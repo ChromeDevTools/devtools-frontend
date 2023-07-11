@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "เลิกตรึงเป็นหน้าต่างแยก"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "หน้า: ไม่ได้เลือก"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "หน้า: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "ตามค่าเดิมของผู้เขียน"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "การเรียกใช้ window.confirm จาก iframe แบบข้ามต้นทางเลิกใช้งานแล้วและจะถูกนำออกในอนาคต"
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "เหตุการณ์การเปลี่ยนแปลง DOM ซึ่งรวมถึง DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument และ DOMCharacterDataModified เลิกใช้งานแล้ว (https://w3c.github.io/uievents/#legacy-event-types) และจะถูกนำออก โปรดใช้ MutationObserver แทน"
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "การรองรับข้อมูล: URL ในองค์ประกอบ SVG <use> เลิกใช้งานแล้วและจะถูกนำออกในอนาคต"
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "การผ่อนปรนนโยบายต้นทางเดียวกันโดยการตั้งค่า document.domain เลิกใช้งานแล้วและจะปิดใช้โดยค่าเริ่มต้น หากต้องการใช้ฟีเจอร์นี้ต่อ โปรดเลือกไม่ใช้คลัสเตอร์ Agent ที่ผูกกับต้นทางโดยการส่งส่วนหัว Origin-Agent-Cluster: ?0 พร้อมด้วยการตอบสนองของ HTTP สำหรับเอกสารและเฟรม ดูรายละเอียดเพิ่มเติมได้ที่ https://developer.chrome.com/blog/immutable-document-domain/"
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path เลิกใช้งานแล้วและจะถูกนำออก โปรดใช้ Event.composedPath() แทน"
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "ไม่รองรับส่วนหัว Expect-CT แล้ว Chrome ต้องการ \"ความโปร่งใสของใบรับรอง\" สำหรับใบรับรองทั้งหมดที่ได้รับความเชื่อถือจากสาธารณะซึ่งออกหลังจากวันที่ 30 เมษายน 2018"
+    "message": "ส่วนหัว Expect-CT เลิกใช้งานแล้วและจะถูกนำออก Chrome ต้องการ \"ความโปร่งใสของใบรับรอง\" สำหรับใบรับรองทั้งหมดที่ได้รับความเชื่อถือจากสาธารณะซึ่งออกหลังจากวันที่ 30 เมษายน 2018"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() และ watchPosition() ไม่ทำงานในต้นทางที่ไม่ปลอดภัยอีกต่อไป คุณควรพิจารณาเปลี่ยนแอปพลิเคชันไปใช้ต้นทางที่ปลอดภัยอย่างเช่น HTTPS หากต้องการใช้ฟีเจอร์นี้ ดูรายละเอียดเพิ่มเติมได้ที่ https://goo.gle/chrome-insecure-origins"
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "แอตทริบิวต์ HTML: เติมข้อความอัตโนมัติ"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "การป้องกันเนื้อหาผสม"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "การลดสตริง User Agent"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "โหมดความเข้ากันได้กับเอกสาร"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "ใช่"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "การดึงข้อมูลล่วงหน้าและการแสดงผลล่วงหน้า"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "หน้านี้"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "คลิกที่รายงานเพื่อแสดงเนื้อหา"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "แอปพลิเคชัน"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "แคช"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "พื้นที่เก็บข้อมูลแคช"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "หน้าที่ขอ AppBanner ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Back-Forward Cache ถูกปิดใช้เนื่องจากคำขอ Keepalive"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "แคชย้อนหลังถูกปิดใช้งานจากการแจ้งว่าไม่เหมาะสม ไปที่ chrome://flags/#back-forward-cache เพื่อเปิดใช้งานในอุปกรณ์นี้โดยตรง"
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "หน้าที่ใช้ WebUSB API ไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Back/Forward Cache ถูกปิดใช้เนื่องจากมีการปิดใช้คุกกี้ในหน้าที่ใช้ Cache-Control: no-store"
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "หน้าที่ใช้ Dedicated Worker หรือ Worklet ยังไม่สามารถใช้ฟีเจอร์แคชย้อนหลัง"
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "ข้อผิดพลาดภายใน"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Back/Forward Cache ถูกปิดใช้เนื่องจากคำขอของเครือข่าย JavaScript บางรายการได้รับทรัพยากรที่มีส่วนหัว Cache-Control: no-store"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Back-Forward Cache ถูกปิดใช้เนื่องจากคำขอ Keepalive"
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{แสดงอีก # เฟรม}other{แสดงอีก # เฟรม}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "ชื่อที่เก็บข้อมูล"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "ความคงทน"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "วันหมดอายุ"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "ไม่ชัดเจน"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "เป็นบุคคลที่สาม"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "กำลังโหลด…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "ไม่"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "ไม่มี"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(ไม่ชัดเจน)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "ต้นทาง"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "เป็นแบบคงอยู่"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "โควต้า"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "เว็บไซต์ระดับบนสุด"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "ใช่"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "ใช่ เนื่องจากเชนระดับบนมีต้นทางของบุคคลที่สาม"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "ใช่ เนื่องจากคีย์พื้นที่เก็บข้อมูลไม่ชัดเจน"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "ใช่ เนื่องจากต้นทางอยู่นอกเว็บไซต์ระดับบนสุด"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "ใช่ เนื่องจากเว็บไซต์ระดับบนสุดไม่ชัดเจน"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "โทเค็นสถานะส่วนตัวที่จัดเก็บไว้ทั้งหมดซึ่งใช้ได้ในอินสแตนซ์ของเบราว์เซอร์นี้"
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "โทเค็นสถานะส่วนตัว"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "กรองตามชุดกฎที่เลือก"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "การตั้งค่าส่วนขยาย"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "การโหลดล่วงหน้าถูกปิดใช้เนื่องจากโหมดการประหยัดอินเทอร์เน็ตของระบบปฏิบัติการ"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "ระบบบังคับเปิดการโหลดล่วงหน้าเนื่องจากมีการเปิดเครื่องมือสำหรับนักพัฒนาเว็บ เมื่อปิดเครื่องมือสำหรับนักพัฒนาเว็บไป ระบบจะปิดใช้การแสดงผลล่วงหน้าเนื่องจากเซสชันเบราว์เซอร์นี้อยู่ในกลุ่มยกเว้นซึ่งใช้สำหรับการเปรียบเทียบประสิทธิภาพ"
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "การโหลดล่วงหน้าถูกปิดใช้เนื่องจากการตั้งค่าของผู้ใช้หรือส่วนขยาย ไปที่ {PH1} เพื่อดูข้อมูลเพิ่มเติมหรือไปที่ {PH2} เพื่อปิดใช้ส่วนขยาย"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "ระบบบังคับเปิดการแสดงผลล่วงหน้าเนื่องจากมีการเปิดเครื่องมือสำหรับนักพัฒนาเว็บ เมื่อปิดเครื่องมือสำหรับนักพัฒนาเว็บไป ระบบจะปิดใช้การแสดงผลล่วงหน้าเนื่องจากเซสชันเบราว์เซอร์นี้อยู่ในกลุ่มยกเว้นซึ่งใช้สำหรับการเปรียบเทียบประสิทธิภาพ"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "การโหลดล่วงหน้าเคยถูกปิดไป แต่ระบบบังคับเปิดแล้วตอนนี้"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "ปิดใช้การโหลดล่วงหน้าอยู่"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "การแสดงผลล่วงหน้าเคยถูกปิดไป แต่ระบบบังคับเปิดแล้วตอนนี้"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "การโหลดล่วงหน้าไม่สำเร็จ"
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "สถานะ"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "หน้าที่แสดงผลล่วงหน้าเปิดใช้งานในระหว่างเริ่มการนำทางเฟรมหลักของหน้า"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "ไม่ได้ใช้การแสดงผลล่วงหน้าเนื่องจากนโยบายสิทธิ์หรือนโยบายการรายงานแซนด์บ็อกซ์ของหน้าเริ่มต้นใช้ไม่ได้กับหน้าที่แสดงผลล่วงหน้า"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "ไม่ได้ใช้การแสดงผลล่วงหน้าเนื่องจากในช่วงเวลาเปิดใช้งาน พารามิเตอร์การนำทางต่างๆ (เช่น ส่วนหัว HTTP) ได้รับการคำนวณมากกว่าในช่วงคำขอการนำทางการแสดงผลล่วงหน้าเดิม"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "หน้าที่แสดงผลล่วงหน้าขอเอาต์พุตเสียงซึ่งยังไม่รองรับในขณะนี้"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "ไม่ได้แสดงผลล่วงหน้าเนื่องจากผู้ใช้ขอให้เบราว์เซอร์ใช้แบตเตอรี่น้อยลง"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "การโหลดทรัพยากรบางรายการถูกบล็อก"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "การนำทางโดยมีการแสดงผลล่วงหน้าจำเป็นต้องมีใบรับรองไคลเอ็นต์ HTTP"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "การนำทางโดยมีการแสดงผลล่วงหน้าไม่สำเร็จเนื่องจากมีการกำหนดเป้าหมาย URL แบบข้ามเว็บไซต์"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "หน้าที่แสดงผลล่วงหน้าซึ่งไปยัง URL แบบข้ามเว็บไซต์"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "การนำทางโดยมีการแสดงผลล่วงหน้าไม่สำเร็จเนื่องจาก URL ที่แสดงผลล่วงหน้าเปลี่ยนเส้นทางไปยัง URL แบบข้ามเว็บไซต์"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "หน้าที่แสดงผลล่วงหน้าซึ่งไปยัง URL ที่เปลี่ยนเส้นทางไปยัง URL แบบข้ามเว็บไซต์"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "ไม่ได้แสดงผลล่วงหน้าเนื่องจากผู้ใช้ขอให้เบราว์เซอร์ใช้อินเทอร์เน็ตน้อยลง"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "หน้าที่แสดงผลล่วงหน้าพยายามเริ่มการดาวน์โหลด ซึ่งยังไม่รองรับในขณะนี้"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "ไม่ได้แสดงผลล่วงหน้าเนื่องจากเบราว์เซอร์พบข้อผิดพลาดภายในซึ่งพยายามระบุข้อมูลการใช้งานหน่วยความจำปัจจุบัน"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "หน้าเริ่มต้นไม่สามารถแสดงผลล่วงหน้าเนื่องจากมี URL ที่มีประสิทธิภาพซึ่งแตกต่างจาก URL ปกติ (เช่น หน้าแท็บใหม่หรือแอปที่โฮสต์)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL ไม่มีสิทธิ์แสดงผลล่วงหน้าเนื่องจากอยู่ในรูปแบบที่ไม่ใช่ http: หรือ https:"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "การนำทางโดยมีการแสดงผลล่วงหน้าไม่สำเร็จเนื่องจากมีการเปลี่ยนเส้นทางไปยัง URL ซึ่งมีรูปแบบที่ไม่ใช่ http: หรือ https:"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "การนำทางโดยมีการแสดงผลล่วงหน้าจำเป็นต้องมีการตรวจสอบสิทธิ์ HTTP ซึ่งยังไม่รองรับในขณะนี้"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "ไม่ได้แสดงผลล่วงหน้าเนื่องจากอุปกรณ์นี้มีหน่วยความจำระบบทั้งหมดไม่เพียงพอที่จะรองรับการแสดงผลล่วงหน้า"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "หน้าที่แสดงผลล่วงหน้าซึ่งไปยัง URL อื่นที่ยังไม่รองรับในขณะนี้"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "ไม่ได้แสดงผลล่วงหน้าเนื่องจากหน้าเริ่มต้นมีการแสดงผลล่วงหน้ามากเกินไป โปรดนำกฎการคาดเดาอื่นๆ ออกเพื่อให้แสดงผลล่วงหน้าเพิ่มเติมได้"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "ไม่ได้แสดงผลล่วงหน้าเนื่องจากเบราว์เซอร์มีหน่วยความจำการแสดงผลล่วงหน้าเกินขีดจำกัด"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "หน้าที่แสดงผลล่วงหน้าถูกยกเลิกการโหลดเนื่องจากเบราว์เซอร์มีหน่วยความจำใกล้จะเต็ม"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "ไม่ได้แสดงผลล่วงหน้าเนื่องจากเบราว์เซอร์มีหน่วยความจำใกล้เต็ม"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "หน้าที่แสดงผลล่วงหน้ามีเนื้อหาผสม"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "หน้าที่แสดงผลล่วงหน้าใช้ JavaScript API ที่ไม่ได้รับอนุญาต ซึ่งยังไม่รองรับในขณะนี้"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "การนำทางโดยมีการแสดงผลล่วงหน้าไม่สำเร็จเนื่องจากมีรหัสสถานะการตอบกลับ HTTP ที่ไม่ใช่ 2xx"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "นโยบายรักษาความปลอดภัยเนื้อหาบล็อกการนำทางโดยมีการแสดงผลล่วงหน้า"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "การนำทางโดยมีการแสดงผลล่วงหน้าพบข้อผิดพลาดเกี่ยวกับเครือข่าย"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "ไม่ได้แสดงผลล่วงหน้าเนื่องจากผู้ใช้ปิดการโหลดล่วงหน้าในการตั้งค่าเบราว์เซอร์"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "หน้าเริ่มต้นขัดข้อง"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "หน้าเริ่มต้นหยุดทำงาน"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "หน้าที่แสดงผลล่วงหน้าขัดข้อง"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "หน้าที่แสดงผลล่วงหน้าหยุดทำงาน"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "หน้าที่แสดงผลล่วงหน้าซึ่งไปยัง URL ของเว็บไซต์เดียวกันแบบข้ามต้นทาง แต่เว็บไซต์ปลายทางไม่ส่งส่วนหัว Supports-Loading-Mode ที่เหมาะสม"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "หน้าที่แสดงผลล่วงหน้าซึ่งไปยัง URL ของเว็บไซต์เดียวกันแบบข้ามต้นทาง แต่เว็บไซต์ปลายทางไม่ส่งส่วนหัว Supports-Loading-Mode ที่เหมาะสม"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "การนำทางโดยมีการแสดงผลล่วงหน้าไม่สำเร็จเนื่องจาก URL ที่แสดงผลล่วงหน้าเปลี่ยนเส้นทางไปยัง URL ของเว็บไซต์เดียวกันแบบข้ามต้นทาง แต่เว็บไซต์ปลายทางไม่ส่งส่วนหัว Supports-Loading-Mode ที่เหมาะสม"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "หน้าที่แสดงผลล่วงหน้าซึ่งไปยัง URL ที่เปลี่ยนเส้นทางไปยัง URL ของเว็บไซต์เดียวกันแบบข้ามต้นทาง แต่เว็บไซต์ปลายทางไม่ส่งส่วนหัว Supports-Loading-Mode ที่เหมาะสม"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "การนำทางโดยมีการแสดงผลล่วงหน้าไม่สำเร็จเนื่องจากใบรับรอง SSL ไม่ถูกต้อง"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "หน้าเริ่มต้นอยู่ในเบื้องหลังเป็นเวลานาน ดังนั้นหน้าที่แสดงผลล่วงหน้าจึงถูกยกเลิก"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "หน้าเริ่มต้นอยู่ในเบื้องหลัง ดังนั้นหน้าที่แสดงผลล่วงหน้าจึงถูกยกเลิก"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "เปลี่ยน User Agent ในการนำทางที่แสดงผลล่วงหน้า"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "เลือกองค์ประกอบเพื่อดูรายละเอียดเพิ่มเติม"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "สถานะ"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "ระบบทิ้งการดึงข้อมูลล่วงหน้าไปหาการดึงข้อมูลล่วงหน้าที่ใหม่กว่าเนื่องจาก |kPrefetchNewLimits| เปิดใช้อยู่"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "มีการเปลี่ยนเส้นทางการดึงข้อมูลล่วงหน้า แต่ URL เปลี่ยนเส้นทางไม่มีสิทธิ์สำหรับการดึงข้อมูลล่วงหน้า"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "มีการเปลี่ยนเส้นทางการดึงข้อมูลล่วงหน้า แต่เกิดปัญหากับการเปลี่ยนเส้นทาง"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "การดึงข้อมูลล่วงหน้าไม่สำเร็จเนื่องจากระบบไม่รองรับส่วนหัว Content-Type ของการตอบกลับ"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "การดึงข้อมูลล่วงหน้าไม่สำเร็จเนื่องจากข้อผิดพลาดเกี่ยวกับเครือข่าย"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "การดึงข้อมูลล่วงหน้าไม่สำเร็จเนื่องจากมีรหัสสถานะการตอบกลับ HTTP ที่ไม่ใช่ 2xx"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "การดึงข้อมูลล่วงหน้าไม่ทำงานเนื่องจากหน้าเริ่มต้นใช้งานมีการดึงข้อมูลล่วงหน้าที่กำลังดำเนินอยู่จำนวนมากเกินไป"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "การดึงข้อมูลล่วงหน้าไปยังต้นทางครั้งก่อนหน้าได้รับการตอบกลับ HTTP 503 ที่มีส่วนหัว Retry-After ซึ่งยังไม่ผ่านไป"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "URL นี้ไม่มีสิทธิ์สำหรับการดึงข้อมูลล่วงหน้าเนื่องจากมี Service Worker ที่ลงทะเบียนไว้หรือมีคุกกี้ข้ามเว็บไซต์สำหรับต้นทางนั้น แต่ยังมีการใส่การดึงข้อมูลล่วงหน้าในเครือข่ายอยู่และไม่ได้ใช้งาน ทั้งนี้เพื่อหลอกว่าก่อนหน้านี้ผู้ใช้มีความสัมพันธ์อะไรบางอย่างกับต้นทาง"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "เวลาที่ผ่านไประหว่างการดึงข้อมูลล่วงหน้าและการใช้งานนานเกิน ระบบจึงทิ้งการดึงข้อมูลล่วงหน้านั้น"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "การดึงข้อมูลล่วงหน้าไม่ทำงานเนื่องจากการตั้งค่าโหมดประหยัดแบตเตอรี่เปิดใช้อยู่"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "การดึงข้อมูลล่วงหน้าไม่ทำงานเนื่องจากเบราว์เซอร์อยู่ในโหมดไม่ระบุตัวตนหรือโหมดผู้มาเยือน"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "การดึงข้อมูลล่วงหน้าไม่ทำงานเนื่องจากระบบปฏิบัติการอยู่ในโหมดประหยัดอินเทอร์เน็ต"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "URL ไม่มีสิทธิ์สำหรับการดึงข้อมูลล่วงหน้าเนื่องจากในบริบทเครือข่ายเริ่มต้นกำหนดค่าให้ใช้พร็อกซีเซิร์ฟเวอร์"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL ไม่มีสิทธิ์สำหรับการดึงข้อมูลล่วงหน้าเนื่องจากโฮสต์ของ URL ไม่มีลักษณะเฉพาะตัว (เช่น ที่อยู่ IP ที่กำหนดเส้นทางแบบสาธารณะไม่ได้ หรือชื่อโฮสต์ที่ไม่มีการควบคุมรีจิสทรี) แต่การดึงข้อมูลล่วงหน้าจะต้องทำผ่านพร็อกซี"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URL ไม่มีสิทธิ์สำหรับการดึงข้อมูลล่วงหน้าเนื่องจากมีการใช้พาร์ติชันพื้นที่เก็บข้อมูลที่ไม่ใช่ค่าเริ่มต้น"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "การดึงข้อมูลล่วงหน้าไม่ทำงานเนื่องจากการโหลดล่วงหน้าปิดใช้อยู่"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "URL ไม่มีสิทธิ์สำหรับการดึงข้อมูลล่วงหน้า เนื่องจากบริบทเครือข่ายเริ่มต้นไม่สามารถกำหนดค่าเพื่อให้ใช้พร็อกซีที่ดึงข้อมูลล่วงหน้าสำหรับคำขอดึงข้อมูลล่วงหน้าข้ามต้นทางในเว็บไซต์เดียวกัน"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URL ไม่มีสิทธิ์สำหรับการดึงข้อมูลล่วงหน้าเนื่องจากรูปแบบไม่ใช่ https:"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URL ไม่มีสิทธิ์สำหรับการดึงข้อมูลล่วงหน้าเนื่องจากทำข้ามเว็บไซต์ แต่ผู้ใช้มีคุกกี้สำหรับต้นทางนั้น"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "URL ไม่มีสิทธิ์สำหรับการดึงข้อมูลล่วงหน้า เนื่องจากมี Service Worker ที่ลงทะเบียนสำหรับต้นทางนั้น ซึ่งระบบยังไม่รองรับ"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "ระบบไม่ได้ใช้การดึงข้อมูลล่วงหน้าเนื่องจากเป็นการดึงข้อมูลล่วงหน้าข้ามเว็บไซต์ และมีการเพิ่มคุกกี้สําหรับ URL นั้นขณะที่การดึงข้อมูลล่วงหน้ายังดำเนินอยู่ ดังนั้นการตอบกลับที่ดึงข้อมูลไว้ล่วงหน้าจึงล้าสมัยไปแล้วตอนนี้"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "ผู้ให้บริการอินเทอร์เน็ตหรือผู้ดูแลเครือข่ายบล็อกการดึงข้อมูลล่วงหน้าไว้"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "พบข้อผิดพลาดของเครือข่ายขณะพยายามตั้งค่าการเชื่อมต่อกับพร็อกซีที่ดึงข้อมูลล่วงหน้า"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "คลิกเพื่อแสดงในแผงองค์ประกอบ"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "มีการใช้ทรัพยากรที่ดึงข้อมูลล่วงหน้า {PH1} รายการสำหรับหน้านี้"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "การโหลดล่วงหน้าที่ใช้สำหรับหน้านี้"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "หน้าเว็บนี้เป็นการแสดงผลล่วงหน้า"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "การแสดงภาพการใช้งาน"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "บันทึกข้อมูลการครอบคลุมไม่ได้เนื่องจากมีการแสดงผลหน้าเว็บล่วงหน้าอยู่เบื้องหลัง"
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "ทั้งหมด"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "บันทึกข้อมูลการครอบคลุมไม่ได้เนื่องจากระบบแสดงหน้าเว็บจาก Back/Forward Cache"
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "เลือกรายละเอียดการครอบคลุม: ต่อฟังก์ชันมีโอเวอร์เฮดต่ำ ต่อการบล็อกมีโอเวอร์เฮดที่จำเป็น"
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "ต่อฟังก์ชัน"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "คลิกปุ่มโหลดซ้ำ {PH1} เพื่อโหลดซ้ำและดูการครอบคลุม"
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "ตอนนี้ใช้ไปแล้ว {PH1} จาก {PH2} ({PH3}%) เหลือ {PH4}"
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "วัดคุมการครอบคลุม"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "โหลดหน้าเว็บซ้ำ"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "แสดงการครอบคลุม"
@@ -5670,7 +5667,7 @@
     "message": "คัดลอกไปยังคลิปบอร์ดแล้ว"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "คัดลอกการเปลี่ยนแปลง CSS ทั้งหมด"
+    "message": "คัดลอกการเปลี่ยนแปลง CSS"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "ชื่อพร็อพเพอร์ตี้ CSS: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "เปิดใช้การเกิดขึ้นพร้อมกันของฮาร์ดแวร์อยู่"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "ค่าของ navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "ไม่มีการควบคุม"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "สำเร็จ"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "คีย์ของผู้ออก PST นี้ไม่พร้อมใช้งาน ผู้ออกคีย์อาจต้องลงทะเบียนผ่านขั้นตอนการลงทะเบียนของ Chrome"
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "ดำเนินการไม่สำเร็จโดยไม่ทราบสาเหตุ"
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "หยุดบันทึกการจัดสรรฮีป"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "ตัวแก้ไขคำสั่ง CDP ซ่อนอยู่"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "ตัวแก้ไขคำสั่ง CDP แสดงอยู่"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "ล้างทั้งหมด"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "กรอง"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "ซ่อนตัวแก้ไขคำสั่ง CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "เมธอด"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "เซสชัน"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "แสดงตัวแก้ไขคำสั่ง CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "เป้าหมาย"
@@ -11702,9 +11711,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "ชุดข้อความ"
   },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "เครือข่าย"
-  },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} เวลา {PH2}"
   },
@@ -13530,7 +13536,7 @@
     "message": "ชื่อ"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
-    "message": "(ทึบ)"
+    "message": "(ไม่ชัดเจน)"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "เซสชัน"

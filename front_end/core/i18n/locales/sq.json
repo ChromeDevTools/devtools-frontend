@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Shkëput nga stacioni në dritare të veçantë"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Faqja: Nuk është zgjedhur"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Faqja: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Sipas krijimit"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Aktivizimi i window.confirm nga kuadrot iframe me origjina të kryqëzuara është zhvlerësuar dhe do të hiqet në të ardhmen."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "Ngjarjet e shndërrimit të DOM-it, duke përfshirë DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument dhe DOMCharacterDataModified, janë zhvlerësuar (https://w3c.github.io/uievents/#legacy-event-types) dhe do të hiqen. Përdor MutationObserver më mirë."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Mbështetja është zhvlerësuar dhe do të hiqet në të ardhmen për të dhënat: URL-të në elementin <use> të skedarit SVG."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Zbutja e politikës për origjinën e njëjtë me anë të cilësimit document.domain është zhvlerësuar dhe do të çaktivizohet si parazgjedhje. Për të vazhduar të përdorësh këtë veçori, tërhiqu nga grupet e agjentëve me çelës origjine duke dërguar një kokë faqeje Origin-Agent-Cluster: ?0 bashkë me përgjigjen e protokollit HTTP për dokumentin dhe kuadrot iframe. Shiko https://developer.chrome.com/blog/immutable-document-domain/ për më shumë detaje."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path është zhvlerësuar dhe do të hiqet. Përdor Event.composedPath() më mirë."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Koka Expect-CT nuk mbështetet më. Chrome kërkon transparencën e certifikatave për të gjitha certifikatat e besuara në mënyrë publike të lëshuara pas datës 30 prill 2018."
+    "message": "Koka Expect-CT është zhvlerësuar dhe do të hiqet. Chrome kërkon transparencën e certifikatave për të gjitha certifikatat e besuara në mënyrë publike të lëshuara pas datës 30 prill 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() dhe watchPosition() nuk funksionojnë më në origjina të pasigurta. Për të përdorur këtë veçori, duhet të marrësh në konsideratë ta kalosh aplikacionin tënd te një origjinë më e sigurt, si p,.sh. HTTPS. Shiko https://goo.gle/chrome-insecure-origins për më shumë detaje."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Atributi i protokollit HTML: autocomplete"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Parandalimi i përmbajtjes së përzier"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Zvogëlimi i vargut të agjentit të përdoruesit"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Modaliteti i përputhshmërisë së dokumentit"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Po"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Marrja paraprake dhe paraqitja paraprake"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Kjo faqe"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Kliko në çfarëdo raporti për të shfaqur tekstin"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Aplikacioni"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Memoria specifike"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Hapësira ruajtëse e memories specifike"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Faqet që kanë kërkuar një AppBanner nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Memoria specifike e faqes së plotë është çaktivizuar për shkak të një kërkese për procesin e mbajtjes aktive."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Memoria specifike e faqes së plotë është çaktivizuar nga flamurët. Vizito chrome://flags/#back-forward-cache për ta aktivizuar lokalisht në këtë pajisje."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Faqet që përdorin WebUSB API nuk janë të përshtatshme për memorien specifike të faqes së plotë."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Memoria specifike e faqes së plotë është çaktivizuar sepse kukit janë çaktivizuar në një faqe që përdor Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Faqet që përdorin një punonjës të dedikuar ose worklet nuk janë aktualisht të përshtatshme për memorien specifike të faqes së plotë."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Gabim i brendshëm."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Memoria specifike e faqes së plotë është çaktivizuar sepse një kërkesë e rrjetit JavaScript mori një burim me kokën Cache-Control: no-store"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Memoria specifike e faqes së plotë është çaktivizuar për shkak të një kërkese për procesin e mbajtjes aktive."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Shfaq # kuadër më shumë}other{Shfaq # kuadro më shumë}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Emri i kovës"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Qëndrueshmëria"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Skadimi"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Është e patejdukshme"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Është e një pale të tretë"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Po ngarkohet…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Jo"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Asnjë"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(e patejdukshme)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Origjina"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "E vazhdueshme"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Kuota"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Sajt i nivelit të lartë"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Po"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Po, sepse zinxhiri i prejardhjes përfshin një origjinë të një pale të tretë"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Po, sepse çelësi i hapësirës ruajtëse është i patejdukshëm"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Po, sepse origjina është jashtë sajtit të nivelit të lartë"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Po, sepse sajti i nivelit të lartë është i patejdukshëm"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Të gjitha kodet e ruajtura të gjendjes private që ofrohen në këtë shembull të shfletuesit."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Kodet e gjendjes private"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Filtro sipas grupit të zgjedhur të rregullave"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Cilësimet e shtesave"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Ngarkimi paraprak është çaktivizuar për shkak të modalitetit të \"Kursyesit të të dhënave\" të sistemit operativ."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Ngarkimi paraprak është aktivizuar me detyrim sepse DevTools është hapur. Kur DevTools është i mbyllur, paraqitja paraprake do të çaktivizohet sepse kjo seancë shfletuesi është pjesë e një grupi kontrolli që përdoret për krahasimet e performancës."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Ngarkimi paraprak është çaktivizuar për shkak të cilësimeve të përdoruesit ose një shtese. Shko te {PH1} për të mësuar më shumë ose shko te {PH2} për të çaktivizuar shtesën."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Paraqitja paraprake është aktivizuar me detyrim sepse DevTools është hapur. Kur DevTools është i mbyllur, paraqitja paraprake do të çaktivizohet sepse kjo seancë shfletuesi është pjesë e një grupi kontrolli që përdoret për krahasimet e performancës."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Ngarkimi paraprak ishte i çaktivizuar, por tani është aktivizuar me detyrim"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Ngarkimi paraprak është çaktivizuar"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Paraqitja paraprake ishte e çaktivizuar, por tani është aktivizuar me detyrim"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Ngarkimi paraprak dështoi."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Statusi"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Faqja e paraqitur paraprakisht u aktivizua gjatë navigimit të kuadrit kryesor në faqen e nisjes."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Paraqitja paraprake nuk u përdor sepse flamurët e kufizuesit ose politika e lejeve të faqes së nisjes nuk ishin në përputhje me ato të faqes së paraqitjes paraprake."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Paraqitja paraprake nuk u përdor për shkak se gjatë kohës së aktivizimit u përllogaritën parametra navigimi (p.sh. kokat HTTP) që ishin të ndryshëm në krahasim me kërkesën origjinale për navigimin e paraqitjes paraprake."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Faqja e paraqitur paraprakisht kërkoi daljen e audios, e cila nuk mbështetet aktualisht."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Paraqitja paraprake nuk u krye sepse përdoruesi kërkoi që shfletuesi të përdorë më pak bateri."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Disa ngarkime të burimeve u bllokuan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Navigimi i paraqitjes paraprake kërkoi një certifikatë të klientit HTTP."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Navigimi i paraqitjes paraprake dështoi sepse kishte si objektiv një URL të sajteve të kryqëzuara."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Faqja e paraqitur paraprakisht u drejtua te një URL e sajteve të kryqëzuara."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Navigimi i paraqitjes paraprake dështoi për shkak se URL-ja e paraqitur paraprakisht të ridrejtoi te një URL e sajteve të kryqëzuara."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Faqja e paraqitur paraprakisht të drejtoi te një URL, e cila të ridrejtoi te një URL e sajteve të kryqëzuara."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Paraqitja paraprake nuk u krye sepse përdoruesi kërkoi që shfletuesi të përdorë më pak të dhëna."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Faqja e paraqitur paraprakisht u përpoq të niste një shkarkim, i cili nuk mbështetet aktualisht."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Paraqitja paraprake nuk u krye sepse shfletuesi ndeshi një gabim të brendshëm gjatë përpjekjes për të përcaktuar përdorimin aktual të memories."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Faqja e nisjes nuk mund të kryejë paraqitjen paraprake sepse ka një URL efektive, por është e ndryshme nga URL-ja e saj normale. (Për shembull, faqja e skedës së re ose aplikacionet e strehuara.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL-ja nuk kualifikohej për t'u paraqitur paraprakisht sepse skema e saj nuk ishte http: apo https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Navigimi i paraqitjes paraprake dështoi për shkak se të ridrejtoi te një URL skema e së cilës nuk ishte http: ose https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Navigimi për paraqitjen paraprake kërkoi vërtetimin me HTTP, i cili nuk mbështetet aktualisht."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Paraqitja paraprake nuk u krye sepse kjo pajisje nuk ka memorie të mjaftueshme sistemi në total për të mbështetur paraqitjen paraprake."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Faqja e paraqitur paraprakisht u drejtua vetë te një URL tjetër, e cila nuk mbështetet aktualisht."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Paraqitja paraprake nuk u krye sepse faqja e nisjes ka tashmë shumë paraqitje paraprake në vazhdim. Hiq rregullat e tjera të spekulimit për të aktivizuar paraqitjen e mëtejshme paraprake."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Paraqitja paraprake nuk u krye sepse shfletuesi e kaloi kufirin e memories për paraqitjen paraprake."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Faqja e paraqitur paraprakisht u shkarkua sepse shfletuesi u vendos nën presionin e memories në nivel kritik."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Paraqitja paraprake nuk u krye sepse shfletuesi ishte nën presionin e memories në nivel kritik."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Faqja e paraqitur paraprakisht përfshinte përmbajtje të përziera."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Faqja e paraqitur paraprakisht përdori një API të ndaluar të JavaScript që nuk mbështetet aktualisht."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Navigimi i paraqitjes paraprake dështoi për shkak të një kodi statusi të përgjigjes HTTP që nuk është i kategorisë 2xx."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Navigimi i paraqitjes paraprake u bllokua nga një politikë për sigurinë e përmbajtjes."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Navigimi i paraqitjes paraprake ndeshi një gabim rrjeti."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Paraqitja paraprake nuk u krye sepse përdoruesi e çaktivizoi ngarkimin paraprak te cilësimet e shfletuesit."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Faqja e nisjes pësoi një ndërprerje aksidentale."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Faqja e nisjes është mbyllur."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Faqja e paraqitur paraprakisht pësoi një ndërprerje aksidentale."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Faqja e paraqitur paraprakisht u mbyll."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Faqja e paraqitur paraprakisht u drejtua vetë te një URL me origjinë të kryqëzuar nga i njëjti sajt, por përgjigja e destinacionit nuk përfshinte kokën e duhur Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Faqja e paraqitur paraprakisht u drejtua te një URL me origjinë të kryqëzuar nga i njëjti sajt, por përgjigja e destinacionit nuk përfshinte kokën e duhur Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Navigimi i paraqitjes paraprake dështoi për shkak se URL-ja e paraqitur paraprakisht të ridrejtoi te një URL e të njëjtit sajt me origjinë të kryqëzuar, por përgjigjja e destinacionit nuk përfshinte kokën e duhur Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Faqja e paraqitur paraprakisht u drejtua te një URL që u ridrejtua te një URL me origjinë të kryqëzuar nga i njëjti sajt, por përgjigja e destinacionit nuk përfshinte kokën e duhur Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Navigimi i paraqitjes paraprake dështoi për shkak të një certifikate të pavlefshme SSL."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Faqja e nisjes është vendosur në sfond për një kohë të gjatë, prandaj faqja e paraqitur paraprakisht është hequr."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Faqja e nisjes është vendosur në sfond, prandaj faqja e paraqitur paraprakisht është hequr."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Ndryshimi i agjentit të përdoruesit ndodhi gjatë navigimit të paraqitjes paraprake."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Zgjidh një element për më shumë detaje"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Statusi"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Marrja paraprake është hequr për një marrje paraprake më të re sepse është aktivizuar |kPrefetchNewLimits|"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Marrja paraprake është ridrejtuar, por URL-ja e ridrejtimit nuk kualifikohet për marrjen paraprake."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Marrja paraprake u ridrejtua, por pati një problem me ridrejtimin."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Marrja paraprake dështoi sepse koka Content-Type e komandës nuk mbështetej."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Marrja paraprake dështoi për shkak të një gabimi të rrjetit."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Marrja paraprake dështoi për shkak të një kodi statusi të përgjigjes HTTP që nuk është e kategorisë 2xx."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Marrja paraprake nuk u krye sepse faqja e nisjes ka tashmë shumë marrje paraprake në vazhdim."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Një marrje paraprake e mëparshme tek origjina mori një përgjigje \"HTTP 503\" me kokën Retry-After, për të cilën koha nuk ka kaluar ende."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "URL-ja nuk kualifikohej për t'u marrë paraprakisht sepse kishte një punonjës të regjistruar shërbimi ose kuki të një sajti të kryqëzuar për atë origjinë, por marrja paraprake u vendos gjithsesi në rrjet dhe nuk u përdor, për të fshehur që përdoruesi kishte një lloj marrëdhënieje të mëparshme me atë origjinë."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Ka kaluar shumë kohë mes marrjes paraprake dhe përdorimit, prandaj marrja paraprake u hoq."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Marrja paraprake nuk u krye sepse është aktivizuar cilësimi i \"Kursyesit të baterisë\"."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Marrja paraprake nuk u krye sepse shfletuesi është në modalitetin \"e fshehtë\" ose \"vizitor\"."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Marrja paraprake nuk u krye sepse sistemi operativ është në modalitetin e \"Kursyesit të të dhënave\"."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "URL-ja nuk kualifikohet për t'u marrë paraprakisht sepse në kontekstin e rrjetit të parazgjedhur është konfiguruar për të përdorur një server proxy."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL-ja nuk kualifikohej për t'u marrë paraprakisht sepse pritësi i saj nuk ishte unik (p.sh. një adresë IP me devijim jopublik ose një emër pritësi që nuk kontrollohet nga regjistri), por kërkohej që marrja paraprake të kalonte në një server proxy."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URL-ja nuk kualifikohej për t'u marrë paraprakisht sepse ajo përdor një ndarje të hapësirës ruajtëse që nuk është e parazgjedhur."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Marrja paraprake nuk u krye sepse ngarkimi paraprak ishte çaktivizuar."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "URL-ja nuk kualifikohej për t'u marrë paraprakisht sepse konteksti i rrjetit të parazgjedhur nuk mund të konfigurohet për të përdorur serverin proxy të marrjes paraprake për një kërkesë të marrjes paraprake me origjinë të kryqëzuar të të njëjtit sajt."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URL-ja nuk kualifikohej për t'u marrë paraprakisht sepse skema e saj nuk ishte https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URL-ja nuk kualifikohej për t'u marrë paraprakisht sepse ishte nga një sajt i kryqëzuar, por përdoruesi kishte kuki për atë origjinë."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "URL-ja nuk kualifikohej për t'u marrë paraprakisht sepse kishte një punonjës të regjistruar shërbimi për atë origjinë, i cili nuk mbështetet aktualisht."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Marrja paraprake nuk është përdorur sepse ishte një marrje paraprake nga sajte të kryqëzuara dhe kukit ishin shtuar për atë URL ndërkohë që marrja paraprake ishte në vazhdim, kështu që përgjigjja e marrjes paraprake tani është e papërditësuar."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Marrja paraprake është bllokuar nga ofruesi i shërbimit të internetit ose administratori i rrjetit."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "U ndesh një gabim rrjeti gjatë përpjekjes për të konfiguruar një lidhje me serverin proxy të marrjes paraprake."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Kliko për të zbuluar në panelin e \"Elementeve\""
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "{PH1} burime të marra paraprakisht janë përdorur për këtë faqe"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Ngarkimi paraprak i përdorur për këtë faqe"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Kjo faqe është paraqitur paraprakisht"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Vizualizimi i përdorimit"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Informacionet e mbulimit nuk mund të merreshin sepse faqja ishte paraqitur paraprakisht në sfond."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Të gjitha"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Informacionet e mbulimit nuk mund të merreshin sepse faqja u shfaq nga memoria specifike e faqes së plotë."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Zgjidh shkallën e detajeve të mbulimit: Për funksion ka mbingarkesë të ulët, për bllok ka mbingarkesë të konsiderueshme."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Për funksion"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Kliko te butoni i ringarkimit {PH1} për të ringarkuar faqen dhe për të marrë mbulimin."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} nga {PH2} ({PH3}%) të përdorua deri më tani, {PH4} të papërdorura."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Mbulimi i instrumentit"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Ringarkoje faqen"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Shfaq mbulimin"
@@ -5670,7 +5667,7 @@
     "message": "U kopjua në kujtesën e fragmenteve"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopjo të gjithë ndryshimet e CSS"
+    "message": "Kopjo ndryshimet e CSS-së"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Emri i atributit CSS: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Zëvendësimi i ekzekutimit të njëkohshëm të harduerit është aktivizuar"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Vlera e navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Nuk ka përshpejtim"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Me sukses"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Çelësat për këtë lëshues të PST-së nuk ofrohen. Lëshuesi mund të duhet të regjistrohet nëpërmjet procesit të regjistrimit të Chrome."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Veprimi nuk u krye për shkaqe të panjohura."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Ndalo regjistrimin e shpërndarjeve të grumbullit"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "Modifikuesi i komandave të CDP-së u fsheh"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "Modifikuesi i komandave të CDP-së është shfaqur"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Pastroji të gjitha"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Filtro"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "Fshi modifikuesin e komandave të  CDP-së"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Metoda"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Sesioni"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "Shfaq modifikuesin e komandave të CDP-së"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Objektivi"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Nënprocesi"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Rrjeti"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} në {PH2}"

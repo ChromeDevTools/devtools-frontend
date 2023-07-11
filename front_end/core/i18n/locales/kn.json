@@ -987,7 +987,7 @@
     "message": "ಪೇಂಟ್"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | reloadPage": {
-    "message": "ಪುಟವನ್ನು ಮರಳಿ ಲೋಡ್ ಮಾಡಿ"
+    "message": "ಪುಟವನ್ನು ಪುನಃ ಲೋಡ್ ಮಾಡಿ"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "ರೆಂಡರಿಂಗ್"
@@ -1045,12 +1045,6 @@
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "ಪ್ರತ್ಯೇಕ ವಿಂಡೋದಲ್ಲಿ ಅನ್‌ಡಾಕ್ ಮಾಡಿ"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "ಪುಟ: ಆಯ್ಕೆಮಾಡಲಾಗಿಲ್ಲ"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "ಪುಟ: {PH1}"
   },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "ನಿಗದಿಪಡಿಸಿದ ಹಾಗೆ"
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "ಕ್ರಾಸ್ ಒರಿಜಿನ್ iframes ನಿಂದ window.confirm ಟ್ರಿಗರ್ ಮಾಡುವುದನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಭವಿಷ್ಯದಲ್ಲಿ ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument, ಮತ್ತು DOMCharacterDataModified ಸೇರಿದಂತೆ DOM ಮ್ಯುಟೇಶನ್ ಈವೆಂಟ್‌ಗಳನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ (https://w3c.github.io/uievents/#legacy-event-types) ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ಬದಲಿಗೆ MutationObserver ಅನ್ನು ಬಳಸಿ."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "ಡೇಟಾಗೆ ಬೆಂಬಲ: SVG <use> ಅಂಶದಲ್ಲಿನ URL ಗಳನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಭವಿಷ್ಯದಲ್ಲಿ ಅವುಗಳನ್ನು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain ಸೆಟ್ ಮಾಡುವ ಮೂಲಕ ಒಂದೇ ಮೂಲದ ನೀತಿ ಸಡಿಲಗೊಳಿಸುವುದನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ಡೀಫಾಲ್ಟ್ ಆಗಿ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತದೆ. ಈ ವೈಶಿಷ್ಟ್ಯದ ಬಳಕೆಯನ್ನು ಮುಂದುವರಿಸಲು, ಡಾಕ್ಯುಮೆಂಟ್ ಮತ್ತು ಫ್ರೇಮ್‌ಗಳಿಗೆ ಸಂಬಂಧಿಸಿದಂತೆ HTTP ಪ್ರತಿಕ್ರಿಯೆಯೊಂದಿಗೆ Origin-Agent-Cluster: ?0 ಹೆಡರ್ ಅನ್ನು ಕಳುಹಿಸುವ ಮೂಲಕ, ಒರಿಜಿನ್-ಕೀ ಇರುವ ಏಜೆಂಟ್ ಕ್ಲಸ್ಟರ್‌ಗಳಿಂದ ಹೊರಗುಳಿಯಿರಿ. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://developer.chrome.com/blog/immutable-document-domain/ ನೋಡಿ."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path ಅನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. ಬದಲಿಗೆ Event.composedPath() ಬಳಸಿ."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT ಹೆಡರ್ ಅನ್ನು ಇನ್ನು ಮುಂದೆ ಬೆಂಬಲಿಸಲಾಗುವುದಿಲ್ಲ. 30 ಏಪ್ರಿಲ್, 2018 ರ ನಂತರ ನೀಡಲಾದ ಎಲ್ಲಾ ಸಾರ್ವಜನಿಕ ವಿಶ್ವಾಸಾರ್ಹ ಪ್ರಮಾಣಪತ್ರಗಳಿಗಾಗಿ Chrome ಗೆ ಪ್ರಮಾಣಪತ್ರ ಪಾರದರ್ಶಕತೆಯ ಅಗತ್ಯವಿದೆ."
+    "message": "Expect-CT ಶಿರೋಲೇಖವನ್ನು ತಡೆಹಿಡಿಯಲಾಗಿದೆ ಮತ್ತು ತೆಗೆದುಹಾಕಲಾಗುತ್ತದೆ. 30 ಏಪ್ರಿಲ್, 2018 ರ ನಂತರ ನೀಡಲಾದ ಎಲ್ಲಾ ಸಾರ್ವಜನಿಕ ವಿಶ್ವಾಸಾರ್ಹ ಪ್ರಮಾಣಪತ್ರಗಳಿಗಾಗಿ Chrome ಗೆ ಪ್ರಮಾಣಪತ್ರ ಪಾರದರ್ಶಕತೆಯ ಅಗತ್ಯವಿದೆ."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() ಮತ್ತು watchPosition(), ಇನ್ನು ಮುಂದೆ ಅಸುರಕ್ಷಿತ ಮೂಲಗಳಲ್ಲಿ ಕಾರ್ಯನಿರ್ವಹಿಸುವುದಿಲ್ಲ. ಈ ವೈಶಿಷ್ಟ್ಯವನ್ನು ಬಳಸಲು, ನಿಮ್ಮ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು HTTPS ನಂತಹ ಸುರಕ್ಷಿತ ಮೂಲಕ್ಕೆ ನೀವು ಬದಲಾಯಿಸಬೇಕು. ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ https://goo.gle/chrome-insecure-origins ನೋಡಿ."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "ಫೆಡೆರೇಟೆಡ್ ಕ್ರೆಡೆನ್ಶಿಯಲ್ ಮ್ಯಾನೇಜ್‌ಮೆಂಟ್ ಬಳಕೆದಾರರ ಮಾಹಿತಿಯ API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML ಗುಣಲಕ್ಷಣ: ಆಟೋಕಂಪ್ಲೀಟ್"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "ಮಿಶ್ರ ಕಂಟೆಂಟ್ ತಡೆಗಟ್ಟುವುದು"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "ಬಳಕೆದಾರರ ಏಜೆಂಟ್ ಸ್ಟ್ರಿಂಗ್ ಕಡಿತ"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ಡಾಕ್ಯುಮೆಂಟ್ ಹೊಂದಾಣಿಕೆ ಮೋಡ್"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "ಹೌದು"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "ಮುಂಚಿತವಾಗಿ ಪಡೆಯುವಿಕೆ ಮತ್ತು ಪ್ರೀರೆಂಡರಿಂಗ್"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "ಈ ಪುಟ"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "ಅದರ ಮುಖ್ಯ ಭಾಗವನ್ನು ಡಿಸ್‌ಪ್ಲೇ ಮಾಡಲು ಯಾವುದಾದರೂ ವರದಿಯ ಮೇಲೆ ಕ್ಲಿಕ್ ಮಾಡಿ"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "ಅಪ್ಲಿಕೇಶನ್"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "ಕ್ಯಾಷ್"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "ಕ್ಯಾಷ್ ಸಂಗ್ರಹಣೆ"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner ಅನ್ನು ವಿನಂತಿಸುವ ಯಾವುದೇ ಪುಟವು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹತೆ ಹೊಂದಿಲ್ಲ."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "ಕೀಪ್-ಅಲೈವ್ ವಿನಂತಿಯ ಕಾರಣ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "ಫ್ಲ್ಯಾಗ್‌ಗಳಿಂದ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. ಸ್ಥಳೀಯವಾಗಿ ಈ ಸಾಧನದಲ್ಲಿ ಅದನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು chrome://flags/#back-forward-cache ಗೆ ಭೇಟಿ ನೀಡಿ."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "WebUSB API ಅನ್ನು ಬಳಸುವ ಪುಟಗಳು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಶ್‌ಗೆ ಅರ್ಹವಾಗಿರುವುದಿಲ್ಲ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Cache-Control: no-store ಅನ್ನು ಬಳಸುವ ಪುಟದಲ್ಲಿ ಕುಕೀಗಳನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿರುವುದರಿಂದ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "ಮೀಸಲಾದ ವರ್ಕರ್ ಅಥವಾ ವರ್ಕ್‌ಲೇಟ್‌ಗಳನ್ನು ಬಳಸುವ ಪುಟಗಳು ಪ್ರಸ್ತುತ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ಗೆ ಅರ್ಹವಾಗಿಲ್ಲ."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "ಆಂತರಿಕ ದೋಷ."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "ಕೆಲವು JavaScript ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿಯು Cache-Control: no-store ಶಿರೋಲೇಖದೊಂದಿಗೆ ಮಾಹಿತಿಯ ಮೂಲವನ್ನು ಸ್ವೀಕರಿಸಿದ ಕಾರಣ ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "ಕೀಪ್-ಅಲೈವ್ ವಿನಂತಿಯ ಕಾರಣ ಬ್ಯಾಕ್-ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{ಇನ್ನೂ # ಫ್ರೇಮ್ ತೋರಿಸಿ}one{ಇನ್ನೂ # ಫ್ರೇಮ್‌ಗಳನ್ನು ತೋರಿಸಿ}other{ಇನ್ನೂ # ಫ್ರೇಮ್‌ಗಳನ್ನು ತೋರಿಸಿ}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "ಬಕೆಟ್ ಹೆಸರು"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "ಬಾಳಿಕೆ"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "ಅವಧಿ ಮುಗಿಯುವ ದಿನಾಂಕ"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "ಅಪಾರದರ್ಶಕವಾಗಿದೆ"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "ಥರ್ಡ್ ಪಾರ್ಟಿಯ ಮೂಲ"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "ಲೋಡ್ ಆಗುತ್ತಿದೆ…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "ಇಲ್ಲ"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "ಯಾವುದೂ ಅಲ್ಲ"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(ಅಪಾರದರ್ಶಕ)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "ಮೂಲ"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "ಸಂಗ್ರಹಣೆಯು ನಿರಂತರವಾಗಿದೆ"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "ಹಂಚಿಕೆ"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "ಉನ್ನತ ಹಂತದ ಸೈಟ್"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "ಹೌದು"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "ಹೌದು, ಏಕೆಂದರೆ ಪೂರ್ವಜರ ಸರಪಳಿಯು ಥರ್ಡ್ ಪಾರ್ಟಿ ಮೂಲವನ್ನು ಹೊಂದಿದೆ"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "ಹೌದು, ಏಕೆಂದರೆ ಸಂಗ್ರಹಣೆ ಕೀ ಅಪಾರದರ್ಶಕವಾಗಿದೆ"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "ಹೌದು, ಏಕೆಂದರೆ ಮೂಲವು ಉನ್ನತ ಮಟ್ಟದ ಸೈಟ್‌ನ ಹೊರಗಿದೆ"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "ಹೌದು, ಏಕೆಂದರೆ ಉನ್ನತ ಮಟ್ಟದ ಸೈಟ್ ಅಪಾರದರ್ಶಕವಾಗಿದೆ"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "ಈ ಬ್ರೌಸರ್‌ನ ನಿದರ್ಶನದಲ್ಲಿ ಲಭ್ಯವಿರುವ, ಸಂಗ್ರಹಿಸಲಾದ ಎಲ್ಲಾ ಖಾಸಗಿ ಸ್ಥಿತಿಯ ಟೋಕನ್‌ಗಳು."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "ಖಾಸಗಿ ಸ್ಥಿತಿಯ ಟೋಕನ್‌ಗಳು"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "ಆಯ್ಕೆಮಾಡಿದ ನಿಯಮ ಸೆಟ್ ಪ್ರಕಾರ ಫಿಲ್ಟರ್ ಮಾಡಿ"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "ವಿಸ್ತರಣೆಗಳ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "ಆಪರೇಟಿಂಗ್ ಸಿಸ್ಟಮ್‌ನ ಡೇಟಾ ಉಳಿಸುವಿಕೆ ಮೋಡ್‌ನಿಂದಾಗಿ ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "DevTools ತೆರೆದಿರುವ ಕಾರಣ ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ಒತ್ತಾಯವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. DevTools ಅನ್ನು ಮುಚ್ಚಿದಾಗ, ಈ ಬ್ರೌಸರ್ ಸೆಶನ್ ಕಾರ್ಯಕ್ಷಮತೆಯನ್ನು ಹೋಲಿಸಲು ಬಳಸಲಾಗುವ ಹೋಲ್ಡ್‌ಬ್ಯಾಕ್ ಗುಂಪಿನ ಭಾಗವಾಗಿರುವುದರಿಂದ ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತದೆ."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "ಬಳಕೆದಾರರ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಅಥವಾ ವಿಸ್ತರಣೆಯೊಂದರ ಕಾರಣ ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. ಇನ್ನಷ್ಟು ತಿಳಿಯಲು {PH1} ಗೆ ಹೋಗಿ, ವಿಸ್ತರಣೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು {PH2} ಗೆ ಹೋಗಿ."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "DevTools ತೆರೆದಿರುವ ಕಾರಣ ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ಒತ್ತಾಯವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. DevTools ಅನ್ನು ಮುಚ್ಚಿದಾಗ, ಈ ಬ್ರೌಸರ್ ಸೆಶನ್ ಕಾರ್ಯಕ್ಷಮತೆಯನ್ನು ಹೋಲಿಸಲು ಬಳಸಲಾಗುವ ಹೋಲ್ಡ್‌ಬ್ಯಾಕ್ ಗುಂಪಿನ ಭಾಗವಾಗಿರುವುದರಿಂದ ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತದೆ."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ, ಆದರೆ ಈಗ ಒತ್ತಾಯವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ, ಆದರೆ ಈಗ ಒತ್ತಾಯವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "ಪ್ರಿಲೋಡಿಂಗ್ ವಿಫಲವಾಗಿದೆ."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "ಸ್ಥಿತಿ"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "ಪುಟದ ಮುಖ್ಯ ಫ್ರೇಮ್ ನ್ಯಾವಿಗೇಶನ್ ಅನ್ನು ಪ್ರಾರಂಭಿಸುವಾಗ ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವನ್ನು ಸಕ್ರಿಯಗೊಂಡಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ಬಳಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಸ್ಯಾಂಡ್‌ಬಾಕ್ಸಿಂಗ್ ಫ್ಲ್ಯಾಗ್‌ಗಳು ಅಥವಾ ಪ್ರಾರಂಭಿಕ ಪುಟದ ಅನುಮತಿಗಳ ನೀತಿಯು ಪ್ರೀರೆಂಡರಿಂಗ್ ಪುಟದೊಂದಿಗೆ ಹೊಂದಾಣಿಕೆಯಾಗಲಿಲ್ಲ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ಬಳಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಮೂಲ ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಷನ್ ವಿನಂತಿಗಿಂತ ಸಕ್ರಿಯಗೊಳಿಸುವ ಸಮಯದಲ್ಲಿ ವಿಭಿನ್ನ ನ್ಯಾವಿಗೇಷನ್ ಪ್ಯಾರಾಮೀಟರ್‌ಗಳನ್ನು (ಉದಾ., HTTP ಹೆಡರ್‌ಗಳು) ಲೆಕ್ಕಹಾಕಲಾಗುತ್ತದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು ಆಡಿಯೊ ಔಟ್‌ಪುಟ್ ಅನ್ನು ವಿನಂತಿಸಿದೆ, ಇದು ಪ್ರಸ್ತುತ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಬ್ರೌಸರ್ ಕಡಿಮೆ ಬ್ಯಾಟರಿಯನ್ನು ಬಳಸಬೇಕೆಂದು ಬಳಕೆದಾರರು ವಿನಂತಿಸಿದ್ದಾರೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "ಕೆಲವು ಮಾಹಿತಿಯ ಮೂಲದ ಲೋಡ್ ಮಾಡುವಿಕೆಯನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್‌ಗೆ HTTP ಕ್ಲೈಂಟ್ ಪ್ರಮಾಣಪತ್ರದ ಅಗತ್ಯವಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್ ವಿಫಲವಾಗಿದೆ ಏಕೆಂದರೆ ಇದು ಕ್ರಾಸ್-ಸೈಟ್ URL ಒಂದನ್ನು ಟಾರ್ಗೆಟ್ ಮಾಡಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವನ್ನು ಕ್ರಾಸ್-ಸೈಟ್ URL ಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಲಾಗಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್ ವಿಫಲವಾಗಿದೆ ಏಕೆಂದರೆ ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ URL ಅನ್ನು ಕ್ರಾಸ್-ಸೈಟ್ URL ಗೆ ಮರುನಿರ್ದೇಶಿಸಲಾಗಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು URL ಒಂದಕ್ಕೆ ನ್ಯಾವಿಗೇಟ್ ಆಗಿದೆ, ಇದು ಕ್ರಾಸ್-ಸೈಟ್ URL ಒಂದಕ್ಕೆ ಮರುನಿರ್ದೇಶಿಸಿತು."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಡೆಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಬ್ರೌಸರ್ ಕಡಿಮೆ ಡೇಟಾವನ್ನು ಬಳಸಬೇಕೆಂದು ಬಳಕೆದಾರರು ವಿನಂತಿಸಿದ್ದಾರೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು ಡೌನ್‌ಲೋಡ್ ಒಂದನ್ನು ಪ್ರಾರಂಭಿಸಲು ಪ್ರಯತ್ನಿಸಿದೆ, ಇದು ಪ್ರಸ್ತುತ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಬ್ರೌಸರ್ ಪ್ರಸ್ತುತ ಮೆಮೊರಿ ಬಳಕೆಯನ್ನು ಗೊತ್ತುಪಡಿಸಲು ಪ್ರಯತ್ನಿಸುವಾಗ ಆಂತರಿಕ ದೋಷವೊಂದನ್ನು ಎದುರಿಸಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವು ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ನಿರ್ವಹಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ, ಏಕೆಂದರೆ ಇದು ಅದರ ಸಾಮಾನ್ಯ URL ಗಿಂತ ವಿಭಿನ್ನವಾದ ಪರಿಣಾಮಕಾರಿ URL ಅನ್ನು ಹೊಂದಿದೆ. (ಉದಾಹರಣೆಗೆ, ಹೊಸ ಟ್ಯಾಬ್ ಪುಟ, ಅಥವಾ ಹೋಸ್ಟ್ ಮಾಡಿದ ಆ್ಯಪ್‌ಗಳು.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲು URL ಅರ್ಹವಾಗಿರಲಿಲ್ಲ ಏಕೆಂದರೆ ಅದರ ಸ್ಕೀಮ್ http: ಅಥವಾ https: ಆಗಿರಲಿಲ್ಲ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಷನ್ ವಿಫಲವಾಗಿದೆ ಏಕೆಂದರೆ ಅದು http: ಅಥವಾ https: ಅಲ್ಲದ ಸ್ಕೀಮ್‌ಗೆ ಮರುನಿರ್ದೇಶಿಸಲ್ಪಟ್ಟಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್‌ಗೆ HTTP ಪ್ರಮಾಣೀಕರಣದ ಅಗತ್ಯವಿದೆ, ಇದು ಪ್ರಸ್ತುತ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ಬೆಂಬಲಿಸಲು ಈ ಸಾಧನವು ಸಾಕಷ್ಟು ಒಟ್ಟು ಸಿಸ್ಟಮ್ ಮೆಮೊರಿಯನ್ನು ಹೊಂದಿಲ್ಲದ ಕಾರಣ ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು ಸ್ವತಃ ಮತ್ತೊಂದು URL ಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಿದೆ, ಇದು ಪ್ರಸ್ತುತ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಪ್ರಾರಂಭಿಕ ಪುಟವು ಈಗಾಗಲೇ ಹಲವಾರು ಚಾಲ್ತಿಯಲ್ಲಿರುವ ಪ್ರೀರೆಂಡರ್‌ಗಳನ್ನು ಹೊಂದಿದೆ. ಮತ್ತಷ್ಟು ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು ಇತರ ಊಹೆಗೆ ಸಂಬಂಧಿಸಿದ ನಿಯಮಗಳನ್ನು ತೆಗೆದುಹಾಕಿ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಪ್ರೀರೆಂಡರಿಂಗ್ ಮೆಮೊರಿ ಮಿತಿಯನ್ನು ಬ್ರೌಸರ್ ಮೀರಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "ಬ್ರೌಸರ್ ನಿರ್ಣಾಯಕ ಮೆಮೊರಿ ಒತ್ತಡಕ್ಕೆ ಒಳಗಾದ ಕಾರಣ ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವನ್ನು ಅನ್‌ಲೋಡ್ ಮಾಡಲಾಗಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ಮಾಡಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಬ್ರೌಸರ್ ಪ್ರಸ್ತುತ ಮೆಮೊರಿ ಬಳಕೆಯನ್ನು ಗೊತ್ತುಪಡಿಸಲು ಪ್ರಯತ್ನಿಸುವಾಗ ಆಂತರಿಕ ದೋಷವೊಂದನ್ನು ಎದುರಿಸಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ಪುಟವು ಮಿಶ್ರ ಕಂಟೆಂಟ್ ಅನ್ನು ಒಳಗೊಂಡಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು ಪ್ರಸ್ತುತ ಬೆಂಬಲಿಸದಿರುವ ನಿಷೇಧಿತ JavaScript API ಒಂದನ್ನು ಬಳಸಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "2xx ಅಲ್ಲದ HTTP ಪ್ರತಿಕ್ರಿಯೆಯ ಸ್ಥಿತಿ ಕೋಡ್‌ನಿಂದಾಗಿ ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಷನ್ ವಿಫಲವಾಗಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್ ಅನ್ನು ಕಂಟೆಂಟ್‌ ಭದ್ರತಾ ನೀತಿಯೊಂದರ ಮೂಲಕ ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್ ನೆಟ್‌ವರ್ಕ್ ದೋಷವೊಂದನ್ನು ಎದುರಿಸಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "ಬಳಕೆದಾರರು ತಮ್ಮ ಬ್ರೌಸರ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಪ್ರಿಲೋಡಿಂಗ್ ಮಾಡುವುದನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿರುವ ಕಾರಣ ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವು ಕ್ರ್ಯಾಶ್ ಆಗಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವನ್ನು ಕೊನೆಗೊಳಿಸಲಾಗಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಿದ ಪುಟವು ಕ್ರ್ಯಾಶ್ ಆಗಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವನ್ನು ಕೊನೆಗೊಳಿಸಲಾಯಿತು."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಆದ ಅದೇ ಸೈಟ್ URL ಗೆ ಸ್ವತಃ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಿದೆ, ಆದರೆ ಗಮ್ಯಸ್ಥಾನದ ಪ್ರತಿಕ್ರಿಯೆಯು ಸೂಕ್ತವಾದ Supports-Loading-Mode ಹೆಡರ್ ಅನ್ನು ಒಳಗೊಂಡಿರಲಿಲ್ಲ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಆದ ಅದೇ ಸೈಟ್ URL ಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಿದೆ, ಆದರೆ ಗಮ್ಯಸ್ಥಾನದ ಪ್ರತಿಕ್ರಿಯೆಯು ಸೂಕ್ತವಾದ Supports-Loading-Mode ಹೆಡರ್ ಅನ್ನು ಒಳಗೊಂಡಿರಲಿಲ್ಲ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್ ವಿಫಲವಾಗಿದೆ ಏಕೆಂದರೆ ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ URL ಅನ್ನು ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಆದ ಅದೇ ಸೈಟ್ URL ಗೆ ಮರುನಿರ್ದೇಶಿಸಲಾಗಿದೆ, ಆದರೆ ಗಮ್ಯಸ್ಥಾನದ ಪ್ರತಿಕ್ರಿಯೆಯು ಸೂಕ್ತವಾದ Supports-Loading-Mode ಹೆಡರ್ ಅನ್ನು ಒಳಗೊಂಡಿಲ್ಲ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು URL ಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಲ್ಪಟ್ಟಿದೆ, ಇದು ಕ್ರಾಸ್-ಆರಿಜಿನ್ ಆದ ಅದೇ ಸೈಟ್ URL ಗೆ ಮರುನಿರ್ದೇಶಿಸಿತು, ಆದರೆ ಗಮ್ಯಸ್ಥಾನದ ಪ್ರತಿಕ್ರಿಯೆಯು ಸೂಕ್ತವಾದ Supports-Loading-Mode ಹೆಡರ್ ಅನ್ನು ಒಳಗೊಂಡಿರಲಿಲ್ಲ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "ಅಮಾನ್ಯವಾದ SSL ಪ್ರಮಾಣಪತ್ರವೊಂದರ ಕಾರಣ ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಷನ್ ವಿಫಲವಾಗಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವನ್ನು ದೀರ್ಘಕಾಲಕ್ಕಾಗಿ ಹಿನ್ನೆಲೆ ಮಾಡಲಾಗಿದೆ, ಆದ್ದರಿಂದ ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವನ್ನು ತ್ಯಜಿಸಲಾಗಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವನ್ನು ಹಿನ್ನೆಲೆ ಮಾಡಲಾಗಿದೆ, ಆದ್ದರಿಂದ ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವನ್ನು ತ್ಯಜಿಸಲಾಗಿದೆ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "ಪ್ರೀರೆಂಡರಿಂಗ್ ನ್ಯಾವಿಗೇಶನ್‌ನಲ್ಲಿ ಬಳಕೆದಾರರ ಏಜೆಂಟ್ ಬದಲಾವಣೆಯಾಗಿದೆ."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ ಘಟಕವೊಂದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "ಸ್ಥಿತಿ"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "ಹೊಸದಾಗಿ ಪ್ರಿಫೆಚ್‌ ಮಾಡುವುದಕ್ಕಾಗಿ ಪ್ರಿಫೆಚ್ ಮಾಡುವಿಕೆಯನ್ನು ತ್ಯಜಿಸಲಾಗಿದೆ ಏಕೆಂದರೆ |kPrefetchNewLimits| ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "ಪ್ರಿಫೆಚ್ ಮಾಡುವಿಕೆಯನ್ನು ಮರುನಿರ್ದೇಶಿಸಲಾಗಿದೆ, ಆದರೆ ಮರುನಿರ್ದೇಶನ URL ಪ್ರಿಫೆಚ್ ಮಾಡಲು ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "ಪ್ರಿಫೆಚ್ ಮಾಡುವಿಕೆಯನ್ನು ಮರುನಿರ್ದೇಶಿಸಲಾಗಿದೆ, ಆದರೆ ಮರುನಿರ್ದೇಶನದಲ್ಲಿ ಸಮಸ್ಯೆ ಕಂಡುಬಂದಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "ಪ್ರತಿಕ್ರಿಯೆಯ ಕಂಟೆಂಟ್ ಪ್ರಕಾರದ ಶಿರೋಲೇಖ ಬೆಂಬಲಿತವಾಗಿಲ್ಲದ ಕಾರಣ ಪ್ರಿಫೆಚ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "ನೆಟ್‌ವರ್ಕ್ ದೋಷದಿಂದಾಗಿ ಪ್ರಿಫೆಚ್ ಮಾಡುವಿಕೆ ವಿಫಲವಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "2xx-ರಹಿತ HTTP ಪ್ರತಿಕ್ರಿಯೆ ಸ್ಥಿತಿ ಕೋಡ್‌ನಿಂದಾಗಿ ಪೂರ್ವಪಡೆಯುವಿಕೆ ವಿಫಲವಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವು ಈಗಾಗಲೇ ಹಲವಾರು ಚಾಲ್ತಿಯಲ್ಲಿರುವ ಪ್ರಿಫೆಚ್‌ಗಳನ್ನು ಹೊಂದಿರುವ ಕಾರಣ ಪೂರ್ವಪಡೆಯುವಿಕೆ ವಿಫಲವಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "ಇನ್ನೂ ಅವಧಿ ಮೀರದ ಹೆಡರ್‌ನೊಂದಿಗೆ ಮರುಪ್ರಯತ್ನಿಸುವ ಮೂಲಕ ಮೂಲದ ಹಿಂದಿನ ಪ್ರಿಫೆಚ್ ಮಾಡುವಿಕೆ HTTP 503 ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು ಸ್ವೀಕರಿಸಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "URL ಪ್ರಿಫೆಚ್ ಮಾಡಲು ಅರ್ಹವಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಅದು ಸೇವಾ ಕಾರ್ಯಕರ್ತರು ಅಥವಾ ಆ ಮೂಲಕ್ಕಾಗಿ ನೋಂದಾಯಿಸಲಾದ ಕ್ರಾಸ್-ಸೈಟ್ ಕುಕೀಗಳನ್ನು ಹೊಂದಿದೆ, ಆದರೆ ಮೂಲದೊಂದಿಗೆ ಬಳಕೆದಾರರ ಹಿಂದಿನ ಸಂವಾದಗಳನ್ನು ಮರೆಮಾಡಲು ನೆಟ್‌ವರ್ಕ್‌ನಲ್ಲಿ ಪ್ರಿಫೆಚ್ ಮಾಡುವಿಕೆಯನ್ನು ಸೇರಿಸಲಾಗಿದೆ, ಆದರೆ ಬಳಸಲಾಗಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "ಪ್ರಿಫೆಚ್ ಮಾಡುವಿಕೆ ಮತ್ತು ಬಳಕೆಯ ನಡುವೆ ತುಂಬಾ ಸಮಯ ಕಳೆದಿರುವ ಕಾರಣ ಪ್ರಿಫೆಚ್ ಮಾಡುವುದನ್ನು ತ್ಯಜಿಸಲಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "ಬ್ಯಾಟರಿ ಸೇವರ್ ಸೆಟ್ಟಿಂಗ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿದ ಕಾರಣ ಪ್ರಿಫೆಚ್ ಮಾಡುವಿಕೆ ವಿಫಲವಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "ಬ್ರೌಸರ್, ಅಜ್ಞಾತ ಅಥವಾ ಅತಿಥಿ ಮೋಡ್‌ನಲ್ಲಿರುವ ಕಾರಣ ಪ್ರಿಫೆಚ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "ಆಪರೇಟಿಂಗ್ ಸಿಸ್ಟಮ್ ಡೇಟಾ ಸೇವರ್ ಮೋಡ್‌ನಲ್ಲಿರುವ ಕಾರಣ ಪ್ರಿಫೆಚ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "ಪ್ರಾಕ್ಸಿ ಸರ್ವರ್ ಅನ್ನು ಬಳಸಲು ಡೀಫಾಲ್ಟ್ ನೆಟ್‌ವರ್ಕ್ ಸಂದರ್ಭವನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಲಾಗಿರುವುದರಿಂದ URL ಅನ್ನು ಪ್ರಿಫೆಚ್ ಮಾಡಲು ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL ನ ಹೋಸ್ಟ್ ಅನನ್ಯವಾಗಿಲ್ಲದ ಕಾರಣ (ಉದಾ, ಸಾರ್ವಜನಿಕವಾಗಿ ರೂಟಬಲ್ ಅಲ್ಲದ IP ವಿಳಾಸ ಅಥವಾ ನೋಂದಾವಣೆ-ನಿಯಂತ್ರಿತವಲ್ಲದ ಹೋಸ್ಟ್ ಹೆಸರು) ಇದು ಪ್ರಿಫೆಚ್ ಮಾಡಲು ಅರ್ಹವಾಗಿಲ್ಲ, ಆದರೆ ಪ್ರಿಫೆಚ್ ಮಾಡುವಿಕೆಯನ್ನು ಪ್ರಾಕ್ಸಿ ಮಾಡುವ ಅಗತ್ಯವಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "ಡೀಫಾಲ್ಟ್ ಅಲ್ಲದ ಸಂಗ್ರಹಣೆ ಪಾರ್ಟಿಶನ್ ಬಳಸುವುದರಿಂದ URL ಅನ್ನು ಪ್ರಿಫೆಚ್ ಮಾಡಲು ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "ಪ್ರಿಲೋಡಿಂಗ್ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿರುವ ಕಾರಣ ಪ್ರಿಫೆಚ್ ಮಾಡುವಿಕೆ ವಿಫಲವಾಗಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "ಅದೇ ಸೈಟ್‌ನಲ್ಲಿ ಕ್ರಾಸ್-ಒರಿಜಿನ್ ಪ್ರಿಫೆಚ್ ವಿನಂತಿಗಾಗಿ ಪ್ರಿಫೆಚ್ ಪ್ರಾಕ್ಸಿಯನ್ನು ಬಳಸಲು ಡಿಫಾಲ್ಟ್ ನೆಟ್‌ವರ್ಕ್ ಸಂದರ್ಭವನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಲಾಗದ ಕಾರಣ URL ಅನ್ನು ಪ್ರಿಫೆಚ್ ಮಾಡಲು ಅರ್ಹತೆ ಹೊಂದಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URL ಅನ್ನು ಪ್ರಿಫೆಚ್ ಮಾಡಲು ಅರ್ಹವಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಅದರ ಸ್ಕೀಮ್ https: ಆಗಿರಲಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URL ಕ್ರಾಸ್-ಸೈಟ್ ಆಗಿರುವುದರಿಂದ ಪ್ರಿಫೆಚ್ ಮಾಡಲು ಅರ್ಹವಾಗಿಲ್ಲ, ಆದರೆ ಬಳಕೆದಾರರು ಆ ಮೂಲಕ್ಕಾಗಿ ಕುಕೀಗಳನ್ನು ಹೊಂದಿದ್ದಾರೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "ಪ್ರಸ್ತುತ ಬೆಂಬಲಿತವಲ್ಲದ ಮೂಲವು ನೋಂದಾಯಿತ ಸೇವಾ ಕಾರ್ಯಕರ್ತರನ್ನು ಹೊಂದಿರುವ ಕಾರಣ URL ಅನ್ನು ಪ್ರಿಫೆಚ್ ಮಾಡಲು ಅರ್ಹವಾಗಿಲ್ಲ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "ಪ್ರಿಫೆಚ್ ಮಾಡುವಿಕೆಯನ್ನು ಬಳಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಅದು ಕ್ರಾಸ್-ಸೈಟ್ ಪ್ರಿಫೆಚ್ ಆಗಿದೆ ಮತ್ತು ಪ್ರಿಫೆಚ್ ಮಾಡುವಿಕೆ ಪ್ರಗತಿಯಲ್ಲಿರುವಾಗ ಆ URL ಗೆ ಕುಕೀಗಳನ್ನು ಸೇರಿಸಿರುವುದರಿಂದ ಪ್ರಿಫೆಚ್ ಮಾಡಲಾದ ಪ್ರತಿಕ್ರಿಯೆಯ ಅವಧಿ ಈಗ ಮೀರಿದೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "ಪ್ರಿಫೆಚ್ ಮಾಡುವಿಕೆಯನ್ನು ನಿಮ್ಮ ಇಂಟರ್ನೆಟ್ ಸೇವೆ ಒದಗಿಸುವವರು ಅಥವಾ ನೆಟ್‌ವರ್ಕ್ ನಿರ್ವಾಹಕರು ನಿರ್ಬಂಧಿಸಿದ್ದಾರೆ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "ಪ್ರಿಫೆಚ್ ಮಾಡುವಾಗ ಪ್ರಾಕ್ಸಿಗೆ ಕನೆಕ್ಷನ್ ಸೆಟಪ್‌ ಮಾಡಲು ಪ್ರಯತ್ನಿಸುತ್ತಿರುವಾಗ ನೆಟ್‌ವರ್ಕ್ ದೋಷ ಎದುರಾಗಿದೆ."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "ಎಲಿಮೆಂಟ್‌ಗಳ ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ ಬಹಿರಂಗಪಡಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "ಈ ಪುಟಕ್ಕಾಗಿ {PH1} ಮೊದಲೇ-ಪಡೆಯಲಾದ ಸಂಪನ್ಮೂಲಗಳನ್ನು ಬಳಸಲಾಗುತ್ತದೆ"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "ಈ ಪುಟಕ್ಕೆ ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ಬಳಸಲಾಗಿದೆ"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "ಈ ಪುಟವನ್ನು ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾಗಿದೆ"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "ಬಳಕೆ ದೃಶ್ಯೀಕರಣ"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "ಕವರೇಜ್ ಮಾಹಿತಿಯನ್ನು ಕ್ಯಾಪ್ಚರ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ ಏಕೆಂದರೆ ಪುಟವನ್ನು ಹಿನ್ನಲೆಯಲ್ಲಿ ಮೊದಲೇ ಸಲ್ಲಿಸಲಾಗಿದೆ."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "ಎಲ್ಲಾ"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "ಕವರೇಜ್ ಮಾಹಿತಿಯನ್ನು ಕ್ಯಾಪ್ಚರ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ ಏಕೆಂದರೆ ಪುಟವನ್ನು ಬ್ಯಾಕ್/ಫಾರ್ವರ್ಡ್ ಕ್ಯಾಷ್‌ನಿಂದ ಒದಗಿಸಲಾಗಿದೆ."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "ಕವರೇಜ್‌ನಲ್ಲಿ ಕಣಗಳ ಮಟ್ಟವನ್ನು ಆಯ್ಕೆ ಮಾಡಿ: ಪ್ರತಿ ಫಂಕ್ಷನ್‌ನಲ್ಲಿ ಓವರ್‌ಹೆಡ್ ಕಡಿಮೆಯಿರುತ್ತದೆ, ಪ್ರತಿ ಬ್ಲಾಕ್‌ನಲ್ಲಿ ಗಣನೀಯ ಓವರ್‌ಹೆಡ್ ಇರುತ್ತದೆ."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "ಪ್ರತಿ ಫಂಕ್ಷನ್"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "ಪುನಃ ಲೋಡ್ ಮಾಡಲು ಮತ್ತು ಕವರೇಜ್ ಪಡೆಯಲು ಪುನಃ ಲೋಡ್ ಮಾಡಿ ಬಟನ್ {PH1} ಕ್ಲಿಕ್ ಮಾಡಿ."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1}/{PH2} ({PH3}%) ರಷ್ಟು ಬಳಸಲಾಗಿದೆ, {PH4} ಬಳಸಲಾಗಿಲ್ಲ."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "ಉಪಕರಣ ವ್ಯಾಪ್ತಿ"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "ಪುಟವನ್ನು ಪುನಃ ಲೋಡ್ ಮಾಡಿ"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "ಕವರೇಜ್ ತೋರಿಸಿ"
@@ -5670,7 +5667,7 @@
     "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್‌ಗೆ ನಕಲಿಸಲಾಗಿದೆ"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "ಎಲ್ಲಾ CSS ಬದಲಾವಣೆಗಳನ್ನು ನಕಲಿಸಿ"
+    "message": "CSS ಬದಲಾವಣೆಗಳನ್ನು ನಕಲಿಸಿ"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS ಆಸ್ತಿಯ ಹೆಸರು: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "ಹಾರ್ಡ್‌ವೇರ್ ಏಕರೂಪ ಓವರ್‌ರೈಡ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "navigator.hardwareConcurrency ನ ಮೌಲ್ಯ"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "ಥ್ರಾಟಲಿಂಗ್ ಇಲ್ಲ"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "ಯಶಸ್ವಿಯಾಗಿದೆ"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "ಈ PST ವಿತರಕರ ಕೀಗಳು ಲಭ್ಯವಿಲ್ಲ. ವಿತರಕರು Chrome ನೋಂದಣಿ ಪ್ರಕ್ರಿಯೆಯ ಮೂಲಕ ನೋಂದಾಯಿಸಿಕೊಳ್ಳಬೇಕಾಗಬಹುದು."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "ಅಪರಿಚಿತ ಕಾರಣದಿಂದಾಗಿ ಕಾರ್ಯಾಚರಣೆ ವಿಫಲವಾಗಿದೆ."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "ರಾಶಿ ಹಂಚಿಕೆಗಳನ್ನು ರೆಕಾರ್ಡಿಂಗ್ ಮಾಡುವುದನ್ನು ನಿಲ್ಲಿಸಿ"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP ಕಮಾಂಡ್ ಎಡಿಟರ್ ಅನ್ನು ಮರೆಮಾಡಲಾಗಿದೆ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP ಕಮಾಂಡ್ ಎಡಿಟರ್ ಅನ್ನು ತೋರಿಸಲಾಗಿದೆ"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "ಎಲ್ಲವನ್ನು ತೆರವುಗೊಳಿಸಿ"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "ಫಿಲ್ಟರ್"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "CDP ಕಮಾಂಡ್ ಎಡಿಟರ್ ಅನ್ನು ಮರೆಮಾಡಿ"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "ವಿಧಾನ"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "ಸೆಶನ್"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "CDP ಕಮಾಂಡ್ ಎಡಿಟರ್ ಅನ್ನು ತೋರಿಸಿ"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "ಟಾರ್ಗೆಟ್"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "ಥ್ರೆಡ್"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "ನೆಟ್‌ವರ್ಕ್"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH2} ನಲ್ಲಿ {PH1}"

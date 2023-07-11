@@ -987,7 +987,7 @@
     "message": "ペイント"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | reloadPage": {
-    "message": "ページを再読み込み"
+    "message": "ページを再読み込みする"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "レンダリング"
@@ -1045,12 +1045,6 @@
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "固定を解除して別ウィンドウに表示"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "ページ: 未選択"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "ページ: {PH1}"
   },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "作成済みとして設定"
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "クロスオリジンの iframe から window.confirm をトリガーすることは非推奨であり、今後削除される予定です。"
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOMSubtreeModified、DOMNodeInserted、DOMNodeRemoved、DOMNodeRemovedFromDocument、DOMNodeInsertedIntoDocument、DOMCharacterDataModified を含む DOM ミューテーション イベントは非推奨となり（https://w3c.github.io/uievents/#legacy-event-types）、削除される予定です。代わりに MutationObserver を使用してください。"
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "データのサポート: SVG の <use> 要素の URL は非推奨となり、今後削除される予定です。"
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain の設定による同一オリジン ポリシーの緩和は非推奨であり、デフォルトで無効になる予定です。引き続きこの機能を使用するには、オリジンキー エージェント クラスタを無効にしてください。これには、ドキュメントとフレームの HTTP レスポンスとともに Origin-Agent-Cluster: ?0 ヘッダーを送信します。詳しくは、https://developer.chrome.com/blog/immutable-document-domain/ をご覧ください。"
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path は非推奨であり、削除される予定です。代わりに Event.composedPath() を使用してください。"
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT ヘッダーはサポートされなくなりました。Chrome では、2018 年 4 月 30 日以降に発行されたすべての公的に信頼されている証明書に対して、Certificate Transparency（証明書の透明性）を設定する必要があります。"
+    "message": "Expect-CT ヘッダーは非推奨であり、削除される予定です。Chrome では、2018 年 4 月 30 日以降に発行されたすべての公的に信頼されている証明書に対して、Certificate Transparency（証明書の透明性）を設定する必要があります。"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() と watchPosition() は、保護されていないオリジンでは使用できなくなりました。この機能を使用する場合は、アプリケーションを安全なオリジン（HTTPS など）に切り替えることを検討してください。詳しくは、https://goo.gle/chrome-insecure-origins をご覧ください。"
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML 属性: autocomplete"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "混合コンテンツを防ぐ"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "ユーザー エージェント文字列の削減"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ドキュメント互換モード"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "はい"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "プリフェッチと事前レンダリング"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "詳細"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "レポートをクリックすると本文が表示されます"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "アプリケーション"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "キャッシュ"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "キャッシュ ストレージ"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner をリクエストしたページは、現時点ではバックフォワード キャッシュの対象になりません。"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "バックフォワード キャッシュはキープアライブ リクエストが原因で無効になっています。"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "バックフォワード キャッシュはフラグにより無効になっています。chrome://flags/#back-forward-cache に移動して、このデバイスでローカルに有効化してください。"
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "WebUSB API を使用するページはバックフォワード キャッシュの対象になりません。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Cache-Control: no-store を使用するページで Cookie が無効になっているため、バックフォワード キャッシュは無効になっています。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "専用のワーカーまたはワークレットを使用するページは、現時点ではバックフォワード キャッシュの対象になりません。"
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "内部エラーが発生しました。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "一部の JavaScript ネットワーク リクエストで Cache-Control: no-store ヘッダーを含むリソースが返されたため、バックフォワード キャッシュは無効になっています。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "バックフォワード キャッシュはキープアライブ リクエストが原因で無効になっています。"
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{他 # 件のフレームを表示}other{他 # 件のフレームを表示}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "バケット名"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "耐久性"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "期限"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "不透明"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "サードパーティ"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "読み込んでいます…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "×"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "なし"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "（不透明）"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "オリジン"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "永続的"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "割り当て"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "トップレベル サイト"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "〇"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "はい、系図チェーンにサードパーティのオリジンが含まれています"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "はい、ストレージキーが不透明です"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "はい、オリジンがトップレベル サイト外にあります"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "はい、トップレベル サイトが不透明です"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "このブラウザ インスタンスで利用可能なすべての保存済みプライベート ステート トークン。"
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "プライベート ステート トークン"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "選択したルールセットでフィルタ"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "拡張機能の設定"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "オペレーティング システムのデータセーバー モードが原因で、プリロードが無効になっています。"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "DevTools が開いているため、プリロードが強制的に有効になっています。このブラウザ セッションはパフォーマンスの比較に使用されるホールドバック グループの一部であるため、DevTools を閉じると事前レンダリングは無効になります。"
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "ユーザー設定または拡張機能が原因で、プリロードが無効になっています。詳細を確認するには {PH1} に、拡張機能を無効にするには {PH2} に移動してください。"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "DevTools が開いているため、事前レンダリングが強制的に有効になっています。このブラウザ セッションはパフォーマンスの比較に使用されるホールドバック グループの一部であるため、DevTools を閉じると事前レンダリングは無効になります。"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "プリロードは無効でしたが、現在は強制的に有効になっています"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "プリロードは無効になっています"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "事前レンダリングは無効でしたが、現在は強制的に有効になっています"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "プリロードに失敗しました。"
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "ステータス"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "事前レンダリングされたページは、開始ページのメインフレーム ナビゲーション時に有効になりました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "開始ページのサンドボックス化のフラグまたは許可ポリシーが事前レンダリング ページのものに対応していなかったため、事前レンダリングは使用されませんでした。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "有効化時に、元の事前レンダリング ナビゲーションのリクエスト時とは異なるナビゲーション パラメータ（HTTP ヘッダーなど）が計算されたため、事前レンダリングは使用されませんでした。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "事前レンダリングされたページでリクエストされたオーディオ出力は、現在サポートされていません。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "ブラウザによるバッテリー使用量の削減をユーザーがリクエストしたため、事前レンダリングは行われませんでした。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "一部のリソースの読み込みがブロックされました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "事前レンダリング ナビゲーションには HTTP クライアント証明書が必要です。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "クロスサイト URL がターゲットに設定されていたため、事前レンダリング ナビゲーションに失敗しました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "事前レンダリングされたページは、クロスサイト URL にナビゲーションされました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "事前レンダリングされた URL がクロスサイト URL にリダイレクトされたため、事前レンダリング ナビゲーションに失敗しました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "事前レンダリングされたページは、クロスサイト URL にリダイレクトされる URL にナビゲーションされました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "ブラウザによるデータ使用量の削減をユーザーがリクエストしたため、事前レンダリングは行われませんでした。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "事前レンダリングされたページでダウンロードを開始しようとしましたが、現在ダウンロードはサポートされていません。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "ブラウザで現在のメモリ使用量を判断する際に内部エラーが発生したため、事前レンダリングは行われませんでした。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "通常の URL とは異なる有効な URL（新しいタブページ、ホストされているアプリなど）が含まれているため、開始ページで事前レンダリングを行えません。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "スキームが http: でも https: でもないため、この URL を事前レンダリングできませんでした。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "スキームが http: でも https: でもない URL にリダイレクトされたため、事前レンダリング ナビゲーションに失敗しました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "事前レンダリング ナビゲーションには HTTP 認証が必要ですが、現在 HTTP 認証はサポートされていません。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "このデバイスは事前レンダリングに対応するためのシステムメモリの合計容量が不足しているため、事前レンダリングは行われませんでした。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "事前レンダリングされたページが自己ナビゲーションした別の URL は、現在サポートされていません。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "開始ページですでに多数の事前レンダリングが進行中だったため、事前レンダリングは行われませんでした。事前レンダリングをさらに行えるようにするには、他の事前予測ルールを削除してください。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "ブラウザが事前レンダリングのメモリ上限を超えたため、事前レンダリングは行われませんでした。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "ブラウザに重大なメモリ負荷がかかったため、事前レンダリングされたページはアンロードされました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "ブラウザに重大なメモリ負荷がかかっていたため、事前レンダリングは行われませんでした。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "事前レンダリングされたページに、混合コンテンツが含まれていました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "事前レンダリングされたページで、現在サポートされていない、禁止された JavaScript API が使用されました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "2xx 以外の HTTP レスポンス ステータス コードが原因で事前レンダリング ナビゲーションに失敗しました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "事前レンダリング ナビゲーションはコンテンツ セキュリティ ポリシーによってブロックされました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "事前レンダリング ナビゲーションでネットワーク エラーが発生しました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "ユーザーがブラウザ設定でプリロードを無効にしたため、事前レンダリングは行われませんでした。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "開始ページで問題が発生しました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "開始ページは強制終了されました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "事前レンダリングされたページで問題が発生しました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "事前レンダリングされたページは強制終了されました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "事前レンダリングされたページは、クロスオリジンの同一サイト URL に自己ナビゲーションしましたが、ナビゲーション先のレスポンスに適切な Supports-Loading-Mode ヘッダーが含まれていませんでした。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "事前レンダリングされたページは、クロスオリジンの同一サイト URL にナビゲーションされましたが、ナビゲーション先のレスポンスに適切な Supports-Loading-Mode ヘッダーが含まれていませんでした。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "事前レンダリングされた URL がクロスオリジンの同一サイト URL にリダイレクトされましたが、リダイレクト先のレスポンスに適切な Supports-Loading-Mode ヘッダーが含まれていなかったため、事前レンダリング ナビゲーションに失敗しました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "事前レンダリングされたページは、クロスオリジンの同一サイト URL にリダイレクトされる URL にナビゲーションされましたが、ナビゲーション先のレスポンスに適切な Supports-Loading-Mode ヘッダーが含まれていませんでした。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "SSL 証明書が無効なため、事前レンダリング ナビゲーションに失敗しました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "開始ページは長い間バックグラウンドで動作していたため、事前レンダリングされたページは破棄されました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "開始ページはバックグラウンドで動作していたため、事前レンダリングされたページは破棄されました。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "事前レンダリング ナビゲーションでユーザー エージェントが変更されました。"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "要素を選択すると詳細が表示されます"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "ステータス"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "|kPrefetchNewLimits| が有効になっているため、プリフェッチは破棄され新しいプリフェッチに置き換えられました"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "プリフェッチがリダイレクトされましたが、リダイレクト URL はプリフェッチの対象となりませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "プリフェッチはリダイレクトされましたが、リダイレクトで問題が発生しました。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "レスポンスの Content-Type ヘッダーがサポートされていないため、プリフェッチに失敗しました。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "ネットワーク エラーのため、プリフェッチに失敗しました。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "2xx 以外の HTTP レスポンス ステータス コードのため、プリフェッチに失敗しました。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "開始ページで大量のプリフェッチがすでに実行されていたため、プリフェッチは実行されませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "オリジンに対する前回のプリフェッチで、まだ経過していない Retry-After ヘッダーを含む HTTP 503 レスポンスが返されました。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "この URL は、オリジンに登録済みの Service Worker またはクロスサイト Cookie があったため、プリフェッチの対象となりませんでした。なお、ユーザーとそのオリジンとの過去の関係を隠すため、プリフェッチはネットワークに送られましたが使用されませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "プリフェッチから使用までの間隔が長すぎたため、プリフェッチは破棄されました。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "バッテリー セーバーの設定が有効になっているため、プリフェッチは実行されませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "ブラウザがシークレット モードまたはゲストモードのため、プリフェッチは実行されませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "オペレーティング システムがデータセーバー モードのため、プリフェッチは実行されませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "この URL は、デフォルトのネットワーク コンテキストではプロキシ サーバーを使用するよう構成されているため、プリフェッチの対象となりません。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "この URL は、ホストが一意でないため（一般公開されていないルーティング可能な IP アドレス、レジストリで管理されていないホスト名など）、プリフェッチの対象となりませんでしたが、プリフェッチをプロキシ送信する必要がありました。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "この URL は、デフォルト以外のストレージ パーティションを使用しているため、プリフェッチの対象となりませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "プリロードが無効になっているため、プリフェッチは実行されませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "この URL は、デフォルトのネットワーク コンテキストで同一サイトのクロスオリジン プリフェッチ リクエストに対してプリフェッチ プロキシを使用するよう構成できなかったため、プリフェッチの対象となりませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "この URL は、スキームが https: でないため、プリフェッチの対象となりませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "この URL はクロスサイトのため、プリフェッチの対象となりませんでしたが、ユーザーはこのオリジンの Cookie を保有しています。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "この URL は、オリジンに登録済みの Service Worker があり、現在サポートされていないため、プリフェッチの対象となりませんでした。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "クロスサイト プリフェッチだったためプリフェッチが使用されず、プリフェッチの実行中にその URL の Cookie が追加されたため、プリフェッチ レスポンスが最新ではなくなりました。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "プリフェッチはインターネット サービス プロバイダまたはネットワーク管理者によってブロックされました。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "プリフェッチ プロキシへの接続を設定しようとしたときに、ネットワーク エラーが発生しました。"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "クリックして要素パネルに表示"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "プリフェッチされた {PH1} 個のリソースがこのページで使用されています"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "このページで使用されているプリロード"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "このページは事前にレンダリングされました"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "使用状況の可視化"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "ページがバックグラウンドで事前レンダリングされていたため、カバレッジ情報を取得できませんでした。"
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "すべて"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "ページがバックフォワード キャッシュから配信されたため、カバレッジ情報を取得できませんでした。"
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "カバレッジの細かさの程度を選択する。関数ではオーバーヘッドが低くなり、ブロックではオーバーヘッドが高くなります。"
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "関数ごと"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "再読み込みボタン {PH1} をクリックすると、再読み込みを行ってカバレッジを取得できます。"
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "これまでに {PH2} 中 {PH1}（{PH3}%）使用、{PH4} 未使用。"
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "計測のカバレッジ"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "ページを再読み込み"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "カバレッジを表示"
@@ -5670,7 +5667,7 @@
     "message": "クリップボードにコピーしました"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "CSS の変更箇所をすべてコピー"
+    "message": "CSS の変更をコピーする"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS プロパティ名: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "ハードウェアの並行処理のオーバーライドが有効です"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "navigator.hardwareConcurrency の値"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "スロットリングなし"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "正常に完了"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "この PST 発行元の鍵は使用できません。発行元は Chrome の登録プロセスを通じて登録する必要がある場合があります。"
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "なんらかの理由で操作できませんでした。"
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "ヒープ割り当ての記録を停止"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP コマンド エディタが非表示になっています"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP コマンド エディタが表示されています"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "すべてクリア"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "フィルタ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "CDP コマンド エディタを非表示にする"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "方法"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "セッション"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "CDP コマンド エディタを表示する"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "対象"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "スレッド"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "ネットワーク"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1}（{PH2}）"

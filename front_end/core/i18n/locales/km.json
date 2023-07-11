@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "ផ្ដាច់​ទៅជា​វិនដូ​ដាច់ដោយឡែក"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "ទំព័រ៖ មិនបាន​ជ្រើសរើស"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "ទំព័រ៖ {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "ដូចត្រូវបាន​សរសេរ​ដើមដំបូង"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "ការបើកដំណើរការ window.confirm ពី iframe ដែលមានប្រភពដើមផ្សេងត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានដកចេញនាពេលអនាគត។"
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "ព្រឹត្តិការណ៍​នៃការប្រែប្រួល DOM រួមទាំង DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument និង DOMCharacterDataModified ត្រូវបាន​បញ្ឈប់ (https://w3c.github.io/uievents/#legacy-event-types) ហើយនឹង​ត្រូវបាន​ដកចេញ។ សូមប្រើ MutationObserver ជំនួសវិញ។"
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "អាចប្រើ​ជាមួយ​ទិន្នន័យ៖ URL ក្នុងធាតុ <use> SVG ត្រូវបាន​បញ្ឈប់ ហើយវានឹង​ត្រូវបាន​ដកចេញ​នាពេលអនាគត។"
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "ការបន្ធូរបន្ថយគោលការណ៍ដែលមានប្រភពដើមតែមួយដោយការកំណត់ document.domain ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានបិទតាមលំនាំដើម។ ដើម្បីបន្តប្រើ​ប្រាស់​មុខងារនេះ សូមផ្តាច់​ចេញពី​បណ្ដុំភ្នាក់ងារដែលបានបញ្ចូលពីដើម ដោយបញ្ជូនផ្នែកក្បាល Origin-Agent-Cluster: ?0 រួមជាមួយការឆ្លើយតប HTTP សម្រាប់ឯកសារ និងស៊ុម។ សូមមើល https://developer.chrome.com/blog/immutable-document-domain/ ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានដកចេញ។ សូមប្រើ Event.composedPath() ជំនួសវិញ។"
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "មិនអាចប្រើ​ផ្នែកក្បាល Expect-CT បានទៀតទេ។ Chrome ត្រូវការតម្លាភាព​នៃវិញ្ញាបនបត្រ​សម្រាប់គ្រប់​វិញ្ញាបនបត្រដែលមាន​ការជឿទុកចិត្តជាសាធារណៈ ដែល​បាន​ចេញ​ក្រោយថ្ងៃ​ទី 30 ខែមេសា ឆ្នាំ 2018។"
+    "message": "ផ្នែកក្បាល Expect-CT ត្រូវបានបញ្ឈប់ ហើយនឹងត្រូវបានលុបចេញ។ Chrome ត្រូវការតម្លាភាព​នៃវិញ្ញាបនបត្រ​សម្រាប់គ្រប់​វិញ្ញាបនបត្រដែលមាន​ការជឿទុកចិត្តជាសាធារណៈ ដែល​បាន​ចេញ​ផ្សាយក្រោយថ្ងៃ​ទី 30 ខែមេសា ឆ្នាំ 2018។"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() និង watchPosition() លែងដំណើរការនៅលើប្រភពដើមដែលមិនមានសុវត្ថិភាពទៀតហើយ។ ដើម្បីប្រើមុខងារនេះ អ្នកគួរតែពិចារណាប្ដូរកម្មវិធីរបស់អ្នកទៅប្រភពដើមដែលមានសុវត្ថិភាព ដូចជា HTTPS ជាដើម។ សូមមើល https://goo.gle/chrome-insecure-origins ដើម្បីទទួលបាន​ព័ត៌មានលម្អិតបន្ថែម។"
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "លក្ខណៈ HTML៖ បំពេញ​ស្វ័យ​ប្រវត្តិ"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "កំពុង​ទប់ស្កាត់​ខ្លឹមសារ​ចម្រុះ"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "ការកាត់បន្ថយជួរអក្សរ​នៃភ្នាក់ងារអ្នកប្រើប្រាស់"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "មុខងារភាពត្រូវគ្នានៃឯកសារ"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "បាទ/ចាស"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "ការទាញយកជាមុន និង​ការបំប្លែង​ជា​មុន"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "ទំព័រ​នេះ"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "ចុចនៅលើ​របាយការណ៍ណាមួយ ដើម្បីបង្ហាញតួរបស់វា"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "កម្មវិធី"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "ឃ្លាំងបម្រុង"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "ទំហំផ្ទុកឃ្លាំងសម្ងាត់"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលបានស្នើសុំ AppBanner នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "ឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងត្រូវបានបិទ ដោយសារមានសំណើរក្សាឱ្យនៅដំណើរការ។"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "ឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងត្រូវបានបិទដោយទង់។ ចូលទៅកាន់ chrome://flags/#back-forward-cache ដើម្បីបើកឃ្លាំងបម្រុងនៅលើឧបករណ៍។"
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "មិនអាចទុកទំព័រដែលប្រើ WebUSB API នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "ឃ្លាំងបម្រុងទុក​ទំព័រក្នុងសភាព​ដើមទាំងស្រុង​ត្រូវបានបិទ ដោយសារ​ខូគី​ត្រូវបានបិទ​នៅលើ​ទំព័រ​ដែលប្រើ Cache-Control: no-store។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើស្គ្រីបជំនួយផ្ទៃខាងក្រោយដាច់ដោយឡែក និងមុខងារសង្ខេបកិច្ចការតែមួយ នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
@@ -3380,8 +3374,11 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "បញ្ហាផ្នែកខាងក្នុង។"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "ឃ្លាំងបម្រុងទុក​ទំព័រក្នុងសភាព​ដើមទាំងស្រុង​ត្រូវបានបិទ ដោយសារ​សំណើ​បណ្ដាញ JavaScript ជាក់លាក់​បានទទួល​ធនធាន​ដែលមាន​ផ្នែកក្បាល Cache-Control: no-store។"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
-    "message": "ឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងត្រូវបានបិទ ដោយសារមានសំណើរក្សាឱ្យនៅដំណើរការ។"
+    "message": "បានបិទឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុង ដោយសារមានសំណើរក្សាឱ្យនៅដំណើរការ។"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "បច្ចុប្បន្ន មិនអាចទុកទំព័រដែលប្រើការចាក់សោក្ដារចុច នៅក្នុងឃ្លាំងបម្រុងទុកទំព័រក្នុងសភាពដើមទាំងស្រុងបានទេ។"
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{បង្ហាញ​ស៊ុម # ទៀត}other{បង្ហាញ​ស៊ុម # ទៀត}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "ឈ្មោះ​ធុង"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "ភាពធន់"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "ការផុតកំណត់"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "មានលក្ខណៈស្រអាប់"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "ជា​ភាគីទីបី"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "កំពុងផ្ទុក…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "ទេ"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "គ្មាន"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(ស្រអាប់)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "ប្រភពដើម"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "មានលក្ខណៈជាប់លាប់"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "ដែន​កំណត់"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "គេហទំព័រ​កម្រិតកំពូល"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "បាទ/ចាស"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "បាទ/ចាស ដោយសារ​ខ្សែសង្វាក់​មេមាន​ប្រភពដើម​ភាគីទីបី"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "បាទ/ចាស ដោយសារ​កូដទំហំ​ផ្ទុក​មានលក្ខណៈស្រអាប់"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "បាទ/ចាស ដោយសារ​ប្រភពដើម​នៅក្រៅ​គេហទំព័រ​កម្រិតកំពូល"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "បាទ/ចាស ដោយសារ​គេហទំព័រ​កម្រិតកំពូល​មានលក្ខណៈស្រអាប់"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "មាន​ថូខិនស្ថានភាពឯកជន​ដែល​បាន​រក្សាទុក​ទាំង​អស់​នៅ​​ក្នុង​អង្គ​កម្មវិធីរុករកតាមអ៊ីនធឺណិត​នេះ។"
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "ថូខិនស្ថានភាពឯកជន"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "ត្រងតាម​សំណុំ​វិធាន​ដែលបាន​ជ្រើសរើស"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "ការកំណត់​កម្មវិធីបន្ថែម"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "ការផ្ទុក​ជាមុន​ត្រូវបានបិទ ដោយសារតែ​មុខងារ​សន្សំសំចៃទិន្នន័យ​របស់​ប្រព័ន្ធ​ប្រតិបត្តិការ។"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "ការផ្ទុកជាមុនត្រូវ​បានបើក​ដោយ​បង្ខំ ដោយសារឧបករណ៍អ្នកអភិវឌ្ឍន៍​បើក។ នៅ​ពេល​ឧបករណ៍អ្នកអភិវឌ្ឍន៍​ត្រូវ​បានបិទ ការបំប្លែង​ជា​មុន​នឹង​ត្រូវ​បានបិទ ដោយសារ​វគ្គកម្មវិធីរុករកតាមអ៊ីនធឺណិត​នេះ​គឺ​ជា​ផ្នែក​មួយរបស់​ក្រុម​ដែលស្ថិតក្រោមការដាក់កំហិត​ ដែលត្រូវ​បាន​ប្រើសម្រាប់​ការ​ប្រៀបធៀប​ប្រតិបត្តិការ។"
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "ការផ្ទុក​ជាមុន​ត្រូវបានបិទ ដោយសារតែ​ការកំណត់​របស់​អ្នកប្រើប្រាស់ ឬ​កម្មវិធីបន្ថែម។ សូមចូល​ទៅកាន់ {PH1} ដើម្បី​ស្វែងយល់បន្ថែម ឬ​ចូលទៅកាន់ {PH2} ដើម្បី​បិទកម្មវិធីបន្ថែម​នោះ។"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "ការបំប្លែង​ជា​មុនត្រូវ​បានបើក​ដោយ​បង្ខំ ដោយសារឧបករណ៍អ្នកអភិវឌ្ឍន៍បើក។ នៅ​ពេល​ឧបករណ៍អ្នកអភិវឌ្ឍន៍​ត្រូវ​បានបិទ ការបំប្លែង​ជា​មុន​នឹង​ត្រូវ​បានបិទ ដោយសារ​វគ្គកម្មវិធីរុករកតាមអ៊ីនធឺណិត​នេះ​គឺ​ជា​ផ្នែក​មួយរបស់​ក្រុម​ដែលស្ថិតក្រោមការដាក់កំហិត​ ដែលត្រូវ​បាន​ប្រើសម្រាប់​ការ​ប្រៀបធៀប​ប្រតិបត្តិការ។"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "ការផ្ទុកជា​មុន​ត្រូវ​បាន​បិទ ប៉ុន្តែ​ឥឡូវ​ត្រូ​វបានបើក​ដោយ​បង្ខំ"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "ការផ្ទុក​ជាមុន​ត្រូវបានបិទ"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "ការបំប្លែង​ជា​មុន​ត្រូវ​បាន​បិទ ប៉ុន្តែ​ឥឡូវ​ត្រូ​វបានបើក​ដោយ​បង្ខំ"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "មិន​អាច​ផ្ទុក​ជា​មុន​បាន​ទេ។"
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "ស្ថានភាព"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "បានបើក​ដំណើរការ​ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន អំឡុងពេលនៃ​ការរុករកស៊ុមចម្បង​របស់ទំព័រ​ចាប់ផ្ដើម។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "មិនបានប្រើការបំប្លែង​ជាមុនទេ ដោយសារ​ទង់ប្រអប់សុវត្ថិភាព ឬគោលការណ៍​ការអនុញ្ញាត​របស់​ទំព័រចាប់ផ្ដើម​មិនត្រូវគ្នា​ជាមួយ​ទង់ប្រអប់សុវត្ថិភាព ឬគោលការណ៍​ការអនុញ្ញាត​របស់ទំព័រ​ដែលបំប្លែង​ជាមុន។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​អំឡុងពេលបើកដំណើរការ ប៉ារ៉ាម៉ែត្រ​រុករកខុសគ្នា (ឧ. ផ្នែកក្បាល HTTP) ត្រូវបាន​គណនា បើធៀបនឹងអំឡុងពេល​ស្នើសុំការរុករក​ដែលបំប្លែង​ជាមុនដើមដំបូង។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានស្នើសុំ​ឧបករណ៍​បញ្ចេញសំឡេង ដែល​បច្ចុប្បន្ននេះមិនអាចប្រើបានទេ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​អ្នកប្រើប្រាស់​បានស្នើឱ្យ​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត​ប្រើថ្មតិចជាងនេះ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "ការផ្ទុក​ធនធាន​មួយចំនួន​ត្រូវបាន​ទប់ស្កាត់។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​បានតម្រូវឱ្យមាន​វិញ្ញាបនបត្រ​កុំព្យូទ័រភ្ញៀវ HTTP។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​មិនបានសម្រេចទេ ដោយសារវា​បានកំណត់ URL ឆ្លងគេហទំព័រជាគោលដៅ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានទៅកាន់ URL ឆ្លងគេហទំព័រ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​មិនបានសម្រេចទេ ដោយសារ URL ដែលបាន​បំប្លែង​ជាមុន​បានបញ្ជូនបន្ត​ទៅកាន់ URL ឆ្លងគេហទំព័រ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានទៅកាន់ URL ដែលបញ្ជូនបន្ត​ទៅ URL ឆ្លងគេហទំព័រ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​អ្នកប្រើប្រាស់​បានស្នើឱ្យ​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត​ប្រើទិន្នន័យតិចជាងនេះ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានព្យាយាម​ចាប់ផ្ដើម​ការទាញយក ដែល​បច្ចុប្បន្ននេះមិនអាចប្រើបានទេ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​កម្មវិធីរុករកតាម​អ៊ីនធឺណិត​បានជួបបញ្ហា​ផ្នែកខាងក្នុង នៅពេល​ព្យាយាម​កំណត់​ការប្រើប្រាស់​អង្គចងចាំ​បច្ចុប្បន្ន។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "ទំព័រ​ចាប់ផ្ដើម​មិនអាច​ធ្វើការបំប្លែង​ជាមុន​បានទេ ដោយសារ​វាមាន URL ដែលមាន​ប្រសិទ្ធភាព​ខុសពី URL ធម្មតា​របស់វា។ (ឧទាហរណ៍ កម្មវិធី​ដែលបានបង្ហោះ ឬទំព័រ​ផ្ទាំងថ្មី​ជាដើម។)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL មិនមានសិទ្ធិ​ក្នុងការបំប្លែង​ជាមុនទេ ដោយសារ​ទម្រង់របស់វា​មិនមែនជា http: ឬ https:។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​មិនបានសម្រេចទេ ដោយសារវា​បានបញ្ជូនបន្ត​ទៅកាន់ URL ដែលទម្រង់​របស់វា​មិនមែនជា http: ឬ https:។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​បានតម្រូវឱ្យមាន​ការផ្ទៀងផ្ទាត់ HTTP ដែល​បច្ចុប្បន្ននេះមិនអាចប្រើបានទេ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​ឧបករណ៍នេះ​មិនមាន​អង្គចងចាំ​ប្រព័ន្ធ​សរុបគ្រប់គ្រាន់ ដើម្បីដំណើរការការបំប្លែង​ជាមុន។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានទៅកាន់ URL ផ្សេងទៀត​ដោយខ្លួនវា ដែលបច្ចុប្បន្ននេះ​មិនអាចប្រើបានទេ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​ទំព័រចាប់ផ្ដើម​មានការបំប្លែង​ជាមុន​ច្រើនពេកដែលកំពុងធ្វើឡើង​ស្រាប់ហើយ។ សូមដក​វិធាន​នៃការប៉ាន់ស្មាន​ផ្សេងទៀត​ចេញ ដើម្បី​បើកការបំប្លែង​ជាមុន​បន្ថែម។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​កម្មវិធីរុករកតាម​អ៊ីនធឺណិត​បានប្រើលើស​ដែនកំណត់​អង្គចងចាំ​សម្រាប់ការបំប្លែង​ជាមុន។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "បាន​ឈប់ផ្ទុកទំព័រ​ដែលបាន​បំប្លែង​ជាមុន ដោយសារ​មានសម្ពាធ​អង្គចងចាំ​ខ្លាំង​លើ​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​មានសម្ពាធ​អង្គចងចាំ​ខ្លាំង​លើ​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​មានខ្លឹមសារ​ចម្រុះ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានប្រើ JavaScript API ដែលត្រូវបាន​ហាមឃាត់ ដែលបច្ចុប្បន្ននេះ​មិនអាចប្រើបានទេ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "ការរុករក​ដែល​បំប្លែង​ជាមុន​មិនបានសម្រេចទេ ដោយសារតែ​លេខកូដ​ស្ថានភាព​នៃការឆ្លើយតប HTTP ដែលមិនមែនជា 2xx។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​ត្រូវបាន​ទប់ស្កាត់​ដោយគោលការណ៍​ស្ដីពីសុវត្ថិភាព​ខ្លឹមសារ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​បានជួប​បញ្ហាបណ្ដាញ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​អ្នកប្រើប្រាស់​បានបិទ​ការផ្ទុកជាមុន​នៅក្នុង​ការកំណត់​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត​របស់គាត់។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "ទំព័រ​ចាប់ផ្ដើម​បានគាំង។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "ទំព័រ​ចាប់ផ្ដើម​ត្រូវបាន​បញ្ឈប់។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "ទំព័រ​ដែល​បាន​បំប្លែង​ជាមុន​បានគាំង។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​ត្រូវបានបញ្ឈប់។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានទៅកាន់ URL គេហទំព័រតែមួយ​ដែលមាន​ប្រភពដើមផ្សេង​ដោយខ្លួនវា ប៉ុន្តែ​ការឆ្លើយតប​ពីគោលដៅ​មិនបាន​រួមបញ្ចូល​ផ្នែកក្បាល​ដែលសមស្របនៃ​មុខងារផ្ទុកដែល​អាចប្រើបានឡើយ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានទៅកាន់ URL គេហទំព័រតែមួយ​ដែលមាន​ប្រភពដើមផ្សេង ប៉ុន្តែ​ការឆ្លើយតប​ពី​គោលដៅ​មិនបាន​រួមបញ្ចូល​ផ្នែកក្បាល​ដែលសមស្របនៃ​មុខងារផ្ទុកដែល​អាចប្រើបានឡើយ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​មិនបានសម្រេចទេ ដោយសារ URL ដែលបាន​បំប្លែង​ជាមុន​បានបញ្ជូនបន្ត​ទៅកាន់ URL គេហទំព័រតែមួយ​ដែលមាន​ប្រភពដើមផ្សេង ប៉ុន្តែ​ការឆ្លើយតប​ពីគោលដៅ​មិនបាន​រួមបញ្ចូល​ផ្នែកក្បាល​ដែលសមស្របនៃ​មុខងារផ្ទុកដែល​អាចប្រើបានឡើយ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានទៅកាន់ URL ដែល​បញ្ជូនបន្ត​ទៅកាន់ URL គេហទំព័រតែមួយ​ដែលមាន​ប្រភពដើមផ្សេង ប៉ុន្តែ​ការឆ្លើយតប​ពី​គោលដៅ​មិនបាន​រួមបញ្ចូល​ផ្នែកក្បាល​ដែលសមស្របនៃ​មុខងារផ្ទុកដែល​អាចប្រើបានឡើយ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​មិនបានសម្រេចទេ ដោយសារតែ​វិញ្ញាបនបត្រ SSL មិនត្រឹមត្រូវ។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "ទំព័រ​ចាប់ផ្ដើម​ត្រូវបាន​ផ្លាស់ទីទៅ​ផ្ទៃខាងក្រោយ​យូរមកហើយ ដូច្នេះ​ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​ត្រូវបាន​លុបចោល។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "ទំព័រ​ចាប់ផ្ដើម​ត្រូវបាន​ផ្លាស់ទីទៅ​ផ្ទៃខាងក្រោយ ដូច្នេះ​ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​ត្រូវបាន​លុបចោល។"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "ការប្ដូរ​ភ្នាក់ងារ​អ្នកប្រើប្រាស់​បានកើតឡើង​នៅក្នុង​ការរុករក​ដែលបំប្លែង​ជាមុន។"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "ជ្រើសរើស​ធាតុ ដើម្បីទទួលបានព័ត៌មានលម្អិត​បន្ថែម"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "ស្ថានភាព"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "ការទាញយកជាមុន​ត្រូវបាន​លុបចោល​សម្រាប់​ការទាញយកជាមុន​ដែលថ្មីជាង ដោយសារ |kPrefetchNewLimits| ត្រូវបាន​បើក"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "ការទាញយក​ជាមុន​ត្រូវបាន​បញ្ជូនបន្ត ប៉ុន្តែ URL បញ្ជូនបន្ត​មិនមានសិទ្ធិ​សម្រាប់​ការទាញយក​ជាមុនទេ។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "ការទាញយក​ជាមុន​ត្រូវបាន​បញ្ជូនបន្ត ប៉ុន្តែ​មានបញ្ហា​ក្នុងការ​បញ្ជូនបន្ត។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "ការទាញយក​ជាមុន​មិនបានសម្រេចទេ ដោយសារ​មិនអាចប្រើផ្នែក​ក្បាលប្រភេទខ្លឹមសាររបស់​ការឆ្លើយតបបានទេ។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "ការទាញយក​ជាមុន​មិនបាន​សម្រេចទេ ដោយសារ​តែបញ្ហា​បណ្ដាញ។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "ការទាញយកជាមុន​មិនបានសម្រេចទេ ដោយសារតែ​លេខកូដ​ស្ថានភាព​នៃការឆ្លើយតប HTTP ដែលមិនមែនជា 2xx។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "មិនបាន​ទាញយក​ជាមុនទេ ដោយសារ​ទំព័រចាប់ផ្ដើម​មានការទាញយក​ជាមុន​ច្រើនពេក​ដែលកំពុង​ដំណើរការ​ស្រាប់ហើយ។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "ការទាញយក​ជាមុន​ពីមុន​ទៅប្រភពដើម​បានទទួល​ការឆ្លើយតប HTTP 503 ដែលផ្នែកក្បាល \"ព្យាយាមម្ដងទៀតបន្ទាប់ពី\" មិនទាន់​បានកន្លងផុត​នៅឡើយទេ។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "URL មិនមានសិទ្ធិ​សម្រាប់ឱ្យ​ទាញយកជាមុនទេ ដោយសារ​មានខូគី​ឆ្លងគេហទំព័រ ឬស្គ្រីបជំនួយផ្ទៃខាងក្រោយ​ដែលបានចុះបញ្ជីសម្រាប់ប្រភព​ដើមនោះ ប៉ុន្តែ​ការទាញយកជាមុន​នៅតែ​ត្រូវបាន​ដាក់នៅលើ​បណ្ដាញ និងមិនត្រូវបានប្រើឡើយ ដើម្បី​ក្លែងបន្លំថា អ្នកប្រើប្រាស់​មានទំនាក់ទំនង​ពីមុនបែបណាមួយ​ជាមួយ​ប្រភពដើម។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "រយៈពេល​ច្រើនពេក​បានកន្លងផុត​រវាង​ការទាញយកជាមុន និង​ការប្រើប្រាស់ ដូច្នេះ​ការទាញយក​ជាមុន​ត្រូវបាន​លុបចោល។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "មិនបាន​ទាញយកជាមុន​ទេ ដោយសារ​ការកំណត់​មុខងារ​សន្សំ​ថ្ម​ត្រូវបាន​បើក។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "មិនបាន​ទាញយកជាមុន​ទេ ដោយសារ​កម្មវិធីរុករកតាម​អ៊ីនធឺណិត​ស្ថិតក្នុង​មុខងារ​ឯកជន ឬ​មុខងារភ្ញៀវ។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "មិនបាន​ទាញយកជាមុន​ទេ ដោយសារ​ប្រព័ន្ធ​ប្រតិបត្តិការ​ស្ថិតក្នុង​មុខងារ​សន្សំសំចៃ​ទិន្នន័យ។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "URL មិនមានសិទ្ធិ​សម្រាប់ឱ្យ​ទាញយក​ជាមុនទេ ដោយសារ​នៅក្នុង​បរិបទ​បណ្ដាញ​លំនាំដើម វាត្រូវបាន​កំណត់​រចនាសម្ព័ន្ធ ដើម្បីប្រើ​ម៉ាស៊ីនមេប្រូកស៊ី។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL មិនមានសិទ្ធិ​សម្រាប់ឱ្យទាញយក​ជាមុនទេ ដោយសារ​ម៉ាស៊ីន​របស់វា​មិនប្លែកពីគេ (ឧ. អាសយដ្ឋាន IP ដែលមិនអាច​ឱ្យបញ្ជូន​ជាសាធារណៈ ឬ​ឈ្មោះ​ម៉ាស៊ីន​ដែលមិន​ត្រូវបាន​គ្រប់គ្រងដោយ​ការចុះបញ្ជី) ប៉ុន្តែ​បានតម្រូវឱ្យ​មានការទាញយកជាមុន ដើម្បី​ដំណើរការ​ជាប្រូកស៊ី។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URL មិនមានសិទ្ធិ​សម្រាប់ឱ្យទាញយក​ជាមុនទេ ដោយសារ​វាប្រើ​ផ្នែកទំហំផ្ទុក​ដែលមិនមែនជា​លំនាំដើម។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "មិនបាន​ទាញយកជាមុន​ទេ ដោយសារ​ការផ្ទុកជាមុន​ត្រូវបាន​បិទ។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "URL មិនមានសិទ្ធិ​សម្រាប់ឱ្យ​ទាញយកជាមុនទេ ដោយសារ​មិនអាច​កំណត់​រចនាសម្ព័ន្ធ​បរិបទ​បណ្ដាញ​លំនាំដើម ដើម្បីប្រើ​ប្រូកស៊ី​នៃការទាញយក​ជាមុន​សម្រាប់​សំណើ​ទាញយកជាមុន​ពីប្រភពដើម​ផ្សេង​នៃគេហទំព័រតែមួយ។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URL មិនមានសិទ្ធិ​សម្រាប់ឱ្យ​ទាញយកជាមុនទេ ដោយសារ​ទម្រង់របស់វា​មិនមែនជា https:។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URL មិនមានសិទ្ធិ​សម្រាប់ឱ្យ​ទាញយកជាមុនទេ ដោយសារ​វាមានលក្ខណៈ​ឆ្លងគេហទំព័រ ប៉ុន្តែ​អ្នកប្រើប្រាស់​មានខូគី​សម្រាប់​ប្រភពដើមនោះ។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "URL មិនមានសិទ្ធិ​សម្រាប់ឱ្យ​ទាញយកជាមុនទេ ដោយសារ​មានស្គ្រីបជំនួយផ្ទៃខាងក្រោយ​ដែលបានចុះបញ្ជី​សម្រាប់​ប្រភពដើមនោះ ដែលបច្ចុប្បន្នមិនអាច​ប្រើបានឡើយ។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "មិនបានប្រើ​ការទាញយកជាមុនទេ ដោយសារ​វាជាការទាញយកជាមុន​ឆ្លងគេហទំព័រ ហើយ​ខូគី​ត្រូវបាន​បញ្ចូល​សម្រាប់ URL នោះ ខណៈដែល​ការទាញយកជាមុន​កំពុងដំណើរការ ដូច្នេះ​ឥឡូវនេះ ការឆ្លើយតប​ដែលបានទាញយកជាមុន​ហួសសម័យហើយ។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "ការទាញយក​ជាមុន​ត្រូវបាន​ទប់ស្កាត់​ដោយក្រុមហ៊ុន​ផ្ដល់​សេវាកម្ម​អ៊ីនធឺណិត ឬ​អ្នកគ្រប់គ្រង​បណ្ដាញ​របស់អ្នក។"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "បានជួបប្រទះ​បញ្ហា​បណ្ដាញ នៅពេល​ព្យាយាម​រៀបចំ​ការតភ្ជាប់​ទៅប្រូកស៊ី​ដែលទាញយកជាមុន។"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "ចុចដើម្បីបង្ហាញផ្ទាំងធាតុ"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "ធនធាន​ដែល​បាន​ទាញយក​ជា​មុន {PH1} ត្រូវ​បានប្រើ​សម្រាប់​ទំព័រ​នេះ"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "បានប្រើ​ការផ្ទុកជាមុន​សម្រាប់​ទំព័រនេះ"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "ទំព័រ​នេះ​ត្រូ​វបាន​បំប្លែង​ជា​មុន"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "រូបភាពនៃការប្រើប្រាស់"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "មិនអាចចាប់យក​ព័ត៌មាន​អំពី​ការគ្របដណ្ដប់​បានទេ ដោយសារ​ទំព័រ​ត្រូវបាន​បំប្លែង​ជាមុន​នៅ​ផ្ទៃខាងក្រោយ។"
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "ទាំងអស់"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "មិនអាចចាប់យក​ព័ត៌មាន​អំពី​ការគ្របដណ្ដប់​បានទេ ដោយសារ​ទំព័រ​ត្រូវបានបង្ហាញ​ពីឃ្លាំងបម្រុងទុក​ទំព័រក្នុងសភាពដើម​ទាំងស្រុង។"
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "ជ្រើសរើសកម្រិតលម្អិតនៃការគ្របដណ្ដប់​​៖ ក្នុងមួយមុខងារមានផ្នែកលើសទាប ក្នុងមួយបណ្ដុំមានផ្នែកលើសច្រើនខ្លាំង។"
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "ក្នុងមួយមុខងារ"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "ចុច​ប៊ូតុងផ្ទុក​ឡើងវិញ {PH1} ដើម្បី​ផ្ទុក​ឡើង​វិញ និង​ទទួលបាន​ការគ្របដណ្ដប់។"
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "បានប្រើ {PH1} នៃ {PH2} ({PH3}%) រហូតមកដល់ពេលនេះ, មិនបានប្រើ {PH4}។"
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "ដំណើរការការគ្របដណ្ដប់"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "ផ្ទុក​ទំព័រ​ឡើងវិញ"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "បង្ហាញ​ការ​គ្របដណ្ដប់"
@@ -5670,7 +5667,7 @@
     "message": "បានចម្លង​ទៅ​ឃ្លីបបត"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "ចម្លង​ការប្ដូរ CSS ទាំងអស់"
+    "message": "ចម្លង​ការផ្លាស់ប្ដូរ CSS"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "ឈ្មោះលក្ខណសម្បត្តិ CSS៖ {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "ការលុបពីលើ​ការដំណើរការ​ព្រម​គ្នា​នៃហាតវែរ​ត្រូវបាន​បើក"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "តម្លៃ​នៃ navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "គ្មានការពន្យឺតទេ"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "ជោគជ័យ"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "មិនអាចប្រើ​កូដ​សម្រាប់​អ្នកចេញ PST នេះទេ។ អ្នកចេញនេះប្រហែលជាត្រូវការ​ចុះឈ្មោះ​តាមរយៈ​ដំណើរការ​ចុះឈ្មោះរបស់ Chrome។"
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "ប្រតិបត្តិការបានបរាជ័យដោយមិនដឹងហេតុផល។"
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "ឈប់ថត​ការបែងចែកហ៊ីប"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "បានលាក់​មុខងារកែ​ឃ្លាបញ្ជា CDP"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "បានបង្ហាញ​មុខងារកែ​ឃ្លាបញ្ជា CDP"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "សម្អាត​ទាំងអស់"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "តម្រង"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "លាក់​មុខងារកែ​ឃ្លាបញ្ជា CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "វិធី"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "វគ្គ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "បង្ហាញ​មុខងារកែ​ឃ្លាបញ្ជា CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "គោលដៅ"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Thread"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "បណ្ដាញ"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} នៅ {PH2}"

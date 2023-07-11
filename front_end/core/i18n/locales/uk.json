@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Відкріпити й перемістити в окреме вікно"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Сторінка: не вибрано"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Сторінка: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Як указано автором"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Запуск window.confirm із міждоменних елементів iframe не підтримується, і в майбутньому цю функцію буде вилучено."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "Події DOM MutationEvent, зокрема DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument і DOMCharacterDataModified, більше не підтримуються (https://w3c.github.io/uievents/#legacy-event-types), і їх буде вилучено. Натомість використовуйте MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Підтримку значень \"data: URL\" в елементі <use> SVG припинено, і в майбутньому цю функцію буде вилучено."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Правило одного джерела більше не можна буде послаблювати, налаштувавши document.domain, і цю функцію буде вилучено. Щоб продовжити користуватися цією функцією, вимкніть кластери агентів за ключем джерела. Для цього надішліть заголовок Origin-Agent-Cluster: ?0 із відповіддю HTTP для документа й фреймів. Докладніше читайте на сторінці https://developer.chrome.com/blog/immutable-document-domain/."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Метод Event.path не підтримується, його буде вилучено. Натомість використовуйте Event.composedPath()."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Заголовок Expect-CT більше не підтримується. Chrome вимагає перевірки всіх загальнодоступних надійних сертифікатів, виданих після 30 квітня 2018 року."
+    "message": "Заголовок Expect-CT не підтримується, і його буде вилучено. Chrome вимагає перевірки всіх загальнодоступних надійних сертифікатів, виданих після 30 квітня 2018 року."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() і watchPosition() більше не працюють із незахищеними джерелами. Щоб користуватися цією функцією, перенесіть свій додаток на захищене джерело, наприклад HTTPS. Докладніше читайте на сторінці https://goo.gle/chrome-insecure-origins."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Атрибут HTML: автозавершення"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Блокування змішаного контенту"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Скорочення інформації в сегменті агента користувача"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Режим сумісності документів"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Так"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Попередня вибірка й попереднє завантаження"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Ця сторінка"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Натисніть будь-який звіт, щоб переглянути його основний текст"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Додаток"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Кеш"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Кеш-пам'ять"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Сторінки, які надіслали запит на AppBanner, наразі не підходять для зворотного кешу."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Зворотний кеш вимкнено через запит повідомлення keepalive."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Зворотний кеш вимкнено експериментальними параметрами. Щоб увімкнути його локально на цьому пристрої, перейдіть на сторінку chrome://flags/#back-forward-cache."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Сторінки, які використовують WebUSB API, не підходять для зворотного кешу."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Зворотний кеш вимкнено, оскільки файли cookie не дозволено на сторінці, де використовується Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Сторінки, які використовують Dedicated Worker або Worklet, наразі не підходять для зворотного кешу."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Внутрішня помилка."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Зворотний кеш вимкнено, оскільки за певним запитом мережі JavaScript отримано ресурс із заголовком Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Зворотний кеш вимкнено через запит повідомлення keepalive."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Показати ще # фрейм}one{Показати ще # фрейм}few{Показати ще # фрейми}many{Показати ще # фреймів}other{Показати ще # фрейму}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Назва сегмента"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Довговічність"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Строк дії"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Непрозорий"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Сторонній розробник"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Завантаження…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Ні"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Немає"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(непрозоро)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Джерело"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Постійна"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Квота"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Сайт верхнього рівня"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Так"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Так, оскільки мережа предків містить стороннє джерело"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Так, оскільки ключ сховища непрозорий"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Так, оскільки джерело не належить до сайту верхнього рівня"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Так, оскільки сайт верхнього рівня непрозорий"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Усі збережені приватні маркери стану, доступні в цьому веб-переглядачі."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Приватні маркери стану"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Фільтрувати за вибраним набором правил"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Налаштування розширень"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Попереднє завантаження вимкнено, оскільки операційна система працює в режимі Заощадження трафіку."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Попереднє завантаження примусово ввімкнено, оскільки відкрито інструменти розробника. Якщо закрити їх, попереднє завантаження буде вимкнено, оскільки цей сеанс веб-переглядача входить до ізольованої групи, дані про яку використовуються для порівняння ефективності."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Попереднє завантаження вимкнено через налаштування користувача або розширення. Щоб дізнатися більше, перейдіть на сторінку {PH1}. Вимкнути розширення можна за посиланням {PH2}."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Попереднє завантаження примусово ввімкнено, оскільки відкрито інструменти розробника. Якщо закрити їх, попереднє завантаження буде вимкнено, оскільки цей сеанс веб-переглядача входить до ізольованої групи, дані про яку використовуються для порівняння ефективності."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Попереднє завантаження було вимкнено, але тепер його ввімкнено примусово"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Попереднє завантаження вимкнено"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Попереднє завантаження було вимкнено, але тепер його ввімкнено примусово"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Помилка попереднього завантаження."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Статус"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Попередньо завантажену сторінку активовано під час навігації в головному фреймі вихідної сторінки."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Попереднє завантаження не використано, оскільки експериментальні параметри ізольованого програмного середовища або правила дозволів для вихідної сторінки несумісні з параметрами попередньо завантаженої сторінки."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Попереднє завантаження не використано, оскільки під час активації було обчислено не ті параметри навігації (наприклад, заголовки HTTP), що під час вихідного запиту навігації попереднього завантаження."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Попередньо завантажена сторінка надіслала запит на аудіовихід, який зараз не підтримується."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Попереднє завантаження не виконано, оскільки користувач указав, що веб-переглядач має заощаджувати заряд акумулятора."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Завантаження деяких ресурсів заблоковано."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Для навігації попереднього завантаження потрібний сертифікат HTTP-клієнта."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Не вдалося виконати навігацію попереднього завантаження, оскільки воно було націлене на міжсайтову URL-адресу."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Попередньо завантажена сторінка виконала переспрямування на міжсайтову URL-адресу."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Не вдалося виконати навігацію попереднього завантаження, оскільки попередньо завантажена URL-адреса здійснила переспрямування на міжсайтову URL-адресу."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Попередньо завантажена сторінка виконала перехід на URL-адресу, яка переспрямовує на міжсайтову URL-адресу."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Попереднє завантаження не виконано, оскільки користувач указав, що веб-переглядач має заощаджувати трафік."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Попередньо завантажена сторінка спробувала завантажити файл, який зараз не підтримується."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Попереднє завантаження не виконано, оскільки у веб-переглядачі сталася внутрішня помилка під час спроби визначити поточний рівень використання пам’яті."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "На вихідній сторінці не можна виконати попереднє завантаження, оскільки її чинна URL-адреса відрізняється від звичайної (це може бути URL-адреса сторінки нової вкладки або розміщених додатків)."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "Не вдалося попередньо завантажити URL-адресу, оскільки вона не починається з префікса http: або https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Не вдалося виконати навігацію попереднього завантаження, оскільки відбулося переспрямування на URL-адресу, яка не починається з префікса http: чи https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Для навігації попереднього завантаження потрібна автентифікація HTTP, яка зараз не підтримується."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Попереднє завантаження не виконано, оскільки на цьому пристрої недостатньо системної пам’яті, щоб підтримувати цю функцію."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Попередньо завантажена сторінка виконала переспрямування на іншу URL-адресу, яка зараз не підтримується."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Попереднє завантаження не виконано, оскільки на вихідній сторінці вже триває забагато таких процесів. Щоб виправити це, вилучіть інші правила попереднього завантаження."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Попереднє завантаження не виконано, оскільки веб-переглядач перевищив відповідний ліміт пам’яті."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Попередньо завантажену сторінку вивантажено, оскільки веб-переглядачу почало критично бракувати пам’яті."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Попереднє завантаження не виконано, оскільки веб-переглядачу критично бракує пам’яті."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Попередньо завантажена сторінка містила змішаний контент."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Попередньо завантажена сторінка використовувала заборонений інтерфейс API JavaScript, який зараз не підтримується."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Не вдалося виконати навігацію попереднього завантаження, оскільки відповідь HTTP має інший код статусу, ніж 2XX."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Навігацію попереднього завантаження заблокували Правила щодо безпеки контенту."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Під час навігації попереднього завантаження сталася помилка мережі."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Попереднє завантаження не виконано, оскільки користувач вимкнув його в налаштуваннях веб-переглядача."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Вихідна сторінка аварійно завершила роботу."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Роботу вихідної сторінки припинено."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Попередньо завантажена сторінка аварійно завершила роботу."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Роботу попередньо завантаженої сторінки припинено."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Попередньо завантажена сторінка виконала переспрямування на міждоменну URL-адресу того самого сайту, але відповідь цільової сторінки не містила відповідного заголовка Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Попередньо завантажена сторінка виконала переспрямування на міждоменну URL-адресу того самого сайту, але відповідь цільової сторінки не містила відповідного заголовка Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Не вдалося виконати навігацію попереднього завантаження, оскільки попередньо завантажена URL-адреса здійснила переспрямування на міждоменну URL-адресу того самого сайту, але відповідь цільової сторінки не містила відповідного заголовка Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Попередньо завантажена сторінка виконала перехід на URL-адресу, яка переспрямувала на міждоменну URL-адресу того самого сайту, але відповідь цільової сторінки не містила відповідного заголовка Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Не вдалося виконати навігацію попереднього завантаження через недійсний сертифікат SSL."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Вихідна сторінка тривалий час була у фоновому режимі, тому попередньо завантажену сторінку відхилено."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Вихідну сторінку переведено у фоновий режим, тому попередньо завантажену сторінку було відхилено."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Під час навігації попереднього завантаження було змінено агент користувача."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Щоб дізнатися більше, виберіть елемент"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Статус"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Попередню вибірку відхилено через наявність новішої попередньої вибірки, оскільки ввімкнено |kPrefetchNewLimits|"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Попередню вибірку переспрямовано, однак переспрямування не підтримується для попередньої вибірки."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Попередню вибірку переспрямовано, проте виникла проблема з переспрямуванням."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Не вдалось отримати попередню вибірку, оскільки заголовок Content-Type відповіді не підтримувався."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Не вдалося виконати попередню вибірку через помилку мережі."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Не вдалося виконати попередню вибірку, оскільки відповідь HTTP має інший код статусу, ніж 2XX."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Не вдалося виконати попередню вибірку, оскільки на вихідній сторінці виконується забагато попередніх вибірок."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "У результаті попередньої вибірки для джерела було отримано відповідь HTTP 503 із заголовком Retry-After, що ще не минув."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "Не вдалося попередньо отримати URL-адресу, оскільки джерело має зареєстрований синтаксис Service Worker або міжсайтові файли cookie, однак попередню вибірку все одно було розміщено в мережі, щоб приховати, що користувач раніше взаємодіяв із джерелом."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Між попередньою вибіркою і використанням минуло забагато часу, тому попередню вибірку було відхилено."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Не вдалося виконати попередню вибірку, оскільки ввімкнено режим енергозбереження."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Не вдалося виконати попередню вибірку, оскільки веб-переглядач в анонімному режимі або режимі гостя."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Не вдалося виконати попередню вибірку, оскільки операційна система працює в режимі заощадження трафіку."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "Не вдається попередньо отримати URL-адресу, оскільки в мережі за умовчанням налаштовано використання проксі-сервера."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "Не вдалося попередньо отримати URL-адресу, оскільки її хост не унікальний (наприклад, IP-адреса не має загальнодоступної маршрутизації або ім’я хоста не контролюється реєстром), однак попередня вибірка обов’язкова для проксі-сервера."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "Не вдалося попередньо отримати URL-адресу, оскільки для неї використовується розділ сховища, не заданий за умовчанням."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Не вдалося виконати попередню вибірку, оскільки попереднє завантаження було вимкнено."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "Не вдалося попередньо отримати URL-адресу, оскільки не можна налаштувати використання проксі-сервера для попередньої вибірки для запиту попередньої вибірки міждоменного джерела того самого сайту в контексті мережі за умовчанням."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "Не вдалося попередньо отримати URL-адресу, оскільки вона не починається з префікса https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "Не вдалося попередньо отримати URL-адресу, оскільки вона міжсайтова, а користувач мав файли cookie для цього джерела."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "Не вдалося попередньо отримати URL-адресу, оскільки джерело має зареєстрований синтаксис Service Worker, який наразі не підтримується."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Попередня вибірка не використовувалася, оскільки вона була міжсайтовою, і поки тривала попередня вибірка, для URL-адреси було додано файли cookie, тому результат попередньої вибірки застарілий."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Попередню вибірку заблоковано вашим постачальником послуг Інтернету або адміністратором мережі."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Під час налаштування з’єднання з проксі-сервером для попередньої вибірки сталася помилка мережі."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Натисніть, щоб показати на панелі \"Елементи\""
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "Кількість ресурсів попередньої вибірки, що використовуються для цієї сторінки: {PH1}"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Попереднє завантаження сторінки"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Цю сторінку було попередньо відтворено"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Візуалізація використання"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Не вдалось отримати інформацію про покриття, оскільки сторінку було попередньо завантажено у фоновому режимі."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Усі"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Не вдалось отримати інформацію про покриття, оскільки сторінку було розміщено зі зворотного кешу."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Виберіть деталізацію покриття: на рівні функцій вона має низькі витрати, на рівні блоків – значні."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "На рівні функцій"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Натисніть кнопку {PH1}, щоб оновити сторінку й отримати інформацію про покриття."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "Наразі використано {PH1} з {PH2} ({PH3}%), не використано {PH4}."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Виміряти покриття"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Оновити сторінку"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Показати \"Покриття\""
@@ -5670,7 +5667,7 @@
     "message": "Скопійовано в буфер обміну"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Скопіювати всі зміни CSS"
+    "message": "Скопіювати зміни CSS"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Назва ресурсу CSS: {PH1}"
@@ -6210,7 +6207,7 @@
     "message": "Передати"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | trigger": {
-    "message": "Активатор"
+    "message": "Тригер"
   },
   "panels/issues/AffectedSharedArrayBufferIssueDetailsView.ts | warning": {
     "message": "попередження"
@@ -7174,9 +7171,6 @@
   },
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Перевизначення апаратної паралельності ввімкнено"
-  },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Значення параметра navigator.hardwareConcurrency"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Без обмеження пропускної спроможності"
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Успішно"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Ключі для постачальника цього файлу PST недоступні. Можливо, постачальника слід зареєструвати через Chrome."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "З невідомої причини не вдалося виконати операцію."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Зупинити запис розподілу пам'яті"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "Редактор команди CDP приховано"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "Редактор команди CDP відображається"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Очистити все"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Фільтр"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "Сховати редактор команди CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Метод"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Сеанс"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "Показати редактор команди CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Ціль"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Потік"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Мережа"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1}, {PH2}"

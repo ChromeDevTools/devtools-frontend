@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "I-undock sa hiwalay na window"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Page: Hindi pinili"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Page: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Gaya ng itinakda ng author"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Hindi na ginagamit ang pag-trigger ng window.confirm mula sa mga cross origin na iframe at aalisin na ito sa hinaharap."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "Hindi na ginagamit at aalisin na ang Mga Event ng DOM Mutation, kasama ang DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument, at DOMCharacterDataModified (https://w3c.github.io/uievents/#legacy-event-types). Pakigamit na lang ang MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Suporta para sa data: Hindi na ginagamit ang mga URL sa SVG <use> na element at aalisin na ito sa hinaharap."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Hindi na ginagamit, at madi-disable nang default ang pagpapahinga ng patakaran sa iisang origin sa pamamagitan ng pagtatakda sa document.domain. Para patuloy na magamit ang feature na ito, mag-opt out sa mga origin-keyed agent cluster sa pamamagitan ng pagpapadala ng header na Origin-Agent-Cluster: ?0 kasama ng sagot ng HTTP para sa dokumento at mga frame. Tingnan ang https://developer.chrome.com/blog/immutable-document-domain/ para sa higit pang detalye."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Hindi na ginagamit at aalisin ang Event.path. Event.composedPath() na lang ang gamitin."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Hindi na sinusuportahan ang header na Expect-CT. Nire-require ng Chrome ang Transparency ng Certificate para sa lahat ng pampublikong pinagkakatiwalaang certificate na ibinigay pagkalipas ng Abril 30, 2018."
+    "message": "Hindi na ginagamit at aalisin ang Expect-CT na header. Iniaatas ng Chrome ang Transparency ng Certificate para sa lahat ng pampublikong pinagkakatiwalaang certificate na ibinigay pagkalipas ng Abril 30, 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "Hindi na gumagana ang getCurrentPosition() at watchPosition() sa mga hindi secure na origin. Para magamit ang feature na ito, dapat mong isaalang-alang ang paglipat ng iyong application sa isang secure na origin, tulad ng HTTPS. Tingnan ang https://goo.gle/chrome-insecure-origins para sa higit pang detalye."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML attribute: autocomplete"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Pinipigilan ang halo-halong content"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Pagpapaikli sa String ng User-Agent"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Compatibility mode ng dokumento"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Oo"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Pag-prefetch at Pag-prerender"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Ang Page na Ito"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Mag-click sa anumang ulat para ipakita ang nilalaman nito"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Application"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Cache"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Storage ng cache"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na humiling ng AppBanner."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Naka-disable ang back/forward cache dahil sa isang keepalive na request."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Dini-disable ng mga pag-flag ang back/forward cache. Bumisita sa chrome://flags/#back-forward-cache para lokal itong i-enable sa device na ito."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Hindi kwalipikado para sa back/forward cache ang mga page na gumagamit ng WebUSB API."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Naka-disable ang back/forward cache dahil naka-disable ang cookies sa isang page na gumagamit ng Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Kasalukuyang hindi kwalipikado para sa back/forward cache ang mga page na gumagamit ng nakalaang worker o worklet."
@@ -3380,8 +3374,11 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Internal na error."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Naka-disable ang back/forward cache dahil nakatanggap ang ilang request sa network ng JavaScript ng resource na may Cache-Control: no-store na header."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
-    "message": "Naka-disable ang back/forward cache dahil sa isang keepalive na request."
+    "message": "Naka-disable ang back/forward cache dahil sa isang keepalive na kahilingan."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "Kasalukuyang hindi available para sa back/forward cache ang mag page na gumagamit ng KeyboardLock."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Magpakita ng # pang frame}one{Magpakita ng # pang frame}other{Magpakita ng # pang frame}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Pangalan ng bucket"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Tibay"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Pag-expire"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Ay opaque"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Ay third-party"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Naglo-load…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Hindi"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Wala"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(opaque)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Origin"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Ay nananatili"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Quota"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Pinakamataas na level na site"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Oo"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Oo, dahil naglalaman ng third-party na origin ang ancestry chain"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Oo, dahil opaque ang storage key"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Oo, dahil nasa labas ng pinakamataas na level na site ang origin"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Oo, dahil opaque ang pinakamataas na level na site"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Lahat ng naka-store na available na Private State Token sa instance ng browser na ito."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Mga Private State Token"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "I-filter ayon sa napiling hanay ng panuntunan"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Mga setting ng mga extension"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Naka-disable ang pag-preload dahil sa Data Saver mode ng operating system."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Sapilitang naka-enable ang pag-preload dahil nakabukas ang DevTools. Kapag nakasara ang DevTools, madi-disable ang pag-prerender dahil ang session ng browser na ito ay bahagi ng holdback group na ginamit para sa mga paghahambing ng performance."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Naka-disable ang pag-preload dahil sa mga setting ng user o ng isang extension. Pumunta sa {PH1} para matuto pa, o pumunta sa {PH2} para i-disable ang extension."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Sapilitang naka-enable ang pag-prerender dahil nakabukas ang DevTools. Kapag nakasara ang DevTools, madi-disable ang pag-prerender dahil ang session ng browser na ito ay bahagi ng holdback group na ginamit para sa mga paghahambing ng performance."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Na-disable ang pag-preload, pero sapilitan itong naka-enable ngayon"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Naka-disable ang pag-preload"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Na-disable ang pag-prerender, pero sapilitan itong naka-enable ngayon"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Hindi na-preload."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Status"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Nag-activate ang na-prerender na page sa pag-navigate ng pangunahing frame ng panimulang page."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Hindi ginamit ang prerender dahil hindi compatible ang mga flag ng pag-sandbox o patakaran sa mga pahintulot ng panimulang page sa mga flag ng pag-sandbox o patakaran sa mga pahintulot ng page sa pag-prerender."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Hindi ginamit ang prerender dahil noong panahon ng pag-activate, iba ang mga parameter sa pag-navigate (hal., mga header ng HTTP) na nakalkula kumpara sa orihinal na request sa pag-navigate sa pag-prerender."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Nag-request ang na-prerender na page ng audio output, na kasalukuyang hindi sinusuportahan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Hindi naisagawa ang prerender dahil ni-request ng user na magtipid ng baterya ang browser."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Na-block ang ilang load ng resource."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Nag-require ang pag-navigate sa pag-prerender ng certificate ng HTTP client."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Hindi naisagawa ang pag-navigate sa pag-prerender dahil nag-target ito ng isang cross-site na URL."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Nag-navigate sa isang cross-site na URL ang na-prerender na page."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Hindi naisagawa ang pag-navigate sa pag-prerender dahil nag-redirect ang na-prerender na URL sa isang cross-site na URL."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Ang na-prerender na page ay nag-navigate sa isang URL na nag-redirect sa isang cross-site na URL."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Hindi naisagawa ang prerender dahil ni-request ng user na magtipid sa data ang browser."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Sinubukan ng na-prerender na page na magsimula ng pag-download, na kasalukuyang hindi sinusuportahan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Hindi naisagawa ang prerender dahil nagkaroon ng internal na error ang browser habang sinusubukang tukuyin ang kasalukuyang paggamit ng memory."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Hindi puwedeng magsagawa ng pag-prerender ang panimulang page, dahil mayroon itong may bisang URL na iba sa normal nitong URL. (Halimbawa, ang Page ng Bagong Tab, o mga hino-host na app.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "Hindi kwalipikadong i-prerender ang URL dahil hindi http: o https: ang scheme nito."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Hindi naisagawa ang pag-navigate sa pag-prerender dahil nag-redirect ito sa isang URL na hindi http: o https: ang scheme."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Nag-require ang pag-navigate sa pag-prerender ng pag-authenticate ng HTTP, na kasalukuyang hindi sinusuportahan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Hindi naisagawa ang prerender dahil walang sapat na kabuuang memory ng system ang device na ito para suportahan ang pag-prerender."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Na-navigate ng na-prerender na page ang sarili nito sa ibang URL, na kasalukuyang hindi sinusuportahan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Hindi naisagawa ang prerender dahil masyado nang maraming kasalukuyang isinasagawang prerender ang panimulang page. Alisin ang iba pang panuntunan sa speculation para ma-enable ang higit pang pag-prerender."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Hindi naisagawa ang prerender dahil lumampas ang browser sa limitasyon ng memory sa pag-prerender."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "In-unload ang na-prerender na page dahil napailalim ang browser sa kritikal na memory pressure."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Hindi naisagawa ang prerender dahil nasa ilalim ng kritikal na memory pressure ang browser."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "May halo-halong content ang na-prerender na page."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Gumamit ang na-prerender na page ng ipinagbabawal na JavaScript API na kasalukuyang hindi sinusuportahan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Hindi naisagawa ang pag-navigate sa pag-prerender dahil sa isang hindi 2xx na status code ng HTTP response."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Na-block ng Patakaran sa Seguridad ng Content ang pag-navigate sa pag-prerender."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Nagkaroon ng error sa network ang pag-navigate sa pag-prerender."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Hindi naisagawa ang prerender dahil na-disable ng user ang pag-preload sa mga setting ng kanyang browser."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Nag-crash ang panimulang page."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Ihininto ang panimulang page."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Nag-crash ang na-prerender na page."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Ihininto ang na-prerender na page."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Na-navigate ng na-prerender na page ang sarili nito sa isang cross-origin at same-site na URL, pero hindi kasama sa tugon ng destinasyon ang naaangkop na header na Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Nag-navigate ang na-prerender na page sa isang cross-origin at same-site na URL, pero hindi kasama sa tugon ng destinasyon ang naaangkop na header na Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Hindi naisagawa ang pag-navigate sa pag-prerender dahil nag-redirect ang na-prerender na URL sa isang cross-origin at same-site na URL, pero wala sa tugon ng destinasyon ang naaangkop na header na Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Nag-navigate ang na-prerender na page sa isang URL na nag-redirect sa isang cross-origin at same-site na URL, pero hindi kasama sa tugon ng destinasyon ang naaangkop na header na Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Hindi naisagawa ang pag-navigate sa pag-prerender dahil sa isang invalid na SSL certificate."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Na-background nang matagal ang panimulang page, kaya na-discard ang na-prerender na page."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Na-background ang panimulang page, kaya na-discard ang na-prerender na page."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Nagpalit ng User Agent sa pag-navigate sa pag-prerender."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Pumili ng element para sa higit pang detalye"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Na-discard ang pag-prefetch para sa mas bagong pag-prefetch dahil naka-enable ang |kPrefetchNewLimits|"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Na-redirect ang pag-prefetch, pero hindi kwalipikado para sa pag-prefetch ang URL sa pag-redirect."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Na-redirect ang pag-prefetch, pero nagkaproblema sa pag-redirect."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Hindi naisagawa ang pag-prefetch dahil hindi sinusuportahan ang Content-Type na header ng sagot."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Hindi naisagawa ang pag-prefetch dahil sa error sa network."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Hindi naisagawa ang pag-prefetch dahil sa isang non-2xx na status code ng HTTP response."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Hindi naisagawa ang pag-prefetch dahil masyado nang maraming isinasagawang pag-prefetch sa kasalukuyan ang panimulang page."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Nakatanggap ang nakaraang pag-prefetch sa origin ng HTTP 503 na sagot na may Retry-After na header na hindi pa lumilipas."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "Hindi kwalipikadong ma-prefetch ang URL dahil may nakarehistrong service worker o cross-site na cookies para sa origin na iyon, pero inilagay pa rin ang pag-prefetch sa network at hindi ginamit, para itago na nagkaroon ang user ng isang uri ng nakaraang ugnayan sa origin."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Masyadong mahabang oras na ang lumipas sa pagitan ng pag-prefetch at paggamit, kaya na-discard ang pag-prefetch."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Hindi naisagawa ang pag-prefetch dahil na-enable ang setting ng Pantipid ng Baterya."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Hindi naisagawa ang pag-prefetch dahil nasa Incognito o Guest mode ang browser."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Hindi naisagawa ang pag-prefetch dahil nasa Data Saver mode ang operating system."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "Hindi kwalipikadong ma-prefetch ang URL, dahil naka-configure ito na gumamit ng proxy server sa default na konteksto ng network."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "Hindi kwalipikadong ma-prefetch ang URL dahil hindi natatangi ang host nito (halimbawa, isang hindi pampublikong routable na IP address o hostname na hindi kinokontrol ng registry), pero ni-require na i-proxy ang pag-prefetch."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "Hindi kwalipikadong ma-prefetch ang URL dahil gumagamit ito ng non-default na partition ng storage."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Hindi naisagawa ang pag-prefetch dahil na-disable ang pag-preload."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "Hindi kwalipikadong ma-prefetch ang URL dahil hindi ma-configure ang default na konteksto ng network para magamit ang proxy sa pag-prefetch para sa same-site na request sa cross-origin na pag-prefetch."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "Hindi kwalipikadong ma-prefetch ang URL dahil hindi https: ang scheme nito."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "Hindi kwalipikadong ma-prefetch ang URL dahil cross-site ito, pero may cookies ang user para sa origin na iyon."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "Hindi kwalipikadong ma-prefetch ang URL dahil may nakarehistrong service worker para sa origin na iyon, na kasalukuyang hindi sinusuportahan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Hindi ginamit ang pag-prefetch dahil isa itong cross-site na pag-prefetch, at nagdagdag ng cookies para sa URL na iyon habang isinasagawa ang pag-prefetch, kaya luma na ngayon ang na-prefetch na sagot."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Na-block ang pag-prefetch ng iyong Internet Service Provider o administrator ng network."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Nagka-error sa network habang sinusubukang mag-set up ng koneksyon sa proxy sa pag-prefetch."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "I-click para ipakita sa panel ng Mga Element"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "Ginagamit para sa page na ito ang {PH1} (na) na-prefetch na resource"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Pag-preload na ginagamit para sa page na ito"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Na-prerender ang page na ito"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Pag-visualize ng Paggamit"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Hindi ma-capture ang impormasyon ng coverage dahil na-prerender ang page sa background."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Lahat"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Hindi ma-capture ang impormasyon ng coverage dahil inihatid ang page mula sa back/forward cache."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Pumili ng granularity ng sakop: Ang bawat function ay may maliit na overhead, ang bawat block ay may malaking overhead."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Bawat function"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "I-click ang button sa pag-reload {PH1} para ma-reload at makuha ang coverage."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} sa {PH2} ({PH3}%) ang nagamit na sa ngayon, {PH4} ang hindi pa nagagamit."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Coverage sa pag-instrument"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "I-reload ang page"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Ipakita ang Sakop"
@@ -5670,7 +5667,7 @@
     "message": "Nakopya sa clipboard"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopyahin ang lahat ng pagbabago sa CSS"
+    "message": "Kopyahin ang mga pagbabago sa CSS"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Pangalan ng property na CSS: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Naka-enable ang pag-override ng pagkakasabay-sabay ng hardware"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Value ng navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Walang pag-throttle"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Tagumpay"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Hindi available ang mga key para sa tagabigay ng PST na ito. Posibleng kailangang nakarehistro ang tagabigay sa pamamagitan ng proseso sa pagpaparehistro ng Chrome."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Nabigo ang pagpapatakbo sa hindi malamang dahilan."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Ihinto ang pag-record ng mga pag-allocate ng heap"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "Naka-hide ang editor ng CDP command"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "Ipinapakita ang editor ng CDP command"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "I-clear lahat"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "I-filter"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "I-hide ang editor ng CDP command"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Method"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Session"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "Ipakita ang editor ng CDP command"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Target"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Thread"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Network"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} sa {PH2}"

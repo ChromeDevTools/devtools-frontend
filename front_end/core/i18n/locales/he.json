@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "ביטול ההצמדה ופתיחת חלון נפרד"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "דף: לא נבחר"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "דף: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "כפי שנוצר"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "האפשרות להפעיל את הפונקציה window.confirm דרך רכיבי iframe ממקורות שונים הוצאה משימוש ותוסר בעתיד."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "אירועי מוטציה של DOM, כולל DOMSubtreeModified,‏ DOMNodeInserted,‏ DOMNodeRemoved,‏ DOMNodeRemovedFromDocument,‏ DOMNodeInsertedIntoDocument ו-DOMCharacterDataModified הוצאו משימוש (https://w3c.github.io/uievents/#legacy-event-types) ויוסרו בעתיד. במקומם יש להשתמש ב-MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "התמיכה בהקצאת כתובות URL מסוג data:‎ לרכיב <use> מסוג SVG הוצאה משימוש ותוסר בעתיד."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "האפשרות למתן את מדיניות המקור הזהה על ידי הגדרת document.domain הוצאה משימוש, ותושבת כברירת מחדל. כדי להמשיך להשתמש בתכונה הזו, יש לבטל את ההסכמה לאשכולות סוכנים המשויכים למקור על ידי שליחת כותרת Origin-Agent-Cluster: ?0 עם תגובת HTTP למסמך ולמסגרות. פרטים נוספים זמינים בכתובת https://developer.chrome.com/blog/immutable-document-domain/‎."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "הממשק Event.path הוצא משימוש ויוסר. במקומו יש להשתמש בממשק Event.composedPath()."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "הכותרת Expect-CT לא נתמכת יותר. ב-Chrome נדרשת שקיפות לגבי כל האישורים הציבוריים המהימנים שהונפקו אחרי 30 באפריל 2018."
+    "message": "הכותרת Expect-CT הוצאה משימוש ותוסר. ב-Chrome נדרשת שקיפות לגבי כל האישורים הציבוריים המהימנים שהונפקו אחרי 30 באפריל 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "האפשרויות getCurrentPosition() ו-watchPosition() לא פועלות יותר במקורות לא מאובטחים. כדי להשתמש בתכונה הזו, כדאי להעביר את האפליקציה למקור מאובטח, כמו HTTPS. פרטים נוספים זמינים בכתובת https://goo.gle/chrome-insecure-origins."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Management API של פרטי הכניסה המשותפים"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "מאפיין HTML: השלמה אוטומטית"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "מניעת תוכן מעורב"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "הפחתת המחרוזות של הסוכן המשתמש"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "מצב תאימות למסמך"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "כן"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "שליפה מראש (prefetch) ועיבוד מראש"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "הדף הזה"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "כדי לראות תוכן של דוח, צריך ללחוץ עליו"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "אפליקציה"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "מטמון"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "אחסון מטמון"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "בשלב זה, דפים שנשלחה מהם בקשה ל-AppBanner לא מתאימים לשמירה במטמון לדף הקודם/הבא."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "התכונה 'מטמון לדף הקודם/הבא' הושבתה עקב בקשה מסוג הודעת keep-alive."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "הפיצ'ר 'מטמון לדף הקודם/הבא' הושבת על ידי תכונות ניסיוניות. צריך לעבור לכתובת chrome://flags/#back-forward-cache כדי להפעיל אותו באופן מקומי במכשיר הזה."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "דפים שמשתמשים ב-WebUSB API לא מתאימים לשמירה במטמון לדף הקודם/הבא."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "התכונה 'מטמון לדף הקודם/הבא' הושבתה כי קובצי cookie הושבתו בדף עם שימוש ב-Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "בשלב זה, דפים שנעשה בהם שימוש ב-worker או ב-worklet ייעודיים לא מתאימים לשמירה במטמון לדף הקודם/הבא."
@@ -3380,8 +3374,11 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "שגיאה פנימית."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "התכונה 'מטמון לדף הקודם/הבא' הושבתה כי בבקשות מסוימות של רשת JavaScript התקבל משאב עם הכותרת Cache-Control: no-store."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
-    "message": "התכונה 'מטמון לדף הקודם/הבא' הושבתה עקב בקשה מסוג הודעת keep-alive."
+    "message": "הפיצ'ר 'מטמון לדף הקודם/הבא' הושבת עקב בקשה מסוג הודעת keep-alive."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "בשלב זה, דפים שנעשה בהם שימוש בנעילת מקלדת לא מתאימים לשמירה במטמון לדף הקודם/הבא."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{הצגה של מסגרת אחת נוספת}one{הצגה של # מסגרות נוספות}two{הצגה של # מסגרות נוספות}other{הצגה של # מסגרות נוספות}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "שם הקטגוריה"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "עמידות"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "תפוגת תוקף"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "אטום"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "צד שלישי"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "בטעינה…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "לא"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "ללא"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(אטום)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "המקור"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "קבוע"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "מכסה"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "האתר ברמה העליונה"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "כן"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "כן, כי רשת ישויות האב מכילה מקור של צד שלישי"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "כן, כי מפתח האחסון אטום"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "כן, כי המקור נמצא מחוץ לאתר ברמה העליונה"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "כן, כי האתר ברמה העליונה אטום"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "כל אסימוני המצב הפרטי המאוחסנים זמינים במופע של הדפדפן הזה."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "אסימוני מצב פרטי"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "סינון לפי קבוצת כללים נבחרת."
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "הגדרות של תוספים"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "הטעינה מראש מושבתת בגלל מצב Data Saver של מערכת ההפעלה."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "הטעינה מראש הופעלה באילוץ כי כלי הפיתוח פתוחים. אחרי הסגירה של כלי הפיתוח, העיבוד מראש יושבת כי הסשן בדפדפן שייך לקבוצת ניסוי להשוואות ביצועים."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "הטעינה מראש מושבתת בגלל הגדרות המשתמש או בגלל תוסף. צריך לעבור אל {PH1} לקבלת מידע נוסף או להיכנס אל {PH2} כדי להשבית את התוסף."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "העיבוד מראש הופעל באילוץ כי כלי הפיתוח פתוחים. אחרי הסגירה של כלי הפיתוח, העיבוד מראש יושבת כי הסשן בדפדפן שייך לקבוצת ניסוי להשוואות ביצועים."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "הטעינה מראש הושבתה, אבל עכשיו היא מופעלת באילוץ"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "הטעינה מראש מושבתת"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "העיבוד מראש הושבת, אבל עכשיו הוא מופעל באילוץ"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "הטעינה מראש נכשלה."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "סטטוס"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "הדף שעבר עיבוד מראש הופעל במהלך התחלת הניווט למסגרת הראשית של הדף."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "לא נעשה שימוש בעיבוד מראש כי מדיניות הסימונים או ההרשאות של ההרצה בארגז החול של הדף שמתחיל את התהליך לא תואמת למדיניות של דף העיבוד מראש."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "לא נעשה שימוש בעיבוד מראש כי במהלך ההפעלה, פרמטרים שונים של הניווט (למשל, כותרות HTTP) חושבו כבר במהלך בקשת המעבר המקורית לעיבוד מראש."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "הדף שעבר עיבוד מראש ביקש פלט אודיו, שלא נתמך בשלב הזה."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "העיבוד מראש לא בוצע כי המשתמש ביקש שהדפדפן יפחית את צריכת הסוללה."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "הטעינה של חלק מהמשאבים נחסמה."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "למעבר לעיבוד מראש נדרש אישור מצד הלקוח ב-HTTP."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "המעבר לעיבוד מראש נכשל כי הוא טירגט כתובת URL מאתר אחר."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "הדף שעבר עיבוד מראש עבר לכתובת URL מאתר אחר."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "המעבר אל העיבוד מראש נכשל כי כתובת ה-URL של העיבוד מראש הפנתה לכתובת URL מאתר אחר."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "הדף שעבר עיבוד מראש עבר לכתובת URL שהפנתה לכתובת URL מאתר אחר."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "העיבוד מראש לא בוצע כי המשתמש ביקש שהדפדפן יפחית את צריכת הנתונים."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "הדף שעבר עיבוד מראש ניסה להתחיל הורדה, שלא נתמכת בשלב הזה."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "העיבוד מראש לא בוצע כי הדפדפן נתקל בשגיאה פנימית בניסיון לקבוע את השימוש הנוכחי בזיכרון."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "בדף שמתחיל את התהליך אי אפשר לבצע את העיבוד מראש כי כתובת ה-URL בפועל שלו שונה מכתובת ה-URL הרגילה שלו. (לדוגמה, דף הכרטיסייה החדשה או האפליקציות המתארחות)."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "כתובת ה-URL לא הייתה כשירה לעיבוד מראש כי הסכמה שלה לא הייתה :http או :https."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "המעבר לעיבוד מראש נכשל כי ההפניה האוטומטית הייתה לכתובת URL שהסכמה שלה לא הייתה :http או :https."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "למעבר לעיבוד מראש נדרש אימות HTTP, שלא ניתן לבצע בשלב הזה."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "העיבוד מראש לא בוצע כי אין מספיק זיכרון מערכת כולל כדי לתמוך בעיבוד מראש."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "הדף שעבר עיבוד מראש עבר מעצמו לכתובת URL אחרת שאין בה תמיכה בשלב הזה."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "העיבוד מראש לא בוצע כי בדף שמתחיל את התהליך כבר יש פעילות מתמשכת של יותר מדי עיבודים מראש. צריך להסיר כללי ספקולציות אחרים כדי לאפשר עוד עיבודים מראש."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "העיבוד מראש לא בוצע כי הדפדפן חרג ממגבלת הזיכרון לעיבוד מראש."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "בדף שעבר עיבוד מראש הוסרו הנתונים שנטענו כי היה מחסור קריטי בנפח הזיכרון של הדפדפן."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "העיבוד מראש לא בוצע כי היה מחסור קריטי בנפח הזיכרון של הדפדפן."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "הדף שעבר עיבוד מראש הכיל תוכן מעורב."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "הדף שעבר עיבוד מראש השתמש ב-JavaScript API שאסור לשימוש ושאין בו תמיכה בשלב הזה."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "המעבר אל העיבוד מראש נכשל בגלל קוד הסטטוס של תשובת HTTP שהוא לא 2xx."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "המעבר לעיבוד מראש נחסם על ידי Content Security Policy."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "אירעה שגיאה בחיבור לרשת במהלך המעבר לעיבוד מראש."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "העיבוד מראש לא בוצע כי המשתמש השבית את הטעינה מראש בהגדרות הדפדפן."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "הדף שמתחיל את התהליך קרס."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "פעילות הדף שמתחיל את התהליך הופסקה."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "הדף שעבר עיבוד מראש קרס."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "פעילות הדף שעבר עיבוד מראש הופסקה."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "הדף שעבר עיבוד מראש עבר מעצמו לכתובת URL ממקור אחר באותו אתר, אבל תגובת היעד לא הכילה את הכותרת Supports-Loading-Mode המתאימה."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "הדף שעבר עיבוד מראש עבר לכתובת URL ממקור אחר באותו אתר, אבל תגובת היעד לא הכילה את הכותרת Supports-Loading-Mode המתאימה."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "המעבר אל העיבוד מראש נכשל כי כתובת ה-URL של העיבוד מראש הפנתה לכתובת URL ממקור שונה באותו אתר, אבל תגובת היעד לא הכילה את הכותרת Supports-Loading-Mode המתאימה."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "הדף שעבר עיבוד מראש עבר לכתובת URL שהפנתה לכתובת URL ממקור אחר באותו אתר, אבל תגובת היעד לא הכילה את הכותרת Supports-Loading-Mode המתאימה."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "המעבר לעיבוד מראש נכשל בגלל אישור SSL לא תקין."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "הדף שמתחיל את התהליך הועבר לרקע לזמן ממושך, לכן הדף שעבר עיבוד מראש נמחק."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "הדף שמתחיל את התהליך הועבר לרקע, לכן הדף שעבר עיבוד מראש נמחק."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "בוצע שינוי בסוכן המשתמש במעבר אל העיבוד מראש."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "לפרטים נוספים, יש לבחור רכיב"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "סטטוס"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "השליפה מראש (prefetch) בוטלה כי התחיל תהליך חדש של שליפה מראש עקב ההפעלה של |kPrefetchNewLimits|"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "השליפה מראש (prefetch) הופנתה לכתובת אחרת, אבל כתובת ה-URL להפניה אוטומטית לא כשירה לשליפה מראש."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "השליפה מראש (prefetch) הופנתה לכתובת אחרת, אבל הייתה בעיה בהפניה האוטומטית."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "השליפה מראש (prefetch) נכשלה כי אין תמיכה בכותרת Content-Type של התגובה."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "השליפה מראש (prefetch) נכשלה עקב שגיאת רשת."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "השליפה מראש (prefetch) נכשלה בגלל קוד הסטטוס של תשובת HTTP שהוא לא 2xx."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "לא בוצעה שליפה מראש (prefetch) כי כבר יש יותר מדי תהליכים פעילים של שליפה מראש."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "בתהליך קודם של שליפה מראש (prefetch) מהמקור התקבלה תגובת HTTP 503 עם הכותרת Retry-After שהזמן שהוקצב לה עוד לא חלף."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "כתובת ה-URL לא התאימה לשליפה מראש (prefetch) כי היו במקור הזה קובץ שירות (service worker) או קובצי cookie מאתרים שונים, אבל בכל זאת הוגדרה ברשת שליפה מראש ללא שימוש, כדי להסתיר קשר קודם בין המשתמש למקור."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "עבר יותר מדי זמן בין השליפה מראש (prefetch) לבין השימוש, ולכן השליפה מראש בוטלה."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "לא בוצעה שליפה מראש (prefetch) כי הגדרת החיסכון בסוללה הופעלה."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "לא בוצעה שליפה מראש (prefetch) כי הדפדפן במצב אורח או במצב פרטי."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "לא בוצעה שליפה מראש (prefetch) כי מערכת ההפעלה נמצאת במצב Data Saver."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "כתובת ה-URL לא מתאימה לשליפה מראש (prefetch) כי לפי ההגדרה בהקשר הרשת שבברירת המחדל, צריך להשתמש בשרת proxy."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "כתובת ה-URL לא התאימה לשליפה מראש (prefetch) כי המארח שלה לא היה ייחודי (למשל, כתובת IP שאי אפשר לנתב באופן ציבורי או שם מארח שלא נמצא בשליטת מרשם), אבל נדרשה שליפה מראש דרך שרת proxy."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "כתובת ה-URL לא התאימה לשליפה מראש (prefetch) כי מחיצת האחסון שלה שונה מזו המוגדרת כברירת מחדל."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "לא בוצעה שליפה מראש (prefetch) כי הטעינה מראש הושבתה."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "כתובת ה-URL לא התאימה לשליפה מראש (prefetch) כי בהקשר הרשת שבברירת המחדל, לא ניתן להגדיר שימוש בשרת proxy לשליפה מראש בבקשת שליפה מראש באתרים שונים לאותו אתר."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "כתובת ה-URL לא התאימה לשליפה מראש (prefetch) כי הסכמה שלה לא הייתה https:‎."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "כתובת ה-URL לא התאימה לשליפה מראש (prefetch) כי מדובר בשליפה מאתרים שונים, אבל למשתמש היו קובצי cookie של המקור הזה."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "כתובת ה-URL לא התאימה לשליפה מראש (prefetch) כי היה קובץ שירות (service worker) רשום במקור הזה, וכרגע אין בו תמיכה."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "לא התבצעה שליפה מראש (prefetch) כי מדובר בשליפה מראש מאתרים שונים, ונוספו קובצי cookie לכתובת ה-URL הזו במהלך השליפה מראש, לכן התגובה שנשלפה מראש לא עדכנית."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "השליפה מראש (prefetch) נחסמה על ידי ספק האינטרנט או מנהל הרשת."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "אירעה שגיאה בחיבור לרשת במהלך ניסיון להגדיר חיבור לשרת ה-proxy לשליפה מראש (prefetch)."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "יש ללחוץ כדי להציג בחלונית הרכיבים"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "בדף הזה פועלים {PH1} משאבים שנשלפו מראש"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "הדף הזה נטען מראש"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "הדף הזה עובד מראש"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "הדמיית שימוש"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "לא ניתן היה לתעד את פרטי הכיסוי כי הדף עבר עיבוד מראש ברקע."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "הכול"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "לא ניתן היה לתעד את פרטי הכיסוי כי הדף הוצג ממטמון לדף הקודם/הבא."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "יש לבחור את רמת הפירוט של הכיסוי: תקורה נמוכה לכל פונקציה, תקורה משמעותית לכל חסימה."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "לכל פונקציה"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "צריך ללחוץ על לחצן הטעינה מחדש {PH1} כדי לטעון מחדש ולקבל כיסוי."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "עד כה נעשה שימוש ב-{PH1} מתוך {PH2} (%{PH3}), לא נעשה שימוש ב-{PH4}."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "כיסוי כלים"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "טעינת הדף מחדש"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "הצגת כלי ה-Coverage"
@@ -5670,7 +5667,7 @@
     "message": "בוצעה העתקה ללוח"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "העתקה של כל שינויי ה-CSS"
+    "message": "העתקת שינויי ה-CSS"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "שם מאפיין ה-CSS: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "הופעלה התכונה 'הפעלות בו-זמניות בחומרה'"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "הערך של navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "ללא ויסות נתונים (throttle)"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "הפעולה הצליחה"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "המפתחות של מנפיק ה-PST הזה לא זמינים. יכול להיות שהמנפיק יצטרך להירשם בתהליך הרישום ב-Chrome."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "הפעולה נכשלה עקב סיבה לא ידועה."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "הפסקת ההקלטה של הקצאות זיכרון בערימה (heap allocation)"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "הכלי לעריכת פקודות CDP מוסתר"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "הכלי לעריכת פקודות CDP מוצג"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "ניקוי הכול"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "סינון"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "הסתרת הכלי לעריכת פקודות CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "שיטה"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "סשן"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "הצגת הכלי לעריכת פקודות CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "יעד"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "פרוטוקול Thread"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "רשת"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} במשך {PH2}"

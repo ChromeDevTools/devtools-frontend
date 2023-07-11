@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Desprinde într-o fereastră separată"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Pagină: neselectată"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Pagina: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Original"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Declanșarea window.confirm din cadre iframe cu origini diferite s-a învechit și va fi eliminată pe viitor."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "Evenimentele de mutare DOM, inclusiv DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument și DOMCharacterDataModified, sunt învechite (https://w3c.github.io/uievents/#legacy-event-types) și vor fi eliminate. Folosește MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Compatibilitate cu datele: adresele URL din elementul SVG <use> sunt învechite și vor fi eliminate pe viitor."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Relaxarea politicii pentru aceeași origine prin setarea document.domain este învechită și va fi dezactivată în mod prestabilit. Pentru a folosi în continuare funcția, renunță la grupurile de agenți pentru care au fost configurate anumite origini, trimițând un antet Origin-Agent-Cluster: ?0 împreună cu răspunsul HTTP pentru document și cadre. Consultă https://developer.chrome.com/blog/immutable-document-domain/ pentru detalii suplimentare."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "API-ul Event.path este învechit și va fi eliminat. Folosește Event.composedPath()."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Antetul Expect-CT nu mai este acceptat. Chrome necesită Transparența certificatului pentru toate certificatele de încredere publice emise după 30 aprilie 2018."
+    "message": "Antetul Expect-CT este învechit și va fi eliminat. Chrome necesită Transparența certificatului pentru toate certificatele de încredere publice emise după 30 aprilie 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() și watchPosition() nu mai funcționează cu origini nesigure. Pentru a folosi această funcție, îți recomandăm să treci aplicația la o origine sigură, cum ar fi HTTPS. Consultă https://goo.gle/chrome-insecure-origins pentru detalii suplimentare."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API-ul Federated Credential Management"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "API-ul Federated Credential Management User Info"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Atribut HTML: completare automată"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Blochează conținutul mixt"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Reducerea șirului User-Agent"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Mod de compatibilitate cu documentul"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Da"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Preluare anticipată și redare anticipată"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Această pagină"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Dă clic pe orice raport pentru a afișa conținutul"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Aplicație"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Memorie cache"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Stocare în memoria cache"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Paginile care au solicitat un AppBanner nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Memoria cache înainte-înapoi este dezactivată din cauza unei solicitări keep-alive."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Memoria cache înainte/înapoi este dezactivată de funcțiile experimentale. Accesează chrome://flags/#back-forward-cache ca să o activezi local pe acest dispozitiv."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Paginile care folosesc API-ul WebUSB nu sunt eligibile pentru memoria cache înainte/înapoi."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Memoria cache înainte-înapoi este dezactivată deoarece cookie-urile sunt dezactivate pentru o pagină care folosește Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Paginile care folosesc un lucrător sau un worklet special nu sunt eligibile momentan pentru memoria cache înainte/înapoi."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Eroare internă."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Memoria cache înainte-înapoi este dezactivată deoarece unele solicitări din rețeaua JavaScript au primit o resursă cu antetul Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Memoria cache înainte-înapoi este dezactivată din cauza unei solicitări keep-alive."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Afișează încă # cadru}few{Afișează încă # cadre}other{Afișează încă # de cadre}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Numele grupării"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Durabilitate"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Data expirării"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Este opacă"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Este terță parte"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Se încarcă…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Nu"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Fără"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(opacă)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Origine"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Este persistent"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Cotă"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Site de nivel superior"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Da"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Da, deoarece lanțul precursor conține o origine terță parte"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Da, deoarece cheia de stocare este opacă"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Da, deoarece originea este în afara site-ului de nivel superior"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Da, deoarece site-ul de nivel superior este opac"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Toate indicativele private de stare stocate disponibile în această instanță a browserului."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Indicative private de stare"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Filtrați după setul de reguli selectat"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Setări pentru extensii"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Preîncărcarea este dezactivată din cauza modului Economizor de date al sistemului de operare."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Preîncărcarea este activată forțat deoarece DevTools este deschis. Când DevTools este închis, redarea anticipată va fi dezactivată deoarece sesiunea de browser face parte dintr-un grup de restricție folosit pentru comparațiile de performanță."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Preîncărcarea este dezactivată din cauza setărilor utilizatorului sau a unei extensii. Accesează {PH1} pentru a afla mai multe sau {PH2} pentru dezactivarea extensiei."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Redarea anticipată este activată forțat deoarece DevTools este deschis. Când DevTools este închis, redarea anticipată va fi dezactivată deoarece sesiunea de browser face parte dintr-un grup de restricție folosit pentru comparațiile de performanță."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Preîncărcarea a fost dezactivată, dar este activată forțat acum"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Preîncărcarea este dezactivată"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Redarea anticipată a fost dezactivată, dar este activată forțat acum"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Preîncărcarea nu a reușit."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Stare"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Pagina redată anticipat s-a activat în timpul navigării principale în pagina de pornire."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Redarea anticipată nu a fost folosită deoarece politica privind semnalările sau permisiunile pentru mediul de testare a paginii de inițiere nu era compatibilă cu cele ale paginii de redare anticipată."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Redarea anticipată nu s-a folosit, deoarece în timpul activării s-au calculat alți parametri de navigare (de exemplu, anteturi HTTP) decât în timpul solicitării de navigare de redare anticipată inițiale."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Pagina redată anticipat a solicitat o ieșire audio, care nu este acceptată momentan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Redarea anticipată nu s-a realizat, deoarece utilizatorul a solicitat ca browserul să folosească mai puțină baterie."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "O parte din resursele încărcate a fost blocată."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Navigarea pentru redarea anticipată a solicitat un certificat de client HTTP."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Navigarea anticipată nu a reușit, deoarece a vizat o adresă URL de pe mai multe site-uri."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Pagina redată anticipat a navigat la o adresă URL de pe mai multe site-uri."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Navigarea la redarea anticipată nu a reușit, deoarece adresa URL redată anticipat a redirecționat către o adresă URL din mai multe site-uri."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Pagina redată anticipat a navigat la o adresă URL care a redirecționat către o adresă URL din mai multe site-uri."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Redarea anticipată nu s-a realizat, deoarece utilizatorul a solicitat ca browserul să folosească mai puține date."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Pagina redată anticipat a încercat să inițieze o descărcare, lucru care nu este acceptat momentan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Redarea anticipată nu s-a realizat, deoarece browserul a întâmpinat o eroare internă când a încercat să determine utilizarea actuală a memoriei."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Pagina de pornire nu poate reda anticipat, deoarece are o adresă URL eficientă, diferită de adresa sa URL normală. (De exemplu, pagina Filă nouă sau aplicații găzduite.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "Adresa URL nu a fost eligibilă să se redea anticipat, deoarece schema acesteia nu era http: sau https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Navigarea la redarea anticipată nu a reușit, deoarece redirecționa spre o adresă URL a cărei schemă nu era http: sau https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Navigarea cu redare anticipată a necesitat autentificarea HTTP, care nu este acceptată momentan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Redarea anticipată nu s-a realizat, deoarece acest dispozitiv nu are suficientă memorie de sistem pentru a o accepta."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Pagina redată anticipat a navigat la o altă adresă URL, care nu este acceptată momentan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Redarea anticipată nu s-a realizat, deoarece pagina de inițiere are deja prea multe redări anticipate în desfășurare. Elimină alte reguli de speculare pentru a activa redarea anticipată."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Redarea anticipată nu s-a realizat, deoarece browserul a depășit limita de memorie de redare anticipată."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Pagina redată anticipat a fost descărcată, deoarece browserul a fost supus unei presiuni critice a memoriei."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Redarea anticipată nu s-a realizat, deoarece browserul se afla sub presiune critică de memorie."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Pagina redată anticipat includea conținut mixt."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Pagina redată anticipat a folosit un API JavaScript interzis, care nu este acceptat momentan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Navigarea la redarea anticipată nu a reușit din cauza unui cod de stare cu răspuns HTTP non-2xx."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Navigarea cu redare anticipată a fost blocată de o Politică privind securitatea conținutului."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Navigarea cu redare anticipată a întâmpinat o eroare de rețea."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Redarea anticipată nu s-a realizat, deoarece utilizatorul a dezactivat preîncărcarea în setările browserului."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Pagina de inițiere s-a blocat."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "S-a eliminat pagina de inițiere."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Pagina redată anticipat s-a blocat."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Pagina redată anticipat a fost închisă."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Pagina redată anticipat a navigat la o adresă URL de pe același site cu origini multiple, dar răspunsul pentru destinație nu a inclus antetul Supports-Loading-Mode corespunzător."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Pagina redată anticipat a navigat la o adresă URL de pe același site cu origini multiple, dar răspunsul pentru destinație nu a inclus antetul Supports-Loading-Mode corespunzător."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Navigarea cu redare anticipată nu a reușit, deoarece adresa URL de redare anticipată a redirecționat către o adresă URL de pe același site cu mai multe origini, dar răspunsul de destinație nu a inclus antetul Supports-Loading-Mode corespunzător."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Pagina redată anticipat a navigat la o adresă URL care a redirecționat către o adresă URL de pe același site cu origini multiple, dar răspunsul pentru destinație nu a inclus antetul Supports-Loading-Mode adecvat."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Redarea anticipată nu a reușit, din cauza unui certificat SSL nevalid."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Pagina de inițiere a rulat în fundal mult timp, așa că s-a renunțat la pagina redată anticipat."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Pagina de inițiere era în fundal, prin urmare s-a renunțat la pagina redată anticipat."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Modificarea valorii User Agent a apărut în redarea anticipată a afișării."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Selectează un element pentru mai multe detalii"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Stare"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Preluarea anticipată a fost eliminată pentru o preluare anticipată mai recentă deoarece este activat parametrul |kPrefetchNewLimits|"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Preluarea anticipată a fost redirecționată, dar redirecționarea nu este eligibilă pentru preluare anticipată."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Preluarea anticipată a fost redirecționată, dar a apărut o problemă cu redirecționarea."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Preluarea anticipată nu a reușit deoarece antetul Content-Type al răspunsului nu a fost acceptat."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Preluarea anticipată nu a reușit din cauza unei erori de rețea."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Preluarea anticipată nu a reușit din cauza unui cod de stare cu răspuns HTTP non-2xx."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Preluarea anticipată nu s-a realizat deoarece pagina de inițiere are deja prea multe preluări anticipate în desfășurare."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "O preluare anticipată anterioară către origine a primit un răspuns HTTP 503 cu antetul Retry-After pentru care timpul încă nu s-a scurs."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece originea respectivă avea un service worker înregistrat sau cookie-uri pe mai multe site-uri, dar preluarea anticipată a fost totuși adăugată în rețea și nu a fost folosită, pentru a ascunde faptul că utilizatorul avea o legătură anterioară cu acea origine."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "A trecut prea mult timp între preluarea anticipată și utilizare. Prin urmare, s-a renunțat la preluarea anticipată."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Preluarea anticipată nu a fost realizată deoarece setarea pentru Economisirea bateriei a fost activată."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Preluarea anticipată nu a fost realizată deoarece browserul este în modul incognito sau în modul pentru invitați."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Preluarea anticipată nu a fost realizată deoarece sistemul de operare este în modul Economizor de date."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "Adresa URL nu este eligibilă pentru preluare anticipată deoarece în contextul rețelei prestabilite este configurată să folosească un server proxy."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece gazda acesteia nu era unică (de ex., o adresă IP care nu poate fi rutată public sau un nume de gazdă care nu este controlat prin registry), dar era necesar ca preluarea anticipată să fie făcută prin proxy."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece folosește altă partiție de stocare decât cea prestabilită."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Preluarea anticipată nu a fost realizată deoarece preîncărcarea a fost dezactivată."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece contextul rețelei prestabilite nu poate fi configurat să folosească proxy-ul de preluare anticipată pentru o solicitare de preluare anticipată cu origini multiple din același site."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece schema acesteia nu este https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece provenea de pe mai multe site-uri, dar utilizatorul avea cookie-uri pentru originea respectivă."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "Adresa URL nu a fost eligibilă pentru preluare anticipată deoarece originea respectivă avea un service worker înregistrat care nu este acceptat momentan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Preluarea anticipată nu a fost folosită deoarece era o preluare anticipată de pe mai multe site-uri, iar pentru adresa URL respectivă au fost adăugate cookie-uri în timpul preluării anticipate. Prin urmare, răspunsul preluat anticipat este învechit."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Preluarea anticipată a fost blocată de furnizorul de servicii de internet sau de administratorul de rețea."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "A apărut o eroare de rețea la încercarea de a configura o conexiune cu serverul proxy pentru preluare anticipată."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Dă clic pentru a afișa în panoul Elemente"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "{PH1} resurse preluate anticipat sunt folosite pentru această pagină"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Preîncărcarea este folosită pentru această pagină"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Această pagină a fost redată anticipat"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Vizualizarea utilizării"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Informațiile despre acoperire nu au putut fi preluate deoarece pagina a fost redată anticipat în fundal."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Toate"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Informațiile despre acoperire nu au putut fi preluate deoarece pagina a fost difuzată din memoria cache înainte-înapoi."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Alege nivelul de detaliere a acoperirii: la nivel de funcție necesită costuri mici, la nivel de grup necesită costuri semnificative."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Per funcție"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Dă clic pe butonul de reîncărcare {PH1} pentru a reîncărca și pentru a obține date despre acoperire."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} din {PH2} ({PH3} %) folosiți până acum, {PH4} nefolosiți."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Acoperire instrument"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Reîncarcă pagina"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Afișează Acoperirea"
@@ -5670,7 +5667,7 @@
     "message": "S-au copiat în clipboard"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Copiază toate modificările CSS"
+    "message": "Copiază modificările CSS"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Numele proprietății CSS: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Modificarea simultaneității hardware este activată"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Valoarea navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Fără limitare"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Reușită"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Cheile pentru acest emitent PST nu sunt disponibile. Poate fi necesar ca emitentul să fie înregistrat prin procesul de înregistrare Chrome."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Operația nu a reușit dintr-un motiv necunoscut."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Oprește înregistrarea alocărilor de memorie heap"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "Editorul de comenzi CDP a fost ascuns"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "Editorul de comenzi CDP a fost afișat"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Șterge tot"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Filtrează"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "Ascunde editorul de comenzi CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Metodă"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Sesiune"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "Afișează editorul de comenzi CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Obiectiv"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Fir"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Rețea"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} la {PH2}"

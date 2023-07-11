@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Alohida oynaga ajratish"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Sahifa: tanlanmadi"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Sahifa: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Muallifli"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Begona manba ichki freymlaridan window.confirm chaqiruvini bajarish eskirdi va keyingi versiyalardan olib tashlanadi."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOM Mutation hodisalari, junladan: DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument va DOMCharacterDataModified eskirgan (https://w3c.github.io/uievents/#legacy-event-types) va olib tashlanadi. Oʻrniga MutationObserver ishlating."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Axborotlar taʼminoti: SVG <use> elementidagi URL eskirgan va kelasi versiyada olib tashlanadi."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain sozlamasi orqali bir xil manba siyosatining yumshatilishi eskirdi va standart holatda oʻchiq boʻladi. Bu funksiyadan foydalanishda davom etish uchun kalitli manba agenti klasteridan foydalanishni bas qiling va hujjat va fremlar uchun HTTP javoblarini Origin-Agent-Cluster: ?0 sarlavhasi bilan yuboring. Batafsil: https://developer.chrome.com/blog/immutable-document-domain/."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path eskirdi va olib tashlanadi. Oʻrniga Event.composedPath() ishlating."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT sarlavhasi boshqa ishlamaydi. Chrome 2018-yil 30-apreldan keyin chiqarilgan barcha ochiq ishonchli sertifikatlar uchun sertifikat shaffofligini talab qiladi."
+    "message": "Expect-CT sarlavhasi eskirdi va olib tashlanadi. Chrome 2018-yil 30-apreldan keyin chiqarilgan barcha ochiq ishonchli sertifikatlar uchun sertifikat shaffofligini talab qiladi."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "Endi himoyalanmagan manabalarda getCurrentPosition() va watchPosition() ishlamaydi. Bu funksiyadan foydalanish uchun ilovangizni HTTPS kabi himoyalangan manbalarga oʻtkazing. Batafsil: https://goo.gle/chrome-insecure-origins."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML atributi: avtomatik kiritish"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Aralash kontent chiqarmaydi"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Foydalanuvchi agenti qatori qisqartmasi"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Hujjat moslik rejimi"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ha"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Oldindan yuklash va renderlash"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Shu sahifa"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Tarkibini koʻrish uchun istalgan hisobot ustiga bosing"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Ilova"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Kesh"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Kesh xotirasi"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner soʻrovini yuboradigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Ortga qaytadigan kesh keepalive soʻrovi tufayli faolsizlantirildi."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Ortga qaytadigan kesh bayroqcha tomonidan faolsizlantirildi. Uni bu qurilmada chrome://flags/#back-forward-cache sahifasi orqali mustaqil yoqish mumkin."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "WebUSB API ishlatadigan sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Cache-Control: no-store ishlatuvchi sahifalarda cookielar yoniq emasligi uchun orqaga qaytadigan kesh faolsizlantirildi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Alohida worker yoki worklet interfeysi bor sahifalarda hozircha ortga qaytadigan kesh ishlamaydi."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Ichki xatolik."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Ayrim JavaScript tarmoq soʻrovi Cache-Control: no-store sarlavhali resursni qabul qilingani uchun Orqaga qaytadigan kesh faolsizlantirildi."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Ortga qaytadigan kesh keepalive soʻrovi tufayli faolsizlantirildi."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Yana # ta freymni chiqarish}other{Yana # ta freymni chiqarish}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Bucket nomi"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Mustahkamlik"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Muddati"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Shaffof"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Tashqi manbaga ega"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Yuklanmoqda…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Yoʻq"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Hech biri"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(shaffoflik)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Manba"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Oʻzgarmas"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Ajratilgan joy"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Yuqori darajali sayt"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Ha"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Ha, chunki yuqori zanjir tarkibida tashqi manba mavjud"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Ha, chunki xotira kaliti shaffof"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Ha, chunki manba yuqori darajali sayt tashqarisida"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Ha, chunki yuqori darajali sayt shaffof"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Bu brauzer nusxasida barcha saqlangan Ishonchli tokenlar mavjud."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Ishonch tokenlari"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Tanlangan qoidalar toʻplami asosida filtrlash"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Kengaytmalar sozlamalari"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Operatsion tizim Mobil trafikni tejash rejimidaligi uchun sahifa oldindan yuklanmadi."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "DevTools ochiqligi sababli oldindan yuklash majburiy yoqilgan. DevTools yopiqligida oldindan renderlash faolsizlantiriladi, chunki bu brauzer seansi unumdorlikni taqqoslash uchun foydalaniladigan ushlab turish guruhining bir qismidir."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Foydalanuvchi sozlamalari yoki kengaytma sababli sahifa oldindan yuklanmadi. Batafsil axborot: {PH1}, kengaytmani faolsizlantirish haqida: {PH2}."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "DevTools ochiqligi sababli oldindan renderlash majburiy yoqilgan. DevTools yopiqligida oldindan renderlash faolsizlantiriladi, chunki bu brauzer seansi unumdorlikni taqqoslash uchun foydalaniladigan ushlab turish guruhining bir qismidir."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Oldindan yuklash faolsizlantirilgan, lekin hozir majburiy yoqildi"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Oldindan renderlash yoqilmagan"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Oldindan renderlash faolsizlantirilgan, lekin hozir majburiy yoqildi"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Avvaldan yuklash amalga oshmadi."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Holati"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Ochilayotgan sahifadagi asosiy freym yoʻnaltirilishi vaqtida oldindan renderlangan sahifa ishga tushdi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Ochilayotgan sahifadagi sinov muhiti tajribaviy funksiyalari yoki ruxsatlar siyosati oldindan renderlanuvchi sahifanikidan farq qilgani uchun oldindan renderlash ishlatilmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Asl navigatsiyani oldindan renderlash soʻrovida xato parametrlar (HTTP sarlavhalar kabi) hisoblangani uchun sahifa faollashtirish vaqtida oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Oldindan renderlangan sahifa audio chiqarishni talab qildi, lekin bu amal hozir ishlamaydi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Foydalanuvchi brauzer batareyani kamroq sarf qilishini talab qilgani uchun sahifa oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Ayrim resurslar yuklanishi bloklandi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Navigatsiyani oldindan renderlashda HTTP mijoz sertifikatini talab qilindi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Soʻralgan sahifa begona URL manzilda boʻlgani uchun navigatsiya oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Oldindan renderlangan sahifa bir xil manzildagi URL manzilga yoʻnaltirildi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Oldindan renderlangan sahifa begona URL manzildagi sahifaga yoʻnaltirilgani uchun navigatsiya oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Oldindan renderlangan sahifa begona URL manzildagi saytga yoʻnaltirildi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Foydalanuvchi brauzer kamroq mobil trafik ishlatishini talab qilgani uchun sahifa oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Oldindan renderlangan sahifa yuklab olishga urindi, lekin bu amal hozir ishlamaydi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Brauzer joriy xotira sarfini aniqlashida ichki xatolik yuz bergani sababli sahifa oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Ochilayotgan sahifa oddiy URL manzildan farqli manzilda boʻlgani uchun uni oldindan renderlash bajarilmadi. (masalan, Yangi varaq sahifasi yoki ichki ilovalar)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "Protokoli http: yoki https: boʻlmagani uchun URL manzil oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Sahifa http: yoki https: protokolidagi URL manzilga yoʻnaltirilgani uchun navigatsiya oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Hozir ishlamaydigan HTTP autentifikatsiyasi talab etilgani uchun navigatsiya oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Qurilma tizimida oldindan renderlash uchun umumiy xotira yetarli boʻlmagani uchun sahifa oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Oldindan renderlangan sahifa oʻzini boshqa URL manzilga yoʻnaltirdi, lekin bu amal hozir ishlamaydi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Ochilayotgan sahifada juda koʻp oldindan renderlash amallari ishga tushgani uchun sahifa oldindan renderlanmadi. Chuqurroq oldindan renderlashni yoqish uchun xalaqit qiluvchi qoidalarni olib tashlang."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Brauzer xotirasi oldindan renderlash limitiga yetgani uchun sahifa oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Brauzer xotirasida joy qolmagani uchun oldindan renderlangan sahifa xotiradan yechildi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Brauzer xotirasida umuman joy qolmagani ushun sahifa oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Oldindan renderlangan sahifa aralash kontentdan iborat."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Oldindan renderlangan sahifa taqiqlangan JavaScript API ishlatdi, lekin bu amal hozir ishlamaydi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Soʻrovga non-2xx HTTP kodli javob qaytgani sababli navigatsiya oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Navigatsiyani oldindan renderlash kontent xavfsizligi siyosati tomonidan bloklandi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Navigatsiyani oldindan renderlashda tarmoq xatoligi yuz berdi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Foydalanuvchi brauzer sozlamalarida oldindan renderlashni faolsizlantirgani uchun sahifa oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Ochilayotgan sahifa ishdan chiqdi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Ochilayotgan sahifa tugatildi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Oldindan renderlangan sahifa ishdan chiqdi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Oldindan renderlangan sahifa tugatildi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Oldindan renderlangan sahifa oʻzini bir xil URL manzildagi begona sahifaga yoʻnaltirildi, lekin manzil tegishli Supports-Loading-Mode sarlavhasini qaytarmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Oldindan renderlangan sahifa bir xil URL manzildagi begona sahifaga yoʻnaltirildi, lekin manzil tegishli Supports-Loading-Mode sarlavhasini qaytarmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Sahifa bir xil URL manzildagi begona sahifaga yoʻnaltirilgani, lekin manzil tegishli Supports-Loading-Mode sarlavhasini qaytarmagani sababli navigatsiya oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Oldindan renderlangan sahifa bir xil URL manzildagi begona sahifaga yoʻnaltirildi, lekin manzil tegishli Supports-Loading-Mode sarlavhasini qaytarmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "SSL sertifikati yaroqsizligi sababli navigatsiya oldindan renderlanmadi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Ochilayotgan sahifa fonda uzoq qolgani uchun oldindan renderlangan sahifa bekor qilindi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Ochilayotgan sahifa fonga olingani uchun oldindan renderlangan sahifa bekor qilindi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Navigatsiyani oldindan renderlashda foydalanuvchi agenti oʻzgardi."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Batafsil axborot olish uchun elementni tanlang"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Holati"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Yangiroq |kPrefetchNewLimits| yoniqligi uchun oldindan yuklash bekor qilindi"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Oldindan yuklan boshqa sahifaga yoʻnaltirildi, lekin yoʻnaltirilgan URL manzilni oldindan yuklash mumkin emas."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Oldindan yuklash boshqa sahifaga yoʻnaltirildi, lekin yoʻnaltirish vaqtida xatolik yuz berdi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Oldindan yuklash soʻrovi amalga oshmadi, chunki Javobdagi Content-Type sarlavhasi ishlamaydi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Oldinidan yuklash tarmoq xatosi sababli amalga oshmadi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Soʻrovga non-2xx HTTP kodli javob qaytgani sababli oldindan yuklash amalga oshmadi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Ochilayotgan sahifada juda koʻp oldindan yuklash amallari ishga tushgani uchun oldindan yuklash amalga oshmadi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Avvalgi oldindan yuklash soʻrovi sarlavhadan keyin qaytarish amali (Retry-After header) bajarilmagan HTTP 503 javobini oldi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "Manbasida qayd qilingan service worker yoki kesishma-sayt cookie fayllari borligi, lekin oldindan yuklash soʻrovi foydalanuvchini avvalgi manba bilan chalgʻitish maqsadida baribir tarmoq orqali yuborilgani va ishlatilmagani uchun URL manzilni oldindan yuklash mumkin emas."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Oldindan yuklash koʻp vaqt va xotira olgani uchun bekor qilindi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Quvvat tejash sozlamasi yoniqligi uchun oldindan yuklash amalga oshmadi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Brauzer Inkognito yoki Mehmon rejimida boʻlgani uchun oldindan yuklash amalga oshmadi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Operatsion tizim Trafik tejash rejimidaligi uchun oldindan yuklash amalga oshmadi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "Standart tarmoq kontekstida proksi server ishlatishi sozlangani uchun URL oldindan yuklanmaydi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "Hosti unikal boʻlmagani (masalan, IP manzili hammaga ochiq marshrutizatsiyaga kirmagan yoki host nomi reestr orqali boshqarilmaydigan) uchun oldindan yuklanishi proksi orqali bajarilishi soʻralgan URL oldindan yuklash mumkin emas."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URL oldindan yuklanmaydi, chunki u nostandart xotira boʻlimini ishlatadi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Oldindan yuklanishi yoniq emasligi uchun oldindan yuklash amalga oshmadi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "Standart tarmoq kontekstida begona manbali bir xil sayt soʻrovini proksi orqali oldindan yuklash sozlanmagani uchun URL manzilni oldindan yuklash mumkin emas."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "Protokoli https: boʻlmagani uchun URL oldindan yuklanmaydi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "Kesishma sayt hisoblangani, lekin begona manba cookie fayllari mavjud boʻlgani uchun URL manzilni oldindan yuklash mumkin emas."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "Manbasida qayd qilingan service worker borligi (hozirda ishlamaydi) uchun URL manzilni oldindan yuklash mumkin emas."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Oldindan yuklash bajarilishida kesishma-sayt oldindan yuklanishi URL manzilga cookielarni kiritgani sababli oldindan yuklangan javob eskirdi va oldindan yuklash soʻrovi bajarilmadi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Oldindan yuklash Internet provayderi yoki tarmoq administratori tomonidan bloklandi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Oldindan yuklash proksi serveriga ulanish vaqtida tarmoq xatoligi yuz berdi."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Elementlar panelida ochish uchun bosing"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "Bu sahifa uchun {PH1} ta oldindan yuklangan resurs ishlatildi"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Bu sahifa maʼlumotlari oldindan yuklandi"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Bu sahifa oldindan renderlangan"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Sarf grafigi"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Sahifa fonda oldindan yuklangani sababli belgilangan qamrov yozib olinmadi."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Hammasi"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Sahifa orqaga qaytadigan keshdan olingani uchun belgilangan qamrov yozib olinmadi."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Qamrov tafsilotlari darajasi: Funksiyalar asosida kam axborot boʻlsa, bloklar asosida keng axborotlar chiqadi."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Har funksiyada"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Qamrovni olish va qayta yuklash uchun qayta yuklash {PH1} tugmasini bosing."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} / {PH2} ({PH3}%) band, {PH4} ishlatilmagan."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Asboblar qamrovi"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Sahifani qayta yuklash"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Qamrovni ochish"
@@ -5670,7 +5667,7 @@
     "message": "Vaqtinchalik xotiraga nusxalandi"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Barcha CSS oʻzgartirishlaridan nusxa olish"
+    "message": "CSS oʻzgarishlarini nusxalash"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS xususiyati nomi: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Apparatli parallellik almashtiruvi yoniq"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "navigator.hardwareConcurrency qiymati"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Tarmoq qotishlarisiz"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Bajarildi"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Mazkur PST noshiri uchun kalitlar mavjud emas. Noshir Chrome roʻyxatdan oʻtish jarayoni orqali qayd qilinishi kerak."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Amal noaniq xatolik tufayli bajarilmadi."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Uyma taqimlanishi yozilishini toʻxtatish"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP buyruqlar muharriri yopildi"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP buyruqlar muharriri ochildi"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Hammasini tozalash"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Filtr"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "CDP buyruqlar muharririni yopish"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Uslub"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Seans"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "CDP buryuqlar muharririni ochish"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Moʻljal"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Zanjir"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Tarmoq"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1}, {PH2}"

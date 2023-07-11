@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "取消固定至分開的視窗"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "頁面：未選取"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "頁面：{PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "設定為已編寫內容"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "從跨來源 iframe 觸發 window.confirm 的功能已淘汰，並將會在日後移除。"
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOM 變更事件 (包括 DOMSubtreeModified、DOMNodeInserted、DOMNodeRemoved、DOMNodeRemovedFromDocument、DOMNodeInsertedIntoDocument 和 DOMCharacterDataModified) 已淘汰 (https://w3c.github.io/uievents/#legacy-event-types)，並將於日後移除。請改用 MutationObserver。"
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "SVG <use> 元素不再支援「data: 網址」，並將於日後移除。"
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "透過設定 document.domain 啟用相同來源政策的功能已淘汰，並將根據預設移除。如要繼續使用此功能，請傳送文件和頁框的 Origin-Agent-Cluster: ?0 標題和 HTTP 回應，藉此選擇不採用 origin-keyed 代理程式叢集。詳情請參閱 https://developer.chrome.com/blog/immutable-document-domain/。"
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path 已淘汰，並將會移除。請改用 Event.composedPath()。"
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "系統已不再支援 Expect-CT 標題。Chrome 要求 2018 年 4 月 30 日後發出的所有公開信任憑證都必須符合《憑證透明度政策》的規定。"
+    "message": "Expect-CT 標題已淘汰，並將會移除。Chrome 要求 2018 年 4 月 30 日後發出的所有公開信任憑證都必須符合《憑證透明度政策》的規定。"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() 和 watchPosition() 無法再在不安全來源上運作。如要使用此功能，請考慮將應用程式轉移至安全來源，例如 HTTPS。詳情請參閱 https://goo.gle/chrome-insecure-origins。"
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "聯合憑證管理 API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML 屬性：自動完成"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "防止混合內容"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "用戶代理程式字串減少"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "文件兼容模式"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "是"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "預先擷取和預先輸出"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "此網頁"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "按一下任何報告即可顯示相關內文"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "應用程式"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "快取"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "快取儲存空間"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "要求 AppBanner 的網頁目前不符合向前/返回快取的資格。"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "由於有 Keepalive 要求，因此系統已停用向前/返回快取功能。"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "標記已停用向前/返回快取。如要在此裝置上啟用該功能，請前往 chrome://flags/#back-forward-cache。"
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "使用 WebUSB API 的網頁不符合向前/返回快取的資格。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "由於使用 Cache-Control: no-store 的頁面已停用 Cookie，因此系統已停用向前/返回快取。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "使用專屬 Worker 或 Worklet 的網頁目前不符合向前/返回快取的資格。"
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "內部錯誤。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "由於部分 JavaScript 網絡要求收到含有「Cache-Control: no-store」標題的資源，因此向前/返回快取已停用。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "由於有 Keepalive 要求，因此系統已停用向前/返回快取功能。"
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{顯示另外 # 個頁框}other{顯示另外 # 個頁框}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "儲存區名稱"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "耐用性"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "到期"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "不透明"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "屬於第三方"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "正在載入…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "否"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "無"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(不透明)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "來源"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "永久"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "配額"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "頂層網站"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "是"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "是，因為祖級鏈含有第三方來源"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "是，因為儲存空間金鑰不透明"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "是，因為來源不屬於頂層網站"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "是，因為頂層網站不透明"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "此瀏覽器例項中所有可用的已儲存 Private State Token。"
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Private State Token"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "按所選規則組合篩選"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "擴充程式設定"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "由於作業系統處於數據節省模式，因預先載入功能已停用。"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "開發人員工具已開啟，因此系統已強制啟用預先載入功能。由於此瀏覽器工作階段屬於用來比較效能的保留群組，因此預先輸出功能會在開發人員工具關閉後停用。"
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "預先載入功能因使用者設定或擴充程式而停用。如要瞭解詳情，請前往 {PH1}；如要停用此擴充程式，請前往 {PH2}。"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "開發人員工具已開啟，因此系統已強制啟用預先載入功能。由於此瀏覽器工作階段屬於用來比較效能的保留群組，因此預先輸出功能會在開發人員工具關閉後停用。"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "預先載入功能先前曾停用，但目前已強制啟用"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "預先載入功能已停用"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "預先輸出功能先前曾停用，但目前已強制啟用"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "無法預先載入。"
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "狀態"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "啟動頁面的主要頁框導覽時，系統已啟用預先輸出的頁面。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "由於啟動中頁面的的沙箱標記或權限政策與預先輸出的頁面不兼容，因此系統未使用預先輸出。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "啟動時計算的導覽參數 (例如 HTTP 標題) 與原始預先輸出的導覽要求不相符，因此系統未使用預先輸出。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "預先輸出的頁面已要求輸出音訊，但目前不支援。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "由於使用者要求瀏覽器減少用電，因此未執行預先輸出。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "已禁止載入部分資源。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "預先輸出導覽需要 HTTP 用戶端憑證。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "由於預先輸出導覽已指定跨網站網址，因預先輸出導覽失敗。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "預先輸出的頁面已導向至跨網站網址。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "由於預先輸出的網址重新導向至跨網站網址，因預先輸出導覽失敗。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "預先輸出的頁面已導覽至重新導向至跨網站網址。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "由於使用者已要求瀏覽器減少數據用量，因此未執行預先輸出。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "預先輸出的頁面嘗試啟動目前不支援的下載。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "由於瀏覽器在嘗試判斷目前記憶體用量時發生內部錯誤，因此未執行預先輸出。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "由於啟動中頁面的有效網址與一般網址不同 (例如新分頁或寄存應用程式)，因此無法執行預先輸出。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "由於網址的配置並非為 http: 或 https:，因此不符合預先輸出的資格。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "由於系統重新導向至配置並非為 http: 或 https: 的網址，因預先輸出導覽失敗。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "預先輸出導覽要求 HTTP 驗證，但目前不支援。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "由於此裝置沒有足夠的總系統記憶體支援預先輸出，因此無法執行預先輸出。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "預先輸出的頁面已導覽至另一個網址，但目前不支援。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "由於啟動中頁面上正在執行的預先輸出過多，因此未執行預先輸出。請移除其他推測規則，才能執行其他預先輸出。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "由於瀏覽器超出預先輸出記憶體限制，因此未執行預先輸出。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "由於瀏覽器面臨極大的記憶體壓力，因此系統已卸載預先輸出的頁面。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "由於瀏覽器面臨極大的記憶體壓力，因此未執行預先輸出。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "預先輸出的頁面包含混合內容。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "預先輸出的頁面使用目前不支援的 JavaScript API。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "由於 HTTP 回應狀態碼不是 2xx，因預先輸出導覽失敗。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "《內容安全政策》已封鎖預先輸出的導覽。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "預先輸出導覽發生網絡錯誤。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "由於使用者已在瀏覽器設定停用預先載入功能，因此系統未執行預先輸出。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "啟動中的頁面已當機。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "啟動中的頁面已終止。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "預先輸出的頁面已當機。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "預先輸出的頁面已終止。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "預先輸出的頁面本身已導覽至跨來源的同網站網址，但目的地回應不含合適的 Supports-Loading-Mode 標題。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "預先輸出的頁面已導覽至跨來源的同網站網址，不過目的地回應不含合適的 Supports-Loading-Mode 標題。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "由於預先輸出頁面導向的網址已重新導向至跨來源的同網站網址，但目的地回應不含合適的 Supports-Loading-Mode 標題，因預先輸出導覽失敗。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "預先輸出的頁面已導覽至重新導向至跨來源的同網站網址，不過目的地回應不含合適的 Supports-Loading-Mode 標題。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "由於 SSL 憑證無效，因預先輸出導覽失敗。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "啟動中的頁面已長期在背景執行，因此系統已捨棄預先輸出的頁面。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "由於啟動中頁面已在背景執行，因此系統已捨棄預先輸出的頁面。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "預先輸出導覽正在變更用戶代理程式。"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "選取元素以瞭解詳情"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "狀態"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "由於 |kPrefetchNewLimits| 已啟用，因此系統已捨棄現有的預先擷取內容，才能預先擷取較新的內容"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "預先擷取已重新導向，不過重新導向網址不符合預先擷取的資格。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "預先擷取已重新導向，但該操作發生問題。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "由於系統不支援回應的 Content-Type 標題，因此無法預先擷取。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "由於發生網絡錯誤，因此無法預先擷取。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "由於 HTTP 回應狀態碼不是 2xx，因此無法預先擷取。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "由於啟動中頁面上正在執行的預先擷取過多，因此無法執行預先擷取。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "先前對來源執行預先擷取時，系統傳回 HTTP 503 回應和 Retry-After 標題，表示目前仍在該標題定義的時限內。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "由於該來源已有註冊的 Service Worker 或跨網站 Cookie，但系統仍將預先擷取的資源放上網絡且未使用，目的是掩飾使用者先前與該來源的某些關係，因此無法預先擷取網址。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "由於在預先擷取和使用之間已過了太長時間，因此系統已捨棄預先擷取的內容。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "由於「慳電模式」設定已啟用，因此無法執行預先擷取。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "由於瀏覽器處於無痕或訪客模式，因此無法執行預先擷取。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "由於作業系統處於數據節省模式，因此系統沒有執行預先擷取。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "由於網址在預設網絡中設定為會使用 Proxy 伺服器，因此不符合預先擷取的資格。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "由於網址的主機並不獨特 (例如，非公開的可路由 IP 位址或並非由註冊資料庫控制的主機名稱)，但是預先擷取需要以 Proxy 處理，因此該網址不符合預先擷取的資格。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "由於網址使用非預設的儲存空間分割，因此不符合預先擷取的資格。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "由於預先載入已停用，因此系統沒有執行預先擷取。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "由於無法設定預設網絡為相同網站的跨來源預先擷取要求使用預先擷取 Proxy，因此系統無法預先擷取網址。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "由於網址的配置並非為 https:，因此不符合預先擷取的資格。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "由於網址屬跨網站性質，不過使用者有該來源的 Cookie，因此網址不符合預先擷取的資格。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "由於該來源已有註冊的 Service Worker，但系統目前不支援，因此無法預先擷取網址。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "由於預先擷取是跨網站性質，而且預先擷取進行時系統曾為該網址新增 Cookie，因此系統沒有使用該預先擷取，而預先擷取的回應現已過期。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "您的互聯網服務供應商或網絡管理員已封鎖預先擷取。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "嘗試設定預先擷取 Proxy 的連線時發生網絡錯誤。"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "按一下即可在元素面板中顯示"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "此頁面已使用 {PH1} 項預先擷取的資源"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "用於此網頁的預先載入功能"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "這是預先輸出的頁面"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "以圖像顯示使用狀況"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "由於頁面已在背景中預先輸出，因此系統無法擷取覆蓋率資料。"
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "全部"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "由於頁面內容來自向前/返回快取，因此無法擷取覆蓋率資料。"
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "選取覆蓋率仔細度：「按每個函數覆蓋」的用量較低，而「按每個區塊覆蓋」的用量則非常高。"
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "按每個函數覆蓋"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "按一下重新載入按鈕 {PH1} 即可重新載入並取得覆蓋率。"
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "到目前為止，已使用 {PH1}，共 {PH2} ({PH3}%)，未使用 {PH4}。"
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "儀表覆蓋率"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "重新載入網頁"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "顯示覆蓋率"
@@ -5670,7 +5667,7 @@
     "message": "已複製到剪貼簿"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "複製所有 CSS 變更"
+    "message": "複製 CSS 變更內容"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS 屬性名稱：{PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "已啟用硬件並發覆寫功能"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "navigator.hardwareConcurrency 嘅數值"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "沒有節流"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "成功"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "此 PST 核發機構的金鑰無法使用，核發機構可能要透過 Chrome 註冊程序完成註冊。"
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "操作由於不明原因失敗。"
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "停止記錄堆分配"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "隱藏咗 CDP 指令編輯器"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "顯示緊 CDP 指令編輯器"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "全部清除"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "篩選器"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "隱藏 CDP 指令編輯器"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "方法"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "工作階段"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "顯示 CDP 指令編輯器"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "目標"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "執行緒"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "網絡"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH2}時顯示的{PH1}"

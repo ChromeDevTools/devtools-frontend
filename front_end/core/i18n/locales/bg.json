@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Отделяне в самостоятелен прозорец"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Страница: Не е избрано нищо"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Страница: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Оригинален"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Възможността за задействане на window.confirm от вложени рамки от външни източници е оттеглена и ще бъде премахната в бъдеще."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "Събития за промяна на DOM, включително DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument и DOMCharacterDataModified, са оттеглени (https://w3c.github.io/uievents/#legacy-event-types) и ще бъдат премахнати. Вместо това използвайте MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Поддръжката на данни: URL адресите в елемента <use> в SVG са оттеглени и ще бъдат премахнати в бъдеще."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Възможността за отмяна на правилото за външни източници чрез задаване на document.domain е оттеглена и ще бъде деактивирана по подразбиране. За да продължите да използвате тази функция, откажете се от групите агенти с ключ източник, като изпратите заглавка Origin-Agent-Cluster: ?0 заедно с HTTP отговора за документа и рамките. За повече подробности вижте https://developer.chrome.com/blog/immutable-document-domain/."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Приложният програмен интерфейс Event.path е оттеглен и ще бъде премахнат. Вместо него използвайте Event.composedPath()."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Заглавката Expect-CT вече не се поддържа. Chrome изисква Прозрачност на сертификатите за всички публично надеждни сертификати, издадени след 30 април 2018 г."
+    "message": "Заглавката Expect-CT е оттеглена и ще бъде премахната. Chrome изисква Прозрачност на сертификатите за всички публично надеждни сертификати, издадени след 30 април 2018 г."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() и watchPosition() вече не работят за незащитени източници. За да използвате тази функция, препоръчваме да прехвърлите приложението си към защитен източник, като например HTTPS. За повече подробности вижте https://goo.gle/chrome-insecure-origins."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API за управление на идентификационни данни за федерирано удостоверяване"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "API за потребителска информация във Federated Credential Management"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML атрибут: автоматично довършване"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Предотвратяване на показването на смесено съдържание"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Намаляване на низовете на потребителския агент"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Режим за съвместимост на документа"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Да"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Предварително извличане и предварително рендериране"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Тази страница"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Кликнете върху отчет, за да се покаже основният му текст"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Приложение"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Кеш"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Хранилище за кеш"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Страниците, които са заявили AppBanner, понастоящем не отговарят на условията за кеша за назад/напред."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Кешът за назад/напред е деактивиран поради заявка за проверка на връзката."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Кешът за назад/напред е деактивиран чрез флагове. За да го активирате локално на това устройство, отворете chrome://flags/#back-forward-cache."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Страниците, които използват WebUSB API, не отговарят на условията за кеша за назад/напред."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Кешът за назад/напред е деактивиран, защото „бисквитките“ са деактивирани на страница, която използва Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Страниците, които използват worker или worklet само за себе си, понастоящем не отговарят на условията за кеша за назад/напред."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Вътрешна грешка."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Кешът за назад/напред е деактивиран, защото в отговор на мрежова заявка за JavaScript  бе получен ресурс със заглавка Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Кешът за назад/напред е деактивиран поради заявка за проверка на връзката."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Показване на още # рамка}other{Показване на още # рамки}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Име на групата"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Устойчивост"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Валидност"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Непрозрачно"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "От трета страна"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Зарежда се…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Не"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Няма"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(непрозрачно)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Източник"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Постоянно"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Квота"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Сайт от първо ниво"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Да"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Да, тъй като родителската верига съдържа източник на трета страна"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Да, защото ключът за хранилището е непрозрачен"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Да, защото източникът е извън сайта от първо ниво"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Да, защото сайтът от първо ниво е непрозрачен"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Всички съхранени означения за частно състояние, налични в този екземпляр на браузъра."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Означения за частно състояние"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Филтриране по избрания набор от правила"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Настройки за разширенията"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Предварителното зареждане е деактивирано заради режима „Икономия на данни“ на операционната система."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Предварителното зареждане е активирано принудително, тъй като инструментариумът DevTools е отворен. Когато той е затворен, предварителното рендериране ще бъде деактивирано, тъй като тази сесия на браузъра е част от изолирана група, която служи за сравняване на ефективността."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Предварителното зареждане е деактивирано заради потребителски настройки или разширение. Отворете {PH1}, за да научите повече, или {PH2}, за да деактивирате разширението."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Предварителното рендериране е активирано принудително, тъй като инструментариумът DevTools е отворен. Когато той е затворен, предварителното рендериране ще бъде деактивирано, тъй като тази сесия на браузъра е част от изолирана група, която служи за сравняване на ефективността."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Предварителното зареждане бе деактивирано, но вече е активирано принудително"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Предварителното зареждане е деактивирано"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Предварителното рендериране бе деактивирано, но вече е активирано принудително"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Предварителното зареждане не бе успешно."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Състояние"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Предварително рендерираната страница бе активирана по време на навигиране в основната рамка на първоначалната страница."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Предварителното рендериране не бе използвано, защото флаговете за тестова среда или правилата за разрешенията на първоначалната страница не бяха съвместими с тези на предварително рендерираната страница."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Предварителното рендериране не бе използвано, защото по време на активирането бяха изчислени различни параметри за навигация (напр. HTTP заглавки) от тези в първоначалната заявка за навигация при предварително рендериране."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Предварително рендерираната страница поиска да извежда звук, което понастоящем не се поддържа."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Предварителното рендериране не бе изпълнено, защото потребителят е поискал браузърът да изразходва по-малко батерия."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Зареждането на част от ресурсите бе блокирано."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Навигацията при предварително рендериране изискваше сертификат за HTTP клиент."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Предварителното рендериране не бе успешно, защото бе насочено към URL адрес от друг сайт."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Зареждането на предварително рендерираната страница доведе до отваряне на URL адрес от друг сайт."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Навигацията при предварително рендериране не бе успешна, защото предварително рендерираният URL адрес доведе до пренасочване към URL адрес от друг сайт."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Зареждането на предварително рендерираната страница доведе до отваряне на URL адрес, който пренасочи към URL адрес от друг сайт."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Предварителното рендериране не бе изпълнено, защото потребителят е поискал браузърът да използва по-малко данни."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Предварително рендерираната страница опита да стартира изтегляне. Понастоящем това не се поддържа."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Предварителното рендериране не бе изпълнено, защото в браузъра възникна вътрешна грешка при опита за определяне на текущата използвана памет."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Първоначалната страница не може да бъде предварително рендерирана, тъй като действителният URL адрес за нея е различен от нормалния ѝ. (Например новият раздел в браузъра или хостваните приложения.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL адресът не отговаряше на условията за предварително рендериране, защото схемата му е различна от http: или https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Навигацията при предварително рендериране не бе успешна, защото доведе до пренасочване към URL адрес, чиято схема не бе http: или https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Навигацията при предварително рендериране изискваше удостоверяване с HTTP, което понастоящем не се поддържа."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Предварителното рендериране не бе изпълнено, защото устройството няма достатъчно обща системна памет за целта."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Зареждането на предварително рендерираната страница доведе до отваряне на друг URL адрес, което понастоящем не се поддържа."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Предварителното рендериране не бе изпълнено, защото за страницата, поискала това, вече се изпълняват твърде много предварителни рендерирания. Премахнете другите спекулативни правила, за да имате възможност да изпълните допълнителни предварителни рендерирания."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Предварителното рендериране не бе изпълнено, защото браузърът надхвърли ограничението за паметта за този процес."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Предварително рендерираната страница бе премахната, защото браузърът не разполагаше с достатъчно памет."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Предварителното рендериране не бе изпълнено, защото браузърът не разполагаше с достатъчно памет."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "В предварително рендерираната страница имаше смесено съдържание."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Предварително рендерираната страница използва забранен API на JavaScript, който понастоящем не се поддържа."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Предварителното рендериране не бе успешно поради HTTP отговор с код на състоянието, различен от 2xx."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Навигацията при предварително рендериране бе блокирана от правило за сигурност на съдържанието."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "По време на навигацията при предварително рендериране възникна грешка в мрежата."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Предварителното рендериране не бе изпълнено, защото потребителят е деактивирал съответната функция в настройките на браузъра си."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Първоначалната страница претърпя срив."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Първоначалната страница бе затворена."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Предварително рендерираната страница претърпя срив."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Предварителното рендериране на страницата бе прекратено."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Зареждането на предварително рендерираната страница доведе до отваряне на URL адрес от външен източник за същия сайт. Отговорът на местоназначението обаче не включваше подходящата заглавка Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Зареждането на предварително рендерираната страница доведе до отваряне на URL адрес от външен източник за същия сайт. Отговорът на местоназначението обаче не включваше подходящата заглавка Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Навигацията при предварително рендериране не бе успешна, защото предварително рендерираният URL адрес доведе до пренасочване към URL адрес от външен източник за същия сайт. Отговорът на местоназначението обаче не включваше подходящата заглавка Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Зареждането на предварително рендерираната страница доведе до отваряне на URL адрес, който пренасочи към URL адрес от външен източник за същия сайт. Отговорът на местоназначението обаче не включваше подходящата заглавка Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Предварителното рендериране не бе успешно поради невалиден SSL сертификат."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Първоначалната страница бе преместена на заден план за дълъг период от време, затова предварително рендерираната страница бе отхвърлена."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Първоначалната страница бе преместена на заден план, затова предварително рендерираната страница бе отхвърлена."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "В навигацията при предварително рендериране възникна промяна на потребителския агент."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "За повече подробности изберете елемент"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Състояние"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Предварително извлечените данни бяха отхвърлени заради по-нови, защото настройката |kPrefetchNewLimits| е активирана"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Предварителното извличане бе пренасочено, но URL адресът за пренасочване не отговаря на условията за предварително извличане."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Предварителното извличане бе пренасочено, но възникна проблем с пренасочването."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Предварителното извличане не бе успешно, защото заглавката Content-Type на отговора не се поддържа."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Предварителното извличане не бе успешно поради грешка в мрежата."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Предварителното извличане не бе успешно поради HTTP отговор с код на състоянието, различен от 2xx."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Предварителното извличане не бе изпълнено, защото за страницата, поискала това, вече се изпълняват твърде много предварителни извличания."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "За предишно предварително извличане за източника е получен HTTP отговор 503 със заглавка Retry-After, времето за която още не е изтекло."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "URL адресът не отговаряше на условията за предварително извличане, защото за съответния източник има регистриран service worker или „бисквитки“ от външен сайт, но въпреки това предварително извлечените данни са поставени в мрежата, без да се използват, за да се прикрие, че потребителят е имал предишна връзка с източника."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Изминало е твърде много време между предварителното извличане на данните и използването им, така че те бяха отхвърлени."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Предварителното извличане не бе изпълнено, защото настройката за режима за запазване на батерията е активирана."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Предварителното извличане не бе изпълнено, защото браузърът е в режим „инкогнито“ или режим на гост."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Предварителното извличане не бе изпълнено, защото операционната система е в режим за икономия на данни."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "URL адресът не отговаря на условията за предварително извличане, защото е конфигуриран да използва прокси сървър в стандартния контекст на мрежата."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL адресът не отговаряше на условията за предварително извличане, защото хостът му не е уникален (напр. IP адрес, който не е публично маршрутизиращ се, или име на хост, което не се контролира чрез системния регистър), а предварителното извличане трябва да се осъществи през прокси сървър."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URL адресът не отговаряше на условията за предварително извличане, защото използва дял от хранилището, различен от стандартния."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Предварителното извличане не бе изпълнено, защото предварителното зареждане е деактивирано."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "URL адресът не отговаряше на условията за предварително извличане, защото стандартният контекст на мрежата не може да бъде конфигуриран така, че прокси сървърът за предварително извличане да се използва за заявки, подадени от същия сайт с цел предварително извличане от външен източник."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URL адресът не отговаряше на условията за предварително извличане, защото схемата му е различна от https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URL адресът не отговаряше на условията за предварително извличане, защото е от външен сайт, а потребителят има „бисквитки“ за съответния източник."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "URL адресът не отговаряше на условията за предварително извличане, защото за съответния източник има регистриран service worker, който понастоящем не се поддържа."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Предварителното извличане не бе използвано, защото е извършено от външен сайт, а „бисквитките“ за този URL адрес са добавени, докато е било в ход, така че предварително извлеченият отговор вече не е актуален."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Предварителното извличане бе блокирано от доставчика ви на интернет услуги или системния ви администратор."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Възникна грешка в мрежата при опита за настройване на връзка с прокси сървъра за предварително извличане."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Кликнете за показване в панела за елементи"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "Предварително извлечени ресурси, използвани за тази страница: {PH1}"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "За тази страница е използвано предварително зареждане"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Тази страница бе рендерирана предварително."
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Визуализация на употребата"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Информацията за покритието не бе записана, тъй като страницата е предварително рендерирана на заден план."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Всички"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Информацията за покритието не бе записана, тъй като страницата е показана от кеша за назад/напред."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Изберете детайлност на данните за обхвата: опцията „На ниво функция“ използва по-малко ресурси, а „На ниво блок“ по-ресурсоемка."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "На ниво функция"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Кликнете върху бутона {PH1}, за да презаредите страницата и да запишете обхвата."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "Използвано досега: {PH1} от {PH2} ({PH3}%), неизползвано: {PH4}."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Инструментация на обхвата"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Презареждане на страницата"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Показване на инструмента за обхвата"
@@ -5670,7 +5667,7 @@
     "message": "Копирано в буферната памет"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Копиране на всички промени в CSS"
+    "message": "Копиране на промените в CSS"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Име на свойството в CSS: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Активирана е заменяща настройка за капацитета за многозадачност на хардуера"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Стойност на navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Без ограничаване на мрежата"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Успех"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Ключовете за този издател на означения за частно състояние (PST) не са налице. Може да се наложи издателят да бъде регистриран чрез съответния процес на Chrome."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Операцията не бе успешна по неизвестна причина."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Спиране на записването на разпределената памет"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "Редакторът за команди за CDP е скрит"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "Редакторът за команди за CDP е показан"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Изчистване на всички"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Филтър"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "Скриване на редактора за команди за CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Метод"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Сесия"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "Показване на редактора за команди за CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Цел"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Нишка"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Мрежа"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} – {PH2}"

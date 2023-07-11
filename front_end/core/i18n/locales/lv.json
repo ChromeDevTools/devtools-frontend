@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Atcelt dokošanu atsevišķā logā"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Lapa: nav atlasīta"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Lapa: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Autora"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Funkcijas window.confirm aktivizēšana no citas izcelsmes iframe ietvariem vairs netiek atbalstīta un nākotnē tiks noņemta."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOM mutācijas notikumi, tostarp DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument un DOMCharacterDataModified, ir novecojuši (https://w3c.github.io/uievents/#legacy-event-types) un tiks noņemti. To vietā izmantojiet MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Datu atbalsts: SVG elementā <use> vairs netiek atbalstīti vietrāži URL, un nākotnē tie tiks noņemti."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Tās pašas izcelsmes politikas ierobežojumu noņemšana, iestatot funkciju document.domain, vairs netiek izmantota, un šī iespēja tiks atspējota pēc noklusējuma. Lai turpinātu izmantot šo funkciju, lūdzu, atsakieties no aģentu grupēšanas pēc izcelsmes, nosūtot galveni Origin-Agent-Cluster: ?0 kopā ar HTTP atbildi dokumentam un ietvariem. Plašāku informāciju skatiet vietnē https://developer.chrome.com/blog/immutable-document-domain/."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Saskarne Event.path vairs netiek izmantota un tiks noņemta. Tās vietā, lūdzu, izmantojiet metodi Event.composedPath()."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Galvene Expect-CT vairs netiek atbalstīta. Pārlūkā Chrome visiem sertifikātiem, kas izdoti pēc 2018. gada 30. aprīļa un publiski atzīti par uzticamiem, ir jāizmanto sertifikāta pārredzamība."
+    "message": "Galvene Expect-CT vairs netiek atbalstīta un tiks noņemta. Pārlūkā Chrome visiem sertifikātiem, kas izdoti pēc 2018. gada 30. aprīļa un publiski atzīti par uzticamiem, ir jāizmanto sertifikāta pārredzamība."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "Metodes getCurrentPosition() un watchPosition() vairs nedarbojas nedrošos avotos. Lai izmantotu šo funkciju, apsveriet iespēju lietojumprogrammā izmantot drošu avotu, piemēram, HTTPS. Plašāku informāciju skatiet vietnē https://goo.gle/chrome-insecure-origins."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federatīvas akreditācijas datu pārvaldības lietotāja informācijas API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML atribūts: automātiskā pabeigšana"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Jaukta satura novēršana"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Lietotāja aģenta virknes samazināšana"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Dokumentu saderības režīms"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Jā"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Priekšienešana un iepriekšēja atveidošana"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Šī lapa"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Noklikšķiniet uz jebkura pārskata, lai skatītu tā saturu"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Lietojumprogramma"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Kešatmiņa"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Kešatmiņas krātuve"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Lapas, kurās tiek pieprasīts AppBanner, pašlaik nav piemērotas pilnīgai saglabāšanai kešatmiņā."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota, jo tika saņemts saites darbības pārbaudes pieprasījums."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Pilnīgu saglabāšanu kešatmiņā atspējoja karodziņu iestatījumi. Lai šajā ierīcē to iespējotu lokāli, atveriet lapu chrome://flags/#back-forward-cache."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Lapas, kurās tiek izmantota saskarne WebUSB API, pašlaik nav piemērotas pilnīgai saglabāšanai kešatmiņā."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota, jo lapā, kurā tiek izmantota direktīva Cache-Control: no-store, ir atspējoti sīkfaili."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Lapas, kurās tiek izmantota saskarne DedicatedWorker vai Worklet, pašlaik nav piemērotas pilnīgai saglabāšanai kešatmiņā."
@@ -3380,8 +3374,11 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Iekšēja kļūda."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota, jo kāds JavaScript tīkla pieprasījums saņēma resursu ar galveni Cache-Control: no-store."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
-    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota, jo tika saņemts saites darbības pārbaudes pieprasījums."
+    "message": "Pilnīga saglabāšana kešatmiņā ir atspējota, jo tika saņemts saites darbības pārbaudes ziņojuma sūtīšanas pieprasījums."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "Lapas, kurās tiek izmantota tastatūras bloķēšana, pašlaik nav piemērotas pilnīgai saglabāšanai kešatmiņā."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Rādīt vēl # ietvaru}zero{Rādīt vēl # ietvarus}one{Rādīt vēl # ietvaru}other{Rādīt vēl # ietvarus}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Kopas nosaukums"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Noturība"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Derīguma termiņš"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Ir nepārredzama"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Ir trešā puse"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Notiek ielāde…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Nē"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Nav"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(nepārredzama)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Avots"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Ir pastāvīga"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Kvota"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Augšējā līmeņa vietne"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Jā"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Jā, jo priekšteču ķēdē ir ietverts trešās puses avots"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Jā, jo krātuves atslēga ir nepārredzama"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Jā, jo avots ir ārpus augšējā līmeņa vietnes"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Jā, jo augšējā līmeņa vietne ir nepārredzama"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Visas saglabātās privāta stāvokļa pilnvaras, kas ir pieejamas šajā pārlūka instancē."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Privāta stāvokļa pilnvaras"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Filtrēt pēc atlasītās kārtulu kopas"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Paplašinājumu iestatījumi"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Iepriekšēja ielāde ir atspējota operētājsistēmas datu lietojuma samazinātāja režīma dēļ."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Iepriekšēja ielāde ir piespiedu kārtā iespējota, jo ir atvērti izstrādātāja rīki. Aizverot izstrādātāja rīkus, iepriekšēja atveidošana tiks atspējota, jo šī pārlūkprogrammas sesija ir ietverta aizturēšanas grupā, kas tiek izmantota veiktspējas salīdzinājumiem."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Iepriekšēja ielāde ir atspējota lietotāja iestatījumu vai paplašinājuma dēļ. Pārejiet uz vietni {PH1}, lai uzzinātu vairāk, vai {PH2}, lai atspējotu paplašinājumu."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Iepriekšēja atveidošana ir piespiedu kārtā iespējota, jo ir atvērti izstrādātāja rīki. Aizverot izstrādātāja rīkus, iepriekšēja atveidošana tiks atspējota, jo šī pārlūkprogrammas sesija ir ietverta aizturēšanas grupā, kas tiek izmantota veiktspējas salīdzinājumiem."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Iepriekšēja ielāde bija atspējota, taču tagad ir piespiedu kārtā iespējota"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Iepriekšēja ielāde ir atspējota"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Iepriekšēja atveidošana bija atspējota, taču tagad ir piespiedu kārtā iespējota"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Iepriekšēja ielāde neizdevās."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Statuss"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Iepriekš atveidotā lapa tika aktivizēta, sākot navigāciju lapas galvenajā ietvarā."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Iepriekšēja atveidošana netika izmantota, jo aktivizācijas lapas smilškastes karodziņi vai atļauju politika nebija saderīga ar iepriekšējas atveidošanas lapas karodziņiem vai politikām."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Iepriekšēja atveidošana netika izmantota, jo aktivizācijas laikā aprēķinātie navigācijas parametri (piem., HTTP galvenes) atšķīrās no iepriekšējas atveidošanas navigācijas sākotnējā pieprasījuma laikā aprēķinātajiem parametriem."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Iepriekš atveidotajā lapā tika pieprasīta audio izvade, kas pašlaik netiek atbalstīta."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Iepriekšēja atveidošana netika veikta, jo lietotājs pieprasīja, lai pārlūks izmantotu mazāk akumulatora jaudas."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Daļa resursu ielādes tika bloķēta."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Iepriekšējas atveidošanas navigācijai bija nepieciešams HTTP klienta sertifikāts."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Iepriekšējas atveidošanas navigācija neizdevās, jo tās mērķis bija citas vietnes URL."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Iepriekš atveidotajā lapā tika veikta navigācija uz citas vietnes URL."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Iepriekšējas atveidošanas navigācija neizdevās, jo iepriekš atveidotais URL novirzīja uz citas vietnes URL."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Iepriekš atveidotajā lapā tika pāriets uz vietrādi URL, kurš novirzīja uz citas vietnes URL."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Iepriekšēja atveidošana netika veikta, jo lietotājs pieprasīja, lai pārlūks izmantotu mazāk datu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Iepriekš atveidotajā lapā tika mēģināts sākt lejupielādi, kas pašlaik netiek atbalstīta."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Iepriekšēja atveidošana netika veikta, jo, mēģinot noteikt pašreizējo atmiņas lietojumu, pārlūkā radās iekšēja kļūda."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Aktivizācijas lapā nevar veikt iepriekšēju atveidošanu, jo tās faktiskais URL atšķiras no parastā URL. (Piemēram, jaunas cilnes lapa vai mitinātas lietotnes.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "Vietrādi URL nevarēja iepriekš atveidot, jo tā shēma nav “http:” vai “https:”."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Iepriekšējas atveidošanas navigācija neizdevās, jo tā novirzīja uz URL, kura shēma nav “http:” vai “https:”."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Iepriekšējas atveidošanas navigācijai bija nepieciešama HTTP autentifikācija, kas pašlaik netiek atbalstīta."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Iepriekšēja atveidošana netika veikta, jo šai ierīcei nav pietiekami daudz sistēmas atmiņas, lai atbalstītu iepriekšēju atveidošanu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Iepriekš atveidotajā lapā tika veikta navigācija uz citu URL, kas pašlaik netiek atbalstīts."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Iepriekšēja atveidošana netika veikta, jo aktivizācijas lapā jau notiek pārāk daudz iepriekšējas atveidošanas darbību. Lai iespējotu turpmāku iepriekšējo atveidošanu, noņemiet citas spekulācijas kārtulas."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Iepriekšēja atveidošana netika veikta, jo pārlūkā tika pārsniegts iepriekšējas atveidošanas atmiņas ierobežojums."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Iepriekš atveidotās lapas ielāde tika atcelta, jo pārlūkā bija kritiski mazs atmiņas apjoms."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Iepriekšēja atveidošana netika veikta, jo pārlūkā bija kritiski mazs atmiņas apjoms."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Iepriekšējas atveidošanas lapā bija ietverts jaukts saturs."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Iepriekš atveidotajā lapā tika izmantota neatļauta JavaScript API, kas pašlaik netiek atbalstīta."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Iepriekšējas atveidošanas navigācija neizdevās, jo saņemtais HTTP atbildes statusa kods nav 2xx kods."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Iepriekšējas atveidošanas navigāciju bloķēja satura drošības politika."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Iepriekšējas atveidošanas navigācijas laikā radās tīkla kļūda."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Iepriekšēja atveidošana netika veikta, jo lietotājs pārlūka iestatījumos atspējoja iepriekšēju ielādi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Aktivizācijas lapa avarēja."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Aktivizācijas lapas darbība tika pārtraukta."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Iepriekš atveidotā lapa avarēja."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Iepriekš atveidotās lapas darbība tika pārtraukta."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Iepriekš atveidotajā lapā tika veikta navigācija uz citas izcelsmes tās pašas vietnes URL, bet galamērķa atbildē nebija iekļauta atbilstošā galvene “Supports-Loading-Mode”."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Iepriekš atveidotajā lapā tika veikta navigācija uz citas izcelsmes tās pašas vietnes URL, bet galamērķa atbildē nebija iekļauta atbilstošā galvene “Supports-Loading-Mode”."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Iepriekšējas atveidošanas navigācija neizdevās, jo iepriekš atveidotais URL novirzīja uz citas izcelsmes tās pašas vietnes URL, bet galamērķa atbildē nebija iekļauta atbilstošā galvene “Supports-Loading-Mode”."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Iepriekš atveidotajā lapā tika veikta navigācija uz URL, kurš novirzīja uz citas izcelsmes tās pašas vietnes URL, bet galamērķa atbildē nebija iekļauta atbilstošā galvene “Supports-Loading-Mode”."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Iepriekšējas atveidošanas navigācija neizdevās nederīga SSL sertifikāta dēļ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Aktivizācijas lapa ilgi darbojās fonā, tāpēc iepriekš atveidotā lapa tika atmesta."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Aktivizācijas lapa darbojās fonā, tāpēc iepriekš atveidotā lapa tika atmesta."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Iepriekšējas atveidošanas navigācijā tika mainīts lietotāja aģents."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Lai skatītu plašāku informāciju, atlasiet elementu"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Statuss"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Priekšienešana tika atmesta jaunākas priekšieneses dēļ, jo ir iespējots |kPrefetchNewLimits|."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Priekšienešana tika novirzīta, taču novirzīšanas vietrādi URL nevar izmantot priekšienešanai."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Priekšienešana tika novirzīta, taču radās ar novirzīšanu saistīta problēma."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Priekšienešana neizdevās, jo atbildes galvene “Content-Type” netika atbalstīta."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Priekšienešana neizdevās tīkla kļūdas dēļ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Priekšienešana neizdevās, jo saņemtais HTTP atbildes statusa kods nav 2xx kods."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Priekšienešana netika veikta, jo aktivizācijas lapai jau ir pārāk daudz priekšienešanas gadījumu."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Iepriekšēja priekšienešana avotā saņēma HTTP 503 atbildi ar galveni “Retry-After”, kas vēl ir derīga."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "Vietrādi URL nevarēja priekšienest, jo šim avotam bija reģistrēts pakalpojumu skripts vai starpvietņu sīkfaili, taču priekšienešana tik un tā tika aktivizēta tīklā, bet netika izmantota, lai maskētu to, ka lietotājam iepriekš ir bijusi saistība ar avotu."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Starp priekšienešanu un izmantošanu ir pagājis pārāk daudz laika, tādēļ priekšienešana tika atmesta."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Priekšienešana netika veikta, jo bija iespējots akumulatora enerģijas taupīšanas režīms."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Priekšienešana netika veikta, jo pārlūkā darbojas inkognito vai viesa režīms."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Priekšienešana netika veikta, jo operētājsistēmā darbojas datu lietojuma samazinātāja režīms."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "Vietrādi URL nevarēja priekšienest, jo noklusējuma tīkla kontekstā tas ir konfigurēts starpniekservera izmantošanai."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "Vietrādi URL nevarēja priekšienest, jo tā saimniekdators nebija unikāls (piem., IP adrese, ko nevar maršrutēt publiski, vai saimniekdatora nosaukums, kas netiek kontrolēts reģistrā), taču priekšienešanai vajag izmantot starpniekserveri."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "Vietrādi URL nevarēja priekšienest, jo tas izmanto krātuves nodalījumu, kas nav noklusējuma nodalījums."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Priekšienešana netika veikta, jo iepriekšēja ielāde bija atspējota."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "Vietrādi URL nevarēja priekšienest, jo noklusējuma tīkla kontekstu nevar konfigurēt priekšienešanas starpniekservera izmantošanai tās pašas vietnes citas izcelsmes priekšienešanas pieprasījumam."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "Vietrādi URL nevarēja priekšienest, jo tā shēma nav “https:”."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "Vietrādi URL nevarēja priekšienest, jo tas ir starpvietņu URL, taču lietotājam bija šī avota sīkfaili."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "Vietrādi URL nevarēja priekšienest, jo šim avotam bija reģistrēts pakalpojumu skripts, kas pašlaik netiek atbalstīts."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Priekšienešana netika izmantota, jo tā bija starpvietņu priekšienešana, un priekšienešanas laikā šim URL tika pievienoti sīkfaili, tādēļ priekšienestā atbilde tagad ir novecojusi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Priekšienešanu bloķēja jūsu interneta pakalpojumu sniedzējs vai tīkla administrators."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Iestatot savienojumu ar priekšienešanas starpniekserveri, radās tīkla kļūda."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Noklikšķiniet, lai skatītu panelī Elementi"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "Šai lapai tiek izmantoti {PH1} priekšienests(-i) resursi"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Šajā lapā tiek izmantota iepriekšēja ielāde"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Šī lapa tika iepriekš atveidota."
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Lietojuma vizualizācija"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Nevarēja tvert pārklājuma informāciju, jo lapa tika iepriekš atveidota fonā."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Visi"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Nevarēja tvert pārklājuma informāciju, jo lapa tika parādīta no pilnīgi kešatmiņā saglabātas versijas."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Izvēlieties lietojuma noteikšanas precizitāti: funkcijas līmeņa precizitātei ir mazs virstēriņš, bet blokkoda līmeņa precizitātei ir ievērojams virstēriņš."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Funkcijas līmenī"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Noklikšķiniet uz atkārtotas ielādes pogas {PH1}, lai ielādētu atkārtoti un iegūtu pārklājumu."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "Pagaidām izmantots: {PH1} no {PH2} ({PH3}%), nav izmantots: {PH4}."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Instrumentēt aptvērumu"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Atkārtoti ielādēt lapu"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Rādīt rīku Coverage"
@@ -5670,7 +5667,7 @@
     "message": "Izmaiņas kopētas starpliktuvē"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopējiet visas CSS izmaiņas."
+    "message": "Kopēt CSS izmaiņas"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS īpašuma nosaukums: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Aparatūras laiksakritības ignorēšana ir iespējota"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Rekvizīta navigator.hardwareConcurrency vērtība"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Bez ierobežošanas"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Sekmīgi pabeigts"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Šī PST izsniedzēja atslēgas nav pieejamas. Iespējams, izsniedzējam ir jābūt reģistrētam, izmantojot Chrome reģistrācijas procesu."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Operācija neizdevās nezināma iemesla dēļ."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Pārtraukt grēdu piešķiršanas ierakstīšanu"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP komandu redaktors ir paslēpts"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP komandu redaktors tiek rādīts"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Notīrīt visu"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Filtrēt"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "Slēpt CDP komandu redaktoru"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Metode"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Sesija"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "Rādīt CDP komandu redaktoru"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Mērķis"
@@ -11702,9 +11711,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Pavediens"
   },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Tīkls"
-  },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1}, ātrums: {PH2}"
   },
@@ -13530,7 +13536,7 @@
     "message": "Nosaukums"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
-    "message": "(nepārredzams)"
+    "message": "(nepārredzama)"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Sesija"

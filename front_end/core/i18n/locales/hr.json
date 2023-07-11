@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Premjesti u zaseban prozor"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Stranica: nije odabrana"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Stranica: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Kao autorski"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Pokretanje API-ja window.confirm iz iframesa različitih izvora obustavlja se i ubuduće će biti uklonjeno."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "Obustavljeni su događaji mutacije DOM-a, uključujući DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument i DOMCharacterDataModified (https://w3c.github.io/uievents/#legacy-event-types) i uklonit će se. Umjesto toga koristite MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Podrška za podatke: URL-ovi u SVG elementu <use> obustavljeni su i ubuduće će se ukloniti."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Popuštanje pravila istog porijekla postavljanjem document.domain obustavlja se i onemogućit će se prema zadanim postavkama. Da biste nastavili koristiti ovu značajku, isključite grupe agenata s ključem porijekla slanjem zaglavlja Origin-Agent-Cluster: ?0 uz odgovor HTTP-a za dokument i okvire. Više pojedinosti pročitajte na vezi https://developer.chrome.com/blog/immutable-document-domain/."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path se obustavlja i uklonit će se. Umjesto toga koristite Event.composedPath()."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Zaglavlje Expect-CT više nije podržano. Chrome zahtijeva Transparentnost certifikata za sve javno pouzdane certifikate izdane nakon 30. travnja 2018."
+    "message": "Zaglavlje Expect-CT obustavlja se i uklonit će se. Chrome zahtijeva Transparentnost certifikata za sve javno pouzdane certifikate izdane nakon 30. travnja 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() i watchPosition() više ne rade na nesigurnim izvorima. Da biste upotrebljavali tu značajku, trebali biste razmisliti o prebacivanju svoje aplikacije na siguran izvor kao što je HTTPS. Više pojedinosti pročitajte na vezi https://goo.gle/chrome-insecure-origins."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML atribut: samodovršavanje"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Sprečavanje miješanog sadržaja"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Redukcija niza korisničkog agenta"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Način kompatibilnosti dokumenta"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Da"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Preddohvaćanje i predrenderiranje"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Ova stranica"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Kliknite na bilo koje izvješće da bi se prikazao njegov tekst"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Aplikacija"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Predmemorija"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Pohrana predmemorije"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Stranice koje su zatražile AppBanner trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Predmemoriranje cijele stranice onemogućeno je zbog keepalive zahtjeva."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Oznake onemogućuju predmemoriranje cijele stranice. Otvorite chrome://flags/#back-forward-cache da biste ga lokalno omogućili na ovom uređaju."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Stranice koje koriste WebUSB API ne ispunjavaju kriterije za predmemoriranje cijele stranice."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Predmemoriranje cijele stranice onemogućeno je jer su kolačići onemogućeni na stranici koja upotrebljava Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Stranice koje koriste predviđeni alat ili radni zadatak trenutačno ne ispunjavaju kriterije za predmemoriranje cijele stranice."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Interna pogreška."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Predmemoriranje cijele stranice onemogućeno je jer je neki zahtjev za JavaScript mrežu primio resurs sa zaglavljem Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Predmemoriranje cijele stranice onemogućeno je zbog keepalive zahtjeva."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Prikaži još # okvir}one{Prikaži još # okvir}few{Prikaži još # okvira}other{Prikaži još # okvira}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Naziv segmenta"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Trajnost"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Istek"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Neprozirno je"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Treća je strana"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Učitavanje…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Ne"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Ništa"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(neprozirno)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Izvor"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Trajna je"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Kvota"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Web-lokacija najviše razine"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Da"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Da, jer lanac nadređenih elemenata sadrži izvor treće strane"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Da, jer je ključ za pohranu neproziran"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Da, jer je izvor izvan web-lokacije najviše razine"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Da, jer je web-lokacija najviše razine neprozirna"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Sve pohranjene oznake koje su pohranjene u ovoj instanci preglednika."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Privatne oznake"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Filtriranje po odabranom skupu pravila"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Postavke proširenja"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Predučitavanje je onemogućeno zbog načina rada za uštedu podataka operativnog sustava."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Predučitavanje je prisilno omogućeno jer su razvojni alati otvoreni. Kad su razvojni alati zatvoreni, predrenderiranje će se onemogućiti jer je ova sesija preglednika dio grupe koja se koristi za usporedbu izvedbe."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Predučitavanje je onemogućeno zbog korisničkih postavki ili proširenja. Otvorite {PH1} da biste saznali više ili {PH2} da biste onemogućili proširenje."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Predrenderiranje je prisilno omogućeno jer su razvojni alati otvoreni. Kad su razvojni alati zatvoreni, predrenderiranje će se onemogućiti jer je ova sesija preglednika dio grupe koja se koristi za usporedbu izvedbe."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Predučitavanje je bilo onemogućeno, ali je sada prisilno omogućeno"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Predučitavanje je onemogućeno"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Predrenderiranje je bilo onemogućeno, ali je sada prisilno omogućeno"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Predučitavanje nije uspjelo."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Status"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Stranica za koju je izrađen predprikaz aktivirana je tijekom navigacije glavnog okvira stranice pokretanja."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Predprikaz nije upotrijebljen jer oznake u testnom okruženju ili pravila o dopuštenjima stranice za pokretanje nisu kompatibilni s pravilima stranice predprikaza."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Predprikaz nije upotrijebljen jer su tijekom vremena aktivacije izračunani različiti parametri navigacije (npr. HTTP zaglavlja) nego tijekom izvornog zahtjeva za kretanje predrenderiranjem."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Stranica za koju je izrađen predprikaz zahtijevala je audioizlaz, što trenutačno nije podržano."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Predprikaz nije izvršen jer je korisnik zatražio da preglednik troši manje baterije."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Dio resursa je blokiran."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Kretanje predprikaza zahtijevalo je HTTP certifikat klijenta."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Kretanje predprikaza nije uspjelo jer je ciljalo URL druge web-lokacije."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Stranica za koju je izrađen predprikaz otvorila je URL druge web-lokacije."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Kretanje predprikaza nije uspjelo jer je URL predprikaza preusmjeren na URL s druge web-lokacije."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Stranica za koju je izrađen predprikaz otvorila je URL koji je preusmjerio na URL s druge web-lokacije."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Predprikaz nije izvršen jer je korisnik zatražio da preglednik upotrebljava manje podataka."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Stranica za koju je izrađen predprikaz pokušala je pokrenuti preuzimanje, što trenutačno nije podržano."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Predprikaz nije izvršen jer je preglednik naišao na internu pogrešku pri pokušaju određivanja trenutačne upotrebe memorije."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Polazna stranica ne može izvršiti predprikaz jer ima učinkovit URL koji se razlikuje od uobičajenog URL-a. (Na primjer, stranica Nova kartica ili hostirane aplikacije.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL nije ispunjavao uvjete za predprikaz jer njegova shema nije http: ili https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Kretanje predprikaza nije uspjelo jer je preusmjeren na URL čija shema nije http: ili https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Kretanje predprikaza zahtijevalo je HTTP autentifikaciju koja trenutačno nije podržana."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Predprikaz nije izvršen jer uređaj nema dovoljno ukupne memorije sustava za podršku predprikaza."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Stranica za koju je izrađen predprikaz otvorila je drugi URL, što trenutačno nije podržano."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Predprikaz nije izvršen jer početna stranica već ima previše predprikaza. Uklonite druga pravila nagađanja da biste omogućili daljnje predprikaz."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Predprikaz nije izvršen jer je preglednik premašio ograničenje predprikaza."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Stranica za koju je izrađen predprikaz učitana je jer je preglednik naišao na kritični pritisak memorije."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Predprikaz nije izvršen jer je preglednik bio pod kritičnim pritiskom memorije."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Stranica za koju je izrađen predprikaz sadrži mješovit sadržaj."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Stranica za koju je izrađen predprikaz upotrebljavala je zabranjeni JavaScript API koji trenutačno nije podržan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Kretanje predprikaza nije uspjelo zbog šifre statusa HTTP odgovora koji nije HTTP 2xx."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Kretanje predprikaza blokiralo je pravila o sigurnosti sadržaja."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Kretanje predprikaza naišlo je na mrežnu pogrešku."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Predprikaz nije izvršen jer je korisnik onemogućio predučitavanje u postavkama preglednika."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Početna stranica se srušila."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Početna stranica je prekinuta."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Stranica za koju je izrađen predprikaz se srušila."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Stranica za koju je izrađen predprikaz je ukinuta."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Stranica za koju je izrađen predprikaz otvorila je URL iste web-lokacije drugog izvora, no odredišni odgovor nije sadržavao odgovarajuće zaglavlje Support-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Stranica za koju je izrađen predprikaz otvorila je URL iste web-lokacije drugog izvora, no odredišni odgovor nije sadržavao odgovarajuće zaglavlje Support-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Kretanje predprikaza nije uspjelo jer je URL predprikaza preusmjeren na URL iste web-lokacije drugog izvora, ali odredišni odgovor ne uključuje odgovarajuće zaglavlje Support-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Stranica za koju je izrađen predprikaz otvorila je URL koji je preusmjerio na URL iste web-lokacije drugog izvora, ali odredišni odgovor nije sadržavao odgovarajuće zaglavlje Support-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Kretanje predprikaza nije uspjelo zbog nevažećeg SSL certifikata."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Početna stranica dugo je bila u pozadini pa je stranica za koju je izrađen predprikaz odbačena."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Polazišna je stranica u pozadini, pa je stranica za koju je izrađen predprikaz odbačena."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Promjena softvera za pristup sadržaju dogodila se u navigaciji predprikaza."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Odaberite element za više pojedinosti"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Preddohvaćanje je odbačeno zbog novijeg preddohvaćanja jer je omogućen |kPrefetchNewLimits|"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Preddohvaćanje je preusmjereno, ali URL za preusmjeravanje ne ispunjava kriterije za preddohvaćanje."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Preddohvaćanje je preusmjereno, ali je došlo do problema s preusmjeravanjem."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Preddohvaćanje nije uspjelo jer zaglavlje Content-Type odgovora nije podržano."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Preddohvaćanje nije uspjelo zbog mrežne pogreške."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Preddohvaćanje nije uspjelo zbog šifre statusa HTTP odgovora koji nije HTTP 2xx."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Preddohvaćanje nije izvršeno jer početna stranica već ima previše preddohvaćanja u tijeku."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Prethodno preddohvaćanje izvora dobilo je odgovor HTTP 503 sa zaglavljem Retry-After koje još nije isteklo."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "URL nije ispunjavao kriterije za preddohvaćanje jer je za taj izvor postojao registriran uslužni alat ili kolačići za više web-lokacija, ali je preddohvaćanje ipak stavljeno u mrežu i nije iskorišteno kako bi se prikrilo da je korisnik imao neku vrstu prethodnog odnosa s izvorom."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Prošlo je previše vremena između preddohvaćanja i upotrebe, pa je preddohvaćanje odbačeno."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Preddohvaćanje nije izvršeno jer je omogućena postavka štednje baterije."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Preddohvaćanje nije izvršeno jer je preglednik u anonimnom načinu ili načinu rada za goste."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Preddohvaćanje nije izvršeno jer je operativni sustav u načinu štednje podatkovnog prometa."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "URL ne ispunjava kriterije za preddohvaćanje jer je u zadanom kontekstu mreže konfiguriran za upotrebu proxy poslužitelja."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL nije ispunjavao kriterije za preddohvaćanje jer njegov host nije bio jedinstven (npr. IP adresa koja nije javno dostupna ili naziv hosta kojim se ne upravlja u registru), ali je preddohvaćanje bilo potrebno usmjeriti putem proxyja."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URL nije ispunjavao kriterije za preddohvaćanje jer upotrebljava particiju pohrane koja nije zadana."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Preddohvaćanje nije izvršeno jer je predučitavanje onemogućeno."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "URL nije ispunjavao kriterije za preddohvaćanje jer se zadani kontekst mreže ne može konfigurirati tako da upotrebljava proxy preddohvaćanja za zahtjev za preddohvaćanje iste web-lokacije iz različitih izvora."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URL nije ispunjavao kriterije za preddohvaćanje jer njegova shema nije bila https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URL nije ispunjavao kriterije za preddohvaćanje jer se odvijalo na različitim web-lokacijama, ali je korisnik imao kolačiće za taj izvor."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "URL nije ispunjavao kriterije za preddohvaćanje jer je za taj izvor postojao registriran uslužni alat koji trenutačno nije podržan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Preddohvaćanje nije iskorišteno jer se radilo o preddohvaćanju na različitim web-lokacijama te su kolačići za taj URL dodani dok je preddohvaćanje bilo u tijeku, pa je preddohvaćeni odgovor sada zastario."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Predučitavanje je blokirao davatelj internetskih usluga ili administrator mreže."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Došlo je do mrežne pogreške prilikom pokušaja uspostavljanja veze s proxyjem za preddohvaćanje."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Kliknite za otkrivanje na ploči elemenata"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "Za ovu stranicu upotrebljavaju se prethodno dohvaćeni resursi (njih {PH1})"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Za ovu se stranicu upotrebljava predučitavanje"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Ova je stranica unaprijed automatski iscrtana"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Vizualizacija upotrebe"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Podaci o pokrivenosti nisu zabilježeni jer je stranica predrenderirana u pozadini."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Sve"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Podaci o pokrivenosti nisu zabilježeni jer je stranica poslužena iz predmemoriranja cijele stranice."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Odaberite preciznost pokrivenosti: podjela po funkcijama ima nisku prekomjernu vrijednost, podjela po blokovima ima značajnu prekomjernu vrijednost."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Po funkciji"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Kliknite gumb za ponovno učitavanje {PH1} da biste ponovno učitali i dobili pokrivenost."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "Zasad je iskorišteno {PH1} od {PH2} ({PH3}%), neiskorišteno {PH4}."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Pokrivenost instrumenta"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Ponovo učitaj stranicu"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Prikaži pokrivenost"
@@ -5670,7 +5667,7 @@
     "message": "Kopirano u međuspremnik"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopirajte sve promjene CSS-a"
+    "message": "Kopirajte promjene u CSS-u"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Naziv CSS entiteta: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Omogućeno je nadjačavanje istovremenog rada hardvera"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Vrijednost za navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Povezivost bez usporavanja"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Uspjelo"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Ključevi za ovog izdavatelja PST-a nisu dostupni. Izdavatelj se možda treba registrirati putem Chromeovog postupka registracije."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Radnja nije uspjela iz nepoznatog razloga."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Prestani snimati alokacije gomile"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "Uređivač naredbi CDP-a je skriven"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "Uređivač naredbi CDP-a je prikazan"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Očisti sve"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Filtar"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "Sakrij uređivač naredbi CDP-a"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Metoda"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Sesija"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "Prikaži uređivač naredbi CDP-a"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Cilj"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Nit"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Mreža"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1}, {PH2}"

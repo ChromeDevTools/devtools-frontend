@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "ჩამაგრების მოხსნა ცალკე ფანჯარაში"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "გვერდი: არ არის არჩეული"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "გვერდი: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "ავტორულის მსგავსად"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "window.confirm-ის გაშვება iframe-ებიდან მოძველებულია და მალე ამოიშლება."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOM მუტაციის მოვლენები, მათ შორის, DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument და DOMCharacterDataModified, შეწყვეტილია (https://w3c.github.io/uievents/#legacy-event-types) და ამოიშლება. გთხოვთ, სანაცვლოდ, გამოიყენოთ MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "მონაცემების მხარდაჭერა: SVG-ის <გამოყენებაში> არსებული URL-ების ელემენტი მოძველებულია და ის მომავალში ამოიშლება."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain-ის განსაზღვრის მეშვეობით ერთსა და იმავე წყაროსთან დაკავშირებული წესების შემსუბუქების შესაძლებლობა მოძველდა და ნაგულისხმევად გათიშული იქნება. ამ ფუნქციის გამოყენების გასაგრძელებლად, გთხოვთ, უარი თქვათ აგენტების იმ კლასტერების გამოყენებაზე, რომლებისთვისაც განსაზღვრულია კონკრეტული წყაროები. ამისთვის, დოკუმენტებისა და ფრეიმებისთვის უნდა გაიგზავნოს Origin-Agent-Cluster: ?0 ჰედერი HTTP პასუხთან ერთად. დეტალური ინფორმაციისთვის იხილეთ https://developer.chrome.com/blog/immutable-document-domain/."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path მოძველდა და მომავალში გაუქმდება. გთხოვთ, სანაცვლოდ, გამოიყენოთ Event.composedPath()."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "ზედა კოლონტიტული Expect-CT მხარდაჭერილი აღარ არის. Chrome მოითხოვს სერტიფიკატთა გამჭვირვალობას საჯაროდ ნდობააღჭურვილი ყველა სერტიფიკატისთვის, რომელიც გაცემულია 2018 წლის 30 აპრილის შემდეგ."
+    "message": "ჰედერი „Expect-CT“ მოძველდა და მომავალში გაუქმდება. Chrome მოითხოვს სერტიფიკატთა გამჭვირვალობას საჯაროდ ნდობააღჭურვილი ყველა სერტიფიკატისთვის, რომელიც გაცემულია 2018 წლის 30 აპრილის შემდეგ."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() და watchPosition() აღარ მუშაობს დაუცველი წყაროების შემთხვევაში. ამ ფუნქციით სარგებლობისთვის გირჩევთ, თქვენი აპლიკაციისთვის გამოიყენოთ დაცული წყარო, როგორიცაა HTTPS. დეტალური ინფორმაციისთვის მოინახულეთ https://goo.gle/chrome-insecure-origins."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management მომხმარებლის ინფორმაციის API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML ატრიბუტი: ავტომატური შევსება"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "ხელშემშლელი შერეული კონტენტი"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "User-Agent ფრაზის შემცირება"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "დოკუმენტთა თავსებადობის რეჟიმი"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "დიახ"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "წინასწარი გადმოტანა და წინასწარი ვიზუალიზაცია"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "ეს გვერდი"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "დააწკაპუნეთ ნებისმიერ ანგარიშზე, მისი ძირითადი ტექსტი რომ გამოაჩინოთ"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "აპლიკაცია"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "ქეში"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "ქეშის მეხსიერება"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "გვერდები, რომლებმაც მოითხოვეს AppBanner, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "უკან-წინ გადასვლის ქეში გათიშულია კავშირის შენარჩუნების მოთხოვნის გამო."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "უკან-წინ გადასვლის ქეში გათიშულია ალმის სასარგებლოდ. ამ მოწყობილობაზე ადგილობრივად მის ჩასართავად გადადით მისამართზე chrome://flags/#back-forward-cache."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "გვერდები, რომლებიც იყენებს WebUSB API-ს, ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "უკან-წინ გადასვლის ქეში გამორთულია, რადგან ქუქი-ჩანაწერები გამორთულია იმ გვერდზე, რომელიც იყენებს „Cache-Control: no-store“-ს."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "გვერდები, რომლებიც იყენებს Dedicated Worker-ს ან Worklet-ს, ამჟამად ვერ შეძლებს უკან-წინ გადასვლის ქეშის გამოყენებას."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "შიდა შეცდომა."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "უკან-წინ გადასვლის ქეში გამორთულია, რადგან JavaScript-ის ქსელის ზოგიერთმა მოთხოვნამ მიიღო რესურსი სათაურით „Cache-Control: no-store“."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "უკან-წინ გადასვლის ქეში გათიშულია კავშირის შენარჩუნების მოთხოვნის გამო."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{# სხვა ფრეიმის ჩვენება}other{# სხვა ფრეიმის ჩვენება}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "კალათის სახელი"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "გამძლეობა"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "მოქმედების ვადა"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "გაუმჭვირვალეა"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "მესამე მხარეა"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "მიმდინარეობს ჩატვირთვა…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "არა"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "არცერთი"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(გაუმჭვირვალე)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "წარმომავლობა"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "მუდმივია"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "კვოტა"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "პირველი თანრიგის საიტი"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "დიახ"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "დიახ, რადგან წარმომავლობის ჯაჭვი შეიცავს მესამე მხარის საწყის მდებარეობას"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "დიახ, მეხსიერების გასაღები გაუმჭვირვალეა"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "დიახ, რადგან საწყისი მდებარეობა პირველი თანრიგის საიტის მიღმაა"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "დიახ, რადგან პირველი თანრიგის საიტი გაუმჭვირვალეა"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "პირადი მდგომარეობის ყველა შენახული ჟეტონი ხელმისაწვდომია ბრაუზერის ამ ეგზემპლარში."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "პირადი მდგომარეობის ჟეტონები"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "წესების არჩეული ნაკრების მიხედვით გაფილტვრა"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "გაფართოებების პარამეტრები"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "წინასწარი ვიზუალიზაცია გამორთულია ოპერაციული სისტემის მონაცემთა დამზოგი რეჟიმის გამო."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "წინასწარი ჩატვირთვა იძულებით ჩაირთო, რადგან DevTools ღიაა. როცა DevTools დახურულია, წინასწარი ჩატვირთვა გამორთულია, ვინაიდან ბრაუზერის ეს სესია იზოლაციის ჯგუფის ნაწილია, რომელიც ეფექტურობის შესადარებლად გამოიყენება."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "წინასწარი ვიზუალიზაცია გამორთულია მომხმარებლის პარამეტრების ან გაფართოების გამო. დამატებითი ინფორმაციის შესატყობად მოინახულეთ {PH1}, ან გაფართოების გამოსართავად მოინახულეთ {PH2}."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "წინასწარი ვიზუალიზაცია იძულებით ჩაირთო, რადგან DevTools ღიაა. როცა DevTools დახურულია, წინასწარი ჩატვირთვა გამორთულია, ვინაიდან ბრაუზერის ეს სესია იზოლაციის ჯგუფის ნაწილია, რომელიც ეფექტურობის შესადარებლად გამოიყენება."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "წინასწარი ჩატვირთვა გაითიშა, მაგრამ იძულებით ჩაირთო ახლა"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "წინასწარი ჩატვირთვა გათიშულია"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "წინასწარი ვიზუალიზაცია გაითიშა, მაგრამ იძულებით ჩაირთო ახლა"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "წინასწარი ჩატვირთვა ვერ მოხერხდა."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "სტატუსი"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "წინასწარი ვიზუალიზაციის გვერდი გააქტიურდა საწყისი გვერდის ძირითადი ფრეიმის ნავიგაციისას."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "წინასწარი ვიზუალიზაცია არ გამოიყენეს, რადგან ქვიშის საათის დროშები ან საწყისი გვერდის დაშვებული წესები შეუთავსებელია წინასწარი ვიზუალიზაციის გვერდზე არსებულთან."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "წინასწარი ვიზუალიზაცია არ ყოფილა გამოყენებული, რადგან გააქტიურების დროს ნავიგაციის სხვა პარამეტრები (მაგალითად, HTTP ზედა კოლონტიტულები) გამოითვლებოდა, ვიდრე ნავიგაციის საწყისი წინასწარი ვიზუალიზაციის მოთხოვნის დროს."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "წინასწარი ვიზუალიზაციის გვერდმა მოითხოვა გამომავალი აუდიო, რომელიც ამჟამად მხარდაჭერილი არ არის."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "წინასწარი ვიზუალიზაცია ვერ განხორციელდა, რადგან მომხმარებელმა მოითხოვა, რომ ბრაუზერს ნაკლები ბატარეა გამოეყენებინა."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "ზოგიერთი რესურსის ჩამოტვირთვა დაიბლოკა."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "წინასწარი ვიზუალიზაციის ნავიგაცია საჭიროებდა HTTP კლიენტის სერტიფიკატს."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "წინასწარი ვიზუალიზაციის ნავიგაცია ვერ მოხერხდა, რადგან ის მიმართული იყო საიტებსშორის URL-ზე."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "წინასწარ ვიზუალიზებული გვერდი გადავიდა საიტებს შორის URL-ზე."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "წინასწარი ვიზუალიზაციის ნავიგაცია ვერ მოხერხდა, რადგან წინასწარი ვიზუალიზაციის URL-მისამართი გადამისამართდა საიტებსშორის URL-ზე."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "წინასწარი ვიზუალიზაციის გვერდი გადავიდა URL-ზე, რომელიც გადამისამართებულია ჯვარედინი საიტების URL-ზე."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "წინასწარი ვიზუალიზაცია ვერ განხორციელდა, რადგან მომხმარებელმა მოითხოვა, რომ ბრაუზერს ნაკლები მონაცემი გამოეყენებინა."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "წინასწარი ვიზუალიზაციის გვერდი შეეცადა დაეწყო ჩამოტვირთვა, რომელიც ამჟამად მხარდაჭერილი არ არის."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "წინასწარი ვიზუალიზაცია ვერ განხორციელდა, რადგან მეხსიერების მიმდინარე გამოყენების განსაზღვრისას ბრაუზერში აღმოჩნდა შიდა შეცდომა."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "საწყისი გვერდი ვერ ახერხებს წინასწარ ვიზუალიზაციას, რადგან მას აქვს ეფექტური URL, რომელიც განსხვავდება მისი ჩვეულებრივი URL-ისგან. (მაგალითად, ახალი ჩანართის გვერდი, ან განთავსებული აპები)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL-მისამართი არ შეესაბამებოდა წინასწარ ვიზუალიზაციას, ვინაიდან მისი სქემა არ იყო http: ან https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "წინასწარი ვიზუალიზაციის ნავიგაცია ვერ მოხერხდა, რადგან ის გადამისამართდა URL-მისამართზე, რომლის სქემა არ იყო http: ან https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "წინასწარი ვიზუალიზაციის ნავიგაცია საჭიროებს HTTP-ავტორიზაციას, რომელიც ამჟამად მხარდაჭერილი არ არის."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "წინასწარი ვიზუალიზაცია ვერ განხორციელდა, რადგან ამ მოწყობილობას არ აქვს საკმარისი მთლიანი სისტემური მეხსიერება წინასწარი ვიზუალიზაციის მხარდაჭერისთვის."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "წინასწარი ვიზუალიზაციის გვერდი გადავიდა სხვა URL-ზე, რომელსაც ამჟამად არ აქვს მხარდაჭერა."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "წინასწარი ვიზუალიზაცია ვერ შესრულდა, რადგან საწყის გვერდზე უკვე ძალიან ბევრი წინასწარი ვიზუალიზაცია სრულდება. წაშალეთ ვარაუდის სხვა წესები, მომდევნო წინასწარი ვიზუალიზაცია რომ ჩართოთ."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "წინასწარი ვიზუალიზაცია ვერ შესრულდა, რადგან ბრაუზერმა გადააჭარბა წინასწარი ვიზუალიზაციისთვის მეხსიერების ლიმიტს."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "წინასწარი ვიზუალიზაციის გვერდის ატვირთვა გაუქმდა, ბრაუზერში კრიტიკულად არასაკმარისი მეხსიერების გამო."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "წინასწარი ვიზუალიზაცია ვერ განხორციელდა, რადგან ბრაუზერში მეხსიერების კრიტიკული უკმარისობა აღმოჩნდა."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "წინასწარი ვიზუალიზაციის გვერდი შეიცავდა შერეულ კონტენტს."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "წინასწარი ვიზუალიზაციის გვერდმა გამოიყენა JavaScript-ის აკრძალული API, რომელიც ამჟამად მხარდაჭერილი არ არის."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "წინასწარი ვიზუალიზაცია ვერ განხორციელდა HTTP პასუხის სტატუსის კოდის გამო, რომელიც განსხვავდება 2xx-ისგან."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "წინასწარი ვიზუალიზაციის ნავიგაცია დაბლოკა კონტენტის უსაფრთხოების დებულებით."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "წინასწარი ვიზუალიზაციის ნავიგაციისას წარმოიშვა ქსელის შეცდომა."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "წინასწარი ვიზუალიზაცია ვერ განხორციელდა, რადგან მომხმარებელმა გამორთო წინასწარი ჩატვირთვის ფუნქცია ბრაუზერის პარამეტრში."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "საწყისი გვერდი ავარიულად გაითიშა."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "საწყისი გვერდი გაითიშა."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "წინასწარ ვიზუალიზებული გვერდი ავარიულად გაითიშა."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "წინასწარი ვიზუალიზაციის გვერდი დაიხურა."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "წინასწარ ვიზუალიზებული გვერდი გადავიდა იმავე საიტის სხვა URL-მისამართზე, მაგრამ სამიზნე პასუხი არ შეიცავდა შესაბამის სათაურს Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "წინასწარ ვიზუალიზებული გვერდი გადავიდა იმავე საიტის სხვა URL-მისამართზე, მაგრამ სამიზნე პასუხი არ შეიცავდა შესაბამის სათაურს Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "წინასწარი ვიზუალიზაციის ნავიგაცია ვერ მოხერხდა, რადგან წინასწარი ვიზუალიზაციის URL-მისამართი გადამისამართდა იმავე საიტის სხვა URL-მისამართზე, მაგრამ სამიზნე პასუხი არ შეიცავდა შესაბამის სათაურს Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "წინასწარი ვიზუალიზაციის გვერდი გადავიდა URL-მისამართზე, რომელიც გადამისამართდა იმავე საიტის სხვა URL-მისამართზე, მაგრამ სამიზნე პასუხი არ შეიცავდა შესაბამის სათაურს Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "წინასწარი ვიზუალიზაციის ნავიგაცია ვერ მოხერხდა არასწორი SSL სერტიფიკატის გამო."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "საწყისი გვერდი დიდი ხანია, ფონურ რეჟიმში გადავიდა, ამიტომაც წინასწარი ვიზუალიზაციის გვერდი გაუქმდა."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "საწყისი გვერდი ფონურ რეჟიმში გადავიდა, ამიტომაც წინასწარი ვიზუალიზაციის გვერდი გაუქმდა."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "User Agent-ის შეცვლა მოხდა წინასწარი ვიზუალიზაციის ნავიგაციისას."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "დამატებითი დეტალებისთვის აირჩიეთ ელემენტი"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "სტატუსი"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "წინასწარი ჩატვირთვა გაუქმდა უფრო ახალი წინასწარი ჩატვირთვის გამო, რადგან |kPrefetchNewLimits| ჩართულია"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "წინასწარი ჩატვირთვა გადამისამართებულია, მაგრამ გადამისამართების URL-ის წინასწარი ჩატვირთვა შეუძლებელია."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "წინასწარი ჩატვირთვა გადამისამართებულია, მაგრამ გადამისამართებასთან დაკავშირებით მოხდა შეცდომა."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "წინასწარი ჩატვირთვა ვერ შესრულდა, რადგან პასუხის კონტენტის ტიპის სათაური არ არის მხარდაჭერილი."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "წინასწარი ჩატვირთვა ვერ მოხერხდა ქსელის შეცდომის გამო."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "წინასწარი ჩატვირთვა ვერ განხორციელდა HTTP პასუხის სტატუსის კოდის გამო, რომელიც განსხვავდება 2xx-ისგან."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "დაფარვის ინფორმაციის დაფიქსირება ვერ მოხერხდა, რადგან ინიციატორი გვერდზე უკვე რამდენიმე წინასწარი ჩატვირთვა მიმდინარეობს."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "საწყის მდებარეობაში ბოლო წინასწარ ჩატვირთვაზე პასუხია HTTP 503 ხელახლა ცდის სათაურით, რომელიც ჯერ არ დახურულა."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "URL-ის წინასწარი ჩატვირთვა ვერ განხორციელდა, რადგან დაფიქსირდა რეგისტრირებული სერვისის მუშაკი ან საიტებს შორის ქუქი-ჩანაწერები ამ მდებარეობისთვის, მაგრამ წინასწარი ჩატვირთვა მაინც დაიწყო ქსელში, რათა შენიღბულიყო მომხმარებლის წარსული ინტერაქცია საწყის მდებარეობასთან."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "მეტისმეტად ბევრი დრო გავიდა წინასწარ ჩატვირთვისა და გამოყენების დროებს შორის, ამიტომაც წინასწარ ჩატვირთვა გაუქმდა."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "წინასწარი ჩატვირთვა ვერ მოხერხდა, რადგან ჩართულია ბატარეის დამზოგის რეჟიმი."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "წინასწარი ჩატვირთვა ვერ მოხერხდა, რადგან ბრაუზერი ინკოგნიტო ან სტუმრის რეჟიმშია."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "წინასწარ ჩატვირთვა ვერ მოხერხდა, რადგან ოპერაციული სისტემა მონაცემთა დაზოგვის რეჟიმშია."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "URL-ის წინასწარი ჩატვირთვა ვერ ხორციელდება, რადგან, ნაგულისხმევი ქსელის კონტექსტში, ის კონფიგურირებულია პროქსი-სერვერის გამოსაყენებლად."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL-ის წინასწარი ჩატვირთვა ვერ განხორციელდა, რადგან მისი მასპინძელი არ არის უნიკალური (მაგალითად: საჯაროდ არამარშრუტიზირებად IP მისამართი ან სერვერის სახელი, რომელსაც რეესტრი ვერ აკონტროლებს), მაგრამ საჭირო იყო წინასწარ ჩატვირთვის პროქსირება."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URL-ის წინასწარი ჩატვირთვა ვერ განხორციელდა, რადგან ის იყენებს მეხსიერების არანაგულისხმევ დანაყოფს."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "URL-ის წინასწარი ჩატვირთვა ვერ განხორციელდა, რადგან წინასწარი ჩატვირთვა გამორთულია."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "URL-ის წინასწარი ჩატვირთვა ვერ განხორციელდა, რადგან ნაგულისხმევი ქსელის კონტექსტის კონფიგურირება შეუძლებელია პროქსის გამოსაყენებლად იმავე საიტის მდებარეობებს შორის წინასწარი ჩატვირთვის მოთხოვნის მიმოცვლისთვის."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URL-ის წინასწარი ჩატვირთვა ვერ განხორციელდა, რადგან მისი სქემა არ იყო https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URL-ის წინასწარი ჩატვირთვა ვერ განხორციელდა, რადგან ის ხორციელდებოდა საიტებს შორის, მაგრამ მომხმარებელს ჰქონდა ქუქი-ჩანაწერები ამ საწყისი მდებარეობისთვის."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "URL-ის წინასწარი ჩატვირთვა ვერ განხორციელდა, რადგან დაფიქსირდა რეგისტრირებული სერვისის მუშაკი ამ მდებარეობისთვის, რომელიც ამჟამად მხარდაუჭერელია."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "წინასწარი ჩატვირთვა არ არის გამოყენებული, რადგან ის გულისხმობდა საიტებს შორის წინასწარ ჩატვირთვას, ხოლო ქუქი-ჩანაწერები დაემატა ამ URL-ისთვის, როცა წინასწარ ჩატვირთვა მიმდინარეობდა, ამიტომაც წინასწარ ჩატვირთვის პასუხი ახლა მოძველებულია."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "წინასწარი ჩატვირთვა დაიბლოკა თქვენი ინტერნეტ-პროვაიდერის ან ქსელის ადმინისტრატორის მიერ."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "ქსელის შეცდომა მოხდა, როცა მიმდინარეობდა წინასწარი ჩატვირთვის პროქსისთან დაკავშირების მცდელობა."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "დააწკაპუნეთ ელემენტების პანელზე გამოსაჩენად"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "ამ გვერდზე გამოყენებულია {PH1} წინასწარ ჩატვირთული რესურსი"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "ამ გვერდისთვის გამოყენებული წინასწარ ჩატვირთვა"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "ეს გვერდი წინასწარ ვიზუალიზებულია"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "გამოყენების ვიზუალიზაცია"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "დაფარვის ინფორმაციის დაფიქსირება ვერ მოხერხდა, რადგან გვერდის წინასწარი ვიზუალიზაცია მოხდა ფონურ რეჟიმში."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "ყველა"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "დაფარვის ინფორმაციის დაფიქსირება ვერ მოხერხდა, რადგან გვერდი ჩაიტვირთა უკან-წინ გადასვლის ქეშიდან."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "აირჩიეთ დაფარვის დეტალიზაცია: ფუნქციის დონეზე ნაკლები ხარჯია, ბლოკის დონეზე — საგრძნობი."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "ფუნქციის დონეზე"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "დააწკაპუნეთ გადატვირთვის ღილაკზე {PH1}, რათა გადატვირთოთ და მიიღოთ დაფარვა."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "ამჟამად გამოყენებულია {PH2}-დან {PH1} ({PH3}%), {PH4} გამოუყენებელია."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "ინსტრუმენტების დაფარვა"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "გვერდის გადატვირთვა"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "დაფარვის ჩვენება"
@@ -5670,7 +5667,7 @@
     "message": "დაკოპირდა გაცვლის ბუფერში"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "ყველა CSS ცვლილების კოპირება"
+    "message": "CSS ცვლილებების კოპირება"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS რესურსის სახელი: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "აპარატურის პარალელიზმის უგულებელყოფა ჩართულია"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "navigator.hardwareConcurrency-ს მნიშვნელობა"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "რეგულირების გარეშე"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "წარმატებით შესრულდა"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "გასაღებები PST-ის ამ გამცემისთვის მიუწვდომელია. გამცემს შესაძლოა დასჭირდეს რეგისტრაცია Chrome-ის რეგისტრაციის პროცესის მეშვეობით."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "ოპერაცია ვერ შესრულდა უცნობი მიზეზის გამო."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "გროვების გამოყოფის ჩაწერის შეწყვეტა"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP ბრძანებათა რედაქტორი დამალულია"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP ბრძანებათა რედაქტორი ნაჩვენებია"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "ყველაფრის გასუფთავება"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "გაფილტვრა"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "CDP ბრძანებათა რედაქტორის დამალვა"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "მეთოდი"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "სესია"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "CDP ბრძანებათა რედაქტორის გამოჩენა"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "სამიზნე"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "ძაფი"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "ქსელი"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1}, {PH2}-ზე"

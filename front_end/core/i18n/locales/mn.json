@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Тусдаа цонх руу салгах"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Хуудас: Сонгоогүй"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Хуудас: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Бичсэний дагуу"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Хөндлөнгийн эхийн iframe-с window.confirm-г идэвхжүүлэхийг зогсоосон бөгөөд ирээдүйд хасна."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument болон DOMCharacterDataModified зэрэг DOM Mutation-н үйл явдлуудыг зогсоосон (https://w3c.github.io/uievents/#legacy-event-types) бөгөөд хасна. Оронд нь MutationObserver-г ашиглана уу."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Өгөгдлийн тусламж: SVG <use> элементийн URL-уудыг зогсоосон бөгөөд үүнийг ирээдүйд хасна."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain тохиргоогоор ижил эхийн бодлогыг сулруулахыг зогсоосон бөгөөд өгөгдмөлөөр идэвхгүй болгоно. Энэ онцлогийг үргэлжлүүлэн ашиглахын тулд Origin-Agent-Cluster: ?0 толгой хэсгийг HTTP хариуны хамтаар документ болон фреймд зориулан илгээснээр түлхүүртэй эхийн агентын кластераас татгалзана уу. Илүү дэлгэрэнгүйг https://developer.chrome.com/blog/immutable-document-domain/ дээрээс харна уу."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path-г зогсоосон бөгөөд хасна. Оронд нь Event.composedPath()-г ашиглана уу."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT толгой хэсгийг цаашид дэмжихээ больсон. Chrome 2018 оны 4-р сарын 30-наас хойш олгосон олон нийтийн бүх итгэмжит сертификатад Сертификатын ил тод байдлыг шаардана."
+    "message": "Expect-CT толгой хэсгийг зогсоосон бөгөөд хасна. Chrome 2018 оны 4-р сарын 30-наас хойш олгосон олон нийтийн бүх итгэмжит сертификатад Сертификатын ил тод байдлыг шаардана."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() болон watchPosition() цаашид аюултай эх дээр ажиллахаа больсон. Энэ онцлогийг ашиглахын тулд та аппликэйшнээ HTTPS зэрэг аюулгүй эх рүү сэлгэх талаар бодож үзэх хэрэгтэй. Илүү дэлгэрэнгүй мэдээллийг https://goo.gle/chrome-insecure-origins дээрээс харна уу."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Нэгдсэн мандат үнэмлэхийн менежментийн API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management-н хэрэглэгчийн мэдээллийн API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML атрибут: автоматаар гүйцээх"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Холимог контентоос сэргийлж байна"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Хэрэглэгчийн агентын мөр багасгал"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Документын тохиромжтой байдлын горим"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Тийм"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Урьдчилан татаж авах ба Урьдчилан рэндэрлэх"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Энэ хуудас"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Дурын тайлан дээр товшиж, үндсэн хэсгийг нь үзүүлнэ үү"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Аппликейшн"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Завсрын санах ой"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Завсрын санах ойн хадгалах сан"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner-н хүсэлт тавьсан хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Keepalive хүсэлтийн улмаас back/forward cache-г идэвхгүй болгосон."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Back/forward cache-г дарцгаас идэвхгүй болгосон. Энэ төхөөрөмж дээр үүнийг дотоодод идэвхжүүлэхийн тулд chrome://flags/#back-forward-cache-д зочилно уу."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "WebUSB API-г ашигладаг хуудаснууд back/forward cache-г ашиглах эрхгүй."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Cache-Control: no-store-г ашигладаг хуудсанд күүкиг идэвхгүй болгосон тул back/forward cache-с идэвхгүй болгосон."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Зориулалтын ажилтан эсвэл ажлын хэсгийн ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
@@ -3380,8 +3374,11 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Дотоод алдаа."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "JavaScript-н сүлжээний зарим хүсэлт Cache-Control: no-store толгой хэсэгтэй нөөц хүлээн авсан тул back/forward cache-г идэвхгүй болгосон."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
-    "message": "Keepalive хүсэлтийн улмаас back/forward cache-г идэвхгүй болгосон."
+    "message": "Keepalive хүсэлтийн улмаас back/forward cache-г идэвхгүй болгосон"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "Гарын түгжээг ашигладаг хуудаснууд одоогоор back/forward cache-г ашиглах эрхгүй."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Бусад # фреймийг харуулах}other{Бусад # фреймийг харуулах}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Хувингийн нэр"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Тэсвэртэй байдал"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Дуусах хугацаа"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Тодорхой бус байна"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Гуравдагч тал юм"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Ачаалж байна…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Үгүй"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Байхгүй"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(тодорхой бус)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Эх"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Автоматаар устгадаггүй хадгалах сан"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Квот"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Дээд түвшний сайт"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Тийм"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Тийм, учир нь угсааны сүлжээ гуравдагч талын эх агуулж байна"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Тийм, учир нь хадгалах сангийн түлхүүр тодорхой бус байна"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Тийм, учир нь эх дээд түвшний сайтаас гадуур байна"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Тийм, учир нь дээд түвшний сайт тунгалаг бус байсан"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Энэ хөтчийн инстансад боломжтой хадгалсан хувийн төлөвийн бүх токен."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Хувийн төлөвийн токенууд"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Сонгосон дүрмийн багцаар шүүх"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Өргөтгөлүүдийн тохиргоо"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Үйлдлийн системийн Дата хэмнэгч горимын улмаас урьдчилан ачаалахыг идэвхгүй болгосон."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "DevTools нээлттэй байгаа тул урьдчилан ачаалахыг албадан идэвхжүүлсэн. DevTools хаалттай үед энэ хөтчийн харилцан үйлдэл нь гүйцэтгэлийн харьцуулалт хийхэд ашигладаг саатуулах бүлгийн нэг хэсэг тул урьдчилан рэндэрлэхийг идэвхгүй болгоно."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Хэрэглэгчийн тохиргоо эсвэл өргөтгөлийн улмаас урьдчилан ачаалахыг идэвхгүй болгосон. Нэмэлт мэдээлэл авахын тулд {PH1} руу очих эсвэл өргөтгөлийг идэвхгүй болгохын тулд {PH2} руу очно уу."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "DevTools нээлттэй байгаа тул урьдчилан рэндэрлэхийг албадан идэвхжүүлсэн. DevTools хаалттай үед энэ хөтчийн харилцан үйлдэл нь гүйцэтгэлийн харьцуулалт хийхэд ашигладаг саатуулах бүлгийн нэг хэсэг тул урьдчилан рэндэрлэхийг идэвхгүй болгоно."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Урьдчилан ачаалахыг идэвхгүй болгосон боловч одоо албадан идэвхжүүлсэн"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Урьдчилан ачаалахыг идэвхгүй болгосон"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Урьдчилан рэндэрлэхийг идэвхгүй болгосон боловч одоо албадан идэвхжүүлсэн"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Урьдчилан ачаалж чадсангүй."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Төлөв"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Урьдчилан рэндэрлэсэн хуудсыг эхлүүлэх хуудасны үндсэн фреймийн навигацын үеэр идэвхжүүлсэн."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Эхлүүлэх хуудасны туршилтын орчны дарцаг эсвэл зөвшөөрлийн бодлого тэдгээр урьдчилан рэндэрлэх хуудастай тохирохгүй байсан тул урьдчилсан рэндэрийг ашиглаагүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Идэвхжүүлэлтийн хугацааны үеэр эх урьдчилан рэндэрлэх навигацын хүсэлтийн үеийнхээс өөр навигацын параметрүүдийг (ж.нь HTTP толгой хэсэг) тооцоолсон тул урьдчилсан рэндэрийг ашиглаагүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Урьдчилан рэндэрлэсэн хуудас аудио гаралт хүссэн бөгөөд үүнийг одоогоор дэмждэггүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Хэрэглэгч хөтчийг батарей бага ашиглахыг хүссэн тул урьдчилсан рэндэрийг гүйцэтгээгүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Зарим нөөцийн ачааллыг блоклосон."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Урьдчилан рэндэрлэх навигацад HTTP клиентийн сертификат шаардлагатай."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Урьдчилан рэндэрлэх навигац нь сайт хоорондын URL-г онилсон тул амжилтгүй болсон."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Урьдчилан рэндэрлэсэн хуудас сайт хоорондын URL руу шилжүүлсэн."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Урьдчилан рэндэрлэсэн URL нь сайт хоорондын URL руу дахин чиглүүлсэн тул урьдчилан рэндэрлэх навигац амжилтгүй болсон."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Урьдчилан рэндэрлэсэн хуудас нь сайт хоорондын URL руу дахин чиглүүлсэн URL руу шилжүүлсэн."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Хэрэглэгч хөтчийг дата бага ашиглахыг хүссэн тул урьдчилсан рэндэрийг гүйцэтгээгүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Урьдчилан рэндэрлэсэн хуудасны таталтыг эхлүүлэхээр оролдсон бөгөөд үүнийг одоогоор дэмждэггүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Хөтөч одоогийн санах ойн ашиглалтыг тодорхойлохоор оролдоход дотоод алдаатай тулгарсан тул урьдчилсан рэндэрийг гүйцэтгээгүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Эхлүүлэх хуудас нь энгийн URL-саа ялгаатай үр дүнтэй URL-тай тул энэ нь урьдчилан рэндэрлэхийг гүйцэтгэх боломжгүй. (Жишээ нь Шинэ таб хуудас эсвэл хост хийсэн аппууд.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL-н схем http: эсвэл https: биш байсан тул энэ нь урьдчилан рэндэрлүүлэх зохих эрхгүй байсан."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Схем нь http: эсвэл https: биш байсан URL руу дахин чиглүүлсэн тул урьдчилан рэндэрлэх навигац амжилтгүй болсон."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Урьдчилан рэндэрлэх навигацад HTTP баталгаажуулалт шаардлагатай бөгөөд үүнийг одоогоор дэмждэггүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Энэ төхөөрөмжид урьдчилан рэндэрлэхийг дэмжихэд хангалттай нийт системийн санах ой байгаагүй тул урьдчилсан рэндэрийг гүйцэтгээгүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Урьдчилан рэндэрлэсэн хуудас өөрийгөө өөр URL руу шилжүүлсэн бөгөөд үүнийг одоогоор дэмждэггүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Эхлүүлэх хуудсанд аль хэдийн хэт олон урьдчилсан рэндэр хийгдэж байсан тул урьдчилсан рэндэрийг гүйцэтгээгүй. Цаашид урьдчилан рэндэрлэхийг идэвхжүүлэхийн тулд бусад таамаглалын дүрмийг хасна уу."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Хөтөч урьдчилан рэндэрлэх санах ойн хязгаараас хэтэрсэн тул урьдчилсан рэндэрийг гүйцэтгээгүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Хөтөч санах ойн ноцтой ачаалалтай байсан тул урьдчилан рэндэрлэсэн хуудсыг ачаалахаа больсон."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Хөтөч санах ойн ноцтой ачаалалтай байсан тул урьдчилсан рэндэрийг гүйцэтгээгүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Урьдчилан рэндэрлэсэн хуудас холилдсон контент агуулсан."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Урьдчилан рэндэрлэсэн хуудас хориотой JavaScript API ашигласан бөгөөд үүнийг одоогоор дэмждэггүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "2xx бус HTTP хариуны статус кодын улмаас урьдчилан рэндэрлэх навигац амжилтгүй болсон."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Урьдчилан рэндэрлэх навигацыг Контентын аюулгүй байдлын бодлогоор блоклосон."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Урьдчилан рэндэрлэх навигац сүлжээний алдаатай тулгарлаа."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Хэрэглэгч хөтчийн тохиргоондоо урьдчилан ачаалахыг идэвхгүй болгосон тул урьдчилсан рэндэрийг гүйцэтгээгүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Эхлүүлэх хуудас гэмтсэн."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Эхлүүлэх хуудсыг устгасан."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Урьдчилан рэндэрлэсэн хуудас гэмтсэн."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Урьдчилан рэндэрлэсэн хуудсыг устгасан."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Урьдчилан рэндэрлэсэн хуудас нь эх хоорондын ижил сайтын URL руу өөрийгөө шилжүүлсэн ч очих газрын хариу нь зохих Supports-Loading-Mode-н толгой хэсгийг агуулаагүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Урьдчилан рэндэрлэсэн хуудас нь эх хоорондын ижил сайтын URL руу шилжүүлсэн ч очих газрын хариу нь зохих Supports-Loading-Mode-н толгой хэсгийг агуулаагүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Урьдчилан рэндэрлэсэн URL эх хоорондын ижил сайтын URL руу дахин чиглүүлсэн тул урьдчилан рэндэрлэх навигац амжилтгүй болсон ч очих газрын хариунд зохих Supports-Loading-Mode-н толгой хэсгийг агуулаагүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Урьдчилан рэндэрлэсэн хуудас нь эх хоорондын ижил сайтын URL руу дахин чиглүүлсэн URL руу шилжүүлсэн ч очих газрын хариу нь зохих Supports-Loading-Mode-н толгой хэсгийг агуулаагүй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "SSL сертификат буруу байсан тул урьдчилан рэндэрлэх навигац амжилтгүй болсон."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Эхлүүлэх хуудсыг удаан хугацааны туршид дэвсгэрт оруулсан тул урьдчилан рэндэрлэсэн хуудсыг устгасан."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Эхлүүлэх хуудсыг дэвсгэрт оруулсан тул урьдчилан рэндэрлэсэн хуудсыг устгасан."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Урьдчилан рэндэрлэх навигацад хэрэглэгчийн агентыг өөрчилсөн."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Дэлгэрэнгүй мэдээлэл авахын тулд нэг элемент сонгоно уу"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Төлөв"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "|kPrefetchNewLimits|-г идэвхжүүлсэн тул урьдчилсан дуудалтыг шинээр урьдчилан дуудах зорилгын улмаас больсон"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Урьдчилсан дуудалтыг дахин чиглүүлсэн ч дахин чиглүүлэх URL нь урьдчилан дуудуулах зохих эрхгүй байна."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Урьдчилсан дуудалтыг дахин чиглүүлсэн ч дахин чиглүүлэхэд асуудал гарсан."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Хариуны Content-Type-н толгой хэсэг дэмжигдээгүй тул урьдчилан дуудаж чадсангүй."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Сүлжээний улмаас урьдчилсан дуудалт амжилтгүй болсон."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "2xx бус HTTP хариуны статус кодын улмаас урьдчилан дуудах амжилтгүй болсон."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Эхлүүлэх хуудас аль хэдийн хэт олон урьдчилан дуудах үйлдэл хийж байсан тул урьдчилсан дуудалтыг гүйцэтгээгүй."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Эхийг урьдчилан дуудах өмнөх оролдлого нь хараахан зарцуулаагүй Retry-After толгой хэсэгтэй HTTP 503 хариу авсан."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "Тухайн эхэд бүртгүүлсэн үйлчилгээний ажилтан эсвэл сайт хоорондын күүки байсан тул URL нь урьдчилан дуудуулах зохих эрхгүй байсан ч урьдчилсан дуудалтыг ямартай ч сүлжээнд тавьсан бөгөөд хэрэглэгч тухайн эхтэй өмнө нь ямар нэг харилцаа холбоотой байсан болохыг далдлахад ашиглаагүй."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Урьдчилсан дуудалт болон ашиглалтын хооронд хэт их хугацаа зарцуулсан тул урьдчилан дуудахыг больсон."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Батарей хэмнэгчийн тохиргоог идэвхжүүлсэн тул урьдчилсан дуудалтыг гүйцэтгээгүй."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Хөтөч нь Нууцлалтай эсвэл Зочны горимд байгаа тул урьдчилан дуудахыг гүйцэтгээгүй."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Үйлдлийн систем нь Дата хэмнэгч горимд байгаа тул урьдчилсан дуудалтыг гүйцэтгээгүй."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "URL-г өгөгдмөл сүлжээний хам сэдэвт прокси ашиглахаар тохируулсан байгаа тул энэ нь урьдчилан дуудуулах зохих эрхгүй байна."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL-н хост нь өвөрмөц бус байсан (ж.нь олон нийтийн замгүй IP хаяг эсвэл бүртгэлээр хянадаггүй хостны нэр) тул энэ нь урьдчилан дуудуулах зохих эрхгүй байсан ч урьдчилсан дуудалтад прокси хийх шаардлагатай байсан."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URL нь өгөгдмөл бус хадгалах сангийн хуваалт ашигладаг тул энэ нь урьдчилан дуудуулах зохих эрхгүй байсан."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Урьдчилан ачаалахыг идэвхгүй болгосон тул урьдчилан дуудахыг гүйцэтгээгүй."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "Өгөгдмөл сүлжээний хам сэдвийг ижил сайтын эх хоорондын урьдчилан дуудах хүсэлтэд урьдчилан дуудах проксиг ашиглахаар тохируулах боломжгүй тул URL нь урьдчилан дуудуулах зохих эрхгүй байсан."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URL-н схем нь https: биш байсан тул энэ нь урьдчилан дуудуулах зохих эрхгүй байсан."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URL нь сайт хоорондынх байсан тул энэ нь урьдчилан дуудуулах зохих эрхгүй байсан ч хэрэглэгчид тухайн эхэд күүки байсан."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "Тухайн эхэд одоогоор дэмждэггүй бүртгүүлсэн үйлчилгээний ажилтан байсан тул URL нь урьдчилан дуудуулах зохих эрхгүй байсан."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Энэ нь сайт хоорондын урьдчилсан дуудалт байсан тул үүнийг ашиглаагүй. Урьдчилан дуудаж байхад тухайн URL-д күүки нэмсэн тул урьдчилан дуудсан хариу одоо хуучирсан."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Урьдчилсан дуудалтыг таны интернэт үйлчилгээ нийлүүлэгч эсвэл сүлжээний админаас блоклосон."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Урьдчилан дуудах проксид холболт тохируулахаар оролдох үед сүлжээний алдаа гарсан."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Элементийн түр зуурын самбарт харуулахын тулд товшино уу"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "Урьдчилан дуудсан {PH1} нөөцийг энэ хуудсанд ашигладаг"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Энэ хуудсанд урьдчилан ачаалахыг ашигласан"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Энэ хуудсыг урьдчилан рэндэрлэсэн"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Ашиглалтын дүрслэл"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Хуудсыг дэвсгэрт урьдчилан рэндэрлэсэн тул хамрах хүрээний мэдээллийг авч чадаагүй."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Бүгд"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Хуудсыг back/forward cache-с олгосон тул хамрах хүрээний мэдээллийг авч чадаагүй."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Хамрах хүрээний түвшнийг сонгоно уу: Функц тутам бага хэмжээний ачаалалтай бa блок тутам их хэмжээний ачаалалтай байна."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Функц тутамд"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Дахин ачаалж, хамрах хүрээ авахын тулд дахин ачаалах товчлуурыг {PH1} товшино уу."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "Одоогоор {PH2} ({PH3}%)-с {PH1}-ийг ашигласан. {PH4}-ийг ашиглаагүй."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Хэрэгслийн хамрах хүрээ"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Хуудсыг дахин ачаалах"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Хамрах хүрээг харуулах"
@@ -5670,7 +5667,7 @@
     "message": "Түр санах ойд хуулсан"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Бүх CSS өөрчлөлтийг хуулна уу"
+    "message": "CSS-н өөрчлөлтийг хуулна уу"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS өмчийн нэр: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Техник хангамжийн давхцлыг дарахыг идэвхжүүлсэн байна"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Navigator.hardwareConcurrency-н утга"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Удаашруулаагүй"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Амжилттай"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Энэ PST олгогчид түлхүүрүүд боломжгүй байна. Олгогч Chrome-н бүртгэлийн явцаар бүртгүүлсэн байх шаардлагатай байж магадгүй."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Тодорхойгүй шалтгааны улмаас үйл ажиллагаа амжилтгүй боллоо."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Санах ойн хуваарилалтыг бичихээ зогсоох"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP тушаал засварлагчийг нуусан"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP тушаал засварлагчийг харуулсан"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Бүгдийг арилгах"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Шүүлтүүр"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "CDP тушаал засварлагчийг нууна уу"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Арга"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Харилцан үйлдэл"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "CDP тушаал засварлагчийг харуулна уу"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Зорилт"
@@ -11702,9 +11711,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Уялдаат"
   },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Сүлжээ"
-  },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH2}-тэй {PH1}"
   },
@@ -13530,7 +13536,7 @@
     "message": "Нэр"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
-    "message": "(тунгалаг бус)"
+    "message": "(тодорхой бус)"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Харилцан үйлдэл"

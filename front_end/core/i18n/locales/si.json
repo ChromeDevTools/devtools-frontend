@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "වෙනම කවුළුවකට නොඈඳන්න"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "පිටුව: තෝරා නැත"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "පිටුව: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "කර්තෘත්වය දක්වන ලද පරිදි"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "හරස් සම්භවයක් ඇති iframes වෙතින් window.confirm ප්‍රේරණය කිරීම අත්හරින ලද අතර අනාගතයේ දී එය ඉවත් කරනු ඇත."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument, සහ DOMCharacterDataModified ඇතුළුව, DOM විකෘති සිදුවීම් අත්හරින ලද (https://w3c.github.io/uievents/#legacy-event-types) අතර ඉවත් කරනු ලැබේ. ඒ වෙනුවට MutationObserver භාවිත කරන්න."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "දත්ත සඳහා සහාය: SVG <use> මූලාංගයේ URL අවලංගු කර ඇති අතර අනාගතයේ දී එය ඉවත් කරනු ලැබේ."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain සැකසීමෙන් එකම මූලාරම්භ ප්‍රතිපත්තිය ලිහිල් කිරීම අත්හරින අතර, පෙරනිමියෙන් අබල කරනු ඇත. මෙම විශේෂාංගය දිගටම භාවිත කිරීමට, කරුණාකර ලේඛනය සහ රාමු සඳහා HTTP ප්‍රතිචාරය සමඟ Origin-Agent-Cluster: ?0 ශීර්ෂයක් යැවීමෙන් මූලාරම්භ-යතුරු සහිත නියෝජිත පොකුරුවලින් ඉවත් වන්න. වැඩි විස්තර සඳහා https://developer.chrome.com/blog/immutable-document-domain/ බලන්න."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path අත්හැර ඇති අතර ඉවත් කරනු ඇත. කරුණාකර ඒ වෙනුවට Event.composedPath() භාවිත කරන්න."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT ශීර්ෂකය තවදුරටත් සහාය නොදක්වයි. Chrome හට 2018 අප්‍රේල් මස 30 වැනිදායින් පසු නිකුත් කරන ලද සියලු පොදු විශ්වාසදායක සහතික සඳහා සහතික විනිවිදභාවය අවශ්‍ය වේ."
+    "message": "Expect-CT ශීර්ෂය අත්හැර ඇති අතර ඉවත් කරනු ඇත. Chrome හට 2018 අප්‍රේල් මස 30 වැනිදායින් පසු නිකුත් කරන ලද සියලු පොදු විශ්වාසදායක සහතික සඳහා සහතික විනිවිදභාවය අවශ්‍ය වේ."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() සහ watchPosition() අනාරක්ෂිත මූලාරම්භවල තවදුරටත් ක්‍රියා නොකරයි. මෙම විශේෂාංගය භාවිත කිරීමට, ඔබ ඔබගේ යෙදුම HTTPS වැනි ආරක්ෂිත මූලාරම්භයකට මාරු කිරීම සලකා බැලිය යුතුය. වැඩි විස්තර සඳහා https://goo.gle/chrome-insecure-origins බලන්න."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "ඒකාබද්ධ අක්තපත්‍ර කළමනාකරණ පරිශීලක තතු API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML උපලක්ෂණය: ස්වයං සම්පූර්ණ කිරීම"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "මිශ්‍ර අන්තර්ගතය වළක්වමින්"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "පරිශීලක නියෝජිත අනුලකුණු වැල් අඩු කිරීම"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ලේඛන ගැළපුම් ප්‍රකාරය"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "ඔව්"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "පූර්ව ලබා ගැනීම සහ පූර්ව යෙදීම"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "මෙම පිටුව"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "එහි අන්තර්ගතය සංදර්ශනය කිරීමට ඕනෑම වාර්තාවක් මත ක්ලික් කරන්න"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "යෙදුම"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "හැඹිලිය"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "හැඹිලි ගබඩාව"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner එකක් ඉල්ලූ පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Keepalive ඉල්ලීමක් හේතුවෙන් පසුපසට/ඉදිරියට කෑෂය අබල කර ඇත."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "ආපසු/ඉදිරි හැඹිලිය සලකුණු කිරීම් මගින් අබල කර ඇත. එය ස්ථානීයව මෙම උපාංගයේ සබල කිරීමට chrome://flags/#back-forward-cache වෙත පිවිසෙන්න"
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "WebUSB AP භාවිත කරන පිටු පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Cache-Control: no-store භාවිතා කරන පිටුවක කුකීස් අබල කර ඇති නිසා ආපසු/ඉදිරි කෑෂය අබල කර ඇත."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "කැපවූ සේවකයෙකු හෝ වැඩපලක් භාවිතා කරන පිටු දැනට පසුපස/ඉදිරි හැඹිලිය සඳහා සුදුසුකම් නොලබයි."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "අභ්‍යන්තර දෝෂය."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "සමහර ජාවාස්ක්‍රිප්ට් ජාල ඉල්ලීම් Cache-Control: no-store ශීර්ෂකය සමග සම්පත් ලැබුණු නිසා ආපසු/ඉදිරියට කෑෂය අබල කර ඇත."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Keepalive ඉල්ලීමක් හේතුවෙන් පසුපසට/ඉදිරියට කෑෂය අබල කර ඇත."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{තව රාමු #ක් පෙන්වන්න}one{තව රාමු #ක් පෙන්වන්න}other{තව රාමු #ක් පෙන්වන්න}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "බකට් නම"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "කල් පැවැත්ම"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "කල් ඉකුත් වීම"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "පාරාන්ධ වේ"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "තෙවන පාර්ශ්වයකි"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "පූරණය කරමින්…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "නැහැ"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "කිසිවක් නැත"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(පාරාන්ධ)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "මූලාරම්භය"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "ස්ථීර වේ"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "කෝටාව"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "ඉහළ මට්ටමේ අඩවිය"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "ඔව්"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "ඔව්, වංශ දාමයේ තුන්වන පාර්ශ්ව සම්භවයක් අඩංගු වන බැවිනි"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "ඔව්, ආචයන යතුර පාරාන්ධ නිසා"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "ඔව්, මූලාරම්භය ඉහළ මට්ටමේ අඩවියෙන් පිටත නිසා"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "ඔව්, ඉහළ මට්ටමේ අඩවිය පාරාන්ධ නිසා"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "මෙම බ්‍රව්සර නිදර්ශනයේ ඇති සියලු ගබඩා කර ඇති පෞද්ගලික තත්ත්ව ටෝකන."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "පෞද්ගලික තත්ත්ව ටෝකන"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "තෝරන ලද රීති කට්ටලය අනුව පෙරන්න"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "දිගු සැකසීම්"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "මෙහෙයුම් පද්ධතියේ දත්ත සුරැකුම් ප්‍රකාරය නිසා පූර්ව පූරණය අබල කර ඇත."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "DevTools විවෘත නිසා පූර්ව පූරණය බලෙන් සබල කර ඇත. DevTools වසා ඇති විට, මෙම බ්‍රව්සර සැසිය කාර්ය සාධනය සැසඳීම් සඳහා භාවිතා කරන රඳවා තබා ගැනීමේ සමූහයක කොටසක් වන නිසා පූර්ව යෙදීම අබල වනු ඇත."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "පරිශීලක සැකසීම් හෝ දිගුවක් නිසා පූර්ව පූරණය අබල කර ඇත. තව දැන ගැනීමට {PH1} වෙත යන්න, නැතහොත් දිගුව අබල කිරීමට {PH2} වෙත යන්න."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "DevTools විවෘත නිසා පූර්ව යෙදීම බලෙන් සබල කර ඇත. DevTools වසා ඇති විට, මෙම බ්‍රව්සර සැසිය කාර්ය සාධනය සැසඳීම් සඳහා භාවිතා කරන රඳවා තබා ගැනීමේ සමූහයක කොටසක් වන නිසා පූර්ව යෙදීම අබල වනු ඇත."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "පූර්ව පූරණය අබල කර ඇති නමුත්, දැන් බලෙන් සබල කර ඇත"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "පූර්ව පූරණය අබල කර ඇත"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "පූර්ව යෙදීම අබල කර ඇති නමුත්, දැන් බලෙන් සබල කර ඇත"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "පූර්ව පූරණය අසමත් විය."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "තත්ත්වය"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "පිටුවේ ප්‍රධාන රාමු සංචාලනය ආරම්භ කිරීමේ දී පෙර යොදන ලද පිටුව සක්‍රිය කර ඇත."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "සෑන්ඩ්බොක්සිං සලකුණු හෝ ආරම්භක පිටුවේ අවසර ප්‍රතිපත්තිය පූර්ව විදැහුම්කරණ පිටුවේ ඒවා සමග නොගැළපෙන නිසා පූර්ව යෙදීම භාවිත කර නොමැත."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "සක්‍රිය කිරීමේ කාලය තුළ, මුල් පූර්ව යෙදීමේ සංචාලන ඉල්ලීමට වඩා විවිධ සංචාලන පරාමිති (උදා., HTTP ශීර්ෂක) ගණනය කරන ලද බැවින්, පූර්ව යෙදීම භාවිත කර නොමැත."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "පෙර යොදන ලද පිටුව ශ්‍රව්‍ය ප්‍රතිදානය ඉල්ලා ඇති අතර, එය දැනට සහාය නොදක්වයි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "පරිශීලකයා බ්‍රව්සරයේ බැටරිය අඩුවෙන් භාවිත කරන ලෙස ඉල්ලා සිටි නිසා පෙර පූර්ව යෙදීම සිදු කර නොමැත."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "සමහර සම්පත් පූරණය අවහිර විය."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "පූර්ව යෙදීමේ සංචාලනයට HTTP සේවාලාභී සහතිකයක් අවශ්‍ය විය."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "එය හරස්-අඩවි URL එකක් ඉලක්ක කරගත් නිසා පූර්ව යෙදීමේ සංචාලනය අසමත් විය."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "පූර්ව විදහන ලද පිටුව හරස් අඩවි URL එකකට සංචාලනය විය."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "පූර්ව යොදන ලද URL හරස්-අඩවි URL එකකට හරවා යවන ලද නිසා පූර්ව යෙදීමේ සංචාලනය අසමත් විය."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "පූර්ව යොදන ලද පිටුව හරස්-අඩවි URL එකකට හරවා යවන ලද URL එකකට සංචාලනය කරන ලදි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "පරිශීලකයා බ්‍රව්සරයේ දත්ත අඩුවෙන් භාවිත කරන ලෙස ඉල්ලා සිටි නිසා පෙර පූර්ව යෙදීම සිදු කර නොමැත."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "පෙර යොදන ලද පිටුව බාගැනීමක් ආරම්භ කිරීමට උත්සාහ කර ඇති අතර, එය දැනට සහාය නොදක්වයි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "බ්‍රව්සරයේ වත්මන් මතක භාවිතය නිර්ණය කිරීමට උත්සාහ කිරීමේ දී අභ්‍යන්තර දෝෂයක් ඇති වූ නිසා පූර්ව යෙදීම සිදු නොවුණි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "ආරම්භක පිටුවට එහි සාමාන්‍ය URL හට වඩා වෙනස් ඵලදායි URL එකක් ඇති නිසා, පූර්ව යෙදීම සිදු කළ නොහැක. (උදාහරණයක් ලෙස, නව පටිති පිටුව, හෝ සත්කාරක යෙදුම්.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "එහි යෝජනා ක්‍රමය http: හෝ https: නොවන නිසා URL එක පූර්ව යෙදීමට සුදුසුකම් නොලබයි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "එය http: හෝ https: නොවන යෝජනා ක්‍රමය URL එකකට හරවා යැවූ නිසා පූර්ව යෙදීමේ සංචාලනය අසමත් විය."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "පූර්ව යෙදීමේ සංචලනය සඳහා HTTP සත්‍යාපනය අවශ්‍ය වන අතර, එය දැනට සහාය නොදක්වයි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "මෙම උපාංගයට පූර්ව විදැහුම්කරණයට සහාය දැක්වීමට ප්‍රමාණවත් සම්පූර්ණ පද්ධති මතකයක් නොමැති නිසා පූර්ව යෙදීම සිදු කර නොමැත."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "පෙර යොදන ලද පිටුව වෙනත් URL එකකට සංචාලනය කර ඇති අතර, එය දැනට සහාය නොදක්වයි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "ආරම්භක පිටුවේ දැනටමත් බොහෝ පූර්ව යෙදීම් සිදුවෙමින් පවතින නිසා පූර්ව යෙදීම සිදු නොවුණි. තව දුරටත් පූර්ව යෙදීම සබල කිරීමට වෙනත් සමපේක්ෂණ රීති ඉවත් කරන්න."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "බ්‍රව්සරය පූර්ව යෙදීමේ මතක සීමාව ඉක්මවූ නිසා පූර්ව යෙදීම සිදු නොවුණි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "බ්‍රව්සරය අර්බුදකාරී මතක පීඩනයකට ලක් වූ නිසා පෙර යොදන ලද පිටුව බාන ලදි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "බ්‍රව්සරය අර්බුදකාරී මතක පීඩනයකට ලක්ව තිබූ නිසා පූර්ව යෙදීම සිදු නොවුණි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "පූර්ව යොදන ලද පිටුවේ මිශ්‍ර අන්තර්ගතයක් අඩංගු විය."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "පෙර යොදන ලද පිටුව දැනට සහාය නොදක්වන තහනම් ජාවාස්ක්‍රිප්ට් API එකක් භාවිතා කර ඇත."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "2xx නොවන HTTP ප්‍රතිචාර තත්ත්ව කේතයක් නිසා පූර්ව යෙදීමේ සංචාලනය අසමත් විය."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "අන්තර්ගත ආරක්ෂක ප්‍රතිපත්තියක් මගින් පූර්ව යෙදීමේ සංචාලනය අවහිර කරන ලදි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "පූර්ව යෙදීමේ සංචාලනය ජාල දෝෂයකට මුහුණ දී ඇත."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "පරිශීලකයා ඔවුන්ගේ බ්‍රව්සරයේ සැකසීම්වල පූර්ව පූරණය අබල කර ඇති නිසා පූර්ව යෙදීම සිදු නොවුණි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "ආරම්භක පිටුව බිඳ වැටුණි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "ආරම්භක පිටුව නැති කරන ලදි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "පූර්ව විදහන ලද පිටුව බිඳ වැටුණි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "පූර්ව යෙදීම කළ පිටුව නැති කරන ලදි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "පෙර යොදන ලද පිටුව හරස් සම්භවයක් ඇති එකම-අඩවි URL එකකට එය විසින් ම සංචාලනය කර ඇති නමුත්, ගමනාන්ත ප්‍රතිචාරයේ යෝග්‍ය සහය-පූරණ-ප්‍රකාර ශීර්ෂය ඇතුළත් නොවුණි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "පෙර යොදන ලද පිටුව හරස් සම්භවයක් ඇති එකම-අඩවි URL එකකට සංචාලනය කර ඇති නමුත්, ගමනාන්ත ප්‍රතිචාරයේ යෝග්‍ය සහය-පූරණ-ප්‍රකාර ශීර්ෂය ඇතුළත් නොවුණි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "පූර්ව යොදන ලද URL එක හරස් සම්භවයක් ඇති එකම-අඩවි URL එකකට හරවා යවා ඇති නමුත්, ගමනාන්ත ප්‍රතිචාරයේ සුදුසු සහාය-පූරණ-ප්‍රකර ශීර්ෂකය ඇතුළත් නොවූ නිසා පූර්ව යෙදීමේ සංචාලනය අසමත් විය."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "පෙර යොදන ලද පිටුව හරස් සම්භවයක් ඇති එකම-අඩවි URL වෙත හරවා යවන ලද URL වෙත සංචාලනය කරන ලද නමුත් ගමනාන්ත ප්‍රතිචාරයේ සුදුසු සහාය-පූරණ-ප්‍රකාර ශීර්ෂය ඇතුළත් නොවුණි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "වලංගු නොවන SSL සහතිකයක් නිසා පූර්ව යෙදීමේ සංචාලනය අසමත් විය."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "ආරම්භක පිටුව දිගු වේලාවක් පසුබිම් කර ඇති බැවින්, පෙර යොදන ලද පිටුව ඉවත දමන ලදි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "ආරම්භක පිටුව පසුබිම් කර ඇති බැවින්, පෙර යොදන ලද පිටුව ඉවත දමන ලදි."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "පරිශීලක නියෝජිතයා වෙනස් කිරීම පූර්ව යෙදීමේ සංචාලනයේ දී සිදු විය."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "වැඩි විස්තර සඳහා අංගයක් තෝරන්න"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "තත්ත්වය"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "|kPrefetchNewLimits| සබල කර ඇති නිසා නව පෙර ලබා ගැනීමක් සඳහා පෙර ලබා ගැනීම ඉවත දමන ලදි"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "පෙර ලබා ගැනීම යළි හරවා යවන ලද නමුත්, යළි-යොමුවීම් URL පෙර ලබා ගැනීම සඳහා සුදුසුකම් නොලබයි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "පෙරවදන යළි යොමු කරන ලද නමුත් යළි යොමු කිරීමේ ගැටලුවක් ඇති විය."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "ප්‍රතිචාරයේ අන්තර්ගත-වර්ග ශීර්ෂයට සහාය නොදැක්වූ බැවින් පෙර ලබා ගැනීම අසමත් විය."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "ජාල දෝෂයක් නිසා පෙර ලබා ගැනීම අසමත් විය."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "2xx නොවන HTTP ප්‍රතිචාර තත්ත්ව කේතයක් නිසා පෙර ලබා ගැනීම අසමත් විය."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "ආරම්භක පිටුවේ දැනටමත් බොහෝ පෙරනිමිති ක්‍රියාත්මක වන බැවින් පෙර ලබා ගැනීම සිදු නොකරන ලදි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "මූලාරම්භයට පෙර ලබා ගැනීමකට HTTP 503 ප්‍රතිචාරයක් ලැබී ඇති අතර එය නැවත උත්සාහ කිරීමෙන් පසු ශීර්ෂකය සමග තවමත් ගත වී නැත."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "එම සම්භවය සඳහා ලියාපදිංචි සේවා සේවකයෙකු හෝ හරස්-අඩවි කුකීස් සිටි නිසා URL එක පෙර ලබා ගැනීමට සුදුසුකම් නොලබන නමුත්, පරිශීලකයා මූලාරම්භය සමග යම් ආකාරයක පෙර සම්බන්ධතාවයක් ඇති බව වසන් කිරීමට පෙර ලබා ගැනීම කෙසේ හෝ ජාලයට දමා භාවිතා නොකරන ලදි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "පූර්ව ලබා ගැනීම සහ භාවිතය අතර බොහෝ කාලයක් ගත වූ බැවින්, පෙර ලබා ගැනීම ඉවත දමන ලදි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "බැටරි සුරැකුම් සැකසීම සබල කර ඇති නිසා පෙර ලබා ගැනීම සිදු නොකරන ලදි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "බ්‍රව්සරය අප්‍රකට හෝ ආගන්තුක ප්‍රකාරයේ ඇති නිසා පෙර ලබා ගැනීම සිදු නොකරන ලදි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "මෙහෙයුම් පද්ධතිය දත්ත සුරැකීමේ ප්‍රකාරයේ ඇති බැවින් පෙර ලබා ගැනීම සිදු නොකරන ලදි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "පෙරනිමි ජාල සන්දර්භය තුළ එය ප්‍රොක්සි සේවාදායකයක් භාවිතා කිරීමට වින්‍යාස කර ඇති නිසා URL එක පෙර ලබා ගැනීමට සුදුසුකම් නොලබයි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL එක පෙර ලබා ගැනීමට සුදුසුකම් නොලබන්නේ එහි ධාරකය අනන්‍ය නොවූ (උදා., ප්‍රසිද්ධියේ මාර්ගගත කළ නොහැකි IP ලිපිනයක් හෝ රෙජිස්ට්‍රි-පාලිත නොවන සත්කාරක නාමයක්) නමුත්, පෙර ලබා ගැනීම ප්‍රොක්සි කිරීමට අවශ්‍ය වූ බැවිනි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "පෙරනිමි නොවන ආචයන කොටසක් භාවිතා කරන නිසා URL එක පෙර ලබා ගැනීමට සුදුසුකම් නොලබයි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "පූර්ව පූරණය අබල කර ඇති නිසා පෙර ලබා ගැනීම සිදු නොකරන ලදි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "පෙරනිමි ජාල සන්දර්භය එකම-අඩවි හරස් ප්‍රභව පෙර ලබා ගැනීමේ ඉල්ලීමක් සඳහා පෙර ලබා ගැනීමේ ප්‍රොක්සි භාවිතා කිරීමට වින්‍යාස කළ නොහැකි නිසා URL එක පෙර ලබා ගැනීමට සුදුසුකම් නොලබයි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "එහි යෝජනා ක්‍රමය https: නොවන නිසා URL එක පෙර ලබා ගැනීමට සුදුසුකම් නොලබයි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URL එය හරස්-අඩවි වූ නිසා පෙර ලබා ගැනීමට සුදුසුකම් නොලබන නමුත්, පරිශීලකයාට එම සම්භවය සඳහා කුකීස් තිබුණි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "දැනට සහාය නොදක්වන, එම සම්භවය සඳහා ලියාපදිංචි සේවා සේවකයෙකු සිටි නිසා URL එක පෙර ලබා ගැනීමට සුදුසුකම් නොලබයි."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "එය හරස්-අඩවි පෙර ලබා ගැනීමක් නිසා පෙර ලබා ගැනීම භාවිතා නොකළ අතර, පෙර ලබා ගැනීම සිදු වෙමින් පවතින අතරේ එම URL සඳහා කුකීස් එක් කරන ලද බැවින්, පෙර ලබා ගත් ප්‍රතිචාරය දැන් යල් පැන ඇත."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "ඔබේ අන්තර්ජාල සේවා සපයන්නා හෝ ජාල පරිපාලක විසින් පූර්ව ලබා ගැනීම අවහිර කර ඇත."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "පෙර ලබා ගැනීමේ ප්‍රොක්සි වෙත සම්බන්ධතාවයක් සැකසීමට උත්සාහ කිරීමේ දී ජාල දෝෂයක් ඇති විය."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "මූලාංග පැනලයෙහි හෙළිදරව් කිරීමට ක්ලික් කරන්න"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "මෙම පිටුව සඳහා {PH1} පෙර ලබා ගත් සම්පත් භාවිතා වේ"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "මෙම පිටුව සඳහා පූර්ව පූරණය භාවිතා වේ"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "මෙම පිටුව පූර්ව යෙදීම කරන ලදි"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "පරිශීලන දෘෂ්ටිය"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "පිටුව පසුබිමේ පෙර සකසන ලද බැවින් ආවරණ තතු ග්‍රහණය කර ගැනීමට නොහැකි විය."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "සියල්ල"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "පිටුව පසුපස/ඉදිරි කෑෂයෙන් ලබා දුන් නිසා ආවරණ තතු ග්‍රහණය කර ගැනීමට නොහැකි විය."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "ආවරණ කැටිති බව තෝරන්න: එක් ශ්‍රිතයකට අඩු පොදු කාර්යයක් ඇත, එක් කොටසකට සැලකිය යුතු පොදු කාර්යයක් ඇත."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "ශ්‍රිතයකට"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "නැවත පූරණය කිරීමට සහ ආවරණය ලබා ගැනීමට නැවත පූරණය කරන්න බොත්තම {PH1} ක්ලික් කරන්න."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "මේ තාක් {PH2}කින් {PH1} ({PH3}%) භාවිත කර ඇත, {PH4} භාවිත කර නැත."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "උපකරණ ආවරණය"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "පිටුව නැවත පූරණය කරන්න"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "ආවරණය පෙන්වන්න"
@@ -5670,7 +5667,7 @@
     "message": "පසුරු පුවරුවට පිටපත් කරන ලදි"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "සියලු CSS වෙනස් කිරීම් පිටපත් කරන්න"
+    "message": "CSS වෙනස්කම් පිටපත් කරන්න"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS දේපළ නම: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "දෘඪාංග සමගාමී ප්‍රතික්ෂේප කිරීම සබල කර ඇත"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "navigator.hardwareConcurrency හි අගය"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "තෙරපීමක් නැත"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "සාර්ථකයි"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "මෙම PST නිකුත් කරන්නා සඳහා යතුරු නොමැත. නිකුත් කරන්නා Chrome ලියාපදිංචි කිරීමේ ක්‍රියාවලිය හරහා ලියාපදිංචි වීමට අවශ්‍ය විය හැක."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "නොදන්නා හේතුවක් නිසා මෙහෙයුම අසාර්ථක විය."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Heap වෙන් කිරීම් පටිගත කිරීම නවත්වන්න"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP විධාන සංස්කාරකය සඟවා ඇත"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP විධාන සංස්කාරකය පෙන්වා ඇත"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "සියල්ල හිස් කරන්න"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "පෙරහන"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "CDP විධාන සංස්කාරකය සඟවන්න"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "ක්‍රමය"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "සැසිය"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "CDP විධාන සංස්කාරකය පෙන්වන්න"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "ඉලක්කය"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "පොට"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "ජාලය"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} දින {PH2}ට"

@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "தனி சாளரத்தில் காட்டு"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "பக்கம்: தேர்ந்தெடுக்கப்படவில்லை"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "பக்கம்: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "அசல் வடிவமாக அமை"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "கிராஸ் ஆரிஜின் iframesஸில் இருந்து window.confirmமை டிரிகர் செய்வது நிறுத்தப்பட்டது, எதிர்காலத்தில் அது அகற்றப்படும்."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument, DOMCharacterDataModified உள்ளிட்ட DOM மாற்ற நிகழ்வுகள் நிறுத்தப்பட்டுள்ளன (https://w3c.github.io/uievents/#legacy-event-types), மேலும் அவை அகற்றப்படும். இவற்றுக்குப் பதிலாக MutationObserver ஐப் பயன்படுத்தவும்."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "தரவிற்கான உதவி: SVG <use> உறுப்பில் உள்ள URLகள் நிறுத்தப்பட்டன, எதிர்காலத்தில் அவை அகற்றப்படும்."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain ஐ அமைத்து அதே ஆரிஜின் கொள்கையைத் தளர்த்துவது நிறுத்தப்பட்டது. இயல்பாகவே இது முடக்கப்படும். இந்த அம்சத்தைத் தொடர்ந்து பயன்படுத்த ஆவணம் மற்றும் ஃபிரேம்களுக்கான HTTP பதிலுடன் Origin-Agent-Cluster: ?0 தலைப்பை அனுப்பி ஆரிஜின்-கீய்டு ஏஜெண்ட் கிளஸ்டர்களின் ஒப்புதலை நீக்கவும். கூடுதல் தகவல்களுக்கு https://developer.chrome.com/blog/immutable-document-domain/ தளத்திற்குச் செல்லவும்."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும். இதற்குப் பதிலாக Event.composedPath() ஐப் பயன்படுத்தவும்."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT தலைப்பு ஆதரிக்கப்படாது. ஏப்ரல் 30, 2018க்குப் பிறகு வெளியிடப்பட்ட பொதுவில் நம்பப்படும் சான்றிதழ்கள் அனைத்திற்குமான சான்றிதழ் வெளிப்படைத்தன்மை Chromeமிற்குத் தேவை."
+    "message": "Expect-CT தலைப்பு நிறுத்தப்பட்டது, அது விரைவில் அகற்றப்படும். ஏப்ரல் 30, 2018க்குப் பிறகு வெளியிடப்பட்ட பொதுவில் நம்பப்படும் சான்றிதழ்கள் அனைத்திற்கும் சான்றிதழ் வெளிப்படைத்தன்மை Chromeமிற்குத் தேவை."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "பாதுகாப்பற்ற ஆரிஜின்களில் getCurrentPosition() மற்றும் watchPosition() இனி செயல்படாது. இந்த அம்சத்தைப் பயன்படுத்த உங்கள் ஆப்ஸை HTTPS போன்ற பாதுகாப்பான ஆரிஜின்களுக்கு மாற்றவும். கூடுதல் தகவல்களுக்கு https://goo.gle/chrome-insecure-origins தளத்தைப் பார்க்கவும்."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML பண்புக்கூறு: தானே நிரப்புதல்"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "கலப்பு உள்ளடக்கத்தைத் தடுத்தல்"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "பயனர் ஏஜெண்ட் தகவல்களைக் குறைத்தல்"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ஆவண இணக்கத்தன்மைப் பயன்முறை"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "ஆம்"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "ப்ரீஃபெட்ச்சிங் மற்றும் ப்ரீரெண்டரிங்"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "இந்தப் பக்கம்"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "அறிக்கையின் உள்ளடக்கத்தைப் பார்க்க, ஏதேனும் ஒன்றின் மீது கிளிக் செய்யவும்"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "ஆப்ஸ்"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "தற்காலிகச் சேமிப்பு"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "தற்காலிகச் சேமிப்பிடம்"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBannerரைக் கோரிய பக்கங்களை ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் தற்போது சேமிக்க முடியாது."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "கீப்-அலைவ் கோரிக்கையின் காரணமாக ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சம் முடக்கப்பட்டுள்ளது."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சம் கொடிகள் மூலம் முடக்கப்பட்டுள்ளது. சாதனத்தில் இதை இயக்க, chrome://flags/#back-forward-cache என்ற பக்கத்திற்குச் செல்லவும்."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "WebUSB APIயைப் பயன்படுத்தும் பக்கங்களை ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் சேமிக்க முடியாது."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Cache-Control: no-store ஐப் பயன்படுத்தும் பக்கத்தில் குக்கீகள் முடக்கப்பட்டுள்ளதால் ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சம் முடக்கப்பட்டுள்ளது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "பிரத்தியேக worker/workletடைப் பயன்படுத்தும் பக்கங்களை ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் தற்போது சேமிக்க முடியாது."
@@ -3380,8 +3374,11 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "அகப் பிழை."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "சில JavaScript நெட்வொர்க் கோரிக்கைகள் Cache-Control: no-store தலைப்புடன் ஆதாரங்களைப் பெற்றதால் ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சம் முடக்கப்பட்டுள்ளது."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
-    "message": "கீப்-அலைவ் கோரிக்கையின் காரணமாக ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சம் முடக்கப்பட்டுள்ளது."
+    "message": "கீப்-அலைவ் கோரிக்கையின் காரணமாக முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல் அம்சம் முடக்கப்பட்டுள்ளது."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "கீபோர்டு லாக்கைப் பயன்படுத்தும் பக்கங்களை ‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் தற்போது சேமிக்க முடியாது."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{மேலும் # ஃபிரேமைக் காட்டு}other{மேலும் # ஃபிரேம்களைக் காட்டு}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "பக்கெட் பெயர்"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "நிலைப்புத்தன்மை"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "காலாவதியாகும் நேரம்"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "ஒபேக்காக உள்ளது"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "மூன்றாம் தரப்பு"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "ஏற்றுகிறது…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "இல்லை"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "ஏதுமில்லை"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(ஒபேக்)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "ஆரிஜின்"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "நிலையாக உள்ளது"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "ஒதுக்கீடு"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "முதன்மை நிலைத் தளம்"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "ஆம்"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "ஆம். ஏனெனில் ஆன்செஸ்ட்ரி செயினில் மூன்றாம் தரப்பு ஆரிஜின் உள்ளது."
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "ஆம். ஏனெனில் சேமிப்பகக் குறியீடு ஒபேக்காக உள்ளது."
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "ஆம். ஏனெனில் முதன்மை நிலைத் தளத்துடன் ஆரிஜின் பொருந்தவில்லை."
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "ஆம். ஏனெனில் முதன்மை நிலைத் தளம் ஒபேக்காக உள்ளது."
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "சேமிக்கப்பட்ட, தனிப்பட்ட நிலை டோக்கன்கள் அனைத்தும் இந்த உலாவியின் நேர்வில் உள்ளன."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "தனிப்பட்ட நிலை டோக்கன்கள்"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "தேர்ந்தெடுக்கப்பட்ட ரூல் செட்டின்படி வடிகட்டு"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "நீட்டிப்பு அமைப்புகள்"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "ஆப்ரேட்டிங் சிஸ்டம் ‘தரவு சேமிப்பான்’ பயன்முறையில் இருப்பதால் முன்கூட்டியே ஏற்றுதல் முடக்கப்பட்டுள்ளது."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "டெவெலப்பர் கருவிகள் திறந்திருப்பதால் 'முன்கூட்டியே ஏற்றுதல்' கட்டாயமாக இயக்கப்பட்டுள்ளது. செயல்திறன் ஒப்பீடுகளுக்காகப் பயன்படுத்தப்படும் ஹோல்டுபேக் குழுவின் பகுதியாக இந்த உலாவி அமர்வு இருப்பதால் டெவெலப்பர் கருவிகள் மூடப்பட்டிருக்கும்போது ப்ரீரெண்டரிங் முடக்கப்பட்டிருக்கும்."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "பயனர் அமைப்புகள் அல்லது நீட்டிப்பின் காரணமாக முன்கூட்டியே ஏற்றுதல் முடக்கப்பட்டுள்ளது. மேலும் தெரிந்துகொள்ள {PH1} என்பதற்குச் செல்லவும் அல்லது நீட்டிப்பை முடக்க {PH2} என்பதற்குச் செல்லவும்."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "டெவெலப்பர் கருவிகள் திறந்திருப்பதால் ப்ரீரெண்டரிங் கட்டாயமாக இயக்கப்பட்டுள்ளது. செயல்திறன் ஒப்பீடுகளுக்காகப் பயன்படுத்தப்படும் ஹோல்டுபேக் குழுவின் பகுதியாக இந்த உலாவி அமர்வு இருப்பதால் டெவெலப்பர் கருவிகள் மூடப்பட்டிருக்கும்போது ப்ரீரெண்டரிங் முடக்கப்பட்டிருக்கும்."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "'முன்கூட்டியே ஏற்றுதல்' முடக்கப்பட்டிருந்தது. ஆனால் தற்போது கட்டாயமாக இயக்கப்பட்டுள்ளது"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "முன்கூட்டியே ஏற்றுதல் முடக்கப்பட்டுள்ளது"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "ப்ரீரெண்டரிங் முடக்கப்பட்டிருந்தது. ஆனால் தற்போது கட்டாயமாக இயக்கப்பட்டுள்ளது"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "முன்கூட்டியே ஏற்றுதல் தோல்வியடைந்தது."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "நிலை"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "தொடங்குதல் பக்கத்தின் முதன்மை ஃபிரேமின் வழிசெலுத்தலின்போது ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் இயக்கப்பட்டது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "தொடங்குதல் பக்கத்தின் சாண்ட்பாக்ஸிங் கொடிகள் அல்லது அனுமதிகள் கொள்கையானது ப்ரீரெண்டரிங் பக்கத்துடன் இணங்கவில்லை என்பதால் ப்ரீரெண்டர் பயன்படுத்தப்படவில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "செயல்பாட்டு நேரத்தின்போது வழிசெலுத்தல் அளவுருக்கள் (எ.கா. HTTP தலைப்புகள்) கணக்கிடப்பட்டதால் ப்ரீரெண்டர் பயன்படுத்தப்படவில்லை. இந்த அளவுருக்கள் அசல் ப்ரீரெண்டரிங் வழிசெலுத்தல் கோரிக்கையின்போது கணக்கிடப்பட்டவற்றிலிருந்து வேறுபட்டவையாகும்."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் ஆடியோ அவுட்புட்டைக் கோரியுள்ளது ஆனால் அது தற்போது ஆதரிக்கப்படுவதில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "பேட்டரியை உலாவி குறைவாகப் பயன்படுத்த வேண்டுமென பயனர் கோரிக்கை விடுத்துள்ளதால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "சில ஆதாரங்கள் ஏற்றப்படுவது தடுக்கப்பட்டுள்ளது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "ப்ரீரெண்டரிங் வழிசெலுத்தலுக்கு HTTP கிளையண்ட் சான்றிதழ் தேவை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "கிராஸ் சைட் URLலை இலக்காகக் கொண்டிருந்ததால் ப்ரீரெண்டரிங்கை வழிசெலுத்த முடியவில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் கிராஸ் சைட் URLலுக்கு வழிசெலுத்தப்பட்டது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "ப்ரீரெண்டர் செய்யப்பட்ட URL, கிராஸ் சைட் URLலுக்குத் திசைதிருப்பப்பட்டதால் ப்ரீரெண்டரிங்கை வழிசெலுத்த முடியவில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "கிராஸ் சைட் URLலுக்குத் திசைதிருப்பப்பட்ட URLலுக்கு ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் வழிசெலுத்தப்பட்டது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "தரவை உலாவி குறைவாகப் பயன்படுத்த வேண்டுமென பயனர் கோரிக்கை விடுத்துள்ளதால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் பதிவிறக்கத்தைத் தொடங்க முயற்சி செய்துள்ளது. ஆனால் அது தற்போது ஆதரிக்கப்படுவதில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "உலாவி தற்போதைய நினைவக உபயோகத்தைத் தீர்மானிக்க முயற்சி செய்யும்போது அகப் பிழை ஏற்பட்டதால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "தொடங்குதல் பக்கத்தில் தற்போதுள்ள URL அதன் வழக்கமான URLலில் இருந்து வேறுபட்டதாக இருப்பதால் ப்ரீரெண்டரிங்கை அது செயல்படுத்த முடியவில்லை. (உதாரணமாக, புதிய பக்கம் அல்லது ஹோஸ்ட் செய்யப்பட்ட ஆப்ஸ்.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "http: அல்லது https: என்ற ஸ்கீம் இல்லாததால் ப்ரீரெண்டர் செய்வதற்கு URL தகுதிபெறவில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "http: அல்லது https: என்ற ஸ்கீம் இல்லாத URLலுக்குத் திசைதிருப்பப்பட்டதால் ப்ரீரெண்டரிங்கை வழிசெலுத்த முடியவில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "ப்ரீரெண்டரிங் வழிசெலுத்தலுக்கு HTTP அங்கீகரிப்பு தேவை, ஆனால் அது தற்போது ஆதரிக்கப்படுவதில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "ப்ரீட்ரெண்டரிங்கை ஆதரிக்கும் அளவிற்கு இந்தச் சாதனத்தில் மொத்த சிஸ்டம் நினைவகம் இல்லாததால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் அதுவாகவே மற்றொரு URLலுக்கு வழிசெலுத்தப்பட்டது, இது தற்போது ஆதரிக்கப்படுவதில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "தொடங்குதல் பக்கத்தில் ஏற்கெனவே பல ப்ரீரெண்டர்கள் செயலில் இருப்பதால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை. கூடுதல் ப்ரீரெண்டரிங்கை இயக்க பிற குறிப்பிட்ட விதிகளை அகற்றவும்."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "ப்ரீரெண்டரிங் நினைவக வரம்பை உலாவி தாண்டிவிட்டதால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "உலாவி கிரிட்டிகல் மெமரி பிரஷரில் இருந்ததால் ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் அகற்றப்பட்டது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "உலாவி கிரிட்டிகல் மெமரி பிரஷரில் இருந்ததால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கத்தில் கலவையான உள்ளடக்கம் இருந்தது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "தற்போது ஆதரிக்கப்படாத தடுக்கப்பட்ட JavaScript APIயை ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் பயன்படுத்தியுள்ளது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "2xx அல்லாத HTTP பதில் நிலைக் குறியீடு காரணமாக ப்ரீரெண்டரிங்கை வழிசெலுத்த முடியவில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "உள்ளடக்கப் பாதுகாப்புக் கொள்கையினால் ப்ரீரெண்டரிங் வழிசெலுத்தல் தடுக்கப்பட்டது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "ப்ரீரெண்டரிங் வழிசெலுத்தலில் நெட்வொர்க் பிழை ஏற்பட்டது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "பயனர் அவரது உலாவி அமைப்புகளில் ‘முன்கூட்டியே ஏற்றுதலை’ முடக்கியுள்ளதால் ப்ரீரெண்டர் செயல்படுத்தப்படவில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "தொடங்குதல் பக்கம் சிதைந்துவிட்டது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "தொடங்குதல் பக்கம் நிறுத்தப்பட்டது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் சிதைந்துவிட்டது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் நிறுத்தப்பட்டது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் தானாகவே ஒரே தளத்தின் கிராஸ் ஆரிஜின் URLலுக்கு வழிசெலுத்தப்பட்டது, ஆனால் டெஸ்டினேஷன் ரெஸ்பான்ஸில் சரியான Supports-Loading-Mode தலைப்பு இல்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கமானது ஒரே தளத்தின் கிராஸ் ஆரிஜின் URLலுக்கு வழிசெலுத்தப்பட்டது, ஆனால் டெஸ்டினேஷன் ரெஸ்பான்ஸில் சரியான Supports-Loading-Mode தலைப்பு இல்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "ப்ரீரெண்டர் செய்யப்பட்ட URL, ஒரே தளத்தின் கிராஸ் ஆரிஜின் URLலுக்குத் திசைதிருப்பப்படுவதால் ப்ரீரெண்டரிங்கை வழிசெலுத்த முடியவில்லை, ஆனால் டெஸ்டினேஷன் ரெஸ்பான்ஸில் சரியான Supports-Loading-Mode தலைப்பு இல்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "ப்ரீரெண்டர் செய்யப்பட்ட பக்கமானது ஒரே தளத்தின் கிராஸ் ஆரிஜின் URLலுக்குத் திசைதிருப்பப்பட்ட URLலுக்கு வழிசெலுத்தப்பட்டது, ஆனால் டெஸ்டினேஷன் ரெஸ்பான்ஸில் சரியான Supports-Loading-Mode தலைப்பு இல்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "தவறான SSL சான்றிதழ் காரணமாக ப்ரீரெண்டரிங்கை வழிசெலுத்த முடியவில்லை."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "தொடங்குதல் பக்கம் நீண்ட நேரமாக பின்னணியில் இயக்கப்பட்டதால் ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் நிராகரிக்கப்பட்டது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "தொடங்குதல் பக்கம் பின்னணியில் இயக்கப்பட்டதால் ப்ரீரெண்டர் செய்யப்பட்ட பக்கம் நிராகரிக்கப்பட்டது."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "ப்ரீரெண்டரிங் வழிசெலுத்தலில் பயனர் ஏஜெண்ட் மாற்றப்பட்டுள்ளது."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "கூடுதல் விவரங்களுக்கு உறுப்பைத் தேர்ந்தெடுக்கவும்"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "நிலை"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "|kPrefetchNewLimits| இயக்கப்பட்டதால் புதிய ப்ரீஃபெட்ச்சுக்கான ப்ரீஃபெட்ச் நிராகரிக்கப்பட்டது"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "ப்ரீஃபெட்ச் திசைதிருப்பப்பட்டது ஆனால் ப்ரீஃபெட்ச் செய்வதற்கு ரீடைரெக்ட் URL தகுதிபெறவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "ப்ரீஃபெட்ச் திசைதிருப்பப்பட்டது, ஆனால் அதில் சிக்கல் ஏற்பட்டது."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "பதிலின் Content-Type தலைப்பு ஆதரிக்கப்படாததால் ப்ரீஃபெட்ச் செயல்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "நெட்வொர்க் பிழை காரணமாக ப்ரீஃபெட்ச் செய்ய முடியவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "2xx அல்லாத HTTP பதில் நிலைக் குறியீடு காரணமாக ப்ரீஃபெட்ச் செய்ய முடியவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "தொடங்குதல் பக்கத்தில் ஏற்கெனவே பல ப்ரீஃபெட்ச்கள் செயலில் இருப்பதால் ப்ரீஃபெட்ச் செயல்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "ஆரிஜினுக்கான முந்தைய ப்ரீஃபெட்ச், இன்னும் முடிவடையாத Retry-After தலைப்புடன் கூடிய HTTP 503 பதிலைப் பெற்றுள்ளது."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "பதிவுசெய்யப்பட்ட service worker அல்லது கிராஸ் சைட் குக்கீகள் ஆரிஜினுக்கு இருந்ததால் ப்ரீஃபெட்ச் செய்வதற்கு URL தகுதிபெறவில்லை. பயனருக்கு ஆரிஜினுடன் முன்பு இருந்த சில வகையான தொடர்புகளை மறைப்பதற்காக நெட்வொர்க்கில் ப்ரீஃபெட்ச் சேர்க்கப்பட்டது ஆனால் பயன்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "ப்ரீஃபெட்ச் செய்யப்பட்டதற்கும் உபயோகத்திற்கும் இடையே அதிக நேரம் கடந்துவிட்டதால் ப்ரீஃபெட்ச் நிராகரிக்கப்பட்டது."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "பேட்டரி சேமிப்பு அமைப்பு இயக்கப்பட்டுள்ளதால் ப்ரீஃபெட்ச் செயல்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "உலாவி மறைநிலை அல்லது கெஸ்ட் பயன்முறையில் இருப்பதால் ப்ரீஃபெட்ச் செயல்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "ஆப்ரேட்டிங் சிஸ்டம் தரவு சேமிப்புப் பயன்முறையில் இருப்பதால் ப்ரீஃபெட்ச் செயல்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "இயல்புநிலை நெட்வொர்க் சூழலில் ப்ராக்ஸி சர்வரைப் பயன்படுத்தும் வகையில் URL உள்ளமைக்கப்பட்டுள்ளதால் ப்ரீஃபெட்ச் செய்வதற்கு அது தகுதிபெறவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URLலின் ஹோஸ்ட் தனித்துவமானதாக இல்லாததால் (உதாரணம்: பொதுவில் ரூட் செய்ய முடியாத IP முகவரி அல்லது ரெஜிஸ்ட்ரியால் கட்டுப்படுத்தப்படாத ஹோஸ்ட்பெயர்) ப்ரீஃபெட்ச் செய்வதற்கு அது தகுதிபெறவில்லை. ஆனால் ப்ரீஃபெட்ச், ப்ராக்ஸி செய்யப்பட்டிருக்க வேண்டும்."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "இயல்புநிலை அல்லாத சேமிப்பக பார்டிஷனை URL பயன்படுத்துவதால் ப்ரீஃபெட்ச் செய்வதற்கு அது தகுதிபெறவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "முன்கூட்டியே ஏற்றுதல் முடக்கப்பட்டுள்ளதால் ப்ரீஃபெட்ச் செயல்படுத்தப்படவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "ஒரே தளத்தின் கிராஸ் ஆரிஜின் ப்ரீஃபெட்ச் கோரிக்கைக்காக ப்ரீஃபெட்ச் ப்ராக்ஸியைப் பயன்படுத்த, இயல்புநிலை நெட்வொர்க் சூழலை உள்ளமைக்க முடியாது என்பதால் ப்ரீஃபெட்ச் செய்வதற்கு URL தகுதிபெறவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "https: என்ற ஸ்கீம் இல்லாததால் ப்ரீஃபெட்ச் செய்வதற்கு URL தகுதிபெறவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URL கிராஸ் சைட்டாக இருந்ததால் ப்ரீஃபெட்ச் செய்வதற்கு அது தகுதிபெறவில்லை, ஆனால் அந்த ஆரிஜினுக்கான குக்கீகள் பயனரிடம் இருந்தன."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "பதிவுசெய்யப்பட்ட service worker ஆர்ஜினுக்கு உள்ளதுடன் அது தற்போது ஆதரிக்கப்படவில்லை என்பதால் ப்ரீஃபெட்ச் செய்வதற்கு URL தகுதிபெறவில்லை."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "இது கிராஸ் சைட் ப்ரீஃபெட்ச் என்பதாலும், ப்ரீஃபெட்ச் செயலில் இருந்தபோதே அந்த URLலுக்கான குக்கீகள் சேர்க்கப்பட்டதாலும் ப்ரீஃபெட்ச் பயன்படுத்தப்படவில்லை, ப்ரீஃபெட்ச் செய்யப்பட்ட பதில் இப்போது பழையதாகிவிட்டது."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "உங்கள் இணைய சேவை வழங்குநர் அல்லது நெட்வொர்க் நிர்வாகியால் ப்ரீஃபெட்ச் தடுக்கப்பட்டது."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "ப்ரீஃபெட்ச்சிங் ப்ராக்ஸிக்கான இணைப்பை அமைக்க முயலும்போது நெட்வொர்க் பிழை ஏற்பட்டது."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "உறுப்புகள் பேனலைப் பார்க்க கிளிக் செய்யுங்கள்"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "முன்பே பெறப்பட்ட ஆதாரங்களில் {PH1} இந்தப் பக்கத்திற்காகப் பயன்படுத்தப்படுகின்றன"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "இந்தப் பக்கத்திற்கு முன்கூட்டியே ஏற்றுதல் பயன்படுத்தப்பட்டது"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "இந்தப் பக்கம் ப்ரீரெண்டரிங் செய்யப்பட்டது"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "பயன்பாட்டுக் காட்சிகள்"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "பக்கம் பின்னணியில் ப்ரீரெண்டர் செய்யப்பட்டதால் கவரேஜ் தகவலைப் பெற முடியவில்லை."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "எல்லாம்"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "‘முன் பின் பக்கங்களைத் தற்காலிகமாகச் சேமித்தல்’ அம்சத்தில் இருந்து பக்கம் வழங்கப்பட்டதால் கவரேஜ் தகவலைப் பெற முடியவில்லை."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "கவரேஜ் துல்லியத்தைத் தேர்வுசெய்யவும்: 'ஒவ்வொரு செயல்பாட்டுக்கும்' என்பது குறைந்த வேலைப்பளுவைக் கொடுக்கும், 'ஒவ்வொரு பிரிவுக்கும்' என்பது அதிக வேலைப்பளுவைக் கொடுக்கும்."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "ஒவ்வொரு செயல்பாட்டுக்கும்"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "ரெஃப்ரெஷ் செய்து கவரேஜைப் பெற, ரெஃப்ரெஷ் செய்வதற்கான {PH1} பட்டனைக் கிளிக் செய்யவும்."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "இதுவரை {PH1}/{PH2} ({PH3}%) பயன்படுத்தப்பட்டுள்ளது, {PH4} பயன்படுத்தப்படவில்லை."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "இன்ஸ்ட்ரூமெண்ட் கவரேஜ்"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "பக்கத்தை ரெஃப்ரெஷ் செய்"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "கவரேஜைக் காட்டு"
@@ -5670,7 +5667,7 @@
     "message": "கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "CSS மாற்றங்கள் அனைத்தையும் நகலெடுக்கும்"
+    "message": "CSS மாற்றங்களை நகலெடுக்கும்"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS பண்பின் பெயர்: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "வன்பொருள் ஒருங்கமைவு மீறிச் செயல்படுவது இயக்கப்பட்டது"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "navigator.hardwareConcurrency இன் மதிப்பு"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "த்ராட்லிங் இல்லை"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "இணைக்கப்பட்டது"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "இந்த PST வழங்குநருக்கான கீ எதுவும் கிடைக்கவில்லை. Chrome பதிவுச் செயல்பாட்டின் மூலம் வழங்குநர் பதிவுசெய்யப்பட வேண்டியிருக்கலாம்."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "அறியப்படாத காரணத்தினால் இந்தச் செயல்பாடு தோல்வியடைந்தது."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "ஹீப் ஒதுக்கீடுகளை ரெக்கார்டு செய்வதை நிறுத்து"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP கமாண்ட் எடிட்டர் மறைக்கப்பட்டது"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP கமாண்ட் எடிட்டர் காட்டப்படுகிறது"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "அனைத்தையும் அழி"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "வடிகட்டு"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "CDP கமாண்ட் எடிட்டரை மறைக்கும்"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "முறை"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "அமர்வு"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "CDP கமாண்ட் எடிட்டரைக் காட்டும்"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "இலக்கு"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "தொடரிழை"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "நெட்வொர்க்"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1}, {PH2}"

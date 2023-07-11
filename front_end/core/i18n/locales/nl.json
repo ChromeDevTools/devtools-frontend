@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Losmaken in een afzonderlijk venster"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Pagina: niet geselecteerd"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Pagina: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Zoals geschreven"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "De activering van window.confirm van cross-origin iframes is beëindigd en wordt in de toekomst verwijderd."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOM-mutatiegebeurtenissen, waaronder DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument en DOMCharacterDataModified, zijn beëindigd (https://w3c.github.io/uievents/#legacy-event-types) en worden verwijderd. Gebruik in plaats daarvan MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Ondersteuning voor gegevens: URL's in <use>-element van svg zijn beëindigd en worden in de toekomst verwijderd."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Versoepeling van het same-origin-beleid door document.domain in te stellen is beëindigd en wordt standaard uitgezet. Als je deze functie wilt blijven gebruiken, meld je je af voor origin-keyed agentclusters door een Origin-Agent-Cluster: ?0-header met de HTTP-reactie voor het document en de frames mee te sturen. Zie https://developer.chrome.com/blog/immutable-document-domain/ voor meer informatie."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path is beëindigd en wordt verwijderd. Gebruik in plaats daarvan Event.composedPath()."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "De header Expect-CT wordt niet meer ondersteund. Chrome vereist certificaattransparantie voor alle openbaar vertrouwde certificaten die na 30 april 2018 zijn uitgegeven."
+    "message": "De koptekst Expect-CT is beëindigd en wordt verwijderd. Chrome vereist certificaattransparantie voor alle openbaar vertrouwde certificaten die na 30 april 2018 zijn uitgegeven."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() en watchPosition() werken niet meer op niet-beveiligde oorsprongen. Als je deze functie wilt gebruiken, kun je overwegen om een beveiligde oorsprong voor je app te gebruiken, zoals HTTPS. Zie https://goo.gle/chrome-insecure-origins voor meer informatie."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-kenmerk: automatisch aanvullen"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Gemengde content vermijden"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Tekenreeksvermindering voor user-agent"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Compatibiliteitsmodus voor documenten"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ja"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Prefetching en pre-rendering"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Deze pagina"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Klik op een rapport om de content te bekijken"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "App"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Cachegeheugen"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Cache-opslag"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Pagina's die een AppBanner hebben aangevraagd, komen momenteel niet in aanmerking voor Back-Forward Cache."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Back-Forward Cache is uitgezet vanwege een keepalive-verzoek."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Back-Forward Cache is uitgezet door flags. Ga naar chrome://flags/#back-forward-cache om het lokaal aan te zetten op dit apparaat."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Pagina's die de WebUSB API gebruiken, komen niet in aanmerking voor Back-Forward Cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Back-Forward Cache is uitgezet, omdat cookies zijn uitgezet op een pagina die Cache-Control: no-store gebruikt."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Pagina's die een specifieke worker of worklet gebruiken, komen momenteel niet in aanmerking voor Back-Forward Cache."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Interne fout."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Back-Forward Cache is uitgezet, omdat een JavaScript-netwerkverzoek een resource met Cache-Control: no-store-header heeft ontvangen."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Back-Forward Cache is uitgezet vanwege een keepalive-verzoek."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Nog # frame bekijken}other{Nog # frames bekijken}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Bucketnaam"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Duurzaamheid"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Vervaldatum"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Is ondoorzichtig"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Is van derden"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Laden…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Nee"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Geen"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(ondoorzichtig)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Oorsprong"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Is persistent"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Quotum"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Site op het hoogste niveau"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Ja"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Ja, omdat de bovenliggende keten een oorsprong van derden bevat"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Ja, omdat de opslagsleutel ondoorzichtig is"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Ja, omdat de oorsprong zich buiten de site op het hoogste niveau bevindt"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Ja, omdat de site op het hoogste niveau ondoorzichtig is"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Alle opgeslagen privéstatustokens zijn beschikbaar in deze browserinstantie."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Privéstatustokens"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Filteren op geselecteerde regelset"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Extensie-instellingen"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Vooraf laden is uitgezet vanwege de modus Databesparing van het besturingssysteem."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Vooraf laden is geforceerd aangezet omdat DevTools is geopend. Als DevTools wordt gesloten, wordt pre-rendering uitgezet omdat deze browsersessie deel uitmaakt van een controlegroep die wordt gebruikt voor prestatievergelijkingen."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Vooraf laden is uitgezet vanwege gebruikersinstellingen of een extensie. Ga naar {PH1} voor meer informatie of ga naar {PH2} om de extensie uit te zetten."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Pre-rendering is geforceerd aangezet omdat DevTools is geopend. Als DevTools wordt gesloten, wordt pre-rendering uitgezet omdat deze browsersessie deel uitmaakt van een controlegroep die wordt gebruikt voor prestatievergelijkingen."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Vooraf laden stond uit, maar is nu geforceerd aangezet"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Vooraf laden staat uit"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Pre-rendering stond uit, maar is nu geforceerd aangezet"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Vooraf laden mislukt."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Status"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Vooraf gerenderde pagina is geactiveerd tijdens het starten van de hoofdframe-navigatie van de initiërende pagina."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "De pre-rendering is niet gebruikt omdat de sandboxingflags of het rechtenbeleid van de initiërende pagina niet compatibel was met dat van de vooraf gerenderde pagina."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "De pre-rendering is niet gebruikt omdat er tijdens de activeringstijd andere navigatieparameters (bijv. HTTP-headers) zijn berekend dan tijdens het oorspronkelijke verzoek voor pre-rendering navigatie."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "De vooraf gerenderde pagina heeft audio-uitvoer aangevraagd maar dat wordt op dit moment niet ondersteund."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "De pre-rendering is niet uitgevoerd omdat de gebruiker heeft gevraagd dat de browser minder batterijvermogen gebruikt."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Het laden van bepaalde resources is geblokkeerd."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "De pre-rendering navigatie vereiste een HTTP-clientcertificaat."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "De pre-rendering navigatie is mislukt omdat deze een cross-site URL targete."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "De vooraf gerenderde pagina is naar een cross-site-URL genavigeerd."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "De pre-rendering navigatie is mislukt omdat de vooraf gerenderde URL is omgeleid naar een cross-site-URL."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "De vooraf gerenderde pagina is naar een URL genavigeerd die omleidt naar een cross-site-URL."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "De pre-rendering is niet uitgevoerd omdat de gebruiker heeft gevraagd dat de browser minder data gebruikt."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "De vooraf gerenderde pagina heeft geprobeerd een download te starten, maar dat wordt op dit moment niet ondersteund."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "De pre-rendering is niet uitgevoerd omdat de browser een interne fout heeft gevonden tijdens een poging om het huidige geheugengebruik te bepalen."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "De initiërende pagina kan de pre-rendering niet uitvoeren omdat deze een effectieve URL heeft die verschilt van de normale URL. (Bijvoorbeeld de pagina Nieuw tabblad of gehoste apps.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "De URL kwam niet in aanmerking voor pre-rendering omdat het schema niet http: of https: was."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "De pre-rendering navigatie is mislukt omdat deze omleidt naar een URL waarvan het schema niet http: of https: was."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "De pre-rendering navigatie vereiste HTTP-verificatie maar dit wordt momenteel niet ondersteund."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "De pre-rendering is niet uitgevoerd omdat dit apparaat onvoldoende systeemgeheugen heeft om pre-rendering te ondersteunen."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "De vooraf gerenderde pagina is uit zichzelf naar een andere URL genavigeerd maar dat wordt op dit moment niet ondersteund."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "De pre-rendering is niet uitgevoerd omdat de initiërende pagina al te veel pre-rendering bevat. Verwijder andere speculatieregels om verdere pre-rendering aan te zetten."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "De pre-rendering is niet uitgevoerd omdat de browser de geheugenlimiet voor pre-rendering heeft overschreden."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Het laden van de vooraf gerenderde pagina is ongedaan gemaakt omdat de browser onder kritieke geheugenbelasting stond."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "De pre-rendering is niet uitgevoerd omdat de browser onder kritieke geheugenbelasting stond."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "De vooraf gerenderde pagina bevatte gemengde content."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "De vooraf gerenderde pagina gebruikte een verboden JavaScript API die op dit moment niet wordt ondersteund."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "De pre-rendering navigatie is mislukt vanwege een niet-2xx HTTP-reactiestatuscode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "De pre-rendering navigatie is geblokkeerd door een Content Security Policy."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "De pre-rendering navigatie heeft een netwerkfout gevonden."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "De pre-rendering is niet uitgevoerd omdat de gebruiker vooraf laden heeft uitgezet in de browserinstellingen."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "De initiërende pagina is gecrasht."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "De initiërende pagina is beëindigd."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "De vooraf gerenderde pagina is gecrasht."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "De vooraf gerenderde pagina is beëindigd."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "De vooraf gerenderde pagina is naar een cross-origin-URL op dezelfde site genavigeerd, maar de bestemmingsreactie bevatte niet de juiste Supports-Loading-Mode-header."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "De vooraf gerenderde pagina is naar een cross-origin-URL op dezelfde site genavigeerd, maar de bestemmingsreactie bevatte niet de juiste Supports-Loading-Mode-header."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "De pre-rendering navigatie is mislukt omdat de vooraf gerenderde URL omleidt naar een cross-origin-URL op dezelfde site, maar de bestemmingsreactie niet de juiste Supports-Loading-Mode-header bevatte."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "De vooraf gerenderde pagina is naar een URL genavigeerd die omleidt naar een cross-origin-URL van dezelfde site, maar de bestemmingsreactie bevatte niet de juiste Supports-Loading-Mode-header."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "De pre-rendering navigatie is mislukt vanwege een ongeldig SSL-certificaat."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "De initiërende pagina werd lange tijd op de achtergrond uitgevoerd, dus de vooraf gerenderde pagina is verwijderd."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "De initiërende pagina werd op de achtergrond uitgevoerd, dus de vooraf gerenderde pagina is verwijderd."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "De user-agent is gewijzigd tijdens pre-rendering navigatie."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Selecteer een element voor meer informatie"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "De prefetching is verwijderd om plaats te maken voor een nieuwere prefetching, omdat |kPrefetchNewLimits| aanstaat"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Het prefetchen is omgeleid, maar de omleidings-URL komt niet in aanmerking voor prefetching."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Het prefetchen is omgeleid, maar er is een probleem met de omleiding."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Het prefetchen is mislukt, omdat de Content-Type-header van de reactie niet wordt ondersteund."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Het prefetchen is mislukt vanwege een netwerkfout."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Het prefetchen is mislukt vanwege een niet-2xx HTTP-reactiestatuscode."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "De prefetching is niet uitgevoerd, omdat er al te veel prefetchings worden uitgevoerd op de initiërende pagina."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Een eerdere prefetch van de bron heeft een HTTP 503-reactie opgeleverd met een Retry-After-header die nog niet is verstreken."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "De URL kwam niet in aanmerking voor prefetching, omdat er een geregistreerde service worker of cross-site cookies voor die oorsprong waren. De prefetching is hoe dan ook op het netwerk gezet en wordt niet gebruikt. Dit is om te verhullen dat de gebruiker al eerder in contact is gekomen met de oorsprong."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Er is te veel tijd verstreken tussen het prefetchen en het gebruik, dus de prefetching is verwijderd."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Het prefetchen is niet uitgevoerd, omdat de instelling Batterijbesparing aanstaat."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Het prefetchen is niet uitgevoerd, omdat de browser in de incognito- of gastmodus staat."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Het prefetchen is niet uitgevoerd, omdat het besturingssysteem in de modus Databesparing staat."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "De URL komt niet in aanmerking voor prefetching, omdat de URL in de standaard netwerkcontext is ingesteld om een proxyserver te gebruiken."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "De URL kwam niet in aanmerking voor prefetching omdat de host niet uniek is (bijvoorbeeld een niet-openbaar routeerbaar IP-adres of een hostnaam die niet door het register wordt beheerd), maar de prefetching wel werd vereist via een proxy."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "De URL kwam niet in aanmerking voor prefetching, omdat deze een niet-standaard opslagpartitie gebruikt."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Het prefetchen is niet uitgevoerd, omdat vooraf laden is uitgezet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "De URL kwam niet in aanmerking voor prefetching, omdat de standaardnetwerkcontext niet kan worden ingesteld om de prefetch-proxy te gebruiken voor een cross-origin-prefetchingverzoek op dezelfde site."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "De URL kwam niet in aanmerking voor prefetching, omdat het schema niet https: was."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "De URL kwam niet in aanmerking voor prefetching omdat deze cross-site was, maar de gebruiker cookies voor die oorsprong had."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "De URL kwam niet in aanmerking voor prefetching, omdat er een geregistreerde service worker voor die oorsprong was. Dit wordt momenteel niet ondersteund."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Prefetchen is niet gebruikt, omdat het om prefetching voor meerdere sites ging en er cookies zijn toegevoegd voor die URL terwijl de prefetching actief was. De prefetch-reactie is nu dus verouderd."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Het prefetchen is geblokkeerd door je internetprovider of netwerkbeheerder."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Er is een netwerkfout opgetreden bij het instellen van een verbinding met de prefetching-proxy."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Klik om te tonen in het deelvenster Elementen"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "{PH1} geprefetchte bronnen worden gebruikt voor deze pagina"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Vooraf laden gebruikt voor deze pagina"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Deze pagina is vooraf gerenderd"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Visualisatie van het gebruik"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Kan dekkingsinformatie niet vastleggen, omdat de pagina vooraf is gerenderd op de achtergrond."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Alle"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Kan dekkingsinformatie niet vastleggen, omdat de pagina is weergegeven vanuit de Back-Forward Cache."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Kies detailniveau van dekking: per functie heeft een lage overhead, per blok heeft een aanzienlijke overhead."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Per functie"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Klik op de knop Opnieuw laden {PH1} om opnieuw te laden en dekking te krijgen."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} van {PH2} ({PH3}%) gebruikt tot nu toe, {PH4} niet gebruikt."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Instrumentdekking"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Pagina opnieuw laden"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Dekking tonen"
@@ -5670,7 +5667,7 @@
     "message": "Gekopieerd naar klembord"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Alle css-wijzigingen kopiëren"
+    "message": "Css-wijzigingen kopiëren"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Naam van CSS-property: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Overschrijving van gelijktijdigheidsniveau van hardware staat aan"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Waarde van navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Geen throttling"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Geslaagd"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "De sleutels voor deze PST-uitgever zijn niet beschikbaar. De uitgever moet mogelijk worden geregistreerd via het Chrome-registratieproces."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "De bewerking is mislukt om een onbekende reden."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Opname van heaptoewijzingen stoppen"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP-opdrachteditor verborgen"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP-opdrachteditor getoond"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Alles wissen"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Filter"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "CDP-opdrachteditor verbergen"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Methode"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Sessie"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "CDP-opdrachteditor tonen"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Doel"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Thread"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Netwerk"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} om {PH2}"

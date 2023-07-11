@@ -987,7 +987,7 @@
     "message": "పెయింట్"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | reloadPage": {
-    "message": "పేజీని మళ్లీ లోడ్ చేయండి"
+    "message": "పేజీని రీలోడ్ చేయండి"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "రెండరింగ్"
@@ -1045,12 +1045,6 @@
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "ప్రత్యేక విండోకు అన్‌డాక్ చేయండి"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "పేజీ: ఎంచుకోలేదు"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "పేజీ: {PH1}"
   },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "ప్రామాణీకరించిన విధంగా"
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "క్రాస్ ఆరిజిన్ iframeల నుండి window.confirmను ట్రిగ్గర్ చేయడం విస్మరించబడింది, భవిష్యత్తులో ఈ ఆప్షన్ తీసివేయబడుతుంది."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument, ఇంకా DOMCharacterDataModified‌తో సహా DOM మ్యుటేషన్ ఈవెంట్‌లు విస్మరించబడ్డాయి (https://w3c.github.io/uievents/#legacy-event-types) అలాగే తీసివేయబడతాయి. దయచేసి బదులుగా MutationObserver‌ను ఉపయోగించండి."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "డేటాకు సపోర్ట్: SVG <use> ఎలిమెంట్‌లో URLలను చేర్చే ఫీచర్ విస్మరించబడింది. భవిష్యత్తులో ఇది తీసివేయబడుతుంది."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain‌ను సెట్ చేసి, ఒకే ఆరిజిన్ పాలసీని సడలించడం విస్మరించబడింది, అలాగే ఆటోమేటిక్‌గా డిజేబుల్ చేయబడుతుంది. ఈ ఫీచర్‌ను ఉపయోగించడం కొనసాగించడానికి, దయచేసి డాక్యుమెంట్, ఫ్రేమ్‌ల కోసం HTTP ప్రతిస్పందనతో పాటు Origin-Agent-Cluster: ?0 హెడర్‌ను పంపడం ద్వారా ఆరిజిన్-కీ గల ఏజెంట్ క్లస్టర్‌లను నిలిపివేయండి. మరిన్ని వివరాల కోసం https://developer.chrome.com/blog/immutable-document-domain/ లింక్‌ను చూడండి."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path విస్మరించబడింది, అలాగే తీసివేయబడుతుంది. దయచేసి బదులుగా Event.composedPath() ఉపయోగించండి."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT హెడర్ ఇకపై సపోర్ట్ చేయదు. Chromeను ఉపయోగించే విషయంలో, ఏప్రిల్ 30, 2018 తర్వాత జారీ చేయబడిన, పబ్లిక్‌గా విశ్వసనీయమైన సర్టిఫికెట్‌లన్నింటికీ పారదర్శకత సర్టిఫికెట్ అవసరం అవుతుంది."
+    "message": "Expect-CT హెడర్ విస్మరించబడింది, అలాగే తీసివేయబడుతుంది. Chromeను ఉపయోగించే విషయంలో, ఏప్రిల్ 30, 2018 తర్వాత జారీ చేయబడిన, పబ్లిక్‌గా విశ్వసనీయమైన సర్టిఫికెట్‌లన్నింటికీ పారదర్శకత సర్టిఫికెట్ అవసరం అవుతుంది."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition(), watchPosition() ఇకపై సురక్షితం కాని ఆరిజిన్‌లలో పని చేయవు. ఈ ఫీచర్‌ను ఉపయోగించడానికి, మీ అప్లికేషన్‌ను HTTPS వంటి సురక్షితమైన ఆరిజిన్‌కు స్విచ్ చేయడాన్ని పరిగణించండి. మరిన్ని వివరాల కోసం https://goo.gle/chrome-insecure-origins లింక్‌ను చూడండి."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "ఫెడరేటెడ్ క్రెడెన్షియల్ మేనేజ్‌మెంట్ API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML లక్షణం: ఆటో-కంప్లీట్"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "మిశ్రమ కంటెంట్‌ను నివారిస్తుంది"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "వెబ్‌సైట్ యాక్సెస్ సాధనం స్ట్రింగ్ కుదింపు"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "డాక్యుమెంట్ అనుకూలత మోడ్"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "అవును"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "ప్రీఫెచింగ్ & ప్రీరెండరింగ్"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "ఈ పేజీ"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "ఏదైనా రిపోర్ట్ తాలూకు ముఖ్యమైన కంటెంట్‌ను ప్రదర్శించడానికి, దానిపై క్లిక్ చేయండి"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "అప్లికేషన్"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "కాష్"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "కాష్ స్టోరేజ్"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner కోసం రిక్వెస్ట్ చేసిన పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "యాక్టివ్‌గా ఉంచమని అందిన రిక్వెస్ట్ కారణంగా వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "వెనుకకు/ముందుకు కాష్ ఫ్లాగ్‌ల ద్వారా డిజేబుల్ చేయబడింది. chrome://flags/#back-forward-cacheకు వెళ్లి, దాన్ని ఈ పరికరంలోనే ఎనేబుల్ చేయండి."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "WebUSB APIను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Cache-Control: no-store‌ను ఉపయోగించే పేజీలో కుక్కీలు డిజేబుల్ చేసి ఉన్నందున వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "డెడికేటెడ్ వర్కర్ లేదా వర్క్‌లెట్‌ను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
@@ -3380,8 +3374,11 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "అంతర్గత ఎర్రర్."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది, ఎందుకంటే కొంత JavaScript నెట్‌వర్క్ రిక్వెస్ట్ Cache-Control: no-store హెడర్‌తో కూడిన రిసోర్స్‌ను అందుకుంది."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
-    "message": "యాక్టివ్‌గా ఉంచమని అందిన రిక్వెస్ట్ కారణంగా వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
+    "message": "'యాక్టివ్‌గా ఉంచ'మని పంపిన రిక్వెస్ట్ కారణంగా వెనుకకు/ముందుకు కాష్ డిజేబుల్ చేయబడింది."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "కీబోర్డ్ లాక్‌ను ఉపయోగించే పేజీలకు వెనుకకు/ముందుకు కాష్‌ను ఉపయోగించడానికి ప్రస్తుతం అర్హత లేదు."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{మరో # ఫ్రేమ్‌ను చూపండి}other{మరో # ఫ్రేమ్‌లను చూపండి}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "బకెట్ పేరు"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "స్థిరత్వం"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "గడువు ముగింపు"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "అపారదర్శకంగా ఉంటుంది"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "ఇది థర్డ్-పార్టీ"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "లోడ్ అవుతోంది…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "లేదు"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "ఏవీ లేవు"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(అపారదర్శకం)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "ఆరిజిన్"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "నిరంతరంగా ఉంటుంది"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "కోటా"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "టాప్-లెవెల్ సైట్"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "అవును"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "అవును, ఎందుకంటే యాన్‌సెస్ట్రీ చెయిన్‌లో థర్డ్-పార్టీ ఆరిజిన్ ఉంది"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "అవును, ఎందుకంటే స్టోరేజ్ కీ అపారదర్శకంగా ఉంది"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "అవును, ఎందుకంటే ఆరిజిన్ అనేది టాప్-లెవెల్ సైట్ వెలుపల ఉంది"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "అవును, ఎందుకంటే టాప్-లెవెల్ సైట్ అపారదర్శకంగా ఉంది"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "స్టోర్ చేసిన అన్ని ప్రైవేట్ స్టేట్ టోకెన్‌లు ఈ బ్రౌజర్ వెర్షన్‌లో అందుబాటులో ఉన్నాయి."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "ప్రైవేట్ స్టేట్ టోకెన్‌లు"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "ఎంపిక చేసిన నియమాల ఆధారంగా ఫిల్టర్ చేయండి"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "ఎక్స్‌టెన్షన్‌ల సెట్టింగ్‌లు"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "ఆపరేటింగ్ సిస్టమ్ డేటా సేవర్ మోడ్ కారణంగా ప్రీలోడింగ్ డిజేబుల్ అయింది."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "DevTools తెరిచి ఉన్న కారణంగా ప్రీలోడింగ్ ఫోర్స్-ఎనేబుల్ చేయబడింది. DevToolsను మూసివేసినప్పుడు, ప్రీరెండరింగ్ డిజేబుల్ చేయబడుతుంది, ఎందుకంటే ఈ బ్రౌజర్ సెషన్, పనితీరును సరిపోల్చడం కోసం ఉపయోగించే హోల్డ్‌బ్యాక్ గ్రూప్‌లో భాగం."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "యూజర్ సెట్టింగ్‌లు లేదా ఎక్స్‌టెన్షన్ కారణంగా ప్రీలోడింగ్ డిజేబుల్ అయింది. {PH1}‌కు వెళ్లి మరింత తెలుసుకోండి, లేదా {PH2}‌కు వెళ్లి ఎక్స్‌టెన్షన్‌ను డిజేబుల్ చేయండి."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "DevTools తెరిచి ఉన్న కారణంగా ప్రీరెండరింగ్ ఫోర్స్-ఎనేబుల్ చేయబడింది. DevToolsను మూసివేసినప్పుడు, ప్రీరెండరింగ్ డిజేబుల్ చేయబడుతుంది, ఎందుకంటే ఈ బ్రౌజర్ సెషన్, పనితీరును సరిపోల్చడం కోసం ఉపయోగించే హోల్డ్‌బ్యాక్ గ్రూప్‌లో భాగం."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "ప్రీలోడింగ్ డిజేబుల్ చేయబడింది, కానీ ఇప్పుడు అది ఫోర్స్-ఎనేబుల్ చేయబడింది"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "ప్రీలోడింగ్ డిజేబుల్ చేయబడింది"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "ప్రీరెండరింగ్ డిజేబుల్ చేయబడింది, కానీ ఇప్పుడు అది ఫోర్స్-ఎనేబుల్ చేయబడింది"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "ప్రీలోడింగ్ విఫలమైంది."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "స్టేటస్"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "ప్రారంభ పేజీ ప్రధాన ఫ్రేమ్ నావిగేషన్ సమయంలో ప్రీరెండర్ అయిన పేజీ యాక్టివేట్ అయింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "ప్రారంభ పేజీకి చెందిన శాండ్‌బాక్సింగ్ ఫ్లాగ్‌లు లేదా అనుమతుల పాలసీ ప్రీరెండరింగ్ పేజీలో ఉన్న వాటికి అనుకూలంగా లేని కారణంగా ప్రీరెండర్‌ను ఉపయోగించలేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "ఒరిజినల్ ప్రీరెండరింగ్ నావిగేషన్ రిక్వెస్ట్ సమయంలో కంటే, యాక్టివేషన్ సమయంలో, (ఉదా, HTTP హెడర్‌లు) భిన్నమైన నావిగేషన్ పారామీటర్‌లను లెక్కించినందున ప్రీరెండర్‌ను ఉపయోగించలేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "ప్రీరెండర్ అయిన పేజీ ఒక ఆడియో అవుట్‌పుట్‌ను రిక్వెస్ట్ చేస్తోంది, ప్రస్తుతం ఆ అవుట్‌పుట్‌ను బ్రౌజర్ సపోర్ట్ చేయడం లేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "తక్కువ బ్యాటరీని ఉపయోగించమని బ్రౌజర్‌ను యూజర్ రిక్వెస్ట్ చేసినందున ప్రీరెండరింగ్ జరగలేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "కొంత రిసోర్స్ లోడ్ బ్లాక్ చేయబడింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "ప్రీరెండరింగ్ నావిగేషన్‌కు HTTP క్లయింట్ సర్టిఫికెట్ అవసరం."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "ప్రీరెండరింగ్ నావిగేషన్ క్రాస్-సైట్ URLను టార్గెట్ చేసిన కారణంగా విఫలమైంది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "ప్రీరెండర్ అయిన పేజీ క్రాస్-సైట్ URLకు నావిగేట్ అయింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "ప్రీరెండర్ అయిన URL క్రాస్-సైట్ URLకు మళ్లించబడినందున ప్రీరెండరింగ్ నావిగేషన్ విఫలమైంది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "ప్రీరెండర్ అయిన పేజీ ఒక URLకు నావిగేట్ అయింది, ఆ URL క్రాస్-సైట్ URLకు మళ్లించబడింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "తక్కువ డేటాను ఉపయోగించమని బ్రౌజర్‌ను యూజర్ రిక్వెస్ట్ చేసినందున ప్రీరెండరింగ్ జరగలేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "ప్రీరెండర్ అయిన పేజీ ఒక డౌన్‌లోడ్‌ను ప్రారంభించింది, ప్రస్తుతం ఆ డౌన్‌లోడ్ సపోర్ట్ చేయడం లేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "ప్రస్తుతం వినియోగించిన మెమరీని తెలుసుకోవడానికి ప్రయత్నిస్తున్నప్పుడు బ్రౌజర్‌లో అంతర్గత ఎర్రర్ ఏర్పడినందున ప్రీరెండరింగ్ జరగలేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "ప్రారంభ పేజీలో దాని సాధారణ URLకు భిన్నంగా ఉన్న ప్రభావవంతమైన URL ఉన్నందున, ప్రారంభ పేజీ ప్రీరెండరింగ్‌ను చేయలేకపోయింది. (ఉదాహరణకు, కొత్త ట్యాబ్ పేజీ, లేదా హోస్ట్ చేసిన యాప్‌లు.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "http: లేదా https:‌ను URL కలిగి లేని కారణంగా దీనికి ప్రీరెండరింగ్‌కు అర్హత లేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "ప్రీరెండరింగ్ నావిగేషన్ విఫలమయ్యింది ఎందుకంటే అది http: లేదా https: కలిగి లేని URLకు మళ్లించబడింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "ప్రీరెండరింగ్ నావిగేషన్‌కు HTTP ప్రామాణీకరణ అవసరం, ప్రస్తుతం అది సపోర్ట్ చేయడం లేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "ప్రీరెండరింగ్‌ను సపోర్ట్ చేయడానికి ఈ పరికరంలో మొత్తం సిస్టమ్ మెమరీ తగినంత లేనందున ప్రీరెండరింగ్ జరగలేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "ప్రీరెండర్ అయిన పేజీ, స్వయంగా అదే మరొక URLకు మళ్లించబడింది, ప్రస్తుతం ఆ URL సపోర్ట్ చేయడం లేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "ప్రారంభ పేజీలో ఇప్పటికే చాలా ప్రీరెండరింగ్‌లు జరుగుతున్నందున ఈ ప్రీరెండరింగ్ జరగలేదు. తదుపరి ప్రీరెండరింగ్‌ను ఎనేబుల్ చేయడం కోసం ఇతర సిద్ధాంత నియమాలను తీసివేయండి."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "బ్రౌజర్ ప్రీరెండరింగ్ మెమరీ పరిమితిని మించిపోయినందున ప్రీరెండరింగ్ జరగలేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "బ్రౌజర్ మెమరీని తక్కువగా ఉపయోగించాల్సి ఉన్నందున ప్రీరెండర్ అయిన పేజీ అన్‌లోడ్ అయింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "బ్రౌజర్ మెమరీని తక్కువగా ఉపయోగించాల్సి ఉన్నందున ప్రీరెండరింగ్ జరగలేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "ప్రీరెండర్ అయిన పేజీ మిక్స్‌డ్ కంటెంట్‌ను కలిగి ఉంది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "ప్రీరెండర్ అయిన పేజీ, ప్రస్తుతం సపోర్ట్ చేయని నిషేధించబడిన JavaScript APIని ఉపయోగించింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "2xx కేటగిరీకి చెందని HTTP రిప్లయి స్టేటస్ కోడ్ కారణంగా ప్రీరెండరింగ్ నావిగేషన్ విఫలమైంది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "కంటెంట్ సెక్యూరిటీ పాలసీ కారణంగా ప్రీరెండరింగ్ నావిగేషన్ బ్లాక్ అయింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "ప్రీరెండరింగ్ నావిగేషన్‌లో నెట్‌వర్క్ ఎర్రర్ ఏర్పడింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "యూజర్, తమ బ్రౌజర్ సెట్టింగ్‌లలో ప్రీలోడింగ్‌ను డిజేబుల్ చేసినందున ప్రీరెండరింగ్ జరగలేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "ప్రారంభ పేజీ క్రాష్ అయింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "ప్రారంభ పేజీ తీసివేయబడింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "ప్రీరెండర్ చేయబడిన పేజీ క్రాష్ అయింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "ప్రీరెండర్ అయిన పేజీ తీసివేయబడింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "ప్రీరెండర్ అయిన పేజీ, స్వయంగా అదే ఒకే సైట్‌కు చెందిన క్రాస్-ఆరిజిన్ URLకు నావిగేట్ అయింది, కానీ గమ్యస్థాన ప్రతిస్పందనలో తగిన Supports-Loading-Mode హెడర్ లేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "ప్రీరెండర్ అయిన పేజీ ఒకే సైట్‌కు చెందిన క్రాస్-ఆరిజిన్ URLకు నావిగేట్ అయింది, కానీ గమ్యస్థాన ప్రతిస్పందనలో తగిన Supports-Loading-Mode హెడర్ లేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "ప్రీరెండర్ అయిన URL ఒకే సైట్‌కు చెందిన క్రాస్-ఆరిజిన్ URLకు మళ్లించబడింది, కానీ గమ్యస్థాన ప్రతిస్పందనలో తగిన Supports-Loading-Mode హెడర్ లేనందున ప్రీరెండరింగ్ నావిగేషన్ జరగలేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "ప్రీరెండర్ అయిన పేజీ URLకు నావిగేట్ అయింది, అది ఒకే సైట్‌కు చెందిన క్రాస్-ఆరిజిన్ URLకు మళ్లించబడింది, కానీ గమ్యస్థాన ప్రతిస్పందనలో తగిన Supports-Loading-Mode హెడర్ లేదు."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "చెల్లుబాటు కాని SSL సర్టిఫికెట్ కారణంగా ప్రీరెండరింగ్ నావిగేషన్ విఫలమయ్యింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "ప్రారంభ పేజీ చాలా కాలంగా బ్యాక్‌గ్రౌండ్‌లో ఉంది, కాబట్టి ప్రీరెండర్ అయిన పేజీ విస్మరించబడింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "ప్రారంభ పేజీ బ్యాక్‌గ్రౌండ్‌లో ఉంది, కాబట్టి ప్రీరెండర్ అయిన పేజీ విస్మరించబడింది."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "ప్రీరెండరింగ్ నావిగేషన్‌లో వినియోగించిన వెబ్‌సైట్ యాక్సెస్ సాధనాన్ని మార్చడం."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "మరిన్ని వివరాల కోసం ఎలిమెంట్‌ను ఎంచుకోండి"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "స్టేటస్"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "కొత్త ప్రీఫెచ్ కోసం ప్రీఫెచ్ విస్మరించబడింది, ఎందుకంటే |kPrefetchNewLimits| ఎనేబుల్ చేయబడింది"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "ప్రీఫెచ్ మళ్లించబడింది, కానీ మళ్లింపు URLకు ప్రీఫెచ్ కోసం అర్హత లేదు."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "ప్రీఫెచ్ మళ్లించబడింది, కానీ మళ్లింపు విషయంలో సమస్య ఉంది."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "రిప్లయికి సంబంధించిన కంటెంట్-రకం హెడర్‌కు సపోర్ట్ లేనందున ప్రీఫెచ్ విఫలమైంది."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "నెట్‌వర్క్ ఎర్రర్ కారణంగా ప్రీఫెచ్ విఫలమైంది."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "2xx కాని HTTP రిప్లయి స్టేటస్ కోడ్ కారణంగా ప్రీఫెచ్ విఫలమైంది."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "ప్రారంభ పేజీలో ఇప్పటికే చాలా ఎక్కువ ప్రీఫెచ్‌లు కొనసాగుతున్నందున ప్రీఫెచ్ అమలు చేయబడలేదు."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "ఆరిజిన్‌ను ప్రీఫెచ్ చేయడానికి ఇదివరకు ప్రయత్నించినప్పుడు HTTP 503 రిప్లయి వచ్చింది. ఇందులో ఇప్పటికీ యాక్టివ్‌గా ఉన్న Retry-After హెడర్ ఉంది."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "URLకు ప్రీఫెచ్ చేయబడే అర్హత లేదు, ఎందుకంటే ఆ ఆరిజిన్‌కు సంబంధించి రిజిస్టర్డ్ సర్వీస్ వర్కర్ లేదా క్రాస్-సైట్ కుక్కీ‌లు ఉన్నాయి, కానీ ఏదేమైనప్పటికీ ప్రీఫెచ్ నెట్‌వర్క్‌లో ఉంచబడింది, అలాగే యూజర్‌కు ఆరిజిన్‌తో ఏదో ఒక రకమైన మునుపటి సంబంధం ఉన్న నేపథ్యంలో దాచిపెట్టడానికి ఉపయోగించబడలేదు."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "ప్రీఫెచ్ అలాగే వినియోగం మధ్య చాలా సమయం గడిచిపోయింది, అందువల్ల ప్రీఫెచ్ విస్మరించబడింది."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "బ్యాటరీ సేవర్ సెట్టింగ్ ఎనేబుల్ చేసి ఉన్నందున ప్రీఫెచ్ అమలు చేయబడలేదు."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "బ్రౌజర్ అజ్ఞాత లేదా గెస్ట్ మోడ్‌లో ఉన్నందున ప్రీఫెచ్ అమలు చేయబడలేదు."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "ఆపరేటింగ్ సిస్టమ్ డేటా సేవర్ మోడ్‌లో ఉన్నందున ప్రీఫెచ్ అమలు చేయబడలేదు."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "URLకు ప్రీఫెచ్ చేయబడే అర్హత లేదు, ఎందుకంటే ఆటోమేటిక్ సెట్టింగ్ నెట్‌వర్క్ సందర్భంలో ప్రాక్సీ సర్వర్‌ను ఉపయోగించేలా ఇది కాన్ఫిగర్ చేయబడింది."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URLకు ప్రీఫెచ్ చేయబడే అర్హత లేదు, ఎందుకంటే దాని హోస్ట్ ప్రత్యేకమైనది కాదు (ఉదా., పబ్లిక్‌గా రూట్ చేయదగని IP అడ్రస్ లేదా రిజిస్ట్రీ కంట్రోల్‌లో లేని హోస్ట్‌పేరు), కానీ ప్రీఫెచ్‌ను ప్రాక్సీ చేయాల్సి ఉంటుంది."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URLకు ప్రీఫెచ్ చేయబడే అర్హత లేదు, ఎందుకంటే అది ఆటోమేటిక్ సెట్టింగ్ కాని స్టోరేజ్ పార్టిషన్‌ను ఉపయోగిస్తోంది."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "ప్రీలోడింగ్ డిజేబుల్ చేయబడినందున ప్రీఫెచ్ అమలు చేయబడలేదు."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "URLకు ప్రీఫెచ్ చేయబడే అర్హత లేదు, ఎందుకంటే అదే సైట్ క్రాస్-ఆరిజిన్ ప్రీఫెచ్ రిక్వెస్ట్ కోసం ప్రీఫెచ్ ప్రాక్సీని ఉపయోగించడానికి ఆటోమేటిక్ సెట్టింగ్ నెట్‌వర్క్ సందర్భాన్ని కాన్ఫిగర్ చేయడం సాధ్యపడలేదు."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URLకు ప్రీఫెచ్ చేయబడే అర్హత లేదు, ఎందుకంటే దాని స్కీమ్ https: కాదు."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URLకు ప్రీఫెచ్ చేయబడే అర్హత లేదు, ఎందుకంటే అది క్రాస్-సైట్, కానీ యూజర్ ఆ ఆరిజిన్‌కు సంబంధించిన కుక్కీ‌లను కలిగి ఉన్నారు."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "URLకు ప్రీఫెచ్ చేయబడే అర్హత లేదు, ఎందుకంటే ఆ ఆరిజిన్‌కు సంబంధించి రిజిస్టర్డ్ సర్వీస్ వర్కర్ ఉన్నారు, దీనికి ప్రస్తుతం సపోర్ట్ లేదు."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "ఇది క్రాస్-సైట్ ప్రీఫెచ్ అయినందున ప్రీఫెచ్ ఉపయోగించబడలేదు, అలాగే ప్రీఫెచ్ కొనసాగుతున్నప్పుడు ఆ URL కోసం కుక్కీలు జోడించబడ్డాయి, తద్వారా ప్రీఫెచ్ చేయబడిన రిప్లయి ఇప్పుడు గడువు ముగిసింది."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "మీ ఇంటర్నెట్ సర్వీస్ ప్రొవైడర్ లేదా నెట్‌వర్క్ అడ్మినిస్ట్రేటర్ ద్వారా ప్రీఫెచ్ బ్లాక్ చేయబడింది."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "ప్రీఫెచ్ చేసే ప్రాక్సీకి కనెక్షన్‌ను సెటప్ చేయడానికి ట్రై చేస్తున్నప్పుడు నెట్‌వర్క్ ఎర్రర్ ఎదురయ్యింది."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "ఎలిమెంట్‌ల ప్యానెల్‌లో చూడటానికి క్లిక్ చేయండి"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "ఈ పేజీ కోసం {PH1} ముందుగా ఫెచ్ చేయబడిన రీసోర్స్‌లు ఉపయోగించబడ్డాయి"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "ఈ పేజీ కోసం ప్రీలోడింగ్ ఉపయోగించబడింది"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "ఈ పేజీ ప్రీరెండర్ చేయబడింది"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "వినియోగం విజువలైజేషన్"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "కవరేజీ సమాచారాన్ని క్యాప్చర్ చేయడం సాధ్యపడలేదు, ఎందుకంటే పేజీ బ్యాక్‌గ్రౌండ్‌లో ప్రీరెండర్ చేయబడింది."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "అన్నీ"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "కవరేజీ సమాచారాన్ని క్యాప్చర్ చేయడం సాధ్యపడలేదు, ఎందుకంటే వెనుకకు/ముందుకు కాష్ నుండి ఈ పేజీ అందించబడింది."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "కవరేజీ గ్రాన్యులారిటీని ఎంచుకోండి: ప్రతి ఫంక్షన్ తక్కువ కవరేజీని, ప్రతి బ్లాక్ పేర్కొనదగిన విధంగా ఎక్కువ కవరేజీని కలిగి ఉన్నాయి."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "ఒక ఫంక్షన్‌కు"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "రీలోడ్ చేసి, కవరేజీని పొందడానికి రీలోడ్ బటన్ {PH1}‌ను క్లిక్ చేయండి."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "ఇప్పటివరకు {PH2}లో {PH1} ({PH3}%) ఉపయోగించబడింది, {PH4} ఉపయోగించబడలేదు."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "పరికర కవరేజీ"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "పేజీని రీలోడ్ చేయండి"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "కవరేజీని చూపు"
@@ -5670,7 +5667,7 @@
     "message": "క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "అన్ని CSS మార్పులను కాపీ చేయండి"
+    "message": "CSS మార్పులను కాపీ చేయండి"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS ప్రాపర్టీ పేరు: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "హార్డ్‌వేర్ ఒకేసారి అమలు చేయగల టాస్క్‌ల సంఖ్యకు సంబంధించిన ఓవర్‌రైడ్ సెట్టింగ్ ఎనేబుల్ చేయబడింది"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "navigator.hardwareConcurrency విలువ"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "త్రోట్లింగ్ చేయడం లేదు"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "విజయవంతమైంది"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "ఈ PST జారీ చేసిన వారికి కీలు అందుబాటులో లేవు. జారీ చేసిన వారు Chrome రిజిస్ట్రేషన్ ప్రాసెస్ ద్వారా రిజిస్టర్ చేసుకోవాల్సి రావచ్చు."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "ఏదో తెలియని కారణంగా యాక్టివిటీ విఫలమైంది."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "హీప్ కేటాయింపులను రికార్డ్ చేయడం ఆపివేయండి"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP కమాండ్ ఎడిటర్ దాచబడింది"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP కమాండ్ ఎడిటర్ చూపబడింది"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "అన్నింటినీ క్లియర్ చేయండి"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "ఫిల్టర్ చేయి"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "CDP కమాండ్ ఎడిటర్‌ను దాచండి"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "పద్ధతి"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "సెషన్"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "CDP కమాండ్ ఎడిటర్‌ను చూడండి"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "టార్గెట్"
@@ -11702,9 +11711,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "థ్రెడ్"
   },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "నెట్‌వర్క్"
-  },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH2} వద్ద {PH1}"
   },
@@ -13530,7 +13536,7 @@
     "message": "పేరు"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
-    "message": "(అపారదర్శకత)"
+    "message": "(అపారదర్శకం)"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "సెషన్"

@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Lepaskan kaitan ke jendela terpisah"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Halaman: Tidak dipilih"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Halaman: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Seperti yang ditulis"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Memicu window.confirm dari iframe lintas origin tidak digunakan lagi dan akan dihapus pada masa mendatang."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "Peristiwa Mutasi DOM, termasuk DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument, dan DOMCharacterDataModified tidak digunakan lagi (https://w3c.github.io/uievents/#legacy-event-types) dan akan dihapus. Sebagai gantinya, gunakan MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Dukungan untuk data: URL dalam elemen <use> SVG tidak digunakan lagi dan akan dihapus pada masa mendatang."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Melonggarkan kebijakan asal yang sama dengan menyetel document.domain sudah tidak digunakan lagi, dan akan dinonaktifkan secara default. Untuk terus menggunakan fitur ini, pilih untuk tidak menggunakan cluster agen dengan kunci asal dengan mengirimkan header Origin-Agent-Cluster: ?0 bersama respons HTTP untuk dokumen dan bingkai. Lihat https://developer.chrome.com/blog/immutable-document-domain/ untuk detail selengkapnya."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path tidak digunakan lagi dan akan dihapus. Sebagai gantinya, gunakan Event.composedPath()."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Header Expect-CT tidak lagi didukung. Chrome mewajibkan Transparansi Sertifikat untuk semua sertifikat tepercaya publik yang diterbitkan setelah 30 April 2018."
+    "message": "Header Expect-CT tidak digunakan lagi dan akan dihapus. Chrome mewajibkan Transparansi Sertifikat untuk semua sertifikat tepercaya publik yang diterbitkan setelah 30 April 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() dan watchPosition() tidak lagi berfungsi pada asal yang tidak aman. Untuk menggunakan fitur ini, sebaiknya Anda mengalihkan aplikasi ke asal yang aman, seperti HTTPS. Lihat https://goo.gle/chrome-insecure-origins untuk detail selengkapnya."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Atribut HTML: pelengkapan otomatis"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Mencegah konten campuran"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Pengurangan String Agen Pengguna"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Mode kompatibilitas dokumen"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ya"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Pengambilan Data & Pra-rendering"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Halaman Ini"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Klik pada laporan untuk menampilkan isinya"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Aplikasi"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Cache"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Penyimpanan cache"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Halaman yang meminta AppBanner saat ini tidak dapat disimpan dengan benar dalam back-forward cache."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Back-forward cache dinonaktifkan karena permintaan keepalive."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Back-forward cache dinonaktifkan oleh tanda. Buka chrome://flags/#back-forward-cache untuk mengaktifkannya secara lokal di perangkat ini."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Halaman yang menggunakan WebUSB API tidak dapat disimpan dengan benar dalam back-forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Back-forward cache dinonaktifkan karena cookie dinonaktifkan di halaman yang menggunakan Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Halaman yang menggunakan pekerja atau worklet khusus saat ini tidak dapat disimpan dengan benar dalam back-forward cache."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Error internal."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Back-forward cache dinonaktifkan karena beberapa permintaan jaringan JavaScript menerima resource dengan header Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Back-forward cache dinonaktifkan karena permintaan keepalive."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Tampilkan # frame lagi}other{Tampilkan # frame lagi}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Nama bucket"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Ketahanan"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Akhir masa berlaku"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Buram"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Adalah pihak ketiga"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Memuat…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Tidak"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Tidak ada"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(buram)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Origin"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Persisten"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Kuota"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Situs tingkat atas"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Ya"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Ya, karena rantai ancestor berisi origin pihak ketiga"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Ya, karena kunci penyimpanan buram"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Ya, karena origin berada di luar situs tingkat atas"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Ya, karena situs tingkat atas buram"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Semua Token Status Pribadi tersimpan tersedia di instance browser ini."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Token Status Pribadi"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Filter menurut kumpulan aturan yang dipilih"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Setelan ekstensi"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Pramuat dinonaktifkan karena mode Penghemat Data sistem operasi."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Pramuat diaktifkan paksa karena DevTools terbuka. Saat DevTools ditutup, pra-rendering akan dinonaktifkan karena sesi browser ini adalah bagian dari grup penahanan yang digunakan untuk perbandingan performa."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Pramuat dinonaktifkan karena setelan pengguna atau ekstensi. Buka {PH1} untuk mempelajari lebih lanjut, atau buka {PH2} untuk menonaktifkan ekstensi."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Pra-rendering diaktifkan paksa karena DevTools terbuka. Saat DevTools ditutup, pra-rendering akan dinonaktifkan karena sesi browser ini adalah bagian dari grup penahanan yang digunakan untuk perbandingan performa."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Pramuat dinonaktifkan, tetapi sekarang diaktifkan paksa"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Pramuat dinonaktifkan"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Pra-rendering dinonaktifkan, tetapi sekarang diaktifkan paksa"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Pramuat gagal."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Status"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Halaman pra-rendering diaktifkan selama navigasi frame utama halaman yang memulai pra-rendering."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Pra-rendering tidak digunakan karena tanda sandbox atau kebijakan izin halaman yang memulai pra-rendering tidak kompatibel dengan halaman pra-rendering."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Pra-rendering tidak digunakan karena selama waktu aktivasi, parameter navigasi yang berbeda (mis., header HTTP) dihitung dibandingkan selama permintaan navigasi pra-rendering asli."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Halaman pra-rendering meminta output audio, yang saat ini tidak didukung."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Pra-rendering tidak dilakukan karena pengguna meminta browser menggunakan lebih sedikit daya baterai."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Beberapa pemuatan resource diblokir."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Navigasi pra-rendering memerlukan sertifikat klien HTTP."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Navigasi pra-rendering gagal karena menargetkan URL lintas situs."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Halaman pra-rendering dialihkan ke URL lintas situs."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Navigasi pra-rendering gagal karena URL yang dipra-render dialihkan ke URL lintas situs."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Halaman pra-rendering dialihkan ke URL yang mengalihkan ke URL lintas situs."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Pra-rendering tidak dilakukan karena pengguna meminta browser menggunakan lebih sedikit data."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Halaman pra-render mencoba memulai download, yang saat ini tidak didukung."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Pra-rendering tidak dilakukan karena browser mengalami error internal saat mencoba menentukan penggunaan memori saat ini."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Halaman yang memulai pra-rendering tidak dapat melakukan pra-rendering karena memiliki URL efektif yang berbeda dari URL biasanya. (Misalnya, Halaman Tab Baru, atau aplikasi yang dihosting)."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL tidak memenuhi syarat untuk dipra-render karena skemanya bukan http: atau https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Navigasi pra-rendering gagal karena mengalihkan ke URL yang skemanya bukan http: atau https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Navigasi pra-rendering memerlukan autentikasi HTTP, yang saat ini tidak didukung."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Pra-rendering tidak dilakukan karena perangkat ini tidak memiliki total memori sistem yang cukup untuk mendukung pra-rendering."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Halaman pra-rendering mengalihkan halaman tersebut ke URL lain, yang saat ini tidak didukung."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Pra-rendering tidak dilakukan karena halaman yang memulai pra-rendering sudah memiliki terlalu banyak pra-render yang sedang berlangsung. Hapus aturan spekulasi lainnya untuk mengaktifkan pra-rendering lebih lanjut."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Pra-rendering tidak dilakukan karena browser melampaui batas memori pra-rendering."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Halaman pra-rendering dihapus muatannya karena browser mengalami tekanan memori kritis."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Pra-rendering tidak dilakukan karena browser mengalami tekanan memori kritis."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Halaman pra-rendering berisi konten campuran."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Halaman pra-rendering menggunakan JavaScript API terlarang yang saat ini tidak didukung."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Navigasi pra-rendering gagal karena kode status respons HTTP non-2xx."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Navigasi pra-rendering diblokir oleh Kebijakan Keamanan Konten."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Navigasi pra-rendering mengalami error jaringan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Pra-rendering tidak dilakukan karena pengguna menonaktifkan pramuat di setelan browser mereka."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Halaman yang memulai pra-rendering mengalami error."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Halaman yang memulai pra-rendering dihentikan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Halaman yang dipra-render mengalami error."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Halaman yang dipra-render dihentikan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Halaman pra-rendering mengalihkan halaman tersebut ke URL situs yang sama lintas origin, tetapi respons tujuan tidak menyertakan header Supports-Loading-Mode yang sesuai."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Halaman pra-rendering dialihkan ke URL situs yang sama lintas origin, tetapi respons tujuan tidak menyertakan header Supports-Loading-Mode yang sesuai."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Navigasi pra-rendering gagal karena URL yang dipra-render dialihkan ke URL situs yang sama dengan lintas origin, tetapi respons tujuan tidak menyertakan header Supports-Loading-Mode yang sesuai."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Halaman pra-rendering dialihkan ke URL yang dialihkan ke URL situs yang sama lintas origin, tetapi respons tujuan tidak menyertakan header Supports-Loading-Mode yang sesuai."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Navigasi pra-rendering gagal karena sertifikat SSL tidak valid."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Halaman yang memulai pra-rendering berada di latar belakang dalam waktu yang lama, sehingga halaman pra-rendering dihapus."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Halaman yang memulai pra-rendering berada di latar belakang, sehingga halaman pra-rendering dihapus."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Perubahan Agen Pengguna terjadi dalam navigasi pra-rendering."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Pilih elemen untuk melihat detail selengkapnya"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Pengambilan data dihapus untuk pengambilan data yang lebih baru karena |kPrefetchNewLimits| diaktifkan"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Pengambilan data telah dialihkan, tetapi URL alihan tidak memenuhi syarat untuk pengambilan data."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Pengambilan data dialihkan, tetapi ada masalah dengan pengalihan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Pengambilan data gagal karena header Content-Type respons tidak didukung."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Pengambilan data gagal karena error jaringan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Pengambilan data gagal karena kode status respons HTTP non-2xx."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Pengambilan data tidak dilakukan karena halaman yang memulai pengambilan data sudah memiliki terlalu banyak pengambilan data yang sedang berlangsung."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Pengambilan data sebelumnya ke origin mendapatkan respons HTTP 503 dengan header Retry-After yang belum berlalu."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "URL tidak memenuhi syarat untuk pengambilan data karena ada pekerja layanan terdaftar atau cookie lintas situs untuk origin tersebut, tetapi pengambilan data telah ditempatkan di jaringan dan tidak digunakan, untuk menyamarkan bahwa pengguna memiliki hubungan sebelumnya dengan origin."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Terlalu banyak waktu yang berlalu antara pengambilan data dan penggunaan, sehingga pengambilan data dihapus."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Pengambilan data tidak dilakukan karena setelan Penghemat Baterai diaktifkan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Pengambilan data tidak dilakukan karena browser dalam mode Samaran atau Tamu."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Pengambilan data tidak dilakukan karena sistem operasi dalam mode Penghemat Data."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "URL tidak memenuhi syarat untuk pengambilan data, karena dalam konteks jaringan default, URL dikonfigurasi untuk menggunakan server proxy."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL tidak memenuhi syarat untuk pengambilan data karena hostnya tidak unik (mis., alamat IP yang tidak dapat dirutekan secara publik, atau nama host yang tidak dikontrol registry), tetapi pengambilan data harus melalui proxy."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URL tidak memenuhi syarat untuk pengambilan data karena menggunakan partisi penyimpanan non-default."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Pengambilan data tidak dilakukan karena pramuat dinonaktifkan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "URL tidak memenuhi syarat untuk pengambilan data karena konteks jaringan default tidak dapat dikonfigurasi untuk menggunakan proxy pengambilan data untuk permintaan pengambilan data lintas origin situs yang sama."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URL tidak memenuhi syarat untuk pengambilan data karena skemanya bukan https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URL tidak memenuhi syarat untuk pengambilan data karena merupakan URL lintas situs, tetapi pengguna memiliki cookie untuk origin tersebut."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "URL tidak memenuhi syarat untuk pengambilan data karena ada pekerja layanan terdaftar untuk origin tersebut, yang saat ini tidak didukung."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Pengambilan data tidak digunakan karena merupakan pengambilan data lintas situs, dan cookie ditambahkan untuk URL tersebut saat pengambilan data sedang berlangsung, sehingga respons pengambilan data kini sudah tidak berlaku."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Pengambilan data diblokir oleh Internet Service Provider atau administrator jaringan Anda."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Terjadi error jaringan saat mencoba menyiapkan koneksi ke proxy pengambilan data."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Klik untuk membuka di panel Elemen"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "{PH1} resource pengambilan data digunakan untuk halaman ini"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Pramuat digunakan untuk halaman ini"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Halaman ini dipra-render"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Visualisasi Penggunaan"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Tidak dapat merekam info cakupan karena halaman dipra-render di latar belakang."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Semua"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Tidak dapat merekam info cakupan karena halaman disajikan dari back-forward cache."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Pilih perincian cakupan: Per fungsi memiliki overhead rendah, per blok memiliki overhead signifikan."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Per fungsi"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Klik tombol muat ulang {PH1} untuk memuat ulang dan mendapatkan cakupan."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} dari {PH2} ({PH3}%) digunakan sejauh ini, {PH4} tidak digunakan."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Cakupan instrumen"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Muat ulang halaman"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Tampilkan Cakupan"
@@ -5670,7 +5667,7 @@
     "message": "Disalin ke papan klip"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Salin semua perubahan CSS"
+    "message": "Salin perubahan CSS"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Nama properti CSS: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Penggantian konkurensi hardware diaktifkan"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Nilai navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Tanpa throttling"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Berhasil"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Kunci untuk penerbit PST ini tidak tersedia. Penerbit mungkin perlu didaftarkan melalui proses pendaftaran Chrome."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Operasi gagal karena alasan yang tidak diketahui."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Berhenti merekam alokasi heap"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "Editor perintah CDP disembunyikan"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "Editor perintah CDP ditampilkan"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Hapus semua"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Filter"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "Sembunyikan editor perintah CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Metode"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Sesi"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "Tampilkan editor perintah CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Target"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Thread"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Jaringan"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} pukul {PH2}"

@@ -159,7 +159,7 @@
     "message": "渲染"
   },
   "core/common/SettingRegistration.ts | sources": {
-    "message": "源代码"
+    "message": "源代码/来源"
   },
   "core/common/SettingRegistration.ts | sync": {
     "message": "同步"
@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "取消停靠至单独的窗口"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "页面：未选择"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "页面：{PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "按原始格式设置"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "从跨源 iframe 触发 window.confirm 的功能已被弃用，日后将被移除。"
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOM 变更事件（包括 DOMSubtreeModified、DOMNodeInserted、DOMNodeRemoved、DOMNodeRemovedFromDocument、DOMNodeInsertedIntoDocument 和 DOMCharacterDataModified，详见 https://w3c.github.io/uievents/#legacy-event-types）已被弃用，并将被移除。请改用 MutationObserver。"
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "对 SVG <use> 元素中 data: URL 的支持已被弃用，日后将被移除。"
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "通过设置 document.domain 放宽同源政策的功能已被弃用，并将默认处于停用状态。若要继续使用此功能，请通过发送 Origin-Agent-Cluster: ?0 标头以及文档和框架的 HTTP 响应来选择停用以源为键的代理集群。如需了解详情，请访问 https://developer.chrome.com/blog/immutable-document-domain/。"
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path 已被弃用，并将被移除。请改用 Event.composedPath()。"
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT 标头已不再受支持。Chrome 要求，在 2018 年 4 月 30 日之后颁发的所有受大众信任的证书均须遵守证书透明度政策。"
+    "message": "Expect-CT 标头已被弃用，并将被移除。Chrome 要求，在 2018 年 4 月 30 日之后颁发的所有受大众信任的证书均须遵守证书透明度政策。"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() 和 watchPosition() 不再适用于不安全的源。若要使用此功能，您应考虑将您的应用转移到安全的源，例如 HTTPS。如需了解详情，请访问 https://goo.gle/chrome-insecure-origins。"
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML 属性：自动补全"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "防止混合内容"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "用户代理字符串缩短"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "文档兼容模式"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "是"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "预提取和预渲染"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "此网页"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "点击任一报告即可显示相应正文"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "应用"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "缓存"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "缓存空间"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "已请求 AppBanner 的网页目前无法储存至往返缓存。"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "往返缓存已被停用，因为这是一项 keepalive 请求。"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "往返缓存被相关 flag 停用了。请在此设备上访问 chrome://flags/#back-forward-cache 以从本地启用该功能。"
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "使用 WebUSB API 的网页无法储存至往返缓存。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "往返缓存已被停用，因为在使用 Cache-Control: no-store 的网页上 Cookie 处于停用状态。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "使用专用 Worker 或 Worklet 的网页目前无法储存至往返缓存。"
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "内部出错了。"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "往返缓存已被停用，因为部分 JavaScript 网络请求收到了包含 Cache-Control: no-store 标头的资源。"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "往返缓存已被停用，因为这是一项 keepalive 请求。"
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{显示另外 # 个框架}other{显示另外 # 个框架}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "存储桶名称"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "耐用性"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "过期时间"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "不透明"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "属于第三方"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "正在加载…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "否"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "无"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "（不透明）"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "源"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "是永久的"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "配额"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "顶级网站"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "是"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "是，因为祖先链包含第三方源"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "是，因为存储密钥是不透明的"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "是，因为相应源不属于该顶级网站"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "是，因为顶级网站是不透明的"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "在此浏览器实例中可用的所有已存储私密状态令牌。"
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "私密状态令牌"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "按所选规则集过滤"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "扩展程序设置"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "由于操作系统启用了省流量模式，预加载已停用。"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "由于开发者工具已打开，因此系统已强制启用预加载功能。关闭开发者工具后，系统将停用预渲染功能，因为此浏览器会话属于用于比较性能的对照组。"
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "预加载由于用户设置或扩展程序而停用。请前往 {PH1} 了解详情，或前往 {PH2} 停用相应扩展程序。"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "由于开发者工具已打开，因此系统已强制启用预渲染功能。关闭开发者工具后，系统将停用预渲染功能，因为此浏览器会话属于用于比较性能的对照组。"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "预加载功能之前已停用，但现已强制启用"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "已停用预加载"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "预渲染功能之前已停用，但现已强制启用"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "预加载失败。"
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "状态"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "在发起页的主框架导航期间激活的预渲染网页。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "未使用预渲染，因为就沙盒标记或权限政策而言，发起页与预渲染页面不兼容。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "未使用预渲染，因为激活期间计算的导航参数（例如 HTTP 标头）不同于原始预渲染导航请求期间计算的参数。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "预渲染的网页请求进行音频输出，但目前不支持该操作。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "未执行预渲染，因为用户已请求浏览器降低耗电量。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "已阻止加载部分资源。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "预渲染导航要求提供 HTTP 客户端证书。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "预渲染导航失败，因为定向到了跨网站网址。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "预渲染的网页导航到了跨网站网址。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "预渲染导航失败，因为预渲染的网址重定向到了跨网站网址。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "预渲染的网页导航到的网址重定向到了跨网站网址。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "未执行预渲染，因为用户已请求浏览器节省数据流量。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "预渲染的网页尝试发起下载，但该操作目前不受支持。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "未执行预渲染，因为浏览器在尝试确定当前内存用量时遇到内部错误。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "发起页无法执行预渲染，因为该页面的有效网址不同于它的常规网址。（例如，“新标签页”页面或托管的应用。）"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "由于网址的架构不是 http: 或 https:，因此无法进行预渲染。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "预渲染导航失败，因为它重定向到的网址不是 http: 或 https: 架构。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "预渲染导航要求进行 HTTP 身份验证，但目前不支持这种验证。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "未执行预渲染，因为此设备没有足够的系统总内存来支持预渲染。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "预渲染的网页自行导航到了另一个网址，但该网址目前不受支持。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "未执行预渲染，因为发起页中已有太多正在进行的预渲染。请移除其他推测规则，以便执行进一步的预渲染。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "未执行预渲染，因为浏览器的内存用量超出了预渲染内存上限。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "由于浏览器面临极大的内存压力，因此预渲染的网页被卸载了。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "未执行预渲染，因为浏览器面临极大的内存压力。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "预渲染的网页包含混合内容。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "预渲染的网页使用了被禁用的 JavaScript API，但该 API 目前不受支持。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "预渲染导航失败，因为 HTTP 响应状态代码不是 2xx。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "预渲染导航被内容安全政策阻止了。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "预渲染导航遇到了网络连接错误。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "由于用户在其浏览器设置中停用了预加载，因此无法进行预渲染"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "发起页崩溃了。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "发起页被终止了。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "预渲染的网页崩溃了。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "预渲染的网页被终止了。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "预渲染的网页自行导航到了一个同网站跨源网址，但目标响应未包含相应的 Supports-Loading-Mode 标头。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "预渲染的网页导航到了同网站跨源网址，但目标响应未包含相应的 Supports-Loading-Mode 标头。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "预渲染导航失败，因为预渲染的网址重定向到了同网站跨源网址，但目标响应未包含相应的 Supports-Loading-Mode 标头。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "预渲染的网页导航到的网址重定向到了同网站跨源网址，但目标响应未包含相应的 Supports-Loading-Mode 标头。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "预渲染导航失败，因为 SSL 证书无效。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "预渲染的网页被舍弃了，因为发起页已转至后台运行且已运行很长时间。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "由于发起页已转至后台运行，因此预渲染的网页被舍弃了。"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "预渲染导航过程中用户代理发生了更改。"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "选择一个元素即可了解更多详情"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "状态"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "由于 |kPrefetchNewRestrictions| 已启用，为了执行较新的预提取，现有的预提取资源被舍弃了"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "预提取已重定向，但重定向网址无法进行预提取。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "预提取已重定向，但重定向出现问题。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "预提取失败，因为响应的 Content-Type 标头不受支持。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "预提取失败，因为发生了网络连接错误。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "预提取失败，因为 HTTP 响应的状态代码不是 2xx。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "未执行预提取，因为发起页中已有太多正在进行的预提取。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "之前针对该源执行的预提取操作收到了 HTTP 503 响应，响应中包含的 Retry-After 标头尚未过期。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "无法预提取该网址，因为相应源已有注册的 Service Worker 或跨网站 Cookie，但系统仍将预提取的资源放置在网络上且没有使用，以掩盖用户以前与该源存在某种关系。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "由于预提取资源和使用资源之间的间隔时间过长，预提取的资源被舍弃了。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "未执行预提取，因为系统启用了“省电模式”设置。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "未执行预提取，因为浏览器处于无痕模式或访客模式。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "未执行预提取，因为操作系统处于省流量模式。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "无法预提取该网址，因为在默认网络环境中，该网址已配置为使用代理服务器。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "无法预提取该网址，因为该网址的主机不是唯一的（例如，不可公开路由的 IP 地址或不受注册表控制的主机名），但预提取需要通过代理才能进行。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "无法预提取该网址，因为该网址使用的是非默认存储分区。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "未执行预提取，因为预加载已停用。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "无法预提取该网址，因为无法将默认网络环境配置为针对同网站跨源预提取请求使用预提取代理。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "无法预提取该网址，因为该网址的 Scheme 不是 https:。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "无法预提取该网址，因为预提取的是跨网站资源，但用户已有相应源的 Cookie。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "无法预提取该网址，因为相应源已有注册的 Service Worker，但系统目前不支持该 Service Worker。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "未使用预提取功能，因为预提取的是跨网站资源。此外，系统在预提取进行期间已为相应网址添加了 Cookie，因此预提取的响应现已过期。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "预提取被您的互联网服务提供商或网络管理员阻止了。"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "尝试设置与预提取代理的连接时发生网络连接错误。"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "点击即可在“元素”面板中显示"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "此网页使用了 {PH1} 个预提取的资源"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "已为此网页使用预加载"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "此网页是预呈现的网页"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "使用情况可视化图表"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "无法捕获覆盖率信息，因为该网页是在后台预渲染的。"
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "全部"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "无法捕获覆盖率信息，因为该网页是使用往返缓存提供的。"
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "选择覆盖范围粒度：“按函数”的开销很低，“按块”的开销很高。"
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "按函数"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "点击“重新加载”按钮 {PH1} 即可重新加载并获取覆盖率。"
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "到目前为止，已使用 {PH1} ({PH3}%)，共 {PH2}，还有 {PH4} 未使用。"
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "插桩覆盖范围"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "重新加载网页"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "显示覆盖范围"
@@ -5670,7 +5667,7 @@
     "message": "已复制到剪贴板"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "复制所有 CSS 更改"
+    "message": "复制 CSS 更改"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS 属性名称：{PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "硬件并发替换已启用"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "navigator.hardwareConcurrency 的值"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "已停用节流模式"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "成功"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "此 PST 颁发者的密钥不可用。该颁发者可能需要通过 Chrome 注册流程进行注册。"
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "由于未知原因，此操作失败。"
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "停止记录堆分配"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "已隐藏 CDP 命令编辑器"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "已显示 CDP 命令编辑器"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "全部清除"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "过滤"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "隐藏 CDP 命令编辑器"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "方法"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "会话"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "显示 CDP 命令编辑器"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "目标"
@@ -11514,7 +11523,7 @@
     "message": "代码段"
   },
   "panels/sources/sources-meta.ts | sources": {
-    "message": "源代码"
+    "message": "源代码/来源"
   },
   "panels/sources/sources-meta.ts | step": {
     "message": "单步调试"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "线程"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "网络"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH2}时显示的{PH1}"

@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Doki lahti ja ava eraldi aknas"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Leht: pole valitud"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Leht: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Loodud kujul"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Funktsiooni window.confirm käivitamise tugi mitme päritoluga iframe'idest on katkestatud ja see eemaldatakse tulevikus."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOM-i mutatsioonisündmuste (sh DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument ja DOMCharacterDataModified) tugi katkestatakse (https://w3c.github.io/uievents/#legacy-event-types) ja need eemaldatakse. Kasutage selle asemel üksust MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Üksuse data: URLs tugi SVG elemendis <use> on katkestatud ja see eemaldatakse tulevikus."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Sama lähtekohaga reegli lõdvendamise tugi seadega document.domain on katkestatud ja see keelatakse vaikimisi. Selle funktsiooni kasutamise jätkamiseks loobuge päritolupõhiste agendikobarate kasutamisest, saates dokumendi ja kaadrite jaoks üksuse Origin-Agent-Cluster: ?0 päise koos HTTP-vastusega. Vaadake lisateavet aadressilt https://developer.chrome.com/blog/immutable-document-domain/."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "API Event.path tugi on katkestatud ja see eemaldatakse. Kasutage selle asemel API-t Event.composedPath()."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Päist Expect-CT enam ei toetata. Chrome nõuab, et kõik avalikud usaldusväärsed sertifikaadid, mis on välja antud pärast 2018. aasta 30. aprilli, peavad järgima sertifikaadi läbipaistvuse eeskirju."
+    "message": "API Expect-CT tugi on katkestatud ja see eemaldatakse. Chrome nõuab, et kõik avalikud usaldusväärsed sertifikaadid, mis on välja antud pärast 30. aprilli 2018, peavad järgima sertifikaadi läbipaistvuse eeskirju."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() ja watchPosition() ei tööta enam ebaturvalistes lähtekohtades. Selle funktsiooni kasutamiseks soovitame teil oma rakenduse ümber lülitada turvalisele lähtekohale, nt HTTPS-ile. Vaadake lisateavet aadressilt https://goo.gle/chrome-insecure-origins."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-i atribuut: automaatne täitmine"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Segatud sisu takistatakse"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Kasutaja-agendi stringi lihtsustamine"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Dokumendi ühilduvusrežiim"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Jah"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Eeltoomine ja eelrenderdus"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "See leht"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Klõpsake mis tahes aruandel, et selle sisu kuvada"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Rakendus"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Vahemälu"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Vahemälu salvestusruum"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBannerit taotlenud lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Vahemälu tagasi-edasiliikumiseks on säilitamissõnumi taotluse tõttu keelatud."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Tagasi-edasiliikumise vahemälu on lippudega keelatud. Minge aadressile chrome://flags/#back-forward-cache, et see selles seadmes kohalikult lubada."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "WebUSB API-d kasutavad lehed ei ole tagasi-edasiliikumise vahemälu jaoks sobilikud."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Tagasi-edasiliikumise vahemälu on keelatud, sest küpsisefailid on keelatud lehel, mis kasutab direktiivi Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Spetsiaalset töötajat või tööki kasutavad lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
@@ -3380,8 +3374,11 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Sisemine viga."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Tagasi-edasiliikumise vahemälu on keelatud, sest mõni JavaScripti võrgutaotlus sai ressursi päisega Cache-Control: no-store."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
-    "message": "Vahemälu tagasi-edasiliikumiseks on säilitamissõnumi taotluse tõttu keelatud."
+    "message": "Tagasi-edasiliikumise vahemälu on säilitamissõnumi taotluse tõttu keelatud."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "Klaviatuurilukku kasutavad lehed ei ole praegu tagasi-edasiliikumise vahemälu jaoks sobilikud."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Kuva veel # raam}other{Kuva veel # raami}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Kimbu nimi"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Vastupidavus"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Aegumine"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "On läbipaistmatu"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "On kolmanda osapoole oma"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Laadimine …"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Ei"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Pole"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(läbipaistmatu)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Allikas"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "On püsilik"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Salvestusruumi piirang"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Ülataseme sait"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Jah"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Jah, sest päritoluahel sisaldab kolmanda osapoole allikat"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Jah, sest salvestusruumi võti on läbipaistmatu"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Jah, sest allikas on ülataseme saidist väljaspool"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Jah, sest ülataseme sait on läbipaistmatu"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Kõik selles brauseri eksemplaris saadaval olevad salvestatud privaatse oleku märgid."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Privaatse oleku märgid"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Filtreerige valitud reeglistiku järgi"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Laienduste seaded"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Eellaadimine on keelatud operatsioonisüsteemi andmemahu säästja režiimi tõttu."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Eellaadimine on sundlubatud, kuna DevTools on avatud. Kui DevTools suletakse, keelatakse eelrenderdus, kuna see brauseriseanss on osa isoleerimisgrupist, mida kasutatakse toimivuse võrdlemisel."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Eellaadimine on kasutaja seadete või laienduse tõttu keelatud. Lisateabe saamiseks minge aadressile {PH1} või laienduse keelamiseks minge aadressile {PH2}."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Eelrenderdus on sundlubatud, kuna DevTools on avatud. Kui DevTools suletakse, keelatakse eelrenderdus, kuna see brauseriseanss on osa isoleerimisgrupist, mida kasutatakse toimivuse võrdlemisel."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Eellaadimine oli keelatud, kuid see on nüüd sundlubatud"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Eellaadimine on keelatud"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Eelrenderdus oli keelatud, kuid see on nüüd sundlubatud"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Eellaadimine ebaõnnestus."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Olek"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Eelrenderdatud leht aktiveeriti algatava lehe põhiraami navigeerimise ajal."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Eelrenderdust ei kasutatud, kuna algatava lehe liivakasti lipud või lubade eeskirjad ei ühildu eelrenderduse lehe omadega."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Eelrenderdust ei kasutatud, kuna aktiveerimise ajal arvutati teistsugused navigeerimisparameetrid (nt HTTP päised) kui algse eelrenderduse navigeerimispäringu ajal."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Eelrenderdatud leht taotles heliväljundit, mida praegu ei toetata."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Eelrenderdust ei tehtud, kuna kasutaja soovis, et brauser kasutaks vähem akut."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Osa ressursi laadimist blokeeriti."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Eelrenderduse navigeerimiseks oli vaja HTTP kliendisertifikaati."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Eelrenderdamise navigeerimine ebaõnnestus, kuna see sihtis saidiülest URL-i."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Eelrenderdatud leht navigeeris saidiülesele URL-ile."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Eelrenderdamise navigeerimine ebaõnnestus, kuna eelrenderdatud URL suunati saidiülesele URL-ile."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Eelrenderdatud leht navigeeris URL-ile, mis suunati ümber saidiülesele URL-ile."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Eelrenderdust ei tehtud, kuna kasutaja soovis, et brauser kasutaks vähem andmeid."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Eelrenderdatud leht üritas algatada allalaadimist, mida praegu ei toetata."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Eelrenderdust ei tehtud, kuna brauseris tekkis sisemine viga, püüdes määratleda praegust mälukasutust."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Algatavat lehte ei saa eelrenderdada, kuna selle kehtiv URL erineb tavalisest URL-ist. (Näiteks uue vahelehe leht või hostitud rakendused.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL ei olnud eelrenderdamiseks sobilik, kuna selle skeem ei olnud http: või https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Eelrenderdamise navigeerimine ebaõnnestus, kuna see suunati ümber URL-ile, mille skeem ei olnud http: või https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Eelrenderduse navigeerimine nõudis HTTP autentimist, mida praegu ei toetata."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Eelrenderdust ei tehtud, kuna sellel seadmel ei ole eelrenderduse toetamiseks piisavalt süsteemimälu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Eelrenderdatud leht navigeeris ise teisele URL-ile, mida praegu ei toetata."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Eelrenderdust ei tehtud, kuna algataval lehel on juba liiga palju eelrenderdusi pooleli. Edasise eelrenderduse võimaldamiseks eemaldage muud spekulatsioonireeglid."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Eelrenderdust ei tehtud, kuna brauser ületas eelrenderduse mälupiirangu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Eelrenderdatud leht laaditi maha, kuna brauser sattus kriitilise mälusurve alla."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Eelrenderdust ei tehtud, kuna brauser oli kriitilise mälusurve all."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Eelrenderdatud lehel oli erinevat sisu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Eelrenderdatud leht kasutas keelatud JavaScripti API-t, mida praegu ei toetata."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Eelrenderdamise navigeerimine ebaõnnestus mitte-2xx HTTP-vastuse olekukoodi tõttu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Eelrenderdamise navigeerimine blokeeriti sisu turvalisuse eeskirjadega."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Eelrenderduse navigeerimisel ilmnes võrgu viga."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Eelrenderdust ei tehtud, kuna kasutaja keelas brauseri seadetes eellaadimise."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Algatav leht jooksis kokku."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Algatava lehe protsess lõpetati."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Eelrenderdatud leht jooksis kokku."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Lehe eelrenderdusprotsess lõpetati."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Eelrenderdatud leht navigeeris ise samal saidil erineva päritoluga URL-ile, kuid sihtkoha vastus ei sisaldanud õiget päist Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Eelrenderdatud leht navigeeris samal saidil erineva päritoluga URL-ile, kuid sihtkoha vastus ei sisaldanud õiget päist Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Eelrenderdamise navigeerimine ebaõnnestus, kuna eelrenderdatud URL suunati ümber sama saidi URL-ile, kuid sihtkoha vastus ei sisaldanud sobivat päist Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Eelrenderdatud leht navigeeris URL-ile, mis suunas samal saidil erineva päritoluga URL-ile, kuid sihtkoha vastus ei sisaldanud õiget päist Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Eelrenderdamise navigeerimine ebaõnnestus kehtetu SSL-sertifikaadi tõttu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Algatav leht oli pikka aega taustal, seega jäeti eelrenderdatud leht kõrvale."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Algatav leht oli taustal, seega jäeti eelrenderdatud leht kõrvale."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Kasutaja-agendi muutmine toimus eelrenderdamise navigeerimisel."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Lisateabe saamiseks valige element"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Olek"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Eeltoomisest loobuti ja asemele võeti uuem eeltoomine, sest |kPrefetchNewLimits| on lubatud."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Eeltoomine suunati ümber, kuid ümbersuunamise URL ei ole eellaadimiseks sobilik."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Eeltoomine suunati ümber, kuid ümbersuunamisega esines probleem."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Eeltoomine ebaõnnestus, sest vastuse päist Content-Type ei toetata."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Eeltoomine ebaõnnestus võrgu vea tõttu."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Eeltoomine ebaõnnestus, sest HTTP-vastuse olekukood ei olnud 2xx-vormingus."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Eeltoomist ei tehtud, kuna algataval lehel on juba liiga palju eeltoomisi pooleli."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Eelnev allika eeltoomine sai vastuse HTTP 503 koos päisega Retry-After, mis ei ole veel möödunud."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "URL ei olnud eeltoomiseks sobilik, sest selle allika jaoks oli olemas registreeritud teenuse töötleja või saidiülesed küpsised, kuid eeltoomine lisati sellegipoolest võrku ja seda ei kasutatud, et varjata kasutaja varasemat seost allikaga."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Eeltoomise ja kasutamise vahel möödus liiga palju aega, mistõttu eeltoomisest loobuti."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Eeltoomist ei tehtud, sest akusäästja seade oli lubatud."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Eeltoomist ei tehtud, sest brauser on inkognito või külalisrežiimis."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Eeltoomist ei tehtud, sest operatsioonisüsteem on režiimis Andmemahu säästja."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "URL ei ole eeltoomiseks sobilik, sest see on vaikevõrgu kontekstis seadistatud puhverserverit kasutama."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL ei olnud eeltoomiseks sobilik, sest selle host ei olnud kordumatu (nt mitteavalikult marsruuditav IP-aadress või hosti nimi, mis ei ole registriga hallatud), kuid eeltoomisel oli puhverserveri nõue."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URL ei olnud eeltoomiseks sobilik, sest see ei kasuta salvestusruumi vaikesektsiooni."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Eeltoomist ei tehtud, sest eellaadimine on keelatud."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "URL ei olnud eeltoomiseks sobilik, sest vaikevõrgu konteksti ei saa seadistada nii, et see kasutaks eeltoomise puhverserverit sama saidi allikatevahelise eeltoomise taotluse jaoks."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URL ei olnud eeltoomiseks sobilik, kuna selle skeem ei olnud https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URL ei olnud eeltoomiseks sobilik, sest see oli saidiülene, kuid kasutajal olid selle allika küpsisefailid."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "URL ei olnud eeltoomiseks sobilik, sest selle allika jaoks oli olemas registreeritud teenuse töötleja. Seda ei toetata praegu."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Eeltoomist ei kasutatud, sest tegemist oli saidiülese eeltoomisega ja eeltoomise ajal lisati sellele URL-ile küpsisefailid, mistõttu on eeltoomise vastus nüüd aegunud."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Eeltoomise blokeeris teie internetiteenuse pakkuja või võrguadministraator."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Eeltoomise puhverserveriga ühenduse loomisel esines võrgu viga."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Klõpsake elementide paneelil kuvamiseks"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "Selle lehe jaoks kasutatakse {PH1} eellaaditud allikat"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Selle lehe jaoks kasutati eellaadimist"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "See leht oli eelrenderdatud"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Kasutuse visualiseerimine"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Katvuse teavet ei õnnestunud jäädvustada, sest leht oli taustal eelrenderdatud."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Kõik"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Katvuse teavet ei õnnestunud jäädvustada, sest leht esitati tagasi-edasiliikumise vahemälust."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Valige katvuse detailsus: funktsioonipõhise detailsuse ressursikulu on väike, plokipõhise detailsuse ressursikulu on märkimisväärne."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Funktsiooni alusel"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Uuesti laadimiseks ja katvuse saamiseks klõpsake uuesti laadimise nupul {PH1}."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} {PH2}-st ({PH3}%) on seni kasutatud, {PH4} on kasutamata."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Instrumendi katvus"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Laadi leht uuesti"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Kuva ulatus"
@@ -5670,7 +5667,7 @@
     "message": "Lõikelauale kopeeritud"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kõikide CSS-i muudatuste kopeerimine"
+    "message": "CSS.i muudatuste kopeerimine"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS-atribuudi nimi: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Riistvara korraga kasutamise alistamine on lubatud"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Üksuse navigator.hardwareConcurrency väärtus"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Piiranguta"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Õnnestus"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Selle PST väljaandja võtmed ei ole saadaval. Väljaandja tuleb võib-olla Chrome'i registreerimisprotsessi kaudu registreerida."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Toiming nurjus teadmata põhjusel."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Katkesta kuhja jaotuste salvestamine"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP käsuredaktor on peidetud"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP käsuredaktor on kuvatud"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Kustuta kõik"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Filtreeri"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "CDP käsuredaktori peitmine"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Meetod"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Seanss"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "CDP käsuredaktori kuvamine"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Sihtmärk"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Lõim"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Võrk"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} – {PH2}"

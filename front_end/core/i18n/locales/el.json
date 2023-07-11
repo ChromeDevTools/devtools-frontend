@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Απαγκύρωση σε ξεχωριστό παράθυρο"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Σελίδα: Δεν έχει επιλεγεί"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Σελίδα: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Βάσει αρχικής σύνταξης"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Η ενεργοποίηση του window.confirm από iframe διασταυρούμενων προελεύσεων έχει καταργηθεί και θα αποσυρθεί στο μέλλον."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "Τα συμβάντα σίγασης DOM, συμπεριλαμβανομένων των DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument και DOMCharacterDataModified έχουν καταργηθεί (https://w3c.github.io/uievents/#legacy-event-types) και θα αποσυρθούν. Εναλλακτικά, χρησιμοποιήστε το MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Η υποστήριξη για το στοιχείο data: URLs in SVG <use> έχει καταργηθεί και θα αποσυρθεί στο μέλλον."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Η χαλάρωση της πολιτικής κοινής προέλευσης με ρύθμιση του document.domain έχει καταργηθεί και θα απενεργοποιηθεί από προεπιλογή. Για να συνεχίσετε να χρησιμοποιείτε αυτήν τη λειτουργία, εξαιρεθείτε από τα συμπλέγματα παραγόντων με κλειδιά προέλευσης, στέλνοντας μια κεφαλίδα Origin-Agent-Cluster: ?0 μαζί με την απόκριση HTTP για το έγγραφο και τα πλαίσια. Ανατρέξτε στη σελίδα https://developer.chrome.com/blog/immutable-document-domain/ για περισσότερες λεπτομέρειες."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Το Event.path καταργήθηκε και θα αποσυρθεί. Εναλλακτικά, χρησιμοποιήστε το Event.composedPath()."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Η κεφαλίδα Expect-CT δεν υποστηρίζεται πλέον. Το Chrome απαιτεί Διαφάνεια πιστοποιητικών για όλα τα πιστοποιητικά που θεωρούνται αξιόπιστα δημοσίως και έχουν εκδοθεί μετά τις 30 Απριλίου 2018."
+    "message": "Η κεφαλίδα Expect-CT καταργήθηκε και θα αποσυρθεί. Το Chrome απαιτεί Διαφάνεια πιστοποιητικών για όλα τα πιστοποιητικά που θεωρούνται αξιόπιστα δημοσίως και έχουν εκδοθεί μετά τις 30 Απριλίου 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "Τα getCurrentPosition() και watchPosition() δεν λειτουργούν πλέον σε μη ασφαλείς προελεύσεις. Για να χρησιμοποιήσετε αυτήν τη λειτουργία, θα πρέπει να εξετάσετε το ενδεχόμενο να αλλάξετε την εφαρμογή σας σε ασφαλή προέλευση, όπως HTTPS. Ανατρέξτε στη σελίδα https://goo.gle/chrome-insecure-origins για περισσότερες λεπτομέρειες."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "API πληροφοριών Federated Credential Management"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Χαρακτηριστικό HTML: αυτόματη συμπλήρωση"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Αποτροπή μικτού περιεχομένου"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Μείωση συμβολοσειράς παράγοντα χρήστη"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Λειτουργία συμβατότητας εγγράφου"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ναι"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Προαναζήτηση και προαπόδοση"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Αυτή η σελίδα"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Κάντε κλικ σε οποιαδήποτε αναφορά για προβολή του σώματός της"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Εφαρμογή"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Κρυφή μνήμη"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Αποθηκευτικός χώρος κρυφής μνήμης"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Οι σελίδες που έχουν ζητήσει ένα AppBanner δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Η κρυφή μνήμη πίσω-εμπρός είναι απενεργοποιημένη λόγω αιτήματος μηνύματος keepalive."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Η κρυφή μνήμη πίσω-εμπρός απενεργοποιήθηκε από επισημάνσεις. Μεταβείτε στο chrome://flags/#back-forward-cache για να την ενεργοποιήσετε τοπικά σε αυτήν τη συσκευή."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Οι σελίδες που χρησιμοποιούν το API WebUSB δεν είναι κατάλληλες για την κρυφή μνήμη πίσω-εμπρός."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Η κρυφή μνήμη πίσω-εμπρός είναι απενεργοποιημένη επειδή τα cookie έχουν απενεργοποιηθεί σε μια σελίδα που χρησιμοποιεί το Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Οι σελίδες που χρησιμοποιούν ένα ειδικό worker ή worklet δεν είναι κατάλληλες προς το παρόν για την κρυφή μνήμη πίσω-εμπρός."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Εσωτερικό σφάλμα."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Η κρυφή μνήμη πίσω-εμπρός απενεργοποιήθηκε επειδή ορισμένα αιτήματα δικτύου JavaScript έλαβαν πόρο με κεφαλίδα Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Η κρυφή μνήμη πίσω-εμπρός είναι απενεργοποιημένη λόγω αιτήματος μηνύματος keepalive."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Εμφάνιση # ακόμη πλαισίου}other{Εμφάνιση # ακόμη πλαισίων}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Όνομα κάδου"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Αντοχή"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Λήξη"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Είναι αδιαφανής"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Είναι τρίτου μέρους"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Φόρτωση…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Όχι"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Καμία"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(αδιαφανής)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Προέλευση"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Είναι μόνιμος"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Όριο αποθηκευτικού χώρου"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Ιστότοπος ανώτατου επιπέδου"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Ναι"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Ναι, επειδή η αλυσίδα καταγωγής περιέχει προέλευση τρίτου μέρους"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Ναι, επειδή το κλειδί αποθηκευτικού χώρου είναι αδιαφανές"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Ναι, επειδή η προέλευση είναι εκτός του ιστοτόπου ανώτατου επιπέδου"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Ναι, επειδή ο ιστότοπος ανώτατου επιπέδου είναι αδιαφανής"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Όλα τα αποθηκευμένα διακριτικά ιδιωτικής κατάστασης που είναι διαθέσιμα σε αυτήν την παρουσία του προγράμματος περιήγησης."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Διακριτικά ιδιωτικής κατάστασης"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Φιλτράρισμα κατά επιλεγμένο σύνολο κανόνων"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Ρυθμίσεις επεκτάσεων"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Η προφόρτωση είναι απενεργοποιημένη, λόγω της λειτουργίας Εξοικονόμηση δεδομένων του λειτουργικού συστήματος."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Η προφόρτωση ενεργοποιείται υποχρεωτικά, επειδή τα Εργαλεία για προγραμματιστές είναι ανοιχτά. Όταν τα Εργαλεία για προγραμματιστές κλείσουν, η προαπόδοση θα απενεργοποιηθεί επειδή αυτή η περίοδος λειτουργίας προγράμματος περιήγησης είναι μέρος μιας ομάδας Holdback που χρησιμοποιείται για συγκρίσεις απόδοσης."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Η προφόρτωση έχει απενεργοποιηθεί λόγω των ρυθμίσεων χρήστη ή μιας επέκτασης. Μεταβείτε στο {PH1} για να μάθετε περισσότερα ή στο {PH2} για να απενεργοποιήσετε την επέκταση."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Η προαπόδοση ενεργοποιείται υποχρεωτικά, επειδή τα Εργαλεία για προγραμματιστές είναι ανοιχτά. Όταν τα Εργαλεία για προγραμματιστές κλείσουν, η προαπόδοση θα απενεργοποιηθεί επειδή αυτή η περίοδος λειτουργίας προγράμματος περιήγησης είναι μέρος μιας ομάδας Holdback που χρησιμοποιείται για συγκρίσεις απόδοσης."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Η προφόρτωση ήταν απενεργοποιημένη αλλά τώρα ενεργοποιήθηκε υποχρεωτικά"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Η προφόρτωση είναι απενεργοποιημένη"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Η προαπόδοση ήταν απενεργοποιημένη αλλά τώρα ενεργοποιήθηκε υποχρεωτικά"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Η προφόρτωση απέτυχε."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Κατάσταση"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Η σελίδα που προαποδόθηκε ενεργοποιήθηκε κατά την πλοήγηση κύριου πλαισίου της σελίδας εκκίνησης."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Η προαπόδοση δεν χρησιμοποιήθηκε, επειδή οι επισημάνσεις ή η πολιτική αδειών του περιβάλλοντος δοκιμών (sandbox) της σελίδας εκκίνησης δεν ήταν συμβατές με τις αντίστοιχες της σελίδας προαπόδοσης."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Η προαπόδοση δεν χρησιμοποιήθηκε, επειδή κατά τη διάρκεια της ενεργοποίησης, υπολογίστηκαν διαφορετικές παράμετροι πλοήγησης (π.χ. κεφαλίδες HTTP) σε σχέση με το αρχικό αίτημα πλοήγησης προαπόδοσης."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Η σελίδα που προαποδόθηκε ζήτησε έξοδο ήχου, η οποία δεν υποστηρίζεται προς το παρόν."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή ο χρήστης ζήτησε το πρόγραμμα περιήγησης να χρησιμοποιεί λιγότερη μπαταρία."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Κάποια φόρτωση πόρου αποκλείστηκε."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Η πλοήγηση προαπόδοσης απαίτησε ένα πιστοποιητικό πελάτη HTTP."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Η πλοήγηση προαπόδοσης απέτυχε, επειδή στόχευε URL πολλών ιστοτόπων."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Η σελίδα που προαποδόθηκε έκανε πλοήγηση σε URL πολλών ιστοτόπων."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Η πλοήγηση προαπόδοσης απέτυχε, επειδή το URL προαπόδοσης ανακατεύθυνε σε URL πολλών ιστοτόπων."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Η σελίδα που προαποδόθηκε έκανε πλοήγηση σε ένα URL που ανακατεύθυνε σε URL πολλών ιστοτόπων."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή ο χρήστης ζήτησε το πρόγραμμα περιήγησης να χρησιμοποιεί λιγότερα δεδομένα."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Η σελίδα που προαποδόθηκε προσπάθησε να ξεκινήσει μια λήψη, η οποία δεν υποστηρίζεται προς το παρόν."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή το πρόγραμμα περιήγησης αντιμετώπισε ένα εσωτερικό σφάλμα κατά την προσπάθεια προσδιορισμού της τρέχουσας χρήσης μνήμης."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Η σελίδα εκκίνησης δεν μπορεί να πραγματοποιήσει προαπόδοση, επειδή έχει ένα ισχύον URL το οποίο διαφέρει από το κανονικό URL της. (Για παράδειγμα, η Σελίδα σε νέα καρτέλα ή φιλοξενούμενες εφαρμογές.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "Το URL δεν ήταν κατάλληλο για προαπόδοση, επειδή το σχήμα του δεν ήταν http: ή https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Η πλοήγηση προαπόδοσης απέτυχε, επειδή ανακατεύθυνε σε URL του οποίου το σχήμα δεν ήταν http: ή https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Η πλοήγηση προαπόδοσης απαιτούσε έλεγχο ταυτότητας HTTP, ο οποίος δεν υποστηρίζεται προς το παρόν."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή αυτή η συσκευή δεν έχει αρκετή συνολική μνήμη συστήματος για να υποστηρίξει την προαπόδοση."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Η σελίδα που προαποδόθηκε πλοηγήθηκε σε άλλο URL, που δεν υποστηρίζεται προς το παρόν."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή η σελίδα εκκίνησης έχει ήδη πάρα πολλές προαποδόσεις σε εξέλιξη. Καταργήστε άλλους κανόνες εικασιών για να ενεργοποιήσετε την περαιτέρω προαπόδοση."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή το πρόγραμμα περιήγησης υπερέβη το όριο μνήμης προαπόδοσης."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Η σελίδα που προαποδόθηκε έκανε unload επειδή το πρόγραμμα περιήγησης αντιμετώπισε κρίσιμη πίεση μνήμης."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή το πρόγραμμα περιήγησης αντιμετώπισε κρίσιμη πίεση μνήμης."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Η σελίδα που προαποδόθηκε περιείχε μικτό περιεχόμενο."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Η σελίδα που προαποδόθηκε χρησιμοποίησε απαγορευμένο JavaScript API που δεν υποστηρίζεται προς το παρόν."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Η πλοήγηση προαπόδοσης απέτυχε, λόγω κατάστασης κωδικού απόκρισης HTTP που δεν είναι 2xx."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Η πλοήγηση προαπόδοσης αποκλείστηκε από μια Πολιτική ασφάλειας περιεχομένου."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Η πλοήγηση προαπόδοσης αντιμετώπισε σφάλμα δικτύου."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Η προαπόδοση δεν πραγματοποιήθηκε, επειδή ο χρήστης απενεργοποίησε την προφόρτωση στις ρυθμίσεις του προγράμματος περιήγησης."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Η σελίδα εκκίνησης παρουσίασε σφάλμα."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Η σελίδα εκκίνησης τερματίστηκε."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Η σελίδα που προαποδόθηκε παρουσίασε σφάλμα."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Η σελίδα που προαποδόθηκε τερματίστηκε."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Η σελίδα που προαποδόθηκε πλοηγήθηκε σε URL διασταυρούμενων προελεύσεων ίδιου ιστοτόπου, αλλά η απόκριση προορισμού δεν περιείχε την κατάλληλη κεφαλίδα Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Η σελίδα που προαποδόθηκε έκανε πλοήγηση σε URL διασταυρούμενων προελεύσεων ίδιου ιστοτόπου, αλλά η απόκριση προορισμού δεν περιείχε την κατάλληλη κεφαλίδα Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Η πλοήγηση προαπόδοσης απέτυχε, επειδή το URL προαπόδοσης ανακατεύθυνε σε URL διασταυρούμενων προελεύσεων ίδιου ιστοτόπου, αλλά η απόκριση προορισμού δεν περιείχε την κατάλληλη κεφαλίδα Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Η σελίδα που προαποδόθηκε έκανε πλοήγηση σε ένα URL που ανακατεύθυνε σε URL διασταυρούμενων προελεύσεων ίδιου ιστοτόπου, αλλά η απόκριση προορισμού δεν περιείχε την κατάλληλη κεφαλίδα Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Η πλοήγηση προαπόδοσης απέτυχε, λόγω μη έγκυρου πιστοποιητικού SSL."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Η σελίδα εκκίνησης τοποθετήθηκε στο παρασκήνιο για μεγάλο χρονικό διάστημα, επομένως η σελίδα που προαποδόθηκε απορρίφθηκε."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Η σελίδα εκκίνησης βρισκόταν στο παρασκήνιο, επομένως η σελίδα που προαποδόθηκε απορρίφθηκε."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Η αλλαγή του παράγοντα χρήστη πραγματοποιήθηκε στην πλοήγηση προαπόδοσης."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Επιλέξτε ένα στοιχείο για περισσότερες λεπτομέρειες"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Κατάσταση"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Η προαναζήτηση απορρίφθηκε για μια νεότερη προαναζήτηση, επειδή έχει ενεργοποιηθεί το |kPrefetchNewLimits|."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Έγινε ανακατεύθυνση της προαναζήτησης, αλλά το URL ανακατεύθυνσης δεν είναι κατάλληλο για την προαναζήτηση."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Έγινε ανακατεύθυνση της προαναζήτησης, αλλά προέκυψε πρόβλημα με την ανακατεύθυνση."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Η προαναζήτηση απέτυχε επειδή η κεφαλίδα Content-Type της απόκρισης δεν υποστηριζόταν."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Η προαναζήτηση απέτυχε λόγω σφάλματος δικτύου."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Η προαναζήτηση απέτυχε, λόγω κατάστασης κωδικού απόκρισης HTTP που δεν είναι 2xx."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Η προαναζήτηση δεν πραγματοποιήθηκε, επειδή η αρχική σελίδα έχει ήδη πάρα πολλές προαναζητήσεις σε εξέλιξη."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Μια προηγούμενη προαναζήτηση στην προέλευση έλαβε μια απόκριση HTTP 503 με κεφαλίδα Retry-After που δεν έχει παρέλθει ακόμα."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "Η διεύθυνση URL δεν ήταν κατάλληλη για προαναζήτηση, επειδή υπήρχε εγγεγραμμένο service worker ή cookie μεταξύ ιστοτόπων για αυτήν την προέλευση, αλλά η προαναζήτηση τοποθετήθηκε στο δίκτυο ούτως ή άλλως και δεν χρησιμοποιήθηκε, ώστε να γίνει απόκρυψη τυχόν προηγούμενης σχέσης του χρήστη με την προέλευση."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Η προαναζήτηση απορρίφθηκε επειδή έχει περάσει πολύς χρόνος μεταξύ της προαναζήτησης και της χρήσης."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Η προαναζήτηση δεν πραγματοποιήθηκε επειδή ήταν ενεργοποιημένη η ρύθμιση Εξοικονόμηση μπαταρίας."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Η προαναζήτηση δεν πραγματοποιήθηκε επειδή το πρόγραμμα περιήγησης είναι σε κατάσταση ανώνυμης περιήγησης ή σε κατάσταση επισκέπτη."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Η προαναζήτηση δεν πραγματοποιήθηκε, επειδή το λειτουργικό σύστημα βρίσκεται σε λειτουργία Εξοικονόμησης δεδομένων."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "Το URL δεν είναι κατάλληλο για προαναζήτηση, επειδή στο προεπιλεγμένο περιβάλλον δικτύου έχει διαμορφωθεί για χρήση διακομιστή μεσολάβησης."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "Το URL δεν ήταν κατάλληλο για προαναζήτηση επειδή ο κεντρικός υπολογιστής του δεν ήταν μοναδικός (π.χ. μια διεύθυνση IP που δεν υποστηρίζει δημόσια δρομολόγηση ή ένα όνομα κεντρικού υπολογιστή που δεν ελέγχεται από το μητρώο), αλλά η προαναζήτηση ήταν απαραίτητη για τη διαβίβαση μέσω διακομιστή μεσολάβησης."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "Το URL δεν ήταν κατάλληλο για προαναζήτηση, επειδή χρησιμοποιεί ένα μη προεπιλεγμένο διαμέρισμα αποθήκευσης."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Η προαναζήτηση δεν πραγματοποιήθηκε επειδή η προφόρτωση απενεργοποιήθηκε."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "Το URL δεν ήταν κατάλληλο για προαναζήτηση, επειδή το προεπιλεγμένο περιβάλλον δικτύου δεν μπορεί να διαμορφωθεί για χρήση του διακομιστή μεσολάβησης προαναζήτησης για αίτημα προαναζήτησης διασταυρούμενων προελεύσεων ίδιου ιστοτόπου."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "Το URL δεν ήταν κατάλληλο για προαναζήτηση, επειδή το σχήμα του δεν ήταν https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "Το URL δεν ήταν κατάλληλο για προαναζήτηση, επειδή ήταν μεταξύ ιστοτόπων, αλλά ο χρήστης είχε cookie για αυτήν την προέλευση."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "Το URL δεν ήταν κατάλληλο για προαναζήτηση, επειδή υπήρχε εγγεγραμμένο service worker για αυτήν την προέλευση, το οποίο δεν υποστηρίζεται προς το παρόν."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Η προαναζήτηση δεν χρησιμοποιήθηκε επειδή αποτελούσε προαναζήτηση μεταξύ ιστοτόπων και προστέθηκαν cookie για αυτό το URL ενώ η προαναζήτηση ήταν σε εξέλιξη, επομένως η απόκριση προαναζήτησης δεν είναι πλέον ενημερωμένη."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Η προαναζήτηση αποκλείστηκε από τον πάροχο υπηρεσιών διαδικτύου ή τον διαχειριστή δικτύου σας."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Παρουσιάστηκε σφάλμα δικτύου κατά την προσπάθεια ρύθμισης μιας σύνδεσης με τον διακομιστή μεσολάβησης προαναζήτησης."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Κάντε κλικ για να αποκαλύψετε το πλαίσιο Στοιχεία"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "{PH1} πόροι προαναζήτησης χρησιμοποιούνται για αυτήν τη σελίδα"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Προφόρτωση που χρησιμοποιείται για αυτήν τη σελίδα"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Έγινε προαπόδοση αυτής της σελίδας."
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Οπτικοποίηση χρήσης"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Δεν ήταν δυνατή η λήψη πληροφοριών κάλυψης, επειδή έγινε προαπόδοση της σελίδας στο παρασκήνιο."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Όλα"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Δεν ήταν δυνατή η λήψη πληροφοριών κάλυψης, επειδή η σελίδα προβλήθηκε από την κρυφή μνήμη πίσω-εμπρός."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Επιλέξτε ευαισθησία κάλυψης: Ανά συνάρτηση έχει χαμηλή επιβάρυνση, ανά μπλοκ έχει σημαντική επιβάρυνση."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Ανά συνάρτηση"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Κάντε κλικ στο κουμπί επανάληψης φόρτωσης {PH1} για να επαναλάβετε τη φόρτωση και να λάβετε κάλυψη."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "Μέχρι στιγμής, έχουν χρησιμοποιηθεί {PH1} από {PH2} ({PH3}%), δεν χρησιμοποιούνται {PH4}."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Κάλυψη οργάνου"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Επανάληψη φόρτωσης σελίδας"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Εμφάνιση Κάλυψης"
@@ -5670,7 +5667,7 @@
     "message": "Αντιγράφηκε στο πρόχειρο"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Αντιγραφή όλων των αλλαγών CSS"
+    "message": "Αντιγραφή αλλαγών CSS"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Όνομα ιδιότητας CSS: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Η παράκαμψη ταυτοχρονισμού εξοπλισμού είναι ενεργοποιημένη"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Τιμή του navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Χωρίς περιορισμό"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Επιτυχία"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Τα κλειδιά για αυτόν τον εκδότη PST δεν είναι διαθέσιμα. Ο εκδότης μπορεί να χρειαστεί να εγγραφεί μέσω της διαδικασίας εγγραφής στο Chrome."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Η λειτουργία απέτυχε για άγνωστο λόγο."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Διακοπή εγγραφής κατανομών σωρού"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "Έγινε απόκρυψη του προγράμματος επεξεργασίας εντολών CDP"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "Εμφανίζεται το πρόγραμμα επεξεργασίας εντολών CDP"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Διαγραφή όλων"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Φίλτρο"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "Απόκρυψη εργαλείου επεξεργασίας εντολών CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Μέθοδος"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Περίοδος σύνδεσης"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "Εμφάνιση προγράμματος επεξεργασίας εντολών CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Στόχος"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Thread"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Δίκτυο"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} σε {PH2}"

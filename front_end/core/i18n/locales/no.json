@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Løsne i separat vindu"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Side: ikke valgt"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Side: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Som forfattet"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Utløsing av window.confirm fra iframe-elementer med andre opphav er avviklet og kommer til å bli fjernet i fremtiden."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOM-mutasjonshendelser, inkludert DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument og DOMCharacterDataModified, er avviklet (https://w3c.github.io/uievents/#legacy-event-types) og kommer til å bli fjernet. Bruk MutationObserver i stedet."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Støtte for data:-nettadresser i <use>-elementer i SVG-filer er avviklet og kommer til å bli fjernet i fremtiden."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Oppmykning av samme opphav-reglene ved å angi document.domain er avviklet og kommer til å være avslått som standard. For å fortsette å bruke denne funksjonen, velg bort agentgrupper med opphavsnøkler ved å sende et Origin-Agent-Cluster: ?0-hode sammen med HTTP-svaret for dokumentet og rammene. Se https://developer.chrome.com/blog/immutable-document-domain/ for mer informasjon."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path er avviklet og kommer til å bli fjernet. Bruk Event.composedPath() i stedet."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT-hodet støttes ikke lenger. Chrome krever sertifikatåpenhet for alle offentlig klarerte sertifikater som er utstedt etter 30. april 2018."
+    "message": "Expect-CT-hodet er avviklet og kommer til å bli fjernet. Chrome krever sertifikatåpenhet for alle offentlig klarerte sertifikater som er utstedt etter 30. april 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() og watchPosition() fungerer ikke på usikre opphav lenger. For å bruke denne funksjonen bør du vurdere å flytte programmet ditt til et sikkert opphav, for eksempel HTTPS. Se https://goo.gle/chrome-insecure-origins for mer informasjon."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "API for brukerinformasjon fra Federated Credential Management"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-attributt: autocomplete"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Hindrer blandet innhold"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Strengreduksjon for brukeragent"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Kompatibilitetsmodus for dokument"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ja"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Forhåndshenting og forhåndsgjengivelse"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Denne siden"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Klikk på en valgfri rapport for å vise brødteksten"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Program"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Buffer"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Bufferlagring"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Sider som bruker har forespurt AppBanner, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Frem-og-tilbake-bufferen er deaktivert på grunn av en keepalive-forespørsel."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Frem-og-tilbake-bufferen er deaktivert via flagg. Gå til chrome://flags/#back-forward-cache for å aktivere den lokalt på denne enheten."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Sider som bruker WebUSB-API-et, kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Frem-og-tilbake-bufferen er deaktivert fordi informasjonskapsler er deaktivert på en side som bruker Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Sider som bruker en dedikert Service Worker eller worklet, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Intern feil."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Frem-og-tilbake-bufferen er deaktivert fordi en JavaScript-nettverksforespørsel har mottatt en ressurs med Cache-Control: no-store-hodet."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Frem-og-tilbake-bufferen er deaktivert på grunn av en keepalive-forespørsel."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Vis # ramme til}other{Vis # flere rammer}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Navn på toppmappe"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Robusthet"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Utløper"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Er ugjennomsiktig"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Er en tredjepart"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Laster inn …"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Nei"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Ingen"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(ugjennomsiktig)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Opphav"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Er vedvarende"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Kvote"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Nettsted på toppnivå"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Ja"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Ja, fordi opphavskjeden inneholder et tredjepartsopphav"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Ja, fordi lagringsnøkkelen er ugjennomsiktig"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Ja, fordi opphavet ligger utenfor nettstedet som er på toppnivå"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Ja, fordi nettstedet på toppnivå er ugjennomsiktig"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Alle lagrede private tilstandstokens som er tilgjengelige i denne nettleserforekomsten."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Private tilstandstokens"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Filtrer etter valgt regelsett"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Innstillinger for utvidelser"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Forhåndslasting er avslått fordi operativsystemet er i datasparingsmodus."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Forhåndslasting er tvungen aktivering fordi Utviklerverktøy er åpen. Når Utviklerverktøy er lukket, deaktiveres forhåndsgjengivelse fordi denne nettleserøkten er en del av en holdback-gruppe som brukes til sammenligning av resultater."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Forhåndslasting er avslått på grunn av brukerinnstillinger eller en utvidelse. Gå til {PH1} for å finne ut mer, eller gå til {PH2} for å slå av utvidelsen."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Forhåndsgjengivelse er tvunget aktivert fordi Utviklerverktøy er åpent. Når Utviklerverktøy er lukket, deaktiveres forhåndsgjengivelse fordi denne nettleserøkten er en del av en holdback-gruppe som brukes til sammenligning av resultater."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Forhåndslasting er slått av, men er tvunget aktivert nå"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Forhåndslasting er slått av"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Forhåndsgjengivelse er deaktivert, men er tvunget aktivert nå"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Kunne ikke forhåndslaste."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Status"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Den forhåndsgjengitte siden ble aktivert under initiering av navigering i sidens hovedramme."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Forhåndsgjengivelsen ble ikke brukt fordi sandkasseflaggene eller tillatelsesregelen for den initierende siden ikke var kompatibel med dem for forhåndsgjengivelsessiden."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Forhåndsgjengivelsen ble ikke brukt, da forskjellige navigasjonsparametere (f.eks. HTTP-hoder) ble beregnet under aktiveringstiden enn under den opprinnelige navigasjonsforespørselen om forhåndsgjengivelse."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Den forhåndsgjengitte siden forespurte lydutdata, noe som ikke støttes for øyeblikket."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Forhåndsgjengivelsen ble ikke utført fordi brukeren ba nettleseren om å bruke mindre batteri."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Noe ressurslasting ble blokkert."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Navigeringen for forhåndsgjengivelse krevde et HTTP-klientsertifikat."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Navigeringen for forhåndsgjengivelse mislyktes fordi målet var en nettadresse på et annet nettsted."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Den forhåndsgjengitte siden navigerte til en nettadresse på et annet nettsted."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Navigeringen for forhåndsgjengivelse mislyktes fordi den forhåndsgjengitte nettadressen viderekoblet til en nettadresse på et annet nettsted."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Den forhåndsgjengitte siden navigerte til en nettadresse som viderekoblet til en nettadresse på et annet nettsted."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Forhåndsgjengivelsen ble ikke utført fordi brukeren ba nettleseren om å bruke mindre data."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Den forhåndsgjengitte siden prøvde å starte en nedlasting, noe som ikke støttes for øyeblikket."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Forhåndsgjengivelsen ble ikke utført fordi nettleseren støtte på en intern feil da den prøvde å fastslå gjeldende minnebruk."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Den initierende siden kan ikke utføre forhåndsgjengivelse fordi den har en annen effektiv nettadresse enn den vanlige nettadressen. (Eksempel: Ny fane-siden eller vertsbaserte apper.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "Nettadressen var ikke kvalifisert for forhåndsgjengivelse fordi den hadde en annen protokoll enn http: og https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Navigeringen for forhåndsgjengivelse mislyktes fordi den ble viderekoblet til en nettadresse med en annen protokoll enn http: og https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Navigeringen for forhåndsgjengivelse krevde HTTP-autentisering, noe som ikke støttes for øyeblikket."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Forhåndsgjengivelsen ble ikke utført fordi denne enheten ikke har nok systemminne totalt til å støtte forhåndsgjengivelse."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Den forhåndsgjengitte siden navigerte seg selv til en annen nettadresse, noe som ikke støttes for øyeblikket."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Forhåndsgjengivelsen ble ikke utført fordi den initierende siden allerede har for mange pågående forhåndsgjengivelser. Fjern andre spekulasjonsregler for å muliggjøre ytterligere forhåndsgjengivelse."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Forhåndsgjengivelsen ble ikke utført fordi nettleseren overskred minnegrensen for forhåndsgjengivelse."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Den forhåndsgjengitte siden ble lastet ut fordi nettleseren begynte å få kritisk lite minne."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Forhåndsgjengivelsen ble ikke utført fordi nettleseren hadde kritisk lite minne."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Den forhåndsgjengitte siden inneholdt blandet innhold."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Den forhåndsgjengitte siden brukte et forbudt JavaScript-API som ikke støttes for øyeblikket."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Navigasjonen for forhåndsgjengivelse mislyktes fordi det ble returnert en HTTP-svarstatuskode utenfor 2xx-serien."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Navigeringen for forhåndsgjengivelse ble blokkert av en Content Security Policy."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Det oppsto en nettverksfeil under navigeringen for forhåndsgjengivelse."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Forhåndsgjengivelsen ble ikke utført fordi brukeren har deaktivert forhåndslasting i nettleserinnstillingene."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Den initierende siden krasjet."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Prosessen for den initierende siden ble avsluttet."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Den forhåndsgjengitte siden krasjet."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Prosessen for forhåndsgjengivelse av siden ble avsluttet."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Den forhåndsgjengitte siden navigerte seg selv til en nettadresse med et annet opphav på samme nettsted, men destinasjonssvaret inneholdt ikke det riktige «Supports-Loading-Mode»-hodet."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Den forhåndsgjengitte siden navigerte til en nettadresse med et annet opphav på samme nettsted, men destinasjonssvaret inneholdt ikke det riktige «Supports-Loading-Mode»-hodet."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Navigeringen for forhåndsgjengivelse mislyktes fordi den forhåndsgjengitte nettadressen viderekoblet til en nettadresse med et annet opphav på samme nettsted, men destinasjonssvaret inneholdt ikke det riktige «Supports-Loading-Mode»-hodet."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Den forhåndsgjengitte siden navigerte til en nettadresse som viderekoblet til en nettadresse med et annet opphav på samme nettsted, men destinasjonssvaret inneholdt ikke det riktige «Supports-Loading-Mode»-hodet."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Navigasjonen for forhåndsgjengivelse mislyktes på grunn av et ugyldig SSL-sertifikat."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Den initierende siden kjørte i bakgrunnen lenge, så den forhåndsgjengitte siden ble forkastet."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Den initierende siden kjørte i bakgrunnen, så den forhåndsgjengitte siden ble forkastet."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Brukeragenten ble endret under navigeringen for forhåndsgjengivelse."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Velg et element for å se flere detaljer"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Forhåndshentingen ble forkastet til fordel for en nyere forhåndshenting fordi |kPrefetchNewLimits| er aktivert"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Forhåndshentingen ble viderekoblet, men nettadressen for viderekobling er ikke kvalifisert for forhåndshenting."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Forhåndshentingen ble viderekoblet, men det oppsto et problem med viderekoblingen."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Forhåndshentingen mislyktes fordi svarets «Content-Type»-hode ikke var støttet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Forhåndshentingen mislyktes på grunn av en nettverksfeil."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Forhåndshentingen mislyktes fordi det ble returnert en HTTP-svarstatuskode utenfor 2xx-serien."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Forhåndshentingen ble ikke utført fordi den initierende siden allerede har for mange pågående forhåndshentinger."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "En tidligere forhåndshenting rettet mot opphavet ga et HTTP 503-svar med et «Retry-After»-hode med en tidsperiode som ikke er forløpt ennå."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "Nettadressen kunne ikke forhåndshentes fordi det fantes en registrert Service Worker eller informasjonskapsler fra andre nettsteder for det aktuelle opphavet. Forhåndshentingen ble likevel igangsatt, men ikke brukt, for å skjule at brukeren hadde allerede hadde en form for tilknytning til opphavet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Det gikk for lang tid mellom forhåndshentingen og bruken, så forhåndshentingen ble forkastet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Forhåndshentingen ble ikke utført fordi innstillingen for batterisparing er aktivert."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Forhåndshentingen ble ikke utført fordi nettleseren er i inkognitomodus eller gjestemodus."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Forhåndshentingen ble ikke utført fordi operativsystemet er i Datasparing-modus."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "Nettadressen kan ikke forhåndshentes fordi den er konfigurert til å bruke en proxy-tjener i standard nettverkskontekst."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "Nettadressen kunne ikke forhåndshentes fordi forhåndshentingen måtte gå via proxy-tjener, men verten var ikke unik (f.eks. fordi IP-adressen ikke var offentlig rutbar eller vertsnavnet ikke var registerkontrollert)."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "Nettadressen kunne ikke forhåndshentes fordi den bruker en lagringspartisjon som ikke er standard."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Forhåndshentingen ble ikke utført fordi forhåndslasting var deaktivert."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "Nettadressen kunne ikke forhåndshentes fordi standard nettverkskontekst ikke kan konfigureres til å bruke proxy-tjeneren for forhåndshenting til forespørsler om forhåndshenting fra andre opphav på samme nettsted."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "Nettadressen kunne ikke forhåndshentes fordi den ikke brukte https: som protokoll."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "Nettadressen kunne ikke forhåndshentes fordi den var på et annet nettsted, men brukeren hadde informasjonskapsler for det aktuelle opphavet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "Nettadressen kunne ikke forhåndshentes fordi det fantes en registrert Service Worker for dette opphavet, noe som ikke støttes per nå."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Forhåndshentingen ble ikke brukt fordi den var rettet mot et annet nettsted og det ble lagt til informasjonskapsler for den aktuelle nettadressen mens forhåndshentingen pågikk, så det forhåndshentede svaret er nå utdatert."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Forhåndshentingen ble blokkert av internettleverandøren eller nettverksadministratoren din."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Det oppsto en nettverksfeil under forsøket på å koble til proxy-tjeneren for forhåndshenting."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Klikk for å vise i Elementer-panelet"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "{PH1} forhåndshentede ressurser brukes for denne siden"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Forhåndslasting brukes for denne siden"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Denne siden ble forhåndsgjengitt"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Bruksvisualisering"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Kunne ikke registrere dekningsinformasjon fordi siden ble forhåndsgjengitt i bakgrunnen."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Alle"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Kunne ikke registrere dekningsinformasjon fordi siden ble hentet fra frem-og-tilbake-bufferen."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Velg dekningsgranularitet: Funksjonsspesifikk har liten innvirkning på ytelsen, mens blokkspesifikk har betydelig innvirkning på ytelsen."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Funksjonsspesifikk"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Klikk på last inn på nytt-knappen {PH1} for å laste inn på nytt og måle dekningen."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} av {PH2} ({PH3} %) er brukt så langt. {PH4} er ubrukt."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Instrumentdekning"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Last inn siden på nytt"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Vis dekning"
@@ -5670,7 +5667,7 @@
     "message": "Kopiert til utklippstavlen"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopier alle CSS-endringene"
+    "message": "Kopier CSS-endringer"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS-egenskapsnavn: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Overstyring av maskinvarens parallellkjøring er aktivert"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Verdien for navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Ingen struping"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Fullført"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Nøklene for denne PST-utstederen er ikke tilgjengelige. Det kan hende at utstederen må registreres via Chrome-registreringsprosessen."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Operasjonen mislyktes av en ukjent årsak."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Stopp opptak av minnetildeling"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "Redigeringsverktøyet for CDP-kommandoer er skjult"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "Redigeringsverktøyet for CDP-kommandoer vises"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Fjern alt"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Filtrér"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "Skjul redigeringsverktøyet for CDP-kommandoer"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Metode"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Økt"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "Vis redigeringsverktøyet for CDP-kommandoer"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Mål"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Tråd"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Nettverk"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} kl. {PH2}"

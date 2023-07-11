@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Losa í aðskilinn glugga"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Síða: Ekki valin"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Síða: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Eins og upprunalega"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Virkjun window.confirm frá iframe þvert á uppruna er úrelt og verður fjarlægð í framtíðinni."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOM-stökkbreytingartilvik, þar á meðal DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument og DOMCharacterDataModified eru úrelt (https://w3c.github.io/uievents/#legacy-event-types) og verða fjarlægð. Nota skal MutationObserver í staðinn."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Stuðningur fyrir gögn: Einingin „Vefslóðir í SVG <use>“ er úrelt og verður fjarlægð í framtíðinni."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Úrelt er að slaka á reglu fyrir sama uppruna með því að stilla document.domain og slökkt verður á þessu sjálfkrafa. Til að halda áfram að nota þennan eiginleika skaltu afþakka fulltrúaklasa með upprunalykla með því að senda Origin-Agent-Cluster: ?0-haus með HTTP-svarinu fyrir skjalið og rammana. Sjá nánar á https://developer.chrome.com/blog/immutable-document-domain/."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path er úrelt og verður fjarlægt. Nota skal Event.composedPath() í staðinn."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Hausinn Expect-CT er ekki studdur lengur. Chrome krefst gagnsæis vottorða fyrir öll vottorð sem teljast almennt traust og eru gefin út eftir 30. apríl 2018."
+    "message": "Expect-CT-hausinn er úreltur og verður fjarlægður. Chrome krefst gagnsæis vottorða fyrir öll vottorð sem teljast almennt traust og eru gefin út eftir 30. apríl 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() og watchPosition() virka ekki lengur á ótraustum uppruna. Til að nota þennan eiginleika skaltu íhuga að flytja forritið yfir á öruggan uppruna, t.d. HTTPS. Frekari upplýsingar eru á https://goo.gle/chrome-insecure-origins."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Forritaskil stjórnunar Federated Credential"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Forritaskil notandaupplýsinga Federated Credential Management"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-eigind: Sjálfvirk útfylling"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Lokar fyrir blandað efni"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Strengjastytting aðgangsbúnaðar"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Samhæfisstilling fyrir skjal"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Já"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Forhleðsla"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Þessi síða"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Smelltu á hvaða skýrslu sem er til að skoða meginmál hennar"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Forrit"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Skyndiminni"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Geymslurými fyrir skyndiminni"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Eins og stendur er ekki hægt að vista síður sem biðja um AppBanner í skyndiminni til baka/áfram."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Slökkt er á skyndiminni til baka/áfram vegna beiðni um að halda tengingu."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Flögg hafa slökkt á skyndiminni til baka/áfram. Opnaðu chrome://flags/#back-forward-cache til að virkja það staðbundið í þessu tæki."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Ekki er hægt að vista síður sem nota forritaskil WebUSB í skyndiminni til baka/áfram."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Slökkt er á skyndiminni til baka/áfram vegna þess að slökkt er á fótsporum á síðu sem notar Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Eins og stendur er ekki hægt að vista síður sem nota tilgreinda skriftu (dedicated worker) eða einfalda skriftu (worklet) í skyndiminni til baka/áfram."
@@ -3380,8 +3374,11 @@
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Innri villa."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Slökkt er á skyndiminni til baka/áfram vegna þess að JavaScript-netbeiðni fékk gögn með Cache-Control: no-store-haus."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
-    "message": "Slökkt er á skyndiminni til baka/áfram vegna beiðni um að halda tengingu."
+    "message": "Slökkt er á skyndiminni til baka / áfram vegna beiðni um að halda tengingu."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keyboardLock": {
     "message": "Eins og stendur er ekki hægt að vista síður sem nota lyklaborðslás í skyndiminni til baka/áfram."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Sýna # ramma í viðbót}one{Sýna # ramma í viðbót}other{Sýna # ramma í viðbót}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Heiti ramma"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Ending"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Rennur út"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Er óljós"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Er frá þriðja aðila"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Hleður…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Nei"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Ekkert"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(óljós)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Uppruni"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Er varanleg"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Kvóti"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Vefsvæði á efsta stigi"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Já"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Já, vegna þess að upprunakeðjan inniheldur uppruna þriðja aðila"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Já, vegna þess að geymslulykillinn er óljós"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Já, vegna þess að uppruninn er utan við vefsvæði á efsta stigi"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Já, vegna þess að vefsvæðið á efsta stigi er óljóst"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Allir vistaðir traustslyklar tiltækir í þessu vafratilviki."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Traustslyklar"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Sía eftir völdu reglusetti"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Stillingar viðbóta"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Slökkt er á forhleðslu vegna þess að stýrikerfið er stillt á gagnasparnað."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Þvingað er að hafa kveikt á forhleðslu vegna þessa að DevTools eru opin. Þegar DevTools er lokað verður slökkt á forhleðslu því þessi vafralota tilheyrir útilokunarhópi sem er notaður við afkastasamanburð."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Slökkt er á forhleðslu vegna stillingar notanda eða viðbótar. Opnaðu {PH1} til að fá frekari upplýsingar eða opnaðu {PH2} til að slökkva á viðbótinni."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Þvingað er að hafa kveikt á forhleðslu vegna þessa að DevTools eru opin. Þegar DevTools er lokað verður slökkt á forhleðslu því þessi vafralota tilheyrir útilokunarhópi sem er notaður við afkastasamanburð."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Slökkt var á forhleðslu en nú hefur verið kveikt á henni með þvingun"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Slökkt er á forhleðslu"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Slökkt var á forhleðslu en nú hefur verið kveikt á henni með þvingun"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Forhleðsla tókst ekki."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Staða"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Forhleðslusíða virkjuð við aðalrammaflettingu ræsingarsíðu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Forhleðsla var ekki notuð vegna þess að samhæfi skorti á milli afmörkunarflagga og heimildareglna ræsingarsíðu og forhleðslusíðu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Forhleðslan var ekki notuð vegna þess að á virkjunartíma voru aðrar flettibreytur (t.d. HTTP-hausar) reiknaðar út en við upprunalega flettibeiðni forhleðslu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Forhlaðna síðan óskaði eftir hljóðúttaki sem er ekki stutt eins og stendur."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Forhleðslan var ekki framkvæmd vegna þess að notandinn bað um að vafrinn notaði minni rafhlöðuhleðslu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Lokað var á hleðslu tiltekinna gagna."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Forhleðsluflettingin krafðist HTTP-biðlaravottorðs."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Forhleðslufletting mistókst vegna þess að hún miðaði á vefslóð þvert á vefsvæði."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Forhlaðna síðan opnaði vefslóð þvert á vefsvæði."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Forhleðslufletting mistókst vegna þess að forhlaðna vefslóðin framsendi á vefslóð þvert á vefsvæði."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Forhlaðna síðan opnaði vefslóð sem framsendi á vefslóð þvert á vefsvæði."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Forhleðslan var ekki framkvæmd vegna þess að notandinn bað um að vafrinn notaði minna gagnamagn."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Forhlaðna síðan reyndi að hefja niðurhal sem er ekki stutt eins og stendur."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Forhleðslan var ekki framkvæmd vegna þess að innri villa kom upp í vafranum þegar reynt var að ákvarða núverandi minnisnotkun."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Ræsingarsíðan getur ekki framkvæmt forhleðslu vegna þess að hún er með virka vefslóð sem er önnur en venjuleg vefslóð hennar. (Til dæmis síða nýrra flipa eða hýst forrit)."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "Ekki var hægt að forhlaða vefslóðinni vegna þess að skema hennar var ekki http: eða https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Forhleðslufletting mistókst vegna þess að hún framsendi á vefslóð með skema sem var ekki http: eða https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Forhleðsluflettingin krafðist HTTP-staðfestingar, sem ekki er studd eins og stendur."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Forhleðslan var ekki framkvæmd vegna þess að þetta tæki er ekki með nægt heildarkerfisminni til að styðja forhleðslu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Forhlaðna síðan opnaði aðra vefslóð sem er ekki studd eins og stendur."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Forhleðslan var ekki framkvæmd vegna þess að ræsingarsíðan er þegar með of margar forhleðslur í gangi. Fjarlægðu aðrar spáreglur til að virkja frekari forhleðslu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Forhleðslan var ekki framkvæmd vegna þess að vafrinn fór yfir minnishámark forhleðslu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Hleðsla forhlaðinnar síðu var afturkölluð vegna þess að alvarlegt minnisálag kom upp í vafranum."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Forhleðslan var ekki framkvæmd vegna þess að alvarlegt minnisálag var á vafranum."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Forhlaðna síðan innihélt blandað efni."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Forhlaðna síðan notaði bannað JavaScript API sem er ekki stutt eins og stendur."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Forhleðslufletting mistókst vegna stöðukóða utan 2xx HTTP-svars."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Efnisöryggisstefna lokaði á forhleðsluflettingu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Netkerfisvilla kom upp við forhleðsluflettingu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Forhleðslan var ekki framkvæmd vegna þess að notandinn slökkti á forhleðslu í vafrastillingunum."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Ræsingarsíðan hrundi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Ræsingarsíðunni var lokað."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Forhlaðna síðan hrundi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Forhlaðinni síðu var lokað."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Forhlaðna síðan opnaði vefslóð þvert á uppruna á sama vefsvæði en svar áfangastaðar innihélt ekki viðeigandi „Supports-Loading-Mode“ haus."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Forhlaðna síðan opnaði vefslóð þvert á uppruna á sama vefsvæði en svar áfangastaðar innihélt ekki viðeigandi „Supports-Loading-Mode“ haus."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Forhleðslufletting mistókst vegna þess að forhlaðna vefslóðin framsendi á vefslóð þvert á uppruna á sama vefsvæði en áfangastaðurinn innihélt ekki viðeigandi „Supports-Loading-Mode“ haus."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Forhlaðna síðan opnaði vefslóð sem framsendi á vefsvæði þvert á uppruna á sama vefsvæði en svar áfangastaðar innihélt ekki viðeigandi „Supports-Loading-Mode“ haus."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Forhleðslufletting mistókst vegna ógilds SSL-vottorðs."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Ræsingarsíðan var sett í bakgrunn í langan tíma svo forhlöðnu síðunni var fleygt."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Ræsingarsíðan var sett í bakgrunn svo forhlöðnu síðunni var fleygt."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Breyting á aðgangsbúnaði átti sér stað við forhleðsluflettingu."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Veldu einingu til að fá frekari upplýsingar"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Staða"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Forhleðslunni var fleygt fyrir nýrri forhleðslu vegna þess að kveikt er á |kPrefetchNewLimits|"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Forhleðslan var framsend en ekki er hægt að forhlaða framsendingarslóðinni."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Forhleðslan var framsend en vandamál kom upp með framsendinguna."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Forhleðslan mistókst vegna þess að „Gerð efnis“-haus svarsins var ekki studdur."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Forhleðslan mistókst vegna netkerfisvillu."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Forhleðslan mistókst vegna stöðukóða utan 2xx HTTP-svars."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Forhleðslan var ekki framkvæmd vegna þess að ræsingarsíðan er þegar með of margar forhleðslur í gangi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Fyrri forhleðsla á upprunanum fékk HTTP 503-svar með „Reyndu aftur eftir“-haus sem er ekki enn liðinn."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "Ekki var hægt að forhlaða vefslóðinni vegna þess að þjónustuskrifta eða fótspor þvert á vefsvæði voru skráð fyrir þennan uppruna, en forhleðslan var samt sem áður sett á netið og ekki notuð, til að fela að notandinn hefði einhver fyrri tengsl við upprunann."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Of langur tími leið milli forhleðslunnar og notkunar svo forhleðslunni var fleygt."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Forhleðsla var ekki framkvæmd vegna þess að kveikt var á rafhlöðusparnaðarstillingunni."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Forhleðsla var ekki framkvæmd vegna þess að vafrinn er í huliðs- eða gestastillingu."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Forhleðsla var ekki framkvæmd vegna þess að stýrikerfið er í gagnasparnaðarstillingu."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "Ekki er hægt að forhlaða vefslóðinni vegna þess að í sjálfgefna netkerfissamhenginu er hún stillt á að nota staðgengilsþjón."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "Ekki var hægt að forhlaða vefslóðinni vegna þess að hýsill hennar var ekki einkvæmur (þ.e. IP-tala sem ekki er hægt að senda á opinber vefsvæði eða hýsilheiti sem er ekki stjórnað af stýriskrá) en forhleðslan þurfti að fara í gegnum staðgengilsþjón."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "Ekki var hægt að forhlaða vefslóðinni vegna þess að hún notar geymsluhluta sem ekki er sjálfgefinn."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Forhleðsla var ekki framkvæmd vegna þess að slökkt var á forhleðslu."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "Ekki var hægt að forhlaða vefslóðinni vegna þess að ekki er hægt að stilla sjálfgefið netkerfissamhengi á að nota staðgengilsþjón forhleðslunnar fyrir forhleðslubeiðni þvert á uppruna á sama vefsvæði."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "Ekki var hægt að forhlaða vefslóðinni vegna þess að skema hennar var ekki https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "Ekki var hægt að forhlaða vefslóðinni vegna þess að hún var þvert á vefsvæði en notandinn var með fótspor fyrir þann uppruna."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "Ekki var hægt að forhlaða vefslóðinni vegna þess að þjónustuaðili var skráður fyrir þennan uppruna, sem er ekki stutt eins og er."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Forhleðslan var ekki notuð vegna þess að hún var forhleðsla þvert á vefsvæði og fótsporum var bætt við fyrir þá vefslóð á meðan forhleðslan stóð yfir svo forhlaðna svarið er núna úrelt."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Netþjónustan eða kerfisstjórinn lokaði á forhleðsluna."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Netvilla kom upp þegar reynt var að setja upp tengingu við staðgengilsþjón forhleðslunnar."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Smelltu til að sýna í einingaglugganum"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "{PH1} forhlaðin gögn eru notuð fyrir þessa síðu"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Forhleðsla notuð fyrir þessa síðu"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Þessari síðu var forhlaðið"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Notkunargraf"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Ekki tókst að fanga notkunarupplýsingar vegna þess að síðunni var forhlaðið í bakgrunninum."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Allt"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Ekki tókst að fanga notkunarupplýsingar vegna þess að síðan var birt úr skyndiminni til baka/áfram."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Veldu niðurskiptingu kóðanotkunar: „Á fall“ er ekki kostnaðarsamt en „á blokk“ er verulega kostnaðarsamt."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Á fall"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Smelltu á endurhleðsluhnappinn {PH1} til að endurhlaða og fá notkun."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} af {PH2} ({PH3}%) í notkun til þessa, {PH4} ekki í notkun."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Kóðanotkun"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Endurhlaða síðu"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Sýna kóðanotkun"
@@ -5670,7 +5667,7 @@
     "message": "Afritað á klippiborð"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Afrita allar CSS-breytingar"
+    "message": "Afrita CSS-breytingar"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Heiti CSS-eiginleika: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Kveikt er á samvirknihnekkingu vélbúnaðar"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Gildi fyrir navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Engin bandvíddartakmörkun"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Tókst"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Lyklarnir fyrir þennan PST-útgefanda eru ekki tiltækir. Hugsanlega þarf að skrá útgefandann í gegnum skráningarferli Chrome."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Aðgerðin mistókst af óþekktri ástæðu."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Stöðva upptöku minnisúthlutunar"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP-skipanaritill falinn"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP-skipanaritill sýndur"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Hreinsa allt"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Sía"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "Fela CDP-skipanaritil"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Aðferð"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Lota"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "Sýna CDP-skipanaritil"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Mark"
@@ -11702,9 +11711,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Þráður"
   },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Net"
-  },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} hjá {PH2}"
   },
@@ -13530,7 +13536,7 @@
     "message": "Heiti"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
-    "message": "(ógagnsætt)"
+    "message": "(óljós)"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Lota"

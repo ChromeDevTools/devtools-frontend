@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "إلغاء الإرساء في نافذة منفصلة"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "الصفحة: لم يتم اختيارها"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "الصفحة: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "على القيمة \"مكتوب من قِبل المستخدم\""
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "إنّ ميزة تنفيذ الوظيفة window.confirm المستنِدة إلى إطارات iframe من مصادر متعددة تم إيقافها نهائيًا وستتم إزالتها في المستقبل."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "إنّ أحداث تغيُّر نموذج العناصر في المستند (DOM)، بما في ذلك\nDOMSubtreeModified وDOMNodeInserted وDOMNodeRemoved وDOMNodeRemovedFromDocument وDOMNodeInsertedIntoDocument وDOMCharacterDataModified \nتم إيقافها نهائيًا (https://w3c.github.io/uievents/#legacy-event-types)، وستتم إزالتها. يُرجى استخدام MutationObserver بدلًا من ذلك."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "تم إيقاف المخطّطات data: URL نهائيًا في عنصر <use> للرسومات الموجّهة التي يمكن تغيير حجمها (SVG) وستتم إزالتها في المستقبل."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "بالنسبة إلى ميزة تخفيف قيود السياسة المشتركة المصدر من خلال ضبط الميزة document.domain، تم إيقافها نهائيًا وستكون غير مفعَّلة تلقائيًا. لمواصلة استخدام هذه الميزة، يُرجى إيقاف مجموعات الوكلاء المرتبطة حسب المصدر من خلال إرسال العنوان Origin-Agent-Cluster: ?0 مع استجابة HTTP للمستند والإطارات. لمعرفة مزيد من التفاصيل، يمكنك الاطّلاع على https://developer.chrome.com/blog/immutable-document-domain/‎."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "تم إيقاف واجهة برمجة التطبيقات Event.path نهائيًا وستتم إزالتها. يُرجى استخدام الإجراء Event.composedPath() بدلاً منها."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "لم يعُد عنوان Expect-CT متاحًا. يتطلَّب Chrome توفُّر شهادة الشفافية لجميع الشهادات الموثوق بها التي تم إصدارها بشكل علني بعد 30 نيسان (أبريل) 2018."
+    "message": "تم إيقاف عنوان Expect-CT نهائيًا وستتم إزالته. يتطلَّب Chrome توفُّر شهادة الشفافية لجميع الشهادات الموثوق بها التي تم إصدارها بشكل علني بعد 30 نيسان (أبريل) 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "لم يعد الإجراءان getCurrentPosition() وwatchPosition() متوافقين مع المصادر غير الآمنة. لاستخدام هذه الميزة، يجب مراعاة نقل تطبيقك إلى مصدر آمن مثل HTTPS. لمعرفة مزيد من التفاصيل، يُرجى الاطّلاع على https://goo.gle/chrome-insecure-origins."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "سمة HTML: الإكمال التلقائي"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "منع المحتوى المختلَط"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "تقليل المعلومات في سلسلة وكيل المستخدم"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "وضع التوافق مع المستند"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "نعم"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "الجلب المُسبَق والعرض المُسبَق"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "هذه الصفحة"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "انقر على أي تقرير لعرض نصه."
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "تطبيق"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "ذاكرة التخزين المؤقت"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "مساحة التخزين لذاكرة التخزين المؤقت"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "الصفحات التي طلبت AppBanner يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" بسبب طلب رسالة التحقّق من الاتصال."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" في chrome://flags. ويمكنك الانتقال إلى الرابط chrome://flags/#back-forward-cache لتفعيلها على هذا الجهاز."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "الصفحات التي تستخدِم WebUSB API يتعذّر حفظها باستخدام ميزة \"التخزين المؤقت للصفحات\"."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" بسبب إيقاف ملفات تعريف الارتباط على صفحة تستخدم السمة Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "الصفحات التي تستخدِم مشغّل خدمات مخصَّصًا أو وظيفة صغيرة يتعذّر حفظها حاليًا باستخدام ميزة \"التخزين المؤقت للصفحات\"."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "حدث خطأ داخلي."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" لأنّ بعض طلبات شبكة JavaScript تلقّت موردًا يحمل العنوان Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "تم إيقاف ميزة \"التخزين المؤقت للصفحات\" بسبب طلب رسالة التحقّق من الاتصال."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{عرض إطار واحد آخر}zero{عرض # إطار آخر}two{عرض إطارَين آخرَين}few{عرض # إطارات أخرى}many{عرض # إطارًا آخر}other{عرض # إطار آخر}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "اسم الحزمة"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "القدرة على الاحتفاظ بالبيانات"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "انتهاء الصلاحية"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "مفتاح بقيمة فارغة"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "مصدر تابع لجهة خارجية"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "جارٍ التحميل…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "لا"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "بدون قيمة محدّدة"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(قيمة فارغة)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "المصدر"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "مساحة التخزين ثابتة"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "حصة التخزين"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "موقع إلكتروني من المستوى الأعلى"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "نعم"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "نعم، لأنّ سلسلة الأصل تحتوي على مصدر تابع لجهة خارجية."
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "نعم، لأنّ قيمة مفتاح التخزين فارغة."
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "نعم، لأنّ المصدر من خارج الموقع الإلكتروني ذي المستوى الأعلى."
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "نعم، لأنّ الموقع الإلكتروني ذي المستوى الأعلى لا يمكن الوصول إلى محتواه بشكلٍ كامل."
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "جميع الرموز المميّزة للحالة الخاصة المخزَّنة متوفّرِة على هذه النسخة من المتصفِّح."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "الرموز المميّزة للحالة الخاصة"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "الفلترة حسب مجموعة القواعد المحدَّدة"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "إعدادات الإضافات"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "تم إيقاف التحميل المُسبَق بسبب وضع \"توفير البيانات\" في نظام التشغيل."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "تم فرض تفعيل ميزة \"التحميل المُسبَق\" لأنّ أدوات مطوّري البرامج مفتوحة. عند إغلاق أدوات مطوّري البرامج، سيتم إيقاف ميزة \"العرض المُسبَق\" لأنّ جلسة المتصفِّح هذه ضمن مجموعة جلسات مستثناة من تفعيل الميزة، وذلك لأغراض مقارنة الأداء."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "تم إيقاف التحميل المُسبَق بسبب إعدادات المستخدم أو الإضافة. انتقِل إلى {PH1} للتعرّف على مزيد من المعلومات، أو إلى {PH2} لإيقاف الإضافة."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "تم فرض تفعيل ميزة \"العرض المُسبَق\" لأنّ أدوات مطوّري البرامج مفتوحة. عند إغلاق أدوات مطوّري البرامج، سيتم إيقاف ميزة \"العرض المُسبَق\" لأنّ جلسة المتصفِّح هذه ضمن مجموعة جلسات مستثناة من تفعيل الميزة، وذلك لأغراض مقارنة الأداء."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "ميزة \"التحميل المُسبَق\" كانت غير مفعَّلة، ولكن تم فرض تفعيلها الآن"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "التحميل المُسبق غير مفعَّل"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "ميزة \"العرض المُسبَق\" كانت غير مفعَّلة، ولكن تم فرض تفعيلها الآن"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "تعذَّرت عملية التحميل المُسبق."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "الحالة"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "تم تفعيل الصفحة المعروضة مُسبقًا أثناء بدء التنقّل في الإطار الرئيسي للصفحة."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "لم يتم استخدام العرض المُسبَق لأنّ سياسة الأذونات أو الميزات التجريبية في وضع الحماية لصفحة البدء لم تكن متوافقة مع سياسة صفحة العرض المُسبَق."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "لم يتم استخدام العرض المُسبَق، لأنّه تم حساب مَعلَمات تنقُّل مختلفة أثناء وقت التفعيل (مثل عناوين HTTP) مقارنةً بالمَعلَمات المحسوبة أثناء طلب التنقّل الأصلي للعرض المُسبَق."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "تطلّبت الصفحة المعروضة مُسبقًا مصادر لإخراج الصوت، وهي غير متاحة حاليًا."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "لم يتم تنفيذ العرض المُسبَق لأنّ المستخدم طلبَ أن يستهلك المتصفِّح طاقة بطارية أقل."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "تم حظر بعض عمليات تحميل الموارد."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "تطلَّبَ الانتقال إلى العرض المُسبَق شهادة عميل HTTP."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب استهداف عنوان URL لمواقع إلكترونية متعددة."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL لمواقع إلكترونية متعددة."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب إعادة توجيه عنوان URL المعروض مسبقًا إلى عنوان URL لمواقع إلكترونية متعددة."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL أُعيد توجيهه إلى عنوان URL من مواقع إلكترونية متعددة."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "لم يتم تنفيذ العرض المُسبَق لأنّ المستخدم طلبَ أن يستهلك المتصفِّح بيانات أقل."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "حاولت الصفحة المعروضة مُسبقًا بدء عملية تنزيل، وهو إجراء غير متاح حاليًا."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "لم يتم تنفيذ العرض المُسبَق بسبب حدوث خطأ داخلي في المتصفِّح أثناء محاولة تحديد استخدام الذاكرة الحالي."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "لا يمكن تنفيذ العرض المُسبَق في صفحة البدء، لأنّها تحتوي على عنوان URL فعّال يختلف عن عنوان URL العادي. (على سبيل المثال، صفحة \"علامة تبويب جديدة\" أو التطبيقات المستضافة)."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "لم يكن عنوان URL مؤهَّلاً لعرض محتواه مُسبقًا لأنّ مخطَّطه لم يكن http:‎ أو https:‎."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "تعذَّر الانتقال إلى العرض المُسبَق لأنّه تمت إعادة التوجيه إلى عنوان URL لم يكن مخطَّطه http:‎ أو https:‎."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "تطلَّبَ الانتقال إلى العرض المُسبَق مصادقة HTTP، وهي غير متاحة حاليًا."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "لم يتم تنفيذ العرض المُسبَق لأنّ هذا الجهاز لا يتضمّن ذاكرة نظام إجمالية كافية لتوفير العرض المُسبق."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL آخر غير متاح حاليًا."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "لم يتم تنفيذ العرض المُسبَق بسبب إجراء عدد كبير جدًا من عمليات العرض المُسبَق في صفحة البدء حاليًا. عليك إزالة قواعد التوقُّع الأخرى لإتاحة المزيد من عمليات العرض المُسبَق."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "لم يتم تنفيذ العرض المُسبَق لأنّ المتصفِّح تجاوزَ الحدّ الأقصى المسموح به لذاكرة العرض المُسبَق."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "تم إلغاء تحميل الصفحة المعروضة مُسبقًا لأنّ المتصفِّح تعرّضَ لضغط شديد في الذاكرة."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "لم يتم تنفيذ العرض المُسبَق لأنّ المتصفِّح تعرّضَ لضغط شديد في الذاكرة."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "تضمّنت الصفحة المعروضة مُسبقًا محتوى مختلَطًا."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "استخدمت الصفحة المعروضة مُسبقًا واجهة برمجة تطبيقات JavaScript محظورة وغير متاحة حاليًا."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب توفُّر رمز حالة ليس من فئة 2xx لاستجابة HTTP."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "حظرت \"سياسة أمان المحتوى\" عملية الانتقال إلى العرض المُسبَق."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب خطأ في الشبكة."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "لم يتم تنفيذ العرض المُسبق لأنّ المستخدم أوقف التحميل المُسبَق في إعدادات المتصفِّح."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "تعطّلت صفحة البدء."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "تم إنهاء صفحة البدء."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "تعطّلت الصفحة المعروضة مُسبقًا."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "تم إنهاء الصفحة المعروضة مُسبقًا."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه، ولكن لم تتضمّن استجابة الوجهة عنوان Supports-Loading-Mode المناسب."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه، ولكن لم تتضمّن استجابة الوجهة عنوان Supports-Loading-Mode المناسب."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب إعادة توجيه عنوان URL المعروض مسبقًا إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه، ولكن لم تتضمّن استجابة الوجهة عنوان Supports-Loading-Mode المناسب."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL أُعيد توجيهه إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه، ولكن لم تتضمّن استجابة الوجهة عنوان Supports-Loading-Mode المناسب."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب عدم توفُّر شهادة طبقة مقابس آمنة (SSL) صالحة."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "تمت إتاحة صفحة البدء في الخلفية لفترة طويلة، لذا تم تجاهل الصفحة المعروضة مُسبقًا."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "تمت إتاحة صفحة البدء في الخلفية، لذا تم تجاهل الصفحة المعروضة مُسبقًا."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "حدثَ تغيير لوكيل المستخدم أثناء الانتقال إلى العرض المُسبَق."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "اختَر عنصرًا لمعرفة مزيد من التفاصيل."
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "الحالة"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "تم تجاهل عملية الجلب المُسبَق هذه بسبب بدء عملية جلب جديدة لأنّه تم تفعيل |kPrefetchNewLimits|."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "تمّت إعادة توجيه الجلب المُسبَق، ولكن عنوان URL لإعادة التوجيه غير مؤهَّل للجلب المُسبَق."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "تمّت إعادة توجيه الجلب المُسبَق، لكن حدثت مشكلة في إعادة التوجيه."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "تعذَّر الجلب المُسبَق لأنّ العنوان Content-Type (نوع المحتوى) للاستجابة لم يكن متوافقًا."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "تعذَّر الجلب المُسبَق بسبب خطأ في الشبكة."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "تعذَّر الجلب المُسبَق لأنّ رمز حالة استجابة HTTP ليس من فئة 2xx."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "لم يتم تنفيذ الجلب المُسبَق بسبب إجراء عدد كبير جدًا من عمليات الجلب المُسبَق في صفحة البدء حاليًا."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "كانت هناك محاولة لجلب المصدر مُسبَقًا ونتج عنها الحصول على استجابة HTTP 503 تتضمّن العنوان Retry-After (إعادة المحاولة) بعد مدّة زمنية لم تنقضِ بعد."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "لم يكن عنوان URL مؤهَّلاً لجلب محتواه مسبقًا بسبب توفُّر مشغِّل خدمات مسجَّل أو ملفات تعريف الارتباط على مواقع إلكترونية متعددة لهذا المصدر. وتم إرسال عملية الجلب المُسبَق على الشبكة على أي حال ولكن لم يتم استخدامها، وكان ذلك بهدف إخفاء اطّلاع المستخدم سابقًا على المصدر."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "انقضى وقت طويل جدًا بين عملية الجلب المُسبَق والاستخدام، لذا تم تجاهل عملية الجلب المُسبَق."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "لم يتم تنفيذ الجلب المُسبَق بسبب تفعيل إعداد \"توفير شحن البطارية\"."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "لم يتم تنفيذ الجلب المُسبَق لأنّ المتصفِّح في وضع التصفّح المتخفي أو وضع الضيف."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "لم يتم تنفيذ الجلب المُسبَق لأنّ نظام التشغيل في وضع \"توفير البيانات\"."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "عنوان URL غير مؤهَّل لجلب محتواه مسبقًا لأنّه تم إعداده في سياق الشبكة التلقائي ليستخدم خادمًا وكيلاً."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "لم يكن عنوان URL مؤهَّلاً لجلب محتواه مسبقًا لأنّ مضيفه لم يكن فريدًا (على سبيل المثال، عنوان IP غير قابل للتوجيه بشكلٍ علني أو اسم مضيف لا يتم التحكّم فيه من خلال قاعدة بيانات المسجّلين)، ولكن كان يتطلّب تنفيذ الجلب المُسبَق من خلال خادم وكيل."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "لم يكن عنوان URL مؤهَّلاً للجلب المسبق لأنّه يستخدم قسمًا غير تلقائي من مساحة التخزين."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "لم يتم تنفيذ الجلب المُسبَق بسبب إيقاف التحميل المُسبَق."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "لم يكن عنوان URL مؤهَّلاً لجلب محتواه مسبقًا لأنّه لا يمكن إعداد سياق الشبكة التلقائي لاستخدام الخادم الوكيل للجلب المُسبَق للاستجابة إلى طلب جلب مسبَق لمحتوى موقع إلكتروني واحد من مصادر متعددة."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "لم يكن عنوان URL مؤهَّلاً لجلب محتواه مسبقًا لأنّ بدايته لم تكن https:‎."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "لم يكن عنوان URL مؤهَّلاً لجلب محتواه مسبقًا لأنّه كان من مواقع إلكترونية متعددة، ولكن كانت لدى المستخدم ملفات تعريف ارتباط لذلك المصدر."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "لم يكن عنوان URL مؤهَّلاً لجلب محتواه مسبقًا بسبب توفُّر مشغِّل خدمات مسجَّل لهذا المصدر، وهذا الإجراء غير متاح حاليًا."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "لم يتم استخدام الجلب المُسبَق لأنّه نُفِّذ على عدّة مواقع إلكترونية وتمّت في الوقت نفسه إضافة ملفات تعريف ارتباط لعنوان URL هذا، لذلك، لم تعُد الاستجابة للجلب المُسبَق صالحة."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "تم حظر الجلب المُسبَق من قِبل مزوّد خدمة الإنترنت أو المشرف على الشبكة."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "حدث خطأ في الشبكة عند محاولة إعداد اتصال بالخادم الوكيل للجلب المُسبَق."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "انقر للعرض في لوحة \"العناصر\""
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "يتم استخدام {PH1} مورد تم جلبه مسبقًا في هذه الصفحة."
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "تم تحميل هذه الصفحة مُسبقًا"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "تم عرض هذه الصفحة مسبقًا."
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "التمثيل المرئي للاستخدام"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "تعذَّر الحصول على معلومات التغطية لأنّه تم عرض الصفحة مسبقًا في الخلفية."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "الكل"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "تعذَّر الحصول على معلومات التغطية لأنّه تم عرض الصفحة من خلال ميزة \"التخزين المؤقت للصفحات\"."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "اختيار آلية تجميع بيانات نسبة استخدام رموز الصفحة: التجميع حسب الدالة (لها أعباء قليلة)، التجميع حسب الكتلة (لها أعباء كبيرة)"
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "حسب الدالة"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "انقر على زر إعادة التحميل {PH1} لإعادة تحميل الصفحة والحصول على معلومات التغطية."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "تم استخدام {PH1} من إجمالي {PH2} ({PH3}%) حتى الآن، ولم يتم استخدام {PH4}."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "تفعيل أداة التغطية"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "إعادة تحميل الصفحة"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "عرض نسبة استخدام رموز الصفحة"
@@ -5670,7 +5667,7 @@
     "message": "تم النسخ إلى الحافظة."
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "نسخ جميع التغييرات من صفحات CSS"
+    "message": "نسخ تغييرات صفحات CSS"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "اسم خاصية CSS: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "تم تفعيل إعداد إلغاء التزامن في الجهاز"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "قيمة navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "بدون تقييد"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "تمت العملية بنجاح."
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "لا تتوفّر مفاتيح لجهة إصدار ملفات PST. قد يلزم تسجيل جهة الإصدار من خلال عملية التسجيل على Chrome."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "تعذّر تنفيذ العملية لسبب غير معروف."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "إيقاف تسجيل تخصيصات لقطات لعناصر متعدّدة"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "تم إخفاء محرِّر أوامر بروتوكول \"أدوات مطوّري البرامج في Chrome\""
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "ظهر محرِّر أوامر بروتوكول \"أدوات مطوّري البرامج في Chrome\"."
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "محو الكل"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "فلتر"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "إخفاء محرِّر أوامر بروتوكول \"أدوات مطوّري البرامج في Chrome\""
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "الطريقة"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "الجلسة"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "إظهار محرِّر أوامر بروتوكول \"أدوات مطوّري البرامج في Chrome\""
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "الهدف"
@@ -11702,9 +11711,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "سلسلة التعليمات"
   },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "الشبكة"
-  },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} في {PH2}"
   },
@@ -13530,7 +13536,7 @@
     "message": "الاسم"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
-    "message": "(مُعتِم)"
+    "message": "(قيمة فارغة)"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "الجلسة"

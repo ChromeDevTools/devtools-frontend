@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Desanclar en una ventana separada"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Página: Sin seleccionar"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Página: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Como se creó"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "La función para activar window.confirm desde iframes de origen cruzado ya no está disponible y se quitará en el futuro."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "Los eventos de mutación de DOM, incluidos DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument y DOMCharacterDataModified dejaron de estar disponibles (https://w3c.github.io/uievents/#legacy-event-types) y se quitarán. En su lugar, usa MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Compatibilidad con datos: Las URLs del elemento <use> SVG están obsoletas y se quitarán en el futuro."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "La función para relajar la política del mismo origen mediante la configuración de document.domain ya no está disponible y se inhabilitará de forma predeterminada. Para seguir utilizando esta función, envía un encabezado Origin-Agent-Cluster: ?0 junto con la respuesta HTTP para el documento y los marcos a fin de inhabilitar los clústeres de agentes con clave de origen. Para obtener más información, consulta https://developer.chrome.com/blog/immutable-document-domain/."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path ya no está disponible y se quitará. En su lugar, utiliza Event.composedPath()."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Ya no se admite el encabezado Expect-CT. Chrome requiere un Certificado de transparencia para todos los certificados de confianza pública emitidos después del 30 de abril de 2018."
+    "message": "El encabezado Expect-CT ya no está disponible y se quitará. Chrome requiere un Certificado de transparencia para todos los certificados de confianza pública emitidos después del 30 de abril de 2018."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() y watchPosition() ya no funcionan en orígenes inseguros. Para utilizar esta función, considera cambiar tu app a un origen seguro, como HTTPS. Para obtener más información, consulta https://goo.gle/chrome-insecure-origins."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "API de Federated Credential Management"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "API de Federated Credential Management User Info"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Atributo HTML: autocompletar"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Previene el contenido mixto"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Reducción de las strings de usuario-agente"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Modo de compatibilidad de documentos"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Sí"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Carga previa y renderización previa"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Esta página"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Haz clic en cualquier informe para mostrar el contenido"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Aplicación"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Memoria caché"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Almacenamiento en memoria caché"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Las páginas que solicitaron un AppBanner no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Se inhabilitó la Memoria caché atrás/adelante debido a una solicitud de keepalive."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Las funciones experimentales inhabilitaron la memoria caché atrás/adelante. Para habilitarla localmente en este dispositivo, visita chrome://flags/#back-forward-cache."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Las páginas que utilizan la API de WebUSB no son aptas para el almacenamiento en la memoria caché atrás/adelante."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Se inhabilitó la memoria caché atrás/adelante porque las cookies están inhabilitadas en una página que usa Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Las páginas que utilizan un trabajador dedicado o un worklet no son aptas para el almacenamiento en la memoria caché atrás/adelante actualmente."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Error interno"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Se inhabilitó la memoria caché atrás/adelante porque una solicitud de red de JavaScript recibió un recurso con el encabezado Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Se inhabilitó la Memoria caché atrás/adelante debido a una solicitud de keepalive."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Mostrar # marco más}other{Mostrar # marcos más}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Nombre del bucket"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Durabilidad"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Vencimiento"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Es opaca"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Es de terceros"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Cargando…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "No"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Ninguno"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(opaco)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Origen"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Es persistente"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Cuota"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Sitio de nivel superior"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Sí"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Sí, porque la cadena principal contiene un origen de terceros"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Sí, porque la clave de almacenamiento es opaca"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Sí, porque el origen está fuera del sitio de nivel más alto"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Sí, porque el sitio de nivel más alto es opaco"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Todos los tokens de estado privado almacenados están disponibles en esta instancia del navegador."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Tokens de estado privado"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Filtrar por conjunto de reglas seleccionado"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Configuración de extensiones"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Se inhabilitó la precarga debido al modo de Ahorro de datos del sistema operativo."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "La precarga está habilitada de manera forzosa porque Herramientas para desarrolladores está abierto. Cuando se cierre Herramientas para desarrolladores, la renderización previa se inhabilitará porque esta sesión del navegador es parte de un grupo de aislamiento que se usa para realizar comparaciones de rendimiento."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "La precarga está inhabilitada debido a la configuración del usuario o una extensión. Ve a {PH1} para obtener más información o a {PH2} para inhabilitar la extensión."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "La renderización previa está habilitada de manera forzosa porque Herramientas para desarrolladores estaban abierto. Cuando se cierre Herramientas para desarrolladores, la renderización previa se inhabilitará porque esta sesión del navegador es parte de un grupo de aislamiento que se usa para realizar comparaciones de rendimiento."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "La precarga estaba inhabilitada, pero ahora se habilitó de manera forzosa"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "La precarga está inhabilitada"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "La renderización previa estaba inhabilitada, pero ahora se habilitó de manera forzosa"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "No se pudo completar la precarga."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Estado"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "La página renderizada previamente se activó durante la navegación del marco principal de la página iniciadora."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "No se usó la renderización previa porque las funciones experimentales de la zona de pruebas o la política de permisos de la página iniciadora no eran compatibles con las de la página de renderización previa."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "No se usó la renderización previa porque, durante el tiempo de activación, se calcularon parámetros de navegación (p. ej., HTTP) diferentes a los que se calcularon durante la solicitud de navegación de renderización previa original."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "La página renderizada previamente solicitó una salida de audio, lo que no se admite por el momento."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "No se realizó la renderización previa porque el usuario solicitó que el navegador usara menos batería."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Se bloqueó parte de la carga del recurso."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "La navegación de renderización previa requería un certificado de cliente HTTP."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "La navegación de renderización previa falló debido a que la URL de destino era una URL de otro sitio."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "La página renderizada previamente navegó a una URL de otro sitio."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "La navegación de renderización previa falló porque la URL renderizada previamente redireccionó a una URL de otro sitio."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "La página renderizada previamente navegó a una URL que redireccionó a una URL de otro sitio."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "No se realizó la renderización previa porque el usuario solicitó que el navegador usara menos datos."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "La página renderizada previamente intentó iniciar una descarga, lo que no se admite por el momento."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "No se realizó la renderización previa porque el navegador encontró un error interno al intentar determinar el uso actual de la memoria."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "La página iniciadora no puede realizarla porque tiene una URL eficaz que es diferente de la URL normal. (Por ejemplo, la página Nueva pestaña o las apps alojadas)."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "La URL no era apta para la renderización previa porque su esquema no era http: ni https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "La navegación de renderización previa falló porque redireccionó a una URL cuyo esquema no era http: ni https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "La navegación de renderización previa requería la autenticación de HTTP, lo que no se admite por el momento."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "No se realizó la renderización previa porque este dispositivo no tiene suficiente memoria total del sistema para admitirla."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "La página renderizada previamente navegó a otra URL, lo que no se admite por el momento."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "No se realizó la renderización previa porque la página iniciadora ya tiene demasiadas renderizaciones previas en curso. Quita otras reglas de especulación para habilitar más renderizaciones previas."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "No se realizó la renderización previa porque el navegador superó el límite de memoria de renderización previa."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Se descargó la página renderizada previamente porque el navegador está utilizando la memoria a un nivel crítico."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "No se realizó la renderización previa porque el navegador está utilizando la memoria a un nivel crítico."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "La página renderizada previamente tenía contenido mixto."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "La página renderizada previamente usó una API de JavaScript prohibida que actualmente no es compatible."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "La navegación de renderización previa falló debido a un código de estado de respuesta HTTP que no era 2xx."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Una Política de Seguridad del Contenido bloqueó la navegación de renderización previa."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Se produjo un error de red en la navegación de renderización previa."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "No se realizó la renderización previa porque el usuario inhabilitó la precarga en la configuración de su navegador."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Falló la página iniciadora."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Se cerró la página iniciadora."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "La página renderizada previamente falló."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Se cerró la página renderizada previamente."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "La página renderizada previamente navegó a una URL de origen cruzado en el mismo sitio, pero la respuesta de destino no incluía el encabezado Supports-Loading-Mode correcto."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "La página renderizada previamente navegó a una URL de origen cruzado en el mismo sitio, pero la respuesta de destino no incluía el encabezado Supports-Loading-Mode correcto."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "La navegación por la renderización previa falló porque la URL renderizada previamente redireccionó a una URL de origen cruzado en el mismo sitio, pero la respuesta de destino no incluía el encabezado Supports-Loading-Mode correcto."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "La página renderizada previamente navegó a una URL que redireccionó a una URL de origen cruzado en el mismo sitio, pero la respuesta de destino no incluía el encabezado Supports-Loading-Mode correcto."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "La navegación de renderización previa falló debido a un certificado SSL no válido."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "La página iniciadora se puso en segundo plano por mucho tiempo, por lo que se descartó la página renderizada previamente."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "La página iniciadora se puso en segundo plano, por lo que se descartó la página renderizada previamente."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Se produjo un cambio en el usuario-agente durante la navegación por la renderización previa."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Selecciona un elemento para obtener más detalles"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Estado"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Se descartó la carga previa de una carga previa más reciente porque |kPrefetchNewLimits| está habilitada"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Se redireccionó la carga previa, pero la URL de redireccionamiento no es apta para la carga previa."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Se redireccionó la carga previa, pero hubo un problema con el redireccionamiento."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "La carga previa falló porque el encabezado Content-Type de la respuesta no era compatible."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Falló la carga previa debido a un error de red."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "La carga previa falló debido a un código de estado de respuesta HTTP que no era 2xx."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "No se realizó la carga previa porque la página iniciadora ya tiene demasiadas cargas previas en curso."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Una carga previa anterior al origen recibió una respuesta HTTP 503 con un encabezado Retry-After que aún no ha transcurrido."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "La URL no era apta para la carga previa porque había un service worker registrado o cookies de otros sitios para ese origen, pero la carga previa se colocaba en la red de todos modos y no se usaba para ocultar que el usuario tenía algún tipo de relación anterior con el origen."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Transcurrió demasiado tiempo entre la carga previa y el uso, por lo que se descartó la carga previa."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "No se realizó la carga previa porque se habilitó el parámetro de configuración de Ahorro de batería."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "No se realizó la carga previa porque el navegador está en Modo de invitado o Incógnito."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "No se realizó la carga previa porque el sistema operativo está en modo Ahorro de datos."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "La URL no es apta para la carga previa porque, en el contexto de red predeterminado, está configurado para usar un servidor proxy."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "La URL no era apta para la carga previa porque su host no era único (p. ej., una dirección IP que no se puede enrutar de forma pública o un nombre de host que no está controlado por registros), pero la carga previa debía realizarse por proxy."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "La URL no era apta para la carga previa porque usa una partición de almacenamiento no predeterminada."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "No se realizó la carga previa porque se inhabilitó la precarga."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "La URL no era apta para la carga previa porque no se puede configurar el contexto de red predeterminado para usar el proxy de carga previa de una solicitud de carga previa de origen cruzado del mismo sitio."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "La URL no era apta para la carga previa porque su esquema no era https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "La URL no era apta para la carga previa porque era entre sitios, pero el usuario tenía cookies para ese origen."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "La URL no era apta para la carga previa porque había un service worker registrado para ese origen, que actualmente no se admite."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "No se usó la carga previa porque era una carga previa entre sitios, y se agregaron cookies para esa URL mientras la carga previa estaba en curso, por lo que la respuesta de carga previa ahora está desactualizada."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Tu proveedor de servicios de Internet o administrador de red bloqueó la carga previa."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Se produjo un error de red cuando se intentó establecer una conexión con el proxy de carga previa."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Hacer clic para mostrar en el panel de elementos"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "Se usaron {PH1} recursos cargados previamente para esta página"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Precarga utilizada para esta página"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Se completó la renderización previa de esta página"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Visualización del uso"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "No se pudo capturar la información de cobertura porque se realizó la renderización previa de la página en segundo plano."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Todo"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "No se pudo capturar la información de cobertura porque la página se publicó desde la memoria caché atrás/adelante."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Elegir el nivel de detalle de la cobertura: la sobrecarga por función es baja y la sobrecarga por bloqueo es alta."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Por función"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Haz clic en el botón de volver a cargar {PH1} a fin de obtener cobertura."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} de {PH2} ({PH3}%) están usados por el momento, {PH4} en desuso."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Cobertura del instrumento"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Volver a cargar la página"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Mostrar cobertura"
@@ -5670,7 +5667,7 @@
     "message": "Se copió el elemento en el portapapeles"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Copiar todos los cambios CSS"
+    "message": "Copiar cambios de CSS"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Nombre de propiedad CSS: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Se habilitó la anulación de la simultaneidad del hardware"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Valor de navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "No hay limitación"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Correcto"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Las claves de esta entidad emisora de PST no están disponibles. Es posible que la entidad emisora deba registrarse mediante el proceso de registro de Chrome."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "No se realizó la operación por una razón desconocida."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Detener grabación de asignaciones de montón"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "Se ocultó el editor de comandos de CDP"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "Se muestra el editor de comandos de CDP"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Borrar todo"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Filtrar"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "Ocultar el editor de comandos de CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Método"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Sesión"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "Mostrar el editor de comandos de CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Objetivo"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Subproceso"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Red"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} a {PH2}"

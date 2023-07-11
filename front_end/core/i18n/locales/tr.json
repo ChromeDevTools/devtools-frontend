@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Ayrı pencereye yerleştir"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Sayfa: Seçili değil"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Sayfa: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Yazıldığı şekilde"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Çapraz kaynak iframe'lerden window.confirm tetikleme desteği sonlandırılmış olup ileride kaldırılacaktır."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument ve DOMCharacterDataModified dahil omak üzere DOM dönüşümü etkinliklerinin desteği sonlandırılmıştır (https://w3c.github.io/uievents/#legacy-event-types) ve bu etkinlikler kaldırılacaktır. Lütfen bunun yerine MutationObserver kullanın."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Veri desteği: SVG <use> öğesindeki URL'lerin desteği sonlandırılmıştır ve gelecekte kaldırılacaktır."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain ayarlayarak aynı kaynak politikasını esnetme işlevi kullanımdan kaldırılmış olup varsayılan olarak devre dışı olacaktır. Bu özelliği kullanmayı sürdürmek için lütfen doküman ve çerçevelere yönelik HTTP yanıtıyla birlikte Origin-Agent-Cluster: ?0 üstbilgisi göndererek kaynak anahtarlı aracı kümelerini devre dışı bırakın. Ayrıntılı bilgi için https://developer.chrome.com/blog/immutable-document-domain/ sayfasına bakın."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path artık kullanılmıyor olup kaldırılacaktır. Lütfen bunun yerine Event.composedPath() politikasını kullanın."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT başlığı artık desteklenmiyor. Chrome, 30 Nisan 2018'den sonra düzenlenen ve herkes tarafından güvenilen tüm sertifikalar için Sertifika Şeffaflığı'nı zorunlu kılmaktadır."
+    "message": "Expect-CT seçeneği artık kullanılmıyor olup kaldırılacaktır. Chrome, 30 Nisan 2018'den sonra düzenlenen ve herkes tarafından güvenilen tüm sertifikalar için Sertifika Şeffaflığı'nı zorunlu kılmaktadır."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() ve watchPosition() güvenilir olmayan kaynaklarda artık çalışmıyor. Bu özelliği kullanmak için uygulamanızı HTTPS gibi güvenli bir kaynağa geçirmenizi öneririz. Daha fazla bilgi için https://goo.gle/chrome-insecure-origins adresine göz atın."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML özelliği: otomatik tamamlama"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Karma içerik engelleniyor"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "User-Agent Dizesi Azaltma"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Doküman uyumluluk modu"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Evet"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Önceden Getirme ve Önceden İşleme"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Bu Sayfa"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Gövdesini görüntülemek istediğiniz raporu tıklayın"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Uygulama"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Önbellek"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Önbellek depolama alanı"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner isteğinde bulunan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Geri-ileri önbellek, keepalive isteği nedeniyle devre dışı bırakıldı."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Geri-ileri önbellek, flag'lerle devre dışı bırakılmış. Özelliği yerel olarak bu cihazda etkinleştirmek için chrome://flags/#back-forward-cache adresine gidin."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "WebUSB API kullanan sayfalar geri-ileri önbelleğe alınmaya uygun değildir."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Cache-Control: no-store kullanan bir sayfada çerezler devre dışı bırakıldığı için geri-ileri önbellek devre dışı bırakıldı."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Özel bir çalışan veya iş akışı kullanan sayfalar şu an için geri-ileri önbelleğe alınmaya uygun değildir."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Dahili hata."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Bazı JavaScript ağ istekleri Cache-Control: no-store başlığına sahip kaynak aldığı için geri-ileri önbellek devre dışı bırakıldı."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Geri-ileri önbellek, keepalive isteği nedeniyle devre dışı bırakıldı."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{# kare daha göster}other{# kare daha göster}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Paket adı"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Dayanıklılık"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Son Geçerlilik Tarihi"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Opak"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Üçüncü taraf"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Yükleniyor…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Hayır"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Yok"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(opak)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Kaynak"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Kalıcı"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Kota"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Üst düzey site"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Evet"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Evet, çünkü üst öğe zinciri bir üçüncü taraf kaynak içeriyor"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Evet, çünkü depolama anahtarı opak"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Evet, çünkü kaynak üst düzey sitenin dışında"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Evet, çünkü üst düzey site opak"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Depolanan tüm Gizlilik Jetonları bu tarayıcı örneğinde kullanılabilir."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Gizlilik Jetonları"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Seçilen kural grubuna göre filtrele"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Uzantı ayarları"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "İşletim sisteminin Veri Tasarrufu modu nedeniyle önceden yükleme devre dışı bırakıldı."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Geliştirici Araçları açık olduğundan, önceden yükleme zorunlu olarak etkinleştirildi. Geliştirici Araçları kapatıldığında bu tarayıcı oturumu, performans karşılaştırmaları için kullanılan bir ayırma grubunun parçası olduğundan önceden işleme devre dışı bırakılır."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Önceden yükleme, kullanıcının ayarları veya bir uzantı nedeniyle devre dışı bırakıldı. Daha fazla bilgi edinmek için {PH1} adresine, uzantıyı devre dışı bırakmak için de {PH2} adresine gidin."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Geliştirici Araçları açık olduğundan, önceden işleme zorunlu olarak etkinleştirildi. Geliştirici Araçları kapatıldığında bu tarayıcı oturumu, performans karşılaştırmaları için kullanılan bir ayırma grubunun parçası olduğundan önceden işleme devre dışı bırakılır."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Önceden yükleme devre dışı bırakılmıştı, ancak artık zorunlu olarak etkinleştirildi"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Önceden yükleme devre dışı bırakıldı"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Önceden işleme devre dışı bırakılmıştı, ancak artık zorunlu olarak etkinleştirildi"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Önceden yükleme başarısız oldu."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Durum"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Önceden işlenmiş sayfa, başlangıç sayfasının ana çerçeve gezinmesi sırasında etkinleştirildi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Başlangıç sayfasının korumalı alan flag'leri veya izin politikası, önceden işleme sayfasındakilerle uyumlu olmadığı için önceden işleme kullanılmadı."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Etkinleştirme süresinde, orijinal önceden işleme gezinme isteği sırasında hesaplanandan farklı gezinme parametreleri (ör. HTTP başlıkları) hesaplandığı için önceden işleme kullanılmadı."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Önceden işlenmiş sayfa, şu anda desteklenmeyen ses çıkışı isteğinde bulundu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Kullanıcı, tarayıcının daha az pil kullanmasını istediği için önceden işleme gerçekleştirilmedi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Bazı kaynak yüklemeleri engellendi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Önceden işleme gezinmesinde bir HTTP istemci sertifikası gerekiyordu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Önceden işleme gezinmesi, çapraz site URL'sini hedeflediğinden başarısız oldu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Önceden işlenmiş sayfa, çapraz site URL'sine gitti."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Önceden işlenmiş URL, çapraz site URL'sine yönlendirildiği için önceden işleme gezinmesi başarısız oldu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Önceden işlenmiş sayfa, çapraz site URL'sine yönlendirilen bir URL'ye gitti."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Kullanıcı, tarayıcının daha az veri kullanmasını istediği için önceden işleme gerçekleştirilmedi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Önceden işlenmiş sayfa, şu anda desteklenmeyen bir indirme işlemi başlatmayı denedi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Tarayıcı, mevcut bellek kullanımını belirlemeye çalışırken dahili bir hatayla karşılaştığı için önceden işleme gerçekleştirilmedi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Başlangıç sayfası, normal URL'sinden farklı bir etkili URL'ye sahip olduğu için önceden işleme gerçekleştiremez. (Örneğin, yeni sekme sayfası veya barındırılan uygulamalar.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "Şeması http: veya https: olmadığı için URL, önceden işlenmeye uygun değildi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Şeması http: veya https: olmayan bir URL'ye yönlendirildiğinden önceden işleme gezinmesi başarısız oldu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Önceden işleme gezinmesinde, şu anda desteklenmeyen HTTP kimlik doğrulaması gerekiyordu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Bu cihaz, önceden işlemeyi destekleyecek kadar yeterli toplam sistem belleğine sahip olmadığı için önceden işleme gerçekleştirilmedi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Önceden işlenmiş sayfa, şu anda desteklenmeyen başka bir URL'ye gitti."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Başlangıç sayfasında devam eden çok fazla önceden işleme olduğu için önceden işleme gerçekleştirilmedi. Daha fazla önceden işlemeyi etkinleştirmek için diğer spekülasyon kurallarını kaldırın."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Tarayıcı, önceden işleme bellek sınırını aştığından önceden işleme gerçekleştirilmedi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Tarayıcı, kritik düzeyde bellek baskısı altında olduğu için önceden işlenmiş sayfa kaldırıldı."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Tarayıcı, kritik düzeyde bellek baskısı altında olduğu için önceden işleme gerçekleştirilmedi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Önceden işlenmiş sayfada karma içerik vardı."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Önceden işlenmiş sayfa şu anda desteklenmeyen yasak bir JavaScript API kullandı."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "2xx olmayan bir HTTP yanıt durum kodu nedeniyle önceden işleme gezinmesi başarısız oldu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Önceden işleme gezinmesi, İçerik Güvenliği Politikası tarafından engellendi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Önceden işleme gezinmesi bir ağ hatasıyla karşılaştı."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Kullanıcı, tarayıcı ayarlarında önceden yüklemeyi devre dışı bıraktığı için önceden işleme gerçekleştirilmedi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Başlangıç sayfası kilitlendi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Başlangıç sayfası sonlandırıldı."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Önceden oluşturulmuş sayfa kilitlendi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Önceden işlenmiş sayfa sonlandırıldı."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Önceden işlenmiş sayfa, aynı sitenin çapraz kaynak URL'sine gitti, ancak hedef yanıtta uygun Supports-Loading-Mode başlığı bulunmuyordu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Önceden işlenmiş sayfa, aynı sitenin çapraz kaynak URL'sine gitti, ancak hedef yanıtta uygun Supports-Loading-Mode başlığı bulunmuyordu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Önceden işlenmiş URL, aynı sitenin çapraz kaynak URL'sine yönlendirdiği, ancak hedef yanıtta uygun Supports-Loading-Mode başlığı bulunmadığı için önceden işleme gezinmesi başarısız oldu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Önceden işlenmiş sayfa, aynı sitenin çapraz kaynak URL'sine yönlendiren, ancak hedef yanıtta uygun Supports-Loading-Mode başlığı bulunmayan bir URL'ye gitti."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Geçersiz SSL sertifikası nedeniyle önceden işleme gezinmesi başarısız oldu."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Başlangıç sayfası uzun süredir arka plana alındığından önceden işlenmiş sayfa silindi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Başlangıç sayfası arka plana alındığından önceden işlenmiş sayfa silindi."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Önceden işleme gezinmesi sırasında kullanıcı aracısı değiştirildi."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Daha fazla ayrıntı için bir öğe seçin"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Durum"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Önceden getirme, |kPrefetchNewLimits| etkinleştirildiğinden daha yeni bir önceden getirme işlemi için silindi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Önceden getirme işlemi yönlendirildi ancak yönlendirme URL'si önceden getirmeye uygun değil."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Önceden getirme yönlendirildi ancak yönlendirmeyle ilgili bir sorun oluştu."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Yanıtın İçerik Türü başlığı desteklenmediğinden önceden getirme başarısız oldu."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Bir ağ hatası nedeniyle önceden getirme işlemi başarısız oldu."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "2xx olmayan bir HTTP yanıt durum kodu nedeniyle önceden getirme işlemi başarısız oldu."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Başlangıç sayfasında devam eden çok fazla önceden getirme olduğu için önceden getirme gerçekleştirilemedi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Kaynağa yapılan eski bir önceden getirme işlemi, henüz süresi geçmemiş Retry-After başlığına sahip bir HTTP 503 yanıtı aldı."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "Söz konusu kaynak için kayıtlı bir hizmet çalışanı veya siteler arası çerezler olduğu ancak önceden getirme, kullanıcının kaynakla önceden bir ilişkisi olduğunu gizlemek amacıyla yine de ağa yerleştirildiği ve kullanılmadığı için URL, önceden getirilmeye uygun değildi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Önceden getirme ile kullanım arasında çok fazla zaman geçtiği için önceden getirme işlemi silindi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Pil Tasarrufu ayarı etkinleştirildiği için önceden getirme işlemi gerçekleştirilemedi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Tarayıcı Gizli modda veya misafir modunda olduğu için önceden getirme işlemi gerçekleştirilemedi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "İşletim sistemi Veri Tasarrufu modunda olduğu için önceden getirme işlemi gerçekleştirilemedi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "Varsayılan ağ bağlamında proxy sunucu kullanacak şekilde yapılandırıldığından URL, önceden getirilmeye uygun değil."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "Ana makinesi benzersiz olmadığından (ör. herkes tarafından yönlendirilemeyen bir IP adresi veya kayıt otoritesi tarafından kontrol edilmeyen bir ana makine adı) ancak önceden getirme için proxy kullanılması gerektiğinden URL, önceden getirilmeye uygun değildi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "Varsayılan olmayan bir depolama alanı bölümü kullandığı için URL, önceden getirilmeye uygun değildi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Önceden yükleme devre dışı bırakıldığı için önceden getirme işlemi gerçekleştirilemedi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "Varsayılan ağ bağlamı, aynı sitenin çapraz kaynak önceden getirme isteği için önceden getirme proxy'sini kullanacak şekilde yapılandırılamadığından URL, önceden getirmeye uygun değildi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "Şeması https: olmadığı için URL, önceden getirilmeye uygun değildi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "Siteler arası olduğu ancak kullanıcının söz konusu kaynağa ait çerezleri olduğu için URL, önceden getirilmeye uygun değildi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "Söz konusu kaynak için şu anda desteklenmeyen kayıtlı bir hizmet çalışanı olduğundan URL, önceden getirilmeye uygun değildi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Siteler arası önceden getirme olduğundan ve önceden getirme işlemi devam ederken söz konusu URL için çerez eklendiğinden önceden getirme kullanılmadı. Dolayısıyla, önceden getirilen yanıt güncel değil."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Önceden getirme işlemi, internet servis sağlayıcınız veya ağ yöneticiniz tarafından engellendi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Önceden getirme proxy'si ile bağlantı kurmaya çalışırken bir ağ hatasıyla karşılaşıldı."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Nesne panelinde göstermek için tıklayın"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "Bu sayfa için önceden getirilen {PH1} kaynak kullanılıyor"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Bu sayfada önceden yükleme kullanıldı"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Bu sayfa önceden işlendi"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Kullanım Görselleştirme"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Sayfa arka planda önceden işlendiği için kapsam bilgileri alınamadı."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Tümü"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Sayfa geri-ileri önbellekten sunulduğu için kapsam bilgileri alınamadı."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Kapsam ayrıntı düzeyini seçin: İşlev düzeyinde oluşan yük az, blok düzeyinde oluşan yük belirgin olur."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "İşlev başına"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Yeniden yükleyip kapsamı görmek için yeniden yükle düğmesini {PH1} tıklayın."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "Şu ana kadar {PH2} içinden {PH1} kadarı (%{PH3}) kullanıldı, {PH4} kadarı kullanılmadı."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Araç kapsamı"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Sayfayı yeniden yükle"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Kapsamı Göster"
@@ -5670,7 +5667,7 @@
     "message": "Panoya kopyalandı"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Tüm CSS değişikliklerini kopyala"
+    "message": "CSS değişikliklerini kopyala"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS özellik adı: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Donanım eşzamanlılığını geçersiz kılma seçeneği etkin"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "navigator.hardwareConcurrency değeri"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Kısıtlamaya gerek yoktur"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Başarılı"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Bu PST'yi veren kurumun anahtarları kullanılamıyor. PST'yi veren kurumun, Chrome kayıt süreci üzerinden kaydolması gerekebilir."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "İşlem bilinmeyen bir nedenden dolayı başarısız oldu."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Yığın ayırmaları kaydını durdur"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP komut düzenleyicisi gizlendi"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP komut düzenleyicisi gösteriliyor"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Tümünü temizle"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Filtre"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "CDP komut düzenleyicisini gizle"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Yöntem"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Oturum"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "CDP komut düzenleyicisini göster"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Hedef"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "İş parçacığı"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Ağ"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1}, {PH2}"

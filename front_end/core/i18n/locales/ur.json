@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "علیحدہ ونڈو میں ڈاک سے ہٹائیں"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "صفحہ: منتخب نہیں کیا گیا"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "صفحہ: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "تصنیف شدہ کے بطور"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "کراس اوریجن iframes سے متحرک کرنے والے window.confirm کو ختم کر دیا گیا ہے اور اسے مستقبل میں ہٹا دیا جائے گا۔"
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOM تغیراتی ایونٹس بشمول DOMSubtreeModified، DOMNodeInserted، DOMNodeRemoved، DOMNodeRemovedFromDocument، DOMNodeInsertedIntoDocument، اور DOMCharacterDataModified فرسودہ ہیں (https://w3c.github.io/uievents/#legacy-event-types) اور انہیں ہٹا دیا جائے گا۔ براہ کرم اس کے بجائے MutationObserver استعمال کریں۔"
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "ڈیٹا کے لیے سپورٹ: SVG‏ <use> عنصر میں URLs فرسودہ ہیں اور انہیں مستقبل میں ہٹا دیا جائے گا۔"
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain کو ترتیب دے کر مماثل اوریجن پالیسی میں نرمی کرنا پرانا ہو چکا ہے، اور بطور ڈیفالٹ غیر فعال ہو جائے گا۔ اس خصوصیت کا استعمال جاری رکھنے کے لیے، براہ کرم دستاویز اور فریمز کے لیے HTTP جواب کے ساتھ Origin-Agent-Cluster: ?0 ہیڈر بھیج کر اوریجن-کی ایجنٹ کلسٹرز سے آپٹ آؤٹ کریں۔ مزید تفصیلات کے لیے https://developer.chrome.com/blog/immutable-document-domain/ ملاحظہ کریں۔"
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path پرانا ہو چکا ہے اور اسے ہٹا دیا جائے گا۔ براہ کرم اس کے بجائے Event.composedPath() استعمال کریں۔"
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT ہیڈر مزید تعاون یافتہ نہیں ہے۔ Chrome کو 30 اپریل 2018 کے بعد جاری کردہ تمام عوامی قابل اعتماد سرٹیفیکیٹس کے لیے سرٹیفکیٹ کی شفافیت درکار ہے۔"
+    "message": "Expect-CT ہیڈر پرانا ہو چکا ہے اور اسے ہٹا دیا جائے گا۔ Chrome کو 30 اپریل 2018 کے بعد جاری کردہ تمام عوامی قابل اعتماد سرٹیفیکیٹس کے لیے سرٹیفکیٹ کی شفافیت درکار ہے۔"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() اور watchPosition() اب غیر محفوظ ماخذ پر کام نہیں کرتا ہے۔ اس خصوصیت کو استعمال کرنے کے لیے، آپ کو اپنی ایپلیکیشن کو محفوظ ماخذ، جیسے HTTPS پر تبدیل کرنے پر غور کرنا چاہیے۔ مزید تفصیلات کے لیے https://goo.gle/chrome-insecure-origins دیکھیں۔"
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML انتساب: خود کار تکمیل"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "مخلوط مواد سے بچنا"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "صارف کے ایجنٹ اسٹرنگ میں تخفیف"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "دستاویز موافقت پذیری وضع"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "ہاں"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "پیشگی بازیافت اور پری رینڈرنگ"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "یہ صفحہ"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "کسی بھی رپورٹ کا مرکزی حصہ دکھانے کے لیے کلک کریں"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "ایپلیکیشن"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "کیش"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "کیش اسٹوریج"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner کی درخواست کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "keepalive کی درخواست کی وجہ سے بیک/فارورڈ کیش کو غیر فعال کر دیا گیا۔"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "جھنڈوں نے بیک/فارورڈ کیش کو غیر فعال کر دیا ہے۔ اس آلے پر اسے مقامی طور پر فعال کرنے کیلئے chrome://flags/#back-forward-cache ملاحظہ کریں۔"
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "WebUSB API استعمال کرنے والے صفحات بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "بیک فارورڈ کیش غیر فعال ہے کیونکہ کوکیز Cache-Control: no-store استعمال کرنے والے صفحات پر غیر فعال ہیں۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "ایک وقف کردہ ورکر یا ورک لیٹ استعمال کرنے والے صفحات فی الوقت بیک/فارورڈ کیش کیلئے اہل نہیں ہیں۔"
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "داخلی خرابی۔"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "بیک/فارورڈ کیش غیر فعال ہے کیونکہ کچھ JavaScript نیٹ ورک کی درخواست کو Cache-Control: no-store ہیڈر کے ساتھ ماخذ موصول ہوا۔"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "keepalive کی درخواست کی وجہ سے بیک/فارورڈ کیش کو غیر فعال کر دیا گیا۔"
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{# مزید فریم دکھائيں}other{# مزید فریمز دکھائیں}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "بکیٹ کا نام"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "پائیداری"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "میعاد کا اختتام"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "مبہم ہے"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "فریق ثالث ہے"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "لوڈ ہو رہا ہے…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "نہیں"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "کوئی نہیں"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(مبہم)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "اوریجن"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "مستقل ہے"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "کوٹہ"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "اعلی سطح کی سائٹ"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "ہاں"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "ہاں، کیونکہ نسب کا سلسلہ فریق ثالث کی اوریجن پر مشتمل ہے"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "ہاں، کیونکہ اسٹوریج کی کلید مبہم ہے"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "ہاں کیونکہ اوریجن اعلی سطحی سائٹ سے باہر ہے"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "ہاں کیونکہ اعلی سطح کی سائٹ مبہم ہے"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "براؤزر کے اس نمونے میں تمام اسٹور کردہ پرائیویٹ اسٹیٹ ٹوکنز دستیاب ہیں۔"
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "پرائیویٹ اسٹیٹ ٹوکنز"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "منتخب کردہ اصول کے سیٹ کے لحاظ سے فلٹر کریں"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "ایکسٹینشنز کی ترتیبات"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "آپریٹنگ سسٹم کے ڈیٹا سیور موڈ پر ہونے کی وجہ سے پیشگی لوڈنگ غیر فعال ہے۔"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "پیشگی لوڈنگ کو زبردستی فعال کیا گیا ہے کیونکہ DevTools کھلا ہوا ہے۔ DevTools کے بند ہونے پر، پری رینڈرنگ کو غیر فعال کر دیا جائے گا کیونکہ براؤزر کا یہ سیشن کارکردگی کے موازنہ کے لیے استعمال ہونے والے ہولڈ بیک گروپ کا حصہ ہے۔"
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "پیشگی لوڈنگ صارف کی ترتیبات یا ایکسٹینشن کی وجہ سے غیر فعال ہے۔ مزید جاننے کے لیے {PH1} پر جائیں، یا ایکسٹینشن کو غیر فعال کرنے کے لیے {PH2} پر جائیں۔"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "پری رینڈرنگ کو زبردستی فعال کیا گیا ہے کیونکہ DevTools کھلا ہے۔ DevTools کے بند ہونے پر، پری رینڈرنگ کو غیر فعال کر دیا جائے گا کیونکہ براؤزر کا یہ سیشن کارکردگی کے موازنہ کے لیے استعمال ہونے والے ہولڈ بیک گروپ کا حصہ ہے۔"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "پیشگی لوڈنگ کو غیر فعال کر دیا گیا تھا، لیکن اب فورس فعال ہے"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "پیشگی لوڈنگ غیر فعال ہے"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "پری رینڈرنگ کو غیر فعال کر دیا گیا تھا، لیکن اب زبردستی فعال ہے"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "پیشگی لوڈنگ ناکام ہو گئی۔"
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "اسٹیٹس"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "صفحے کی مین فریم نیویگیشن شروع ہونے کے دوران پری رینڈر کردہ صفحہ فعال ہو گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "پری رینڈر استعمال نہیں کیا گیا کیونکہ شروعاتی صفحے کے سینڈ باکسنگ کے فلیگز یا اجازتوں کی پالیسی پری رینڈرنگ کے صفحے کے ساتھ موافق نہیں تھی۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "پری رینڈر استعمال نہیں کیا گیا کیونکہ فعالیت کے وقت کے دوران اصل پری رینڈرنگ نیویگیشن درخواست کے مقابلے میں مختلف نیویگیشن پیرامیٹرز (جیسے،HTTP ہیڈرز) کیلکولیٹ کیے گئے۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "پری رینڈر کردہ صفحے نے آڈیو کے آؤٹ پُٹ کی درخواست کی، جو فی الحال تعاون یافتہ نہیں ہے۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "صارف نے براؤزر کے کم بیٹری استعمال کرنے کی درخواست دی تھی جس کی وجہ سے پری رینڈر انجام نہیں دیا گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "کچھ وسائل کی لوڈنگ کو مسدود کر دیا گیا ہے۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "پری رینڈرنگ نیویگیشن کے لیے HTTP کلائنٹ سرٹیفکیٹ کی ضرورت تھی۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "کراس سائٹ URL کو ہدف بنانے کی وجہ سے پری رینڈرنگ نیویگیشن ناکام ہو گئی۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "پری رینڈر کردہ صفحہ کراس سائٹ URL پر نیویگیٹ ہو گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "پری رینڈرنگ نیویگیشن ناکام ہوگئی کیونکہ پری رینڈر کردہ URL نے کراس سائٹ URL پر ری ڈائریکٹ کیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "پری رینڈر کردہ صفحہ ایک ایسے URL پر نیویگیٹ ہو گیا جس نے کراس-سائٹ URL پر ری ڈائریکٹ کر دیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "صارف نے براؤزر کے کم ڈیٹا استعمال کرنے کی درخواست دی تھی جس کی وجہ سے پری رینڈر انجام نہیں دیا گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "پری رینڈر کردہ صفحے نے ڈاؤن لوڈ شروع کرنے کی کوشش کی، جو کہ فی الحال تعاون یافتہ نہیں ہے۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "براؤزر کو موجودہ میموری کے استعمال کا تعین کرنے کی کوشش کے دوران اندرونی خرابی کا سامنا کرنا پڑا جس کی وجہ سے پری رینڈر انجام نہیں دیا گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "شروعاتی صفحے کا ایک موثر URL ہے جو کہ اس کے عام URL سے مختلف ہے، جس کی وجہ سے یہ پری رینڈرنگ انجام نہیں دے سکتا ہے۔ (مثال کے طور پر، نیا ٹیب صفحہ، یا میزبانی کردہ ایپس۔)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL کی اسکیم :http یا :https نہ ہونے کی وجہ سے وہ پری رینڈر ہونے کے لیے اہل نہیں تھا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "پری رینڈرنگ نیویگیشن ناکام ہوگئی کیونکہ اسے ایک ایسے URL پر ری ڈائریکٹ کیا جس کی اسکیم :http یا :https نہیں تھی۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "پری رینڈرنگ نیویگیشن کے لیے HTTP کی تصدیق درکار ہے، جو فی الحال تعاون یافتہ نہیں ہے۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "پری رینڈر انجام نہیں دیا گیا کیونکہ اس آلہ میں پری رینڈرنگ کو سپورٹ کرنے کے لیے سسٹم کی مجموعی میموری کافی نہیں ہے۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "پری رینڈر کردہ صفحہ خود دوسرے URL پر نیویگیٹ ہو گیا، جو فی الحال تعاون یافتہ نہیں ہے۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "شروعاتی صفحے پر پہلے سے ہی بہت زیادہ پری رینڈرز جاری ہونے کی وجہ سے پری رینڈر انجام نہیں دیا گیا۔ مزید پری رینڈرنگ کو فعال کرنے کے لیے قیاس آرائی کے دیگر اصول ہٹائیں۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "براؤزر کے پری رینڈرنگ میموری کی حد سے تجاوز کر جانے کی وجہ سے پری رینڈر انجام نہیں دیا گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "براؤزر کے بہت زیادہ میموری کے دباؤ میں آنے کی وجہ سے پری رینڈر کردہ صفحہ ان لوڈ ہو گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "براؤزر کے بہت زیادہ میموری کے دباؤ میں آنے کی وجہ سے پری رینڈر انجام نہیں دیا گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "پری رینڈر کردہ صفحہ ملے جلے مواد پر مشتمل تھا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "پری رینڈر کردہ صفحے میں ایک ممنوعہ JavaScript API استعمال کیا گیا جو کہ فی الحال تعاون یافتہ نہیں ہے۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "پری رینڈرنگ نیویگیشن غیر-2xx ‏HTTP جواب کے صورتحال کے کوڈ کی وجہ سے ناکام ہو گئی۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "مواد کی سیکیورٹی کی پالیسی کے ذریعے پری رینڈرنگ نیویگیشن کو مسدود کر دیا گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "پری رینڈرنگ نیویگیشن کو نیٹ ورک کی خرابی کا سامنا کرنا پڑا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "صارف نے اپنے براؤزر کی ترتیبات میں پیشگی لوڈنگ کو غیر فعال کر دیا تھا جس کی وجہ سے پری رینڈر انجام نہیں دیا گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "شروعاتی صفحہ کریش ہو گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "شروعاتی صفحہ ختم کر دیا گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "پری رینڈر کردہ صفحہ کریش ہو گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "پری رینڈر کردہ صفحے کو ختم کر دیا گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "پری رینڈر کردہ صفحہ خود ایک کراس اوریجن کی مماثل سائٹ کے URL پر نیویگیٹ ہو گیا، لیکن منزل کے جواب میں مناسب سپورٹس لوڈنگ موڈ ہیڈر شامل نہیں تھا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "پری رینڈر کردہ صفحہ کراس اوریجن کی مماثل سائٹ کے URL پر نیویگیٹ ہو گیا، لیکن منزل کے جواب میں مناسب سپورٹس لوڈنگ موڈ ہیڈر شامل نہیں تھا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "پری رینڈرنگ نیویگیشن ناکام ہوگئی کیونکہ پری رینڈر کردہ URL نے مماثل سائٹ پر کراس اوریجن URL پر ری ڈائریکٹ کر دیا لیکن منزل کے جواب میں مناسب لوڈنگ موڈ ہیڈر کے لیے سپورٹ شامل نہیں تھی۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "پری رینڈر کردہ صفحہ ایک ایسے URL پر نیویگیٹ ہوا جس نے کراس اوریجن کی مماثل سائٹ کے URL پر ری ڈائریکٹ کیا، لیکن منزل کے جواب میں مناسب سپورٹس لوڈنگ موڈ ہیڈر شامل نہیں تھا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "ایک غلط SSL سرٹیفیکیٹ کی وجہ سے پری رینڈرنگ نیویگیشن ناکام ہو گئی۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "شروعاتی صفحہ ایک طویل وقت کے لیے پس منظر میں تھا لہذا پری رینڈر کر دہ صفحے کو مسترد کر دیا گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "شروعاتی صفحہ پس منظر میں تھا لہذا پری رینڈر کردہ صفحے کو مسترد کر دیا گیا۔"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "پری رینڈرنگ نیویگیشن میں صرف ایجنٹ تبدیل کرنا پیش آیا۔"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "مزید تفصیلات کے لیے ایک عنصر منتخب کریں"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "اسٹیٹس"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "پیشگی بازیافت کو ایک نئی پیشگی بازیافت کے لیے مسترد کر دیا گیا کیونکہ |kPrefetchNewLimits| فعال ہے"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "پیشگی بازیافت ری ڈائریکٹ کی گئی لیکن ری ڈائریکٹ URL پیشگی بازیافت کے لیے اہل نہیں ہے۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "پیشگی بازیافت کو ری ڈائریکٹ کیا گیا تھا لیکن ری ڈائریکٹ میں ایک مسئلہ پیش آ گیا۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "پیشگی بازیافت ناکام ہو گئی کیونکہ جواب کے مواد کی قسم کا ہیڈر تعاون یافتہ نہیں تھا۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "نیٹ ورک کی خرابی کی وجہ سے پیشگی بازیافت ناکام ہو گئی۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "غیر 2xx ‏HTTP جواب کی صورتحال کے کوڈ کی وجہ سے پیشگی بازیافت ناکام ہو گئی۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "پیشگی بازیافت انجام نہیں دی گئی کیونکہ شروعاتی صفحہ میں پہلے سے ہی بہت زیادہ پیشگی بازیافتیں جاری ہیں۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "اوریجن کی ایک پچھلی پیشگی بازیافت کو بعد میں دوبارہ کوشش کریں ہیڈر کے ساتھ HTTP 503 جواب ملا جس کی میعاد ابھی تک ختم نہیں ہوئی ہے۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "URL پیشگی بازیافت کے لیے اہل نہیں تھا کیونکہ اس اوریجن کے لیے رجسٹرڈ سروس ورکر یا کراس سائٹ کوکیز تھیں لیکن پیشگی بازیافت کو بہر حال نیٹ ورک پر ڈال دیا گیا اور استعمال یہ چھپانے کے لیے نہیں کیا گیا کہ صارف کا پہلے اوریجن کے ساتھ کسی قسم کا تعلق تھا۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "پیشگی بازیافت اور استعمال کے دوران بہت زیادہ وقت گزر گیا پیشگی بازیافت مسترد کر دی گئی۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "پیشگی بازیافت انجام نہیں دی گئی کیونکہ بیٹری سیور کی ترتیب فعال تھی۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "پیشگی بازیافت انجام نہیں دی گئی کیونکہ براؤزر پوشیدگی یا مہمان وضع میں ہے۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "پیشگی بازیافت انجام نہیں دی گئی کیونکہ آپریٹنگ سسٹم ڈیٹا سیور موڈ میں ہے۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "URL پیشگی بازیافت کے لیے اہل نہیں ہے کیونکہ ڈیفالٹ نیٹ ورک کے سیاق و سباق میں اسے پراکسی سرور استعمال کرنے کے لیے کنفیگر کیا گیا ہے۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL پیشگی بازیافت کیے جانے کا اہل نہیں تھا کیونکہ اس کا میزبان منفرد نہیں تھا (مثال کے طور پر، ایک غیر عوامی روٹیبل IP پتہ یا ایک میزبان کا نام جو رجسٹری کے زیر کنٹرول نہیں ہے) لیکن پیشگی بازیافت کو پراکسی کرنا ضروری تھا۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URL پیشگی بازفت کے لیے اہل نہیں تھا کیونکہ یہ غیر ڈیفالٹ اسٹوریج پارٹیشن کا استعمال کرتا ہے۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "پیشگی بازیافت انجام نہیں دی گئی کیونکہ پیشگی لوڈنگ غیر فعال تھی۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "URL پیشگی بازیافت کے لیے اہل نہیں تھا کیونکہ ڈیفالٹ نیٹ ورک کے سیاق و سباق کو کراس اوریجن کی پیشگی بازیافت کی درخواست کی مماثل سائٹ کی خاطر استعمال کرنے کے لیے کنفیگر نہیں کیا جا سکتا۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URL پیشگی بازیافت کے لیے اہل نہیں تھا کیونکہ اس کا اسکیم https نہیں تھا:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URL پیشگی بازیافت کا اہل نہیں تھا کیونکہ یہ کراس سائٹ تھا لیکن صارف کے پاس اس اوریجن کے لیے کوکیز تھیں۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "URL پیشگی بازیافت کے لیے اہل نہیں تھا کیونکہ اس اوریجن کے لیے رجسٹرڈ سروس ورکر تھا جو فی الحال تعاون یافتہ نہیں ہے۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "پیشگی بازیافت استعمال نہیں کی گئی کیونکہ یہ کراس سائٹ پیشگی بازیافت تھی اور پیشگی بازیافت جاری ہونے کے دوران اس URL کے لیے کوکیز شامل کی گئی تھیں اس لیے پیشگی بازیافت شدہ جواب اب پرانا ہو چکا ہے۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "پیشگی بازیافت کو آپ کے انٹرنیٹ سروس پرووائیڈر یا نیٹ ورک کے منتظم نے مسدود کر دیا تھا۔"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "پیشگی بازیافت پراکسی سے کنکشن سیٹ اپ کرنے کی کوشش کے وقت نیٹ ورک کی خرابی پیش آ گئی۔"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "عناصر کے پینل میں ظاہر کرنے کے لیے کلک کریں"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "اس صفحہ کے لیے {PH1} پیشگی بازیافت کئے گئے وسائل استعمال کیے گئے ہیں"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "اس صفحہ کے لیے پیشگی لوڈنگ استعمال کی گئی"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "یہ صفحہ پری رینڈر کیا گیا"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "استعمال سے متعلق ویژوئلائزیشن"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "کوریج کی معلومات کیپچر نہیں کی جا سکی کیونکہ صفحہ پس منظر میں پری رینڈر کیا گیا تھا۔"
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "سبھی"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "کوریج کی معلومات کیپچر نہیں کی جا سکی کیونکہ صفحہ بیک/فارورڈ کیش سے پیش کیا گیا تھا۔"
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "کوریج گرینولیریٹی منتخب کریں: فی فنکشن میں کم اوور ہیڈ ہوتا ہے، فی بلاک میں کافی اوور ہیڈ ہوتا ہے۔"
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "فی فنکشن"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "دوبارہ لوڈ کرنے اور کوریج حاصل کرنے کے لیے دوبارہ لوڈ کریں {PH1} بٹن پر کلک کریں۔"
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "اب تک {PH2} میں سے {PH1} (%{PH3}) کا استعمال کیا گیا، {PH4} کا استعمال نہیں کیا گیا۔"
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "انسٹرومنٹ کوریج"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "صفحہ دوبارہ لوڈ کریں"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "کوریج دکھائیں"
@@ -5670,7 +5667,7 @@
     "message": "کلپ بورڈ پر کاپی ہو گیا"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "CSS کی تمام تبدیلیاں کاپی کریں"
+    "message": "CSS تبدیلیوں کو کاپی کریں"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS پراپرٹی کا نام: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "ہارڈ ویئر کنکرنسی اوور رائیڈ فعال ہے"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "navigator.hardwareConcurrency کی قدر"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "کوئی تھروٹلنگ نہیں"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "کامیاب"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "اس PST جاری کنندہ کے لیے کلیدیں دستیاب نہیں ہیں۔ جاری کنندہ کو Chrome رجسٹریشن پروسیس کے ذریعے رجسٹر کرنے کی ضرورت ہو سکتی ہے۔"
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "آپریشن نامعلوم وجہ کی بناء پر ناکام ہو گیا۔"
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "ہیپ الوکیشنز ریکارڈ کرنا بند کریں"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP کمانڈ ایڈیٹر پوشیدہ ہے"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP کمانڈ ایڈیٹر ظاہر ہے"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "سب صاف کریں"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "فلٹر"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "CDP کمانڈ ایڈیٹر چھپائیں"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "طریقہ"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "سیشن"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "CDP کمانڈ ایڈیٹر دکھائیں"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "ہدف"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "تھریڈ"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "نیٹ ورک"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} بوقت {PH2}"

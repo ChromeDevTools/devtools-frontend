@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Адмацаваць у асобнае акно"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Старонка: не выбрана"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Старонка: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Як створана"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Выклік функцыі window.confirm з акон iframe у іншых крыніцах не падтрымліваецца. Гэта магчымасць пазней будзе выдалена."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "Падзеі змянення DOM, у тым ліку DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument і DOMCharacterDataModified, больш не падтрымліваюцца (https://w3c.github.io/uievents/#legacy-event-types) і будуць выдалены. Замест іх выкарыстоўвайце MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "URL-адрасы з элемента <use> у файле SVG больш не падтрымліваюцца і пазней будуць выдалены."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Змяншаць патрабаванні палітыкі абмежавання крыніцы шляхам змянення document.domain не рэкамендуецца. Стандартна гэта магчымасць будзе адключана. Цяпер, каб выкарыстоўваць гэту функцыю, трэба адмовіцца ад прымянення кластараў агента з ключом крыніцы, адправіўшы загаловак Origin-Agent-Cluster: ?0 разам з адказам HTTP для дакумента і фрэймаў. Дадатковая інфармацыя – па спасылцы https://developer.chrome.com/blog/immutable-document-domain/."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Інтэрфейс API Event.path не падтрымліваецца і будзе выдалены. Выкарыстоўвайце замест яго Event.composedPath()."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Загаловак Expect-CT больш не падтрымліваецца. У Chrome патрабуецца праверка ўсіх агульнадаступных давераных сертыфікатаў, выпушчаных пасля 30 красавіка 2018 г."
+    "message": "Загаловак \"Expect-CT\" не падтрымліваецца і будзе выдалены. У Chrome патрабуецца праверка ўсіх агульнадаступных давераных сертыфікатаў, выпушчаных пасля 30 красавіка 2018 г."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() і watchPosition() больш не працуюць з небяспечнымі крыніцамі. Каб выкарыстоўваць гэту функцыю, укажыце для праграмы бяспечную крыніцу (напрыклад, HTTPS). Дадатковая інфармацыя – па спасылцы https://goo.gle/chrome-insecure-origins."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Атрыбут HTML: autocomplete"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Прадухіленне змешанага змесціва"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Скарачэнне радка User-Agent"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Рэжым сумяшчальнасці дакументаў"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Так"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Папярэдняя загрузка і папярэдняя візуалізацыя"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Гэта старонка"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Каб паглядзець змесціва любой справаздачы, націсніце на яе"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Праграма"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Кэш"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Сховішча кэша"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Старонкі, якія адправілі запыт на AppBanner, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Кэш пераходу назад і наперад адключаны з-за паведамлення keepalive."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Кэш пераходу назад і наперад адключаны эксперыментальнымі параметрамі. Каб уключыць яго на гэтай прыладзе, наведайце старонку chrome://flags/#back-forward-cache."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Старонкі, якія выкарыстоўваюць WebUSB API, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Кэш пераходу назад і наперад адключаны, бо на старонцы, якая выкарыстоўвае Cache-Control: no-store, адключаны файлы cookie."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Старонкі, якія выкарыстоўваюць вылучаны рабочы працэс або worklet, не падыходзяць для захавання ў кэшы пераходу назад і наперад."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Унутраная памылка."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Кэш пераходу назад і наперад адключаны, бо ў адказ на сеткавы запыт JavaScript быў атрыманы рэсурс з загалоўкам Cache-Control: no-store."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Кэш пераходу назад і наперад адключаны з-за паведамлення keepalive."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Паказаць яшчэ # фрэйм}one{Паказаць яшчэ # фрэйм}few{Паказаць яшчэ # фрэймы}many{Паказаць яшчэ # фрэймаў}other{Паказаць яшчэ # фрэйма}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Назва сегмента"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Трываласць"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Тэрмін дзеяння"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Непразрысты"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Мае старонняе паходжанне"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Ідзе загрузка…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Не"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Не ўказана"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(непразрысты)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Крыніца"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Пастаяннае"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Квота"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Сайт верхняга ўзроўню"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Так"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Так, бо ў ланцужку продкаў ёсць старонняя крыніца"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Так, бо ключ сховішча непразрысты"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Так, бо крыніца не знаходзіцца на сайце верхняга ўзроўню"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Так, бо сайт верхняга ўзроўню непразрысты"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Усе захаваныя прыватныя токены стану даступныя ў гэтым экзэмпляры браўзера."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Прыватныя токены стану"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Фільтраваць па выбраным наборы правіл"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Налады пашырэнняў"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Папярэдняя загрузка адключана па прычыне ўключэння ў аперацыйнай сістэме рэжыму эканоміі трафіка."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Перадзагрузка прымусова ўключана, бо адкрыты інструменты распрацоўшчыка. Пры закрыцці інструментаў распрацоўшчыка папярэдняя візуалізацыя будзе адключана, бо гэты сеанс браўзера адносіцца да абмежаванай групы, якая выкарыстоўваецца для параўнання прадукцыйнасці."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Папярэдняя загрузка адключана з-за налад карыстальніка або з-за пашырэння. Каб даведацца больш, перайдзіце на старонку {PH1}. Каб адключыць пашырэнне, перайдзіце на старонку {PH2}."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Папярэдняя візуалізацыя прымусова ўключана, бо адкрыты інструменты распрацоўшчыка. Пры закрыцці інструментаў распрацоўшчыка папярэдняя візуалізацыя будзе адключана, бо гэты сеанс браўзера адносіцца да абмежаванай групы, якая выкарыстоўваецца для параўнання прадукцыйнасці."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Перадзагрузка была адключана, але цяпер прымусова ўключана"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Папярэдняя загрузка адключана"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Папярэдняя візуалізацыя была адключана, але цяпер прымусова ўключана"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Збой перадзагрузкі."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Стан"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Папярэдне візуалізаваная старонка актывавана пры пераходзе ў асноўным фрэйме зыходнай старонкі."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Папярэдняя візуалізацыя не выкарыстоўвалася, бо эксперыментальныя параметры пясочніцы або палітыка дазволаў зыходнай старонкі аказаліся несумяшчальнымі з адпаведнымі параметрамі і палітыкай старонкі ажыццяўлення папярэдняй візуалізацыі."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Папярэдняя візуалізацыя не выкарыстоўвалася, бо на працягу часу актывацыі былі разлічаны параметры пераходу (напрыклад, загалоўкі HTTP), якія адрозніваліся ад параметраў, разлічаных пры зыходным запыце на пераход з папярэдняй візуалізацыяй."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Папярэдне візуалізаваная старонка запытала вывад гуку, але гэта функцыя цяпер не падтрымліваецца."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Папярэдняя візуалізацыя не была выканана, бо карыстальнік запытаў эканомны расход зараду акумулятара браўзерам."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Загрузка некаторых рэсурсаў заблакіравана."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Для пераходу з папярэдняй візуалізацыяй патрабаваўся сертыфікат HTTP-кліента."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Пераход з папярэдняй візуалізацыяй выканаць не ўдалося, бо ён прыводзіў на міжсайтавы URL-адрас."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "З папярэдне візуалізаванай старонкі быў ажыццёўлены пераход на міжсайтавы URL-адрас."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Пераход з папярэдняй візуалізацыяй выканаць не ўдалося, бо з папярэдне візуалізаванай старонкі па URL-адрасе адбылося перанакіраванне на міжсайтавы URL-адрас."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "З папярэдне візуалізаванай старонкі быў ажыццёўлены пераход на URL-адрас, з якога адбылося перанакіраванне на міжсайтавы URL-адрас."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Папярэдняя візуалізацыя не была выканана, бо карыстальнік запытаў эканомны расход трафіка браўзерам."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Папярэдне візуалізаваная старонка ажыццявіла спробу спампоўвання, але гэта функцыя цяпер не падтрымліваецца."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Папярэдняя візуалізацыя не была выканана, бо ў браўзеры адбылася ўнутраная памылка пры спробе вызначыць бягучае выкарыстанне памяці."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Зыходная старонка не можа выканаць папярэднюю візуалізацыю, бо яе эфектыўны URL-адрас адрозніваецца ад звычайнага (напрыклад, вядзе на старонку новай укладкі або да размешчаных праграм)."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL-адрас быў непрыдатны для папярэдняй візуалізацыі, бо яго схема адрозніваецца ад схем http: і https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Пераход з папярэдняй візуалізацыяй выканаць не ўдалося, бо падчас яго адбылося перанакіраванне на URL-адрас са схемай, якая адрозніваецца ад http: або https:."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Для пераходу з папярэдняй візуалізацыяй патрабавалася аўтэнтыфікацыя HTTP, якая цяпер не падтрымліваецца."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Папярэдняя візуалізацыя не была выканана, бо гэта прылада не мае аб'ёму агульнай сістэмнай памяці, дастатковага для падтрымкі папярэдняй візуалізацыі."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Папярэдне візуалізаваная старонка самастойна выканала пераход на іншы URL-адрас, які цяпер не падтрымліваецца."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Папярэдняя візуалізацыя не была выканана, бо для зыходнай старонкі ўжо выконваецца зашмат папярэдніх візуалізацый. Каб папярэднюю візуалізацыю можна было ажыццяўляць далей, выдаліце іншыя правілы прагназавання."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Папярэдняя візуалізацыя не была выканана, бо ў браўзеры быў перавышаны ліміт памяці для папярэдняй візуалізацыі."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Папярэдне візуалізаваная старонка была выгружана, бо для работы браўзера не хапала памяці."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Папярэдняя візуалізацыя не была выканана, бо браўзеру не хапала памяці."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Папярэдне візуалізаваная старонка ўтрымлівала змешанае змесціва."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Папярэдне візуалізаваная старонка выкарыстоўвала забаронены інтэрфейс API JavaScript, які цяпер не падтрымліваецца."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Пераход з папярэдняй візуалізацыяй выканаць не ўдалося, бо адказ HTTP меў код стану, які не належаў да катэгорыі 2xx."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Пераход з папярэдняй візуалізацыяй быў заблакіраваны Палітыкай бяспекі змесціва."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Падчас пераходу з папярэдняй візуалізацыяй адбылася памылка сеткі."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Папярэдняя візуалізацыя не была выканана, бо карыстальнік адключыў папярэднюю загрузку ў наладах браўзера."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Адбыўся збой зыходнай старонкі."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Зыходная старонка закрыта."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Адбыўся збой папярэдне візуалізаванай старонкі."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Папярэдне візуалізаваная старонка закрыта."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Папярэдне візуалізаваная старонка самастойна выканала пераход на міждаменны URL-адрас таго ж сайта, але адказ з мэтавага сайта не ўключаў у сябе карэктнага загалоўка Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "З папярэдне візуалізаванай старонкі быў ажыццёўлены пераход на міждаменны URL-адрас таго ж сайта, але адказ з мэтавага сайта не ўключаў у сябе карэктнага загалоўка Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Пераход з папярэдняй візуалізацыяй выканаць не ўдалося, бо з папярэдне візуалізаванай старонкі па URL-адрасе адбылося перанакіраванне на міждаменны URL-адрас таго ж сайта, але адказ з мэтавага сайта не ўключаў у сябе карэктнага загалоўка Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "З папярэдне візуалізаванай старонкі быў ажыццёўлены пераход на URL-адрас, з якога адбылося перанакіраванне на міждаменны URL-адрас таго ж сайта, але адказ з мэтавага сайта не ўключаў у сябе карэктнага загалоўка Supports-Loading-Mode."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Пераход з папярэдняй візуалізацыяй выканаць не ўдалося з-за несапраўднага сертыфіката SSL."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Зыходная старонка доўгі час знаходзілася ў фонавым рэжыме, таму папярэдне візуалізаваная старонка была адхілена."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Зыходная старонка знаходзілася ў фонавым рэжыме, таму папярэдне візуалізаваная старонка была адхілена."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Падчас пераходу з папярэдняй візуалізацыяй адбылася змена агента карыстальніка."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Каб атрымаць дадатковую інфармацыю, выберыце элемент"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Стан"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Даныя папярэдняй выбаркі заменены на больш новыя, бо ўключаны параметр |kPrefetchNewLimits|"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Папярэдняя выбарка была перанакіравана, але URL-адрас перанакіравання аказаўся непрыдатным для папярэдняй выбаркі."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Узнікла праблема з перанакіраваннем папярэдняй выбаркі."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Не ўдалося выканаць папярэднюю выбарку, бо загаловак Content-Type у адказе не падтрымліваўся."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Не ўдалося выканаць папярэднюю выбарку з-за памылкі сеткі."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Не ўдалося выканаць папярэднюю выбарку, бо адказ HTTP меў код стану, які не належаў да катэгорыі 2xx."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Не ўдалося выканаць папярэднюю выбарку, бо для зыходнай старонкі ўжо выконваецца зашмат папярэдніх выбарак."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Пры мінулай спробе папярэдняй выбаркі крыніца вярнула памылку HTTP 503. Час, указаны ў загалоўку Retry-After гэтага адказу, яшчэ не скончыўся."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "URL-адрас быў непрыдатны для папярэдняй выбаркі, бо для крыніцы ёсць зарэгістраваны сцэнарый Service Worker або файлы cookie з іншага сайта. Запыт папярэдняй выбаркі быў адпраўлены ў сетку, але не быў выкарыстаны, каб схаваць той факт, што карыстальнік ужо ўзаемадзейнічаў з крыніцай."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Паміж папярэдняй выбаркай і выкарыстаннем прайшло занадта шмат часу, таму даныя папярэдняй выбаркі былі адхілены."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Не ўдалося выканаць папярэднюю выбарку, бо быў уключаны рэжым энергазберажэння."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Не ўдалося выканаць папярэднюю выбарку, бо браўзер працуе ў рэжыме інкогніта або ў гасцявым рэжыме."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Папярэдняя выбарка не была выканана, бо аперацыйная сістэма працуе ў рэжыме эканоміі трафіка."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "URL-адрас непрыдатны для папярэдняй выбаркі, бо ў стандартным сеткавым кантэксце для яго наладжана выкарыстанне проксі-сервера."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL-адрас быў непрыдатны для папярэдняй выбаркі, бо яго хост не ўнікальны (напрыклад, не з'яўляецца агульнадаступным IP-адрасам з магчымасцю маршрутызацыі або яго імя не кіруецца праз рэестр), але для папярэдняй выбаркі патрабаваўся проксі-сервер."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URL-адрас не быў прыдатны для папярэдняй выбаркі, бо ён спасылаецца на раздзел сховішча, не ўказаны як стандартны."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Не ўдалося выканаць папярэднюю выбарку, бо папярэдняя загрузка была адключана."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "URL-адрас быў непрыдатны для папярэдняй выбаркі, бо стандартны кантэкст сеткі не дазваляе наладзіць выкарыстанне проксі-сервера папярэдняй выбаркі для міждаменных запытаў папярэдняй выбаркі да таго ж сайта."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URL-адрас быў непрыдатны для папярэдняй выбаркі, бо яго схема адрозніваецца ад схемы https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URL-адрас быў непрыдатны для папярэдняй выбаркі, бо ён адносіўся да іншага сайта, але ў карыстальніка былі файлы cookie для гэтай крыніцы."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "URL-адрас быў непрыдатны для папярэдняй выбаркі, бо для гэтай крыніцы ёсць зарэгістраваны сцэнарый Service Worker, які зараз не падтрымліваецца."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Падчас папярэдняй выбаркі з іншага сайта для яго былі дададзены файлы cookie. У выніку гэтага атрыманыя даныя аказаліся неактуальнымі і не выкарыстоўваліся."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Інтэрнэт-правайдар або адміністратар сеткі заблакіравалі папярэднюю выбарку."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Падчас спробы наладзіць падключэнне да проксі-сервера папярэдняй выбаркі адбылася памылка сеткі."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Націсніце, каб паказаць на панэлі \"Элементы\""
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "Для работы гэтай старонкі выкарыстоўваюцца папярэдне загружаныя рэсурсы ({PH1})"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Для гэтай старонкі выкарыстоўвалася папярэдняя загрузка"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Старонка папярэдне візуалізавана"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Візуалізацыя выкарыстання"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Не ўдалося атрымаць інфармацыю аб выкарыстаным кодзе, бо папярэдняя візуалізацыя старонкі была зроблена ў фонавым рэжыме."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Усё"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Не ўдалося атрымаць інфармацыю аб выкарыстаным кодзе, бо старонка была атрымана з кэша пераходу назад і наперад."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Выберыце дэталізацыю пакрыцця: \"На ўзроўні функцый\" – затрачваецца малая колькасць рэсурсаў, \"На ўзроўні блокаў\" – ёсць значная дадатковая нагрузка."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "На ўзроўні функцый"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Націсніце кнопку перазагрузкі {PH1}, каб перазагрузіць старонку і атрымаць інфармацыю аб выкарыстаным кодзе."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} з {PH2} ({PH3}%) выкарыстана, {PH4} не выкарыстана."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Аналіз пакрыцця"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Перазагрузіць старонку"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Паказаць інструмент \"Пакрыццё\""
@@ -5670,7 +5667,7 @@
     "message": "Скапіравана ў буфер абмену"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Скапіраваць усе змяненні CSS"
+    "message": "Капіраваць змяненні CSS"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "Імя ўласцівасці CSS: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Уключана перавызначэнне апаратнага паралелізму"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "Значэнне параметра navigator.hardwareConcurrency"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Без рэгулявання нагрузкі"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Выканана"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "Ключы для гэтага выдаўца PST недаступныя. Магчыма, яму неабходна прайсці працэс рэгістрацыі ў Chrome."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Збой аперацыі па невядомай прычыне."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Спыніць запіс размеркавання аб'ектаў у дынамічнай памяці"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "Рэдактар каманд CDP схаваны"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "Рэдактар каманд CDP паказваецца"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Выдаліць усё"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Фільтр"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "Схаваць рэдактар каманд CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Метад"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Сеанс"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "Паказаць рэдактар каманд CDP"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Мэта"
@@ -11702,9 +11711,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Паток"
   },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Сетка"
-  },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} на {PH2}"
   },
@@ -13530,7 +13536,7 @@
     "message": "Імя"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
-    "message": "(непразрыстае)"
+    "message": "(непразрысты)"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "Сеанс"

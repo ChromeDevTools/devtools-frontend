@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "আলাদা উইন্ডোতে আনডক করুন"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "পৃষ্ঠা: বেছে নেওয়া হয়নি"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "পৃষ্ঠা: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "যেভাবে তৈরি করা"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "ক্রস অরিজিন iframe থেকে window.confirm ট্রিগার করা বন্ধ করা হয়েছে এবং ভবিষ্যতে এটি সরিয়ে দেওয়া হবে।"
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument, ও DOMCharacterDataModified সহ DOM মিউটেশন ইভেন্ট বাতিল করা হয়েছে (https://w3c.github.io/uievents/#legacy-event-types) এবং সরানো হবে। এর পরিবর্তে MutationObserver ব্যবহার করুন।"
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "ডেটার জন্য সহায়তা: SVG <use> এলিমেন্টের URL বাতিল করা হয়েছে এবং ভবিষ্যতে সেটি সরিয়ে নেওয়া হবে।"
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain সেট করার মাধ্যমে একই উৎস সম্পর্কিত নীতি শিথিল করার বিষয়টি বন্ধ করা হয়েছে এবং ডিফল্ট হিসেবে এটি সরিয়ে দেওয়া হবে। এই ফিচার ব্যবহার করা চালিয়ে যেতে, ডকুমেন্ট ও ফ্রেমের জন্য HTTP প্রতিক্রিয়ার সাথে Origin-Agent-Cluster: ?0 হেডার পাঠানোর মাধ্যমে অরিজিন-কী এজেন্ট ক্লাস্টার থেকে বেরিয়ে আসুন। আরও বিবরণের জন্য https://developer.chrome.com/blog/immutable-document-domain/ দেখুন।"
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path বন্ধ করা হয়েছে এবং সরিয়ে দেওয়া হবে। এর পরিবর্তে Event.composedPath() ব্যবহার করুন।"
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT হেডার আর কাজ করবে না। ৩০ এপ্রিল, ২০১৮-এর পরে ইস্যু করা সব সর্বজনীন বিশ্বস্ত শংসাপত্রের জন্য Chrome-এর, সার্টিফিকেট ট্রান্সপারেন্সি প্রয়োজন হয়।"
+    "message": "Expect-CT হেডার বন্ধ করে দেওয়া হয়েছে এবং তা সরিয়ে দেওয়া হবে। ৩০ এপ্রিল, ২০১৮-এর পরে ইস্যু করা সব সর্বজনীন বিশ্বস্ত শংসাপত্রের জন্য Chrome-এর, সার্টিফিকেট ট্রান্সপারেন্সি প্রয়োজন হয়।"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "অসুরক্ষিত উৎসে getCurrentPosition() ও watchPosition() আর কাজ করে না। এই ফিচারটি ব্যবহার করতে, আপনার অ্যাপ্লিকেশন কোনও সুরক্ষিত উৎসে পাল্টানোর কথা বিবেচনা করতে পারেন, যেমন HTTPS। আরও তথ্যের জন্য https://goo.gle/chrome-insecure-origins দেখুন।"
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management ব্যবহারকারী সম্পর্কিত তথ্য API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML অ্যাট্রিবিউট: অটোকমপ্লিট"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "মিক্স কন্টেন্ট আটকানো হচ্ছে"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "ইউজার এজেন্ট স্ট্রিং রিডাকশন"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ডকুমেন্টের কম্প্যাটিবিলিটি মোড"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "হ্যাঁ"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "প্রিফেচিং ও প্রিরেন্ডারিং"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "এই পৃষ্ঠা"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "কোনও রিপোর্টে ক্লিক করে সেটির বডি দেখুন"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "অ্যাপ্লিকেশন"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "ক্যাশে"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "ক্যাশে স্টোরেজ"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner-এর অনুরোধ করেছে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "সক্রিয়-রাখা অনুরোধের জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "chrome://flags-এ ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে। এই ডিভাইসে স্থানীয়ভাবে চালু করতে chrome://flags/#back-forward-cache লিঙ্ক দেখুন।"
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "WebUSB API ব্যবহার করে এমন পৃষ্ঠা ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে কারণ কুকি এমন পৃষ্ঠায় বন্ধ করা আছে যেটি Cache-Control: no-store ব্যবহার করে।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "ডেডিকেটেড ওয়ার্কার বা ওয়ার্কলেট ব্যবহার করে এমন পৃষ্ঠা বর্তমানে ব্যাক-ফরোয়ার্ড ক্যাশেতে সেভ করা যায় না।"
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "অভ্যন্তরীণ সমস্যা।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে কারণ কিছু জাভাস্ক্রিপ্ট নেটওয়ার্ক সম্পর্কিত অনুরোধ Cache-Control: no-store হেডার সহ রিসোর্ট রিসিভ করেছে।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "সক্রিয়-রাখা অনুরোধের জন্য ব্যাক-ফরোয়ার্ড ক্যাশে বন্ধ করা আছে।"
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{আরও #টি ফ্রেম দেখুন}one{আরও #টি ফ্রেম দেখুন}other{আরও #টি ফ্রেম দেখুন}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "বাকেটের নাম"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "কতটা টেকসই"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "মেয়াদ শেষের তারিখ"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "অস্বচ্ছ"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "থার্ড-পার্টি"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "লোড হচ্ছে…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "না"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "কোনও মান নেই"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(অস্বচ্ছ)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "অরিজিন"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "স্টোরেজ অবিচ্ছিন্ন"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "কোটা"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "সেরা লেভেলের সাইট"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "হ্যাঁ"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "হ্যাঁ, কারণ মূল চেইনে থার্ড-পার্টি অরিজিন আছে"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "হ্যাঁ, কারণ স্টোরেজ 'কী' অস্বচ্ছ"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "হ্যাঁ, কারণ অরিজিনটি সেরা লেভেলের সাইটের বাইরের"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "হ্যাঁ, কারণ সেরা লেভেলের সাইট অস্বচ্ছ"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "এই ব্রাউজার দৃষ্টান্তে স্টোর করা সব ব্যক্তিগত স্টেট টোকেন উপলভ্য রয়েছে।"
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "ব্যক্তিগত স্টেট টোকেন"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "বেছে নেওয়া রুল সেট গ্রিড অনুযায়ী ফিল্টার করুন"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "এক্সটেনশন সেটিংস"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "অপারেটিং সিস্টেমের 'ডেটা সেভার' মোডের কারণে প্রিলোডিং বন্ধ হয়ে গেছে।"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "DevTools খোলা থাকার কারণে প্রিলোড করার ফিচার জোর করে চালু করা হয়েছে। যখন DevTools বন্ধ থাকে, তখন প্রি-রেন্ডারিং বন্ধ করা হয় কারণ এই ব্রাউজার সেশনটি হল কর্মক্ষমতা তুলনা করতে ব্যবহৃত হোল্ডব্যাক গ্রুপের অংশ।"
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "ব্যবহারকারীর সেটিংস বা একটি এক্সটেনশনের জন্য প্রিলোডিং বন্ধ হয়ে গেছে। আরও জানতে {PH1} লিঙ্কে যান অথবা এক্সটেনশন বন্ধ করতে {PH2} লিঙ্কে যান।"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "DevTools খোলা থাকার কারণে প্রিরেন্ডারিং জোর করে চালু করা হয়েছে। যখন DevTools বন্ধ থাকে, তখন প্রি-রেন্ডারিং বন্ধ করা হয় কারণ এই ব্রাউজার সেশনটি হল কর্মক্ষমতা তুলনা করতে ব্যবহৃত হোল্ডব্যাক গ্রুপের অংশ।"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "প্রিলোড করার ফিচার বন্ধ ছিল, কিন্তু এখন জোর করে চালু করা হয়েছে"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "প্রিলোডিং বন্ধ করা হয়েছে"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "প্রিরেন্ডারিং বন্ধ ছিল, কিন্তু এখন জোর করে চালু করা হয়েছে"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "প্রিলোড হয়নি।"
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "স্ট্যাটাস"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "ইনিশিয়েটিং পেজের মেন ফ্রেম নেভিগেশনের সময় প্রিরেন্ডার করা পেজ চালু করা হয়েছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "প্রিরেন্ডার ব্যবহার করা হয়নি, কারণ স্যান্ডবক্সিং ফ্ল্যাগ বা ইনিশিয়েটিং পেজের অনুমতি সংক্রান্ত নীতি প্রিরেন্ডারিং পেজের সাথে সামঞ্জস্যপূর্ণ ছিল না।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "প্রিরেন্ডার ব্যবহার করা হয়নি, কারণ চালু করার সময়, আসল প্রিরেন্ডার নেভিগেশন অনুরোধের পরিবর্তে  বিভিন্ন নেভিগেশন প্যারামিটার (যেমন HTTP হেডার) গণনা করা হয়েছিল।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "প্রিরেন্ডার করা পেজ অডিওর জন্য অনুরোধ করেছে, বর্তমানে যা কাজ করবে না।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্যবহারকারী অনুরোধ করেছিলেন যে ব্রাউজার যাতে কম ব্যাটারি ব্যবহার করে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "কিছু রিসোর্স লোড ব্লক করা হয়েছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "প্রিরেন্ডারিং নেভিগেশনে একটি HTTP ক্লায়েন্ট সার্টিফিকেট প্রয়োজন।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "প্রিরেন্ডারিং নেভিগেশন করা যায়নি, কারণ এটি ক্রস-সাইট URL টার্গেট করেছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "প্রিরেন্ডার করা পেজ একটি ক্রস-সাইট URL-এ নেভিগেট করা হয়েছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "প্রিরেন্ডারিং নেভিগেশন করা যায়নি, কারণ প্রিরেন্ডার করা URL ক্রস-সাইট URL-এ রিডাইরেক্ট করা হয়েছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "প্রিরেন্ডার করা পেজ একটি URL-এ নেভিগেট করা হয়েছে যা একটি ক্রস-সাইট URL-এ রিডাইরেক্ট করা হয়েছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্যবহারকারী, ব্রাউজার যাতে কম ডেটা ব্যবহার করে সেই অনুরোধ করেছেন।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "প্রিরেন্ডার করা পেজ ডাউনলোড করার চেষ্টা করেছে বর্তমানে যা কাজ করবে না।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্রাউজার বর্তমান মেমরির ব্যবহার নির্ধারণের চেষ্টা করার সময় একটি অভ্যন্তরীণ সমস্যার সম্মুখীন হয়েছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "ইনিশিয়েটিং পেজ প্রিরেন্ডারিং পারফর্ম করতে পারবে না, কারণ এতে একটি কার্যকর URL রয়েছে যা সাধারণ URL থেকে আলাদা। (যেমন, নতুন ট্যাব পেজ বা হোস্ট করা অ্যাপ।)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL প্রিরেন্ডার করার জন্য উপযুক্ত নয়, কারণ এর স্কিম, HTTP বা HTTPS : নয়"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "প্রিরেন্ডারিং নেভিগেশন করা যায়নি, কারণ এটি এমন একটি URL-এ রিডাইরেক্ট করেছে যার স্কিম HTTP: বা HTTPS নয়:।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "প্রিরেন্ডারিং নেভিগেশনে HTTP সংক্রান্ত যাচাইকরণ প্রয়োজন যা বর্তমানে কাজ করবে না।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ প্রিরেন্ডার কাজ করার জন্য পর্যাপ্ত মোট সিস্টেম মেমরি এই ডিভাইসে নেই।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "প্রিরেন্ডার করা পেজ নিজে থেকে অন্য URL-এ নেভিগেট করেছে, যা বর্তমানে কাজ করবে না।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ইনিশিয়েটিং পেজে আগে থেকেই অনেকগুলি প্রিরেন্ডার চলছে। আরও প্রিরেন্ডারিং চালু করতে, অন্যান্য স্পেকুলেশন রুল সরিয়ে দিন।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্রাউজারটি প্রিরেন্ডারিং মেমরির সীমা অতিক্রম করে গেছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "প্রিরেন্ডার করা পেজ আনলোড করা হয়েছে, কারণ ব্রাউজারে মেমরি অত্যন্ত কম ছিল।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্রাউজারের মেমরি অত্যন্ত কম ছিল।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "প্রিরেন্ডার করা পেজে মিক্সড কন্টেন্ট রয়েছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "প্রিরেন্ডার করা পেজ নিষিদ্ধ জাভাস্ক্রিপ্ট API ব্যবহার করেছে যা বর্তমানে কাজ করবে না।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "2xx HTTP রেসপন্স স্ট্যাটাস কোড না হওয়ার কারণে প্রিরেন্ডারিং নেভিগেশন করা যায়নি।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "প্রিরেন্ডারিং নেভিগেশন, কন্টেন্ট সুরক্ষা সংক্রান্ত নীতির মাধ্যমে ব্লক করা রয়েছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "প্রিরেন্ডারিং নেভিগেশনে একটি নেটওয়ার্কের সমস্যা হয়েছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "প্রিরেন্ডার পারফর্ম করা যায়নি, কারণ ব্যবহারকারী ব্রাউজার সেটিংসে প্রিলোডিং বন্ধ করে দিয়েছেন।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "ইনিশিয়েটিং পেজ ক্র্যাশ করেছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "ইনিশিয়েটিং পেজ বন্ধ করা হয়েছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "প্রিরেন্ডার করা পেজ ক্র্যাশ হয়ে গেছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "প্রিরেন্ডার করা পেজ বন্ধ করে দেওয়া হয়েছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "প্রিরেন্ডার করা পেজ একটি ক্রস-অরিজিন একই ধরনের সাইট URL-এ নেভিগেট করেছে, কিন্তু ডেস্টিনেশন রেসপন্সে উপযুক্ত Supports-Loading-Mode হেডার অন্তর্ভুক্ত করা হয়নি।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "প্রিরেন্ডার করা পেজ একটি ক্রস-অরিজিন একই ধরনের সাইট URL-এ নেভিগেট করা হয়েছে কিন্তু ডেস্টিনেশন রেসপন্সে উপযুক্ত Supports-Loading-Mode হেডার অন্তর্ভুক্ত করা হয়নি।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "প্রিরেন্ডারিং নেভিগেশন সম্ভব হয়নি, কারণ প্রিরেন্ডার করা URL একটি ক্রস-অরিজিন একই ধরনের সাইট URL-এ রিডাইরেক্ট করা হয়েছে, কিন্তু ডেস্টিনেশন রেসপন্সে উপযুক্ত Supports-Loading-Mode হেডার অন্তর্ভুক্ত করেনি।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "প্রি-রেন্ডার করা পেজ একটি URL-এ নেভিগেট করা হয়েছে যা একটি ক্রস-অরিজিন একই ধরনের সাইট URL-এ রিডাইরেক্ট করা হয়েছে, কিন্তু ডেস্টিনেশন রেসপন্সে উপযুক্ত Supports-Loading-Mode হেডার অন্তর্ভুক্ত করা হয়নি।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "একটি ভুল SSL সার্টিফিকেটের কারণে প্রিরেন্ডারিং নেভিগেশন করা যায়নি।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "ইনিশিয়েটিং পেজ দীর্ঘ সময়ের জন্য ব্যাকগ্রাউন্ডে ছিল, তাই প্রিরেন্ডার করা পেজ বাতিল করা হয়েছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "ইনিশিয়েটিং পেজ ব্যাকগ্রাউন্ডে পাঠানো হয়েছে, তাই আগে থেকে রেন্ডার করা পেজটি বাতিল করা হয়েছে।"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "প্রিরেন্ডারিং নেভিগেশনে ব্যবহারকারী এজেন্ট পরিবর্তন করা হয়েছে।"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "আরও বিবরণের জন্য এলিমেন্ট বেছে নিন"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "স্ট্যাটাস"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "আরও নতুন প্রিফেচের জন্য প্রিফেচ বাতিল করা হয়েছে কারণ |kPrefetchNewLimits| চালু আছে"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "প্রিফেচ রিডাইরেক্ট করা হয়েছে, তবে রিডাইরেক্ট করা URL প্রিফেচ করার জন্য উপযুক্ত নয়।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "প্রিফেচ রিডাইরেক্ট করা হয়েছিল, তবে রিডাইরেক্ট করার ক্ষেত্রে সমস্যা হয়েছিল।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "প্রিফেচ পারফর্ম করা যায়নি কারণ উত্তরের কন্টেন্টের ধরন সম্পর্কিত হেডার কাজ করেনি।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "নেটওয়ার্কের সমস্যা থাকার কারণে প্রিফেচ পারফর্ম করা যায়নি।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "2xx HTTP রেসপন্স স্ট্যাটাস কোড না হওয়ার কারণে প্রিফেচ পারফর্ম করা যায়নি।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "প্রিফেচ পার্ফর্ম করা যায়নি কারণ শুরুর পৃষ্ঠায় আগে থেকেই অনেক বেশি প্রিফেচ চালু ছিল।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "অরিজিনের আগের প্রিফেচ 'পরে আবার চেষ্টা করুন' হেডারের সাথে HTTP 503 উত্তর পেয়েছে যার মেয়াদ এখনও শেষ হয়নি।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "URL প্রিফেচ করার উপযুক্ত ছিল না কারণ সেই অরিজিনের জন্য রেজিস্টার করা সার্ভিস ওয়ার্কার বা ক্রস-সাইট কুকি ছিল, তবে যেকোনও উপায়ে প্রিফেচ নেটওয়ার্কে রাখা হয়। ব্যবহারকারীর সেই অরিজিনের সাথে কোনও সম্পর্ক আছে তা আড়াল করতে এটি ব্যবহার করা হয়নি।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "প্রিফেচ পারফর্ম ও ব্যবহার করার মধ্যে অনেকটা সময় পেরিয়ে গেছে, তাই প্রিফেচ বাতিল করা হয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "প্রিফেচ পারফর্ম করা যায়নি কারণ ব্যাটারি সেভার সেটিং চালু করা ছিল।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "প্রিফেচ পারফর্ম করা যায়নি কারণ ব্রাউজার 'ছদ্মবেশী' বা 'অতিথি' মোডে আছে।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "অপারেটিং সিস্টেম 'ডেটা সেভার' মোডে থাকার জন্য প্রিফেচ পারফর্ম করা যায়নি।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "URL প্রিফেচ করার জন্য উপযুক্ত নয় কারণ, এটি ডিফল্ট নেটওয়ার্ক কনটেক্সটে প্রক্সি সার্ভার ব্যবহার করার জন্য কনফিগার করা হয়েছে।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL প্রিফেচ করার উপযুক্ত ছিল না কারণ এর হোস্ট অনন্য ছিল না (যেমন, সর্বজনীনভাবে রুটেবল নয় এমন IP অ্যাড্রেস বা এমন হোস্টনেম যেটি রেজিস্ট্রি দ্বারা কন্ট্রোল করা হয় না) তবে প্রিফেচ, প্রক্সি করার প্রয়োজন ছিল।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URL প্রিফেচ করার উপযুক্ত ছিল না কারণ এটি ডিফল্ট অবস্থায় নেই এমন স্টোরেজ পার্টিশন ব্যবহার করে।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "প্রিফেচ পারফর্ম করা যায়নি কারণ প্রিলোড করার সুবিধা বন্ধ ছিল।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "URL প্রিফেচ করার উপযুক্ত ছিল না কারণ একই ধরনের সাইটের ক্রস-অরিজিনের প্রিফেচ সম্পর্কিত অনুরোধের জন্য প্রিফেচ প্রক্সি ব্যবহার করতে ডিফল্ট নেটওয়ার্ক কনটেক্সট কনফিগার করা যায়নি।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URL প্রিফেচ করার উপযুক্ত ছিল না কারণ এর স্কিম https: ছিল না।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "প্রিফেচ ক্রস-সাইট হওয়ার কারণে ব্যবহার করার উপযুক্ত ছিল না, তবে ব্যবহারকারীর কাছে সেই অরিজিনের জন্য কুকি ছিল।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "URL প্রিফেচ করার উপযুক্ত ছিল না কারণ সেই অরিজিনের জন্য রেজিস্টার করা সার্ভিস ওয়ার্কার ছিল, যেটি বর্তমানে কাজ করে না।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "প্রিফেচ ক্রস-সাইট হওয়ার কারণে সেটি ব্যবহার করা হয়নি এবং প্রিফেচটি চলার সময় সেই URL-এ কুকি যোগ করা হয়েছে, তাই প্রিফেচ করা উত্তর এখন পুরনো।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "প্রিফেচ আপনার ইন্টারনেট সার্ভিস প্রোভাইডার বা নেটওয়ার্ক অ্যাডমিনিস্ট্রেটরের মাধ্যমে ব্লক করা আছে।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "প্রিফেচিং প্রক্সির সাথে কানেকশন সেট-আপে চেষ্টা করার সময় নেটওয়ার্কের সমস্যা হয়েছে।"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "এলিমেন্ট প্যানেলে দেখতে ক্লিক করুন"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "এই পৃষ্ঠায় আগে থেকে নিয়ে আসা রিসোর্স {PH1} ব্যবহার করা হয়েছিল"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "এই পৃষ্ঠার জন্য প্রিলোডিং ব্যবহার করা হয়েছে"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "এই পৃষ্ঠাটি প্রিরেন্ডার করা হয়েছে"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "ব্যবহার ভিজ্যুয়ালাইজ করা"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "কভারেজ সম্পর্কিত তথ্য ক্যাপচার করা যায়নি কারণ পৃষ্ঠাটি ব্যাকগ্রাউন্ডে প্রিরেন্ডার করা হয়েছিল।"
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "সব"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "কভারেজ সম্পর্কিত তথ্য ক্যাপচার করা যায়নি কারণ পৃষ্ঠাটি ব্যাক-ফরোয়ার্ড ক্যাশে থেকে দেখানো হয়েছিল।"
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "কভারেজ গ্র্যানুলারিটি বাছুন: ফাংশন পিছু ছোট ওভারহেড ও ব্লক পিছু অনেক বেশি ওভারহেড থাকে।"
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "ফাংশন পিছু"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "রিলোড করতে ও কভারেজ পেতে {PH1} 'রিলোড করুন' বোতামে ক্লিক করুন।"
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "এখনও পর্যন্ত {PH2}-এর মধ্যে {PH1} ব্যবহার হয়েছে ({PH3}%), {PH4} ব্যবহার করা হয়নি।"
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "ইনস্ট্রুমেন্ট কভারেজ"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "পৃষ্ঠা আবার লোড করুন"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "কভারেজ দেখুন"
@@ -5670,7 +5667,7 @@
     "message": "ক্লিপবোর্ডে কপি করা হয়েছে"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "CSS সংক্রান্ত সবকটি পরিবর্তন কপি করুন"
+    "message": "CSS পরিবর্তন কপি করুন"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS প্রপার্টির নাম: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "হার্ডওয়্যার কনকারেন্সি ওভাররাইড চালু করা হয়েছে"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "navigator.hardwareConcurrency-এর মান"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "নেটওয়ার্ক আলাদা করা হচ্ছে না"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "সফল হয়েছে"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "এই PST ইস্যুকারীর জন্য 'কী' উপলভ্য নেই। ইস্যুকারীকে Chrome রেজিস্ট্রেশন প্রসেসের মাধ্যমে হয়ত রেজিস্টার করতে হবে।"
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "অজানা একটি কারণে এই অপারেশন সম্পূর্ণ করা যায়নি।"
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "হিপ অ্যালোকেশন রেকর্ড করা বন্ধ করুন"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP কমান্ড এডিটর লুকানো আছে"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP কমান্ড এডিটর দেখানো হয়েছে"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "সব মুছে দিন"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "ফিল্টার করুন"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "লুকান  CDP কমান্ড এডিটর"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "পদ্ধতি"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "সেশন"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "CDP কমান্ড এডিটর দেখান"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "লক্ষ্য"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "থ্রেড"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "নেটওয়ার্ক"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH2}-এ {PH1}"

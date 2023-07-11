@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "മറ്റൊരു വിൻഡോയിലേക്ക് അൺഡോക്ക് ചെയ്യുക"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "പേജ്: തിരഞ്ഞെടുത്തിട്ടില്ല"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "പേജ്: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "സൃഷ്‌ടിച്ചത് ആയി സജ്ജീകരിക്കുക"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "ക്രോസ് ഒറിജിൻ iframes-ൽ നിന്നുള്ള window.confirm പ്രവർത്തനക്ഷമമാക്കുന്നത് അവസാനിപ്പിച്ചു, ഭാവിയിൽ ഇത് നീക്കം ചെയ്യും."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument, and DOMCharacterDataModified എന്നിവയുൾപ്പെടെയുള്ള DOM മ്യൂട്ടേഷൻ ഇവന്റുകൾ അവസാനിപ്പിച്ചു, (https://w3c.github.io/uievents/#legacy-event-types) അവ നീക്കം ചെയ്യും. പകരം MutationObserver ഉപയോഗിക്കുക."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "ഡാറ്റയ്ക്കുള്ള പിന്തുണ: SVG <use> എലമെന്റിലെ URL-കൾ അവസാനിപ്പിച്ചു, ഭാവിയിൽ അവ നീക്കം ചെയ്യും."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain സജ്ജീകരിക്കുന്നതിലൂടെ സെയിം ഒറിജിൻ നയത്തിൽ ഇളവ് വരുത്തുന്നത് അവസാനിപ്പിച്ചു, ഇത് ഡിഫോൾട്ടായി പ്രവർത്തനരഹിതമാക്കും. ഈ ഫീച്ചർ തുടർന്നും ഉപയോഗിക്കാൻ, Origin-Agent-Cluster: ?0 ഹെഡറും ഡോക്യുമെന്റിനും ഫ്രെയിമുകൾക്കുമുള്ള HTTPS പ്രതികരണവും അയച്ച്, ഉറവിടത്തിൽ നിന്ന് കീ ചെയ്ത ഏജന്റ് ക്ലസ്റ്ററുകൾ ഒഴിവാക്കുക. കൂടുതൽ വിശദാംശങ്ങൾക്ക് https://developer.chrome.com/blog/immutable-document-domain/ കാണുക."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path അവസാനിപ്പിച്ചു, ഇത് നീക്കം ചെയ്യുന്നതുമാണ്. പകരം Event.composedPath() ഉപയോഗിക്കുക."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT ഹെഡ്ഡറിന് ഇനി പിന്തുണയില്ല. 2018 ഏപ്രിൽ 30-ന് ശേഷം Chrome-ന് നൽകുന്ന പബ്ലിക്കായി വിശ്വസനീയമായ എല്ലാ സർട്ടിഫിക്കറ്റുകൾക്കും സർട്ടിഫിക്കറ്റ് സുതാര്യത ആവശ്യമാണ്."
+    "message": "Expect-CT ഹെഡ്ഡർ അവസാനിപ്പിച്ചു, അത് നീക്കം ചെയ്യും. 2018 ഏപ്രിൽ 30-ന് ശേഷം Chrome-ന് നൽകുന്ന പബ്ലിക്കായി വിശ്വസനീയമായ എല്ലാ സർട്ടിഫിക്കറ്റുകൾക്കും സർട്ടിഫിക്കറ്റ് സുതാര്യത ആവശ്യമാണ്."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "സുരക്ഷിതമല്ലാത്ത ഉറവിടങ്ങളിൽ getCurrentPosition(), watchPosition() എന്നിവ ഇനി പ്രവർത്തിക്കില്ല. ഈ ഫീച്ചർ ഉപയോഗിക്കാൻ, HTTPS പോലുള്ള സുരക്ഷിതമായ ഉറവിടത്തിലേക്ക് നിങ്ങളുടെ ആപ്പ് മാറ്റുന്ന കാര്യം പരിഗണിക്കുക. കൂടുതൽ വിശദാംശങ്ങൾക്ക് https://goo.gle/chrome-insecure-origins കാണുക."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info API"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML ആട്രിബ്യൂട്ട്: സ്വയംപൂർത്തിയാക്കൽ"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "മിക്‌സഡ് ഉള്ളടക്കം തടയുന്നു"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "ഉപയോക്തൃ-ഏജന്റ് സ്ട്രിംഗ് ചുരുക്കൽ"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "ഡോക്യുമെന്റ് അനുയോജ്യതാ മോഡ്"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "ഉവ്വ്"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "പ്രീഫെച്ചിംഗും പ്രീറെൻഡറിംഗും"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "ഈ പേജ്"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "റിപ്പോർട്ടിന്റെ ബോഡി കാണാൻ അതിൽ ക്ലിക്ക് ചെയ്യുക"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "ആപ്പ്"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "കാഷെ"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "കാഷെ സ്‌റ്റോറേജ്"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner അഭ്യർത്ഥിച്ച പേജുകൾക്ക് നിലവിൽ ബാക്ക്/ഫോർവേഡ് കാഷെയ്ക്കുള്ള യോഗ്യതയില്ല."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "സജീവമായി നിലനിർത്താനുള്ള അഭ്യർത്ഥന കാരണം ബാക്ക്/ഫോർവേഡ് കാഷെ പ്രവർത്തനരഹിതമാക്കിയിരിക്കുന്നു."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "ഫ്ലാഗുകൾ, ബാക്ക്/ഫോർവേഡ് കാഷെ പ്രവർത്തനരഹിതമാക്കിയിരിക്കുന്നു. ഈ ഉപകരണത്തിൽ ഇത് ലോക്കലായി പ്രവർത്തനക്ഷമമാക്കാൻ chrome://flags/#back-forward-cache സന്ദർശിക്കുക."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "WebUSB API ഉപയോഗിക്കുന്ന പേജുകൾക്ക് നിലവിൽ ബാക്ക്/ഫോർവേഡ് കാഷെയ്ക്കുള്ള യോഗ്യതയില്ല."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Cache-Control: no-store ഉപയോഗിക്കുന്ന പേജിൽ കുക്കികൾ പ്രവർത്തനരഹിതമാക്കിയതിനാൽ ബാക്ക്/ഫോർവേഡ് കാഷെ പ്രവർത്തനരഹിതമാക്കി."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "ഡെഡിക്കേറ്റഡ് വർക്കർ അല്ലെങ്കിൽ വർക്ക്‌ലെറ്റ് ഉപയോഗിക്കുന്ന പേജുകൾക്ക് നിലവിൽ ബാക്ക്/ഫോർവേഡ് കാഷെയ്ക്കുള്ള യോഗ്യതയില്ല."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "ആന്തരിക പിശക്."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "ചില JavaScript നെറ്റ്‌വർക്ക് അഭ്യർത്ഥനയ്ക്ക് Cache-Control: no-store ഹെഡ്ഡർ ഉള്ള റിസോഴ്‌സ് ലഭിച്ചതിനാൽ ബാക്ക്/ഫോർവേഡ് കാഷെ പ്രവർത്തനരഹിതമാക്കി."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "സജീവമായി നിലനിർത്താനുള്ള അഭ്യർത്ഥന കാരണം ബാക്ക്/ഫോർവേഡ് കാഷെ പ്രവർത്തനരഹിതമാക്കിയിരിക്കുന്നു."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{# ഫ്രെയിം കൂടി കാണിക്കുക}other{# ഫ്രെയിമുകൾ കൂടി കാണിക്കുക}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "ബക്കറ്റിന്റെ പേര്"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "നിലനിൽക്കുന്ന കാലയളവ്"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "കാലഹരണപ്പെടുന്നത്"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "അതാര്യമാണ്"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "മൂന്നാം കക്ഷി ആണ്"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "ലോഡ് ചെയ്യുന്നു…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "അല്ല"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "ഒന്നുമില്ല"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(അതാര്യം)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "ഒറിജിൻ"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "സുസ്ഥിരമാണ്"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "ക്വാട്ട"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "ടോപ് ലെവൽ സൈറ്റ്"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "അതെ"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "അതെ, കാരണം ആൻസെസ്ട്രി ചെയ്‌നിൽ ഒരു മൂന്നാം കക്ഷി ഒറിജിൻ ഉണ്ട്"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "അതെ, കാരണം സ്റ്റോറേജ് കീ അതാര്യമാണ്"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "അതെ, കാരണം ടോപ് ലെവൽ സൈറ്റുമായി ഒറിജിൻ പൊരുത്തപ്പെടുന്നില്ല"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "അതെ, കാരണം ടോപ് ലെവൽ സൈറ്റ് അതാര്യമാണ്"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "ഈ ബ്രൗസർ ഇൻസ്‌റ്റൻസിൽ ലഭ്യമായ സംഭരിച്ച എല്ലാ പ്രൈവറ്റ് ട്രസ്‌റ്റ് ടോക്കണുകളും."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "പ്രൈവറ്റ് സ്റ്റേറ്റ് ടോക്കണുകൾ"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "തിരഞ്ഞെടുത്ത റൂൾ സെറ്റ് അനുസരിച്ച് ഫിൽട്ടർ ചെയ്യുക"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "വിപുലീകരണങ്ങളുടെ ക്രമീകരണം"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "ഓപ്പറേറ്റിംഗ് സിസ്റ്റത്തിന്റെ ഡാറ്റാ സേവർ മോഡ് കാരണം പ്രീലോഡിംഗ് പ്രവർത്തനരഹിതമാണ്."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "DevTools ഓണായിരിക്കുന്നതിനാൽ പ്രീലോഡിംഗ് നിർബന്ധിതമായി പ്രവർത്തനക്ഷമമാക്കിയിരിക്കുന്നു. ഈ ബ്രൗസർ സെഷൻ, പ്രകടന താരതമ്യത്തിന് ഉപയോഗിക്കുന്ന ഒരു ഹോൾഡ്ബാക്ക് സെഷന്റെ ഭാഗമായതിനാൽ DevTools ഓഫായിരിക്കുമ്പോൾ പ്രീറെൻഡറിംഗ് പ്രവർത്തനരഹിതമാക്കും."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "ഉപയോക്തൃ ക്രമീകരണമോ വിപുലീകരണമോ കാരണം പ്രീലോഡിംഗ് പ്രവർത്തനരഹിതമാക്കി. കൂടുതലറിയാൻ {PH1} സന്ദർശിക്കൂ, അല്ലെങ്കിൽ വിപുലീകരണം പ്രവർത്തനരഹിതമാക്കാൻ {PH2}സന്ദർശിക്കൂ."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "DevTools ഓണായിരിക്കുന്നതിനാൽ പ്രീറെൻഡറിംഗ് നിർബന്ധിതമായി പ്രവർത്തനക്ഷമമാക്കിയിരിക്കുന്നു. ഈ ബ്രൗസർ സെഷൻ, പ്രകടന താരതമ്യത്തിന് ഉപയോഗിക്കുന്ന ഒരു ഹോൾഡ്ബാക്ക് സെഷന്റെ ഭാഗമായതിനാൽ DevTools ഓഫായിരിക്കുമ്പോൾ പ്രീറെൻഡറിംഗ് പ്രവർത്തനരഹിതമാക്കും."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "പ്രീലോഡിംഗ് പ്രവർത്തനരഹിതമായിരുന്നു, എന്നാൽ ഇപ്പോൾ നിർബന്ധിതമായി പ്രവർത്തനക്ഷമമാക്കിയിട്ടുണ്ട്"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "പ്രീലോഡിംഗ് പ്രവർത്തനരഹിതമാക്കി"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "പ്രീറെൻഡറിംഗ് പ്രവർത്തനരഹിതമായിരുന്നു, എന്നാൽ ഇപ്പോൾ നിർബന്ധിതമായി പ്രവർത്തനക്ഷമമാക്കിയിട്ടുണ്ട്"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "മുൻകൂട്ടി ലോഡ് ചെയ്യാനായില്ല."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "നില"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "ആരംഭിക്കുന്ന പേജിന്റെ പ്രധാന ഫ്രെയിം നാവിഗേഷൻ സമയത്ത് പ്രീറെൻഡർ ചെയ്ത പേജ് സജീവമാക്കി."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "ആരംഭിക്കുന്ന പേജിന്റെ സാൻഡ്‌ബോക്‌സിംഗ് ഫ്ലാഗുകളോ അനുമതി നയമോ പ്രീറെൻഡറിംഗ് പേജുമായി പൊരുത്തപ്പെടാത്തതിനാൽ പ്രീറെൻഡർ ഉപയോഗിച്ചില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "സജീവമാക്കൽ സമയത്ത്, യഥാർത്ഥ പ്രീറെൻഡറിംഗ് നാവിഗേഷൻ അഭ്യർത്ഥനയുടെ സമയത്തുള്ളതിൽ നിന്ന് വ്യത്യസ്തമായ നാവിഗേഷൻ പാരാമീറ്ററുകൾ (ഉദാ. HTTP ഹെഡ്ഡറുകൾ) കണക്കാക്കിയതിനാൽ പ്രീറെൻഡർ ഉപയോഗിച്ചില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "പ്രീറെൻഡർ ചെയ്‌ത പേജ് ഓഡിയോ ഔട്ട്‌പുട്ട് അഭ്യർത്ഥിച്ചു, അത് നിലവിൽ പിന്തുണയ്‌ക്കുന്നില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "ബ്രൗസർ കുറച്ച് ബാറ്ററി ഉപയോഗിക്കണമെന്ന് ഉപയോക്താവ് അഭ്യർത്ഥിച്ചതിനാൽ പ്രീറെൻഡർ ചെയ്തില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "ചില ഉറവിട ലോഡ് ബ്ലോക്ക് ചെയ്തു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "പ്രീറെൻഡറിംഗ് നാവിഗേഷന് HTTP ക്ലയന്റ് സർട്ടിഫിക്കറ്റ് ആവശ്യമാണ്."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "ഒരു ക്രോസ് സൈറ്റ് URL ടാർഗറ്റ് ചെയ്‌തതിനാൽ പ്രീറെൻഡറിംഗ് നാവിഗേഷൻ പരാജയപ്പെട്ടു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "പ്രീറെൻഡർ ചെയ്‌ത പേജ് ഒരു ക്രോസ്-സൈറ്റ് URL-ലേക്ക് നാവിഗേറ്റ് ചെയ്‌തു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "പ്രീറെൻഡർ ചെയ്ത URL, ക്രോസ് സൈറ്റ് URL-ലേക്ക് റീഡയറക്‌റ്റ് ചെയ്‌തതിനാൽ പ്രീറെൻഡറിംഗ് നാവിഗേഷൻ പരാജയപ്പെട്ടു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "പ്രീറെൻഡർ ചെയ്ത പേജ്, ഒരു ക്രോസ്-സൈറ്റ് URL-ലേക്ക് റീഡയറക്‌റ്റ് ചെയ്‌ത URL-ലേക്ക് നാവിഗേറ്റ് ചെയ്തു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "ബ്രൗസർ കുറച്ച് ഡാറ്റ ഉപയോഗിക്കണമെന്ന് ഉപയോക്താവ് അഭ്യർത്ഥിച്ചതിനാൽ പ്രീറെൻഡർ ചെയ്തില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "പ്രീറെൻഡർ ചെയ്ത പേജ് ഒരു ഡൗൺലോഡ് ആരംഭിക്കാൻ ശ്രമിച്ചു, അത് നിലവിൽ പിന്തുണയ്ക്കുന്നില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "നിലവിലെ മെമ്മറി ഉപയോഗം നിർണ്ണയിക്കാൻ ശ്രമിക്കുമ്പോൾ ബ്രൗസർ ഒരു ആന്തരിക പിശക് നേരിട്ടതിനാൽ പ്രീറെൻഡർ ചെയ്തില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "ആരംഭിക്കുന്ന പേജിന് പ്രീറെൻഡറിംഗ് നടത്താനാകുന്നില്ല, കാരണം അതിന് സാധാരണ URL-ൽ നിന്ന് വ്യത്യസ്തമായി ഫലപ്രദമായ ഒരു URL ഉണ്ട്. (ഉദാഹരണത്തിന്, പുതിയ ടാബ് പേജ്, അല്ലെങ്കിൽ ഹോസ്റ്റ് ചെയ്ത ആപ്പുകൾ.)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URL-ന്റെ സ്കീം http: അല്ലെങ്കിൽ https: അല്ലാത്തതിനാൽ, അത് പ്രീറെൻഡർ ചെയ്യാൻ യോഗ്യമല്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "http: അല്ലെങ്കിൽ https: അല്ലാത്ത സ്‌കീമുള്ള URL-ലേക്ക് റീഡയറക്‌റ്റ് ചെയ്‌തതിനാൽ പ്രീറെൻഡറിംഗ് നാവിഗേഷൻ പരാജയപ്പെട്ടു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "പ്രീറെൻഡറിംഗ് നാവിഗേഷന് HTTP പരിശോധിച്ചുറപ്പിക്കൽ ആവശ്യമാണ്, അത് നിലവിൽ പിന്തുണയ്ക്കുന്നില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "പ്രീറെൻഡറിംഗിനെ പിന്തുണയ്ക്കാൻ ആവശ്യമായ മൊത്തം സിസ്റ്റം മെമ്മറി ഈ ഉപകരണത്തിൽ ഇല്ലാത്തതിനാൽ പ്രീറെൻഡർ ചെയ്തില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "മറ്റൊരു URL-ലേക്ക് പ്രീറെൻഡർ ചെയ്‌ത പേജ് നാവിഗേറ്റ് ചെയ്‌തു, അത് നിലവിൽ പിന്തുണയ്‌ക്കുന്നില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "ആരംഭിക്കുന്ന പേജിൽ നിലവിൽ നിരവധി പ്രീറെൻഡറുകൾ നടക്കുന്നതിനാൽ പ്രീറെൻഡർ ചെയ്തില്ല. കൂടുതൽ പ്രീറെൻഡറിംഗ് പ്രവർത്തനക്ഷമമാക്കാൻ ഊഹാപോഹവുമായി ബന്ധപ്പെട്ട മറ്റ് നയങ്ങൾ നീക്കം ചെയ്യുക."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "ബ്രൗസർ, പ്രീറെൻഡറിംഗ് മെമ്മറി പരിധി കവിഞ്ഞതിനാൽ പ്രീറെൻഡർ ചെയ്തില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "ബ്രൗസർ, ക്രിട്ടിക്കൽ മെമ്മറി പ്രഷറിന് കീഴിലായതിനാൽ പ്രീറെൻഡർ ചെയ്ത പേജ് അൺലോഡ് ചെയ്തു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "ബ്രൗസർ, ക്രിട്ടിക്കൽ മെമ്മറി പ്രഷറിന് കീഴിലായതിനാൽ പ്രീറെൻഡർ ചെയ്തില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "പ്രീറെൻഡർ ചെയ്ത പേജിൽ മിക്‌സഡ് ഉള്ളടക്കം അടങ്ങിയിരിക്കുന്നു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "പ്രീറെൻഡർ ചെയ്‌ത പേജ് നിലവിൽ പിന്തുണയ്‌ക്കാത്ത, നിരോധിക്കപ്പെട്ട JavaScript API ഉപയോഗിച്ചു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "2xx അല്ലാത്ത HTTP റെസ്പോൺസ് സ്റ്റാറ്റസ് കോഡ് കാരണം പ്രീറെൻഡറിംഗ് നാവിഗേഷൻ പരാജയപ്പെട്ടു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "ഉള്ളടക്ക സുരക്ഷാ നയം പ്രകാരം പ്രീറെൻഡറിംഗ് നാവിഗേഷൻ ബ്ലോക്ക് ചെയ്തു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "പ്രീറെൻഡറിംഗ് നാവിഗേഷന് നെറ്റ്‌വർക്ക് പിശക് നേരിട്ടു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "ഉപയോക്താവ് അവരുടെ ബ്രൗസർ ക്രമീകരണത്തിൽ പ്രീലോഡിംഗ് പ്രവർത്തനരഹിതമാക്കിയതിനാൽ പ്രീറെൻഡർ ചെയ്തില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "ആരംഭിക്കുന്ന പേജ് ക്രാഷായി."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "ആരംഭിക്കുന്ന പേജ് അവസാനിപ്പിച്ചു"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "പ്രീറെൻഡർ ചെയ്ത പേജ് ക്രാഷായി."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "പ്രീറെൻഡർ ചെയ്ത പേജ് അവസാനിപ്പിച്ചു"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "ക്രോസ്-ഒറിജിനുള്ള അതേ സൈറ്റ് URL-ലേക്ക് പ്രീറെൻഡർ ചെയ്ത പേജ് നാവിഗേറ്റ് ചെയ്തു, എന്നാൽ ഡെസ്റ്റിനേഷൻ റെസ്‌പോൺസിൽ അനുയോജ്യമായ Supports-Loading-Mode ഹെഡ്ഡർ ഉൾപ്പെടുന്നില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "ക്രോസ്-ഒറിജിനുള്ള അതേ സൈറ്റ് URL-ലേക്ക് പ്രീറെൻഡർ ചെയ്ത പേജ് നാവിഗേറ്റ് ചെയ്തു, എന്നാൽ ഡെസ്റ്റിനേഷൻ റെസ്‌പോൺസിൽ അനുയോജ്യമായ Supports-Loading-Mode ഹെഡ്ഡർ ഉൾപ്പെടുന്നില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "പ്രീറെൻഡർ ചെയ്ത URL, ക്രോസ്-ഒറിജിനുള്ള അതേ സൈറ്റിലെ URL-ലേക്ക് റീഡയറക്‌റ്റ് ചെയ്‌തെങ്കിലും ഡെസ്റ്റിനേഷൻ റെസ്‌പോൺസിൽ അനുയോജ്യമായ Supports-Loading-Mode ഹെഡ്ഡർ ഉൾപ്പെടാത്തതിനാൽ പ്രീറെൻഡറിംഗ് നാവിഗേഷൻ പരാജയപ്പെട്ടു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "ക്രോസ്-ഒറിജിനുള്ള അതേ സൈറ്റ് URL-ലേക്ക് റീഡയറക്ട് ചെയ്ത ഒരു URL-ലേക്ക്, പ്രീറെൻഡർ ചെയ്ത പേജ് നാവിഗേറ്റ് ചെയ്തെങ്കിലും ഡെസ്റ്റിനേഷൻ റെസ്‌പോൺസിൽ അനുയോജ്യമായ Supports-Loading-Mode ഹെഡ്ഡർ ഉൾപ്പെടുന്നില്ല."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "SSL സർട്ടിഫിക്കറ്റ് അസാധുവായത് കാരണം പ്രീറെൻഡറിംഗ് നാവിഗേഷൻ പരാജയപ്പെട്ടു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "ദീർഘനേരമായി ആരംഭിക്കുന്ന പേജ് പശ്ചാത്തലമാക്കിയിരിക്കുന്നതിനാൽ, പ്രീറെൻഡർ ചെയ്ത പേജ് നിരസിച്ചു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "ആരംഭിക്കുന്ന പേജ് പശ്ചാത്തലമാക്കിയതിനാൽ പ്രീറെൻഡർ ചെയ്ത പേജ് നിരസിച്ചു."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "പ്രീറെൻഡറിംഗ് നാവിഗേഷനിൽ ഉപയോക്തൃ ഏജന്റിനെ മാറ്റി."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "കൂടുതൽ വിശദാംശങ്ങൾക്ക് ഒരു എലമെന്റ് തിരഞ്ഞെടുക്കുക"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "നില"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "|kPrefetchNewLimits| പ്രവർത്തനക്ഷമമാക്കിയതിനാൽ, പുതിയ പ്രീഫെച്ചിന് വേണ്ടി പ്രീഫെച്ച് നിരസിച്ചു"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "പ്രീഫെച്ച് റീഡയറക്റ്റ് ചെയ്‌തു, എന്നാൽ റീഡയറക്റ്റ് URL പ്രീഫെച്ച് ചെയ്യാൻ യോഗ്യമല്ല."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "പ്രീഫെച്ച് റീഡയറക്റ്റ് ചെയ്‌തു, എന്നാൽ റീഡയറക്റ്റ് ചെയ്യലുമായി ബന്ധപ്പെട്ട് ഒരു പ്രശ്‌നമുണ്ടായി."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "പ്രതികരണത്തിന്റെ ഉള്ളടക്ക-തര ഹെഡ്ഡറിനെ പിന്തുണയ്‌ക്കാത്തതിനാൽ പ്രീഫെച്ച് ചെയ്‌തില്ല."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "നെറ്റ്‌വർക്ക് പിശക് കാരണം പ്രീഫെച്ച് പരാജയപ്പെട്ടു."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "2xx അല്ലാത്ത HTTP റെസ്പോൺസ് സ്റ്റാറ്റസ് കോഡ് കാരണം പ്രീഫെച്ച് പരാജയപ്പെട്ടു."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "ആരംഭിക്കുന്ന പേജിൽ നിലവിൽ നിരവധി പ്രീഫെച്ചുകൾ നടക്കുന്നതിനാൽ പ്രീഫെച്ച് ചെയ്തില്ല."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "ഒറിജിന്റെ മുമ്പത്തെ പ്രീഫെച്ചിന് \"പിന്നീട് വീണ്ടും ശ്രമിക്കുക\" ഹെഡ്ഡർ ഉള്ള ഒരു HTTP 503 പ്രതികരണം ലഭിച്ചു, അത് ഇതുവരെ കാലഹരണപ്പെട്ടിട്ടില്ല."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "ആ ഒറിജിനായി രജിസ്റ്റർ ചെയ്ത സർവീസ് വർക്കറോ ക്രോസ്-സൈറ്റ് കുക്കികളോ ഉള്ളതിനാൽ URL പ്രീഫെച്ച് ചെയ്യാൻ യോഗ്യമല്ല, എന്നാൽ ഉപയോക്താവിന് ഒറിജിനുമായി ഉണ്ടായിരുന്ന മുമ്പ് ഉണ്ടായിരുന്ന ഇടപഴകലുകൾ മറയ്ക്കുന്നതിന്, നെറ്റ്‌വർക്കിൽ പ്രീഫെച്ച് ഉൾപ്പെടുത്തിയെങ്കിലും അത് ഉപയോഗിച്ചില്ല."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "പ്രീഫെച്ചിനും ഉപയോഗത്തിനുമിടയിൽ വളരെയധികം സമയം കഴിഞ്ഞുപോയതിനാൽ പ്രീഫെച്ച് നിരസിച്ചു."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "ബാറ്ററി സേവർ ക്രമീകരണം പ്രവർത്തനക്ഷമമാക്കിയതിനാൽ പ്രീഫെച്ച് ചെയ്തില്ല."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "ബ്രൗസർ അദൃശ്യ മോഡിലോ അതിഥി മോഡിലോ ആയതിനാൽ പ്രീഫെച്ച് ചെയ്തില്ല."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "ഓപ്പറേറ്റിംഗ് സിസ്റ്റം ഡാറ്റ സേവർ മോഡിൽ ആയതിനാൽ പ്രീഫെച്ച് ചെയ്തില്ല."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "ഡിഫോൾട്ട് നെറ്റ്‌വർക്ക് സന്ദർഭത്തിൽ ഒരു പ്രോക്സി സെർവർ ഉപയോഗിക്കുന്നതിനായി കോൺഫിഗർ ചെയ്തിരിക്കുന്നതിനാൽ URL പ്രീഫെച്ച് ചെയ്യാൻ യോഗ്യമല്ല."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URL-ന്റെ ഹോസ്റ്റ് തനത് അല്ലാത്തതിനാൽ (ഉദാ. പൊതുവായി റൂട്ട് ചെയ്യാനാകാത്ത IP വിലാസം അല്ലെങ്കിൽ രജിസ്ട്രി-നിയന്ത്രിതമല്ലാത്ത ഒരു ഹോസ്റ്റ് നാമം) അത് പ്രീഫെച്ച് ചെയ്യാൻ യോഗ്യമല്ല, എന്നാൽ പ്രീഫെച്ച് പ്രോക്സി വഴി കൈമാറേണ്ടതുണ്ട്."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "ഡിഫോൾട്ട് അല്ലാത്ത സ്റ്റോറേജ് പാർട്ടീഷൻ ഉപയോഗിക്കുന്നതിനാൽ URL പ്രീഫെച്ച് ചെയ്യാൻ യോഗ്യമല്ല."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "പ്രീലോഡിംഗ് പ്രവർത്തനരഹിതമാക്കിയതിനാൽ പ്രീഫെച്ച് ചെയ്തില്ല."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "അതേ സൈറ്റിലെ ക്രോസ് ഒറിജിൻ പ്രീഫെച്ച് അഭ്യർത്ഥനയ്ക്കായി പ്രീഫെച്ച് പ്രോക്സി ഉപയോഗിക്കുന്നതിന് ഡിഫോൾട്ട് നെറ്റ്‌വർക്ക് സന്ദർഭം കോൺഫിഗർ ചെയ്യാൻ കഴിയാത്തതിനാൽ URL പ്രീഫെച്ച് ചെയ്യാൻ യോഗ്യമല്ല."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URL-ന്റെ സ്കീം https: അല്ലാത്തതിനാൽ, അത് പ്രീഫെച്ച് ചെയ്യാൻ യോഗ്യമല്ല."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "ക്രോസ്-സൈറ്റ് ആയതിനാൽ URL പ്രീഫെച്ച് ചെയ്യാൻ യോഗ്യമല്ല, എന്നാൽ ഉപയോക്താവിന് ആ ഒറിജിനായി കുക്കികൾ ഉണ്ടായിരുന്നു."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "ഒറിജിന് നിലവിൽ പിന്തുണയ്‌ക്കാത്ത, രജിസ്റ്റർ ചെയ്ത സർവീസ് വർക്കർ ഉള്ളതിനാൽ URL പ്രീഫെച്ച് ചെയ്യാൻ യോഗ്യമല്ല."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "ക്രോസ്-സൈറ്റ് പ്രീഫെച്ച് ആയതിനാൽ പ്രീഫെച്ച് ഉപയോഗിച്ചില്ല, കൂടാതെ പ്രീഫെച്ച് നടന്നുകൊണ്ടിരിക്കുമ്പോൾ ആ URL-നായി കുക്കികൾ ചേർത്തതിനാൽ പ്രീഫെച്ച് ചെയ്ത പ്രതികരണം ഇപ്പോൾ കാലഹരണപ്പെട്ടു."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "നിങ്ങളുടെ ഇന്റർനെറ്റ് സേവന ദാതാവോ നെറ്റ്‌വർക്ക് അഡ്‌മിനിസ്‌ട്രേറ്ററോ പ്രീഫെച്ച് ബ്ലോക്ക് ചെയ്‌തു."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "പ്രീഫെച്ച് പ്രോക്സിയുമായുള്ള കണക്ഷൻ സജ്ജീകരിക്കാൻ ശ്രമിക്കുന്നതിനിടയിൽ ഒരു നെറ്റ്‌വർക്ക് പിശക് സംഭവിച്ചു."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "എലമെന്റുകളുടെ പാനലിൽ വെളിപ്പെടുത്താൻ ക്ലിക്ക് ചെയ്യുക"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "{PH1} മുമ്പേ ലഭ്യമാക്കിയ വിഭവങ്ങളാണ് ഈ പേജിനായി ഉപയോഗിക്കുന്നത്"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "ഈ പേജിനായി പ്രീലോഡിംഗ് ഉപയോഗിക്കുന്നു"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "ഈ പേജിനെ പ്രീറെൻഡർ ചെയ്തു"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "ഉപയോഗ വിഷ്വലൈസേഷൻ"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "പശ്ചാത്തലത്തിൽ പേജ് പ്രീറെൻഡർ ചെയ്തതിനാൽ കവറേജ് വിവരങ്ങൾ ക്യാപ്‌ചർ ചെയ്യാനായില്ല."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "എല്ലാം"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "ബാക്ക്/ഫോർവേഡ് കാഷെയിൽ നിന്ന് പേജ് നൽകിയതിനാൽ കവറേജ് വിവരങ്ങൾ ക്യാപ്‌ചർ ചെയ്യാനായില്ല."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "കവറേജ് ഗ്രാനുലാരിറ്റി തിരഞ്ഞെടുക്കുക: ഓരോ ഫംഗ്‌ഷനും കുറഞ്ഞ ഓവർഹെഡും ഓരോ ബ്ലോക്കിനും സാരമായ ഓവർഹെഡും ഉണ്ട്."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "ഓരോ ഫംഗ്‌ഷനിലും"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "റീലോഡ് ചെയ്യാനും കവറേജ് ലഭിക്കാനും റീലോഡ് ബട്ടൺ {PH1} ക്ലിക്ക് ചെയ്യുക."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH2}-യിൽ {PH1} ({PH3}%) ഇതുവരെ ഉപയോഗിച്ചു, {PH4} ഉപയോഗിച്ചിട്ടില്ല."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "ഉപകരണ കവറേജ്"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "പേജ് റീലോഡ് ചെയ്യുക"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "കവറേജ് കാണിക്കുക"
@@ -5670,7 +5667,7 @@
     "message": "ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "എല്ലാ CSS മാറ്റങ്ങളും പകർത്തുക"
+    "message": "CSS മാറ്റങ്ങൾ പകർത്തുക"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS പ്രോപ്പർട്ടി നാമം: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "ഹാർഡ്‌വെയർ കൺകറൻസി അസാധുവാക്കൽ പ്രവർത്തനക്ഷമമാക്കി"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "navigator.hardwareConcurrency-യുടെ മൂല്യം"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "ത്രോട്ടിലിംഗ് ഇല്ല"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "വിജയകരം"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "ഈ PST ഇഷ്യൂവറിനുള്ള കീകൾ ലഭ്യമല്ല. ഇഷ്യൂവർ Chrome രജിസ്ട്രേഷൻ പ്രോസസ് വഴി രജിസ്റ്റർ ചെയ്യേണ്ടതുണ്ട്."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "അജ്ഞാതമായ കാരണത്താൽ പ്രവർത്തനം നടന്നില്ല."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "ഹീപ്പ് അലോക്കേഷനുകൾ റെക്കോർഡ് ചെയ്യുന്നത് നിർത്തുക"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDP കമാൻഡ് എഡിറ്റർ മറച്ചിരിക്കുന്നു"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDP കമാൻഡ് എഡിറ്റർ കാണിച്ചിരിക്കുന്നു"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "എല്ലാം മായ്‌ക്കുക"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "ഫിൽട്ടർ ചെയ്യുക"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "CDP കമാൻഡ് എഡിറ്റർ മറയ്ക്കുക"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "രീതി"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "സെഷൻ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "CDP കമാൻഡ് എഡിറ്റർ കാണിക്കുക"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "ടാർഗറ്റ്"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "ത്രെഡ്"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "നെറ്റ്‌വർക്ക്"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1}, {PH2}-ന്"

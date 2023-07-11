@@ -987,7 +987,7 @@
     "message": "ቀለም ቅባ"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | reloadPage": {
-    "message": "ገጽን ዳግም ጫን"
+    "message": "ገጽን እንደገና ጫን"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | rendering": {
     "message": "ምስል በመስራት ላይ"
@@ -1045,12 +1045,6 @@
   },
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "ወደ የተለየ መስኮት ይንቀሉ"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "ገፅ፦ አልተመረጠም"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "ገፅ፦ {PH1}"
   },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "ፈቃድ እንደተሰጠው"
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "ከመነሻ አቋራጭ iframes window.confirmን መቀስቀስ ተቋርጧል እና ለወደፊት ይወገዳል።"
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "የDOM መለወጥ ክስተቶች DOMSubtreeModified፣ DOMNodeInserted፣ DOMNodeRemoved፣ DOMNodeRemovedFromDocument፣ DOMNodeInsertedIntoDocument እና DOMCharacterDataModifiedን ጨምሮ ተቋርጠዋል (https://w3c.github.io/uievents/#legacy-event-types) እና ይወገዳሉ። እባክዎ በምትኩ MutationObserver ይጠቀሙ።"
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "የውሂብ ድጋፍ፦ በSVG ውስጥ ያሉ ዩአርኤሎች <use> ክፍለ አካል ተቋርጧል እና ለወደፊቱ ይወገዳል።"
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "ተመሳሳዩን መነሻ ፖሊሲ በማቀናበር document.domain ማላላት የተቋረጠ ሲሆን፣ በነባሪነት ይሰናከላል። ይህን ባህሪ መጠቀምን ለመቀጠል፣ እባክዎን ለሰነዱ እና ክፈፎች ከ HTTP ምላሽ ጋር Origin-Agent-Cluster: ?0 አርዕስት በመላክ በመነሻ ቁልፍ ከተደረጉ የወኪል ስብስቦች መርጠው ይውጡ። ለተጨማሪ ዝርዝሮች https://developer.chrome.com/blog/immutable-document-domain/ ን ይመልከቱ።"
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path የተቋረጠ ሲሆን፣ ይወገዳል። እባክዎ በምትኩ Event.composedPath() ን ይጠቀሙ።"
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "የExpect-CT ግርጌ ከአሁን ወዲህ አይደገፍም። ከኤፕሪል 30 2018 በኋላ ለተሰጡ ሁሉም በይፋ የታመኑ የእውቅና ማረጋገጫዎች Chrome የእውቅና ማረጋገጫ ግልጽነት ይፈልጋል።"
+    "message": "የExpect-CT ራስጌ ተቋርጧል እና ይወገዳል። ከኤፕሪል 30 2018 በኋላ ለተሰጡ ሁሉም በይፋ የታመኑ የእውቅና ማረጋገጫዎች Chrome የእውቅና ማረጋገጫ ግልጽነት ይፈልጋል።"
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() እና watchPosition() ከአሁን በኋላ ደህንነታቸው ባልተጠበቁ መነሻዎች ላይ አይሰሩም። ይህንን ባህሪ ለመጠቀም መተግበሪያዎን እንደ HTTPS ወዳለ ደህንነቱ የተጠበቀ ምንጭ ለመቀየር ያስቡበት። ለተጨማሪ ዝርዝሮች https://goo.gle/chrome-insecure-origins ን ይመልከቱ።"
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "የፌዴሬትድ የመግቢያ ማስረጃ አስተዳደር ኤፒአይ"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "የፌዴራል የምስክር ወረቀት አስተዳደር የተጠቃሚ መረጃ ኤፒአይ"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "የHTML መገለጫ ባህሪ፦ ራስሰር አጠናቅ"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "ቅልቅል ይዘት መከልከል"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "የተጠቃሚ-ወኪል ሕብረቁምፊ ቅነሳ"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "የሰነድ የተኳኋኝነት ሁነታ"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "አዎ"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "አስቀድሞ ማምጣት እና ቅድመ-ምስል መስራት"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "ይህ ገጽ"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "ሰውነቱን ለማሳየት በማንኛውም ሪፖርት ላይ ጠቅ ያድርጉ"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "መተግበሪያ"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "መሸጎጫ"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "የመሸጎጫ ማከማቻ"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "AppBanner የጠየቁ ገጾች በአሁኑ ጊዜ ለጀርባ/ፊት መሸጎጫ ብቁ አይደሉም።"
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "የጀርባ/ፊት መሸጎጫ በእንደነቃ አቆይ ጥያቄ ምክንያት ተሰናክሏል።"
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "የጀርባ/ፊት መሸጎጫው በጥቆማዎች ተሰናክሏል። በዚህ መሣሪያ ላይ ለማንቃት chrome://flags/#back-forward-cache ይጎብኙ።"
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "የWebUSB ኤፒአይን የሚጠቀሙ ገጾች ለጀርባ-ፊት መሸጎጫ ብቁ አይደሉም።"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "የጀርባ-ፊት መሸጎጫ Cache-Control: no-storeን በሚጠቀም ገጽ ላይ ያሉ ኩኪዎች በመሰናከላቸው ምክንያት ተሰናክሏል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "ቋሚ ሰራተኛ ወይም የስራ-ክፍል የሚጠቀሙ ገጾች በአሁኑ ጊዜ ለጀርባ/ፊት መሸጎጫ ብቁ አይደሉም።"
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "ውስጣዊ ስህተት።"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "የጀርባ-ፊት መሸጎጫ አንዳንድ የጃቫስክሪፕት አውታረ መረብ ጥያቄ የCache-Control: no-store ራስጌ ያለው ንብረት ስለደረሰው ተሰናክሏል።"
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "የጀርባ/ፊት መሸጎጫ በእንደነቃ አቆይ ጥያቄ ምክንያት ተሰናክሏል።"
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{# ተጨማሪ ክፍለ ገጸ ድርን አሳይ}one{# ተጨማሪ ክፍለ ገጸ ድሮችን አሳይ}other{# ተጨማሪ ክፍለ ገጸ ድሮችን አሳይ}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "የቁጥር ወሰን ስም"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "መቆየት የሚችልበት ጊዜ"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "ጊዜው የሚያልፍበት"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "ብርሃን ከል ነው"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "ሦስተኛ ወገን ነው"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "በመጫን ላይ…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "አይ"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "ምንም"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(ብርሃን ከል)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "ምንጭ"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "የሚጸና ነው"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "ኮታ"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "ከፍተኛ ደረጃ ጣቢያ"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "አዎ"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "አዎ፣ ምክንያቱም የዘር ሐረግ ሰንሰለቱ የሦስተኛ ወገን መነሻ ይይዛል"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "አዎ፣ ምክንያቱም የማከማቻ ቁልፉ ብርሃን ከል ነው"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "አዎ፣ ምክንያቱም መነሻው ከከፍተኛ ደረጃ ጣቢያው ውጪ ሰለሆነ"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "አዎ፣ ምክንያቱም ከፍተኛ ደረጃ ጣቢያው ብርሃን ከል ነው"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "በዚህ የአሳሽ አብነት ውስጥ የሚገኙ ሁሉም የተከማቹ የግል ሁኔታ ማስመሰያዎች።"
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "የግል ሁኔታ ማስመሰያዎች"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "በተመረጠ የደንብ ስብስብ አጣራ"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "የቅጥያዎች ቅንብሮች"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "በስርዓተ ክወናው ውሂብ ቆጣቢ ሁነታ ምክንያት ቅድሚያ በመጫን ላይ አልተሳካም።"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "DevTools ክፍት ስለሆነ ቅድሚያ በመጫን ላይ በግዳጅ ነቅቷል። DevTools ዝግ በሚሆንበት ጊዜ ቅድመ-ምስል ሥራ ይሰናከላል፣ ምክንያቱም ይህ የአሳሽ ክፍለ ጊዜ ለአፈጻጸም ንጽጽሮች ሥራ ላይ የሚውል የታቃቢ ቡድን አንድ አካል ነው።"
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "በተጠቃሚ ቅንብሮች ወይም በቅጥያ ምክንያት ቅድሚያ መጫን ተሰናክሏል። ቅጥያውን ለማሰናከል ወደ {PH1} የበለጠ ለመረዳት ይሂዱ ወይም ወደ {PH2} ይሂዱ።"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "DevTools ክፍት ስለሆነ ቅድመ-ምስል ሥራ በግዳጅ ነቅቷል። DevTools ዝግ በሚሆንበት ጊዜ ቅድመ-ምስል ሥራ ይሰናከላል፣ ምክንያቱም ይህ የአሳሽ ክፍለ ጊዜ ለአፈጻጸም ንጽጽሮች ሥራ ላይ የሚውል የታቃቢ ቡድን አንድ አካል ነው።"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "ቅድሚያ በመጫን ላይ ተሰናክሎ ነበር፣ ነገር ግን አሁን ላይ በግዳጅ ነቅቷል"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "በቅድሚያ መጫን ተሰናክሏል"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "ቅድመ-ምስል ሥራ ተሰናክሎ ነበር፣ ነገር ግን አሁን ላይ በግዳጅ ነቅቷል"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "ቅድሚያ በመጫን ላይ አልተሳካም።"
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "ሁኔታ"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "በመነሻ ገጽ ዋና ክፍለ ገጸ ድር አሰሳ ወቅት ቅድመ-ምስል የተሰራለት ገጽ ገቢር ሆኗል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "ማጠሪያ ጠቋሚዎች ወይም የመነሻ ገጹ የፈቃዶች መመሪያ ከቅድመ-ምስል የተሰራለት ገጽ ጋር ተኳሃኝ ስላልሆኑ ቅድመ-ምስል ስራ ጥቅም ላይ አልዋለም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "ቅድመ-ምስል ስራ ጥቅም ላይ ያልዋለው በእንቅስቃሴ ጊዜ ከዋናው ቅድመ ምስል የመስራት የአሰሳ ጥያቄ ይልቅ የተለዩ የአሰሳ መለኪያዎች (ለምሳሌ፣ የኤችቲቲፒ ራስጌዎች) ይሰሉ ስለነበር ነው።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "ቅድመ-ምስል የተሰራለት ገጽ አሁን ላይ የማይደገፍ የኦዲዮ ማውጫ ጠይቋል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "ተጠቃሚው አሳሹ ያነሰ ባትሪ እንዲጠቀም ስለጠየቀ ቅድመ-ምስል ስራ አልተካሄደም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "አንዳንድ የንብረት ጭነት ታግዶ ነበር።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "የቅድመ-ምስል ስራ አሰሳ የደንበኛ እውቅና ማረጋገጫ ይጠይቃል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "የቅድመ-ምስል ስራ አሰሳው ተሻጋሪ ጣቢያ ዩአርኤል ላይ ስላነጣጠረ አልተሳካም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "ቅድመ-ምስል የተሰራለን ገጽ ወደ ተሻጋሪ ጣቢያ ዩአርኤል አስሷል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "ቅድመ-ምስል የተሰራለት ዩአርኤል ወደ ተሻጋሪ ጣቢያ ዩአርኤል ስላዞረ የቅድመ-ምስል ስራ አሰሳ አልተሳካም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "ቀድሞ የተሰራው ገጽ ወደ ዩአርኤል ተዘዋውሯል ይህም ወደ ጣቢያ-አቋራጭ ዩአርኤል ተዘዋውሯል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "ተጠቃሚው አሳሹ ያነሰ ውሂብ እንዲጠቀም ስለጠየቀ ቅድመ-ምስል ስራ አልተካሄደም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "ቅድመ-ምስል የተሰራለት ገጽ አሁን የማይደገፍ ውርድ ለመጀመር ሞክሯል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "አሳሹ የአሁን የማህደረ ትውስታ አጠቃቀምን ለማወቅ በመሞከር ላይ ሳለ የውስጥ ስህተት ስላጋጠመው ቅድመ-ምስል ስራ አልተከናወነም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "መነሻ ገጹ ከመደበኛው ዩአርኤል የተለየ የሚሰራ ዩአርኤል ስላለው ቅድመ-ምስል ስራ ማከናወን አይችልም። (ለምሳሌ፣ አዲሱ የትር ገጽ ወይም የተስተናገዱ መተግበሪያዎች።)"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "ዕቅዱ ኤችቲቲፒ: ወይም ኤችቲቲፒኤስ: ስላልነበር ዩአርኤሉ ለቅድመ-ምስል ስራ ብቁ አልነበረም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "የቅድመ-ምስል ስራ አሰሳ ዕቅዱ ኤችቲቲፒ፡ ወይም ኤችቲቲፒኤስ፡ ወዳልሆነ ዩአርኤል ስላዞረው አልተሳካም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "የቅድመ-ምስል ስራ አሰሳ አሁን ላይ የማይደገፍ የኤችቲቲፒ ፈቃድ ይጠይቃል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "ይህ መሣሪያ ቅድመ-ምስል ስራን ለመደገፍ በቂ አጠቃላይ ሥርዓት ስለሌለው ቅድመ-ምስል ስራው አልተከናወነም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "ቅድመ-ምስል የተሰራለት ገጽ አሁን ላይ ወደማይደገፍ ሌላ ዩአርኤል እራሱን አስሷል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "ጀማሪው ገጽ አስቀድሞ በጣም ብዙ በሂደት ላይ ያሉ ቅድመ-ምስል ስራዎች ስላሉት አልተከናወነም። ተጨማሪ ቅድመ-ምስል ስራን ለማንቃት ሌላ የሃሳብ ደንቦችን ያስወግዱ።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "አሳሹ የቅድመ-ምስል ስራ ማህደረ ትውስታ ገደብን ስላለፈ ቅድመ-ምስል ስራ አልተካሄደም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "አሳሹ በአሳሳቢ የማህደረ ትውስታ ግፊት ስር ስለወደቀ ቅድመ-ምስል የተሰራለት ገጽ ተራግፏል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "አሳሹ በአሳሳቢ ግፊት ስር ስለነበር ቅድመ-ምስል ስራው አልተከናወነም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "ቅድመ-ምስል የተሰራለት ገጽ የተቀላቀለ ይዘት ይዟል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "ቅድመ-ምስል የተሰራለት ገጽ አሁን የማይደገፍ የተከለከለ የጃቫስክሪፕት ኤፒአይ ተጠቅሟል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "የቅድመ-ምስል ስራ አሰሳ 2xx የኤችቲቲፒ ምላሽ የሁኔታ ኮድ ባልሆነ ምክንያት አልተሳካም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "የቅድመ-ምስል ስራ አሰሳ በይዘት ደህንነት መመሪያ ታግዷል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "የቅድመ-ምስል ስራ አሰሳ የአውታረ መረብ ስህተት አጋጥሞታል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "ተጠቃሚው በአሳሽ ቅንብሮቻቸው ውስጥ ቅድሚያ መጫንን ስላሰናከሉ ቅድመ-ምስል ስራ አልተከናወነም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "መነሻ ገጹ ተበላሽቷል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "አስጀማሪው ገጽ ጠፍቷል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "ቅድሚያ ምስሉ የተሰራው ገጽ ተበላሽቷል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "ቅድመ-ምስል የተሰራለት ገጽ ጠፍቷል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "ቅድመ-ምስል የተሰራለት ገጽ ወደ ተሻጋሪ መነሻ አንድ ዓይነት ጣቢያ ዩአርኤል እራሱን አስሷል ነገር ግን መድረሻ ምላሹ ተገቢውን የድጋፎች-ጭነት-ሁነታ ግርጌን አላካተተም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "ቅድመ-ምስል የተሰራለት ገጽ ወደ ተሻጋሪ መነሻ አንድ ዓይነት ጣቢያ ዩአርኤል አስሷል ነገር ግን መድረሻ ምላሹ ተገቢውን የድጋፎች-ጭነት-ሁነታ ግርጌን አላካተተም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "ቅድመ-ምስል የተሰራለት ዩአርኤል ወደ ተሻጋሪ መነሻ አንድ ዓይነት ጣቢያ ዩአርኤል ስለዞረ የቅድመ-ምስል ስራ አሰሳው አልተሳካም ነገር ግን የመድረሻው ምላሽ ተገቢውን የድጋፍ-ጭነት-ሁነታ ግርጌ አላካተተም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "የቅድመ-ምስል ስራ ገጽ ወደ ተሻጋሪ መነሻ አንድ ዓይነት ጣቢያ ዩአርኤል ወደዞረ ዩአርኤል አስሷል ግን የመደረሻው ምላሽ ተገቢውን የድጋፎች-ጭነት-ሁነታ ግርጌ አላካተተም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "የቅድመ-ምስል ስራ አሰሳ ልክ ባልሆነ የኤስኤስኤል የእውቅና ማረጋገጫ ምክንያት አልተሳካም።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "መነሻ ገጹ ለረጅም ጊዜ ከዳራ ተቀምጦ ነበር ስለዚህ ቅድመ-ምስል የተሰራለት ገጽ ተወግዷል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "መነሻ ገጹ ከዳራ ተቀምጦ ነበር ስለዚህ ቅድመ-ምስል የተሰራለት ገጽ ተወግዷል።"
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "ተለዋጭ የተጠቃሚ ወኪል የቅድመ-ምስል ስራ አሰሳ ውስጥ ተከስቷል።"
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "ለተጨማሪ ዝርዝሮች አካል ይምረጡ"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "ሁኔታ"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "ቅድመ-ማምጣቱ ይበልጥ አዲስ ለሆነ ቅድመ-ማምጣት ተጥሏል፣ ምክንያቱም |kPrefetchNewLimits| ነቅቷል"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "ቅድመ-ማምጣቱ ተዘዋውሯል ነገር ግን የማዞሪያ ዩአርኤሉ ቀድሞ-ለመምጣት ብቁ አይደለም።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "ቅድመ-ማምጣቱ ተዘዋውሯል ነገር ግን በማዞሩ ላይ ችግር ነበር።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "የምላሹ ይዘት-ዓይነት ራስጌ ስላልተደገፈ ቅድመ-ማምጣቱ አልተሳካም።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "በአውታረ መረብ ስህተት ምክንያት ቅድመ-ማምጣቱ አልተሳካም።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "2xx ባልሆነ የኤችቲቲፒ ምላሽ የሁኔታ ኮድ ምክንያት ቅድመ-ማምጣቱ አልተሳካም።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "ቅድመ-ማምጣቱ ጀማሪ ገጹ ቀድሞውኑ በጣም ብዙ በመካሄድ ላይ ያሉ ቅድመ-ማምጣቶች ስላሉት አልተከናወነም።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "የመነሻው ቀዳሚ ቅድመ-ማምጣት እስካሁን ጊዜው ካላለፈ የበኋላ-እንደገና መሞከር ራስጌ የኤችቲቲፒ 503 ምላሽ አግኝቷል።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "ዩአርኤሉ ለዚያ መነሻ የተመዘገበ የአገልግሎት ሠራተኛ ወይም የጣቢያ-ተሻጋሪ ኩኪዎች ስለነበሩ ቀድሞ-ለመምጣት ብቁ አልነበረም፣ ቢሆንም ግን ቅድመ-ማምጣቱ በአውታረ መረቡ ላይ ተቀምጧል እና ተጠቃሚው ከመነሻው ጋር ከዚህ ቀደም የሆነ ዓይነት ግንኙነት እንደነበረው ለማስመሰል ጥቅም ላይ አልዋለም ነበር።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "በቅድመ-ማምጣቱ እና አጠቃቀሙ መከከል ብዙ ጊዜ አልፏል፣ ስለዚህ ቅድመ-ማምጣቱ ተጥሏል።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "የባትሪ ኃይል ቆጣቢ ቅንብር ነቅቶ ስለነበር ቅድመ-ማምጣቱ አልተከናወነም።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "አሳሹ በማንነት የማያሳውቅ ወይም በእንግዳ ሁነታ ውስጥ ስለሆነ ቅድመ-ማምጣቱ አልተከናወነም።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "ሥርዓተ ክወናው በውሂብ ቆጣቢ ሁነታ ውስጥ ስለሆነ ቅድመ-ማምጣቱ አልተከናወነም።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "ዩአርኤሉ በነባሪው አውታረ መረብ ይዘት ውስጥ ተኪ አገልጋይ እንዲጠቀም ስለተዋቀረ ቀድሞ-ለመምጣት ብቁ አይደለም።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "ዩአርኤሉ አስተናጋጁ ልዪ ሰላልሆነ ቀድሞ-ለመምጣት ብቁ አይደለም (ለምሳሌ፣ ይፋዊ ባልሆነ መንገድ መላክ የሚችል የአይ ፒ አድራሻ ወይም የመመዝገብ ቁጥጥር ያልተደረገበት የአስተናጋጅ ስም) ነገር ግን ቅድመ-ማምጣቱ ተኪ መሆን ያስፈልገው ነበር።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "ዩአርኤሉ ነባሪ ያልሆነ የማከማቻ ክፍልፋይ ስለሚጠቀም ቀድሞ-ለመምጣት ብቁ አይደለም።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "በቅድሚያ መጫን ተሰናክሎ ስለነበር ቅድመ-ማምጣቱ አልተከናወነም።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "ዩአርኤሉ ነባሪ የአውታረ መረብ ይዘቱ ለተመሳሳይ ጣቢያ ተሻጋሪ-መነሻ ቅድመ-ማምጣት ጥያቄ የቅድመ-ማምጣት ተኪውን ለመጠቀም መዋቀር ስላልቻለ ቀድሞ-ለመምጣት ብቁ አልነበረም።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "ዩአርኤሉ ዕቅዱ ኤችቲቲፒኤስ: ስላልነበር ቀድሞ-ለመምጣት ብቁ አልነበረም።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "ዩአርኤሉ ጣቢያ-ተሻጋሪ ስለነበር ቀድሞ-ለመምጣት ብቁ አልነበረም፣ ነገር ግን ተጠቃሚው ለዚያ መነሻ ኩኪዎች ነበሩት።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "ዩአርኤሉ ለመነሻው ተመዝግቦ በአሁኑ ጊዜ የማይደገፍ የአገልግሎት ሠራተኛ ስለነበረው ቀድሞ-ለመምጣት ብቁ አልነበረም።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "ቅድመ-ማምጣቱ የጣቢያ-ተሻጋሪ ቅድመ-ማምጣት ስለሆነ እና ቅድመ-ማምጣቱ በመካሄድ ላይ እያለ ለዚያ ዩአርኤል ኩኪዎች ስለታከሉ ጥቅም ላይ አልዋለም፣ ስለዚህ ቅድመ-ማምጣት ምላሹ አሁን ቀኑ ያለፈበት ነው።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "ቅድመ-ማምጣቱ በእርስዎ የበይነመረብ አገልግሎት አቅራቢ ወይም የአውታረ መረብ አስተዳዳሪ ታግዷል።"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "ከቀድሞ-አምጪ ተኪው ጋር ግንኙነት ለማዋቀር በተሞከረበት ጊዜ የአውታረ መረብ ስህተት አጋጥሞ ነበር።"
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "በክፍለ አካላት ፓነል ውስጥ ለመግለጥ ጠቅ ያድርጉ"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "የ{PH1} ቅድሚያ የመጡ ንብረቶች ለዚህ ገፅ ጥቅም ላይ ውለዋል"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "ለዚህ ገጽ ጥቅም ላይ የዋለ ቅድሚያ መጫን"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "ይህ ገፅ ቅድመ-ምስል ተሰርቶለታል"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "የአጠቃቀም ምናባዊ አቀራረብ"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "ገጹ በቅድመ-ምስል የተሠራው በዳራ ውስጥ ስለነበር የሽፋን መረጃን ማግኘት አልተቻለም።"
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "ሁሉንም"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "ገጹ ከጀርባ-ፊት መሸጎጫ የቀረበ ስለሆነ የሽፋን መረጃን ማግኘት አልተቻለም።"
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "የሽፋን ጥራትን ይምረጡ፦ በእያንዳንዱ ተግባር ዝቅተኛ መደበኛ ወጪ አለው፣ በአንድ ብሎክ ከፍተኛ የሆነ መደበኛ ወጪ አለው።"
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "በእያንዳንዱ ተግባር"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "እንደገና ለመጫን እና ሽፋን ለማግኘት የእንደገና ጫን አዘራሩ {PH1} ላይ ጠቅ ያድርጉ።"
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} ከ{PH2} ({PH3}%) እስካሁን ጥቅም ላይ ውሏል፣ {PH4} ጥቅም ላይ ያልዋለ።"
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "የመሣሪያ ሽፋን"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "ገጽን እንደገና ጫን"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "ሽፋንን አሳይ"
@@ -5670,7 +5667,7 @@
     "message": "ወደ ቅንጥብ ሰሌዳ ተቀድቷል"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "ሁሉንም የሲኤስኤስ ለውጦች ይቅዱ"
+    "message": "የሲኤስኤስ ለውጦችን ይቅዱ"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS የንብረት ስም፦ {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "የሃርድዌር ትይዩ መስራት መሻር ነቅቷል።"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "የ navigator.hardwareConcurrency መጠን"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "መተላለፊያ የለም"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "ተሳክቷል"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "የዚህ PST ሰጪ ቁልፎች አይገኙም። ሰጪው በChrome ምዝገባ ሂደት በኩል መመዝገብ ሊያስፈልገው ይችላል።"
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "ክዋኔው ባልታወቀ ምክንያት አልተሳካም።"
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "የቁልል ምደባዎችን መመዝገብ አቁም"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "የCDP ትዕዛዝ አርታዒ ተደብቋል"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "የCDP ትዕዛዝ አርታዒ ይታያል"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "ሁሉንም አጽዳ"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "ማጣሪያ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "ደብቅ  የCDP ትዕዛዝ አርታዒ"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "ዘዴ"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "ክፍለ-ጊዜ"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "የCDP ትዕዛዝ አርታዒን አሳይ"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "ዒላማ"
@@ -11702,9 +11711,6 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "ተከታታይ"
   },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "አውታረ መረብ"
-  },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} በ{PH2} ላይ"
   },
@@ -13530,7 +13536,7 @@
     "message": "ስም"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
-    "message": "(ብርሃን-ከል)"
+    "message": "(ብርሃን ከል)"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "ክፍለ-ጊዜ"

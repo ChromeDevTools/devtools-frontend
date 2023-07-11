@@ -1046,12 +1046,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Kendu ainguratzea eta jarri beste leiho batean"
   },
-  "entrypoints/main/OutermostTargetSelector.ts | targetNotSelected": {
-    "message": "Orria: ez da hautatu"
-  },
-  "entrypoints/main/OutermostTargetSelector.ts | targetS": {
-    "message": "Orria: {PH1}"
-  },
   "entrypoints/main/main-meta.ts | asAuthored": {
     "message": "Erabiltzaileak ezarri bezala"
   },
@@ -1280,14 +1274,17 @@
   "generated/Deprecation.ts | CrossOriginWindowConfirm": {
     "message": "Jatorri anitzeko iframe-etatik window.confirm abiarazteko aukera zaharkituta dago eta kendu egingo da etorkizunean."
   },
+  "generated/Deprecation.ts | DOMMutationEvents": {
+    "message": "DOMaren mutazio-gertaerak, DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument eta DOMCharacterDataModified barne, zaharkituta daude (https://w3c.github.io/uievents/#legacy-event-types) eta kendu egingo dira. Haien ordez, erabili MutationObserver."
+  },
+  "generated/Deprecation.ts | DataUrlInSvgUse": {
+    "message": "Onartzen diren datuak: SVG <use> elementuko URLak zaharkituta daude, eta kendu egingo dira etorkizunean."
+  },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain ezartzearen ondorioz jatorri bereko gidalerroa erlaxatzeko aukera zaharkituta dago eta desgaitu egingo da modu lehenetsian. Eginbidea erabiltzen jarraitzeko, aukeratu jatorrian oinarritutako agente multzoak ez erabiltzea HTTP erantzunarekin batera Origin-Agent-Cluster: ?0 goiburu bat bidalita dokumenturako eta markorako. Xehetasun gehiago ikusteko, joan https://developer.chrome.com/blog/immutable-document-domain/ helbidera."
   },
-  "generated/Deprecation.ts | EventPath": {
-    "message": "Event.path zaharkituta dago eta kendu egingo da. Haren ordez, erabili Event.composedPath()."
-  },
   "generated/Deprecation.ts | ExpectCTHeader": {
-    "message": "Expect-CT goiburua jada ez da onartzen. Chrome-k ziurtagiri-gardentasuna eskatzen die publikoki fidagarritzat hartzen diren ziurtagiri guztiei (2018ko apirilaren 30a ezkero jaulkitakoak)."
+    "message": "Expect-CT goiburua zaharkituta dago, eta kendu egingo da. Chrome-k ziurtagiri-gardentasuna eskatzen die publikoki fidagarritzat hartzen diren ziurtagiri guztiei (2018ko apirilaren 30a ezkero jaulkitakoak)."
   },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() eta watchPosition() metodoek jada ez dute funtzionatzen jatorri ez-seguruetan. Eginbidea erabiltzeko, aplikazioa jatorri seguru batera eramatea gomendatzen dugu (adibidez, HTTPSra). Xehetasun gehiago ikusteko, joan https://goo.gle/chrome-insecure-origins helbidera."
@@ -1574,6 +1571,9 @@
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
   },
+  "models/issues_manager/FederatedAuthUserInfoRequestIssue.ts | fedCmUserInfo": {
+    "message": "Federated Credential Management User Info APIa"
+  },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML atributua: osatze automatikoa"
   },
@@ -1615,9 +1615,6 @@
   },
   "models/issues_manager/MixedContentIssue.ts | preventingMixedContent": {
     "message": "Nahasitako edukia prebenitzen"
-  },
-  "models/issues_manager/NavigatorUserAgentIssue.ts | userAgentReduction": {
-    "message": "Erabiltzaile-agentearen katearen murrizketa"
   },
   "models/issues_manager/QuirksModeIssue.ts | documentCompatibilityMode": {
     "message": "Dokumentuen bateragarritasun modua"
@@ -2867,8 +2864,8 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Bai"
   },
-  "panels/application/PreloadingTreeElement.ts | prefetchingAndPrerendering": {
-    "message": "Aurrez eskuratzea eta errendatzea"
+  "panels/application/PreloadingTreeElement.ts | thisPage": {
+    "message": "Orri hau"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Sakatu edozein txosten haren gorputza ikusteko"
@@ -3101,9 +3098,6 @@
   "panels/application/StorageView.ts | application": {
     "message": "Aplikazioa"
   },
-  "panels/application/StorageView.ts | cache": {
-    "message": "Cachea"
-  },
   "panels/application/StorageView.ts | cacheStorage": {
     "message": "Cache-biltegiratzea"
   },
@@ -3221,9 +3215,6 @@
   "panels/application/components/BackForwardCacheStrings.ts | appBanner": {
     "message": "Une honetan, aurreko orria cachean gordetzeko eginbidea ez dago erabilgarri AppBanner bat eskatu duten orrietan."
   },
-  "panels/application/components/BackForwardCacheStrings.ts | authorizationHeader": {
-    "message": "Aurreko orria cachean gordetzeko eginbidea desgaituta dago, aktibo mantenarazteko eskaera bat dela eta."
-  },
   "panels/application/components/BackForwardCacheStrings.ts | backForwardCacheDisabled": {
     "message": "Eginbide esperimentalek aurreko orria cachean gordetzeko eginbidea desaktibatu dute. Joan chrome://flags/#back-forward-cache ezarpenera eginbidea gailu honetan gaitzeko."
   },
@@ -3289,6 +3280,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentWebUSB": {
     "message": "Aurreko orria cachean gordetzeko eginbidea ez dago erabilgarri WebUSB APIa erabiltzen duten orrietan."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | cookieDisabled": {
+    "message": "Aurreko orria cachean gordetzeko eginbidea desgaituta dago, Cache-Control: no-store darabilen orri batean cookieak desgaituta daudelako."
   },
   "panels/application/components/BackForwardCacheStrings.ts | dedicatedWorkerOrWorklet": {
     "message": "Une honetan, aurreko orria cachean gordetzeko eginbidea ez dago erabilgarri worker dedikatu bat edo worklet bat erabiltzen duten orrietan."
@@ -3379,6 +3373,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | internalError": {
     "message": "Barneko errorea."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | jsNetworkRequestReceivedCacheControlNoStoreResource": {
+    "message": "Aurreko orria cachean gordetzeko eginbidea desgaituta dago, JavaScript darabilen sareko eskaeraren batek Cache-Control: no-store goiburua duen baliabide bat jaso duelako."
   },
   "panels/application/components/BackForwardCacheStrings.ts | keepaliveRequest": {
     "message": "Aurreko orria cachean gordetzeko eginbidea desgaituta dago, aktibo mantenarazteko eskaera bat dela eta."
@@ -4106,6 +4103,60 @@
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
     "message": "{n,plural, =1{Erakutsi beste # marko}other{Erakutsi beste # marko}}"
   },
+  "panels/application/components/StorageMetadataView.ts | bucketName": {
+    "message": "Edukiontziaren izena"
+  },
+  "panels/application/components/StorageMetadataView.ts | durability": {
+    "message": "Iraunkortasuna"
+  },
+  "panels/application/components/StorageMetadataView.ts | expiration": {
+    "message": "Iraungitzea"
+  },
+  "panels/application/components/StorageMetadataView.ts | isOpaque": {
+    "message": "Opakua da"
+  },
+  "panels/application/components/StorageMetadataView.ts | isThirdParty": {
+    "message": "Hirugarrenena da"
+  },
+  "panels/application/components/StorageMetadataView.ts | loading": {
+    "message": "Kargatzen…"
+  },
+  "panels/application/components/StorageMetadataView.ts | no": {
+    "message": "Ez"
+  },
+  "panels/application/components/StorageMetadataView.ts | none": {
+    "message": "Bat ere ez"
+  },
+  "panels/application/components/StorageMetadataView.ts | opaque": {
+    "message": "(opakua)"
+  },
+  "panels/application/components/StorageMetadataView.ts | origin": {
+    "message": "Jatorria"
+  },
+  "panels/application/components/StorageMetadataView.ts | persistent": {
+    "message": "Iraunkorra da"
+  },
+  "panels/application/components/StorageMetadataView.ts | quota": {
+    "message": "Kuota"
+  },
+  "panels/application/components/StorageMetadataView.ts | topLevelSite": {
+    "message": "Goi-mailako webgunea"
+  },
+  "panels/application/components/StorageMetadataView.ts | yes": {
+    "message": "Bai"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseAncestorChainHasCrossSite": {
+    "message": "Bai, jatorri-katean hirugarrenen jatorri bat dagoelako"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseKeyIsOpaque": {
+    "message": "Bai, biltegiratze-gakoa opakua delako"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseOriginNotInTopLevelSite": {
+    "message": "Bai, jatorria goi-mailako webgunetik kanpo dagoelako"
+  },
+  "panels/application/components/StorageMetadataView.ts | yesBecauseTopLevelIsOpaque": {
+    "message": "Bai, goi-mailako webgunea opakua delako"
+  },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
     "message": "Arakatzaile-instantzia honetan gordetako egoeraren token pribatu guztiak."
   },
@@ -4123,9 +4174,6 @@
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Egoeraren token pribatuak"
-  },
-  "panels/application/preloading/PreloadingView.ts | checkboxFilterBySelectedRuleSet": {
-    "message": "Iragazi hautatutako arau multzoaren arabera"
   },
   "panels/application/preloading/PreloadingView.ts | extensionSettings": {
     "message": "Luzapenen ezarpenak"
@@ -4166,23 +4214,11 @@
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
     "message": "Aurrez kargatzeko aukera desgaituta dago, sistema eragilea datu-aurreztailearen moduan dagoelako."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByFeatureFlag": {
-    "message": "Aurrez kargatzeko aukera derrigorrean gaitu da, garatzaileentzako tresnak irekita daudelako. Garatzaileentzako tresnak ixten direnean, aurrez errendatzeko aukera desgaituko da, arakatzaileko saio hau errendimendua alderatzeko kontrol-talde batekoa delako."
-  },
   "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
     "message": "Aurrez kargatzeko aukera desgaituta dago, erabiltzailearen ezarpenengatik edo luzapen batengatik. Informazio gehiago lortzeko, joan {PH1} atalera. Luzapena desgaitzeko, joan {PH2} atalera."
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPrerenderingDisabledByFeatureFlag": {
-    "message": "Aurrez errendatzeko aukera derrigorrean gaitu da, garatzaileentzako tresnak irekita daudelako. Garatzaileentzako tresnak ixten direnean, aurrez errendatzeko aukera desgaituko da, arakatzaileko saio hau errendimendua alderatzeko kontrol-talde batekoa delako."
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingDisabledByFeatureFlag": {
-    "message": "Aurrez kargatzeko aukera desgaituta zegoen, baina orain derrigorrean gaitu da"
-  },
   "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
     "message": "Aurrez kargatzeko aukera desgaituta dago"
-  },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePrerenderingDisabledByFeatureFlag": {
-    "message": "Aurrez errendatzeko aukera desgaituta zegoen, baina orain derrigorrean gaitu da"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Huts egin du aurrez kargatzeak."
@@ -4217,132 +4253,6 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Egoera"
   },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
-    "message": "Errendatzea abiarazi duen orriaren marko nagusiaren nabigazioan aktibatu da aurrez errendatutako orria."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
-    "message": "Aurrez errendatzeko aukera ez da erabili, hura abiarazi duen orriaren sandbox markak edo baimenen gidalerroak ez direlako bateragarriak aurrez errendatu beharreko orriarenekin."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
-    "message": "Ez da erabili aurrez errendatzeko aukera, aktibatzeko unean kalkulatu diren nabigazio-parametroak (adib., HTTP goiburuak) ez datozelako bat errendatzearen aurreko nabigaziorako jatorrizko eskaeran kalkulatutakoekin."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
-    "message": "Aurrez errendatutako orriak audioa erreproduzitzeko eskatu du, baina orain ez da halakorik onartzen."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBatterySaverEnabled": {
-    "message": "Ez da aurrez errendatu, arakatzaileak bateria gutxiago erabiltzea eskatu duelako erabiltzaileak."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Baliabideren baten karga blokeatu da."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusClientCertRequested": {
-    "message": "Errendatu aurreko nabigazioak HTTP bezero-ziurtagiri bat behar du."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
-    "message": "Errendatu aurreko nabigazioak huts egin du, helmuga beste webgune baten URL bat delako."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
-    "message": "Aurrez errendatutako orriak beste webgune baten URL batera nabigatu du."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
-    "message": "Errendatu aurreko nabigazioak huts egin du, aurrez errendatutako URLak beste webgune baten URL batera birbideratzen duelako."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
-    "message": "Beste webgune baten URL batera birbideratzen duen URL batera nabigatu du aurrez errendatutako orriak."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDataSaverEnabled": {
-    "message": "Ez da aurrez errendatu, arakatzaileak datu gutxiago erabiltzea eskatu duelako erabiltzaileak."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusDownload": {
-    "message": "Aurrez errendatutako orria zerbait deskargatzen saiatu da, baina orain ez da halakorik onartzen."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Ez da aurrez errendatu, arakatzaileak barneko errore bat izan duelako oraingo memoria-erabilera zehazten saiatzean."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusHasEffectiveUrl": {
-    "message": "Errendatzea abiarazi duen orriak ezin du aurrez errendatu, bere ohiko URLa eta funtzionatzen duen URLa bat ez datozelako; adibidez, Fitxa berria orria edo aplikazio ostatatuak."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeNavigation": {
-    "message": "URLak ez ditu betetzen aurrez errendatzeko baldintzak, http: edo https: ez den eskema bat daukalako."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusInvalidSchemeRedirect": {
-    "message": "Errendatu aurreko nabigazioak huts egin du, http: edo https: ez den eskema bat daukan URL batera birbideratzen duelako."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLoginAuthRequested": {
-    "message": "Errendatu aurreko nabigazioak HTTP autentifikazioa behar du, baina orain ez da halakorik onartzen."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusLowEndDevice": {
-    "message": "Ez da aurrez errendatu, horretarako sistema-memoria gutxiegi daukalako gailuak."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMainFrameNavigation": {
-    "message": "Aurrez errendatutako orriak beste URL batera nabigatu du, baina orain ez da halakorik onartzen."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Ez da aurrez errendatu, abiarazi duen orriak halako errendatze gehiegi dituelako jada. Eduki gehiago aurrez errendatu ahal izateko, kendu beste espekulazio-arauak."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryLimitExceeded": {
-    "message": "Ez da aurrez errendatu, arakatzaileak horretarako gehieneko memoria gainditu duelako."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
-    "message": "Aurrez errendatutako orria deskargatu da, arakatzaileak memoria-arazo larri bat izan duelako."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
-    "message": "Ez da aurrez errendatu, arakatzaileak memoriari loturiko arazo larri bat izan duelako."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMixedContent": {
-    "message": "Aurrez errendatutako orriak nahasitako edukia dauka."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusMojoBinderPolicy": {
-    "message": "Aurrez errendatutako orriak JavaScript API debekatu bat erabili du, baina orain ez da halakorik onartzen."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationBadHttpStatus": {
-    "message": "Errendatu aurreko nabigazioak huts egin du, 2xx ez den egoera-kode bat daukan HTTP erantzun batengatik."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
-    "message": "Edukiaren segurtasun-gidalerroek errendatu aurreko nabigazioa blokeatu dute."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusNavigationRequestNetworkError": {
-    "message": "Errendatu aurreko nabigazioak sareko errore bat izan du."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPreloadingDisabled": {
-    "message": "Ez da aurrez errendatu, erabiltzaileak aurrez kargatzeko aukera desgaitu duelako arakatzailearen ezarpenetan."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
-    "message": "Errendatzea abiarazi duen orriak huts egin du."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
-    "message": "Errendatzea abiarazi duen orria itxi da."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Aurrez errendatutako orriak huts egin du."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusRendererProcessKilled": {
-    "message": "Aurrez errendatutako orria itxi da."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Aurrez errendatutako orriak webgune bereko baina beste jatorri bateko URL batera nabigatu du, baina helmugako erantzunak ez dauka Supports-Loading-Mode goiburu egokia."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
-    "message": "Aurrez errendatutako orriak webgune bereko baina beste jatorri bateko URL batera nabigatu du, baina helmugako erantzunak ez dauka Supports-Loading-Mode goiburu egokia."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
-    "message": "Errendatu aurreko nabigazioak huts egin du; izan ere, aurrez errendatutako URLak webgune bereko baina beste jatorri bateko URL batera birbideratzen du, baina helmugako erantzunak ez dauka Supports-Loading-Mode goiburu egokia."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
-    "message": "Aurrez errendatutako orriak webgune bereko baina beste jatorri bateko URL batera birbideratzen duen URL batera nabigatu du, baina helmugako erantzunak ez dauka Supports-Loading-Mode goiburu egokia."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusSslCertificateError": {
-    "message": "Errendatu aurreko nabigazioak huts egin du, SSL ziurtagiri batek balio ez duelako."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTimeoutBackgrounded": {
-    "message": "Errendatzea abiarazi duen orria atzeko planoan egon da luzaroan; beraz, aurrez kargatutako orria baztertu da."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusTriggerBackgrounded": {
-    "message": "Errendatzea abiarazi duen orria atzeko planoan dago; beraz, aurrez kargatutako orria baztertu da."
-  },
-  "panels/application/preloading/components/PreloadingDetailsReportView.ts | prerenderFinalStatusUaChangeRequiresReload": {
-    "message": "Errendatu aurreko nabigazioan erabiltzaile-agentea aldatu da."
-  },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Xehetasun gehiago lortzeko, hautatu elementu bat"
   },
@@ -4351,6 +4261,78 @@
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Egoera"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchEvicted": {
+    "message": "Aurretiko eskuratzea baztertu, eta berriago batekin ordeztu da, |kPrefetchNewLimits| gaituta dagoelako"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedIneligibleRedirect": {
+    "message": "Aurretiko eskuratzea birbideratu egin da, baina birbideratze URLak ez ditu betetzen aurrez eskuratzeko baldintzak."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedInvalidRedirect": {
+    "message": "Aurretiko eskuratzea birbideratu egin da, baina arazo bat izan da birbideratzearekin."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedMIMENotSupported": {
+    "message": "Aurretiko eskuratzeak huts egin du, erantzunaren eduki motaren goiburua ez delako onartzen."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNetError": {
+    "message": "Aurretiko eskuratzeak huts egin du, sareko errore bat dela eta."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
+    "message": "Aurretiko eskuratzeak huts egin du, 2xx ez den egoera-kode bat daukan HTTP erantzun batengatik."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
+    "message": "Ez da aurrez eskuratu, abiarazi duen orriak aurretiko eskuratze gehiegi dituelako jada."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
+    "message": "Aurrez jatorrira egindako aurretiko eskuratze batekin HTTP 503 erantzuna jaso da, ondoren berriro saiatzeko goiburu batekin. Oraindik ez da igaro zehaztutako denbora."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsPrivacyDecoy": {
+    "message": "URLak ez ditu betetzen aurrez eskuratzeko baldintzak, jatorri horretan erregistratutako service worker bat edo beste webgune bateko cookieak daudelako, eta, hala eta guztiz ere, aurretiko eskuratzea sarean jarri delako eta ez delako erabili, lehendik erabiltzaileak jatorriarekiko harremanen bat duela ezkutatzeko."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchIsStale": {
+    "message": "Denbora gehiegi igaro da aurretik eskuratzeko prozesua osatu denetik emaitza erabili den arte; beraz, baztertu egin da aurretik eskuratutako emaitza."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBatterySaverEnabled": {
+    "message": "Ez da aurrez eskuratu, Bateria-aurreztailea gaituta dagoelako."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleBrowserContextOffTheRecord": {
+    "message": "Ez da aurrez eskuratu, arakatzailea ezkutuko moduan edo gonbidatu moduan dagoelako."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleDataSaverEnabled": {
+    "message": "Ez da aurrez eskuratu, sistema eragilea datu-aurreztailearen moduan dagoelako."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleExistingProxy": {
+    "message": "URLak ez ditu betetzen aurrez eskuratzeko baldintzak, sarearen testuinguru lehenetsian proxy-zerbitzari bat erabiltzeko konfiguratuta dagoelako."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleHostIsNonUnique": {
+    "message": "URLak ez ditu betetzen aurrez eskuratzeko baldintzak, ostalaria ez delako esklusiboa (adibidez, publikoki bideraezina den IP helbide bat edo erregistroaren bidez kontrolatu gabeko ostalari-izen bat) eta aurretiko eskuratzea proxy bidez egin behar zelako."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleNonDefaultStoragePartition": {
+    "message": "URLak ez ditu betetzen aurrez eskuratzeko baldintzak, lehenetsia ez den biltegi-partizio bat darabilelako."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
+    "message": "Ez da aurrez eskuratu, aurrez kargatzeko aukera desgaituta zegoelako."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
+    "message": "URLak ez ditu betetzen aurrez eskuratzeko baldintzak, sarearen testuinguru lehenetsia ezin delako konfiguratu aurrez eskuratzeko proxya erabiltzeko webgune bereko eta jatorri desberdineko aurretiko eskuratzeen kasuan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSchemeIsNotHttps": {
+    "message": "URLak ez ditu betetzen aurrez eskuratzeko baldintzak, https: ez den eskema bat daukalako."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasCookies": {
+    "message": "URLak ez ditu betetzen aurrez eskuratzeko baldintzak, beste webgune batekoa delako eta erabiltzaileak jatorri horretako cookieak dauzkalako."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleUserHasServiceWorker": {
+    "message": "URLak ez ditu betetzen aurrez eskuratzeko baldintzak, jatorri horretan service worker bat dagoelako erregistratuta, eta hori ez delako onartzen une honetan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedCookiesChanged": {
+    "message": "Ez da erabili aurretik eskuratutako emaitza, beste webgune batetik eskuratu delako, eta aurretik eskuratzeko prozesua abian zen bitartean cookieak gehitu zaizkiolako URLari; ondorioz, aurretik eskuratutako emaitza zaharkituta dago."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchNotUsedProbeFailed": {
+    "message": "Interneteko zerbitzu-hornitzaileak edo sarearen administratzaileak blokeatu du aurretiko eskuratzea."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
+    "message": "Sareko errore bat gertatu da aurretik eskuratzeko proxyarekiko konexioa konfiguratzean."
   },
   "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
     "message": "Sakatu hau elementuen panela ager dadin"
@@ -4390,6 +4372,9 @@
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
     "message": "Aurrez eskuratutako {PH1} baliabide erabiltzen dira orrian"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
+    "message": "Aurrez kargatzeko aukera erabili da orri honetan"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Orria aurrez errendatu da"
@@ -4994,8 +4979,14 @@
   "panels/coverage/CoverageListView.ts | usageVisualization": {
     "message": "Erabileraren ikuspegia"
   },
+  "panels/coverage/CoverageView.ts | activationNoCapture": {
+    "message": "Ezin izan da kapturatu estaldurari buruzko informazioa, orria aurrez errendatu delako atzeko planoan."
+  },
   "panels/coverage/CoverageView.ts | all": {
     "message": "Guztiak"
+  },
+  "panels/coverage/CoverageView.ts | bfcacheNoCapture": {
+    "message": "Ezin izan da kapturatu estaldurari buruzko informazioa, aurreko orria cachean gordetzeko eginbidearen bidez eman delako orria."
   },
   "panels/coverage/CoverageView.ts | chooseCoverageGranularityPer": {
     "message": "Aukeratu estalduraren xehetasun-maila: funtzioaren arabera aukeratuz gero, gainkarga txikia izango da; blokearen arabera aukeratuz gero, berriz, handia."
@@ -5036,6 +5027,9 @@
   "panels/coverage/CoverageView.ts | perFunction": {
     "message": "Funtzioaren arabera"
   },
+  "panels/coverage/CoverageView.ts | reloadPrompt": {
+    "message": "Sakatu berriro kargatzeko botoia {PH1} berriro kargatzeko eta estaldura lortzeko."
+  },
   "panels/coverage/CoverageView.ts | sOfSSUsedSoFarSUnused": {
     "message": "{PH1} / {PH2} (% {PH3}) erabili dira oraingoz. {PH4} erabili gabe dago."
   },
@@ -5047,6 +5041,9 @@
   },
   "panels/coverage/coverage-meta.ts | instrumentCoverage": {
     "message": "Aktibatu estaldura"
+  },
+  "panels/coverage/coverage-meta.ts | reloadPage": {
+    "message": "Kargatu berriro orria"
   },
   "panels/coverage/coverage-meta.ts | showCoverage": {
     "message": "Erakutsi estaldura"
@@ -5670,7 +5667,7 @@
     "message": "Kopiatu da arbelean"
   },
   "panels/elements/StylesSidebarPane.ts | copyAllCSSChanges": {
-    "message": "Kopiatu CSSan egindako aldaketa guztiak"
+    "message": "Kopiatu CSSko aldaketak"
   },
   "panels/elements/StylesSidebarPane.ts | cssPropertyName": {
     "message": "CSS propietatearen izena: {PH1}"
@@ -7175,9 +7172,6 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Hardware-aldiberekotasuna ez aplikatzeko aukera gaituta dago"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyValue": {
-    "message": "navigator.hardwareConcurrency-ren balioa"
-  },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Ez moteldu"
   },
@@ -8540,6 +8534,9 @@
   "panels/network/components/RequestTrustTokensView.ts | success": {
     "message": "Lortu da"
   },
+  "panels/network/components/RequestTrustTokensView.ts | theKeysForThisPSTIssuerAreUnavailable": {
+    "message": "PST honen jaulkitzailearen gakoak ez daude erabilgarri. Baliteke Chrome-ren erregistro-prozesuaren bidez erregistratu behar izatea jaulkitzailea."
+  },
   "panels/network/components/RequestTrustTokensView.ts | theOperationFailedForAnUnknown": {
     "message": "Eragiketak huts egin du arrazoi ezezagun batengatik."
   },
@@ -9335,6 +9332,12 @@
   "panels/profiler/profiler-meta.ts | stopRecordingHeapAllocations": {
     "message": "Utzi memoriaren esleipenak erregistratzeari"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorHidden": {
+    "message": "CDPren aginduen editorea ezkutatuta dago"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | CDPCommandEditorShown": {
+    "message": "CDPren aginduen editorea ikusgai dago"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | clearAll": {
     "message": "Garbitu guztiak"
   },
@@ -9346,6 +9349,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | filter": {
     "message": "Iragazi"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | hideCDPCommandEditor": {
+    "message": "Ezkutatu CDPren aginduen editorea"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | method": {
     "message": "Metodoa"
@@ -9379,6 +9385,9 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | session": {
     "message": "Saioa"
+  },
+  "panels/protocol_monitor/ProtocolMonitor.ts | showCDPCommandEditor": {
+    "message": "Erakutsi CDPren aginduen editorea"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | target": {
     "message": "Helburua"
@@ -11701,9 +11710,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | thread": {
     "message": "Haria"
-  },
-  "panels/timeline/TimelineFlameChartNetworkDataProvider.ts | network": {
-    "message": "Sarea"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH1} ({PH2})"

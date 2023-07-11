@@ -79,6 +79,7 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
 
     this.loader = SDK.PageResourceLoader.PageResourceLoader.instance();
     this.loader.addEventListener(SDK.PageResourceLoader.Events.Update, this.update, this);
+    this.update();
   }
 
   override async doUpdate(): Promise<void> {

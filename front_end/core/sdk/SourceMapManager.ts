@@ -141,8 +141,7 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
                         }
                         return sourceMap;
                       },
-                      error => {
-                        Common.Console.Console.instance().warn(`DevTools failed to load source map: ${error.message}`);
+                      () => {
                         if (this.#clientData.get(client) === clientData) {
                           this.dispatchEventToListeners(Events.SourceMapFailedToAttach, {client});
                         }

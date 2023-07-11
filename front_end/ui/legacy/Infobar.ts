@@ -18,9 +18,9 @@ const UIStrings = {
    */
   dontShowAgain: 'Don\'t show again',
   /**
-   *@description Text that is usually a hyperlink to more documentation
+   *@description Text that indicates that a short message can be expanded to a detailed message
    */
-  learnMore: 'Learn more',
+  showMore: 'Show more',
   /**
    *@description Text to close something
    */
@@ -105,7 +105,7 @@ export class Infobar {
 
     this.closeContainer = this.mainRow.createChild('div', 'infobar-close-container');
     this.toggleElement = createTextButton(
-        i18nString(UIStrings.learnMore), this.onToggleDetails.bind(this), 'link-style devtools-link hidden');
+        i18nString(UIStrings.showMore), this.onToggleDetails.bind(this), 'link-style devtools-link hidden');
     this.toggleElement.setAttribute('role', 'link');
     this.closeContainer.appendChild(this.toggleElement);
     this.closeButton = this.closeContainer.createChild('div', 'close-button', 'dt-close-button');

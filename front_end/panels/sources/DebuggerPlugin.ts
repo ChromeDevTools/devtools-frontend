@@ -69,10 +69,6 @@ const UIStrings = {
    */
   configure: 'Configure',
   /**
-   *@description Text in Debugger Plugin of the Sources panel
-   */
-  sourceMapFoundButIgnoredForFile: 'Source map found, but ignored for file on ignore list.',
-  /**
    *@description Text to add a breakpoint
    */
   addBreakpoint: 'Add breakpoint',
@@ -119,7 +115,7 @@ const UIStrings = {
   /**
    *@description Text in Debugger Plugin of the Sources panel
    */
-  sourceMapDetected: 'Source map detected.',
+  sourceMapLoaded: 'Source map loaded.',
   /**
    *@description Title of the Filtered List WidgetProvider of Quick Open
    *@example {Ctrl+P Ctrl+O} PH1
@@ -134,6 +130,36 @@ const UIStrings = {
    *@description Text in Debugger Plugin of the Sources panel
    */
   theDebuggerWillSkipStepping: 'The debugger will skip stepping through this script, and will not stop on exceptions.',
+  /**
+   *@description Text in Debugger Plugin of the Sources panel
+   */
+  sourceMapSkipped: 'Source map skipped for this file.',
+  /**
+   *@description Text in Debugger Plugin of the Sources panel
+   */
+  sourceMapFailed: 'Source map failed to load.',
+  /**
+   *@description Text in Debugger Plugin of the Sources panel
+   */
+  debuggingPowerReduced: 'DevTools can\'t show authored sources, but you can debug the deployed code.',
+  /**
+   *@description Text in Debugger Plugin of the Sources panel
+   */
+  reloadForSourceMap: 'To enable again, make sure the file isn\'t on the ignore list and reload.',
+  /**
+   *@description Text in Debugger Plugin of the Sources panel
+   *@example {http://site.com/lib.js.map} PH1
+   *@example {HTTP error: status code 404, net::ERR_UNKNOWN_URL_SCHEME} PH2
+   */
+  errorLoading: 'Error loading url {PH1}: {PH2}',
+  /**
+   *@description Text in Debugger Plugin of the Sources panel
+   */
+  ignoreScript: 'Ignore this file',
+  /**
+   *@description Text in Debugger Plugin of the Sources panel
+   */
+  ignoreContentScripts: 'Ignore extension scripts',
   /**
    *@description Error message that is displayed in UI when a file needed for debugging information for a call frame is missing
    *@example {src/myapp.debug.wasm.dwp} PH1
@@ -213,6 +239,7 @@ export class DebuggerPlugin extends Plugin {
   #scheduledFinishingActiveDialog = false;
   private missingDebugInfoBar: UI.Infobar.Infobar|null = null;
   #sourcesPanelDebuggedMetricsRecorded = false;
+  private readonly loader: SDK.PageResourceLoader.PageResourceLoader;
 
   private readonly ignoreListCallback: () => void;
 
@@ -236,6 +263,9 @@ export class DebuggerPlugin extends Plugin {
         Workspace.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
 
     this.scriptFileForDebuggerModel = new Map();
+
+    this.loader = SDK.PageResourceLoader.PageResourceLoader.instance();
+    this.loader.addEventListener(SDK.PageResourceLoader.Events.Update, this.showSourceMapInfobar, this);
 
     this.ignoreListCallback = this.showIgnoreListInfobarIfNeeded.bind(this);
     Bindings.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
@@ -380,7 +410,7 @@ export class DebuggerPlugin extends Plugin {
     if (!uiSourceCode.contentType().hasScripts()) {
       return;
     }
-    const projectType = uiSourceCode.project().type();
+
     if (!Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
             uiSourceCode)) {
       this.hideIgnoreListInfobar();
@@ -393,9 +423,6 @@ export class DebuggerPlugin extends Plugin {
 
     function unIgnoreList(): void {
       Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(uiSourceCode);
-      if (projectType === Workspace.Workspace.projectTypes.ContentScripts) {
-        Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListContentScripts();
-      }
     }
 
     const infobar =
@@ -414,11 +441,6 @@ export class DebuggerPlugin extends Plugin {
 
     infobar.createDetailsRowMessage(i18nString(UIStrings.theDebuggerWillSkipStepping));
 
-    const scriptFile =
-        this.scriptFileForDebuggerModel.size ? this.scriptFileForDebuggerModel.values().next().value : null;
-    if (scriptFile && scriptFile.hasSourceMapURL()) {
-      infobar.createDetailsRowMessage(i18nString(UIStrings.sourceMapFoundButIgnoredForFile));
-    }
     this.attachInfobar(this.ignoreListInfobar);
   }
 
@@ -1469,6 +1491,26 @@ export class DebuggerPlugin extends Plugin {
     this.attachInfobar(this.missingDebugInfoBar);
   }
 
+  private getSourceMapResource(): SDK.PageResourceLoader.PageResource|null {
+    const resourceMap = this.loader.getResourcesLoaded();
+    for (const [debuggerModel, script] of this.scriptFileForDebuggerModel.entries()) {
+      const url = script.script?.sourceMapURL;
+      if (url) {
+        const initiatorUrl = SDK.SourceMapManager.SourceMapManager.resolveRelativeSourceURL(
+            debuggerModel.target(), script.script.sourceURL);
+        const resolvedUrl = Common.ParsedURL.ParsedURL.completeURL(initiatorUrl, url);
+        if (resolvedUrl) {
+          const resource = resourceMap.get(SDK.PageResourceLoader.PageResourceLoader.makeKey(
+              resolvedUrl, script.script.createPageResourceLoadInitiator()));
+          if (resource) {
+            return resource;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   private showSourceMapInfobar(): void {
     if (this.sourceMapInfobar) {
       return;
@@ -1476,16 +1518,59 @@ export class DebuggerPlugin extends Plugin {
     if (!Common.Settings.Settings.instance().moduleSetting('jsSourceMapsEnabled').get()) {
       return;
     }
-    this.sourceMapInfobar = UI.Infobar.Infobar.create(
-        UI.Infobar.Type.Info, i18nString(UIStrings.sourceMapDetected), [],
-        Common.Settings.Settings.instance().createSetting('sourceMapInfobarDisabled', false));
-    if (!this.sourceMapInfobar) {
+
+    const resource = this.getSourceMapResource();
+    if (resource && resource.success === null) {
+      // Don't create the infobar until we know whether loading succeeded or failed.
       return;
     }
-    this.sourceMapInfobar.createDetailsRowMessage(i18nString(UIStrings.associatedFilesShouldBeAdded));
-    this.sourceMapInfobar.createDetailsRowMessage(i18nString(UIStrings.associatedFilesAreAvailable, {
-      PH1: String(UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('quickOpen.show')),
-    }));
+
+    if (!resource) {
+      this.sourceMapInfobar = UI.Infobar.Infobar.create(
+          UI.Infobar.Type.Info, i18nString(UIStrings.sourceMapSkipped), [],
+          Common.Settings.Settings.instance().createSetting('sourceMapSkippedInfobarDisabled', false));
+      if (!this.sourceMapInfobar) {
+        return;
+      }
+      this.sourceMapInfobar.createDetailsRowMessage(i18nString(UIStrings.debuggingPowerReduced));
+      this.sourceMapInfobar.createDetailsRowMessage(i18nString(UIStrings.reloadForSourceMap));
+    } else if (resource.success) {
+      this.sourceMapInfobar = UI.Infobar.Infobar.create(
+          UI.Infobar.Type.Info, i18nString(UIStrings.sourceMapLoaded), [],
+          Common.Settings.Settings.instance().createSetting('sourceMapInfobarDisabled', false));
+      if (!this.sourceMapInfobar) {
+        return;
+      }
+      this.sourceMapInfobar.createDetailsRowMessage(i18nString(UIStrings.associatedFilesShouldBeAdded));
+      this.sourceMapInfobar.createDetailsRowMessage(i18nString(UIStrings.associatedFilesAreAvailable, {
+        PH1: String(UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('quickOpen.show')),
+      }));
+    } else {
+      let text: string;
+      let delegate: () => void;
+      const ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance();
+      if (this.uiSourceCode.project().type() === Workspace.Workspace.projectTypes.ContentScripts) {
+        text = i18nString(UIStrings.ignoreContentScripts);
+        delegate = ignoreListManager.ignoreListContentScripts.bind(ignoreListManager);
+      } else {
+        text = i18nString(UIStrings.ignoreScript);
+        delegate = ignoreListManager.ignoreListUISourceCode.bind(ignoreListManager, this.uiSourceCode);
+      }
+      this.sourceMapInfobar =
+          UI.Infobar.Infobar.create(UI.Infobar.Type.Warning, i18nString(UIStrings.sourceMapFailed), [
+            {text, highlight: false, delegate, dismiss: true},
+          ]);
+      if (!this.sourceMapInfobar) {
+        return;
+      }
+      this.sourceMapInfobar.createDetailsRowMessage(i18nString(UIStrings.debuggingPowerReduced));
+      if (resource.errorMessage) {
+        this.sourceMapInfobar.createDetailsRowMessage(i18nString(UIStrings.errorLoading, {
+          PH1: Platform.StringUtilities.trimMiddle(resource.url, UI.UIUtils.MaxLengthForDisplayedURLs),
+          PH2: resource.errorMessage,
+        }));
+      }
+    }
     this.sourceMapInfobar.setCloseCallback(() => {
       this.removeInfobar(this.sourceMapInfobar);
       this.sourceMapInfobar = null;

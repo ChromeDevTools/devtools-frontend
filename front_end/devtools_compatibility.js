@@ -1198,6 +1198,7 @@ function installObjectObserve() {
     'automaticallyIgnoreListKnownThirdPartyScripts',
     'skipStackFramesPattern',
     'sourceMapInfobarDisabled',
+    'sourceMapSkippedInfobarDisabled',
     'sourcesPanelDebuggerSidebarSplitViewState',
     'sourcesPanelNavigatorSplitViewState',
     'sourcesPanelSplitSidebarRatio',

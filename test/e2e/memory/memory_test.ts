@@ -27,6 +27,7 @@ import {
   findSearchResult,
   getDataGridRows,
   navigateToMemoryTab,
+  setClassFilter,
   setSearchFilter,
   takeAllocationProfile,
   takeAllocationTimelineProfile,
@@ -301,5 +302,100 @@ describe('The Memory Panel', async function() {
     void takeAllocationTimelineProfile({recordStacks: false});
     const dropdown = await waitFor('select[aria-label="Perspective"]');
     await waitForNoElementsWithTextContent('Allocation', dropdown);
+  });
+
+  it('shows object source links in snapshot', async () => {
+    const {target, frontend} = getBrowserAndPages();
+    await target.evaluate(`
+        class MyTestClass {
+          constructor() {
+            this.z = new Uint32Array(1e6);  // Pull the class to top.
+            this.myFunction = () => 42;
+          }
+        };
+        function* MyTestGenerator() {
+          yield 1;
+        }
+        class MyTestClass2 {}
+        window.myTestClass = new MyTestClass();
+        window.myTestGenerator = MyTestGenerator();
+        window.myTestClass2 = new MyTestClass2();
+        //# sourceURL=my-test-script.js`);
+    await navigateToMemoryTab();
+    await takeHeapSnapshot();
+    await setClassFilter('MyTest');
+    await waitForNonEmptyHeapSnapshotData();
+
+    const expectedEntries = [
+      {constructor: 'MyTestClass', link: 'my-test-script.js:3'},
+      {constructor: 'MyTestClass', prop: 'myFunction', link: 'my-test-script.js:5'},
+      {constructor: 'MyTestGenerator', link: 'my-test-script.js:8'},
+      {constructor: 'MyTestClass2', link: 'my-test-script.js:11'},
+    ];
+
+    const rows = await getDataGridRows('.data-grid');
+    for (const entry of expectedEntries) {
+      let row: puppeteer.ElementHandle<Element>|null = null;
+      // Find the row with the desired constructor.
+      for (const r of rows) {
+        const constructorName = await waitForFunction(() => r.evaluate(e => e.firstChild?.textContent));
+        if (entry.constructor === constructorName) {
+          row = r;
+          break;
+        }
+      }
+      assertNotNullOrUndefined(row);
+      // Expand the constructor sub-tree.
+      await clickElement(row);
+      await frontend.keyboard.press('ArrowRight');
+      // Get the object subtree/child.
+      const {objectElement, objectName} = await waitForFunction(async () => {
+        const objectElement =
+            await row?.evaluateHandle(e => e.nextSibling) as puppeteer.ElementHandle<HTMLElement>| null;
+        const objectName = await objectElement?.evaluate(e => e.querySelector('.object-value-object')?.textContent);
+        if (!objectName) {
+          return undefined;
+        }
+        return {objectElement, objectName};
+      });
+      let element = objectElement;
+      assertNotNullOrUndefined(element);
+      // Verify we have the object with the matching name.
+      assert.strictEqual(objectName, entry.constructor);
+      // Get the right property of the object if required.
+      if (entry.prop) {
+        // Expand the object.
+        await clickElement(element);
+        await frontend.keyboard.press('ArrowRight');
+        // Try to find the property.
+        element = await waitForFunction(async () => {
+          let row = element;
+          while (row) {
+            const nextRow = await row.evaluateHandle(e => e.nextSibling) as puppeteer.ElementHandle<HTMLElement>| null;
+            if (!nextRow) {
+              return undefined;
+            }
+            row = nextRow;
+            const text = await row.evaluate(e => e.querySelector('.property-name')?.textContent);
+            // If we did not find any text at all, then we saw all properties. Let us fail/retry here.
+            if (!text) {
+              return undefined;
+            }
+            // If we found the property, we are done.
+            if (text === entry.prop) {
+              return row;
+            }
+            // Continue looking for the property on the next row.
+          }
+          return undefined;
+        });
+        assertNotNullOrUndefined(element);
+      }
+
+      // Verify the link to the source code.
+      const linkText =
+          await waitForFunction(async () => element?.evaluate(e => e.querySelector('.devtools-link')?.textContent));
+      assert.strictEqual(linkText, entry.link);
+    }
   });
 });

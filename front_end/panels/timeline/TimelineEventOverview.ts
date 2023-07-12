@@ -357,7 +357,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
   }
 
   private drawFrames(imageWidth: number, imageHeight: number): void {
-    if (!imageWidth || !this.model) {
+    if (!imageWidth) {
       return;
     }
     if (!this.#filmStrip || this.#filmStrip.frames.length < 1) {

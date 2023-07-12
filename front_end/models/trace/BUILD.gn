@@ -38,6 +38,7 @@ devtools_entrypoint("bundle") {
     "../../panels/recorder/*",
     "../../panels/timeline/*",
     "../../services/tracing/*",
+    "../../ui/components/docs/*",
     "../timeline_model/*",
   ]
 

@@ -60,18 +60,16 @@ export class TraceLoader {
     // Required URLs differ across the component server and the unit tests, so try both.
     const urlForTest = new URL(`/fixtures/traces/${name}`, window.location.origin);
     const urlForComponentExample = new URL(`/test/unittests/fixtures/traces/${name}`, window.location.origin);
-    try {
-      // Attempt to fetch file from unit test server.
-      const contents = await loadTraceFileFromURL(urlForTest);
-      fileContentsCache.set(name, contents);
-      return contents;
-    } catch (e) {
-      // If file wasn't found on test server, attempt a fetch from
-      // component server.
+
+    if (window.location.pathname.includes('ui/components/docs') ||
+        window.location.pathname.includes('ui\\components\\docs')) {
       const contents = await loadTraceFileFromURL(urlForComponentExample);
       fileContentsCache.set(name, contents);
       return contents;
     }
+    const contents = await loadTraceFileFromURL(urlForTest);
+    fileContentsCache.set(name, contents);
+    return contents;
   }
 
   /**

@@ -10,6 +10,7 @@ ts_library("ts") {
   sources = [
     "basic.ts",
     "flamechart.ts",
+    "overview.ts",
     "track_example.ts",
   ]
   deps = [
@@ -18,6 +19,7 @@ ts_library("ts") {
     "../../../../core/sdk:bundle",
     "../../../../models/bindings:bundle",
     "../../../../models/timeline_model:bundle",
+    "../../../../models/trace:bundle",
     "../../../../models/workspace:bundle",
     "../../../../panels/timeline:bundle",
     "../../../legacy:bundle",
@@ -31,6 +33,7 @@ copy_to_gen("performance_panel") {
   sources = [
     "basic.html",
     "flamechart.html",
+    "overview.html",
     "track_example.html",
   ]
 

@@ -5,6 +5,7 @@ Version: 0.4.4
 License: MIT
 License File: package/LICENSE.md
 Security Critical: no
+Shipped: yes
 
 Description:
 Documentation, sample and data for using VS Code's HTML/CSS custom data format.

@@ -5,6 +5,7 @@ Version: 0.1
 License: Apache 2.0
 License File: LICENSE
 Security Critical: No
+Shipped: no
 Description:
   TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.
   This package includes TypeScript integration into Ninja.

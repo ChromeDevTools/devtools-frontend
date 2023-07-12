@@ -5,6 +5,7 @@ Version: 2.4.1
 License: BSD-3
 License File: LICENSE
 Security Critical: no
+Shipped: yes
 
 Description:
 Lit is a simple library for building fast, lightweight web components.

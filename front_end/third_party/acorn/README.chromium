@@ -5,6 +5,7 @@ Version: 8.10.0
 License: MIT
 License File: package/LICENSE
 Security Critical: no
+Shipped: yes
 
 Description:
 A tiny, fast JavaScript parser written in JavaScript.

@@ -2,6 +2,8 @@ Name: Lighthouse
 Short Name: lighthouse
 URL: github.com/GoogleChrome/lighthouse
 License: Apache License 2.0
+License File: LICENSE
 Security Critical: no
+Shipped: yes
 
 This directory contains Chromium's version of the lighthouse report assets, including renderer.

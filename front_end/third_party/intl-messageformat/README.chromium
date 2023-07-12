@@ -3,7 +3,9 @@ Short Name: intl-messageformat
 URL: https://github.com/formatjs/formatjs
 Version: 9.8.0
 License: New BSD
+License File: LICENSE
 Security Critical: no
+Shipped: yes
 
 Description:
 Formats ICU Message strings with number, date, plural, and select placeholders to create localized messages.

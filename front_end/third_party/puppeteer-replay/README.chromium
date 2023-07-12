@@ -5,6 +5,7 @@ Version: 2.13.1
 License: Apache-2.0
 License File: package/LICENSE
 Security Critical: no
+Shipped: yes
 
 Description:
 @puppeteer/replay is a Node library which provides a high-level API to replay Chrome DevTools recordings.

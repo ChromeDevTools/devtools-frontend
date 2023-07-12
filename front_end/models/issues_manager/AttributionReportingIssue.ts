@@ -22,6 +22,8 @@ export const enum IssueCode {
   InvalidRegisterOsSourceHeader = 'AttributionReportingIssue::InvalidRegisterOsSourceHeader',
   InvalidRegisterOsTriggerHeader = 'AttributionReportingIssue::InvalidRegisterOsTriggerHeader',
   WebAndOsHeaders = 'AttributionReportingIssue::WebAndOsHeaders',
+  NavigationRegistrationWithoutTransientUserActivation =
+      'AttributionReportingIssue::NavigationRegistrationWithoutTransientUserActivation',
   Unknown = 'AttributionReportingIssue::Unknown',
 }
 
@@ -53,6 +55,8 @@ function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails)
       return IssueCode.InvalidRegisterOsTriggerHeader;
     case Protocol.Audits.AttributionReportingIssueType.WebAndOsHeaders:
       return IssueCode.WebAndOsHeaders;
+    case Protocol.Audits.AttributionReportingIssueType.NavigationRegistrationWithoutTransientUserActivation:
+      return IssueCode.NavigationRegistrationWithoutTransientUserActivation;
     default:
       return IssueCode.Unknown;
   }
@@ -157,6 +161,11 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
           file: 'arOsTriggerIgnored.md',
           links: [structuredHeaderLink],
         };
+      case IssueCode.NavigationRegistrationWithoutTransientUserActivation:
+        return {
+          file: 'arNavigationRegistrationWithoutTransientUserActivation.md',
+          links: [],
+        };
       case IssueCode.Unknown:
         return null;
     }
@@ -181,6 +190,7 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
       case IssueCode.TriggerIgnored:
       case IssueCode.OsSourceIgnored:
       case IssueCode.OsTriggerIgnored:
+      case IssueCode.NavigationRegistrationWithoutTransientUserActivation:
       case IssueCode.Unknown:
         return IssueKind.PageError;
     }

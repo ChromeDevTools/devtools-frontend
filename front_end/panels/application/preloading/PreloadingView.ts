@@ -8,11 +8,12 @@ import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Common from '../../../core/common/common.js';
 import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
+import * as SplitView from '../../../ui/components/split_view/split_view.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import * as PreloadingComponents from './components/components.js';
 import type * as PreloadingHelper from './helper/helper.js';
@@ -213,31 +214,6 @@ class PreloadingUIUtils {
   }
 }
 
-function makeHsplit(
-    left: LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox>,
-    right: LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox>): UI.SplitWidget.SplitWidget {
-  const leftContainer = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, left);
-  leftContainer.setMinimumSize(0, 40);
-  leftContainer.contentElement.classList.add('overflow-auto');
-
-  const rightContainer = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.VBox, right);
-  rightContainer.setMinimumSize(0, 80);
-  rightContainer.contentElement.classList.add('overflow-auto');
-
-  const hsplit = new UI.SplitWidget.SplitWidget(
-      /* isVertical */ false,
-      /* secondIsSidebar */ true,
-      /* settingName */ undefined,
-      /* defaultSidebarWidth */ 400,
-      /* defaultSidebarHeight */ undefined,
-      /* constraintsInDip */ undefined,
-  );
-  hsplit.setMainWidget(leftContainer);
-  hsplit.setSidebarWidget(rightContainer);
-
-  return hsplit;
-}
-
 export class PreloadingRuleSetView extends UI.Widget.VBox {
   private model: SDK.PreloadingModel.PreloadingModel;
   private focusedRuleSetId: Protocol.Preload.RuleSetId|null = null;
@@ -245,7 +221,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
 
   private readonly warningsContainer: HTMLDivElement;
   private readonly warningsView = new PreloadingWarningsView();
-  private readonly hsplit: UI.SplitWidget.SplitWidget;
+  private readonly hsplit: SplitView.SplitView.SplitView;
   private readonly ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
   private readonly ruleSetDetails = new PreloadingComponents.RuleSetDetailsReportView.RuleSetDetailsReportView();
 
@@ -279,8 +255,18 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     this.warningsView.show(this.warningsContainer);
 
     this.ruleSetGrid.addEventListener('cellfocused', this.onRuleSetsGridCellFocused.bind(this));
-    this.hsplit = makeHsplit(this.ruleSetGrid, this.ruleSetDetails);
-    this.hsplit.show(this.contentElement);
+    LitHtml.render(
+        LitHtml.html`
+        <${SplitView.SplitView.SplitView.litTagName} .horizontal=${true} style="--min-sidebar-size: 0px">
+          <div slot="main" class="overflow-auto" style="height: 100%">
+            ${this.ruleSetGrid}
+          </div>
+          <div slot="sidebar" class="overflow-auto" style="height: 100%">
+            ${this.ruleSetDetails}
+          </div>
+        </${SplitView.SplitView.SplitView.litTagName}>`,
+        this.contentElement, {host: this});
+    this.hsplit = this.contentElement.querySelector('devtools-split-view') as SplitView.SplitView.SplitView;
   }
 
   override wasShown(): void {
@@ -304,9 +290,9 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     this.ruleSetDetails.data = ruleSet;
 
     if (ruleSet === null) {
-      this.hsplit.hideSidebar();
+      this.hsplit.style.setProperty('--current-main-area-size', '100%');
     } else {
-      this.hsplit.showBoth();
+      this.hsplit.style.setProperty('--current-main-area-size', '60%');
     }
   }
 
@@ -396,8 +382,17 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
     toolbar.appendToolbarItem(this.ruleSetSelector.item());
 
     this.preloadingGrid.addEventListener('cellfocused', this.onPreloadingGridCellFocused.bind(this));
-    const hsplit = makeHsplit(this.preloadingGrid, this.preloadingDetails);
-    hsplit.show(vbox.contentElement);
+    LitHtml.render(
+        LitHtml.html`
+        <${SplitView.SplitView.SplitView.litTagName} .horizontal=${true} style="--min-sidebar-size: 0px">
+          <div slot="main" class="overflow-auto" style="height: 100%">
+            ${this.preloadingGrid}
+          </div>
+          <div slot="sidebar" class="overflow-auto" style="height: 100%">
+            ${this.preloadingDetails}
+          </div>
+        </${SplitView.SplitView.SplitView.litTagName}>`,
+        vbox.contentElement, {host: this});
 
     vbox.show(this.contentElement);
   }

@@ -89,6 +89,7 @@ devtools_module("application") {
     "../../ui/components/expandable_list:bundle",
     "../../ui/components/legacy_wrapper:bundle",
     "../../ui/components/report_view:bundle",
+    "../../ui/components/split_view:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/cookie_table:bundle",
     "../../ui/legacy/components/data_grid:bundle",

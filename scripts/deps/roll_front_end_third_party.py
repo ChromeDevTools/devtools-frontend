@@ -156,7 +156,7 @@ for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
             f'{folder_name}-tsconfig.json',
         ] + [
             name
-            for name in members if name.startswith(f'package/{package_root}')
+            for name in members if name.startswith(f'package/{package_root}/')
             and name not in excluded_sources and
             (name.endswith('.js') or name.endswith('.js.map')
              or name.endswith('.d.ts') or name.endswith('.d.ts.map'))
@@ -164,15 +164,14 @@ for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
 
     # Update devtools_grd_files.gni
     update_gn_var(
-        './config/gni/devtools_grd_files.gni',
-        'grd_files_debug_sources', [
+        './config/gni/devtools_grd_files.gni', 'grd_files_debug_sources', [
             f'front_end/third_party/{folder_name}/' + name
-            for name in members if name.startswith(f'package/{package_root}')
+            for name in members if name.startswith(f'package/{package_root}/')
             and name not in excluded_sources and name.endswith('.js')
         ] + [
             name for name in read_gn_var('./config/gni/devtools_grd_files.gni',
                                          'grd_files_debug_sources')
-            if not name.startswith(f'front_end/third_party/{folder_name}')
+            if not name.startswith(f'front_end/third_party/{folder_name}/')
         ])
 
     # Update README.chromium
@@ -181,8 +180,8 @@ for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
 
     tar.close()
 
+    subprocess.check_call(['git', 'cl', 'format'], cwd=DEVTOOLS_PATH)
     if args.upload_cl:
-        subprocess.check_call(['git', 'cl', 'format'], cwd=DEVTOOLS_PATH)
         subprocess.check_call(['git', 'add', '-A'], cwd=DEVTOOLS_PATH)
         subprocess.check_call(
             ['git', 'commit', '-m', f'Update {package_name} to {version}'],

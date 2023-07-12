@@ -181,6 +181,14 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     return this.windowInternal;
   }
 
+  minimumRecordTime(): number {
+    return this.timelineModelInternal.minimumRecordTime();
+  }
+
+  maximumRecordTime(): number {
+    return this.timelineModelInternal.maximumRecordTime();
+  }
+
   private autoWindowTimes(): void {
     const timelineModel = this.timelineModelInternal;
     let tasks: TraceEngine.Legacy.Event[] = [];

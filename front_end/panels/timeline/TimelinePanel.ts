@@ -493,8 +493,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (!this.performanceModel) {
       return;
     }
-    const left = event.data.startTime;
-    const right = event.data.endTime;
+
+    const left = (event.data.startTime > 0) ? event.data.startTime : this.performanceModel.minimumRecordTime();
+    const right = Number.isFinite(event.data.endTime) ? event.data.endTime : this.performanceModel.maximumRecordTime();
     this.performanceModel.setWindow({left, right}, /* animate */ true);
   }
 

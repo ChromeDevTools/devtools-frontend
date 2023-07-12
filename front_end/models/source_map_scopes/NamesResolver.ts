@@ -206,16 +206,22 @@ const enum Punctuation {
   Equals = 'equals',
 }
 
-const resolveScope =
-    async(scope: SDK.DebuggerModel
-              .ScopeChainEntry): Promise<{variableMapping: Map<string, string>, thisMapping: string | null}> => {
-  const scopeChain = await findScopeChainForDebuggerScope(scope);
-  const parsedScope = scopeChain.pop();
+const resolveDebuggerScope = async(scope: SDK.DebuggerModel.ScopeChainEntry):
+    Promise<{variableMapping: Map<string, string>, thisMapping: string | null}> => {
+      const script = scope.callFrame().script;
+      const scopeChain = await findScopeChainForDebuggerScope(scope);
+      return resolveScope(script, scopeChain);
+    };
+
+const resolveScope = async(
+    script: SDK.Script.Script,
+    scopeChain: Formatter.FormatterWorkerPool
+        .ScopeTreeNode[]): Promise<{variableMapping: Map<string, string>, thisMapping: string | null}> => {
+  const parsedScope = scopeChain[scopeChain.length - 1];
   if (!parsedScope) {
     return {variableMapping: new Map<string, string>(), thisMapping: null};
   }
   let cachedScopeMap = scopeToCachedIdentifiersMap.get(parsedScope);
-  const script = scope.callFrame().script;
   const sourceMap = script.debuggerModel.sourceMapManager().sourceMapForClient(script);
 
   if (!cachedScopeMap || cachedScopeMap.sourceMap !== sourceMap) {
@@ -260,7 +266,7 @@ const resolveScope =
             promises.push(resolvePosition());
           };
 
-          const parsedVariables = await scopeIdentifiers(script, parsedScope, scopeChain);
+          const parsedVariables = await scopeIdentifiers(script, parsedScope, scopeChain.slice(0, -1));
           if (!parsedVariables) {
             return {variableMapping, thisMapping};
           }
@@ -395,7 +401,7 @@ export const allVariablesInCallFrame = async(callFrame: SDK.DebuggerModel.CallFr
   }
 
   const scopeChain = callFrame.scopeChain();
-  const nameMappings = await Promise.all(scopeChain.map(resolveScope));
+  const nameMappings = await Promise.all(scopeChain.map(resolveDebuggerScope));
   const reverseMapping = new Map<string, string>();
   for (const {variableMapping} of nameMappings) {
     for (const [compiledName, originalName] of variableMapping) {
@@ -405,6 +411,34 @@ export const allVariablesInCallFrame = async(callFrame: SDK.DebuggerModel.CallFr
     }
   }
   cachedMapByCallFrame.set(callFrame, reverseMapping);
+  return reverseMapping;
+};
+
+export const allVariablesAtPosition = async(location: SDK.DebuggerModel.Location): Promise<Map<string, string>> => {
+  const reverseMapping = new Map<string, string>();
+  const script = location.script();
+  if (!script) {
+    return reverseMapping;
+  }
+
+  const scopeTreeAndText = await computeScopeTree(script);
+  if (!scopeTreeAndText) {
+    return reverseMapping;
+  }
+
+  const {scopeTree, text} = scopeTreeAndText;
+  const locationOffset = text.offsetFromPosition(location.lineNumber, location.columnNumber);
+  const scopeChain = findScopeChain(scopeTree, {start: locationOffset, end: locationOffset});
+
+  while (scopeChain.length > 0) {
+    const {variableMapping} = await resolveScope(script, scopeChain);
+    for (const [compiledName, originalName] of variableMapping) {
+      if (originalName && !reverseMapping.has(originalName)) {
+        reverseMapping.set(originalName, compiledName);
+      }
+    }
+    scopeChain.pop();
+  }
   return reverseMapping;
 };
 
@@ -494,7 +528,7 @@ export const resolveThisObject =
     return callFrame.thisObject();
   }
 
-  const {thisMapping} = await resolveScope(scopeChain[0]);
+  const {thisMapping} = await resolveDebuggerScope(scopeChain[0]);
   if (!thisMapping) {
     return callFrame.thisObject();
   }
@@ -580,7 +614,7 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
   override async getAllProperties(accessorPropertiesOnly: boolean, generatePreview: boolean):
       Promise<SDK.RemoteObject.GetPropertiesResult> {
     const allProperties = await this.object.getAllProperties(accessorPropertiesOnly, generatePreview);
-    const {variableMapping} = await resolveScope(this.scope);
+    const {variableMapping} = await resolveDebuggerScope(this.scope);
 
     const properties = allProperties.properties;
     const internalProperties = allProperties.internalProperties;
@@ -601,7 +635,7 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
   }
 
   override async setPropertyValue(argumentName: string|Protocol.Runtime.CallArgument, value: string): Promise<string|undefined> {
-    const {variableMapping} = await resolveScope(this.scope);
+    const {variableMapping} = await resolveDebuggerScope(this.scope);
 
     let name;
     if (typeof argumentName === 'string') {

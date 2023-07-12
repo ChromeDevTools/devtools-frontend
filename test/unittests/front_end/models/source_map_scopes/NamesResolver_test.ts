@@ -416,6 +416,74 @@ describeWithMockConnection('NameResolver', () => {
 
     assert.isNull(await SourceMapScopes.NamesResolver.resolveDebuggerFrameFunctionName(callFrame));
   });
+
+  describe('allVariablesAtPosition', () => {
+    let script: SDK.Script.Script;
+
+    beforeEach(async () => {
+      const originalContent = `
+function mulWithOffset(param1, param2, offset) {
+  const intermediate = param1 * param2;
+  const result = intermediate;
+  if (offset !== undefined) {
+    const intermediate = result + offset;
+    return intermediate;
+  }
+  return result;
+}
+`;
+      const sourceMapUrl = 'file:///tmp/example.js.min.map';
+      // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map"' v5.7.0.
+      const sourceMapContent = JSON.stringify({
+        version: 3,
+        names: ['mulWithOffset', 'param1', 'param2', 'offset', 'intermediate', 'result', 'undefined'],
+        sources: ['example.js'],
+        sourcesContent: [originalContent],
+        mappings:
+            'AACA,SAASA,cAAcC,EAAQC,EAAQC,GACrC,MAAMC,EAAeH,EAASC,EAC9B,MAAMG,EAASD,EACf,GAAID,IAAWG,UAAW,CACxB,MAAMF,EAAeC,EAASF,EAC9B,OAAOC,CACT,CACA,OAAOC,CACT',
+      });
+
+      const scriptContent =
+          'function mulWithOffset(n,t,e){const f=n*t;const u=f;if(e!==undefined){const n=u+e;return n}return u}';
+      script = await backend.addScript(
+          target, {url: 'file:///tmp/bundle.js', content: scriptContent},
+          {url: sourceMapUrl, content: sourceMapContent});
+    });
+
+    it('has the right mapping on a function scope without shadowing', async () => {
+      const location = script.rawLocation(0, 30);  // Beginning of function scope.
+      assertNotNullOrUndefined(location);
+
+      const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(location);
+
+      assert.strictEqual(mapping.get('param1'), 'n');
+      assert.strictEqual(mapping.get('param2'), 't');
+      assert.strictEqual(mapping.get('offset'), 'e');
+      assert.strictEqual(mapping.get('intermediate'), 'f');
+      assert.strictEqual(mapping.get('result'), 'u');
+    });
+
+    it('has the right mapping in a block scope with shadowing in the authored code', async () => {
+      const location = script.rawLocation(0, 70);  // Beginning of block scope.
+      assertNotNullOrUndefined(location);
+
+      const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(location);
+
+      // Block scope {intermediate} shadows function scope {intermediate}.
+      assert.strictEqual(mapping.get('intermediate'), 'n');
+    });
+
+    it('has the right mapping in a block scope with shadowing in the compiled code', async () => {
+      const location = script.rawLocation(0, 70);  // Beginning of block scope.
+      assertNotNullOrUndefined(location);
+
+      const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(location);
+
+      // TODO(crbug.com/1444349): Fix shadowing of {n}.
+      //     {param1} should really be marked as "unavailable" in one form or another.
+      assert.strictEqual(mapping.get('param1'), 'n');
+    });
+  });
 });
 
 function getIdentifiersFromScopeDescriptor(source: string, scopeDescriptor: string): {

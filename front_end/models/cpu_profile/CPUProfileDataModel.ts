@@ -360,9 +360,14 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     let nodeId: number = samples[1];
     for (let sampleIndex = 1; sampleIndex < samplesCount - 1; sampleIndex++) {
       const nextNodeId = samples[sampleIndex + 1];
+      const prevNode = idToNode.get(prevNodeId);
+      const nextNode = idToNode.get(nextNodeId);
+      if (prevNodeId === undefined || nextNodeId === undefined || !prevNode || !nextNode) {
+        console.error(`Unexpectedly found undefined nodes: ${prevNodeId} ${nextNodeId}`);
+        continue;
+      }
       if (nodeId === programNodeId && !isSystemNode(prevNodeId) && !isSystemNode(nextNodeId) &&
-          bottomNode((idToNode.get(prevNodeId) as ProfileNode)) ===
-              bottomNode((idToNode.get(nextNodeId) as ProfileNode))) {
+          bottomNode(prevNode) === bottomNode(nextNode)) {
         samples[sampleIndex] = prevNodeId;
       }
       prevNodeId = nodeId;

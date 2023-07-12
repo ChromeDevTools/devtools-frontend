@@ -12,20 +12,39 @@ import * as Helpers from '../helpers/helpers.js';
 const events =
     new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ThreadID, Types.TraceEvents.TraceEventComplete[]>>();
 
-const profilesInProcess = new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ProfileID, ProfileData>>();
+const profilesInProcess = new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ThreadID, ProfileData>>();
+
+// The profile head, containing the event's metadata like its start
+// time, comes in a "Profile" event. The sample data comes in
+// "ProfileChunk" events. We match these ProfileChunks with their head
+// using process and profile ids. However, in order to integrate sample
+// data with trace data, we need the thread id that owns each profile.
+// This thread id is extracted from the head event.
+// For this reason, we have a preprocessed data structure, where events
+// are matched by profile id, which we then finish processing to export
+// events matched by thread id.
+const preprocessedData = new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ProfileID, PreprocessedData>>();
 
 let handlerState = HandlerState.UNINITIALIZED;
 
 export function buildProfileCalls(): void {
-  for (const [processId, profiles] of profilesInProcess) {
-    for (const [profileId, profileData] of profiles) {
-      if (!profileData.profile.nodes.length) {
+  for (const [processId, profiles] of preprocessedData) {
+    for (const [profileId, preProcessedData] of profiles) {
+      const threadId = preProcessedData.threadId;
+      if (!preProcessedData.rawProfile.nodes.length || !threadId) {
         continue;
       }
       const trackingStack: Partial<ProfileCall>[] = [];
-      const profileModel = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(profileData.profile);
+
+      const profileModel = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(preProcessedData.rawProfile);
+
+      const finalizedData:
+          ProfileData = {rawProfile: preProcessedData.rawProfile, parsedProfile: profileModel, profileCalls: []};
+
       profileModel.forEachFrame(openFrameCallback, closeFrameCallback);
-      Helpers.Trace.sortTraceEventsInPlace(profileData.profileCalls);
+      Helpers.Trace.sortTraceEventsInPlace(finalizedData.profileCalls);
+      const dataByThread = Platform.MapUtilities.getWithDefault(profilesInProcess, processId, () => new Map());
+      dataByThread.set(threadId, finalizedData);
 
       function openFrameCallback(
           _depth: number, node: CPUProfile.ProfileTreeModel.ProfileNode, timeStampMs: number): void {
@@ -40,6 +59,7 @@ export function buildProfileCalls(): void {
           return;
         }
         const {callFrame, ts, pid, profileId, children} = partialProfileCall;
+
         if (callFrame === undefined || ts === undefined || pid === undefined || profileId === undefined ||
             children === undefined) {
           return;
@@ -49,8 +69,7 @@ export function buildProfileCalls(): void {
         const completeProfileCall:
             ProfileCall = {callFrame, ts, pid, profileId, dur, selfTime, children, depth, nodeId: node.id};
         const parent = trackingStack.at(-1);
-        const profileData = getOrCreateProfileData(processId, profileId);
-        const calls = profileData.profileCalls;
+        const calls = finalizedData.profileCalls;
         calls.push(completeProfileCall);
         if (!parent) {
           return;
@@ -67,6 +86,7 @@ export function buildProfileCalls(): void {
 
 export function reset(): void {
   events.clear();
+  preprocessedData.clear();
   profilesInProcess.clear();
   handlerState = HandlerState.UNINITIALIZED;
 }
@@ -90,13 +110,14 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     // domain. Also convert from ms to us.
     // Note: events are collected on a different thread than what's sampled.
     // The correct process and thread ids are specified by the profile.
-    const profileData = getOrCreateProfileData(event.pid, event.id);
-    profileData.profile.startTime = event.ts;
+    const profileData = getOrCreatePreProcessedData(event.pid, event.id);
+    profileData.rawProfile.startTime = event.ts;
+    profileData.threadId = event.tid;
     return;
   }
   if (Types.TraceEvents.isTraceEventProfileChunk(event)) {
-    const profileData = getOrCreateProfileData(event.pid, event.id);
-    const cdpProfile = profileData.profile;
+    const profileData = getOrCreatePreProcessedData(event.pid, event.id);
+    const cdpProfile = profileData.rawProfile;
     const nodesAndSamples: Types.TraceEvents.TraceEventPartialProfile|undefined =
         event.args?.data?.cpuProfile || {samples: []};
     const samples = nodesAndSamples?.samples || [];
@@ -155,20 +176,21 @@ export function data(): SamplesHandlerData {
   };
 }
 
-function getOrCreateProfileData(
-    processId: Types.TraceEvents.ProcessID, profileId: Types.TraceEvents.ProfileID): ProfileData {
-  const profileById = Platform.MapUtilities.getWithDefault(profilesInProcess, processId, () => new Map());
-  return Platform.MapUtilities.getWithDefault(profileById, profileId, () => ({
-                                                                        profile: {
-                                                                          startTime: 0,
-                                                                          endTime: 0,
-                                                                          nodes: [],
-                                                                          samples: [],
-                                                                          timeDeltas: [],
-                                                                          lines: [],
-                                                                        },
-                                                                        profileCalls: [],
-                                                                      }));
+function getOrCreatePreProcessedData(
+    processId: Types.TraceEvents.ProcessID, profileId: Types.TraceEvents.ProfileID): PreprocessedData {
+  const profileById = Platform.MapUtilities.getWithDefault(preprocessedData, processId, () => new Map());
+  return Platform.MapUtilities.getWithDefault<Types.TraceEvents.ProfileID, PreprocessedData>(
+      profileById, profileId, () => ({
+                                rawProfile: {
+                                  startTime: 0,
+                                  endTime: 0,
+                                  nodes: [],
+                                  samples: [],
+                                  timeDeltas: [],
+                                  lines: [],
+                                },
+                                profileId,
+                              }));
 }
 
 export interface SamplesHandlerData {
@@ -188,6 +210,12 @@ export interface ProfileCall {
 }
 
 export type ProfileData = {
-  profile: CPUProfile.CPUProfileDataModel.ExtendedProfile,
+  rawProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile,
+  parsedProfile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel,
   profileCalls: ProfileCall[],
+};
+
+type PreprocessedData = {
+  rawProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile,
+  threadId?: Types.TraceEvents.ThreadID, profileId: Types.TraceEvents.ProfileID,
 };

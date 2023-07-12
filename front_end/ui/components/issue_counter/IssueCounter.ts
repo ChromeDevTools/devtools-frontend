@@ -82,7 +82,7 @@ export function getIssueCountsEnumeration(
 }
 
 export class IssueCounter extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`issue-counter`;
+  static readonly litTagName = LitHtml.literal`devtools-issue-counter`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #clickHandler: undefined|(() => void) = undefined;
   #tooltipCallback: undefined|(() => void) = undefined;
@@ -200,10 +200,10 @@ export class IssueCounter extends HTMLElement {
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent('issue-counter', IssueCounter);
+ComponentHelpers.CustomElements.defineComponent('devtools-issue-counter', IssueCounter);
 
 declare global {
   interface HTMLElementTagNameMap {
-    'issue-counter': IssueCounter;
+    'devtools-issue-counter': IssueCounter;
   }
 }

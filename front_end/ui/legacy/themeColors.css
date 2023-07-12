@@ -160,7 +160,6 @@
   --color-token-meta: rgb(85 85 85);
   --color-token-deleted: rgb(221 68 68);
   --color-token-inserted: rgb(34 153 34);
-  --color-token-pseudo-element: rgb(17 85 204);
 
   /* Colors used by the code editor */
   --color-secondary-cursor: #c0c0c0;
@@ -260,7 +259,6 @@
 
   --sys-color-on-base: var(--ref-palette-neutral10);
   --sys-color-on-base-divider: var(--ref-palette-primary90);
-
   /* Inverse */
 
   --sys-color-inverse-surface: var(--ref-palette-neutral20);
@@ -464,7 +462,6 @@
   --color-token-attribute: rgb(155 187 220);
   --color-token-attribute-value: rgb(242 151 102);
   --color-token-meta: rgb(221 251 85);
-  --color-token-pseudo-element: rgb(237 119 229);
 
   /* Colors used by the code editor */
   --color-secondary-cursor: rgb(63 63 63);
@@ -564,7 +561,6 @@
 
   --sys-color-on-base: var(--ref-palette-neutral90);
   --sys-color-on-base-divider: var(--ref-palette-neutral40);
-
   /* Inverse */
 
   --sys-color-inverse-surface: var(--ref-palette-neutral90);

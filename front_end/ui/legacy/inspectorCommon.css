@@ -35,7 +35,6 @@
   --legacy-selection-bg-color: var(--legacy-accent-color);
   --legacy-selection-inactive-fg-color: #5a5a5a;
   --legacy-selection-inactive-bg-color: #dadada;
-  --legacy-tab-selected-fg-color: #333;
   --legacy-divider-border: 1px solid var(--color-details-hairline);
   --legacy-focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
   --legacy-focus-ring-active-shadow: 0 0 0 1px var(--legacy-accent-color);
@@ -72,7 +71,6 @@
   --legacy-selection-fg-color: #cdcdcd;
   --legacy-selection-inactive-fg-color: #cdcdcd;
   --legacy-selection-inactive-bg-color: hsl(0deg 0% 28%);
-  --legacy-tab-selected-fg-color: #eaeaea;
   --legacy-focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
   --legacy-item-selection-bg-color: hsl(207deg 88% 22%);
   --legacy-item-selection-inactive-bg-color: #454545;
@@ -201,7 +199,7 @@ iframe.fill {
 }
 
 .view-container > .toolbar {
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .flex-auto {
@@ -1288,9 +1286,7 @@ span[is="dt-icon-label"] {
 }
 
 ::selection {
-  --override-selection-background-color: rgb(141 199 248 / 60%);
-
-  background-color: var(--override-selection-background-color);
+  background-color: var(--selection);
 }
 
 .-theme-with-dark-background *::selection,
@@ -1396,7 +1392,6 @@ input.custom-search-input::-webkit-search-cancel-button {
 }
 
 :host-context(.-theme-with-dark-background) devtools-adorner {
-  --override-adorner-background-color: rgb(var(--color-syntax-2-rgb) / 15%);
   --override-adorner-border-color: rgb(var(--color-syntax-2-rgb) / 50%);
   --override-adorner-focus-border-color: var(--color-syntax-2);
   --override-adorner-active-background-color: var(--color-syntax-8);

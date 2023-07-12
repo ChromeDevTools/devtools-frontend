@@ -10,7 +10,7 @@
   --icon-checkmark-purple: var(--color-purple-bright);
   --icon-checkmark-red: var(--color-error-bright);
   --icon-contrast-issue: var(--color-error-bright);
-  --icon-default: var(--color-on-surface-variant);
+  --icon-default: var(--sys-color-on-surface-subtle);
   --icon-default-hover: var(--color-on-surface);
   --icon-disabled: color-mix(in sRGB, var(--color-on-surface-variant) 55%, transparent);
   --icon-error: var(--color-error-bright);
@@ -40,10 +40,16 @@
   --icon-request-response: var(--color-primary-bright);
   --icon-request: var(--color-on-surface-variant);
   --icon-security-lock: var(--color-tertiary-bright);
-  --icon-css: var(--color-purple-bright);
-  --icon-css-hover: var(--color-purple);
+  --icon-css: var(--sys-color-purple-bright);
+  --icon-css-hover: var(--sys-color-purple);
   --icon-status-code-ok: var(--color-tertiary-bright);
   --icon-stop: var(--color-error-bright);
   --icon-toggled: var(--color-primary-bright);
   --icon-warning: var(--color-orange-bright);
+  --ui-text: var(--sys-color-on-surface-subtle);
+  --text-disabled: var(--ref-palette-neutral160);
+  --text-primary: var(--sys-color-on-surface);
+  --text-secondary: var(--sys-color-token-subtle);
+  --text-link: var(--sys-color-primary);
+  --selection: var(--sys-color-state-ripple-primary);
 }

@@ -25,7 +25,7 @@
 }
 
 .property-name {
-  color: var(--color-syntax-1);
+  color: var(--sys-color-token-property-special);
 }
 
 .property-value {

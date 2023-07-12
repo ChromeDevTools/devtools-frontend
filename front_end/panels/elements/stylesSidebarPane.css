@@ -8,7 +8,7 @@
   min-height: 18px;
   white-space: nowrap;
   user-select: text;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   position: relative;
   overflow: hidden;
 
@@ -48,19 +48,19 @@
   }
 
   .styles-section-subtitle .devtools-link {
-    color: var(--color-text-primary);
+    color: var(--text-primary);
     text-decoration-color: hsl(0deg 0% 60%);
     outline-offset: 0;
   }
 
   .selector,
   .try-rule-selector-element {
-    color: var(--color-text-disabled);
+    color: var(--text-disabled);
   }
 
   .simple-selector.selector-matches,
   &.keyframe-key {
-    color: var(--color-text-primary);
+    color: var(--text-primary);
   }
 
   .style-properties {
@@ -98,12 +98,12 @@
   white-space: normal;
 
   .ancestor-rule-list {
-    color: var(--color-text-disabled);
+    color: var(--text-disabled);
   }
 }
 
 .styles-section-subtitle {
-  color: var(--color-text-secondary);
+  color: var(--text-secondary);
   float: right;
   padding-left: 15px;
   max-width: 100%;
@@ -116,7 +116,7 @@
 
 .sidebar-pane-open-brace,
 .sidebar-pane-closing-brace {
-  color: var(--color-text-primary);
+  color: var(--text-primary);
 }
 
 @keyframes styles-element-state-pane-slidein {
@@ -156,7 +156,7 @@
 }
 
 .styles-sidebar-pane-toolbar-container {
-  --override-toolbar-background-color: var(--color-background-elevation-1);
+  --override-toolbar-background-color: var(--sys-color-cdt-base-container);
 
   flex-shrink: 0;
   overflow: hidden;
@@ -167,7 +167,7 @@
 }
 
 .styles-sidebar-pane-toolbar {
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   flex-shrink: 0;
 }
 
@@ -180,8 +180,8 @@
   display: flex;
 
   > input {
-    outline: none !important; /* stylelint-disable-line declaration-no-important */
-    border: none;
+    border: solid 1px var(--sys-color-neutral-outline);
+    border-radius: 4px;
     width: 100%;
     background: var(--color-background);
     padding-left: 4px;
@@ -203,9 +203,9 @@
 }
 
 .sidebar-separator {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface2);
   padding: 0 5px;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   color: var(--color-text-secondary);
   white-space: nowrap;
   text-overflow: ellipsis;

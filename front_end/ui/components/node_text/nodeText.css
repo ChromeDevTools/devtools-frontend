@@ -11,7 +11,7 @@
 }
 
 .node-label-class {
-  color: var(--override-node-text-class-color, var(--color-token-attribute));
+  color: var(--override-node-text-class-color, var(--sys-color-token-attribute));
 }
 
 .node-label-id {

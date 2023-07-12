@@ -69,22 +69,22 @@
 
 .shadow-split-widget.vbox > .shadow-split-widget-sidebar:not(.maximized) {
   border: 0;
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
 }
 
 .shadow-split-widget.hbox > .shadow-split-widget-sidebar:not(.maximized) {
   border: 0;
-  border-left: 1px solid var(--color-details-hairline);
+  border-left: 1px solid var(--sys-color-divider);
 }
 
 .shadow-split-widget.vbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
   border: 0;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .shadow-split-widget.hbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
   border: 0;
-  border-right: 1px solid var(--color-details-hairline);
+  border-right: 1px solid var(--sys-color-divider);
 }
 
 :host-context(.disable-resizer-for-elements-hack) .shadow-split-widget-resizer {

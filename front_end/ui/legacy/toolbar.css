@@ -62,6 +62,14 @@
   white-space: normal;
 }
 
+devtools-issue-counter.toolbar-item {
+  margin-top: -4px;
+}
+
+devtools-issue-counter.main-toolbar {
+  margin-top: 1px;
+}
+
 .toolbar-dropdown-arrow {
   background-color: var(--color-text-secondary);
   pointer-events: none;
@@ -89,7 +97,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 .toolbar-text {
   margin: 0 5px;
   flex: none;
-  color: var(--color-text-secondary);
+  color: var(--ui-text);
 }
 
 .toolbar-text:empty {
@@ -397,7 +405,7 @@ select.toolbar-item:focus-visible > * {
 /* Separator */
 
 .toolbar-divider {
-  background-color: var(--color-details-hairline);
+  background-color: var(--sys-color-divider);
   width: 1px;
   margin: 5px 4px;
   height: 16px;

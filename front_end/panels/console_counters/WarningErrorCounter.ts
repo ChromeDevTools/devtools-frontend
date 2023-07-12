@@ -62,6 +62,7 @@ export class WarningErrorCounter implements UI.Toolbar.Provider {
 
     const issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this.issueCounter = new IssueCounter.IssueCounter.IssueCounter();
+    this.issueCounter.classList.add('main-toolbar');
     countersWrapper.appendChild(this.issueCounter);
     this.issueCounter.data = {
       clickHandler: (): void => {

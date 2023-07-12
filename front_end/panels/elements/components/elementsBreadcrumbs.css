@@ -5,11 +5,11 @@
  */
 
 :host {
-  --override-node-text-label-color: var(--color-syntax-2);
-  --override-node-text-class-color: var(--color-syntax-4);
-  --override-node-text-id-color: var(--color-syntax-4);
-  --override-node-text-multiple-descriptors-id: var(--color-syntax-7);
-  --override-node-text-multiple-descriptors-class: var(--color-syntax-4);
+  --override-node-text-label-color: var(--sys-color-token-tag);
+  --override-node-text-class-color: var(--sys-color-token-attribute);
+  --override-node-text-id-color: var(--sys-color-token-attribute);
+  --override-node-text-multiple-descriptors-id: var(--sys-color-on-surface);
+  --override-node-text-multiple-descriptors-class: var(--sys-color-token-property);
 }
 
 .crumbs {
@@ -21,7 +21,7 @@
   cursor: default;
   white-space: nowrap;
   position: relative;
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
   font-size: inherit;
   font-family: inherit;
 }

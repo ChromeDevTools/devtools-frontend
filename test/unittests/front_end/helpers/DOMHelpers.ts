@@ -40,6 +40,25 @@ export const renderElementIntoDOM = (element: HTMLElement, renderOptions: Render
   return element;
 };
 
+function removeChildren(node: Node): void {
+  while (node.firstChild) {
+    const child = node.firstChild;
+    if (child.__widget) {
+      // Child is a widget, so we have to use the Widget system to remove it from the DOM.
+      child.__widget.detach();
+    } else if (child.__widgetCounter) {
+      // If an element has __widgetCounter, this means it is not a widget
+      // itself, but at least one of its children are, so we now recurse
+      // on this element's children. If we try to just remove this
+      // element, we will get errors about removing widgets using regular
+      // DOM operations.
+      removeChildren(child);
+    } else {
+      // Non-widget element, so remove using normal DOM APIs.
+      node.removeChild(child);
+    }
+  }
+}
 /**
  * Completely cleans out the test DOM to ensure it's empty for the next test run.
  * This is run automatically between tests - you should not be manually calling this yourself.
@@ -47,6 +66,7 @@ export const renderElementIntoDOM = (element: HTMLElement, renderOptions: Render
 export const resetTestDOM = () => {
   const previousContainer = document.getElementById(TEST_CONTAINER_ID);
   if (previousContainer) {
+    removeChildren(previousContainer);
     previousContainer.remove();
   }
 

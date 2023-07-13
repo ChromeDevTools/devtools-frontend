@@ -5,7 +5,6 @@
 const {assert} = chai;
 
 import * as CodeMirror from '../../../../../front_end/third_party/codemirror.next/codemirror.next.js';
-import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
@@ -47,7 +46,6 @@ describeWithMockConnection('ConsoleContextSelector', () => {
     const targetContext = createExecutionContext(target);
     UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, targetContext);
     evaluateOnTarget = sinon.stub(target.runtimeAgent(), 'invoke_evaluate');
-    Root.Runtime.experiments.register('evaluateExpressionsWithSourceMaps', '');
   });
 
   let id = 0;

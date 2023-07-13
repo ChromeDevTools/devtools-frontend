@@ -123,6 +123,7 @@ const REGISTERED_EXPERIMENTS = [
   'highlightErrorsElementsPanel',
   'setAllBreakpointsEagerly',
   'selfXssWarning',
+  'evaluateExpressionsWithSourceMaps',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {

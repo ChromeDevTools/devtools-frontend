@@ -19,6 +19,7 @@ import * as Persistence from '../../../../../front_end/models/persistence/persis
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {TestPlugin} from '../../helpers/LanguagePluginHelpers.js';
 import {
+  clearMockConnectionResponseHandler,
   describeWithMockConnection,
   dispatchEvent,
   registerListenerOnOutgoingMessage,
@@ -279,6 +280,56 @@ describeWithMockConnection('BreakpointManager', () => {
       const breakpoint = createBreakpoint('', /* isLogpoint */ false);
 
       assert.notInclude(breakpoint.backendCondition(), '//# sourceURL=');
+    });
+
+    it('substitutes source-mapped variables', async () => {
+      Root.Runtime.experiments.enableForTest('evaluateExpressionsWithSourceMaps');
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assertNotNullOrUndefined(debuggerModel);
+
+      const scriptInfo = {url: URL, content: 'function adder(n,r){const t=n+r;return t}'};
+      // Created with `terser -m -o script.min.js --source-map "includeSources;url=script.min.js.map" original-script.js`
+      const sourceMapContent = JSON.stringify({
+        'version': 3,
+        'names': ['adder', 'param1', 'param2', 'result'],
+        'sources': ['/original-script.js'],
+        'sourcesContent':
+            ['function adder(param1, param2) {\n  const result = param1 + param2;\n  return result;\n}\n\n'],
+        'mappings': 'AAAA,SAASA,MAAMC,EAAQC,GACrB,MAAMC,EAASF,EAASC,EACxB,OAAOC,CACT',
+      });
+      const sourceMapInfo = {url: SOURCE_MAP_URL, content: sourceMapContent};
+      const script = await backend.addScript(target, scriptInfo, sourceMapInfo);
+
+      // Get the uiSourceCode for the original source.
+      const uiSourceCode = await debuggerWorkspaceBinding.uiSourceCodeForSourceMapSourceURLPromise(
+          debuggerModel, ORIGINAL_SCRIPT_SOURCE_URL, script.isContentScript());
+      assertNotNullOrUndefined(uiSourceCode);
+
+      // Mock out "Debugger.setBreakpointByUrl and just echo back the request".
+      const cdpSetBreakpointPromise = new Promise<Protocol.Debugger.SetBreakpointByUrlRequest>(res => {
+        clearMockConnectionResponseHandler('Debugger.setBreakpointByUrl');
+        setMockConnectionResponseHandler('Debugger.setBreakpointByUrl', request => {
+          res(request);
+          return {};
+        });
+      });
+
+      // Set the breakpoint on the `const result = ...` line with a condition using
+      // "authored" variable names.
+      const breakpoint = await breakpointManager.setBreakpoint(
+          uiSourceCode, 1, 0, 'param1 > 0' as Breakpoints.BreakpointManager.UserCondition, /* enabled */ true,
+          /* isLogpoint */ false, Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION);
+      assertNotNullOrUndefined(breakpoint);
+
+      await breakpoint.updateBreakpoint();
+
+      const {url, lineNumber, columnNumber, condition} = await cdpSetBreakpointPromise;
+      assert.strictEqual(url, URL);
+      assert.strictEqual(lineNumber, 0);
+      assert.strictEqual(columnNumber, 20);
+      assert.strictEqual(condition, 'n > 0\n\n//# sourceURL=debugger://breakpoint');
+
+      Root.Runtime.experiments.disableForTest('evaluateExpressionsWithSourceMaps');
     });
   });
 

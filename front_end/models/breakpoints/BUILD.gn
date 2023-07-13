@@ -17,6 +17,8 @@ devtools_module("breakpoints") {
     "../../core/sdk:bundle",
     "../../generated:protocol",
     "../bindings:bundle",
+    "../formatter:bundle",
+    "../source_map_scopes:bundle",
     "../text_utils:bundle",
     "../workspace:bundle",
   ]

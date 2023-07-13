@@ -365,7 +365,7 @@ describe('RendererHandler', function() {
       return;
     }
 
-    const event0 = getRootAt(thread, 0).event;
+    const event0 = getRootAt(thread, 0).entry;
     assert.deepEqual(event0 as unknown, {
       'args': {},
       'cat': 'disabled-by-default-devtools.timeline',
@@ -380,7 +380,7 @@ describe('RendererHandler', function() {
       'selfTime': 132,
     });
 
-    const event1 = getRootAt(thread, 1).event;
+    const event1 = getRootAt(thread, 1).entry;
     assert.deepEqual(event1 as unknown, {
       'args': {},
       'cat': 'disabled-by-default-devtools.timeline',
@@ -395,7 +395,7 @@ describe('RendererHandler', function() {
       'selfTime': 4,
     });
 
-    const eventLast = getRootAt(thread, tree.roots.size - 1).event;
+    const eventLast = getRootAt(thread, tree.roots.size - 1).entry;
     assert.deepEqual(eventLast as unknown, {
       'args': {},
       'cat': 'disabled-by-default-devtools.timeline',
@@ -427,7 +427,7 @@ describe('RendererHandler', function() {
       return;
     }
 
-    const event0 = getRootAt(thread, 0).event;
+    const event0 = getRootAt(thread, 0).entry;
     assert.deepEqual(event0 as unknown, {
       'args': {},
       'cat': 'disabled-by-default-devtools.timeline',
@@ -442,7 +442,7 @@ describe('RendererHandler', function() {
       'selfTime': 130,
     });
 
-    const event1 = getRootAt(thread, 1).event;
+    const event1 = getRootAt(thread, 1).entry;
     assert.deepEqual(event1 as unknown, {
       'args': {},
       'cat': 'disabled-by-default-devtools.timeline',
@@ -457,7 +457,7 @@ describe('RendererHandler', function() {
       'selfTime': 5,
     });
 
-    const eventLast = getRootAt(thread, tree.roots.size - 1).event;
+    const eventLast = getRootAt(thread, tree.roots.size - 1).entry;
     assert.deepEqual(eventLast as unknown, {
       'args': {'data': {'type': 'unload'}},
       'cat': 'devtools.timeline',
@@ -566,7 +566,7 @@ describe('RendererHandler', function() {
 
     assert.strictEqual(tree.maxDepth, 3, 'Got the correct tree max depth');
 
-    const rootsEvents = [...tree.roots].map(id => tree.nodes.get(id)).map(n => n ? n.event : null);
+    const rootsEvents = [...tree.roots].map(id => tree.nodes.get(id)).map(n => n ? n.entry : null);
     assert.deepEqual(rootsEvents.map(e => e ? {name: e.name, ts: e.ts, dur: e.dur} : null) as unknown[], [
       {'name': 'A', 'ts': 0, 'dur': 10},
       {'name': 'E', 'ts': 11, 'dur': 3},
@@ -633,7 +633,7 @@ describe('RendererHandler', function() {
 
     assert.strictEqual(tree.maxDepth, 2, 'Got the correct tree max depth');
 
-    const rootsEvents = [...tree.roots].map(id => tree.nodes.get(id)).map(n => n ? n.event : null);
+    const rootsEvents = [...tree.roots].map(id => tree.nodes.get(id)).map(n => n ? n.entry : null);
     assert.deepEqual(rootsEvents.map(e => e ? {name: e.name, ts: e.ts, dur: e.dur} : null) as unknown[], [
       {'name': 'A', 'ts': 0, 'dur': 10},
     ]);
@@ -678,7 +678,7 @@ describe('RendererHandler', function() {
 
     assert.strictEqual(tree.maxDepth, 3, 'Got the correct tree max depth');
 
-    const rootsEvents = [...tree.roots].map(id => tree.nodes.get(id)).map(n => n ? n.event : null);
+    const rootsEvents = [...tree.roots].map(id => tree.nodes.get(id)).map(n => n ? n.entry : null);
     assert.deepEqual(rootsEvents.map(e => e ? {name: e.name, ts: e.ts, dur: e.dur} : null) as unknown[], [
       {'name': 'A', 'ts': 0, 'dur': 10},
       {'name': 'E', 'ts': 10, 'dur': 3},
@@ -748,16 +748,16 @@ describe('RendererHandler', function() {
       assert(false, 'Root nodes were not found');
       return;
     }
-    const taskA = nodeA.event;
-    const taskE = nodeE.event;
+    const taskA = nodeA.entry;
+    const taskE = nodeE.entry;
     const nodeD = tree.nodes.get([...nodeA.childrenIds][1]);
     const nodeB = tree.nodes.get([...nodeA.childrenIds][0]);
     if (!nodeB || !nodeD) {
       assert(false, 'Child nodes were not found');
       return;
     }
-    const taskD = nodeD.event;
-    const taskB = nodeB.event;
+    const taskD = nodeD.entry;
+    const taskB = nodeB.entry;
 
     const nodeC = tree.nodes.get([...nodeB.childrenIds][0]);
 
@@ -765,7 +765,7 @@ describe('RendererHandler', function() {
       assert(false, 'Child nodes were not found');
       return;
     }
-    const taskC = nodeC.event;
+    const taskC = nodeC.entry;
 
     const taskCTotalTime = taskC.dur;
     if (taskCTotalTime === undefined) {

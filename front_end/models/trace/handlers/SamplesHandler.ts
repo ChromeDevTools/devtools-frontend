@@ -34,7 +34,7 @@ export function buildProfileCalls(): void {
       if (!preProcessedData.rawProfile.nodes.length || !threadId) {
         continue;
       }
-      const trackingStack: Partial<ProfileCall>[] = [];
+      const trackingStack: Partial<Types.TraceEvents.ProfileCall>[] = [];
 
       const profileModel = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(preProcessedData.rawProfile);
 
@@ -49,7 +49,7 @@ export function buildProfileCalls(): void {
       function openFrameCallback(
           _depth: number, node: CPUProfile.ProfileTreeModel.ProfileNode, timeStampMs: number): void {
         const ts = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(timeStampMs));
-        trackingStack.push({callFrame: node.callFrame, ts, pid: processId, profileId, children: []});
+        trackingStack.push({callFrame: node.callFrame, ts, pid: processId, children: [], tid: threadId});
       }
       function closeFrameCallback(
           depth: number, node: CPUProfile.ProfileTreeModel.ProfileNode, _timeStamp: number, durMs: number,
@@ -58,16 +58,26 @@ export function buildProfileCalls(): void {
         if (!partialProfileCall) {
           return;
         }
-        const {callFrame, ts, pid, profileId, children} = partialProfileCall;
-
+        const {callFrame, ts, pid, children, tid} = partialProfileCall;
         if (callFrame === undefined || ts === undefined || pid === undefined || profileId === undefined ||
-            children === undefined) {
+            children === undefined || tid === undefined) {
           return;
         }
         const dur = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(durMs));
         const selfTime = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(selfTimeMs));
-        const completeProfileCall:
-            ProfileCall = {callFrame, ts, pid, profileId, dur, selfTime, children, depth, nodeId: node.id};
+        const completeProfileCall: Types.TraceEvents.ProfileCall = {
+          callFrame,
+          ts,
+          pid,
+          dur,
+          selfTime,
+          children,
+          ph: Types.TraceEvents.Phase.COMPLETE,
+          cat: '',
+          name: 'ProfileCall',
+          tid,
+          nodeId: node.id,
+        };
         const parent = trackingStack.at(-1);
         const calls = finalizedData.profileCalls;
         calls.push(completeProfileCall);
@@ -197,22 +207,10 @@ export interface SamplesHandlerData {
   profilesInProcess: typeof profilesInProcess;
 }
 
-export interface ProfileCall {
-  callFrame: Protocol.Runtime.CallFrame;
-  pid: Types.TraceEvents.ProcessID;
-  profileId: Types.TraceEvents.ProfileID;
-  nodeId: Protocol.integer;
-  depth: number;
-  ts: Types.Timing.MicroSeconds;
-  dur: Types.Timing.MicroSeconds;      // "time"
-  selfTime: Types.Timing.MicroSeconds;  // "self time"
-  children: ProfileCall[];
-}
-
 export type ProfileData = {
   rawProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile,
   parsedProfile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel,
-  profileCalls: ProfileCall[],
+  profileCalls: Types.TraceEvents.ProfileCall[],
 };
 
 type PreprocessedData = {

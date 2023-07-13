@@ -153,8 +153,8 @@ export class TimelineJSProfileProcessor {
 
       // Top level events cannot be nested into JS frames so we reset
       // the stack when we find one.
-      if (e.name === TraceEngine.Handlers.Types.KnownEventName.RunMicrotasks ||
-          e.name === TraceEngine.Handlers.Types.KnownEventName.RunTask) {
+      if (e.name === TraceEngine.Types.TraceEvents.KnownEventName.RunMicrotasks ||
+          e.name === TraceEngine.Types.TraceEvents.KnownEventName.RunTask) {
         lockedJsStackDepth = [];
         truncateJSStack(0, e.startTime);
         fakeJSInvocation = false;

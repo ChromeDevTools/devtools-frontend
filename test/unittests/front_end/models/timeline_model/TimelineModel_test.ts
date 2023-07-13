@@ -1494,7 +1494,7 @@ describeWithEnvironment('TimelineData', function() {
     const allSDKEvents = getAllTracingModelPayloadEvents(data.tracingModel);
 
     const decodeImageEvent =
-        allSDKEvents.find(event => event.name === TraceEngine.Handlers.Types.KnownEventName.DecodeImage);
+        allSDKEvents.find(event => event.name === TraceEngine.Types.TraceEvents.KnownEventName.DecodeImage);
     if (!decodeImageEvent) {
       throw new Error('Could not find Decode Image event Event.');
     }

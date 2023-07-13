@@ -824,6 +824,13 @@ export interface SyntheticInteractionEvent extends TraceEventSyntheticNestableAs
   };
 }
 
+export interface ProfileCall extends TraceEventComplete {
+  callFrame: Protocol.Runtime.CallFrame;
+  nodeId: Protocol.integer;
+  selfTime: MicroSeconds;
+  children: ProfileCall[];
+}
+
 export function isSyntheticInteractionEvent(event: TraceEventData): event is SyntheticInteractionEvent {
   return Boolean(
       'interactionId' in event && event.args?.data && 'beginEvent' in event.args.data && 'endEvent' in event.args.data);
@@ -1125,4 +1132,96 @@ export function isSyntheticLayoutShift(traceEventData: TraceEventData): traceEve
     return false;
   }
   return 'rawEvent' in traceEventData.args.data;
+}
+
+export function isProfileCall(event: TraceEventData): event is ProfileCall {
+  return 'callFrame' in event;
+}
+
+export const enum KnownEventName {
+  /* Task/Other */
+  Program = 'Program',
+  RunTask = 'RunTask',
+  AsyncTask = 'AsyncTask',
+  /* Load */
+  XHRLoad = 'XHRLoad',
+  XHRReadyStateChange = 'XHRReadyStateChange',
+  /* Parse */
+  ParseHTML = 'ParseHTML',
+  ParseCSS = 'ParseAuthorStyleSheet',
+  /* V8 */
+  CompileScript = 'V8.CompileScript',
+  CompileCode = 'V8.CompileCode',
+  CompileModule = 'V8.CompileModule',
+  Optimize = 'V8.OptimizeCode',
+  WasmStreamFromResponseCallback = 'v8.wasm.streamFromResponseCallback',
+  WasmCompiledModule = 'v8.wasm.compiledModule',
+  WasmCachedModule = 'v8.wasm.cachedModule',
+  WasmModuleCacheHit = 'v8.wasm.moduleCacheHit',
+  WasmModuleCacheInvalid = 'v8.wasm.moduleCacheInvalid',
+  /* Js */
+  RunMicrotasks = 'RunMicrotasks',
+  ProfileCall = 'ProfileCall',
+  EvaluateScript = 'EvaluateScript',
+  FunctionCall = 'FunctionCall',
+  EventDispatch = 'EventDispatch',
+  EvaluateModule = 'v8.evaluateModule',
+  RequestMainThreadFrame = 'RequestMainThreadFrame',
+  RequestAnimationFrame = 'RequestAnimationFrame',
+  CancelAnimationFrame = 'CancelAnimationFrame',
+  FireAnimationFrame = 'FireAnimationFrame',
+  RequestIdleCallback = 'RequestIdleCallback',
+  CancelIdleCallback = 'CancelIdleCallback',
+  FireIdleCallback = 'FireIdleCallback',
+  TimerInstall = 'TimerInstall',
+  TimerRemove = 'TimerRemove',
+  TimerFire = 'TimerFire',
+  WebSocketCreate = 'WebSocketCreate',
+  WebSocketSendHandshake = 'WebSocketSendHandshakeRequest',
+  WebSocketReceiveHandshake = 'WebSocketReceiveHandshakeResponse',
+  WebSocketDestroy = 'WebSocketDestroy',
+  CryptoDoEncrypt = 'DoEncrypt',
+  CryptoDoEncryptReply = 'DoEncryptReply',
+  CryptoDoDecrypt = 'DoDecrypt',
+  CryptoDoDecryptReply = 'DoDecryptReply',
+  CryptoDoDigest = 'DoDigest',
+  CryptoDoDigestReply = 'DoDigestReply',
+  CryptoDoSign = 'DoSign',
+  CryptoDoSignReply = 'DoSignReply',
+  CryptoDoVerify = 'DoVerify',
+  CryptoDoVerifyReply = 'DoVerifyReply',
+  V8Execute = 'V8.Execute',
+
+  /* Gc */
+  GC = 'GCEvent',
+  DOMGC = 'BlinkGC.AtomicPhase',
+  IncrementalGCMarking = 'V8.GCIncrementalMarking',
+  MajorGC = 'MajorGC',
+  MinorGC = 'MinorGC',
+  /* Layout (a.k.a "Rendering") */
+  ScheduleStyleRecalculation = 'ScheduleStyleRecalculation',
+  RecalculateStyles = 'RecalculateStyles',
+  Layout = 'Layout',
+  UpdateLayoutTree = 'UpdateLayoutTree',
+  InvalidateLayout = 'InvalidateLayout',
+  LayoutInvalidationTracking = 'LayoutInvalidationTracking',
+  ComputeIntersections = 'ComputeIntersections',
+  HitTest = 'HitTest',
+  PrePaint = 'PrePaint',
+  /* Paint */
+  ScrollLayer = 'ScrollLayer',
+  UpdateLayer = 'UpdateLayer',
+  PaintSetup = 'PaintSetup',
+  Paint = 'Paint',
+  PaintImage = 'PaintImage',
+  Commit = 'Commit',
+  CompositeLayers = 'CompositeLayers',
+  RasterTask = 'RasterTask',
+  ImageDecodeTask = 'ImageDecodeTask',
+  ImageUploadTask = 'ImageUploadTask',
+  DecodeImage = 'Decode Image',
+  ResizeImage = 'Resize Image',
+  DrawLazyPixelRef = 'Draw LazyPixelRef',
+  DecodeLazyPixelRef = 'Decode LazyPixelRef',
+  GPUTask = 'GPUTask',
 }

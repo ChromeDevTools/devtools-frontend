@@ -149,9 +149,9 @@ describe('TimelineJSProfile', () => {
       return new TraceEngine.Legacy.ConstructedEvent(
           'devtools.timeline', 'JSSample', TraceEngine.Types.TraceEvents.Phase.INSTANT, ts, thread);
     }
-    const runTask = createEvent(TraceEngine.Handlers.Types.KnownEventName.RunTask, 0, 100);
-    const evaluateScript = createEvent(TraceEngine.Handlers.Types.KnownEventName.EvaluateScript, 0, 100);
-    const runMicroTasks = createEvent(TraceEngine.Handlers.Types.KnownEventName.RunMicrotasks, 50, 100);
+    const runTask = createEvent(TraceEngine.Types.TraceEvents.KnownEventName.RunTask, 0, 100);
+    const evaluateScript = createEvent(TraceEngine.Types.TraceEvents.KnownEventName.EvaluateScript, 0, 100);
+    const runMicroTasks = createEvent(TraceEngine.Types.TraceEvents.KnownEventName.RunMicrotasks, 50, 100);
 
     const sampleEvent1 = createSample(20);
     sampleEvent1.addArgs({data: {stackTrace: [{'functionName': 'A', 'callUID': 'A', 'scriptId': 1}]}});

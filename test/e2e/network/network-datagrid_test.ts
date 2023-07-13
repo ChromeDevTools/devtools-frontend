@@ -25,6 +25,7 @@ import {
   waitForSelectedRequestChange,
   waitForSomeRequestsToAppear,
 } from '../helpers/network-helpers.js';
+import {unregisterAllServiceWorkers} from '../../conductor/hooks.js';
 
 async function getRequestRowInfo(frontend: BrowserAndPages['frontend'], name: string) {
   const statusColumn = await frontend.evaluate(() => {
@@ -59,6 +60,10 @@ describe('The Network Tab', async function() {
     await navigateToNetworkTab('empty.html');
     await setCacheDisabled(true);
     await setPersistLog(false);
+  });
+
+  afterEach(async () => {
+    await unregisterAllServiceWorkers();
   });
 
   it('can click on checkbox label to toggle checkbox', async () => {

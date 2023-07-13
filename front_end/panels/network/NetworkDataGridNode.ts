@@ -949,6 +949,9 @@ export class NetworkRequestNode extends NetworkNode {
       case 'priority': {
         const priority = this.requestInternal.priority();
         this.setTextAndTitle(cell, priority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority) : '');
+        const initialPriority = this.requestInternal.initialPriority();
+        this.appendSubtitle(
+            cell, initialPriority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(initialPriority) : '');
         break;
       }
       case 'connectionid': {

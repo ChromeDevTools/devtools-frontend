@@ -89,6 +89,14 @@ server.once('error', error => {
   throw error;
 });
 
+const styleSheetPaths = [
+  'front_end/ui/legacy/themeColors.css',
+  'front_end/ui/legacy/tokens.css',
+  'front_end/ui/legacy/applicationColorTokens.css',
+  'front_end/ui/legacy/inspectorCommon.css',
+  'front_end/ui/components/docs/component_docs_styles.css',
+];
+
 function createComponentIndexFile(componentPath, componentExamples) {
   const componentName = componentPath.replace('/front_end/ui/components/docs/', '').replace(/_/g, ' ').replace('/', '');
   // clang-format off
@@ -146,6 +154,11 @@ function createComponentIndexFile(componentPath, componentExamples) {
 }
 
 function createServerIndexFile(componentNames) {
+  const linksToStyleSheets =
+      styleSheetPaths
+          .map(link => `<link rel="stylesheet" href="${sharedResourcesBase}${path.join(link.split('/'))}" />`)
+          .join('\n');
+
   // clang-format off
   return `<!DOCTYPE html>
   <html>
@@ -153,9 +166,7 @@ function createServerIndexFile(componentNames) {
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width" />
       <title>DevTools components</title>
-      <link rel="stylesheet" href="${sharedResourcesBase}front_end/ui/legacy/themeColors.css" />
-      <link rel="stylesheet" href="${sharedResourcesBase}front_end/ui/legacy/applicationColorTokens.css" />
-      <link rel="stylesheet" href="${sharedResourcesBase}front_end/ui/components/docs/component_docs_styles.css" />
+      ${linksToStyleSheets}
     </head>
     <body id="index-page">
       <h1>DevTools components</h1>
@@ -282,19 +293,18 @@ async function requestHandler(request, response) {
     const baseUrlForSharedResource =
         componentDocsBaseArg && componentDocsBaseArg.endsWith(sharedResourcesBase) ? '/' : `/${sharedResourcesBase}`;
     const fileContents = await fs.promises.readFile(path.join(componentDocsBaseFolder, filePath), {encoding: 'utf8'});
-    const themeColoursLink = `<link rel="stylesheet" href="${
-        path.join(baseUrlForSharedResource, 'front_end', 'ui', 'legacy', 'themeColors.css')}" type="text/css" />`;
-    const applicationColorTokensLink = `<link rel="stylesheet" href="${
-        path.join(
-            baseUrlForSharedResource, 'front_end', 'ui', 'legacy', 'applicationColorTokens.css')}" type="text/css" />`;
-    const inspectorCommonLink = `<link rel="stylesheet" href="${
-        path.join(baseUrlForSharedResource, 'front_end', 'ui', 'legacy', 'inspectorCommon.css')}" type="text/css" />`;
+
+    const linksToStyleSheets =
+        styleSheetPaths
+            .map(
+                link => `<link rel="stylesheet" href="${
+                    path.join(baseUrlForSharedResource, ...link.split('/'))}" type="text/css" />`)
+            .join('\n');
+
     const toggleDarkModeScript = `<script type="module" src="${
         path.join(baseUrlForSharedResource, 'front_end', 'ui', 'components', 'docs', 'component_docs.js')}"></script>`;
-    const newFileContents =
-        fileContents
-            .replace('</head>', `${themeColoursLink}\n${applicationColorTokensLink}\n${inspectorCommonLink}\n</head>`)
-            .replace('</body>', toggleDarkModeScript + '\n</body>');
+    const newFileContents = fileContents.replace('</head>', `${linksToStyleSheets}</head>`)
+                                .replace('</body>', toggleDarkModeScript + '\n</body>');
     respondWithHtml(response, newFileContents);
 
   } else {

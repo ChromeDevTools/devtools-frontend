@@ -67,7 +67,7 @@ ul {
   transition: opacity 0.3s ease-in-out;
 }
 
-.row:focus-within,
+.row:focus-within .deleteButton,
 .row:hover .deleteButton {
   opacity: 100%;
 }

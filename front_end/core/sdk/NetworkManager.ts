@@ -96,13 +96,6 @@ const UIStrings = {
    */
   requestWasBlockedByDevtoolsS: 'Request was blocked by DevTools: "{PH1}"',
   /**
-   *@description Text in Network Manager
-   *@example {https://example.com} PH1
-   *@example {application} PH2
-   */
-  crossoriginReadBlockingCorb:
-      'Cross-Origin Read Blocking (CORB) blocked cross-origin response {PH1} with MIME type {PH2}. See https://www.chromestatus.com/feature/5629709824032768 for more details.',
-  /**
    *@description Message in Network Manager
    *@example {XHR} PH1
    *@example {GET} PH2
@@ -715,8 +708,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     this.updateNetworkRequest(networkRequest);
   }
 
-  loadingFinished({requestId, timestamp: finishTime, encodedDataLength, shouldReportCorbBlocking}:
-                      Protocol.Network.LoadingFinishedEvent): void {
+  loadingFinished({requestId, timestamp: finishTime, encodedDataLength}: Protocol.Network.LoadingFinishedEvent): void {
     let networkRequest: NetworkRequest|null|undefined = this.#requestsById.get(requestId);
     if (!networkRequest) {
       networkRequest = this.maybeAdoptMainResourceRequest(requestId);
@@ -725,7 +717,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       return;
     }
     this.getExtraInfoBuilder(requestId).finished();
-    this.finishNetworkRequest(networkRequest, finishTime, encodedDataLength, shouldReportCorbBlocking);
+    this.finishNetworkRequest(networkRequest, finishTime, encodedDataLength);
     this.#manager.dispatchEventToListeners(Events.LoadingFinished, networkRequest);
   }
 
@@ -996,8 +988,10 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
   }
 
   private finishNetworkRequest(
-      networkRequest: NetworkRequest, finishTime: number, encodedDataLength: number,
-      shouldReportCorbBlocking?: boolean): void {
+      networkRequest: NetworkRequest,
+      finishTime: number,
+      encodedDataLength: number,
+      ): void {
     networkRequest.endTime = finishTime;
     networkRequest.finished = true;
     if (encodedDataLength >= 0) {
@@ -1012,13 +1006,6 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     }
     this.#manager.dispatchEventToListeners(Events.RequestFinished, networkRequest);
     MultitargetNetworkManager.instance().inflightMainResourceRequests.delete(networkRequest.requestId());
-
-    if (shouldReportCorbBlocking) {
-      const message =
-          i18nString(UIStrings.crossoriginReadBlockingCorb, {PH1: networkRequest.url(), PH2: networkRequest.mimeType});
-      this.#manager.dispatchEventToListeners(
-          Events.MessageGenerated, {message: message, requestId: networkRequest.requestId(), warning: true});
-    }
 
     if (Common.Settings.Settings.instance().moduleSetting('monitoringXHREnabled').get() &&
         networkRequest.resourceType().category() === Common.ResourceType.resourceCategories.XHR) {

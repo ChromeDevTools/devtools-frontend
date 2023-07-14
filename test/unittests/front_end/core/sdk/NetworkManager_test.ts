@@ -74,8 +74,7 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
 describe('NetworkDispatcher', () => {
   const requestWillBeSentEvent = {requestId: 'mockId', request: {url: 'example.com'}} as
       Protocol.Network.RequestWillBeSentEvent;
-  const loadingFinishedEvent =
-      {requestId: 'mockId', timestamp: 42, encodedDataLength: 42, shouldReportCorbBlocking: false} as
+  const loadingFinishedEvent = {requestId: 'mockId', timestamp: 42, encodedDataLength: 42} as
       Protocol.Network.LoadingFinishedEvent;
   describeWithEnvironment('request', () => {
     let networkDispatcher: SDK.NetworkManager.NetworkDispatcher;

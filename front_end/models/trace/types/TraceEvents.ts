@@ -824,11 +824,11 @@ export interface SyntheticInteractionEvent extends TraceEventSyntheticNestableAs
   };
 }
 
-export interface ProfileCall extends TraceEventComplete {
+export interface TraceEventSyntheticProfileCall extends TraceEventComplete {
   callFrame: Protocol.Runtime.CallFrame;
   nodeId: Protocol.integer;
   selfTime: MicroSeconds;
-  children: ProfileCall[];
+  children: TraceEventSyntheticProfileCall[];
 }
 
 export function isSyntheticInteractionEvent(event: TraceEventData): event is SyntheticInteractionEvent {
@@ -1134,7 +1134,7 @@ export function isSyntheticLayoutShift(traceEventData: TraceEventData): traceEve
   return 'rawEvent' in traceEventData.args.data;
 }
 
-export function isProfileCall(event: TraceEventData): event is ProfileCall {
+export function isProfileCall(event: TraceEventData): event is TraceEventSyntheticProfileCall {
   return 'callFrame' in event;
 }
 

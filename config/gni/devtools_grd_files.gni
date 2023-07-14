@@ -954,6 +954,7 @@ grd_files_debug_sources = [
   "front_end/models/trace/handlers/UserInteractionsHandler.js",
   "front_end/models/trace/handlers/UserTimingsHandler.js",
   "front_end/models/trace/handlers/types.js",
+  "front_end/models/trace/helpers/SamplesIntegrator.js",
   "front_end/models/trace/helpers/Timing.js",
   "front_end/models/trace/helpers/Trace.js",
   "front_end/models/trace/types/File.js",

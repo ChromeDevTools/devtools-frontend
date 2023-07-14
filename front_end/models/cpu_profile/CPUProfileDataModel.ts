@@ -541,6 +541,12 @@ export class CPUProfileDataModel extends ProfileTreeModel {
   nodeByIndex(index: number): ProfileNode|null {
     return this.samples && this.#idToParsedNode.get(this.samples[index]) || null;
   }
+  /**
+   * Returns the node that corresponds to a given node id.
+   */
+  nodeById(nodeId: number): ProfileNode|null {
+    return this.#idToParsedNode.get(nodeId) || null;
+  }
 
   nodes(): ProfileNode[]|null {
     if (!this.#idToParsedNode) {

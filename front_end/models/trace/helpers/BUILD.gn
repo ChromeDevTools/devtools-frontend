@@ -8,6 +8,7 @@ import("../../visibility.gni")
 
 devtools_module("helpers") {
   sources = [
+    "SamplesIntegrator.ts",
     "Timing.ts",
     "Trace.ts",
   ]
@@ -15,6 +16,8 @@ devtools_module("helpers") {
   deps = [
     "../../../core/common:bundle",
     "../../../core/platform:bundle",
+    "../../../core/root:bundle",
+    "../../../models/cpu_profile:bundle",
     "../types:bundle",
   ]
 }

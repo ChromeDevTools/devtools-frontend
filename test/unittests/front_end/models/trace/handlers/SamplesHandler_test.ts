@@ -209,7 +209,7 @@ describeWithEnvironment('SamplesHandler', function() {
     });
   });
   describe('CPU Profile parsing', () => {
-    it('generates a parsed CPU a CPU profile from a trace file', async () => {
+    it('generates a parsed CPU profile from a trace file', async () => {
       const data = await handleEventsFromTraceFile(this, 'recursive-blocking-js.json.gz');
       assert.strictEqual(data.profilesInProcess.size, 1);
       const profileById = data.profilesInProcess.values().next().value;

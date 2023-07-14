@@ -7,6 +7,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("helpers") {
   testonly = true
   sources = [
+    "SamplesIntegrator_test.ts",
     "Timing_test.ts",
     "Trace_test.ts",
   ]

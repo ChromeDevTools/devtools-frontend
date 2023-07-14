@@ -34,7 +34,7 @@ export function buildProfileCalls(): void {
       if (!preProcessedData.rawProfile.nodes.length || !threadId) {
         continue;
       }
-      const trackingStack: Partial<Types.TraceEvents.ProfileCall>[] = [];
+      const trackingStack: Partial<Types.TraceEvents.TraceEventSyntheticProfileCall>[] = [];
 
       const profileModel = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(preProcessedData.rawProfile);
 
@@ -65,7 +65,7 @@ export function buildProfileCalls(): void {
         }
         const dur = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(durMs));
         const selfTime = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(selfTimeMs));
-        const completeProfileCall: Types.TraceEvents.ProfileCall = {
+        const completeProfileCall: Types.TraceEvents.TraceEventSyntheticProfileCall = {
           callFrame,
           ts,
           pid,
@@ -210,7 +210,7 @@ export interface SamplesHandlerData {
 export type ProfileData = {
   rawProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile,
   parsedProfile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel,
-  profileCalls: Types.TraceEvents.ProfileCall[],
+  profileCalls: Types.TraceEvents.TraceEventSyntheticProfileCall[],
 };
 
 type PreprocessedData = {

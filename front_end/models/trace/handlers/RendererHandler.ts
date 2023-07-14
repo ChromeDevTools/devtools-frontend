@@ -415,7 +415,7 @@ interface RendererEventData {
 
 export type RendererTraceEvent = Types.TraceEvents.TraceEventRendererData&Partial<RendererEventData>;
 
-export type RendererEntry = RendererTraceEvent|Types.TraceEvents.ProfileCall;
+export type RendererEntry = RendererTraceEvent|Types.TraceEvents.TraceEventSyntheticProfileCall;
 
 export interface RendererEventTree {
   nodes: Map<RendererEventNodeId, RendererEventNode>;

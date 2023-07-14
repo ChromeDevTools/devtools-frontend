@@ -32,6 +32,11 @@ const yargsObject =
           desc: 'Path to the source folder containing the tests, relative to the current working directory.',
           demandOption: true
         })
+        .option('autoninja', {
+          type: 'boolean',
+          desc: 'If true, will trigger an autoninja build before executing the test suite',
+          default: false,
+        })
         .option('target', {type: 'string', default: 'Default', desc: 'Name of the Ninja output directory.'})
         .option('node-modules-path', {
           type: 'string',
@@ -180,6 +185,19 @@ function setNodeModulesPath(nodeModulesPathsInput) {
   }
 }
 
+function triggerAutoninja(target) {
+  const ninjaCommand = os.platform() === 'win32' ? 'autoninja.bat' : 'autoninja';
+  const ninjaArgs = ['-C', `out/${target}`];
+  const cwd = devtoolsRootPath();
+  const result = childProcess.spawnSync(ninjaCommand, ninjaArgs, {encoding: 'utf-8', stdio: 'inherit', cwd});
+
+  if (result.error) {
+    throw result.error;
+  }
+
+  return result.status;
+}
+
 function executeTestSuite({
   absoluteTestSuitePath,
   jobs,
@@ -256,6 +274,10 @@ function validateChromeBinaryExistsAndExecutable(chromeBinaryPath) {
 }
 
 function main() {
+  if (yargsObject['autoninja']) {
+    triggerAutoninja(yargsObject['target']);
+  }
+
   const chromeBinaryPath = yargsObject['chrome-binary-path'];
 
   if (!validateChromeBinaryExistsAndExecutable(chromeBinaryPath)) {

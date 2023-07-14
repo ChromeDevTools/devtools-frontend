@@ -22,7 +22,7 @@
     "auto-debug-e2etest": "npm run build && npm run debug-e2etest --",
     "auto-debug-interactionstest": "npm run build && npm run debug-interactionstest --",
     "auto-debug-unittest": "DEBUG_TEST=1 npm run auto-unittest --",
-    "auto-e2etest": "npm run build && npm run e2etest --",
+    "auto-e2etest": "vpython third_party/node/node.py --output scripts/test/run_test_suite.js --config=test/e2e/test-runner-config.json --autoninja",
     "auto-e2etest-parallel": "npm run build && npm run e2etest-parallel --",
     "auto-interactionstest": "npm run build && npm run interactionstest --",
     "auto-screenshotstest": "npm run build && third_party/node/node.py --output scripts/test/run_test_suite.js --config test/interactions/test-runner-config.json --mocha-fgrep '[screenshot]'",

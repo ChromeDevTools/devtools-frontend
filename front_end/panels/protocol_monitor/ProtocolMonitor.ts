@@ -137,7 +137,7 @@ export const buildProtocolMetadata = (domains: Iterable<ProtocolDomain>):
 
 const metadataByCommand = buildProtocolMetadata(
     ProtocolClient.InspectorBackend.inspectorBackend.agentPrototypes.values() as Iterable<ProtocolDomain>);
-const typesByCommand = ProtocolClient.InspectorBackend.inspectorBackend.typeMap;
+const typesByName = ProtocolClient.InspectorBackend.inspectorBackend.typeMap;
 
 export interface Message {
   id?: number;
@@ -733,7 +733,7 @@ export class EditorWidget extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     super();
     this.jsonEditor = new Components.JSONEditor.JSONEditor();
     this.jsonEditor.metadataByCommand = metadataByCommand;
-    this.jsonEditor.typesByCommand = typesByCommand;
+    this.jsonEditor.typesByName = typesByName;
     this.element.append(this.jsonEditor);
     this.jsonEditor.addEventListener(Components.JSONEditor.SubmitEditorEvent.eventName, (event: Event) => {
       this.dispatchEventToListeners(Events.CommandSent, (event as Components.JSONEditor.SubmitEditorEvent).data);

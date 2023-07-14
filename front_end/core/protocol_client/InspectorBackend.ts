@@ -88,6 +88,7 @@ interface CommandParameter {
   name: string;
   type: string;
   optional: boolean;
+  description: string;
 }
 
 type Callback = (error: MessageError|null, arg1: Object|null) => void;

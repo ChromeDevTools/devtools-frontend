@@ -110,7 +110,7 @@ export class PopoverHelper {
 
     this.startHidePopoverTimer(this.hideTimeout);
     this.stopShowPopoverTimer();
-    if (event.which && this.disableOnClick) {
+    if (event.buttons && this.disableOnClick) {
       return;
     }
     this.startShowPopoverTimer(event, this.isPopoverVisible() ? this.showTimeout * 0.6 : this.showTimeout);

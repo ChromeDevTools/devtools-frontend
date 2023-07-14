@@ -91,8 +91,8 @@ export class SubmitEditorEvent extends Event {
 @customElement('devtools-json-editor')
 export class JSONEditor extends LitElement {
   static override styles = [editorWidgetStyles];
-  @property() declare protocolMethodWithParametersMap: Map<string, Parameter[]>;
-  @property() declare protocolTypesMap: Map<string, Type[]>;
+  @property() declare metadataByCommand: Map<string, {parameters: Parameter[], description: string}>;
+  @property() declare typesByCommand: Map<string, Type[]>;
   @property() declare targetManager;
   @state() declare parameters: Parameter[];
   @state() command: string = '';
@@ -168,13 +168,13 @@ export class JSONEditor extends LitElement {
   }
 
   populateParametersForCommand(): void {
-    const commandParameters = this.protocolMethodWithParametersMap.get(this.command);
+    const commandParameters = this.metadataByCommand.get(this.command)?.parameters;
     if (!commandParameters) {
       return;
     }
     this.parameters = commandParameters.map((parameter: Parameter) => {
       if (parameter.type === 'object') {
-        const typeInfos = this.protocolTypesMap.get(parameter.typeRef as string) ?? [];
+        const typeInfos = this.typesByCommand.get(parameter.typeRef as string) ?? [];
         return {
           optional: parameter.optional,
           type: parameter.type,
@@ -278,7 +278,7 @@ export class JSONEditor extends LitElement {
     if (parameter.type !== 'array' || !parameter.typeRef) {
       return;
     }
-    const typeInfos = this.protocolTypesMap.get(parameter.typeRef as string) ?? [];
+    const typeInfos = this.typesByCommand.get(parameter.typeRef as string) ?? [];
     parameter.value.push({
       optional: true,
       type: this.#isTypePrimitive(parameter.typeRef) ? parameter.typeRef : 'object',
@@ -430,7 +430,7 @@ export class JSONEditor extends LitElement {
       <div class="row attribute padded">
         <div>command<span class="separator">:</span></div>
         <devtools-recorder-input
-          .options=${[...this.protocolMethodWithParametersMap.keys()]}
+          .options=${[...this.metadataByCommand.keys()]}
           .value=${this.command}
           .placeholder=${'Enter your command...'}
           @blur=${this.#handleCommandInputBlur}

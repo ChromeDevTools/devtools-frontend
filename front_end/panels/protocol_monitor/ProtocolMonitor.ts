@@ -123,21 +123,21 @@ const timeRenderer = (value: DataGrid.DataGridUtils.CellValue): LitHtml.Template
   return LitHtml.html`${i18nString(UIStrings.sMs, {PH1: String(value)})}`;
 };
 
-export const buildProtocolCommandsParametersMap =
-    (domains: Iterable<ProtocolDomain>): Map<string, Components.JSONEditor.Parameter[]> => {
-      const commandsMap: Map<string, Components.JSONEditor.Parameter[]> = new Map();
+export const buildProtocolMetadata = (domains: Iterable<ProtocolDomain>):
+    Map<string, {parameters: Components.JSONEditor.Parameter[], description: string}> => {
+      const metadataByCommand: Map<string, {parameters: Components.JSONEditor.Parameter[], description: string}> =
+          new Map();
       for (const domain of domains) {
-        for (const command of Object.keys(domain.commandParameters)) {
-          commandsMap.set(command, domain.commandParameters[command]);
+        for (const command of Object.keys(domain.metadata)) {
+          metadataByCommand.set(command, domain.metadata[command]);
         }
       }
-      return commandsMap;
+      return metadataByCommand;
     };
 
-const protocolMethodWithParametersMap = buildProtocolCommandsParametersMap(
+const metadataByCommand = buildProtocolMetadata(
     ProtocolClient.InspectorBackend.inspectorBackend.agentPrototypes.values() as Iterable<ProtocolDomain>);
-
-const protocolTypesMap = ProtocolClient.InspectorBackend.inspectorBackend.typeMap;
+const typesByCommand = ProtocolClient.InspectorBackend.inspectorBackend.typeMap;
 
 export interface Message {
   id?: number;
@@ -157,9 +157,7 @@ export interface LogMessage {
 
 export interface ProtocolDomain {
   readonly domain: string;
-  readonly commandParameters: {
-    [x: string]: Components.JSONEditor.Parameter[],
-  };
+  readonly metadata: {[commandName: string]: {parameters: Components.JSONEditor.Parameter[], description: string}};
 }
 
 export class ProtocolMonitorDataGrid extends UI.Widget.VBox {
@@ -663,7 +661,7 @@ export class CommandAutocompleteSuggestionProvider {
     }
 
     const newestToOldest = [...this.#commandHistory].reverse();
-    newestToOldest.push(...protocolMethodWithParametersMap.keys());
+    newestToOldest.push(...metadataByCommand.keys());
     return newestToOldest.filter(cmd => cmd.startsWith(prefix)).map(text => ({
                                                                       text,
                                                                     }));
@@ -734,8 +732,8 @@ export class EditorWidget extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   constructor() {
     super();
     this.jsonEditor = new Components.JSONEditor.JSONEditor();
-    this.jsonEditor.protocolMethodWithParametersMap = protocolMethodWithParametersMap;
-    this.jsonEditor.protocolTypesMap = protocolTypesMap;
+    this.jsonEditor.metadataByCommand = metadataByCommand;
+    this.jsonEditor.typesByCommand = typesByCommand;
     this.element.append(this.jsonEditor);
     this.jsonEditor.addEventListener(Components.JSONEditor.SubmitEditorEvent.eventName, (event: Event) => {
       this.dispatchEventToListeners(Events.CommandSent, (event as Components.JSONEditor.SubmitEditorEvent).data);

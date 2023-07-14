@@ -141,9 +141,10 @@ export class InspectorBackend {
     return prototype;
   }
 
-  registerCommand(method: QualifiedName, parameters: CommandParameter[], replyArgs: string[]): void {
+  registerCommand(method: QualifiedName, parameters: CommandParameter[], replyArgs: string[], description: string):
+      void {
     const [domain, command] = splitQualifiedName(method);
-    this.agentPrototype(domain as ProtocolDomainName).registerCommand(command, parameters, replyArgs);
+    this.agentPrototype(domain as ProtocolDomainName).registerCommand(command, parameters, replyArgs, description);
     this.#initialized = true;
   }
 
@@ -924,28 +925,26 @@ class _AgentPrototype {
   replyArgs: {
     [x: string]: string[],
   };
-  commandParameters: {
-    [x: string]: CommandParameter[],
-  };
-
+  description = '';
+  metadata: {[commandName: string]: {parameters: CommandParameter[], description: string}};
   readonly domain: string;
   target!: TargetBase;
   constructor(domain: string) {
     this.replyArgs = {};
     this.domain = domain;
-    this.commandParameters = {};
+    this.metadata = {};
   }
 
-  registerCommand(methodName: UnqualifiedName, parameters: CommandParameter[], replyArgs: string[]): void {
+  registerCommand(
+      methodName: UnqualifiedName, parameters: CommandParameter[], replyArgs: string[], description: string): void {
     const domainAndMethod = qualifyName(this.domain, methodName);
-
     function sendMessagePromise(this: _AgentPrototype, ...args: unknown[]): Promise<unknown> {
       return _AgentPrototype.prototype.sendMessageToBackendPromise.call(this, domainAndMethod, parameters, args);
     }
-
     // @ts-ignore Method code generation
     this[methodName] = sendMessagePromise;
-    this.commandParameters[domainAndMethod] = parameters;
+    this.metadata[domainAndMethod] = {parameters, description};
+
     function invoke(
         this: _AgentPrototype, request: Object|undefined = {}): Promise<Protocol.ProtocolResponseWithError> {
       return this.invoke(domainAndMethod, request);
@@ -953,7 +952,6 @@ class _AgentPrototype {
 
     // @ts-ignore Method code generation
     this['invoke_' + methodName] = invoke;
-
     this.replyArgs[domainAndMethod] = replyArgs;
   }
 

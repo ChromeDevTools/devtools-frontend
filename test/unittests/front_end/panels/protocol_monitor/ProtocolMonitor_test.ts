@@ -67,54 +67,72 @@ describe('ProtocolMonitor', () => {
       });
     });
 
-    it('should correctly creates a map of CDP commands with their corresponding parameters', async () => {
+    it('should correctly creates a map of CDP commands with their corresponding metadata', async () => {
       const domains = [
         {
           domain: 'Test',
-          commandParameters: {
-            'Test.test': [{
-              name: 'test',
-              type: 'test',
-              optional: true,
-            }],
+          metadata: {
+            'Test.test': {
+              parameters: [{
+                name: 'test',
+                type: 'test',
+                optional: true,
+              }],
+              description: 'Description1',
+            },
           },
         },
         {
           domain: 'Test2',
-          commandParameters: {
-            'Test2.test2': [{
-              name: 'test2',
-              type: 'test2',
-              optional: true,
-            }],
-            'Test2.test3': [{
-              name: 'test3',
-              type: 'test3',
-              optional: true,
-            }],
+          metadata: {
+            'Test2.test2': {
+              parameters: [{
+                name: 'test2',
+                type: 'test2',
+                optional: true,
+              }],
+              description: 'Description2',
+            },
+            'Test2.test3': {
+              parameters: [{
+                name: 'test3',
+                type: 'test3',
+                optional: true,
+              }],
+              description: 'Description3',
+            },
           },
         },
       ] as Iterable<ProtocolMonitor.ProtocolMonitor.ProtocolDomain>;
 
       const expectedCommands = new Map();
-      expectedCommands.set('Test.test', [{
-                             name: 'test',
-                             type: 'test',
-                             optional: true,
-                           }]);
-      expectedCommands.set('Test2.test2', [{
-                             name: 'test2',
-                             type: 'test2',
-                             optional: true,
-                           }]);
-      expectedCommands.set('Test2.test3', [{
-                             name: 'test3',
-                             type: 'test3',
-                             optional: true,
-                           }]);
+      expectedCommands.set('Test.test', {
+        parameters: [{
+          name: 'test',
+          type: 'test',
+          optional: true,
+        }],
+        description: 'Description1',
+      });
+      expectedCommands.set('Test2.test2', {
+        parameters: [{
+          name: 'test2',
+          type: 'test2',
+          optional: true,
+        }],
+        description: 'Description2',
+      });
+      expectedCommands.set('Test2.test3', {
+        parameters: [{
+          name: 'test3',
+          type: 'test3',
+          optional: true,
+        }],
+        description: 'Description3',
+      });
 
-      assert.deepStrictEqual(
-          ProtocolMonitor.ProtocolMonitor.buildProtocolCommandsParametersMap(domains), expectedCommands);
+      const metadataByCommand = ProtocolMonitor.ProtocolMonitor.buildProtocolMetadata(domains);
+      assert.deepStrictEqual(metadataByCommand, expectedCommands);
     });
   });
 

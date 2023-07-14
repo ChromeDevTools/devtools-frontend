@@ -24,6 +24,7 @@ const MEMORY_PANEL_CONTENT = 'div[aria-label="Memory panel"]';
 const PROFILE_TREE_SIDEBAR = 'div.profiles-tree-sidebar';
 export const MEMORY_TAB_ID = '#tab-heap_profiler';
 const CLASS_FILTER_INPUT = 'div[aria-placeholder="Class filter"]';
+const SELECTED_RESULT = '#profile-views table.data tr.data-grid-data-grid-node.revealed.parent.selected';
 
 export async function navigateToMemoryTab() {
   await click(MEMORY_TAB_ID);
@@ -141,17 +142,36 @@ export async function waitForSearchResultNumber(results: number) {
 }
 
 export async function findSearchResult(searchResult: string, pollIntrerval: number = 500) {
+  const {frontend} = getBrowserAndPages();
   const match = await waitFor('#profile-views table.data');
-  await waitForFunction(async () => {
-    await click('[aria-label="Search next"]');
-    const result = Promise.race([
-      waitForElementWithTextContent(searchResult, match),
-      new Promise(resolve => {
-        setTimeout(resolve, pollIntrerval, false);
-      }),
-    ]);
-    return result;
+  const matches = await waitFor('label.search-results-matches');
+  const matchesText = await matches.evaluate(async element => {
+    return element.textContent;
   });
+  if (matchesText === '1 of 1') {
+    await waitForElementWithTextContent(searchResult, match);
+  } else {
+    await waitForFunction(async () => {
+      const selectedBefore = await waitFor(SELECTED_RESULT);
+      await click('[aria-label="Search next"]');
+      // Wait until the click has taken effect by checking that the selected
+      // result has changed. This is done to prevent the assertion afterwards
+      // from happening before the next result is fully loaded.
+      await waitForFunction(async () => {
+        const selectedAfter = await waitFor(SELECTED_RESULT);
+        return await frontend.evaluate((b, a) => {
+          return b !== a;
+        }, selectedBefore, selectedAfter);
+      });
+      const result = Promise.race([
+        waitForElementWithTextContent(searchResult, match),
+        new Promise(resolve => {
+          setTimeout(resolve, pollIntrerval, false);
+        }),
+      ]);
+      return result;
+    });
+  }
 }
 
 const normalizRetainerName = (retainerName: string) => {

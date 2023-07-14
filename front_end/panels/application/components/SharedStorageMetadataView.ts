@@ -16,7 +16,7 @@ const UIStrings = {
   /**
    *@description Text in SharedStorage Metadata View of the Application panel
    */
-  sharedStorage: 'Shared Storage',
+  sharedStorage: 'Shared storage',
   /**
    *@description The time when the origin most recently created its shared storage database
    */

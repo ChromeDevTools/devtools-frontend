@@ -14,7 +14,7 @@ import {
   selectStorageItemAtIndex,
 } from '../helpers/application-helpers.js';
 
-const SESSION_STORAGE_SELECTOR = '[aria-label="Session Storage"].parent';
+const SESSION_STORAGE_SELECTOR = '[aria-label="Session storage"].parent';
 let DOMAIN_SELECTOR: string;
 
 describe('The Application Tab', async () => {

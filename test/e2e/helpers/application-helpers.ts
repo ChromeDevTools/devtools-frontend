@@ -14,7 +14,7 @@ export async function navigateToApplicationTab(target: puppeteer.Page, testName:
 }
 
 export async function navigateToServiceWorkers() {
-  const SERVICE_WORKER_ROW_SELECTOR = '[aria-label="Service Workers"]';
+  const SERVICE_WORKER_ROW_SELECTOR = '[aria-label="Service workers"]';
   await click(SERVICE_WORKER_ROW_SELECTOR);
 }
 

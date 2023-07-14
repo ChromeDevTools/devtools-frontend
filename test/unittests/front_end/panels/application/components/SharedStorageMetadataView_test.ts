@@ -44,7 +44,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     assertShadowRoot(report.shadowRoot);
 
     const titleElement = report.shadowRoot.querySelector('.report-title');
-    assert.strictEqual(titleElement?.textContent, 'Shared Storage');
+    assert.strictEqual(titleElement?.textContent, 'Shared storage');
   });
 
   it('renders report keys and values', async () => {

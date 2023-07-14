@@ -114,7 +114,7 @@ const UIStrings = {
   /**
    *@description Label of a tab in the network panel. Previously known as 'Trust Tokens'.
    */
-  trustTokens: 'Private State Tokens',
+  trustTokens: 'Private state tokens',
   /**
    *@description Title of the Private State Token tab in the Network panel. Previously known as 'Trust Token tab'.
    */

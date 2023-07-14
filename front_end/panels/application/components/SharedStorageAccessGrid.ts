@@ -15,7 +15,7 @@ const UIStrings = {
   /**
    *@description Text in Shared Storage Events View of the Application panel
    */
-  sharedStorage: 'Shared Storage',
+  sharedStorage: 'Shared storage',
   /**
    *@description Hover text for an info icon in the Shared Storage Events panel
    */

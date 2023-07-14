@@ -18,7 +18,7 @@ const UIStrings = {
   /**
    *@description Text in SharedStorage Items View of the Application panel
    */
-  sharedStorage: 'Shared Storage',
+  sharedStorage: 'Shared storage',
   /**
    *@description Text representing the name of a value stored in the "Shared Storage Items" table
    */

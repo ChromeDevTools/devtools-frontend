@@ -26,7 +26,7 @@ import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 
 const TOP_FRAME_SELECTOR = '[aria-label="top"]';
 const WEB_WORKERS_SELECTOR = '[aria-label="Web Workers"]';
-const SERVICE_WORKERS_SELECTOR = '[aria-label="top"] ~ ol [aria-label="Service Workers"]';
+const SERVICE_WORKERS_SELECTOR = '[aria-label="top"] ~ ol [aria-label="Service workers"]';
 const OPENED_WINDOWS_SELECTOR = '[aria-label="Opened Windows"]';
 const IFRAME_FRAME_ID_SELECTOR = '[aria-label="frameId (iframe.html)"]';
 const MAIN_FRAME_SELECTOR = '[aria-label="frameId (main-frame.html)"]';

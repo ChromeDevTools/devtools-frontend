@@ -198,7 +198,7 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
     super(true);
 
     // TODO(crbug.com/1156978): Replace UI.ReportView.ReportView with ReportView.ts web component.
-    this.currentWorkersView = new UI.ReportView.ReportView(i18n.i18n.lockedString('Service Workers'));
+    this.currentWorkersView = new UI.ReportView.ReportView(i18n.i18n.lockedString('Service workers'));
     this.currentWorkersView.setBodyScrollable(false);
     this.contentElement.classList.add('service-worker-list');
     this.currentWorkersView.show(this.contentElement);

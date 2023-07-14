@@ -135,7 +135,7 @@ const UIStrings = {
   /**
    * @description Text in Application Panel Sidebar of the Application panel
    */
-  serviceWorkers: 'Service Workers',
+  serviceWorkers: 'Service workers',
   /**
    * @description Checkbox label in Application Panel Sidebar of the Application panel.
    * Storage quota refers to the amount of disk available for the website or app.

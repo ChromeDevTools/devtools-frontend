@@ -43,7 +43,7 @@ const UIStrings = {
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
-  localStorage: 'Local Storage',
+  localStorage: 'Local storage',
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */

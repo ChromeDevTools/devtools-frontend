@@ -21,7 +21,7 @@ const UIStrings = {
    * be used to show a certain set of advertisements in the future as the
    * outcome of a FLEDGE auction. (https://developer.chrome.com/blog/fledge-api/)
    */
-  interestGroups: 'Interest Groups',
+  interestGroups: 'Interest groups',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/InterestGroupTreeElement.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

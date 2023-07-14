@@ -18,7 +18,7 @@ const UIStrings = {
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
-  cacheStorage: 'Cache Storage',
+  cacheStorage: 'Cache storage',
   /**
    *@description A context menu item in the Application Panel Sidebar of the Application panel
    */

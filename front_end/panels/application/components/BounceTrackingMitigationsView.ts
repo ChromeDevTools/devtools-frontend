@@ -18,7 +18,7 @@ const UIStrings = {
   /**
    * @description Title text in bounce tracking mitigations view of the Application panel.
    */
-  bounceTrackingMitigationsTitle: 'Bounce Tracking Mitigations',
+  bounceTrackingMitigationsTitle: 'Bounce tracking mitigations',
   /**
    * @description Label for the button to force bounce tracking mitigations to run.
    */

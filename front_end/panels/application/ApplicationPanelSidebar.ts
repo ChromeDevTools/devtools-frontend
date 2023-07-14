@@ -106,11 +106,11 @@ const UIStrings = {
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
-  localStorage: 'Local Storage',
+  localStorage: 'Local storage',
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
-  sessionStorage: 'Session Storage',
+  sessionStorage: 'Session storage',
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
@@ -122,7 +122,7 @@ const UIStrings = {
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
-  backgroundServices: 'Background Services',
+  backgroundServices: 'Background services',
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
@@ -1103,7 +1103,7 @@ export class ServiceWorkersTreeElement extends ApplicationPanelTreeElement {
   private view?: ServiceWorkersView;
 
   constructor(storagePanel: ResourcesPanel) {
-    super(storagePanel, i18n.i18n.lockedString('Service Workers'), false);
+    super(storagePanel, i18n.i18n.lockedString('Service workers'), false);
     const icon = UI.Icon.Icon.create('gears', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
@@ -2196,7 +2196,7 @@ export class FrameTreeElement extends ApplicationPanelTreeElement {
 
   workerCreated(targetInfo: Protocol.Target.TargetInfo): void {
     const categoryKey = targetInfo.type === 'service_worker' ? 'Service Workers' : 'Web Workers';
-    const categoryName = targetInfo.type === 'service_worker' ? i18n.i18n.lockedString('Service Workers') :
+    const categoryName = targetInfo.type === 'service_worker' ? i18n.i18n.lockedString('Service workers') :
                                                                 i18nString(UIStrings.webWorkers);
     let categoryElement = this.categoryElements.get(categoryKey);
     if (!categoryElement) {

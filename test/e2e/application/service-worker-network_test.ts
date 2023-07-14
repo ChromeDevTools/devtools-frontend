@@ -9,7 +9,7 @@ import {tabExistsInDrawer, tabExistsInMainPanel} from '../helpers/cross-tool-hel
 import {closeDrawer} from '../helpers/quick_open-helpers.js';
 
 const NETWORK_TAB_SELECTOR = '#tab-network';
-const SERVICE_WORKER_ROW_SELECTOR = '[aria-label="Service Workers"]';
+const SERVICE_WORKER_ROW_SELECTOR = '[aria-label="Service workers"]';
 const TEST_HTML_FILE = 'service-worker-network';
 const SERVICE_WORKER_NETWORK_SELECTOR = '[aria-label="Network requests"]';
 

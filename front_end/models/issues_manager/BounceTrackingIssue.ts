@@ -14,7 +14,7 @@ const UIStrings = {
   /**
    *@description Title for Bounce Tracking Mitigation explainer url link.
    */
-  bounceTrackingMitigations: 'Bounce Tracking Mitigations',
+  bounceTrackingMitigations: 'Bounce tracking mitigations',
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/BounceTrackingIssue.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

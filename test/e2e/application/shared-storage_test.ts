@@ -31,7 +31,7 @@ import {
   getInnerTextOfDataGridCells,
 } from '../helpers/datagrid-helpers.js';
 
-const SHARED_STORAGE_SELECTOR = '[aria-label="Shared Storage"].parent';
+const SHARED_STORAGE_SELECTOR = '[aria-label="Shared storage"].parent';
 let DOMAIN: string;
 let DOMAIN_SELECTOR: string;
 

@@ -33,7 +33,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineController.ts'
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineController implements SDK.TargetManager.SDKModelObserver<SDK.CPUProfilerModel.CPUProfilerModel>,
                                            TraceEngine.TracingManager.TracingManagerClient {
-  private readonly target: SDK.Target.Target;
+  readonly primaryPageTarget: SDK.Target.Target;
   private tracingManager: TraceEngine.TracingManager.TracingManager|null;
   private performanceModel: PerformanceModel;
   private readonly client: Client;
@@ -47,7 +47,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
   private cpuProfiles?: Map<any, any>|null;
 
   constructor(target: SDK.Target.Target, client: Client) {
-    this.target = target;
+    this.primaryPageTarget = target;
     this.tracingManager = target.model(TraceEngine.TracingManager.TracingManager);
     this.performanceModel = new PerformanceModel();
     this.performanceModel.setMainTarget(target);
@@ -59,10 +59,6 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
 
   dispose(): void {
     SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.CPUProfilerModel.CPUProfilerModel, this);
-  }
-
-  mainTarget(): SDK.Target.Target {
-    return this.target;
   }
 
   async startRecording(options: RecordingOptions): Promise<Protocol.ProtocolResponseWithError> {

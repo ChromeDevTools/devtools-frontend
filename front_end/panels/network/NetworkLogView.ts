@@ -95,9 +95,10 @@ const UIStrings = {
    */
   resourceTypesToInclude: 'Resource types to include',
   /**
-   *@description Label for a filter in the Network panel
+   *@description Label for a checkbox in the Network panel. When checked, only requests with
+   *             blocked response cookies are shown.
    */
-  hasBlockedCookies: 'Blocked cookies',
+  hasBlockedCookies: 'Blocked response cookies',
   /**
    *@description Tooltip for a checkbox in the Network panel. The response to a network request may include a
    *             cookie (https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies). Such response cookies can

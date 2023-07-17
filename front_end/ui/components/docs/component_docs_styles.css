@@ -35,6 +35,7 @@ body {
 
 .components-list a {
   display: block;
+  font-size: 14px;
   padding: 10px;
 }
 

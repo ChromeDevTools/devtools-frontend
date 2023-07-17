@@ -156,7 +156,7 @@ function createComponentIndexFile(componentPath, componentExamples) {
 function createServerIndexFile(componentNames) {
   const linksToStyleSheets =
       styleSheetPaths
-          .map(link => `<link rel="stylesheet" href="${sharedResourcesBase}${path.join(link.split('/'))}" />`)
+          .map(link => `<link rel="stylesheet" href="${sharedResourcesBase}${path.join(...link.split('/'))}" />`)
           .join('\n');
 
   // clang-format off

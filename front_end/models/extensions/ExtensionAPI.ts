@@ -1138,7 +1138,11 @@ self.injectedExtensionAPI = function(
   }
 
   function canAccessResource(resource: APIImpl.ResourceData): boolean {
-    return extensionInfo.allowFileAccess || !resource.url.startsWith('file://');
+    try {
+      return extensionInfo.allowFileAccess || (new URL(resource.url)).protocol !== 'file:';
+    } catch (e) {
+      return false;
+    }
   }
 
   function InspectedWindow(this: PublicAPI.Chrome.DevTools.InspectedWindow): void {

@@ -26,7 +26,9 @@
 .header-name {
   color: var(--color-text-primary);
   font-weight: 400;
-  width: 160px;
+  width: 30%;
+  min-width: 160px;
+  max-width: 240px;
   flex-shrink: 0;
   text-transform: capitalize;
   overflow-wrap: break-word;

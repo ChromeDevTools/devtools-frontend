@@ -14,4 +14,10 @@ describe('Performance panel overview/minimap', () => {
     const pane = await waitFor('#timeline-overview-pane');
     await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview.png', 3);
   });
+
+  itScreenshot('shows a red bar for a long task', async () => {
+    await loadComponentDocExample('performance_panel/overview.html?trace=one-second-interaction');
+    const pane = await waitFor('#timeline-overview-pane');
+    await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview-long-task-red-bar.png', 3);
+  });
 });

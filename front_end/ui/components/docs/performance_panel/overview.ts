@@ -15,7 +15,7 @@ if (!container) {
 }
 
 const params = new URLSearchParams(window.location.search);
-const fileName = (params.get('fileName') || 'web-dev') + '.json.gz';
+const fileName = (params.get('trace') || 'web-dev') + '.json.gz';
 const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
 minimap.markAsRoot();
 minimap.show(container);

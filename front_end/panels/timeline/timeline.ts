@@ -23,6 +23,7 @@ import * as TimelineFlameChartView from './TimelineFlameChartView.js';
 import * as TimelineHistoryManager from './TimelineHistoryManager.js';
 import * as TimelineLayersView from './TimelineLayersView.js';
 import * as TimelineLoader from './TimelineLoader.js';
+import * as TimelineMiniMap from './TimelineMiniMap.js';
 import * as TimelinePaintProfilerView from './TimelinePaintProfilerView.js';
 import * as TimelinePanel from './TimelinePanel.js';
 import * as TimelineSelection from './TimelineSelection.js';
@@ -54,6 +55,7 @@ export {
   TimelineHistoryManager,
   TimelineLayersView,
   TimelineLoader,
+  TimelineMiniMap,
   TimelinePaintProfilerView,
   TimelinePanel,
   TimelineSelection,

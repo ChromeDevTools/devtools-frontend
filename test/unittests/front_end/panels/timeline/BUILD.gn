@@ -17,6 +17,7 @@ ts_library("timeline") {
     "TimelineFlameChartView_test.ts",
     "TimelineHistoryManager_test.ts",
     "TimelineLoader_test.ts",
+    "TimelineMiniMap_test.ts",
     "TimelineSelection_test.ts",
     "TimelineTreeView_test.ts",
     "TimelineUIUtils_test.ts",

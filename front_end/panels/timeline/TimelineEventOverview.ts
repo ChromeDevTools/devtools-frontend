@@ -329,6 +329,14 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
       return;
     }
 
+    if (this.height() === 0) {
+      // Height of 0 causes the maths below to get off and generate very large
+      // negative numbers that cause an extremely long loop when attempting to
+      // draw images by frame. Rather than that, let's warn and exist early.
+      console.warn('TimelineFilmStrip could not be drawn as its canvas height is 0');
+      return;
+    }
+
     const drawGeneration = Symbol('drawGeneration');
     this.drawGeneration = drawGeneration;
     void this.imageByFrame(frames[0]).then(image => {

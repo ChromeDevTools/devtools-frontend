@@ -264,17 +264,9 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
     const timeOffset = this.model.timelineModel().minimumRecordTime();
     const timeSpan = this.model.timelineModel().maximumRecordTime() - timeOffset;
     const scale = this.width() / timeSpan;
-    const frames = this.model.frames();
     const ctx = this.context();
     const fillPath = new Path2D();
     const markersPath = new Path2D();
-    for (let i = 0; i < frames.length; ++i) {
-      const frame = frames[i];
-      if (!frame.hasWarnings()) {
-        continue;
-      }
-      paintWarningDecoration(frame.startTime, frame.duration);
-    }
 
     for (const track of this.model.timelineModel().tracks()) {
       const events = track.events;

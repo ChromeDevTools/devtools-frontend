@@ -1020,16 +1020,6 @@ const UIStrings = {
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  jank: 'jank',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   *@example {Took 3ms} PH1
-   *@example {jank} PH2
-   */
-  sLongFrameTimesAreAnIndicationOf: '{PH1}. Long frame times are an indication of {PH2}',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
   forcedReflow: 'Forced reflow',
   /**
    *@description Text used to highlight a long interaction and link to web.dev/inp
@@ -3049,7 +3039,7 @@ export class TimelineUIUtils {
     contentHelper.addSection(i18nString(UIStrings.frame));
 
     const duration = TimelineUIUtils.frameDuration(frame);
-    contentHelper.appendElementRow(i18nString(UIStrings.duration), duration, frame.hasWarnings());
+    contentHelper.appendElementRow(i18nString(UIStrings.duration), duration);
     contentHelper.appendTextRow(i18nString(UIStrings.cpuTime), i18n.TimeUtilities.millisToString(frame.cpuTime, true));
     if (filmStrip && filmStripFrame) {
       const filmStripPreview = document.createElement('div');
@@ -3079,14 +3069,7 @@ export class TimelineUIUtils {
       PH1: i18n.TimeUtilities.millisToString(frame.endTime - frame.startTime, true),
       PH2: i18n.TimeUtilities.millisToString(frame.startTimeOffset, true),
     });
-    if (!frame.hasWarnings()) {
-      return i18n.i18n.getFormatLocalizedString(str_, UIStrings.emptyPlaceholder, {PH1: durationText});
-    }
-
-    const link = UI.XLink.XLink.create(
-        'https://developers.google.com/web/fundamentals/performance/rendering/', i18nString(UIStrings.jank));
-    return i18n.i18n.getFormatLocalizedString(
-        str_, UIStrings.sLongFrameTimesAreAnIndicationOf, {PH1: durationText, PH2: link});
+    return i18n.i18n.getFormatLocalizedString(str_, UIStrings.emptyPlaceholder, {PH1: durationText});
   }
 
   static quadWidth(quad: number[]): number {

@@ -118,10 +118,6 @@ const UIStrings = {
    *@description Text for a rendering frame
    */
   frame: 'Frame',
-  /**
-   *@description Warning text content in Timeline Flame Chart Data Provider of the Performance panel
-   */
-  longFrame: 'Long frame',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -930,11 +926,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       } else {
         title = i18nString(UIStrings.frame);
       }
-
-      if (frame.hasWarnings()) {
-        warning = document.createElement('span');
-        warning.textContent = i18nString(UIStrings.longFrame);
-      }
     } else {
       return null;
     }
@@ -1069,8 +1060,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         const overlay = context.createPattern(this.droppedFramePatternCanvas, 'repeat');
         context.fillStyle = overlay || context.fillStyle;
       }
-    } else if (frame.hasWarnings()) {
-      context.fillStyle = '#fad1d1';
     } else {
       context.fillStyle = '#d7f0d1';
     }

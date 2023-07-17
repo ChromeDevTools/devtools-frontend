@@ -454,10 +454,6 @@ export class TimelineFrame {
     this.mainFrameId = undefined;
   }
 
-  hasWarnings(): boolean {
-    return false;
-  }
-
   setEndTime(endTime: number): void {
     this.endTime = endTime;
     this.duration = this.endTime - this.startTime;

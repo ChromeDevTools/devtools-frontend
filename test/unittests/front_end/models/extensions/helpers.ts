@@ -6,6 +6,7 @@ import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
 import * as Host from '../../../../../front_end/core/host/host.js';
 import * as Extensions from '../../../../../front_end/models/extensions/extensions.js';
 import {describeWithEnvironment, setupActionRegistry} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
 interface ExtensionContext {
   chrome: Partial<Chrome.DevTools.Chrome>;
@@ -48,7 +49,7 @@ export function describeWithDevtoolsExtension(
     context.chrome = chrome;
   }
 
-  return describe(`with-extension-${title}`, function() {
+  return describeWithMockConnection(`with-extension-${title}`, function() {
     beforeEach(cleanup);
     beforeEach(setup);
     afterEach(cleanup);

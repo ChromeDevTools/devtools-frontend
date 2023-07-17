@@ -739,11 +739,6 @@ export class EditorWidget extends Common.ObjectWrapper.eventMixin<EventTypes, ty
       this.dispatchEventToListeners(Events.CommandSent, (event as Components.JSONEditor.SubmitEditorEvent).data);
     });
   }
-
-  setCommand(command: string, parameters: Components.JSONEditor.Parameter[]): void {
-    this.jsonEditor.parameters = parameters;
-    this.jsonEditor.command = command;
-  }
 }
 
 export function parseCommandInput(input: string): {command: string, parameters: object} {

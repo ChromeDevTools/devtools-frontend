@@ -114,16 +114,9 @@ export class JSONEditor extends LitElement {
   @state() command: string = '';
   @state() targetId?: string;
 
-  #hintPopoverHelper: UI.PopoverHelper.PopoverHelper;
+  #hintPopoverHelper?: UI.PopoverHelper.PopoverHelper;
   constructor() {
     super();
-
-    this.#hintPopoverHelper = new UI.PopoverHelper.PopoverHelper(this, event => this.#handlePopoverDescriptions(event));
-
-    this.#hintPopoverHelper.setDisableOnClick(true);
-    this.#hintPopoverHelper.setTimeout(300);
-    this.#hintPopoverHelper.setHasPadding(true);
-
     this.parameters = [];
     this.targetManager = SDK.TargetManager.TargetManager.instance();
     this.targetId = this.targetManager.targets().length !== 0 ? this.targetManager.targets()[0].id() : undefined;
@@ -139,6 +132,19 @@ export class JSONEditor extends LitElement {
     });
   }
 
+  override connectedCallback(): void {
+    super.connectedCallback();
+    this.#hintPopoverHelper = new UI.PopoverHelper.PopoverHelper(this, event => this.#handlePopoverDescriptions(event));
+    this.#hintPopoverHelper.setDisableOnClick(true);
+    this.#hintPopoverHelper.setTimeout(300);
+    this.#hintPopoverHelper.setHasPadding(true);
+  }
+  override disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.#hintPopoverHelper?.hidePopover();
+    this.#hintPopoverHelper?.dispose();
+  }
+
   #handlePopoverDescriptions(event: MouseEvent):
       {box: AnchorBox, show: (popover: UI.GlassPane.GlassPane) => Promise<boolean>}|null {
     const hintElement = event.composedPath()[0] as HTMLElement;
@@ -152,9 +158,9 @@ export class JSONEditor extends LitElement {
       box: hintElement.boxInWindow(),
       show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
         const popupElement = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView({
-          'getMessage': (): string => `<code><span>${head}</span></code>`,
+          'getMessage': (): string => `<code><span>${head}.</span></code>`,
           // Will change this line once the returnType of command will have been added to the metadataByCommandMap
-          'getPossibleFixMessage': (): string => type ? tail + `Type: ${type}<br>` : tail,
+          'getPossibleFixMessage': (): string => type ? tail + `<br>Type: ${type}<br>` : tail,
           'getLearnMoreLink': (): string =>
               `https://chromedevtools.github.io/devtools-protocol/tot/${this.command.split('.')[0]}/`,
         });

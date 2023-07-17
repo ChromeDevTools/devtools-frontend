@@ -1450,7 +1450,7 @@ Common.Settings.registerSettingExtension({
   title: i18nLazyString(UIStrings.automaticallyRevealFilesIn),
   settingName: 'autoRevealInNavigator',
   settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: false,
+  defaultValue: true,
   options: [
     {
       value: true,

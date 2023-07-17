@@ -791,6 +791,13 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       return null;
     }
     if (this.scriptsTree.selectedTreeElement) {
+      // If the tree outline is being marked as "being edited" (i.e. we're renaming a file
+      // or chosing the name for a new snippet), we shall not proceed with revealing here,
+      // as that will steal focus from the input widget and thus cancel editing. The
+      // test/e2e/snippets/breakpoint_test.ts exercises this.
+      if (UI.UIUtils.isBeingEdited(this.scriptsTree.selectedTreeElement.treeOutline?.element)) {
+        return null;
+      }
       this.scriptsTree.selectedTreeElement.deselect();
     }
     this.lastSelectedUISourceCode = uiSourceCode;

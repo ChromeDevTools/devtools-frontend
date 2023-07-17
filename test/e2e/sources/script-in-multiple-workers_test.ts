@@ -12,16 +12,12 @@ import {
   getPendingEvents,
   goToResource,
   installEventListener,
-  pressKey,
   step,
   timeout,
-  typeText,
   waitFor,
   waitForFunction,
-  waitForNone,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {openCommandMenu} from '../helpers/quick_open-helpers.js';
 import {
   addBreakpointForLine,
   BREAKPOINT_ITEM_SELECTOR,
@@ -91,14 +87,6 @@ describe('Multi-Workers', async function() {
 
         const {target, frontend} = getBrowserAndPages();
         installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
-
-        await step('Enable reveal in sidebar', async () => {
-          await openCommandMenu();
-          await typeText('reveal files');
-          await waitFor('.filtered-list-widget-title');
-          await pressKey('Enter');
-          await waitForNone('.filtered-list-widget-title');
-        });
 
         await step('Send message to a worker to trigger break', async () => {
           await target.evaluate('workers[3].postMessage({command:"break"});');

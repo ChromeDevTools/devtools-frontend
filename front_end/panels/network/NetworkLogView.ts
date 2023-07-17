@@ -41,7 +41,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as HAR from '../../models/har/har.js';
-import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -104,7 +103,7 @@ const UIStrings = {
    *             cookie (https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies). Such response cookies can
    *             be malformed or otherwise invalid and the browser may choose to ignore or not accept invalid cookies.
    */
-  onlyShowRequestsWithBlocked: 'Show only the requests with blocked response cookies',
+  onlyShowRequestsWithBlockedCookies: 'Show only the requests with blocked response cookies',
   /**
    *@description Label for a filter in the Network panel
    */
@@ -377,7 +376,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     implements SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager>, NetworkLogViewInterface {
   private readonly networkInvertFilterSetting: Common.Settings.Setting<boolean>;
   private readonly networkHideDataURLSetting: Common.Settings.Setting<boolean>;
-  private readonly networkShowIssuesOnlySetting: Common.Settings.Setting<boolean>;
+  private readonly networkShowBlockedCookiesOnlySetting: Common.Settings.Setting<boolean>;
   private readonly networkOnlyBlockedRequestsSetting: Common.Settings.Setting<boolean>;
   private readonly networkOnlyThirdPartySetting: Common.Settings.Setting<boolean>;
   private readonly networkResourceTypeFiltersSetting: Common.Settings.Setting<{[key: string]: boolean}>;
@@ -407,7 +406,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly invertFilterUI: UI.FilterBar.CheckboxFilterUI;
   private readonly dataURLFilterUI: UI.FilterBar.CheckboxFilterUI;
   private resourceCategoryFilterUI: UI.FilterBar.NamedBitSetFilterUI;
-  private readonly onlyIssuesFilterUI: UI.FilterBar.CheckboxFilterUI;
+  private readonly onlyBlockedResponseCookiesFilterUI: UI.FilterBar.CheckboxFilterUI;
   private readonly onlyBlockedRequestsUI: UI.FilterBar.CheckboxFilterUI;
   private readonly onlyThirdPartyFilterUI: UI.FilterBar.CheckboxFilterUI;
   private readonly filterParser: TextUtils.TextUtils.FilterParser;
@@ -428,8 +427,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     this.networkInvertFilterSetting = Common.Settings.Settings.instance().createSetting('networkInvertFilter', false);
     this.networkHideDataURLSetting = Common.Settings.Settings.instance().createSetting('networkHideDataURL', false);
-    this.networkShowIssuesOnlySetting =
-        Common.Settings.Settings.instance().createSetting('networkShowIssuesOnly', false);
+    this.networkShowBlockedCookiesOnlySetting =
+        Common.Settings.Settings.instance().createSetting('networkShowBlockedCookiesOnlySetting', false);
     this.networkOnlyBlockedRequestsSetting =
         Common.Settings.Settings.instance().createSetting('networkOnlyBlockedRequests', false);
     this.networkOnlyThirdPartySetting =
@@ -510,12 +509,14 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
     filterBar.addFilter(this.resourceCategoryFilterUI);
 
-    this.onlyIssuesFilterUI = new UI.FilterBar.CheckboxFilterUI(
-        'only-show-issues', i18nString(UIStrings.hasBlockedCookies), true, this.networkShowIssuesOnlySetting);
-    this.onlyIssuesFilterUI.addEventListener(
+    this.onlyBlockedResponseCookiesFilterUI = new UI.FilterBar.CheckboxFilterUI(
+        'only-show-blocked-cookies', i18nString(UIStrings.hasBlockedCookies), true,
+        this.networkShowBlockedCookiesOnlySetting);
+    this.onlyBlockedResponseCookiesFilterUI.addEventListener(
         UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
-    UI.Tooltip.Tooltip.install(this.onlyIssuesFilterUI.element(), i18nString(UIStrings.onlyShowRequestsWithBlocked));
-    filterBar.addFilter(this.onlyIssuesFilterUI);
+    UI.Tooltip.Tooltip.install(
+        this.onlyBlockedResponseCookiesFilterUI.element(), i18nString(UIStrings.onlyShowRequestsWithBlockedCookies));
+    filterBar.addFilter(this.onlyBlockedResponseCookiesFilterUI);
 
     this.onlyBlockedRequestsUI = new UI.FilterBar.CheckboxFilterUI(
         'only-show-blocked-requests', i18nString(UIStrings.blockedRequests), true,
@@ -1431,7 +1432,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   setTextFilterValue(filterString: string): void {
     this.textFilterUI.setValue(filterString);
     this.dataURLFilterUI.setChecked(false);
-    this.onlyIssuesFilterUI.setChecked(false);
+    this.onlyBlockedResponseCookiesFilterUI.setChecked(false);
     this.onlyBlockedRequestsUI.setChecked(false);
     this.resourceCategoryFilterUI.reset();
   }
@@ -1777,8 +1778,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     if (this.dataURLFilterUI.checked() && (request.parsedURL.isDataURL() || request.parsedURL.isBlobURL())) {
       return false;
     }
-    if (this.onlyIssuesFilterUI.checked() &&
-        !IssuesManager.RelatedIssue.hasIssueOfCategory(request, IssuesManager.Issue.IssueCategory.Cookie)) {
+    if (this.onlyBlockedResponseCookiesFilterUI.checked() && !request.blockedResponseCookies().length) {
       return false;
     }
     if (this.onlyBlockedRequestsUI.checked() && !request.wasBlocked() && !request.corsErrorStatus()) {

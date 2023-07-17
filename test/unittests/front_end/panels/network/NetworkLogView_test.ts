@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../front_end/core/common/common.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Network from '../../../../../front_end/panels/network/network.js';
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
@@ -16,6 +17,7 @@ import * as Coordinator from '../../../../../front_end/ui/components/render_coor
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../helpers/MockConnection.js';
+import {assertElement} from '../../helpers/DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -90,11 +92,13 @@ describeWithMockConnection('NetworkLogView', () => {
       assert.strictEqual(actual, expected);
     });
 
-    function createNetworkLogView(): Network.NetworkLogView.NetworkLogView {
+    function createNetworkLogView(filterBar?: UI.FilterBar.FilterBar): Network.NetworkLogView.NetworkLogView {
+      if (!filterBar) {
+        filterBar = {addFilter: () => {}, filterButton: () => ({addEventListener: () => {}})} as unknown as
+            UI.FilterBar.FilterBar;
+      }
       return new Network.NetworkLogView.NetworkLogView(
-          {addFilter: () => {}, filterButton: () => ({addEventListener: () => {}})} as unknown as
-              UI.FilterBar.FilterBar,
-          document.createElement('div'),
+          filterBar, document.createElement('div'),
           Common.Settings.Settings.instance().createSetting('networkLogLargeRows', false));
     }
 
@@ -260,6 +264,40 @@ describeWithMockConnection('NetworkLogView', () => {
 
     it('replaces requests when switching scope with preserve log off', handlesSwitchingScope(false));
     it('appends requests when switching scope with preserve log on', handlesSwitchingScope(true));
+
+    it('can filter requests with blocked response cookies', async () => {
+      const request1 = createNetworkRequest('url1', {target});
+      request1.blockedResponseCookies = () => [{
+        blockedReasons: [Protocol.Network.SetCookieBlockedReason.SameSiteNoneInsecure],
+        cookie: null,
+        cookieLine: 'foo=bar; SameSite=None',
+      }];
+      createNetworkRequest('url2', {target});
+      const filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+      networkLogView = createNetworkLogView(filterBar);
+      networkLogView.markAsRoot();
+      networkLogView.show(document.body);
+      const rootNode = networkLogView.columns().dataGrid().rootNode();
+      const blockedCookiesCheckbox =
+          filterBar.element.querySelector('[title="Show only the requests with blocked response cookies"] span')
+              ?.shadowRoot?.querySelector('input') ||
+          null;
+      assertElement(blockedCookiesCheckbox, HTMLInputElement);
+
+      assert.deepEqual(
+          rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
+          ['url1' as Platform.DevToolsPath.UrlString, 'url2' as Platform.DevToolsPath.UrlString]);
+
+      blockedCookiesCheckbox.checked = true;
+      const event = new Event('change');
+      blockedCookiesCheckbox.dispatchEvent(event);
+
+      assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
+        'url1' as Platform.DevToolsPath.UrlString,
+      ]);
+
+      networkLogView.detach();
+    });
   };
 
   describe('without tab target', () => tests(createTarget));

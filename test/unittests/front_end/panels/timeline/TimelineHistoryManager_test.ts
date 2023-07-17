@@ -30,6 +30,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
             traceParseDataIndex: 1,
           },
           filmStripForPreview: null,
+          traceParsedData: firstFileModels.traceParsedData,
         },
     );
 
@@ -40,6 +41,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
         traceParseDataIndex: 2,
       },
       filmStripForPreview: null,
+      traceParsedData: secondFileModels.traceParsedData,
     });
 
     // Make sure the correct model tuples (legacy and new engine) are returned when

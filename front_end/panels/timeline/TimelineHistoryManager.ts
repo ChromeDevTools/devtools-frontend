@@ -15,6 +15,7 @@ import {
   TimelineEventOverviewCPUActivity,
   TimelineEventOverviewNetwork,
   TimelineEventOverviewResponsiveness,
+  type TimelineEventOverview,
 } from './TimelineEventOverview.js';
 
 const UIStrings = {
@@ -73,6 +74,8 @@ export interface NewHistoryRecordingData {
   data: RecordingData;
   // We do not store this, but need it to build the thumbnail preview.
   filmStripForPreview: TraceEngine.Extras.FilmStrip.Data|null;
+  // Also not stored, but used to create the preview overview for a new trace.
+  traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData;
 }
 
 export class TimelineHistoryManager {
@@ -81,7 +84,7 @@ export class TimelineHistoryManager {
   private readonly nextNumberByDomain: Map<string, number>;
   private readonly buttonInternal: ToolbarButton;
   private readonly allOverviews: {
-    constructor: typeof TimelineEventOverviewResponsiveness,
+    constructor: (traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData) => TimelineEventOverview,
     height: number,
   }[];
   private totalHeight: number;
@@ -98,9 +101,18 @@ export class TimelineHistoryManager {
     this.clear();
 
     this.allOverviews = [
-      {constructor: TimelineEventOverviewResponsiveness, height: 3},
-      {constructor: TimelineEventOverviewCPUActivity, height: 20},
-      {constructor: TimelineEventOverviewNetwork, height: 8},
+      {
+        constructor: (traceParsedData): TimelineEventOverviewResponsiveness => {
+          return new TimelineEventOverviewResponsiveness(traceParsedData);
+        },
+        height: 3,
+      },
+      {constructor: (): TimelineEventOverviewCPUActivity => new TimelineEventOverviewCPUActivity(), height: 20},
+      {
+        constructor: (traceParsedData): TimelineEventOverviewNetwork =>
+            new TimelineEventOverviewNetwork(traceParsedData),
+        height: 8,
+      },
     ];
     this.totalHeight = this.allOverviews.reduce((acc, entry) => acc + entry.height, 0);
     this.enabled = true;
@@ -113,7 +125,7 @@ export class TimelineHistoryManager {
     this.lastActiveModel = legacyModel;
     this.recordings.unshift({legacyModel: legacyModel, traceParseDataIndex});
 
-    this.buildPreview(legacyModel, filmStrip);
+    this.buildPreview(legacyModel, newInput.traceParsedData, filmStrip);
     const modelTitle = this.title(legacyModel);
     this.buttonInternal.setText(modelTitle);
     const buttonTitle = this.action.title();
@@ -242,8 +254,9 @@ export class TimelineHistoryManager {
     return data.title;
   }
 
-  private buildPreview(performanceModel: PerformanceModel, filmStrip: TraceEngine.Extras.FilmStrip.Data|null):
-      HTMLDivElement {
+  private buildPreview(
+      performanceModel: PerformanceModel, traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData,
+      filmStrip: TraceEngine.Extras.FilmStrip.Data|null): HTMLDivElement {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(performanceModel.timelineModel().pageURL());
     const domain = parsedURL ? parsedURL.host : '';
     const title = performanceModel.tracingModel().title() || domain;
@@ -262,7 +275,7 @@ export class TimelineHistoryManager {
     preview.appendChild(this.buildTextDetails(performanceModel, title, timeElement));
     const screenshotAndOverview = preview.createChild('div', 'hbox');
     screenshotAndOverview.appendChild(this.buildScreenshotThumbnail(filmStrip));
-    screenshotAndOverview.appendChild(this.buildOverview(performanceModel));
+    screenshotAndOverview.appendChild(this.buildOverview(performanceModel, traceParsedData));
     return data.preview;
   }
 
@@ -303,7 +316,8 @@ export class TimelineHistoryManager {
     return container;
   }
 
-  private buildOverview(performanceModel: PerformanceModel): Element {
+  private buildOverview(
+      performanceModel: PerformanceModel, traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData): Element {
     const container = document.createElement('div');
 
     container.style.width = previewWidth + 'px';
@@ -315,11 +329,11 @@ export class TimelineHistoryManager {
     const ctx = canvas.getContext('2d');
     let yOffset = 0;
     for (const overview of this.allOverviews) {
-      const timelineOverview = new overview.constructor();
-      timelineOverview.setCanvasSize(previewWidth, overview.height);
-      timelineOverview.setModel(performanceModel);
-      timelineOverview.update();
-      const sourceContext = timelineOverview.context();
+      const timelineOverviewComponent = overview.constructor(traceParsedData);
+      timelineOverviewComponent.setCanvasSize(previewWidth, overview.height);
+      timelineOverviewComponent.setModel(performanceModel);
+      timelineOverviewComponent.update();
+      const sourceContext = timelineOverviewComponent.context();
       const imageData = sourceContext.getImageData(0, 0, sourceContext.canvas.width, sourceContext.canvas.height);
       if (ctx) {
         ctx.putImageData(imageData, 0, yOffset);

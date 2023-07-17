@@ -62,7 +62,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineEventOverview.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class TimelineEventOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
+export abstract class TimelineEventOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
   protected model: PerformanceModel|null;
   constructor(id: string, title: string|null) {
     super();
@@ -88,8 +88,12 @@ export class TimelineEventOverview extends PerfUI.TimelineOverviewPane.TimelineO
 }
 
 export class TimelineEventOverviewNetwork extends TimelineEventOverview {
-  constructor() {
+  // WIP as part of crbug.com/1464206
+  // eslint-disable-next-line no-unused-private-class-members
+  #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData;
+  constructor(traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData) {
     super('network', i18nString(UIStrings.net));
+    this.#traceParsedData = traceParsedData;
   }
 
   override update(): void {
@@ -250,8 +254,12 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
 }
 
 export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
-  constructor() {
+  // WIP as part of crbug.com/1464206
+  // eslint-disable-next-line no-unused-private-class-members
+  #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData;
+  constructor(traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData) {
     super('responsiveness', null);
+    this.#traceParsedData = traceParsedData;
   }
 
   override update(): void {

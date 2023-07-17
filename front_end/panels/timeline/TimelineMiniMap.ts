@@ -76,9 +76,13 @@ export class TimelineMiniMap extends
 
   updateControls(data: OverviewData): void {
     this.#controls = [];
-    this.#controls.push(new TimelineEventOverviewResponsiveness());
+    if (data.traceParsedData) {
+      this.#controls.push(new TimelineEventOverviewResponsiveness(data.traceParsedData));
+    }
     this.#controls.push(new TimelineEventOverviewCPUActivity());
-    this.#controls.push(new TimelineEventOverviewNetwork());
+    if (data.traceParsedData) {
+      this.#controls.push(new TimelineEventOverviewNetwork(data.traceParsedData));
+    }
     if (data.settings.showScreenshots && data.traceParsedData) {
       const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(data.traceParsedData);
       if (filmStrip.frames.length) {

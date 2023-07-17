@@ -1286,6 +1286,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
 
       const traceData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
+      if (!traceData) {
+        throw new Error(`Could not get trace data at index ${this.#traceEngineActiveTraceIndex}`);
+      }
       // We store the Performance Model and the index of the active trace.
       // However we also pass in the full trace data because we use it to build
       // the preview overview thumbnail of the trace that gets shown in the UI.
@@ -1294,7 +1297,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           legacyModel: this.performanceModel,
           traceParseDataIndex: this.#traceEngineActiveTraceIndex,
         },
-        filmStripForPreview: traceData ? TraceEngine.Extras.FilmStrip.fromTraceData(traceData) : null,
+        filmStripForPreview: TraceEngine.Extras.FilmStrip.fromTraceData(traceData),
+        traceParsedData: traceData,
       });
     } catch (error) {
       this.recordingFailed(error.message);

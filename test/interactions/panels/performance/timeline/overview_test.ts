@@ -20,4 +20,10 @@ describe('Performance panel overview/minimap', () => {
     const pane = await waitFor('#timeline-overview-pane');
     await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview-long-task-red-bar.png', 3);
   });
+
+  itScreenshot('shows network requests in the overview', async () => {
+    await loadComponentDocExample('performance_panel/overview.html?trace=many-requests');
+    const pane = await waitFor('#timeline-overview-pane');
+    await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview-busy-network.png', 3);
+  });
 });

@@ -82,6 +82,7 @@ describe('ProtocolMonitor', () => {
                 optional: true,
               }],
               description: 'Description1',
+              replyArgs: ['Test1'],
             },
           },
         },
@@ -95,6 +96,7 @@ describe('ProtocolMonitor', () => {
                 optional: true,
               }],
               description: 'Description2',
+              replyArgs: ['Test2'],
             },
             'Test2.test3': {
               parameters: [{
@@ -103,6 +105,7 @@ describe('ProtocolMonitor', () => {
                 optional: true,
               }],
               description: 'Description3',
+              replyArgs: ['Test3'],
             },
           },
         },
@@ -116,6 +119,7 @@ describe('ProtocolMonitor', () => {
           optional: true,
         }],
         description: 'Description1',
+        replyArgs: ['Test1'],
       });
       expectedCommands.set('Test2.test2', {
         parameters: [{
@@ -124,6 +128,7 @@ describe('ProtocolMonitor', () => {
           optional: true,
         }],
         description: 'Description2',
+        replyArgs: ['Test2'],
       });
       expectedCommands.set('Test2.test3', {
         parameters: [{
@@ -132,6 +137,7 @@ describe('ProtocolMonitor', () => {
           optional: true,
         }],
         description: 'Description3',
+        replyArgs: ['Test3'],
       });
 
       const metadataByCommand = ProtocolMonitor.ProtocolMonitor.buildProtocolMetadata(domains);
@@ -187,6 +193,54 @@ describe('ProtocolMonitor', () => {
       jsonEditor.connectedCallback();
       renderElementIntoDOM(jsonEditor);
       return jsonEditor;
+    };
+
+    const populateMetadata = async(jsonEditor: ProtocolComponents.JSONEditor.JSONEditor): Promise<void> => {
+      const mockDomain = [
+        {
+          domain: 'Test',
+          metadata: {
+            'Test.test': {
+              parameters: [{
+                name: 'test',
+                type: 'test',
+                optional: true,
+              }],
+              description: 'Description1.',
+              replyArgs: ['Test1'],
+            },
+          },
+        },
+      ] as Iterable<ProtocolMonitor.ProtocolMonitor.ProtocolDomain>;
+
+      const metadataByCommand = ProtocolMonitor.ProtocolMonitor.buildProtocolMetadata(mockDomain);
+      jsonEditor.metadataByCommand = metadataByCommand;
+      await jsonEditor.updateComplete;
+    };
+
+    const renderPopup = async (element: Element|null) => {
+      if (element) {
+        const clock = sinon.useFakeTimers();
+        try {
+          dispatchMouseMoveEvent(element, {
+            bubbles: true,
+            composed: true,
+          });
+          clock.tick(300);
+          clock.restore();
+        } finally {
+          clock.restore();
+        }
+        await raf();
+      } else {
+        throw new Error('No parameter has been found');
+      }
+    };
+
+    const serializePopupContent = (): string|null|undefined => {
+      const container = document.body.querySelector<HTMLDivElement>('[data-devtools-glass-pane]');
+      const hintDetailView = container?.shadowRoot?.querySelector('devtools-css-hint-details-view');
+      return hintDetailView?.shadowRoot?.textContent?.replaceAll(/\s/g, '');
     };
 
     it('should return the parameters in a format understandable by the ProtocolMonitor', async () => {
@@ -322,7 +376,7 @@ describe('ProtocolMonitor', () => {
       assert.deepStrictEqual(expectedParams, resultedParams);
     });
 
-    it('should show the popup for the description of parameters', async () => {
+    it('should show the popup with the correct description for the description of parameters', async () => {
       const inputParameters = [
         {
           type: 'array',
@@ -334,7 +388,7 @@ describe('ProtocolMonitor', () => {
           ],
           name: 'arrayParam',
           typeRef: 'string',
-          description: 'test',
+          description: 'test.',
         },
       ] as ProtocolComponents.JSONEditor.Parameter[];
       const jsonEditor = renderJSONEditor();
@@ -344,24 +398,27 @@ describe('ProtocolMonitor', () => {
 
       const param = jsonEditor.renderRoot.querySelector('[data-paramId]');
 
-      if (param) {
-        const clock = sinon.useFakeTimers();
-        try {
-          dispatchMouseMoveEvent(param, {
-            bubbles: true,
-            composed: true,
-          });
-          clock.tick(300);
-          clock.restore();
-        } finally {
-          clock.restore();
-        }
-        await raf();
-      } else {
-        throw new Error('No parameter has been found');
-      }
-      const container = document.body.querySelector<HTMLDivElement>('[data-devtools-glass-pane]');
-      assert.isNotNull(container);
+      await renderPopup(param);
+      const popupContent = serializePopupContent();
+      const expectedPopupContent = 'test.Type:arrayLearnMore';
+      assert.deepStrictEqual(popupContent, expectedPopupContent);
+    });
+
+    it('should show the popup with the correct description for the description of command', async () => {
+      const cdpCommand = 'Test.test';
+      const jsonEditor = renderJSONEditor();
+
+      await populateMetadata(jsonEditor);
+      jsonEditor.command = cdpCommand;
+      await jsonEditor.updateComplete;
+
+      const command = jsonEditor.renderRoot.querySelector('.command');
+      await renderPopup(command);
+
+      const popupContent = serializePopupContent();
+
+      const expectedPopupContent = 'Description1.Returns:Test1LearnMore';
+      assert.deepStrictEqual(popupContent, expectedPopupContent);
     });
   });
 });

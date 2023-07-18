@@ -97,8 +97,9 @@ const splitDescription = (description: string): [string, string] => {
   // which contains the most informations.
   // The number 150 has been chosen arbitrarily
   if (description.length > 150) {
-    const firstSentence = description.split('.')[0];
-    const restOfDescription = description.slice(firstSentence.length + 1);
+    const [firstSentence, restOfDescription] = description.split('.');
+    // To make the UI nicer, we add a dot at the end of the first sentence.
+    firstSentence + '.';
     return [firstSentence, restOfDescription];
   }
   return [description, ''];
@@ -107,7 +108,8 @@ const splitDescription = (description: string): [string, string] => {
 @customElement('devtools-json-editor')
 export class JSONEditor extends LitElement {
   static override styles = [editorWidgetStyles];
-  @property() declare metadataByCommand: Map<string, {parameters: Parameter[], description: string}>;
+  @property()
+  declare metadataByCommand: Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>;
   @property() declare typesByName: Map<string, Type[]>;
   @property() declare targetManager;
   @state() declare parameters: Parameter[];
@@ -139,6 +141,7 @@ export class JSONEditor extends LitElement {
     this.#hintPopoverHelper.setTimeout(300);
     this.#hintPopoverHelper.setHasPadding(true);
   }
+
   override disconnectedCallback(): void {
     super.disconnectedCallback();
     this.#hintPopoverHelper?.hidePopover();
@@ -154,13 +157,23 @@ export class JSONEditor extends LitElement {
     }
     const [head, tail] = splitDescription(elementData.description);
     const type = elementData.type;
+    const replyArgs = elementData.replyArgs;
+    let popupContent = '';
+    // replyArgs and type cannot get into conflict because replyArgs is attached to a command and type to a parameter
+    if (replyArgs) {
+      popupContent = tail + `Returns: ${replyArgs}<br>`;
+    } else if (type) {
+      popupContent = tail + `<br>Type: ${type}<br>`;
+    } else {
+      popupContent = tail;
+    }
+
     return {
       box: hintElement.boxInWindow(),
       show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
         const popupElement = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView({
-          'getMessage': (): string => `<code><span>${head}.</span></code>`,
-          // Will change this line once the returnType of command will have been added to the metadataByCommandMap
-          'getPossibleFixMessage': (): string => type ? tail + `<br>Type: ${type}<br>` : tail,
+          'getMessage': (): string => `<code><span>${head}</span></code>`,
+          'getPossibleFixMessage': (): string => popupContent,
           'getLearnMoreLink': (): string =>
               `https://chromedevtools.github.io/devtools-protocol/tot/${this.command.split('.')[0]}/`,
         });
@@ -171,11 +184,11 @@ export class JSONEditor extends LitElement {
   }
 
   #getDescriptionAndTypeForElement(hintElement: HTMLElement):
-      {description: string, type: ParameterType|string}|undefined {
+      {description: string, type?: ParameterType, replyArgs?: string[]}|undefined {
     if (hintElement.matches('.command')) {
       const metadata = this.metadataByCommand.get(this.command);
       if (metadata) {
-        return {description: metadata.description, type: ''};
+        return {description: metadata.description, replyArgs: metadata.replyArgs};
       }
     }
     if (hintElement.matches('.parameter')) {

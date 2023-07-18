@@ -927,7 +927,7 @@ class _AgentPrototype {
     [x: string]: string[],
   };
   description = '';
-  metadata: {[commandName: string]: {parameters: CommandParameter[], description: string}};
+  metadata: {[commandName: string]: {parameters: CommandParameter[], description: string, replyArgs: string[]}};
   readonly domain: string;
   target!: TargetBase;
   constructor(domain: string) {
@@ -944,7 +944,7 @@ class _AgentPrototype {
     }
     // @ts-ignore Method code generation
     this[methodName] = sendMessagePromise;
-    this.metadata[domainAndMethod] = {parameters, description};
+    this.metadata[domainAndMethod] = {parameters, description, replyArgs};
 
     function invoke(
         this: _AgentPrototype, request: Object|undefined = {}): Promise<Protocol.ProtocolResponseWithError> {

@@ -4,7 +4,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 """
-Used to download a pre-built version of Chrome for running unit tests
+Used to download a pre-built version of Chrome for Testing for running
+tests.
 """
 
 import argparse
@@ -19,11 +20,14 @@ import zipfile
 
 
 def parse_options(cli_args):
-    parser = argparse.ArgumentParser(description='Download Chromium')
+    parser = argparse.ArgumentParser(description='Download Chrome')
     parser.add_argument('url', help='download URL')
     parser.add_argument('target', help='target directory')
-    parser.add_argument('path_to_binary', help='path to binary inside of the zip archive')
-    parser.add_argument('build_number', help='build number to find out whether we need to re-download')
+    parser.add_argument('path_to_binary',
+                        help='path to binary inside of the ZIP archive')
+    parser.add_argument(
+        'version_number',
+        help='version number to find out whether we need to re-download')
     return parser.parse_args(cli_args)
 
 
@@ -38,23 +42,26 @@ def handleAccessDeniedOnWindows(func, path, exc):
     else:
         raise exc
 
+
 def download_and_extract(options):
-    BUILD_NUMBER_FILE = os.path.join(options.target, 'build_number')
+    VERSION_NUMBER_FILE = os.path.join(options.target, 'version_number')
     EXPECTED_BINARY = os.path.join(options.target, options.path_to_binary)
-    # Check whether we already downloaded pre-built Chromium of right build number
-    if os.path.exists(BUILD_NUMBER_FILE):
-        with open(BUILD_NUMBER_FILE) as file:
-            build_number = file.read().strip()
-            if build_number == options.build_number:
+    # Check whether we already downloaded pre-built Chrome with this version number.
+    if os.path.exists(VERSION_NUMBER_FILE):
+        with open(VERSION_NUMBER_FILE) as file:
+            version_number = file.read().strip()
+            if version_number == options.version_number:
                 assert os.path.exists(EXPECTED_BINARY)
                 return
 
-    # Remove previous download
+    # Remove previous download.
     if os.path.exists(options.target):
-        shutil.rmtree(options.target, ignore_errors=False, onerror=handleAccessDeniedOnWindows)
+        shutil.rmtree(options.target,
+                      ignore_errors=False,
+                      onerror=handleAccessDeniedOnWindows)
 
     try:
-        # Download again and save build number
+        # Download again and save version number.
         try:
             filehandle, headers = urllib.request.urlretrieve(options.url)
         except:
@@ -69,10 +76,10 @@ def download_and_extract(options):
     finally:
         urllib.request.urlcleanup()
 
-    # Fix permissions. Do this recursively is necessary for MacOS bundles.
+    # Fix permissions. Doing this recursively is necessary for MacOS bundles.
     if os.path.isfile(EXPECTED_BINARY):
         os.chmod(EXPECTED_BINARY, 0o555)
-        # On linux, the crashpad_handler binary needs the +x bit, too.
+        # On Linux, the crashpad_handler binary needs the +x bit, too.
         crashpad = os.path.join(os.path.dirname(EXPECTED_BINARY),
                                 'chrome_crashpad_handler')
         if os.path.isfile(crashpad):
@@ -81,8 +88,8 @@ def download_and_extract(options):
         for root, dirs, files in os.walk(EXPECTED_BINARY):
             for f in files:
                 os.chmod(os.path.join(root, f), 0o555)
-    with open(BUILD_NUMBER_FILE, 'w') as file:
-        file.write(options.build_number)
+    with open(VERSION_NUMBER_FILE, 'w') as file:
+        file.write(options.version_number)
 
 
 if __name__ == '__main__':

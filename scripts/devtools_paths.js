@@ -121,7 +121,7 @@ function downloadedChromeBinaryPath() {
     'darwin': path.join('chrome-mac', 'Chromium.app', 'Contents', 'MacOS', 'Chromium'),
     'win32': path.join('chrome-win', 'chrome.exe'),
   };
-  return path.join(thirdPartyPath(), 'chrome', paths[os.platform()]);
+  return path.join(thirdPartyPath(), 'chromium', paths[os.platform()]);
 }
 
 module.exports = {

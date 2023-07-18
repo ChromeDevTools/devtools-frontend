@@ -43,6 +43,11 @@ vars = {
   'chromium_mac': '1171681',
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac_Arm/LAST_CHANGE
   'chromium_mac_arm': '1171680',
+
+  # Chrome version used for tests. It should be regularly updated to
+  # match the Canary version listed here:
+  # https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json
+  'chrome': '117.0.5895.0',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.
@@ -251,7 +256,7 @@ hooks = [
     'action': [ 'python3',
                 'scripts/deps/download_chromium.py',
                 'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Win_x64/' + Var('chromium_win') + '/chrome-win.zip',
-                'third_party/chrome',
+                'third_party/chromium',
                 'chrome-win/chrome.exe',
                 Var('chromium_win'),
     ],
@@ -263,7 +268,7 @@ hooks = [
     'action': [ 'python3',
                 'scripts/deps/download_chromium.py',
                 'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac/' + Var('chromium_mac') + '/chrome-mac.zip',
-                'third_party/chrome',
+                'third_party/chromium',
                 'chrome-mac/Chromium.app/Contents',
                 Var('chromium_mac'),
     ],
@@ -275,7 +280,7 @@ hooks = [
     'action': [ 'python3',
                 'scripts/deps/download_chromium.py',
                 'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac_Arm/' + Var('chromium_mac_arm') + '/chrome-mac.zip',
-                'third_party/chrome',
+                'third_party/chromium',
                 'chrome-mac/Chromium.app/Contents',
                 Var('chromium_mac_arm'),
     ],
@@ -287,11 +292,62 @@ hooks = [
     'action': [ 'python3',
                 'scripts/deps/download_chromium.py',
                 'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/' + Var('chromium_linux') + '/chrome-linux.zip',
-                'third_party/chrome',
+                'third_party/chromium',
                 'chrome-linux/chrome',
                 Var('chromium_linux'),
     ],
   },
+
+  # Pull Chrome binaries from CfT buckets.
+  {
+    'name': 'download_chrome_win',
+    'pattern': '.',
+    'condition': 'host_os == "win" and build_with_chromium == False',
+    'action': [ 'python3',
+                'scripts/deps/download_chrome.py',
+                'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/' + Var('chrome') + '/win64/chrome-win64.zip',
+                'third_party/chrome',
+                'chrome-win64/chrome.exe',
+                Var('chrome'),
+    ],
+  },
+  {
+    'name': 'download_chrome_mac',
+    'pattern': '.',
+    'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu != "arm64"',
+    'action': [ 'python3',
+                'scripts/deps/download_chrome.py',
+                'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/' + Var('chrome') + '/mac-x64/chrome-mac-x64.zip',
+                'third_party/chrome',
+                'chrome-mac-x64/Google Chrome for Testing.app/Contents',
+                Var('chrome'),
+    ],
+  },
+  {
+    'name': 'download_chrome_mac',
+    'pattern': '.',
+    'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu == "arm64"',
+    'action': [ 'python3',
+                'scripts/deps/download_chrome.py',
+                'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/' + Var('chrome') + '/mac-arm64/chrome-mac-arm64.zip',
+                'third_party/chrome',
+                'chrome-mac-arm64/Google Chrome for Testing.app/Contents',
+                Var('chrome'),
+    ],
+  },
+  {
+    'name': 'download_chrome_linux',
+    'pattern': '.',
+    'condition': 'host_os == "linux" and build_with_chromium == False',
+    'action': [ 'python3',
+                'scripts/deps/download_chrome.py',
+                'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/' + Var('chrome') + '/linux64/chrome-linux64.zip',
+                'third_party/chrome',
+                'chrome-linux64/chrome',
+                Var('chrome'),
+    ],
+  },
+
   {
     # Update LASTCHANGE for build script timestamps
     'name': 'lastchange',

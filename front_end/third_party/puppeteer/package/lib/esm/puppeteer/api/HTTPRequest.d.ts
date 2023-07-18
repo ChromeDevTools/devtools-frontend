@@ -381,7 +381,5 @@ export declare function headersArray(headers: Record<string, string | string[]>)
  * List taken from {@link https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml}
  * with extra 306 and 418 codes.
  */
-export declare const STATUS_TEXTS: {
-    [key: string]: string | undefined;
-};
+export declare const STATUS_TEXTS: Record<string, string | undefined>;
 //# sourceMappingURL=HTTPRequest.d.ts.map

@@ -22,10 +22,10 @@ export declare const isSuitableNodeForTextMatching: (node: Node) => boolean;
 /**
  * @internal
  */
-export type TextContent = {
+export interface TextContent {
     full: string;
     immediate: string[];
-};
+}
 /**
  * Builds the text content of a node using some custom logic.
  *

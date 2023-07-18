@@ -550,9 +550,24 @@ _RaceLocatorImpl_locators = new WeakMap(), _RaceLocatorImpl_instances = new Weak
         abortControllers.set(locator, abortController);
         return abortController;
     };
-    await Promise.allSettled(__classPrivateFieldGet(this, _RaceLocatorImpl_locators, "f").map(locator => {
+    const results = await Promise.allSettled(__classPrivateFieldGet(this, _RaceLocatorImpl_locators, "f").map(locator => {
         return action(locator.on(LocatorEmittedEvents.Action, handleLocatorAction(locator)), createAbortController(locator).signal);
     }));
     options.signal?.throwIfAborted();
+    const rejected = results.filter((result) => {
+        return result.status === 'rejected';
+    });
+    // If some locators are fulfilled, do not throw.
+    if (rejected.length !== results.length) {
+        return;
+    }
+    for (const result of rejected) {
+        const reason = result.reason;
+        // AbortError is be an expected result of a race.
+        if (isErrorLike(reason) && reason.name === 'AbortError') {
+            continue;
+        }
+        throw reason;
+    }
 };
 //# sourceMappingURL=Locator.js.map

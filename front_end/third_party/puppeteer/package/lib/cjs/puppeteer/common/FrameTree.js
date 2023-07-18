@@ -78,7 +78,7 @@ class FrameTree {
             }
             __classPrivateFieldGet(this, _FrameTree_childIds, "f").get(frame._parentId).add(frame._id);
         }
-        else {
+        else if (!__classPrivateFieldGet(this, _FrameTree_mainFrame, "f")) {
             __classPrivateFieldSet(this, _FrameTree_mainFrame, frame, "f");
         }
         __classPrivateFieldGet(this, _FrameTree_waitRequests, "f").get(frame._id)?.forEach(request => {

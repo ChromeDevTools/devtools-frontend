@@ -570,7 +570,7 @@ function selectorToPElementSelector(selector) {
             case exports.SelectorType.XPath:
                 return `::-p-xpath(${escape(s.substring(exports.SelectorType.XPath.length + 1))})`;
             case exports.SelectorType.Pierce:
-                return `::-p-pierce(${s.substring(exports.SelectorType.Pierce.length + 1)})`;
+                return `:scope >>> ${s.substring(exports.SelectorType.Pierce.length + 1)}`;
             case exports.SelectorType.Text:
                 return `::-p-text(${escape(s.substring(exports.SelectorType.Text.length + 1))})`;
         }
@@ -1463,7 +1463,7 @@ class PuppeteerRunnerExtension extends RunnerExtension {
         switch (step.type) {
             case exports.StepType.DoubleClick:
                 await locatorRace(step.selectors.map((selector) => {
-                    return targetPageOrFrame.locator(selectorToPElementSelector(selector));
+                    return localFrame.locator(selectorToPElementSelector(selector));
                 }))
                     .setTimeout(timeout)
                     .on('action', () => startWaitingForEvents())
@@ -1479,7 +1479,7 @@ class PuppeteerRunnerExtension extends RunnerExtension {
                 break;
             case exports.StepType.Click:
                 await locatorRace(step.selectors.map((selector) => {
-                    return targetPageOrFrame.locator(selectorToPElementSelector(selector));
+                    return localFrame.locator(selectorToPElementSelector(selector));
                 }))
                     .setTimeout(timeout)
                     .on('action', () => startWaitingForEvents())
@@ -1494,7 +1494,7 @@ class PuppeteerRunnerExtension extends RunnerExtension {
                 break;
             case exports.StepType.Hover:
                 await locatorRace(step.selectors.map((selector) => {
-                    return targetPageOrFrame.locator(selectorToPElementSelector(selector));
+                    return localFrame.locator(selectorToPElementSelector(selector));
                 }))
                     .setTimeout(timeout)
                     .on('action', () => startWaitingForEvents())
@@ -1530,7 +1530,7 @@ class PuppeteerRunnerExtension extends RunnerExtension {
                 break;
             case exports.StepType.Change:
                 await locatorRace(step.selectors.map((selector) => {
-                    return targetPageOrFrame.locator(selectorToPElementSelector(selector));
+                    return localFrame.locator(selectorToPElementSelector(selector));
                 }))
                     .on('action', () => startWaitingForEvents())
                     .setTimeout(timeout)
@@ -1546,7 +1546,7 @@ class PuppeteerRunnerExtension extends RunnerExtension {
             case exports.StepType.Scroll: {
                 if ('selectors' in step) {
                     await locatorRace(step.selectors.map((selector) => {
-                        return targetPageOrFrame.locator(selectorToPElementSelector(selector));
+                        return localFrame.locator(selectorToPElementSelector(selector));
                     }))
                         .on('action', () => startWaitingForEvents())
                         .setTimeout(timeout)

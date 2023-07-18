@@ -17,11 +17,11 @@ import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { ConnectionTransport } from '../ConnectionTransport.js';
 import { EventEmitter } from '../EventEmitter.js';
 import { BrowsingContext } from './BrowsingContext.js';
-type Capability = {
+interface Capability {
     acceptInsecureCerts?: boolean;
     browserName?: string;
     browserVersion?: string;
-};
+}
 /**
  * @internal
  */

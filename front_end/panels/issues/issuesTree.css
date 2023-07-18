@@ -450,16 +450,3 @@ devtools-icon.network-panel {
     color: HighlightText;
   }
 }
-/*
-    const popup = await treeOutline.evaluate((node: Element) => {
-      if (!node.shadowRoot) {
-        throw new Error("Node shadow root not found.");
-      }
-      return node.shadowRoot.querySelector('div.widget.has-padding');
-    });
-    if (!popup) {
-      throw new Error("Popup not found.");
-    }
-    assert.strictEqual(popup.textContent, 'A form field element should have an id or name attribute');
-   });
-*/

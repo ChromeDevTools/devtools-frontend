@@ -13785,12 +13785,6 @@
                             "name": "encodedDataLength",
                             "description": "Total number of bytes received for this request.",
                             "type": "number"
-                        },
-                        {
-                            "name": "shouldReportCorbBlocking",
-                            "description": "Set when 1) response was blocked by Cross-Origin Read Blocking and also\n2) this needs to be reported to the DevTools console.",
-                            "optional": true,
-                            "type": "boolean"
                         }
                     ]
                 },
@@ -16688,6 +16682,7 @@
                         "FencedFramesEmbedder",
                         "CookieDisabled",
                         "HTTPAuthRequired",
+                        "CookieFlushed",
                         "WebSocket",
                         "WebTransport",
                         "WebRTC",
@@ -23750,7 +23745,8 @@
                         "MemoryPressureOnTrigger",
                         "MemoryPressureAfterTriggered",
                         "PrerenderingDisabledByDevTools",
-                        "ResourceLoadBlockedByClient"
+                        "ResourceLoadBlockedByClient",
+                        "SpeculationRuleRemoved"
                     ]
                 },
                 {

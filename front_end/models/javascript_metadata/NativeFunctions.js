@@ -7888,6 +7888,10 @@ export const NativeFunctions = [
     signatures: [['controlCode','data']]
   },
   {
+    name: 'startTransaction',
+    signatures: [['transaction']]
+  },
+  {
     name: 'getStatusChange',
     signatures: [['readerStates','signal']]
   },

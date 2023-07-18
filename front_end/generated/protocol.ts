@@ -9227,11 +9227,6 @@ export namespace Network {
      * Total number of bytes received for this request.
      */
     encodedDataLength: number;
-    /**
-     * Set when 1) response was blocked by Cross-Origin Read Blocking and also
-     * 2) this needs to be reported to the DevTools console.
-     */
-    shouldReportCorbBlocking?: boolean;
   }
 
   /**
@@ -11344,6 +11339,7 @@ export namespace Page {
     FencedFramesEmbedder = 'FencedFramesEmbedder',
     CookieDisabled = 'CookieDisabled',
     HTTPAuthRequired = 'HTTPAuthRequired',
+    CookieFlushed = 'CookieFlushed',
     WebSocket = 'WebSocket',
     WebTransport = 'WebTransport',
     WebRTC = 'WebRTC',
@@ -15854,6 +15850,7 @@ export namespace Preload {
     MemoryPressureAfterTriggered = 'MemoryPressureAfterTriggered',
     PrerenderingDisabledByDevTools = 'PrerenderingDisabledByDevTools',
     ResourceLoadBlockedByClient = 'ResourceLoadBlockedByClient',
+    SpeculationRuleRemoved = 'SpeculationRuleRemoved',
   }
 
   /**

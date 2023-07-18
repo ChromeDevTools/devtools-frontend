@@ -3502,7 +3502,10 @@ export const generatedProperties = [
  },
  {
   "keywords": [
+   "content-box",
+   "border-box",
    "fill-box",
+   "stroke-box",
    "view-box"
   ],
   "name": "transform-box"
@@ -3674,13 +3677,6 @@ export const generatedProperties = [
    "auto"
   ],
   "name": "will-change"
- },
- {
-  "inherited": true,
-  "keywords": [
-   "normal"
-  ],
-  "name": "word-boundary-detection"
  },
  {
   "inherited": true,
@@ -5571,7 +5567,10 @@ export const generatedPropertyValues = {
  },
  "transform-box": {
   "values": [
+   "content-box",
+   "border-box",
    "fill-box",
+   "stroke-box",
    "view-box"
   ]
  },
@@ -5677,11 +5676,6 @@ export const generatedPropertyValues = {
  "will-change": {
   "values": [
    "auto"
-  ]
- },
- "word-boundary-detection": {
-  "values": [
-   "normal"
   ]
  },
  "word-break": {

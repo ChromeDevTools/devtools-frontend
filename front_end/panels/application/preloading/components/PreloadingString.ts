@@ -330,6 +330,12 @@ const UIStrings = {
    *  Description text for PrerenderFinalStatus::kResourceLoadBlockedByClient.
    */
   prerenderFinalStatusResourceLoadBlockedByClient: 'Some resource load was blocked.',
+
+  // TODO(kprokopenko): Please provide meaningful description.
+  /**
+   * Description text for PrerenderFinalStatus::kSpeculationRuleRemoved.
+   */
+  prerenderFinalStatusSpeculationRuleRemoved: 'Unknown',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingString.ts', UIStrings);
@@ -601,6 +607,8 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
       return i18nString(UIStrings.prerenderFinalStatusPrerenderingDisabledByDevTools);
     case Protocol.Preload.PrerenderFinalStatus.ResourceLoadBlockedByClient:
       return i18nString(UIStrings.prerenderFinalStatusResourceLoadBlockedByClient);
+    case Protocol.Preload.PrerenderFinalStatus.SpeculationRuleRemoved:
+      return i18nString(UIStrings.prerenderFinalStatusSpeculationRuleRemoved);
     default:
       // Note that we use switch and exhaustiveness check to prevent to
       // forget updating these strings, but allow to handle unknown

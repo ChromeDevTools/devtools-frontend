@@ -545,6 +545,11 @@ const UIStrings = {
    * @description Undefined.
    */
   HTTPAuthRequired: 'Undefined',
+  // TODO(kprokopenko, leimy): Please provide meaningful description.
+  /**
+   * @description Undefined.
+   */
+  CookieFlushed: 'Undefined',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BackForwardCacheStrings.ts', UIStrings);
@@ -692,4 +697,5 @@ export const NotRestoredReasonDescription = {
   'WebTransportSticky': {name: i18nLazyString(UIStrings.webTransportSticky)},
   'WebSocketSticky': {name: i18nLazyString(UIStrings.webSocketSticky)},
   'HTTPAuthRequired': {name: i18nLazyString(UIStrings.HTTPAuthRequired)},
+  'CookieFlushed': {name: i18nLazyString(UIStrings.CookieFlushed)},
 };

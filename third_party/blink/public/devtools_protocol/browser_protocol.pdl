@@ -6268,9 +6268,6 @@ domain Network
       MonotonicTime timestamp
       # Total number of bytes received for this request.
       number encodedDataLength
-      # Set when 1) response was blocked by Cross-Origin Read Blocking and also
-      # 2) this needs to be reported to the DevTools console.
-      optional boolean shouldReportCorbBlocking
 
   # Details of an intercepted HTTP request, which must be either allowed, blocked, modified or
   # mocked.
@@ -8581,6 +8578,7 @@ domain Page
       FencedFramesEmbedder
       CookieDisabled
       HTTPAuthRequired
+      CookieFlushed
       #Blocklisted features
       WebSocket
       WebTransport
@@ -11239,6 +11237,7 @@ experimental domain Preload
       MemoryPressureAfterTriggered
       PrerenderingDisabledByDevTools
       ResourceLoadBlockedByClient
+      SpeculationRuleRemoved
 
   # Fired when a prerender attempt is completed.
   event prerenderAttemptCompleted

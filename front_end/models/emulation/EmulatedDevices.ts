@@ -1777,7 +1777,7 @@ const emulatedDevices = [
   },
   {
     'order': 200,
-    'show-by-default': true,
+    'show-by-default': false,
     'title': 'Facebook on Android',
     'screen': {
       'horizontal': {

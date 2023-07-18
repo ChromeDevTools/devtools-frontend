@@ -43,6 +43,8 @@
 
 "use strict";
 
+import { AST_Node } from "../ast.js";
+
 function characters(str) {
     return str.split("");
 }
@@ -96,48 +98,26 @@ function return_this() { return this; }
 function return_null() { return null; }
 
 var MAP = (function() {
-    function MAP(a, f, backwards) {
-        var ret = [], top = [], i;
-        function doit() {
-            var val = f(a[i], i);
-            var is_last = val instanceof Last;
-            if (is_last) val = val.v;
-            if (val instanceof AtTop) {
-                val = val.v;
-                if (val instanceof Splice) {
-                    top.push.apply(top, backwards ? val.v.slice().reverse() : val.v);
-                } else {
-                    top.push(val);
-                }
-            } else if (val !== skip) {
-                if (val instanceof Splice) {
-                    ret.push.apply(ret, backwards ? val.v.slice().reverse() : val.v);
-                } else {
-                    ret.push(val);
-                }
+    function MAP(a, tw, allow_splicing = true) {
+        const new_a = [];
+
+        for (let i = 0; i < a.length; ++i) {
+            let item = a[i];
+            let ret = item.transform(tw, allow_splicing);
+
+            if (ret instanceof AST_Node) {
+                new_a.push(ret);
+            } else if (ret instanceof Splice) {
+                new_a.push(...ret.v);
             }
-            return is_last;
         }
-        if (Array.isArray(a)) {
-            if (backwards) {
-                for (i = a.length; --i >= 0;) if (doit()) break;
-                ret.reverse();
-                top.reverse();
-            } else {
-                for (i = 0; i < a.length; ++i) if (doit()) break;
-            }
-        } else {
-            for (i in a) if (HOP(a, i)) if (doit()) break;
-        }
-        return top.concat(ret);
+
+        return new_a;
     }
-    MAP.at_top = function(val) { return new AtTop(val); };
+
     MAP.splice = function(val) { return new Splice(val); };
-    MAP.last = function(val) { return new Last(val); };
-    var skip = MAP.skip = {};
-    function AtTop(val) { this.v = val; }
+    MAP.skip = {};
     function Splice(val) { this.v = val; }
-    function Last(val) { this.v = val; }
     return MAP;
 })();
 
@@ -249,7 +229,15 @@ function regexp_source_fix(source) {
         return (escaped ? "" : "\\") + lineTerminatorEscape[match];
     });
 }
-const all_flags = "gimuy";
+
+// Subset of regexps that is not going to cause regexp based DDOS
+// https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS
+const re_safe_regexp = /^[\\/|\0\s\w^$.[\]()]*$/;
+
+/** Check if the regexp is safe for Terser to create without risking a RegExp DOS */
+export const regexp_is_safe = (source) => re_safe_regexp.test(source);
+
+const all_flags = "dgimsuyv";
 function sort_regexp_flags(flags) {
     const existing_flags = new Set(flags.split(""));
     let out = "";
@@ -272,6 +260,10 @@ function has_annotation(node, annotation) {
 
 function set_annotation(node, annotation) {
     node._annotations |= annotation;
+}
+
+function clear_annotation(node, annotation) {
+    node._annotations &= ~annotation;
 }
 
 export {
@@ -298,5 +290,6 @@ export {
     sort_regexp_flags,
     string_template,
     has_annotation,
-    set_annotation
+    set_annotation,
+    clear_annotation,
 };

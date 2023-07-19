@@ -9,6 +9,7 @@ import * as PageLoadMetrics from './PageLoadMetricsHandler.js';
 import * as Screenshots from './ScreenshotsHandler.js';
 import * as UserInteractions from './UserInteractionsHandler.js';
 import * as UserTimings from './UserTimingsHandler.js';
+import * as Warnings from './WarningsHandler.js';
 
 import type * as Types from './types.js';
 
@@ -23,6 +24,7 @@ export const ENABLED_TRACE_HANDLERS = {
   Screenshots,
   GPU,
   NetworkRequests,
+  Warnings,
 };
 
 export type PartialTraceData = Readonly<Types.EnabledHandlerDataWithMeta<typeof ENABLED_TRACE_HANDLERS>>;

@@ -158,6 +158,18 @@ export interface TraceEventComplete extends TraceEventData {
   dur: MicroSeconds;
 }
 
+export interface TraceEventFireIdleCallback extends TraceEventComplete {
+  name: 'FireIdleCallback';
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      allottedMilliseconds: MilliSeconds,
+      frame: string,
+      id: number,
+      timedOut: boolean,
+    },
+  };
+}
+
 export interface TraceEventDispatch extends TraceEventComplete {
   name: 'EventDispatch';
   args: TraceEventArgs&{
@@ -911,6 +923,10 @@ export function isTraceEventInstant(event: TraceEventData): event is TraceEventI
 
 export function isTraceEventRendererEvent(event: TraceEventData): event is TraceEventRendererEvent {
   return isTraceEventInstant(event) || isTraceEventComplete(event);
+}
+
+export function isTraceEventFireIdleCallback(event: TraceEventData): event is TraceEventFireIdleCallback {
+  return event.name === 'FireIdleCallback';
 }
 
 export function isThreadName(

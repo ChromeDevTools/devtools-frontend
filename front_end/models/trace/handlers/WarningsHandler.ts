@@ -7,15 +7,30 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 export interface WarningsData {
+  // Tracks warnings keyed by the event.
   perEvent: Map<Types.TraceEvents.TraceEventData, Warning[]>;
+  // The same data in reverse: for each type of warning, track the events.
+  // Useful if we need to enumerate issues by type of issue
+  perWarning: Map<Warning, Types.TraceEvents.TraceEventData[]>;
 }
 
-export type Warning = 'LONG_TASK';
+export type Warning = 'LONG_TASK'|'IDLE_CALLBACK_OVER_TIME';
 
 const warningsPerEvent: WarningsData['perEvent'] = new Map();
+const eventsPerWarning: WarningsData['perWarning'] = new Map();
 
 export function reset(): void {
   warningsPerEvent.clear();
+}
+
+function storeWarning(event: Types.TraceEvents.TraceEventData, warning: Warning): void {
+  const existingWarnings = Platform.MapUtilities.getWithDefault(warningsPerEvent, event, () => []);
+  existingWarnings.push(warning);
+  warningsPerEvent.set(event, existingWarnings);
+
+  const existingEvents = Platform.MapUtilities.getWithDefault(eventsPerWarning, warning, () => []);
+  existingEvents.push(event);
+  eventsPerWarning.set(warning, existingEvents);
 }
 
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
@@ -23,9 +38,15 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     const longTaskThreshold = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(50));
     const {duration} = Helpers.Timing.eventTimingsMicroSeconds(event);
     if (duration > longTaskThreshold) {
-      const existingWarnings = Platform.MapUtilities.getWithDefault(warningsPerEvent, event, () => []);
-      existingWarnings.push('LONG_TASK');
-      warningsPerEvent.set(event, existingWarnings);
+      storeWarning(event, 'LONG_TASK');
+    }
+    return;
+  }
+
+  if (Types.TraceEvents.isTraceEventFireIdleCallback(event)) {
+    const {duration} = Helpers.Timing.eventTimingsMilliSeconds(event);
+    if (duration > event.args.data.allottedMilliseconds) {
+      storeWarning(event, 'IDLE_CALLBACK_OVER_TIME');
     }
   }
 }
@@ -33,5 +54,6 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
 export function data(): WarningsData {
   return {
     perEvent: new Map(warningsPerEvent),
+    perWarning: new Map(eventsPerWarning),
   };
 }

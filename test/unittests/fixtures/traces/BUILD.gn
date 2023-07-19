@@ -17,6 +17,7 @@ copy_to_gen("traces") {
     "fenced-frame-fledge.json.gz",
     "forced-layouts-and-no-gpu.json.gz",
     "generic-about-tracing-trace.json.gz",
+    "idle-callback.json.gz",
     "idle-tasks.json.gz",
     "interactive-time.json.gz",
     "invalidate-style-class-name-change.json.gz",

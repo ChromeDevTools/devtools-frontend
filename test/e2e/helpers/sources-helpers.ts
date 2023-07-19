@@ -284,6 +284,39 @@ export async function isBreakpointSet(lineNumber: number|string) {
   return breakpointLineParentClasses?.includes('cm-breakpoint');
 }
 
+/**
+ * @param lineNumber 1-based line number
+ * @param index 1-based index of the inline breakpoint in the given line
+ */
+export async function enableInlineBreakpointForLine(line: number, index: number) {
+  const {frontend} = getBrowserAndPages();
+  const decorationSelector = `pierce/.cm-content > :nth-child(${line}) > :nth-child(${index} of .cm-inlineBreakpoint)`;
+  await click(decorationSelector);
+  await waitForFunction(
+      () => frontend.$eval(decorationSelector, element => !element.classList.contains('cm-inlineBreakpoint-disabled')));
+}
+
+/**
+ * @param lineNumber 1-based line number
+ * @param index 1-based index of the inline breakpoint in the given line
+ * @param expectNoBreakpoint If we should wait for the line to not have any inline breakpoints after
+ *                           the click instead of a disabled one.
+ */
+export async function disableInlineBreakpointForLine(line: number, index: number, expectNoBreakpoint: boolean = false) {
+  const {frontend} = getBrowserAndPages();
+  const decorationSelector = `pierce/.cm-content > :nth-child(${line}) > :nth-child(${index} of .cm-inlineBreakpoint)`;
+  await click(decorationSelector);
+  if (expectNoBreakpoint) {
+    await waitForFunction(
+        () => frontend.$$eval(
+            `pierce/.cm-content > :nth-child(${line}) > .cm-inlineBreakpoint`, elements => elements.length === 0));
+  } else {
+    await waitForFunction(
+        () =>
+            frontend.$eval(decorationSelector, element => element.classList.contains('cm-inlineBreakpoint-disabled')));
+  }
+}
+
 export async function checkBreakpointDidNotActivate() {
   await step('check that the script did not pause', async () => {
     // TODO(almuthanna): make sure this check happens at a point where the pause indicator appears if it was active

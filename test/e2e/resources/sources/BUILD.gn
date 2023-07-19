@@ -8,6 +8,8 @@ copy_to_gen("sources") {
   sources = [
     "breakpoint-conflict-source-map.html",
     "breakpoint-conflict-source-url.html",
+    "breakpoint-decorations.html",
+    "breakpoint-decorations.js",
     "breakpoint-hit-on-first-load.html",
     "breakpoint-hit-on-first-load.js",
     "breakpoint-on-comment.html",

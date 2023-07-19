@@ -113,7 +113,7 @@ export function unionIssueKind(a: IssueKind, b: IssueKind): IssueKind {
 }
 
 export function getShowThirdPartyIssuesSetting(): Common.Settings.Setting<boolean> {
-  return Common.Settings.Settings.instance().createSetting('showThirdPartyIssues', false);
+  return Common.Settings.Settings.instance().createSetting('showThirdPartyIssues', true);
 }
 
 export interface AffectedElement {

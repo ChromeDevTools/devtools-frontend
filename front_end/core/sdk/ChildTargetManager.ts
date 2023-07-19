@@ -129,16 +129,18 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
     if (targetInfo.type === 'worker' && targetInfo.title && targetInfo.title !== targetInfo.url) {
       targetName = targetInfo.title;
     } else if (!['page', 'iframe', 'webview'].includes(targetInfo.type)) {
-      if (targetInfo.url === 'chrome://print/' ||
-          (targetInfo.url.startsWith('chrome://') && targetInfo.url.endsWith('.top-chrome/'))) {
+      const KNOWN_FRAME_PATTERNS = [
+        '^chrome://print/$',
+        '^chrome://file-manager/',
+        '^chrome://.*\\.top-chrome/$',
+        '^devtools://',
+      ];
+      if (KNOWN_FRAME_PATTERNS.some(p => targetInfo.url.match(p))) {
         type = Type.Frame;
       } else {
         const parsedURL = Common.ParsedURL.ParsedURL.fromString(targetInfo.url);
         targetName =
             parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + (++ChildTargetManager.lastAnonymousTargetId);
-        if (parsedURL?.scheme === 'devtools' && targetInfo.type === 'other') {
-          type = Type.Frame;
-        }
       }
     }
 

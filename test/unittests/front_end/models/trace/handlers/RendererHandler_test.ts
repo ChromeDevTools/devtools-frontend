@@ -8,7 +8,9 @@ import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 import {
   getEventsIn,
   getRootAt,
+  makeBeginEvent,
   makeCompleteEvent,
+  makeEndEvent,
   makeInstantEvent,
   prettyPrint,
 } from '../../../helpers/TraceHelpers.js';
@@ -19,34 +21,15 @@ const SUB_FRAME_PID = 2236065;
 const SUB_FRAME_PID_2 = 2236084;
 const SUB_FRAME_PID_3 = 2236123;
 
-async function handleEventsFromTraceFile(context: Mocha.Suite|Mocha.Context|null, file: string, handleSamples = false):
-    Promise<TraceModel.Handlers.ModelHandlers.Renderer.RendererHandlerData> {
-  const traceEvents = await TraceLoader.rawEvents(context, file);
-  TraceModel.Handlers.ModelHandlers.Renderer.reset();
-  TraceModel.Handlers.ModelHandlers.Meta.initialize();
-  TraceModel.Handlers.ModelHandlers.Samples.initialize();
-  TraceModel.Handlers.ModelHandlers.Renderer.initialize();
-
-  for (const event of traceEvents) {
-    TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
-    // Samples processing might take significant time, so by default don't
-    // handle sample events.
-    if (handleSamples) {
-      TraceModel.Handlers.ModelHandlers.Samples.handleEvent(event);
-    }
-    TraceModel.Handlers.ModelHandlers.Renderer.handleEvent(event);
-  }
-
-  await TraceModel.Handlers.ModelHandlers.Meta.finalize();
-  await TraceModel.Handlers.ModelHandlers.Samples.finalize();
-  await TraceModel.Handlers.ModelHandlers.Renderer.finalize();
-
-  return TraceModel.Handlers.ModelHandlers.Renderer.data();
+async function handleEventsFromTraceFile(
+    context: Mocha.Suite|Mocha.Context|null, file: string): Promise<TraceModel.Handlers.Types.TraceParseData> {
+  const traceData = await TraceLoader.traceEngine(context, file);
+  return traceData;
 }
 
 describe('RendererHandler', function() {
   it('finds all the renderers in a real world profile', async () => {
-    const renderers = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
+    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     assert.strictEqual(renderers.processes.size, 4);
 
     const pids = [...renderers.processes].map(([pid]) => pid);
@@ -88,7 +71,7 @@ describe('RendererHandler', function() {
   });
 
   it('finds all the main frame threads in a real world profile', async () => {
-    const renderers = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
+    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     const frame = renderers.processes.get(TraceModel.Types.TraceEvents.ProcessID(MAIN_FRAME_PID)) as
         TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess;
     const names = [...frame.threads].map(([, thread]) => thread.name).sort();
@@ -108,7 +91,7 @@ describe('RendererHandler', function() {
   });
 
   it('finds all the sub frame threads in a real world profile', async () => {
-    const renderers = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
+    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     const frame = renderers.processes.get(TraceModel.Types.TraceEvents.ProcessID(SUB_FRAME_PID)) as
         TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess;
     const names = [...frame.threads].map(([, thread]) => thread.name).sort();
@@ -124,7 +107,7 @@ describe('RendererHandler', function() {
   });
 
   it('finds all the roots on the main frame\'s main thread in a real world profile', async () => {
-    const renderers = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
+    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     const frame = renderers.processes.get(TraceModel.Types.TraceEvents.ProcessID(MAIN_FRAME_PID)) as
         TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess;
     const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
@@ -162,7 +145,7 @@ describe('RendererHandler', function() {
   });
 
   it('finds all the roots on the sub frame\'s main thread in a real world profile', async () => {
-    const renderers = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
+    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     const frame = renderers.processes.get(TraceModel.Types.TraceEvents.ProcessID(SUB_FRAME_PID)) as
         TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess;
     const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
@@ -176,11 +159,11 @@ describe('RendererHandler', function() {
       assert(false, 'Main thread has no tree of events');
       return;
     }
-    assert.deepEqual([...tree.roots], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18]);
+    assert.deepEqual([...tree.roots], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19]);
   });
 
   it('builds a hierarchy for the main frame\'s main thread in a real world profile', async () => {
-    const renderers = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
+    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     const frame = renderers.processes.get(TraceModel.Types.TraceEvents.ProcessID(MAIN_FRAME_PID)) as
         TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess;
     const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
@@ -312,7 +295,7 @@ describe('RendererHandler', function() {
   });
 
   it('builds a hierarchy for the sub frame\'s main thread in a real world profile', async () => {
-    const renderers = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
+    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     const frame = renderers.processes.get(TraceModel.Types.TraceEvents.ProcessID(SUB_FRAME_PID)) as
         TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess;
     const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
@@ -343,6 +326,7 @@ describe('RendererHandler', function() {
 -RunTask [0.077ms]
   -ScheduleStyleRecalculation [I]
 -RunTask [0.415ms]
+-RunTask [0ms]
 -EventDispatch (pagehide) [0.012ms]
 -EventDispatch (visibilitychange) [0.007ms]
 -EventDispatch (webkitvisibilitychange) [0.016ms]
@@ -350,7 +334,7 @@ describe('RendererHandler', function() {
   });
 
   it('has some correct known roots for the main frame\'s main thread in a real world profile', async () => {
-    const renderers = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
+    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     const frame = renderers.processes.get(TraceModel.Types.TraceEvents.ProcessID(MAIN_FRAME_PID)) as
         TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess;
     const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
@@ -412,7 +396,7 @@ describe('RendererHandler', function() {
   });
 
   it('has some correct known roots for the sub frame\'s main thread in a real world profile', async () => {
-    const renderers = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
+    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     const frame = renderers.processes.get(TraceModel.Types.TraceEvents.ProcessID(SUB_FRAME_PID)) as
         TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess;
     const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
@@ -809,32 +793,6 @@ describe('RendererHandler', function() {
     assert.strictEqual(taskD.selfTime, taskETotalTime);
   });
 
-  it('can sanitize multiple processes', async () => {
-    const processes = new Map([
-      [
-        TraceModel.Types.TraceEvents.ProcessID(0),
-        {
-          url: null,
-          isOnMainFrame: false,
-          threads: new Map(),
-        } as TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess,
-      ],
-      [
-        TraceModel.Types.TraceEvents.ProcessID(1),
-        {
-          url: 'http://what.com',
-          isOnMainFrame: true,
-          threads: new Map(),
-        } as TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess,
-      ],
-    ]);
-
-    TraceModel.Handlers.ModelHandlers.Renderer.sanitizeProcesses(processes);
-
-    assert.strictEqual(processes.size, 1, 'Didn\'t remove the bad process');
-    assert.strictEqual([...processes.values()][0].url, ('http://what.com'), 'Removed the correct process');
-  });
-
   it('can process multiple processes', async () => {
     /**
      * |------------- Task A -------------||-- Task E --|
@@ -914,8 +872,7 @@ describe('RendererHandler', function() {
   });
 
   it('can assign origins to processes', async () => {
-    await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const metadata = TraceModel.Handlers.ModelHandlers.Meta.data();
+    const {Meta: metadata} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     const processes:
         Map<TraceModel.Types.TraceEvents.ProcessID, TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess> =
             new Map();
@@ -932,8 +889,7 @@ describe('RendererHandler', function() {
   });
 
   it('can assign main frame flags to processes', async () => {
-    await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const metadata = TraceModel.Handlers.ModelHandlers.Meta.data();
+    const {Meta: metadata} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     const processes:
         Map<TraceModel.Types.TraceEvents.ProcessID, TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess> =
             new Map();
@@ -950,8 +906,8 @@ describe('RendererHandler', function() {
   });
 
   it('can assign thread names to threads in processes', async () => {
-    await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const {mainFrameId, rendererProcessesByFrame, threadsInProcess} = TraceModel.Handlers.ModelHandlers.Meta.data();
+    const {Meta: metadata} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
+    const {mainFrameId, rendererProcessesByFrame, threadsInProcess} = metadata;
     const processes:
         Map<TraceModel.Types.TraceEvents.ProcessID, TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess> =
             new Map();
@@ -1015,7 +971,110 @@ describe('RendererHandler', function() {
   });
 
   it('populates the map of trace events to tree nodes', async () => {
-    const renderers = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    assert.strictEqual(renderers.traceEventToNode.size, 2564);
+    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
+    assert.strictEqual(renderers.traceEventToNode.size, 2578);
+  });
+  describe('Synthetic complete events', () => {
+    async function handleEvents(traceEvents: TraceModel.Types.TraceEvents.TraceEventData[]):
+        Promise<TraceModel.Handlers.ModelHandlers.Renderer.RendererHandlerData> {
+      TraceModel.Handlers.ModelHandlers.Renderer.reset();
+      TraceModel.Handlers.ModelHandlers.Meta.reset();
+      TraceModel.Handlers.ModelHandlers.Samples.reset();
+      TraceModel.Handlers.ModelHandlers.Meta.initialize();
+      TraceModel.Handlers.ModelHandlers.Samples.initialize();
+      TraceModel.Handlers.ModelHandlers.Renderer.initialize();
+
+      for (const event of traceEvents) {
+        TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
+        TraceModel.Handlers.ModelHandlers.Renderer.handleEvent(event);
+      }
+
+      await TraceModel.Handlers.ModelHandlers.Meta.finalize();
+      await TraceModel.Handlers.ModelHandlers.Samples.finalize();
+      await TraceModel.Handlers.ModelHandlers.Renderer.finalize();
+      return TraceModel.Handlers.ModelHandlers.Renderer.data();
+    }
+    let defaultTraceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
+    const pid = TraceModel.Types.TraceEvents.ProcessID(28274);
+    const tid = TraceModel.Types.TraceEvents.ThreadID(775);
+    beforeEach(async () => {
+      defaultTraceEvents = await TraceLoader.rawEvents(this, 'basic.json.gz');
+    });
+
+    afterEach(() => {
+      TraceModel.Handlers.ModelHandlers.Renderer.reset();
+      TraceModel.Handlers.ModelHandlers.Meta.reset();
+      TraceModel.Handlers.ModelHandlers.Samples.reset();
+    });
+
+    it('builds a hierarchy using begin and end trace events', async () => {
+      // |------------- RunTask -------------||-- RunTask --|
+      //  |-- RunMicrotasks --||-- Layout --|
+      //   |- FunctionCall -|
+      const traceEvents = [
+        ...defaultTraceEvents, makeBeginEvent('RunTask', 0, '*', pid, tid),  // 0..10
+        makeBeginEvent('RunMicrotasks', 1, '*', pid, tid),                   // 1..4
+        makeBeginEvent('FunctionCall', 2, '*', pid, tid),                    // 2..3
+        makeEndEvent('FunctionCall', 3, '*', pid, tid),                      // 2..3
+        makeEndEvent('RunMicrotasks', 4, '*', pid, tid),                     // 1..4
+        makeBeginEvent('Layout', 5, '*', pid, tid),                          // 5..8
+        makeEndEvent('Layout', 8, '*', pid, tid),                            // 5..8
+        makeEndEvent('RunTask', 10, '*', pid, tid),                          // 0..10
+        makeBeginEvent('RunTask', 11, '*', pid, tid),                        // 11..14
+        makeEndEvent('RunTask', 14, '*', pid, tid),                          // 11..14
+      ];
+
+      const data = await handleEvents(traceEvents);
+
+      assert.strictEqual(data.allRendererEvents.length, 7);
+      assert.strictEqual(data.processes.size, 1);
+      const [process] = data.processes.values();
+      assert.strictEqual(process.threads.size, 1);
+      const [thread] = process.threads.values();
+      assert.strictEqual(thread.tree?.roots.size, 2);
+      assert.strictEqual(thread.tree?.nodes.size, 5);
+      if (!thread.tree) {
+        return;
+      }
+      assert.strictEqual(prettyPrint(thread, thread.tree.roots), `
+-RunTask [0.01ms]
+  -RunMicrotasks [0.003ms]
+    -FunctionCall [0.001ms]
+  -Layout [0.003ms]
+-RunTask [0.003ms]`);
+    });
+    it('builds a hierarchy using complete, begin and end trace events', async () => {
+      // |------------- RunTask -------------|
+      //  |-- RunMicrotasks --||-- Layout --|
+      //   |- FunctionCall -|
+
+      const traceEvents = [
+        ...defaultTraceEvents, makeBeginEvent('RunTask', 0, '*', pid, tid),  // 0..10
+        makeBeginEvent('RunMicrotasks', 1, '*', pid, tid),                   // 1..4
+        makeCompleteEvent('FunctionCall', 2, 1, '*', pid, tid),              // 2..3
+        makeEndEvent('RunMicrotasks', 4, '*', pid, tid),                     // 1..4
+        makeBeginEvent('Layout', 5, '*', pid, tid),                          // 5..8
+        makeEndEvent('Layout', 8, '*', pid, tid),                            // 5..8
+        makeEndEvent('RunTask', 10, '*', pid, tid),                          // 0..10
+      ];
+
+      const data = await handleEvents(traceEvents);
+
+      assert.strictEqual(data.allRendererEvents.length, 6);
+      assert.strictEqual(data.processes.size, 1);
+      const [process] = data.processes.values();
+      assert.strictEqual(process.threads.size, 1);
+      const [thread] = process.threads.values();
+      assert.strictEqual(thread.tree?.roots.size, 1);
+      assert.strictEqual(thread.tree?.nodes.size, 4);
+      if (!thread.tree) {
+        return;
+      }
+      assert.strictEqual(prettyPrint(thread, thread.tree.roots), `
+-RunTask [0.01ms]
+  -RunMicrotasks [0.003ms]
+    -FunctionCall [0.001ms]
+  -Layout [0.003ms]`);
+    });
   });
 });

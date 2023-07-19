@@ -15,6 +15,7 @@ const traceEventToNode = new Map<RendererTraceEvent, RendererEventNode>();
 const allRendererEvents: RendererTraceEvent[] = [];
 let nodeIdCount = 0;
 const makeRendererEventNodeId = (): RendererEventNodeId => (++nodeIdCount) as RendererEventNodeId;
+const completeEventStack: (Types.TraceEvents.TraceEventSyntheticCompleteEvent)[] = [];
 
 let handlerState = HandlerState.UNINITIALIZED;
 
@@ -58,6 +59,7 @@ export function reset(): void {
   processes.clear();
   traceEventToNode.clear();
   allRendererEvents.length = 0;
+  completeEventStack.length = 0;
   nodeIdCount = -1;
   handlerState = HandlerState.UNINITIALIZED;
 }
@@ -73,6 +75,18 @@ export function initialize(): void {
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   if (handlerState !== HandlerState.INITIALIZED) {
     throw new Error('Renderer Handler is not initialized');
+  }
+
+  if (Types.TraceEvents.isTraceEventBegin(event) || Types.TraceEvents.isTraceEventEnd(event)) {
+    const process = getOrCreateRendererProcess(processes, event.pid);
+    const thread = getOrCreateRendererThread(process, event.tid);
+    const completeEvent = makeCompleteEvent(event);
+    if (!completeEvent) {
+      return;
+    }
+    thread.events.push(completeEvent);
+    allRendererEvents.push(completeEvent);
+    return;
   }
 
   if (Types.TraceEvents.isTraceEventInstant(event) || Types.TraceEvents.isTraceEventComplete(event)) {
@@ -384,6 +398,39 @@ export function treify(
   return tree;
 }
 
+export function makeCompleteEvent(event: Types.TraceEvents.TraceEventBegin|Types.TraceEvents.TraceEventEnd):
+    Types.TraceEvents.TraceEventSyntheticCompleteEvent|null {
+  if (Types.TraceEvents.isTraceEventEnd(event)) {
+    // Quietly ignore unbalanced close events, they're legit (we could
+    // have missed start one).
+    const beginEvent = completeEventStack.pop();
+    if (!beginEvent) {
+      return null;
+    }
+    if (beginEvent.name !== event.name || beginEvent.cat !== event.cat) {
+      console.error(
+          'Begin/End events mismatch at ' + beginEvent.ts + ' (' + beginEvent.name + ') vs. ' + event.ts + ' (' +
+          event.name + ')');
+      return null;
+    }
+    // Update the begin event's duration using the timestamp of the end
+    // event.
+    beginEvent.dur = Types.Timing.MicroSeconds(event.ts - beginEvent.ts);
+    return null;
+  }
+
+  // Create a synthetic event using the begin event, when we find the
+  // matching end event later we will update its duration.
+  const syntheticComplete: Types.TraceEvents.TraceEventSyntheticCompleteEvent = {
+    ...event,
+    ph: Types.TraceEvents.Phase.COMPLETE,
+    dur: Types.Timing.MicroSeconds(0),
+  };
+
+  completeEventStack.push(syntheticComplete);
+  return syntheticComplete;
+}
+
 export function deps(): TraceEventHandlerName[] {
   return ['Meta', 'Samples'];
 }
@@ -413,7 +460,7 @@ interface RendererEventData {
   parent?: RendererTraceEvent;
 }
 
-export type RendererTraceEvent = Types.TraceEvents.TraceEventRendererData&Partial<RendererEventData>;
+export type RendererTraceEvent = Types.TraceEvents.TraceEventRendererEvent&Partial<RendererEventData>;
 
 export type RendererEntry = RendererTraceEvent|Types.TraceEvents.TraceEventSyntheticProfileCall;
 

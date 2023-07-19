@@ -304,6 +304,38 @@ export function makeInstantEvent(
 }
 
 /**
+ * Builds a mock TraceEventBegin.
+ */
+export function makeBeginEvent(name: string, ts: number, cat: string = '*', pid: number = 0, tid: number = 0):
+    TraceEngine.Types.TraceEvents.TraceEventBegin {
+  return {
+    args: {},
+    cat,
+    name,
+    ph: TraceEngine.Types.TraceEvents.Phase.BEGIN,
+    pid: TraceEngine.Types.TraceEvents.ProcessID(pid),
+    tid: TraceEngine.Types.TraceEvents.ThreadID(tid),
+    ts: TraceEngine.Types.Timing.MicroSeconds(ts),
+  };
+}
+
+/**
+ * Builds a mock TraceEventEnd.
+ */
+export function makeEndEvent(name: string, ts: number, cat: string = '*', pid: number = 0, tid: number = 0):
+    TraceEngine.Types.TraceEvents.TraceEventEnd {
+  return {
+    args: {},
+    cat,
+    name,
+    ph: TraceEngine.Types.TraceEvents.Phase.END,
+    pid: TraceEngine.Types.TraceEvents.ProcessID(pid),
+    tid: TraceEngine.Types.TraceEvents.ThreadID(tid),
+    ts: TraceEngine.Types.Timing.MicroSeconds(ts),
+  };
+}
+
+/**
  * Provides a stubbed TraceEngine.Legacy.Thread instance.
  * IMPORTANT: this is not designed to be a fully stubbed Thread, but one that is
  * stubbed enough to be able to use it to instantiate an TraceEngine.Legacy.Event.

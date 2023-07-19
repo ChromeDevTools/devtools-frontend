@@ -725,7 +725,7 @@ export class Thread extends NamedObject {
    * against either enum. Once the migration is complete (crbug.com/1417587), we
    * will be able to use === to compare with no TS errors and this method can be
    * removed.
-   **/
+   */
   #eventMatchesPhase(event: Event, phase: Types.TraceEvents.Phase): boolean {
     return (event.phase as string) === phase;
   }

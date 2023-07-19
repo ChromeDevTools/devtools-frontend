@@ -167,6 +167,23 @@ export interface TraceEventDispatch extends TraceEventComplete {
   };
 }
 
+export interface TraceEventBegin extends TraceEventData {
+  ph: Phase.BEGIN;
+}
+
+export interface TraceEventEnd extends TraceEventData {
+  ph: Phase.END;
+}
+
+/**
+ * This denotes a complete event created from a pair of begin and end
+ * events. For practicality, instead of always having to look for the
+ * end event corresponding to a begin event, we create a synthetic
+ * complete event that comprises the data of both from the beginning in
+ * the RendererHandler.
+ */
+export type TraceEventSyntheticCompleteEvent = TraceEventComplete;
+
 export interface TraceEventEventTiming extends TraceEventData {
   ph: Phase.ASYNC_NESTABLE_START|Phase.ASYNC_NESTABLE_END;
   id: string;
@@ -434,7 +451,7 @@ export interface TraceEventInstant extends TraceEventData {
   s: TraceEventScope;
 }
 
-export type TraceEventRendererData = TraceEventInstant|TraceEventComplete;
+export type TraceEventRendererEvent = TraceEventInstant|TraceEventComplete;
 
 export interface TraceEventTracingStartedInBrowser extends TraceEventInstant {
   name: 'TracingStartedInBrowser';
@@ -876,6 +893,14 @@ export function isTraceEventComplete(event: TraceEventData): event is TraceEvent
   return event.ph === Phase.COMPLETE;
 }
 
+export function isTraceEventBegin(event: TraceEventData): event is TraceEventBegin {
+  return event.ph === Phase.BEGIN;
+}
+
+export function isTraceEventEnd(event: TraceEventData): event is TraceEventEnd {
+  return event.ph === Phase.END;
+}
+
 export function isTraceEventDispatch(event: TraceEventData): event is TraceEventDispatch {
   return event.name === 'EventDispatch';
 }
@@ -884,7 +909,7 @@ export function isTraceEventInstant(event: TraceEventData): event is TraceEventI
   return event.ph === Phase.INSTANT;
 }
 
-export function isTraceEventRendererEvent(event: TraceEventData): event is TraceEventRendererData {
+export function isTraceEventRendererEvent(event: TraceEventData): event is TraceEventRendererEvent {
   return isTraceEventInstant(event) || isTraceEventComplete(event);
 }
 

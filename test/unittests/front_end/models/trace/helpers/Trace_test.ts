@@ -147,4 +147,222 @@ describe('TraceModel helpers', function() {
       assert.strictEqual(localId2, fakeEventWithLocalId2.id2?.local);
     });
   });
+  describe('mergeEventsInOrder', () => {
+    it('merges two ordered arrays of trace events with no duration', async () => {
+      const array1 = [
+        {
+          name: 'a',
+          ts: 0,
+        },
+        {
+          name: 'b',
+          ts: 2,
+        },
+        {
+          name: 'c',
+          ts: 4,
+        },
+        {
+          name: 'd',
+          ts: 6,
+        },
+        {
+          name: 'e',
+          ts: 8,
+        },
+      ] as TraceModel.Types.TraceEvents.TraceEventData[];
+
+      const array2 = [
+        {
+          name: 'a',
+          ts: 1,
+        },
+        {
+          name: 'b',
+          ts: 3,
+        },
+        {
+          name: 'c',
+          ts: 5,
+        },
+        {
+          name: 'd',
+          ts: 7,
+        },
+        {
+          name: 'e',
+          ts: 9,
+        },
+      ] as TraceModel.Types.TraceEvents.TraceEventData[];
+      const ordered = TraceModel.Helpers.Trace.mergeEventsInOrder(array1, array2);
+      for (let i = 1; i < ordered.length; i++) {
+        assert.isAbove(ordered[i].ts, ordered[i - 1].ts);
+      }
+    });
+    it('merges two ordered arrays of trace events with duration', async () => {
+      const array1 = [
+        {
+          name: 'a',
+          ts: 0,
+          dur: 10,
+        },
+        {
+          name: 'b',
+          ts: 2,
+          dur: 12,
+        },
+        {
+          name: 'c',
+          ts: 4,
+          dur: 2,
+        },
+        {
+          name: 'd',
+          ts: 6,
+          dur: 9,
+        },
+        {
+          name: 'e',
+          ts: 8,
+          dur: 100,
+        },
+      ] as TraceModel.Types.TraceEvents.TraceEventData[];
+
+      const array2 = [
+        {
+          name: 'a',
+          ts: 1,
+          dur: 2,
+        },
+        {
+          name: 'b',
+          ts: 3,
+          dur: 1,
+        },
+        {
+          name: 'c',
+          ts: 5,
+          dur: 99,
+        },
+        {
+          name: 'd',
+          ts: 7,
+        },
+        {
+          name: 'e',
+          ts: 9,
+          dur: 0,
+        },
+      ] as TraceModel.Types.TraceEvents.TraceEventData[];
+      const ordered = TraceModel.Helpers.Trace.mergeEventsInOrder(array1, array2);
+      for (let i = 1; i < ordered.length; i++) {
+        assert.isAbove(ordered[i].ts, ordered[i - 1].ts);
+      }
+    });
+    it('merges two ordered arrays of trace events when timestamps collide', async () => {
+      const array1 = [
+        {
+          name: 'a',
+          ts: 0,
+          dur: 10,
+        },
+        {
+          name: 'b',
+          ts: 2,
+          dur: 12,
+        },
+        {
+          name: 'c',
+          ts: 4,
+          dur: 2,
+        },
+        {
+          name: 'd',
+          ts: 6,
+          dur: 9,
+        },
+        {
+          name: 'e',
+          ts: 8,
+          dur: 100,
+        },
+      ] as TraceModel.Types.TraceEvents.TraceEventData[];
+
+      const array2 = [
+        {
+          name: 'a',
+          ts: 0,
+          dur: 2,
+        },
+        {
+          name: 'b',
+          ts: 2,
+          dur: 1,
+        },
+        {
+          name: 'c',
+          ts: 4,
+          dur: 99,
+        },
+        {
+          name: 'd',
+          ts: 7,
+        },
+        {
+          name: 'e',
+          ts: 9,
+          dur: 0,
+        },
+      ] as TraceModel.Types.TraceEvents.TraceEventData[];
+      const ordered = TraceModel.Helpers.Trace.mergeEventsInOrder(array1, array2);
+      for (let i = 1; i < ordered.length; i++) {
+        const dur = ordered[i].dur;
+        const durPrev = ordered[i - 1].dur;
+        const eventsHaveDuration = dur !== undefined && durPrev !== undefined;
+        const correctOrderForSharedTimestamp =
+            eventsHaveDuration && ordered[i].ts === ordered[i - 1].ts && dur <= durPrev;
+        assert.isTrue(ordered[i].ts > ordered[i - 1].ts || correctOrderForSharedTimestamp);
+      }
+    });
+    it('merges two ordered arrays of trace events when timestamps and durations collide', async () => {
+      const array1 = [
+        {
+          name: 'a',
+          ts: 0,
+          dur: 10,
+        },
+        {
+          name: 'b',
+          ts: 2,
+          dur: 10,
+        },
+        {
+          name: 'c',
+          ts: 4,
+          dur: 10,
+        },
+        {
+          name: 'd',
+          ts: 6,
+          dur: 10,
+        },
+        {
+          name: 'e',
+          ts: 8,
+          dur: 10,
+        },
+      ] as TraceModel.Types.TraceEvents.TraceEventData[];
+
+      const array2 = [...array1];
+      const ordered = TraceModel.Helpers.Trace.mergeEventsInOrder(array1, array2);
+      for (let i = 1; i < ordered.length; i++) {
+        const dur = ordered[i].dur;
+        const durPrev = ordered[i - 1].dur;
+        const eventsHaveDuration = dur !== undefined && durPrev !== undefined;
+        const correctOrderForSharedTimestamp =
+            eventsHaveDuration && ordered[i].ts === ordered[i - 1].ts && dur <= durPrev;
+        assert.isTrue(ordered[i].ts > ordered[i - 1].ts || correctOrderForSharedTimestamp);
+      }
+    });
+  });
 });

@@ -8,6 +8,7 @@ import * as Common from '../../../core/common/common.js';
 import type * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 import * as Types from '../types/types.js';
 import {millisecondsToMicroseconds} from './Timing.js';
+import {mergeEventsInOrder} from './Trace.js';
 
 /**
  * This is a helpers that integrates CPU profiling data coming in the
@@ -17,7 +18,7 @@ import {millisecondsToMicroseconds} from './Timing.js';
  * of what the duration of each JS call was, given the sample data and
  * given the trace events profiled during that time. At the end of its
  * execution, the SamplesIntegrator returns an array of ProfileCalls
- * (under SamplesIntegrator::getConstructedProfileCalls()), which
+ * (under SamplesIntegrator::buildProfileCalls()), which
  * represent JS calls, with a call frame and duration. These calls have
  * the shape of a complete trace events and can be treated as flame
  * chart entries in the timeline.
@@ -96,11 +97,55 @@ export class SamplesIntegrator {
     this.#processId = pid;
   }
 
-  getConstructedProfileCalls(): Types.TraceEvents.TraceEventSyntheticProfileCall[] {
+  buildProfileCalls(traceEvents: Types.TraceEvents.TraceEventData[]):
+      Types.TraceEvents.TraceEventSyntheticProfileCall[] {
+    const mergedEvents = mergeEventsInOrder(traceEvents, this.callsFromProfileSamples());
+    const stack = [];
+    for (let i = 0; i < mergedEvents.length; i++) {
+      const event = mergedEvents[i];
+      if (stack.length === 0) {
+        if (Types.TraceEvents.isProfileCall(event)) {
+          this.#onProfileCall(event);
+          continue;
+        }
+        stack.push(event);
+        this.#onTraceEventStart(event);
+        continue;
+      }
+
+      const parentEvent = stack.at(-1);
+      if (parentEvent === undefined) {
+        continue;
+      }
+      const begin = event.ts;
+      const parentBegin = parentEvent.ts;
+      const parentDuration = parentEvent.dur || 0;
+      const parentEnd = parentBegin + parentDuration;
+
+      const startsAfterParent = begin >= parentEnd;
+      if (startsAfterParent) {
+        this.#onTraceEventEnd(parentEvent);
+        stack.pop();
+        i--;
+        continue;
+      }
+      if (Types.TraceEvents.isProfileCall(event)) {
+        this.#onProfileCall(event, parentEvent);
+        continue;
+      }
+      this.#onTraceEventStart(event);
+      stack.push(event);
+    }
+    while (stack.length) {
+      const last = stack.pop();
+      if (last) {
+        this.#onTraceEventEnd(last);
+      }
+    }
     return this.#constructedProfileCalls;
   }
 
-  onTraceEventStart(event: Types.TraceEvents.TraceEventData): void {
+  #onTraceEventStart(event: Types.TraceEvents.TraceEventData): void {
     // Because instant trace events have no duration, they don't provide
     // useful information for possible changes in the duration of calls
     // in the JS stack.
@@ -141,7 +186,7 @@ export class SamplesIntegrator {
     this.#lockedJsStackDepth.push(this.#currentJSStack.length);
   }
 
-  onProfileCall(event: Types.TraceEvents.TraceEventSyntheticProfileCall, parent?: Types.TraceEvents.TraceEventData):
+  #onProfileCall(event: Types.TraceEvents.TraceEventSyntheticProfileCall, parent?: Types.TraceEvents.TraceEventData):
       void {
     if ((parent && SamplesIntegrator.isJSInvocationEvent(parent)) || this.#fakeJSInvocation) {
       this.#extractStackTrace(event);
@@ -157,7 +202,7 @@ export class SamplesIntegrator {
     }
   }
 
-  onTraceEventEnd(event: Types.TraceEvents.TraceEventData): void {
+  #onTraceEventEnd(event: Types.TraceEvents.TraceEventData): void {
     // Because the event has ended, any frames that happened after
     // this event are terminated. Frames that are ancestors to this
     // event are extended to cover its ending.
@@ -283,6 +328,7 @@ export class SamplesIntegrator {
     //                [E]
     //                  ^ t = x2
     this.#truncateJSStack(i, event.ts);
+
     for (; i < stackTrace.length; ++i) {
       const call = stackTrace[i];
       this.#currentJSStack.push(call);

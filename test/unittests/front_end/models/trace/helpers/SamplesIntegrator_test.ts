@@ -12,54 +12,6 @@ import {makeCompleteEvent} from '../../../helpers/TraceHelpers.js';
 import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
 
 describeWithEnvironment('SamplesIntegrator', function() {
-  function iterateEventsOnIntegrator(
-      events: TraceModel.Types.TraceEvents.TraceEventData[],
-      samplesIntegrator: TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator) {
-    const mergedEvents = [...events, ...samplesIntegrator.callsFromProfileSamples()];
-    TraceModel.Helpers.Trace.sortTraceEventsInPlace(mergedEvents);
-    const stack: TraceModel.Types.TraceEvents.TraceEventData[] = [];
-    for (let i = 0; i < mergedEvents.length; i++) {
-      const event = mergedEvents[i];
-      if (stack.length === 0) {
-        if (TraceModel.Types.TraceEvents.isProfileCall(event)) {
-          samplesIntegrator.onProfileCall(event);
-          continue;
-        }
-        stack.push(event);
-        samplesIntegrator.onTraceEventStart(event);
-        continue;
-      }
-
-      const parentEvent = stack.at(-1);
-      if (parentEvent === undefined) {
-        continue;
-      }
-      const begin = event.ts;
-      const parentBegin = parentEvent.ts;
-      const parentDuration = parentEvent.dur || 0;
-      const parentEnd = parentBegin + parentDuration;
-
-      const startsAfterParent = begin >= parentEnd;
-      if (startsAfterParent) {
-        samplesIntegrator.onTraceEventEnd(parentEvent);
-        stack.pop();
-        i--;
-        continue;
-      }
-      if (TraceModel.Types.TraceEvents.isProfileCall(event)) {
-        samplesIntegrator.onProfileCall(event, parentEvent);
-        continue;
-      }
-      samplesIntegrator.onTraceEventStart(event);
-      stack.push(event);
-    }
-    while (stack.length) {
-      const last = stack.pop();
-      if (last) {
-        samplesIntegrator.onTraceEventEnd(last);
-      }
-    }
-  }
   const scriptId = 'Peperoni' as Protocol.Runtime.ScriptId;
   const url = '';
   const lineNumber = -1;
@@ -106,7 +58,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
     });
   });
 
-  describe('getConstructedProfileCalls', () => {
+  describe('buildProfileCalls', () => {
     it('generates profile calls using trace events and JS samples from a trace file', async () => {
       const data = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
       const samplesData = data.Samples;
@@ -119,8 +71,8 @@ describeWithEnvironment('SamplesIntegrator', function() {
       if (!traceEvents) {
         throw new Error('Trace events were unexpectedly not found.');
       }
-      iterateEventsOnIntegrator(traceEvents, samplesIntegrator);
-      assert.strictEqual(samplesIntegrator.getConstructedProfileCalls().length, 6243);
+      const constructedCalls = samplesIntegrator.buildProfileCalls(traceEvents);
+      assert.strictEqual(constructedCalls.length, 6243);
     });
 
     it('creates JS profile calls with a top-level V8 invocation', () => {
@@ -132,8 +84,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const integrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedBasicProfile, pid, tid);
       const callEvent = makeCompleteEvent(TraceModel.Types.TraceEvents.KnownEventName.FunctionCall, 0, 500);
       const traceEvents = [callEvent];
-      iterateEventsOnIntegrator(traceEvents, integrator);
-      const constructedCalls = integrator.getConstructedProfileCalls();
+      const constructedCalls = integrator.buildProfileCalls(traceEvents);
       assert.strictEqual(constructedCalls.length, 2);
       assert.strictEqual(constructedCalls[0].callFrame.functionName, 'a');
       assert.strictEqual(constructedCalls[0].ts, 100);
@@ -146,8 +97,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
     it('creates JS frame events without a top-level V8 invocation', () => {
       const integrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedBasicProfile, pid, tid);
       const traceEvents: TraceModel.Types.TraceEvents.TraceEventComplete[] = [];
-      iterateEventsOnIntegrator(traceEvents, integrator);
-      const constructedCalls = integrator.getConstructedProfileCalls();
+      const constructedCalls = integrator.buildProfileCalls(traceEvents);
       assert.strictEqual(constructedCalls.length, 2);
       assert.strictEqual(constructedCalls[0].callFrame.functionName, 'a');
       assert.strictEqual(constructedCalls[0].ts, 100);
@@ -185,8 +135,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const integrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, pid, tid);
       const callEvent = makeCompleteEvent(TraceModel.Types.TraceEvents.KnownEventName.FunctionCall, 250, 250);
       const traceEvents = [callEvent];
-      iterateEventsOnIntegrator(traceEvents, integrator);
-      const constructedCalls = integrator.getConstructedProfileCalls();
+      const constructedCalls = integrator.buildProfileCalls(traceEvents);
       assert.strictEqual(constructedCalls.length, 2);
       assert.strictEqual(constructedCalls[0].callFrame.functionName, 'a');
       assert.strictEqual(constructedCalls[0].ts, 100);
@@ -231,8 +180,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const parseFunction = makeCompleteEvent('V8.ParseFunction', 12, 1);
 
       const traceEvents = [evaluateScript, v8Run, parseFunction];
-      iterateEventsOnIntegrator(traceEvents, integrator);
-      const constructedCalls = integrator.getConstructedProfileCalls();
+      const constructedCalls = integrator.buildProfileCalls(traceEvents);
       assert.strictEqual(constructedCalls.length, 2);
       assert.strictEqual(constructedCalls[0].callFrame.functionName, 'a');
       assert.strictEqual(constructedCalls[0].ts, 100);
@@ -275,8 +223,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const traceEvents = [runTask, evaluateScript, runMicroTasks];
       const parsedProfile = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(cdpProfile);
       const integrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, pid, tid);
-      iterateEventsOnIntegrator(traceEvents, integrator);
-      const constructedCalls = integrator.getConstructedProfileCalls();
+      const constructedCalls = integrator.buildProfileCalls(traceEvents);
 
       assert.strictEqual(constructedCalls.length, 3);
       const framesForFunctionA = constructedCalls.filter(c => c.callFrame.functionName === 'a');
@@ -324,8 +271,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const integrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, pid, tid);
       const callEvent = makeCompleteEvent(TraceModel.Types.TraceEvents.KnownEventName.FunctionCall, 0, 1000);
       const traceEvents = [callEvent];
-      iterateEventsOnIntegrator(traceEvents, integrator);
-      const constructedCalls = integrator.getConstructedProfileCalls();
+      const constructedCalls = integrator.buildProfileCalls(traceEvents);
       assert.strictEqual(constructedCalls.length, 4);
 
       assert.strictEqual(constructedCalls[0].callFrame.functionName, 'a');

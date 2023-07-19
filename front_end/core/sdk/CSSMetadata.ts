@@ -469,6 +469,7 @@ const colorAwareProperties = new Set<string>([
   'list-style-image',
   'outline',
   'outline-color',
+  'scrollbar-color',
   'stop-color',
   'stroke',
   'text-decoration-color',

@@ -250,7 +250,7 @@ export interface TraceEventSyntheticNetworkRequest extends TraceEventComplete {
       mimeType: string,
       pathname: string,
       search: string,
-      priority: string,
+      priority: Priority,
       protocol: string,
       redirects: TraceEventSyntheticNetworkRedirect[],
       renderBlocking: RenderBlocking,
@@ -567,7 +567,7 @@ export interface SyntheticLayoutShift extends TraceEventLayoutShift {
   parsedData: LayoutShiftParsedData;
 }
 
-export type Priority = 'Low'|'High'|'VeryHigh'|'Highest';
+export type Priority = 'Low'|'High'|'Medium'|'VeryHigh'|'Highest';
 export type RenderBlocking = 'blocking'|'non_blocking'|'in_body_parser_blocking'|'potentially_blocking';
 export interface TraceEventResourceSendRequest extends TraceEventInstant {
   name: 'ResourceSendRequest';

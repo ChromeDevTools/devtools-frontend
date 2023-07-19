@@ -179,3 +179,15 @@ export function eventTimingsSeconds(event: Types.TraceEvents.TraceEventData): Ev
     selfTime: microSecondsToSeconds(microTimes.selfTime),
   };
 }
+
+export function traceBoundsMilliseconds(bounds: Types.Timing.TraceWindow): {
+  min: Types.Timing.MilliSeconds,
+  max: Types.Timing.MilliSeconds,
+  range: Types.Timing.MilliSeconds,
+} {
+  return {
+    min: microSecondsToMilliseconds(bounds.min),
+    max: microSecondsToMilliseconds(bounds.max),
+    range: microSecondsToMilliseconds(bounds.range),
+  };
+}

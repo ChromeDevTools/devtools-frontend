@@ -43,9 +43,6 @@ TimelineModel.TimelineModel.RecordType = TimelineModelModule.TimelineModel.Recor
 TimelineModel.TimelineModel.PageFrame = TimelineModelModule.TimelineModel.PageFrame;
 
 /** @constructor */
-TimelineModel.TimelineModel.NetworkRequest = TimelineModelModule.TimelineModel.NetworkRequest;
-
-/** @constructor */
 TimelineModel.InvalidationTrackingEvent = TimelineModelModule.TimelineModel.InvalidationTrackingEvent;
 
 /** @constructor */

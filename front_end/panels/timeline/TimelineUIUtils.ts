@@ -1159,9 +1159,8 @@ let eventDispatchDesciptors: EventDispatchTypeDescriptor[];
 
 let colorGenerator: Common.Color.Generator;
 
-const requestPreviewElements = new WeakMap<
-    TimelineModel.TimelineModel.NetworkRequest|TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest,
-    HTMLImageElement>();
+const requestPreviewElements =
+    new WeakMap<TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest, HTMLImageElement>();
 
 interface EventStylesMap {
   [x: string]: TimelineRecordStyle;

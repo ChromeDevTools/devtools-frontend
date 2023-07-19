@@ -10,7 +10,7 @@ import {TraceLoader} from '../../helpers/TraceLoader.js';
 describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
   it('renders the network track correctly', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {timelineModel, traceParsedData} = await TraceLoader.allModels(this, 'load-simple.json.gz');
+    const traceParsedData = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
 
     const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
     const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
@@ -25,9 +25,13 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     assert.deepEqual(dataProvider.minimumBoundary(), minTime);
     assert.deepEqual(dataProvider.totalTime(), maxTime - minTime);
 
-    const networkEvents = timelineModel.networkRequests();
-    const networkEventsStartTimes = networkEvents.map(request => request.beginTime());
-    const networkEventsTotalTimes = networkEvents.map(request => request.endTime - request.beginTime());
+    const networkEvents = traceParsedData.NetworkRequests.byTime;
+    const networkEventsStartTimes =
+        networkEvents.map(request => TraceEngine.Helpers.Timing.microSecondsToMilliseconds(request.ts));
+    const networkEventsTotalTimes = networkEvents.map(request => {
+      const {startTime, endTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(request);
+      return endTime - startTime;
+    });
     assert.deepEqual(dataProvider.timelineData().entryLevels.length, 6);
     assert.deepEqual(dataProvider.timelineData().entryLevels, [0, 1, 1, 1, 1, 2]);
     assertTimestampsEqual(dataProvider.timelineData().entryStartTimes, networkEventsStartTimes);
@@ -125,35 +129,6 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     assert.deepEqual(
         dataProvider.getDecorationPixels(event, /* unclippedBarX= */ 10, /* timeToPixelRatio= */ 1),
         {sendStart: 30, headersEnd: 235, finish: 237, start: 10, end: 238});
-  });
-
-  describe('TraceEngine', function() {
-    // TODO(crbug.com/1457485)
-    // This test is used to check we handle the event "same" as OPP. Once
-    // the migration is done, it should be removed.
-    it('returns same events as old engine', async function() {
-      const {timelineModel, traceParsedData} = await TraceLoader.allModels(this, 'cls-cluster-max-timeout.json.gz');
-      const networkEventsFromOldEngine = timelineModel.networkRequests();
-      // The first request of this file misses the SendRequest event, so we discarded it in Trace Engine.
-      // So remove the first request for the test.
-      networkEventsFromOldEngine.shift();
-      const networkEventsFromNewEngine = traceParsedData.NetworkRequests.byTime;
-      assert.strictEqual(networkEventsFromNewEngine.length, networkEventsFromNewEngine.length);
-
-      for (let i = 0; i < 136; i++) {
-        const {startTime, endTime, finishTime} = networkEventsFromOldEngine[i];
-        assert.strictEqual(startTime * 1000, networkEventsFromNewEngine[i].ts);
-        assert.strictEqual(endTime * 1000, networkEventsFromNewEngine[i].ts + networkEventsFromNewEngine[i].dur);
-        assertTimestampEqual(
-            (finishTime || endTime) * 1000, networkEventsFromNewEngine[i].args.data.syntheticData.finishTime);
-
-        const {sendStartTime, headersEndTime} = networkEventsFromOldEngine[i].getSendReceiveTiming();
-        const sendStartTimeNew = networkEventsFromNewEngine[i].args.data.syntheticData.sendStartTime;
-        const headersEndTimeNew = networkEventsFromNewEngine[i].args.data.syntheticData.downloadStart;
-        assertTimestampEqual(sendStartTime * 1000, sendStartTimeNew);
-        assertTimestampEqual(headersEndTime * 1000, headersEndTimeNew);
-      }
-    });
   });
 });
 

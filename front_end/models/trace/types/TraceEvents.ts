@@ -463,6 +463,18 @@ export interface TraceEventInstant extends TraceEventData {
   s: TraceEventScope;
 }
 
+export interface TraceEventUpdateCounters extends TraceEventInstant {
+  name: 'UpdateCounters';
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      documents: number,
+      jsEventListeners: number,
+      jsHeapSizeUsed: number,
+      nodes: number,
+    },
+  };
+}
+
 export type TraceEventRendererEvent = TraceEventInstant|TraceEventComplete;
 
 export interface TraceEventTracingStartedInBrowser extends TraceEventInstant {
@@ -927,6 +939,10 @@ export function isTraceEventRendererEvent(event: TraceEventData): event is Trace
 
 export function isTraceEventFireIdleCallback(event: TraceEventData): event is TraceEventFireIdleCallback {
   return event.name === 'FireIdleCallback';
+}
+
+export function isTraceEventUpdateCounters(event: TraceEventData): event is TraceEventUpdateCounters {
+  return event.name === 'UpdateCounters';
 }
 
 export function isThreadName(

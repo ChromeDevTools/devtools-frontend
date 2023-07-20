@@ -16,20 +16,30 @@ if (!container) {
 
 const params = new URLSearchParams(window.location.search);
 const fileName = (params.get('trace') || 'web-dev') + '.json.gz';
-const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
-minimap.markAsRoot();
-minimap.show(container);
 
-const models = await TraceLoader.TraceLoader.allModels(null, fileName);
+async function renderMiniMap(containerSelector: string, options: {showMemory: boolean}) {
+  const container = document.querySelector<HTMLElement>(containerSelector);
+  if (!container) {
+    throw new Error('could not find container');
+  }
+  const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
+  minimap.markAsRoot();
+  minimap.show(container);
 
-minimap.setNavStartTimes(models.timelineModel.navStartTimes());
-minimap.setBounds(models.timelineModel.minimumRecordTime(), models.timelineModel.maximumRecordTime());
-minimap.setWindowTimes(models.performanceModel.window().left, models.performanceModel.window().right);
-minimap.updateControls({
-  traceParsedData: models.traceParsedData,
-  performanceModel: models.performanceModel,
-  settings: {
-    showMemory: false,
-    showScreenshots: true,
-  },
-});
+  const models = await TraceLoader.TraceLoader.allModels(null, fileName);
+
+  minimap.setNavStartTimes(models.timelineModel.navStartTimes());
+  minimap.setBounds(models.timelineModel.minimumRecordTime(), models.timelineModel.maximumRecordTime());
+  minimap.setWindowTimes(models.performanceModel.window().left, models.performanceModel.window().right);
+  minimap.updateControls({
+    traceParsedData: models.traceParsedData,
+    performanceModel: models.performanceModel,
+    settings: {
+      showMemory: options.showMemory,
+      showScreenshots: true,
+    },
+  });
+}
+
+await renderMiniMap('.container', {showMemory: false});
+await renderMiniMap('.container-with-memory', {showMemory: true});

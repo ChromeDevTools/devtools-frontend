@@ -92,17 +92,6 @@
   list-style-type: none;
 }
 
-.memory-graph-label {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  font-size: 9px;
-  color: var(--color-text-secondary);
-  white-space: nowrap;
-  padding: 0 4px;
-  background-color: var(--color-background-opacity-80);
-}
-
 #memory-graphs-canvas-container {
   overflow: hidden;
   flex: auto;

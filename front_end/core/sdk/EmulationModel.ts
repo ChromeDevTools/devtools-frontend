@@ -81,6 +81,8 @@ export class EmulationModel extends SDKModel<void> {
         Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersContrast');
     const mediaFeaturePrefersReducedDataSetting =
         Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersReducedData');
+    const mediaFeaturePrefersReducedTransparencySetting =
+        Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersReducedTransparency');
     const mediaFeaturePrefersReducedMotionSetting =
         Common.Settings.Settings.instance().moduleSetting<string>('emulatedCSSMediaFeaturePrefersReducedMotion');
     // Note: this uses a different format than what the CDP API expects,
@@ -95,6 +97,7 @@ export class EmulationModel extends SDKModel<void> {
       ['prefers-contrast', mediaFeaturePrefersContrastSetting.get()],
       ['prefers-reduced-data', mediaFeaturePrefersReducedDataSetting.get()],
       ['prefers-reduced-motion', mediaFeaturePrefersReducedMotionSetting.get()],
+      ['prefers-reduced-transparency', mediaFeaturePrefersReducedTransparencySetting.get()],
     ]);
     mediaTypeSetting.addChangeListener(() => {
       this.#mediaConfiguration.set('type', mediaTypeSetting.get());
@@ -122,6 +125,10 @@ export class EmulationModel extends SDKModel<void> {
     });
     mediaFeaturePrefersReducedMotionSetting.addChangeListener(() => {
       this.#mediaConfiguration.set('prefers-reduced-motion', mediaFeaturePrefersReducedMotionSetting.get());
+      void this.updateCssMedia();
+    });
+    mediaFeaturePrefersReducedTransparencySetting.addChangeListener(() => {
+      this.#mediaConfiguration.set('prefers-reduced-transparency', mediaFeaturePrefersReducedTransparencySetting.get());
       void this.updateCssMedia();
     });
     void this.updateCssMedia();
@@ -394,6 +401,10 @@ export class EmulationModel extends SDKModel<void> {
       {
         name: 'prefers-reduced-motion',
         value: this.#mediaConfiguration.get('prefers-reduced-motion') ?? '',
+      },
+      {
+        name: 'prefers-reduced-transparency',
+        value: this.#mediaConfiguration.get('prefers-reduced-transparency') ?? '',
       },
     ];
     return this.emulateCSSMedia(type, features);

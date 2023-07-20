@@ -858,6 +858,26 @@ Common.Settings.registerSettingExtension({
 });
 
 Common.Settings.registerSettingExtension({
+  settingName: 'emulatedCSSMediaFeaturePrefersReducedTransparency',
+  settingType: Common.Settings.SettingType.ENUM,
+  storageType: Common.Settings.SettingStorageType.Session,
+  defaultValue: '',
+  options: [
+    {
+      title: i18nLazyString(UIStrings.doNotEmulateCss, {PH1: 'prefers-reduced-transparency'}),
+      text: i18nLazyString(UIStrings.noEmulation),
+      value: '',
+    },
+    {
+      title: i18nLazyString(UIStrings.emulateCss, {PH1: 'prefers-reduced-transparency: reduce'}),
+      text: i18n.i18n.lockedLazyString('prefers-reduced-transparency: reduce'),
+      value: 'reduce',
+    },
+  ],
+  title: i18nLazyString(UIStrings.emulateCssMediaFeature, {PH1: 'prefers-reduced-transparency'}),
+});
+
+Common.Settings.registerSettingExtension({
   settingName: 'emulatedCSSMediaFeatureColorGamut',
   settingType: Common.Settings.SettingType.ENUM,
   storageType: Common.Settings.SettingStorageType.Session,

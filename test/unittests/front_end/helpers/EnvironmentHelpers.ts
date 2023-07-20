@@ -166,6 +166,9 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedData', '',
         Common.Settings.SettingType.ENUM),
     createSettingValue(
+        Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeaturePrefersReducedTransparency', '',
+        Common.Settings.SettingType.ENUM),
+    createSettingValue(
         Common.Settings.SettingCategory.RENDERING, 'emulatedCSSMediaFeatureColorGamut', '',
         Common.Settings.SettingType.ENUM),
     createSettingValue(

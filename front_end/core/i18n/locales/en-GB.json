@@ -902,6 +902,9 @@
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedmotion": {
     "message": "Forces CSS prefers-reduced-motion media feature"
   },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedtransparencyMedia": {
+    "message": "Forces CSS prefers-reduced-transparency media feature"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Forces media type for testing print and screen styles"
   },

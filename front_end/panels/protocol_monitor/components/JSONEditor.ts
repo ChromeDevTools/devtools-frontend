@@ -72,12 +72,6 @@ export interface Command {
   targetId?: string;
 }
 
-interface Type {
-  name: string;
-  type: string;
-  optional: boolean;
-  description: string;
-}
 /**
  * Parents should listen for this event and register the listeners provided by
  * this event"
@@ -105,12 +99,14 @@ const splitDescription = (description: string): [string, string] => {
   return [description, ''];
 };
 
+const DUMMY_DATA = 'dummy';
+
 @customElement('devtools-json-editor')
 export class JSONEditor extends LitElement {
   static override styles = [editorWidgetStyles];
   @property()
   declare metadataByCommand: Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>;
-  @property() declare typesByName: Map<string, Type[]>;
+  @property() declare typesByName: Map<string, Parameter[]>;
   @property() declare targetManager;
   @state() declare parameters: Parameter[];
   @state() command: string = '';
@@ -146,6 +142,124 @@ export class JSONEditor extends LitElement {
     super.disconnectedCallback();
     this.#hintPopoverHelper?.hidePopover();
     this.#hintPopoverHelper?.dispose();
+  }
+
+  #convertObjectToParameterSchema(key: string, value: unknown, schema?: Parameter, initialSchema?: Parameter[]):
+      Parameter {
+    const type = schema?.type || typeof value;
+    const description = schema?.description ?? '';
+    const optional = schema?.optional ?? true;
+
+    switch (type) {
+      case 'string':
+      case 'boolean':
+      case 'number':
+        return {
+          type,
+          name: key,
+          optional,
+          typeRef: schema?.typeRef,
+          value,
+          description,
+        } as Parameter;
+      case 'object': {
+        if (typeof value !== 'object' || value === null) {
+          throw Error('Wrong value');
+        }
+        const typeRef = schema?.typeRef;
+        if (!typeRef) {
+          break;
+        }
+
+        let nestedType;
+        if (typeRef === DUMMY_DATA) {
+          nestedType = initialSchema;
+        } else {
+          nestedType = this.typesByName.get(typeRef);
+        }
+
+        if (!nestedType) {
+          break;
+        }
+        const objectValues = [];
+        for (const objectKey of Object.keys(value as object)) {
+          const objectType = nestedType.find(param => param.name === objectKey);
+          objectValues.push(this.#convertObjectToParameterSchema(
+              objectKey, (value as Record<string, unknown>)[objectKey], objectType as Parameter));
+        }
+        return {
+          type: ParameterType.Object,
+          name: key,
+          optional: schema.optional,
+          typeRef: schema.typeRef,
+          value: objectValues,
+          description,
+        };
+      }
+      case 'array': {
+        const typeRef = schema?.typeRef;
+        if (!typeRef) {
+          throw Error('No type ref');
+        }
+
+        if (!Array.isArray(value)) {
+          throw Error('Wrong value');
+        }
+        const nestedType = this.#isTypePrimitive(typeRef) ? undefined : {
+          optional: true,
+          type: ParameterType.Object,
+          value: [],
+          typeRef,
+          description: '',
+          name: '',
+        } as Parameter;
+
+        const objectValues = [];
+
+        for (let i = 0; i < value.length; i++) {
+          const temp = this.#convertObjectToParameterSchema(`${i}`, value[i], nestedType);
+          objectValues.push(temp);
+        }
+        return {
+          type: ParameterType.Array,
+          name: key,
+          optional: optional,
+          typeRef: schema?.typeRef,
+          value: objectValues,
+          description,
+        };
+      }
+    }
+    return {
+      type,
+      name: key,
+      optional,
+      typeRef: schema?.typeRef,
+      value,
+      description,
+    } as Parameter;
+  }
+
+  displayCommand(command: string, parameters: {
+    [paramName: string]: unknown,
+  }): void {
+    this.command = command;
+    const schema = this.metadataByCommand.get(this.command);
+    if (!schema?.parameters) {
+      return;
+    }
+    this.parameters = this.#convertObjectToParameterSchema(
+                              '', parameters, {
+                                'typeRef': DUMMY_DATA,
+                                'type': ParameterType.Object,
+                                'name': '',
+                                'description': '',
+                                'optional': true,
+                                'value': [],
+                              },
+                              schema.parameters)
+                          .value as Parameter[];
+    this.requestUpdate();
   }
 
   #handlePopoverDescriptions(event: MouseEvent):
@@ -233,8 +347,15 @@ export class JSONEditor extends LitElement {
         }
         case 'object': {
           const nestedParameters: {[key: string]: unknown} = {};
+
           for (const subParameter of parameter.value) {
-            nestedParameters[subParameter.name] = formatParameterValue(subParameter);
+            const formattedValue = formatParameterValue(subParameter);
+            if (formattedValue !== undefined) {
+              nestedParameters[subParameter.name] = formatParameterValue(subParameter);
+            }
+          }
+          if (Object.keys(nestedParameters).length === 0) {
+            return undefined;
           }
           return nestedParameters;
         }
@@ -255,7 +376,13 @@ export class JSONEditor extends LitElement {
     for (const parameter of this.parameters) {
       formattedParameters[parameter.name] = formatParameterValue(parameter);
     }
-    return formattedParameters;
+    return formatParameterValue({
+             type: ParameterType.Object,
+             name: DUMMY_DATA,
+             optional: true,
+             value: this.parameters,
+             description: '',
+           }) as {[key: string]: unknown};
   }
 
   populateParametersForCommand(): void {
@@ -374,6 +501,7 @@ export class JSONEditor extends LitElement {
       return;
     }
     const typeInfos = this.typesByName.get(parameter.typeRef as string) ?? [];
+
     parameter.value.push({
       optional: true,
       type: this.#isTypePrimitive(parameter.typeRef) ? parameter.typeRef : 'object',
@@ -478,7 +606,7 @@ export class JSONEditor extends LitElement {
           const handleInputOnBlur = (event: Event): void => {
             this.#handleParameterInputBlur(event);
           };
-          const classes = { colorBlue: parameter.optional, parameter: true };
+          const classes = {colorBlue: parameter.optional, parameter: true};
           return html`
                 <li class="row">
                   <div class="row">

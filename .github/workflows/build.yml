@@ -5,28 +5,26 @@ on:
 
 jobs:
   build:
+    env:
+      WORKSPACE_CACHE_PATHS: |
+        .
+        !src
+        !!src/out
+        !!src/.cipd
     runs-on: ubuntu-latest
     steps:
-    - name: Cache CIPD
-      uses: actions/cache@v3
-      with:
-        path: src/.cipd
-        key: ${{ runner.os }}-cipd
     - uses: actions/checkout@v3
       with:
         path: src
-    - name: setup-depot-tools
-      uses: newkdev/setup-depot-tools@v1.0.1
-    - name: Cache gclient workspace
-      uses: actions/cache@v3
+    - name: Restore gclient workspace cache
+      uses: actions/cache/restore@v3
       with:
-        path: |
-          .
-          !src
-          !!src/out
+        path: ${{ env.WORKSPACE_CACHE_PATHS }}
         key: ${{ runner.os }}-gclient-workspace-${{ hashFiles('src/DEPS') }}
         restore-keys: |
-          ${{ runner.os }}-gclient-workspace
+          ${{ runner.os }}-gclient-workspace-
+    - name: setup-depot-tools
+      uses: newkdev/setup-depot-tools@v1.0.1
     - name: Sync gclient workspace
       run: |
         gclient config --unmanaged src --name src
@@ -40,4 +38,9 @@ jobs:
       with:
         name: dist-front_end
         path: src/out/Default/gen/front_end
-    
+    - name: Save gclient workspace cache
+      uses: actions/cache/save@v3
+      with:
+        path: ${{ env.WORKSPACE_CACHE_PATHS }}
+        key: ${{ runner.os }}-gclient-workspace-${{ hashFiles('src/DEPS') }}
+  

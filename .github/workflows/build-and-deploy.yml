@@ -9,11 +9,13 @@ permissions:
   contents: write
 
 jobs:
-  build-and-deploy:
+  build:
+    uses: ./.github/workflows/build.yml
+  deploy:
     runs-on: ubuntu-latest
+    needs: build
     steps:
     - uses: actions/checkout@v3
-    - uses: ./.github/workflows/build.yml
     - uses: actions/download-artifact@v3
       with:
         name: dist-front_end

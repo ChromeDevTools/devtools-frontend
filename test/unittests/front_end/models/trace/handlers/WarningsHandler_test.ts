@@ -33,4 +33,35 @@ describe('WarningsHandler', function() {
     const event = longIdleCallbacks[0];
     assert.deepEqual(data.perEvent.get(event), ['IDLE_CALLBACK_OVER_TIME']);
   });
+
+  it('identifies layout events that take over 10ms', async () => {
+    const events = await TraceLoader.rawEvents(this, 'large-layout-small-recalc.json.gz');
+    for (const event of events) {
+      TraceEngine.Handlers.ModelHandlers.Warnings.handleEvent(event);
+    }
+    const data = TraceEngine.Handlers.ModelHandlers.Warnings.data();
+    const forcedLayout = data.perWarning.get('FORCED_LAYOUT') || [];
+    assert.lengthOf(forcedLayout, 1);
+    const event = forcedLayout[0];
+    assert.deepEqual(data.perEvent.get(event), ['FORCED_LAYOUT']);
+    assert.strictEqual(event.name, TraceEngine.Types.TraceEvents.KnownEventName.Layout);
+
+    const styleRecalcs = data.perWarning.get('FORCED_STYLE') || [];
+    // This trace contains a style recalc, but it is below the time threshold
+    // and thus should not be marked as a warning.
+    assert.lengthOf(styleRecalcs, 0);
+  });
+
+  it('identifies style recalc events that take over 10ms', async () => {
+    const events = await TraceLoader.rawEvents(this, 'large-recalc-style.json.gz');
+    for (const event of events) {
+      TraceEngine.Handlers.ModelHandlers.Warnings.handleEvent(event);
+    }
+    const data = TraceEngine.Handlers.ModelHandlers.Warnings.data();
+    const forcedStyle = data.perWarning.get('FORCED_STYLE') || [];
+    assert.lengthOf(forcedStyle, 1);
+    const event = forcedStyle[0];
+    assert.deepEqual(data.perEvent.get(event), ['FORCED_STYLE']);
+    assert.strictEqual(event.name, TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayoutTree);
+  });
 });

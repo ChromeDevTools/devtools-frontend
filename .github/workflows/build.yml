@@ -23,6 +23,7 @@ jobs:
         path: |
           .
           !src
+          !!src/out
         key: ${{ runner.os }}-gclient-workspace-${{ hashFiles('src/DEPS') }}
         restore-keys: |
           ${{ runner.os }}-gclient-workspace

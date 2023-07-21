@@ -1,0 +1,34 @@
+name: Build and deploy DevTools frontend
+
+on:
+  push:
+    branches:
+    - main
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: setup-depot-tools
+      uses: newkdev/setup-depot-tools@v1.0.1
+    - name: Setup gclient workspace
+      run: |
+        CURRENT_CHECKOUT_DIR="$(pwd)"
+        mkdir -p /tmp/gclient_root
+        cd /tmp/gclient_root
+        gclient config --unmanaged "$CURRENT_CHECKOUT_DIR"
+        gclient sync
+    - name: Build DevTools frontend
+      run: |
+        cd /tmp/gclient_root/devtools-frontend
+        gn gen out/Default
+        autoninja -C out/Default
+    - name: Deploy DevTools frontend
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        branch: gh-pages
+        folder: /tmp/gclient_root/devtools-frontend/out/Default/gen/front_end

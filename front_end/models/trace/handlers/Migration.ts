@@ -4,6 +4,7 @@
 
 import * as GPU from './GPUHandler.js';
 import * as LayoutShifts from './LayoutShiftsHandler.js';
+import * as Memory from './MemoryHandler.js';
 import * as NetworkRequests from './NetworkRequestsHandler.js';
 import * as PageLoadMetrics from './PageLoadMetricsHandler.js';
 import * as Screenshots from './ScreenshotsHandler.js';
@@ -23,6 +24,7 @@ export const ENABLED_TRACE_HANDLERS = {
   LayoutShifts,
   Screenshots,
   GPU,
+  Memory,
   NetworkRequests,
   Warnings,
 };

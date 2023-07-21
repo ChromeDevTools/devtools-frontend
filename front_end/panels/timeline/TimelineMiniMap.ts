@@ -89,8 +89,8 @@ export class TimelineMiniMap extends
         this.#controls.push(new TimelineFilmStripOverview(filmStrip));
       }
     }
-    if (data.settings.showMemory) {
-      this.#controls.push(new TimelineEventOverviewMemory());
+    if (data.settings.showMemory && data.traceParsedData) {
+      this.#controls.push(new TimelineEventOverviewMemory(data.traceParsedData));
     }
     for (const control of this.#controls) {
       control.setModel(data.performanceModel);

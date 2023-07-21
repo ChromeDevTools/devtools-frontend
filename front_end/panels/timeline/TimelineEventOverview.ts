@@ -454,9 +454,12 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
 
 export class TimelineEventOverviewMemory extends TimelineEventOverview {
   private heapSizeLabel: HTMLElement;
-  constructor() {
+  #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData;
+
+  constructor(traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData) {
     super('memory', i18nString(UIStrings.heap));
     this.heapSizeLabel = this.element.createChild('div', 'memory-graph-label');
+    this.#traceParsedData = traceParsedData;
   }
 
   resetHeapSizeLabels(): void {
@@ -472,24 +475,20 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
       return;
     }
 
-    const tracks = this.model.timelineModel().tracks().filter(
-        track => track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame);
-    const trackEvents = tracks.map(track => track.events);
+    const mainRendererIds = Array.from(this.#traceParsedData.Meta.topLevelRendererIds);
+    const counterEventsPerTrack =
+        mainRendererIds.map(pid => this.#traceParsedData.Memory.updateCountersByProcess.get(pid) || [])
+            .filter(eventsPerRenderer => eventsPerRenderer.length > 0);
 
     const lowerOffset = 3 * ratio;
     let maxUsedHeapSize = 0;
     let minUsedHeapSize = 100000000000;
-    const minTime = this.model.timelineModel().minimumRecordTime();
-    const maxTime = this.model.timelineModel().maximumRecordTime();
 
-    function isUpdateCountersEvent(event: TraceEngine.Legacy.Event): boolean {
-      return event.name === TimelineModel.TimelineModel.RecordType.UpdateCounters;
-    }
-    for (let i = 0; i < trackEvents.length; i++) {
-      trackEvents[i] = trackEvents[i].filter(isUpdateCountersEvent);
-    }
+    const boundsMs = TraceEngine.Helpers.Timing.traceBoundsMilliseconds(this.#traceParsedData.Meta.traceBounds);
+    const minTime = boundsMs.min;
+    const maxTime = boundsMs.max;
 
-    function calculateMinMaxSizes(event: TraceEngine.Legacy.Event): void {
+    function calculateMinMaxSizes(event: TraceEngine.Types.TraceEvents.TraceEventUpdateCounters): void {
       const counters = event.args.data;
       if (!counters || !counters.jsHeapSizeUsed) {
         return;
@@ -497,9 +496,11 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
       maxUsedHeapSize = Math.max(maxUsedHeapSize, counters.jsHeapSizeUsed);
       minUsedHeapSize = Math.min(minUsedHeapSize, counters.jsHeapSizeUsed);
     }
-    for (let i = 0; i < trackEvents.length; i++) {
-      trackEvents[i].forEach(calculateMinMaxSizes);
+
+    for (let i = 0; i < counterEventsPerTrack.length; i++) {
+      counterEventsPerTrack[i].forEach(calculateMinMaxSizes);
     }
+
     minUsedHeapSize = Math.min(minUsedHeapSize, maxUsedHeapSize);
 
     const lineWidth = 1;
@@ -510,18 +511,18 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
 
     const histogram = new Array(width);
 
-    function buildHistogram(event: TraceEngine.Legacy.Event): void {
+    function buildHistogram(event: TraceEngine.Types.TraceEvents.TraceEventUpdateCounters): void {
       const counters = event.args.data;
       if (!counters || !counters.jsHeapSizeUsed) {
         return;
       }
-      const x = Math.round((event.startTime - minTime) * xFactor);
+      const {startTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
+      const x = Math.round((startTime - minTime) * xFactor);
       const y = Math.round((counters.jsHeapSizeUsed - minUsedHeapSize) * yFactor);
-      // TODO(alph): use sum instead of max.
       histogram[x] = Math.max(histogram[x] || 0, y);
     }
-    for (let i = 0; i < trackEvents.length; i++) {
-      trackEvents[i].forEach(buildHistogram);
+    for (let i = 0; i < counterEventsPerTrack.length; i++) {
+      counterEventsPerTrack[i].forEach(buildHistogram);
     }
 
     const ctx = this.context();

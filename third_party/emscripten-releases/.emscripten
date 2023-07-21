@@ -1,12 +1,20 @@
 import os
 import platform
+import subprocess
 import sys
+
+def get_mac_architecture():
+    if platform.machine() == "x86_64":
+        is_translated = subprocess.run(["sysctl", "-n", "sysctl.proc_translated"], capture_output=True, text=True).stdout.strip() == "1"
+        return "arm64" if is_translated else "x86_64"
+    return platform.machine()
 
 emscripten_releases = os.path.abspath(os.path.dirname(
     os.path.dirname(os.path.dirname(sys.argv[0]))))
 NODE_JS = os.path.join(
     os.path.dirname(emscripten_releases), 'node', *{
-        'Darwin': ('mac', 'node-darwin-x64', 'bin', 'node'),
+        'Darwin': ('mac', 'node-darwin-arm64' if get_mac_architecture()
+                       == 'arm64' else 'node-darwin-x64', 'bin', 'node'),
         'Linux': ('linux', 'node-linux-x64', 'bin', 'node'),
         'Windows': ('win', 'node.exe'),
     }[platform.system()])

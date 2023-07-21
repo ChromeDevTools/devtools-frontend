@@ -44,3 +44,7 @@ test/unittests/fixtures/traces/*.json
 /.vscode/settings.json
 /.vscode/tasks.json
 /.vscode/launch.json
+
+/.gclient_entries
+/.gclient_previous_sync_commits
+/.cipd

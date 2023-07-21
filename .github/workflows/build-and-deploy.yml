@@ -11,24 +11,40 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      GCLIENT_ROOT: $RUNNER_TEMP/gclient_root
     steps:
+    - name: Cache CIPD
+      uses: actions/cache@v3
+      with:
+        path: .cipd
+        key: ${{ runner.os }}-cipd
     - uses: actions/checkout@v3
     - name: setup-depot-tools
       uses: newkdev/setup-depot-tools@v1.0.1
-    - name: Setup gclient workspace
+    - name: Cache gclient workspace
+      uses: actions/cache@v3
+      with:
+        path: |
+          $GCLIENT_ROOT
+          !$GCLIENT_ROOT/devtools-frontend
+        key: ${{ runner.os }}-gclient-workspace-${{ hashFiles("DEPS") }}
+        restore-keys: |
+          ${{ runner.os }}-gclient-workspace
+    - name: Sync gclient workspace
       run: |
         CURRENT_CHECKOUT_DIR="$(pwd)"
-        mkdir -p $RUNNER_TEMP/gclient_root
-        cd $RUNNER_TEMP/gclient_root
+        mkdir -p $GCLIENT_ROOT
+        cd $GCLIENT_ROOT
         gclient config --unmanaged "$CURRENT_CHECKOUT_DIR" --name devtools-frontend
-        gclient sync
+        gclient sync --no-history
     - name: Build DevTools frontend
       run: |
-        cd $RUNNER_TEMP/gclient_root/devtools-frontend
+        cd $GCLIENT_ROOT/devtools-frontend
         gn gen out/Default
         autoninja -C out/Default
     - name: Deploy DevTools frontend
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: gh-pages
-        folder: $RUNNER_TEMP/gclient_root/devtools-frontend/out/Default/gen/front_end
+        folder: ${{ env.GCLIENT_ROOT }}/devtools-frontend/out/Default/gen/front_end

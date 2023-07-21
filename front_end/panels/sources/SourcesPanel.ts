@@ -213,9 +213,11 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   constructor() {
     super('sources');
 
-    new UI.DropTarget.DropTarget(
+    if (Root.Runtime.Runtime.isDescriptorEnabled({experiment: undefined, condition: Root.Runtime.ConditionName.NOT_SOURCES_HIDE_ADD_FOLDER})) {
+      new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.Folder], i18nString(UIStrings.dropWorkspaceFolderHere),
         this.handleDrop.bind(this));
+      }
 
     this.workspace = Workspace.Workspace.WorkspaceImpl.instance();
     this.togglePauseAction =

@@ -459,6 +459,7 @@ UI.ViewManager.registerViewExtension({
     const Sources = await loadSourcesModule();
     return Sources.SourcesNavigator.FilesNavigatorView.instance();
   },
+  condition: Root.Runtime.ConditionName.NOT_SOURCES_HIDE_ADD_FOLDER,
 });
 
 UI.ViewManager.registerViewExtension({

@@ -18,17 +18,17 @@ jobs:
     - name: Setup gclient workspace
       run: |
         CURRENT_CHECKOUT_DIR="$(pwd)"
-        mkdir -p /tmp/gclient_root
-        cd /tmp/gclient_root
+        mkdir -p $RUNNER_TEMP/gclient_root
+        cd $RUNNER_TEMP/gclient_root
         gclient config --unmanaged "$CURRENT_CHECKOUT_DIR"
         gclient sync
     - name: Build DevTools frontend
       run: |
-        cd /tmp/gclient_root/devtools-frontend
+        cd $RUNNER_TEMP/gclient_root/devtools-frontend
         gn gen out/Default
         autoninja -C out/Default
     - name: Deploy DevTools frontend
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         branch: gh-pages
-        folder: /tmp/gclient_root/devtools-frontend/out/Default/gen/front_end
+        folder: $RUNNER_TEMP/gclient_root/devtools-frontend/out/Default/gen/front_end

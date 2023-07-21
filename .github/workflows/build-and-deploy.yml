@@ -12,6 +12,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v3
     - uses: ./.github/workflows/build.yml
     - uses: actions/download-artifact@v3
       with:

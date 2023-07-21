@@ -28,7 +28,7 @@ jobs:
         path: |
           $GCLIENT_ROOT
           !$GCLIENT_ROOT/devtools-frontend
-        key: ${{ runner.os }}-gclient-workspace-${{ hashFiles("DEPS") }}
+        key: ${{ runner.os }}-gclient-workspace-${{ hashFiles('DEPS') }}
         restore-keys: |
           ${{ runner.os }}-gclient-workspace
     - name: Sync gclient workspace

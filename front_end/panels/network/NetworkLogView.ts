@@ -90,6 +90,14 @@ const UIStrings = {
    */
   hidesDataAndBlobUrls: 'Hides data: and blob: URLs',
   /**
+   * @description Label for a filter in the Network panel
+   */
+  chromeExtensions: 'Hide extension requests',
+  /**
+   * @description Tooltip for a filter in the Network panel
+   */
+  hideChromeExtension: 'Hide requests created by Chrome extensions',
+  /**
    *@description Aria accessible name in Network Log View of the Network panel
    */
   resourceTypesToInclude: 'Resource types to include',
@@ -376,6 +384,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     implements SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager>, NetworkLogViewInterface {
   private readonly networkInvertFilterSetting: Common.Settings.Setting<boolean>;
   private readonly networkHideDataURLSetting: Common.Settings.Setting<boolean>;
+  private readonly networkHideChromeExtensions: Common.Settings.Setting<boolean>;
   private readonly networkShowBlockedCookiesOnlySetting: Common.Settings.Setting<boolean>;
   private readonly networkOnlyBlockedRequestsSetting: Common.Settings.Setting<boolean>;
   private readonly networkOnlyThirdPartySetting: Common.Settings.Setting<boolean>;
@@ -409,6 +418,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly onlyBlockedResponseCookiesFilterUI: UI.FilterBar.CheckboxFilterUI;
   private readonly onlyBlockedRequestsUI: UI.FilterBar.CheckboxFilterUI;
   private readonly onlyThirdPartyFilterUI: UI.FilterBar.CheckboxFilterUI;
+  private readonly hideChromeExtensionsUI: UI.FilterBar.CheckboxFilterUI;
   private readonly filterParser: TextUtils.TextUtils.FilterParser;
   private readonly suggestionBuilder: UI.FilterSuggestionBuilder.FilterSuggestionBuilder;
   private dataGrid: DataGrid.SortableDataGrid.SortableDataGrid<NetworkNode>;
@@ -427,6 +437,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     this.networkInvertFilterSetting = Common.Settings.Settings.instance().createSetting('networkInvertFilter', false);
     this.networkHideDataURLSetting = Common.Settings.Settings.instance().createSetting('networkHideDataURL', false);
+    this.networkHideChromeExtensions =
+        Common.Settings.Settings.instance().createSetting('networkHideChromeExtensions', true);
     this.networkShowBlockedCookiesOnlySetting =
         Common.Settings.Settings.instance().createSetting('networkShowBlockedCookiesOnlySetting', false);
     this.networkOnlyBlockedRequestsSetting =
@@ -496,6 +508,13 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
     UI.Tooltip.Tooltip.install(this.dataURLFilterUI.element(), i18nString(UIStrings.hidesDataAndBlobUrls));
     filterBar.addFilter(this.dataURLFilterUI);
+
+    this.hideChromeExtensionsUI = new UI.FilterBar.CheckboxFilterUI(
+        'chrome-extension', i18nString(UIStrings.chromeExtensions), true, this.networkHideChromeExtensions);
+    this.hideChromeExtensionsUI.addEventListener(
+        UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
+    UI.Tooltip.Tooltip.install(this.hideChromeExtensionsUI.element(), i18nString(UIStrings.hideChromeExtension));
+    filterBar.addFilter(this.hideChromeExtensionsUI);
 
     const filterItems =
         Object.values(Common.ResourceType.resourceCategories)
@@ -1434,6 +1453,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.dataURLFilterUI.setChecked(false);
     this.onlyBlockedResponseCookiesFilterUI.setChecked(false);
     this.onlyBlockedRequestsUI.setChecked(false);
+    this.hideChromeExtensionsUI.setChecked(true);
     this.resourceCategoryFilterUI.reset();
   }
 
@@ -1785,6 +1805,9 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       return false;
     }
     if (this.onlyThirdPartyFilterUI.checked() && request.isSameSite()) {
+      return false;
+    }
+    if (this.hideChromeExtensionsUI.checked() && request.scheme === 'chrome-extension') {
       return false;
     }
     for (let i = 0; i < this.filters.length; ++i) {

@@ -1,0 +1,27 @@
+name: Build DevTools frontend
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        path: src
+    - name: setup-depot-tools
+      uses: newkdev/setup-depot-tools@v1.0.1
+    - name: Sync gclient workspace
+      run: |
+        gclient config --unmanaged src --name src
+        gclient sync --no-history
+    - name: Build DevTools frontend
+      run: |
+        cd src
+        gn gen out/Default
+        autoninja -C out/Default
+    - uses: ./src/.github/actions/upload-artifact
+      with:
+        name: dist-front_end
+        path: src/out/Default/gen/front_end

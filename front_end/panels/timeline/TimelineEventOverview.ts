@@ -266,39 +266,56 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
 }
 
 export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
-  // WIP as part of crbug.com/1464206
-  // eslint-disable-next-line no-unused-private-class-members
   #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData;
   constructor(traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData) {
     super('responsiveness', null);
     this.#traceParsedData = traceParsedData;
   }
 
+  #gatherEventsWithRelevantWarnings(): Set<TraceEngine.Types.TraceEvents.TraceEventData> {
+    const {topLevelRendererIds} = this.#traceParsedData.Meta;
+
+    // All the warnings that we care about regarding responsiveness and want to represent on the overview.
+    const warningsForResponsiveness = new Set<TraceEngine.Handlers.ModelHandlers.Warnings.Warning>([
+      'LONG_TASK',
+      'FORCED_STYLE',
+      'IDLE_CALLBACK_OVER_TIME',
+      'FORCED_LAYOUT',
+    ]);
+
+    const allWarningEvents = new Set<TraceEngine.Types.TraceEvents.TraceEventData>();
+    for (const warning of warningsForResponsiveness) {
+      const eventsForWarning = this.#traceParsedData.Warnings.perWarning.get(warning);
+      if (!eventsForWarning) {
+        continue;
+      }
+
+      for (const event of eventsForWarning) {
+        // Only keep events whose PID is a top level renderer, which means it
+        // was on the main thread. This avoids showing issues from iframes or
+        // other sub-frames in the minimap overview.
+        if (topLevelRendererIds.has(event.pid)) {
+          allWarningEvents.add(event);
+        }
+      }
+    }
+    return allWarningEvents;
+  }
+
   override update(): void {
     super.update();
-    if (!this.model) {
-      return;
-    }
-    const height = this.height();
 
-    const timeOffset = this.model.timelineModel().minimumRecordTime();
-    const timeSpan = this.model.timelineModel().maximumRecordTime() - timeOffset;
+    const height = this.height();
+    const {traceBounds} = this.#traceParsedData.Meta;
+    const timeSpan = traceBounds.range;
     const scale = this.width() / timeSpan;
     const ctx = this.context();
     const fillPath = new Path2D();
     const markersPath = new Path2D();
 
-    for (const track of this.model.timelineModel().tracks()) {
-      const events = track.events;
-      for (let i = 0; i < events.length; ++i) {
-        if (!TimelineModel.TimelineModel.EventOnTimelineData.forEvent(events[i]).warning) {
-          continue;
-        }
-        const duration = events[i].duration;
-        if (duration !== undefined) {
-          paintWarningDecoration(events[i].startTime, duration);
-        }
-      }
+    const eventsWithWarning = this.#gatherEventsWithRelevantWarnings();
+    for (const event of eventsWithWarning) {
+      paintWarningDecoration(event);
     }
 
     ctx.fillStyle = 'hsl(0, 80%, 90%)';
@@ -307,12 +324,13 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
     ctx.fill(fillPath);
     ctx.stroke(markersPath);
 
-    function paintWarningDecoration(time: number, duration: number): void {
-      const x = Math.round(scale * (time - timeOffset));
-      const w = Math.round(scale * duration);
-      fillPath.rect(x, 0, w, height);
-      markersPath.moveTo(x + w, 0);
-      markersPath.lineTo(x + w, height);
+    function paintWarningDecoration(event: TraceEngine.Types.TraceEvents.TraceEventData): void {
+      const {startTime, duration} = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(event);
+      const x = Math.round(scale * (startTime - traceBounds.min));
+      const width = Math.round(scale * duration);
+      fillPath.rect(x, 0, width, height);
+      markersPath.moveTo(x + width, 0);
+      markersPath.lineTo(x + width, height);
     }
   }
 }
@@ -470,7 +488,7 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
     super.update();
     const ratio = window.devicePixelRatio;
 
-    if (!this.model) {
+    if (this.#traceParsedData.Memory.updateCountersByProcess.size === 0) {
       this.resetHeapSizeLabels();
       return;
     }

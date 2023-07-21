@@ -1,0 +1,35 @@
+name: Build and Deploy to Netlify
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+permissions:
+  statuses: write
+  deployments: write
+  pull-requests: write
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: dist-front_end
+          path: $RUNNER_TEMP/dist-front_end
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v2.0
+        with:
+          publish-dir: '$RUNNER_TEMP/dist-front_end'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy from GitHub Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 1

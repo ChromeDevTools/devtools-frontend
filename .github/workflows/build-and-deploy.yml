@@ -20,7 +20,7 @@ jobs:
         CURRENT_CHECKOUT_DIR="$(pwd)"
         mkdir -p $RUNNER_TEMP/gclient_root
         cd $RUNNER_TEMP/gclient_root
-        gclient config --unmanaged "$CURRENT_CHECKOUT_DIR"
+        gclient config --unmanaged "$CURRENT_CHECKOUT_DIR" --name devtools-frontend
         gclient sync
     - name: Build DevTools frontend
       run: |

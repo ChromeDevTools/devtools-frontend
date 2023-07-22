@@ -13,6 +13,7 @@ group("front_end") {
     ":embedder-scripts",
     ":html_entrypoints",
     ":integration_test_runner",
+    ":index_html",
     ":legacy_entrypoints",
     "Images",
     "core/i18n/locales",
@@ -149,4 +150,8 @@ group("embedder-scripts") {
   metadata = {
     grd_files = get_target_outputs(":embedder-scripts-gen")
   }
+}
+
+copy_to_gen("index_html") {
+  sources = [ "index.html" ]
 }

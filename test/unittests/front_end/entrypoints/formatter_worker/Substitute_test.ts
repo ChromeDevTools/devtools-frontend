@@ -6,13 +6,14 @@ const {assert} = chai;
 
 import * as FormatterWorker from '../../../../../front_end/entrypoints/formatter_worker/formatter_worker.js';
 
-const mapping = new Map<string, string>([
+const mapping = new Map<string, string|null>([
   ['varX', 'x'],
   ['varY', 'y'],
   ['varZ', 'z'],
   ['this', 'this_1'],
   ['rename_to_this', 'this'],
   ['rename_to_arguments', 'arguments'],
+  ['varQ', null],
 ]);
 
 function substitute(expression: string): string {
@@ -168,5 +169,9 @@ describe('Substitute', () => {
 
   it('Throws on parse error', () => {
     assert.throws(() => substitute('('), SyntaxError);
+  });
+
+  it('Throws if the renamed variable is unavailable', () => {
+    assert.throws(() => substitute('varQ'), Error);
   });
 });

@@ -361,7 +361,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
         ?.evaluateCommandInConsole(executionContext, message, expression, useCommandLineAPI);
   }
 
-  private async substituteNames(expression: string, mapping: Map<string, string>): Promise<string> {
+  private async substituteNames(expression: string, mapping: Map<string, string|null>): Promise<string> {
     try {
       return await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, mapping);
     } catch {

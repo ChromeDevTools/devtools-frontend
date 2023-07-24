@@ -18,7 +18,7 @@ interface CachedScopeMap {
 }
 
 const scopeToCachedIdentifiersMap = new WeakMap<Formatter.FormatterWorkerPool.ScopeTreeNode, CachedScopeMap>();
-const cachedMapByCallFrame = new WeakMap<SDK.DebuggerModel.CallFrame, Map<string, string>>();
+const cachedMapByCallFrame = new WeakMap<SDK.DebuggerModel.CallFrame, Map<string, string|null>>();
 const cachedTextByDeferredContent = new WeakMap<TextUtils.ContentProvider.DeferredContent, TextUtils.Text.Text|null>();
 
 async function getTextFor(contentProvider: TextUtils.ContentProvider.ContentProvider):
@@ -394,7 +394,12 @@ export const resolveScopeChain =
   return callFrame.scopeChain();
 };
 
-export const allVariablesInCallFrame = async(callFrame: SDK.DebuggerModel.CallFrame): Promise<Map<string, string>> => {
+/**
+ * @returns A mapping from original name -> compiled name. If the orignal name is unavailable (e.g. because the compiled name was
+ * shadowed) we set it to `null`.
+ */
+export const allVariablesInCallFrame =
+    async(callFrame: SDK.DebuggerModel.CallFrame): Promise<Map<string, string|null>> => {
   const cachedMap = cachedMapByCallFrame.get(callFrame);
   if (cachedMap) {
     return cachedMap;
@@ -402,20 +407,32 @@ export const allVariablesInCallFrame = async(callFrame: SDK.DebuggerModel.CallFr
 
   const scopeChain = callFrame.scopeChain();
   const nameMappings = await Promise.all(scopeChain.map(resolveDebuggerScope));
-  const reverseMapping = new Map<string, string>();
+  const reverseMapping = new Map<string, string|null>();
+  const compiledNames = new Set<string>();
   for (const {variableMapping} of nameMappings) {
     for (const [compiledName, originalName] of variableMapping) {
-      if (originalName && !reverseMapping.has(originalName)) {
-        reverseMapping.set(originalName, compiledName);
+      if (!originalName) {
+        continue;
       }
+      if (!reverseMapping.has(originalName)) {
+        // An inner scope might have shadowed {compiledName}. Mark it as "unavailable" in that case.
+        const compiledNameOrNull = compiledNames.has(compiledName) ? null : compiledName;
+        reverseMapping.set(originalName, compiledNameOrNull);
+      }
+      compiledNames.add(compiledName);
     }
   }
   cachedMapByCallFrame.set(callFrame, reverseMapping);
   return reverseMapping;
 };
 
-export const allVariablesAtPosition = async(location: SDK.DebuggerModel.Location): Promise<Map<string, string>> => {
-  const reverseMapping = new Map<string, string>();
+/**
+ * @returns A mapping from original name -> compiled name. If the orignal name is unavailable (e.g. because the compiled name was
+ * shadowed) we set it to `null`.
+ */
+export const allVariablesAtPosition =
+    async(location: SDK.DebuggerModel.Location): Promise<Map<string, string|null>> => {
+  const reverseMapping = new Map<string, string|null>();
   const script = location.script();
   if (!script) {
     return reverseMapping;
@@ -429,13 +446,20 @@ export const allVariablesAtPosition = async(location: SDK.DebuggerModel.Location
   const {scopeTree, text} = scopeTreeAndText;
   const locationOffset = text.offsetFromPosition(location.lineNumber, location.columnNumber);
   const scopeChain = findScopeChain(scopeTree, {start: locationOffset, end: locationOffset});
+  const compiledNames = new Set<string>();
 
   while (scopeChain.length > 0) {
     const {variableMapping} = await resolveScope(script, scopeChain);
     for (const [compiledName, originalName] of variableMapping) {
-      if (originalName && !reverseMapping.has(originalName)) {
-        reverseMapping.set(originalName, compiledName);
+      if (!originalName) {
+        continue;
       }
+      if (!reverseMapping.has(originalName)) {
+        // An inner scope might have shadowed {compiledName}. Mark it as "unavailable" in that case.
+        const compiledNameOrNull = compiledNames.has(compiledName) ? null : compiledName;
+        reverseMapping.set(originalName, compiledNameOrNull);
+      }
+      compiledNames.add(compiledName);
     }
     scopeChain.pop();
   }

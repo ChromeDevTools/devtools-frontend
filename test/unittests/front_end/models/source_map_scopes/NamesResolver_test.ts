@@ -479,9 +479,7 @@ function mulWithOffset(param1, param2, offset) {
 
       const mapping = await SourceMapScopes.NamesResolver.allVariablesAtPosition(location);
 
-      // TODO(crbug.com/1444349): Fix shadowing of {n}.
-      //     {param1} should really be marked as "unavailable" in one form or another.
-      assert.strictEqual(mapping.get('param1'), 'n');
+      assert.isNull(mapping.get('param1'));
     });
   });
 });

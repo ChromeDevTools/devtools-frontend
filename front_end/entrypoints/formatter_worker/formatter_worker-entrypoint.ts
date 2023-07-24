@@ -14,7 +14,7 @@ self.onmessage = function(event: MessageEvent): void {
     indentString: string,
     content: string,
     mimeType: string,
-    mapping: [string, string][],
+    mapping: [string, string|null][],
     sourceType: 'module'|'script',
   } = event.data.params;
   if (!method) {
@@ -29,7 +29,7 @@ self.onmessage = function(event: MessageEvent): void {
       FormatterWorker.CSSRuleParser.parseCSS(params.content, self.postMessage);
       break;
     case FormatterActions.JAVASCRIPT_SUBSTITUTE: {
-      const mapping = new Map<string, string>(params.mapping);
+      const mapping = new Map<string, string|null>(params.mapping);
       self.postMessage(FormatterWorker.Substitute.substituteExpression(params.content, mapping));
       break;
     }

@@ -109,7 +109,7 @@ export class FormatterWorkerPool {
   }
 
   private runTask(methodName: FormatterActions.FormatterActions, params: {
-    [x: string]: string|string[][],
+    [x: string]: unknown,
     // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }): Promise<any> {
@@ -125,7 +125,7 @@ export class FormatterWorkerPool {
     return this.runTask(FormatterActions.FormatterActions.FORMAT, parameters) as Promise<FormatterActions.FormatResult>;
   }
 
-  javaScriptSubstitute(expression: string, mapping: Map<string, string>): Promise<string> {
+  javaScriptSubstitute(expression: string, mapping: Map<string, string|null>): Promise<string> {
     return this
         .runTask(
             FormatterActions.FormatterActions.JAVASCRIPT_SUBSTITUTE,
@@ -158,16 +158,10 @@ export class FormatterWorkerPool {
 
 class Task {
   method: string;
-  params: {
-    [x: string]: string|string[][],
-  };
+  params: unknown;
   callback: (arg0: MessageEvent|null) => void;
   isChunked: boolean|undefined;
-  constructor(
-      method: string, params: {
-        [x: string]: string|string[][],
-      },
-      callback: (arg0: MessageEvent|null) => void, isChunked?: boolean) {
+  constructor(method: string, params: unknown, callback: (arg0: MessageEvent|null) => void, isChunked?: boolean) {
     this.method = method;
     this.params = params;
     this.callback = callback;

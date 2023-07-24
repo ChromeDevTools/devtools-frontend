@@ -37,6 +37,11 @@ const UIStrings = {
    * @description Label for a link for SameParty Issues. 'Attribute' refers to a cookie attribute.
    */
   firstPartySetsExplained: '`First-Party Sets` and the `SameParty` attribute',
+  /**
+   * @description Label for a link for third-party cookie Issues.
+   */
+  thirdPartyPhaseoutExplained: 'Prepare for phasing out third-party cookies',
+
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CookieIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -430,6 +435,22 @@ const excludeBlockedWithinFirstPartySet: LazyMarkdownIssueDescription = {
   links: [],
 };
 
+const cookieWarnThirdPartyPhaseoutSet: LazyMarkdownIssueDescription = {
+  file: 'cookieWarnThirdPartyPhaseoutSet.md',
+  links: [{
+    link: 'https://developer.chrome.com/docs/privacy-sandbox/third-party-cookie-phase-out/',
+    linkTitle: i18nLazyString(UIStrings.thirdPartyPhaseoutExplained),
+  }],
+};
+
+const cookieWarnThirdPartyPhaseoutRead: LazyMarkdownIssueDescription = {
+  file: 'cookieWarnThirdPartyPhaseoutRead.md',
+  links: [{
+    link: 'https://developer.chrome.com/docs/privacy-sandbox/third-party-cookie-phase-out/',
+    linkTitle: i18nLazyString(UIStrings.thirdPartyPhaseoutExplained),
+  }],
+};
+
 const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   // These two don't have a deprecation date yet, but they need to be fixed eventually.
   ['CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie', sameSiteUnspecifiedWarnRead],
@@ -471,4 +492,6 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
     'CookieIssue::ExcludeThirdPartyCookieBlockedInFirstPartySet::SetCookie',
     excludeBlockedWithinFirstPartySet,
   ],
+  ['CookieIssue::WarnThirdPartyPhaseout::ReadCookie', cookieWarnThirdPartyPhaseoutRead],
+  ['CookieIssue::WarnThirdPartyPhaseout::SetCookie', cookieWarnThirdPartyPhaseoutSet],
 ]);

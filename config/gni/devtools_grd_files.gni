@@ -365,6 +365,8 @@ grd_files_release_sources = [
   "front_end/models/issues_manager/descriptions/cookieExcludeBlockedWithinFirstPartySet.md",
   "front_end/models/issues_manager/descriptions/cookieExcludeDomainNonAscii.md",
   "front_end/models/issues_manager/descriptions/cookieWarnDomainNonAscii.md",
+  "front_end/models/issues_manager/descriptions/cookieWarnThirdPartyPhaseoutRead.md",
+  "front_end/models/issues_manager/descriptions/cookieWarnThirdPartyPhaseoutSet.md",
   "front_end/models/issues_manager/descriptions/corsAllowCredentialsRequired.md",
   "front_end/models/issues_manager/descriptions/corsDisabledScheme.md",
   "front_end/models/issues_manager/descriptions/corsDisallowedByMode.md",

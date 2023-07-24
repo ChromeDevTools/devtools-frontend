@@ -156,6 +156,8 @@ devtools_issue_description_files = [
   "SameSiteUnspecifiedLaxAllowUnsafeSet.md",
   "SameSiteWarnCrossDowngradeRead.md",
   "SameSiteWarnCrossDowngradeSet.md",
+  "cookieWarnThirdPartyPhaseoutSet.md",
+  "cookieWarnThirdPartyPhaseoutRead.md",
   "SameSiteWarnStrictLaxDowngradeStrict.md",
   "sharedArrayBuffer.md",
   "stylesheetLateImport.md",

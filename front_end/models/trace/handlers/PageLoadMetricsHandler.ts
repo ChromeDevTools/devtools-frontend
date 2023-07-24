@@ -65,6 +65,7 @@ const markerTypeGuards = [
   Types.TraceEvents.isTraceEventFirstPaint,
   Types.TraceEvents.isTraceEventFirstContentfulPaint,
   Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate,
+  Types.TraceEvents.isTraceEventNavigationStart,
 ];
 
 interface MakerEvent extends Types.TraceEvents.TraceEventData {
@@ -113,6 +114,10 @@ function storePageLoadMetricAgainstNavigationId(
   }
   const processData = rendererProcessesInFrame.get(event.pid);
   if (!processData) {
+    return;
+  }
+
+  if (Types.TraceEvents.isTraceEventNavigationStart(event)) {
     return;
   }
 
@@ -279,7 +284,8 @@ export function getFrameIdForPageLoadEvent(event: Types.TraceEvents.PageLoadEven
   if (Types.TraceEvents.isTraceEventFirstContentfulPaint(event) ||
       Types.TraceEvents.isTraceEventInteractiveTime(event) ||
       Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate(event) ||
-      Types.TraceEvents.isTraceEventLayoutShift(event) || Types.TraceEvents.isTraceEventFirstPaint(event)) {
+      Types.TraceEvents.isTraceEventNavigationStart(event) || Types.TraceEvents.isTraceEventLayoutShift(event) ||
+      Types.TraceEvents.isTraceEventFirstPaint(event)) {
     return event.args.frame;
   }
   if (Types.TraceEvents.isTraceEventMarkDOMContent(event) || Types.TraceEvents.isTraceEventMarkLoad(event)) {
@@ -316,6 +322,11 @@ function getNavigationForPageLoadEvent(event: Types.TraceEvents.PageLoadEvent):
     const frameId = getFrameIdForPageLoadEvent(event);
     const {navigationsByFrameId} = metaHandlerData();
     return Helpers.Trace.getNavigationForTraceEvent(event, frameId, navigationsByFrameId);
+  }
+
+  if (Types.TraceEvents.isTraceEventNavigationStart(event)) {
+    // We don't want to compute metrics of the navigation relative to itself, so we'll avoid avoid all that.
+    return null;
   }
 
   return Platform.assertNever(event, `Unexpected event type: ${event}`);

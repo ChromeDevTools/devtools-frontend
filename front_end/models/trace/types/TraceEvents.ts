@@ -405,7 +405,8 @@ export interface TraceEventFirstPaint extends TraceEventMark {
 }
 
 export type PageLoadEvent = TraceEventFirstContentfulPaint|TraceEventMarkDOMContent|TraceEventInteractiveTime|
-    TraceEventLargestContentfulPaintCandidate|TraceEventLayoutShift|TraceEventFirstPaint|TraceEventMarkLoad;
+    TraceEventLargestContentfulPaintCandidate|TraceEventLayoutShift|TraceEventFirstPaint|TraceEventMarkLoad|
+    TraceEventNavigationStart;
 
 export interface TraceEventLargestContentfulPaintCandidate extends TraceEventMark {
   name: 'largestContentfulPaint::Candidate';

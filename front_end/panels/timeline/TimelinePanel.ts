@@ -1090,7 +1090,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       for (const profile of model.timelineModel().cpuProfiles()) {
         PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(profile.cpuProfileData, profile.target);
       }
-      this.setMarkers(model.timelineModel());
+      this.setMarkersForMinimap(model.timelineModel());
       this.flameChart.setSelection(null);
       this.#minimapComponent.setWindowTimes(model.window().left, model.window().right);
     }
@@ -1361,7 +1361,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
   }
 
-  private setMarkers(timelineModel: TimelineModel.TimelineModel.TimelineModelImpl): void {
+  private setMarkersForMinimap(timelineModel: TimelineModel.TimelineModel.TimelineModelImpl): void {
     const markers = new Map<number, Element>();
     const recordTypes = TimelineModel.TimelineModel.RecordType;
     const zeroTime = timelineModel.minimumRecordTime();

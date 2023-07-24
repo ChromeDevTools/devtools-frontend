@@ -29,7 +29,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
         ...traceParsedData.UserTimings.performanceMarks,
         ...traceParsedData.UserTimings.performanceMeasures,
         ...traceParsedData.PageLoadMetrics.allMarkerEvents,
-      ];
+      ].sort((a, b) => a.ts - b.ts);
       assert.deepEqual(groupTreeEvents, allTimingEvents);
     });
 
@@ -42,7 +42,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
         assert.fail('Could not find Timings track flame chart group');
       }
       const groupTreeEvents = dataProvider.groupTreeEvents(timingsTrackGroup);
-      assert.strictEqual(groupTreeEvents?.length, 11);
+      assert.strictEqual(groupTreeEvents?.length, 12);
       const allEventsAreSync = groupTreeEvents?.every(
           event => !TraceEngine.Types.TraceEvents.isAsyncPhase(TraceEngine.Legacy.phaseForEvent(event)));
       assert.isTrue(allEventsAreSync);

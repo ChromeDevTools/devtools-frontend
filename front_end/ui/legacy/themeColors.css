@@ -291,7 +291,7 @@
   /* Surfaces */
 
   --sys-color-surface5: rgb(234 240 249 / 100%);
-  --sys-color-surface4: rgb(237 242 250 / 100%);
+  --sys-color-surface4: rgb(237 239 246 / 100%);
   --sys-color-surface3: rgb(238 243 250 / 100%);
   --sys-color-surface2: rgb(243 246 252 / 100%);
   --sys-color-surface1: rgb(247 249 253 / 100%);
@@ -581,6 +581,7 @@
 
   --sys-color-on-base: var(--ref-palette-neutral90);
   --sys-color-on-base-divider: var(--ref-palette-neutral40);
+
   /* Inverse */
 
   --sys-color-inverse-surface: var(--ref-palette-neutral90);
@@ -654,7 +655,7 @@
 
   /* Universal surfaces */
 
-  --sys-color-cdt-base: var(--sys-color-color-base);
+  --sys-color-cdt-base: var(--sys-color-base);
   --sys-color-cdt-base-container: var(--sys-color-base-container);
 
   /* Tinted surfaces */

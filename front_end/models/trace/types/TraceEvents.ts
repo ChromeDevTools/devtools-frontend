@@ -1168,18 +1168,18 @@ export function isSyntheticConsoleTimingTraceEvent(traceEventData: TraceEventDat
 
 export function isTraceEventPerformanceMeasure(traceEventData: TraceEventData):
     traceEventData is TraceEventPerformanceMeasureBegin|TraceEventPerformanceMeasureEnd {
-  return isTraceEventAsyncPhase(traceEventData) && traceEventData.cat === 'blink.user_timing';
+  return traceEventData.cat === 'blink.user_timing' && isTraceEventAsyncPhase(traceEventData);
 }
 
 export function isTraceEventPerformanceMark(traceEventData: TraceEventData):
     traceEventData is TraceEventPerformanceMark {
-  return (traceEventData.ph === Phase.MARK || traceEventData.ph === Phase.INSTANT) &&
-      traceEventData.cat === 'blink.user_timing';
+  return traceEventData.cat === 'blink.user_timing' &&
+      (traceEventData.ph === Phase.MARK || traceEventData.ph === Phase.INSTANT);
 }
 
 export function isTraceEventConsoleTime(traceEventData: TraceEventData): traceEventData is TraceEventConsoleTimeBegin|
     TraceEventConsoleTimeEnd {
-  return isTraceEventAsyncPhase(traceEventData) && traceEventData.cat === 'blink.console';
+  return traceEventData.cat === 'blink.console' && isTraceEventAsyncPhase(traceEventData);
 }
 
 export function isTraceEventTimeStamp(traceEventData: TraceEventData): traceEventData is TraceEventTimeStamp {

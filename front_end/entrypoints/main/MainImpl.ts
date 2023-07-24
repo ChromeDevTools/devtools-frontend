@@ -452,8 +452,12 @@ export class MainImpl {
       }
     }
 
-    for (const experiment of Root.Runtime.experiments.enabledExperiments()) {
-      Host.userMetrics.experimentEnabledAtLaunch(experiment.name);
+    for (const experiment of Root.Runtime.experiments.allConfigurableExperiments()) {
+      if (experiment.isEnabled()) {
+        Host.userMetrics.experimentEnabledAtLaunch(experiment.name);
+      } else {
+        Host.userMetrics.experimentDisabledAtLaunch(experiment.name);
+      }
     }
   }
   async #createAppUI(): Promise<void> {

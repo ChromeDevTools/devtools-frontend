@@ -408,6 +408,7 @@ const EnumeratedHistogram = {
   DeveloperResourceScheme: 'DevTools.DeveloperResourceScheme',
   ElementsSidebarTabShown: 'DevTools.Elements.SidebarTabShown',
   ExperimentDisabled: 'DevTools.ExperimentDisabled',
+  ExperimentDisabledAtLaunch: 'DevTools.ExperimentDisabledAtLaunch',
   ExperimentEnabled: 'DevTools.ExperimentEnabled',
   ExperimentEnabledAtLaunch: 'DevTools.ExperimentEnabledAtLaunch',
   IssueCreated: 'DevTools.IssueCreated',

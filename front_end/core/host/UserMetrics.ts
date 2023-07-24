@@ -208,6 +208,15 @@ export class UserMetrics {
         EnumeratedHistogram.ExperimentEnabledAtLaunch, experiment, DevtoolsExperiments.MaxValue);
   }
 
+  experimentDisabledAtLaunch(experimentId: string): void {
+    const experiment = DevtoolsExperiments[experimentId as keyof typeof DevtoolsExperiments];
+    if (experiment === undefined) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.ExperimentDisabledAtLaunch, experiment, DevtoolsExperiments.MaxValue);
+  }
+
   experimentChanged(experimentId: string, isEnabled: boolean): void {
     const experiment = DevtoolsExperiments[experimentId as keyof typeof DevtoolsExperiments];
     if (experiment === undefined) {

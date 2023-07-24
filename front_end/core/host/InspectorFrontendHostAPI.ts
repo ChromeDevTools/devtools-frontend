@@ -371,6 +371,7 @@ export enum EnumeratedHistogram {
   KeybindSetSettingChanged = 'DevTools.KeybindSetSettingChanged',
   ElementsSidebarTabShown = 'DevTools.Elements.SidebarTabShown',
   ExperimentEnabledAtLaunch = 'DevTools.ExperimentEnabledAtLaunch',
+  ExperimentDisabledAtLaunch = 'DevTools.ExperimentDisabledAtLaunch',
   ExperimentEnabled = 'DevTools.ExperimentEnabled',
   ExperimentDisabled = 'DevTools.ExperimentDisabled',
   DeveloperResourceLoaded = 'DevTools.DeveloperResourceLoaded',

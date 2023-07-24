@@ -370,6 +370,19 @@ describe('User Metrics', () => {
     ]);
   });
 
+  it('dispatches an event when experiments are initialized at launch', async () => {
+    await assertHistogramEventsInclude([
+      {
+        actionName: 'DevTools.ExperimentEnabledAtLaunch',
+        actionCode: 52,  // Enabled by default: cssTypeComponentLength
+      },
+      {
+        actionName: 'DevTools.ExperimentDisabledAtLaunch',
+        actionCode: 41,  // Disabled by default: FontEditor
+      },
+    ]);
+  });
+
   it('tracks panel loading', async () => {
     // We specify the selected panel here because the default behavior is to go to the
     // elements panel, but this means we won't get the PanelLoaded event. Instead we

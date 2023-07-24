@@ -141,10 +141,6 @@ export class ExperimentsSupport {
     return result;
   }
 
-  enabledExperiments(): Experiment[] {
-    return this.#experiments.filter(experiment => experiment.isEnabled());
-  }
-
   private setExperimentsSetting(value: Object): void {
     if (!self.localStorage) {
       return;

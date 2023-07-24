@@ -307,7 +307,7 @@ export class SamplesIntegrator {
       }
       // Scoot the right edge of this callFrame to the right
       this.#currentJSStack[i].dur =
-          Types.Timing.MicroSeconds(Math.max(this.#currentJSStack[i].dur, endTime - this.#currentJSStack[i].ts));
+          Types.Timing.MicroSeconds(Math.max(this.#currentJSStack[i].dur || 0, endTime - this.#currentJSStack[i].ts));
     }
 
     // If there are call frames in the sample that differ with the stack

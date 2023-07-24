@@ -67,7 +67,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const [[tid, cpuProfileData]] = profileByThread.entries();
       const parsedProfile = cpuProfileData.parsedProfile;
       const samplesIntegrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, pid, tid);
-      const traceEvents = data.Renderer.processes.get(pid)?.threads.get(tid)?.events;
+      const traceEvents = data.Renderer.allRendererEvents.filter(event => event.pid === pid && event.tid === tid);
       if (!traceEvents) {
         throw new Error('Trace events were unexpectedly not found.');
       }

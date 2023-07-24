@@ -159,10 +159,10 @@ describeWithEnvironment('SamplesHandler', function() {
       ];
       const callsTestData = calls?.map(c => ({
                                          id: c.nodeId,
-                                         dur: Math.round(c.dur),
+                                         dur: Math.round(c.dur || 0),
                                          ts: c.ts,
-                                         selfTime: Math.round(c.selfTime),
-                                         children: c.children.map(child => child.nodeId),
+                                         selfTime: Math.round(c.selfTime || 0),
+                                         children: c.children?.map(child => child.nodeId) || [],
                                        }));
 
       assert.deepEqual(callsTestData, expectedResult);
@@ -183,10 +183,10 @@ describeWithEnvironment('SamplesHandler', function() {
       ];
       const callsTestData = calls?.map(c => ({
                                          id: c.nodeId,
-                                         dur: Math.round(c.dur),
+                                         dur: Math.round(c.dur || 0),
                                          ts: c.ts,
-                                         selfTime: Math.round(c.selfTime),
-                                         children: c.children.map(child => child.nodeId),
+                                         selfTime: Math.round(c.selfTime || 0),
+                                         children: c.children?.map(child => child.nodeId) || [],
                                        }));
       assert.deepEqual(callsTestData, expectedResult);
     });

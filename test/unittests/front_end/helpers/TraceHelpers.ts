@@ -173,7 +173,7 @@ export const defaultTraceEvent: TraceEngine.Types.TraceEvents.TraceEventData = {
  * @see RendererHandler.ts
  */
 export function getTree(thread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread):
-    TraceEngine.Handlers.ModelHandlers.Renderer.RendererEventTree {
+    TraceEngine.Handlers.ModelHandlers.Renderer.RendererTree {
   const tree = thread.tree;
   if (!tree) {
     assert(false, `Couldn't get tree in thread ${thread.name}`);
@@ -187,7 +187,7 @@ export function getTree(thread: TraceEngine.Handlers.ModelHandlers.Renderer.Rend
  * @see RendererHandler.ts
  */
 export function getRootAt(thread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread, index: number):
-    TraceEngine.Handlers.ModelHandlers.Renderer.RendererEventNode {
+    TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode {
   const tree = getTree(thread);
   const nodeId = [...tree.roots][index];
   if (nodeId === undefined) {
@@ -203,8 +203,8 @@ export function getRootAt(thread: TraceEngine.Handlers.ModelHandlers.Renderer.Re
  */
 export function getNodeFor(
     thread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread,
-    nodeId: TraceEngine.Handlers.ModelHandlers.Renderer.RendererEventNodeId):
-    TraceEngine.Handlers.ModelHandlers.Renderer.RendererEventNode {
+    nodeId: TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNodeId):
+    TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode {
   const tree = getTree(thread);
   const node = tree.nodes.get(nodeId);
   if (!node) {
@@ -218,10 +218,10 @@ export function getNodeFor(
  * Gets all the `events` for the `nodes` with `ids`.
  */
 export function getEventsIn(
-    ids: IterableIterator<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEventNodeId>,
+    ids: IterableIterator<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNodeId>,
     nodes:
-        Map<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEventNodeId,
-            TraceEngine.Handlers.ModelHandlers.Renderer.RendererEventNode>):
+        Map<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNodeId,
+            TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode>):
     TraceEngine.Types.TraceEvents.TraceEventData[] {
   return [...ids].map(id => nodes.get(id)).flatMap(node => node ? node.entry : []);
 }
@@ -230,10 +230,10 @@ export function getEventsIn(
  */
 export function prettyPrint(
     thread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread,
-    nodes: Set<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEventNodeId>,
+    nodes: Set<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNodeId>,
     predicate: (
-        node: TraceEngine.Handlers.ModelHandlers.Renderer.RendererEventNode,
-        event: TraceEngine.Handlers.ModelHandlers.Renderer.RendererTraceEvent) => boolean = () => true,
+        node: TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode,
+        event: TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntry) => boolean = () => true,
     indentation: number = 2, delimiter: string = ' ', prefix: string = '-', newline: string = '\n',
     out: string = ''): string {
   let skipped = false;
@@ -247,9 +247,9 @@ export function prettyPrint(
     }
     skipped = false;
     const spacing = new Array(node.depth * indentation).fill(delimiter).join('');
-    const type = TraceEngine.Types.TraceEvents.isTraceEventDispatch(event) ? `(${event.args.data?.type})` : false;
-    const duration = TraceEngine.Types.TraceEvents.isTraceEventInstant(event) ? '[I]' : `[${event.dur / 1000}ms]`;
-    const info = [type, duration].filter(Boolean);
+    const eventType = TraceEngine.Types.TraceEvents.isTraceEventDispatch(event) ? `(${event.args.data?.type})` : false;
+    const duration = `[${(event.dur || 0) / 1000}ms]`;
+    const info = [eventType, duration].filter(Boolean);
     out += `${newline}${spacing}${prefix}${event.name} ${info.join(' ')}`;
     out = prettyPrint(thread, node.childrenIds, predicate, indentation, delimiter, prefix, newline, out);
   }

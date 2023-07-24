@@ -178,14 +178,14 @@ describe('RendererHandler', function() {
       return;
     }
 
-    const isRoot = (node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNode) => node.depth === 0;
-    const isInstant = (event: TraceModel.Handlers.ModelHandlers.Renderer.RendererTraceEvent) =>
+    const isRoot = (node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntryNode) => node.depth === 0;
+    const isInstant = (event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry) =>
         TraceModel.Types.TraceEvents.isTraceEventInstant(event);
-    const isLong = (event: TraceModel.Handlers.ModelHandlers.Renderer.RendererTraceEvent) =>
+    const isLong = (event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry) =>
         TraceModel.Types.TraceEvents.isTraceEventComplete(event) && event.dur > 1000;
     const isIncluded =
-        (node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEventNode,
-         event: TraceModel.Handlers.ModelHandlers.Renderer.RendererTraceEvent) =>
+        (node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntryNode,
+         event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry) =>
             !isRoot(node) || (isInstant(event) || isLong(event));
 
     assert.strictEqual(prettyPrint(thread, tree.roots, isIncluded), `
@@ -210,10 +210,10 @@ describe('RendererHandler', function() {
   -EventDispatch (readystatechange) [0.008ms]
   -EventDispatch (DOMContentLoaded) [0.035ms]
   -UpdateLayoutTree [0.373ms]
-    -InvalidateLayout [I]
+    -InvalidateLayout [0ms]
 -RunTask [2.675ms]
   -Layout [0.854ms]
-    -InvalidateLayout [I]
+    -InvalidateLayout [0ms]
     -Layout [0.302ms]
       -UpdateLayoutTree [0.149ms]
   -Paint [0.203ms]
@@ -223,7 +223,7 @@ describe('RendererHandler', function() {
   -EventDispatch (visibilitychange) [0.038ms]
   -EventDispatch (webkitvisibilitychange) [0.009ms]
   -EventDispatch (unload) [0.004ms]
-  -ScheduleStyleRecalculation [I]
+  -ScheduleStyleRecalculation [0ms]
 ..............
 -RunTask [1.231ms]
   -UpdateLayoutTree [0.093ms]
@@ -243,11 +243,11 @@ describe('RendererHandler', function() {
   -EventDispatch (mousemove) [0.018ms]
   -HitTest [0.022ms]
   -HitTest [0.002ms]
-  -ScheduleStyleRecalculation [I]
+  -ScheduleStyleRecalculation [0ms]
   -EventDispatch (mousedown) [0.018ms]
   -UpdateLayoutTree [0.146ms]
   -HitTest [0.016ms]
-  -ScheduleStyleRecalculation [I]
+  -ScheduleStyleRecalculation [0ms]
   -UpdateLayoutTree [0.031ms]
   -EventDispatch (focus) [0.014ms]
   -EventDispatch (focusin) [0.005ms]
@@ -255,7 +255,7 @@ describe('RendererHandler', function() {
 .....
 -RunTask [1.034ms]
   -HitTest [0.038ms]
-  -ScheduleStyleRecalculation [I]
+  -ScheduleStyleRecalculation [0ms]
   -EventDispatch (mouseup) [0.016ms]
   -EventDispatch (click) [0.44ms]
     -EventDispatch (beforeunload) [0.009ms]
@@ -278,11 +278,11 @@ describe('RendererHandler', function() {
   -EventDispatch (readystatechange) [0.007ms]
   -EventDispatch (DOMContentLoaded) [0.005ms]
   -UpdateLayoutTree [0.301ms]
-    -InvalidateLayout [I]
+    -InvalidateLayout [0ms]
 .
 -RunTask [1.897ms]
   -Layout [0.44ms]
-    -InvalidateLayout [I]
+    -InvalidateLayout [0ms]
   -Paint [0.289ms]
 ..................................
 -RunTask [1.304ms]
@@ -290,7 +290,7 @@ describe('RendererHandler', function() {
   -EventDispatch (visibilitychange) [0.009ms]
   -EventDispatch (webkitvisibilitychange) [0.004ms]
   -EventDispatch (unload) [0.015ms]
-  -ScheduleStyleRecalculation [I]
+  -ScheduleStyleRecalculation [0ms]
 ......................................................................................................................`);
   });
 
@@ -324,7 +324,7 @@ describe('RendererHandler', function() {
 -RunTask [0.078ms]
 -RunTask [0.043ms]
 -RunTask [0.077ms]
-  -ScheduleStyleRecalculation [I]
+  -ScheduleStyleRecalculation [0ms]
 -RunTask [0.415ms]
 -RunTask [0ms]
 -EventDispatch (pagehide) [0.012ms]
@@ -721,7 +721,7 @@ describe('RendererHandler', function() {
       makeCompleteEvent('D', 3, 3),   // 3..6 (starts when B finishes)
       makeCompleteEvent('C', 2, 1),   // 2..3 (finishes when B finishes)
       makeCompleteEvent('E', 10, 3),  // 10..13 (starts when A finishes)
-    ] as TraceModel.Handlers.ModelHandlers.Renderer.RendererTraceEvent[];
+    ] as TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry[];
 
     TraceModel.Helpers.Trace.sortTraceEventsInPlace(data);
     const tree = TraceModel.Handlers.ModelHandlers.Renderer.treify(data, {filter: {has: () => true}});
@@ -828,7 +828,7 @@ describe('RendererHandler', function() {
           isOnMainFrame: true,
           threads: new Map([[
             TraceModel.Types.TraceEvents.ThreadID(1),
-            {name: 'Foo', events: data1},
+            {name: 'Foo', entries: data1},
           ]]),
         } as TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess,
       ],
@@ -839,7 +839,7 @@ describe('RendererHandler', function() {
           isOnMainFrame: false,
           threads: new Map([[
             TraceModel.Types.TraceEvents.ThreadID(3),
-            {name: 'Bar', events: data2},
+            {name: 'Bar', entries: data2},
           ]]),
         } as TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess,
       ],

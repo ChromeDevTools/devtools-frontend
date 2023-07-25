@@ -333,6 +333,74 @@ describeWithMockConnection('BreakpointManager', () => {
     });
   });
 
+  it('substitutes source-mapped variables for the same original script in different bundles correctly', async () => {
+    Root.Runtime.experiments.enableForTest('evaluateExpressionsWithSourceMaps');
+    const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+    assertNotNullOrUndefined(debuggerModel);
+
+    // Create two 'bundles' that are identical modulo variable names.
+    const url1 = 'http://site/script1.js' as Platform.DevToolsPath.UrlString;
+    const url2 = 'http://site/script2.js' as Platform.DevToolsPath.UrlString;
+    const scriptInfo1 = {url: url1, content: 'function adder(n,r){const t=n+r;return t}'};
+    const scriptInfo2 = {url: url2, content: 'function adder(o,p){const t=o+p;return t}'};
+
+    // The source map is the same for both 'bundles'.
+    // Created with `terser -m -o script.min.js --source-map "includeSources;url=script.min.js.map" original-script.js`
+    const sourceMapContent = JSON.stringify({
+      'version': 3,
+      'names': ['adder', 'param1', 'param2', 'result'],
+      'sources': ['/original-script.js'],
+      'sourcesContent':
+          ['function adder(param1, param2) {\n  const result = param1 + param2;\n  return result;\n}\n\n'],
+      'mappings': 'AAAA,SAASA,MAAMC,EAAQC,GACrB,MAAMC,EAASF,EAASC,EACxB,OAAOC,CACT',
+    });
+    const sourceMapInfo = {url: SOURCE_MAP_URL, content: sourceMapContent};
+    await Promise.all([
+      backend.addScript(target, scriptInfo1, sourceMapInfo),
+      backend.addScript(target, scriptInfo2, sourceMapInfo),
+    ]);
+
+    // Get the uiSourceCode for the original source.
+    const uiSourceCode = await debuggerWorkspaceBinding.uiSourceCodeForSourceMapSourceURLPromise(
+        debuggerModel, ORIGINAL_SCRIPT_SOURCE_URL, /* isContentScript */ false);
+    assertNotNullOrUndefined(uiSourceCode);
+
+    // Mock out "Debugger.setBreakpointByUrl and echo back the first two 'Debugger.setBreakpointByUrl' requests.
+    const cdpSetBreakpointPromise = new Promise<Map<string, Protocol.Debugger.SetBreakpointByUrlRequest>>(res => {
+      clearMockConnectionResponseHandler('Debugger.setBreakpointByUrl');
+      const requests = new Map<string, Protocol.Debugger.SetBreakpointByUrlRequest>();
+      setMockConnectionResponseHandler('Debugger.setBreakpointByUrl', request => {
+        requests.set(request.url, request);
+        if (requests.size === 2) {
+          res(requests);
+        }
+        return {};
+      });
+    });
+
+    // Set the breakpoint on the `const result = ...` line with a condition using
+    // "authored" variable names.
+    const breakpoint = await breakpointManager.setBreakpoint(
+        uiSourceCode, 1, 0, 'param1 > 0' as Breakpoints.BreakpointManager.UserCondition, /* enabled */ true,
+        /* isLogpoint */ false, Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION);
+    assertNotNullOrUndefined(breakpoint);
+
+    await breakpoint.updateBreakpoint();
+
+    const requests = await cdpSetBreakpointPromise;
+    const req1 = requests.get(url1);
+    assertNotNullOrUndefined(req1);
+    assert.strictEqual(req1.url, url1);
+    assert.strictEqual(req1.condition, 'n > 0\n\n//# sourceURL=debugger://breakpoint');
+
+    const req2 = requests.get(url2);
+    assertNotNullOrUndefined(req2);
+    assert.strictEqual(req2.url, url2);
+    assert.strictEqual(req2.condition, 'o > 0\n\n//# sourceURL=debugger://breakpoint');
+
+    Root.Runtime.experiments.disableForTest('evaluateExpressionsWithSourceMaps');
+  });
+
   it('allows awaiting the restoration of breakpoints', async () => {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
     const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);

@@ -20,6 +20,7 @@ export function describeWithDevtoolsExtension(
     startPage: `${window.location.origin}/blank.html`,
     name: 'TestExtension',
     exposeExperimentalAPIs: true,
+    allowFileAccess: false,
     ...extension,
   };
   const context: ExtensionContext = {

@@ -13,7 +13,7 @@
 .console-pins {
   max-height: 200px;
   overflow-y: auto;
-  background: var(--color-background-elevation-1);
+  background: var(--sys-color-cdt-base-container);
 
   --override-error-background-color: rgb(255 240 240);
   --override-error-border-color: rgb(225 214 214);
@@ -21,7 +21,7 @@
 }
 
 .console-pins:not(:empty) {
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .-theme-with-dark-background .console-pins,
@@ -72,7 +72,8 @@
 }
 
 .console-pin-name:focus-within {
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
+  border-radius: 4px;
   box-shadow: var(--legacy-focus-ring-active-shadow) inset;
 }
 

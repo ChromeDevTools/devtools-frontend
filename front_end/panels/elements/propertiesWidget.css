@@ -26,6 +26,10 @@
   background: var(--color-background);
   padding-left: 4px;
   margin: 3px;
+
+  &:hover {
+    box-shadow: 0 0 0 1px var(--ref-palette-neutral90);
+  }
 }
 
 .properties-widget-filter-box > input:focus,

@@ -14,7 +14,7 @@ li.storage-group-list-item {
 }
 
 li.storage-group-list-item:not(:first-child) {
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
 }
 
 li.storage-group-list-item::before {
@@ -31,7 +31,7 @@ li.storage-group-list-item::before {
   width: 28px;
   min-width: 28px;
   height: 26px;
-  border-right: 1px solid var(--color-details-hairline);
+  border-right: 1px solid var(--sys-color-divider);
   overflow: hidden;
 }
 
@@ -46,7 +46,7 @@ li.storage-group-list-item::before {
   min-width: 125px;
   text-overflow: elipsis;
   padding: 0 10px;
-  border-right: 1px solid var(--color-details-hairline);
+  border-right: 1px solid var(--sys-color-divider);
   overflow: hidden;
 }
 
@@ -57,7 +57,7 @@ li.storage-group-list-item::before {
 }
 
 .player-entry-row:nth-child(odd) {
-  background: var(--color-background-elevation-0);
+  background: var(--sys-color-surface1);
 }
 
 .player-entry-row:hover {
@@ -78,5 +78,5 @@ li.storage-group-list-item::before {
   line-height: 27px;
   min-height: 27px;
   padding-left: 10px;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
 }

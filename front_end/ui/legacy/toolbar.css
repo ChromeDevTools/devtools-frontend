@@ -356,10 +356,14 @@ select.toolbar-item:focus-visible > * {
   height: 19px;
   padding: 4px 3px 3px;
   margin: 1px 3px;
-  background-color: var(--color-background);
-  border: 1px solid transparent;
+  background-color: var(--sys-color-cdt-base-container);
+  border: 1px solid var(--sys-color-neutral-outline);
+  border-radius: 4px;
   min-width: 35px;
-  box-shadow: var(--legacy-focus-ring-inactive-shadow);
+
+  &:hover {
+    box-shadow: 0 0 0 1px var(--ref-palette-neutral90);
+  }
 }
 
 .toolbar-input.focused,
@@ -449,14 +453,15 @@ select.toolbar-item:focus-visible > * {
 
 input[is="history-input"] {
   margin: 0 1px;
-  border: 1px solid transparent;
+  border: 1px solid var(--sys-color-neutral-outline);
+  border-radius: 4px;
   line-height: 16px;
   padding: 1px;
   color: var(--color-text-primary);
 }
 
 input[is="history-input"]:hover {
-  box-shadow: var(--legacy-focus-ring-inactive-shadow);
+  box-shadow: 0 0 0 1px var(--ref-palette-neutral90);
 }
 
 input[is="history-input"]:focus,

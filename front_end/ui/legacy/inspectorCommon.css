@@ -218,7 +218,7 @@ iframe.fill {
 
 .overflow-auto {
   overflow: auto;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 iframe.widget {
@@ -268,7 +268,7 @@ select {
 select option,
 select optgroup,
 input {
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 input {
@@ -295,8 +295,12 @@ input::placeholder {
 .harmony-input[type="text"] {
   padding: 3px 6px;
   height: 24px;
-  border: none;
-  box-shadow: var(--legacy-focus-ring-inactive-shadow);
+  border: 1px solid var(--sys-color-neutral-outline);
+  border-radius: 4px;
+
+  &:hover {
+    box-shadow: 0 0 0 1px var(--ref-palette-neutral90);
+  }
 }
 
 .harmony-input:not([type]).error-input,
@@ -1286,12 +1290,7 @@ span[is="dt-icon-label"] {
 }
 
 ::selection {
-  background-color: var(--selection);
-}
-
-.-theme-with-dark-background *::selection,
-:host-context(.-theme-with-dark-background) *::selection {
-  background-color: rgb(93 93 93 / 60%);
+  background-color: var(--text-selection);
 }
 
 .reload-warning {
@@ -1407,12 +1406,12 @@ input.custom-search-input::-webkit-search-cancel-button {
   right: 0;
   bottom: 0;
   z-index: 0;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 .panel-sidebar {
   overflow-x: hidden;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 iframe.extension {

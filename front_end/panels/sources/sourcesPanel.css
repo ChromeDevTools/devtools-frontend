@@ -31,8 +31,8 @@
   position: absolute;
   top: 0;
   width: 100%;
-  background-color: var(--color-background-elevation-1);
-  border-bottom: 1px solid var(--color-details-hairline);
+  background-color: var(--sys-color-cdt-base);
+  border-bottom: 1px solid var(--sys-color-divider);
   overflow: hidden;
   z-index: 1;
 }

@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 devtools-data-grid-controller {
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-divider);
   margin-top: 0;
 }
 

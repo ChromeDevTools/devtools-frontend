@@ -47,9 +47,11 @@
   --icon-toggled: var(--color-primary-bright);
   --icon-warning: var(--color-orange-bright);
   --ui-text: var(--sys-color-on-surface-subtle);
-  --text-disabled: var(--ref-palette-neutral160);
+  --text-disabled: var(--ref-palette-neutral60);
   --text-primary: var(--sys-color-on-surface);
   --text-secondary: var(--sys-color-token-subtle);
   --text-link: var(--sys-color-primary);
-  --selection: var(--sys-color-state-ripple-primary);
+  --text-selection: var(--sys-color-state-ripple-primary);
+  --color-grid-stripe: var(--sys-color-surface1);
+  --color-grid-default: var(--sys-color-surface);
 }

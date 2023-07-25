@@ -216,7 +216,7 @@ export class SensorsView extends UI.Widget.VBox {
 
     this.createLocationSection(this.Location);
 
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
+    this.createPanelSeparator();
 
     this.deviceOrientationSetting =
         Common.Settings.Settings.instance().createSetting('emulation.deviceOrientationOverride', '');
@@ -225,15 +225,15 @@ export class SensorsView extends UI.Widget.VBox {
 
     this.createDeviceOrientationSection();
 
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
+    this.createPanelSeparator();
 
     this.appendTouchControl();
 
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
+    this.createPanelSeparator();
 
     this.appendIdleEmulator();
 
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
+    this.createPanelSeparator();
   }
 
   static instance(): SensorsView {
@@ -246,6 +246,10 @@ export class SensorsView extends UI.Widget.VBox {
   override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([sensorsStyles]);
+  }
+
+  private createPanelSeparator(): void {
+    this.contentElement.createChild('div').classList.add('panel-section-separator');
   }
 
   private createLocationSection(location: SDK.EmulationModel.Location): void {

@@ -188,7 +188,7 @@
     margin: 3px;
 
     &:hover {
-      box-shadow: var(--legacy-focus-ring-inactive-shadow);
+      box-shadow: 0 0 0 1px var(--ref-palette-neutral90);
     }
 
     &:focus,

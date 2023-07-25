@@ -22,6 +22,10 @@
     margin: 3px;
   }
 
+  & > input:hover {
+    box-shadow: 0 0 0 1px var(--ref-palette-neutral90);
+  }
+
   & > input:focus,
   & > input:not(:placeholder-shown) {
     box-shadow: var(--legacy-focus-ring-active-shadow);

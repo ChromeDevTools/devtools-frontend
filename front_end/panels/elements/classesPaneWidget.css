@@ -35,4 +35,8 @@
   width: calc(100% - 7px);
   background-color: var(--sys-color-cdt-base-container);
   cursor: text;
+
+  &:hover {
+    box-shadow: 0 0 0 1px var(--ref-palette-neutral90);
+  }
 }

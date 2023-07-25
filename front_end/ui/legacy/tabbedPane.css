@@ -42,7 +42,7 @@
 }
 
 .tabbed-pane-content.has-no-tabs {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 .tabbed-pane-placeholder {

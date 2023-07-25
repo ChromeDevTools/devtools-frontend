@@ -41,8 +41,6 @@
   --override-network-overview-waiting: #00a846;
   --override-network-overview-receiving: #0299de;
   --override-network-overview-queueing: #fff;
-  --network-grid-default-color: rgb(255 255 255 / 100%);
-  --network-grid-stripe-color: rgb(245 245 245 / 100%);
   --network-grid-navigation-color: rgb(221 238 255 / 100%);
   --network-grid-hovered-color: rgb(235 242 252 / 70%);
   --network-grid-initiator-path-color: rgb(58 217 58 / 40%);
@@ -56,8 +54,6 @@
 }
 
 .-theme-with-dark-background {
-  --network-grid-default-color: rgb(36 36 36 / 100%);
-  --network-grid-stripe-color: rgb(41 41 41 / 100%);
   --network-grid-navigation-color: rgb(221 238 255 / 100%);
   --network-grid-hovered-color: rgb(20 37 63 / 70%);
   --network-grid-initiator-path-color: rgb(58 217 58 / 40%);
@@ -111,7 +107,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 #network-overview-container canvas {
@@ -177,8 +173,8 @@
 }
 
 .panel.network .toolbar {
-  background-color: var(--color-background-elevation-1);
-  border-bottom: var(--legacy-divider-border);
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 @media (forced-colors: active) {

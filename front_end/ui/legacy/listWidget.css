@@ -34,7 +34,7 @@
 
 .list-item:focus-within,
 .list-item:hover {
-  background: var(--override-background-list-item-color);
+  background: var(--sys-color-state-hover-on-subtle);
 }
 
 .list-widget-input-validation-error {
@@ -79,7 +79,8 @@
   flex-direction: column;
   align-items: stretch;
   flex: none;
-  background: var(--color-background-elevation-2);
+  background: var(--sys-color-cdt-base-container);
+  border-bottom: 1px solid var(--sys-color-divider);
   overflow: hidden;
 }
 

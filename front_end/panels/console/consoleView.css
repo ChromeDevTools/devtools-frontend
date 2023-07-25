@@ -28,7 +28,7 @@
  */
 
 .console-view {
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   overflow: hidden;
 
   --override-error-text-color: var(--color-error-text);
@@ -38,7 +38,6 @@
   --override-warning-border-color: hsl(50deg 100% 88%);
   --override-focused-message-border-color: hsl(214deg 67% 88%);
   --override-focused-message-background-color: hsl(214deg 48% 95%);
-  --override-console-warning-background-color: hsl(50deg 100% 95%);
   --override-console-warning-text-color: hsl(39deg 100% 18%);
 }
 
@@ -47,7 +46,6 @@
   --override-warning-border-color: rgb(102 85 0);
   --override-focused-message-border-color: hsl(214deg 47% 48%);
   --override-focused-message-background-color: hsl(214deg 19% 20%);
-  --override-console-warning-background-color: hsl(50deg 100% 10%);
   --override-console-warning-text-color: hsl(39deg 89% 55%);
   --override-console-link-color: var(--color-background-inverted);
 }
@@ -62,8 +60,8 @@
 }
 
 .console-toolbar-container > .toolbar {
-  background-color: var(--color-background-elevation-1);
-  border-bottom: var(--legacy-divider-border);
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .console-view-fix-select-all {
@@ -73,8 +71,8 @@
 
 .console-settings-pane {
   flex: none;
-  background-color: var(--color-background-elevation-1);
-  border-bottom: var(--legacy-divider-border);
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .console-settings-pane .toolbar {
@@ -205,8 +203,8 @@
 
 .console-message-wrapper {
   display: flex;
-  border-top: 1px solid var(--override-message-border-color);
-  border-bottom: 1px solid transparent;
+  margin: 4px;
+  border-radius: 5px;
 
   /* Console ANSI color */
   --console-color-black: #000;
@@ -225,6 +223,10 @@
   --console-color-ightmagenta: #f5f;
   --console-color-lightcyan: #5ff;
   --console-color-white: #fff;
+
+  &.console-info-level:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
 }
 
 .-theme-with-dark-background .console-message-wrapper {
@@ -246,43 +248,19 @@
 }
 
 .console-message-wrapper:first-of-type {
-  border-top-color: transparent;
+  border-top-color: var(--sys-color-cdt-base-container);
 }
 
 .console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level) {
   border-top-width: 0;
 }
 
-.console-message-wrapper:last-of-type {
-  border-bottom-color: var(--override-message-border-color);
-}
-
 .console-message-wrapper:focus {
-  border-top-color: var(--override-focused-message-border-color);
-  border-bottom-color: var(--override-focused-message-border-color);
   background-color: var(--override-focused-message-background-color);
 }
 
 .console-message-wrapper:focus + .console-message-wrapper {
   border-top-color: transparent;
-}
-
-.console-message-wrapper.console-error-level,
-.console-message-wrapper.console-error-level:not(:focus) + .console-message-wrapper:not(.console-warning-level):not(:focus) {
-  border-top-color: var(--override-error-border-color);
-}
-
-.console-message-wrapper.console-warning-level,
-.console-message-wrapper.console-warning-level:not(:focus) + .console-message-wrapper:not(.console-error-level):not(:focus) {
-  border-top-color: var(--override-warning-border-color);
-}
-
-.console-message-wrapper.console-error-level:last-of-type {
-  border-bottom-color: var(--override-error-border-color);
-}
-
-.console-message-wrapper.console-warning-level:last-of-type {
-  border-bottom-color: var(--override-warning-border-color);
 }
 
 .console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level):focus {
@@ -332,11 +310,11 @@
 }
 
 .console-error-level {
-  background-color: var(--override-console-error-background-color);
+  background-color: var(--sys-color-surface-error);
 }
 
 .console-warning-level {
-  background-color: var(--override-console-warning-background-color);
+  background-color: var(--sys-color-surface-yellow);
 }
 
 .console-warning-level .console-message-text {

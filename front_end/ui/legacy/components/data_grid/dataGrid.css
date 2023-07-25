@@ -6,7 +6,7 @@
 
 .data-grid {
   position: relative;
-  border: 1px solid var(--color-details-hairline-light) !important; /* stylelint-disable-line declaration-no-important */
+  border: 1px solid var(--sys-color-divider) !important; /* stylelint-disable-line declaration-no-important */
   /* See: crbug.com/1152736 for color variable migration. */
   line-height: 120%;
 }
@@ -28,7 +28,7 @@
   overflow-x: hidden;
   overflow-y: overlay;
   transform: translateZ(0);
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 .data-grid thead {
@@ -94,7 +94,7 @@
 
 .striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd):not(.dirty):not(.selected),
 .striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even):not(.dirty):not(.selected) {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface1);
 }
 
 .data-grid td,
@@ -104,7 +104,7 @@
   overflow: hidden;
   line-height: 18px;
   height: 18px;
-  border-left: 1px solid var(--color-details-hairline);
+  border-left: 1px solid var(--sys-color-divider);
   padding: 1px 4px;
 }
 
@@ -115,8 +115,8 @@
 
 .data-grid th {
   text-align: left;
-  background-color: var(--color-background-elevation-1);
-  border-bottom: 1px solid var(--color-details-hairline);
+  background-color: var(--sys-color-surface1);
+  border-bottom: 1px solid var(--sys-color-divider);
   font-weight: normal;
   vertical-align: middle;
 }

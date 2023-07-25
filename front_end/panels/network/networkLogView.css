@@ -38,7 +38,6 @@
 }
 
 #network-container {
-  border: 1px solid var(--color-details-hairline);
   overflow: hidden;
 }
 
@@ -50,8 +49,8 @@
   flex: 0 0 27px;
   line-height: 27px;
   padding-left: 5px;
-  background-color: var(--color-background-elevation-1);
-  border-top: 1px solid var(--color-details-hairline);
+  background-color: var(--sys-color-cdt-base-container);
+  border-top: 1px solid var(--sys-color-divider);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -76,7 +75,7 @@
 
 .network-log-grid.data-grid td {
   height: 41px;
-  border-left: 1px solid var(--color-details-hairline);
+  border-left: 1px solid var(--sys-color-divider);
   vertical-align: middle;
 }
 
@@ -94,14 +93,14 @@
 
 .network-waterfall-header,
 .network-log-grid.data-grid thead th {
-  border-bottom: 1px solid var(--color-details-hairline);
-  border-left: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
+  border-left: 1px solid var(--sys-color-divider);
 }
 
 .network-waterfall-header,
 .network-log-grid.data-grid thead {
   height: 31px;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface1);
 }
 
 .network-waterfall-header.small,
@@ -429,8 +428,8 @@
   /* stylelint-enable no-descending-specificity */
 
   .network-log-grid {
-    --network-grid-default-color: canvas;
-    --network-grid-stripe-color: canvas;
+    --color-grid-default: canvas;
+    --color-grid-stripe: canvas;
     --network-grid-hovered-color: Highlight;
     --network-grid-selected-color: ButtonText;
     --network-grid-focus-selected-color: Highlight;

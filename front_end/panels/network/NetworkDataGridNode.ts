@@ -509,8 +509,8 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
 export const _backgroundColors: {
   [x: string]: string,
 } = {
-  Default: '--network-grid-default-color',
-  Stripe: '--network-grid-stripe-color',
+  Default: '--color-grid-default',
+  Stripe: '--color-grid-stripe',
   Navigation: '--network-grid-navigation-color',
   Hovered: '--network-grid-hovered-color',
   InitiatorPath: '--network-grid-initiator-path-color',

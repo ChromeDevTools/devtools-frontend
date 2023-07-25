@@ -50,7 +50,7 @@ tbody tr.selected {
 td,
 th {
   padding: 1px 4px;
-  border-left: 1px solid var(--color-details-hairline);
+  border-left: 1px solid var(--sys-color-divider);
   color: var(--color-text-primary);
   line-height: var(--table-row-height);
   height: var(--table-row-height);
@@ -64,11 +64,11 @@ th {
 th {
   font-weight: normal;
   text-align: left;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   position: sticky;
   top: 0;
   z-index: 2;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface1);
 }
 
 td:focus,

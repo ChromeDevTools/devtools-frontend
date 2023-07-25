@@ -325,6 +325,7 @@ export interface ExtensionDescriptor {
   name: string;
   exposeExperimentalAPIs: boolean;
   hostsPolicy?: ExtensionHostsPolicy;
+  allowFileAccess?: boolean;
 }
 export interface ExtensionHostsPolicy {
   runtimeAllowedHosts: string[];

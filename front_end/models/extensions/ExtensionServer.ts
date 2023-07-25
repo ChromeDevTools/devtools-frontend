@@ -107,6 +107,20 @@ export class HostsPolicy {
   }
 }
 
+function currentTargetIsFile(): boolean {
+  const inspectedURL = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL();
+  if (!inspectedURL) {
+    return false;
+  }
+  let parsedURL;
+  try {
+    parsedURL = new URL(inspectedURL);
+  } catch (exception) {
+    return false;
+  }
+  return parsedURL.protocol === 'file:';
+}
+
 export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private readonly clientObjects: Map<string, unknown>;
   private readonly handlers:
@@ -121,6 +135,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private registeredExtensions: Map<string, {
     name: string,
     hostsPolicy: HostsPolicy,
+    allowFileAccess: boolean,
   }>;
   private status: ExtensionStatus;
   private readonly sidebarPanesInternal: ExtensionSidebarPane[];
@@ -1018,7 +1033,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return;
     }
     const hostsPolicy = HostsPolicy.create(extensionInfo.hostsPolicy);
-    if (!hostsPolicy || !hostsPolicy.isAllowedOnCurrentTarget()) {
+    if (!hostsPolicy || !hostsPolicy.isAllowedOnCurrentTarget() ||
+        (!extensionInfo.allowFileAccess && currentTargetIsFile())) {
       return;
     }
     try {
@@ -1033,7 +1049,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(
             extensionOrigin, injectedAPI);
         const name = extensionInfo.name || `Extension ${extensionOrigin}`;
-        this.registeredExtensions.set(extensionOrigin, {name, hostsPolicy});
+        this.registeredExtensions.set(
+            extensionOrigin, {name, hostsPolicy, allowFileAccess: Boolean(extensionInfo.allowFileAccess)});
       }
       this.addExtensionFrame(extensionInfo);
     } catch (e) {
@@ -1073,7 +1090,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!extension) {
       return false;
     }
-    return extension.hostsPolicy.isAllowedOnCurrentTarget();
+    return extension.hostsPolicy.isAllowedOnCurrentTarget() && (extension.allowFileAccess || !currentTargetIsFile());
   }
 
   private async onmessage(event: MessageEvent): Promise<void> {

@@ -13,11 +13,11 @@ import * as Workspace from '../../../../../front_end/models/workspace/workspace.
 import * as Logs from '../../../../../front_end/models/logs/logs.js';
 import * as HAR from '../../../../../front_end/models/har/har.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+import {assertElement} from '../../helpers/DOMHelpers.js';
 
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../helpers/MockConnection.js';
-import {assertElement} from '../../helpers/DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -264,6 +264,35 @@ describeWithMockConnection('NetworkLogView', () => {
 
     it('replaces requests when switching scope with preserve log off', handlesSwitchingScope(false));
     it('appends requests when switching scope with preserve log on', handlesSwitchingScope(true));
+
+    it('Hide Chrome extension requests', async () => {
+      createNetworkRequest('chrome-extension://url1', {target});
+      createNetworkRequest('url2', {target});
+      const filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+      networkLogView = createNetworkLogView(filterBar);
+
+      networkLogView.markAsRoot();
+      networkLogView.show(document.body);
+      const rootNode = networkLogView.columns().dataGrid().rootNode();
+      const hideExtCheckbox =
+          filterBar.element.querySelector('[title="Hide requests created by Chrome extensions"] span')
+              ?.shadowRoot?.querySelector('input') ||
+          null;
+      assertElement(hideExtCheckbox, HTMLInputElement);
+      assert.deepEqual(
+          rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
+          ['url2' as Platform.DevToolsPath.UrlString]);
+
+      hideExtCheckbox.checked = false;
+      const event = new Event('change');
+      hideExtCheckbox.dispatchEvent(event);
+
+      assert.deepEqual(
+          rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
+          ['chrome-extension://url1' as Platform.DevToolsPath.UrlString, 'url2' as Platform.DevToolsPath.UrlString]);
+
+      networkLogView.detach();
+    });
 
     it('can filter requests with blocked response cookies', async () => {
       const request1 = createNetworkRequest('url1', {target});

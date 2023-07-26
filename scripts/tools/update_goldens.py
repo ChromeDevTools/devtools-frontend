@@ -64,10 +64,13 @@ WARNING_BUILDERS_STILL_RUNNING = 'Patchset %s has builders that are still ' \
 WARNING_BUILDERS_FAILED = 'Patchset %s has builders that failed:\n  %s\n'
 WARNING_BUILDERS_MISSING = 'Patchset %s does not have screenshot tests for ' \
     'all platform.\nOnly these builders found:\n  %s'
-WARNING_GSUTIL_CONNECTIVITY = 'Ups! gsutil seems to not work for you right ' \
-    'now.\nThis is either a connectivity problem or a configuration issue.\n' \
-    'Try running "./third_party/depot_tools/gsutil.py config" command.\n' \
-    'When prompted for a project id, please use "v8-infra".'
+WARNING_GSUTIL_CONNECTIVITY = (
+    'Ups! gsutil seems to not work for you right '
+    'now.\nThis is either a connectivity problem or a configuration issue.\n'
+    'Make sure you are logged in with your Google account and you are included '
+    'in the devtools-dev@google.com group.\n'
+    'Try running "./third_party/depot_tools/gsutil.py config" command.\n'
+    'When prompted for a project id, please use "v8-infra".\n')
 WARNING_GIT_DIRTY = 'Before attempting to apply screenshot patches, please' \
     'make sure your local repo is clean.\nFolder %s seems to contain ' \
     'un-committed changes.' % GOLDENS_DIR

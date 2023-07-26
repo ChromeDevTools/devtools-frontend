@@ -280,6 +280,7 @@ export interface TraceEventSyntheticNetworkRequest extends TraceEventComplete {
       pathname: string,
       search: string,
       priority: Priority,
+      initialPriority: Priority,
       protocol: string,
       redirects: TraceEventSyntheticNetworkRedirect[],
       renderBlocking: RenderBlocking,
@@ -622,6 +623,16 @@ export interface TraceEventResourceSendRequest extends TraceEventInstant {
       // TODO(crbug.com/1457985): change requestMethod to enum when confirm in the backend code.
       requestMethod?: string,
       renderBlocking?: RenderBlocking,
+    },
+  };
+}
+
+export interface TraceEventResourceChangePriority extends TraceEventInstant {
+  name: 'ResourceChangePriority';
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      requestId: string,
+      priority: Priority,
     },
   };
 }
@@ -1082,6 +1093,12 @@ export function isTraceEventProfile(traceEventData: TraceEventData): traceEventD
 
 export function isTraceEventProfileChunk(traceEventData: TraceEventData): traceEventData is TraceEventProfileChunk {
   return traceEventData.name === 'ProfileChunk';
+}
+
+export function isTraceEventResourceChangePriority(
+    traceEventData: TraceEventData,
+    ): traceEventData is TraceEventResourceChangePriority {
+  return traceEventData.name === 'ResourceChangePriority';
 }
 
 export function isTraceEventResourceSendRequest(

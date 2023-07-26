@@ -384,12 +384,14 @@ describeWithMockConnection('TimelineUIUtils', function() {
       );
 
       const rowData = getRowDataForDetailsElement(details);
+
       assert.deepEqual(
           rowData,
           [
             {title: 'URL', value: 'localhost:3000/app.css'},
             {title: 'Duration', value: '4.075ms (3.08ms network transfer + 995μs resource loading)'},
             {title: 'Request Method', value: 'GET'},
+            {title: 'Initial Priority', value: 'Highest'},
             {title: 'Priority', value: 'Highest'},
             {title: 'Mime Type', value: 'text/css'},
             {title: 'Encoded Data', value: '402 B'},

@@ -8,6 +8,7 @@ copy_to_gen("traces") {
   sources = [
     "animation.json.gz",
     "basic.json.gz",
+    "changing-priority.json.gz",
     "cls-cluster-max-duration.json.gz",
     "cls-cluster-max-timeout.json.gz",
     "cls-cluster-navigation.json.gz",

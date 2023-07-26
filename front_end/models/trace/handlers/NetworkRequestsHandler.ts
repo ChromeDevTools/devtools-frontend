@@ -21,6 +21,7 @@ const SECONDS_TO_MICROSECONDS = 1000000;
 // these 5 types of trace records to a synthetic complete event that
 // represents a composite of these trace records.
 interface TraceEventsForNetworkRequest {
+  changePriority?: Types.TraceEvents.TraceEventResourceChangePriority;
   willSendRequests?: Types.TraceEvents.TraceEventResourceWillSendRequest[];
   sendRequests?: Types.TraceEvents.TraceEventResourceSendRequest[];
   receiveResponse?: Types.TraceEvents.TraceEventResourceReceiveResponse;
@@ -96,6 +97,11 @@ export function initialize(): void {
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   if (handlerState !== HandlerState.INITIALIZED) {
     throw new Error('Network Request handler is not initialized');
+  }
+
+  if (Types.TraceEvents.isTraceEventResourceChangePriority(event)) {
+    storeTraceEventWithRequestId(event.args.data.requestId, 'changePriority', event);
+    return;
   }
 
   if (Types.TraceEvents.isTraceEventResourceWillSendRequest(event)) {
@@ -208,6 +214,12 @@ export async function finalize(): Promise<void> {
 
     const firstSendRequest = request.sendRequests[0];
     const finalSendRequest = request.sendRequests[request.sendRequests.length - 1];
+
+    const initialPriority = finalSendRequest.args.data.priority;
+    let finalPriority = initialPriority;
+    if (request.changePriority) {
+      finalPriority = request.changePriority.args.data.priority;
+    }
 
     // Start time
     // =======================
@@ -370,7 +382,8 @@ export async function finalize(): Promise<void> {
           host,
           mimeType: request.receiveResponse.args.data.mimeType,
           pathname,
-          priority: finalSendRequest.args.data.priority,
+          priority: finalPriority,
+          initialPriority,
           protocol,
           redirects,
           // In the event the property isn't set, assume non-blocking.

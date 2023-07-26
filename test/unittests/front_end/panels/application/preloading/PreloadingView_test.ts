@@ -1177,4 +1177,49 @@ describeWithMockConnection('PreloadingWarningsView', async () => {
         },
         ['Preloading is disabled']);
   });
+
+  it('shows warnings only once even if multiple events received', async () => {
+    const event = {
+      disabledByPreference: false,
+      disabledByDataSaver: false,
+      disabledByBatterySaver: false,
+      disabledByHoldbackPrefetchSpeculationRules: true,
+      disabledByHoldbackPrerenderSpeculationRules: false,
+    };
+    const infoTextsExpected = ['Prefetch was disabled, but is force-enabled now'];
+
+    const target = createTarget();
+    const view = createRuleSetView(target);
+
+    const warningsUpdatedPromise: Promise<void> = new Promise(resolve => {
+      const model = target.model(SDK.PreloadingModel.PreloadingModel);
+      assertNotNullOrUndefined(model);
+      model.addEventListener(SDK.PreloadingModel.Events.WarningsUpdated, _ => resolve());
+    });
+
+    dispatchEvent(target, 'Preload.preloadEnabledStateUpdated', event);
+
+    await warningsUpdatedPromise;
+    await coordinator.done();
+
+    const warningsUpdatedPromise2: Promise<void> = new Promise(resolve => {
+      const model = target.model(SDK.PreloadingModel.PreloadingModel);
+      assertNotNullOrUndefined(model);
+      model.addEventListener(SDK.PreloadingModel.Events.WarningsUpdated, _ => resolve());
+    });
+
+    dispatchEvent(target, 'Preload.preloadEnabledStateUpdated', event);
+
+    await warningsUpdatedPromise2;
+    await coordinator.done();
+
+    const infobarContainer = view.getInfobarContainerForTest();
+    const infoTextsGot = Array.from(infobarContainer.children).map(infobarElement => {
+      assertShadowRoot(infobarElement.shadowRoot);
+      const infoText = infobarElement.shadowRoot.querySelector('.infobar-info-text');
+      assertNotNullOrUndefined(infoText);
+      return infoText.textContent;
+    });
+    assert.deepEqual(infoTextsGot, infoTextsExpected);
+  });
 });

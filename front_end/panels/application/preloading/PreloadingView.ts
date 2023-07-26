@@ -654,6 +654,8 @@ class PreloadingRuleSetSelector implements UI.Toolbar.Provider,
 }
 
 export class PreloadingWarningsView extends UI.Widget.VBox {
+  private warningsProcessed: boolean = false;
+
   constructor() {
     super(/* isWebComponent */ false, /* delegatesFocus */ false);
   }
@@ -695,6 +697,12 @@ export class PreloadingWarningsView extends UI.Widget.VBox {
 
       return shouldShowWarning ? detailsMessage : null;
     }
+
+    if (this.warningsProcessed) {
+      return;
+    }
+
+    this.warningsProcessed = true;
 
     const event = args.data;
     const detailsMessage = createDisabledMessages(event);

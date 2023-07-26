@@ -41,20 +41,6 @@ const UIStrings = {
    */
   eventLog: 'Event Log',
   /**
-   *@description The label for estimated total blocking time in the performance panel
-   */
-  estimated: 'estimated',
-  /**
-   *@description Label for the total blocking time in the Performance Panel
-   *@example {320.23} PH1
-   *@example {(estimated)} PH2
-   */
-  totalBlockingTimeSmss: 'Total blocking time: {PH1}ms{PH2}',
-  /**
-   *@description Text that is usually a hyperlink to more documentation
-   */
-  learnMore: 'Learn more',
-  /**
    *@description Title of the Layers tool
    */
   layers: 'Layers',
@@ -77,7 +63,6 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private readonly defaultDetailsWidget: UI.Widget.VBox;
   private readonly defaultDetailsContentElement: HTMLElement;
   private rangeDetailViews: Map<string, TimelineTreeView>;
-  private readonly additionalMetricsToolbar: UI.Toolbar.Toolbar;
   private model!: PerformanceModel;
   #selectedEvents?: TraceEngine.Legacy.CompatibleTraceEvent[]|null;
   private lazyPaintProfilerView?: TimelinePaintProfilerView|null;
@@ -117,9 +102,6 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.appendTab(Tab.EventLog, i18nString(UIStrings.eventLog), eventsView);
     this.rangeDetailViews.set(Tab.EventLog, eventsView);
 
-    this.additionalMetricsToolbar = new UI.Toolbar.Toolbar('timeline-additional-metrics');
-    this.element.appendChild(this.additionalMetricsToolbar.element);
-
     this.tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this.tabSelected, this);
   }
 
@@ -151,23 +133,6 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.lazyPaintProfilerView = null;
     this.lazyLayersView = null;
     await this.setSelection(null);
-
-    // Add TBT info to the footer.
-    this.additionalMetricsToolbar.removeToolbarItems();
-    if (model && model.timelineModel()) {
-      const {estimated, time} = model.timelineModel().totalBlockingTime();
-      const isEstimate = estimated ? ` (${i18nString(UIStrings.estimated)})` : '';
-      const message = i18nString(UIStrings.totalBlockingTimeSmss, {PH1: time.toFixed(2), PH2: isEstimate});
-
-      const warning = document.createElement('span');
-      const clsLink = UI.XLink.XLink.create('https://web.dev/tbt/', i18nString(UIStrings.learnMore));
-      // Prevent focus ring from being cut off.
-      clsLink.style.margin = '3px';
-      warning.appendChild(clsLink);
-
-      this.additionalMetricsToolbar.appendText(message);
-      this.additionalMetricsToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(warning));
-    }
   }
 
   private setContent(node: Node): void {

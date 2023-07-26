@@ -115,7 +115,7 @@ export class CSSVarSwatch extends HTMLElement {
     // When the value of CSS var() is greater than two spaces, only one is
     // always displayed, and the actual number of spaces is displayed when
     // editing is clicked.
-    const result = text.replace(/\s{2,}/g, ' ').match(VARIABLE_FUNCTION_REGEX);
+    const result = text.replace(/\n/g, ' ').replace(/\s{2,}/g, ' ').match(VARIABLE_FUNCTION_REGEX);
     if (!result) {
       return null;
     }
@@ -125,7 +125,7 @@ export class CSSVarSwatch extends HTMLElement {
       pre: result[1],
 
       // Returns the CSS variable name, e.g. `--foo`
-      variableName: result[2],
+      variableName: result[2].trim(),
 
       // Returns the fallback value in the CSS variable, including a comma if
       // one is present, e.g. `,50px`

@@ -61,6 +61,24 @@ describeWithLocale('CSSVarSwatch', () => {
     });
   });
 
+  it('renders a simple var function with newlines', () => {
+    const component = new InlineEditor.LinkSwatch.CSSVarSwatch();
+    renderElementIntoDOM(component);
+    component.data = {
+      text: 'var(\n--test\n)',
+      computedValue: '2px',
+      fromFallback: false,
+      onLinkActivate: () => {},
+    };
+
+    assertVarSwatch(component, {
+      valueTooltip: '2px',
+      linkTooltip: '2px',
+      isDefined: true,
+      varText: '--test',
+    });
+  });
+
   it('renders a var function with an undefined property', () => {
     const component = new InlineEditor.LinkSwatch.CSSVarSwatch();
     renderElementIntoDOM(component);
@@ -165,7 +183,7 @@ describeWithLocale('CSSVarSwatch', () => {
       valueTooltip: 'red',
       linkTooltip: 'red',
       isDefined: true,
-      varText: '--test ',
+      varText: '--test',
     });
   });
 
@@ -183,7 +201,7 @@ describeWithLocale('CSSVarSwatch', () => {
       valueTooltip: 'red',
       linkTooltip: 'red',
       isDefined: true,
-      varText: '--f\ oo ',
+      varText: '--f\ oo',
     });
   });
 });

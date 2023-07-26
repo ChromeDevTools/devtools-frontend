@@ -253,7 +253,12 @@ def read_try_results(patchset):
         results_command.extend(['-p', patchset])
     stdout = subprocess.check_output(results_command)
     if stdout:
-        return json.loads(stdout)
+        try:
+            return json.loads(stdout)
+        except Exception as e:
+            print(f'Unable to parse try-results output. \n{str(e)}\n')
+            print('Usually this goes away if you set SKIP_GCE_AUTH_FOR_GIT=1.')
+            sys.exit(1)
     return {}
 
 

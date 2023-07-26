@@ -36,13 +36,13 @@ vars = {
 
   # Chromium build number for unit tests. It should be regularly updated to
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE
-  'chromium_linux': '1174765',
+  'chromium_linux': '1175211',
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Win_x64/LAST_CHANGE
-  'chromium_win': '1174750',
+  'chromium_win': '1175181',
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac/LAST_CHANGE
-  'chromium_mac': '1174754',
+  'chromium_mac': '1175200',
   # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac_Arm/LAST_CHANGE
-  'chromium_mac_arm': '1174746',
+  'chromium_mac_arm': '1175192',
 
   # Chrome version used for tests. It should be regularly updated to
   # match the Canary version listed here:

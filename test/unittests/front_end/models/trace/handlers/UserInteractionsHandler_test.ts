@@ -8,10 +8,6 @@ import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 describe('UserInteractionsHandler', function() {
-  beforeEach(async () => {
-    TraceModel.Handlers.ModelHandlers.UserInteractions.reset();
-  });
-
   describe('error handling', () => {
     it('throws if not initialized', async () => {
       // Finalize the handler by calling data and then finalize on it.
@@ -72,6 +68,20 @@ describe('UserInteractionsHandler', function() {
       });
       assert.isNotNull(expectedLongestEvent);
       assert.strictEqual(data.longestInteractionEvent, expectedLongestEvent);
+    });
+
+    it('returns a set of all interactions that exceed the threshold', async () => {
+      await processTrace(this, 'one-second-interaction.json.gz');
+      const data = TraceModel.Handlers.ModelHandlers.UserInteractions.data();
+      // There are two long interactions: the pointerup, and the click.
+      assert.strictEqual(data.interactionsOverThreshold.size, 2);
+    });
+
+    it('does not include interactions below the threshold', async () => {
+      await processTrace(this, 'slow-interaction-keydown.json.gz');
+      const data = TraceModel.Handlers.ModelHandlers.UserInteractions.data();
+      // All the interactions in this trace are < 200ms
+      assert.strictEqual(data.interactionsOverThreshold.size, 0);
     });
 
     it('sets the `dur` key on each event by finding the begin and end events and subtracting the ts', async () => {

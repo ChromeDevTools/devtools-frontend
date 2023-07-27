@@ -24,9 +24,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/InteractionsTrackAppender.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const LONG_INTERACTION_THRESHOLD =
-    TraceEngine.Helpers.Timing.millisecondsToMicroseconds(TraceEngine.Types.Timing.MilliSeconds(200));
-
 export class InteractionsTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'Interactions';
 
@@ -88,14 +85,20 @@ export class InteractionsTrackAppender implements TrackAppender {
    * interactions (the first available level to append more data).
    */
   #appendInteractionsAtLevel(trackStartLevel: number): number {
-    const interactions = this.#traceParsedData.UserInteractions.interactionEventsWithNoNesting;
-    const newLevel = this.#compatibilityBuilder.appendEventsAtLevel(interactions, trackStartLevel, this);
-    for (let i = 0; i < interactions.length; ++i) {
-      const eventDurationMicroSeconds = interactions[i].dur || TraceEngine.Types.Timing.MicroSeconds(0);
-      if (eventDurationMicroSeconds <= LONG_INTERACTION_THRESHOLD) {
+    const {interactionEventsWithNoNesting, interactionsOverThreshold} = this.#traceParsedData.UserInteractions;
+
+    // Render all top level interactions (see UserInteractionsHandler for an explanation on the nesting) onto the track.
+    const newLevel =
+        this.#compatibilityBuilder.appendEventsAtLevel(interactionEventsWithNoNesting, trackStartLevel, this);
+
+    // Each interaction that we drew that is over the INP threshold needs to be
+    // candy-striped.
+    for (const interaction of interactionEventsWithNoNesting) {
+      const overThreshold = interactionsOverThreshold.has(interaction);
+      if (!overThreshold) {
         continue;
       }
-      const index = this.#compatibilityBuilder.indexForEvent(interactions[i]);
+      const index = this.#compatibilityBuilder.indexForEvent(interaction);
       if (index !== undefined) {
         this.#addCandyStripingForLongInteraction(index);
       }
@@ -107,7 +110,7 @@ export class InteractionsTrackAppender implements TrackAppender {
     const decorationsForEvent = this.#flameChartData.entryDecorations[eventIndex] || [];
     decorationsForEvent.push({
       type: 'CANDY',
-      startAtTime: LONG_INTERACTION_THRESHOLD,
+      startAtTime: TraceEngine.Handlers.ModelHandlers.UserInteractions.LONG_INTERACTION_THRESHOLD,
     });
     this.#flameChartData.entryDecorations[eventIndex] = decorationsForEvent;
   }

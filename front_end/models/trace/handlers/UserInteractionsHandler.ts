@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {HandlerState} from './types.js';
@@ -14,6 +15,8 @@ import {HandlerState} from './types.js';
 // We don't need to know which process / thread these events occurred in,
 // because they are effectively global, so we just track all that we find.
 const allEvents: Types.TraceEvents.TraceEventEventTiming[] = [];
+
+export const LONG_INTERACTION_THRESHOLD = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(200));
 
 export interface UserInteractionsData {
   /** All the user events we found in the trace */
@@ -39,6 +42,8 @@ export interface UserInteractionsData {
   interactionEventsWithNoNesting: readonly Types.TraceEvents.SyntheticInteractionEvent[];
   // The longest duration interaction event. Can be null if the trace has no interaction events.
   longestInteractionEvent: Readonly<Types.TraceEvents.SyntheticInteractionEvent>|null;
+  // All interactions that went over the interaction threshold (200ms, see https://web.dev/inp/)
+  interactionsOverThreshold: Readonly<Set<Types.TraceEvents.SyntheticInteractionEvent>>;
 }
 
 let longestInteractionEvent: Types.TraceEvents.SyntheticInteractionEvent|null = null;
@@ -55,6 +60,7 @@ export function reset(): void {
   eventTimingStartEventsForInteractions.length = 0;
   eventTimingEndEventsById.clear();
   interactionEventsWithNoNesting.length = 0;
+  longestInteractionEvent = null;
   handlerState = HandlerState.INITIALIZED;
 }
 
@@ -247,5 +253,8 @@ export function data(): UserInteractionsData {
     interactionEvents: [...interactionEvents],
     interactionEventsWithNoNesting: [...interactionEventsWithNoNesting],
     longestInteractionEvent,
+    interactionsOverThreshold: new Set(interactionEvents.filter(event => {
+      return event.dur > LONG_INTERACTION_THRESHOLD;
+    })),
   };
 }

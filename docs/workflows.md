@@ -59,12 +59,6 @@ This works with Chromium 79 or later.
 **(Requires `brew install coreutils` on Mac.)**
 
 ```bash
-<path-to-devtools-frontend>/third_party/chromium/chrome-<platform>/chrome --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
-```
-
-Once we finalize [switching over to Chrome for Testing](https://crbug.com/1465312) instead of Chromium, you can use:
-
-```bash
 <path-to-devtools-frontend>/third_party/chrome/chrome-<platform>/chrome --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
 ```
 
@@ -95,12 +89,6 @@ Open DevTools via F12 or Ctrl+Shift+J on Windows/Linux or Cmd+Option+I on Mac.
 Serve the content of `out/Default/gen/front_end` on a web server, e.g. via `python3 -m http.server 8000`.
 
 Then start Chromium, allowing for accesses from the web server:
-
-```bash
-<path-to-devtools-frontend>/third_party/chromium/chrome-<platform>/chrome --remote-debugging-port=9222 --remote-allow-origins=http://localhost:8000 about:blank
-```
-
-Once we finalize [switching over to Chrome for Testing](https://crbug.com/1465312) instead of Chromium, you can use:
 
 ```bash
 <path-to-devtools-frontend>/third_party/chrome/chrome-<platform>/chrome --remote-debugging-port=9222 --remote-allow-origins=http://localhost:8000 about:blank

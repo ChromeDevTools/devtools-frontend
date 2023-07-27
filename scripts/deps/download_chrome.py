@@ -21,12 +21,16 @@ import zipfile
 
 def parse_options(cli_args):
     parser = argparse.ArgumentParser(description='Download Chrome')
-    parser.add_argument('url', help='download URL')
-    parser.add_argument('target', help='target directory')
-    parser.add_argument('path_to_binary',
-                        help='path to binary inside of the ZIP archive')
+    parser.add_argument('--url', help='download URL')
+    parser.add_argument('--target', help='target directory')
     parser.add_argument(
-        'version_number',
+        '--rename_from',
+        help='path to directory to be renamed inside of the ZIP archive')
+    parser.add_argument('--rename_to', help='new name for directory')
+    parser.add_argument('--path_to_binary',
+                        help='path to binary after extracting and renaming')
+    parser.add_argument(
+        '--version_number',
         help='version number to find out whether we need to re-download')
     return parser.parse_args(cli_args)
 
@@ -46,6 +50,7 @@ def handleAccessDeniedOnWindows(func, path, exc):
 def download_and_extract(options):
     VERSION_NUMBER_FILE = os.path.join(options.target, 'version_number')
     EXPECTED_BINARY = os.path.join(options.target, options.path_to_binary)
+
     # Check whether we already downloaded pre-built Chrome with this version number.
     if os.path.exists(VERSION_NUMBER_FILE):
         with open(VERSION_NUMBER_FILE) as file:
@@ -72,6 +77,8 @@ def download_and_extract(options):
                     ['curl', '--output', '-', '-sS', options.url]))
         zip_file = zipfile.ZipFile(filehandle, 'r')
         zip_file.extractall(path=options.target)
+        shutil.move(os.path.join(options.target, options.rename_from),
+                    os.path.join(options.target, options.rename_to))
 
     finally:
         urllib.request.urlcleanup()

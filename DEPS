@@ -47,7 +47,7 @@ vars = {
   # Chrome version used for tests. It should be regularly updated to
   # match the Canary version listed here:
   # https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json
-  'chrome': '117.0.5912.0',
+  'chrome': '117.0.5907.0',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.
@@ -305,10 +305,12 @@ hooks = [
     'condition': 'host_os == "win" and build_with_chromium == False',
     'action': [ 'python3',
                 'scripts/deps/download_chrome.py',
-                'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/' + Var('chrome') + '/win64/chrome-win64.zip',
-                'third_party/chrome',
-                'chrome-win64/chrome.exe',
-                Var('chrome'),
+                '--url=https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/' + Var('chrome') + '/win64/chrome-win64.zip',
+                '--target=third_party/chrome',
+                '--rename_from=chrome-win64',
+                '--rename_to=chrome-win',
+                '--path_to_binary=chrome-win/chrome.exe',
+                '--version_number=' + Var('chrome'),
     ],
   },
   {
@@ -317,10 +319,12 @@ hooks = [
     'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu != "arm64"',
     'action': [ 'python3',
                 'scripts/deps/download_chrome.py',
-                'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/' + Var('chrome') + '/mac-x64/chrome-mac-x64.zip',
-                'third_party/chrome',
-                'chrome-mac-x64/Google Chrome for Testing.app/Contents',
-                Var('chrome'),
+                '--url=https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/' + Var('chrome') + '/mac-x64/chrome-mac-x64.zip',
+                '--target=third_party/chrome',
+                '--rename_from=chrome-mac-x64',
+                '--rename_to=chrome-mac',
+                '--path_to_binary=chrome-mac/Google Chrome for Testing.app/Contents',
+                '--version_number=' + Var('chrome'),
     ],
   },
   {
@@ -329,10 +333,12 @@ hooks = [
     'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu == "arm64"',
     'action': [ 'python3',
                 'scripts/deps/download_chrome.py',
-                'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/' + Var('chrome') + '/mac-arm64/chrome-mac-arm64.zip',
-                'third_party/chrome',
-                'chrome-mac-arm64/Google Chrome for Testing.app/Contents',
-                Var('chrome'),
+                '--url=https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/' + Var('chrome') + '/mac-arm64/chrome-mac-arm64.zip',
+                '--target=third_party/chrome',
+                '--rename_from=chrome-mac-arm64',
+                '--rename_to=chrome-mac',
+                '--path_to_binary=chrome-mac/Google Chrome for Testing.app/Contents',
+                '--version_number=' + Var('chrome'),
     ],
   },
   {
@@ -341,10 +347,12 @@ hooks = [
     'condition': 'host_os == "linux" and build_with_chromium == False',
     'action': [ 'python3',
                 'scripts/deps/download_chrome.py',
-                'https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/' + Var('chrome') + '/linux64/chrome-linux64.zip',
-                'third_party/chrome',
-                'chrome-linux64/chrome',
-                Var('chrome'),
+                '--url=https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/' + Var('chrome') + '/linux64/chrome-linux64.zip',
+                '--target=third_party/chrome',
+                '--rename_from=chrome-linux64',
+                '--rename_to=chrome-linux',
+                '--path_to_binary=chrome-linux/chrome',
+                '--version_number=' + Var('chrome'),
     ],
   },
 

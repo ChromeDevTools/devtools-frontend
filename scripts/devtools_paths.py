@@ -83,12 +83,12 @@ def downloaded_chrome_binary_path():
     return path.abspath(
         path.join(
             *{
-                'Linux': (devtools_root_path(), 'third_party', 'chromium',
+                'Linux': (devtools_root_path(), 'third_party', 'chrome',
                           'chrome-linux', 'chrome'),
-                'Darwin': (devtools_root_path(), 'third_party', 'chromium',
-                           'chrome-mac', 'Chromium.app', 'Contents', 'MacOS',
-                           'Chromium'),
-                'Windows': (devtools_root_path(), 'third_party', 'chromium',
+                'Darwin': (devtools_root_path(), 'third_party', 'chrome',
+                           'chrome-mac', 'Google Chrome for Testing.app',
+                           'Contents', 'MacOS', 'Google Chrome for Testing'),
+                'Windows': (devtools_root_path(), 'third_party', 'chrome',
                             'chrome-win', 'chrome.exe'),
             }[platform.system()]))
 

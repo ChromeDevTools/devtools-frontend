@@ -4,6 +4,7 @@
 import '../../recorder/components/components.js';
 
 import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
@@ -18,6 +19,24 @@ import editorWidgetStyles from './JSONEditor.css.js';
 const {html, Decorators, LitElement, Directives, nothing} = LitHtml;
 const {customElement, property, state} = Decorators;
 const {live, classMap, repeat} = Directives;
+
+const UIStrings = {
+  /**
+   *@description The title of a button that deletes a parameter.
+   */
+  deleteParameter: 'Delete parameter',
+  /**
+   *@description The title of a button that adds a parameter.
+   */
+  addParameter: 'Add a parameter',
+  /**
+   *@description The title of a button that reset the value of a paremeters to its default value.
+   */
+  resetDefaultValue: 'Reset to default value',
+};
+const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/components/JSONEditor.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-json-editor': JSONEditor;
@@ -99,7 +118,14 @@ const splitDescription = (description: string): [string, string] => {
   return [description, ''];
 };
 
+const defaultValueByType = new Map<string, string|number|boolean>([
+  ['string', ''],
+  ['number', 0],
+  ['boolean', false],
+]);
+
 const DUMMY_DATA = 'dummy';
+const EMPTY_STRING = '<empty_string>';
 
 @customElement('devtools-json-editor')
 export class JSONEditor extends LitElement {
@@ -107,20 +133,21 @@ export class JSONEditor extends LitElement {
   @property()
   declare metadataByCommand: Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>;
   @property() declare typesByName: Map<string, Parameter[]>;
+  @property() declare enumsByName: Map<string, Record<string, string>>;
   @property() declare targetManager;
   @state() declare parameters: Parameter[];
   @state() command: string = '';
   @state() targetId?: string;
 
   #hintPopoverHelper?: UI.PopoverHelper.PopoverHelper;
+
   constructor() {
     super();
     this.parameters = [];
     this.targetManager = SDK.TargetManager.TargetManager.instance();
     this.targetId = this.targetManager.targets().length !== 0 ? this.targetManager.targets()[0].id() : undefined;
-    this.addEventListener('keydown', (event: Event) => {
-      if ((event as KeyboardEvent).key === 'Enter' &&
-          ((event as KeyboardEvent).metaKey || (event as KeyboardEvent).ctrlKey)) {
+    this.addEventListener('keydown', event => {
+      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
         this.dispatchEvent(new SubmitEditorEvent({
           command: this.command,
           parameters: this.getParameters(),
@@ -144,105 +171,59 @@ export class JSONEditor extends LitElement {
     this.#hintPopoverHelper?.dispose();
   }
 
-  #convertObjectToParameterSchema(key: string, value: unknown, schema?: Parameter, initialSchema?: Parameter[]):
-      Parameter {
-    const type = schema?.type || typeof value;
-    const description = schema?.description ?? '';
-    const optional = schema?.optional ?? true;
-
-    switch (type) {
-      case 'string':
-      case 'boolean':
-      case 'number':
-        return {
-          type,
-          name: key,
-          optional,
-          typeRef: schema?.typeRef,
-          value,
-          description,
-        } as Parameter;
-      case 'object': {
-        if (typeof value !== 'object' || value === null) {
-          throw Error('Wrong value');
-        }
-        const typeRef = schema?.typeRef;
-        if (!typeRef) {
-          break;
-        }
-
-        let nestedType;
-        if (typeRef === DUMMY_DATA) {
-          nestedType = initialSchema;
-        } else {
-          nestedType = this.typesByName.get(typeRef);
-        }
-
-        if (!nestedType) {
-          break;
-        }
-        const objectValues = [];
-        for (const objectKey of Object.keys(value as object)) {
-          const objectType = nestedType.find(param => param.name === objectKey);
-          objectValues.push(this.#convertObjectToParameterSchema(
-              objectKey, (value as Record<string, unknown>)[objectKey], objectType as Parameter));
-        }
-        return {
-          type: ParameterType.Object,
-          name: key,
-          optional: schema.optional,
-          typeRef: schema.typeRef,
-          value: objectValues,
-          description,
-        };
+  getParameters(): {[key: string]: unknown} {
+    const formatParameterValue = (parameter: Parameter): unknown => {
+      if (parameter.value === undefined) {
+        return;
       }
-      case 'array': {
-        const typeRef = schema?.typeRef;
-        if (!typeRef) {
-          throw Error('No type ref');
+      switch (parameter.type) {
+        case ParameterType.Number: {
+          return Number(parameter.value);
         }
-
-        if (!Array.isArray(value)) {
-          throw Error('Wrong value');
+        case ParameterType.Boolean: {
+          return Boolean(parameter.value);
         }
-        const nestedType = this.#isTypePrimitive(typeRef) ? undefined : {
-          optional: true,
-          type: ParameterType.Object,
-          value: [],
-          typeRef,
-          description: '',
-          name: '',
-        } as Parameter;
-
-        const objectValues = [];
-
-        for (let i = 0; i < value.length; i++) {
-          const temp = this.#convertObjectToParameterSchema(`${i}`, value[i], nestedType);
-          objectValues.push(temp);
+        case ParameterType.Object: {
+          const nestedParameters: {[key: string]: unknown} = {};
+          for (const subParameter of parameter.value) {
+            const formattedValue = formatParameterValue(subParameter);
+            if (formattedValue !== undefined) {
+              nestedParameters[subParameter.name] = formatParameterValue(subParameter);
+            }
+          }
+          if (Object.keys(nestedParameters).length === 0) {
+            return undefined;
+          }
+          return nestedParameters;
         }
-        return {
-          type: ParameterType.Array,
-          name: key,
-          optional: optional,
-          typeRef: schema?.typeRef,
-          value: objectValues,
-          description,
-        };
+        case ParameterType.Array: {
+          const nestedArrayParameters = [];
+          for (const subParameter of parameter.value) {
+            nestedArrayParameters.push(formatParameterValue(subParameter));
+          }
+          return nestedArrayParameters;
+        }
+        default: {
+          return parameter.value;
+        }
       }
+    };
+
+    const formattedParameters: {[key: string]: unknown} = {};
+    for (const parameter of this.parameters) {
+      formattedParameters[parameter.name] = formatParameterValue(parameter);
     }
-    return {
-      type,
-      name: key,
-      optional,
-      typeRef: schema?.typeRef,
-      value,
-      description,
-    } as Parameter;
+    return formatParameterValue({
+             type: ParameterType.Object,
+             name: DUMMY_DATA,
+             optional: true,
+             value: this.parameters,
+             description: '',
+           }) as {[key: string]: unknown};
   }
 
-  displayCommand(command: string, parameters: {
-    [paramName: string]: unknown,
-  }): void {
+  // Displays a command entered in the input bar inside the editor
+  displayCommand(command: string, parameters: Record<string, unknown>): void {
     this.command = command;
     const schema = this.metadataByCommand.get(this.command);
     if (!schema?.parameters) {
@@ -260,6 +241,113 @@ export class JSONEditor extends LitElement {
                               schema.parameters)
                           .value as Parameter[];
     this.requestUpdate();
+  }
+
+  #convertObjectToParameterSchema(key: string, value: unknown, schema?: Parameter, initialSchema?: Parameter[]):
+      Parameter {
+    const type = schema?.type || typeof value;
+    const description = schema?.description ?? '';
+    const optional = schema?.optional ?? true;
+
+    switch (type) {
+      case ParameterType.String:
+      case ParameterType.Boolean:
+      case ParameterType.Number:
+        return this.#convertPrimitiveParameter(key, value, schema);
+      case ParameterType.Object:
+        return this.#convertObjectParameter(key, value, schema, initialSchema);
+      case ParameterType.Array:
+        return this.#convertArrayParameter(key, value, schema);
+    }
+    return {
+      type,
+      name: key,
+      optional,
+      typeRef: schema?.typeRef,
+      value,
+      description,
+    } as Parameter;
+  }
+
+  #convertPrimitiveParameter(key: string, value: unknown, schema?: Parameter): Parameter {
+    const type = schema?.type || typeof value;
+    const description = schema?.description ?? '';
+    const optional = schema?.optional ?? true;
+    return {
+      type,
+      name: key,
+      optional,
+      typeRef: schema?.typeRef,
+      value,
+      description,
+    } as Parameter;
+  }
+
+  #convertObjectParameter(key: string, value: unknown, schema?: Parameter, initialSchema?: Parameter[]): Parameter {
+    const description = schema?.description ?? '';
+    if (typeof value !== 'object' || value === null) {
+      throw Error('The value is not an object');
+    }
+    const typeRef = schema?.typeRef;
+    if (!typeRef) {
+      throw Error('Every object parameters should have a type ref');
+    }
+
+    const nestedType = typeRef === DUMMY_DATA ? initialSchema : this.typesByName.get(typeRef);
+
+    if (!nestedType) {
+      throw Error('No nested type for keys were found');
+    }
+    const objectValues = [];
+    for (const objectKey of Object.keys(value)) {
+      const objectType = nestedType.find(param => param.name === objectKey);
+      objectValues.push(
+          this.#convertObjectToParameterSchema(objectKey, (value as Record<string, unknown>)[objectKey], objectType));
+    }
+    return {
+      type: ParameterType.Object,
+      name: key,
+      optional: schema.optional,
+      typeRef: schema.typeRef,
+      value: objectValues,
+      description,
+    };
+  }
+
+  #convertArrayParameter(key: string, value: unknown, schema?: Parameter): Parameter {
+    const description = schema?.description ?? '';
+    const optional = schema?.optional ?? true;
+    const typeRef = schema?.typeRef;
+    if (!typeRef) {
+      throw Error('Every array parameters should have a type ref');
+    }
+
+    if (!Array.isArray(value)) {
+      throw Error('The value is not an array');
+    }
+    const nestedType = this.#isTypePrimitive(typeRef) ? undefined : {
+      optional: true,
+      type: ParameterType.Object as ParameterType.Object,
+      value: [],
+      typeRef,
+      description: '',
+      name: '',
+    };
+
+    const objectValues = [];
+
+    for (let i = 0; i < value.length; i++) {
+      const temp = this.#convertObjectToParameterSchema(`${i}`, value[i], nestedType);
+      objectValues.push(temp);
+    }
+    return {
+      type: ParameterType.Array,
+      name: key,
+      optional: optional,
+      typeRef: schema?.typeRef,
+      value: objectValues,
+      description,
+    };
   }
 
   #handlePopoverDescriptions(event: MouseEvent):
@@ -333,65 +421,13 @@ export class JSONEditor extends LitElement {
     }));
   }
 
-  getParameters(): {[key: string]: unknown} {
-    const formatParameterValue = (parameter: Parameter): unknown => {
-      if (!parameter.value) {
-        return;
-      }
-      switch (parameter.type) {
-        case 'number': {
-          return Number(parameter.value);
-        }
-        case 'boolean': {
-          return Boolean(parameter.value);
-        }
-        case 'object': {
-          const nestedParameters: {[key: string]: unknown} = {};
-
-          for (const subParameter of parameter.value) {
-            const formattedValue = formatParameterValue(subParameter);
-            if (formattedValue !== undefined) {
-              nestedParameters[subParameter.name] = formatParameterValue(subParameter);
-            }
-          }
-          if (Object.keys(nestedParameters).length === 0) {
-            return undefined;
-          }
-          return nestedParameters;
-        }
-        case 'array': {
-          const nestedArrayParameters = [];
-          for (const subParameter of parameter.value) {
-            nestedArrayParameters.push(formatParameterValue(subParameter));
-          }
-          return nestedArrayParameters;
-        }
-        default: {
-          return parameter.value;
-        }
-      }
-    };
-
-    const formattedParameters: {[key: string]: unknown} = {};
-    for (const parameter of this.parameters) {
-      formattedParameters[parameter.name] = formatParameterValue(parameter);
-    }
-    return formatParameterValue({
-             type: ParameterType.Object,
-             name: DUMMY_DATA,
-             optional: true,
-             value: this.parameters,
-             description: '',
-           }) as {[key: string]: unknown};
-  }
-
-  populateParametersForCommand(): void {
+  populateParametersForCommandWithDefaultValues(): void {
     const commandParameters = this.metadataByCommand.get(this.command)?.parameters;
     if (!commandParameters) {
       return;
     }
     this.parameters = commandParameters.map((parameter: Parameter) => {
-      if (parameter.type === 'object') {
+      if (parameter.type === ParameterType.Object) {
         const typeInfos = this.typesByName.get(parameter.typeRef as string) ?? [];
         return {
           optional: parameter.optional,
@@ -399,19 +435,18 @@ export class JSONEditor extends LitElement {
           description: parameter.description,
           typeRef: parameter.typeRef,
           value: typeInfos.map(type => {
-            const param: Parameter = {
+            return {
               optional: type.optional,
-              type: this.#isParameterSupported(parameter) ? type.type : 'string',
+              type: this.#isParameterSupported(parameter) ? type.type : ParameterType.String,
               name: type.name,
               description: type.description,
-              value: undefined,
+              value: type.optional ? undefined : defaultValueByType.get(type.type),
             } as Parameter;
-            return param;
           }),
           name: parameter.name,
         };
       }
-      if (parameter.type === 'array') {
+      if (parameter.type === ParameterType.Array) {
         return {
           optional: parameter.optional,
           type: parameter.type,
@@ -424,8 +459,8 @@ export class JSONEditor extends LitElement {
       return {
         optional: parameter.optional,
         type: parameter.type,
-        typeRef: this.#isParameterSupported(parameter) ? parameter.typeRef : 'string',
-        value: parameter.value || undefined,
+        typeRef: this.#isParameterSupported(parameter) ? parameter.typeRef : ParameterType.String,
+        value: parameter.optional ? undefined : defaultValueByType.get(parameter.type),
         name: parameter.name,
         description: parameter.description,
       } as Parameter;
@@ -441,7 +476,7 @@ export class JSONEditor extends LitElement {
       if (i === pathArray.length - 1) {
         return {parameter, parentParameter} as {parameter: Parameter, parentParameter: Parameter};
       }
-      if (parameter?.type === 'array' || parameter?.type === 'object') {
+      if (parameter?.type === ParameterType.Array || parameter?.type === ParameterType.Object) {
         if (parameter.value) {
           parameters = parameter.value;
         }
@@ -454,22 +489,31 @@ export class JSONEditor extends LitElement {
   }
 
   #handleParameterInputBlur = (event: Event): void => {
-    if (event.target instanceof RecorderComponents.RecorderInput.RecorderInput) {
-      const value = event.target.value;
-      const paramId = event.target.getAttribute('data-paramid');
-      if (paramId) {
-        const realParamId = paramId.split('.');
-        const object = this.#getChildByPath(realParamId).parameter;
-        object.value = value;
-      }
+    if (!(event.target instanceof RecorderComponents.RecorderInput.RecorderInput)) {
+      return;
     }
+    const value = event.target.value;
+    const paramId = event.target.getAttribute('data-paramid');
+    if (!paramId) {
+      return;
+    }
+    const realParamId = paramId.split('.');
+    const object = this.#getChildByPath(realParamId).parameter;
+    if (value === '') {
+      object.value = defaultValueByType.get(object.type);
+    } else {
+      object.value = value;
+    }
+
+    // Needed to render the delete button for object parameters
+    this.requestUpdate();
   };
 
   #handleCommandInputBlur = async(event: Event): Promise<void> => {
     if (event.target instanceof RecorderComponents.RecorderInput.RecorderInput) {
       this.command = event.target.value;
     }
-    this.populateParametersForCommand();
+    this.populateParametersForCommandWithDefaultValues();
   };
 
   #computeTargetLabel(target: SDK.Target.Target): string {
@@ -477,48 +521,125 @@ export class JSONEditor extends LitElement {
   }
 
   #isParameterSupported(parameter: Parameter): boolean {
-    if (parameter.type === 'array' || parameter.type === 'object' || parameter.type === 'string' ||
-        parameter.type === 'boolean' || parameter.type === 'number') {
+    if (parameter.type === ParameterType.Array || parameter.type === ParameterType.Object ||
+        parameter.type === ParameterType.String || parameter.type === ParameterType.Boolean ||
+        parameter.type === ParameterType.Number) {
       return true;
     }
     throw new Error('Parameter is not of correct type');
   }
 
   #isTypePrimitive(type: string): boolean {
-    if (type === 'string' || type === 'boolean' || type === 'number') {
+    if (type === ParameterType.String || type === ParameterType.Boolean || type === ParameterType.Number) {
       return true;
     }
     return false;
   }
 
-  #handleAddArrayParameter(parameterId: string): void {
+  #handleAddParameter(parameterId: string): void {
+    const createNestedParameter = (type: Parameter, name: string): Parameter => {
+      if (type.type === ParameterType.Object) {
+        const typeRef = type.typeRef;
+        if (!typeRef) {
+          throw Error('Every object parameters should have a type ref');
+        }
+        const nestedType = this.typesByName.get(typeRef) ?? [];
+
+        const nestedValue: Parameter[] =
+            nestedType.map(nestedType => createNestedParameter(nestedType, nestedType.name));
+
+        return {
+          type: ParameterType.Object,
+          name: name,
+          optional: type.optional,
+          typeRef: typeRef,
+          value: nestedValue,
+          description: type.description,
+        };
+      }
+      return {
+        type: type.type,
+        name: name,
+        optional: type.optional,
+        typeRef: type.typeRef,
+        value: defaultValueByType.get(type.type),
+        description: type.description,
+      } as Parameter;
+    };
+
     const realParamId = parameterId.split('.');
-    const parameter = this.#getChildByPath(realParamId).parameter;
+    const {parameter} = this.#getChildByPath(realParamId);
+
     if (!parameter) {
       return;
     }
-    if (parameter.type !== 'array' || !parameter.typeRef) {
-      return;
-    }
-    const typeInfos = this.typesByName.get(parameter.typeRef as string) ?? [];
 
-    parameter.value.push({
-      optional: true,
-      type: this.#isTypePrimitive(parameter.typeRef) ? parameter.typeRef : 'object',
-      name: String(parameter.value.length),
-      value: typeInfos.length !== 0 ?
-          typeInfos.map(type => ({
-                          optional: type.optional,
-                          type: this.#isParameterSupported(parameter) ? type.type : 'string',
-                          name: type.name,
-                          value: undefined,
-                        })) :
-          undefined,
-    } as Parameter);
+    switch (parameter.type) {
+      case ParameterType.Array: {
+        const typeRef = parameter.typeRef;
+        if (!typeRef) {
+          return;
+        }
+
+        const nestedType = this.typesByName.get(typeRef) ?? [];
+        const nestedValue: Parameter[] = nestedType.map(type => createNestedParameter(type, type.name));
+
+        parameter.value.push({
+          type: this.#isTypePrimitive(typeRef) ? typeRef : ParameterType.Object,
+          name: String(parameter.value.length),
+          optional: true,
+          typeRef: typeRef,
+          value: nestedValue.length !== 0 ? nestedValue : '',
+          description: '',
+        } as Parameter);
+        break;
+      }
+      case ParameterType.Object: {
+        const typeRef = parameter.typeRef;
+        if (!typeRef) {
+          return;
+        }
+        const nestedType = this.typesByName.get(typeRef) ?? [];
+        const nestedValue: Parameter[] =
+            nestedType.map(nestedType => createNestedParameter(nestedType, nestedType.name));
+
+        parameter.value.push({
+          type: ParameterType.Object,
+          name: '',
+          optional: true,
+          typeRef: typeRef,
+          value: nestedValue,
+          description: '',
+        });
+        break;
+      }
+      default:
+        // For non-array and non-object parameters, set the value to the default value if available.
+        parameter.value = defaultValueByType.get(parameter.type);
+        break;
+    }
     this.requestUpdate();
   }
 
-  #handleDeleteArrayParameter(parameterId: string): void {
+  #handleClearParameter(parameterId: string): void {
+    const realParamId = parameterId.split('.');
+    const {parameter} = this.#getChildByPath(realParamId);
+    if (!parameter) {
+      return;
+    }
+
+    if (parameter.type === ParameterType.Object) {
+      parameter.value.forEach(param => this.#handleClearParameter(`${parameterId}.${param.name}`));
+    } else if (parameter.type === ParameterType.Array) {
+      parameter.value = [];
+    } else {
+      parameter.value = parameter.optional ? undefined : defaultValueByType.get(parameter.type);
+    }
+
+    this.requestUpdate();
+  }
+
+  #handleDeleteParameter(parameterId: string): void {
     const realParamId = parameterId.split('.');
     const {parameter, parentParameter} = this.#getChildByPath(realParamId);
     if (!parameter) {
@@ -567,6 +688,19 @@ export class JSONEditor extends LitElement {
     // clang-format on
   }
 
+  #computeDropdownValues(parameter: Parameter): string[] {
+    // The suggestion box should only be shown for parameters of type string and boolean
+    if (parameter.type === ParameterType.String) {
+      const domainName = this.command.split('.')[0];
+      const enums = this.enumsByName.get(`${domainName}.${parameter.typeRef}`) ?? {};
+      return Object.values(enums);
+    }
+    if (parameter.type === ParameterType.Boolean) {
+      return ['true', 'false'];
+    }
+    return [];
+  }
+
   #onTargetSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
     this.targetId = event.itemValue as string;
     this.requestUpdate();
@@ -589,7 +723,6 @@ export class JSONEditor extends LitElement {
           ></devtools-button>
         `;
   }
-
   /**
    * Renders the parameters list corresponding to a specific CDP command.
    */
@@ -602,39 +735,91 @@ export class JSONEditor extends LitElement {
       <ul>
         ${repeat(parameters, parameter => {
           const parameterId = parentParameter ? `${parentParameterId}` + '.' + `${parameter.name}` : parameter.name;
-          const subparameters: Parameter[] = parameter.type === 'array' || parameter.type === 'object' ? (parameter.value ?? []) : [];
+          const subparameters: Parameter[] = parameter.type === ParameterType.Array || parameter.type === ParameterType.Object ? (parameter.value ?? []) : [];
           const handleInputOnBlur = (event: Event): void => {
             this.#handleParameterInputBlur(event);
           };
-          const classes = {colorBlue: parameter.optional, parameter: true};
+          const isPrimitive = this.#isTypePrimitive(parameter.type);
+          const isArray = parameter.type === ParameterType.Array;
+          const isParentArray = parentParameter && parentParameter.type === ParameterType.Array;
+          const isObject = parameter.type === ParameterType.Object;
+          const hasOptions = parameter.type === ParameterType.String || parameter.type === ParameterType.Boolean;
+          const classes = {
+            optionalParameter: parameter.optional,
+            parameter: true,
+            undefinedParameter: parameter.value === undefined && parameter.optional,
+          };
           return html`
                 <li class="row">
                   <div class="row">
-                    <div class=${classMap(classes)} data-paramId=${parameterId}>${parameter.name}<span class="separator">:</span></div>
-                    ${parameter.type === 'array' ? html`
-                    ${this.#renderInlineButton({
-                        title: 'Add parameter',
-                        iconName: 'plus',
-                        onClick: () => this.#handleAddArrayParameter(parameterId),
-                        classMap: { deleteButton: true },
-                      })}
-                  `: nothing}
-                    ${parameter.type !== 'array' && parameter.type !== 'object' ? html`
-                    <devtools-recorder-input
-                      data-paramId=${parameterId}
-                      .value=${live(parameter.value ?? '')}
-                      .placeholder=${'Enter your parameter...'}
-                      @blur=${handleInputOnBlur}
-                    ></devtools-recorder-input>` : nothing}
+                    <div class=${classMap(classes)} data-paramId=${parameterId}>
+                        ${parameter.name}<span class="separator">:</span>
+                    </div>
+                        <!-- Render button to complete reset an array parameter or an object parameter-->
+                        ${(isArray && parameter.value.length !== 0) || isObject ?
+                        this.#renderInlineButton({
+                          title: i18nString(UIStrings.resetDefaultValue),
+                          iconName: 'clear',
+                          onClick: () => this.#handleClearParameter(parameterId),
+                          classMap: {deleteButton: true},
+                        }) : nothing}
 
-                    ${parameter.optional ? html`
-                      ${this.#renderInlineButton({
-                          title: 'Delete',
-                          iconName: 'minus',
-                          onClick: () => this.#handleDeleteArrayParameter(parameterId),
-                          classMap: { deleteButton: true },
-                        })}` : nothing}
-                  </div>
+                          <!-- Render button to add values inside an array parameter -->
+                          ${isArray ? html`
+                          ${this.#renderInlineButton({
+                              title: i18nString(UIStrings.addParameter),
+                              iconName: 'plus',
+                              onClick: () => this.#handleAddParameter(parameterId),
+                              classMap: { deleteButton: true },
+                            })}
+                        `: nothing}
+
+                          <!-- In case  the parameter is not optional or its value is not undefined render the input -->
+                          ${isPrimitive && (parameter.value !== undefined || !parameter.optional) && (!isParentArray) ?
+                            html`
+                              <devtools-recorder-input
+                                data-paramId=${parameterId}
+                                .options=${hasOptions ? this.#computeDropdownValues(parameter) : []}
+                                .autocomplete=${false}
+                                .value=${live(parameter.value ?? '')}
+                                .placeholder=${parameter.value === '' ? EMPTY_STRING : `<${defaultValueByType.get(parameter.type)}>`}
+                                @blur=${handleInputOnBlur}
+                              ></devtools-recorder-input>` : nothing}
+
+                          <!-- Render the buttons to change the value from undefined to empty string for optional primitive parameters -->
+                          ${isPrimitive && !isParentArray && parameter.optional ?
+                            html`${parameter.value === undefined ? html`  ${this.#renderInlineButton({
+                              title: i18nString(UIStrings.addParameter),
+                              iconName: 'plus',
+                              onClick: () => this.#handleAddParameter(parameterId),
+                              classMap: { deleteButton: true },
+                            })}` : html`  ${this.#renderInlineButton({
+                              title: i18nString(UIStrings.resetDefaultValue),
+                              iconName: 'clear',
+                              onClick: () => this.#handleClearParameter(parameterId),
+                              classMap: { deleteButton: true },
+                            })}`}` : nothing}
+
+                          <!-- In case the parameter is nested inside an array we render the input field as well as a delete button -->
+                          ${isParentArray ? html`
+                          <!-- If the parameter is an object we don't want to display the input field we just want the delete button-->
+                          ${!isObject ? html`
+                          <devtools-recorder-input
+                            data-paramId=${parameterId}
+                            .options=${hasOptions ? this.#computeDropdownValues(parameter) : []}
+                            .autocomplete=${false}
+                            .value=${live(parameter.value ?? '')}
+                            .placeholder=${parameter.value === '' ? EMPTY_STRING : `<${defaultValueByType.get(parameter.type)}>`}
+                            @blur=${handleInputOnBlur}
+                          ></devtools-recorder-input>` : nothing}
+
+                            ${this.#renderInlineButton({
+                                title: i18nString(UIStrings.deleteParameter),
+                                iconName: 'bin',
+                                onClick: () => this.#handleDeleteParameter(parameterId),
+                                classMap: { deleteButton: true },
+                              })}` : nothing}
+                    </div>
                 </li>
                 ${this.#renderParameters(subparameters, id, parameter, parameterId)}
               `;

@@ -103,6 +103,7 @@ export class InspectorBackend {
   #initialized: boolean = false;
   #eventParameterNamesForDomain = new Map<ProtocolDomainName, EventParameterNames>();
   readonly typeMap = new Map<QualifiedName, CommandParameter[]>();
+  readonly enumMap = new Map<QualifiedName, Record<string, string>>();
 
   private getOrCreateEventParameterNamesForDomain(domain: ProtocolDomainName): EventParameterNames {
     let map = this.#eventParameterNamesForDomain.get(domain);
@@ -149,7 +150,7 @@ export class InspectorBackend {
     this.#initialized = true;
   }
 
-  registerEnum(type: QualifiedName, values: Object): void {
+  registerEnum(type: QualifiedName, values: Record<string, string>): void {
     const [domain, name] = splitQualifiedName(type);
     // @ts-ignore globalThis global namespace pollution
     if (!globalThis.Protocol[domain]) {
@@ -159,6 +160,7 @@ export class InspectorBackend {
 
     // @ts-ignore globalThis global namespace pollution
     globalThis.Protocol[domain][name] = values;
+    this.enumMap.set(type, values);
     this.#initialized = true;
   }
 

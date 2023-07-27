@@ -139,7 +139,7 @@ export const buildProtocolMetadata = (domains: Iterable<ProtocolDomain>):
 const metadataByCommand = buildProtocolMetadata(
     ProtocolClient.InspectorBackend.inspectorBackend.agentPrototypes.values() as Iterable<ProtocolDomain>);
 const typesByName = ProtocolClient.InspectorBackend.inspectorBackend.typeMap;
-
+const enumsByName = ProtocolClient.InspectorBackend.inspectorBackend.enumMap;
 export interface Message {
   id?: number;
   method: string;
@@ -748,6 +748,7 @@ export class EditorWidget extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     this.jsonEditor = new Components.JSONEditor.JSONEditor();
     this.jsonEditor.metadataByCommand = metadataByCommand;
     this.jsonEditor.typesByName = typesByName as Map<string, Components.JSONEditor.Parameter[]>;
+    this.jsonEditor.enumsByName = enumsByName;
     this.element.append(this.jsonEditor);
     this.jsonEditor.addEventListener(Components.JSONEditor.SubmitEditorEvent.eventName, (event: Event) => {
       this.dispatchEventToListeners(Events.CommandSent, (event as Components.JSONEditor.SubmitEditorEvent).data);

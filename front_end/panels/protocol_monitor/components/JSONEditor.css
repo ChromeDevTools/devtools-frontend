@@ -50,8 +50,12 @@ ul {
   padding-left: 2em;
 }
 
-.colorBlue {
+.optionalParameter {
   color: var(--color-syntax-3);
+}
+
+.undefinedParameter {
+  color: var(--color-text-disabled);
 }
 
 .wrapper {

@@ -228,6 +228,7 @@ export class RecorderInput extends LitElement {
    * State passed to devtools-suggestion-box.
    */
   @property(jsonPropertyOptions) declare options: Readonly<string[]>;
+  @property() declare autocomplete?: boolean;
   @state() declare expression: string;
 
   /**
@@ -248,7 +249,7 @@ export class RecorderInput extends LitElement {
     this.value = '';
     this.disabled = false;
     this.mimeType = '';
-
+    this.autocomplete = true;
     this.addEventListener('blur', this.#handleBlurEvent);
   }
 
@@ -330,7 +331,7 @@ export class RecorderInput extends LitElement {
         @suggestioninit=${this.#handleSuggestionInitEvent}
         @suggest=${this.#handleSuggestEvent}
         .options=${this.options}
-        .expression=${this.expression}
+        .expression=${this.autocomplete ? this.expression : ''}
       ></devtools-suggestion-box>`;
   }
 }

@@ -20,7 +20,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
     UI.ActionRegistry.ActionRegistry.reset();
   });
 
-  it('can select from multiple parsed data objects', async () => {
+  it('can select from multiple parsed data objects', async function() {
     // Add two parsed data objects to the history manager.
     const firstFileModels = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
     historyManager.addRecording(

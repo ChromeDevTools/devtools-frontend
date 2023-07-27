@@ -27,7 +27,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
   let entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
-  beforeEach(async () => {
+  beforeEach(async function() {
     const data = await TraceLoader.allModels(this, 'timings-track.json.gz');
     traceParsedData = data.traceParsedData;
     timingsTrackAppender =

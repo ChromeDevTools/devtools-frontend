@@ -18,6 +18,7 @@ module.exports = {
     'rulesdir/no_repeated_tests' : 2,
     'rulesdir/compare_arrays_with_assert_deepequal' : 2,
     'rulesdir/ban_screenshot_test_outside_perf_panel' : 2,
+    'rulesdir/trace_engine_test_timeouts' : 2,
   },
   'overrides' : [{
     'files' : ['*.ts'],

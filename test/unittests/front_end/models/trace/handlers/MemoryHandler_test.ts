@@ -11,7 +11,7 @@ describe('MemoryHandler', function() {
     TraceEngine.Handlers.ModelHandlers.Memory.reset();
   });
 
-  it('gathers update counters', async () => {
+  it('gathers update counters', async function() {
     const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz');
     TraceEngine.Handlers.ModelHandlers.Meta.initialize();
     for (const event of events) {

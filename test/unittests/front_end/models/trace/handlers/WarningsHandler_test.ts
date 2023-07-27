@@ -10,7 +10,7 @@ describe('WarningsHandler', function() {
     TraceEngine.Handlers.ModelHandlers.Warnings.reset();
   });
 
-  it('identifies long tasks', async () => {
+  it('identifies long tasks', async function() {
     const events = await TraceLoader.rawEvents(this, 'slow-interaction-keydown.json.gz');
     for (const event of events) {
       TraceEngine.Handlers.ModelHandlers.Warnings.handleEvent(event);
@@ -22,7 +22,7 @@ describe('WarningsHandler', function() {
     assert.strictEqual(event?.name, TraceEngine.Types.TraceEvents.KnownEventName.RunTask);
   });
 
-  it('identifies idle callbacks that ran over the allotted time', async () => {
+  it('identifies idle callbacks that ran over the allotted time', async function() {
     const events = await TraceLoader.rawEvents(this, 'idle-callback.json.gz');
     for (const event of events) {
       TraceEngine.Handlers.ModelHandlers.Warnings.handleEvent(event);
@@ -34,7 +34,7 @@ describe('WarningsHandler', function() {
     assert.deepEqual(data.perEvent.get(event), ['IDLE_CALLBACK_OVER_TIME']);
   });
 
-  it('identifies layout events that take over 10ms', async () => {
+  it('identifies layout events that take over 10ms', async function() {
     const events = await TraceLoader.rawEvents(this, 'large-layout-small-recalc.json.gz');
     for (const event of events) {
       TraceEngine.Handlers.ModelHandlers.Warnings.handleEvent(event);
@@ -52,7 +52,7 @@ describe('WarningsHandler', function() {
     assert.lengthOf(styleRecalcs, 0);
   });
 
-  it('identifies style recalc events that take over 10ms', async () => {
+  it('identifies style recalc events that take over 10ms', async function() {
     const events = await TraceLoader.rawEvents(this, 'large-recalc-style.json.gz');
     for (const event of events) {
       TraceEngine.Handlers.ModelHandlers.Warnings.handleEvent(event);

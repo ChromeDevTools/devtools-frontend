@@ -59,7 +59,7 @@ describe('NetworkRequestsHandler', function() {
       TraceModel.Handlers.ModelHandlers.NetworkRequests.initialize();
     });
 
-    it('calculates network requests correctly', async () => {
+    it('calculates network requests correctly', async function() {
       const traceEvents = await TraceLoader.rawEvents(this, 'load-simple.json.gz');
       for (const event of traceEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
@@ -212,7 +212,7 @@ describe('NetworkRequestsHandler', function() {
       TraceModel.Handlers.ModelHandlers.NetworkRequests.initialize();
     });
 
-    it('changes priority of the resouce', async () => {
+    it('changes priority of the resouce', async function() {
       const traceEvents = await TraceLoader.rawEvents(this, 'changing-priority.json.gz');
 
       for (const event of traceEvents) {
@@ -243,7 +243,7 @@ describe('NetworkRequestsHandler', function() {
       TraceModel.Handlers.ModelHandlers.NetworkRequests.initialize();
     });
 
-    it('calculates redirects correctly (navigations)', async () => {
+    it('calculates redirects correctly (navigations)', async function() {
       const traceEvents = await TraceLoader.rawEvents(this, 'redirects.json.gz');
       for (const event of traceEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
@@ -276,7 +276,7 @@ describe('NetworkRequestsHandler', function() {
           'Incorrect number of redirects (request 1)');
     });
 
-    it('calculates redirects correctly (subresources)', async () => {
+    it('calculates redirects correctly (subresources)', async function() {
       const traceEvents = await TraceLoader.rawEvents(this, 'redirects-subresource-multiple.json.gz');
       for (const event of traceEvents) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);

@@ -19,7 +19,7 @@ describe('UserTimingsHandler', function() {
       await TraceModel.Handlers.ModelHandlers.UserTimings.finalize();
       return TraceModel.Handlers.ModelHandlers.UserTimings.data();
     }
-    before(async () => {
+    before(async function() {
       const events = await TraceLoader.rawEvents(this, 'user-timings.json.gz');
       timingsData = await getTimingsDataFromEvents(events);
     });
@@ -46,7 +46,7 @@ describe('UserTimingsHandler', function() {
         }
       });
 
-      it('sorts the blocks to ensure they are in time order', async () => {
+      it('sorts the blocks to ensure they are in time order', async function() {
         const events = await TraceLoader.rawEvents(this, 'user-timings.json.gz');
         TraceModel.Handlers.ModelHandlers.UserTimings.reset();
         // Reverse the array so that the events are in the wrong order.
@@ -63,7 +63,7 @@ describe('UserTimingsHandler', function() {
         assert.isTrue(data.performanceMeasures[1].ts <= data.performanceMeasures[2].ts);
       });
 
-      it('calculates the duration correctly from the begin/end event timestamps', async () => {
+      it('calculates the duration correctly from the begin/end event timestamps', async function() {
         const events = await TraceLoader.rawEvents(this, 'user-timings.json.gz');
         TraceModel.Handlers.ModelHandlers.UserTimings.reset();
         for (const event of events) {
@@ -76,7 +76,7 @@ describe('UserTimingsHandler', function() {
           assert.strictEqual(timing.dur, timing.args.data.endEvent.ts - timing.args.data.beginEvent.ts);
         }
       });
-      it('correctly extracts nested timings in the correct order', async () => {
+      it('correctly extracts nested timings in the correct order', async function() {
         const events = await TraceLoader.rawEvents(this, 'user-timings-complex.json.gz');
         const complexTimingsData = await getTimingsDataFromEvents(events);
         const userTimingEventNames = [];
@@ -93,7 +93,7 @@ describe('UserTimingsHandler', function() {
           'nested-d',
         ]);
       });
-      it('correctly orders measures when one measure encapsulates the others', async () => {
+      it('correctly orders measures when one measure encapsulates the others', async function() {
         const events = await TraceLoader.rawEvents(this, 'user-timings-complex.json.gz');
         const complexTimingsData = await getTimingsDataFromEvents(events);
         const userTimingEventNames = [];
@@ -119,7 +119,7 @@ describe('UserTimingsHandler', function() {
     });
   });
   describe('console timings', function() {
-    before(async () => {
+    before(async function() {
       const events = await TraceLoader.rawEvents(this, 'timings-track.json.gz');
       TraceModel.Handlers.ModelHandlers.UserTimings.reset();
       for (const event of events) {
@@ -149,7 +149,7 @@ describe('UserTimingsHandler', function() {
         }
       });
 
-      it('sorts the blocks to ensure they are in time order', async () => {
+      it('sorts the blocks to ensure they are in time order', async function() {
         const events = await TraceLoader.rawEvents(this, 'timings-track.json.gz');
         TraceModel.Handlers.ModelHandlers.UserTimings.reset();
         // Reverse the array so that the events are in the wrong order.

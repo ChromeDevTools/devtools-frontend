@@ -11,7 +11,7 @@ import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 describe('MetaHandler', function() {
   let baseEvents: TraceModel.Types.TraceEvents.TraceEventData[];
-  beforeEach(async () => {
+  beforeEach(async function() {
     let defaultTraceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
       defaultTraceEvents = await TraceLoader.rawEvents(this, 'basic.json.gz');
@@ -166,7 +166,7 @@ describe('MetaHandler', function() {
       assert.strictEqual(data.mainFrameId, '3E1717BE677B75D0536E292E00D6A34A');
     });
 
-    it('finds the main frame ID for a trace that started with a page reload', async () => {
+    it('finds the main frame ID for a trace that started with a page reload', async function() {
       const events = await TraceLoader.rawEvents(this, 'reload-and-trace-page.json.gz');
       TraceModel.Handlers.ModelHandlers.Meta.reset();
       TraceModel.Handlers.ModelHandlers.Meta.initialize();
@@ -178,7 +178,7 @@ describe('MetaHandler', function() {
       const data = TraceModel.Handlers.ModelHandlers.Meta.data();
       assert.strictEqual(data.mainFrameId, '1D148CB660D1F96ED70D78DC6A53267B');
     });
-    it('tracks the frames for found processes', async () => {
+    it('tracks the frames for found processes', async function() {
       const events = await TraceLoader.rawEvents(this, 'reload-and-trace-page.json.gz');
       TraceModel.Handlers.ModelHandlers.Meta.reset();
       TraceModel.Handlers.ModelHandlers.Meta.initialize();
@@ -199,7 +199,7 @@ describe('MetaHandler', function() {
   });
 
   describe('finding GPU thread and main frame', function() {
-    it('finds the GPU process and GPU Thread', async () => {
+    it('finds the GPU process and GPU Thread', async function() {
       const events = await TraceLoader.rawEvents(this, 'threejs-gpu.json.gz');
       TraceModel.Handlers.ModelHandlers.Meta.reset();
       TraceModel.Handlers.ModelHandlers.Meta.initialize();
@@ -212,7 +212,7 @@ describe('MetaHandler', function() {
       assert.strictEqual(gpuThreadId, TraceModel.Types.TraceEvents.ThreadID(3581327));
     });
 
-    it('handles traces that do not have a GPU thread and returns undefined for the thread ID', async () => {
+    it('handles traces that do not have a GPU thread and returns undefined for the thread ID', async function() {
       const traceEventsWithNoGPUThread = await TraceLoader.rawEvents(this, 'forced-layouts-and-no-gpu.json.gz');
       for (const event of traceEventsWithNoGPUThread) {
         TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
@@ -227,7 +227,7 @@ describe('MetaHandler', function() {
     });
   });
 
-  it('obtains renderer process IDs when there are no navigations', async () => {
+  it('obtains renderer process IDs when there are no navigations', async function() {
     let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
       traceEvents = await TraceLoader.rawEvents(this, 'threejs-gpu.json.gz');
@@ -265,7 +265,7 @@ describe('MetaHandler', function() {
         }]);
   });
 
-  it('handles multiple renderers from navigations', async () => {
+  it('handles multiple renderers from navigations', async function() {
     let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
       traceEvents = await TraceLoader.rawEvents(this, 'multiple-top-level-renderers.json.gz');
@@ -323,7 +323,7 @@ describe('MetaHandler', function() {
     ]);
   });
 
-  it('calculates trace bounds correctly', async () => {
+  it('calculates trace bounds correctly', async function() {
     let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
       traceEvents = await TraceLoader.rawEvents(this, 'basic.json.gz');
@@ -352,7 +352,7 @@ describe('MetaHandler', function() {
     assert.strictEqual(range, expectedMax - expectedMin, 'Range calculated incorrectly');
   });
 
-  it('ignores ::UMA Events', async () => {
+  it('ignores ::UMA Events', async function() {
     let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {
       // This file contains UMA events which need to be ignored.

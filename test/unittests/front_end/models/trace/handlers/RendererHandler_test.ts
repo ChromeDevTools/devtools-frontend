@@ -997,7 +997,7 @@ describe('RendererHandler', function() {
     let defaultTraceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     const pid = TraceModel.Types.TraceEvents.ProcessID(28274);
     const tid = TraceModel.Types.TraceEvents.ThreadID(775);
-    beforeEach(async () => {
+    beforeEach(async function() {
       defaultTraceEvents = await TraceLoader.rawEvents(this, 'basic.json.gz');
     });
 

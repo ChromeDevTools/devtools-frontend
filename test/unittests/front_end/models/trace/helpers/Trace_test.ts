@@ -8,19 +8,19 @@ const {assert} = chai;
 
 describe('TraceModel helpers', function() {
   describe('extractOriginFromTrace', () => {
-    it('extracts the origin of a parsed trace correctly', async () => {
+    it('extracts the origin of a parsed trace correctly', async function() {
       const model = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const origin = TraceModel.Helpers.Trace.extractOriginFromTrace(model.Meta.mainFrameURL);
       assert.strictEqual(origin, 'web.dev');
     });
 
-    it('will remove the `www` if it is present', async () => {
+    it('will remove the `www` if it is present', async function() {
       const traceEvents = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
       const origin = TraceModel.Helpers.Trace.extractOriginFromTrace(traceEvents.Meta.mainFrameURL);
       assert.strictEqual(origin, 'google.com');
     });
 
-    it('returns null when no origin is found', async () => {
+    it('returns null when no origin is found', async function() {
       const traceEvents = await TraceLoader.traceEngine(this, 'basic.json.gz');
       const origin = TraceModel.Helpers.Trace.extractOriginFromTrace(traceEvents.Meta.mainFrameURL);
       assert.isNull(origin);
@@ -100,7 +100,7 @@ describe('TraceModel helpers', function() {
   });
 
   describe('getNavigationForTraceEvent', () => {
-    it('returns the correct navigation for a request', async () => {
+    it('returns the correct navigation for a request', async function() {
       const {NetworkRequests, Meta} = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
       const request1 = NetworkRequests.byTime[0];
       const navigationForFirstRequest = TraceModel.Helpers.Trace.getNavigationForTraceEvent(
@@ -113,7 +113,7 @@ describe('TraceModel helpers', function() {
       assert.strictEqual(navigationForSecondRequest?.ts, TraceModel.Types.Timing.MicroSeconds(636471400029));
     });
 
-    it('returns the correct navigation for a page load event', async () => {
+    it('returns the correct navigation for a page load event', async function() {
       const {PageLoadMetrics, Meta} = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
       const firstNavigationId = Meta.navigationsByNavigationId.keys().next().value;
 

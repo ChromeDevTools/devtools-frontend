@@ -21,7 +21,7 @@ describe('UserInteractionsHandler', function() {
     });
   });
 
-  it('returns all user interactions', async () => {
+  it('returns all user interactions', async function() {
     const traceEvents = await TraceLoader.rawEvents(this, 'slow-interaction-button-click.json.gz');
     for (const event of traceEvents) {
       TraceModel.Handlers.ModelHandlers.UserInteractions.handleEvent(event);

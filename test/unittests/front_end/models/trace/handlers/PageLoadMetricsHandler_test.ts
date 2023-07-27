@@ -22,7 +22,7 @@ function countMetricOcurrences(
 
 describe('PageLoadMetricsHandler', function() {
   describe('contentful paints', () => {
-    it('obtains all the FCP and LCP events for all frames', async () => {
+    it('obtains all the FCP and LCP events for all frames', async function() {
       const {Meta, PageLoadMetrics} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
       const {mainFrameId} = Meta;
       const pageLoadMetricsData = PageLoadMetrics.metricScoresByFrameId;
@@ -49,7 +49,7 @@ describe('PageLoadMetricsHandler', function() {
       assert.strictEqual(lcpCount, 2);
     });
 
-    it('finds the right FCP and LCP events for a trace for a page that was refreshed', async () => {
+    it('finds the right FCP and LCP events for a trace for a page that was refreshed', async function() {
       const {Meta, PageLoadMetrics} = await TraceLoader.traceEngine(this, 'reload-and-trace-page.json.gz');
       const {mainFrameId} = Meta;
       const pageLoadMetricsData = PageLoadMetrics.metricScoresByFrameId;
@@ -72,7 +72,7 @@ describe('PageLoadMetricsHandler', function() {
       assert.strictEqual(lcpCount, 1);
     });
 
-    it('stores the navigation event as part of the metric', async () => {
+    it('stores the navigation event as part of the metric', async function() {
       const {Meta, PageLoadMetrics} = await TraceLoader.traceEngine(this, 'reload-and-trace-page.json.gz');
       const {mainFrameId, navigationsByFrameId} = Meta;
       const navigationBeforeMetrics = navigationsByFrameId.get(mainFrameId)?.[0];
@@ -101,7 +101,7 @@ describe('PageLoadMetricsHandler', function() {
   });
 
   describe('markDOMContent frame', () => {
-    it('obtains them and assigns them to the correct frames', async () => {
+    it('obtains them and assigns them to the correct frames', async function() {
       const {Meta, PageLoadMetrics} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
       const {mainFrameId} = Meta;
       const pageLoadMetricsData = PageLoadMetrics.metricScoresByFrameId;
@@ -133,7 +133,7 @@ describe('PageLoadMetricsHandler', function() {
     }
     const firstNavigationId = '05059ACF683224E6FC7E344F544A4050';
     const secondNavigationId = '550FC08C662EF691E1535F305CBC0FCA';
-    beforeEach(async () => {
+    beforeEach(async function() {
       const {PageLoadMetrics, Meta} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
       const pageLoadMetricsData = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId);
       if (!pageLoadMetricsData) {
@@ -219,7 +219,7 @@ describe('PageLoadMetricsHandler', function() {
       assertMetricNavigationId(firstContentfulPaints[1], secondNavigationId);
     });
 
-    it('provides metric scores sorted in ASC order by their events\' timestamps', async () => {
+    it('provides metric scores sorted in ASC order by their events\' timestamps', async function() {
       const {PageLoadMetrics, Meta} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
 
       const pageLoadMetricsData = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId);
@@ -246,7 +246,7 @@ describe('PageLoadMetricsHandler', function() {
   });
 
   describe('FLEDGE fenced frames', () => {
-    it('is able to parse a trace containing fenced frames without erroring', async () => {
+    it('is able to parse a trace containing fenced frames without erroring', async function() {
       const {PageLoadMetrics} = await TraceLoader.traceEngine(this, 'fenced-frame-fledge.json.gz');
       assert.strictEqual(PageLoadMetrics.metricScoresByFrameId.size, 3);
     });
@@ -255,7 +255,7 @@ describe('PageLoadMetricsHandler', function() {
   describe('Marker events', () => {
     let mainFrameId: string;
     let allMarkerEvents: TraceModel.Types.TraceEvents.PageLoadEvent[];
-    beforeEach(async () => {
+    beforeEach(async function() {
       const {PageLoadMetrics, Meta} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
       mainFrameId = Meta.mainFrameId;
       allMarkerEvents = PageLoadMetrics.allMarkerEvents;
@@ -276,7 +276,7 @@ describe('PageLoadMetricsHandler', function() {
       }
     });
 
-    it('only stores the largest contentful paint with the highest candidate index', async () => {
+    it('only stores the largest contentful paint with the highest candidate index', async function() {
       const {PageLoadMetrics} = await TraceLoader.traceEngine(this, 'multiple-lcp-main-frame.json.gz');
       const pageLoadMarkers = PageLoadMetrics.allMarkerEvents;
       const largestContentfulPaints =

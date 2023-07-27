@@ -8,13 +8,13 @@ import {TraceLoader} from '../../../helpers/TraceLoader.js';
 const {assert} = chai;
 
 describe('FilmStrip', function() {
-  it('identifies the frames from a trace', async () => {
+  it('identifies the frames from a trace', async function() {
     const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
     assert.lengthOf(filmStrip.frames, 5);
   });
 
-  it('caches the film strip based on the trace data and the zero time', async () => {
+  it('caches the film strip based on the trace data and the zero time', async function() {
     const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const filmStrip1 = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
     const filmStrip2 = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
@@ -29,7 +29,7 @@ describe('FilmStrip', function() {
     assert.notStrictEqual(filmStrip3, filmStrip4);
   });
 
-  it('exposes the snapshot string for each frame', async () => {
+  it('exposes the snapshot string for each frame', async function() {
     const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
     assert.isTrue(filmStrip.frames.every(frame => {
@@ -37,7 +37,7 @@ describe('FilmStrip', function() {
     }));
   });
 
-  it('can use a custom zero time to filter out screenshots', async () => {
+  it('can use a custom zero time to filter out screenshots', async function() {
     const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
     // Set a custom zero time after the first screenshot and ensure that we now only have four events.
@@ -52,7 +52,7 @@ describe('FilmStrip', function() {
     ]);
   });
 
-  it('can return the frame closest to a given timestamp', async () => {
+  it('can return the frame closest to a given timestamp', async function() {
     const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);
     const frameTimestamps = filmStrip.frames.map(frame => frame.screenshotEvent.ts);

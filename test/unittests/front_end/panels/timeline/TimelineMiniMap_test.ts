@@ -8,7 +8,7 @@ import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 describeWithEnvironment('TimelineMiniMap', function() {
-  it('always shows the responsiveness, CPU activity and network panel', async () => {
+  it('always shows the responsiveness, CPU activity and network panel', async function() {
     const models = await TraceLoader.allModels(this, 'web-dev.json.gz');
 
     const container = document.createElement('div');
@@ -36,7 +36,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
     minimap.detach();
   });
 
-  it('will show the other panels if they are set to visible', async () => {
+  it('will show the other panels if they are set to visible', async function() {
     const models = await TraceLoader.allModels(this, 'web-dev.json.gz');
 
     const container = document.createElement('div');

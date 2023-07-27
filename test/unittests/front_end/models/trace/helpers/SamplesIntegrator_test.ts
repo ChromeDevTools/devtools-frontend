@@ -59,7 +59,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
   });
 
   describe('buildProfileCalls', () => {
-    it('generates profile calls using trace events and JS samples from a trace file', async () => {
+    it('generates profile calls using trace events and JS samples from a trace file', async function() {
       const data = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
       const samplesData = data.Samples;
       assert.strictEqual(samplesData.profilesInProcess.size, 1);

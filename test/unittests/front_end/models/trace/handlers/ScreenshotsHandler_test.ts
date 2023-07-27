@@ -23,7 +23,7 @@ describe('ScreenshotHandler', function() {
 
   let baseEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
 
-  beforeEach(async () => {
+  beforeEach(async function() {
     const defaultTraceEvents = await TraceLoader.rawEvents(this, 'basic.json.gz');
 
     baseEvents = [

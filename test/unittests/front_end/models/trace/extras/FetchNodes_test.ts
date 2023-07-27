@@ -28,7 +28,7 @@ describeWithMockConnection('TraceSDKServices', function() {
   });
 
   describe('DOMNodeLookup', function() {
-    it('returns the DOM Node for the given node ID', async () => {
+    it('returns the DOM Node for the given node ID', async function() {
       // Create a mock target, dom model, document and node.
       const target = createTarget();
       const domModel = target.model(SDK.DOMModel.DOMModel);

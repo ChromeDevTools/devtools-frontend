@@ -102,6 +102,16 @@ const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertyTreeEleme
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const parentMap = new WeakMap<StylesSidebarPane, StylePropertyTreeElement>();
 
+interface StylePropertyTreeElementParams {
+  stylesPane: StylesSidebarPane;
+  matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
+  property: SDK.CSSProperty.CSSProperty;
+  isShorthand: boolean;
+  inherited: boolean;
+  overloaded: boolean;
+  newProperty: boolean;
+}
+
 export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private readonly style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   private matchedStylesInternal: SDK.CSSMatchedStyles.CSSMatchedStyles;
@@ -126,9 +136,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   #propertyTextFromSource: string;
 
   constructor(
-      stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
-      property: SDK.CSSProperty.CSSProperty, isShorthand: boolean, inherited: boolean, overloaded: boolean,
-      newProperty: boolean) {
+      {stylesPane, matchedStyles, property, isShorthand, inherited, overloaded, newProperty}:
+          StylePropertyTreeElementParams,
+  ) {
     // Pass an empty title, the title gets made later in onattach.
     super('', isShorthand);
     this.style = property.ownerStyle;
@@ -816,8 +826,15 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         overloaded = true;
       }
 
-      const item = new StylePropertyTreeElement(
-          this.parentPaneInternal, this.matchedStylesInternal, property, false, inherited, overloaded, false);
+      const item = new StylePropertyTreeElement({
+        stylesPane: this.parentPaneInternal,
+        matchedStyles: this.matchedStylesInternal,
+        property,
+        isShorthand: false,
+        inherited,
+        overloaded,
+        newProperty: false,
+      });
       item.setComputedStyles(this.computedStyles);
       item.setParentsComputedStyles(this.parentsComputedStyles);
       this.appendChild(item);

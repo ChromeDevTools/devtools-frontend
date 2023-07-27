@@ -998,8 +998,15 @@ export class StylePropertiesSection {
       if (style.parentRule && style.parentRule.isUserAgent() && inherited) {
         continue;
       }
-      const item = new StylePropertyTreeElement(
-          this.parentPane, this.matchedStyles, property, isShorthand, inherited, overloaded, false);
+      const item = new StylePropertyTreeElement({
+        stylesPane: this.parentPane,
+        matchedStyles: this.matchedStyles,
+        property,
+        isShorthand,
+        inherited,
+        overloaded,
+        newProperty: false,
+      });
       item.setComputedStyles(this.computedStyles);
       item.setParentsComputedStyles(this.parentsComputedStyles);
       this.propertiesTreeOutline.appendChild(item);
@@ -1101,7 +1108,15 @@ export class StylePropertiesSection {
   addNewBlankProperty(index: number|undefined = this.propertiesTreeOutline.rootElement().childCount()):
       StylePropertyTreeElement {
     const property = this.styleInternal.newBlankProperty(index);
-    const item = new StylePropertyTreeElement(this.parentPane, this.matchedStyles, property, false, false, false, true);
+    const item = new StylePropertyTreeElement({
+      stylesPane: this.parentPane,
+      matchedStyles: this.matchedStyles,
+      property,
+      isShorthand: false,
+      inherited: false,
+      overloaded: false,
+      newProperty: true,
+    });
     this.propertiesTreeOutline.insertChild(item, property.index);
     return item;
   }

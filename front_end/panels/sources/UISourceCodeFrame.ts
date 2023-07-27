@@ -225,7 +225,8 @@ export class UISourceCodeFrame extends
 
   protected override getContentType(): string {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(this.uiSourceCodeInternal);
-    return binding ? binding.network.mimeType() : this.uiSourceCodeInternal.mimeType();
+    const mimeType = binding ? binding.network.mimeType() : this.uiSourceCodeInternal.mimeType();
+    return Common.ResourceType.ResourceType.simplifyContentType(mimeType);
   }
 
   canEditSourceInternal(): boolean {

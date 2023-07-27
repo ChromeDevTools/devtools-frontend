@@ -31,6 +31,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as FormatterActions from '../../../../entrypoints/formatter_worker/FormatterActions.js';  // eslint-disable-line rulesdir/es_modules_import
 import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
@@ -85,9 +86,10 @@ export class SearchableContainer extends UI.Widget.VBox {
   constructor(resource: TextUtils.ContentProvider.ContentProvider, contentType: string, autoPrettyPrint?: boolean) {
     super(true);
     this.registerRequiredCSS(resourceSourceFrameStyles);
-    const sourceFrame = new ResourceSourceFrame(resource, contentType);
+    const simpleContentType = Common.ResourceType.ResourceType.simplifyContentType(contentType);
+    const sourceFrame = new ResourceSourceFrame(resource, simpleContentType);
     this.sourceFrame = sourceFrame;
-    const canPrettyPrint = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(contentType);
+    const canPrettyPrint = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(simpleContentType);
     sourceFrame.setCanPrettyPrint(canPrettyPrint, autoPrettyPrint);
     const searchableView = new UI.SearchableView.SearchableView(sourceFrame, sourceFrame);
     searchableView.element.classList.add('searchable-view');

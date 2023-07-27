@@ -395,6 +395,26 @@ describeWithEnvironment('ResourceType class', () => {
     assert.strictEqual(resourceType.canonicalMimeType(), '', 'the canonical mime type was not returned correctly');
   });
 
+  it('is able to return the simplified content type of a json subtype', () => {
+    assert.strictEqual(
+        ResourceType.simplifyContentType('application/sparql-results+json'), 'application/json',
+        'the simplified content type was not returned correctly');
+
+    assert.strictEqual(
+        ResourceType.simplifyContentType('application/hal+json'), 'application/json',
+        'the simplified content type was not returned correctly');
+  });
+
+  it('simplifyContentType() does not affect other content types than json subtypes', () => {
+    assert.strictEqual(
+        ResourceType.simplifyContentType('text/javascript'), 'text/javascript',
+        'the simplified content type was not returned correctly');
+
+    assert.strictEqual(
+        ResourceType.simplifyContentType('application/json'), 'application/json',
+        'the simplified content type was not returned correctly');
+  });
+
   it('treats a Ping as Other', () => {
     const resourceType = resourceTypes.Ping;
     assert.strictEqual(resourceType.isTextType(), false, 'A ping is not a text type');

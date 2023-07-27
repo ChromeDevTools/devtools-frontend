@@ -263,6 +263,11 @@ export class ResourceType {
     return mimeTypeByExtension.get(ext);
   }
 
+  static simplifyContentType(contentType: string): string {
+    const regex = new RegExp('^application.*json$');
+    return regex.test(contentType) ? 'application/json' : contentType;
+  }
+
   /**
    * Adds suffixes iff the mimeType is 'text/javascript' to denote whether the JS is minified or from
    * a source map.

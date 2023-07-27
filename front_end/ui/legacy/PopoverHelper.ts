@@ -215,7 +215,6 @@ export class PopoverHelper {
 
       // This should not happen, but we hide previous popover to be on the safe side.
       if (popoverHelperInstance) {
-        console.error('One popover is already visible');
         popoverHelperInstance.hidePopover();
       }
       popoverHelperInstance = this;

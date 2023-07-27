@@ -198,6 +198,7 @@ export type TraceEventSyntheticCompleteEvent = TraceEventComplete;
 
 export interface TraceEventEventTiming extends TraceEventData {
   ph: Phase.ASYNC_NESTABLE_START|Phase.ASYNC_NESTABLE_END;
+  name: KnownEventName.EventTiming;
   id: string;
   args: TraceEventArgs&{
     frame: string,
@@ -1072,7 +1073,7 @@ export function isTraceEventInteractiveTime(traceEventData: TraceEventData):
 }
 
 export function isTraceEventEventTiming(traceEventData: TraceEventData): traceEventData is TraceEventEventTiming {
-  return traceEventData.name === 'EventTiming';
+  return traceEventData.name === KnownEventName.EventTiming;
 }
 
 export function isTraceEventEventTimingEnd(traceEventData: TraceEventData): traceEventData is TraceEventEventTimingEnd {
@@ -1318,4 +1319,5 @@ export const enum KnownEventName {
   DrawLazyPixelRef = 'Draw LazyPixelRef',
   DecodeLazyPixelRef = 'Decode LazyPixelRef',
   GPUTask = 'GPUTask',
+  EventTiming = 'EventTiming',
 }

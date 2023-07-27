@@ -235,6 +235,8 @@ module.exports = function(config) {
 
       mocha: {
         grep: MOCHA_FGREP,
+        // Up the default Mocha timeout to give the bots some space!
+        timeout: 5_000,
       },
       remoteDebuggingPort: REMOTE_DEBUGGING_PORT,
     },

@@ -578,6 +578,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         Logs.NetworkLog.Events.RequestAdded, this.onRequestUpdated, this);
     Logs.NetworkLog.NetworkLog.instance().addEventListener(
         Logs.NetworkLog.Events.RequestUpdated, this.onRequestUpdated, this);
+    Logs.NetworkLog.NetworkLog.instance().addEventListener(
+        Logs.NetworkLog.Events.RequestRemoved, this.onRequestRemoved, this);
     Logs.NetworkLog.NetworkLog.instance().addEventListener(Logs.NetworkLog.Events.Reset, this.reset, this);
 
     this.updateGroupByFrame();
@@ -1311,6 +1313,22 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.columnsInternal.scheduleRefresh();
   }
 
+  private removeNodeAndMaybeAncestors(node: NetworkRequestNode): void {
+    let parent: NetworkNode|
+        (DataGrid.DataGrid.DataGridNode<DataGrid.ViewportDataGrid.ViewportDataGridNode<
+             DataGrid.SortableDataGrid.SortableDataGridNode<NetworkNode>>>|
+         null) = node.parent;
+    if (!parent) {
+      return;
+    }
+    parent.removeChild(node);
+    while (parent && !parent.hasChildren() && parent.dataGrid && parent.dataGrid.rootNode() !== parent) {
+      const grandparent = (parent.parent as NetworkNode);
+      grandparent.removeChild(parent);
+      parent = grandparent;
+    }
+  }
+
   private refresh(): void {
     this.needsRefresh = false;
 
@@ -1362,19 +1380,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       }
       const removeFromParent = node.parent && (isFilteredOut || node.parent !== newParent);
       if (removeFromParent) {
-        let parent: NetworkNode|
-            (DataGrid.DataGrid.DataGridNode<DataGrid.ViewportDataGrid.ViewportDataGridNode<
-                 DataGrid.SortableDataGrid.SortableDataGridNode<NetworkNode>>>|
-             null) = node.parent;
-        if (!parent) {
-          continue;
-        }
-        parent.removeChild(node);
-        while (parent && !parent.hasChildren() && parent.dataGrid && parent.dataGrid.rootNode() !== parent) {
-          const grandparent = (parent.parent as NetworkNode);
-          grandparent.removeChild(parent);
-          parent = grandparent;
-        }
+        this.removeNodeAndMaybeAncestors(node);
       }
 
       if (!newParent || isFilteredOut) {
@@ -1477,6 +1483,15 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     const request = event.data;
     if (this.isInScope(request)) {
       this.refreshRequest(request);
+    }
+  }
+
+  private onRequestRemoved(event: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void {
+    const request = event.data;
+    this.staleRequests.delete(request);
+    const node = networkRequestToNode.get(request);
+    if (node) {
+      this.removeNodeAndMaybeAncestors(node);
     }
   }
 

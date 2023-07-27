@@ -25,6 +25,7 @@ describeWithMockConnection('NetworkLogView', () => {
   const tests = (targetFactory: () => SDK.Target.Target) => {
     let target: SDK.Target.Target;
     let networkLogView: Network.NetworkLogView.NetworkLogView;
+    let networkLog: Logs.NetworkLog.NetworkLog;
 
     beforeEach(() => {
       const dummyStorage = new Common.Settings.SettingsStorage({});
@@ -46,7 +47,7 @@ describeWithMockConnection('NetworkLogView', () => {
         shortcutTitleForAction: () => {},
         shortcutsForAction: () => [],
       } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
-      Logs.NetworkLog.NetworkLog.instance();
+      networkLog = Logs.NetworkLog.NetworkLog.instance();
       target = targetFactory();
     });
 
@@ -325,6 +326,21 @@ describeWithMockConnection('NetworkLogView', () => {
       assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
         'url1' as Platform.DevToolsPath.UrlString,
       ]);
+
+      networkLogView.detach();
+    });
+
+    it('can remove requests', async () => {
+      networkLogView = createNetworkLogView();
+      const request = createNetworkRequest('url1', {target});
+      networkLogView.markAsRoot();
+      networkLogView.show(document.body);
+
+      const rootNode = networkLogView.columns().dataGrid().rootNode();
+      assert.strictEqual(rootNode.children.length, 1);
+
+      networkLog.dispatchEventToListeners(Logs.NetworkLog.Events.RequestRemoved, request);
+      assert.strictEqual(rootNode.children.length, 0);
 
       networkLogView.detach();
     });

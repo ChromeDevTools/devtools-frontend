@@ -42,16 +42,6 @@ vars = {
   # https://chrome-infra-packages.appspot.com/p/infra/3pp/tools/ninja
   'ninja_version': 'version:2@1.11.1.chromium.6',
 
-  # Chromium build number for unit tests. It should be regularly updated to
-  # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/LAST_CHANGE
-  'chromium_linux': '1176408',
-  # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Win_x64/LAST_CHANGE
-  'chromium_win': '1176366',
-  # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac/LAST_CHANGE
-  'chromium_mac': '1176398',
-  # the content of https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac_Arm/LAST_CHANGE
-  'chromium_mac_arm': '1176396',
-
   # Chrome version used for tests. It should be regularly updated to
   # match the Canary version listed here:
   # https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json
@@ -270,56 +260,6 @@ hooks = [
                 '--no_auth',
                 '--bucket', 'chromium-clang-format',
                 '-s', 'buildtools/linux64/clang-format.sha1',
-    ],
-  },
-
-  # Pull chromium from common storage
-  {
-    'name': 'download_chromium_win',
-    'pattern': '.',
-    'condition': 'host_os == "win" and build_with_chromium == False',
-    'action': [ 'python3',
-                'scripts/deps/download_chromium.py',
-                'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Win_x64/' + Var('chromium_win') + '/chrome-win.zip',
-                'third_party/chromium',
-                'chrome-win/chrome.exe',
-                Var('chromium_win'),
-    ],
-  },
-  {
-    'name': 'download_chromium_mac',
-    'pattern': '.',
-    'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu != "arm64"',
-    'action': [ 'python3',
-                'scripts/deps/download_chromium.py',
-                'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac/' + Var('chromium_mac') + '/chrome-mac.zip',
-                'third_party/chromium',
-                'chrome-mac/Chromium.app/Contents',
-                Var('chromium_mac'),
-    ],
-  },
-  {
-    'name': 'download_chromium_mac',
-    'pattern': '.',
-    'condition': 'host_os == "mac" and build_with_chromium == False and host_cpu == "arm64"',
-    'action': [ 'python3',
-                'scripts/deps/download_chromium.py',
-                'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Mac_Arm/' + Var('chromium_mac_arm') + '/chrome-mac.zip',
-                'third_party/chromium',
-                'chrome-mac/Chromium.app/Contents',
-                Var('chromium_mac_arm'),
-    ],
-  },
-  {
-    'name': 'download_chromium_linux',
-    'pattern': '.',
-    'condition': 'host_os == "linux" and build_with_chromium == False',
-    'action': [ 'python3',
-                'scripts/deps/download_chromium.py',
-                'https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/' + Var('chromium_linux') + '/chrome-linux.zip',
-                'third_party/chromium',
-                'chrome-linux/chrome',
-                Var('chromium_linux'),
     ],
   },
 

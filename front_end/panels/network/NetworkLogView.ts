@@ -92,11 +92,11 @@ const UIStrings = {
   /**
    * @description Label for a filter in the Network panel
    */
-  chromeExtensions: 'Hide extension requests',
+  chromeExtensions: 'Hide extension URLs',
   /**
    * @description Tooltip for a filter in the Network panel
    */
-  hideChromeExtension: 'Hide requests created by Chrome extensions',
+  hideChromeExtension: 'Hide requests to \'chrome-extension://\' URLs',
   /**
    *@description Aria accessible name in Network Log View of the Network panel
    */
@@ -438,7 +438,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.networkInvertFilterSetting = Common.Settings.Settings.instance().createSetting('networkInvertFilter', false);
     this.networkHideDataURLSetting = Common.Settings.Settings.instance().createSetting('networkHideDataURL', false);
     this.networkHideChromeExtensions =
-        Common.Settings.Settings.instance().createSetting('networkHideChromeExtensions', true);
+        Common.Settings.Settings.instance().createSetting('networkHideChromeExtensions', false);
     this.networkShowBlockedCookiesOnlySetting =
         Common.Settings.Settings.instance().createSetting('networkShowBlockedCookiesOnlySetting', false);
     this.networkOnlyBlockedRequestsSetting =
@@ -1453,7 +1453,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.dataURLFilterUI.setChecked(false);
     this.onlyBlockedResponseCookiesFilterUI.setChecked(false);
     this.onlyBlockedRequestsUI.setChecked(false);
-    this.hideChromeExtensionsUI.setChecked(true);
+    this.hideChromeExtensionsUI.setChecked(false);
     this.resourceCategoryFilterUI.reset();
   }
 

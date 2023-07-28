@@ -275,22 +275,23 @@ describeWithMockConnection('NetworkLogView', () => {
       networkLogView.show(document.body);
       const rootNode = networkLogView.columns().dataGrid().rootNode();
       const hideExtCheckbox =
-          filterBar.element.querySelector('[title="Hide requests created by Chrome extensions"] span')
+          filterBar.element.querySelector('[title="Hide requests to \'chrome-extension://\' URLs"] span')
               ?.shadowRoot?.querySelector('input') ||
           null;
-      assertElement(hideExtCheckbox, HTMLInputElement);
-      assert.deepEqual(
-          rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
-          ['url2' as Platform.DevToolsPath.UrlString]);
 
-      hideExtCheckbox.checked = false;
-      const event = new Event('change');
-      hideExtCheckbox.dispatchEvent(event);
+      assertElement(hideExtCheckbox, HTMLInputElement);
 
       assert.deepEqual(
           rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
           ['chrome-extension://url1' as Platform.DevToolsPath.UrlString, 'url2' as Platform.DevToolsPath.UrlString]);
 
+      hideExtCheckbox.checked = true;
+      const event = new Event('change');
+      hideExtCheckbox.dispatchEvent(event);
+
+      assert.deepEqual(
+          rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
+          ['url2' as Platform.DevToolsPath.UrlString]);
       networkLogView.detach();
     });
 

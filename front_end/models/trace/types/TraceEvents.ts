@@ -879,20 +879,18 @@ export interface SyntheticInteractionEvent extends TraceEventSyntheticNestableAs
 }
 
 /**
- * An event created synthetically in the frontend, that can have
- * a reference to its parent and children.
+ * An event created synthetically in the frontend that has a self time
+ * (the time spent running the task itself).
  */
-export interface SyntheticEventWithChildren extends TraceEventData {
+export interface SyntheticEventWithSelfTime extends TraceEventData {
   selfTime?: MicroSeconds;
-  parent?: SyntheticEventWithChildren;
-  children?: SyntheticEventWithChildren[];
 }
 
 /**
  * A profile call created in the frontend from samples disguised as a
  * trace event.
  */
-export interface TraceEventSyntheticProfileCall extends SyntheticEventWithChildren {
+export interface TraceEventSyntheticProfileCall extends SyntheticEventWithSelfTime {
   callFrame: Protocol.Runtime.CallFrame;
   nodeId: Protocol.integer;
   children?: TraceEventSyntheticProfileCall[];
@@ -900,9 +898,9 @@ export interface TraceEventSyntheticProfileCall extends SyntheticEventWithChildr
 
 /**
  * A trace event augmented synthetically in the frontend to contain
- * references to its parent and children.
+ * its self time.
  */
-export type SyntheticRendererEntry = TraceEventRendererEvent&Partial<SyntheticEventWithChildren>;
+export type SyntheticRendererEvent = TraceEventRendererEvent&SyntheticEventWithSelfTime;
 
 export function isSyntheticInteractionEvent(event: TraceEventData): event is SyntheticInteractionEvent {
   return Boolean(

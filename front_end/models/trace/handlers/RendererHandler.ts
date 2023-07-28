@@ -23,7 +23,7 @@ import * as Types from '../types/types.js';
  */
 
 const processes = new Map<Types.TraceEvents.ProcessID, RendererProcess>();
-const traceEventToNode = new Map<Types.TraceEvents.SyntheticRendererEntry, RendererEntryNode>();
+const entryToNode = new Map<RendererEntry, RendererEntryNode>();
 const allRendererEvents: Types.TraceEvents.TraceEventRendererEvent[] = [];
 let nodeIdCount = 0;
 const makeRendererEntrytNodeId = (): RendererEntryNodeId => (++nodeIdCount) as RendererEntryNodeId;
@@ -68,7 +68,7 @@ const getOrCreateRendererThread = (process: RendererProcess, tid: Types.TraceEve
 
 export function reset(): void {
   processes.clear();
-  traceEventToNode.clear();
+  entryToNode.clear();
   allRendererEvents.length = 0;
   completeEventStack.length = 0;
   nodeIdCount = -1;
@@ -129,7 +129,7 @@ export function data(): RendererHandlerData {
 
   return {
     processes: new Map(processes),
-    traceEventToNode: new Map(traceEventToNode),
+    entryToNode: new Map(entryToNode),
     allRendererEvents: [...allRendererEvents],
   };
 }
@@ -337,15 +337,12 @@ export function treify(
     // If the parent stack is empty, then the current event is a root. Create a
     // node for it, mark it as a root, then proceed with the next event.
     if (stack.length === 0) {
-      if (Types.TraceEvents.isProfileCall(event)) {
-        continue;
-      }
       tree.nodes.set(nodeId, node);
       tree.roots.add(nodeId);
       event.selfTime = Types.Timing.MicroSeconds(duration);
       stack.push(node);
       tree.maxDepth = Math.max(tree.maxDepth, stack.length);
-      traceEventToNode.set(event, node);
+      entryToNode.set(event, node);
       continue;
     }
 
@@ -393,10 +390,6 @@ export function treify(
       throw new Error('Impossible: current event starts during the parent event');
     }
 
-    if (Types.TraceEvents.isProfileCall(event)) {
-      continue;
-    }
-
     // 4. The only remaining case is the common case, where the current event is
     //    contained within the parent event. Create a node for the current
     //    event, establish the parent/child relationship, then proceed with the
@@ -411,7 +404,7 @@ export function treify(
     }
     stack.push(node);
     tree.maxDepth = Math.max(tree.maxDepth, stack.length);
-    traceEventToNode.set(event, node);
+    entryToNode.set(event, node);
   }
   return tree;
 }
@@ -455,7 +448,7 @@ export function deps(): TraceEventHandlerName[] {
 
 export interface RendererHandlerData {
   processes: Map<Types.TraceEvents.ProcessID, RendererProcess>;
-  traceEventToNode: Map<Types.TraceEvents.SyntheticRendererEntry, RendererEntryNode>;
+  entryToNode: Map<RendererEntry, RendererEntryNode>;
   /**
    * All trace events and synthetic profile calls made from
    * samples.
@@ -481,7 +474,7 @@ export interface RendererThread {
   tree?: RendererTree;
 }
 
-export type RendererEntry = Types.TraceEvents.SyntheticRendererEntry|Types.TraceEvents.TraceEventSyntheticProfileCall;
+export type RendererEntry = Types.TraceEvents.SyntheticRendererEvent|Types.TraceEvents.TraceEventSyntheticProfileCall;
 
 export interface RendererTree {
   nodes: Map<RendererEntryNodeId, RendererEntryNode>;

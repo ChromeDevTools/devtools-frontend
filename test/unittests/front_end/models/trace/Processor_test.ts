@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 import * as TraceModel from '../../../../../front_end/models/trace/trace.js';
+import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 const {assert} = chai;
 
-describe('TraceProcessor', async function() {
+describeWithEnvironment('TraceProcessor', async function() {
   it('can use a trace processor', async function() {
     const processor = TraceModel.Processor.TraceProcessor.createWithAllHandlers();
     const file = await TraceLoader.rawEvents(this, 'basic.json.gz');

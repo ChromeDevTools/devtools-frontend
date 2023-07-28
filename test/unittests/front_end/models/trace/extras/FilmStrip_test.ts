@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 import * as TraceEngine from '../../../../../../front_end/models/trace/trace.js';
+import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 const {assert} = chai;
 
-describe('FilmStrip', function() {
+describeWithEnvironment('FilmStrip', function() {
   it('identifies the frames from a trace', async function() {
     const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(traceParsedData);

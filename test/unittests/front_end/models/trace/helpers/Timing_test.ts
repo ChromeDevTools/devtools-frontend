@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
+import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 const {assert} = chai;
@@ -13,7 +14,7 @@ function secToMicro(value: TraceModel.Types.Timing.Seconds): TraceModel.Types.Ti
   return milliToMicro(value * 1000);
 }
 
-describe('Timing helpers', () => {
+describeWithEnvironment('Timing helpers', () => {
   describe('Timing conversions', () => {
     it('can convert milliseconds to microseconds', () => {
       const input = TraceModel.Types.Timing.MilliSeconds(1);

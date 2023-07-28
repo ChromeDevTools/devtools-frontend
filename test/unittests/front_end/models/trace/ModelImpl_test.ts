@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 import * as TraceModel from '../../../../../front_end/models/trace/trace.js';
+import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 const {assert} = chai;
 
-describe('TraceModel', async function() {
+describeWithEnvironment('TraceModel', async function() {
   it('dispatches an end event when the trace is done', function(done) {
     const model = TraceModel.TraceModel.Model.createWithAllHandlers();
     const events: string[] = [];

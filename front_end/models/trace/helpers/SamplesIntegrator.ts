@@ -332,8 +332,11 @@ export class SamplesIntegrator {
     for (; i < stackTrace.length; ++i) {
       const call = stackTrace[i];
       this.#currentJSStack.push(call);
-      if (call.nodeId === this.#profileModel.programNode?.id || call.nodeId === this.#profileModel.root?.id) {
-        // Skip (root) and (program) frames.
+      if (call.nodeId === this.#profileModel.programNode?.id || call.nodeId === this.#profileModel.root?.id ||
+          call.nodeId === this.#profileModel.idleNode?.id) {
+        // Skip (root), (program) and (idle) frames, since this are not
+        // relevant for web profiling and we don't want to show them in
+        // the timeline.
         continue;
       }
       this.#constructedProfileCalls.push(call);
@@ -452,7 +455,6 @@ export class SamplesIntegrator {
       cat: '',
       name: 'ProfileCall',
       nodeId: node.id,
-      children: [],
       ph: Types.TraceEvents.Phase.COMPLETE,
       pid,
       tid,

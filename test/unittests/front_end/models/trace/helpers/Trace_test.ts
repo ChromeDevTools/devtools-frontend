@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
+import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../helpers/TraceLoader.js';
 const {assert} = chai;
 
-describe('TraceModel helpers', function() {
+describeWithEnvironment('TraceModel helpers', function() {
   describe('extractOriginFromTrace', () => {
     it('extracts the origin of a parsed trace correctly', async function() {
       const model = await TraceLoader.traceEngine(this, 'web-dev.json.gz');

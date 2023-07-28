@@ -72,7 +72,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
         throw new Error('Trace events were unexpectedly not found.');
       }
       const constructedCalls = samplesIntegrator.buildProfileCalls(traceEvents);
-      assert.strictEqual(constructedCalls.length, 6243);
+      assert.strictEqual(constructedCalls.length, 6178);
     });
 
     it('creates JS profile calls with a top-level V8 invocation', () => {
@@ -289,6 +289,30 @@ describeWithEnvironment('SamplesIntegrator', function() {
       assert.strictEqual(constructedCalls[3].callFrame.functionName, 'c');
       assert.strictEqual(constructedCalls[3].ts, 700);
       assert.strictEqual(constructedCalls[3].dur, 300);
+    });
+    it('skips samples from (program), (idle) and (root) nodes', async function() {
+      const data = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
+      const samplesData = data.Samples;
+      assert.strictEqual(samplesData.profilesInProcess.size, 1);
+      const [[pid, profileByThread]] = samplesData.profilesInProcess.entries();
+      const [[tid, cpuProfileData]] = profileByThread.entries();
+      const parsedProfile = cpuProfileData.parsedProfile;
+      const samplesIntegrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, pid, tid);
+      const traceEvents = data.Renderer.allRendererEvents.filter(event => event.pid === pid && event.tid === tid);
+      if (!traceEvents) {
+        throw new Error('Trace events were unexpectedly not found.');
+      }
+      const rootNode = parsedProfile.root;
+      const programNode = parsedProfile.programNode;
+      const idleNode = parsedProfile.idleNode;
+      if (programNode === undefined || idleNode === undefined) {
+        throw new Error('Could not find program or idle node');
+      }
+      const constructedCalls = samplesIntegrator.buildProfileCalls(traceEvents);
+
+      const filteredNodes = constructedCalls.filter(
+          c => c.nodeId === rootNode.id || c.nodeId === idleNode.id || c.nodeId === programNode.id);
+      assert.strictEqual(filteredNodes.length, 0);
     });
   });
 });

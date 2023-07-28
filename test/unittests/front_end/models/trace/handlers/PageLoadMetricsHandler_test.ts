@@ -5,6 +5,7 @@
 const {assert} = chai;
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
+import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 function countMetricOcurrences(
@@ -20,7 +21,7 @@ function countMetricOcurrences(
   }, 0);
 }
 
-describe('PageLoadMetricsHandler', function() {
+describeWithEnvironment('PageLoadMetricsHandler', function() {
   describe('contentful paints', () => {
     it('obtains all the FCP and LCP events for all frames', async function() {
       const {Meta, PageLoadMetrics} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');

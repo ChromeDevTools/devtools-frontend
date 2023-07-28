@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import * as TraceEngine from '../../../../../../front_end/models/trace/trace.js';
+import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../helpers/TraceLoader.js';
 const {assert} = chai;
 
-describe('TraceEvent types', function() {
+describeWithEnvironment('TraceEvent types', function() {
   const {Phase, isNestableAsyncPhase, isAsyncPhase, isFlowPhase} = TraceEngine.Types.TraceEvents;
   it('is able to determine if a phase is a nestable async phase', function() {
     assert.isTrue(isNestableAsyncPhase(Phase.ASYNC_NESTABLE_START));

@@ -11,6 +11,7 @@ import {
   getRootAt,
   makeBeginEvent,
   makeCompleteEvent,
+  makeProfileCall,
   makeEndEvent,
   makeInstantEvent,
   prettyPrint,
@@ -125,23 +126,23 @@ describeWithEnvironment('RendererHandler', function() {
     assert.deepEqual([...tree.roots], [
       0,   1,   2,   3,   4,   9,   10,  11,  12,  13,  14,  16,  18,  19,  20,  21,  22,  23,  24,  28,  29,  30,  31,
       35,  36,  37,  38,  45,  46,  48,  50,  52,  53,  54,  59,  60,  64,  65,  66,  67,  68,  69,  75,  76,  78,  79,
-      80,  81,  82,  83,  84,  86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  101, 102, 103, 104, 105, 106, 107,
-      108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 134, 140, 141, 142, 143, 144, 145, 146,
-      147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 170, 171, 172, 173,
-      174, 175, 176, 177, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 204, 205, 206, 207,
-      208, 209, 210, 214, 215, 216, 217, 218, 220, 224, 225, 226, 227, 228, 229, 231, 232, 233, 234, 235, 236, 237, 238,
-      239, 240, 241, 248, 249, 250, 256, 257, 258, 262, 263, 267, 268, 272, 273, 277, 278, 282, 283, 287, 288, 292, 293,
-      297, 298, 302, 303, 309, 310, 311, 312, 313, 319, 320, 321, 322, 323, 327, 328, 329, 330, 334, 335, 339, 340, 344,
-      345, 351, 352, 353, 354, 355, 356, 360, 361, 362, 366, 367, 368, 372, 373, 374, 378, 379, 380, 384, 385, 386, 387,
-      388, 394, 395, 396, 397, 411, 416, 417, 418, 419, 420, 427, 432, 433, 434, 435, 436, 437, 438, 439, 440, 441, 442,
-      443, 444, 445, 450, 451, 452, 453, 454, 455, 456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469,
-      470, 471, 472, 484, 485, 489, 490, 491, 492, 493, 494, 495, 496, 497, 498, 499, 500, 501, 502, 503, 504, 505, 506,
-      507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 523, 524, 525, 526, 527, 533, 534, 535, 536, 537, 538,
-      539, 540, 547, 548, 549, 550, 551, 552, 553, 554, 555, 556, 560, 561, 562, 564, 565, 569, 570, 571, 572, 573, 574,
-      575, 576, 577, 578, 579, 580, 581, 582, 583, 584, 589, 590, 591, 592, 593, 597, 598, 599, 603, 604, 605, 609, 610,
-      611, 612, 616, 617, 618, 619, 620, 626, 627, 628, 632, 633, 634, 640, 641, 642, 643, 647, 648, 649, 650, 654, 655,
-      659, 660, 664, 665, 666, 670, 671, 675, 676, 680, 681, 685, 686, 690, 691, 697, 698, 699, 700, 701, 705, 706, 707,
-      711, 712, 713, 717, 718, 719, 725, 726, 727, 728, 732, 734, 735, 736, 737, 738, 739, 740, 741, 745,
+      80,  81,  82,  83,  84,  86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  103, 104, 105, 106, 107, 108, 109,
+      110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 136, 142, 143, 144, 145, 146, 147, 148,
+      149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 172, 173, 174, 175,
+      176, 177, 178, 179, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 206, 207, 208, 209,
+      210, 211, 212, 216, 217, 218, 219, 220, 222, 226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 238, 239, 240,
+      241, 242, 243, 250, 251, 252, 258, 259, 260, 264, 265, 269, 270, 274, 275, 279, 280, 284, 285, 289, 290, 294, 295,
+      299, 300, 304, 305, 311, 312, 313, 314, 315, 321, 322, 323, 324, 325, 329, 330, 331, 332, 336, 337, 341, 342, 346,
+      347, 353, 354, 355, 356, 357, 358, 362, 363, 364, 368, 369, 370, 374, 375, 376, 380, 381, 382, 386, 387, 388, 389,
+      390, 396, 397, 398, 399, 413, 418, 419, 420, 421, 422, 429, 434, 435, 436, 437, 438, 439, 440, 441, 442, 443, 444,
+      445, 446, 447, 452, 453, 454, 455, 456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471,
+      472, 473, 474, 486, 487, 491, 492, 493, 494, 495, 496, 497, 498, 499, 500, 501, 502, 503, 504, 505, 506, 507, 508,
+      509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 525, 526, 527, 528, 529, 535, 536, 537, 538, 539, 540,
+      541, 542, 549, 550, 551, 552, 553, 554, 555, 556, 557, 558, 562, 563, 564, 566, 567, 571, 572, 573, 574, 575, 576,
+      577, 578, 579, 580, 581, 582, 583, 584, 585, 586, 591, 592, 593, 594, 595, 599, 600, 601, 605, 606, 607, 611, 612,
+      613, 614, 618, 619, 620, 621, 622, 628, 629, 630, 634, 635, 636, 642, 643, 644, 645, 649, 650, 651, 652, 656, 657,
+      661, 662, 666, 667, 668, 672, 673, 677, 678, 682, 683, 687, 688, 692, 693, 699, 700, 701, 702, 703, 707, 708, 709,
+      713, 714, 715, 719, 720, 721, 727, 728, 729, 730, 734, 736, 737, 738, 739, 740, 741, 742, 743, 747,
     ]);
   });
 
@@ -188,8 +189,7 @@ describeWithEnvironment('RendererHandler', function() {
         (node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntryNode,
          event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry) =>
             !isRoot(node) || (isInstant(event) || isLong(event));
-
-    assert.strictEqual(prettyPrint(thread, tree.roots, isIncluded), `
+    assert.strictEqual(prettyPrint(tree, isIncluded), `
 ...........
 -RunTask [2.21ms]
   -MajorGC [2.148ms]
@@ -199,6 +199,8 @@ describeWithEnvironment('RendererHandler', function() {
   -EventDispatch (visibilitychange) [0.01ms]
   -EventDispatch (webkitvisibilitychange) [0.006ms]
   -EventDispatch (unload) [0.006ms]
+  -ProfileCall (anonymous) [0.205ms]
+    -ProfileCall (anonymous) [0.205ms]
 .....................
 -RunTask [3.402ms]
   -ParseHTML [2.593ms]
@@ -311,7 +313,7 @@ describeWithEnvironment('RendererHandler', function() {
       return;
     }
 
-    assert.strictEqual(prettyPrint(thread, tree.roots), `
+    assert.strictEqual(prettyPrint(tree), `
 -RunTask [0.13ms]
 -RunTask [0.005ms]
 -RunTask [0.009ms]
@@ -846,6 +848,8 @@ describeWithEnvironment('RendererHandler', function() {
       ],
     ]);
 
+    TraceModel.Handlers.ModelHandlers.Samples.initialize();
+    await TraceModel.Handlers.ModelHandlers.Samples.finalize();
     TraceModel.Handlers.ModelHandlers.Renderer.buildHierarchy(processes, {filter: {has: () => true}});
 
     const firstThread = [...[...processes.values()][0].threads.values()][0];
@@ -973,7 +977,7 @@ describeWithEnvironment('RendererHandler', function() {
 
   it('populates the map of trace events to tree nodes', async () => {
     const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    assert.strictEqual(renderers.entryToNode.size, 2578);
+    assert.strictEqual(renderers.entryToNode.size, 2590);
   });
   describe('Synthetic complete events', () => {
     async function handleEvents(traceEvents: TraceModel.Types.TraceEvents.TraceEventData[]):
@@ -1037,7 +1041,7 @@ describeWithEnvironment('RendererHandler', function() {
       if (!thread.tree) {
         return;
       }
-      assert.strictEqual(prettyPrint(thread, thread.tree.roots), `
+      assert.strictEqual(prettyPrint(thread.tree), `
 -RunTask [0.01ms]
   -RunMicrotasks [0.003ms]
     -FunctionCall [0.001ms]
@@ -1071,11 +1075,102 @@ describeWithEnvironment('RendererHandler', function() {
       if (!thread.tree) {
         return;
       }
-      assert.strictEqual(prettyPrint(thread, thread.tree.roots), `
+      assert.strictEqual(prettyPrint(thread.tree), `
 -RunTask [0.01ms]
   -RunMicrotasks [0.003ms]
     -FunctionCall [0.001ms]
   -Layout [0.003ms]`);
+    });
+  });
+  describe('building hierarchies trace events and profile calls', () => {
+    it('builds a hierarchy from trace events and profile calls', async () => {
+      const evaluateScript = makeCompleteEvent(TraceModel.Types.TraceEvents.KnownEventName.EvaluateScript, 0, 500);
+      const v8Run = makeCompleteEvent('v8.run', 10, 490);
+      const parseFunction = makeCompleteEvent('V8.ParseFunction', 12, 1);
+
+      const traceEvents: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry[] =
+          [evaluateScript, v8Run, parseFunction];
+
+      const profileCalls = [makeProfileCall('a', 100, 200), makeProfileCall('b', 300, 200)];
+      const allEntries = TraceModel.Helpers.Trace.mergeEventsInOrder(traceEvents, profileCalls);
+      const tree = TraceModel.Handlers.ModelHandlers.Renderer.treify(allEntries, {filter: {has: () => true}});
+      assert.strictEqual(prettyPrint(tree), `
+-EvaluateScript [0.5ms]
+  -v8.run [0.49ms]
+    -V8.ParseFunction [0.001ms]
+    -ProfileCall (a) [0.2ms]
+    -ProfileCall (b) [0.2ms]`);
+    });
+    it('builds a hierarchy from only profile calls', async () => {
+      const allEntries = [
+        makeProfileCall('a', 100, 200),
+        makeProfileCall('b', 300, 200),
+        makeProfileCall('c', 300, 200),
+        makeProfileCall('d', 400, 100),
+      ];
+      const tree = TraceModel.Handlers.ModelHandlers.Renderer.treify(allEntries, {filter: {has: () => true}});
+      assert.strictEqual(prettyPrint(tree), `
+-ProfileCall (a) [0.2ms]
+-ProfileCall (b) [0.2ms]
+  -ProfileCall (c) [0.2ms]
+    -ProfileCall (d) [0.1ms]`);
+    });
+    it('build a hierarchy using data from real world trace file', async () => {
+      const {Renderer} = await handleEventsFromTraceFile(this, 'recursive-counting-js.json.gz');
+      const threadId = TraceModel.Types.TraceEvents.ThreadID(259);
+      const firstProcessId = TraceModel.Types.TraceEvents.ProcessID(23239);
+
+      const thread = Renderer.processes.get(firstProcessId)?.threads.get(threadId);
+      if (!thread || !thread.tree) {
+        throw new Error('Tree not found');
+      }
+      const onlyLongTasksPredicate =
+          (_node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntryNode,
+           event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry) => Boolean(event.dur && event.dur > 1000);
+      assert.strictEqual(prettyPrint(thread.tree, onlyLongTasksPredicate), `
+.............
+-RunTask [17.269ms]
+.......................
+-RunTask [1065.663ms]
+  -ParseHTML [1065.609ms]
+    -EvaluateScript [1.433ms]
+...
+    -EvaluateScript [1063.887ms]
+...
+      -ProfileCall (anonymous) [1063.462ms]
+        -ProfileCall (foo) [1063.462ms]
+          -ProfileCall (foo) [1063.462ms]
+            -ProfileCall (foo) [1063.462ms]
+              -ProfileCall (foo) [1063.462ms]
+                -ProfileCall (count) [1.169ms]
+..
+                -ProfileCall (count) [1061.413ms]
+........
+-RunTask [1.12ms]
+  -ParseHTML [1.082ms]
+.............................................................
+-RunTask [1058.811ms]
+  -TimerFire [1058.77ms]
+    -FunctionCall [1058.693ms]
+.
+      -ProfileCall (anonymous) [1058.548ms]
+        -ProfileCall (foo) [1058.548ms]
+          -ProfileCall (foo) [1058.548ms]
+            -ProfileCall (foo) [1058.548ms]
+              -ProfileCall (foo) [1058.548ms]
+                -ProfileCall (count) [1058.422ms]
+......
+-RunTask [1057.455ms]
+  -TimerFire [1057.391ms]
+    -FunctionCall [1057.27ms]
+.
+      -ProfileCall (anonymous) [1056.51ms]
+        -ProfileCall (foo) [1056.51ms]
+          -ProfileCall (foo) [1056.51ms]
+            -ProfileCall (foo) [1056.51ms]
+              -ProfileCall (foo) [1056.51ms]
+                -ProfileCall (count) [1056.51ms]
+.......`);
     });
   });
 });

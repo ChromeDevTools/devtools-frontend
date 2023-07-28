@@ -6,6 +6,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
+import {data as samplesHandlerData} from './SamplesHandler.js';
 
 import {KNOWN_EVENTS, type TraceEventHandlerName, HandlerState} from './types.js';
 import * as Types from '../types/types.js';
@@ -289,11 +290,22 @@ export function sanitizeThreads(processes: Map<Types.TraceEvents.ProcessID, Rend
 export function buildHierarchy(
     processes: Map<Types.TraceEvents.ProcessID, RendererProcess>,
     options: {filter: {has: (name: Types.TraceEvents.KnownEventName) => boolean}}): void {
-  for (const [, process] of processes) {
-    for (const [, thread] of process.threads) {
+  for (const [pid, process] of processes) {
+    for (const [tid, thread] of process.threads) {
+      if (!thread.entries.length) {
+        thread.tree = makeEmptyRendererTree();
+        continue;
+      }
       // Step 1. Massage the data.
       Helpers.Trace.sortTraceEventsInPlace(thread.entries);
-      // Step 2. Build the tree.
+      // Step 2. Inject profile calls from samples
+      const cpuProfile = samplesHandlerData().profilesInProcess.get(pid)?.get(tid)?.parsedProfile;
+      const samplesIntegrator = cpuProfile && new Helpers.SamplesIntegrator.SamplesIntegrator(cpuProfile, pid, tid);
+      const profileCalls = samplesIntegrator?.buildProfileCalls(thread.entries);
+      if (profileCalls) {
+        thread.entries = Helpers.Trace.mergeEventsInOrder(thread.entries, profileCalls);
+      }
+      // Step 3. Build the tree.
       thread.tree = treify(thread.entries, options);
     }
   }
@@ -383,11 +395,13 @@ export function treify(
       nodeIdCount--;
       continue;
     }
-    // 3. If the current event starts during the parent event, but ends after
-    //    it, then the data is messed up some way.
+    // 3. If the current event starts during the parent event, but ends
+    //    after it, then the data is messed up some way, for example a
+    //    profile call was sampled too late after its start, ignore the
+    //    problematic event.
     const endsAfterParent = end > parentEnd;
     if (endsAfterParent) {
-      throw new Error('Impossible: current event starts during the parent event');
+      continue;
     }
 
     // 4. The only remaining case is the common case, where the current event is

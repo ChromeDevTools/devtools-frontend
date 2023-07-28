@@ -113,6 +113,8 @@ export const KNOWN_EVENTS = new Map([
   [Types.TraceEvents.KnownEventName.EventDispatch, {category: EventCategory.Js, label: 'Event'}],
   [Types.TraceEvents.KnownEventName.EvaluateModule, {category: EventCategory.Js, label: 'Evaluate Module'}],
   [Types.TraceEvents.KnownEventName.V8Execute, {category: EventCategory.Js, label: 'Execute'}],
+  [Types.TraceEvents.KnownEventName.ProfileCall, {category: EventCategory.Js, label: 'JS Call'}],
+
   [
     Types.TraceEvents.KnownEventName.RequestMainThreadFrame,
     {category: EventCategory.Js, label: 'Request Main Thread Frame'},

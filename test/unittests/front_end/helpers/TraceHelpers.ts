@@ -5,6 +5,7 @@ import type * as TimelineModel from '../../../../front_end/models/timeline_model
 import * as TraceEngine from '../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
 import * as PerfUI from '../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
+import type * as Protocol from '../../../../front_end/generated/protocol.js';
 
 import {initializeGlobalVars} from './EnvironmentHelpers.js';
 import {TraceLoader} from './TraceLoader.js';
@@ -226,35 +227,55 @@ export function getEventsIn(
   return [...ids].map(id => nodes.get(id)).flatMap(node => node ? node.entry : []);
 }
 /**
- * Pretty-prints the tree in a thread.
+ * Pretty-prints a tree.
  */
 export function prettyPrint(
-    thread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread,
-    nodes: Set<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNodeId>,
+    tree: TraceEngine.Handlers.ModelHandlers.Renderer.RendererTree,
     predicate: (
         node: TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode,
         event: TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntry) => boolean = () => true,
     indentation: number = 2, delimiter: string = ' ', prefix: string = '-', newline: string = '\n',
     out: string = ''): string {
   let skipped = false;
-  for (const nodeId of nodes) {
-    const node = getNodeFor(thread, nodeId);
-    const event = node.entry;
-    if (!predicate(node, event)) {
-      out += `${!skipped ? newline : ''}.`;
-      skipped = true;
-      continue;
+  return printNodes(tree.roots);
+  function printNodes(nodeIds: Set<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNodeId>): string {
+    const nodes = [];
+    for (const nodeId of nodeIds) {
+      const child = tree.nodes.get(nodeId);
+      if (!child) {
+        continue;
+      }
+      nodes.push(child);
     }
-    skipped = false;
-    const spacing = new Array(node.depth * indentation).fill(delimiter).join('');
-    const eventType = TraceEngine.Types.TraceEvents.isTraceEventDispatch(event) ? `(${event.args.data?.type})` : false;
-    const duration = `[${(event.dur || 0) / 1000}ms]`;
-    const info = [eventType, duration].filter(Boolean);
-    out += `${newline}${spacing}${prefix}${event.name} ${info.join(' ')}`;
-    out = prettyPrint(thread, node.childrenIds, predicate, indentation, delimiter, prefix, newline, out);
+    for (const node of nodes) {
+      const event = node.entry;
+      if (!predicate(node, event)) {
+        out += `${!skipped ? newline : ''}.`;
+        skipped = true;
+        continue;
+      }
+      skipped = false;
+      const spacing = new Array(node.depth * indentation).fill(delimiter).join('');
+      const eventType =
+          TraceEngine.Types.TraceEvents.isTraceEventDispatch(event) ? `(${event.args.data?.type})` : false;
+      const jsFunctionName = TraceEngine.Types.TraceEvents.isProfileCall(event) ?
+          `(${event.callFrame.functionName || 'anonymous'})` :
+          false;
+      const duration = `[${(event.dur || 0) / 1000}ms]`;
+      const info = [jsFunctionName, eventType, duration].filter(Boolean);
+      out += `${newline}${spacing}${prefix}${event.name} ${info.join(' ')}`;
+      const children = [];
+      for (const childId of node.childrenIds) {
+        const child = tree.nodes.get(childId);
+        if (!child) {
+          continue;
+        }
+        children.push(child);
+      }
+      out = printNodes(node.childrenIds);
+    }
+    return out;
   }
-
-  return out;
 }
 
 /**
@@ -335,6 +356,30 @@ export function makeEndEvent(name: string, ts: number, cat: string = '*', pid: n
   };
 }
 
+export function makeProfileCall(
+    functionName: string, tsMs: number, durMs: number,
+    pid: TraceEngine.Types.TraceEvents.ProcessID = TraceEngine.Types.TraceEvents.ProcessID(0),
+    tid: TraceEngine.Types.TraceEvents.ThreadID = TraceEngine.Types.TraceEvents.ThreadID(0),
+    nodeId: number = 0): TraceEngine.Types.TraceEvents.TraceEventSyntheticProfileCall {
+  return {
+    cat: '',
+    name: 'ProfileCall',
+    nodeId,
+    ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
+    pid,
+    tid,
+    ts: TraceEngine.Types.Timing.MicroSeconds(tsMs),
+    dur: TraceEngine.Types.Timing.MicroSeconds(durMs),
+    selfTime: TraceEngine.Types.Timing.MicroSeconds(0),
+    callFrame: {
+      functionName,
+      scriptId: '' as Protocol.Runtime.ScriptId,
+      url: '',
+      lineNumber: -1,
+      columnNumber: -1,
+    },
+  };
+}
 /**
  * Provides a stubbed TraceEngine.Legacy.Thread instance.
  * IMPORTANT: this is not designed to be a fully stubbed Thread, but one that is

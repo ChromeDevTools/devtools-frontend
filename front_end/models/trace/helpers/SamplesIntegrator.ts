@@ -400,8 +400,14 @@ export class SamplesIntegrator {
   }
 
   static showNativeName(name: string): boolean {
-    const showRuntimeCallStats = Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats');
-    return showRuntimeCallStats && Boolean(SamplesIntegrator.nativeGroup(name));
+    try {
+      // Querying for unregistered experiments will error on debug
+      // builds.
+      const showRuntimeCallStats = Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats');
+      return showRuntimeCallStats && Boolean(SamplesIntegrator.nativeGroup(name));
+    } catch (error) {
+      return false;
+    }
   }
 
   static nativeGroup(nativeName: string): 'Parse'|'Compile'|null {
@@ -419,7 +425,13 @@ export class SamplesIntegrator {
   }
 
   static filterStackFrames(stack: Types.TraceEvents.TraceEventSyntheticProfileCall[]): void {
-    const showAllEvents = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
+    let showAllEvents = false;
+    try {
+      // Querying for unregistered experiments will error on debug
+      // builds.
+      showAllEvents = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
+    } catch (_err) {
+    }
     const showNativeFunctions = Common.Settings.Settings.hasInstance() &&
         Common.Settings.Settings.instance().moduleSetting('showNativeFunctionsInJSProfile').get();
     if (showAllEvents) {

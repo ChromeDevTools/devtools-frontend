@@ -596,6 +596,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     dropDownContainer.title = moreTabsString;
     ARIAUtils.markAsMenuButton(dropDownContainer);
     ARIAUtils.setLabel(dropDownContainer, moreTabsString);
+    ARIAUtils.setExpanded(dropDownContainer, false);
     dropDownContainer.tabIndex = 0;
     dropDownContainer.appendChild(chevronIcon);
     dropDownContainer.addEventListener('click', this.dropDownClicked.bind(this));
@@ -623,6 +624,9 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
       useSoftMenu: false,
       x: rect.left,
       y: rect.bottom,
+      onSoftMenuClosed: (): void => {
+        ARIAUtils.setExpanded(this.dropDownButton, false);
+      },
     });
     for (const tab of this.tabs) {
       if (tab.shown) {
@@ -635,7 +639,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
         menu.defaultSection().appendItem(tab.title, this.dropDownMenuItemSelected.bind(this, tab));
       }
     }
-    void menu.show();
+    void menu.show().then(() => ARIAUtils.setExpanded(this.dropDownButton, menu.isHostedMenuOpen()));
   }
 
   private dropDownKeydown(event: KeyboardEvent): void {

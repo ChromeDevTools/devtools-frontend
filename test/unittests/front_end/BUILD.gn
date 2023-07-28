@@ -58,6 +58,7 @@ group("front_end") {
     "panels/performance_monitor",
     "panels/profiler",
     "panels/protocol_monitor",
+    "panels/protocol_monitor/components",
     "panels/recorder",
     "panels/recorder/components",
     "panels/recorder/converters",

@@ -31,7 +31,7 @@ interface SetBreakpointByUrlResponse {
 export class MockProtocolBackend {
   #scriptSources = new Map<string, string>();
   #sourceMapContents = new Map<string, string>();
-  #objectProperties = new Map<string, {name: string, value: number}[]>();
+  #objectProperties = new Map<string, {name: string, value?: number}[]>();
   #setBreakpointByUrlResponses = new Map<string, SetBreakpointByUrlResponse>();
   #removeBreakpointCallbacks = new Map<Protocol.Debugger.BreakpointId, () => void>();
   #nextObjectIndex = 0;
@@ -168,7 +168,7 @@ export class MockProtocolBackend {
     };
   }
 
-  createSimpleRemoteObject(properties: {name: string, value: number}[]): Protocol.Runtime.RemoteObject {
+  createSimpleRemoteObject(properties: {name: string, value?: number}[]): Protocol.Runtime.RemoteObject {
     const objectId = 'OBJECTID.' + this.#nextObjectIndex++;
     this.#objectProperties.set(objectId, properties);
 

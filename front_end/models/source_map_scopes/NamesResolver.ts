@@ -642,20 +642,11 @@ export class RemoteObject extends SDK.RemoteObject.RemoteObject {
 
     const properties = allProperties.properties;
     const internalProperties = allProperties.internalProperties;
-    const newProperties = [];
-    if (properties) {
-      for (let i = 0; i < properties.length; ++i) {
-        const property = properties[i];
-        const name = variableMapping.get(property.name) || properties[i].name;
-        if (!property.value) {
-          continue;
-        }
-        newProperties.push(new SDK.RemoteObject.RemoteObjectProperty(
-            name, property.value, property.enumerable, property.writable, property.isOwn, property.wasThrown,
-            property.symbol, property.synthetic));
-      }
-    }
-    return {properties: newProperties, internalProperties: internalProperties};
+    const newProperties = properties?.map(property => {
+      const name = variableMapping.get(property.name);
+      return name !== undefined ? property.cloneWithNewName(name) : property;
+    });
+    return {properties: newProperties ?? [], internalProperties};
   }
 
   override async setPropertyValue(argumentName: string|Protocol.Runtime.CallArgument, value: string): Promise<string|undefined> {

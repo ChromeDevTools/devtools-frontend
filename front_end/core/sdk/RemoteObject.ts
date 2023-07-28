@@ -768,6 +768,15 @@ export class RemoteObjectProperty {
     }
     return true;
   }
+
+  cloneWithNewName(newName: string): RemoteObjectProperty {
+    const property = new RemoteObjectProperty(
+        newName, this.value ?? null, this.enumerable, this.writable, this.isOwn, this.wasThrown, this.symbol,
+        this.synthetic, this.syntheticSetter, this.private);
+    property.getter = this.getter;
+    property.setter = this.setter;
+    return property;
+  }
 }
 
 // Below is a wrapper around a local object that implements the RemoteObject interface,

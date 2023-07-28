@@ -300,6 +300,34 @@ describeWithMockConnection('NameResolver', () => {
     assert.sameDeepMembers(namesAndValues, [{name: 'par1', value: 42}]);
   });
 
+  it('resolves names for variables in TDZ', async () => {
+    const sourceMapUrl = 'file:///tmp/example.js.min.map';
+    // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map" v5.7.0.
+    const sourceMapContent = JSON.stringify({
+      'version': 3,
+      'names': ['adder', 'arg1', 'arg2', 'console', 'log', 'result'],
+      'sources': ['index.js'],
+      'sourcesContent': [
+        'function adder(arg1, arg2) {\n  console.log(arg1, arg2);\n  const result = arg1 + arg2;\n  return result;\n}\n',
+      ],
+      'mappings': 'AAAA,SAASA,MAAMC,EAAMC,GACnBC,QAAQC,IAAIH,EAAMC,GAClB,MAAMG,EAASJ,EAAOC,EACtB,OAAOG,CACT',
+    });
+
+    const source = `function adder(n,o){console.log(n,o);const c=n+o;return c}\n//# sourceMappingURL=${sourceMapUrl}`;
+    const scopes = '              {                                          }';
+
+    const scopeObject = backend.createSimpleRemoteObject([{name: 'n', value: 42}, {name: 'o', value: 5}, {name: 'c'}]);
+    const callFrame = await backend.createCallFrame(
+        target, {url: URL, content: source}, scopes, {url: sourceMapUrl, content: sourceMapContent}, [scopeObject]);
+
+    const resolvedScopeObject = await SourceMapScopes.NamesResolver.resolveScopeInObject(callFrame.scopeChain()[0]);
+    const properties = await resolvedScopeObject.getAllProperties(false, false);
+    const namesAndValues = properties.properties?.map(p => ({name: p.name, value: p.value?.value})) ?? [];
+
+    assert.sameDeepMembers(
+        namesAndValues, [{name: 'arg1', value: 42}, {name: 'arg2', value: 5}, {name: 'result', value: undefined}]);
+  });
+
   it('resolves inner scope clashing names from let -> var transpilation', async () => {
     // This tests the  behavior where the TypeScript compiler renames a variable when transforming let-variables
     // to var-variables to avoid clash, and DevTools then (somewhat questionably) deobfuscates the var variables

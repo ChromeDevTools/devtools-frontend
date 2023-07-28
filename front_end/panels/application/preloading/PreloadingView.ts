@@ -670,7 +670,7 @@ export class PreloadingWarningsView extends UI.Widget.VBox {
 
       if (event.disabledByPreference) {
         const preloadingSettingLink = new ChromeLink.ChromeLink.ChromeLink();
-        preloadingSettingLink.href = 'chrome://settings/cookies';
+        preloadingSettingLink.href = 'chrome://settings/preloading';
         preloadingSettingLink.textContent = i18nString(UIStrings.preloadingPageSettings);
         const extensionSettingLink = new ChromeLink.ChromeLink.ChromeLink();
         extensionSettingLink.href = 'chrome://extensions';

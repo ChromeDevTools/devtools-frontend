@@ -14,7 +14,7 @@
 devtools-editable-content {
   background: transparent;
   border: none;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   cursor: text;
   display: inline-block;
   line-height: 18px;
@@ -26,13 +26,13 @@ devtools-editable-content {
 
 devtools-editable-content:hover,
 devtools-editable-content:focus {
-  box-shadow: 0 0 0 1px var(--color-details-hairline);
+  box-shadow: 0 0 0 1px var(--sys-color-divider);
   border-radius: 2px;
 }
 
 devtools-editable-content[placeholder]:empty::before {
   content: attr(placeholder);
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   opacity: 50%;
 }
 
@@ -50,7 +50,7 @@ devtools-editable-content:focus ~ devtools-suggestion-box {
 }
 
 .suggestions {
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow);
   min-height: 1em;
   min-width: 150px;
@@ -67,7 +67,7 @@ devtools-editable-content:focus ~ devtools-suggestion-box {
   white-space: nowrap;
   font-family: var(--source-code-font-family);
   font-size: var(--source-code-font-size);
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .suggestions > li:hover {
@@ -75,8 +75,8 @@ devtools-editable-content:focus ~ devtools-suggestion-box {
 }
 
 .suggestions > li.selected {
-  background-color: var(--color-primary);
-  color: var(--color-background);
+  background-color: var(--sys-color-primary);
+  color: var(--sys-color-cdt-base-container);
 }
 
 .incorrect-type {

@@ -804,7 +804,7 @@ export class StepView extends HTMLElement {
                     .data=${
                       {
                         iconName: 'triangle-down',
-                        color: 'var(--color-text-primary)',
+                        color: 'var(--sys-color-on-surface)',
                       } as IconButton.Icon.IconData
                     }>
                   </${IconButton.Icon.Icon.litTagName}>`
@@ -822,6 +822,7 @@ export class StepView extends HTMLElement {
           ${
             this.#step &&
             LitHtml.html`<devtools-recorder-step-editor
+            class=${this.#isSelected ? 'is-selected' : ''}
             .step=${this.#step}
             .disabled=${this.#isPlaying}
             @stepedited=${this.#stepEdited}>

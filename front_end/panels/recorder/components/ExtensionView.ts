@@ -99,7 +99,7 @@ export class ExtensionView extends HTMLElement {
                 .data=${
                   {
                     iconPath: extensionIcon,
-                    color: 'var(--color-text-secondary)',
+                    color: 'var(--sys-color-secondary)',
                   } as IconButton.Icon.IconData
                 }>
               </${IconButton.Icon.Icon.litTagName}>

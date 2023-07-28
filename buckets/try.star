@@ -217,6 +217,7 @@ cq_main = struct(
     experiment_builders = [
         # Quarantine a builder here
         # This will make them experiment 100%
+        "devtools_frontend_mac_rel",
         "devtools_frontend_parallel_linux_rel",
         "devtools_frontend_parallel_mac_rel",
         "devtools_frontend_parallel_win64_rel",

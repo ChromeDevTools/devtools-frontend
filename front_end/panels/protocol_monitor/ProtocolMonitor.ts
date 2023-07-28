@@ -625,26 +625,13 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this.#protocolMonitorDataGrid.addEventListener(Events.CommandChange, event => {
       this.#editorWidget.jsonEditor.displayCommand(event.data.command, event.data.parameters);
     });
-
+    this.#editorWidget.element.style.overflow = 'hidden';
     this.#split.setMainWidget(this.#protocolMonitorDataGrid);
     this.#split.setSidebarWidget(this.#editorWidget);
     this.#split.hideSidebar(true);
     this.#editorWidget.addEventListener(Events.CommandSent, event => {
       this.#protocolMonitorDataGrid.onCommandSend(event.data.command, event.data.parameters, event.data.targetId);
     });
-
-    this.#split.addEventListener(UI.SplitWidget.Events.SidebarSizeChanged, this.handleSidebarSizeChange.bind(this));
-  }
-
-  // This function will fire when the sidebar is resized
-  // It will allow the apparation of horizontal scrollbar in the editor
-  // when the side bar width is under 400px
-  private handleSidebarSizeChange(): void {
-    const width = this.#editorWidget.element.offsetWidth;
-    if (width <= this.#sideBarMinWidth) {
-      this.#editorWidget.element.style.overflowX = 'auto';
-      this.#editorWidget.element.style.overflowY = 'hidden';
-    }
   }
 
   static instance(opts: {forceNew: null|boolean} = {forceNew: null}): ProtocolMonitorImpl {

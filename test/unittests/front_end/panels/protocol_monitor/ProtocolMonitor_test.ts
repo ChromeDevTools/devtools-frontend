@@ -673,8 +673,9 @@ describe('ProtocolMonitor', () => {
 
         await renderHoveredElement(param);
 
-        const setDefaultValueButton = jsonEditor.renderRoot.querySelector('devtools-button');
-
+        // The first button will be the one to add so we take the second one which is the one to clear
+        const setDefaultValueButton =
+            jsonEditor.renderRoot.querySelector('devtools-button[title="Reset to default value"]');
         if (!setDefaultValueButton) {
           throw new Error('No button');
         }

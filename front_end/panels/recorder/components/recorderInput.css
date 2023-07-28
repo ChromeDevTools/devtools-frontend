@@ -42,12 +42,11 @@ devtools-editable-content[placeholder]:empty:focus::before {
 
 devtools-suggestion-box {
   position: absolute;
-  visibility: hidden;
-  display: block;
+  display: none;
 }
 
 devtools-editable-content:focus ~ devtools-suggestion-box {
-  visibility: visible;
+  display: block;
 }
 
 .suggestions {
@@ -59,6 +58,7 @@ devtools-editable-content:focus ~ devtools-suggestion-box {
   overflow-y: auto;
   position: relative;
   z-index: 100;
+  max-height: 350px;
 }
 
 .suggestions > li {

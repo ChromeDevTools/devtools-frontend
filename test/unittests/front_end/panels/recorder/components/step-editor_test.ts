@@ -267,8 +267,8 @@ describeWithLocale('StepEditor', () => {
       throw new Error('Failed to find element');
     }
     assert.strictEqual(
-        window.getComputedStyle(suggestions).visibility,
-        'visible',
+        window.getComputedStyle(suggestions).display,
+        'block',
     );
 
     input.dispatchEvent(
@@ -279,8 +279,8 @@ describeWithLocale('StepEditor', () => {
         }),
     );
     assert.strictEqual(
-        window.getComputedStyle(suggestions).visibility,
-        'hidden',
+        window.getComputedStyle(suggestions).display,
+        'none',
     );
   });
 
@@ -300,14 +300,14 @@ describeWithLocale('StepEditor', () => {
       throw new Error('Failed to find element');
     }
     assert.strictEqual(
-        window.getComputedStyle(suggestions).visibility,
-        'visible',
+        window.getComputedStyle(suggestions).display,
+        'block',
     );
 
     button.focus();
     assert.strictEqual(
-        window.getComputedStyle(suggestions).visibility,
-        'hidden',
+        window.getComputedStyle(suggestions).display,
+        'none',
     );
   });
 

@@ -751,75 +751,85 @@ export class JSONEditor extends LitElement {
           };
           return html`
                 <li class="row">
-                  <div class="row">
+                  <div class="row-icons">
                     <div class=${classMap(classes)} data-paramId=${parameterId}>
                         ${parameter.name}<span class="separator">:</span>
                     </div>
-                        <!-- Render button to complete reset an array parameter or an object parameter-->
-                        ${(isArray && parameter.value.length !== 0) || isObject ?
-                        this.#renderInlineButton({
+
+                    <!-- Render button to add values inside an array parameter -->
+                    ${isArray ? html`
+                      ${this.#renderInlineButton({
+                          title: i18nString(UIStrings.addParameter),
+                          iconName: 'plus',
+                          onClick: () => this.#handleAddParameter(parameterId),
+                          classMap: { deleteButton: true },
+                        })}
+                    `: nothing}
+
+                    <!-- Render button to complete reset an array parameter or an object parameter-->
+                    ${(isArray && parameter.value.length !== 0) || isObject ?
+                    this.#renderInlineButton({
+                      title: i18nString(UIStrings.resetDefaultValue),
+                      iconName: 'clear',
+                      onClick: () => this.#handleClearParameter(parameterId),
+                      classMap: {deleteButton: true},
+                    }) : nothing}
+
+                    <!-- Render the buttons to change the value from undefined to empty string for optional primitive parameters -->
+                    ${isPrimitive && !isParentArray && parameter.optional && parameter.value === undefined ?
+                        html`  ${this.#renderInlineButton({
+                          title: i18nString(UIStrings.addParameter),
+                          iconName: 'plus',
+                          onClick: () => this.#handleAddParameter(parameterId),
+                          classMap: { deleteButton: true },
+                        })}` : nothing}
+                  </div>
+
+                  <div class="row-icons">
+                    <!-- In case  the parameter is not optional or its value is not undefined render the input -->
+                    ${isPrimitive && (parameter.value !== undefined || !parameter.optional) && (!isParentArray) ?
+                      html`
+                        <devtools-recorder-input
+                          data-paramId=${parameterId}
+                          .options=${hasOptions ? this.#computeDropdownValues(parameter) : []}
+                          .autocomplete=${false}
+                          .value=${live(parameter.value ?? '')}
+                          .placeholder=${parameter.value === '' ? EMPTY_STRING : `<${defaultValueByType.get(parameter.type)}>`}
+                          class=${classMap({'json-input': true})}
+                          @blur=${handleInputOnBlur}
+                        ></devtools-recorder-input>` : nothing}
+
+                    <!-- Render the buttons to change the value from empty string to undefined for optional primitive parameters -->
+                    ${isPrimitive && !isParentArray && parameter.optional && parameter.value !== undefined ?
+                        html`  ${this.#renderInlineButton({
                           title: i18nString(UIStrings.resetDefaultValue),
                           iconName: 'clear',
                           onClick: () => this.#handleClearParameter(parameterId),
-                          classMap: {deleteButton: true},
-                        }) : nothing}
+                          classMap: { deleteButton: true },
+                        })}` : nothing}
 
-                          <!-- Render button to add values inside an array parameter -->
-                          ${isArray ? html`
-                          ${this.#renderInlineButton({
-                              title: i18nString(UIStrings.addParameter),
-                              iconName: 'plus',
-                              onClick: () => this.#handleAddParameter(parameterId),
-                              classMap: { deleteButton: true },
-                            })}
-                        `: nothing}
 
-                          <!-- In case  the parameter is not optional or its value is not undefined render the input -->
-                          ${isPrimitive && (parameter.value !== undefined || !parameter.optional) && (!isParentArray) ?
-                            html`
-                              <devtools-recorder-input
-                                data-paramId=${parameterId}
-                                .options=${hasOptions ? this.#computeDropdownValues(parameter) : []}
-                                .autocomplete=${false}
-                                .value=${live(parameter.value ?? '')}
-                                .placeholder=${parameter.value === '' ? EMPTY_STRING : `<${defaultValueByType.get(parameter.type)}>`}
-                                @blur=${handleInputOnBlur}
-                              ></devtools-recorder-input>` : nothing}
+                    <!-- In case the parameter is nested inside an array we render the input field as well as a delete button -->
+                    ${isParentArray ? html`
+                    <!-- If the parameter is an object we don't want to display the input field we just want the delete button-->
+                    ${!isObject ? html`
+                    <devtools-recorder-input
+                      data-paramId=${parameterId}
+                      .options=${hasOptions ? this.#computeDropdownValues(parameter) : []}
+                      .autocomplete=${false}
+                      .value=${live(parameter.value ?? '')}
+                      .placeholder=${parameter.value === '' ? EMPTY_STRING : `<${defaultValueByType.get(parameter.type)}>`}
+                      @blur=${handleInputOnBlur}
+                      class=${classMap({'json-input': true})}
+                    ></devtools-recorder-input>` : nothing}
 
-                          <!-- Render the buttons to change the value from undefined to empty string for optional primitive parameters -->
-                          ${isPrimitive && !isParentArray && parameter.optional ?
-                            html`${parameter.value === undefined ? html`  ${this.#renderInlineButton({
-                              title: i18nString(UIStrings.addParameter),
-                              iconName: 'plus',
-                              onClick: () => this.#handleAddParameter(parameterId),
-                              classMap: { deleteButton: true },
-                            })}` : html`  ${this.#renderInlineButton({
-                              title: i18nString(UIStrings.resetDefaultValue),
-                              iconName: 'clear',
-                              onClick: () => this.#handleClearParameter(parameterId),
-                              classMap: { deleteButton: true },
-                            })}`}` : nothing}
-
-                          <!-- In case the parameter is nested inside an array we render the input field as well as a delete button -->
-                          ${isParentArray ? html`
-                          <!-- If the parameter is an object we don't want to display the input field we just want the delete button-->
-                          ${!isObject ? html`
-                          <devtools-recorder-input
-                            data-paramId=${parameterId}
-                            .options=${hasOptions ? this.#computeDropdownValues(parameter) : []}
-                            .autocomplete=${false}
-                            .value=${live(parameter.value ?? '')}
-                            .placeholder=${parameter.value === '' ? EMPTY_STRING : `<${defaultValueByType.get(parameter.type)}>`}
-                            @blur=${handleInputOnBlur}
-                          ></devtools-recorder-input>` : nothing}
-
-                            ${this.#renderInlineButton({
-                                title: i18nString(UIStrings.deleteParameter),
-                                iconName: 'bin',
-                                onClick: () => this.#handleDeleteParameter(parameterId),
-                                classMap: { deleteButton: true },
-                              })}` : nothing}
-                    </div>
+                    ${this.#renderInlineButton({
+                        title: i18nString(UIStrings.deleteParameter),
+                        iconName: 'bin',
+                        onClick: () => this.#handleDeleteParameter(parameterId),
+                        classMap: { deleteButton: true },
+                      })}` : nothing}
+                  </div>
                 </li>
                 ${this.#renderParameters(subparameters, id, parameter, parameterId)}
               `;
@@ -841,6 +851,7 @@ export class JSONEditor extends LitElement {
           .value=${this.command}
           .placeholder=${'Enter your command...'}
           @blur=${this.#handleCommandInputBlur}
+          class=${classMap({'json-input': true})}
         ></devtools-recorder-input>
       </div>
       ${this.parameters.length ? html`

@@ -20,7 +20,7 @@ export function setUpEnvironment() {
   Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
   const networkPersistenceManager =
       Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
-  return {networkPersistenceManager};
+  return {networkPersistenceManager, workspace, debuggerWorkspaceBinding};
 }
 
 export async function createWorkspaceProject(

@@ -428,6 +428,11 @@ export class UISourceCode extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return this.isUnconditionallyIgnoreListedInternal;
   }
 
+  isFetchXHR(): boolean {
+    return [Common.ResourceType.resourceTypes.XHR, Common.ResourceType.resourceTypes.Fetch].includes(
+        this.contentType());
+  }
+
   /**
    * Unconditionally ignore list this UISourcecode, ignoring any user
    * setting. We use this to mark breakpoint/logpoint condition scripts for now.

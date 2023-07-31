@@ -9,8 +9,10 @@ copy_to_gen("network") {
     "cacheable.rawresponse",
     "chunked.txt",
     "chunked_sync.html",
+    "coffees.json",
     "csp-report-only.rawresponse",
     "embedded_requests.html",
+    "fetch-json.html",
     "fetch.html",
     "headers-and-payload.html",
     "hello.html",
@@ -43,6 +45,7 @@ copy_to_gen("network") {
     "webbundle_bad_metadata.wbn",
     "webbundle_bad_metadata.wbn.headers",
     "websocket.html",
+    "xhr-json.html",
     "xhr.html",
   ]
 }

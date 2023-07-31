@@ -471,6 +471,10 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       return;
     }
 
+    if (uiSourceCode.isFetchXHR()) {
+      return;
+    }
+
     const frames = Bindings.NetworkProject.NetworkProject.framesForUISourceCode(uiSourceCode);
     if (frames.length) {
       for (const frame of frames) {

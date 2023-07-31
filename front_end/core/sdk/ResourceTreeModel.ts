@@ -310,7 +310,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     }
 
     const request = event.data;
-    if (request.failed || request.resourceType() === Common.ResourceType.resourceTypes.XHR) {
+    if (request.failed) {
       return;
     }
 

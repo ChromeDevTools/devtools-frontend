@@ -14,6 +14,7 @@ export function createContentProviderUISourceCodes(options: {
   items: {
     url: Platform.DevToolsPath.UrlString,
     content?: string, mimeType: string,
+    resourceType?: Common.ResourceType.ResourceType,
     metadata?: Workspace.UISourceCode.UISourceCodeMetadata,
   }[],
   projectType?: Workspace.Workspace.projectTypes,
@@ -35,7 +36,7 @@ export function createContentProviderUISourceCodes(options: {
   }
   const uiSourceCodes: Workspace.UISourceCode.UISourceCode[] = [];
   for (const item of options.items) {
-    const resourceType = Common.ResourceType.ResourceType.fromMimeType(item.mimeType);
+    const resourceType = item.resourceType || Common.ResourceType.ResourceType.fromMimeType(item.mimeType);
     const uiSourceCode = project.createUISourceCode(item.url, resourceType);
     const contentProvider =
         TextUtils.StaticContentProvider.StaticContentProvider.fromString(item.url, resourceType, item.content || '');

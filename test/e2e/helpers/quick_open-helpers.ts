@@ -53,6 +53,11 @@ export const openFileQuickOpen = async () => {
   await waitFor(QUICK_OPEN_SELECTOR);
 };
 
+export async function readQuickOpenResults(): Promise<string[]> {
+  const items = await $$('.filtered-list-widget-title');
+  return await Promise.all(items.map(element => element.evaluate(el => el.textContent as string)));
+}
+
 export const openFileWithQuickOpen = async (filename: string, filePosition = 0) => {
   await openFileQuickOpen();
   await typeIntoQuickOpen(filename);

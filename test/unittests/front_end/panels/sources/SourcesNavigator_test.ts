@@ -70,6 +70,60 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
     });
 
+    it('shows folder with scripts requests', async () => {
+      const {project} = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: 'http://example.com/script.js' as Platform.DevToolsPath.UrlString,
+            mimeType: 'application/javascript',
+            resourceType: Common.ResourceType.resourceTypes.Script,
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        target,
+      });
+
+      const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
+      const rootElement = navigatorView.scriptsTree.rootElement();
+
+      assertNotNullOrUndefined(rootElement);
+
+      const folder = rootElement.firstChild();
+      const file = folder?.firstChild();
+
+      assert.strictEqual(folder?.title, 'example.com');
+      assert.strictEqual(file?.title, 'script.js');
+
+      project.removeProject();
+    });
+
+    it('does not shows XHR and Fetch requests', async () => {
+      const {project} = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: 'http://example.com/list-xhr.json' as Platform.DevToolsPath.UrlString,
+            mimeType: 'application/json',
+            resourceType: Common.ResourceType.resourceTypes.XHR,
+          },
+          {
+            url: 'http://example.com/list-fetch.json' as Platform.DevToolsPath.UrlString,
+            mimeType: 'application/json',
+            resourceType: Common.ResourceType.resourceTypes.Fetch,
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        target,
+      });
+
+      const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
+      const rootElement = navigatorView.scriptsTree.rootElement();
+
+      assertNotNullOrUndefined(rootElement);
+      assert.strictEqual(rootElement.children().length, 0);
+
+      project.removeProject();
+    });
+
     it('reveals main frame target on navigation', async () => {
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
 

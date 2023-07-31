@@ -47,11 +47,10 @@ describeWithEnvironment('FilteredUISourceCodeListProvider', () => {
     filteredUISourceCodeListProvider.attach();
 
     const result = filteredUISourceCodeListProvider.itemCount();
-    const expected = 0;
 
     workspace.removeProject(project);
 
-    assert.strictEqual(result, expected);
+    assert.strictEqual(result, 0);
   });
 
   it('should exclude XHR requests in the result', () => {

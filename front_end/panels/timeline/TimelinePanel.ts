@@ -318,9 +318,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   // Tracks the index of the trace that the user is currently viewing.
   #traceEngineActiveTraceIndex = -1;
 
-  constructor() {
+  constructor(fullTraceEngine: boolean = false) {
     super('timeline');
-    this.#traceEngineModel = TraceEngine.TraceModel.Model.createWithRequiredHandlersForMigration();
+    this.#traceEngineModel = fullTraceEngine ? TraceEngine.TraceModel.Model.createWithAllHandlers() :
+                                               TraceEngine.TraceModel.Model.createWithRequiredHandlersForMigration();
     this.element.addEventListener('contextmenu', this.contextMenu.bind(this), false);
     this.dropTarget = new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.File, UI.DropTarget.Type.URI],
@@ -430,12 +431,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   static instance(opts: {
     forceNew: boolean|null,
     isNode: boolean,
-  }|undefined = {forceNew: null, isNode: false}): TimelinePanel {
+    fullTraceEngine?: boolean,
+  }|undefined = {forceNew: null, isNode: false, fullTraceEngine: false}): TimelinePanel {
     const {forceNew, isNode: isNodeMode} = opts;
     isNode = isNodeMode;
 
     if (!timelinePanelInstance || forceNew) {
-      timelinePanelInstance = new TimelinePanel();
+      timelinePanelInstance = new TimelinePanel(opts.fullTraceEngine);
     }
 
     return timelinePanelInstance;

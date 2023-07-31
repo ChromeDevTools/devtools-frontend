@@ -155,29 +155,26 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
       // Lighthouse can only audit normal pages.
       isPageTargetCallback: targetInfo => targetInfo.type === 'page',
     });
+
     const {page} = puppeteerHandle;
-    const configContext = {
-      logLevel: flags.logLevel,
-      settingsOverrides: flags,
-    };
+    if (!page) {
+      throw new Error('Could not create page handle for the target page');
+    }
 
     if (action === 'snapshot') {
-      // TODO: Remove `configContext` once Lighthouse roll removes it
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-      return await self.runLighthouseSnapshot({config, page, configContext, flags});
+      return await self.snapshot(page, {config, flags});
     }
 
     if (action === 'startTimespan') {
-      // TODO: Remove `configContext` once Lighthouse roll removes it
       // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-      const timespan = await self.startLighthouseTimespan({config, page, configContext, flags});
+      const timespan = await self.startTimespan(page, {config, flags});
       endTimespan = timespan.endTimespan;
       return;
     }
 
-    // TODO: Remove `configContext` once Lighthouse roll removes it
     // @ts-expect-error https://github.com/GoogleChrome/lighthouse/issues/11628
-    return await self.runLighthouseNavigation(url, {config, page, configContext, flags});
+    return await self.navigation(page, url, {config, flags});
   } catch (err) {
     return ({
       fatal: true,

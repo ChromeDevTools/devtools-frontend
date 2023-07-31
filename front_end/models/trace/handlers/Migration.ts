@@ -8,6 +8,8 @@ import * as Memory from './MemoryHandler.js';
 import * as NetworkRequests from './NetworkRequestsHandler.js';
 import * as PageLoadMetrics from './PageLoadMetricsHandler.js';
 import * as Screenshots from './ScreenshotsHandler.js';
+import type * as Renderer from './RendererHandler.js';
+import type * as Samples from './SamplesHandler.js';
 import * as UserInteractions from './UserInteractionsHandler.js';
 import * as UserTimings from './UserTimingsHandler.js';
 import * as Warnings from './WarningsHandler.js';
@@ -29,4 +31,16 @@ export const ENABLED_TRACE_HANDLERS = {
   Warnings,
 };
 
-export type PartialTraceData = Readonly<Types.EnabledHandlerDataWithMeta<typeof ENABLED_TRACE_HANDLERS>>;
+// Renderer and Samples handler are only executed when the panel is run
+// from the component examples server. Thus we mark them as optional
+// properties during the migration.
+export type MaybeRendererAndSamplesHandler = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Renderer?: typeof Renderer,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Samples?: typeof Samples,
+};
+
+export type EnabledHandlersDuringMigration = typeof ENABLED_TRACE_HANDLERS&MaybeRendererAndSamplesHandler;
+
+export type PartialTraceData = Readonly<Types.EnabledHandlerDataWithMeta<EnabledHandlersDuringMigration>>;

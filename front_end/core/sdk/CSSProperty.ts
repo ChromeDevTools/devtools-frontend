@@ -170,6 +170,10 @@ export class CSSProperty {
 
     if (majorChange) {
       HostModule.userMetrics.actionTaken(HostModule.UserMetrics.Action.StyleRuleEdited);
+      if (this.ownerStyle.parentRule?.isKeyframeRule()) {
+        HostModule.userMetrics.actionTaken(HostModule.UserMetrics.Action.StylePropertyInsideKeyframeEdited);
+      }
+
       if (this.name.startsWith('--')) {
         HostModule.userMetrics.actionTaken(HostModule.UserMetrics.Action.CustomPropertyEdited);
       }

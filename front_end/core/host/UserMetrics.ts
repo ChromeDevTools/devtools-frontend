@@ -542,7 +542,8 @@ export enum Action {
   StyleSheetInitiatorLinkClicked = 80,
   BreakpointRemovedFromGutterContextMenu = 81,
   BreakpointRemovedFromGutterToggle = 82,
-  MaxValue = 83,
+  StylePropertyInsideKeyframeEdited = 83,
+  MaxValue = 84,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

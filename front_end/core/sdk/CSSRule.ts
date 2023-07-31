@@ -70,6 +70,10 @@ export class CSSRule {
     return this.origin === Protocol.CSS.StyleSheetOrigin.Regular;
   }
 
+  isKeyframeRule(): boolean {
+    return false;
+  }
+
   cssModel(): CSSModel {
     return this.cssModelInternal;
   }
@@ -260,6 +264,10 @@ export class CSSKeyframeRule extends CSSRule {
     }
 
     super.rebase(edit);
+  }
+
+  override isKeyframeRule(): boolean {
+    return true;
   }
 
   setKeyText(newKeyText: string): Promise<boolean> {

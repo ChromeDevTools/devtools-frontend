@@ -45,7 +45,7 @@ vars = {
   # Chrome version used for tests. It should be regularly updated to
   # match the Canary version listed here:
   # https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json
-  'chrome': '117.0.5918.0',
+  'chrome': '117.0.5920.0',
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.

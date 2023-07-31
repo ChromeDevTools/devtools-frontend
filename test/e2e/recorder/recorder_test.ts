@@ -17,19 +17,21 @@ import {
   describe,
   it,
 } from '../../../test/shared/mocha-extensions.js';
+
 import {
+  assertRecordingMatchesSnapshot,
   changeNetworkConditions,
   fillCreateRecordingForm,
   getCurrentRecording,
+  getRecordingController,
+  onRecorderAttachedToTarget,
   openRecorderPanel,
+  startOrStopRecordingShortcut,
   startRecording,
   startRecordingViaShortcut,
   stopRecording,
-  startOrStopRecordingShortcut,
-  getRecordingController,
-  onRecorderAttachedToTarget,
-  assertRecordingMatchesSnapshot,
 } from './helpers.js';
+
 import {type RecorderActions} from '../../../front_end/panels/recorder/recorder-actions.js';
 import {type UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
 import {assertMatchesJSONSnapshot} from '../../../test/shared/snapshots.js';
@@ -338,6 +340,7 @@ describe('Recorder', function() {
 
     const {target} = getBrowserAndPages();
     await target.bringToFront();
+    await target.waitForSelector('input');
     await target.keyboard.press('1');
     await target.keyboard.press('Enter', {delay: 50});
 

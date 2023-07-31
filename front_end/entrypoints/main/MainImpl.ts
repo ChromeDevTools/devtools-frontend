@@ -326,7 +326,7 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         'evaluateExpressionsWithSourceMaps', 'Resolve variable names in expressions using source maps', undefined);
     Root.Runtime.experiments.register('instrumentationBreakpoints', 'Enable instrumentation breakpoints', true);
-    Root.Runtime.experiments.register('setAllBreakpointsEagerly', 'Set all breakpoints eagerly at startup', true);
+    Root.Runtime.experiments.register('setAllBreakpointsEagerly', 'Set all breakpoints eagerly at startup');
 
     // Dual-screen
     Root.Runtime.experiments.register(
@@ -423,6 +423,7 @@ export class MainImpl {
       ...('EyeDropper' in window ? [Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER] : []),
       'keyboardShortcutEditor',
       'sourcesPrettyPrint',
+      'setAllBreakpointsEagerly',
       Root.Runtime.ExperimentName.DISABLE_COLOR_FORMAT_SETTING,
       Root.Runtime.ExperimentName.TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL,
       Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING,

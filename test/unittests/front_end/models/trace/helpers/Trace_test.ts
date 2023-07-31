@@ -366,4 +366,16 @@ describeWithEnvironment('TraceModel helpers', function() {
       }
     });
   });
+  describe('activeURLForFrameAtTime', () => {
+    it('extracts the active url for a frame at a given time', async function() {
+      const traceEvents = await TraceLoader.traceEngine(this, 'simple-js-program.json.gz');
+      const frameId = '1F729458403A23CF1D8D246095129AC4';
+      const firstURL = TraceModel.Helpers.Trace.activeURLForFrameAtTime(
+          frameId, TraceModel.Types.Timing.MicroSeconds(251126654355), traceEvents.Meta.rendererProcessesByFrame);
+      assert.strictEqual(firstURL, 'about:blank');
+      const secondURL = TraceModel.Helpers.Trace.activeURLForFrameAtTime(
+          frameId, TraceModel.Types.Timing.MicroSeconds(251126663398), traceEvents.Meta.rendererProcessesByFrame);
+      assert.strictEqual(secondURL, 'https://www.google.com');
+    });
+  });
 });

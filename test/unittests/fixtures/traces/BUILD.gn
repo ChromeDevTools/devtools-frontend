@@ -45,6 +45,7 @@ copy_to_gen("traces") {
     "reload-and-trace-page.json.gz",
     "reload-no-tti.json.gz",
     "request-with-query-param.json.gz",
+    "simple-js-program.json.gz",
     "slow-interaction-button-click.json.gz",
     "slow-interaction-keydown.json.gz",
     "style-invalidation-change-attribute.json.gz",

@@ -132,3 +132,24 @@ export function getNavigationForTraceEvent(
 export function extractId(event: Types.TraceEvents.TraceEventNestableAsync): string|undefined {
   return event.id || event.id2?.global || event.id2?.local;
 }
+
+export function activeURLForFrameAtTime(
+    frameId: string, time: Types.Timing.MicroSeconds,
+    rendererProcessesByFrame: Map<
+        string,
+        Map<Types.TraceEvents.ProcessID, {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindow}[]>>):
+    string|null {
+  const processData = rendererProcessesByFrame.get(frameId);
+  if (!processData) {
+    return null;
+  }
+  for (const processes of processData.values()) {
+    for (const processInfo of processes) {
+      if (processInfo.window.min > time || processInfo.window.max < time) {
+        continue;
+      }
+      return processInfo.frame.url;
+    }
+  }
+  return null;
+}

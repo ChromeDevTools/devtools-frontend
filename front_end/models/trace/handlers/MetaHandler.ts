@@ -10,7 +10,7 @@ import {HandlerState} from './types.js';
 // We track the renderer processes we see in each frame on the way through the trace.
 const rendererProcessesByFrameId = new Map<
     string,
-    Map<Types.TraceEvents.ProcessID, {window: Types.Timing.TraceWindow, frame: Types.TraceEvents.TraceFrame}>>();
+    Map<Types.TraceEvents.ProcessID, {window: Types.Timing.TraceWindow, frame: Types.TraceEvents.TraceFrame}[]>>();
 
 // We will often want to key data by Frame IDs, and commonly we'll care most
 // about the main frame's ID, so we store and expose that.
@@ -99,26 +99,27 @@ function updateRendererProcessByFrame(
   const rendererProcessInFrame = Platform.MapUtilities.getWithDefault(
       rendererProcessesByFrameId, frame.frame,
       () => new Map<
-          Types.TraceEvents.ProcessID, {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindow}>());
+          Types.TraceEvents.ProcessID, {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindow}[]>());
   const rendererProcessInfo = Platform.MapUtilities.getWithDefault(rendererProcessInFrame, frame.processId, () => {
-    return {
-      frame,
-      window: {
-        min: Types.Timing.MicroSeconds(0),
-        max: Types.Timing.MicroSeconds(0),
-        range: Types.Timing.MicroSeconds(0),
-      },
-    };
+    return [];
   });
+  const lastProcessData = rendererProcessInfo.at(-1);
 
-  // If this window was already created, do nothing.
-  if (rendererProcessInfo.window.min !== Types.Timing.MicroSeconds(0)) {
+  // Only store a new entry if the URL changed, otherwise it's just
+  // redundant information.
+  if (lastProcessData && lastProcessData.frame.url === frame.url) {
     return;
   }
-
   // For now we store the time of the event as the min. In the finalize we step
   // through each of these windows and update their max and range values.
-  rendererProcessInfo.window.min = event.ts;
+  rendererProcessInfo.push({
+    frame,
+    window: {
+      min: event.ts,
+      max: Types.Timing.MicroSeconds(0),
+      range: Types.Timing.MicroSeconds(0),
+    },
+  });
 }
 
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
@@ -261,7 +262,7 @@ export async function finalize(): Promise<void> {
   // each particular renderer started and stopped being the main renderer
   // process.
   for (const [, processWindows] of rendererProcessesByFrameId) {
-    const processWindowValues = [...processWindows.values()];
+    const processWindowValues = [...processWindows.values()].flat();
     for (let i = 0; i < processWindowValues.length; i++) {
       const currentWindow = processWindowValues[i];
       const nextWindow = processWindowValues[i + 1];
@@ -314,13 +315,22 @@ type MetaHandlerData = {
                       Map<Types.TraceEvents.ThreadID, Types.TraceEvents.TraceEventThreadName>>,
               mainFrameId: string,
               mainFrameURL: string,
-              rendererProcessesByFrame:
-                  Map<string,
-                      Map<Types.TraceEvents.ProcessID,
-                          {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindow}>>,
+              /**
+               * A frame can have multiple renderer processes, at the same time,
+               * a renderer process can have multiple URLs. This map tracks the
+               * processes active on a given frame, with the time window in which
+               * they were active. Because a renderer process might have multiple
+               * URLs, each process in each frame has an array of windows, with an
+               * entry for each URL it had.
+               */
+              rendererProcessesByFrame: FrameProcessData,
               topLevelRendererIds: Set<Types.TraceEvents.ProcessID>,
               frameByProcessId: Map<Types.TraceEvents.ProcessID, Map<string, Types.TraceEvents.TraceFrame>>,
 };
+
+export type FrameProcessData =
+    Map<string,
+        Map<Types.TraceEvents.ProcessID, {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindow}[]>>;
 
 export function data(): MetaHandlerData {
   if (handlerState !== HandlerState.FINALIZED) {

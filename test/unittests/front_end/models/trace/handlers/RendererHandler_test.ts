@@ -882,8 +882,7 @@ describeWithEnvironment('RendererHandler', function() {
         Map<TraceModel.Types.TraceEvents.ProcessID, TraceModel.Handlers.ModelHandlers.Renderer.RendererProcess> =
             new Map();
 
-    TraceModel.Handlers.ModelHandlers.Renderer.assignOrigin(
-        processes, metadata.mainFrameId, metadata.rendererProcessesByFrame);
+    TraceModel.Handlers.ModelHandlers.Renderer.assignOrigin(processes, metadata.rendererProcessesByFrame);
 
     assert.deepEqual([...processes].map(([pid, p]) => [pid, p.url ? new URL(p.url).origin : null]), [
       [TraceModel.Types.TraceEvents.ProcessID(MAIN_FRAME_PID), 'http://localhost:5000'],

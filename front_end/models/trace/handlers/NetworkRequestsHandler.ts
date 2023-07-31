@@ -6,6 +6,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import {type TraceEventHandlerName, HandlerState} from './types.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
+import * as Helpers from '../helpers/helpers.js';
 
 import * as Types from '../types/types.js';
 
@@ -343,9 +344,8 @@ export async function finalize(): Promise<void> {
         request.resourceFinish ? request.resourceFinish.args.data : {encodedDataLength: 0, decodedBodyLength: 0};
     const {host, protocol, pathname, search} = new URL(url);
     const isHttps = protocol === 'https:';
-    const renderProcesses = rendererProcessesByFrame.get(frame);
-    const processInfo = renderProcesses?.get(finalSendRequest.pid);
-    const requestingFrameUrl = processInfo ? processInfo.frame.url : '';
+    const requestingFrameUrl =
+        Helpers.Trace.activeURLForFrameAtTime(frame, finalSendRequest.ts, rendererProcessesByFrame) || '';
 
     // Construct a synthetic trace event for this network request.
     const networkEvent: Types.TraceEvents.TraceEventSyntheticNetworkRequest = {

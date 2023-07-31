@@ -123,7 +123,9 @@ function storePageLoadMetricAgainstNavigationId(
 
   // We compare the timestamp of the event to determine if it happened during the
   // time window in which its process was considered active.
-  const eventBelongsToProcess = event.ts >= processData.window.min && event.ts <= processData.window.max;
+  const minTime = processData[0].window.min;
+  const maxTime = processData.at(-1)?.window.max || 0;
+  const eventBelongsToProcess = event.ts >= minTime && event.ts <= maxTime;
 
   if (!eventBelongsToProcess) {
     // If the event occurred outside its process' active time window we ignore it.

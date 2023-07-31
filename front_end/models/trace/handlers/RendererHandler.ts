@@ -5,7 +5,7 @@
 import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 
-import {data as metaHandlerData} from './MetaHandler.js';
+import {data as metaHandlerData, type FrameProcessData} from './MetaHandler.js';
 import {data as samplesHandlerData} from './SamplesHandler.js';
 
 import {KNOWN_EVENTS, type TraceEventHandlerName, HandlerState} from './types.js';
@@ -143,11 +143,11 @@ export function data(): RendererHandlerData {
  */
 export function assignMeta(
     processes: Map<Types.TraceEvents.ProcessID, RendererProcess>, mainFrameId: string,
-    rendererProcessesByFrame: Map<string, Map<Types.TraceEvents.ProcessID, {frame: Types.TraceEvents.TraceFrame}>>,
+    rendererProcessesByFrame: FrameProcessData,
     threadsInProcess:
         Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ThreadID, Types.TraceEvents.TraceEventThreadName>>):
     void {
-  assignOrigin(processes, mainFrameId, rendererProcessesByFrame);
+  assignOrigin(processes, rendererProcessesByFrame);
   assignIsMainFrame(processes, mainFrameId, rendererProcessesByFrame);
   assignThreadName(processes, rendererProcessesByFrame, threadsInProcess);
 }
@@ -157,26 +157,27 @@ export function assignMeta(
  * @see assignMeta
  */
 export function assignOrigin(
-    processes: Map<Types.TraceEvents.ProcessID, RendererProcess>, mainFrameId: string,
-    rendererProcessesByFrame: Map<string, Map<Types.TraceEvents.ProcessID, {frame: Types.TraceEvents.TraceFrame}>>):
-    void {
-  for (const [frameId, renderProcessesByPid] of rendererProcessesByFrame) {
-    for (const [pid, processInfo] of renderProcessesByPid) {
-      const process = getOrCreateRendererProcess(processes, pid);
-      // Sometimes a single process is responsible with rendering multiple
-      // frames at the same time. For example, see https://crbug.com/1334563.
-      // When this happens, we'd still like to assign a single url per process
-      // so: 1) use the first frame rendered by this process as the url source
-      // and 2) if there's a more "important" frame found, use its url instead.
-      if (process.url === null /* first frame */ || frameId === mainFrameId /* more important frame */) {
-        // If we are here, it's because we care about this process and the URL. But before we store
-        // it, we check if it is a valid URL by trying to create a URL object. If it isn't, we won't
-        // set it, and this process will be filtered out later.
-        try {
-          new URL(processInfo.frame.url);
-          process.url = processInfo.frame.url;
-        } catch (e) {
-          process.url = null;
+    processes: Map<Types.TraceEvents.ProcessID, RendererProcess>, rendererProcessesByFrame: FrameProcessData): void {
+  for (const renderProcessesByPid of rendererProcessesByFrame.values()) {
+    for (const [pid, processWindows] of renderProcessesByPid) {
+      for (const processInfo of processWindows.flat()) {
+        const process = getOrCreateRendererProcess(processes, pid);
+        // Sometimes a single process is responsible with rendering multiple
+        // frames at the same time. For example, see https://crbug.com/1334563.
+        // When this happens, we'd still like to assign a single url per process
+        // so: 1) use the first frame rendered by this process as the url source
+        // and 2) if the last url is "about:blank", use the next frame's url,
+        // data from about:blank is irrelevant.
+        if (process.url === null || process.url === 'about:blank') {
+          // If we are here, it's because we care about this process and the URL. But before we store
+          // it, we check if it is a valid URL by trying to create a URL object. If it isn't, we won't
+          // set it, and this process will be filtered out later.
+          try {
+            new URL(processInfo.frame.url);
+            process.url = processInfo.frame.url;
+          } catch (e) {
+            process.url = null;
+          }
         }
       }
     }
@@ -189,8 +190,7 @@ export function assignOrigin(
  */
 export function assignIsMainFrame(
     processes: Map<Types.TraceEvents.ProcessID, RendererProcess>, mainFrameId: string,
-    rendererProcessesByFrame: Map<string, Map<Types.TraceEvents.ProcessID, {frame: Types.TraceEvents.TraceFrame}>>):
-    void {
+    rendererProcessesByFrame: FrameProcessData): void {
   for (const [frameId, renderProcessesByPid] of rendererProcessesByFrame) {
     for (const [pid] of renderProcessesByPid) {
       const process = getOrCreateRendererProcess(processes, pid);
@@ -210,8 +210,7 @@ export function assignIsMainFrame(
  * @see assignMeta
  */
 export function assignThreadName(
-    processes: Map<Types.TraceEvents.ProcessID, RendererProcess>,
-    rendererProcessesByFrame: Map<string, Map<Types.TraceEvents.ProcessID, {frame: Types.TraceEvents.TraceFrame}>>,
+    processes: Map<Types.TraceEvents.ProcessID, RendererProcess>, rendererProcessesByFrame: FrameProcessData,
     threadsInProcess:
         Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ThreadID, Types.TraceEvents.TraceEventThreadName>>):
     void {

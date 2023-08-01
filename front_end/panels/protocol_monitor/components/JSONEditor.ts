@@ -715,7 +715,7 @@ export class JSONEditor extends LitElement {
     return html`
           <devtools-button
             title=${opts.title}
-            .size=${Buttons.Button.Size.MEDIUM}
+            .size=${Buttons.Button.Size.SMALL}
             .iconName=${opts.iconName}
             .variant=${Buttons.Button.Variant.ROUND}
             class=${classMap(opts.classMap)}
@@ -795,7 +795,6 @@ export class JSONEditor extends LitElement {
                           .autocomplete=${false}
                           .value=${live(parameter.value ?? '')}
                           .placeholder=${parameter.value === '' ? EMPTY_STRING : `<${defaultValueByType.get(parameter.type)}>`}
-                          class=${classMap({'json-input': true})}
                           @blur=${handleInputOnBlur}
                         ></devtools-recorder-input>` : nothing}
 
@@ -805,7 +804,7 @@ export class JSONEditor extends LitElement {
                           title: i18nString(UIStrings.resetDefaultValue),
                           iconName: 'clear',
                           onClick: () => this.#handleClearParameter(parameterId),
-                          classMap: { deleteButton: true },
+                          classMap: { deleteButton: true, deleteIcon: true },
                         })}` : nothing}
 
 
@@ -820,14 +819,13 @@ export class JSONEditor extends LitElement {
                       .value=${live(parameter.value ?? '')}
                       .placeholder=${parameter.value === '' ? EMPTY_STRING : `<${defaultValueByType.get(parameter.type)}>`}
                       @blur=${handleInputOnBlur}
-                      class=${classMap({'json-input': true})}
                     ></devtools-recorder-input>` : nothing}
 
                     ${this.#renderInlineButton({
                         title: i18nString(UIStrings.deleteParameter),
                         iconName: 'bin',
                         onClick: () => this.#handleDeleteParameter(parameterId),
-                        classMap: { deleteButton: true },
+                        classMap: { deleteButton: true, deleteIcon: true },
                       })}` : nothing}
                   </div>
                 </li>

@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Extensions from '../../../../../front_end/models/extensions/extensions.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 
@@ -276,6 +277,146 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
       // eslint-disable-next-line rulesdir/compare_arrays_with_assert_deepequal
       assert.hasAnyKeys(result, ['entries']);
     }
+  });
+
+  function setUpFrame(
+      name: string, url: Platform.DevToolsPath.UrlString, parentFrame?: SDK.ResourceTreeModel.ResourceTreeFrame,
+      executionContextOrigin?: Platform.DevToolsPath.UrlString) {
+    const mimeType = 'text/html';
+    const secureContextType = Protocol.Page.SecureContextType.Secure;
+    const crossOriginIsolatedContextType = Protocol.Page.CrossOriginIsolatedContextType.Isolated;
+    const loaderId = 'loader' as Protocol.Network.LoaderId;
+
+    const parentTarget = parentFrame?.resourceTreeModel()?.target();
+    const target = createTarget({id: `${name}-target-id` as Protocol.Target.TargetID, parentTarget});
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    Platform.assertNotNullOrUndefined(resourceTreeModel);
+
+    const id = `${name}-frame-id` as Protocol.Page.FrameId;
+    resourceTreeModel.frameNavigated(
+        {
+          id,
+          parentId: parentFrame?.id,
+          loaderId,
+          url,
+          domainAndRegistry: new URL(url).hostname,
+          securityOrigin: new URL(url).origin,
+          mimeType,
+          secureContextType,
+          crossOriginIsolatedContextType,
+          gatedAPIFeatures: [],
+        },
+        Protocol.Page.NavigationType.Navigation);
+
+    if (executionContextOrigin) {
+      executionContextOrigin = new URL(executionContextOrigin).origin as Platform.DevToolsPath.UrlString;
+      const parentRuntimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      Platform.assertNotNullOrUndefined(parentRuntimeModel);
+      parentRuntimeModel.executionContextCreated({
+        id: 0 as Protocol.Runtime.ExecutionContextId,
+        origin: executionContextOrigin,
+        name: executionContextOrigin,
+        uniqueId: executionContextOrigin,
+        auxData: {frameId: id, isDefault: true},
+      });
+    }
+
+    const frame = resourceTreeModel.frameForId(id);
+    Platform.assertNotNullOrUndefined(frame);
+    return frame;
+  }
+
+  it('blocks evaluation on blocked subframes', async () => {
+    assert.isUndefined(context.chrome.devtools);
+    const parentFrameUrl = 'http://example.com' as Platform.DevToolsPath.UrlString;
+    const childFrameUrl = 'http://web.dev' as Platform.DevToolsPath.UrlString;
+    const parentFrame = setUpFrame('parent', parentFrameUrl);
+    setUpFrame('child', childFrameUrl, parentFrame);
+
+    const result = await new Promise<{result: unknown, error?: {details: unknown[]}}>(
+        r => context.chrome.devtools?.inspectedWindow.eval(
+            '4', {frameURL: childFrameUrl}, (result, error) => r({result, error})));
+
+    assert.deepStrictEqual(result.error?.details, ['Permission denied']);
+  });
+
+  it('doesn\'t block evaluation on blocked sub-executioncontexts with useContentScriptContext', async () => {
+    assert.isUndefined(context.chrome.devtools);
+
+    const parentFrameUrl = 'http://example.com' as Platform.DevToolsPath.UrlString;
+    const childFrameUrl = 'http://example.com/2' as Platform.DevToolsPath.UrlString;
+    const childExeContextOrigin = 'http://web.dev' as Platform.DevToolsPath.UrlString;
+    const parentFrame = setUpFrame('parent', parentFrameUrl, undefined, parentFrameUrl);
+    const childFrame = setUpFrame('child', childFrameUrl, parentFrame, childExeContextOrigin);
+
+    // Create a fake content script execution context, i.e., a non-default context with the extension's (== window's)
+    // origin.
+    const runtimeModel = childFrame.resourceTreeModel()?.target().model(SDK.RuntimeModel.RuntimeModel);
+    Platform.assertNotNullOrUndefined(runtimeModel);
+    runtimeModel.executionContextCreated({
+      id: 1 as Protocol.Runtime.ExecutionContextId,
+      origin: window.location.origin,
+      name: window.location.origin,
+      uniqueId: window.location.origin,
+      auxData: {frameId: childFrame.id, isDefault: false},
+    });
+    const contentScriptExecutionContext = runtimeModel.executionContext(1);
+    Platform.assertNotNullOrUndefined(contentScriptExecutionContext);
+    sinon.stub(contentScriptExecutionContext, 'evaluate').returns(Promise.resolve({
+      object: SDK.RemoteObject.RemoteObject.fromLocalObject(4),
+    }));
+
+    const result = await new Promise<{result: unknown, error?: {details: unknown[]}}>(
+        r => context.chrome.devtools?.inspectedWindow.eval(
+            '4', {frameURL: childFrameUrl, useContentScriptContext: true}, (result, error) => r({result, error})));
+
+    assert.deepStrictEqual(result.result, 4);
+  });
+
+  it('blocks evaluation on blocked sub-executioncontexts with explicit scriptExecutionContextOrigin', async () => {
+    assert.isUndefined(context.chrome.devtools);
+
+    const parentFrameUrl = 'http://example.com' as Platform.DevToolsPath.UrlString;
+    const childFrameUrl = 'http://example.com/2' as Platform.DevToolsPath.UrlString;
+    const parentFrame = setUpFrame('parent', parentFrameUrl, undefined, parentFrameUrl);
+    const childFrame = setUpFrame('child', childFrameUrl, parentFrame, parentFrameUrl);
+
+    // Create a non-default context with a blocked origin.
+    const childExeContextOrigin = 'http://web.dev' as Platform.DevToolsPath.UrlString;
+    const runtimeModel = childFrame.resourceTreeModel()?.target().model(SDK.RuntimeModel.RuntimeModel);
+    Platform.assertNotNullOrUndefined(runtimeModel);
+    runtimeModel.executionContextCreated({
+      id: 1 as Protocol.Runtime.ExecutionContextId,
+      origin: childExeContextOrigin,
+      name: childExeContextOrigin,
+      uniqueId: childExeContextOrigin,
+      auxData: {frameId: childFrame.id, isDefault: false},
+    });
+
+    const result = await new Promise<{result: unknown, error?: {details: unknown[]}}>(
+        r => context.chrome.devtools?.inspectedWindow.eval(
+            // The typings don't match the implementation, so we need to cast to any here to make ts happy.
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            '4', {frameURL: childFrameUrl, scriptExecutionContext: childExeContextOrigin} as any,
+            (result, error) => r({result, error})));
+
+    assert.deepStrictEqual(result.error?.details, ['Permission denied']);
+  });
+
+  it('blocks evaluation on blocked sub-executioncontexts', async () => {
+    assert.isUndefined(context.chrome.devtools);
+
+    const parentFrameUrl = 'http://example.com' as Platform.DevToolsPath.UrlString;
+    const childFrameUrl = 'http://example.com/2' as Platform.DevToolsPath.UrlString;
+    const childExeContextOrigin = 'http://web.dev' as Platform.DevToolsPath.UrlString;
+    const parentFrame = setUpFrame('parent', parentFrameUrl, undefined, parentFrameUrl);
+    setUpFrame('child', childFrameUrl, parentFrame, childExeContextOrigin);
+
+    const result = await new Promise<{result: unknown, error?: {details: unknown[]}}>(
+        r => context.chrome.devtools?.inspectedWindow.eval(
+            '4', {frameURL: childFrameUrl}, (result, error) => r({result, error})));
+
+    assert.deepStrictEqual(result.error?.details, ['Permission denied']);
   });
 });
 

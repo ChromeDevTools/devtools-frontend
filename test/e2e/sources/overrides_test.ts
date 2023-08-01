@@ -67,7 +67,7 @@ describe('The Overrides Panel', async function() {
     await step('can create content overrides via request\'s context menu', async () => {
       await openNetworkTab();
       await selectRequestByName('coffees.json', {button: 'right'});
-      await click('aria/Save for overrides');
+      await click('aria/Override content');
       await waitFor('[aria-label="coffees.json, file"]');
     });
 
@@ -97,7 +97,7 @@ describe('The Overrides Panel', async function() {
     await step('can create content overrides via request\'s context menu', async () => {
       await openNetworkTab();
       await selectRequestByName('coffees.json', {button: 'right'});
-      await click('aria/Save for overrides');
+      await click('aria/Override content');
       await waitFor('[aria-label="coffees.json, file"]');
     });
 
@@ -114,6 +114,61 @@ describe('The Overrides Panel', async function() {
       await typeIntoQuickOpen('coffees.json');
       const list = await readQuickOpenResults();
       assert.deepEqual(list, ['coffees.json']);
+    });
+  });
+
+  it('can always override content via the Network panel', async () => {
+    await step('can override without local overrides folder set up', async () => {
+      await goToResource('network/fetch-json.html');
+      await openNetworkTab();
+      await selectRequestByName('coffees.json', {button: 'right'});
+      await click('aria/Override content');
+
+      // File permission pop up
+      const infoBar = await waitForAria('Select a folder to store override files in.');
+      await click('.infobar-main-row .infobar-button', {root: infoBar});
+
+      // Open & clsoe the file in the Sources panel
+      const fileTab = await waitFor('[aria-label="coffees.json, file"]');
+      assert.isNotNull(fileTab);
+
+      await click('aria/Close coffees.json');
+    });
+
+    await step('can open the overridden file in the Sources panel if it exists', async () => {
+      await openNetworkTab();
+      await selectRequestByName('coffees.json', {button: 'right'});
+      await click('aria/Override content');
+
+      // No file permission pop up
+      const popups = await $$('aria/Select a folder to store override files in.', undefined, 'aria');
+      assert.strictEqual(popups.length, 0);
+
+      // Open & close the file in the Sources panel
+      const fileTab = await waitFor('[aria-label="coffees.json, file"]');
+      assert.isNotNull(fileTab);
+
+      await click('aria/Close coffees.json');
+    });
+
+    await step('can enable the local overrides setting and override content', async () => {
+      // Disable Local overrides
+      await click('aria/Enable Local Overrides');
+
+      // Navigate to files
+      await openNetworkTab();
+      await selectRequestByName('coffees.json', {button: 'right'});
+      await click('aria/Override content');
+
+      // No file permission pop up
+      const popups = await $$('aria/Select a folder to store override files in.', undefined, 'aria');
+      assert.strictEqual(popups.length, 0);
+
+      // Open & close the file in the Sources panel
+      const fileTab = await waitFor('[aria-label="coffees.json, file"]');
+      assert.isNotNull(fileTab);
+
+      await click('aria/Close coffees.json');
     });
   });
 });

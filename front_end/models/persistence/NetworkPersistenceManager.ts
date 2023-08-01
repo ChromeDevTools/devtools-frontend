@@ -8,10 +8,12 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import * as Breakpoints from '../breakpoints/breakpoints.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {FileSystemWorkspaceBinding, type FileSystem} from './FileSystemWorkspaceBinding.js';
+import {IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {PersistenceBinding, PersistenceImpl} from './PersistenceImpl.js';
 
 let networkPersistenceManagerInstance: NetworkPersistenceManager|null;
@@ -152,6 +154,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       Common.EventTarget.removeEventListeners(this.eventDescriptors);
       await this.updateActiveProject();
     }
+    this.dispatchEventToListeners(Events.LocalOverridesProjectUpdated, this.enabled);
   }
 
   private async uiSourceCodeRenamedListener(
@@ -376,13 +379,53 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     this.updateInterceptionPatterns();
   }
 
-  canSaveUISourceCodeForOverrides(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    return this.activeInternal && uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network &&
-        !this.bindings.has(uiSourceCode) && !this.savingForOverrides.has(uiSourceCode);
+  isUISourceCodeOverridable(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+    return uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network;
+  }
+
+  #isUISourceCodeAlreadyOverridden(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+    return this.bindings.has(uiSourceCode) || this.savingForOverrides.has(uiSourceCode);
+  }
+
+  #shouldPromptSaveForOverridesDialog(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+    return this.isUISourceCodeOverridable(uiSourceCode) && !this.#isUISourceCodeAlreadyOverridden(uiSourceCode) &&
+        !this.activeInternal && !this.projectInternal;
+  }
+
+  #canSaveUISourceCodeForOverrides(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+    return this.activeInternal && this.isUISourceCodeOverridable(uiSourceCode) &&
+        !this.#isUISourceCodeAlreadyOverridden(uiSourceCode);
+  }
+
+  async setupAndStartLocalOverrides(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<boolean> {
+    // No overrides folder, set it up
+    if (this.#shouldPromptSaveForOverridesDialog(uiSourceCode)) {
+      await new Promise<void>(
+          resolve => UI.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(resolve));
+      await IsolatedFileSystemManager.instance().addFileSystem('overrides');
+    }
+
+    if (!this.project()) {
+      return false;
+    }
+
+    // Already have an overrides folder, enable setting
+    if (!this.enabledSetting.get()) {
+      this.enabledSetting.set(true);
+      await this.once(Events.LocalOverridesProjectUpdated);
+    }
+
+    // Save new file
+    if (!this.#isUISourceCodeAlreadyOverridden(uiSourceCode)) {
+      uiSourceCode.commitWorkingCopy();
+      await this.saveUISourceCodeForOverrides(uiSourceCode as Workspace.UISourceCode.UISourceCode);
+    }
+
+    return true;
   }
 
   async saveUISourceCodeForOverrides(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
-    if (!this.canSaveUISourceCodeForOverrides(uiSourceCode)) {
+    if (!this.#canSaveUISourceCodeForOverrides(uiSourceCode)) {
       return;
     }
     this.savingForOverrides.add(uiSourceCode);
@@ -929,11 +972,13 @@ export const HEADERS_FILENAME = '.headers';
 export enum Events {
   ProjectChanged = 'ProjectChanged',
   RequestsForHeaderOverridesFileChanged = 'RequestsForHeaderOverridesFileChanged',
+  LocalOverridesProjectUpdated = 'LocalOverridesProjectUpdated',
 }
 
 export type EventTypes = {
   [Events.ProjectChanged]: Workspace.Workspace.Project|null,
   [Events.RequestsForHeaderOverridesFileChanged]: Workspace.UISourceCode.UISourceCode,
+  [Events.LocalOverridesProjectUpdated]: boolean,
 };
 
 export interface HeaderOverride {

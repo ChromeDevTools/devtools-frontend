@@ -271,6 +271,10 @@ export class SubMenu extends Item {
     return this.section('default');
   }
 
+  overrideSection(): Section {
+    return this.section('override');
+  }
+
   saveSection(): Section {
     return this.section('save');
   }
@@ -542,7 +546,7 @@ export class ContextMenu extends SubMenu {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention
   static readonly groupWeights =
-      ['header', 'new', 'reveal', 'edit', 'clipboard', 'debug', 'view', 'default', 'save', 'footer'];
+      ['header', 'new', 'reveal', 'edit', 'clipboard', 'debug', 'view', 'default', 'override', 'save', 'footer'];
 }
 
 export interface Provider {

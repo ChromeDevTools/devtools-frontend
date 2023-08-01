@@ -26,7 +26,7 @@ const UIStrings = {
   /**
    *@description A context menu item in the Persistence Actions of the Workspace settings in Settings
    */
-  saveForOverrides: 'Save for overrides',
+  overrideContent: 'Override content',
   /**
    *@description A context menu item in the Persistence Actions of the Workspace settings in Settings
    */
@@ -81,12 +81,13 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
 
     // Retrieve uiSourceCode by URL to pick network resources everywhere.
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(contentProvider.contentURL());
-    if (uiSourceCode && NetworkPersistenceManager.instance().canSaveUISourceCodeForOverrides(uiSourceCode)) {
-      contextMenu.saveSection().appendItem(i18nString(UIStrings.saveForOverrides), () => {
-        uiSourceCode.commitWorkingCopy();
-        void NetworkPersistenceManager.instance().saveUISourceCodeForOverrides(
-            uiSourceCode as Workspace.UISourceCode.UISourceCode);
-        void Common.Revealer.reveal(uiSourceCode);
+    const networkPersistenceManager = NetworkPersistenceManager.instance();
+    if (uiSourceCode && networkPersistenceManager.isUISourceCodeOverridable(uiSourceCode)) {
+      contextMenu.overrideSection().appendItem(i18nString(UIStrings.overrideContent), async () => {
+        const isSuccess = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
+        if (isSuccess) {
+          await Common.Revealer.reveal(uiSourceCode);
+        }
       });
     }
 

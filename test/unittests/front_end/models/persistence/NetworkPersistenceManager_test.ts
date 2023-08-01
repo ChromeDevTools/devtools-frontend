@@ -16,6 +16,68 @@ import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {createWorkspaceProject, setUpEnvironment} from '../../helpers/OverridesHelpers.js';
 import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
+const setUpEnvironmentWithUISourceCode =
+    (url: string, resourceType: Common.ResourceType.ResourceType, project?: Workspace.Workspace.Project) => {
+      const {workspace, networkPersistenceManager} = setUpEnvironment();
+
+      if (!project) {
+        project = {id: () => url, type: () => Workspace.Workspace.projectTypes.Network} as Workspace.Workspace.Project;
+      }
+
+      const uiSourceCode =
+          new Workspace.UISourceCode.UISourceCode(project, url as Platform.DevToolsPath.UrlString, resourceType);
+
+      project.uiSourceCodes = () => [uiSourceCode];
+
+      workspace.addProject(project);
+
+      return {workspace, project: project, uiSourceCode, networkPersistenceManager};
+    };
+
+describeWithMockConnection('NetworkPersistenceManager', () => {
+  beforeEach(async () => {
+    SDK.NetworkManager.MultitargetNetworkManager.dispose();
+    const target = createTarget();
+    sinon.stub(target.fetchAgent(), 'invoke_enable');
+  });
+
+  it('can create an overridden file with Local Overrides enabled', async () => {
+    const url = 'http://www.example.com/list-fetch.json';
+    const resourceType = Common.ResourceType.resourceTypes.Document;
+
+    const {uiSourceCode} = setUpEnvironmentWithUISourceCode(url, resourceType);
+    const networkPersistenceManager =
+        await createWorkspaceProject('file:///path/to/overrides' as Platform.DevToolsPath.UrlString, []);
+
+    const saveSpy = sinon.spy(networkPersistenceManager, 'saveUISourceCodeForOverrides');
+    const actual = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
+
+    saveSpy.restore();
+
+    assert.isTrue(saveSpy.calledOnce, 'can override content');
+    assert.isTrue(actual, 'is override success');
+  });
+
+  it('can create an overridden file with Local Overrides folder set up but disabled', async () => {
+    Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').set(false);
+
+    const url = 'http://www.example.com/list-xhr.json';
+    const resourceType = Common.ResourceType.resourceTypes.Document;
+
+    const {uiSourceCode} = setUpEnvironmentWithUISourceCode(url, resourceType);
+    const networkPersistenceManager =
+        await createWorkspaceProject('file:///path/to/overrides' as Platform.DevToolsPath.UrlString, []);
+
+    const saveSpy = sinon.spy(networkPersistenceManager, 'saveUISourceCodeForOverrides');
+    const actual = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
+
+    saveSpy.restore();
+
+    assert.isTrue(saveSpy.calledOnce, 'can override content');
+    assert.isTrue(actual, 'is override success');
+  });
+});
+
 describeWithMockConnection('NetworkPersistenceManager', () => {
   let networkPersistenceManager: Persistence.NetworkPersistenceManager.NetworkPersistenceManager;
 

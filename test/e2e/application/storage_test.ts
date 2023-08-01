@@ -115,7 +115,7 @@ describe('The Application Tab', async () => {
     await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
 
     await waitForFunction(async () => {
-      const data = await getStorageItemsData(['name', 'value']);
+      const data = await getStorageItemsData(['name', 'value'], 0);
       return data.length === 0;
     });
   });

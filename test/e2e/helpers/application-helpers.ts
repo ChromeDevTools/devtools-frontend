@@ -60,8 +60,15 @@ export async function getFrameTreeTitles() {
   return Promise.all(treeTitles.map(node => node.evaluate(e => e.textContent)));
 }
 
-export async function getStorageItemsData(columns: string[]) {
-  return getDataGridData('.storage-view table', columns);
+export async function getStorageItemsData(columns: string[], leastExpected: number = 1) {
+  const gridData = await waitForFunction(async () => {
+    const values = await getDataGridData('.storage-view table', columns);
+    if (values.length >= leastExpected) {
+      return values;
+    }
+    return undefined;
+  });
+  return gridData;
 }
 
 export async function filterStorageItems(filter: string) {

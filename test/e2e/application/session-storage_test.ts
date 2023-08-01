@@ -4,7 +4,7 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, getTestServerPort, step, waitForFunction} from '../../shared/helper.js';
+import {getBrowserAndPages, getTestServerPort, step} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   deleteSelectedStorageItem,
@@ -35,11 +35,7 @@ describe('The Application Tab', async () => {
     });
 
     await step('check that storage data values are correct', async () => {
-      await waitForFunction(async () => {
-        const values = await getStorageItemsData(['key', 'value']);
-        return values.length >= 2;
-      });
-      const dataGridRowValues = await getStorageItemsData(['key', 'value']);
+      const dataGridRowValues = await getStorageItemsData(['key', 'value'], 2);
       assert.deepEqual(dataGridRowValues, [
         {
           key: 'firstKey',

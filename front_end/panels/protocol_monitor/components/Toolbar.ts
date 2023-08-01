@@ -20,16 +20,30 @@ declare global {
 const copyIconUrl = new URL('../../../Images/copy.svg', import.meta.url).toString();
 const sendIconUrl = new URL('../../../Images/send.svg', import.meta.url).toString();
 
+export class CopyCommandEvent extends Event {
+  static readonly eventName = 'copycommand';
+  constructor() {
+    super(CopyCommandEvent.eventName, {bubbles: true, composed: true});
+  }
+}
+
+export class SendCommandEvent extends Event {
+  static readonly eventName = 'commandsent';
+  constructor() {
+    super(SendCommandEvent.eventName, {bubbles: true, composed: true});
+  }
+}
+
 @customElement('devtools-pm-toolbar')
 export class Toolbar extends LitElement {
   static override styles = [toolbarStyles];
 
   #handleCopy = (): void => {
-    this.dispatchEvent(new CustomEvent('copycommand', {bubbles: true}));
+    this.dispatchEvent(new CopyCommandEvent());
   };
 
   #handleSend = (): void => {
-    this.dispatchEvent(new CustomEvent('commandsent', {bubbles: true}));
+    this.dispatchEvent(new SendCommandEvent());
   };
 
   override render(): LitHtml.TemplateResult {

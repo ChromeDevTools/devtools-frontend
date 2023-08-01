@@ -16,6 +16,7 @@ import * as ProtocolComponents from '../../../../../../front_end/panels/protocol
 import type * as RecorderComponents from '../../../../../../front_end/panels/recorder/components/components.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import * as Menus from '../../../../../../front_end/ui/components/menus/menus.js';
+import * as Host from '../../../../../../front_end/core/host/host.js';
 
 describeWithEnvironment('JSONEditor', () => {
   const renderJSONEditor = () => {
@@ -609,87 +610,122 @@ describeWithEnvironment('JSONEditor', () => {
     });
   });
 
-  it('should return the parameters in a format understandable by the ProtocolMonitor', async () => {
-    const jsonEditor = renderJSONEditor();
+  describe('Send parameters in a correct format', () => {
+    it('should return the parameters in a format understandable by the ProtocolMonitor when sending a command via CTRL + Enter',
+       async () => {
+         const jsonEditor = renderJSONEditor();
 
-    const inputParameters = [
-      {
-        'optional': true,
-        'type': 'string',
-        'value': 'test0',
-        'name': 'test0',
-      },
-      {
-        'optional': true,
-        'type': 'string',
-        'value': 'test1',
-        'name': 'test1',
-      },
-      {
-        'optional': false,
-        'type': 'string',
-        'value': 'test2',
-        'name': 'test2',
-      },
-      {
-        'optional': true,
-        'type': 'array',
-        'value': [
-          {
-            'optional': true,
-            'type': 'string',
-            'value': 'param1Value',
-            'name': 'param1',
-          },
-          {
-            'optional': true,
-            'type': 'string',
-            'value': 'param2Value',
-            'name': 'param2',
-          },
-        ],
-        'name': 'test3',
-      },
-      {
-        'optional': true,
-        'type': 'object',
-        'value': [
-          {
-            'optional': true,
-            'type': 'string',
-            'value': 'param1Value',
-            'name': 'param1',
-          },
-          {
-            'optional': true,
-            'type': 'string',
-            'value': 'param2Value',
-            'name': 'param2',
-          },
-        ],
-        'name': 'test4',
-      },
-    ];
+         const inputParameters = [
+           {
+             'optional': true,
+             'type': 'string',
+             'value': 'test0',
+             'name': 'test0',
+           },
+           {
+             'optional': true,
+             'type': 'string',
+             'value': 'test1',
+             'name': 'test1',
+           },
+           {
+             'optional': false,
+             'type': 'string',
+             'value': 'test2',
+             'name': 'test2',
+           },
+           {
+             'optional': true,
+             'type': 'array',
+             'value': [
+               {
+                 'optional': true,
+                 'type': 'string',
+                 'value': 'param1Value',
+                 'name': 'param1',
+               },
+               {
+                 'optional': true,
+                 'type': 'string',
+                 'value': 'param2Value',
+                 'name': 'param2',
+               },
+             ],
+             'name': 'test3',
+           },
+           {
+             'optional': true,
+             'type': 'object',
+             'value': [
+               {
+                 'optional': true,
+                 'type': 'string',
+                 'value': 'param1Value',
+                 'name': 'param1',
+               },
+               {
+                 'optional': true,
+                 'type': 'string',
+                 'value': 'param2Value',
+                 'name': 'param2',
+               },
+             ],
+             'name': 'test4',
+           },
+         ];
 
-    const expectedParameters = {
-      'test0': 'test0',
-      'test1': 'test1',
-      'test2': 'test2',
-      'test3': ['param1Value', 'param2Value'],
-      'test4': {
-        'param1': 'param1Value',
-        'param2': 'param2Value',
-      },
-    };
+         const expectedParameters = {
+           'test0': 'test0',
+           'test1': 'test1',
+           'test2': 'test2',
+           'test3': ['param1Value', 'param2Value'],
+           'test4': {
+             'param1': 'param1Value',
+             'param2': 'param2Value',
+           },
+         };
 
-    jsonEditor.parameters = inputParameters as ProtocolComponents.JSONEditor.Parameter[];
-    const responsePromise = getEventPromise(jsonEditor, ProtocolComponents.JSONEditor.SubmitEditorEvent.eventName);
+         jsonEditor.parameters = inputParameters as ProtocolComponents.JSONEditor.Parameter[];
+         const responsePromise = getEventPromise(jsonEditor, ProtocolComponents.JSONEditor.SubmitEditorEvent.eventName);
 
-    dispatchKeyDownEvent(jsonEditor, {key: 'Enter', ctrlKey: true, metaKey: true});
+         dispatchKeyDownEvent(jsonEditor, {key: 'Enter', ctrlKey: true, metaKey: true});
 
-    const response = await responsePromise as ProtocolComponents.JSONEditor.SubmitEditorEvent;
+         const response = await responsePromise as ProtocolComponents.JSONEditor.SubmitEditorEvent;
 
-    assert.deepStrictEqual(response.data.parameters, expectedParameters);
+         assert.deepStrictEqual(response.data.parameters, expectedParameters);
+       });
+
+    it('should return the parameters in a format understandable by the ProtocolMonitor when sending a command via the send button',
+       async () => {
+         const jsonEditor = renderJSONEditor();
+         jsonEditor.command = 'Test.test';
+         jsonEditor.parameters = [
+           {
+             name: 'testName',
+             type: ProtocolComponents.JSONEditor.ParameterType.String,
+             description: 'test',
+             optional: false,
+             value: 'testValue',
+           },
+         ];
+         await jsonEditor.updateComplete;
+
+         const toolbar = jsonEditor.renderRoot.querySelector('devtools-pm-toolbar');
+         if (!toolbar) {
+           throw Error('No toolbar found !');
+         }
+         const event = new ProtocolComponents.Toolbar.SendCommandEvent();
+         const responsePromise = getEventPromise(jsonEditor, ProtocolComponents.JSONEditor.SubmitEditorEvent.eventName);
+
+         toolbar.dispatchEvent(event);
+         const response = await responsePromise as ProtocolComponents.JSONEditor.SubmitEditorEvent;
+
+         const expectedParameters = {
+           'testName': 'testValue',
+         };
+
+         assert.deepStrictEqual(response.data.parameters, expectedParameters);
+       });
   });
 
   it('should not display parameters if a command is unknown', async () => {
@@ -720,4 +756,38 @@ describeWithEnvironment('JSONEditor', () => {
 
     assert.deepStrictEqual(targetId, expectedId);
   });
+
+  it('should copy the CDP command to clipboard via copy event', async () => {
+    const jsonEditor = renderJSONEditor();
+    jsonEditor.command = 'Test.test';
+    jsonEditor.parameters = [
+      {
+        name: 'test',
+        type: ProtocolComponents.JSONEditor.ParameterType.String,
+        description: 'test',
+        optional: false,
+        value: 'test',
+      },
+    ];
+    await jsonEditor.updateComplete;
+    const isCalled = sinon.promise();
+    const copyText = sinon
+                         .stub(
+                             Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+                             'copyText',
+                             )
+                         .callsFake(() => {
+                           void isCalled.resolve(true);
+                         });
+    const toolbar = jsonEditor.renderRoot.querySelector('devtools-pm-toolbar');
+    if (!toolbar) {
+      throw Error('No toolbar found !');
+    }
+    const event = new ProtocolComponents.Toolbar.CopyCommandEvent();
+    toolbar.dispatchEvent(event);
+    await isCalled;
+
+    assert.isTrue(copyText.calledWith(JSON.stringify({command: 'Test.test', parameters: {'test': 'test'}})));
+  });
+
 });

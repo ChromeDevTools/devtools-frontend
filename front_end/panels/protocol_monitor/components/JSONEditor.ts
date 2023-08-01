@@ -43,7 +43,7 @@ declare global {
   }
 }
 
-const enum ParameterType {
+export const enum ParameterType {
   String = 'string',
   Number = 'number',
   Boolean = 'boolean',

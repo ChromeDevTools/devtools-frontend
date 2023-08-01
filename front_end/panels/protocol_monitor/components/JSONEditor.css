@@ -58,11 +58,12 @@ ul {
 }
 
 .wrapper {
-  padding-left: 2em;
+  padding-left: 1em;
   overflow: hidden;
   height: 100%;
   width: 100%;
   padding-bottom: 50px;
+  padding-top: 0.5em;
 }
 
 .deleteButton {

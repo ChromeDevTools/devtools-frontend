@@ -40,11 +40,15 @@ thead tr {
 }
 
 tbody tr {
-  background-color: var(--override-data-grid-row-background-color, --color-background);
+  background-color: var(--override-data-grid-row-background-color, --sys-color-surface);
 }
 
 tbody tr.selected {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-ripple-primary);
+}
+
+.wrapping-container.striped tr:nth-child(odd):not(.selected):not(.padding-row) {
+  background-color: var(--sys-color-surface1);
 }
 
 td,
@@ -62,6 +66,7 @@ th {
 }
 
 th {
+  color: var(--sys-color-surface-variant);
   font-weight: normal;
   text-align: left;
   border-bottom: 1px solid var(--sys-color-divider);
@@ -77,7 +82,7 @@ th:focus {
 }
 
 th:hover.sortable {
-  background: var(--color-background-elevation-0);
+  background-color: var(--sys-color-surface2);
 }
 
 .cell-resize-handle {

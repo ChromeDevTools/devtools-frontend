@@ -97,6 +97,7 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
         },
       ],
       rows: this.#buildReportRows(),
+      striped: true,
     };
 
     // Disabled until https://crbug.com/1079231 is fixed.

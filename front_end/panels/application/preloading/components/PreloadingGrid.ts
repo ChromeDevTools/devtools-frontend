@@ -77,6 +77,7 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
         },
       ],
       rows: this.#buildReportRows(),
+      striped: true,
     };
 
     // Disabled until https://crbug.com/1079231 is fixed.

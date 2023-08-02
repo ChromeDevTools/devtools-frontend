@@ -8,6 +8,7 @@ import * as Protocol from '../../../../../../../front_end/generated/protocol.js'
 import * as PreloadingComponents from '../../../../../../../front_end/panels/application/preloading/components/components.js';
 import * as SDK from '../../../../../../../front_end/core/sdk/sdk.js';
 import * as Coordinator from '../../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import * as ReportView from '../../../../../../../front_end/ui/components/report_view/report_view.js';
 import {
   assertShadowRoot,
@@ -74,11 +75,15 @@ describeWithEnvironment('UsedPreloadingView', async () => {
 
     const component = await renderUsedPreloadingView(data);
     assertShadowRoot(component.shadowRoot);
+    const headers = getElementsWithinComponent(
+        component, 'devtools-report devtools-report-section-header', ReportView.ReportView.ReportSectionHeader);
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
+    assert.strictEqual(headers.length, 1);
     assert.strictEqual(sections.length, 1);
 
+    assert.include(headers[0]?.textContent, 'Preloading status');
     assert.include(sections[0]?.textContent, 'This page was successfully prefetched.');
   });
 
@@ -117,11 +122,15 @@ describeWithEnvironment('UsedPreloadingView', async () => {
 
     const component = await renderUsedPreloadingView(data);
     assertShadowRoot(component.shadowRoot);
+    const headers = getElementsWithinComponent(
+        component, 'devtools-report devtools-report-section-header', ReportView.ReportView.ReportSectionHeader);
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
+    assert.strictEqual(headers.length, 1);
     assert.strictEqual(sections.length, 1);
 
+    assert.include(headers[0]?.textContent, 'Preloading status');
     assert.include(sections[0]?.textContent, 'This page was successfully prerendered.');
   });
 
@@ -160,11 +169,15 @@ describeWithEnvironment('UsedPreloadingView', async () => {
 
     const component = await renderUsedPreloadingView(data);
     assertShadowRoot(component.shadowRoot);
+    const headers = getElementsWithinComponent(
+        component, 'devtools-report devtools-report-section-header', ReportView.ReportView.ReportSectionHeader);
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
+    assert.strictEqual(headers.length, 1);
     assert.strictEqual(sections.length, 2);
 
+    assert.include(headers[0]?.textContent, 'Preloading status');
     assert.include(
         sections[0]?.textContent,
         'The initiating page attempted to prefetch this page\'s URL, but the prefetch failed, so a full navigation was performed instead.');
@@ -214,11 +227,15 @@ describeWithEnvironment('UsedPreloadingView', async () => {
 
     const component = await renderUsedPreloadingView(data);
     assertShadowRoot(component.shadowRoot);
+    const headers = getElementsWithinComponent(
+        component, 'devtools-report devtools-report-section-header', ReportView.ReportView.ReportSectionHeader);
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
+    assert.strictEqual(headers.length, 1);
     assert.strictEqual(sections.length, 2);
 
+    assert.include(headers[0]?.textContent, 'Preloading status');
     assert.include(
         sections[0]?.textContent,
         'The initiating page attempted to prerender this page\'s URL, but the prerender failed, so a full navigation was performed instead.');
@@ -268,11 +285,15 @@ describeWithEnvironment('UsedPreloadingView', async () => {
 
     const component = await renderUsedPreloadingView(data);
     assertShadowRoot(component.shadowRoot);
+    const headers = getElementsWithinComponent(
+        component, 'devtools-report devtools-report-section-header', ReportView.ReportView.ReportSectionHeader);
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
+    assert.strictEqual(headers.length, 1);
     assert.strictEqual(sections.length, 2);
 
+    assert.include(headers[0]?.textContent, 'Preloading status');
     assert.include(
         sections[0]?.textContent,
         'The initiating page attempted to prerender this page\'s URL. The prerender failed, but the resulting response body was still used as a prefetch.');
@@ -287,7 +308,27 @@ describeWithEnvironment('UsedPreloadingView', async () => {
     ]);
   });
 
-  it('renderes no preloading attempts used', async () => {
+  it('renders no preloading attempts used', async () => {
+    const data: PreloadingComponents.UsedPreloadingView.UsedPreloadingViewData = {
+      pageURL: 'https://example.com/no-preloads.html' as Platform.DevToolsPath.UrlString,
+      attempts: [],
+    };
+
+    const component = await renderUsedPreloadingView(data);
+    assertShadowRoot(component.shadowRoot);
+    const headers = getElementsWithinComponent(
+        component, 'devtools-report devtools-report-section-header', ReportView.ReportView.ReportSectionHeader);
+    const sections = getElementsWithinComponent(
+        component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
+
+    assert.strictEqual(headers.length, 1);
+    assert.strictEqual(sections.length, 1);
+
+    assert.include(headers[0]?.textContent, 'Preloading status');
+    assert.include(sections[0]?.textContent, 'The initiating page did not attempt to preload this page\'s URL.');
+  });
+
+  it('renders no preloading attempts used with mismatch', async () => {
     const data: PreloadingComponents.UsedPreloadingView.UsedPreloadingViewData = {
       pageURL: 'https://example.com/no-preloads.html' as Platform.DevToolsPath.UrlString,
       attempts: [
@@ -322,11 +363,19 @@ describeWithEnvironment('UsedPreloadingView', async () => {
 
     const component = await renderUsedPreloadingView(data);
     assertShadowRoot(component.shadowRoot);
+    const headers = getElementsWithinComponent(
+        component, 'devtools-report devtools-report-section-header', ReportView.ReportView.ReportSectionHeader);
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
-    assert.strictEqual(sections.length, 1);
+    assert.strictEqual(headers.length, 3);
+    assert.strictEqual(sections.length, 3);
 
+    assert.include(headers[0]?.textContent, 'Preloading status');
     assert.include(sections[0]?.textContent, 'The initiating page did not attempt to preload this page\'s URL.');
+    assert.include(headers[1]?.textContent, 'Current URL');
+    assert.include(sections[1]?.textContent, 'https://example.com/no-preloads.html');
+    assert.include(headers[2]?.textContent, 'URLs being preloaded by the initiating page');
+    assertNotNullOrUndefined(sections[2].querySelector('devtools-resources-mismatched-preloading-grid'));
   });
 });

@@ -7,22 +7,25 @@ import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../ui/components/report_view/report_view.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
 import type * as Platform from '../../../../core/platform/platform.js';
 
-import type * as UI from '../../../../ui/legacy/legacy.js';
+import usedPreloadingStyles from './usedPreloadingView.css.js';
 
 import {prefetchFailureReason, prerenderFailureReason} from './PreloadingString.js';
+import * as MismatchedPreloadingGrid from './MismatchedPreloadingGrid.js';
 
 const UIStrings = {
   /**
-   *@description Title for the panel
+   *@description Header for preloading status.
    */
-  preloadingUsedForThisPage: 'Preloading used for this page',
+  preloadingStatus: 'Preloading status',
   /**
    *@description Label for failure reason of preloeading
    */
@@ -54,6 +57,14 @@ const UIStrings = {
    *@description Message that tells this page was not preloaded.
    */
   noPreloads: 'The initiating page did not attempt to preload this page\'s URL.',
+  /**
+   *@description Header for current URL.
+   */
+  currentURL: 'Current URL',
+  /**
+   *@description Header for mismatched preloads.
+   */
+  preloadedURLs: 'URLs being preloaded by the initiating page',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/UsedPreloadingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -86,7 +97,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
   };
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [];
+    this.#shadow.adoptedStyleSheets = [usedPreloadingStyles];
   }
 
   set data(data: UsedPreloadingViewData) {
@@ -130,22 +141,37 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     let basicMessage;
     switch (kind) {
       case UsedKind.DowngradedPrerenderToPrefetchAndUsed:
-        basicMessage = i18nString(UIStrings.downgradedPrefetchUsed);
+        basicMessage = LitHtml.html`${i18nString(UIStrings.downgradedPrefetchUsed)}`;
         break;
       case UsedKind.PrefetchUsed:
-        basicMessage = i18nString(UIStrings.prefetchUsed);
+        basicMessage = LitHtml.html`${i18nString(UIStrings.prefetchUsed)}`;
         break;
       case UsedKind.PrerenderUsed:
-        basicMessage = i18nString(UIStrings.prerenderUsed);
+        basicMessage = LitHtml.html`${i18nString(UIStrings.prerenderUsed)}`;
         break;
       case UsedKind.PrefetchFailed:
-        basicMessage = i18nString(UIStrings.prefetchFailed);
+        basicMessage = LitHtml.html`${i18nString(UIStrings.prefetchFailed)}`;
         break;
       case UsedKind.PrerenderFailed:
-        basicMessage = i18nString(UIStrings.prerenderFailed);
+        basicMessage = LitHtml.html`${i18nString(UIStrings.prerenderFailed)}`;
         break;
       case UsedKind.NoPreloads:
-        basicMessage = i18nString(UIStrings.noPreloads);
+        // Disabled until https://crbug.com/1079231 is fixed.
+        // clang-format off
+        basicMessage = LitHtml.html`
+          <${IconButton.Icon.Icon.litTagName}
+            .data=${
+              {
+                iconName: 'clear',
+                color: 'var(--icon-default)',
+                width: '16px',
+              } as IconButton.Icon.IconWithName
+            }
+          >
+          </${IconButton.Icon.Icon.litTagName}>
+          ${i18nString(UIStrings.noPreloads)}
+        `;
+        // clang-format on
         break;
     }
 
@@ -177,15 +203,54 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return LitHtml.html`
-      <${ReportView.ReportView.Report.litTagName} .data=${
-          {reportTitle: i18nString(UIStrings.preloadingUsedForThisPage)} as ReportView.ReportView.ReportData
-      }>
+      <${ReportView.ReportView.Report.litTagName}>
+        <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.preloadingStatus)}</${
+          ReportView.ReportView.ReportSectionHeader.litTagName}>
         <${ReportView.ReportView.ReportSection.litTagName}>
           ${basicMessage}
         </${ReportView.ReportView.ReportSection.litTagName}>
 
         ${maybeFailureReason}
+
+        ${this.#maybeMismatchedSections(kind)}
       </${ReportView.ReportView.Report.litTagName}>
+    `;
+    // clang-format on
+  }
+
+  #maybeMismatchedSections(kind: UsedKind): LitHtml.LitTemplate {
+    if (kind !== UsedKind.NoPreloads || this.#data.attempts.length === 0) {
+      return LitHtml.nothing;
+    }
+
+    const rows = this.#data.attempts.map(attempt => {
+      return {
+        url: attempt.key.url,
+        action: attempt.key.action,
+        status: attempt.status,
+      };
+    });
+    const data = {
+      pageURL: this.#data.pageURL,
+      rows,
+    };
+
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return LitHtml.html`
+      <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.currentURL)}</${
+        ReportView.ReportView.ReportSectionHeader.litTagName}>
+      <${ReportView.ReportView.ReportSection.litTagName}>
+        ${UI.XLink.XLink.create(this.#data.pageURL)}
+      </${ReportView.ReportView.ReportSection.litTagName}>
+
+      <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.preloadedURLs)}</${
+        ReportView.ReportView.ReportSectionHeader.litTagName}>
+      <${ReportView.ReportView.ReportSection.litTagName}>
+        <${MismatchedPreloadingGrid.MismatchedPreloadingGrid.litTagName}
+          .data=${data as MismatchedPreloadingGrid.MismatchedPreloadingGridData}></${
+          MismatchedPreloadingGrid.MismatchedPreloadingGrid.litTagName}>
+      </${ReportView.ReportView.ReportSection.litTagName}>
     `;
     // clang-format on
   }

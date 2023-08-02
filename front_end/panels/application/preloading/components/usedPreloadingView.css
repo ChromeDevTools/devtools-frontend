@@ -1,0 +1,19 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  overflow: auto;
+  height: 100%;
+}
+
+devtools-report-section-header {
+  padding-bottom: 0;
+  margin-bottom: -1.5em;
+}
+
+devtools-report-section-header:nth-of-type(1) {
+  padding-top: 1em;
+}

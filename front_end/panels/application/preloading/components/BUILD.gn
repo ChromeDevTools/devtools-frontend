@@ -12,11 +12,13 @@ generate_css("css_files") {
     "preloadingDetailsReportView.css",
     "preloadingGrid.css",
     "ruleSetGrid.css",
+    "usedPreloadingView.css",
   ]
 }
 
 devtools_module("components") {
   sources = [
+    "MismatchedPreloadingGrid.ts",
     "PreloadingDetailsReportView.ts",
     "PreloadingGrid.ts",
     "PreloadingString.ts",

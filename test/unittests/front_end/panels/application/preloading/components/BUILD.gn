@@ -7,6 +7,7 @@ import("../../../../../../../third_party/typescript/typescript.gni")
 ts_library("components") {
   testonly = true
   sources = [
+    "MismatchedPreloadingGrid_test.ts",
     "PreloadingDetailsReportView_test.ts",
     "PreloadingGrid_test.ts",
     "RuleSetDetailsReportView_test.ts",

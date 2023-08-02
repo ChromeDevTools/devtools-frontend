@@ -46,6 +46,10 @@ vars = {
   # match the Canary version listed here:
   # https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json
   'chrome': '117.0.5924.2',
+
+  # 'magic' text to tell depot_tools that git submodules should be accepted but
+  # but parity with DEPS file is expected.
+  'SUBMODULE_MIGRATION': 'True'
 }
 
 # Only these hosts are allowed for dependencies in this DEPS file.

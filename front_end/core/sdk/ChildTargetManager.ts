@@ -132,6 +132,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
       const KNOWN_FRAME_PATTERNS = [
         '^chrome://print/$',
         '^chrome://file-manager/',
+        '^chrome://feedback/',
         '^chrome://.*\\.top-chrome/$',
         '^devtools://',
       ];

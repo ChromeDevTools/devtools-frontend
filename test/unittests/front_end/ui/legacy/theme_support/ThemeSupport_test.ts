@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Common from '../../../../../../front_end/core/common/common.js';
 import * as ThemeSupport from '../../../../../../front_end/ui/legacy/theme_support/theme_support.js';
 import {assertShadowRoot} from '../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
@@ -26,7 +27,12 @@ describe('Theme Support', () => {
   describeWithEnvironment('Computed Values', () => {
     let themeSupport: ThemeSupport.ThemeSupport;
     before(() => {
-      themeSupport = ThemeSupport.ThemeSupport.instance();
+      const setting = {
+        get() {
+          return 'default';
+        },
+      } as Common.Settings.Setting<string>;
+      themeSupport = ThemeSupport.ThemeSupport.instance({forceNew: true, setting});
       customElements.define('test-styled-component', StyledComponent);
     });
 

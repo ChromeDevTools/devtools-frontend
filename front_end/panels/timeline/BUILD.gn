@@ -33,6 +33,7 @@ devtools_module("timeline") {
     "NetworkTrackAppender.ts",
     "PerformanceModel.ts",
     "SaveFileFormatter.ts",
+    "ThreadAppender.ts",
     "TimelineController.ts",
     "TimelineDetailsView.ts",
     "TimelineEventOverview.ts",

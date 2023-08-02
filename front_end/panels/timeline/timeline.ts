@@ -13,6 +13,7 @@ import * as LayoutShiftsTrackAppender from './LayoutShiftsTrackAppender.js';
 import * as NetworkTrackAppender from './NetworkTrackAppender.js';
 import * as PerformanceModel from './PerformanceModel.js';
 import * as SaveFileFormatter from './SaveFileFormatter.js';
+import * as ThreadAppender from './ThreadAppender.js';
 import * as TimelineController from './TimelineController.js';
 import * as TimelineDetailsView from './TimelineDetailsView.js';
 import * as TimelineEventOverview from './TimelineEventOverview.js';
@@ -45,6 +46,7 @@ export {
   NetworkTrackAppender,
   PerformanceModel,
   SaveFileFormatter,
+  ThreadAppender,
   TimelineController,
   TimelineDetailsView,
   TimelineEventOverview,

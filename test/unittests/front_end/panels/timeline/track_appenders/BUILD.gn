@@ -13,6 +13,7 @@ ts_library("track_appenders") {
     "InteractionsTrackAppender_test.ts",
     "LayoutShiftsTrackAppender_test.ts",
     "NetworkTrackAppender_test.ts",
+    "ThreadAppender_test.ts",
     "TimingsTrackAppender_test.ts",
   ]
 

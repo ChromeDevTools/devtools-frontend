@@ -89,7 +89,7 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     }
   });
 
-  it('returns the correct title for an interaction', async function() {
+  it('returns the correct title for a layout shift', async function() {
     const {layoutShiftsTrackAppender, traceParsedData} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
     const shifts = traceParsedData.LayoutShifts.clusters.flatMap(c => c.events);
     const title = layoutShiftsTrackAppender.titleForEvent(shifts[0]);

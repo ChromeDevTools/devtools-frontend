@@ -52,7 +52,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
       const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'timings-track.json.gz');
       dataProvider.setModel(performanceModel, traceParsedData);
-      const mainTrack = dataProvider.timelineData().groups.find(g => g.name.includes('Main'));
+      const mainTrack = dataProvider.timelineData().groups.find(g => g.name.includes('Main —'));
       if (!mainTrack) {
         assert.fail('Could not find Main track flame chart group');
       }

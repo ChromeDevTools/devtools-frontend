@@ -38,17 +38,19 @@ describeWithEnvironment('TimelineFlameChartView', function() {
         new UI.SearchableView.SearchConfig(/* query */ searchQuery, /* caseSensitive */ false, /* isRegex */ false);
     flameChartView.performSearch(searchConfig, true);
 
-    assert.strictEqual(flameChartView.getSearchResults()?.length, 23);
+    assert.strictEqual(flameChartView.getSearchResults()?.length, 31);
+    assertSelectionName('PrePaint');
+
+    flameChartView.jumpToNextSearchResult();
     assertSelectionName('PrePaint');
 
     flameChartView.jumpToNextSearchResult();
     assertSelectionName('Paint');
 
-    flameChartView.jumpToNextSearchResult();
-    assertSelectionName('PaintImage');
-
     flameChartView.jumpToPreviousSearchResult();
-    assertSelectionName('Paint');
+    assertSelectionName('PrePaint');
+    flameChartView.jumpToPreviousSearchResult();
+    assertSelectionName('PrePaint');
 
     function assertSelectionName(name: string) {
       const selection = mockViewDelegate.selection;

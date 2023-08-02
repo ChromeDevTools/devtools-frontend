@@ -7,6 +7,7 @@ import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Common from '../../core/common/common.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import {ThreadAppender} from './ThreadAppender.js';
 
 import {
   type TimelineFlameChartEntry,
@@ -76,7 +77,7 @@ export interface TrackAppender {
   highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo;
 }
 
-export const TrackNames = ['Timings', 'Interactions', 'GPU', 'LayoutShifts'] as const;
+export const TrackNames = ['Timings', 'Interactions', 'GPU', 'LayoutShifts', 'Thread'] as const;
 // Network track will use TrackAppender interface, but it won't be shown in Main flamechart.
 // So manually add it to TrackAppenderName.
 export type TrackAppenderName = typeof TrackNames[number]|'Network';
@@ -105,6 +106,7 @@ export class CompatibilityTracksAppender {
   #interactionsTrackAppender: InteractionsTrackAppender;
   #gpuTrackAppender: GPUTrackAppender;
   #layoutShiftsTrackAppender: LayoutShiftsTrackAppender;
+  #threadAppenders: ThreadAppender[] = [];
 
   /**
    * @param flameChartData the data used by the flame chart renderer on
@@ -150,6 +152,23 @@ export class CompatibilityTracksAppender {
     this.#layoutShiftsTrackAppender = new LayoutShiftsTrackAppender(this, this.#flameChartData, this.#traceParsedData);
     this.#allTrackAppenders.push(this.#layoutShiftsTrackAppender);
 
+    if (this.#traceParsedData.Renderer) {
+      for (const [pid, process] of this.#traceParsedData.Renderer.processes) {
+        for (const [tid, thread] of process.threads) {
+          if (thread.name !== 'CrRendererMain') {
+            // At the moment we only support the main thread, since the
+            // title for other tracks is procesed differently. Tackling
+            // other threads will be implemented in the future as part
+            // of crbug.com/1428024
+            continue;
+          }
+          const threadAppender = new ThreadAppender(this, this.#traceParsedData, this.#colorGenerator, pid, tid);
+          this.#threadAppenders.push(threadAppender);
+          this.#allTrackAppenders.push(threadAppender);
+        }
+      }
+    }
+
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
       for (const group of this.#flameChartData.groups) {
         // We only need to update the color here, because FlameChart will call `scheduleUpdate()` when theme is changed.
@@ -187,6 +206,10 @@ export class CompatibilityTracksAppender {
 
   layoutShiftsTrackAppender(): LayoutShiftsTrackAppender {
     return this.#layoutShiftsTrackAppender;
+  }
+
+  threadAppenders(): ThreadAppender[] {
+    return this.#threadAppenders;
   }
 
   /**

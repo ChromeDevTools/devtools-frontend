@@ -463,6 +463,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             return 3;
           case 'GPU':
             return 8;
+          case 'Thread':
+            return 4;
           default:
             return -1;
         }
@@ -472,13 +474,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         case TimelineModel.TimelineModel.TrackType.Animation:
           return 0;
         case TimelineModel.TimelineModel.TrackType.MainThread:
-          return track.forMainFrame ? 4 : 5;
+          return track.forMainFrame ? 5 : 6;
         case TimelineModel.TimelineModel.TrackType.Worker:
-          return 6;
-        case TimelineModel.TimelineModel.TrackType.Raster:
           return 7;
-        case TimelineModel.TimelineModel.TrackType.Other:
+        case TimelineModel.TimelineModel.TrackType.Raster:
           return 9;
+        case TimelineModel.TimelineModel.TrackType.Other:
+          return 10;
         default:
           return -1;
       }

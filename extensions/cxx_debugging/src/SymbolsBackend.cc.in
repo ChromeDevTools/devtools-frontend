@@ -1,0 +1,139 @@
+// Copyright 2023 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// clang-format off
+#include <string>
+#include <vector>
+
+#include <emscripten.h>
+#include <emscripten/bind.h>
+#include "ApiContext.h"
+#include "WasmVendorPlugins.h"
+
+#include "Plugins/Language/CPlusPlus/CPlusPlusLanguage.h"
+#include "Plugins/ObjectFile/wasm/ObjectFileWasm.h"
+#include "Plugins/ScriptInterpreter/None/ScriptInterpreterNone.h"
+#include "Plugins/SymbolFile/DWARF/SymbolFileDWARF.h"
+#include "Plugins/SymbolVendor/wasm/SymbolVendorWasm.h"
+#include "lldb/Host/FileSystem.h"
+#include "lldb/Host/linux/HostInfoLinux.h"
+#include "llvm/ADT/StringRef.h"
+#include "llvm/Support/Base64.h"
+#include "llvm/Support/CommandLine.h"
+#include "llvm/Support/raw_ostream.h"
+
+namespace {
+
+struct DefaultPluginsContext
+    : symbols_backend::PluginRegistryContext<
+                            lldb_private::HostInfoPosix,
+                            symbols_backend::WasmPlatform,
+                            lldb_private::ScriptInterpreterNone,
+                            lldb_private::FileSystem,
+                            lldb_private::CPlusPlusLanguage,
+                            lldb_private::TypeSystemClang,
+                            lldb_private::wasm::ObjectFileWasm,
+                            lldb_private::wasm::SymbolVendorWasm,
+                            symbols_backend::WasmProcess,
+                            symbols_backend::SymbolFileWasmDWARF> {
+  DefaultPluginsContext() : PluginRegistryContext() {
+    lldb_private::Debugger::Initialize(nullptr);
+  }
+  ~DefaultPluginsContext() { lldb_private::Debugger::Terminate(); }
+};
+
+DefaultPluginsContext& GetGlobalContext() {
+  static DefaultPluginsContext global_context;
+  return global_context;
+}
+
+template <typename T, typename ClassT>
+std::function<void(ClassT&, emscripten::val)> OptionalSetter(
+    ClassT& (ClassT::*setter)(llvm::Optional<T>)) {
+  return [setter](ClassT& cls, emscripten::val value) {
+    if (value == emscripten::val::undefined() ||
+        value == emscripten::val::null()) {
+      (cls.*setter)(llvm::None);
+    } else {
+      (cls.*setter)(value.as<T>());
+    }
+  };
+}
+
+template <typename T, typename ClassT>
+std::function<emscripten::val(const ClassT&)> OptionalGetter(
+    llvm::Optional<T> (ClassT::*getter)() const) {
+  return [getter](const ClassT& cls) {
+    if (auto value = (cls.*getter)()) {
+      return emscripten::val(std::move(*value));
+    }
+    return emscripten::val::undefined();
+  };
+}
+}  // namespace
+
+namespace symbols_backend {
+class DWARFSymbolsPlugin : public api::ApiContext {
+ public:
+  DWARFSymbolsPlugin() : context_(GetGlobalContext()) {}
+
+ private:
+  DefaultPluginsContext& context_;
+};
+}  // namespace symbols_backend
+
+
+
+
+EMSCRIPTEN_BINDINGS(DWARFSymbolsPlugin) {
+{%- for spec in specs %}
+{%- for ty in list(spec.types.values()) + spec.return_types %}
+{%- if not ty.builtin %}
+
+  {%- for enum in ty.enums %}
+  emscripten::enum_<symbols_backend::api::{{ty.cxx_name}}::{{enum.cxx_name}}>("{{ty.cxx_name + enum.cxx_name}}")
+    {%- for case in enum.members %}
+    .value("{{case.upper()}}", symbols_backend::api::{{ty.cxx_name}}::{{enum.cxx_name}}::{{enum.get_member_cxx_name(case)}})
+    {%- endfor %}
+    ;
+  {%- endfor %}
+
+  emscripten::class_<symbols_backend::api::{{ty.cxx_name}}>("{{ty.cxx_name}}")
+      .constructor<>()
+{%- for member in ty.members %}
+{%- if member.optional %}
+      .property("{{member.protocol_name}}", OptionalGetter(&symbols_backend::api::{{ty.cxx_name}}::Get{{member.get_accessor_suffix()}}), OptionalSetter(&symbols_backend::api::{{ty.cxx_name}}::Set{{member.get_accessor_suffix()}}))
+{%- else %}
+      .property("{{member.protocol_name}}", &symbols_backend::api::{{ty.cxx_name}}::Get{{member.get_accessor_suffix()}}, &symbols_backend::api::{{ty.cxx_name}}::Set{{member.get_accessor_suffix()}})
+{%- endif %}
+{%- endfor %}
+      ;
+
+
+{%- endif %}
+{%- endfor %}
+
+{%- for type in spec.array_types().values() %}
+{%- if type.builtin %}
+  emscripten::register_vector<{{type.cxx_name}}>("{{type.cxx_name.split(':')[-1].title()}}Array");
+{%- else %}
+  emscripten::register_vector<symbols_backend::api::
+{%- if type.enum and type.context -%}{{type.context.cxx_name}}::{%- endif -%}
+{{- type.cxx_name }}>("{{type.protocol_name.split(':')[-1]}}Array");
+{%- endif %}
+{%- endfor %}
+  emscripten::register_vector<uint8_t>("ByteArray");
+
+  emscripten::class_<symbols_backend::api::ApiContext>("DWARFSymbolsPluginBase")
+      .constructor<>()
+      {%- for command in spec.functions.values() %}
+      .function("{{command.cxx_name}}",
+                &symbols_backend::DWARFSymbolsPlugin::{{command.cxx_name}})
+      {%- endfor %}
+      ;
+  emscripten::class_<symbols_backend::DWARFSymbolsPlugin, emscripten::base<symbols_backend::api::ApiContext>>("DWARFSymbolsPlugin")
+      .constructor<>();
+{%- endfor %}
+
+}

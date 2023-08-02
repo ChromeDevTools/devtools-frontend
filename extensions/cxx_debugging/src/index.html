@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!--
+  Copyright 2023 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+
+  This is the demo page for the DevToolsPlugin, which serves as an
+  interactive playground during development of the extension itself,
+  and is not shipped as part of the final product.
+-->
+<html>
+  <head>
+    <title>DevToolsPlugin demo</title>
+    <script type="module">
+      import {createPlugin} from './DWARFSymbols.js';
+      import {ResourceLoader} from './MEMFSResourceLoader.js';
+      (async () => {
+        globalThis.createPlugin = createPlugin;
+        console.log('Loading plugin...');
+        globalThis.plugin = await createPlugin(new ResourceLoader());
+        console.log('Plugin loaded');
+      })();
+    </script>
+  </head>
+  <body>
+    <input type="file" id="file" accept=".wasm,application/wasm,.dwp" multiple>
+  </body>
+  <script>
+    document.querySelector("input").addEventListener('change', fileChanged);
+    async function fetchFile(file) {
+      const url = URL.createObjectURL(file);
+      const fileResponse = await fetch(url);
+      const code = await fileResponse.arrayBuffer();
+      return code;
+    }
+
+    async function fileChanged(event) {
+      const files = event.target.files;
+      if (files.length === 0) return;
+      if (files.length > 2) {
+        alert("Too many files selected");
+        return;
+      }
+      let code, dwp = undefined;
+      if (files.length === 1) {
+        code = await fetchFile(files[0]);
+      } else {
+        let codeFile, dwpFile;
+        if (files[0].name.endsWith('.dwp')) {
+          [dwpFile, codeFile] = files;
+        } else if (files[1].name.endsWith('.dwp')) {
+          [codeFile, dwpFile] = files;
+        } else {
+          alert("Select a wasm file and a dwp file, or only a wasm file");
+          return;
+        }
+        [code, dwp] = await Promise.all([fetchFile(codeFile), fetchFile(dwpFile)]);
+      }
+      if (globalThis.rawModuleId) {
+        await plugin.removeRawModule(globalThis.rawModuleId);
+        globalThis.rawModuleId = undefined;
+      }
+      const sources = await plugin.addRawModule(file.name, '', {url: 'file:///something.wasm', code, dwp});
+      globalThis.rawModuleId = file.name;
+      console.log(`Successfully loaded ${file.name}`, sources);
+    }
+  </script>
+</html>

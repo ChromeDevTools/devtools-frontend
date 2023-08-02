@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "target": "esnext",
+    "module": "commonjs",
+    "sourceMap": true,
+    "allowUnreachableCode": false,
+    "useUnknownInCatchVariables": false,
+    "baseUrl": ".",
+    "paths": {
+      "test/*": [
+        "../../../test/*"
+      ],
+      "puppeteer": [
+        "../../../node_modules/puppeteer/lib/types.d.ts"
+      ],
+      "*": [
+        "*",
+        "../../../node_modules/@types/*/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "MochaRootHooks.ts",
+    "TestDriver.ts",
+    "StandaloneTestDriver.ts",
+    "OptionsPageTests.ts",
+    "cxx-debugging-extension-helpers.ts",
+    "standalone/MemoryInspector_test.ts"
+  ]
+}

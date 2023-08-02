@@ -260,3 +260,45 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
     return false;
   }
 }
+
+const DEFAULT_OPTS = {
+  prefixLength: 25,
+  maxLength: 1000,
+};
+
+/**
+ * Takes a whole line and calculates the substring we want to actually display in the UI.
+ * Also returns a translated {matchRange} (the parameter is relative to {lineContent} but the
+ * caller needs it relative to {lineSegment}).
+ *
+ * {lineContent} is modified in the following way:
+ *
+ *   * Whitespace is trimmed from the beginning (unless the match includes it).
+ *   * We only leave {options.prefixLength} characters before the match (and add an ellipsis in
+ *     case we removed anything)
+ *   * Truncate the remainder to {options.maxLength} characters.
+ */
+export function lineSegmentForMatch(
+    lineContent: string, range: TextUtils.TextRange.SourceRange,
+    optionsArg: Partial<typeof DEFAULT_OPTS> =
+        DEFAULT_OPTS): {lineSegment: string, matchRange: TextUtils.TextRange.SourceRange} {
+  const options = {...DEFAULT_OPTS, ...optionsArg};
+
+  // Remove the whitespace at the beginning, but stop where the match starts.
+  const attemptedTrimmedLine = lineContent.trimStart();
+  const potentiallyRemovedWhitespaceLength = lineContent.length - attemptedTrimmedLine.length;
+  const actuallyRemovedWhitespaceLength = Math.min(range.offset, potentiallyRemovedWhitespaceLength);
+
+  // Apply {options.prefixLength} and {options.maxLength}.
+  const lineSegmentBegin = Math.max(actuallyRemovedWhitespaceLength, range.offset - options.prefixLength);
+  const lineSegmentEnd = Math.min(lineContent.length, lineSegmentBegin + options.maxLength);
+  const lineSegmentPrefix = lineSegmentBegin > actuallyRemovedWhitespaceLength ? '…' : '';
+
+  // Build the resulting line segment and match range.
+  const lineSegment = lineSegmentPrefix + lineContent.substring(lineSegmentBegin, lineSegmentEnd);
+  const rangeOffset = range.offset - lineSegmentBegin + lineSegmentPrefix.length;
+  const rangeLength = Math.min(range.length, lineSegment.length - rangeOffset);
+  const matchRange = new TextUtils.TextRange.SourceRange(rangeOffset, rangeLength);
+
+  return {lineSegment, matchRange};
+}

@@ -66,6 +66,7 @@ group("front_end") {
     "panels/recorder/models",
     "panels/recorder/util",
     "panels/screencast",
+    "panels/search",
     "panels/security",
     "panels/settings/components",
     "panels/settings/emulation",

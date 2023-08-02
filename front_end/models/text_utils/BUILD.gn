@@ -40,6 +40,7 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/helpers/*",
     "../../../test/unittests/front_end/models/text_utils/*",
     "../../../test/unittests/front_end/panels/coverage/*",
+    "../../../test/unittests/front_end/panels/search/*",
     "../../entrypoints/*",
     "../../legacy_test_runner/test_runner/*",
     "../../panels/*",

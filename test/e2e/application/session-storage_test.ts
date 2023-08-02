@@ -60,7 +60,7 @@ describe('The Application Tab', async () => {
     await selectStorageItemAtIndex(0);
     await deleteSelectedStorageItem();
 
-    const dataGridRowValues = await getStorageItemsData(['key', 'value']);
+    const dataGridRowValues = await getStorageItemsData(['key', 'value'], 1);
     assert.deepEqual(dataGridRowValues, [
       {
         key: 'secondKey',

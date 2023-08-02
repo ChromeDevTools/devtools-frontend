@@ -121,7 +121,7 @@ describe('The Application Tab', async () => {
     });
 
     await step('check that storage data values are correct', async () => {
-      const dataGridRowValues = await getStorageItemsData(['key', 'value']);
+      const dataGridRowValues = await getStorageItemsData(['key', 'value'], 2);
       assert.deepEqual(dataGridRowValues, [
         {
           key: 'firstKey',

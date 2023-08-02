@@ -44,7 +44,7 @@ describe('The Application Tab', async () => {
     await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
 
     const dataGridRowValuesBefore = await waitForFunction(async () => {
-      const data = await getStorageItemsData(['name', 'value']);
+      const data = await getStorageItemsData(['name', 'value'], 3);
       return data.length ? data : undefined;
     });
 
@@ -88,7 +88,7 @@ describe('The Application Tab', async () => {
     await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
 
     const dataGridRowValuesBefore = await waitForFunction(async () => {
-      const data = await getStorageItemsData(['name', 'value']);
+      const data = await getStorageItemsData(['name', 'value'], 3);
       return data.length ? data : undefined;
     });
 

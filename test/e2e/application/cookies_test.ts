@@ -83,7 +83,7 @@ describe('The Application Tab', async () => {
     await doubleClickSourceTreeItem(COOKIES_SELECTOR);
     await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
 
-    const dataGridRowValues1 = await getStorageItemsData(['partitionKey']);
+    const dataGridRowValues1 = await getStorageItemsData(['partitionKey'], 4);
     assert.deepEqual(dataGridRowValues1, [
       {
         partitionKey: '',
@@ -165,7 +165,7 @@ describe('The Application Tab', async () => {
     await doubleClickSourceTreeItem(COOKIES_SELECTOR);
     await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
 
-    const dataGridRowValues1 = await getStorageItemsData(['name']);
+    const dataGridRowValues1 = await getStorageItemsData(['name'], 4);
     assert.deepEqual(dataGridRowValues1, [
       {
         name: 'urlencoded',
@@ -185,7 +185,7 @@ describe('The Application Tab', async () => {
     await clearStorageItems();
     await clearStorageItemsFilter();
 
-    const dataGridRowValues2 = await getStorageItemsData(['name']);
+    const dataGridRowValues2 = await getStorageItemsData(['name'], 3);
     assert.deepEqual(dataGridRowValues2, [
       {
         name: '__Host-foo3',

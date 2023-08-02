@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
 import {
   getBrowserAndPages,
   step,
+  waitForFunction,
 } from '../../shared/helper.js';
 import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
 import {
@@ -43,30 +42,33 @@ describe('The Sources Tab', () => {
                          .join(''));
   }
 
+  async function checkLineDecorationDescriptor(line: number, expected: string): Promise<void> {
+    await waitForFunction(async () => {
+      return await getLineDecorationDescriptor(line) === expected;
+    });
+  }
+
   it('shows inline decorations when setting a breakpoint on a line with multiple locations', async () => {
     const {frontend} = getBrowserAndPages();
     await addBreakpointForLine(frontend, 3);
 
-    assert.strictEqual(
-        await getLineDecorationDescriptor(3), '    var p = @Promise.%resolve().%then(() => console.%log(42)%)');
+    await checkLineDecorationDescriptor(3, '    var p = @Promise.%resolve().%then(() => console.%log(42)%)');
   });
 
   it('shows no inline decorations when setting a breakpoint on a line with a single location', async () => {
     const {frontend} = getBrowserAndPages();
     await addBreakpointForLine(frontend, 5);
 
-    assert.strictEqual(await getLineDecorationDescriptor(5), '    return p;');
+    await checkLineDecorationDescriptor(5, '    return p;');
   });
 
   it('removes the breakpoint when the last inline breakpoint is disabled', async () => {
     const {frontend} = getBrowserAndPages();
     await addBreakpointForLine(frontend, 3);
-    assert.strictEqual(
-        await getLineDecorationDescriptor(3), '    var p = @Promise.%resolve().%then(() => console.%log(42)%)');
+    await checkLineDecorationDescriptor(3, '    var p = @Promise.%resolve().%then(() => console.%log(42)%)');
 
     await disableInlineBreakpointForLine(3, 1, true);
-    assert.strictEqual(
-        await getLineDecorationDescriptor(3), '    var p = Promise.resolve().then(() => console.log(42))');
+    await checkLineDecorationDescriptor(3, '    var p = Promise.resolve().then(() => console.log(42))');
   });
 
   it('can enable/disable inline breakpoints by clicking on the decorations', async () => {
@@ -76,15 +78,13 @@ describe('The Sources Tab', () => {
     await step('click the second inline breakpoint', async () => {
       await enableInlineBreakpointForLine(3, 2);
 
-      assert.strictEqual(
-          await getLineDecorationDescriptor(3), '    var p = @Promise.@resolve().%then(() => console.%log(42)%)');
+      await checkLineDecorationDescriptor(3, '    var p = @Promise.@resolve().%then(() => console.%log(42)%)');
     });
 
     await step('click the first inline breakpoint', async () => {
       await disableInlineBreakpointForLine(3, 1);
 
-      assert.strictEqual(
-          await getLineDecorationDescriptor(3), '    var p = %Promise.@resolve().%then(() => console.%log(42)%)');
+      await checkLineDecorationDescriptor(3, '    var p = %Promise.@resolve().%then(() => console.%log(42)%)');
     });
   });
 });

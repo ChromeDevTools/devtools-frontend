@@ -115,14 +115,19 @@ class RegisteredExtension {
       inspectedURL = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL();
     }
 
+    if (!inspectedURL) {
+      return false;
+    }
+
+    if (!ExtensionServer.canInspectURL(inspectedURL)) {
+      return false;
+    }
+
     if (!this.hostsPolicy.isAllowedOnURL(inspectedURL)) {
       return false;
     }
 
     if (!this.allowFileAccess) {
-      if (!inspectedURL) {
-        return false;
-      }
       let parsedURL;
       try {
         parsedURL = new URL(inspectedURL);
@@ -404,7 +409,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private inspectedURLChanged(event: Common.EventTarget.EventTargetEvent<SDK.Target.Target>): void {
-    if (!this.canInspectURL(event.data.inspectedURL())) {
+    if (!ExtensionServer.canInspectURL(event.data.inspectedURL())) {
       this.disableExtensions();
       return;
     }
@@ -800,10 +805,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return harLog;
   }
 
-  private makeResource(contentProvider: TextUtils.ContentProvider.ContentProvider): {
-    url: string,
-    type: string,
-  } {
+  private makeResource(contentProvider: TextUtils.ContentProvider.ContentProvider): {url: string, type: string} {
     return {url: contentProvider.contentURL(), type: contentProvider.contentType().name()};
   }
 
@@ -812,7 +814,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       url: string,
       type: string,
     }>();
-
     function pushResourceData(
         this: ExtensionServer, contentProvider: TextUtils.ContentProvider.ContentProvider): boolean {
       if (!resources.has(contentProvider.contentURL())) {
@@ -836,6 +837,13 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   private async getResourceContent(
       contentProvider: TextUtils.ContentProvider.ContentProvider, message: PrivateAPI.ExtensionServerRequestMessage,
       port: MessagePort): Promise<void> {
+    const url = contentProvider.contentURL();
+    const origin = extensionOrigins.get(port);
+    const extension = origin && this.registeredExtensions.get(origin);
+    if (!extension?.isAllowedOnTarget(url)) {
+      this.dispatchCallback(message.requestId, port, this.status.E_FAILED('Permission denied'));
+      return undefined;
+    }
     const {content, isEncoded} = await contentProvider.requestContent();
     this.dispatchCallback(message.requestId, port, {encoding: isEncoded ? 'base64' : '', content: content});
   }
@@ -875,6 +883,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     function callbackWrapper(this: ExtensionServer, error: string|null): void {
       const response = error ? this.status.E_FAILED(error) : this.status.OK();
       this.dispatchCallback(requestId, port, response);
+    }
+    const origin = extensionOrigins.get(port);
+    const extension = origin && this.registeredExtensions.get(origin);
+    if (!extension?.isAllowedOnTarget(url as Platform.DevToolsPath.UrlString)) {
+      return this.status.E_FAILED('Permission denied');
     }
 
     const uiSourceCode =
@@ -1037,7 +1050,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       this.#pendingExtensions.push(extensionInfo);
       return;
     }
-    if (!this.canInspectURL(inspectedURL)) {
+    if (!ExtensionServer.canInspectURL(inspectedURL)) {
       this.disableExtensions();
     }
     if (!this.extensionsEnabled) {
@@ -1225,7 +1238,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     // We shouldn't get here if the outermost frame can't be inspected by an extension, but
     // let's double check for subframes.
     const extension = this.registeredExtensions.get(securityOrigin);
-    if (!this.canInspectURL(frame.url) || !extension?.isAllowedOnTarget(frame.url)) {
+    if (!extension?.isAllowedOnTarget(frame.url)) {
       return this.status.E_FAILED('Permission denied');
     }
 
@@ -1261,7 +1274,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         return this.status.E_FAILED(frame.url + ' has no execution context');
       }
     }
-    if (!this.canInspectURL(context.origin) || !extension?.isAllowedOnTarget(context.origin)) {
+    if (!extension?.isAllowedOnTarget(context.origin)) {
       return this.status.E_FAILED('Permission denied');
     }
 
@@ -1288,7 +1301,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return undefined;
   }
 
-  private canInspectURL(url: Platform.DevToolsPath.UrlString): boolean {
+  static canInspectURL(url: Platform.DevToolsPath.UrlString): boolean {
     let parsedURL;
     // This is only to work around invalid URLs we're occasionally getting from some tests.
     // TODO(caseq): make sure tests supply valid URLs or we specifically handle invalid ones.

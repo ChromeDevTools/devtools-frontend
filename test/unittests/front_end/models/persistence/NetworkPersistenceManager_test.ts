@@ -54,8 +54,8 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
 
     saveSpy.restore();
 
-    assert.isTrue(saveSpy.calledOnce, 'can override content');
-    assert.isTrue(actual, 'is override success');
+    assert.isTrue(saveSpy.calledOnce, 'should override content once');
+    assert.isTrue(actual, 'should complete override successfully');
   });
 
   it('can create an overridden file with Local Overrides folder set up but disabled', async () => {
@@ -73,8 +73,8 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
 
     saveSpy.restore();
 
-    assert.isTrue(saveSpy.calledOnce, 'can override content');
-    assert.isTrue(actual, 'is override success');
+    assert.isTrue(saveSpy.calledOnce, 'should override content once');
+    assert.isTrue(actual, 'should complete override successfully');
   });
 });
 

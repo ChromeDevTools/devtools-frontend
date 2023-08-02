@@ -18,17 +18,18 @@ const setUpEnvironmentWithUISourceCode =
       const {workspace, debuggerWorkspaceBinding} = setUpEnvironment();
       Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: false, debuggerWorkspaceBinding});
 
-      const proj = project ||
-          {id: () => url, type: () => Workspace.Workspace.projectTypes.Network} as Workspace.Workspace.Project;
+      if (!project) {
+        project = {id: () => url, type: () => Workspace.Workspace.projectTypes.Network} as Workspace.Workspace.Project;
+      }
 
       const uiSourceCode =
-          new Workspace.UISourceCode.UISourceCode(proj, url as Platform.DevToolsPath.UrlString, resourceType);
+          new Workspace.UISourceCode.UISourceCode(project, url as Platform.DevToolsPath.UrlString, resourceType);
 
-      proj.uiSourceCodes = () => [uiSourceCode];
+      project.uiSourceCodes = () => [uiSourceCode];
 
-      workspace.addProject(proj);
+      workspace.addProject(project);
 
-      return {workspace, project: proj, uiSourceCode};
+      return {workspace, project, uiSourceCode};
     };
 
 describeWithEnvironment('FilteredUISourceCodeListProvider', () => {

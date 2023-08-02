@@ -88,6 +88,27 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
         if (isSuccess) {
           await Common.Revealer.reveal(uiSourceCode);
         }
+
+        // Collect metrics: Context menu access point
+        if (contentProvider instanceof SDK.NetworkRequest.NetworkRequest) {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentFromNetworkContextMenu);
+        } else if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentFromSourcesContextMenu);
+        }
+        // Collect metrics: Content type
+        if (uiSourceCode.isFetchXHR()) {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideFetchXHR);
+        } else if (contentProvider.contentType().isScript()) {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideScript);
+        } else if (contentProvider.contentType().isDocument()) {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideDocument);
+        } else if (contentProvider.contentType().isStyleSheet()) {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideStyleSheet);
+        } else if (contentProvider.contentType().isImage()) {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideImage);
+        } else if (contentProvider.contentType().isFont()) {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideFont);
+        }
       });
     }
 

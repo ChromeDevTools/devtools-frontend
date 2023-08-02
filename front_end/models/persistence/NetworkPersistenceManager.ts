@@ -400,25 +400,31 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   async setupAndStartLocalOverrides(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<boolean> {
     // No overrides folder, set it up
     if (this.#shouldPromptSaveForOverridesDialog(uiSourceCode)) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuSetup);
       await new Promise<void>(
           resolve => UI.InspectorView.InspectorView.instance().displaySelectOverrideFolderInfobar(resolve));
       await IsolatedFileSystemManager.instance().addFileSystem('overrides');
     }
 
     if (!this.project()) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuAbandonSetup);
       return false;
     }
 
     // Already have an overrides folder, enable setting
     if (!this.enabledSetting.get()) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuActivateDisabled);
       this.enabledSetting.set(true);
       await this.once(Events.LocalOverridesProjectUpdated);
     }
 
     // Save new file
     if (!this.#isUISourceCodeAlreadyOverridden(uiSourceCode)) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuSaveNewFile);
       uiSourceCode.commitWorkingCopy();
       await this.saveUISourceCodeForOverrides(uiSourceCode as Workspace.UISourceCode.UISourceCode);
+    } else {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuOpenExistingFile);
     }
 
     return true;

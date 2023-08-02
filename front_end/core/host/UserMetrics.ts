@@ -543,7 +543,20 @@ export enum Action {
   BreakpointRemovedFromGutterContextMenu = 81,
   BreakpointRemovedFromGutterToggle = 82,
   StylePropertyInsideKeyframeEdited = 83,
-  MaxValue = 84,
+  OverrideContentFromSourcesContextMenu = 84,
+  OverrideContentFromNetworkContextMenu = 85,
+  OverrideScript = 86,
+  OverrideStyleSheet = 87,
+  OverrideDocument = 88,
+  OverrideFetchXHR = 89,
+  OverrideImage = 90,
+  OverrideFont = 91,
+  OverrideContentContextMenuSetup = 92,
+  OverrideContentContextMenuAbandonSetup = 93,
+  OverrideContentContextMenuActivateDisabled = 94,
+  OverrideContentContextMenuOpenExistingFile = 95,
+  OverrideContentContextMenuSaveNewFile = 96,
+  MaxValue = 97,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

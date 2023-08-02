@@ -12,3 +12,19 @@ per-file htaccess=file://config/owner/INFRA_OWNERS
 per-file package-lock.json=file://config/owner/INFRA_OWNERS
 per-file package.json=file://config/owner/INFRA_OWNERS
 per-file tsconfig.json=file://config/owner/INFRA_OWNERS
+
+# git submodules
+per-file build=devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com
+per-file build=file://config/owner/INFRA_OWNERS
+per-file buildtools=devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com
+per-file buildtools=file://config/owner/INFRA_OWNERS
+per-file extensions/cxx_debugging/third_party/lldb-eval/src=devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com
+per-file extensions/cxx_debugging/third_party/lldb-eval/src=file://config/owner/INFRA_OWNERS
+per-file extensions/cxx_debugging/third_party/llvm/src=devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com
+per-file extensions/cxx_debugging/third_party/llvm/src=file://config/owner/INFRA_OWNERS
+per-file third_party/clang-format/script=devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com
+per-file third_party/clang-format/script=file://config/owner/INFRA_OWNERS
+per-file third_party/depot_tools=devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com
+per-file third_party/depot_tools=file://config/owner/INFRA_OWNERS
+per-file third_party/inspector_protocol=devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com
+per-file third_party/inspector_protocol=file://config/owner/INFRA_OWNERS

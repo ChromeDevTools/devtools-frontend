@@ -148,6 +148,7 @@ export class JSONEditor extends LitElement {
     this.targetId = this.targetManager.targets().length !== 0 ? this.targetManager.targets()[0].id() : undefined;
     this.addEventListener('keydown', event => {
       if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+        this.#handleParameterInputKeydown(event);
         this.dispatchEvent(new SubmitEditorEvent({
           command: this.command,
           parameters: this.getParameters(),
@@ -488,11 +489,16 @@ export class JSONEditor extends LitElement {
     throw new Error('Not found');
   }
 
-  #handleParameterInputBlur = (event: Event): void => {
+  #saveParameterValue = (event: Event): void => {
     if (!(event.target instanceof RecorderComponents.RecorderInput.RecorderInput)) {
       return;
     }
-    const value = event.target.value;
+    let value: string|undefined;
+    if (event instanceof KeyboardEvent) {
+      value = event.target.renderRoot.querySelector('devtools-editable-content')?.innerText;
+    } else {
+      value = event.target.value;
+    }
     const paramId = event.target.getAttribute('data-paramid');
     if (!paramId) {
       return;
@@ -504,9 +510,17 @@ export class JSONEditor extends LitElement {
     } else {
       object.value = value;
     }
-
     // Needed to render the delete button for object parameters
     this.requestUpdate();
+  };
+
+  #handleParameterInputKeydown = (event: KeyboardEvent): void => {
+    if (!(event.target instanceof RecorderComponents.RecorderInput.RecorderInput)) {
+      return;
+    }
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      this.#saveParameterValue(event);
+    }
   };
 
   #handleCommandInputBlur = async(event: Event): Promise<void> => {
@@ -737,7 +751,10 @@ export class JSONEditor extends LitElement {
           const parameterId = parentParameter ? `${parentParameterId}` + '.' + `${parameter.name}` : parameter.name;
           const subparameters: Parameter[] = parameter.type === ParameterType.Array || parameter.type === ParameterType.Object ? (parameter.value ?? []) : [];
           const handleInputOnBlur = (event: Event): void => {
-            this.#handleParameterInputBlur(event);
+            this.#saveParameterValue(event);
+          };
+          const handleKeydown = (event: KeyboardEvent): void => {
+            this.#handleParameterInputKeydown(event);
           };
           const isPrimitive = this.#isTypePrimitive(parameter.type);
           const isArray = parameter.type === ParameterType.Array;
@@ -796,6 +813,7 @@ export class JSONEditor extends LitElement {
                           .value=${live(parameter.value ?? '')}
                           .placeholder=${parameter.value === '' ? EMPTY_STRING : `<${defaultValueByType.get(parameter.type)}>`}
                           @blur=${handleInputOnBlur}
+                          @keydown=${handleKeydown}
                         ></devtools-recorder-input>` : nothing}
 
                     <!-- Render the buttons to change the value from empty string to undefined for optional primitive parameters -->
@@ -819,6 +837,8 @@ export class JSONEditor extends LitElement {
                       .value=${live(parameter.value ?? '')}
                       .placeholder=${parameter.value === '' ? EMPTY_STRING : `<${defaultValueByType.get(parameter.type)}>`}
                       @blur=${handleInputOnBlur}
+                      @keydown=${handleKeydown}
+                      class=${classMap({'json-input': true})}
                     ></devtools-recorder-input>` : nothing}
 
                     ${this.#renderInlineButton({

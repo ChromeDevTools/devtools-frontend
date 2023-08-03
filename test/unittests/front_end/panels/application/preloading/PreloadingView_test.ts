@@ -360,9 +360,9 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
 
     assertGridContents(
         ruleSetGridComponent,
-        ['#', 'Validity', 'Location', 'Preloads'],
+        ['Rule set', 'Status'],
         [
-          ['2', 'Valid', '<script>', '1 Running'],
+          ['Main_Page', '1 Running'],
         ],
     );
   });
@@ -389,10 +389,11 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
 
     assertGridContents(
         ruleSetGridComponent,
-        ['#', 'Validity', 'Location', 'Preloads'],
+        ['Rule set', 'Status'],
         [
-          ['2', 'Invalid', '<script>', ''],
+          ['Main_Page', '1 error'],
         ],
+
     );
 
     const cells = [
@@ -444,7 +445,7 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
 
     assertGridContents(
         ruleSetGridComponent,
-        ['#', 'Validity', 'Location', 'Preloads'],
+        ['Rule set', 'Status'],
         [],
     );
   });
@@ -474,7 +475,7 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
 
     assertGridContents(
         ruleSetGridComponent,
-        ['#', 'Validity', 'Location', 'Preloads'],
+        ['Rule set', 'Status'],
         [],
     );
   });
@@ -523,9 +524,9 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
 
     assertGridContents(
         ruleSetGridComponent,
-        ['#', 'Validity', 'Location', 'Preloads'],
+        ['Rule set', 'Status'],
         [
-          ['2', 'Valid', '<script>', ''],
+          ['Main_Page', ''],
         ],
     );
   });

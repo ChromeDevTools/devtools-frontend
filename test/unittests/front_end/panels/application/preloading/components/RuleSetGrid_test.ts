@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
-import type * as Protocol from '../../../../../../../front_end/generated/protocol.js';
+import * as Protocol from '../../../../../../../front_end/generated/protocol.js';
 import * as PreloadingComponents from '../../../../../../../front_end/panels/application/preloading/components/components.js';
 import * as DataGrid from '../../../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
@@ -15,44 +15,133 @@ const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-async function renderRuleSetsGrid(rows: PreloadingComponents.RuleSetGrid.RuleSetGridRow[]): Promise<HTMLElement> {
-  const component = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
-  component.update(rows);
-  renderElementIntoDOM(component);
-  assertShadowRoot(component.shadowRoot);
-  await coordinator.done();
-
+function assertGridContents(
+    gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]): DataGrid.DataGrid.DataGrid {
   const controller = getElementWithinComponent(
-      component, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
-  assertShadowRoot(controller.shadowRoot);
+      gridComponent, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
   const grid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
   assertShadowRoot(grid.shadowRoot);
+
+  const headerGot = Array.from(getHeaderCells(grid.shadowRoot), cell => {
+    assertNotNullOrUndefined(cell.textContent);
+    return cell.textContent.trim();
+  });
+  const rowsGot = getValuesOfAllBodyRows(grid.shadowRoot);
+
+  assert.deepEqual([headerGot, rowsGot], [headerExpected, rowsExpected]);
 
   return grid;
 }
 
+async function assertRenderResult(
+    rowsInput: PreloadingComponents.RuleSetGrid.RuleSetGridRow[], headerExpected: string[],
+    rowsExpected: string[][]): Promise<DataGrid.DataGrid.DataGrid> {
+  const component = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
+  component.update(rowsInput);
+  renderElementIntoDOM(component);
+  await coordinator.done();
+
+  return assertGridContents(
+      component,
+      headerExpected,
+      rowsExpected,
+  );
+}
+
 describeWithEnvironment('RuleSetGrid', async () => {
-  it('renders grid with content', async () => {
-    const rows = [{
-      id: 'ruleSetId:0.1',
-      processLocalId: '1',
-      preloadsStatusSummary: '1 Not triggered / 2 Ready / 3 Failure',
-      ruleSetId: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
-      validity: 'Valid',
-      location: '<script>',
-    }];
+  it('renders grid', async () => {
+    await assertRenderResult(
+        [{
+          ruleSet: {
+            id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+            sourceText: `
+{
+  "prefetch":[
+    {
+      "source": "list",
+      "urls": ["/prefetched.html"]
+    }
+  ]
+}
+`,
+          },
+          preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
+        }],
+        ['Rule set', 'Status'],
+        [
+          ['Main_Page', '1 Not triggered, 2 Ready, 3 Failure'],
+        ],
+    );
+  });
 
-    const grid = await renderRuleSetsGrid(rows);
-    assertShadowRoot(grid.shadowRoot);
+  it('shows short url for out-of-document speculation rules', async () => {
+    await assertRenderResult(
+        [{
+          ruleSet: {
+            id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+            sourceText: `
+{
+  "prefetch":[
+    {
+      "source": "list",
+      "urls": ["/prefetched.html"]
+    }
+  ]
+}
+`,
+            url: 'https://example.com/assets/speculation-rules.json',
+          },
+          preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
+        }],
+        ['Rule set', 'Status'],
+        [
+          ['example.com/assets/speculation-rules.json', '1 Not triggered, 2 Ready, 3 Failure'],
+        ],
+    );
+  });
 
-    const header = Array.from(getHeaderCells(grid.shadowRoot), cell => {
-      assertNotNullOrUndefined(cell.textContent);
-      return cell.textContent.trim();
-    });
-    const bodyRows = getValuesOfAllBodyRows(grid.shadowRoot);
-    assert.deepEqual([header, bodyRows], [
-      ['#', 'Validity', 'Location', 'Preloads'],
-      [['1', 'Valid', '<script>', ' 1 Not triggered / 2 Ready / 3 Failure']],
-    ]);
+  it('shows error counts', async () => {
+    await assertRenderResult(
+        [
+          {
+            ruleSet: {
+              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+              sourceText: `
+{
+  "prefetch":[
+    {
+      "source": "list-typo",
+      "urls": ["/prefetched.html"]
+    }
+  ]
+}
+`,
+              errorType: Protocol.Preload.RuleSetErrorType.InvalidRulesSkipped,
+              errorMessage: 'fake error message',
+            },
+            preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
+          },
+          {
+            ruleSet: {
+              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+              sourceText: `
+{"invalidJson"
+`,
+              errorType: Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject,
+              errorMessage: 'fake error message',
+            },
+            preloadsStatusSummary: '',
+          },
+        ],
+        ['Rule set', 'Status'],
+        [
+          ['Main_Page', '1 error 1 Not triggered, 2 Ready, 3 Failure'],
+          ['Main_Page', '1 error'],
+        ],
+    );
   });
 });

@@ -157,7 +157,7 @@ class PreloadingUIUtils {
 
     return LIST.filter(status => (countsByStatus?.get(status) || 0) > 0)
         .map(status => (countsByStatus?.get(status) || 0) + ' ' + this.status(status))
-        .join(' / ');
+        .join(', ');
   }
 
   // Summary of error of rule set shown in grid.
@@ -298,12 +298,8 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     const ruleSetRows = this.model.getAllRuleSets().map(({id, value}) => {
       const countsByStatus = countsByRuleSetId.get(id) || new Map<SDK.PreloadingModel.PreloadingStatus, number>();
       return {
-        id,
-        processLocalId: PreloadingUIUtils.processLocalId(value.id),
+        ruleSet: value,
         preloadsStatusSummary: PreloadingUIUtils.preloadsStatusSummary(countsByStatus),
-        ruleSetId: value.id,
-        validity: PreloadingUIUtils.validity(value),
-        location: PreloadingUIUtils.location(value),
       };
     });
     this.ruleSetGrid.update(ruleSetRows);

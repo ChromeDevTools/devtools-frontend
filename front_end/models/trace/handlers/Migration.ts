@@ -31,16 +31,14 @@ export const ENABLED_TRACE_HANDLERS = {
   Warnings,
 };
 
+export type EnabledHandlersDuringMigration = typeof ENABLED_TRACE_HANDLERS;
+
 // Renderer and Samples handler are only executed when the panel is run
 // from the component examples server. Thus we mark them as optional
 // properties during the migration.
-export type MaybeRendererAndSamplesHandler = {
+export type PartialTraceData = Readonly<Types.EnabledHandlerDataWithMeta<EnabledHandlersDuringMigration>>&{
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  Renderer?: typeof Renderer,
+  readonly Renderer?: Readonly<ReturnType<typeof Renderer['data']>>,
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  Samples?: typeof Samples,
+  readonly Samples?: Readonly<ReturnType<typeof Samples['data']>>,
 };
-
-export type EnabledHandlersDuringMigration = typeof ENABLED_TRACE_HANDLERS&MaybeRendererAndSamplesHandler;
-
-export type PartialTraceData = Readonly<Types.EnabledHandlerDataWithMeta<EnabledHandlersDuringMigration>>;

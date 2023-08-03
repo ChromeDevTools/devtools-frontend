@@ -155,6 +155,17 @@ Common.Revealer.registerRevealer({
 
 Common.Revealer.registerRevealer({
   contextTypes() {
+    return [PreloadingHelper.PreloadingForward.RuleSetView];
+  },
+  destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,
+  async loadRevealer() {
+    const Resources = await loadResourcesModule();
+    return Resources.ResourcesPanel.RuleSetViewRevealer.instance();
+  },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
     return [PreloadingHelper.PreloadingForward.AttemptViewWithFilter];
   },
   destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,

@@ -872,6 +872,13 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.panel.showView(view);
   }
 
+  showPreloadingRuleSetView(revealInfo: PreloadingHelper.PreloadingForward.RuleSetView): void {
+    if (this.preloadingRuleSetTreeElement) {
+      this.preloadingRuleSetTreeElement.select();
+      this.preloadingRuleSetTreeElement.revealRuleSet(revealInfo);
+    }
+  }
+
   showPreloadingAttemptViewWithFilter(filter: PreloadingHelper.PreloadingForward.AttemptViewWithFilter): void {
     if (this.preloadingAttemptTreeElement) {
       this.preloadingAttemptTreeElement.select();

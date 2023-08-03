@@ -97,6 +97,14 @@ export class PreloadingTreeElement<V extends PreloadingRuleSetView|PreloadingAtt
     return false;
   }
 
+  revealRuleSet(revealInfo: PreloadingHelper.PreloadingForward.RuleSetView): void {
+    if (!this.view || !(this.view instanceof PreloadingRuleSetView)) {
+      throw new Error('unreachable');
+    }
+
+    this.view.revealRuleSet(revealInfo);
+  }
+
   setFilter(filter: PreloadingHelper.PreloadingForward.AttemptViewWithFilter): void {
     if (!this.view || !(this.view instanceof PreloadingAttemptView)) {
       throw new Error('unreachable');

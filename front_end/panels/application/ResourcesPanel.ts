@@ -239,6 +239,29 @@ export class FrameDetailsRevealer implements Common.Revealer.Revealer {
   }
 }
 
+let ruleSetViewRevealerInstance: RuleSetViewRevealer;
+
+export class RuleSetViewRevealer implements Common.Revealer.Revealer {
+  static instance(opts: {
+    forceNew: boolean|null,
+  } = {forceNew: null}): FrameDetailsRevealer {
+    const {forceNew} = opts;
+    if (!ruleSetViewRevealerInstance || forceNew) {
+      ruleSetViewRevealerInstance = new RuleSetViewRevealer();
+    }
+
+    return ruleSetViewRevealerInstance;
+  }
+
+  async reveal(revealInfo: Object): Promise<void> {
+    if (!(revealInfo instanceof PreloadingHelper.PreloadingForward.RuleSetView)) {
+      throw new Error('Internal error: not an RuleSetView');
+    }
+    const sidebar = await ResourcesPanel.showAndGetSidebar();
+    sidebar.showPreloadingRuleSetView(revealInfo);
+  }
+}
+
 let attemptViewWithFilterRevealerInstance: AttemptViewWithFilterRevealer;
 
 export class AttemptViewWithFilterRevealer implements Common.Revealer.Revealer {

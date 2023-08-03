@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
@@ -15,9 +16,10 @@ import * as ReportView from '../../../../ui/components/report_view/report_view.j
 import * as RequestLinkIcon from '../../../../ui/components/request_link_icon/request_link_icon.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as PreloadingHelper from '../helper/helper.js';
 
 import preloadingDetailsReportViewStyles from './preloadingDetailsReportView.css.js';
-import {prefetchFailureReason, prerenderFailureReason} from './PreloadingString.js';
+import {prefetchFailureReason, prerenderFailureReason, ruleSetLocationShort} from './PreloadingString.js';
 
 const UIStrings = {
   /**
@@ -84,6 +86,10 @@ const UIStrings = {
    *@description button: Title of button to activate prerendered page
    */
   buttonClickToActivate: 'Click to activate prerendered page',
+  /**
+   *@description button: Title of button to reveal rule set
+   */
+  buttonClickToRevealRuleSet: 'Click to reveal rule set',
 };
 const str_ =
     i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingDetailsReportView.ts', UIStrings);
@@ -379,19 +385,30 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
   }
 
   #renderRuleSet(ruleSet: Protocol.Preload.RuleSet): LitHtml.LitTemplate {
-    // We can assume `sourceText` is a valid JSON because this triggered the preloading attempt.
-    const json = JSON.stringify(JSON.parse(ruleSet.sourceText));
+    const revealRuleSetView = (): void => {
+      void Common.Revealer.reveal(new PreloadingHelper.PreloadingForward.RuleSetView(ruleSet.id));
+    };
+    const location = ruleSetLocationShort(ruleSet);
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return LitHtml.html`
-          <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsRuleSet)}</${
-            ReportView.ReportView.ReportKey.litTagName}>
-          <${ReportView.ReportView.ReportValue.litTagName}>
-            <div class="text-ellipsis" title="">
-              ${json}
-            </div>
-          </${ReportView.ReportView.ReportValue.litTagName}>
+      <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsRuleSet)}</${
+        ReportView.ReportView.ReportKey.litTagName}>
+      <${ReportView.ReportView.ReportValue.litTagName}>
+        <div class="text-ellipsis" title="">
+          <button class="link" role="link"
+            @click=${revealRuleSetView}
+            title=${i18nString(UIStrings.buttonClickToRevealRuleSet)}
+            style=${LitHtml.Directives.styleMap({
+              color: 'var(--color-link)',
+              'text-decoration': 'underline',
+            })}
+          >
+            ${location}
+          </button>
+        </div>
+      </${ReportView.ReportView.ReportValue.litTagName}>
     `;
     // clang-format on
   }

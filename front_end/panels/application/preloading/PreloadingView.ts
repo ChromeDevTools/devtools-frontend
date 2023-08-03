@@ -284,6 +284,11 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     this.render();
   }
 
+  revealRuleSet(revealInfo: PreloadingHelper.PreloadingForward.RuleSetView): void {
+    this.focusedRuleSetId = revealInfo.ruleSetId;
+    this.render();
+  }
+
   private updateRuleSetDetails(): void {
     const id = this.focusedRuleSetId;
     const ruleSet = id === null ? null : this.model.getRuleSetById(id);

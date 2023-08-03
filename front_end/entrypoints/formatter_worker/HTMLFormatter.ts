@@ -262,26 +262,38 @@ export class HTMLModel {
       const tokenType = type ? new Set<string>(type.split(' ')) : new Set<string>();
       const token = new Token(tokenValue, tokenType, tokenStart, tokenEnd);
 
-      // This is a pretty horrible work-around for a bug in the CodeMirror 5 HTML
-      // tokenizer, which isn't easy to fix because it shares this code with the
+      // This is a pretty horrible work-around for two bugs in the CodeMirror 5 HTML
+      // tokenizer, which aren't easy to fix because it shares this code with the
       // XML parser[^1], and which is also not actively maintained anymore. The
       // real fix here is to migrate off of CodeMirror 5 also for formatting and
       // pretty printing and use CodeMirror 6 instead, but that's a bigger
-      // project. For now we ducktape the problem by merging a '/' token
-      // following a string token in the HTML formatter, which does the trick.
+      // project.
+      //
+      // For now we ducktape the first problem by merging a '/' token
+      // following a string token in the HTML formatter, which does the trick, and
+      // also merging the error tokens for unescaped ampersands with text tokens
+      // (where `type` is `null`) preceeding and following the error tokens.
       //
       // [^1]: https://github.com/codemirror/codemirror5/blob/742627a/mode/xml/xml.js#L137
       //
       if (pendingToken) {
-        if (tokenValue === '/' && type === 'attribute') {
+        if (tokenValue === '/' && type === 'attribute' && pendingToken.type.has('string')) {
           token.startOffset = pendingToken.startOffset;
           token.value = `${pendingToken.value}${tokenValue}`;
           token.type = pendingToken.type;
+        } else if (
+            (tokenValue.startsWith('&') && type === 'error' && pendingToken.type.size === 0) ||
+            (type === null && pendingToken.type.has('error'))) {
+          pendingToken.endOffset = token.endOffset;
+          pendingToken.value += tokenValue;
+          pendingToken.type = token.type;
+          return;
         } else if (pushToken(pendingToken) === AbortTokenization) {
           return AbortTokenization;
         }
         pendingToken = null;
-      } else if (type === 'string') {
+      }
+      if (type === 'string' || type === null) {
         pendingToken = token;
         return;
       }

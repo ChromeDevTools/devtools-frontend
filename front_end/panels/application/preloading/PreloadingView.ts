@@ -124,16 +124,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/Preloadi
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 class PreloadingUIUtils {
-  static action({key}: SDK.PreloadingModel.PreloadingAttempt): string {
-    // Use "prefetch"/"prerender" as is in SpeculationRules.
-    switch (key.action) {
-      case Protocol.Preload.SpeculationAction.Prefetch:
-        return i18n.i18n.lockedString('prefetch');
-      case Protocol.Preload.SpeculationAction.Prerender:
-        return i18n.i18n.lockedString('prerender');
-    }
-  }
-
   static status(status: SDK.PreloadingModel.PreloadingStatus): string {
     // See content/public/browser/preloading.h PreloadingAttemptOutcome.
     switch (status) {
@@ -443,15 +433,16 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
     const url = SDK.TargetManager.TargetManager.instance().inspectedURL();
     const securityOrigin = url ? (new Common.ParsedURL.ParsedURL(url)).securityOrigin() : null;
     const preloadingAttemptRows = this.model.getPreloadingAttempts(filteringRuleSetId).map(({id, value}) => {
-      // Shorten URL if a preloading attempt is same-origin.
-      const orig = value.key.url;
-      const url = securityOrigin && orig.startsWith(securityOrigin) ? orig.slice(securityOrigin.length) : orig;
-
+      const attempt = value;
+      const ruleSets = attempt.ruleSetIds.flatMap(id => {
+        const ruleSet = this.model.getRuleSetById(id);
+        return ruleSet === null ? [] : [ruleSet];
+      });
       return {
         id,
-        url,
-        action: PreloadingUIUtils.action(value),
-        status: PreloadingUIUtils.status(value.status),
+        attempt,
+        ruleSets,
+        securityOrigin,
       };
     });
     this.preloadingGrid.update(preloadingAttemptRows);

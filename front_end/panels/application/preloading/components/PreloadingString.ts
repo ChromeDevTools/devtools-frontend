@@ -4,7 +4,7 @@
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
-import type * as SDK from '../../../../core/sdk/sdk.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
@@ -336,6 +336,30 @@ const UIStrings = {
    * Description text for PrerenderFinalStatus::kSpeculationRuleRemoved.
    */
   prerenderFinalStatusSpeculationRuleRemoved: 'Unknown',
+  /**
+   *@description Text in grid and details: Preloading attempt is not yet triggered.
+   */
+  statusNotTriggered: 'Not triggered',
+  /**
+   *@description Text in grid and details: Preloading attempt is eligible but pending.
+   */
+  statusPending: 'Pending',
+  /**
+   *@description Text in grid and details: Preloading is running.
+   */
+  statusRunning: 'Running',
+  /**
+   *@description Text in grid and details: Preloading finished and the result is ready for the next navigation.
+   */
+  statusReady: 'Ready',
+  /**
+   *@description Text in grid and details: Ready, then used.
+   */
+  statusSuccess: 'Success',
+  /**
+   *@description Text in grid and details: Preloading failed.
+   */
+  statusFailure: 'Failure',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingString.ts', UIStrings);
@@ -625,4 +649,59 @@ export function ruleSetLocationShort(ruleSet: Protocol.Preload.RuleSet): string 
   }
 
   return Bindings.ResourceUtils.displayNameForURL(ruleSet.url as Platform.DevToolsPath.UrlString);
+}
+
+export function action({key}: SDK.PreloadingModel.PreloadingAttempt): string {
+  // Use "prefetch"/"prerender" as is in SpeculationRules.
+  switch (key.action) {
+    case Protocol.Preload.SpeculationAction.Prefetch:
+      return i18n.i18n.lockedString('prefetch');
+    case Protocol.Preload.SpeculationAction.Prerender:
+      return i18n.i18n.lockedString('prerender');
+  }
+}
+
+export function status(status: SDK.PreloadingModel.PreloadingStatus): string {
+  // See content/public/browser/preloading.h PreloadingAttemptOutcome.
+  switch (status) {
+    case SDK.PreloadingModel.PreloadingStatus.NotTriggered:
+      return i18nString(UIStrings.statusNotTriggered);
+    case SDK.PreloadingModel.PreloadingStatus.Pending:
+      return i18nString(UIStrings.statusPending);
+    case SDK.PreloadingModel.PreloadingStatus.Running:
+      return i18nString(UIStrings.statusRunning);
+    case SDK.PreloadingModel.PreloadingStatus.Ready:
+      return i18nString(UIStrings.statusReady);
+    case SDK.PreloadingModel.PreloadingStatus.Success:
+      return i18nString(UIStrings.statusSuccess);
+    case SDK.PreloadingModel.PreloadingStatus.Failure:
+      return i18nString(UIStrings.statusFailure);
+      // NotSupported is used to handle unreachable case. For example,
+      // there is no code path for
+      // PreloadingTriggeringOutcome::kTriggeredButPending in prefetch,
+      // which is mapped to NotSupported. So, we regard it as an
+      // internal error.
+    case SDK.PreloadingModel.PreloadingStatus.NotSupported:
+      return i18n.i18n.lockedString('Internal error');
+  }
+}
+
+export function composedStatus(attempt: SDK.PreloadingModel.PreloadingAttempt): string {
+  const short = status(attempt.status);
+
+  if (attempt.status !== SDK.PreloadingModel.PreloadingStatus.Failure) {
+    return short;
+  }
+
+  switch (attempt.action) {
+    case Protocol.Preload.SpeculationAction.Prefetch: {
+      const detail = prefetchFailureReason(attempt) ?? i18n.i18n.lockedString('Internal error');
+      return short + ' - ' + detail;
+    }
+    case Protocol.Preload.SpeculationAction.Prerender: {
+      const detail = prerenderFailureReason(attempt);
+      assertNotNullOrUndefined(detail);
+      return short + ' - ' + detail;
+    }
+  }
 }

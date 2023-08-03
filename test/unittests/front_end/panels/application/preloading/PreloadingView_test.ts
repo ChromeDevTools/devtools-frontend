@@ -630,11 +630,12 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
 
     assertGridContents(
         preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
+        ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
             '/prerendered.html',
             'prerender',
+            '',
             'Running',
           ],
         ],
@@ -643,43 +644,6 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
     const placeholder = preloadingDetailsComponent.shadowRoot.querySelector('div.preloading-noselected div p');
 
     assert.strictEqual(placeholder?.textContent, 'Select an element for more details');
-  });
-
-  it('shows full URL in attempts grid if cross-domain', async () => {
-    const emulator = new NavigationEmulator();
-    await emulator.openDevTools();
-    const view = createAttemptView(emulator.primaryTarget);
-
-    await emulator.navigateAndDispatchEvents('');
-    await emulator.addSpecRules(`
-{
-  "prerender":[
-    {
-      "source": "list",
-      "urls": ["https://different-domain.example.com/prerendered.html"]
-    }
-  ]
-}
-`);
-
-    await coordinator.done();
-
-    const preloadingGridComponent = view.getPreloadingGridForTest();
-    assertShadowRoot(preloadingGridComponent.shadowRoot);
-    const preloadingDetailsComponent = view.getPreloadingDetailsForTest();
-    assertShadowRoot(preloadingDetailsComponent.shadowRoot);
-
-    assertGridContents(
-        preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
-        [
-          [
-            'https://different-domain.example.com/prerendered.html',
-            'prerender',
-            'Running',
-          ],
-        ],
-    );
   });
 
   // See https://crbug.com/1432880
@@ -728,11 +692,12 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
 
     assertGridContents(
         preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
+        ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
             '/prerendered.html',
             'prerender',
+            '',
             'Running',
           ],
         ],
@@ -804,16 +769,18 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
 
     assertGridContents(
         preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
+        ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
             '/subresource2.js',
             'prefetch',
+            'Main_Page',
             'Running',
           ],
           [
             '/prerendered3.html',
             'prerender',
+            'Main_Page',
             'Running',
           ],
         ],
@@ -828,11 +795,12 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
 
     assertGridContents(
         preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
+        ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
             '/subresource2.js',
             'prefetch',
+            'Main_Page',
             'Running',
           ],
         ],
@@ -847,16 +815,18 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
 
     assertGridContents(
         preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
+        ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
             '/subresource2.js',
             'prefetch',
+            'Main_Page',
             'Running',
           ],
           [
             '/prerendered3.html',
             'prerender',
+            'Main_Page',
             'Running',
           ],
         ],
@@ -889,11 +859,12 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
 
     assertGridContents(
         preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
+        ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
             '/prerendered.html',
             'prerender',
+            '',
             'Running',
           ],
         ],
@@ -961,11 +932,12 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
 
     assertGridContents(
         preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
+        ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
             '/prerendered.html',
             'prerender',
+            '',
             'Ready',
           ],
         ],
@@ -1022,6 +994,8 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
         url: 'https://example.com/prerendered.html',
       },
       status: Protocol.Preload.PreloadingStatus.Failure,
+      prerenderStatus: Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
+      disallowedMojoInterface: 'device.mojom.GamepadMonitor',
     });
     // Note that `TargetManager.removeTarget` is not called on `Target.targetDestroyed`.
     // Here, we manually remove the target for prerendered page from `TargetManager`.
@@ -1039,12 +1013,13 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
 
     assertGridContents(
         preloadingGridComponent,
-        ['URL', 'Action', 'Status'],
+        ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
             '/prerendered.html',
             'prerender',
-            'Failure',
+            '',
+            'Failure - The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
           ],
         ],
     );
@@ -1067,6 +1042,10 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
       ['URL', 'https://example.com/prerendered.html'],
       ['Action', 'prerenderInspectActivate'],
       ['Status', 'Preloading failed.'],
+      [
+        'Failure reason',
+        'The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
+      ],
     ]);
 
     const buttons = report.querySelectorAll('devtools-report-value:nth-of-type(2) devtools-button');

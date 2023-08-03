@@ -66,7 +66,6 @@ th {
 }
 
 th {
-  color: var(--sys-color-surface-variant);
   font-weight: normal;
   text-align: left;
   border-bottom: 1px solid var(--sys-color-divider);

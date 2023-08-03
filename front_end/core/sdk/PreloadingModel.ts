@@ -101,11 +101,11 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     return this.currentDocument()?.ruleSets.getAll() || [];
   }
 
-  getPreloadCountsByRuleSetId(): Map<Protocol.Preload.RuleSetId, Map<PreloadingStatus, number>> {
-    const countsByRuleSetId = new Map<Protocol.Preload.RuleSetId, Map<PreloadingStatus, number>>();
+  getPreloadCountsByRuleSetId(): Map<Protocol.Preload.RuleSetId|null, Map<PreloadingStatus, number>> {
+    const countsByRuleSetId = new Map<Protocol.Preload.RuleSetId|null, Map<PreloadingStatus, number>>();
 
     for (const {value} of this.getPreloadingAttempts(null)) {
-      for (const ruleSetId of value.ruleSetIds) {
+      for (const ruleSetId of [null, ...value.ruleSetIds]) {
         if (countsByRuleSetId.get(ruleSetId) === undefined) {
           countsByRuleSetId.set(ruleSetId, new Map<PreloadingStatus, number>());
         }

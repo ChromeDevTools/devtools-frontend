@@ -765,7 +765,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
     const preloadingGridComponent = view.getPreloadingGridForTest();
     assertShadowRoot(preloadingGridComponent.shadowRoot);
 
-    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All rule sets');
+    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All preloads');
 
     assertGridContents(
         preloadingGridComponent,
@@ -791,7 +791,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
 
     await coordinator.done();
 
-    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'Rule set: 2');
+    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'Main_Page');
 
     assertGridContents(
         preloadingGridComponent,
@@ -811,7 +811,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
 
     await coordinator.done();
 
-    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All rule sets');
+    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All preloads');
 
     assertGridContents(
         preloadingGridComponent,

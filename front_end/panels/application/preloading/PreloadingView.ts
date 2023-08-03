@@ -14,6 +14,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Bindings from '../../../models/bindings/bindings.js';
 
 import * as PreloadingComponents from './components/components.js';
 import type * as PreloadingHelper from './helper/helper.js';
@@ -30,12 +31,7 @@ const UIStrings = {
   /**
    *@description DropDown text for filtering preloading attempts by rule set: No filter
    */
-  filterAllRuleSets: 'All rule sets',
-  /**
-   *@description DropDown text for filtering preloading attempts by rule set: By rule set
-   *@example {0} PH1
-   */
-  filterRuleSet: 'Rule set: {PH1}',
+  filterAllPreloads: 'All preloads',
   /**
    *@description Text in grid: Rule set is valid
    */
@@ -149,9 +145,7 @@ class PreloadingUIUtils {
     }
   }
 
-  static preloadsStatusSummary(
-      ruleSet: Protocol.Preload.RuleSet,
-      countsByRuleSetId: Map<Protocol.Preload.RuleSetId, Map<SDK.PreloadingModel.PreloadingStatus, number>>): string {
+  static preloadsStatusSummary(countsByStatus: Map<SDK.PreloadingModel.PreloadingStatus, number>): string {
     const LIST = [
       SDK.PreloadingModel.PreloadingStatus.NotTriggered,
       SDK.PreloadingModel.PreloadingStatus.Pending,
@@ -161,14 +155,8 @@ class PreloadingUIUtils {
       SDK.PreloadingModel.PreloadingStatus.Failure,
     ];
 
-    if (ruleSet.errorType !== undefined) {
-      return '';
-    }
-
-    const counts = countsByRuleSetId.get(ruleSet.id);
-
-    return LIST.filter(status => (counts?.get(status) || 0) > 0)
-        .map(status => (counts?.get(status) || 0) + ' ' + this.status(status))
+    return LIST.filter(status => (countsByStatus?.get(status) || 0) > 0)
+        .map(status => (countsByStatus?.get(status) || 0) + ' ' + this.status(status))
         .join(' / ');
   }
 
@@ -201,6 +189,19 @@ class PreloadingUIUtils {
     // RuleSetId is form of '<processId>.<processLocalId>'
     const index = id.indexOf('.');
     return index === -1 ? id : id.slice(index + 1);
+  }
+
+  // TODO(https://crbug.com/1410709): Move
+  // front_end/panels/application/preloading/components/PreloadingString.ts
+  // to
+  // front_end/panels/application/preloading/helper/PreloadingString.ts
+  // and use PreloadingString.ruleSetLocationShort.
+  static ruleSetLocationShort(ruleSet: Protocol.Preload.RuleSet): string {
+    if (ruleSet.url === undefined) {
+      return i18n.i18n.lockedString('Main_Page');
+    }
+
+    return Bindings.ResourceUtils.displayNameForURL(ruleSet.url as Platform.DevToolsPath.UrlString);
   }
 }
 
@@ -294,15 +295,17 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
   render(): void {
     // Update rule sets grid
     const countsByRuleSetId = this.model.getPreloadCountsByRuleSetId();
-    const ruleSetRows = this.model.getAllRuleSets().map(
-        ({id, value}) => ({
-          id,
-          processLocalId: PreloadingUIUtils.processLocalId(value.id),
-          preloadsStatusSummary: PreloadingUIUtils.preloadsStatusSummary(value, countsByRuleSetId),
-          ruleSetId: value.id,
-          validity: PreloadingUIUtils.validity(value),
-          location: PreloadingUIUtils.location(value),
-        }));
+    const ruleSetRows = this.model.getAllRuleSets().map(({id, value}) => {
+      const countsByStatus = countsByRuleSetId.get(id) || new Map<SDK.PreloadingModel.PreloadingStatus, number>();
+      return {
+        id,
+        processLocalId: PreloadingUIUtils.processLocalId(value.id),
+        preloadsStatusSummary: PreloadingUIUtils.preloadsStatusSummary(countsByStatus),
+        ruleSetId: value.id,
+        validity: PreloadingUIUtils.validity(value),
+        location: PreloadingUIUtils.location(value),
+      };
+    });
     this.ruleSetGrid.update(ruleSetRows);
 
     this.updateRuleSetDetails();
@@ -554,7 +557,7 @@ class PreloadingRuleSetSelector implements UI.Toolbar.Provider,
 
     this.dropDown = new UI.SoftDropDown.SoftDropDown(this.listModel, this);
     this.dropDown.setRowHeight(36);
-    this.dropDown.setPlaceholderText(i18nString(UIStrings.filterAllRuleSets));
+    this.dropDown.setPlaceholderText(i18nString(UIStrings.filterAllPreloads));
 
     this.toolbarItem = new UI.Toolbar.ToolbarItem(this.dropDown.element);
     this.toolbarItem.setTitle(i18nString(UIStrings.filterFilterByRuleSet));
@@ -599,25 +602,21 @@ class PreloadingRuleSetSelector implements UI.Toolbar.Provider,
   // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|null>
   titleFor(id: Protocol.Preload.RuleSetId|null): string {
     if (id === null) {
-      return i18nString(UIStrings.filterAllRuleSets);
+      return i18nString(UIStrings.filterAllPreloads);
     }
 
-    // RuleSetId is form of '<processId>.<processLocalId>'
-    return i18nString(UIStrings.filterRuleSet, {PH1: PreloadingUIUtils.processLocalId(id)});
+    const ruleSet = this.model.getRuleSetById(id);
+    if (ruleSet === null) {
+      return i18n.i18n.lockedString('Internal error');
+    }
+
+    return PreloadingUIUtils.ruleSetLocationShort(ruleSet);
   }
 
   subtitleFor(id: Protocol.Preload.RuleSetId|null): string {
-    const ruleSet = id === null ? null : this.model.getRuleSetById(id);
-
-    if (ruleSet === null) {
-      return '';
-    }
-
-    if (ruleSet.url !== undefined) {
-      return ruleSet.url;
-    }
-
-    return '<script>';
+    const countsByStatus =
+        this.model.getPreloadCountsByRuleSetId().get(id) || new Map<SDK.PreloadingModel.PreloadingStatus, number>();
+    return PreloadingUIUtils.preloadsStatusSummary(countsByStatus);
   }
 
   // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|null>

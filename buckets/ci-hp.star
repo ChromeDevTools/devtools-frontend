@@ -56,6 +56,9 @@ highly_privileged_builder(
             ],
             "show_commit_log": False,
             "roll_chromium_pin": True,
+            "scripted_rolls": [
+                "puppeteer",
+            ],
             # "Bug: none" is required to pass presubmit tests
             "bugs": "none",
         },

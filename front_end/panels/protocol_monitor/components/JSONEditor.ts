@@ -202,7 +202,7 @@ export class JSONEditor extends LitElement {
           for (const subParameter of parameter.value) {
             nestedArrayParameters.push(formatParameterValue(subParameter));
           }
-          return nestedArrayParameters;
+          return nestedArrayParameters.length === 0 ? undefined : nestedArrayParameters;
         }
         default: {
           return parameter.value;
@@ -431,45 +431,50 @@ export class JSONEditor extends LitElement {
     if (!commandParameters) {
       return;
     }
+
     this.parameters = commandParameters.map((parameter: Parameter) => {
-      if (parameter.type === ParameterType.Object) {
-        const typeInfos = this.typesByName.get(parameter.typeRef as string) ?? [];
-        return {
-          optional: parameter.optional,
-          type: parameter.type,
-          description: parameter.description,
-          typeRef: parameter.typeRef,
-          value: typeInfos.map(type => {
-            return {
-              optional: type.optional,
-              type: this.#isParameterSupported(parameter) ? type.type : ParameterType.String,
-              name: type.name,
-              description: type.description,
-              value: type.optional ? undefined : defaultValueByType.get(type.type),
-            } as Parameter;
-          }),
-          name: parameter.name,
-        };
-      }
-      if (parameter.type === ParameterType.Array) {
-        return {
-          optional: parameter.optional,
-          type: parameter.type,
-          description: parameter.description,
-          typeRef: parameter.typeRef,
-          value: [],
-          name: parameter.name,
-        };
-      }
-      return {
-        optional: parameter.optional,
-        type: parameter.type,
-        typeRef: this.#isParameterSupported(parameter) ? parameter.typeRef : ParameterType.String,
-        value: parameter.optional ? undefined : defaultValueByType.get(parameter.type),
-        name: parameter.name,
-        description: parameter.description,
-      } as Parameter;
+      return this.#populateParameterDefaults(parameter);
     });
+  }
+
+  #populateParameterDefaults(parameter: Parameter): Parameter {
+    if (parameter.type === ParameterType.Object) {
+      const typeRef = parameter.typeRef;
+      if (!typeRef) {
+        throw Error('Every object parameters should have a type ref');
+      }
+
+      const nestedType = this.typesByName.get(typeRef);
+      // This is extremely rare.
+      // It happens when the keys for an object are not registered like for Tracing.MemoryDumpConfig or headers for instance.
+      // The user has to type the object wanted by hand and the parameter is treated as a string parameter
+      if (!nestedType) {
+        return {
+          ...parameter,
+          type: ParameterType.String,
+          value: parameter.optional ? undefined : defaultValueByType.get(parameter.type),
+        } as StringParameter;
+      }
+
+      const nestedParameters = nestedType.map(nestedType => {
+        return this.#populateParameterDefaults(nestedType);
+      });
+
+      return {
+        ...parameter,
+        value: nestedParameters,
+      };
+    }
+    if (parameter.type === ParameterType.Array) {
+      return {
+        ...parameter,
+        value: parameter.value?.map(param => this.#populateParameterDefaults(param)) || [],
+      };
+    }
+    return {
+      ...parameter,
+      value: parameter.optional ? undefined : defaultValueByType.get(parameter.type),
+    } as Parameter;
   }
 
   #getChildByPath(pathArray: string[]): {parameter: Parameter, parentParameter: Parameter} {
@@ -536,15 +541,6 @@ export class JSONEditor extends LitElement {
 
   #computeTargetLabel(target: SDK.Target.Target): string {
     return `${target.name()} (${target.inspectedURL()})`;
-  }
-
-  #isParameterSupported(parameter: Parameter): boolean {
-    if (parameter.type === ParameterType.Array || parameter.type === ParameterType.Object ||
-        parameter.type === ParameterType.String || parameter.type === ParameterType.Boolean ||
-        parameter.type === ParameterType.Number) {
-      return true;
-    }
-    throw new Error('Parameter is not of correct type');
   }
 
   #isTypePrimitive(type: string): boolean {

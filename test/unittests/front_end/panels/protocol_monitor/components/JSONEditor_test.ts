@@ -118,6 +118,19 @@ describeWithEnvironment('JSONEditor', () => {
             description: 'Description8.',
             replyArgs: ['Test8'],
           },
+          'Test.test9': {
+            parameters: [
+              {
+                'name': 'traceConfig',
+                'type': 'object',
+                'optional': true,
+                'description': '',
+                'typeRef': 'Tracing.TraceConfig',
+              },
+            ],
+            description: 'Description9.',
+            replyArgs: ['Test9'],
+          },
         },
       },
     ] as Iterable<ProtocolMonitor.ProtocolMonitor.ProtocolDomain>;
@@ -839,6 +852,64 @@ describeWithEnvironment('JSONEditor', () => {
     await isCalled;
 
     assert.isTrue(copyText.calledWith(JSON.stringify({command: 'Test.test', parameters: {'test': 'test'}})));
+  });
+
+  it('should display the correct parameters with a command with array nested inside object', async () => {
+    const command = 'Test.test9';
+    const typesByName = new Map();
+    // This nested object contains every subtype including array
+    typesByName.set('Tracing.TraceConfig', [
+      {
+        'name': 'recordMode',
+        'type': 'string',
+        'optional': true,
+        'description': 'Controls how the trace buffer stores data.',
+        'typeRef': null,
+      },
+      {
+        'name': 'traceBufferSizeInKb',
+        'type': 'number',
+        'optional': true,
+        'description':
+            'Size of the trace buffer in kilobytes. If not specified or zero is passed, a default value of 200 MB would be used.',
+        'typeRef': null,
+      },
+      {
+        'name': 'enableSystrace',
+        'type': 'boolean',
+        'optional': true,
+        'description': 'Turns on system tracing.',
+        'typeRef': null,
+      },
+      {
+        'name': 'includedCategories',
+        'type': 'array',
+        'optional': true,
+        'description': 'Included category filters.',
+        'typeRef': 'string',
+      },
+      {
+        'name': 'memoryDumpConfig',
+        'type': 'object',
+        'optional': true,
+        'description': 'Configuration for memory dump triggers. Used only when \\"memory-infra\\" category is enabled.',
+        'typeRef':
+            'Tracing.MemoryDumpConfig',  // This typeref is on purpose not added to show that this param will be treated as a string parameter
+      },
+    ]);
+
+    const jsonEditor = renderJSONEditor();
+
+    await populateMetadata(jsonEditor);
+    jsonEditor.typesByName = typesByName;
+    jsonEditor.command = command;
+    jsonEditor.populateParametersForCommandWithDefaultValues();
+    await jsonEditor.updateComplete;
+    const shadowRoot = jsonEditor.renderRoot;
+    const parameters = shadowRoot.querySelectorAll('.parameter');
+    // This expected value is equal to 6 because there are 5 different parameters inside typesByName + 1
+    // for the name of the parameter (traceConfig)
+    assert.deepStrictEqual(parameters.length, 6);
   });
 
 });

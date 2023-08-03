@@ -251,7 +251,7 @@ def script_main(args):
     source_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     repo_dir = os.path.dirname(os.path.dirname(source_dir))
     third_party = os.path.join(repo_dir, 'third_party')
-    clang_dir = os.path.join(third_party, 'llvm-build', 'Release+Asserts',
+    clang_dir = os.path.join(third_party, 'emscripten-releases', 'install',
                              'bin')
     cmake_dir = os.path.join(third_party, 'cmake', 'bin')
     sysroot_dir = find_sysroot(repo_dir)

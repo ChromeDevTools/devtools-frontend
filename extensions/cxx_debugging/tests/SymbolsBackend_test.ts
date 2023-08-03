@@ -18,9 +18,17 @@ it('SymbolsBackend', async () => {
       FS.mkdir('cxx_debugging');
       FS.mkdir('cxx_debugging/tests');
       FS.mkdir('cxx_debugging/tests/inputs');
-      [].forEach(
-          name =>
-              FS.createPreloadedFile('cxx_debugging/tests/inputs', name, `build/tests/inputs/${name}`, true, false));
+      ['hello.s.wasm',
+       'windows_paths.s.wasm',
+       'globals.s.wasm',
+       'classstatic.s.wasm',
+       'namespaces.s.wasm',
+       'shadowing.s.wasm',
+       'inline.s.wasm',
+      ]
+          .forEach(
+              name => FS.createPreloadedFile(
+                  'cxx_debugging/tests/inputs', name, `build/tests/inputs/${name}`, true, false));
       ['split-dwarf.s.dwo',
        'split-dwarf.s.wasm',
       ].forEach(name => FS.createPreloadedFile('tests/inputs', name, `build/tests/inputs/${name}`, true, false));

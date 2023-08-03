@@ -14,7 +14,6 @@ __original_main:                        # @__original_main
   return
   end_function
 .Lfunc_end0:
-  .size __original_main, .Lfunc_end0-__original_main
 
   .section  .debug_abbrev,"",@
   .int8 1                                 # Abbreviation Code
@@ -296,6 +295,8 @@ __original_main:                        # @__original_main
   .int8 5                                 # DW_AT_location
   .int8 0x3                               # DW_OP_addr
   .int32 0x28
+
+  ${EOM}                                  # End DW_AT_compile_unit
 .Ldebug_info_end0:
 
   .section  .debug_str,"S",@

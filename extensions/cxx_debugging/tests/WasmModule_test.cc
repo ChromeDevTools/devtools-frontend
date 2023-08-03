@@ -48,21 +48,21 @@ auto MakeRange(const ContainerT& c)
 
 TEST(WasmModuleTest, AddScript) {
   llvm::Expected<std::unique_ptr<WasmModule>> module =
-      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/hello.wasm");
+      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/hello.s.wasm");
   ASSERT_TRUE(!!module);
   EXPECT_TRUE((*module)->Valid());
 }
 
 TEST(WasmModuleTest, SourceScripts) {
   auto module =
-      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/hello.wasm");
+      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/hello.s.wasm");
   ASSERT_TRUE(!!module);
   EXPECT_EQ((*module)->GetSourceScripts().sources.size(), 2u);
 }
 
 TEST(WasmModuleTest, HelloAddScript) {
   auto module =
-      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/hello.wasm");
+      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/hello.s.wasm");
   ASSERT_TRUE(!!module);
   EXPECT_TRUE((*module)->Valid());
   auto scripts = (*module)->GetSourceScripts();
@@ -77,284 +77,123 @@ TEST(WasmModuleTest, HelloAddScript) {
 
 TEST(WasmModuleTest, HelloSourceToRawLocation) {
   auto module =
-      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/hello.wasm");
+      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/hello.s.wasm");
   ASSERT_TRUE(!!module);
-  SourceLocation source_location("hello.c", 8, 3);
-
-  lldb::addr_t code_section_start = 0xf2;
+  SourceLocation source_location("hello.c", 3, 0);
 
   auto raw_locations = (*module)->GetOffsetFromSourceLocation(source_location);
-  EXPECT_THAT(raw_locations, testing::ElementsAre(std::make_pair(
-                                 lldb::addr_t(0x167 - code_section_start), 8)));
+  EXPECT_THAT(raw_locations, testing::ElementsAre(std::make_pair(2, 3)));
 }
 
 TEST(WasmModuleTest, HelloRawToSourceLocation) {
   auto module =
-      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/hello.wasm");
+      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/hello.s.wasm");
   ASSERT_TRUE(!!module);
-  lldb::addr_t code_section_start = 0xf2;
-  auto loc =
-      (*module)->GetSourceLocationFromOffset(0x167 - code_section_start, 0);
+  auto loc = (*module)->GetSourceLocationFromOffset(2, 0);
   EXPECT_EQ(loc.size(), 1u);
   if (loc.empty()) {
     return;
   }
   const SourceLocation& front_location = *loc.begin();
   EXPECT_EQ(front_location.file, "hello.c");
-  EXPECT_EQ(front_location.column, 3u);
-  EXPECT_EQ(front_location.line, 8u);
-}
-
-TEST(WasmModuleTest, InlineExactGetOffsetFromSourceLocation) {
-  auto module =
-      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/inline_emcc.wasm");
-  ASSERT_TRUE(!!module);
-
-  {
-    // inline.c:18 -> 0x05
-    SourceLocation source_location("inline.cc", 18, 0);
-    auto raw_locations =
-        (*module)->GetOffsetFromSourceLocation(source_location);
-    EXPECT_THAT(raw_locations, testing::ElementsAre(std::make_pair(0x05, 4)));
-  }
-
-  {
-    // inline.c:19 not present
-    SourceLocation source_location("inline.cc", 19, 0);
-    auto raw_locations =
-        (*module)->GetOffsetFromSourceLocation(source_location);
-    EXPECT_THAT(raw_locations, testing::ElementsAre());
-  }
-
-  {
-    // inline.c:20 -> 0x09
-    SourceLocation source_location("inline.cc", 20, 0);
-    auto raw_locations =
-        (*module)->GetOffsetFromSourceLocation(source_location);
-    EXPECT_THAT(raw_locations, testing::ElementsAre(std::make_pair(0x09, 5)));
-  }
+  EXPECT_EQ(front_location.column, 0u);
+  EXPECT_EQ(front_location.line, 3u);
 }
 
 TEST(WasmModuleTest, RegressCrbug1153147) {
   auto module = WasmModule::CreateFromFile(
-      "cxx_debugging/tests/inputs/regress-crbug-1153147.wasm");
+      "cxx_debugging/tests/inputs/windows_paths.s.wasm");
   ASSERT_TRUE(!!module);
 
   SourceLocation source_location("c:\\src\\temp.c", 5, 5);
   auto raw_locations = (*module)->GetOffsetFromSourceLocation(source_location);
-  EXPECT_THAT(raw_locations, testing::ElementsAre(std::make_pair(0x6e, 4)));
+  EXPECT_THAT(raw_locations, testing::ElementsAre(std::make_pair(2, 5)));
 }
 
 TEST(WasmModuleTest, InlineSourceToRawLocation) {
   auto module =
-      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/inline.wasm");
+      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/inline.s.wasm");
   ASSERT_TRUE(!!module);
-  SourceLocation source_location("inline.cc", 8, 18);
+  SourceLocation source_location("inline.c", 10, 0);
 
   auto raw_locations = (*module)->GetOffsetFromSourceLocation(source_location);
   EXPECT_THAT(raw_locations,
-              testing::ElementsAre(std::make_pair(lldb::addr_t(0x61), 14),
-                                   std::make_pair(lldb::addr_t(0x99), 14)));
+              testing::ElementsAre(std::make_pair(lldb::addr_t(0x5), 1)));
 }
 
 TEST(WasmModuleTest, InlineRawToSourceLocation) {
-  auto m = WasmModule::CreateFromFile("cxx_debugging/tests/inputs/inline.wasm");
+  auto m =
+      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/inline.s.wasm");
   ASSERT_TRUE(!!m);
-  lldb::addr_t code_section_start = 0x102;
   {
-    auto loc = (*m)->GetSourceLocationFromOffset(0x167 - code_section_start, 0);
+    auto loc = (*m)->GetSourceLocationFromOffset(0x2, 0);
     EXPECT_EQ(loc.size(), 1u);
     if (loc.empty()) {
       return;
     }
     const SourceLocation& front_location = *loc.begin();
-    EXPECT_EQ(front_location.file, "inline.cc");
-    EXPECT_EQ(front_location.column, 18u);
-    EXPECT_EQ(front_location.line, 8u);
+    EXPECT_EQ(front_location.file, "inline.c");
+    EXPECT_EQ(front_location.column, 0u);
+    EXPECT_EQ(front_location.line, 1u);
   }
   {
-    auto loc = (*m)->GetSourceLocationFromOffset(0x19F - code_section_start, 0);
+    auto loc = (*m)->GetSourceLocationFromOffset(0x5, 0);
     EXPECT_EQ(loc.size(), 1u);
     if (loc.empty()) {
       return;
     }
     const SourceLocation& front_location = *loc.begin();
-    EXPECT_EQ(front_location.file, "inline.cc");
-    EXPECT_EQ(front_location.column, 18u);
-    EXPECT_EQ(front_location.line, 8u);
+    EXPECT_EQ(front_location.file, "inline.c");
+    EXPECT_EQ(front_location.column, 0u);
+    EXPECT_EQ(front_location.line, 10u);
   }
   {
-    auto loc = (*m)->GetSourceLocationFromOffset(0x1BB - code_section_start, 0);
+    auto loc = (*m)->GetSourceLocationFromOffset(0x6, 0);
     EXPECT_EQ(loc.size(), 1u);
     if (loc.empty()) {
       return;
     }
     const SourceLocation& front_location = *loc.begin();
-    EXPECT_EQ(front_location.file, "inline.cc");
-    EXPECT_EQ(front_location.column, 7u);
-    EXPECT_EQ(front_location.line, 14u);
-  }
-  {
-    auto loc = (*m)->GetSourceLocationFromOffset(0x1DC - code_section_start, 0);
-    EXPECT_EQ(loc.size(), 1u);
-    if (loc.empty()) {
-      return;
-    }
-    const SourceLocation& front_location = *loc.begin();
-    EXPECT_EQ(front_location.file, "inline.cc");
-    EXPECT_EQ(front_location.column, 3u);
-    EXPECT_EQ(front_location.line, 20u);
-  }
-  {
-    auto loc = (*m)->GetSourceLocationFromOffset(0x167 - code_section_start, 1);
-    EXPECT_EQ(loc.size(), 1u);
-    if (loc.empty()) {
-      return;
-    }
-    const SourceLocation& front_location = *loc.begin();
-    EXPECT_EQ(front_location.file, "inline.cc");
-    EXPECT_EQ(front_location.column, 13u);
-    EXPECT_EQ(front_location.line, 13u);
-  }
-  {
-    auto loc = (*m)->GetSourceLocationFromOffset(0x19F - code_section_start, 1);
-    EXPECT_EQ(loc.size(), 1u);
-    if (loc.empty()) {
-      return;
-    }
-    const SourceLocation& front_location = *loc.begin();
-    EXPECT_EQ(front_location.file, "inline.cc");
-    EXPECT_EQ(front_location.column, 10u);
-    EXPECT_EQ(front_location.line, 14u);
-  }
-  {
-    auto loc = (*m)->GetSourceLocationFromOffset(0x167 - code_section_start, 2);
-    EXPECT_EQ(loc.size(), 1u);
-    if (loc.empty()) {
-      return;
-    }
-    const SourceLocation& front_location = *loc.begin();
-    EXPECT_EQ(front_location.file, "inline.cc");
-    EXPECT_EQ(front_location.column, 11u);
-    EXPECT_EQ(front_location.line, 19u);
-  }
-  {
-    auto loc = (*m)->GetSourceLocationFromOffset(0x19F - code_section_start, 2);
-    EXPECT_EQ(loc.size(), 1u);
-    if (loc.empty()) {
-      return;
-    }
-    const SourceLocation& front_location = *loc.begin();
-    EXPECT_EQ(front_location.file, "inline.cc");
-    EXPECT_EQ(front_location.column, 11u);
-    EXPECT_EQ(front_location.line, 19u);
-  }
-  {
-    auto loc = (*m)->GetSourceLocationFromOffset(0x1BB - code_section_start, 1);
-    EXPECT_EQ(loc.size(), 1u);
-    if (loc.empty()) {
-      return;
-    }
-    const SourceLocation& front_location = *loc.begin();
-    EXPECT_EQ(front_location.file, "inline.cc");
-    EXPECT_EQ(front_location.column, 11u);
-    EXPECT_EQ(front_location.line, 19u);
+    EXPECT_EQ(front_location.file, "inline.c");
+    EXPECT_EQ(front_location.column, 0u);
+    EXPECT_EQ(front_location.line, 2u);
   }
 }
 
 TEST(WasmModuleTest, InlineFunctionInfo) {
-  auto m = WasmModule::CreateFromFile("cxx_debugging/tests/inputs/inline.wasm");
+  auto m =
+      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/inline.s.wasm");
   ASSERT_TRUE(!!m);
-  lldb::addr_t code_section_start = 0x102;
   {
-    auto function_names =
-        (*m)->GetFunctionInfo(0x167 - code_section_start).names;
-    EXPECT_THAT(
-        function_names,
-        testing::ElementsAre("square(int)", "dsquare(int, int)", "main"));
+    auto function_names = (*m)->GetFunctionInfo(0x2).names;
+    EXPECT_THAT(function_names, testing::ElementsAre("caller"));
   }
   {
-    auto function_names =
-        (*m)->GetFunctionInfo(0x19F - code_section_start).names;
-    EXPECT_THAT(
-        function_names,
-        testing::ElementsAre("square(int)", "dsquare(int, int)", "main"));
-  }
-  {
-    auto function_names =
-        (*m)->GetFunctionInfo(0x1BB - code_section_start).names;
-    EXPECT_THAT(function_names,
-                testing::ElementsAre("dsquare(int, int)", "main"));
-  }
-  {
-    auto function_names =
-        (*m)->GetFunctionInfo(0x1DC - code_section_start).names;
-    EXPECT_THAT(function_names, testing::ElementsAre("main"));
+    auto function_names = (*m)->GetFunctionInfo(0x5).names;
+    EXPECT_THAT(function_names, testing::ElementsAre("callee", "caller"));
   }
 }
 
 TEST(WasmModuleTest, InlineFunctionRanges) {
-  auto m = WasmModule::CreateFromFile("cxx_debugging/tests/inputs/inline.wasm");
+  auto m =
+      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/inline.s.wasm");
   ASSERT_TRUE(!!m);
-  lldb::addr_t code_section_start = 0x102;
   {
-    llvm::SmallVector<LocationRange, 1> function_ranges(MakeRange(
-        (*m)->GetInlineFunctionAddressRanges(0x167 - code_section_start)));
-    EXPECT_THAT(function_ranges,
-                testing::ElementsAre(std::make_pair(
-                    lldb::addr_t(0x155 - code_section_start), 0x23)));
-  }
-  {
-    llvm::SmallVector<LocationRange, 1> function_ranges(MakeRange(
-        (*m)->GetInlineFunctionAddressRanges(0x19F - code_section_start)));
-    EXPECT_THAT(function_ranges,
-                testing::ElementsAre(std::make_pair(
-                    lldb::addr_t(0x18D - code_section_start), 0x23)));
-  }
-  {
-    llvm::SmallVector<LocationRange, 1> function_ranges(MakeRange(
-        (*m)->GetInlineFunctionAddressRanges(0x1BB - code_section_start)));
-    EXPECT_THAT(function_ranges,
-                testing::ElementsAre(std::make_pair(
-                    lldb::addr_t(0x147 - code_section_start), 0x85)));
-  }
-  {
-    llvm::SmallVector<LocationRange, 1> function_ranges(MakeRange(
-        (*m)->GetInlineFunctionAddressRanges(0x1DC - code_section_start)));
-    EXPECT_EQ(function_ranges.size(), 0u);
+    llvm::SmallVector<LocationRange, 1> function_ranges(
+        MakeRange((*m)->GetInlineFunctionAddressRanges(0x5)));
+    EXPECT_THAT(function_ranges.size(), 1u);
+    EXPECT_THAT(function_ranges, testing::ElementsAre(std::make_pair(0x5, 1)));
   }
 }
 
 TEST(WasmModuleTest, ChildInlineFunctionRanges) {
-  auto m = WasmModule::CreateFromFile("cxx_debugging/tests/inputs/inline.wasm");
+  auto m =
+      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/inline.s.wasm");
   ASSERT_TRUE(!!m);
-  lldb::addr_t code_section_start = 0x102;
-  {
-    llvm::SmallVector<LocationRange, 1> function_ranges(MakeRange(
-        (*m)->GetChildInlineFunctionAddressRanges(0x167 - code_section_start)));
-    EXPECT_EQ(function_ranges.size(), 0u);
-  }
-  {
-    llvm::SmallVector<LocationRange, 1> function_ranges(MakeRange(
-        (*m)->GetChildInlineFunctionAddressRanges(0x19F - code_section_start)));
-    EXPECT_EQ(function_ranges.size(), 0u);
-  }
-  {
-    llvm::SmallVector<LocationRange, 1> function_ranges(MakeRange(
-        (*m)->GetChildInlineFunctionAddressRanges(0x1BB - code_section_start)));
-    EXPECT_THAT(
-        function_ranges,
-        testing::ElementsAre(
-            std::make_pair(lldb::addr_t(0x155 - code_section_start), 0x23),
-            std::make_pair(lldb::addr_t(0x18D - code_section_start), 0x23)));
-  }
-  {
-    llvm::SmallVector<LocationRange, 1> function_ranges(MakeRange(
-        (*m)->GetChildInlineFunctionAddressRanges(0x1DC - code_section_start)));
-    EXPECT_THAT(function_ranges,
-                testing::ElementsAre(std::make_pair(
-                    lldb::addr_t(0x147 - code_section_start), 0x85)));
-  }
+  llvm::SmallVector<LocationRange, 1> function_ranges(
+      MakeRange((*m)->GetChildInlineFunctionAddressRanges(0x2)));
+  EXPECT_THAT(function_ranges.size(), 1u);
+  EXPECT_THAT(function_ranges, testing::ElementsAre(std::make_pair(0x5, 1)));
 }
 
 TEST(WasmModuleTest, AddScriptMissingScript) {
@@ -365,9 +204,9 @@ TEST(WasmModuleTest, AddScriptMissingScript) {
 
 TEST(WasmModuleTest, GlobalVariable) {
   auto module =
-      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/global.wasm");
+      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/globals.s.wasm");
   ASSERT_TRUE(!!module);
-  auto variables = (*module)->GetVariablesInScope(0x2f, 0);
+  auto variables = (*module)->GetVariablesInScope(0x3, 0);
   std::vector<llvm::StringRef> names;
   names.reserve(variables.size());
   for (auto& v : variables) {
@@ -422,10 +261,10 @@ TEST(WasmModuleTest, GlobalVariable) {
 }
 
 TEST(WasmModuleTest, ClassStaticVariable) {
-  auto module =
-      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/classstatic.wasm");
+  auto module = WasmModule::CreateFromFile(
+      "cxx_debugging/tests/inputs/classstatic.s.wasm");
   ASSERT_TRUE(!!module);
-  auto variables = (*module)->GetVariablesInScope(0x4c, 0);
+  auto variables = (*module)->GetVariablesInScope(0x3, 0);
   llvm::SmallVector<llvm::StringRef, 1> names;
   for (auto& v : variables) {
     names.push_back(v.name);
@@ -434,11 +273,10 @@ TEST(WasmModuleTest, ClassStaticVariable) {
 }
 
 TEST(WasmModuleTest, NamespacedGlobalVariables) {
-  auto m =
-      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/namespaces.wasm");
+  auto m = WasmModule::CreateFromFile(
+      "cxx_debugging/tests/inputs/namespaces.s.wasm");
   ASSERT_TRUE(!!m);
-  lldb::addr_t code_section_start = 0x139;
-  auto variables = (*m)->GetVariablesInScope(0x19c - code_section_start, 0);
+  auto variables = (*m)->GetVariablesInScope(0x03, 0);
   llvm::SmallVector<llvm::StringRef, 5> names;
   for (auto& v : variables) {
     names.push_back(v.name);
@@ -449,131 +287,41 @@ TEST(WasmModuleTest, NamespacedGlobalVariables) {
 }
 
 TEST(WasmModuleTest, InlineLocalVariable) {
-  auto m = WasmModule::CreateFromFile("cxx_debugging/tests/inputs/inline.wasm");
+  auto m =
+      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/inline.s.wasm");
   ASSERT_TRUE(!!m);
-  lldb::addr_t code_section_start = 0x102;
   {
-    const int location = 0x167 - code_section_start;
-    auto variables = (*m)->GetVariablesInScope(location, 0);
+    auto variables = (*m)->GetVariablesInScope(0x2, 0);
     llvm::SmallVector<llvm::StringRef, 2> names;
     for (auto& v : variables) {
       names.push_back(v.name);
     }
-    EXPECT_THAT(names, testing::UnorderedElementsAre("x", "result"));
+    EXPECT_THAT(names, testing::UnorderedElementsAre("outer_var"));
   }
   {
-    const int location = 0x19F - code_section_start;
-    auto variables = (*m)->GetVariablesInScope(location, 0);
+    auto variables = (*m)->GetVariablesInScope(0x5, 0);
     llvm::SmallVector<llvm::StringRef, 2> names;
     for (auto& v : variables) {
       names.push_back(v.name);
     }
-    EXPECT_THAT(names, testing::UnorderedElementsAre("x", "result"));
+    EXPECT_THAT(names,
+                testing::UnorderedElementsAre("inner_var", "inner_param"));
   }
-  {
-    const int location = 0x1BB - code_section_start;
-    auto variables = (*m)->GetVariablesInScope(location, 0);
-    llvm::SmallVector<llvm::StringRef, 3> names;
-    for (auto& v : variables) {
-      names.push_back(v.name);
-    }
-    EXPECT_THAT(names, testing::UnorderedElementsAre("x", "y", "dsq"));
-  }
-  {
-    const int location = 0x1DC - code_section_start;
-    auto variables = (*m)->GetVariablesInScope(location, 0);
-    llvm::SmallVector<llvm::StringRef, 1> names;
-    for (auto& v : variables) {
-      names.push_back(v.name);
-    }
-    EXPECT_THAT(names, testing::UnorderedElementsAre("I"));
-  }
-  {
-    const int location = 0x167 - code_section_start;
-    auto variables = (*m)->GetVariablesInScope(location, 1);
-    llvm::SmallVector<llvm::StringRef, 3> names;
-    for (auto& v : variables) {
-      names.push_back(v.name);
-    }
-    EXPECT_THAT(names, testing::UnorderedElementsAre("x", "y", "dsq"));
-  }
-  {
-    const int location = 0x167 - code_section_start;
-    auto variables = (*m)->GetVariablesInScope(location, 2);
-    llvm::SmallVector<llvm::StringRef, 1> names;
-    for (auto& v : variables) {
-      names.push_back(v.name);
-    }
-    EXPECT_THAT(names, testing::UnorderedElementsAre("I"));
-  }
-  {
-    const int location = 0x1BB - code_section_start;
-    auto variables = (*m)->GetVariablesInScope(location, 1);
-    llvm::SmallVector<llvm::StringRef, 1> names;
-    for (auto& v : variables) {
-      names.push_back(v.name);
-    }
-    EXPECT_THAT(names, testing::UnorderedElementsAre("I"));
-  }
-}
-
-TEST(WasmModuleTest, Strings) {
-  auto module =
-      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/string.wasm");
-  ASSERT_TRUE(!!module);
-  auto variables = (*module)->GetVariablesInScope(0x11, 0);
-  llvm::SmallVector<llvm::StringRef, 1> names;
-  for (auto& v : variables) {
-    names.push_back(v.name);
-  }
-  EXPECT_THAT(names, testing::UnorderedElementsAre("String"));
-}
-
-TEST(WasmModuleTest, Arrays) {
-  auto module =
-      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/array.wasm");
-  ASSERT_TRUE(!!module);
-  lldb::addr_t code_section_start = 0x55;
-  auto variables = (*module)->GetVariablesInScope(0xe7 - code_section_start, 0);
-  llvm::SmallVector<std::pair<llvm::StringRef, llvm::StringRef>, 1> names;
-  EXPECT_EQ(variables.size(), 1u);
-  if (variables.size() > 0) {
-    const Variable& front_variable = *variables.begin();
-    EXPECT_EQ(front_variable.name, "A");
-    EXPECT_EQ(front_variable.type, "int[4]");
-  }
-}
-
-TEST(WasmModuleTest, GetMappedLinesMultipleIndices) {
-  auto module = WasmModule::CreateFromFile(
-      "cxx_debugging/tests/inputs/addresses_multiple_file_indices.wasm");
-  ASSERT_TRUE(!!module);
-  auto lines = (*module)->GetMappedLines("/tmp/tmp.2cFLVcXyW0/addresses.cc");
-  ASSERT_GT(lines.size(), 0);
-
-  EXPECT_THAT(lines, testing::UnorderedElementsAreArray(
-                         {0, 5, 6, 7, 9, 11, 12, 16, 17, 20, 21, 22}));
 }
 
 TEST(WasmModuleTest, ShadowingVariables) {
   auto module =
-      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/shadowing.wasm");
+      WasmModule::CreateFromFile("cxx_debugging/tests/inputs/shadowing.s.wasm");
   ASSERT_TRUE(!!module);
 
-  auto offsets = (*module)->GetOffsetFromSourceLocation({"shadowing.c", 9, 7});
-  ASSERT_GT(offsets.size(), 0);
-
-  auto variables = (*module)->GetVariablesInScope((*offsets.begin()).first, 0);
+  auto variables = (*module)->GetVariablesInScope(0x04, 0);
   ASSERT_EQ(variables.size(), 1);
 
   auto var = variables.begin();
   ASSERT_EQ(var->name, "a");
   ASSERT_EQ(var->scope, lldb::eValueTypeVariableLocal);
 
-  offsets = (*module)->GetOffsetFromSourceLocation({"shadowing.c", 13, 3});
-  ASSERT_GT(offsets.size(), 0);
-
-  variables = (*module)->GetVariablesInScope((*offsets.begin()).first, 0);
+  variables = (*module)->GetVariablesInScope(0x02, 0);
   ASSERT_EQ(variables.size(), 1);
 
   var = variables.begin();

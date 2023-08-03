@@ -40,6 +40,7 @@ __original_main:                        # @__original_main
   .int32 .Lstring2                              # DW_AT_name
   .int8 0x07                                    # DW_AT_encoding
   .int8 4                                       # DW_AT_byte_size
+  ${EOM}
 .Ldebug_info_end0:
 
   .section  .debug_addr,"",@

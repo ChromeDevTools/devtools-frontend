@@ -4,81 +4,71 @@
 
 import {createPlugin} from '../src/DWARFSymbols.js';
 import {ResourceLoader} from '../src/MEMFSResourceLoader.js';
-
-import {WorkerRPC, type AsyncHostInterface} from '../src/WorkerRPC.js';
-
 import {type WasmValue} from '../src/WasmTypes.js';
-import {type TestWorkerInterface} from './DevToolsPluginTestWorker.js';
+import {type AsyncHostInterface, WorkerRPC} from '../src/WorkerRPC.js';
 
+import {type TestWorkerInterface} from './DevToolsPluginTestWorker.js';
 import {makeURL, TestHostInterface} from './TestUtils.js';
 
 describe('DevToolsPlugin', () => {
   describe('addRawModule', () => {
+    const expectedSources = [makeURL('/build/tests/inputs/hello.c'), makeURL('/build/tests/inputs/printf.h')];
     it('does not race with removeRawModule', async () => {
       const plugin = await createPlugin(new TestHostInterface(), new ResourceLoader());
-      const sources1Promise = plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/inline.wasm')});
+      const sources1Promise = plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/hello.s.wasm')});
 
       const sources1 = await sources1Promise;
-      expect(sources1).to.deep.equal([makeURL('/build/tests/inputs/inline.cc')]);
+      expect(sources1).to.deep.equal(expectedSources);
 
       const remove1Promise = plugin.removeRawModule('0');
-      const sources2Promise = plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/inline.wasm')});
+      const sources2Promise = plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/hello.s.wasm')});
 
       const [, sources2] = await Promise.all([remove1Promise, sources2Promise]);
-      expect(sources2).to.deep.equal([makeURL('/build/tests/inputs/inline.cc')]);
+      expect(sources2).to.deep.equal(expectedSources);
     });
 
     it('does not try to create module file names that contain /', async () => {
       const plugin = await createPlugin(new TestHostInterface(), new ResourceLoader());
-      const sources = await plugin.addRawModule('?ü', '', {url: makeURL('/build/tests/inputs/inline.wasm')});
-      expect(sources).to.deep.equal([makeURL('/build/tests/inputs/inline.cc')]);
+      const sources = await plugin.addRawModule('?ü', '', {url: makeURL('/build/tests/inputs/hello.s.wasm')});
+      expect(sources).to.deep.equal(expectedSources);
     });
   });
 
   describe('rawLocationToSourceLocation', () => {
     it('maps bytecode addresses correctly', async () => {
       const plugin = await createPlugin(new TestHostInterface(), new ResourceLoader());
-      const rawModuleId = 'inline.wasm@123456';
-      const sourceFileURL = makeURL('/build/tests/inputs/inline.cc');
-      const sources = await plugin.addRawModule(rawModuleId, '', {url: makeURL('/build/tests/inputs/inline.wasm')});
-      expect(sources).to.deep.equal([sourceFileURL]);
-      expect(await plugin.rawLocationToSourceLocation({rawModuleId, codeOffset: 0x06, inlineFrameIndex: 0}))
-          .to.deep.equal([{sourceFileURL, rawModuleId, lineNumber: 17, columnNumber: -1}]);
-      expect(await plugin.rawLocationToSourceLocation({rawModuleId, codeOffset: 0x45, inlineFrameIndex: 0}))
-          .to.deep.equal([{sourceFileURL, rawModuleId, lineNumber: 12, columnNumber: 19}]);
-      expect(await plugin.rawLocationToSourceLocation({rawModuleId, codeOffset: 0x53, inlineFrameIndex: 0}))
-          .to.deep.equal([{sourceFileURL, rawModuleId, lineNumber: 7, columnNumber: 15}]);
-      expect(await plugin.rawLocationToSourceLocation({rawModuleId, codeOffset: 0x5f, inlineFrameIndex: 0}))
-          .to.deep.equal([{sourceFileURL, rawModuleId, lineNumber: 7, columnNumber: 19}]);
-      expect(await plugin.rawLocationToSourceLocation({rawModuleId, codeOffset: 0x67, inlineFrameIndex: 0}))
-          .to.deep.equal([{sourceFileURL, rawModuleId, lineNumber: 7, columnNumber: 17}]);
-      expect(await plugin.rawLocationToSourceLocation({rawModuleId, codeOffset: 0x68, inlineFrameIndex: 0}))
-          .to.deep.equal([{sourceFileURL, rawModuleId, lineNumber: 7, columnNumber: 6}]);
+      const rawModuleId = 'hello.wasm@123456';
+      const sourceFileURL = makeURL('/build/tests/inputs/hello.c');
+      const header = makeURL('/build/tests/inputs/printf.h');
+      const sources = await plugin.addRawModule(rawModuleId, '', {url: makeURL('/build/tests/inputs/hello.s.wasm')});
+      expect(sources).to.deep.equal([sourceFileURL, header]);
+      expect(await plugin.rawLocationToSourceLocation({rawModuleId, codeOffset: 0x02, inlineFrameIndex: 0}))
+          .to.deep.equal([{sourceFileURL, rawModuleId, lineNumber: 2, columnNumber: -1}]);
+      expect(await plugin.rawLocationToSourceLocation({rawModuleId, codeOffset: 0x5, inlineFrameIndex: 0}))
+          .to.deep.equal([{sourceFileURL: header, rawModuleId, lineNumber: 0, columnNumber: -1}]);
     });
   });
 
   describe('sourceLocationToRawLocation', () => {
     it('maps source locations to ranges correctly in the presence of inlining', async () => {
       const plugin = await createPlugin(new TestHostInterface(), new ResourceLoader());
-      const rawModuleId = 'inline.wasm@123456';
-      const sourceFileURL = makeURL('/build/tests/inputs/inline.cc');
-      const sources = await plugin.addRawModule(rawModuleId, '', {url: makeURL('/build/tests/inputs/inline.wasm')});
+      const rawModuleId = 'inline.s.wasm@123456';
+      const sourceFileURL = makeURL('/build/tests/inputs/inline.c');
+      const sources = await plugin.addRawModule(rawModuleId, '', {url: makeURL('/build/tests/inputs/inline.s.wasm')});
       expect(sources).to.deep.equal([sourceFileURL]);
-      expect(await plugin.sourceLocationToRawLocation({rawModuleId, sourceFileURL, lineNumber: 7, columnNumber: -1}))
-          .to.deep.equal([
-            {rawModuleId, startOffset: 0x53, endOffset: 0x6f},
-            {rawModuleId, startOffset: 0x8b, endOffset: 0xa7},
-          ]);
-      expect(await plugin.sourceLocationToRawLocation({rawModuleId, sourceFileURL, lineNumber: 19, columnNumber: 2}))
-          .to.deep.equal([{rawModuleId, startOffset: 0xd8, endOffset: 0xe0}]);
+      expect(await plugin.sourceLocationToRawLocation({rawModuleId, sourceFileURL, lineNumber: 0, columnNumber: -1}))
+          .to.deep.equal([{rawModuleId, startOffset: 0x2, endOffset: 0x5}]);
+      expect(await plugin.sourceLocationToRawLocation({rawModuleId, sourceFileURL, lineNumber: 9, columnNumber: -1}))
+          .to.deep.equal([{rawModuleId, startOffset: 0x5, endOffset: 0x6}]);
     });
 
     it('returns only raw locations for the same line', async () => {
       const plugin = await createPlugin(new TestHostInterface(), new ResourceLoader());
-      const rawModuleId = 'inline.wasm@123456';
-      const sourceFileURL = makeURL('/build/tests/inputs/inline.cc');
-      const sources = await plugin.addRawModule(rawModuleId, '', {url: makeURL('/build/tests/inputs/inline.wasm')});
-      expect(sources).to.deep.equal([sourceFileURL]);
+      const rawModuleId = 'hello.wasm@123456';
+      const sourceFileURL = makeURL('/build/tests/inputs/hello.c');
+      const header = makeURL('/build/tests/inputs/printf.h');
+      const sources = await plugin.addRawModule(rawModuleId, '', {url: makeURL('/build/tests/inputs/hello.s.wasm')});
+      expect(sources).to.deep.equal([sourceFileURL, header]);
       expect(await plugin.sourceLocationToRawLocation({rawModuleId, sourceFileURL, lineNumber: 5, columnNumber: -1}))
           .to.deep.equal([]);
       expect(await plugin.sourceLocationToRawLocation({rawModuleId, sourceFileURL, lineNumber: 10, columnNumber: -1}))
@@ -100,34 +90,33 @@ describe('DevToolsPlugin', () => {
   describe('getInlinedCalleeRanges', () => {
     it('gets inlined callee PC ranges correctly', async () => {
       const plugin = await createPlugin(new TestHostInterface(), new ResourceLoader());
-      const sources = await plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/inline.wasm')});
-      expect(sources).to.deep.equal([makeURL('/build/tests/inputs/inline.cc')]);
+      const sources = await plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/inline.s.wasm')});
+      expect(sources).to.deep.equal([makeURL('/build/tests/inputs/inline.c')]);
 
-      const ranges = await plugin.getInlinedCalleesRanges({rawModuleId: '0', codeOffset: 218, inlineFrameIndex: 0});
-      expect(ranges).to.deep.equal([{rawModuleId: '0', startOffset: 69, endOffset: 202}]);
+      const ranges = await plugin.getInlinedCalleesRanges({rawModuleId: '0', codeOffset: 0x2, inlineFrameIndex: 0});
+      expect(ranges).to.deep.equal([{rawModuleId: '0', startOffset: 0x5, endOffset: 0x6}]);
     });
   });
 
   describe('getInlinedFunctionRanges', () => {
     it('gets inlined function PC ranges correctly', async () => {
       const plugin = await createPlugin(new TestHostInterface(), new ResourceLoader());
-      const sources = await plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/inline.wasm')});
-      expect(sources).to.deep.equal([makeURL('/build/tests/inputs/inline.cc')]);
+      const sources = await plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/inline.s.wasm')});
+      expect(sources).to.deep.equal([makeURL('/build/tests/inputs/inline.c')]);
 
-      const ranges = await plugin.getInlinedFunctionRanges({rawModuleId: '0', codeOffset: 101, inlineFrameIndex: 0});
-      expect(ranges).to.deep.equal([{rawModuleId: '0', startOffset: 83, endOffset: 118}]);
+      const ranges = await plugin.getInlinedFunctionRanges({rawModuleId: '0', codeOffset: 0x5, inlineFrameIndex: 0});
+      expect(ranges).to.deep.equal([{rawModuleId: '0', startOffset: 0x5, endOffset: 0x6}]);
     });
   });
 
   describe('getFunctionInfo', () => {
     it('gets inlined function infos correctly', async () => {
       const plugin = await createPlugin(new TestHostInterface(), new ResourceLoader());
-      const sources = await plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/inline.wasm')});
-      expect(sources).to.eql([makeURL('/build/tests/inputs/inline.cc')]);
+      const sources = await plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/inline.s.wasm')});
+      expect(sources).to.eql([makeURL('/build/tests/inputs/inline.c')]);
 
-      const functions = await plugin.getFunctionInfo({rawModuleId: '0', codeOffset: 101, inlineFrameIndex: 0});
-      expect(functions).to.deep.equal(
-          {frames: [{name: 'square(int)'}, {name: 'dsquare(int, int)'}, {name: 'main'}], missingSymbolFiles: []});
+      const functions = await plugin.getFunctionInfo({rawModuleId: '0', codeOffset: 0x5, inlineFrameIndex: 0});
+      expect(functions).to.deep.equal({frames: [{name: 'callee'}, {name: 'caller'}], missingSymbolFiles: []});
     });
   });
 
@@ -135,40 +124,35 @@ describe('DevToolsPlugin', () => {
     it('lists parameter variables correctly', async () => {
       const plugin = await createPlugin(new TestHostInterface(), new ResourceLoader());
 
-      const sources = await plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/params.wasm')});
-      expect(sources).to.eql([makeURL('/build/tests/inputs/params.c')]);
+      await plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/shadowing.s.wasm')});
 
-      const variables = await plugin.listVariablesInScope({rawModuleId: '0', codeOffset: 102, inlineFrameIndex: 0});
-      expect(variables.map(v => v.scope)).to.eql(['GLOBAL', 'GLOBAL', 'PARAMETER', 'PARAMETER', 'PARAMETER']);
+      {
+        const variables = await plugin.listVariablesInScope({rawModuleId: '0', codeOffset: 0x2, inlineFrameIndex: 0});
+        expect(variables.map(v => v.scope)).to.eql(['PARAMETER']);
+      }
+      {
+        const variables = await plugin.listVariablesInScope({rawModuleId: '0', codeOffset: 0x3, inlineFrameIndex: 0});
+        expect(variables.map(v => v.scope)).to.eql(['LOCAL']);
+      }
     });
 
     it('lists global variables correctly', async () => {
       const plugin = await createPlugin(new TestHostInterface(), new ResourceLoader());
 
-      const sources = await plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/multiple_cu_global.wasm')});
-      expect(sources).to.have.members(
-          [makeURL('/build/tests/inputs/global.cc'), makeURL('/build/tests/inputs/standalone_global.cc')]);
+      const sources = await plugin.addRawModule('0', '', {url: makeURL('/build/tests/inputs/globals.s.wasm')});
 
-      const variables = await plugin.listVariablesInScope({rawModuleId: '0', codeOffset: 80, inlineFrameIndex: 0});
-      expect(variables.some(value => value.name === '::var_standalone_signed_char')).to.equal(false);
+      const variables = await plugin.listVariablesInScope({rawModuleId: '0', codeOffset: 0x6, inlineFrameIndex: 0});
+      expect(variables.map(v => v.name)).to.deep.equal(['::var_separate_cu']);
     });
   });
 
   describe('getMappedLines', () => {
     it('computes mapped lines correctly.', async () => {
       const plugin = await createPlugin(new TestHostInterface(), new ResourceLoader());
-      await plugin.addRawModule('c_string', '', {url: makeURL('/build/tests/inputs/string.wasm')});
+      const sources = await plugin.addRawModule('hello', '', {url: makeURL('/build/tests/inputs/hello.s.wasm')});
 
-      const mappedLines = await plugin.getMappedLines('c_string', makeURL('/build/tests/inputs/string.c'));
-      expect(mappedLines).to.eql([8, 10, 11, 12, 13]);
-    });
-
-    it('also computes lines in headers.', async () => {
-      const plugin = await createPlugin(new TestHostInterface(), new ResourceLoader());
-      await plugin.addRawModule('hello', '', {url: makeURL('/build/tests/inputs/hello.wasm')});
-
-      const mappedLines = await plugin.getMappedLines('hello', makeURL('/build/tests/inputs/printf.h'));
-      expect(mappedLines).to.eql([8, 9, 10]);
+      const mappedLines = await plugin.getMappedLines('hello', makeURL('/build/tests/inputs/hello.c'));
+      expect(mappedLines).to.eql([2]);
     });
   });
 

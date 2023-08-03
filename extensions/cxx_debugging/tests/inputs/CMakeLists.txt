@@ -5,20 +5,36 @@
 get_filename_component(llvm_bin ${LLVM_TABLEGEN} DIRECTORY)
 set(LLVM_MC ${llvm_bin}/llvm-mc)
 
+set(EOM ".int8 0")
+set(ABBR ".int8")
+file(STRINGS dw_opcodes.def DW_OPCODES)
+list(APPEND CMAKE_CONFIGURE_DEPENDS dw_opcodes.def)
+foreach(opcode_def IN ITEMS ${DW_OPCODES})
+  if (opcode_def MATCHES "^[ \t]*#" OR opcode_def MATCHES "^[ \]*$")
+    continue()
+  endif()
+  string(REGEX REPLACE "[ \t]+" ";" split ${opcode_def})
+  list(GET split 0 opcode)
+  list(GET split 1 value)
+  set(${opcode} ".int8 ${value}  # ${opcode}")
+endforeach()
+
 set(compiled_inputs)
 macro(add_test_inputs)
   cmake_parse_arguments(option "DWO" "" "" ${ARGN})
   foreach(input IN ITEMS ${option_UNPARSED_ARGUMENTS})
-    set(mc_args ${CMAKE_CURRENT_SOURCE_DIR}/${input} -triple wasm32-unknown-unknown -filetype=obj -o ${input}.wasm)
+    configure_file(${input} ${input}.preprocessed)
+    set(input_file ${CMAKE_CURRENT_BINARY_DIR}/${input}.preprocessed)
+    set(mc_args ${input_file} -triple wasm32-unknown-unknown -filetype=obj -o ${input}.wasm)
     if (option_DWO)
       add_custom_command(OUTPUT ${input}.wasm ${input}.dwo
-        DEPENDS ${input}
+        DEPENDS ${input_file}
         COMMAND ${LLVM_MC} ${mc_args} -split-dwarf-file=${input}.dwo
         )
       list(APPEND compiled_inputs ${CMAKE_CURRENT_BINARY_DIR}/${input}.wasm ${CMAKE_CURRENT_BINARY_DIR}/${input}.dwo)
     else()
       add_custom_command(OUTPUT ${input}.wasm
-        DEPENDS ${input}
+        DEPENDS ${input_file}
         COMMAND ${LLVM_MC} ${mc_args}
         )
       list(APPEND compiled_inputs ${CMAKE_CURRENT_BINARY_DIR}/${input}.wasm)
@@ -57,7 +73,18 @@ macro(add_test_program program)
 endmacro()
 
 add_test_inputs(DWO split-dwarf.s)
-add_test_inputs(embedded.s addr_index.s enums.s)
+add_test_inputs(
+  embedded.s
+  addr_index.s
+  enums.s
+  hello.s
+  windows_paths.s
+  globals.s
+  classstatic.s
+  namespaces.s
+  shadowing.s
+  inline.s
+)
 
 add_test_program(addresses_main addresses.cc)
 add_test_program(lldb_eval_inputs

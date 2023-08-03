@@ -33,7 +33,7 @@ const ChromeWS = function(baseBrowserDecorator, args, config) {
   const debugArgs = isDebug() ? [] : [];
   this._getOptions = function(url) {
     return parentOptions.call(this, url, args).concat([
-      '--headless',
+      '--headless=new',
       '--disable-gpu',
       '--disable-dev-shm-usage',
       '--remote-allow-origins=*',

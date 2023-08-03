@@ -17,6 +17,7 @@ import type * as RecorderComponents from '../../../../../../front_end/panels/rec
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import * as Menus from '../../../../../../front_end/ui/components/menus/menus.js';
 import * as Host from '../../../../../../front_end/core/host/host.js';
+import * as UI from '../../../../../../front_end/ui/legacy/legacy.js';
 
 describeWithEnvironment('JSONEditor', () => {
   const renderJSONEditor = () => {
@@ -348,6 +349,56 @@ describeWithEnvironment('JSONEditor', () => {
     });
   });
 
+  describe('Display command written in editor inside input bar', () => {
+    it('should display the command edited inside the CDP editor into the input bar', async () => {
+      const split = new UI.SplitWidget.SplitWidget(true, false, 'protocol-monitor-split-container', 400);
+      const editorWidget = new ProtocolMonitor.ProtocolMonitor.EditorWidget();
+      const jsonEditor = editorWidget.jsonEditor;
+      jsonEditor.command = 'Test.test';
+      jsonEditor.parameters = [
+        {
+          name: 'test',
+          type: ProtocolComponents.JSONEditor.ParameterType.String,
+          description: 'test',
+          optional: false,
+          value: 'test',
+        },
+      ];
+      const dataGrid = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorDataGrid(split);
+      split.setMainWidget(dataGrid);
+      split.setSidebarWidget(editorWidget);
+      // Needed to resolve pending promises in the after each hook
+      await new Promise(resolve => {
+        split.toggleSidebar();
+        setTimeout(resolve, 500);
+      });
+
+      // The first input bar corresponds to the filter bar, so we query the second one which corresponds to the CDP one.
+      const toolbarInput = dataGrid.element.shadowRoot?.querySelectorAll('.toolbar')[1].shadowRoot?.querySelector(
+          '.toolbar-input-prompt');
+      assert.deepStrictEqual(toolbarInput?.innerHTML, '{"command":"Test.test","parameters":{"test":"test"}}');
+    });
+
+    it('should not display the command into the input bar if the command is empty string', async () => {
+      const split = new UI.SplitWidget.SplitWidget(true, false, 'protocol-monitor-split-container', 400);
+      const editorWidget = new ProtocolMonitor.ProtocolMonitor.EditorWidget();
+      const jsonEditor = editorWidget.jsonEditor;
+      jsonEditor.command = '';
+      const dataGrid = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorDataGrid(split);
+      split.setMainWidget(dataGrid);
+      split.setSidebarWidget(editorWidget);
+      // Needed to resolve pending promises in the after each hook
+      await new Promise(resolve => {
+        split.toggleSidebar();
+        setTimeout(resolve, 500);
+      });
+
+      // The first input bar corresponds to the filter bar, so we query the second one which corresponds to the CDP one.
+      const toolbarInput = dataGrid.element.shadowRoot?.querySelectorAll('.toolbar')[1].shadowRoot?.querySelector(
+          '.toolbar-input-prompt');
+      assert.deepStrictEqual(toolbarInput?.innerHTML, '');
+    });
+  });
   describe('Descriptions', () => {
     it('should show the popup with the correct description for the description of parameters', async () => {
       const inputParameters = [

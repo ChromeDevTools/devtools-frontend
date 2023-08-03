@@ -409,8 +409,12 @@ export class JSONEditor extends LitElement {
     return;
   }
 
+  getCommandJson(): string {
+    return this.command !== '' ? JSON.stringify({command: this.command, parameters: this.getParameters()}) : '';
+  }
+
   #copyToClipboard(): void {
-    const commandJson = JSON.stringify({command: this.command, parameters: this.getParameters()});
+    const commandJson = this.getCommandJson();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(commandJson);
   }
 

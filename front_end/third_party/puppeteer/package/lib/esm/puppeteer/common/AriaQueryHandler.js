@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var _a;
 import { assert } from '../util/assert.js';
 import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { QueryHandler } from './QueryHandler.js';
@@ -63,6 +62,9 @@ const parseARIASelector = (selector) => {
  * @internal
  */
 export class ARIAQueryHandler extends QueryHandler {
+    static querySelector = async (node, selector, { ariaQuerySelector }) => {
+        return ariaQuerySelector(node, selector);
+    };
     static async *queryAll(element, selector) {
         const context = element.executionContext();
         const { name, role } = parseARIASelector(selector);
@@ -72,12 +74,8 @@ export class ARIAQueryHandler extends QueryHandler {
             return world.adoptBackendNode(node.backendDOMNodeId);
         });
     }
+    static queryOne = async (element, selector) => {
+        return ((await AsyncIterableUtil.first(this.queryAll(element, selector))) ?? null);
+    };
 }
-_a = ARIAQueryHandler;
-ARIAQueryHandler.querySelector = async (node, selector, { ariaQuerySelector }) => {
-    return ariaQuerySelector(node, selector);
-};
-ARIAQueryHandler.queryOne = async (element, selector) => {
-    return ((await AsyncIterableUtil.first(_a.queryAll(element, selector))) ?? null);
-};
 //# sourceMappingURL=AriaQueryHandler.js.map

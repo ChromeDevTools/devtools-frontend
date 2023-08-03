@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ARIAQueryHandler = void 0;
 const assert_js_1 = require("../util/assert.js");
@@ -66,6 +65,9 @@ const parseARIASelector = (selector) => {
  * @internal
  */
 class ARIAQueryHandler extends QueryHandler_js_1.QueryHandler {
+    static querySelector = async (node, selector, { ariaQuerySelector }) => {
+        return ariaQuerySelector(node, selector);
+    };
     static async *queryAll(element, selector) {
         const context = element.executionContext();
         const { name, role } = parseARIASelector(selector);
@@ -75,13 +77,9 @@ class ARIAQueryHandler extends QueryHandler_js_1.QueryHandler {
             return world.adoptBackendNode(node.backendDOMNodeId);
         });
     }
+    static queryOne = async (element, selector) => {
+        return ((await AsyncIterableUtil_js_1.AsyncIterableUtil.first(this.queryAll(element, selector))) ?? null);
+    };
 }
 exports.ARIAQueryHandler = ARIAQueryHandler;
-_a = ARIAQueryHandler;
-ARIAQueryHandler.querySelector = async (node, selector, { ariaQuerySelector }) => {
-    return ariaQuerySelector(node, selector);
-};
-ARIAQueryHandler.queryOne = async (element, selector) => {
-    return ((await AsyncIterableUtil_js_1.AsyncIterableUtil.first(_a.queryAll(element, selector))) ?? null);
-};
 //# sourceMappingURL=AriaQueryHandler.js.map

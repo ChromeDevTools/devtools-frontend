@@ -14,18 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _CDPKeyboard_instances, _CDPKeyboard_client, _CDPKeyboard_pressedKeys, _CDPKeyboard_modifierBit, _CDPKeyboard_keyDescriptionForString, _CDPMouse_instances, _CDPMouse_client, _CDPMouse_keyboard, _CDPMouse__state, _CDPMouse_state_get, _CDPMouse_transactions, _CDPMouse_createTransaction, _CDPMouse_withTransaction, _CDPTouchscreen_client, _CDPTouchscreen_keyboard;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CDPTouchscreen = exports.CDPMouse = exports.CDPKeyboard = void 0;
 const Input_js_1 = require("../api/Input.js");
@@ -35,30 +23,29 @@ const USKeyboardLayout_js_1 = require("./USKeyboardLayout.js");
  * @internal
  */
 class CDPKeyboard extends Input_js_1.Keyboard {
+    #client;
+    #pressedKeys = new Set();
+    /**
+     * @internal
+     */
+    _modifiers = 0;
     /**
      * @internal
      */
     constructor(client) {
         super();
-        _CDPKeyboard_instances.add(this);
-        _CDPKeyboard_client.set(this, void 0);
-        _CDPKeyboard_pressedKeys.set(this, new Set());
-        /**
-         * @internal
-         */
-        this._modifiers = 0;
-        __classPrivateFieldSet(this, _CDPKeyboard_client, client, "f");
+        this.#client = client;
     }
     async down(key, options = {
         text: undefined,
         commands: [],
     }) {
-        const description = __classPrivateFieldGet(this, _CDPKeyboard_instances, "m", _CDPKeyboard_keyDescriptionForString).call(this, key);
-        const autoRepeat = __classPrivateFieldGet(this, _CDPKeyboard_pressedKeys, "f").has(description.code);
-        __classPrivateFieldGet(this, _CDPKeyboard_pressedKeys, "f").add(description.code);
-        this._modifiers |= __classPrivateFieldGet(this, _CDPKeyboard_instances, "m", _CDPKeyboard_modifierBit).call(this, description.key);
+        const description = this.#keyDescriptionForString(key);
+        const autoRepeat = this.#pressedKeys.has(description.code);
+        this.#pressedKeys.add(description.code);
+        this._modifiers |= this.#modifierBit(description.key);
         const text = options.text === undefined ? description.text : options.text;
-        await __classPrivateFieldGet(this, _CDPKeyboard_client, "f").send('Input.dispatchKeyEvent', {
+        await this.#client.send('Input.dispatchKeyEvent', {
             type: text ? 'keyDown' : 'rawKeyDown',
             modifiers: this._modifiers,
             windowsVirtualKeyCode: description.keyCode,
@@ -72,11 +59,70 @@ class CDPKeyboard extends Input_js_1.Keyboard {
             commands: options.commands,
         });
     }
+    #modifierBit(key) {
+        if (key === 'Alt') {
+            return 1;
+        }
+        if (key === 'Control') {
+            return 2;
+        }
+        if (key === 'Meta') {
+            return 4;
+        }
+        if (key === 'Shift') {
+            return 8;
+        }
+        return 0;
+    }
+    #keyDescriptionForString(keyString) {
+        const shift = this._modifiers & 8;
+        const description = {
+            key: '',
+            keyCode: 0,
+            code: '',
+            text: '',
+            location: 0,
+        };
+        const definition = USKeyboardLayout_js_1._keyDefinitions[keyString];
+        (0, assert_js_1.assert)(definition, `Unknown key: "${keyString}"`);
+        if (definition.key) {
+            description.key = definition.key;
+        }
+        if (shift && definition.shiftKey) {
+            description.key = definition.shiftKey;
+        }
+        if (definition.keyCode) {
+            description.keyCode = definition.keyCode;
+        }
+        if (shift && definition.shiftKeyCode) {
+            description.keyCode = definition.shiftKeyCode;
+        }
+        if (definition.code) {
+            description.code = definition.code;
+        }
+        if (definition.location) {
+            description.location = definition.location;
+        }
+        if (description.key.length === 1) {
+            description.text = description.key;
+        }
+        if (definition.text) {
+            description.text = definition.text;
+        }
+        if (shift && definition.shiftText) {
+            description.text = definition.shiftText;
+        }
+        // if any modifiers besides shift are pressed, no text should be sent
+        if (this._modifiers & ~8) {
+            description.text = '';
+        }
+        return description;
+    }
     async up(key) {
-        const description = __classPrivateFieldGet(this, _CDPKeyboard_instances, "m", _CDPKeyboard_keyDescriptionForString).call(this, key);
-        this._modifiers &= ~__classPrivateFieldGet(this, _CDPKeyboard_instances, "m", _CDPKeyboard_modifierBit).call(this, description.key);
-        __classPrivateFieldGet(this, _CDPKeyboard_pressedKeys, "f").delete(description.code);
-        await __classPrivateFieldGet(this, _CDPKeyboard_client, "f").send('Input.dispatchKeyEvent', {
+        const description = this.#keyDescriptionForString(key);
+        this._modifiers &= ~this.#modifierBit(description.key);
+        this.#pressedKeys.delete(description.code);
+        await this.#client.send('Input.dispatchKeyEvent', {
             type: 'keyUp',
             modifiers: this._modifiers,
             key: description.key,
@@ -86,7 +132,7 @@ class CDPKeyboard extends Input_js_1.Keyboard {
         });
     }
     async sendCharacter(char) {
-        await __classPrivateFieldGet(this, _CDPKeyboard_client, "f").send('Input.insertText', { text: char });
+        await this.#client.send('Input.insertText', { text: char });
     }
     charIsKey(char) {
         return !!USKeyboardLayout_js_1._keyDefinitions[char];
@@ -119,64 +165,6 @@ class CDPKeyboard extends Input_js_1.Keyboard {
     }
 }
 exports.CDPKeyboard = CDPKeyboard;
-_CDPKeyboard_client = new WeakMap(), _CDPKeyboard_pressedKeys = new WeakMap(), _CDPKeyboard_instances = new WeakSet(), _CDPKeyboard_modifierBit = function _CDPKeyboard_modifierBit(key) {
-    if (key === 'Alt') {
-        return 1;
-    }
-    if (key === 'Control') {
-        return 2;
-    }
-    if (key === 'Meta') {
-        return 4;
-    }
-    if (key === 'Shift') {
-        return 8;
-    }
-    return 0;
-}, _CDPKeyboard_keyDescriptionForString = function _CDPKeyboard_keyDescriptionForString(keyString) {
-    const shift = this._modifiers & 8;
-    const description = {
-        key: '',
-        keyCode: 0,
-        code: '',
-        text: '',
-        location: 0,
-    };
-    const definition = USKeyboardLayout_js_1._keyDefinitions[keyString];
-    (0, assert_js_1.assert)(definition, `Unknown key: "${keyString}"`);
-    if (definition.key) {
-        description.key = definition.key;
-    }
-    if (shift && definition.shiftKey) {
-        description.key = definition.shiftKey;
-    }
-    if (definition.keyCode) {
-        description.keyCode = definition.keyCode;
-    }
-    if (shift && definition.shiftKeyCode) {
-        description.keyCode = definition.shiftKeyCode;
-    }
-    if (definition.code) {
-        description.code = definition.code;
-    }
-    if (definition.location) {
-        description.location = definition.location;
-    }
-    if (description.key.length === 1) {
-        description.text = description.key;
-    }
-    if (definition.text) {
-        description.text = definition.text;
-    }
-    if (shift && definition.shiftText) {
-        description.text = definition.shiftText;
-    }
-    // if any modifiers besides shift are pressed, no text should be sent
-    if (this._modifiers & ~8) {
-        description.text = '';
-    }
-    return description;
-};
 const getFlag = (button) => {
     switch (button) {
         case Input_js_1.MouseButton.Left:
@@ -217,22 +205,56 @@ const getButtonFromPressedButtons = (buttons) => {
  * @internal
  */
 class CDPMouse extends Input_js_1.Mouse {
+    #client;
+    #keyboard;
     /**
      * @internal
      */
     constructor(client, keyboard) {
         super();
-        _CDPMouse_instances.add(this);
-        _CDPMouse_client.set(this, void 0);
-        _CDPMouse_keyboard.set(this, void 0);
-        _CDPMouse__state.set(this, {
-            position: { x: 0, y: 0 },
-            buttons: 0 /* MouseButtonFlag.None */,
-        });
-        // Transactions can run in parallel, so we store each of thme in this array.
-        _CDPMouse_transactions.set(this, []);
-        __classPrivateFieldSet(this, _CDPMouse_client, client, "f");
-        __classPrivateFieldSet(this, _CDPMouse_keyboard, keyboard, "f");
+        this.#client = client;
+        this.#keyboard = keyboard;
+    }
+    #_state = {
+        position: { x: 0, y: 0 },
+        buttons: 0 /* MouseButtonFlag.None */,
+    };
+    get #state() {
+        return Object.assign({ ...this.#_state }, ...this.#transactions);
+    }
+    // Transactions can run in parallel, so we store each of thme in this array.
+    #transactions = [];
+    #createTransaction() {
+        const transaction = {};
+        this.#transactions.push(transaction);
+        const popTransaction = () => {
+            this.#transactions.splice(this.#transactions.indexOf(transaction), 1);
+        };
+        return {
+            update: (updates) => {
+                Object.assign(transaction, updates);
+            },
+            commit: () => {
+                this.#_state = { ...this.#_state, ...transaction };
+                popTransaction();
+            },
+            rollback: popTransaction,
+        };
+    }
+    /**
+     * This is a shortcut for a typical update, commit/rollback lifecycle based on
+     * the error of the action.
+     */
+    async #withTransaction(action) {
+        const { update, commit, rollback } = this.#createTransaction();
+        try {
+            await action(update);
+            commit();
+        }
+        catch (error) {
+            rollback();
+            throw error;
+        }
     }
     async reset() {
         const actions = [];
@@ -243,31 +265,31 @@ class CDPMouse extends Input_js_1.Mouse {
             [16 /* MouseButtonFlag.Forward */, Input_js_1.MouseButton.Forward],
             [8 /* MouseButtonFlag.Back */, Input_js_1.MouseButton.Back],
         ]) {
-            if (__classPrivateFieldGet(this, _CDPMouse_instances, "a", _CDPMouse_state_get).buttons & flag) {
+            if (this.#state.buttons & flag) {
                 actions.push(this.up({ button: button }));
             }
         }
-        if (__classPrivateFieldGet(this, _CDPMouse_instances, "a", _CDPMouse_state_get).position.x !== 0 || __classPrivateFieldGet(this, _CDPMouse_instances, "a", _CDPMouse_state_get).position.y !== 0) {
+        if (this.#state.position.x !== 0 || this.#state.position.y !== 0) {
             actions.push(this.move(0, 0));
         }
         await Promise.all(actions);
     }
     async move(x, y, options = {}) {
         const { steps = 1 } = options;
-        const from = __classPrivateFieldGet(this, _CDPMouse_instances, "a", _CDPMouse_state_get).position;
+        const from = this.#state.position;
         const to = { x, y };
         for (let i = 1; i <= steps; i++) {
-            await __classPrivateFieldGet(this, _CDPMouse_instances, "m", _CDPMouse_withTransaction).call(this, updateState => {
+            await this.#withTransaction(updateState => {
                 updateState({
                     position: {
                         x: from.x + (to.x - from.x) * (i / steps),
                         y: from.y + (to.y - from.y) * (i / steps),
                     },
                 });
-                const { buttons, position } = __classPrivateFieldGet(this, _CDPMouse_instances, "a", _CDPMouse_state_get);
-                return __classPrivateFieldGet(this, _CDPMouse_client, "f").send('Input.dispatchMouseEvent', {
+                const { buttons, position } = this.#state;
+                return this.#client.send('Input.dispatchMouseEvent', {
                     type: 'mouseMoved',
-                    modifiers: __classPrivateFieldGet(this, _CDPMouse_keyboard, "f")._modifiers,
+                    modifiers: this.#keyboard._modifiers,
                     buttons,
                     button: getButtonFromPressedButtons(buttons),
                     ...position,
@@ -281,17 +303,17 @@ class CDPMouse extends Input_js_1.Mouse {
         if (!flag) {
             throw new Error(`Unsupported mouse button: ${button}`);
         }
-        if (__classPrivateFieldGet(this, _CDPMouse_instances, "a", _CDPMouse_state_get).buttons & flag) {
+        if (this.#state.buttons & flag) {
             throw new Error(`'${button}' is already pressed.`);
         }
-        await __classPrivateFieldGet(this, _CDPMouse_instances, "m", _CDPMouse_withTransaction).call(this, updateState => {
+        await this.#withTransaction(updateState => {
             updateState({
-                buttons: __classPrivateFieldGet(this, _CDPMouse_instances, "a", _CDPMouse_state_get).buttons | flag,
+                buttons: this.#state.buttons | flag,
             });
-            const { buttons, position } = __classPrivateFieldGet(this, _CDPMouse_instances, "a", _CDPMouse_state_get);
-            return __classPrivateFieldGet(this, _CDPMouse_client, "f").send('Input.dispatchMouseEvent', {
+            const { buttons, position } = this.#state;
+            return this.#client.send('Input.dispatchMouseEvent', {
                 type: 'mousePressed',
-                modifiers: __classPrivateFieldGet(this, _CDPMouse_keyboard, "f")._modifiers,
+                modifiers: this.#keyboard._modifiers,
                 clickCount,
                 buttons,
                 button,
@@ -305,17 +327,17 @@ class CDPMouse extends Input_js_1.Mouse {
         if (!flag) {
             throw new Error(`Unsupported mouse button: ${button}`);
         }
-        if (!(__classPrivateFieldGet(this, _CDPMouse_instances, "a", _CDPMouse_state_get).buttons & flag)) {
+        if (!(this.#state.buttons & flag)) {
             throw new Error(`'${button}' is not pressed.`);
         }
-        await __classPrivateFieldGet(this, _CDPMouse_instances, "m", _CDPMouse_withTransaction).call(this, updateState => {
+        await this.#withTransaction(updateState => {
             updateState({
-                buttons: __classPrivateFieldGet(this, _CDPMouse_instances, "a", _CDPMouse_state_get).buttons & ~flag,
+                buttons: this.#state.buttons & ~flag,
             });
-            const { buttons, position } = __classPrivateFieldGet(this, _CDPMouse_instances, "a", _CDPMouse_state_get);
-            return __classPrivateFieldGet(this, _CDPMouse_client, "f").send('Input.dispatchMouseEvent', {
+            const { buttons, position } = this.#state;
+            return this.#client.send('Input.dispatchMouseEvent', {
                 type: 'mouseReleased',
-                modifiers: __classPrivateFieldGet(this, _CDPMouse_keyboard, "f")._modifiers,
+                modifiers: this.#keyboard._modifiers,
                 clickCount,
                 buttons,
                 button,
@@ -347,11 +369,11 @@ class CDPMouse extends Input_js_1.Mouse {
     }
     async wheel(options = {}) {
         const { deltaX = 0, deltaY = 0 } = options;
-        const { position, buttons } = __classPrivateFieldGet(this, _CDPMouse_instances, "a", _CDPMouse_state_get);
-        await __classPrivateFieldGet(this, _CDPMouse_client, "f").send('Input.dispatchMouseEvent', {
+        const { position, buttons } = this.#state;
+        await this.#client.send('Input.dispatchMouseEvent', {
             type: 'mouseWheel',
             pointerType: 'mouse',
-            modifiers: __classPrivateFieldGet(this, _CDPMouse_keyboard, "f")._modifiers,
+            modifiers: this.#keyboard._modifiers,
             deltaY,
             deltaX,
             buttons,
@@ -360,7 +382,7 @@ class CDPMouse extends Input_js_1.Mouse {
     }
     async drag(start, target) {
         const promise = new Promise(resolve => {
-            __classPrivateFieldGet(this, _CDPMouse_client, "f").once('Input.dragIntercepted', event => {
+            this.#client.once('Input.dragIntercepted', event => {
                 return resolve(event.data);
             });
         });
@@ -370,29 +392,29 @@ class CDPMouse extends Input_js_1.Mouse {
         return promise;
     }
     async dragEnter(target, data) {
-        await __classPrivateFieldGet(this, _CDPMouse_client, "f").send('Input.dispatchDragEvent', {
+        await this.#client.send('Input.dispatchDragEvent', {
             type: 'dragEnter',
             x: target.x,
             y: target.y,
-            modifiers: __classPrivateFieldGet(this, _CDPMouse_keyboard, "f")._modifiers,
+            modifiers: this.#keyboard._modifiers,
             data,
         });
     }
     async dragOver(target, data) {
-        await __classPrivateFieldGet(this, _CDPMouse_client, "f").send('Input.dispatchDragEvent', {
+        await this.#client.send('Input.dispatchDragEvent', {
             type: 'dragOver',
             x: target.x,
             y: target.y,
-            modifiers: __classPrivateFieldGet(this, _CDPMouse_keyboard, "f")._modifiers,
+            modifiers: this.#keyboard._modifiers,
             data,
         });
     }
     async drop(target, data) {
-        await __classPrivateFieldGet(this, _CDPMouse_client, "f").send('Input.dispatchDragEvent', {
+        await this.#client.send('Input.dispatchDragEvent', {
             type: 'drop',
             x: target.x,
             y: target.y,
-            modifiers: __classPrivateFieldGet(this, _CDPMouse_keyboard, "f")._modifiers,
+            modifiers: this.#keyboard._modifiers,
             data,
         });
     }
@@ -411,53 +433,19 @@ class CDPMouse extends Input_js_1.Mouse {
     }
 }
 exports.CDPMouse = CDPMouse;
-_CDPMouse_client = new WeakMap(), _CDPMouse_keyboard = new WeakMap(), _CDPMouse__state = new WeakMap(), _CDPMouse_transactions = new WeakMap(), _CDPMouse_instances = new WeakSet(), _CDPMouse_state_get = function _CDPMouse_state_get() {
-    return Object.assign({ ...__classPrivateFieldGet(this, _CDPMouse__state, "f") }, ...__classPrivateFieldGet(this, _CDPMouse_transactions, "f"));
-}, _CDPMouse_createTransaction = function _CDPMouse_createTransaction() {
-    const transaction = {};
-    __classPrivateFieldGet(this, _CDPMouse_transactions, "f").push(transaction);
-    const popTransaction = () => {
-        __classPrivateFieldGet(this, _CDPMouse_transactions, "f").splice(__classPrivateFieldGet(this, _CDPMouse_transactions, "f").indexOf(transaction), 1);
-    };
-    return {
-        update: (updates) => {
-            Object.assign(transaction, updates);
-        },
-        commit: () => {
-            __classPrivateFieldSet(this, _CDPMouse__state, { ...__classPrivateFieldGet(this, _CDPMouse__state, "f"), ...transaction }, "f");
-            popTransaction();
-        },
-        rollback: popTransaction,
-    };
-}, _CDPMouse_withTransaction = 
-/**
- * This is a shortcut for a typical update, commit/rollback lifecycle based on
- * the error of the action.
- */
-async function _CDPMouse_withTransaction(action) {
-    const { update, commit, rollback } = __classPrivateFieldGet(this, _CDPMouse_instances, "m", _CDPMouse_createTransaction).call(this);
-    try {
-        await action(update);
-        commit();
-    }
-    catch (error) {
-        rollback();
-        throw error;
-    }
-};
 /**
  * @internal
  */
 class CDPTouchscreen extends Input_js_1.Touchscreen {
+    #client;
+    #keyboard;
     /**
      * @internal
      */
     constructor(client, keyboard) {
         super();
-        _CDPTouchscreen_client.set(this, void 0);
-        _CDPTouchscreen_keyboard.set(this, void 0);
-        __classPrivateFieldSet(this, _CDPTouchscreen_client, client, "f");
-        __classPrivateFieldSet(this, _CDPTouchscreen_keyboard, keyboard, "f");
+        this.#client = client;
+        this.#keyboard = keyboard;
     }
     async tap(x, y) {
         await this.touchStart(x, y);
@@ -465,28 +453,27 @@ class CDPTouchscreen extends Input_js_1.Touchscreen {
     }
     async touchStart(x, y) {
         const touchPoints = [{ x: Math.round(x), y: Math.round(y) }];
-        await __classPrivateFieldGet(this, _CDPTouchscreen_client, "f").send('Input.dispatchTouchEvent', {
+        await this.#client.send('Input.dispatchTouchEvent', {
             type: 'touchStart',
             touchPoints,
-            modifiers: __classPrivateFieldGet(this, _CDPTouchscreen_keyboard, "f")._modifiers,
+            modifiers: this.#keyboard._modifiers,
         });
     }
     async touchMove(x, y) {
         const movePoints = [{ x: Math.round(x), y: Math.round(y) }];
-        await __classPrivateFieldGet(this, _CDPTouchscreen_client, "f").send('Input.dispatchTouchEvent', {
+        await this.#client.send('Input.dispatchTouchEvent', {
             type: 'touchMove',
             touchPoints: movePoints,
-            modifiers: __classPrivateFieldGet(this, _CDPTouchscreen_keyboard, "f")._modifiers,
+            modifiers: this.#keyboard._modifiers,
         });
     }
     async touchEnd() {
-        await __classPrivateFieldGet(this, _CDPTouchscreen_client, "f").send('Input.dispatchTouchEvent', {
+        await this.#client.send('Input.dispatchTouchEvent', {
             type: 'touchEnd',
             touchPoints: [],
-            modifiers: __classPrivateFieldGet(this, _CDPTouchscreen_keyboard, "f")._modifiers,
+            modifiers: this.#keyboard._modifiers,
         });
     }
 }
 exports.CDPTouchscreen = CDPTouchscreen;
-_CDPTouchscreen_client = new WeakMap(), _CDPTouchscreen_keyboard = new WeakMap();
 //# sourceMappingURL=Input.js.map

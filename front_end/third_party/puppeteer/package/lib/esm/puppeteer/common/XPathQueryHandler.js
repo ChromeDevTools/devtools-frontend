@@ -18,8 +18,8 @@ import { QueryHandler } from './QueryHandler.js';
  * @internal
  */
 export class XPathQueryHandler extends QueryHandler {
+    static querySelectorAll = (element, selector, { xpathQuerySelectorAll }) => {
+        return xpathQuerySelectorAll(element, selector);
+    };
 }
-XPathQueryHandler.querySelectorAll = (element, selector, { xpathQuerySelectorAll }) => {
-    return xpathQuerySelectorAll(element, selector);
-};
 //# sourceMappingURL=XPathQueryHandler.js.map

@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Sandbox_document, _Sandbox_realm, _Sandbox_timeoutSettings, _Sandbox_taskManager;
 import { assert } from '../../util/assert.js';
 import { withSourcePuppeteerURLIfNone } from '../util.js';
 import { TaskManager, WaitTask } from '../WaitTask.js';
@@ -46,25 +34,25 @@ export const PUPPETEER_SANDBOX = Symbol('puppeteerSandbox');
  * @internal
  */
 export class Sandbox {
+    #document;
+    #realm;
+    #timeoutSettings;
+    #taskManager = new TaskManager();
     constructor(context, timeoutSettings) {
-        _Sandbox_document.set(this, void 0);
-        _Sandbox_realm.set(this, void 0);
-        _Sandbox_timeoutSettings.set(this, void 0);
-        _Sandbox_taskManager.set(this, new TaskManager());
-        __classPrivateFieldSet(this, _Sandbox_realm, context, "f");
-        __classPrivateFieldSet(this, _Sandbox_timeoutSettings, timeoutSettings, "f");
+        this.#realm = context;
+        this.#timeoutSettings = timeoutSettings;
     }
     get taskManager() {
-        return __classPrivateFieldGet(this, _Sandbox_taskManager, "f");
+        return this.#taskManager;
     }
     async document() {
-        if (__classPrivateFieldGet(this, _Sandbox_document, "f")) {
-            return __classPrivateFieldGet(this, _Sandbox_document, "f");
+        if (this.#document) {
+            return this.#document;
         }
-        __classPrivateFieldSet(this, _Sandbox_document, await __classPrivateFieldGet(this, _Sandbox_realm, "f").evaluateHandle(() => {
+        this.#document = await this.#realm.evaluateHandle(() => {
             return document;
-        }), "f");
-        return __classPrivateFieldGet(this, _Sandbox_document, "f");
+        });
+        return this.#document;
     }
     async $(selector) {
         const document = await this.document();
@@ -90,11 +78,11 @@ export class Sandbox {
     }
     async evaluateHandle(pageFunction, ...args) {
         pageFunction = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, pageFunction);
-        return __classPrivateFieldGet(this, _Sandbox_realm, "f").evaluateHandle(pageFunction, ...args);
+        return this.#realm.evaluateHandle(pageFunction, ...args);
     }
     async evaluate(pageFunction, ...args) {
         pageFunction = withSourcePuppeteerURLIfNone(this.evaluate.name, pageFunction);
-        return __classPrivateFieldGet(this, _Sandbox_realm, "f").evaluate(pageFunction, ...args);
+        return this.#realm.evaluate(pageFunction, ...args);
     }
     async adoptHandle(handle) {
         return (await this.evaluateHandle(node => {
@@ -102,7 +90,7 @@ export class Sandbox {
         }, handle));
     }
     async transferHandle(handle) {
-        if (handle.context() === __classPrivateFieldGet(this, _Sandbox_realm, "f")) {
+        if (handle.context() === this.#realm) {
             return handle;
         }
         const transferredHandle = await this.evaluateHandle(node => {
@@ -112,7 +100,7 @@ export class Sandbox {
         return transferredHandle;
     }
     waitForFunction(pageFunction, options = {}, ...args) {
-        const { polling = 'raf', timeout = __classPrivateFieldGet(this, _Sandbox_timeoutSettings, "f").timeout(), root, signal, } = options;
+        const { polling = 'raf', timeout = this.#timeoutSettings.timeout(), root, signal, } = options;
         if (typeof polling === 'number' && polling < 0) {
             throw new Error('Cannot poll with non-positive interval');
         }
@@ -165,5 +153,4 @@ export class Sandbox {
         await handle.dispose();
     }
 }
-_Sandbox_document = new WeakMap(), _Sandbox_realm = new WeakMap(), _Sandbox_timeoutSettings = new WeakMap(), _Sandbox_taskManager = new WeakMap();
 //# sourceMappingURL=Sandbox.js.map

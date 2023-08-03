@@ -569,5 +569,43 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * @internal
      */
     assertElementHasWorld(): asserts this;
+    /**
+     * If the element is a form input, you can use {@link ElementHandle.autofill}
+     * to test if the form is compatible with the browser's autofill
+     * implementation. Throws an error if the form cannot be autofilled.
+     *
+     * @remarks
+     *
+     * Currently, Puppeteer supports auto-filling credit card information only and
+     * in Chrome in the new headless and headful modes only.
+     *
+     * ```ts
+     * // Select an input on the credit card form.
+     * const name = await page.waitForSelector('form #name');
+     * // Trigger autofill with the desired data.
+     * await name.autofill({
+     *   creditCard: {
+     *     number: '4444444444444444',
+     *     name: 'John Smith',
+     *     expiryMonth: '01',
+     *     expiryYear: '2030',
+     *     cvc: '123',
+     *   },
+     * });
+     * ```
+     */
+    autofill(data: AutofillData): Promise<void>;
+}
+/**
+ * @public
+ */
+export interface AutofillData {
+    creditCard: {
+        number: string;
+        name: string;
+        expiryMonth: string;
+        expiryYear: string;
+        cvc: string;
+    };
 }
 //# sourceMappingURL=ElementHandle.d.ts.map

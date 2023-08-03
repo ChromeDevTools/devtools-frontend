@@ -25,19 +25,22 @@ import {
   IsolatedWorldChart,
   WaitForSelectorOptions,
 } from '../common/IsolatedWorld.js';
+import {LazyArg} from '../common/LazyArg.js';
 import {PuppeteerLifeCycleEvent} from '../common/LifecycleWatcher.js';
 import {
+  Awaitable,
   EvaluateFunc,
   EvaluateFuncWith,
   HandleFor,
   InnerLazyParams,
   NodeFor,
 } from '../common/types.js';
+import {importFSPromises} from '../common/util.js';
 import {TaskManager} from '../common/WaitTask.js';
 
 import {KeyboardTypeOptions} from './Input.js';
 import {JSHandle} from './JSHandle.js';
-import {Locator} from './Locator.js';
+import {Locator, FunctionLocator, NodeLocator} from './locators/locators.js';
 
 /**
  * @internal
@@ -415,17 +418,35 @@ export class Frame {
   }
 
   /**
-   * Creates a locator for the provided `selector`. See {@link Locator} for
+   * Creates a locator for the provided selector. See {@link Locator} for
    * details and supported actions.
    *
    * @remarks
    * Locators API is experimental and we will not follow semver for breaking
    * change in the Locators API.
    */
-  locator(selector: string): Locator {
-    return Locator.create(this, selector);
-  }
+  locator<Selector extends string>(
+    selector: Selector
+  ): Locator<NodeFor<Selector>>;
 
+  /**
+   * Creates a locator for the provided function. See {@link Locator} for
+   * details and supported actions.
+   *
+   * @remarks
+   * Locators API is experimental and we will not follow semver for breaking
+   * change in the Locators API.
+   */
+  locator<Ret>(func: () => Awaitable<Ret>): Locator<Ret>;
+  locator<Selector extends string, Ret>(
+    selectorOrFunc: Selector | (() => Awaitable<Ret>)
+  ): Locator<NodeFor<Selector>> | Locator<Ret> {
+    if (typeof selectorOrFunc === 'string') {
+      return NodeLocator.create(this, selectorOrFunc);
+    } else {
+      return FunctionLocator.create(this, selectorOrFunc);
+    }
+  }
   /**
    * Queries the frame for an element matching the given selector.
    *
@@ -762,9 +783,64 @@ export class Frame {
    */
   async addScriptTag(
     options: FrameAddScriptTagOptions
-  ): Promise<ElementHandle<HTMLScriptElement>>;
-  async addScriptTag(): Promise<ElementHandle<HTMLScriptElement>> {
-    throw new Error('Not implemented');
+  ): Promise<ElementHandle<HTMLScriptElement>> {
+    let {content = '', type} = options;
+    const {path} = options;
+    if (+!!options.url + +!!path + +!!content !== 1) {
+      throw new Error(
+        'Exactly one of `url`, `path`, or `content` must be specified.'
+      );
+    }
+
+    if (path) {
+      const fs = await importFSPromises();
+      content = await fs.readFile(path, 'utf8');
+      content += `//# sourceURL=${path.replace(/\n/g, '')}`;
+    }
+
+    type = type ?? 'text/javascript';
+
+    return this.mainRealm().transferHandle(
+      await this.isolatedRealm().evaluateHandle(
+        async ({Deferred}, {url, id, type, content}) => {
+          const deferred = Deferred.create<void>();
+          const script = document.createElement('script');
+          script.type = type;
+          script.text = content;
+          if (url) {
+            script.src = url;
+            script.addEventListener(
+              'load',
+              () => {
+                return deferred.resolve();
+              },
+              {once: true}
+            );
+            script.addEventListener(
+              'error',
+              event => {
+                deferred.reject(
+                  new Error(event.message ?? 'Could not load script')
+                );
+              },
+              {once: true}
+            );
+          } else {
+            deferred.resolve();
+          }
+          if (id) {
+            script.id = id;
+          }
+          document.head.appendChild(script);
+          await deferred.valueOrThrow();
+          return script;
+        },
+        LazyArg.create(context => {
+          return context.puppeteerUtil;
+        }),
+        {...options, type, content}
+      )
+    );
   }
 
   /**
@@ -780,10 +856,67 @@ export class Frame {
   async addStyleTag(
     options: FrameAddStyleTagOptions
   ): Promise<ElementHandle<HTMLLinkElement>>;
-  async addStyleTag(): Promise<
-    ElementHandle<HTMLStyleElement | HTMLLinkElement>
-  > {
-    throw new Error('Not implemented');
+  async addStyleTag(
+    options: FrameAddStyleTagOptions
+  ): Promise<ElementHandle<HTMLStyleElement | HTMLLinkElement>> {
+    let {content = ''} = options;
+    const {path} = options;
+    if (+!!options.url + +!!path + +!!content !== 1) {
+      throw new Error(
+        'Exactly one of `url`, `path`, or `content` must be specified.'
+      );
+    }
+
+    if (path) {
+      const fs = await importFSPromises();
+
+      content = await fs.readFile(path, 'utf8');
+      content += '/*# sourceURL=' + path.replace(/\n/g, '') + '*/';
+      options.content = content;
+    }
+
+    return this.mainRealm().transferHandle(
+      await this.isolatedRealm().evaluateHandle(
+        async ({Deferred}, {url, content}) => {
+          const deferred = Deferred.create<void>();
+          let element: HTMLStyleElement | HTMLLinkElement;
+          if (!url) {
+            element = document.createElement('style');
+            element.appendChild(document.createTextNode(content!));
+          } else {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = url;
+            element = link;
+          }
+          element.addEventListener(
+            'load',
+            () => {
+              deferred.resolve();
+            },
+            {once: true}
+          );
+          element.addEventListener(
+            'error',
+            event => {
+              deferred.reject(
+                new Error(
+                  (event as ErrorEvent).message ?? 'Could not load style'
+                )
+              );
+            },
+            {once: true}
+          );
+          document.head.appendChild(element);
+          await deferred.valueOrThrow();
+          return element;
+        },
+        LazyArg.create(context => {
+          return context.puppeteerUtil;
+        }),
+        options
+      )
+    );
   }
 
   /**

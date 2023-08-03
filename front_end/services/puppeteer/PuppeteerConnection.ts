@@ -89,8 +89,8 @@ export class PuppeteerConnectionHelper {
         undefined /* defaultViewport */,
         undefined /* process */,
         undefined /* closeCallback */,
-        targetFilterCallback,
-        isPageTargetCallback,
+        target => targetFilterCallback((target as puppeteer.Target)._getTargetInfo()),
+        target => isPageTargetCallback((target as puppeteer.Target)._getTargetInfo()),
     );
 
     const [, browser] = await Promise.all([

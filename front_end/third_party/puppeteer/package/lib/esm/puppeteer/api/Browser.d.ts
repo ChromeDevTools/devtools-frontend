@@ -17,9 +17,9 @@
 import { ChildProcess } from 'child_process';
 import { Protocol } from 'devtools-protocol';
 import { EventEmitter } from '../common/EventEmitter.js';
-import type { Target } from '../common/Target.js';
 import type { BrowserContext } from './BrowserContext.js';
 import type { Page } from './Page.js';
+import type { Target } from './Target.js';
 /**
  * BrowserContext options.
  *
@@ -43,11 +43,11 @@ export type BrowserCloseCallback = () => Promise<void> | void;
 /**
  * @public
  */
-export type TargetFilterCallback = (target: Protocol.Target.TargetInfo) => boolean;
+export type TargetFilterCallback = (target: Target) => boolean;
 /**
  * @internal
  */
-export type IsPageTargetCallback = (target: Protocol.Target.TargetInfo) => boolean;
+export type IsPageTargetCallback = (target: Target) => boolean;
 /**
  * @internal
  */

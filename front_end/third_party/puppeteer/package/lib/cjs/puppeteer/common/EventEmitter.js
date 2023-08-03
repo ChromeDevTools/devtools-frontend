@@ -33,11 +33,12 @@ const index_js_1 = __importDefault(require("../../third_party/mitt/index.js"));
  * @public
  */
 class EventEmitter {
+    emitter;
+    eventsMap = new Map();
     /**
      * @internal
      */
     constructor() {
-        this.eventsMap = new Map();
         this.emitter = (0, index_js_1.default)(this.eventsMap);
     }
     /**

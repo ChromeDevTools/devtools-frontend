@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import { EventEmitter } from '../common/EventEmitter.js';
+import { waitWithTimeout } from '../common/util.js';
+import { Deferred } from '../util/Deferred.js';
 /**
  * @internal
  */
@@ -185,8 +187,44 @@ export class Browser extends EventEmitter {
     target() {
         throw new Error('Not implemented');
     }
-    waitForTarget() {
-        throw new Error('Not implemented');
+    /**
+     * Searches for a target in all browser contexts.
+     *
+     * @param predicate - A function to be run for every target.
+     * @returns The first target found that matches the `predicate` function.
+     *
+     * @example
+     *
+     * An example of finding a target for a page opened via `window.open`:
+     *
+     * ```ts
+     * await page.evaluate(() => window.open('https://www.example.com/'));
+     * const newWindowTarget = await browser.waitForTarget(
+     *   target => target.url() === 'https://www.example.com/'
+     * );
+     * ```
+     */
+    async waitForTarget(predicate, options = {}) {
+        const { timeout = 30000 } = options;
+        const targetDeferred = Deferred.create();
+        this.on("targetcreated" /* BrowserEmittedEvents.TargetCreated */, check);
+        this.on("targetchanged" /* BrowserEmittedEvents.TargetChanged */, check);
+        try {
+            this.targets().forEach(check);
+            if (!timeout) {
+                return await targetDeferred.valueOrThrow();
+            }
+            return await waitWithTimeout(targetDeferred.valueOrThrow(), 'target', timeout);
+        }
+        finally {
+            this.off("targetcreated" /* BrowserEmittedEvents.TargetCreated */, check);
+            this.off("targetchanged" /* BrowserEmittedEvents.TargetChanged */, check);
+        }
+        async function check(target) {
+            if ((await predicate(target)) && !targetDeferred.resolved()) {
+                targetDeferred.resolve(target);
+            }
+        }
     }
     /**
      * An array of all open pages inside the Browser.

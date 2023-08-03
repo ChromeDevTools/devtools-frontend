@@ -21,9 +21,9 @@ const QueryHandler_js_1 = require("./QueryHandler.js");
  * @internal
  */
 class XPathQueryHandler extends QueryHandler_js_1.QueryHandler {
+    static querySelectorAll = (element, selector, { xpathQuerySelectorAll }) => {
+        return xpathQuerySelectorAll(element, selector);
+    };
 }
 exports.XPathQueryHandler = XPathQueryHandler;
-XPathQueryHandler.querySelectorAll = (element, selector, { xpathQuerySelectorAll }) => {
-    return xpathQuerySelectorAll(element, selector);
-};
 //# sourceMappingURL=XPathQueryHandler.js.map

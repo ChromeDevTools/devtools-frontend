@@ -27,11 +27,12 @@ import mitt from '../../third_party/mitt/index.js';
  * @public
  */
 export class EventEmitter {
+    emitter;
+    eventsMap = new Map();
     /**
      * @internal
      */
     constructor() {
-        this.eventsMap = new Map();
         this.emitter = mitt(this.eventsMap);
     }
     /**

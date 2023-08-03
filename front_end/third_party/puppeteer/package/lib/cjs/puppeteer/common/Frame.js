@@ -14,18 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Frame_url, _Frame_detached, _Frame_client;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Frame = void 0;
 const Frame_js_1 = require("../api/Frame.js");
@@ -34,31 +22,33 @@ const Deferred_js_1 = require("../util/Deferred.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
 const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
-const LazyArg_js_1 = require("./LazyArg.js");
 const LifecycleWatcher_js_1 = require("./LifecycleWatcher.js");
 const util_js_1 = require("./util.js");
 /**
  * @internal
  */
 class Frame extends Frame_js_1.Frame {
+    #url = '';
+    #detached = false;
+    #client;
+    _frameManager;
+    _id;
+    _loaderId = '';
+    _hasStartedLoading = false;
+    _lifecycleEvents = new Set();
+    _parentId;
     constructor(frameManager, frameId, parentFrameId, client) {
         super();
-        _Frame_url.set(this, '');
-        _Frame_detached.set(this, false);
-        _Frame_client.set(this, void 0);
-        this._loaderId = '';
-        this._hasStartedLoading = false;
-        this._lifecycleEvents = new Set();
         this._frameManager = frameManager;
-        __classPrivateFieldSet(this, _Frame_url, '', "f");
+        this.#url = '';
         this._id = frameId;
         this._parentId = parentFrameId;
-        __classPrivateFieldSet(this, _Frame_detached, false, "f");
+        this.#detached = false;
         this._loaderId = '';
         this.updateClient(client);
     }
     updateClient(client) {
-        __classPrivateFieldSet(this, _Frame_client, client, "f");
+        this.#client = client;
         this.worlds = {
             [IsolatedWorlds_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
             [IsolatedWorlds_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
@@ -68,14 +58,14 @@ class Frame extends Frame_js_1.Frame {
         return this._frameManager.page();
     }
     isOOPFrame() {
-        return __classPrivateFieldGet(this, _Frame_client, "f") !== this._frameManager.client;
+        return this.#client !== this._frameManager.client;
     }
     async goto(url, options = {}) {
         const { referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'], referrerPolicy = this._frameManager.networkManager.extraHTTPHeaders()['referer-policy'], waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
         let ensureNewDocumentNavigation = false;
         const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager, this, waitUntil, timeout);
         let error = await Deferred_js_1.Deferred.race([
-            navigate(__classPrivateFieldGet(this, _Frame_client, "f"), url, referer, referrerPolicy, this._id),
+            navigate(this.#client, url, referer, referrerPolicy, this._id),
             watcher.terminationPromise(),
         ]);
         if (!error) {
@@ -138,7 +128,7 @@ class Frame extends Frame_js_1.Frame {
         }
     }
     _client() {
-        return __classPrivateFieldGet(this, _Frame_client, "f");
+        return this.#client;
     }
     executionContext() {
         return this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].executionContext();
@@ -190,7 +180,7 @@ class Frame extends Frame_js_1.Frame {
         return this._name || '';
     }
     url() {
-        return __classPrivateFieldGet(this, _Frame_url, "f");
+        return this.#url;
     }
     parentFrame() {
         return this._frameManager._frameTree.parentFrame(this._id) || null;
@@ -199,91 +189,14 @@ class Frame extends Frame_js_1.Frame {
         return this._frameManager._frameTree.childFrames(this._id);
     }
     isDetached() {
-        return __classPrivateFieldGet(this, _Frame_detached, "f");
-    }
-    async addScriptTag(options) {
-        let { content = '', type } = options;
-        const { path } = options;
-        if (+!!options.url + +!!path + +!!content !== 1) {
-            throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
-        }
-        if (path) {
-            const fs = await (0, util_js_1.importFSPromises)();
-            content = await fs.readFile(path, 'utf8');
-            content += `//# sourceURL=${path.replace(/\n/g, '')}`;
-        }
-        type = type ?? 'text/javascript';
-        return this.mainRealm().transferHandle(await this.isolatedRealm().evaluateHandle(async ({ Deferred }, { url, id, type, content }) => {
-            const deferred = Deferred.create();
-            const script = document.createElement('script');
-            script.type = type;
-            script.text = content;
-            if (url) {
-                script.src = url;
-                script.addEventListener('load', () => {
-                    return deferred.resolve();
-                }, { once: true });
-                script.addEventListener('error', event => {
-                    deferred.reject(new Error(event.message ?? 'Could not load script'));
-                }, { once: true });
-            }
-            else {
-                deferred.resolve();
-            }
-            if (id) {
-                script.id = id;
-            }
-            document.head.appendChild(script);
-            await deferred.valueOrThrow();
-            return script;
-        }, LazyArg_js_1.LazyArg.create(context => {
-            return context.puppeteerUtil;
-        }), { ...options, type, content }));
-    }
-    async addStyleTag(options) {
-        let { content = '' } = options;
-        const { path } = options;
-        if (+!!options.url + +!!path + +!!content !== 1) {
-            throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
-        }
-        if (path) {
-            const fs = await (0, util_js_1.importFSPromises)();
-            content = await fs.readFile(path, 'utf8');
-            content += '/*# sourceURL=' + path.replace(/\n/g, '') + '*/';
-            options.content = content;
-        }
-        return this.mainRealm().transferHandle(await this.isolatedRealm().evaluateHandle(async ({ Deferred }, { url, content }) => {
-            const deferred = Deferred.create();
-            let element;
-            if (!url) {
-                element = document.createElement('style');
-                element.appendChild(document.createTextNode(content));
-            }
-            else {
-                const link = document.createElement('link');
-                link.rel = 'stylesheet';
-                link.href = url;
-                element = link;
-            }
-            element.addEventListener('load', () => {
-                deferred.resolve();
-            }, { once: true });
-            element.addEventListener('error', event => {
-                deferred.reject(new Error(event.message ?? 'Could not load style'));
-            }, { once: true });
-            document.head.appendChild(element);
-            await deferred.valueOrThrow();
-            return element;
-        }, LazyArg_js_1.LazyArg.create(context => {
-            return context.puppeteerUtil;
-        }), options));
+        return this.#detached;
     }
     async title() {
         return this.isolatedRealm().title();
     }
     _deviceRequestPromptManager() {
         if (this.isOOPFrame()) {
-            return this._frameManager._deviceRequestPromptManager(__classPrivateFieldGet(this, _Frame_client, "f"));
+            return this._frameManager._deviceRequestPromptManager(this.#client);
         }
         const parentFrame = this.parentFrame();
         (0, assert_js_1.assert)(parentFrame !== null);
@@ -294,10 +207,10 @@ class Frame extends Frame_js_1.Frame {
     }
     _navigated(framePayload) {
         this._name = framePayload.name;
-        __classPrivateFieldSet(this, _Frame_url, `${framePayload.url}${framePayload.urlFragment || ''}`, "f");
+        this.#url = `${framePayload.url}${framePayload.urlFragment || ''}`;
     }
     _navigatedWithinDocument(url) {
-        __classPrivateFieldSet(this, _Frame_url, url, "f");
+        this.#url = url;
     }
     _onLifecycleEvent(loaderId, name) {
         if (name === 'init') {
@@ -314,11 +227,10 @@ class Frame extends Frame_js_1.Frame {
         this._hasStartedLoading = true;
     }
     _detach() {
-        __classPrivateFieldSet(this, _Frame_detached, true, "f");
+        this.#detached = true;
         this.worlds[IsolatedWorlds_js_1.MAIN_WORLD]._detach();
         this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD]._detach();
     }
 }
 exports.Frame = Frame;
-_Frame_url = new WeakMap(), _Frame_detached = new WeakMap(), _Frame_client = new WeakMap();
 //# sourceMappingURL=Frame.js.map

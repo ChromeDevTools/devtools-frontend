@@ -394,19 +394,19 @@ export async function waitForEvent<T>(
       deferred.resolve(event);
     }
   });
-  return Deferred.race<T | Error>([deferred, abortPromise]).then(
-    r => {
-      removeEventListeners([listener]);
-      if (isErrorLike(r)) {
-        throw r;
-      }
-      return r;
-    },
-    error => {
-      removeEventListeners([listener]);
-      throw error;
+
+  try {
+    const response = await Deferred.race<T | Error>([deferred, abortPromise]);
+    if (isErrorLike(response)) {
+      throw response;
     }
-  );
+
+    return response;
+  } catch (error) {
+    throw error;
+  } finally {
+    removeEventListeners([listener]);
+  }
 }
 
 /**
@@ -646,4 +646,25 @@ export function getPageContent(): string {
   }
 
   return content;
+}
+
+/**
+ * @internal
+ */
+export function validateDialogType(
+  type: string
+): 'alert' | 'confirm' | 'prompt' | 'beforeunload' {
+  let dialogType = null;
+  const validDialogTypes = new Set([
+    'alert',
+    'confirm',
+    'prompt',
+    'beforeunload',
+  ]);
+
+  if (validDialogTypes.has(type)) {
+    dialogType = type;
+  }
+  assert(dialogType, `Unknown javascript dialog type: ${type}`);
+  return dialogType as 'alert' | 'confirm' | 'prompt' | 'beforeunload';
 }

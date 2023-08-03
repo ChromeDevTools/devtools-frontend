@@ -21,11 +21,7 @@ import {Protocol} from 'devtools-protocol';
 import type {Browser} from '../api/Browser.js';
 import type {BrowserContext} from '../api/BrowserContext.js';
 import {ElementHandle} from '../api/ElementHandle.js';
-import {
-  Frame,
-  FrameAddScriptTagOptions,
-  FrameAddStyleTagOptions,
-} from '../api/Frame.js';
+import {Frame} from '../api/Frame.js';
 import {HTTPRequest} from '../api/HTTPRequest.js';
 import {HTTPResponse} from '../api/HTTPResponse.js';
 import {JSHandle} from '../api/JSHandle.js';
@@ -55,13 +51,12 @@ import {
 import {ConsoleMessage, ConsoleMessageType} from './ConsoleMessage.js';
 import {Coverage} from './Coverage.js';
 import {DeviceRequestPrompt} from './DeviceRequestPrompt.js';
-import {Dialog} from './Dialog.js';
+import {CDPDialog} from './Dialog.js';
 import {EmulationManager} from './EmulationManager.js';
 import {TargetCloseError} from './Errors.js';
 import {FileChooser} from './FileChooser.js';
 import {FrameManager, FrameManagerEmittedEvents} from './FrameManager.js';
 import {CDPKeyboard, CDPMouse, CDPTouchscreen} from './Input.js';
-import {WaitForSelectorOptions} from './IsolatedWorld.js';
 import {MAIN_WORLD} from './IsolatedWorlds.js';
 import {
   Credentials,
@@ -70,7 +65,7 @@ import {
 } from './NetworkManager.js';
 import {PDFOptions} from './PDFOptions.js';
 import {Viewport} from './PuppeteerViewport.js';
-import {Target} from './Target.js';
+import {CDPTarget} from './Target.js';
 import {TargetManagerEmittedEvents} from './TargetManager.js';
 import {TaskQueue} from './TaskQueue.js';
 import {TimeoutSettings} from './TimeoutSettings.js';
@@ -86,6 +81,7 @@ import {
   isString,
   pageBindingInitString,
   releaseObject,
+  validateDialogType,
   valueFromRemoteObject,
   waitForEvent,
   waitWithTimeout,
@@ -102,7 +98,7 @@ export class CDPPage extends Page {
    */
   static async _create(
     client: CDPSession,
-    target: Target,
+    target: CDPTarget,
     ignoreHTTPSErrors: boolean,
     defaultViewport: Viewport | null,
     screenshotTaskQueue: TaskQueue
@@ -130,7 +126,7 @@ export class CDPPage extends Page {
 
   #closed = false;
   #client: CDPSession;
-  #target: Target;
+  #target: CDPTarget;
   #keyboard: CDPKeyboard;
   #mouse: CDPMouse;
   #timeoutSettings = new TimeoutSettings();
@@ -155,7 +151,7 @@ export class CDPPage extends Page {
    */
   constructor(
     client: CDPSession,
-    target: Target,
+    target: CDPTarget,
     ignoreHTTPSErrors: boolean,
     screenshotTaskQueue: TaskQueue
   ) {
@@ -271,7 +267,7 @@ export class CDPPage extends Page {
       .catch(debugError);
   }
 
-  #onDetachedFromTarget = (target: Target) => {
+  #onDetachedFromTarget = (target: CDPTarget) => {
     const sessionId = target._session()?.id();
     const worker = this.#workers.get(sessionId!);
     if (!worker) {
@@ -281,7 +277,7 @@ export class CDPPage extends Page {
     this.emit(PageEmittedEvents.WorkerDestroyed, worker);
   };
 
-  #onAttachedToTarget = (createdTarget: Target) => {
+  #onAttachedToTarget = (createdTarget: CDPTarget) => {
     this.#frameManager.onAttachedToTarget(createdTarget);
     if (createdTarget._getTargetInfo().type === 'worker') {
       const session = createdTarget._session();
@@ -392,7 +388,7 @@ export class CDPPage extends Page {
     return await this.#emulationManager.setGeolocation(options);
   }
 
-  override target(): Target {
+  override target(): CDPTarget {
     return this.#target;
   }
 
@@ -581,24 +577,6 @@ export class CDPPage extends Page {
     if (items.length) {
       await this.#client.send('Network.setCookies', {cookies: items});
     }
-  }
-
-  override async addScriptTag(
-    options: FrameAddScriptTagOptions
-  ): Promise<ElementHandle<HTMLScriptElement>> {
-    return this.mainFrame().addScriptTag(options);
-  }
-
-  override async addStyleTag(
-    options: Omit<FrameAddStyleTagOptions, 'url'>
-  ): Promise<ElementHandle<HTMLStyleElement>>;
-  override async addStyleTag(
-    options: FrameAddStyleTagOptions
-  ): Promise<ElementHandle<HTMLLinkElement>>;
-  override async addStyleTag(
-    options: FrameAddStyleTagOptions
-  ): Promise<ElementHandle<HTMLStyleElement | HTMLLinkElement>> {
-    return this.mainFrame().addStyleTag(options);
   }
 
   override async exposeFunction(
@@ -830,22 +808,10 @@ export class CDPPage extends Page {
   }
 
   #onDialog(event: Protocol.Page.JavascriptDialogOpeningEvent): void {
-    let dialogType = null;
-    const validDialogTypes = new Set<Protocol.Page.DialogType>([
-      'alert',
-      'confirm',
-      'prompt',
-      'beforeunload',
-    ]);
-
-    if (validDialogTypes.has(event.type)) {
-      dialogType = event.type as Protocol.Page.DialogType;
-    }
-    assert(dialogType, 'Unknown javascript dialog type: ' + event.type);
-
-    const dialog = new Dialog(
+    const type = validateDialogType(event.type);
+    const dialog = new CDPDialog(
       this.#client,
-      dialogType,
+      type,
       event.message,
       event.defaultPrompt
     );
@@ -883,6 +849,10 @@ export class CDPPage extends Page {
     ]);
 
     return result[0];
+  }
+
+  override async createCDPSession(): Promise<CDPSession> {
+    return await this.target().createCDPSession();
   }
 
   override async waitForRequest(
@@ -1392,13 +1362,6 @@ export class CDPPage extends Page {
 
   override get mouse(): CDPMouse {
     return this.#mouse;
-  }
-
-  override waitForXPath(
-    xpath: string,
-    options: WaitForSelectorOptions = {}
-  ): Promise<ElementHandle<Node> | null> {
-    return this.mainFrame().waitForXPath(xpath, options);
   }
 
   /**

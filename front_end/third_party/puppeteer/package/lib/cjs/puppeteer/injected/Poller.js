@@ -14,18 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _MutationPoller_fn, _MutationPoller_root, _MutationPoller_observer, _MutationPoller_deferred, _RAFPoller_fn, _RAFPoller_deferred, _IntervalPoller_fn, _IntervalPoller_ms, _IntervalPoller_interval, _IntervalPoller_deferred;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IntervalPoller = exports.RAFPoller = exports.MutationPoller = void 0;
 const assert_js_1 = require("../util/assert.js");
@@ -34,64 +22,63 @@ const Deferred_js_1 = require("../util/Deferred.js");
  * @internal
  */
 class MutationPoller {
+    #fn;
+    #root;
+    #observer;
+    #deferred;
     constructor(fn, root) {
-        _MutationPoller_fn.set(this, void 0);
-        _MutationPoller_root.set(this, void 0);
-        _MutationPoller_observer.set(this, void 0);
-        _MutationPoller_deferred.set(this, void 0);
-        __classPrivateFieldSet(this, _MutationPoller_fn, fn, "f");
-        __classPrivateFieldSet(this, _MutationPoller_root, root, "f");
+        this.#fn = fn;
+        this.#root = root;
     }
     async start() {
-        const deferred = (__classPrivateFieldSet(this, _MutationPoller_deferred, Deferred_js_1.Deferred.create(), "f"));
-        const result = await __classPrivateFieldGet(this, _MutationPoller_fn, "f").call(this);
+        const deferred = (this.#deferred = Deferred_js_1.Deferred.create());
+        const result = await this.#fn();
         if (result) {
             deferred.resolve(result);
             return;
         }
-        __classPrivateFieldSet(this, _MutationPoller_observer, new MutationObserver(async () => {
-            const result = await __classPrivateFieldGet(this, _MutationPoller_fn, "f").call(this);
+        this.#observer = new MutationObserver(async () => {
+            const result = await this.#fn();
             if (!result) {
                 return;
             }
             deferred.resolve(result);
             await this.stop();
-        }), "f");
-        __classPrivateFieldGet(this, _MutationPoller_observer, "f").observe(__classPrivateFieldGet(this, _MutationPoller_root, "f"), {
+        });
+        this.#observer.observe(this.#root, {
             childList: true,
             subtree: true,
             attributes: true,
         });
     }
     async stop() {
-        (0, assert_js_1.assert)(__classPrivateFieldGet(this, _MutationPoller_deferred, "f"), 'Polling never started.');
-        if (!__classPrivateFieldGet(this, _MutationPoller_deferred, "f").finished()) {
-            __classPrivateFieldGet(this, _MutationPoller_deferred, "f").reject(new Error('Polling stopped'));
+        (0, assert_js_1.assert)(this.#deferred, 'Polling never started.');
+        if (!this.#deferred.finished()) {
+            this.#deferred.reject(new Error('Polling stopped'));
         }
-        if (__classPrivateFieldGet(this, _MutationPoller_observer, "f")) {
-            __classPrivateFieldGet(this, _MutationPoller_observer, "f").disconnect();
-            __classPrivateFieldSet(this, _MutationPoller_observer, undefined, "f");
+        if (this.#observer) {
+            this.#observer.disconnect();
+            this.#observer = undefined;
         }
     }
     result() {
-        (0, assert_js_1.assert)(__classPrivateFieldGet(this, _MutationPoller_deferred, "f"), 'Polling never started.');
-        return __classPrivateFieldGet(this, _MutationPoller_deferred, "f").valueOrThrow();
+        (0, assert_js_1.assert)(this.#deferred, 'Polling never started.');
+        return this.#deferred.valueOrThrow();
     }
 }
 exports.MutationPoller = MutationPoller;
-_MutationPoller_fn = new WeakMap(), _MutationPoller_root = new WeakMap(), _MutationPoller_observer = new WeakMap(), _MutationPoller_deferred = new WeakMap();
 /**
  * @internal
  */
 class RAFPoller {
+    #fn;
+    #deferred;
     constructor(fn) {
-        _RAFPoller_fn.set(this, void 0);
-        _RAFPoller_deferred.set(this, void 0);
-        __classPrivateFieldSet(this, _RAFPoller_fn, fn, "f");
+        this.#fn = fn;
     }
     async start() {
-        const deferred = (__classPrivateFieldSet(this, _RAFPoller_deferred, Deferred_js_1.Deferred.create(), "f"));
-        const result = await __classPrivateFieldGet(this, _RAFPoller_fn, "f").call(this);
+        const deferred = (this.#deferred = Deferred_js_1.Deferred.create());
+        const result = await this.#fn();
         if (result) {
             deferred.resolve(result);
             return;
@@ -100,7 +87,7 @@ class RAFPoller {
             if (deferred.finished()) {
                 return;
             }
-            const result = await __classPrivateFieldGet(this, _RAFPoller_fn, "f").call(this);
+            const result = await this.#fn();
             if (!result) {
                 window.requestAnimationFrame(poll);
                 return;
@@ -111,61 +98,59 @@ class RAFPoller {
         window.requestAnimationFrame(poll);
     }
     async stop() {
-        (0, assert_js_1.assert)(__classPrivateFieldGet(this, _RAFPoller_deferred, "f"), 'Polling never started.');
-        if (!__classPrivateFieldGet(this, _RAFPoller_deferred, "f").finished()) {
-            __classPrivateFieldGet(this, _RAFPoller_deferred, "f").reject(new Error('Polling stopped'));
+        (0, assert_js_1.assert)(this.#deferred, 'Polling never started.');
+        if (!this.#deferred.finished()) {
+            this.#deferred.reject(new Error('Polling stopped'));
         }
     }
     result() {
-        (0, assert_js_1.assert)(__classPrivateFieldGet(this, _RAFPoller_deferred, "f"), 'Polling never started.');
-        return __classPrivateFieldGet(this, _RAFPoller_deferred, "f").valueOrThrow();
+        (0, assert_js_1.assert)(this.#deferred, 'Polling never started.');
+        return this.#deferred.valueOrThrow();
     }
 }
 exports.RAFPoller = RAFPoller;
-_RAFPoller_fn = new WeakMap(), _RAFPoller_deferred = new WeakMap();
 /**
  * @internal
  */
 class IntervalPoller {
+    #fn;
+    #ms;
+    #interval;
+    #deferred;
     constructor(fn, ms) {
-        _IntervalPoller_fn.set(this, void 0);
-        _IntervalPoller_ms.set(this, void 0);
-        _IntervalPoller_interval.set(this, void 0);
-        _IntervalPoller_deferred.set(this, void 0);
-        __classPrivateFieldSet(this, _IntervalPoller_fn, fn, "f");
-        __classPrivateFieldSet(this, _IntervalPoller_ms, ms, "f");
+        this.#fn = fn;
+        this.#ms = ms;
     }
     async start() {
-        const deferred = (__classPrivateFieldSet(this, _IntervalPoller_deferred, Deferred_js_1.Deferred.create(), "f"));
-        const result = await __classPrivateFieldGet(this, _IntervalPoller_fn, "f").call(this);
+        const deferred = (this.#deferred = Deferred_js_1.Deferred.create());
+        const result = await this.#fn();
         if (result) {
             deferred.resolve(result);
             return;
         }
-        __classPrivateFieldSet(this, _IntervalPoller_interval, setInterval(async () => {
-            const result = await __classPrivateFieldGet(this, _IntervalPoller_fn, "f").call(this);
+        this.#interval = setInterval(async () => {
+            const result = await this.#fn();
             if (!result) {
                 return;
             }
             deferred.resolve(result);
             await this.stop();
-        }, __classPrivateFieldGet(this, _IntervalPoller_ms, "f")), "f");
+        }, this.#ms);
     }
     async stop() {
-        (0, assert_js_1.assert)(__classPrivateFieldGet(this, _IntervalPoller_deferred, "f"), 'Polling never started.');
-        if (!__classPrivateFieldGet(this, _IntervalPoller_deferred, "f").finished()) {
-            __classPrivateFieldGet(this, _IntervalPoller_deferred, "f").reject(new Error('Polling stopped'));
+        (0, assert_js_1.assert)(this.#deferred, 'Polling never started.');
+        if (!this.#deferred.finished()) {
+            this.#deferred.reject(new Error('Polling stopped'));
         }
-        if (__classPrivateFieldGet(this, _IntervalPoller_interval, "f")) {
-            clearInterval(__classPrivateFieldGet(this, _IntervalPoller_interval, "f"));
-            __classPrivateFieldSet(this, _IntervalPoller_interval, undefined, "f");
+        if (this.#interval) {
+            clearInterval(this.#interval);
+            this.#interval = undefined;
         }
     }
     result() {
-        (0, assert_js_1.assert)(__classPrivateFieldGet(this, _IntervalPoller_deferred, "f"), 'Polling never started.');
-        return __classPrivateFieldGet(this, _IntervalPoller_deferred, "f").valueOrThrow();
+        (0, assert_js_1.assert)(this.#deferred, 'Polling never started.');
+        return this.#deferred.valueOrThrow();
     }
 }
 exports.IntervalPoller = IntervalPoller;
-_IntervalPoller_fn = new WeakMap(), _IntervalPoller_ms = new WeakMap(), _IntervalPoller_interval = new WeakMap(), _IntervalPoller_deferred = new WeakMap();
 //# sourceMappingURL=Poller.js.map

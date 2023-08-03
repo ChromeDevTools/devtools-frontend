@@ -15,7 +15,7 @@
  */
 /// <reference types="node" />
 import { Protocol } from 'devtools-protocol';
-import { BoundingBox, BoxModel, ClickOptions, ElementHandle, Offset, Point } from '../api/ElementHandle.js';
+import { AutofillData, BoundingBox, BoxModel, ClickOptions, ElementHandle, Offset, Point } from '../api/ElementHandle.js';
 import { KeyPressOptions, KeyboardTypeOptions } from '../api/Input.js';
 import { ScreenshotOptions } from '../api/Page.js';
 import { CDPSession } from './Connection.js';
@@ -84,5 +84,6 @@ export declare class CDPElementHandle<ElementType extends Node = Element> extend
     boundingBox(): Promise<BoundingBox | null>;
     boxModel(): Promise<BoxModel | null>;
     screenshot(this: CDPElementHandle<Element>, options?: ScreenshotOptions): Promise<string | Buffer>;
+    autofill(data: AutofillData): Promise<void>;
 }
 //# sourceMappingURL=ElementHandle.d.ts.map

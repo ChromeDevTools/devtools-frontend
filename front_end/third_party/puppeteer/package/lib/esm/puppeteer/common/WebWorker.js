@@ -1,15 +1,3 @@
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _WebWorker_executionContext, _WebWorker_client, _WebWorker_url;
 import { Deferred } from '../util/Deferred.js';
 import { EventEmitter } from './EventEmitter.js';
 import { ExecutionContext } from './ExecutionContext.js';
@@ -42,23 +30,23 @@ import { debugError, withSourcePuppeteerURLIfNone } from './util.js';
  * @public
  */
 export class WebWorker extends EventEmitter {
+    #executionContext = Deferred.create();
+    #client;
+    #url;
     /**
      * @internal
      */
     constructor(client, url, consoleAPICalled, exceptionThrown) {
         super();
-        _WebWorker_executionContext.set(this, Deferred.create());
-        _WebWorker_client.set(this, void 0);
-        _WebWorker_url.set(this, void 0);
-        __classPrivateFieldSet(this, _WebWorker_client, client, "f");
-        __classPrivateFieldSet(this, _WebWorker_url, url, "f");
-        __classPrivateFieldGet(this, _WebWorker_client, "f").once('Runtime.executionContextCreated', async (event) => {
+        this.#client = client;
+        this.#url = url;
+        this.#client.once('Runtime.executionContextCreated', async (event) => {
             const context = new ExecutionContext(client, event.context);
-            __classPrivateFieldGet(this, _WebWorker_executionContext, "f").resolve(context);
+            this.#executionContext.resolve(context);
         });
-        __classPrivateFieldGet(this, _WebWorker_client, "f").on('Runtime.consoleAPICalled', async (event) => {
+        this.#client.on('Runtime.consoleAPICalled', async (event) => {
             try {
-                const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f").valueOrThrow();
+                const context = await this.#executionContext.valueOrThrow();
                 return consoleAPICalled(event.type, event.args.map((object) => {
                     return new CDPJSHandle(context, object);
                 }), event.stackTrace);
@@ -67,29 +55,29 @@ export class WebWorker extends EventEmitter {
                 debugError(err);
             }
         });
-        __classPrivateFieldGet(this, _WebWorker_client, "f").on('Runtime.exceptionThrown', exception => {
+        this.#client.on('Runtime.exceptionThrown', exception => {
             return exceptionThrown(exception.exceptionDetails);
         });
         // This might fail if the target is closed before we receive all execution contexts.
-        __classPrivateFieldGet(this, _WebWorker_client, "f").send('Runtime.enable').catch(debugError);
+        this.#client.send('Runtime.enable').catch(debugError);
     }
     /**
      * @internal
      */
     async executionContext() {
-        return __classPrivateFieldGet(this, _WebWorker_executionContext, "f").valueOrThrow();
+        return this.#executionContext.valueOrThrow();
     }
     /**
      * The URL of this web worker.
      */
     url() {
-        return __classPrivateFieldGet(this, _WebWorker_url, "f");
+        return this.#url;
     }
     /**
      * The CDP session client the WebWorker belongs to.
      */
     get client() {
-        return __classPrivateFieldGet(this, _WebWorker_client, "f");
+        return this.#client;
     }
     /**
      * If the function passed to the `worker.evaluate` returns a Promise, then
@@ -107,7 +95,7 @@ export class WebWorker extends EventEmitter {
      */
     async evaluate(pageFunction, ...args) {
         pageFunction = withSourcePuppeteerURLIfNone(this.evaluate.name, pageFunction);
-        const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f").valueOrThrow();
+        const context = await this.#executionContext.valueOrThrow();
         return context.evaluate(pageFunction, ...args);
     }
     /**
@@ -124,9 +112,8 @@ export class WebWorker extends EventEmitter {
      */
     async evaluateHandle(pageFunction, ...args) {
         pageFunction = withSourcePuppeteerURLIfNone(this.evaluateHandle.name, pageFunction);
-        const context = await __classPrivateFieldGet(this, _WebWorker_executionContext, "f").valueOrThrow();
+        const context = await this.#executionContext.valueOrThrow();
         return context.evaluateHandle(pageFunction, ...args);
     }
 }
-_WebWorker_executionContext = new WeakMap(), _WebWorker_client = new WeakMap(), _WebWorker_url = new WeakMap();
 //# sourceMappingURL=WebWorker.js.map

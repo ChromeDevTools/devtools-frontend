@@ -21,12 +21,12 @@ const QueryHandler_js_1 = require("./QueryHandler.js");
  * @internal
  */
 class PQueryHandler extends QueryHandler_js_1.QueryHandler {
+    static querySelectorAll = (element, selector, { pQuerySelectorAll }) => {
+        return pQuerySelectorAll(element, selector);
+    };
+    static querySelector = (element, selector, { pQuerySelector }) => {
+        return pQuerySelector(element, selector);
+    };
 }
 exports.PQueryHandler = PQueryHandler;
-PQueryHandler.querySelectorAll = (element, selector, { pQuerySelectorAll }) => {
-    return pQuerySelectorAll(element, selector);
-};
-PQueryHandler.querySelector = (element, selector, { pQuerySelector }) => {
-    return pQuerySelector(element, selector);
-};
 //# sourceMappingURL=PQueryHandler.js.map

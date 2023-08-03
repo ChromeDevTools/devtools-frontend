@@ -21,7 +21,7 @@ import { ExecutionContext } from './ExecutionContext.js';
 import { Frame } from './Frame.js';
 import { FrameTree } from './FrameTree.js';
 import { NetworkManager } from './NetworkManager.js';
-import { Target } from './Target.js';
+import { CDPTarget } from './Target.js';
 import { TimeoutSettings } from './TimeoutSettings.js';
 /**
  * @internal
@@ -66,7 +66,7 @@ export declare class FrameManager extends EventEmitter {
     mainFrame(): Frame;
     frames(): Frame[];
     frame(frameId: string): Frame | null;
-    onAttachedToTarget(target: Target): void;
+    onAttachedToTarget(target: CDPTarget): void;
     /**
      * @internal
      */

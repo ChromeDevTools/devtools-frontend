@@ -27,6 +27,13 @@ import { customQueryHandlers } from './CustomQueryHandler.js';
  */
 export class Puppeteer {
     /**
+     * Operations for {@link CustomQueryHandler | custom query handlers}. See
+     * {@link CustomQueryHandlerRegistry}.
+     *
+     * @internal
+     */
+    static customQueryHandlers = customQueryHandlers;
+    /**
      * Registers a {@link CustomQueryHandler | custom query handler}.
      *
      * @remarks
@@ -72,11 +79,15 @@ export class Puppeteer {
     /**
      * @internal
      */
+    _isPuppeteerCore;
+    /**
+     * @internal
+     */
+    _changedProduct = false;
+    /**
+     * @internal
+     */
     constructor(settings) {
-        /**
-         * @internal
-         */
-        this._changedProduct = false;
         this._isPuppeteerCore = settings.isPuppeteerCore;
         this.connect = this.connect.bind(this);
     }
@@ -92,11 +103,4 @@ export class Puppeteer {
         return _connectToCDPBrowser(options);
     }
 }
-/**
- * Operations for {@link CustomQueryHandler | custom query handlers}. See
- * {@link CustomQueryHandlerRegistry}.
- *
- * @internal
- */
-Puppeteer.customQueryHandlers = customQueryHandlers;
 //# sourceMappingURL=Puppeteer.js.map

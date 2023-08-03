@@ -30,6 +30,7 @@ import {
 import {assert} from '../../util/assert.js';
 import {Deferred} from '../../util/Deferred.js';
 import {Accessibility} from '../Accessibility.js';
+import {CDPSession} from '../Connection.js';
 import {ConsoleMessage, ConsoleMessageLocation} from '../ConsoleMessage.js';
 import {Coverage} from '../Coverage.js';
 import {EmulationManager} from '../EmulationManager.js';
@@ -45,6 +46,7 @@ import {EvaluateFunc, HandleFor} from '../types.js';
 import {
   debugError,
   isString,
+  validateDialogType,
   waitForEvent,
   waitWithTimeout,
   withSourcePuppeteerURLIfNone,
@@ -52,8 +54,13 @@ import {
 
 import {Browser} from './Browser.js';
 import {BrowserContext} from './BrowserContext.js';
-import {BrowsingContext} from './BrowsingContext.js';
+import {
+  BrowsingContext,
+  BrowsingContextEmittedEvents,
+  CDPSessionWrapper,
+} from './BrowsingContext.js';
 import {Connection} from './Connection.js';
+import {Dialog} from './Dialog.js';
 import {Frame} from './Frame.js';
 import {HTTPRequest} from './HTTPRequest.js';
 import {HTTPResponse} from './HTTPResponse.js';
@@ -68,23 +75,24 @@ import {BidiSerializer} from './Serializer.js';
 export class Page extends PageBase {
   #accessibility: Accessibility;
   #timeoutSettings = new TimeoutSettings();
-  #browserContext: BrowserContext;
   #connection: Connection;
   #frameTree = new FrameTree<Frame>();
   #networkManager: NetworkManager;
   #viewport: Viewport | null = null;
   #closedDeferred = Deferred.create<TargetCloseError>();
-  #subscribedEvents = new Map<string, Handler<any>>([
+  #subscribedEvents = new Map<Bidi.Event['method'], Handler<any>>([
     ['log.entryAdded', this.#onLogEntryAdded.bind(this)],
     ['browsingContext.load', this.#onFrameLoaded.bind(this)],
     [
       'browsingContext.domContentLoaded',
       this.#onFrameDOMContentLoaded.bind(this),
     ],
-    ['browsingContext.contextCreated', this.#onFrameAttached.bind(this)],
-    ['browsingContext.contextDestroyed', this.#onFrameDetached.bind(this)],
-    ['browsingContext.fragmentNavigated', this.#onFrameNavigated.bind(this)],
-  ]) as Map<Bidi.Session.SubscriptionRequestEvent, Handler>;
+    [
+      'browsingContext.navigationStarted',
+      this.#onFrameNavigationStarted.bind(this),
+    ],
+    ['browsingContext.userPromptOpened', this.#onDialog.bind(this)],
+  ]);
   #networkManagerEvents = new Map<symbol, Handler<any>>([
     [
       NetworkManagerEmittedEvents.Request,
@@ -107,29 +115,37 @@ export class Page extends PageBase {
       this.emit.bind(this, PageEmittedEvents.Response),
     ],
   ]);
+
+  #browsingContextEvents = new Map<symbol, Handler<any>>([
+    [BrowsingContextEmittedEvents.Created, this.#onContextCreated.bind(this)],
+    [
+      BrowsingContextEmittedEvents.Destroyed,
+      this.#onContextDestroyed.bind(this),
+    ],
+  ]);
   #tracing: Tracing;
   #coverage: Coverage;
   #emulationManager: EmulationManager;
   #mouse: Mouse;
   #touchscreen: Touchscreen;
   #keyboard: Keyboard;
+  #browsingContext: BrowsingContext;
+  #browserContext: BrowserContext;
 
   constructor(
-    browserContext: BrowserContext,
-    info: Omit<Bidi.BrowsingContext.Info, 'url'> & {
-      url?: string;
-    }
+    browsingContext: BrowsingContext,
+    browserContext: BrowserContext
   ) {
     super();
+    this.#browsingContext = browsingContext;
     this.#browserContext = browserContext;
-    this.#connection = browserContext.connection;
+    this.#connection = browsingContext.connection;
+
+    for (const [event, subscriber] of this.#browsingContextEvents) {
+      this.#browsingContext.on(event, subscriber);
+    }
 
     this.#networkManager = new NetworkManager(this.#connection, this);
-    this.#onFrameAttached({
-      ...info,
-      url: info.url ?? 'about:blank',
-      children: info.children ?? [],
-    });
 
     for (const [event, subscriber] of this.#subscribedEvents) {
       this.#connection.on(event, subscriber);
@@ -138,6 +154,15 @@ export class Page extends PageBase {
     for (const [event, subscriber] of this.#networkManagerEvents) {
       this.#networkManager.on(event, subscriber);
     }
+
+    const frame = new Frame(
+      this,
+      this.#browsingContext,
+      this.#timeoutSettings,
+      this.#browsingContext.parent
+    );
+    this.#frameTree.addFrame(frame);
+    this.emit(PageEmittedEvents.FrameAttached, frame);
 
     // TODO: https://github.com/w3c/webdriver-bidi/issues/443
     this.#accessibility = new Accessibility(
@@ -151,6 +176,10 @@ export class Page extends PageBase {
     this.#mouse = new Mouse(this.mainFrame().context());
     this.#touchscreen = new Touchscreen(this.mainFrame().context());
     this.#keyboard = new Keyboard(this.mainFrame().context());
+  }
+
+  _setBrowserContext(browserContext: BrowserContext): void {
+    this.#browserContext = browserContext;
   }
 
   override get accessibility(): Accessibility {
@@ -178,7 +207,7 @@ export class Page extends PageBase {
   }
 
   override browser(): Browser {
-    return this.#browserContext.browser();
+    return this.browserContext().browser();
   }
 
   override browserContext(): BrowserContext {
@@ -217,44 +246,65 @@ export class Page extends PageBase {
     }
   }
 
-  #onFrameAttached(info: Bidi.BrowsingContext.Info): void {
+  #onContextCreated(context: BrowsingContext): void {
     if (
-      !this.frame(info.context) &&
-      (this.frame(info.parent ?? '') || !this.#frameTree.getMainFrame())
+      !this.frame(context.id) &&
+      (this.frame(context.parent ?? '') || !this.#frameTree.getMainFrame())
     ) {
-      const context = new BrowsingContext(
-        this.#connection,
-        this.#timeoutSettings,
-        info
-      );
-      this.#connection.registerBrowsingContexts(context);
-
       const frame = new Frame(
         this,
         context,
         this.#timeoutSettings,
-        info.parent
+        context.parent
       );
       this.#frameTree.addFrame(frame);
-      this.emit(PageEmittedEvents.FrameAttached, frame);
+      if (frame !== this.mainFrame()) {
+        this.emit(PageEmittedEvents.FrameAttached, frame);
+      }
     }
   }
 
-  async #onFrameNavigated(
+  async #onFrameNavigationStarted(
     info: Bidi.BrowsingContext.NavigationInfo
   ): Promise<void> {
     const frameId = info.context;
 
-    let frame = this.frame(frameId);
-    // Detach all child frames first.
+    const frame = this.frame(frameId);
+
     if (frame) {
-      frame = await this.#frameTree.waitForFrame(frameId);
+      // TODO: Investigate if a navigationCompleted event should be in Spec
+      const predicate = (
+        event: Bidi.BrowsingContext.DomContentLoaded['params']
+      ) => {
+        if (event.context === frame?._id) {
+          return true;
+        }
+        return false;
+      };
+
+      await Deferred.race([
+        waitForEvent(
+          this.#connection,
+          'browsingContext.domContentLoaded',
+          predicate,
+          0,
+          this.#closedDeferred.valueOrThrow()
+        ).catch(debugError),
+        waitForEvent(
+          this.#connection,
+          'browsingContext.fragmentNavigated',
+          predicate,
+          0,
+          this.#closedDeferred.valueOrThrow()
+        ).catch(debugError),
+      ]);
+
       this.emit(PageEmittedEvents.FrameNavigated, frame);
     }
   }
 
-  #onFrameDetached(info: Bidi.BrowsingContext.Info): void {
-    const frame = this.frame(info.context);
+  #onContextDestroyed(context: BrowsingContext): void {
+    const frame = this.frame(context.id);
 
     if (frame) {
       if (frame === this.mainFrame()) {
@@ -274,7 +324,7 @@ export class Page extends PageBase {
     this.emit(PageEmittedEvents.FrameDetached, frame);
   }
 
-  #onLogEntryAdded(event: Bidi.Log.LogEntry): void {
+  #onLogEntryAdded(event: Bidi.Log.Entry): void {
     const frame = this.frame(event.source.context);
     if (!frame) {
       return;
@@ -329,6 +379,17 @@ export class Page extends PageBase {
     }
   }
 
+  #onDialog(event: Bidi.BrowsingContext.UserPromptOpenedParameters): void {
+    const frame = this.frame(event.context);
+    if (!frame) {
+      return;
+    }
+    const type = validateDialogType(event.type);
+
+    const dialog = new Dialog(frame.context(), type, event.message);
+    this.emit(PageEmittedEvents.Dialog, dialog);
+  }
+
   getNavigationResponse(id: string | null): HTTPResponse | null {
     return this.#networkManager.getNavigationResponse(id);
   }
@@ -337,12 +398,14 @@ export class Page extends PageBase {
     if (this.#closedDeferred.finished()) {
       return;
     }
+
     this.#closedDeferred.resolve(new TargetCloseError('Page closed!'));
     this.#networkManager.dispose();
 
     await this.#connection.send('browsingContext.close', {
       context: this.mainFrame()._id,
     });
+
     this.emit(PageEmittedEvents.Close);
     this.removeAllListeners();
   }
@@ -395,7 +458,13 @@ export class Page extends PageBase {
           response.url() === this.url()
         );
       }),
-      this.mainFrame().context().reload(options),
+      this.mainFrame()
+        .context()
+        .reload({
+          ...options,
+          timeout:
+            options?.timeout ?? this.#timeoutSettings.navigationTimeout(),
+        }),
     ]);
 
     return response;
@@ -492,11 +561,12 @@ export class Page extends PageBase {
       landscape,
       width,
       height,
-      pageRanges,
+      pageRanges: ranges,
       scale,
       preferCSSPageSize,
       timeout,
     } = this._getPDFOptions(options, 'cm');
+    const pageRanges = ranges ? ranges.split(', ') : [];
     const {result} = await waitWithTimeout(
       this.#connection.send('browsingContext.print', {
         context: this.mainFrame()._id,
@@ -507,7 +577,7 @@ export class Page extends PageBase {
           width,
           height,
         },
-        pageRanges: pageRanges.split(', '),
+        pageRanges,
         scale,
         shrinkToFit: !preferCSSPageSize,
       }),
@@ -632,16 +702,26 @@ export class Page extends PageBase {
   override title(): Promise<string> {
     return this.mainFrame().title();
   }
+
+  override async createCDPSession(): Promise<CDPSession> {
+    const {sessionId} = await this.mainFrame()
+      .context()
+      .cdpSession.send('Target.attachToTarget', {
+        targetId: this.mainFrame()._id,
+        flatten: true,
+      });
+    return new CDPSessionWrapper(this.mainFrame().context(), sessionId);
+  }
 }
 
 function isConsoleLogEntry(
-  event: Bidi.Log.LogEntry
+  event: Bidi.Log.Entry
 ): event is Bidi.Log.ConsoleLogEntry {
   return event.type === 'console';
 }
 
 function isJavaScriptLogEntry(
-  event: Bidi.Log.LogEntry
+  event: Bidi.Log.Entry
 ): event is Bidi.Log.JavascriptLogEntry {
   return event.type === 'javascript';
 }

@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _DeviceRequestPrompt_instances, _DeviceRequestPrompt_client, _DeviceRequestPrompt_timeoutSettings, _DeviceRequestPrompt_id, _DeviceRequestPrompt_handled, _DeviceRequestPrompt_updateDevicesHandle, _DeviceRequestPrompt_waitForDevicePromises, _DeviceRequestPrompt_updateDevices, _DeviceRequestPromptManager_instances, _DeviceRequestPromptManager_client, _DeviceRequestPromptManager_timeoutSettings, _DeviceRequestPromptManager_deviceRequestPrompDeferreds, _DeviceRequestPromptManager_onDeviceRequestPrompted;
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 /**
@@ -33,6 +21,14 @@ import { Deferred } from '../util/Deferred.js';
  * @public
  */
 export class DeviceRequestPromptDevice {
+    /**
+     * Device id during a prompt.
+     */
+    id;
+    /**
+     * Device name as it appears in a prompt.
+     */
+    name;
     /**
      * @internal
      */
@@ -64,29 +60,47 @@ export class DeviceRequestPromptDevice {
  * @public
  */
 export class DeviceRequestPrompt {
+    #client;
+    #timeoutSettings;
+    #id;
+    #handled = false;
+    #updateDevicesHandle = this.#updateDevices.bind(this);
+    #waitForDevicePromises = new Set();
+    /**
+     * Current list of selectable devices.
+     */
+    devices = [];
     /**
      * @internal
      */
     constructor(client, timeoutSettings, firstEvent) {
-        _DeviceRequestPrompt_instances.add(this);
-        _DeviceRequestPrompt_client.set(this, void 0);
-        _DeviceRequestPrompt_timeoutSettings.set(this, void 0);
-        _DeviceRequestPrompt_id.set(this, void 0);
-        _DeviceRequestPrompt_handled.set(this, false);
-        _DeviceRequestPrompt_updateDevicesHandle.set(this, __classPrivateFieldGet(this, _DeviceRequestPrompt_instances, "m", _DeviceRequestPrompt_updateDevices).bind(this));
-        _DeviceRequestPrompt_waitForDevicePromises.set(this, new Set());
-        /**
-         * Current list of selectable devices.
-         */
-        this.devices = [];
-        __classPrivateFieldSet(this, _DeviceRequestPrompt_client, client, "f");
-        __classPrivateFieldSet(this, _DeviceRequestPrompt_timeoutSettings, timeoutSettings, "f");
-        __classPrivateFieldSet(this, _DeviceRequestPrompt_id, firstEvent.id, "f");
-        __classPrivateFieldGet(this, _DeviceRequestPrompt_client, "f").on('DeviceAccess.deviceRequestPrompted', __classPrivateFieldGet(this, _DeviceRequestPrompt_updateDevicesHandle, "f"));
-        __classPrivateFieldGet(this, _DeviceRequestPrompt_client, "f").on('Target.detachedFromTarget', () => {
-            __classPrivateFieldSet(this, _DeviceRequestPrompt_client, null, "f");
+        this.#client = client;
+        this.#timeoutSettings = timeoutSettings;
+        this.#id = firstEvent.id;
+        this.#client.on('DeviceAccess.deviceRequestPrompted', this.#updateDevicesHandle);
+        this.#client.on('Target.detachedFromTarget', () => {
+            this.#client = null;
         });
-        __classPrivateFieldGet(this, _DeviceRequestPrompt_instances, "m", _DeviceRequestPrompt_updateDevices).call(this, firstEvent);
+        this.#updateDevices(firstEvent);
+    }
+    #updateDevices(event) {
+        if (event.id !== this.#id) {
+            return;
+        }
+        for (const rawDevice of event.devices) {
+            if (this.devices.some(device => {
+                return device.id === rawDevice.id;
+            })) {
+                continue;
+            }
+            const newDevice = new DeviceRequestPromptDevice(rawDevice.id, rawDevice.name);
+            this.devices.push(newDevice);
+            for (const waitForDevicePromise of this.#waitForDevicePromises) {
+                if (waitForDevicePromise.filter(newDevice)) {
+                    waitForDevicePromise.promise.resolve(newDevice);
+                }
+            }
+        }
     }
     /**
      * Resolve to the first device in the prompt matching a filter.
@@ -97,31 +111,31 @@ export class DeviceRequestPrompt {
                 return device;
             }
         }
-        const { timeout = __classPrivateFieldGet(this, _DeviceRequestPrompt_timeoutSettings, "f").timeout() } = options;
+        const { timeout = this.#timeoutSettings.timeout() } = options;
         const deferred = Deferred.create({
             message: `Waiting for \`DeviceRequestPromptDevice\` failed: ${timeout}ms exceeded`,
             timeout,
         });
         const handle = { filter, promise: deferred };
-        __classPrivateFieldGet(this, _DeviceRequestPrompt_waitForDevicePromises, "f").add(handle);
+        this.#waitForDevicePromises.add(handle);
         try {
             return await deferred.valueOrThrow();
         }
         finally {
-            __classPrivateFieldGet(this, _DeviceRequestPrompt_waitForDevicePromises, "f").delete(handle);
+            this.#waitForDevicePromises.delete(handle);
         }
     }
     /**
      * Select a device in the prompt's list.
      */
     async select(device) {
-        assert(__classPrivateFieldGet(this, _DeviceRequestPrompt_client, "f") !== null, 'Cannot select device through detached session!');
+        assert(this.#client !== null, 'Cannot select device through detached session!');
         assert(this.devices.includes(device), 'Cannot select unknown device!');
-        assert(!__classPrivateFieldGet(this, _DeviceRequestPrompt_handled, "f"), 'Cannot select DeviceRequestPrompt which is already handled!');
-        __classPrivateFieldGet(this, _DeviceRequestPrompt_client, "f").off('DeviceAccess.deviceRequestPrompted', __classPrivateFieldGet(this, _DeviceRequestPrompt_updateDevicesHandle, "f"));
-        __classPrivateFieldSet(this, _DeviceRequestPrompt_handled, true, "f");
-        return __classPrivateFieldGet(this, _DeviceRequestPrompt_client, "f").send('DeviceAccess.selectPrompt', {
-            id: __classPrivateFieldGet(this, _DeviceRequestPrompt_id, "f"),
+        assert(!this.#handled, 'Cannot select DeviceRequestPrompt which is already handled!');
+        this.#client.off('DeviceAccess.deviceRequestPrompted', this.#updateDevicesHandle);
+        this.#handled = true;
+        return this.#client.send('DeviceAccess.selectPrompt', {
+            id: this.#id,
             deviceId: device.id,
         });
     }
@@ -129,51 +143,31 @@ export class DeviceRequestPrompt {
      * Cancel the prompt.
      */
     async cancel() {
-        assert(__classPrivateFieldGet(this, _DeviceRequestPrompt_client, "f") !== null, 'Cannot cancel prompt through detached session!');
-        assert(!__classPrivateFieldGet(this, _DeviceRequestPrompt_handled, "f"), 'Cannot cancel DeviceRequestPrompt which is already handled!');
-        __classPrivateFieldGet(this, _DeviceRequestPrompt_client, "f").off('DeviceAccess.deviceRequestPrompted', __classPrivateFieldGet(this, _DeviceRequestPrompt_updateDevicesHandle, "f"));
-        __classPrivateFieldSet(this, _DeviceRequestPrompt_handled, true, "f");
-        return __classPrivateFieldGet(this, _DeviceRequestPrompt_client, "f").send('DeviceAccess.cancelPrompt', { id: __classPrivateFieldGet(this, _DeviceRequestPrompt_id, "f") });
+        assert(this.#client !== null, 'Cannot cancel prompt through detached session!');
+        assert(!this.#handled, 'Cannot cancel DeviceRequestPrompt which is already handled!');
+        this.#client.off('DeviceAccess.deviceRequestPrompted', this.#updateDevicesHandle);
+        this.#handled = true;
+        return this.#client.send('DeviceAccess.cancelPrompt', { id: this.#id });
     }
 }
-_DeviceRequestPrompt_client = new WeakMap(), _DeviceRequestPrompt_timeoutSettings = new WeakMap(), _DeviceRequestPrompt_id = new WeakMap(), _DeviceRequestPrompt_handled = new WeakMap(), _DeviceRequestPrompt_updateDevicesHandle = new WeakMap(), _DeviceRequestPrompt_waitForDevicePromises = new WeakMap(), _DeviceRequestPrompt_instances = new WeakSet(), _DeviceRequestPrompt_updateDevices = function _DeviceRequestPrompt_updateDevices(event) {
-    if (event.id !== __classPrivateFieldGet(this, _DeviceRequestPrompt_id, "f")) {
-        return;
-    }
-    for (const rawDevice of event.devices) {
-        if (this.devices.some(device => {
-            return device.id === rawDevice.id;
-        })) {
-            continue;
-        }
-        const newDevice = new DeviceRequestPromptDevice(rawDevice.id, rawDevice.name);
-        this.devices.push(newDevice);
-        for (const waitForDevicePromise of __classPrivateFieldGet(this, _DeviceRequestPrompt_waitForDevicePromises, "f")) {
-            if (waitForDevicePromise.filter(newDevice)) {
-                waitForDevicePromise.promise.resolve(newDevice);
-            }
-        }
-    }
-};
 /**
  * @internal
  */
 export class DeviceRequestPromptManager {
+    #client;
+    #timeoutSettings;
+    #deviceRequestPrompDeferreds = new Set();
     /**
      * @internal
      */
     constructor(client, timeoutSettings) {
-        _DeviceRequestPromptManager_instances.add(this);
-        _DeviceRequestPromptManager_client.set(this, void 0);
-        _DeviceRequestPromptManager_timeoutSettings.set(this, void 0);
-        _DeviceRequestPromptManager_deviceRequestPrompDeferreds.set(this, new Set());
-        __classPrivateFieldSet(this, _DeviceRequestPromptManager_client, client, "f");
-        __classPrivateFieldSet(this, _DeviceRequestPromptManager_timeoutSettings, timeoutSettings, "f");
-        __classPrivateFieldGet(this, _DeviceRequestPromptManager_client, "f").on('DeviceAccess.deviceRequestPrompted', event => {
-            __classPrivateFieldGet(this, _DeviceRequestPromptManager_instances, "m", _DeviceRequestPromptManager_onDeviceRequestPrompted).call(this, event);
+        this.#client = client;
+        this.#timeoutSettings = timeoutSettings;
+        this.#client.on('DeviceAccess.deviceRequestPrompted', event => {
+            this.#onDeviceRequestPrompted(event);
         });
-        __classPrivateFieldGet(this, _DeviceRequestPromptManager_client, "f").on('Target.detachedFromTarget', () => {
-            __classPrivateFieldSet(this, _DeviceRequestPromptManager_client, null, "f");
+        this.#client.on('Target.detachedFromTarget', () => {
+            this.#client = null;
         });
     }
     /**
@@ -181,18 +175,18 @@ export class DeviceRequestPromptManager {
      * requestDevice.
      */
     async waitForDevicePrompt(options = {}) {
-        assert(__classPrivateFieldGet(this, _DeviceRequestPromptManager_client, "f") !== null, 'Cannot wait for device prompt through detached session!');
-        const needsEnable = __classPrivateFieldGet(this, _DeviceRequestPromptManager_deviceRequestPrompDeferreds, "f").size === 0;
+        assert(this.#client !== null, 'Cannot wait for device prompt through detached session!');
+        const needsEnable = this.#deviceRequestPrompDeferreds.size === 0;
         let enablePromise;
         if (needsEnable) {
-            enablePromise = __classPrivateFieldGet(this, _DeviceRequestPromptManager_client, "f").send('DeviceAccess.enable');
+            enablePromise = this.#client.send('DeviceAccess.enable');
         }
-        const { timeout = __classPrivateFieldGet(this, _DeviceRequestPromptManager_timeoutSettings, "f").timeout() } = options;
+        const { timeout = this.#timeoutSettings.timeout() } = options;
         const deferred = Deferred.create({
             message: `Waiting for \`DeviceRequestPrompt\` failed: ${timeout}ms exceeded`,
             timeout,
         });
-        __classPrivateFieldGet(this, _DeviceRequestPromptManager_deviceRequestPrompDeferreds, "f").add(deferred);
+        this.#deviceRequestPrompDeferreds.add(deferred);
         try {
             const [result] = await Promise.all([
                 deferred.valueOrThrow(),
@@ -201,19 +195,22 @@ export class DeviceRequestPromptManager {
             return result;
         }
         finally {
-            __classPrivateFieldGet(this, _DeviceRequestPromptManager_deviceRequestPrompDeferreds, "f").delete(deferred);
+            this.#deviceRequestPrompDeferreds.delete(deferred);
         }
     }
+    /**
+     * @internal
+     */
+    #onDeviceRequestPrompted(event) {
+        if (!this.#deviceRequestPrompDeferreds.size) {
+            return;
+        }
+        assert(this.#client !== null);
+        const devicePrompt = new DeviceRequestPrompt(this.#client, this.#timeoutSettings, event);
+        for (const promise of this.#deviceRequestPrompDeferreds) {
+            promise.resolve(devicePrompt);
+        }
+        this.#deviceRequestPrompDeferreds.clear();
+    }
 }
-_DeviceRequestPromptManager_client = new WeakMap(), _DeviceRequestPromptManager_timeoutSettings = new WeakMap(), _DeviceRequestPromptManager_deviceRequestPrompDeferreds = new WeakMap(), _DeviceRequestPromptManager_instances = new WeakSet(), _DeviceRequestPromptManager_onDeviceRequestPrompted = function _DeviceRequestPromptManager_onDeviceRequestPrompted(event) {
-    if (!__classPrivateFieldGet(this, _DeviceRequestPromptManager_deviceRequestPrompDeferreds, "f").size) {
-        return;
-    }
-    assert(__classPrivateFieldGet(this, _DeviceRequestPromptManager_client, "f") !== null);
-    const devicePrompt = new DeviceRequestPrompt(__classPrivateFieldGet(this, _DeviceRequestPromptManager_client, "f"), __classPrivateFieldGet(this, _DeviceRequestPromptManager_timeoutSettings, "f"), event);
-    for (const promise of __classPrivateFieldGet(this, _DeviceRequestPromptManager_deviceRequestPrompDeferreds, "f")) {
-        promise.resolve(devicePrompt);
-    }
-    __classPrivateFieldGet(this, _DeviceRequestPromptManager_deviceRequestPrompDeferreds, "f").clear();
-};
 //# sourceMappingURL=DeviceRequestPrompt.js.map

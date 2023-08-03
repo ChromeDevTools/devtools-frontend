@@ -21,11 +21,11 @@ import { DeviceRequestPrompt } from '../common/DeviceRequestPrompt.js';
 import { ExecutionContext } from '../common/ExecutionContext.js';
 import { IsolatedWorldChart, WaitForSelectorOptions } from '../common/IsolatedWorld.js';
 import { PuppeteerLifeCycleEvent } from '../common/LifecycleWatcher.js';
-import { EvaluateFunc, EvaluateFuncWith, HandleFor, InnerLazyParams, NodeFor } from '../common/types.js';
+import { Awaitable, EvaluateFunc, EvaluateFuncWith, HandleFor, InnerLazyParams, NodeFor } from '../common/types.js';
 import { TaskManager } from '../common/WaitTask.js';
 import { KeyboardTypeOptions } from './Input.js';
 import { JSHandle } from './JSHandle.js';
-import { Locator } from './Locator.js';
+import { Locator } from './locators/locators.js';
 /**
  * @internal
  */
@@ -313,14 +313,23 @@ export declare class Frame {
      */
     evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
-     * Creates a locator for the provided `selector`. See {@link Locator} for
+     * Creates a locator for the provided selector. See {@link Locator} for
      * details and supported actions.
      *
      * @remarks
      * Locators API is experimental and we will not follow semver for breaking
      * change in the Locators API.
      */
-    locator(selector: string): Locator;
+    locator<Selector extends string>(selector: Selector): Locator<NodeFor<Selector>>;
+    /**
+     * Creates a locator for the provided function. See {@link Locator} for
+     * details and supported actions.
+     *
+     * @remarks
+     * Locators API is experimental and we will not follow semver for breaking
+     * change in the Locators API.
+     */
+    locator<Ret>(func: () => Awaitable<Ret>): Locator<Ret>;
     /**
      * Queries the frame for an element matching the given selector.
      *

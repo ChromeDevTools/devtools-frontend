@@ -16,7 +16,7 @@
 import { TargetFilterCallback } from '../api/Browser.js';
 import { CDPSession, Connection } from './Connection.js';
 import { EventEmitter } from './EventEmitter.js';
-import { Target } from './Target.js';
+import { CDPTarget } from './Target.js';
 import { TargetInterceptor, TargetFactory, TargetManager } from './TargetManager.js';
 /**
  * ChromeTargetManager uses the CDP's auto-attach mechanism to intercept
@@ -30,7 +30,7 @@ export declare class ChromeTargetManager extends EventEmitter implements TargetM
     constructor(connection: Connection, targetFactory: TargetFactory, targetFilterCallback?: TargetFilterCallback);
     initialize(): Promise<void>;
     dispose(): void;
-    getAvailableTargets(): Map<string, Target>;
+    getAvailableTargets(): Map<string, CDPTarget>;
     addTargetInterceptor(session: CDPSession | Connection, interceptor: TargetInterceptor): void;
     removeTargetInterceptor(client: CDPSession | Connection, interceptor: TargetInterceptor): void;
 }

@@ -23,7 +23,7 @@ import { HTTPRequest } from './HTTPRequest.js';
  */
 export declare class HTTPResponse extends BaseHTTPResponse {
     #private;
-    constructor(request: HTTPRequest, responseEvent: Bidi.Network.ResponseCompletedParams);
+    constructor(request: HTTPRequest, { response }: Bidi.Network.ResponseCompletedParameters);
     remoteAddress(): RemoteAddress;
     url(): string;
     status(): number;

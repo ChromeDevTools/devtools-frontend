@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Callback_id, _Callback_error, _Callback_deferred, _Callback_timer, _Callback_label, _CallbackRegistry_callbacks, _CallbackRegistry_idGenerator, _Connection_instances, _Connection_url, _Connection_transport, _Connection_delay, _Connection_timeout, _Connection_sessions, _Connection_closed, _Connection_manuallyAttached, _Connection_callbacks, _Connection_onClose, _CDPSessionImpl_sessionId, _CDPSessionImpl_targetType, _CDPSessionImpl_callbacks, _CDPSessionImpl_connection;
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { debug } from './Debug.js';
@@ -54,55 +42,52 @@ function createIncrementalIdGenerator() {
  * @internal
  */
 export class Callback {
+    #id;
+    #error = new ProtocolError();
+    #deferred = Deferred.create();
+    #timer;
+    #label;
     constructor(id, label, timeout) {
-        _Callback_id.set(this, void 0);
-        _Callback_error.set(this, new ProtocolError());
-        _Callback_deferred.set(this, Deferred.create());
-        _Callback_timer.set(this, void 0);
-        _Callback_label.set(this, void 0);
-        __classPrivateFieldSet(this, _Callback_id, id, "f");
-        __classPrivateFieldSet(this, _Callback_label, label, "f");
+        this.#id = id;
+        this.#label = label;
         if (timeout) {
-            __classPrivateFieldSet(this, _Callback_timer, setTimeout(() => {
-                __classPrivateFieldGet(this, _Callback_deferred, "f").reject(rewriteError(__classPrivateFieldGet(this, _Callback_error, "f"), `${label} timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.`));
-            }, timeout), "f");
+            this.#timer = setTimeout(() => {
+                this.#deferred.reject(rewriteError(this.#error, `${label} timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.`));
+            }, timeout);
         }
     }
     resolve(value) {
-        clearTimeout(__classPrivateFieldGet(this, _Callback_timer, "f"));
-        __classPrivateFieldGet(this, _Callback_deferred, "f").resolve(value);
+        clearTimeout(this.#timer);
+        this.#deferred.resolve(value);
     }
     reject(error) {
-        clearTimeout(__classPrivateFieldGet(this, _Callback_timer, "f"));
-        __classPrivateFieldGet(this, _Callback_deferred, "f").reject(error);
+        clearTimeout(this.#timer);
+        this.#deferred.reject(error);
     }
     get id() {
-        return __classPrivateFieldGet(this, _Callback_id, "f");
+        return this.#id;
     }
     get promise() {
-        return __classPrivateFieldGet(this, _Callback_deferred, "f");
+        return this.#deferred;
     }
     get error() {
-        return __classPrivateFieldGet(this, _Callback_error, "f");
+        return this.#error;
     }
     get label() {
-        return __classPrivateFieldGet(this, _Callback_label, "f");
+        return this.#label;
     }
 }
-_Callback_id = new WeakMap(), _Callback_error = new WeakMap(), _Callback_deferred = new WeakMap(), _Callback_timer = new WeakMap(), _Callback_label = new WeakMap();
 /**
  * Manages callbacks and their IDs for the protocol request/response communication.
  *
  * @internal
  */
 export class CallbackRegistry {
-    constructor() {
-        _CallbackRegistry_callbacks.set(this, new Map());
-        _CallbackRegistry_idGenerator.set(this, createIncrementalIdGenerator());
-    }
+    #callbacks = new Map();
+    #idGenerator = createIncrementalIdGenerator();
     create(label, timeout, request) {
-        const callback = new Callback(__classPrivateFieldGet(this, _CallbackRegistry_idGenerator, "f").call(this), label, timeout);
-        __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").set(callback.id, callback);
+        const callback = new Callback(this.#idGenerator(), label, timeout);
+        this.#callbacks.set(callback.id, callback);
         try {
             request(callback.id);
         }
@@ -113,18 +98,18 @@ export class CallbackRegistry {
                 .valueOrThrow()
                 .catch(debugError)
                 .finally(() => {
-                __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").delete(callback.id);
+                this.#callbacks.delete(callback.id);
             });
             callback.reject(error);
             throw error;
         }
         // Must only have sync code up until here.
         return callback.promise.valueOrThrow().finally(() => {
-            __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").delete(callback.id);
+            this.#callbacks.delete(callback.id);
         });
     }
     reject(id, message, originalMessage) {
-        const callback = __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").get(id);
+        const callback = this.#callbacks.get(id);
         if (!callback) {
             return;
         }
@@ -137,70 +122,68 @@ export class CallbackRegistry {
         callback.reject(rewriteError(error, `Protocol error (${callback.label}): ${message}`, originalMessage));
     }
     resolve(id, value) {
-        const callback = __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").get(id);
+        const callback = this.#callbacks.get(id);
         if (!callback) {
             return;
         }
         callback.resolve(value);
     }
     clear() {
-        for (const callback of __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").values()) {
+        for (const callback of this.#callbacks.values()) {
             // TODO: probably we can accept error messages as params.
             this._reject(callback, new TargetCloseError('Target closed'));
         }
-        __classPrivateFieldGet(this, _CallbackRegistry_callbacks, "f").clear();
+        this.#callbacks.clear();
     }
 }
-_CallbackRegistry_callbacks = new WeakMap(), _CallbackRegistry_idGenerator = new WeakMap();
 /**
  * @public
  */
 export class Connection extends EventEmitter {
+    #url;
+    #transport;
+    #delay;
+    #timeout;
+    #sessions = new Map();
+    #closed = false;
+    #manuallyAttached = new Set();
+    #callbacks = new CallbackRegistry();
     constructor(url, transport, delay = 0, timeout) {
         super();
-        _Connection_instances.add(this);
-        _Connection_url.set(this, void 0);
-        _Connection_transport.set(this, void 0);
-        _Connection_delay.set(this, void 0);
-        _Connection_timeout.set(this, void 0);
-        _Connection_sessions.set(this, new Map());
-        _Connection_closed.set(this, false);
-        _Connection_manuallyAttached.set(this, new Set());
-        _Connection_callbacks.set(this, new CallbackRegistry());
-        __classPrivateFieldSet(this, _Connection_url, url, "f");
-        __classPrivateFieldSet(this, _Connection_delay, delay, "f");
-        __classPrivateFieldSet(this, _Connection_timeout, timeout ?? 180000, "f");
-        __classPrivateFieldSet(this, _Connection_transport, transport, "f");
-        __classPrivateFieldGet(this, _Connection_transport, "f").onmessage = this.onMessage.bind(this);
-        __classPrivateFieldGet(this, _Connection_transport, "f").onclose = __classPrivateFieldGet(this, _Connection_instances, "m", _Connection_onClose).bind(this);
+        this.#url = url;
+        this.#delay = delay;
+        this.#timeout = timeout ?? 180000;
+        this.#transport = transport;
+        this.#transport.onmessage = this.onMessage.bind(this);
+        this.#transport.onclose = this.#onClose.bind(this);
     }
     static fromSession(session) {
         return session.connection();
     }
     get timeout() {
-        return __classPrivateFieldGet(this, _Connection_timeout, "f");
+        return this.#timeout;
     }
     /**
      * @internal
      */
     get _closed() {
-        return __classPrivateFieldGet(this, _Connection_closed, "f");
+        return this.#closed;
     }
     /**
      * @internal
      */
     get _sessions() {
-        return __classPrivateFieldGet(this, _Connection_sessions, "f");
+        return this.#sessions;
     }
     /**
      * @param sessionId - The session id
      * @returns The current CDP session if it exists
      */
     session(sessionId) {
-        return __classPrivateFieldGet(this, _Connection_sessions, "f").get(sessionId) || null;
+        return this.#sessions.get(sessionId) || null;
     }
     url() {
-        return __classPrivateFieldGet(this, _Connection_url, "f");
+        return this.#url;
     }
     send(method, ...paramArgs) {
         // There is only ever 1 param arg passed, but the Protocol defines it as an
@@ -210,13 +193,13 @@ export class Connection extends EventEmitter {
         // type-inference.
         // So now we check if there are any params or not and deal with them accordingly.
         const params = paramArgs.length ? paramArgs[0] : undefined;
-        return this._rawSend(__classPrivateFieldGet(this, _Connection_callbacks, "f"), method, params);
+        return this._rawSend(this.#callbacks, method, params);
     }
     /**
      * @internal
      */
     _rawSend(callbacks, method, params, sessionId) {
-        return callbacks.create(method, __classPrivateFieldGet(this, _Connection_timeout, "f"), id => {
+        return callbacks.create(method, this.#timeout, id => {
             const stringifiedMessage = JSON.stringify({
                 method,
                 params,
@@ -224,7 +207,7 @@ export class Connection extends EventEmitter {
                 sessionId,
             });
             debugProtocolSend(stringifiedMessage);
-            __classPrivateFieldGet(this, _Connection_transport, "f").send(stringifiedMessage);
+            this.#transport.send(stringifiedMessage);
         });
     }
     /**
@@ -237,9 +220,9 @@ export class Connection extends EventEmitter {
      * @internal
      */
     async onMessage(message) {
-        if (__classPrivateFieldGet(this, _Connection_delay, "f")) {
+        if (this.#delay) {
             await new Promise(f => {
-                return setTimeout(f, __classPrivateFieldGet(this, _Connection_delay, "f"));
+                return setTimeout(f, this.#delay);
             });
         }
         debugProtocolReceive(message);
@@ -247,66 +230,80 @@ export class Connection extends EventEmitter {
         if (object.method === 'Target.attachedToTarget') {
             const sessionId = object.params.sessionId;
             const session = new CDPSessionImpl(this, object.params.targetInfo.type, sessionId);
-            __classPrivateFieldGet(this, _Connection_sessions, "f").set(sessionId, session);
+            this.#sessions.set(sessionId, session);
             this.emit('sessionattached', session);
-            const parentSession = __classPrivateFieldGet(this, _Connection_sessions, "f").get(object.sessionId);
+            const parentSession = this.#sessions.get(object.sessionId);
             if (parentSession) {
                 parentSession.emit('sessionattached', session);
             }
         }
         else if (object.method === 'Target.detachedFromTarget') {
-            const session = __classPrivateFieldGet(this, _Connection_sessions, "f").get(object.params.sessionId);
+            const session = this.#sessions.get(object.params.sessionId);
             if (session) {
                 session._onClosed();
-                __classPrivateFieldGet(this, _Connection_sessions, "f").delete(object.params.sessionId);
+                this.#sessions.delete(object.params.sessionId);
                 this.emit('sessiondetached', session);
-                const parentSession = __classPrivateFieldGet(this, _Connection_sessions, "f").get(object.sessionId);
+                const parentSession = this.#sessions.get(object.sessionId);
                 if (parentSession) {
                     parentSession.emit('sessiondetached', session);
                 }
             }
         }
         if (object.sessionId) {
-            const session = __classPrivateFieldGet(this, _Connection_sessions, "f").get(object.sessionId);
+            const session = this.#sessions.get(object.sessionId);
             if (session) {
                 session._onMessage(object);
             }
         }
         else if (object.id) {
             if (object.error) {
-                __classPrivateFieldGet(this, _Connection_callbacks, "f").reject(object.id, createProtocolErrorMessage(object), object.error.message);
+                this.#callbacks.reject(object.id, createProtocolErrorMessage(object), object.error.message);
             }
             else {
-                __classPrivateFieldGet(this, _Connection_callbacks, "f").resolve(object.id, object.result);
+                this.#callbacks.resolve(object.id, object.result);
             }
         }
         else {
             this.emit(object.method, object.params);
         }
     }
+    #onClose() {
+        if (this.#closed) {
+            return;
+        }
+        this.#closed = true;
+        this.#transport.onmessage = undefined;
+        this.#transport.onclose = undefined;
+        this.#callbacks.clear();
+        for (const session of this.#sessions.values()) {
+            session._onClosed();
+        }
+        this.#sessions.clear();
+        this.emit(ConnectionEmittedEvents.Disconnected);
+    }
     dispose() {
-        __classPrivateFieldGet(this, _Connection_instances, "m", _Connection_onClose).call(this);
-        __classPrivateFieldGet(this, _Connection_transport, "f").close();
+        this.#onClose();
+        this.#transport.close();
     }
     /**
      * @internal
      */
     isAutoAttached(targetId) {
-        return !__classPrivateFieldGet(this, _Connection_manuallyAttached, "f").has(targetId);
+        return !this.#manuallyAttached.has(targetId);
     }
     /**
      * @internal
      */
     async _createSession(targetInfo, isAutoAttachEmulated = true) {
         if (!isAutoAttachEmulated) {
-            __classPrivateFieldGet(this, _Connection_manuallyAttached, "f").add(targetInfo.targetId);
+            this.#manuallyAttached.add(targetInfo.targetId);
         }
         const { sessionId } = await this.send('Target.attachToTarget', {
             targetId: targetInfo.targetId,
             flatten: true,
         });
-        __classPrivateFieldGet(this, _Connection_manuallyAttached, "f").delete(targetInfo.targetId);
-        const session = __classPrivateFieldGet(this, _Connection_sessions, "f").get(sessionId);
+        this.#manuallyAttached.delete(targetInfo.targetId);
+        const session = this.#sessions.get(sessionId);
         if (!session) {
             throw new Error('CDPSession creation failed.');
         }
@@ -320,20 +317,6 @@ export class Connection extends EventEmitter {
         return await this._createSession(targetInfo, false);
     }
 }
-_Connection_url = new WeakMap(), _Connection_transport = new WeakMap(), _Connection_delay = new WeakMap(), _Connection_timeout = new WeakMap(), _Connection_sessions = new WeakMap(), _Connection_closed = new WeakMap(), _Connection_manuallyAttached = new WeakMap(), _Connection_callbacks = new WeakMap(), _Connection_instances = new WeakSet(), _Connection_onClose = function _Connection_onClose() {
-    if (__classPrivateFieldGet(this, _Connection_closed, "f")) {
-        return;
-    }
-    __classPrivateFieldSet(this, _Connection_closed, true, "f");
-    __classPrivateFieldGet(this, _Connection_transport, "f").onmessage = undefined;
-    __classPrivateFieldGet(this, _Connection_transport, "f").onclose = undefined;
-    __classPrivateFieldGet(this, _Connection_callbacks, "f").clear();
-    for (const session of __classPrivateFieldGet(this, _Connection_sessions, "f").values()) {
-        session._onClosed();
-    }
-    __classPrivateFieldGet(this, _Connection_sessions, "f").clear();
-    this.emit(ConnectionEmittedEvents.Disconnected);
-};
 /**
  * Internal events that the CDPSession class emits.
  *
@@ -401,29 +384,29 @@ export class CDPSession extends EventEmitter {
  * @internal
  */
 export class CDPSessionImpl extends CDPSession {
+    #sessionId;
+    #targetType;
+    #callbacks = new CallbackRegistry();
+    #connection;
     /**
      * @internal
      */
     constructor(connection, targetType, sessionId) {
         super();
-        _CDPSessionImpl_sessionId.set(this, void 0);
-        _CDPSessionImpl_targetType.set(this, void 0);
-        _CDPSessionImpl_callbacks.set(this, new CallbackRegistry());
-        _CDPSessionImpl_connection.set(this, void 0);
-        __classPrivateFieldSet(this, _CDPSessionImpl_connection, connection, "f");
-        __classPrivateFieldSet(this, _CDPSessionImpl_targetType, targetType, "f");
-        __classPrivateFieldSet(this, _CDPSessionImpl_sessionId, sessionId, "f");
+        this.#connection = connection;
+        this.#targetType = targetType;
+        this.#sessionId = sessionId;
     }
     connection() {
-        return __classPrivateFieldGet(this, _CDPSessionImpl_connection, "f");
+        return this.#connection;
     }
     send(method, ...paramArgs) {
-        if (!__classPrivateFieldGet(this, _CDPSessionImpl_connection, "f")) {
-            return Promise.reject(new TargetCloseError(`Protocol error (${method}): Session closed. Most likely the ${__classPrivateFieldGet(this, _CDPSessionImpl_targetType, "f")} has been closed.`));
+        if (!this.#connection) {
+            return Promise.reject(new TargetCloseError(`Protocol error (${method}): Session closed. Most likely the ${this.#targetType} has been closed.`));
         }
         // See the comment in Connection#send explaining why we do this.
         const params = paramArgs.length ? paramArgs[0] : undefined;
-        return __classPrivateFieldGet(this, _CDPSessionImpl_connection, "f")._rawSend(__classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f"), method, params, __classPrivateFieldGet(this, _CDPSessionImpl_sessionId, "f"));
+        return this.#connection._rawSend(this.#callbacks, method, params, this.#sessionId);
     }
     /**
      * @internal
@@ -431,10 +414,10 @@ export class CDPSessionImpl extends CDPSession {
     _onMessage(object) {
         if (object.id) {
             if (object.error) {
-                __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").reject(object.id, createProtocolErrorMessage(object), object.error.message);
+                this.#callbacks.reject(object.id, createProtocolErrorMessage(object), object.error.message);
             }
             else {
-                __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").resolve(object.id, object.result);
+                this.#callbacks.resolve(object.id, object.result);
             }
         }
         else {
@@ -447,29 +430,28 @@ export class CDPSessionImpl extends CDPSession {
      * won't emit any events and can't be used to send messages.
      */
     async detach() {
-        if (!__classPrivateFieldGet(this, _CDPSessionImpl_connection, "f")) {
-            throw new Error(`Session already detached. Most likely the ${__classPrivateFieldGet(this, _CDPSessionImpl_targetType, "f")} has been closed.`);
+        if (!this.#connection) {
+            throw new Error(`Session already detached. Most likely the ${this.#targetType} has been closed.`);
         }
-        await __classPrivateFieldGet(this, _CDPSessionImpl_connection, "f").send('Target.detachFromTarget', {
-            sessionId: __classPrivateFieldGet(this, _CDPSessionImpl_sessionId, "f"),
+        await this.#connection.send('Target.detachFromTarget', {
+            sessionId: this.#sessionId,
         });
     }
     /**
      * @internal
      */
     _onClosed() {
-        __classPrivateFieldGet(this, _CDPSessionImpl_callbacks, "f").clear();
-        __classPrivateFieldSet(this, _CDPSessionImpl_connection, undefined, "f");
+        this.#callbacks.clear();
+        this.#connection = undefined;
         this.emit(CDPSessionEmittedEvents.Disconnected);
     }
     /**
      * Returns the session's id.
      */
     id() {
-        return __classPrivateFieldGet(this, _CDPSessionImpl_sessionId, "f");
+        return this.#sessionId;
     }
 }
-_CDPSessionImpl_sessionId = new WeakMap(), _CDPSessionImpl_targetType = new WeakMap(), _CDPSessionImpl_callbacks = new WeakMap(), _CDPSessionImpl_connection = new WeakMap();
 function createProtocolErrorMessage(object) {
     let message = `${object.error.message}`;
     // TODO: remove the type checks when we stop connecting to BiDi with a CDP

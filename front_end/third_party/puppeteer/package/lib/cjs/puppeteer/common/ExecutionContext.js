@@ -14,18 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var _ExecutionContext_instances, _ExecutionContext_bindingsInstalled, _ExecutionContext_puppeteerUtil, _ExecutionContext_installGlobalBinding, _ExecutionContext_evaluate;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExecutionContext = void 0;
 const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
@@ -64,10 +52,11 @@ const getSourceUrlComment = (url) => {
  * @internal
  */
 class ExecutionContext {
+    _client;
+    _world;
+    _contextId;
+    _contextName;
     constructor(client, contextPayload, world) {
-        _ExecutionContext_instances.add(this);
-        _ExecutionContext_bindingsInstalled.set(this, false);
-        _ExecutionContext_puppeteerUtil.set(this, void 0);
         this._client = client;
         this._world = world;
         this._contextId = contextPayload.id;
@@ -75,31 +64,46 @@ class ExecutionContext {
             this._contextName = contextPayload.name;
         }
     }
+    #bindingsInstalled = false;
+    #puppeteerUtil;
     get puppeteerUtil() {
         let promise = Promise.resolve();
-        if (!__classPrivateFieldGet(this, _ExecutionContext_bindingsInstalled, "f")) {
+        if (!this.#bindingsInstalled) {
             promise = Promise.all([
-                __classPrivateFieldGet(this, _ExecutionContext_instances, "m", _ExecutionContext_installGlobalBinding).call(this, new Binding_js_1.Binding('__ariaQuerySelector', AriaQueryHandler_js_1.ARIAQueryHandler.queryOne)),
-                __classPrivateFieldGet(this, _ExecutionContext_instances, "m", _ExecutionContext_installGlobalBinding).call(this, new Binding_js_1.Binding('__ariaQuerySelectorAll', (async (element, selector) => {
+                this.#installGlobalBinding(new Binding_js_1.Binding('__ariaQuerySelector', AriaQueryHandler_js_1.ARIAQueryHandler.queryOne)),
+                this.#installGlobalBinding(new Binding_js_1.Binding('__ariaQuerySelectorAll', (async (element, selector) => {
                     const results = AriaQueryHandler_js_1.ARIAQueryHandler.queryAll(element, selector);
                     return element.executionContext().evaluateHandle((...elements) => {
                         return elements;
                     }, ...(await AsyncIterableUtil_js_1.AsyncIterableUtil.collect(results)));
                 }))),
             ]);
-            __classPrivateFieldSet(this, _ExecutionContext_bindingsInstalled, true, "f");
+            this.#bindingsInstalled = true;
         }
         ScriptInjector_js_1.scriptInjector.inject(script => {
-            if (__classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f")) {
-                void __classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f").then(handle => {
+            if (this.#puppeteerUtil) {
+                void this.#puppeteerUtil.then(handle => {
                     void handle.dispose();
                 });
             }
-            __classPrivateFieldSet(this, _ExecutionContext_puppeteerUtil, promise.then(() => {
+            this.#puppeteerUtil = promise.then(() => {
                 return this.evaluateHandle(script);
-            }), "f");
-        }, !__classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f"));
-        return __classPrivateFieldGet(this, _ExecutionContext_puppeteerUtil, "f");
+            });
+        }, !this.#puppeteerUtil);
+        return this.#puppeteerUtil;
+    }
+    async #installGlobalBinding(binding) {
+        try {
+            if (this._world) {
+                this._world._bindings.set(binding.name, binding);
+                await this._world._addBindingToContext(this, binding.name);
+            }
+        }
+        catch {
+            // If the binding cannot be added, then either the browser doesn't support
+            // bindings (e.g. Firefox) or the context is broken. Either breakage is
+            // okay, so we ignore the error.
+        }
     }
     /**
      * Evaluates the given function.
@@ -142,7 +146,7 @@ class ExecutionContext {
      * returned.
      */
     async evaluate(pageFunction, ...args) {
-        return await __classPrivateFieldGet(this, _ExecutionContext_instances, "m", _ExecutionContext_evaluate).call(this, true, pageFunction, ...args);
+        return await this.#evaluate(true, pageFunction, ...args);
     }
     /**
      * Evaluates the given function.
@@ -194,119 +198,107 @@ class ExecutionContext {
      * {@link ElementHandle | element handle}.
      */
     async evaluateHandle(pageFunction, ...args) {
-        return __classPrivateFieldGet(this, _ExecutionContext_instances, "m", _ExecutionContext_evaluate).call(this, false, pageFunction, ...args);
+        return this.#evaluate(false, pageFunction, ...args);
     }
-}
-exports.ExecutionContext = ExecutionContext;
-_ExecutionContext_bindingsInstalled = new WeakMap(), _ExecutionContext_puppeteerUtil = new WeakMap(), _ExecutionContext_instances = new WeakSet(), _ExecutionContext_installGlobalBinding = async function _ExecutionContext_installGlobalBinding(binding) {
-    try {
-        if (this._world) {
-            this._world._bindings.set(binding.name, binding);
-            await this._world._addBindingToContext(this, binding.name);
+    async #evaluate(returnByValue, pageFunction, ...args) {
+        const sourceUrlComment = getSourceUrlComment((0, util_js_1.getSourcePuppeteerURLIfAvailable)(pageFunction)?.toString() ??
+            util_js_1.PuppeteerURL.INTERNAL_URL);
+        if ((0, util_js_1.isString)(pageFunction)) {
+            const contextId = this._contextId;
+            const expression = pageFunction;
+            const expressionWithSourceUrl = SOURCE_URL_REGEX.test(expression)
+                ? expression
+                : `${expression}\n${sourceUrlComment}\n`;
+            const { exceptionDetails, result: remoteObject } = await this._client
+                .send('Runtime.evaluate', {
+                expression: expressionWithSourceUrl,
+                contextId,
+                returnByValue,
+                awaitPromise: true,
+                userGesture: true,
+            })
+                .catch(rewriteError);
+            if (exceptionDetails) {
+                throw (0, util_js_1.createEvaluationError)(exceptionDetails);
+            }
+            return returnByValue
+                ? (0, util_js_1.valueFromRemoteObject)(remoteObject)
+                : (0, util_js_1.createJSHandle)(this, remoteObject);
         }
-    }
-    catch {
-        // If the binding cannot be added, then either the browser doesn't support
-        // bindings (e.g. Firefox) or the context is broken. Either breakage is
-        // okay, so we ignore the error.
-    }
-}, _ExecutionContext_evaluate = async function _ExecutionContext_evaluate(returnByValue, pageFunction, ...args) {
-    const sourceUrlComment = getSourceUrlComment((0, util_js_1.getSourcePuppeteerURLIfAvailable)(pageFunction)?.toString() ??
-        util_js_1.PuppeteerURL.INTERNAL_URL);
-    if ((0, util_js_1.isString)(pageFunction)) {
-        const contextId = this._contextId;
-        const expression = pageFunction;
-        const expressionWithSourceUrl = SOURCE_URL_REGEX.test(expression)
-            ? expression
-            : `${expression}\n${sourceUrlComment}\n`;
-        const { exceptionDetails, result: remoteObject } = await this._client
-            .send('Runtime.evaluate', {
-            expression: expressionWithSourceUrl,
-            contextId,
-            returnByValue,
-            awaitPromise: true,
-            userGesture: true,
-        })
-            .catch(rewriteError);
+        const functionDeclaration = (0, Function_js_1.stringifyFunction)(pageFunction);
+        const functionDeclarationWithSourceUrl = SOURCE_URL_REGEX.test(functionDeclaration)
+            ? functionDeclaration
+            : `${functionDeclaration}\n${sourceUrlComment}\n`;
+        let callFunctionOnPromise;
+        try {
+            callFunctionOnPromise = this._client.send('Runtime.callFunctionOn', {
+                functionDeclaration: functionDeclarationWithSourceUrl,
+                executionContextId: this._contextId,
+                arguments: await Promise.all(args.map(convertArgument.bind(this))),
+                returnByValue,
+                awaitPromise: true,
+                userGesture: true,
+            });
+        }
+        catch (error) {
+            if (error instanceof TypeError &&
+                error.message.startsWith('Converting circular structure to JSON')) {
+                error.message += ' Recursive objects are not allowed.';
+            }
+            throw error;
+        }
+        const { exceptionDetails, result: remoteObject } = await callFunctionOnPromise.catch(rewriteError);
         if (exceptionDetails) {
             throw (0, util_js_1.createEvaluationError)(exceptionDetails);
         }
         return returnByValue
             ? (0, util_js_1.valueFromRemoteObject)(remoteObject)
             : (0, util_js_1.createJSHandle)(this, remoteObject);
-    }
-    const functionDeclaration = (0, Function_js_1.stringifyFunction)(pageFunction);
-    const functionDeclarationWithSourceUrl = SOURCE_URL_REGEX.test(functionDeclaration)
-        ? functionDeclaration
-        : `${functionDeclaration}\n${sourceUrlComment}\n`;
-    let callFunctionOnPromise;
-    try {
-        callFunctionOnPromise = this._client.send('Runtime.callFunctionOn', {
-            functionDeclaration: functionDeclarationWithSourceUrl,
-            executionContextId: this._contextId,
-            arguments: await Promise.all(args.map(convertArgument.bind(this))),
-            returnByValue,
-            awaitPromise: true,
-            userGesture: true,
-        });
-    }
-    catch (error) {
-        if (error instanceof TypeError &&
-            error.message.startsWith('Converting circular structure to JSON')) {
-            error.message += ' Recursive objects are not allowed.';
-        }
-        throw error;
-    }
-    const { exceptionDetails, result: remoteObject } = await callFunctionOnPromise.catch(rewriteError);
-    if (exceptionDetails) {
-        throw (0, util_js_1.createEvaluationError)(exceptionDetails);
-    }
-    return returnByValue
-        ? (0, util_js_1.valueFromRemoteObject)(remoteObject)
-        : (0, util_js_1.createJSHandle)(this, remoteObject);
-    async function convertArgument(arg) {
-        if (arg instanceof LazyArg_js_1.LazyArg) {
-            arg = await arg.get(this);
-        }
-        if (typeof arg === 'bigint') {
-            // eslint-disable-line valid-typeof
-            return { unserializableValue: `${arg.toString()}n` };
-        }
-        if (Object.is(arg, -0)) {
-            return { unserializableValue: '-0' };
-        }
-        if (Object.is(arg, Infinity)) {
-            return { unserializableValue: 'Infinity' };
-        }
-        if (Object.is(arg, -Infinity)) {
-            return { unserializableValue: '-Infinity' };
-        }
-        if (Object.is(arg, NaN)) {
-            return { unserializableValue: 'NaN' };
-        }
-        const objectHandle = arg && (arg instanceof JSHandle_js_1.CDPJSHandle || arg instanceof ElementHandle_js_1.CDPElementHandle)
-            ? arg
-            : null;
-        if (objectHandle) {
-            if (objectHandle.executionContext() !== this) {
-                throw new Error('JSHandles can be evaluated only in the context they were created!');
+        async function convertArgument(arg) {
+            if (arg instanceof LazyArg_js_1.LazyArg) {
+                arg = await arg.get(this);
             }
-            if (objectHandle.disposed) {
-                throw new Error('JSHandle is disposed!');
+            if (typeof arg === 'bigint') {
+                // eslint-disable-line valid-typeof
+                return { unserializableValue: `${arg.toString()}n` };
             }
-            if (objectHandle.remoteObject().unserializableValue) {
-                return {
-                    unserializableValue: objectHandle.remoteObject().unserializableValue,
-                };
+            if (Object.is(arg, -0)) {
+                return { unserializableValue: '-0' };
             }
-            if (!objectHandle.remoteObject().objectId) {
-                return { value: objectHandle.remoteObject().value };
+            if (Object.is(arg, Infinity)) {
+                return { unserializableValue: 'Infinity' };
             }
-            return { objectId: objectHandle.remoteObject().objectId };
+            if (Object.is(arg, -Infinity)) {
+                return { unserializableValue: '-Infinity' };
+            }
+            if (Object.is(arg, NaN)) {
+                return { unserializableValue: 'NaN' };
+            }
+            const objectHandle = arg && (arg instanceof JSHandle_js_1.CDPJSHandle || arg instanceof ElementHandle_js_1.CDPElementHandle)
+                ? arg
+                : null;
+            if (objectHandle) {
+                if (objectHandle.executionContext() !== this) {
+                    throw new Error('JSHandles can be evaluated only in the context they were created!');
+                }
+                if (objectHandle.disposed) {
+                    throw new Error('JSHandle is disposed!');
+                }
+                if (objectHandle.remoteObject().unserializableValue) {
+                    return {
+                        unserializableValue: objectHandle.remoteObject().unserializableValue,
+                    };
+                }
+                if (!objectHandle.remoteObject().objectId) {
+                    return { value: objectHandle.remoteObject().value };
+                }
+                return { objectId: objectHandle.remoteObject().objectId };
+            }
+            return { value: arg };
         }
-        return { value: arg };
     }
-};
+}
+exports.ExecutionContext = ExecutionContext;
 const rewriteError = (error) => {
     if (error.message.includes('Object reference chain is too long')) {
         return { result: { type: 'undefined' } };

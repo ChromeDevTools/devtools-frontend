@@ -5,10 +5,6 @@ import { Protocol } from 'devtools-protocol';
 import { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
 import type { Readable } from 'stream';
 
-declare const __JSHandleSymbol: unique symbol;
-
-declare const __JSHandleSymbol_2: unique symbol;
-
 /**
  * The Accessibility class provides methods for inspecting the browser's
  * accessibility tree. The accessibility tree is used by assistive technology
@@ -78,17 +74,13 @@ export declare class Accessibility {
     private collectInterestingNodes;
 }
 
-/**
- * @public
- */
-export declare type ActionCondition = (element: ElementHandle, signal: AbortSignal) => Promise<void>;
+/* Excluded from this release type: Action */
 
 /**
  * @public
  */
 export declare interface ActionOptions {
     signal?: AbortSignal;
-    conditions: ActionCondition[];
 }
 
 /**
@@ -109,6 +101,19 @@ export declare type ActionResult = 'continue' | 'abort' | 'respond';
 /**
  * @public
  */
+export declare interface AutofillData {
+    creditCard: {
+        number: string;
+        name: string;
+        expiryMonth: string;
+        expiryYear: string;
+        cvc: string;
+    };
+}
+
+/**
+ * @public
+ */
 export declare type Awaitable<T> = T | PromiseLike<T>;
 
 /**
@@ -117,6 +122,11 @@ export declare type Awaitable<T> = T | PromiseLike<T>;
 export declare type AwaitableIterable<T> = Iterable<T> | AsyncIterable<T>;
 
 /* Excluded from this release type: AwaitableIterator */
+
+/**
+ * @public
+ */
+export declare type AwaitedLocator<T> = T extends Locator<infer S> ? S : never;
 
 declare type BeginSubclassSelectorTokens = ['.', '#', '[', ':'];
 
@@ -631,6 +641,8 @@ export declare interface BrowserLaunchArgumentOptions {
 
 /* Excluded from this release type: CDPBrowserContext */
 
+/* Excluded from this release type: CDPDialog */
+
 /* Excluded from this release type: CDPElementHandle */
 
 /* Excluded from this release type: CDPJSHandle */
@@ -689,6 +701,8 @@ export declare class CDPSession extends EventEmitter {
 /* Excluded from this release type: CDPSessionImpl */
 
 /* Excluded from this release type: CDPSessionOnMessageObject */
+
+/* Excluded from this release type: CDPTarget */
 
 /* Excluded from this release type: CDPTouchscreen */
 
@@ -1231,6 +1245,8 @@ defaultArgs: (options?: BrowserLaunchArgumentOptions) => string[];
 
 /* Excluded from this release type: DeferredOptions */
 
+/* Excluded from this release type: DelegatedLocator */
+
 /**
  * @public
  */
@@ -1348,6 +1364,7 @@ export declare class Dialog {
      * is not a `prompt`.
      */
     defaultValue(): string;
+    /* Excluded from this release type: sendCommand */
     /**
      * A promise that resolves when the dialog has been accepted.
      *
@@ -1810,6 +1827,32 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      */
     scrollIntoView(this: ElementHandle<Element>): Promise<void>;
     /* Excluded from this release type: assertElementHasWorld */
+    /**
+     * If the element is a form input, you can use {@link ElementHandle.autofill}
+     * to test if the form is compatible with the browser's autofill
+     * implementation. Throws an error if the form cannot be autofilled.
+     *
+     * @remarks
+     *
+     * Currently, Puppeteer supports auto-filling credit card information only and
+     * in Chrome in the new headless and headful modes only.
+     *
+     * ```ts
+     * // Select an input on the credit card form.
+     * const name = await page.waitForSelector('form #name');
+     * // Trigger autofill with the desired data.
+     * await name.autofill({
+     *   creditCard: {
+     *     number: '4444444444444444',
+     *     name: 'John Smith',
+     *     expiryMonth: '01',
+     *     expiryYear: '2030',
+     *     cvc: '123',
+     *   },
+     * });
+     * ```
+     */
+    autofill(data: AutofillData): Promise<void>;
 }
 
 /* Excluded from this release type: EmulationManager */
@@ -2026,6 +2069,8 @@ export declare class FileChooser {
     cancel(): void;
 }
 
+/* Excluded from this release type: FilteredLocator */
+
 /* Excluded from this release type: FirefoxLauncher */
 
 /* Excluded from this release type: FirefoxTargetManager */
@@ -2200,14 +2245,23 @@ export declare class Frame {
      */
     evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
-     * Creates a locator for the provided `selector`. See {@link Locator} for
+     * Creates a locator for the provided selector. See {@link Locator} for
      * details and supported actions.
      *
      * @remarks
      * Locators API is experimental and we will not follow semver for breaking
      * change in the Locators API.
      */
-    locator(selector: string): Locator;
+    locator<Selector extends string>(selector: Selector): Locator<NodeFor<Selector>>;
+    /**
+     * Creates a locator for the provided function. See {@link Locator} for
+     * details and supported actions.
+     *
+     * @remarks
+     * Locators API is experimental and we will not follow semver for breaking
+     * change in the Locators API.
+     */
+    locator<Ret>(func: () => Awaitable<Ret>): Locator<Ret>;
     /**
      * Queries the frame for an element matching the given selector.
      *
@@ -2649,6 +2703,8 @@ export declare interface FrameWaitForFunctionOptions {
      */
     signal?: AbortSignal;
 }
+
+/* Excluded from this release type: FunctionLocator */
 
 /**
  * @public
@@ -3189,7 +3245,7 @@ export declare class JSHandle<T = unknown> {
     /**
      * Used for nominally typing {@link JSHandle}.
      */
-    [__JSHandleSymbol]?: T;
+    _?: T;
     /* Excluded from this release type: __constructor */
     /* Excluded from this release type: disposed */
     /* Excluded from this release type: executionContext */
@@ -3566,49 +3622,89 @@ export declare interface LaunchOptions {
 /* Excluded from this release type: LifecycleWatcher */
 
 /**
- * Locators describe a strategy of locating elements and performing an action on
- * them. If the action fails because the element is not ready for the action,
- * the whole operation is retried. Various preconditions for a successful action
- * are checked automatically.
+ * Locators describe a strategy of locating objects and performing an action on
+ * them. If the action fails because the object is not ready for the action, the
+ * whole operation is retried. Various preconditions for a successful action are
+ * checked automatically.
  *
  * @public
  */
-export declare abstract class Locator extends EventEmitter {
-    /* Excluded from this release type: create */
+export declare abstract class Locator<T> extends EventEmitter {
+    #private;
     /**
      * Creates a race between multiple locators but ensures that only a single one
      * acts.
+     *
+     * @public
      */
-    static race(locators: Locator[]): Locator;
+    static race<Locators extends readonly unknown[] | []>(locators: Locators): Locator<AwaitedLocator<Locators[number]>>;
+    /**
+     * Used for nominally typing {@link Locator}.
+     */
+    _?: T;
+    /* Excluded from this release type: visibility */
+    /* Excluded from this release type: _timeout */
+    /* Excluded from this release type: operators */
+    get timeout(): number;
     on<K extends keyof LocatorEventObject>(eventName: K, handler: (event: LocatorEventObject[K]) => void): this;
     once<K extends keyof LocatorEventObject>(eventName: K, handler: (event: LocatorEventObject[K]) => void): this;
     off<K extends keyof LocatorEventObject>(eventName: K, handler: (event: LocatorEventObject[K]) => void): this;
-    abstract setVisibility(visibility: VisibilityOption): this;
-    abstract setTimeout(timeout: number): this;
-    abstract setEnsureElementIsInTheViewport(value: boolean): this;
-    abstract setWaitForEnabled(value: boolean): this;
-    abstract setWaitForStableBoundingBox(value: boolean): this;
-    abstract click(clickOptions?: ClickOptions & {
-        signal?: AbortSignal;
-    }): Promise<void>;
+    setTimeout(timeout: number): Locator<T>;
+    setVisibility<NodeType extends Node>(this: Locator<NodeType>, visibility: VisibilityOption): Locator<NodeType>;
+    setWaitForEnabled<NodeType extends Node>(this: Locator<NodeType>, value: boolean): Locator<NodeType>;
+    setEnsureElementIsInTheViewport<ElementType extends Element>(this: Locator<ElementType>, value: boolean): Locator<ElementType>;
+    setWaitForStableBoundingBox<ElementType extends Element>(this: Locator<ElementType>, value: boolean): Locator<ElementType>;
+    /* Excluded from this release type: copyOptions */
+    /* Excluded from this release type: _clone */
+    /* Excluded from this release type: _wait */
+    /**
+     * Clones the locator.
+     */
+    clone(): Locator<T>;
+    /**
+     * Waits for the locator to get a handle from the page.
+     *
+     * @public
+     */
+    waitHandle(options?: Readonly<ActionOptions>): Promise<HandleFor<T>>;
+    /**
+     * Waits for the locator to get the serialized value from the page.
+     *
+     * Note this requires the value to be JSON-serializable.
+     *
+     * @public
+     */
+    wait(options?: Readonly<ActionOptions>): Promise<T>;
+    /**
+     * Maps the locator using the provided mapper.
+     *
+     * @public
+     */
+    map<To>(mapper: Mapper<T, To>): Locator<To>;
+    /**
+     * Creates an expectation that is evaluated against located values.
+     *
+     * If the expectations do not match, then the locator will retry.
+     *
+     * @public
+     */
+    filter<S extends T>(predicate: Predicate<T, S>): Locator<S>;
+    click<ElementType extends Element>(this: Locator<ElementType>, options?: Readonly<LocatorClickOptions>): Promise<void>;
     /**
      * Fills out the input identified by the locator using the provided value. The
      * type of the input is determined at runtime and the appropriate fill-out
      * method is chosen based on the type. contenteditable, selector, inputs are
      * supported.
      */
-    abstract fill(value: string, fillOptions?: {
-        signal?: AbortSignal;
-    }): Promise<void>;
-    abstract hover(hoverOptions?: {
-        signal?: AbortSignal;
-    }): Promise<void>;
-    abstract scroll(scrollOptions?: {
-        scrollTop?: number;
-        scrollLeft?: number;
-        signal?: AbortSignal;
-    }): Promise<void>;
+    fill<ElementType extends Element>(this: Locator<ElementType>, value: string, options?: Readonly<ActionOptions>): Promise<void>;
+    hover<ElementType extends Element>(this: Locator<ElementType>, options?: Readonly<ActionOptions>): Promise<void>;
+    scroll<ElementType extends Element>(this: Locator<ElementType>, options?: Readonly<LocatorScrollOptions>): Promise<void>;
 }
+
+/**
+ * @public
+ */
+export declare type LocatorClickOptions = ClickOptions & ActionOptions;
 
 /**
  * All the events that a locator instance may emit.
@@ -3628,8 +3724,6 @@ export declare enum LocatorEmittedEvents {
 export declare interface LocatorEventObject {
     [LocatorEmittedEvents.Action]: never;
 }
-
-/* Excluded from this release type: LocatorImpl */
 
 /**
  * @public
@@ -3670,9 +3764,24 @@ export declare interface LocatorOptions {
 /**
  * @public
  */
+export declare interface LocatorScrollOptions extends ActionOptions {
+    scrollTop?: number;
+    scrollLeft?: number;
+}
+
+/**
+ * @public
+ */
 export declare type LowerCasePaperFormat = 'letter' | 'legal' | 'tabloid' | 'ledger' | 'a0' | 'a1' | 'a2' | 'a3' | 'a4' | 'a5' | 'a6';
 
 /* Excluded from this release type: MAIN_WORLD */
+
+/* Excluded from this release type: MappedLocator */
+
+/**
+ * @public
+ */
+export declare type Mapper<From, To> = (value: From) => Awaitable<To>;
 
 /**
  * @public
@@ -3984,6 +4093,8 @@ export declare interface NewDocumentScriptEvaluation {
  */
 export declare type NodeFor<ComplexSelector extends string> = TypeSelectorOfComplexSelector<ComplexSelector> extends infer TypeSelector ? TypeSelector extends keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap ? ElementFor<TypeSelector> : Element : never;
 
+/* Excluded from this release type: NodeLocator */
+
 /* Excluded from this release type: NodeWebSocketTransport */
 
 declare type NonEmptyReadonlyArray<T> = [T, ...(readonly T[])];
@@ -4145,6 +4256,10 @@ export declare class Page extends EventEmitter {
      */
     mainFrame(): Frame;
     /**
+     * Creates a Chrome Devtools Protocol session attached to the page.
+     */
+    createCDPSession(): Promise<CDPSession>;
+    /**
      * {@inheritDoc Keyboard}
      */
     get keyboard(): Keyboard;
@@ -4292,14 +4407,23 @@ export declare class Page extends EventEmitter {
      */
     getDefaultTimeout(): number;
     /**
-     * Creates a locator for the provided `selector`. See {@link Locator} for
+     * Creates a locator for the provided selector. See {@link Locator} for
      * details and supported actions.
      *
      * @remarks
      * Locators API is experimental and we will not follow semver for breaking
      * change in the Locators API.
      */
-    locator(selector: string): Locator;
+    locator<Selector extends string>(selector: Selector): Locator<NodeFor<Selector>>;
+    /**
+     * Creates a locator for the provided function. See {@link Locator} for
+     * details and supported actions.
+     *
+     * @remarks
+     * Locators API is experimental and we will not follow semver for breaking
+     * change in the Locators API.
+     */
+    locator<Ret>(func: () => Awaitable<Ret>): Locator<Ret>;
     /* Excluded from this release type: locatorRace */
     /**
      * Runs `document.querySelector` within the page. If no element matches the
@@ -4575,7 +4699,6 @@ export declare class Page extends EventEmitter {
      */
     addStyleTag(options: Omit<FrameAddStyleTagOptions, 'url'>): Promise<ElementHandle<HTMLStyleElement>>;
     addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLLinkElement>>;
-    addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLStyleElement | HTMLLinkElement>>;
     /**
      * The method adds a function called `name` on the page's `window` object.
      * When called, the function executes `puppeteerFunction` in node.js and
@@ -6204,6 +6327,11 @@ export declare const PredefinedNetworkConditions: Readonly<{
 }>;
 
 /**
+ * @public
+ */
+export declare type Predicate<From, To extends From = From> = ((value: From) => value is To) | ((value: From) => Awaitable<boolean>);
+
+/**
  * Copyright 2020 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -6530,6 +6658,8 @@ export declare type PuppeteerNodeLaunchOptions = BrowserLaunchArgumentOptions & 
 
 /* Excluded from this release type: QueuedEventGroup */
 
+/* Excluded from this release type: RaceLocator */
+
 /* Excluded from this release type: RAFPoller */
 
 /* Excluded from this release type: Realm */
@@ -6579,6 +6709,8 @@ export declare interface ResponseForRequest {
     contentType: string;
     body: string | Buffer;
 }
+
+/* Excluded from this release type: RETRY_DELAY */
 
 /**
  * @public
@@ -6791,28 +6923,24 @@ declare type SplitWithDelemiters<Input extends string, Delemiters extends readon
  * {@link https://chromedevtools.github.io/devtools-protocol/tot/Target/ | CDP target}.
  * In CDP a target is something that can be debugged such a frame, a page or a
  * worker.
- *
  * @public
  */
 export declare class Target {
-    #private;
-    /* Excluded from this release type: _initializedDeferred */
-    /* Excluded from this release type: _isClosedDeferred */
-    /* Excluded from this release type: _targetId */
     /* Excluded from this release type: __constructor */
-    /* Excluded from this release type: _session */
-    /* Excluded from this release type: _sessionFactory */
-    /**
-     * Creates a Chrome Devtools Protocol session attached to the target.
-     */
-    createCDPSession(): Promise<CDPSession>;
-    /* Excluded from this release type: _targetManager */
-    /* Excluded from this release type: _getTargetInfo */
     /**
      * If the target is not of type `"service_worker"` or `"shared_worker"`, returns `null`.
      */
     worker(): Promise<WebWorker | null>;
+    /**
+     * If the target is not of type `"page"`, `"webview"` or `"background_page"`,
+     * returns `null`.
+     */
+    page(): Promise<Page | null>;
     url(): string;
+    /**
+     * Creates a Chrome Devtools Protocol session attached to the target.
+     */
+    createCDPSession(): Promise<CDPSession>;
     /**
      * Identifies what kind of target this is.
      *
@@ -6820,7 +6948,7 @@ export declare class Target {
      *
      * See {@link https://developer.chrome.com/extensions/background_pages | docs} for more info about background pages.
      */
-    type(): 'page' | 'background_page' | 'service_worker' | 'shared_worker' | 'other' | 'browser' | 'webview';
+    type(): TargetType;
     /**
      * Get the browser the target belongs to.
      */
@@ -6833,14 +6961,6 @@ export declare class Target {
      * Get the target that opened this target. Top-level targets return `null`.
      */
     opener(): Target | undefined;
-    /* Excluded from this release type: _targetInfoChanged */
-    /* Excluded from this release type: _initialize */
-    /* Excluded from this release type: _checkIfInitialized */
-    /**
-     * If the target is not of type `"page"`, `"webview"` or `"background_page"`,
-     * returns `null`.
-     */
-    page(): Promise<Page | null>;
 }
 
 /* Excluded from this release type: TargetCloseError */
@@ -6850,13 +6970,26 @@ export declare class Target {
 /**
  * @public
  */
-export declare type TargetFilterCallback = (target: Protocol.Target.TargetInfo) => boolean;
+export declare type TargetFilterCallback = (target: Target) => boolean;
 
 /* Excluded from this release type: TargetInterceptor */
 
 /* Excluded from this release type: TargetManager */
 
 /* Excluded from this release type: TargetManagerEmittedEvents */
+
+/**
+ * @public
+ */
+export declare enum TargetType {
+    PAGE = "page",
+    BACKGROUND_PAGE = "background_page",
+    SERVICE_WORKER = "service_worker",
+    SHARED_WORKER = "shared_worker",
+    BROWSER = "browser",
+    WEBVIEW = "webview",
+    OTHER = "other"
+}
 
 /* Excluded from this release type: TaskManager */
 
@@ -6967,6 +7100,8 @@ declare type TypeSelectorOfCompoundSelector<CompoundSelector extends string> = S
 export declare function unregisterCustomQueryHandler(name: string): void;
 
 /* Excluded from this release type: UTILITY_WORLD_NAME */
+
+/* Excluded from this release type: validateDialogType */
 
 /* Excluded from this release type: valueFromRemoteObject */
 

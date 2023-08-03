@@ -30,6 +30,13 @@ const CustomQueryHandler_js_1 = require("./CustomQueryHandler.js");
  */
 class Puppeteer {
     /**
+     * Operations for {@link CustomQueryHandler | custom query handlers}. See
+     * {@link CustomQueryHandlerRegistry}.
+     *
+     * @internal
+     */
+    static customQueryHandlers = CustomQueryHandler_js_1.customQueryHandlers;
+    /**
      * Registers a {@link CustomQueryHandler | custom query handler}.
      *
      * @remarks
@@ -75,11 +82,15 @@ class Puppeteer {
     /**
      * @internal
      */
+    _isPuppeteerCore;
+    /**
+     * @internal
+     */
+    _changedProduct = false;
+    /**
+     * @internal
+     */
     constructor(settings) {
-        /**
-         * @internal
-         */
-        this._changedProduct = false;
         this._isPuppeteerCore = settings.isPuppeteerCore;
         this.connect = this.connect.bind(this);
     }
@@ -96,11 +107,4 @@ class Puppeteer {
     }
 }
 exports.Puppeteer = Puppeteer;
-/**
- * Operations for {@link CustomQueryHandler | custom query handlers}. See
- * {@link CustomQueryHandlerRegistry}.
- *
- * @internal
- */
-Puppeteer.customQueryHandlers = CustomQueryHandler_js_1.customQueryHandlers;
 //# sourceMappingURL=Puppeteer.js.map

@@ -15,6 +15,7 @@
  */
 import { BrowserContext as BrowserContextBase } from '../../api/BrowserContext.js';
 import { Page as PageBase } from '../../api/Page.js';
+import { Target } from '../../api/Target.js';
 import { Viewport } from '../PuppeteerViewport.js';
 import { Browser } from './Browser.js';
 import { Connection } from './Connection.js';
@@ -28,11 +29,16 @@ interface BrowserContextOptions {
 export declare class BrowserContext extends BrowserContextBase {
     #private;
     constructor(browser: Browser, options: BrowserContextOptions);
+    targets(): Target[];
+    waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: {
+        timeout?: number;
+    }): Promise<Target>;
     get connection(): Connection;
     newPage(): Promise<PageBase>;
     close(): Promise<void>;
     browser(): Browser;
     pages(): Promise<PageBase[]>;
+    isIncognito(): boolean;
 }
 export {};
 //# sourceMappingURL=BrowserContext.d.ts.map

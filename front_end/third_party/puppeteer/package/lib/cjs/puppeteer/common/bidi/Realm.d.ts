@@ -22,5 +22,5 @@ export declare class Realm extends EventEmitter {
 /**
  * @internal
  */
-export declare function getBidiHandle(realmOrContext: Realm, result: Bidi.CommonDataTypes.RemoteValue, frame: Frame): JSHandle | ElementHandle<Node>;
+export declare function getBidiHandle(realmOrContext: Realm, result: Bidi.Script.RemoteValue, frame: Frame): JSHandle | ElementHandle<Node>;
 //# sourceMappingURL=Realm.d.ts.map

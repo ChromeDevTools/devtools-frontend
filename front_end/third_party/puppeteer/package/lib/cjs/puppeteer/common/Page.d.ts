@@ -19,8 +19,7 @@ import type { Readable } from 'stream';
 import { Protocol } from 'devtools-protocol';
 import type { Browser } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
-import { ElementHandle } from '../api/ElementHandle.js';
-import { Frame, FrameAddScriptTagOptions, FrameAddStyleTagOptions } from '../api/Frame.js';
+import { Frame } from '../api/Frame.js';
 import { HTTPRequest } from '../api/HTTPRequest.js';
 import { HTTPResponse } from '../api/HTTPResponse.js';
 import { JSHandle } from '../api/JSHandle.js';
@@ -31,11 +30,10 @@ import { Coverage } from './Coverage.js';
 import { DeviceRequestPrompt } from './DeviceRequestPrompt.js';
 import { FileChooser } from './FileChooser.js';
 import { CDPKeyboard, CDPMouse, CDPTouchscreen } from './Input.js';
-import { WaitForSelectorOptions } from './IsolatedWorld.js';
 import { Credentials, NetworkConditions } from './NetworkManager.js';
 import { PDFOptions } from './PDFOptions.js';
 import { Viewport } from './PuppeteerViewport.js';
-import { Target } from './Target.js';
+import { CDPTarget } from './Target.js';
 import { TaskQueue } from './TaskQueue.js';
 import { Tracing } from './Tracing.js';
 import { EvaluateFunc, HandleFor } from './types.js';
@@ -48,11 +46,11 @@ export declare class CDPPage extends Page {
     /**
      * @internal
      */
-    static _create(client: CDPSession, target: Target, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null, screenshotTaskQueue: TaskQueue): Promise<CDPPage>;
+    static _create(client: CDPSession, target: CDPTarget, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null, screenshotTaskQueue: TaskQueue): Promise<CDPPage>;
     /**
      * @internal
      */
-    constructor(client: CDPSession, target: Target, ignoreHTTPSErrors: boolean, screenshotTaskQueue: TaskQueue);
+    constructor(client: CDPSession, target: CDPTarget, ignoreHTTPSErrors: boolean, screenshotTaskQueue: TaskQueue);
     /**
      * @internal
      */
@@ -62,7 +60,7 @@ export declare class CDPPage extends Page {
     isJavaScriptEnabled(): boolean;
     waitForFileChooser(options?: WaitTimeoutOptions): Promise<FileChooser>;
     setGeolocation(options: GeolocationOptions): Promise<void>;
-    target(): Target;
+    target(): CDPTarget;
     browser(): Browser;
     browserContext(): BrowserContext;
     mainFrame(): Frame;
@@ -86,9 +84,6 @@ export declare class CDPPage extends Page {
     cookies(...urls: string[]): Promise<Protocol.Network.Cookie[]>;
     deleteCookie(...cookies: Protocol.Network.DeleteCookiesRequest[]): Promise<void>;
     setCookie(...cookies: Protocol.Network.CookieParam[]): Promise<void>;
-    addScriptTag(options: FrameAddScriptTagOptions): Promise<ElementHandle<HTMLScriptElement>>;
-    addStyleTag(options: Omit<FrameAddStyleTagOptions, 'url'>): Promise<ElementHandle<HTMLStyleElement>>;
-    addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLLinkElement>>;
     exposeFunction(name: string, pptrFunction: Function | {
         default: Function;
     }): Promise<void>;
@@ -105,6 +100,7 @@ export declare class CDPPage extends Page {
         referrerPolicy?: string;
     }): Promise<HTTPResponse | null>;
     reload(options?: WaitForOptions): Promise<HTTPResponse | null>;
+    createCDPSession(): Promise<CDPSession>;
     waitForRequest(urlOrPredicate: string | ((req: HTTPRequest) => boolean | Promise<boolean>), options?: {
         timeout?: number;
     }): Promise<HTTPRequest>;
@@ -152,7 +148,6 @@ export declare class CDPPage extends Page {
     }): Promise<void>;
     isClosed(): boolean;
     get mouse(): CDPMouse;
-    waitForXPath(xpath: string, options?: WaitForSelectorOptions): Promise<ElementHandle<Node> | null>;
     /**
      * This method is typically coupled with an action that triggers a device
      * request from an api such as WebBluetooth.

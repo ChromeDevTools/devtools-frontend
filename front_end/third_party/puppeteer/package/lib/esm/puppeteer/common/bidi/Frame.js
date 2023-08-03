@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Frame_page, _Frame_context, _Frame_timeoutSettings, _Frame_abortDeferred;
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { Frame as BaseFrame } from '../../api/Frame.js';
 import { Deferred } from '../../util/Deferred.js';
@@ -37,16 +25,18 @@ import { MAIN_SANDBOX, PUPPETEER_SANDBOX, Sandbox, } from './Sandbox.js';
  * @internal
  */
 export class Frame extends BaseFrame {
+    #page;
+    #context;
+    #timeoutSettings;
+    #abortDeferred = Deferred.create();
+    sandboxes;
+    _id;
     constructor(page, context, timeoutSettings, parentId) {
         super();
-        _Frame_page.set(this, void 0);
-        _Frame_context.set(this, void 0);
-        _Frame_timeoutSettings.set(this, void 0);
-        _Frame_abortDeferred.set(this, Deferred.create());
-        __classPrivateFieldSet(this, _Frame_page, page, "f");
-        __classPrivateFieldSet(this, _Frame_context, context, "f");
-        __classPrivateFieldSet(this, _Frame_timeoutSettings, timeoutSettings, "f");
-        this._id = __classPrivateFieldGet(this, _Frame_context, "f").id;
+        this.#page = page;
+        this.#context = context;
+        this.#timeoutSettings = timeoutSettings;
+        this._id = this.#context.id;
         this._parentId = parentId ?? undefined;
         const puppeteerRealm = context.createSandboxRealm(UTILITY_WORLD_NAME);
         this.sandboxes = {
@@ -63,41 +53,47 @@ export class Frame extends BaseFrame {
         return this.sandboxes[PUPPETEER_SANDBOX];
     }
     page() {
-        return __classPrivateFieldGet(this, _Frame_page, "f");
+        return this.#page;
     }
     name() {
         return this._name || '';
     }
     url() {
-        return __classPrivateFieldGet(this, _Frame_context, "f").url;
+        return this.#context.url;
     }
     parentFrame() {
-        return __classPrivateFieldGet(this, _Frame_page, "f").frame(this._parentId ?? '');
+        return this.#page.frame(this._parentId ?? '');
     }
     childFrames() {
-        return __classPrivateFieldGet(this, _Frame_page, "f").childFrames(__classPrivateFieldGet(this, _Frame_context, "f").id);
+        return this.#page.childFrames(this.#context.id);
     }
     async evaluateHandle(pageFunction, ...args) {
-        return __classPrivateFieldGet(this, _Frame_context, "f").evaluateHandle(pageFunction, ...args);
+        return this.#context.evaluateHandle(pageFunction, ...args);
     }
     async evaluate(pageFunction, ...args) {
-        return __classPrivateFieldGet(this, _Frame_context, "f").evaluate(pageFunction, ...args);
+        return this.#context.evaluate(pageFunction, ...args);
     }
     async goto(url, options) {
-        const navigationId = await __classPrivateFieldGet(this, _Frame_context, "f").goto(url, options);
-        return __classPrivateFieldGet(this, _Frame_page, "f").getNavigationResponse(navigationId);
+        const navigationId = await this.#context.goto(url, {
+            ...options,
+            timeout: options?.timeout ?? this.#timeoutSettings.navigationTimeout(),
+        });
+        return this.#page.getNavigationResponse(navigationId);
     }
     setContent(html, options) {
-        return __classPrivateFieldGet(this, _Frame_context, "f").setContent(html, options);
+        return this.#context.setContent(html, {
+            ...options,
+            timeout: options?.timeout ?? this.#timeoutSettings.navigationTimeout(),
+        });
     }
     content() {
-        return __classPrivateFieldGet(this, _Frame_context, "f").content();
+        return this.#context.content();
     }
     title() {
-        return __classPrivateFieldGet(this, _Frame_context, "f").title();
+        return this.#context.title();
     }
     context() {
-        return __classPrivateFieldGet(this, _Frame_context, "f");
+        return this.#context;
     }
     $(selector) {
         return this.mainRealm().$(selector);
@@ -117,22 +113,30 @@ export class Frame extends BaseFrame {
         return this.mainRealm().$x(expression);
     }
     async waitForNavigation(options = {}) {
-        const { waitUntil = 'load', timeout = __classPrivateFieldGet(this, _Frame_timeoutSettings, "f").navigationTimeout(), } = options;
+        const { waitUntil = 'load', timeout = this.#timeoutSettings.navigationTimeout(), } = options;
         const waitUntilEvent = lifeCycleToSubscribedEvent.get(getWaitUntilSingle(waitUntil));
-        const [info] = await Promise.all([
-            waitForEvent(__classPrivateFieldGet(this, _Frame_context, "f"), waitUntilEvent, () => {
+        const [info] = await Deferred.race([
+            // TODO(lightning00blade): Should also keep tack of
+            // navigationAborted and navigationFailed
+            Promise.all([
+                waitForEvent(this.#context, waitUntilEvent, () => {
+                    return true;
+                }, timeout, this.#abortDeferred.valueOrThrow()),
+                waitForEvent(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.NavigationStarted, () => {
+                    return true;
+                }, timeout, this.#abortDeferred.valueOrThrow()),
+            ]),
+            waitForEvent(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.FragmentNavigated, () => {
                 return true;
-            }, timeout, __classPrivateFieldGet(this, _Frame_abortDeferred, "f").valueOrThrow()),
-            waitForEvent(__classPrivateFieldGet(this, _Frame_context, "f"), Bidi.BrowsingContext.EventNames.FragmentNavigated, () => {
-                return true;
-            }, timeout, __classPrivateFieldGet(this, _Frame_abortDeferred, "f").valueOrThrow()),
+            }, timeout, this.#abortDeferred.valueOrThrow()).then(info => {
+                return [info, undefined];
+            }),
         ]);
-        return __classPrivateFieldGet(this, _Frame_page, "f").getNavigationResponse(info.navigation);
+        return this.#page.getNavigationResponse(info.navigation);
     }
     dispose() {
-        __classPrivateFieldGet(this, _Frame_abortDeferred, "f").reject(new Error('Frame detached'));
-        __classPrivateFieldGet(this, _Frame_context, "f").dispose();
+        this.#abortDeferred.reject(new Error('Frame detached'));
+        this.#context.dispose();
     }
 }
-_Frame_page = new WeakMap(), _Frame_context = new WeakMap(), _Frame_timeoutSettings = new WeakMap(), _Frame_abortDeferred = new WeakMap();
 //# sourceMappingURL=Frame.js.map

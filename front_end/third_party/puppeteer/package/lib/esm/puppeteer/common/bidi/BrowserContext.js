@@ -13,107 +13,79 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _BrowserContext_instances, _BrowserContext_browser, _BrowserContext_connection, _BrowserContext_defaultViewport, _BrowserContext_pages, _BrowserContext_onContextDestroyedBind, _BrowserContext_init, _BrowserContext_isDefault, _BrowserContext_getTree, _BrowserContext_onContextDestroyed;
 import { BrowserContext as BrowserContextBase } from '../../api/BrowserContext.js';
-import { Deferred } from '../../util/Deferred.js';
-import { Page } from './Page.js';
-import { debugError } from './utils.js';
 /**
  * @internal
  */
 export class BrowserContext extends BrowserContextBase {
+    #browser;
+    #connection;
+    #defaultViewport;
+    #isDefault = false;
     constructor(browser, options) {
         super();
-        _BrowserContext_instances.add(this);
-        _BrowserContext_browser.set(this, void 0);
-        _BrowserContext_connection.set(this, void 0);
-        _BrowserContext_defaultViewport.set(this, void 0);
-        _BrowserContext_pages.set(this, new Map());
-        _BrowserContext_onContextDestroyedBind.set(this, __classPrivateFieldGet(this, _BrowserContext_instances, "m", _BrowserContext_onContextDestroyed).bind(this));
-        _BrowserContext_init.set(this, Deferred.create());
-        _BrowserContext_isDefault.set(this, false);
-        __classPrivateFieldSet(this, _BrowserContext_browser, browser, "f");
-        __classPrivateFieldSet(this, _BrowserContext_connection, __classPrivateFieldGet(this, _BrowserContext_browser, "f").connection, "f");
-        __classPrivateFieldSet(this, _BrowserContext_defaultViewport, options.defaultViewport, "f");
-        __classPrivateFieldGet(this, _BrowserContext_connection, "f").on('browsingContext.contextDestroyed', __classPrivateFieldGet(this, _BrowserContext_onContextDestroyedBind, "f"));
-        __classPrivateFieldSet(this, _BrowserContext_isDefault, options.isDefault, "f");
-        __classPrivateFieldGet(this, _BrowserContext_instances, "m", _BrowserContext_getTree).call(this).catch(debugError);
+        this.#browser = browser;
+        this.#connection = this.#browser.connection;
+        this.#defaultViewport = options.defaultViewport;
+        this.#isDefault = options.isDefault;
+    }
+    targets() {
+        return this.#browser.targets().filter(target => {
+            return target.browserContext() === this;
+        });
+    }
+    waitForTarget(predicate, options = {}) {
+        return this.#browser.waitForTarget(target => {
+            return target.browserContext() === this && predicate(target);
+        }, options);
     }
     get connection() {
-        return __classPrivateFieldGet(this, _BrowserContext_connection, "f");
+        return this.#connection;
     }
     async newPage() {
-        await __classPrivateFieldGet(this, _BrowserContext_init, "f").valueOrThrow();
-        const { result } = await __classPrivateFieldGet(this, _BrowserContext_connection, "f").send('browsingContext.create', {
-            type: 'tab',
+        const { result } = await this.#connection.send('browsingContext.create', {
+            type: "tab" /* Bidi.BrowsingContext.CreateType.Tab */,
         });
-        const page = new Page(this, {
-            context: result.context,
-            children: [],
-        });
-        if (__classPrivateFieldGet(this, _BrowserContext_defaultViewport, "f")) {
+        const target = this.#browser._getTargetById(result.context);
+        // TODO: once BiDi has some concept matching BrowserContext, the newly
+        // created contexts should get automatically assigned to the right
+        // BrowserContext. For now, we assume that only explicitly created pages go
+        // to the current BrowserContext. Otherwise, the contexts get assigned to
+        // the default BrowserContext by the Browser.
+        target._setBrowserContext(this);
+        const page = await target.page();
+        if (!page) {
+            throw new Error('Page is not found');
+        }
+        if (this.#defaultViewport) {
             try {
-                await page.setViewport(__classPrivateFieldGet(this, _BrowserContext_defaultViewport, "f"));
+                await page.setViewport(this.#defaultViewport);
             }
             catch {
                 // No support for setViewport in Firefox.
             }
         }
-        __classPrivateFieldGet(this, _BrowserContext_pages, "f").set(result.context, page);
         return page;
     }
     async close() {
-        await __classPrivateFieldGet(this, _BrowserContext_init, "f").valueOrThrow();
-        if (__classPrivateFieldGet(this, _BrowserContext_isDefault, "f")) {
+        if (this.#isDefault) {
             throw new Error('Default context cannot be closed!');
         }
-        for (const page of __classPrivateFieldGet(this, _BrowserContext_pages, "f").values()) {
-            await page?.close().catch(error => {
-                debugError(error);
-            });
-        }
-        __classPrivateFieldGet(this, _BrowserContext_pages, "f").clear();
+        await this.#browser._closeContext(this);
     }
     browser() {
-        return __classPrivateFieldGet(this, _BrowserContext_browser, "f");
+        return this.#browser;
     }
     async pages() {
-        await __classPrivateFieldGet(this, _BrowserContext_init, "f").valueOrThrow();
-        return [...__classPrivateFieldGet(this, _BrowserContext_pages, "f").values()];
+        const results = await Promise.all([...this.targets()].map(t => {
+            return t.page();
+        }));
+        return results.filter((p) => {
+            return p !== null;
+        });
+    }
+    isIncognito() {
+        return !this.#isDefault;
     }
 }
-_BrowserContext_browser = new WeakMap(), _BrowserContext_connection = new WeakMap(), _BrowserContext_defaultViewport = new WeakMap(), _BrowserContext_pages = new WeakMap(), _BrowserContext_onContextDestroyedBind = new WeakMap(), _BrowserContext_init = new WeakMap(), _BrowserContext_isDefault = new WeakMap(), _BrowserContext_instances = new WeakSet(), _BrowserContext_getTree = async function _BrowserContext_getTree() {
-    if (!__classPrivateFieldGet(this, _BrowserContext_isDefault, "f")) {
-        __classPrivateFieldGet(this, _BrowserContext_init, "f").resolve();
-        return;
-    }
-    try {
-        const { result } = await __classPrivateFieldGet(this, _BrowserContext_connection, "f").send('browsingContext.getTree', {});
-        for (const context of result.contexts) {
-            const page = new Page(this, context);
-            __classPrivateFieldGet(this, _BrowserContext_pages, "f").set(context.context, page);
-        }
-        __classPrivateFieldGet(this, _BrowserContext_init, "f").resolve();
-    }
-    catch (err) {
-        __classPrivateFieldGet(this, _BrowserContext_init, "f").reject(err);
-    }
-}, _BrowserContext_onContextDestroyed = async function _BrowserContext_onContextDestroyed(event) {
-    const page = __classPrivateFieldGet(this, _BrowserContext_pages, "f").get(event.context);
-    await page?.close().catch(error => {
-        debugError(error);
-    });
-    __classPrivateFieldGet(this, _BrowserContext_pages, "f").delete(event.context);
-};
 //# sourceMappingURL=BrowserContext.js.map

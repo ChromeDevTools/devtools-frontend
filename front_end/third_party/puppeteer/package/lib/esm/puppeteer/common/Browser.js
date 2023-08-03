@@ -13,28 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var _CDPBrowser_instances, _CDPBrowser_ignoreHTTPSErrors, _CDPBrowser_defaultViewport, _CDPBrowser_process, _CDPBrowser_connection, _CDPBrowser_closeCallback, _CDPBrowser_targetFilterCallback, _CDPBrowser_isPageTargetCallback, _CDPBrowser_defaultContext, _CDPBrowser_contexts, _CDPBrowser_screenshotTaskQueue, _CDPBrowser_targetManager, _CDPBrowser_emitDisconnected, _CDPBrowser_setIsPageTargetCallback, _CDPBrowser_createTarget, _CDPBrowser_onAttachedToTarget, _CDPBrowser_onDetachedFromTarget, _CDPBrowser_onTargetChanged, _CDPBrowser_onTargetDiscovered, _CDPBrowser_getVersion, _CDPBrowserContext_connection, _CDPBrowserContext_browser, _CDPBrowserContext_id;
 import { Browser as BrowserBase, WEB_PERMISSION_TO_PROTOCOL_PERMISSION, } from '../api/Browser.js';
 import { BrowserContext } from '../api/BrowserContext.js';
 import { assert } from '../util/assert.js';
-import { Deferred } from '../util/Deferred.js';
 import { ChromeTargetManager } from './ChromeTargetManager.js';
 import { ConnectionEmittedEvents } from './Connection.js';
 import { FirefoxTargetManager } from './FirefoxTargetManager.js';
 import { InitializationStatus, OtherTarget, PageTarget, WorkerTarget, } from './Target.js';
 import { TaskQueue } from './TaskQueue.js';
-import { waitWithTimeout } from './util.js';
 /**
  * @internal
  */
@@ -47,143 +33,103 @@ export class CDPBrowser extends BrowserBase {
         await browser._attach();
         return browser;
     }
+    #ignoreHTTPSErrors;
+    #defaultViewport;
+    #process;
+    #connection;
+    #closeCallback;
+    #targetFilterCallback;
+    #isPageTargetCallback;
+    #defaultContext;
+    #contexts = new Map();
+    #screenshotTaskQueue;
+    #targetManager;
     /**
      * @internal
      */
     get _targets() {
-        return __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").getAvailableTargets();
+        return this.#targetManager.getAvailableTargets();
     }
     /**
      * @internal
      */
     constructor(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback) {
         super();
-        _CDPBrowser_instances.add(this);
-        _CDPBrowser_ignoreHTTPSErrors.set(this, void 0);
-        _CDPBrowser_defaultViewport.set(this, void 0);
-        _CDPBrowser_process.set(this, void 0);
-        _CDPBrowser_connection.set(this, void 0);
-        _CDPBrowser_closeCallback.set(this, void 0);
-        _CDPBrowser_targetFilterCallback.set(this, void 0);
-        _CDPBrowser_isPageTargetCallback.set(this, void 0);
-        _CDPBrowser_defaultContext.set(this, void 0);
-        _CDPBrowser_contexts.set(this, new Map());
-        _CDPBrowser_screenshotTaskQueue.set(this, void 0);
-        _CDPBrowser_targetManager.set(this, void 0);
-        _CDPBrowser_emitDisconnected.set(this, () => {
-            this.emit("disconnected" /* BrowserEmittedEvents.Disconnected */);
-        });
-        _CDPBrowser_createTarget.set(this, (targetInfo, session) => {
-            const { browserContextId } = targetInfo;
-            const context = browserContextId && __classPrivateFieldGet(this, _CDPBrowser_contexts, "f").has(browserContextId)
-                ? __classPrivateFieldGet(this, _CDPBrowser_contexts, "f").get(browserContextId)
-                : __classPrivateFieldGet(this, _CDPBrowser_defaultContext, "f");
-            if (!context) {
-                throw new Error('Missing browser context');
-            }
-            const createSession = (isAutoAttachEmulated) => {
-                return __classPrivateFieldGet(this, _CDPBrowser_connection, "f")._createSession(targetInfo, isAutoAttachEmulated);
-            };
-            if (__classPrivateFieldGet(this, _CDPBrowser_isPageTargetCallback, "f").call(this, targetInfo)) {
-                return new PageTarget(targetInfo, session, context, __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f"), createSession, __classPrivateFieldGet(this, _CDPBrowser_ignoreHTTPSErrors, "f"), __classPrivateFieldGet(this, _CDPBrowser_defaultViewport, "f") ?? null, __classPrivateFieldGet(this, _CDPBrowser_screenshotTaskQueue, "f"));
-            }
-            if (targetInfo.type === 'service_worker' ||
-                targetInfo.type === 'shared_worker') {
-                return new WorkerTarget(targetInfo, session, context, __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f"), createSession);
-            }
-            return new OtherTarget(targetInfo, session, context, __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f"), createSession);
-        });
-        _CDPBrowser_onAttachedToTarget.set(this, async (target) => {
-            if ((await target._initializedDeferred.valueOrThrow()) ===
-                InitializationStatus.SUCCESS) {
-                this.emit("targetcreated" /* BrowserEmittedEvents.TargetCreated */, target);
-                target
-                    .browserContext()
-                    .emit("targetcreated" /* BrowserContextEmittedEvents.TargetCreated */, target);
-            }
-        });
-        _CDPBrowser_onDetachedFromTarget.set(this, async (target) => {
-            target._initializedDeferred.resolve(InitializationStatus.ABORTED);
-            target._isClosedDeferred.resolve();
-            if ((await target._initializedDeferred.valueOrThrow()) ===
-                InitializationStatus.SUCCESS) {
-                this.emit("targetdestroyed" /* BrowserEmittedEvents.TargetDestroyed */, target);
-                target
-                    .browserContext()
-                    .emit("targetdestroyed" /* BrowserContextEmittedEvents.TargetDestroyed */, target);
-            }
-        });
-        _CDPBrowser_onTargetChanged.set(this, ({ target }) => {
-            this.emit("targetchanged" /* BrowserEmittedEvents.TargetChanged */, target);
-            target
-                .browserContext()
-                .emit("targetchanged" /* BrowserContextEmittedEvents.TargetChanged */, target);
-        });
-        _CDPBrowser_onTargetDiscovered.set(this, (targetInfo) => {
-            this.emit('targetdiscovered', targetInfo);
-        });
         product = product || 'chrome';
-        __classPrivateFieldSet(this, _CDPBrowser_ignoreHTTPSErrors, ignoreHTTPSErrors, "f");
-        __classPrivateFieldSet(this, _CDPBrowser_defaultViewport, defaultViewport, "f");
-        __classPrivateFieldSet(this, _CDPBrowser_process, process, "f");
-        __classPrivateFieldSet(this, _CDPBrowser_screenshotTaskQueue, new TaskQueue(), "f");
-        __classPrivateFieldSet(this, _CDPBrowser_connection, connection, "f");
-        __classPrivateFieldSet(this, _CDPBrowser_closeCallback, closeCallback || function () { }, "f");
-        __classPrivateFieldSet(this, _CDPBrowser_targetFilterCallback, targetFilterCallback ||
-            (() => {
-                return true;
-            }), "f");
-        __classPrivateFieldGet(this, _CDPBrowser_instances, "m", _CDPBrowser_setIsPageTargetCallback).call(this, isPageTargetCallback);
+        this.#ignoreHTTPSErrors = ignoreHTTPSErrors;
+        this.#defaultViewport = defaultViewport;
+        this.#process = process;
+        this.#screenshotTaskQueue = new TaskQueue();
+        this.#connection = connection;
+        this.#closeCallback = closeCallback || function () { };
+        this.#targetFilterCallback =
+            targetFilterCallback ||
+                (() => {
+                    return true;
+                });
+        this.#setIsPageTargetCallback(isPageTargetCallback);
         if (product === 'firefox') {
-            __classPrivateFieldSet(this, _CDPBrowser_targetManager, new FirefoxTargetManager(connection, __classPrivateFieldGet(this, _CDPBrowser_createTarget, "f"), __classPrivateFieldGet(this, _CDPBrowser_targetFilterCallback, "f")), "f");
+            this.#targetManager = new FirefoxTargetManager(connection, this.#createTarget, this.#targetFilterCallback);
         }
         else {
-            __classPrivateFieldSet(this, _CDPBrowser_targetManager, new ChromeTargetManager(connection, __classPrivateFieldGet(this, _CDPBrowser_createTarget, "f"), __classPrivateFieldGet(this, _CDPBrowser_targetFilterCallback, "f")), "f");
+            this.#targetManager = new ChromeTargetManager(connection, this.#createTarget, this.#targetFilterCallback);
         }
-        __classPrivateFieldSet(this, _CDPBrowser_defaultContext, new CDPBrowserContext(__classPrivateFieldGet(this, _CDPBrowser_connection, "f"), this), "f");
+        this.#defaultContext = new CDPBrowserContext(this.#connection, this);
         for (const contextId of contextIds) {
-            __classPrivateFieldGet(this, _CDPBrowser_contexts, "f").set(contextId, new CDPBrowserContext(__classPrivateFieldGet(this, _CDPBrowser_connection, "f"), this, contextId));
+            this.#contexts.set(contextId, new CDPBrowserContext(this.#connection, this, contextId));
         }
     }
+    #emitDisconnected = () => {
+        this.emit("disconnected" /* BrowserEmittedEvents.Disconnected */);
+    };
     /**
      * @internal
      */
     async _attach() {
-        __classPrivateFieldGet(this, _CDPBrowser_connection, "f").on(ConnectionEmittedEvents.Disconnected, __classPrivateFieldGet(this, _CDPBrowser_emitDisconnected, "f"));
-        __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").on("targetAvailable" /* TargetManagerEmittedEvents.TargetAvailable */, __classPrivateFieldGet(this, _CDPBrowser_onAttachedToTarget, "f"));
-        __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").on("targetGone" /* TargetManagerEmittedEvents.TargetGone */, __classPrivateFieldGet(this, _CDPBrowser_onDetachedFromTarget, "f"));
-        __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").on("targetChanged" /* TargetManagerEmittedEvents.TargetChanged */, __classPrivateFieldGet(this, _CDPBrowser_onTargetChanged, "f"));
-        __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").on("targetDiscovered" /* TargetManagerEmittedEvents.TargetDiscovered */, __classPrivateFieldGet(this, _CDPBrowser_onTargetDiscovered, "f"));
-        await __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").initialize();
+        this.#connection.on(ConnectionEmittedEvents.Disconnected, this.#emitDisconnected);
+        this.#targetManager.on("targetAvailable" /* TargetManagerEmittedEvents.TargetAvailable */, this.#onAttachedToTarget);
+        this.#targetManager.on("targetGone" /* TargetManagerEmittedEvents.TargetGone */, this.#onDetachedFromTarget);
+        this.#targetManager.on("targetChanged" /* TargetManagerEmittedEvents.TargetChanged */, this.#onTargetChanged);
+        this.#targetManager.on("targetDiscovered" /* TargetManagerEmittedEvents.TargetDiscovered */, this.#onTargetDiscovered);
+        await this.#targetManager.initialize();
     }
     /**
      * @internal
      */
     _detach() {
-        __classPrivateFieldGet(this, _CDPBrowser_connection, "f").off(ConnectionEmittedEvents.Disconnected, __classPrivateFieldGet(this, _CDPBrowser_emitDisconnected, "f"));
-        __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").off("targetAvailable" /* TargetManagerEmittedEvents.TargetAvailable */, __classPrivateFieldGet(this, _CDPBrowser_onAttachedToTarget, "f"));
-        __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").off("targetGone" /* TargetManagerEmittedEvents.TargetGone */, __classPrivateFieldGet(this, _CDPBrowser_onDetachedFromTarget, "f"));
-        __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").off("targetChanged" /* TargetManagerEmittedEvents.TargetChanged */, __classPrivateFieldGet(this, _CDPBrowser_onTargetChanged, "f"));
-        __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").off("targetDiscovered" /* TargetManagerEmittedEvents.TargetDiscovered */, __classPrivateFieldGet(this, _CDPBrowser_onTargetDiscovered, "f"));
+        this.#connection.off(ConnectionEmittedEvents.Disconnected, this.#emitDisconnected);
+        this.#targetManager.off("targetAvailable" /* TargetManagerEmittedEvents.TargetAvailable */, this.#onAttachedToTarget);
+        this.#targetManager.off("targetGone" /* TargetManagerEmittedEvents.TargetGone */, this.#onDetachedFromTarget);
+        this.#targetManager.off("targetChanged" /* TargetManagerEmittedEvents.TargetChanged */, this.#onTargetChanged);
+        this.#targetManager.off("targetDiscovered" /* TargetManagerEmittedEvents.TargetDiscovered */, this.#onTargetDiscovered);
     }
     /**
      * The spawned browser process. Returns `null` if the browser instance was created with
      * {@link Puppeteer.connect}.
      */
     process() {
-        return __classPrivateFieldGet(this, _CDPBrowser_process, "f") ?? null;
+        return this.#process ?? null;
     }
     /**
      * @internal
      */
     _targetManager() {
-        return __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f");
+        return this.#targetManager;
+    }
+    #setIsPageTargetCallback(isPageTargetCallback) {
+        this.#isPageTargetCallback =
+            isPageTargetCallback ||
+                ((target) => {
+                    return (target.type() === 'page' ||
+                        target.type() === 'background_page' ||
+                        target.type() === 'webview');
+                });
     }
     /**
      * @internal
      */
     _getIsPageTargetCallback() {
-        return __classPrivateFieldGet(this, _CDPBrowser_isPageTargetCallback, "f");
+        return this.#isPageTargetCallback;
     }
     /**
      * Creates a new incognito browser context. This won't share cookies/cache with other
@@ -205,12 +151,12 @@ export class CDPBrowser extends BrowserBase {
      */
     async createIncognitoBrowserContext(options = {}) {
         const { proxyServer, proxyBypassList } = options;
-        const { browserContextId } = await __classPrivateFieldGet(this, _CDPBrowser_connection, "f").send('Target.createBrowserContext', {
+        const { browserContextId } = await this.#connection.send('Target.createBrowserContext', {
             proxyServer,
             proxyBypassList: proxyBypassList && proxyBypassList.join(','),
         });
-        const context = new CDPBrowserContext(__classPrivateFieldGet(this, _CDPBrowser_connection, "f"), this, browserContextId);
-        __classPrivateFieldGet(this, _CDPBrowser_contexts, "f").set(browserContextId, context);
+        const context = new CDPBrowserContext(this.#connection, this, browserContextId);
+        this.#contexts.set(browserContextId, context);
         return context;
     }
     /**
@@ -218,13 +164,13 @@ export class CDPBrowser extends BrowserBase {
      * return a single instance of {@link BrowserContext}.
      */
     browserContexts() {
-        return [__classPrivateFieldGet(this, _CDPBrowser_defaultContext, "f"), ...Array.from(__classPrivateFieldGet(this, _CDPBrowser_contexts, "f").values())];
+        return [this.#defaultContext, ...Array.from(this.#contexts.values())];
     }
     /**
      * Returns the default browser context. The default browser context cannot be closed.
      */
     defaultBrowserContext() {
-        return __classPrivateFieldGet(this, _CDPBrowser_defaultContext, "f");
+        return this.#defaultContext;
     }
     /**
      * @internal
@@ -233,11 +179,61 @@ export class CDPBrowser extends BrowserBase {
         if (!contextId) {
             return;
         }
-        await __classPrivateFieldGet(this, _CDPBrowser_connection, "f").send('Target.disposeBrowserContext', {
+        await this.#connection.send('Target.disposeBrowserContext', {
             browserContextId: contextId,
         });
-        __classPrivateFieldGet(this, _CDPBrowser_contexts, "f").delete(contextId);
+        this.#contexts.delete(contextId);
     }
+    #createTarget = (targetInfo, session) => {
+        const { browserContextId } = targetInfo;
+        const context = browserContextId && this.#contexts.has(browserContextId)
+            ? this.#contexts.get(browserContextId)
+            : this.#defaultContext;
+        if (!context) {
+            throw new Error('Missing browser context');
+        }
+        const createSession = (isAutoAttachEmulated) => {
+            return this.#connection._createSession(targetInfo, isAutoAttachEmulated);
+        };
+        const targetForFilter = new OtherTarget(targetInfo, session, context, this.#targetManager, createSession);
+        if (this.#isPageTargetCallback(targetForFilter)) {
+            return new PageTarget(targetInfo, session, context, this.#targetManager, createSession, this.#ignoreHTTPSErrors, this.#defaultViewport ?? null, this.#screenshotTaskQueue);
+        }
+        if (targetInfo.type === 'service_worker' ||
+            targetInfo.type === 'shared_worker') {
+            return new WorkerTarget(targetInfo, session, context, this.#targetManager, createSession);
+        }
+        return new OtherTarget(targetInfo, session, context, this.#targetManager, createSession);
+    };
+    #onAttachedToTarget = async (target) => {
+        if ((await target._initializedDeferred.valueOrThrow()) ===
+            InitializationStatus.SUCCESS) {
+            this.emit("targetcreated" /* BrowserEmittedEvents.TargetCreated */, target);
+            target
+                .browserContext()
+                .emit("targetcreated" /* BrowserContextEmittedEvents.TargetCreated */, target);
+        }
+    };
+    #onDetachedFromTarget = async (target) => {
+        target._initializedDeferred.resolve(InitializationStatus.ABORTED);
+        target._isClosedDeferred.resolve();
+        if ((await target._initializedDeferred.valueOrThrow()) ===
+            InitializationStatus.SUCCESS) {
+            this.emit("targetdestroyed" /* BrowserEmittedEvents.TargetDestroyed */, target);
+            target
+                .browserContext()
+                .emit("targetdestroyed" /* BrowserContextEmittedEvents.TargetDestroyed */, target);
+        }
+    };
+    #onTargetChanged = ({ target }) => {
+        this.emit("targetchanged" /* BrowserEmittedEvents.TargetChanged */, target);
+        target
+            .browserContext()
+            .emit("targetchanged" /* BrowserContextEmittedEvents.TargetChanged */, target);
+    };
+    #onTargetDiscovered = (targetInfo) => {
+        this.emit('targetdiscovered', targetInfo);
+    };
     /**
      * The browser websocket endpoint which can be used as an argument to
      * {@link Puppeteer.connect}.
@@ -256,24 +252,24 @@ export class CDPBrowser extends BrowserBase {
      * | browser endpoint}.
      */
     wsEndpoint() {
-        return __classPrivateFieldGet(this, _CDPBrowser_connection, "f").url();
+        return this.#connection.url();
     }
     /**
      * Promise which resolves to a new {@link Page} object. The Page is created in
      * a default browser context.
      */
     async newPage() {
-        return __classPrivateFieldGet(this, _CDPBrowser_defaultContext, "f").newPage();
+        return this.#defaultContext.newPage();
     }
     /**
      * @internal
      */
     async _createPageInContext(contextId) {
-        const { targetId } = await __classPrivateFieldGet(this, _CDPBrowser_connection, "f").send('Target.createTarget', {
+        const { targetId } = await this.#connection.send('Target.createTarget', {
             url: 'about:blank',
             browserContextId: contextId || undefined,
         });
-        const target = __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").getAvailableTargets().get(targetId);
+        const target = this.#targetManager.getAvailableTargets().get(targetId);
         if (!target) {
             throw new Error(`Missing target for page (id = ${targetId})`);
         }
@@ -293,7 +289,7 @@ export class CDPBrowser extends BrowserBase {
      * an array with all the targets in all browser contexts.
      */
     targets() {
-        return Array.from(__classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").getAvailableTargets().values()).filter(target => {
+        return Array.from(this.#targetManager.getAvailableTargets().values()).filter(target => {
             return (target._initializedDeferred.value() === InitializationStatus.SUCCESS);
         });
     }
@@ -309,47 +305,8 @@ export class CDPBrowser extends BrowserBase {
         }
         return browserTarget;
     }
-    /**
-     * Searches for a target in all browser contexts.
-     *
-     * @param predicate - A function to be run for every target.
-     * @returns The first target found that matches the `predicate` function.
-     *
-     * @example
-     *
-     * An example of finding a target for a page opened via `window.open`:
-     *
-     * ```ts
-     * await page.evaluate(() => window.open('https://www.example.com/'));
-     * const newWindowTarget = await browser.waitForTarget(
-     *   target => target.url() === 'https://www.example.com/'
-     * );
-     * ```
-     */
-    async waitForTarget(predicate, options = {}) {
-        const { timeout = 30000 } = options;
-        const targetDeferred = Deferred.create();
-        this.on("targetcreated" /* BrowserEmittedEvents.TargetCreated */, check);
-        this.on("targetchanged" /* BrowserEmittedEvents.TargetChanged */, check);
-        try {
-            this.targets().forEach(check);
-            if (!timeout) {
-                return await targetDeferred.valueOrThrow();
-            }
-            return await waitWithTimeout(targetDeferred.valueOrThrow(), 'target', timeout);
-        }
-        finally {
-            this.off("targetcreated" /* BrowserEmittedEvents.TargetCreated */, check);
-            this.off("targetchanged" /* BrowserEmittedEvents.TargetChanged */, check);
-        }
-        async function check(target) {
-            if ((await predicate(target)) && !targetDeferred.resolved()) {
-                targetDeferred.resolve(target);
-            }
-        }
-    }
     async version() {
-        const version = await __classPrivateFieldGet(this, _CDPBrowser_instances, "m", _CDPBrowser_getVersion).call(this);
+        const version = await this.#getVersion();
         return version.product;
     }
     /**
@@ -357,59 +314,52 @@ export class CDPBrowser extends BrowserBase {
      * {@link Page.setUserAgent}.
      */
     async userAgent() {
-        const version = await __classPrivateFieldGet(this, _CDPBrowser_instances, "m", _CDPBrowser_getVersion).call(this);
+        const version = await this.#getVersion();
         return version.userAgent;
     }
     async close() {
-        await __classPrivateFieldGet(this, _CDPBrowser_closeCallback, "f").call(null);
+        await this.#closeCallback.call(null);
         this.disconnect();
     }
     disconnect() {
-        __classPrivateFieldGet(this, _CDPBrowser_targetManager, "f").dispose();
-        __classPrivateFieldGet(this, _CDPBrowser_connection, "f").dispose();
+        this.#targetManager.dispose();
+        this.#connection.dispose();
         this._detach();
     }
     /**
      * Indicates that the browser is connected.
      */
     isConnected() {
-        return !__classPrivateFieldGet(this, _CDPBrowser_connection, "f")._closed;
+        return !this.#connection._closed;
+    }
+    #getVersion() {
+        return this.#connection.send('Browser.getVersion');
     }
 }
-_CDPBrowser_ignoreHTTPSErrors = new WeakMap(), _CDPBrowser_defaultViewport = new WeakMap(), _CDPBrowser_process = new WeakMap(), _CDPBrowser_connection = new WeakMap(), _CDPBrowser_closeCallback = new WeakMap(), _CDPBrowser_targetFilterCallback = new WeakMap(), _CDPBrowser_isPageTargetCallback = new WeakMap(), _CDPBrowser_defaultContext = new WeakMap(), _CDPBrowser_contexts = new WeakMap(), _CDPBrowser_screenshotTaskQueue = new WeakMap(), _CDPBrowser_targetManager = new WeakMap(), _CDPBrowser_emitDisconnected = new WeakMap(), _CDPBrowser_createTarget = new WeakMap(), _CDPBrowser_onAttachedToTarget = new WeakMap(), _CDPBrowser_onDetachedFromTarget = new WeakMap(), _CDPBrowser_onTargetChanged = new WeakMap(), _CDPBrowser_onTargetDiscovered = new WeakMap(), _CDPBrowser_instances = new WeakSet(), _CDPBrowser_setIsPageTargetCallback = function _CDPBrowser_setIsPageTargetCallback(isPageTargetCallback) {
-    __classPrivateFieldSet(this, _CDPBrowser_isPageTargetCallback, isPageTargetCallback ||
-        ((target) => {
-            return (target.type === 'page' ||
-                target.type === 'background_page' ||
-                target.type === 'webview');
-        }), "f");
-}, _CDPBrowser_getVersion = function _CDPBrowser_getVersion() {
-    return __classPrivateFieldGet(this, _CDPBrowser_connection, "f").send('Browser.getVersion');
-};
 /**
  * @internal
  */
 export class CDPBrowserContext extends BrowserContext {
+    #connection;
+    #browser;
+    #id;
     /**
      * @internal
      */
     constructor(connection, browser, contextId) {
         super();
-        _CDPBrowserContext_connection.set(this, void 0);
-        _CDPBrowserContext_browser.set(this, void 0);
-        _CDPBrowserContext_id.set(this, void 0);
-        __classPrivateFieldSet(this, _CDPBrowserContext_connection, connection, "f");
-        __classPrivateFieldSet(this, _CDPBrowserContext_browser, browser, "f");
-        __classPrivateFieldSet(this, _CDPBrowserContext_id, contextId, "f");
+        this.#connection = connection;
+        this.#browser = browser;
+        this.#id = contextId;
     }
     get id() {
-        return __classPrivateFieldGet(this, _CDPBrowserContext_id, "f");
+        return this.#id;
     }
     /**
      * An array of all active targets inside the browser context.
      */
     targets() {
-        return __classPrivateFieldGet(this, _CDPBrowserContext_browser, "f").targets().filter(target => {
+        return this.#browser.targets().filter(target => {
             return target.browserContext() === this;
         });
     }
@@ -434,7 +384,7 @@ export class CDPBrowserContext extends BrowserContext {
      * that matches the `predicate` function.
      */
     waitForTarget(predicate, options = {}) {
-        return __classPrivateFieldGet(this, _CDPBrowserContext_browser, "f").waitForTarget(target => {
+        return this.#browser.waitForTarget(target => {
             return target.browserContext() === this && predicate(target);
         }, options);
     }
@@ -443,14 +393,14 @@ export class CDPBrowserContext extends BrowserContext {
      *
      * @returns Promise which resolves to an array of all open pages.
      * Non visible pages, such as `"background_page"`, will not be listed here.
-     * You can find them using {@link Target.page | the target page}.
+     * You can find them using {@link CDPTarget.page | the target page}.
      */
     async pages() {
         const pages = await Promise.all(this.targets()
             .filter(target => {
             return (target.type() === 'page' ||
                 (target.type() === 'other' &&
-                    __classPrivateFieldGet(this, _CDPBrowserContext_browser, "f")._getIsPageTargetCallback()?.(target._getTargetInfo())));
+                    this.#browser._getIsPageTargetCallback()?.(target)));
         })
             .map(target => {
             return target.page();
@@ -467,7 +417,7 @@ export class CDPBrowserContext extends BrowserContext {
      * The default browser context cannot be closed.
      */
     isIncognito() {
-        return !!__classPrivateFieldGet(this, _CDPBrowserContext_id, "f");
+        return !!this.#id;
     }
     /**
      * @example
@@ -491,9 +441,9 @@ export class CDPBrowserContext extends BrowserContext {
             }
             return protocolPermission;
         });
-        await __classPrivateFieldGet(this, _CDPBrowserContext_connection, "f").send('Browser.grantPermissions', {
+        await this.#connection.send('Browser.grantPermissions', {
             origin,
-            browserContextId: __classPrivateFieldGet(this, _CDPBrowserContext_id, "f") || undefined,
+            browserContextId: this.#id || undefined,
             permissions: protocolPermissions,
         });
     }
@@ -510,21 +460,21 @@ export class CDPBrowserContext extends BrowserContext {
      * ```
      */
     async clearPermissionOverrides() {
-        await __classPrivateFieldGet(this, _CDPBrowserContext_connection, "f").send('Browser.resetPermissions', {
-            browserContextId: __classPrivateFieldGet(this, _CDPBrowserContext_id, "f") || undefined,
+        await this.#connection.send('Browser.resetPermissions', {
+            browserContextId: this.#id || undefined,
         });
     }
     /**
      * Creates a new page in the browser context.
      */
     newPage() {
-        return __classPrivateFieldGet(this, _CDPBrowserContext_browser, "f")._createPageInContext(__classPrivateFieldGet(this, _CDPBrowserContext_id, "f"));
+        return this.#browser._createPageInContext(this.#id);
     }
     /**
      * The browser this browser context belongs to.
      */
     browser() {
-        return __classPrivateFieldGet(this, _CDPBrowserContext_browser, "f");
+        return this.#browser;
     }
     /**
      * Closes the browser context. All the targets that belong to the browser context
@@ -534,9 +484,8 @@ export class CDPBrowserContext extends BrowserContext {
      * Only incognito browser contexts can be closed.
      */
     async close() {
-        assert(__classPrivateFieldGet(this, _CDPBrowserContext_id, "f"), 'Non-incognito profiles cannot be closed!');
-        await __classPrivateFieldGet(this, _CDPBrowserContext_browser, "f")._disposeContext(__classPrivateFieldGet(this, _CDPBrowserContext_id, "f"));
+        assert(this.#id, 'Non-incognito profiles cannot be closed!');
+        await this.#browser._disposeContext(this.#id);
     }
 }
-_CDPBrowserContext_connection = new WeakMap(), _CDPBrowserContext_browser = new WeakMap(), _CDPBrowserContext_id = new WeakMap();
 //# sourceMappingURL=Browser.js.map

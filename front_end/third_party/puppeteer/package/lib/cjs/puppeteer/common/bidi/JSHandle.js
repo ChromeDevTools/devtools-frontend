@@ -14,18 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _JSHandle_disposed, _JSHandle_realm, _JSHandle_remoteValue;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JSHandle = void 0;
 const JSHandle_js_1 = require("../../api/JSHandle.js");
@@ -33,19 +21,19 @@ const util_js_1 = require("../util.js");
 const Serializer_js_1 = require("./Serializer.js");
 const utils_js_1 = require("./utils.js");
 class JSHandle extends JSHandle_js_1.JSHandle {
+    #disposed = false;
+    #realm;
+    #remoteValue;
     constructor(realm, remoteValue) {
         super();
-        _JSHandle_disposed.set(this, false);
-        _JSHandle_realm.set(this, void 0);
-        _JSHandle_remoteValue.set(this, void 0);
-        __classPrivateFieldSet(this, _JSHandle_realm, realm, "f");
-        __classPrivateFieldSet(this, _JSHandle_remoteValue, remoteValue, "f");
+        this.#realm = realm;
+        this.#remoteValue = remoteValue;
     }
     context() {
-        return __classPrivateFieldGet(this, _JSHandle_realm, "f");
+        return this.#realm;
     }
     get disposed() {
-        return __classPrivateFieldGet(this, _JSHandle_disposed, "f");
+        return this.#disposed;
     }
     async evaluate(pageFunction, ...args) {
         pageFunction = (0, util_js_1.withSourcePuppeteerURLIfNone)(this.evaluate.name, pageFunction);
@@ -86,26 +74,24 @@ class JSHandle extends JSHandle_js_1.JSHandle {
         return map;
     }
     async jsonValue() {
-        const value = Serializer_js_1.BidiSerializer.deserialize(__classPrivateFieldGet(this, _JSHandle_remoteValue, "f"));
-        if (__classPrivateFieldGet(this, _JSHandle_remoteValue, "f").type !== 'undefined' && value === undefined) {
-            throw new Error('Could not serialize referenced object');
-        }
-        return value;
+        return await this.evaluate(value => {
+            return value;
+        });
     }
     asElement() {
         return null;
     }
     async dispose() {
-        if (__classPrivateFieldGet(this, _JSHandle_disposed, "f")) {
+        if (this.#disposed) {
             return;
         }
-        __classPrivateFieldSet(this, _JSHandle_disposed, true, "f");
-        if ('handle' in __classPrivateFieldGet(this, _JSHandle_remoteValue, "f")) {
-            await (0, utils_js_1.releaseReference)(__classPrivateFieldGet(this, _JSHandle_realm, "f"), __classPrivateFieldGet(this, _JSHandle_remoteValue, "f"));
+        this.#disposed = true;
+        if ('handle' in this.#remoteValue) {
+            await (0, utils_js_1.releaseReference)(this.#realm, this.#remoteValue);
         }
     }
     get isPrimitiveValue() {
-        switch (__classPrivateFieldGet(this, _JSHandle_remoteValue, "f").type) {
+        switch (this.#remoteValue.type) {
             case 'string':
             case 'number':
             case 'bigint':
@@ -119,17 +105,16 @@ class JSHandle extends JSHandle_js_1.JSHandle {
     }
     toString() {
         if (this.isPrimitiveValue) {
-            return 'JSHandle:' + Serializer_js_1.BidiSerializer.deserialize(__classPrivateFieldGet(this, _JSHandle_remoteValue, "f"));
+            return 'JSHandle:' + Serializer_js_1.BidiSerializer.deserialize(this.#remoteValue);
         }
-        return 'JSHandle@' + __classPrivateFieldGet(this, _JSHandle_remoteValue, "f").type;
+        return 'JSHandle@' + this.#remoteValue.type;
     }
     get id() {
-        return 'handle' in __classPrivateFieldGet(this, _JSHandle_remoteValue, "f") ? __classPrivateFieldGet(this, _JSHandle_remoteValue, "f").handle : undefined;
+        return 'handle' in this.#remoteValue ? this.#remoteValue.handle : undefined;
     }
     remoteValue() {
-        return __classPrivateFieldGet(this, _JSHandle_remoteValue, "f");
+        return this.#remoteValue;
     }
 }
 exports.JSHandle = JSHandle;
-_JSHandle_disposed = new WeakMap(), _JSHandle_realm = new WeakMap(), _JSHandle_remoteValue = new WeakMap();
 //# sourceMappingURL=JSHandle.js.map

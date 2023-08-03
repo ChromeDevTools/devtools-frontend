@@ -14,18 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Accessibility_client, _AXNode_instances, _AXNode_richlyEditable, _AXNode_editable, _AXNode_focusable, _AXNode_hidden, _AXNode_name, _AXNode_role, _AXNode_ignored, _AXNode_cachedHasFocusableChild, _AXNode_isPlainTextField, _AXNode_isTextOnlyObject, _AXNode_hasFocusableChild;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Accessibility = void 0;
 /**
@@ -51,12 +39,12 @@ exports.Accessibility = void 0;
  * @public
  */
 class Accessibility {
+    #client;
     /**
      * @internal
      */
     constructor(client) {
-        _Accessibility_client.set(this, void 0);
-        __classPrivateFieldSet(this, _Accessibility_client, client, "f");
+        this.#client = client;
     }
     /**
      * Captures the current state of the accessibility tree.
@@ -99,10 +87,10 @@ class Accessibility {
      */
     async snapshot(options = {}) {
         const { interestingOnly = true, root = null } = options;
-        const { nodes } = await __classPrivateFieldGet(this, _Accessibility_client, "f").send('Accessibility.getFullAXTree');
+        const { nodes } = await this.#client.send('Accessibility.getFullAXTree');
         let backendNodeId;
         if (root) {
-            const { node } = await __classPrivateFieldGet(this, _Accessibility_client, "f").send('DOM.describeNode', {
+            const { node } = await this.#client.send('DOM.describeNode', {
                 objectId: root.id,
             });
             backendNodeId = node.backendNodeId;
@@ -155,35 +143,59 @@ class Accessibility {
     }
 }
 exports.Accessibility = Accessibility;
-_Accessibility_client = new WeakMap();
 class AXNode {
+    payload;
+    children = [];
+    #richlyEditable = false;
+    #editable = false;
+    #focusable = false;
+    #hidden = false;
+    #name;
+    #role;
+    #ignored;
+    #cachedHasFocusableChild;
     constructor(payload) {
-        _AXNode_instances.add(this);
-        this.children = [];
-        _AXNode_richlyEditable.set(this, false);
-        _AXNode_editable.set(this, false);
-        _AXNode_focusable.set(this, false);
-        _AXNode_hidden.set(this, false);
-        _AXNode_name.set(this, void 0);
-        _AXNode_role.set(this, void 0);
-        _AXNode_ignored.set(this, void 0);
-        _AXNode_cachedHasFocusableChild.set(this, void 0);
         this.payload = payload;
-        __classPrivateFieldSet(this, _AXNode_name, this.payload.name ? this.payload.name.value : '', "f");
-        __classPrivateFieldSet(this, _AXNode_role, this.payload.role ? this.payload.role.value : 'Unknown', "f");
-        __classPrivateFieldSet(this, _AXNode_ignored, this.payload.ignored, "f");
+        this.#name = this.payload.name ? this.payload.name.value : '';
+        this.#role = this.payload.role ? this.payload.role.value : 'Unknown';
+        this.#ignored = this.payload.ignored;
         for (const property of this.payload.properties || []) {
             if (property.name === 'editable') {
-                __classPrivateFieldSet(this, _AXNode_richlyEditable, property.value.value === 'richtext', "f");
-                __classPrivateFieldSet(this, _AXNode_editable, true, "f");
+                this.#richlyEditable = property.value.value === 'richtext';
+                this.#editable = true;
             }
             if (property.name === 'focusable') {
-                __classPrivateFieldSet(this, _AXNode_focusable, property.value.value, "f");
+                this.#focusable = property.value.value;
             }
             if (property.name === 'hidden') {
-                __classPrivateFieldSet(this, _AXNode_hidden, property.value.value, "f");
+                this.#hidden = property.value.value;
             }
         }
+    }
+    #isPlainTextField() {
+        if (this.#richlyEditable) {
+            return false;
+        }
+        if (this.#editable) {
+            return true;
+        }
+        return this.#role === 'textbox' || this.#role === 'searchbox';
+    }
+    #isTextOnlyObject() {
+        const role = this.#role;
+        return role === 'LineBreak' || role === 'text' || role === 'InlineTextBox';
+    }
+    #hasFocusableChild() {
+        if (this.#cachedHasFocusableChild === undefined) {
+            this.#cachedHasFocusableChild = false;
+            for (const child of this.children) {
+                if (child.#focusable || child.#hasFocusableChild()) {
+                    this.#cachedHasFocusableChild = true;
+                    break;
+                }
+            }
+        }
+        return this.#cachedHasFocusableChild;
     }
     find(predicate) {
         if (predicate(this)) {
@@ -205,14 +217,14 @@ class AXNode {
         // implementation details, but we want to expose them as leaves to platform
         // accessibility APIs because screen readers might be confused if they find
         // any children.
-        if (__classPrivateFieldGet(this, _AXNode_instances, "m", _AXNode_isPlainTextField).call(this) || __classPrivateFieldGet(this, _AXNode_instances, "m", _AXNode_isTextOnlyObject).call(this)) {
+        if (this.#isPlainTextField() || this.#isTextOnlyObject()) {
             return true;
         }
         // Roles whose children are only presentational according to the ARIA and
         // HTML5 Specs should be hidden from screen readers.
         // (Note that whilst ARIA buttons can have only presentational children, HTML5
         // buttons are allowed to have content.)
-        switch (__classPrivateFieldGet(this, _AXNode_role, "f")) {
+        switch (this.#role) {
             case 'doc-cover':
             case 'graphics-symbol':
             case 'img':
@@ -226,19 +238,19 @@ class AXNode {
                 break;
         }
         // Here and below: Android heuristics
-        if (__classPrivateFieldGet(this, _AXNode_instances, "m", _AXNode_hasFocusableChild).call(this)) {
+        if (this.#hasFocusableChild()) {
             return false;
         }
-        if (__classPrivateFieldGet(this, _AXNode_focusable, "f") && __classPrivateFieldGet(this, _AXNode_name, "f")) {
+        if (this.#focusable && this.#name) {
             return true;
         }
-        if (__classPrivateFieldGet(this, _AXNode_role, "f") === 'heading' && __classPrivateFieldGet(this, _AXNode_name, "f")) {
+        if (this.#role === 'heading' && this.#name) {
             return true;
         }
         return false;
     }
     isControl() {
-        switch (__classPrivateFieldGet(this, _AXNode_role, "f")) {
+        switch (this.#role) {
             case 'button':
             case 'checkbox':
             case 'ColorWell':
@@ -266,11 +278,11 @@ class AXNode {
         }
     }
     isInteresting(insideControl) {
-        const role = __classPrivateFieldGet(this, _AXNode_role, "f");
-        if (role === 'Ignored' || __classPrivateFieldGet(this, _AXNode_hidden, "f") || __classPrivateFieldGet(this, _AXNode_ignored, "f")) {
+        const role = this.#role;
+        if (role === 'Ignored' || this.#hidden || this.#ignored) {
             return false;
         }
-        if (__classPrivateFieldGet(this, _AXNode_focusable, "f") || __classPrivateFieldGet(this, _AXNode_richlyEditable, "f")) {
+        if (this.#focusable || this.#richlyEditable) {
             return true;
         }
         // If it's not focusable but has a control role, then it's interesting.
@@ -281,7 +293,7 @@ class AXNode {
         if (insideControl) {
             return false;
         }
-        return this.isLeafNode() && !!__classPrivateFieldGet(this, _AXNode_name, "f");
+        return this.isLeafNode() && !!this.#name;
     }
     serialize() {
         const properties = new Map();
@@ -298,7 +310,7 @@ class AXNode {
             properties.set('description', this.payload.description.value);
         }
         const node = {
-            role: __classPrivateFieldGet(this, _AXNode_role, "f"),
+            role: this.#role,
         };
         const userStringProperties = [
             'name',
@@ -335,7 +347,7 @@ class AXNode {
             // RootWebArea's treat focus differently than other nodes. They report whether
             // their frame  has focus, not whether focus is specifically on the root
             // node.
-            if (booleanProperty === 'focused' && __classPrivateFieldGet(this, _AXNode_role, "f") === 'RootWebArea') {
+            if (booleanProperty === 'focused' && this.#role === 'RootWebArea') {
                 continue;
             }
             const value = getBooleanPropertyValue(booleanProperty);
@@ -401,27 +413,4 @@ class AXNode {
         return nodeById.values().next().value;
     }
 }
-_AXNode_richlyEditable = new WeakMap(), _AXNode_editable = new WeakMap(), _AXNode_focusable = new WeakMap(), _AXNode_hidden = new WeakMap(), _AXNode_name = new WeakMap(), _AXNode_role = new WeakMap(), _AXNode_ignored = new WeakMap(), _AXNode_cachedHasFocusableChild = new WeakMap(), _AXNode_instances = new WeakSet(), _AXNode_isPlainTextField = function _AXNode_isPlainTextField() {
-    if (__classPrivateFieldGet(this, _AXNode_richlyEditable, "f")) {
-        return false;
-    }
-    if (__classPrivateFieldGet(this, _AXNode_editable, "f")) {
-        return true;
-    }
-    return __classPrivateFieldGet(this, _AXNode_role, "f") === 'textbox' || __classPrivateFieldGet(this, _AXNode_role, "f") === 'searchbox';
-}, _AXNode_isTextOnlyObject = function _AXNode_isTextOnlyObject() {
-    const role = __classPrivateFieldGet(this, _AXNode_role, "f");
-    return role === 'LineBreak' || role === 'text' || role === 'InlineTextBox';
-}, _AXNode_hasFocusableChild = function _AXNode_hasFocusableChild() {
-    if (__classPrivateFieldGet(this, _AXNode_cachedHasFocusableChild, "f") === undefined) {
-        __classPrivateFieldSet(this, _AXNode_cachedHasFocusableChild, false, "f");
-        for (const child of this.children) {
-            if (__classPrivateFieldGet(child, _AXNode_focusable, "f") || __classPrivateFieldGet(child, _AXNode_instances, "m", _AXNode_hasFocusableChild).call(child)) {
-                __classPrivateFieldSet(this, _AXNode_cachedHasFocusableChild, true, "f");
-                break;
-            }
-        }
-    }
-    return __classPrivateFieldGet(this, _AXNode_cachedHasFocusableChild, "f");
-};
 //# sourceMappingURL=Accessibility.js.map

@@ -21,9 +21,9 @@ const QueryHandler_js_1 = require("./QueryHandler.js");
  * @internal
  */
 class TextQueryHandler extends QueryHandler_js_1.QueryHandler {
+    static querySelectorAll = (element, selector, { textQuerySelectorAll }) => {
+        return textQuerySelectorAll(element, selector);
+    };
 }
 exports.TextQueryHandler = TextQueryHandler;
-TextQueryHandler.querySelectorAll = (element, selector, { textQuerySelectorAll }) => {
-    return textQuerySelectorAll(element, selector);
-};
 //# sourceMappingURL=TextQueryHandler.js.map

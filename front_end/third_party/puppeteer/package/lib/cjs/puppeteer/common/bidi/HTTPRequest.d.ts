@@ -25,7 +25,7 @@ export declare class HTTPRequest extends BaseHTTPRequest {
     _response: HTTPResponse | null;
     _redirectChain: HTTPRequest[];
     _navigationId: string | null;
-    constructor(event: Bidi.Network.BeforeRequestSentParams, frame: Frame | null, redirectChain: HTTPRequest[]);
+    constructor(event: Bidi.Network.BeforeRequestSentParameters, frame: Frame | null, redirectChain: HTTPRequest[]);
     url(): string;
     resourceType(): ResourceType;
     method(): string;

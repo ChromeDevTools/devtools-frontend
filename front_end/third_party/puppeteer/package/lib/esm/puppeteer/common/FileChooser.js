@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _FileChooser_element, _FileChooser_multiple, _FileChooser_handled;
 import { assert } from '../util/assert.js';
 /**
  * File choosers let you react to the page requesting for a file.
@@ -49,15 +37,15 @@ import { assert } from '../util/assert.js';
  * @public
  */
 export class FileChooser {
+    #element;
+    #multiple;
+    #handled = false;
     /**
      * @internal
      */
     constructor(element, event) {
-        _FileChooser_element.set(this, void 0);
-        _FileChooser_multiple.set(this, void 0);
-        _FileChooser_handled.set(this, false);
-        __classPrivateFieldSet(this, _FileChooser_element, element, "f");
-        __classPrivateFieldSet(this, _FileChooser_multiple, event.mode !== 'selectSingle', "f");
+        this.#element = element;
+        this.#multiple = event.mode !== 'selectSingle';
     }
     /**
      * Whether file chooser allow for
@@ -65,7 +53,7 @@ export class FileChooser {
      * file selection.
      */
     isMultiple() {
-        return __classPrivateFieldGet(this, _FileChooser_multiple, "f");
+        return this.#multiple;
     }
     /**
      * Accept the file chooser request with the given file paths.
@@ -77,17 +65,16 @@ export class FileChooser {
      * absolute.
      */
     async accept(paths) {
-        assert(!__classPrivateFieldGet(this, _FileChooser_handled, "f"), 'Cannot accept FileChooser which is already handled!');
-        __classPrivateFieldSet(this, _FileChooser_handled, true, "f");
-        await __classPrivateFieldGet(this, _FileChooser_element, "f").uploadFile(...paths);
+        assert(!this.#handled, 'Cannot accept FileChooser which is already handled!');
+        this.#handled = true;
+        await this.#element.uploadFile(...paths);
     }
     /**
      * Closes the file chooser without selecting any files.
      */
     cancel() {
-        assert(!__classPrivateFieldGet(this, _FileChooser_handled, "f"), 'Cannot cancel FileChooser which is already handled!');
-        __classPrivateFieldSet(this, _FileChooser_handled, true, "f");
+        assert(!this.#handled, 'Cannot cancel FileChooser which is already handled!');
+        this.#handled = true;
     }
 }
-_FileChooser_element = new WeakMap(), _FileChooser_multiple = new WeakMap(), _FileChooser_handled = new WeakMap();
 //# sourceMappingURL=FileChooser.js.map

@@ -15,12 +15,13 @@
  */
 /// <reference types="node" />
 import { ChildProcess } from 'child_process';
-import { Browser as BrowserBase, BrowserCloseCallback, TargetFilterCallback, IsPageTargetCallback, BrowserContextOptions, WaitForTargetOptions, Permission } from '../api/Browser.js';
+import { Browser as BrowserBase, BrowserCloseCallback, TargetFilterCallback, IsPageTargetCallback, BrowserContextOptions, Permission } from '../api/Browser.js';
 import { BrowserContext } from '../api/BrowserContext.js';
 import { Page } from '../api/Page.js';
+import { Target } from '../api/Target.js';
 import { Connection } from './Connection.js';
 import { Viewport } from './PuppeteerViewport.js';
-import { Target } from './Target.js';
+import { CDPTarget } from './Target.js';
 import { TargetManager } from './TargetManager.js';
 /**
  * @internal
@@ -34,7 +35,7 @@ export declare class CDPBrowser extends BrowserBase {
     /**
      * @internal
      */
-    get _targets(): Map<string, Target>;
+    get _targets(): Map<string, CDPTarget>;
     /**
      * @internal
      */
@@ -123,29 +124,11 @@ export declare class CDPBrowser extends BrowserBase {
      * All active targets inside the Browser. In case of multiple browser contexts, returns
      * an array with all the targets in all browser contexts.
      */
-    targets(): Target[];
+    targets(): CDPTarget[];
     /**
      * The target associated with the browser.
      */
-    target(): Target;
-    /**
-     * Searches for a target in all browser contexts.
-     *
-     * @param predicate - A function to be run for every target.
-     * @returns The first target found that matches the `predicate` function.
-     *
-     * @example
-     *
-     * An example of finding a target for a page opened via `window.open`:
-     *
-     * ```ts
-     * await page.evaluate(() => window.open('https://www.example.com/'));
-     * const newWindowTarget = await browser.waitForTarget(
-     *   target => target.url() === 'https://www.example.com/'
-     * );
-     * ```
-     */
-    waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: WaitForTargetOptions): Promise<Target>;
+    target(): CDPTarget;
     version(): Promise<string>;
     /**
      * The browser's original user agent. Pages can override the browser user agent with
@@ -172,7 +155,7 @@ export declare class CDPBrowserContext extends BrowserContext {
     /**
      * An array of all active targets inside the browser context.
      */
-    targets(): Target[];
+    targets(): CDPTarget[];
     /**
      * This searches for a target in this specific browser context.
      *
@@ -201,7 +184,7 @@ export declare class CDPBrowserContext extends BrowserContext {
      *
      * @returns Promise which resolves to an array of all open pages.
      * Non visible pages, such as `"background_page"`, will not be listed here.
-     * You can find them using {@link Target.page | the target page}.
+     * You can find them using {@link CDPTarget.page | the target page}.
      */
     pages(): Promise<Page[]>;
     /**

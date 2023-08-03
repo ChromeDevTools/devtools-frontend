@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _ElementHandle_frame;
 import { ElementHandle as BaseElementHandle, } from '../../api/ElementHandle.js';
 import { assert } from '../../util/assert.js';
 import { JSHandle } from './JSHandle.js';
@@ -32,13 +20,13 @@ import { JSHandle } from './JSHandle.js';
  * @internal
  */
 export class ElementHandle extends BaseElementHandle {
+    #frame;
     constructor(realm, remoteValue, frame) {
         super(new JSHandle(realm, remoteValue));
-        _ElementHandle_frame.set(this, void 0);
-        __classPrivateFieldSet(this, _ElementHandle_frame, frame, "f");
+        this.#frame = frame;
     }
     get frame() {
-        return __classPrivateFieldGet(this, _ElementHandle_frame, "f");
+        return this.#frame;
     }
     context() {
         return this.handle.context();
@@ -56,6 +44,38 @@ export class ElementHandle extends BaseElementHandle {
         // TODO: Should assert element has a Sandbox
         return;
     }
+    async autofill(data) {
+        const client = this.#frame.context().cdpSession;
+        const nodeInfo = await client.send('DOM.describeNode', {
+            objectId: this.handle.id,
+        });
+        const fieldId = nodeInfo.node.backendNodeId;
+        const frameId = this.#frame._id;
+        await client.send('Autofill.trigger', {
+            fieldId,
+            frameId,
+            card: data.creditCard,
+        });
+    }
+    async boundingBox() {
+        if (this.frame.parentFrame()) {
+            throw new Error('Elements within nested iframes are currently not supported.');
+        }
+        const box = await this.frame.isolatedRealm().evaluate(element => {
+            const rect = element.getBoundingClientRect();
+            if (!rect.left && !rect.top && !rect.width && !rect.height) {
+                // TODO(jrandolf): Detect if the element is truly not visible.
+                return null;
+            }
+            return {
+                x: rect.left,
+                y: rect.top,
+                width: rect.width,
+                height: rect.height,
+            };
+        }, this);
+        return box;
+    }
     // ///////////////////
     // // Input methods //
     // ///////////////////
@@ -64,7 +84,7 @@ export class ElementHandle extends BaseElementHandle {
         const { x = 0, y = 0 } = options?.offset ?? {};
         const remoteValue = this.remoteValue();
         assert('sharedId' in remoteValue);
-        return __classPrivateFieldGet(this, _ElementHandle_frame, "f").page().mouse.click(x, y, Object.assign({}, options, {
+        return this.#frame.page().mouse.click(x, y, Object.assign({}, options, {
             origin: {
                 type: 'element',
                 element: remoteValue,
@@ -75,7 +95,7 @@ export class ElementHandle extends BaseElementHandle {
         await this.scrollIntoViewIfNeeded();
         const remoteValue = this.remoteValue();
         assert('sharedId' in remoteValue);
-        return __classPrivateFieldGet(this, _ElementHandle_frame, "f").page().mouse.move(0, 0, {
+        return this.#frame.page().mouse.move(0, 0, {
             origin: {
                 type: 'element',
                 element: remoteValue,
@@ -86,7 +106,7 @@ export class ElementHandle extends BaseElementHandle {
         await this.scrollIntoViewIfNeeded();
         const remoteValue = this.remoteValue();
         assert('sharedId' in remoteValue);
-        return __classPrivateFieldGet(this, _ElementHandle_frame, "f").page().touchscreen.tap(0, 0, {
+        return this.#frame.page().touchscreen.tap(0, 0, {
             origin: {
                 type: 'element',
                 element: remoteValue,
@@ -97,7 +117,7 @@ export class ElementHandle extends BaseElementHandle {
         await this.scrollIntoViewIfNeeded();
         const remoteValue = this.remoteValue();
         assert('sharedId' in remoteValue);
-        return __classPrivateFieldGet(this, _ElementHandle_frame, "f").page().touchscreen.touchStart(0, 0, {
+        return this.#frame.page().touchscreen.touchStart(0, 0, {
             origin: {
                 type: 'element',
                 element: remoteValue,
@@ -108,7 +128,7 @@ export class ElementHandle extends BaseElementHandle {
         await this.scrollIntoViewIfNeeded();
         const remoteValue = this.remoteValue();
         assert('sharedId' in remoteValue);
-        return __classPrivateFieldGet(this, _ElementHandle_frame, "f").page().touchscreen.touchMove(0, 0, {
+        return this.#frame.page().touchscreen.touchMove(0, 0, {
             origin: {
                 type: 'element',
                 element: remoteValue,
@@ -117,16 +137,15 @@ export class ElementHandle extends BaseElementHandle {
     }
     async touchEnd() {
         await this.scrollIntoViewIfNeeded();
-        await __classPrivateFieldGet(this, _ElementHandle_frame, "f").page().touchscreen.touchEnd();
+        await this.#frame.page().touchscreen.touchEnd();
     }
     async type(text, options) {
         await this.focus();
-        await __classPrivateFieldGet(this, _ElementHandle_frame, "f").page().keyboard.type(text, options);
+        await this.#frame.page().keyboard.type(text, options);
     }
     async press(key, options) {
         await this.focus();
-        await __classPrivateFieldGet(this, _ElementHandle_frame, "f").page().keyboard.press(key, options);
+        await this.#frame.page().keyboard.press(key, options);
     }
 }
-_ElementHandle_frame = new WeakMap();
 //# sourceMappingURL=ElementHandle.js.map

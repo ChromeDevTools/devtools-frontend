@@ -1,16 +1,4 @@
 "use strict";
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _HTTPResponse_request, _HTTPResponse_remoteAddress, _HTTPResponse_status, _HTTPResponse_statusText, _HTTPResponse_url, _HTTPResponse_fromCache, _HTTPResponse_headers, _HTTPResponse_timings;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HTTPResponse = void 0;
 const HTTPResponse_js_1 = require("../../api/HTTPResponse.js");
@@ -18,61 +6,63 @@ const HTTPResponse_js_1 = require("../../api/HTTPResponse.js");
  * @internal
  */
 class HTTPResponse extends HTTPResponse_js_1.HTTPResponse {
-    constructor(request, responseEvent) {
+    #request;
+    #remoteAddress;
+    #status;
+    #statusText;
+    #url;
+    #fromCache;
+    #headers = {};
+    #timings;
+    constructor(request, { response }) {
         super();
-        _HTTPResponse_request.set(this, void 0);
-        _HTTPResponse_remoteAddress.set(this, void 0);
-        _HTTPResponse_status.set(this, void 0);
-        _HTTPResponse_statusText.set(this, void 0);
-        _HTTPResponse_url.set(this, void 0);
-        _HTTPResponse_fromCache.set(this, void 0);
-        _HTTPResponse_headers.set(this, {});
-        _HTTPResponse_timings.set(this, void 0);
-        const { response } = responseEvent;
-        __classPrivateFieldSet(this, _HTTPResponse_request, request, "f");
-        __classPrivateFieldSet(this, _HTTPResponse_remoteAddress, {
+        this.#request = request;
+        this.#remoteAddress = {
             ip: '',
             port: -1,
-        }, "f");
-        __classPrivateFieldSet(this, _HTTPResponse_url, response.url, "f");
-        __classPrivateFieldSet(this, _HTTPResponse_fromCache, response.fromCache, "f");
-        __classPrivateFieldSet(this, _HTTPResponse_status, response.status, "f");
-        __classPrivateFieldSet(this, _HTTPResponse_statusText, response.statusText, "f");
-        // TODO: update once BiDi has types
-        __classPrivateFieldSet(this, _HTTPResponse_timings, response.timings ?? null, "f");
+        };
+        this.#url = response.url;
+        this.#fromCache = response.fromCache;
+        this.#status = response.status;
+        this.#statusText = response.statusText;
+        // TODO: File and issue with BiDi spec
+        this.#timings = null;
         // TODO: Removed once the Firefox implementation is compliant with https://w3c.github.io/webdriver-bidi/#get-the-response-data.
         for (const header of response.headers || []) {
-            __classPrivateFieldGet(this, _HTTPResponse_headers, "f")[header.name] = header.value ?? '';
+            // TODO: How to handle Binary Headers
+            // https://w3c.github.io/webdriver-bidi/#type-network-Header
+            if (header.value.type === 'string') {
+                this.#headers[header.name.toLowerCase()] = header.value.value;
+            }
         }
     }
     remoteAddress() {
-        return __classPrivateFieldGet(this, _HTTPResponse_remoteAddress, "f");
+        return this.#remoteAddress;
     }
     url() {
-        return __classPrivateFieldGet(this, _HTTPResponse_url, "f");
+        return this.#url;
     }
     status() {
-        return __classPrivateFieldGet(this, _HTTPResponse_status, "f");
+        return this.#status;
     }
     statusText() {
-        return __classPrivateFieldGet(this, _HTTPResponse_statusText, "f");
+        return this.#statusText;
     }
     headers() {
-        return __classPrivateFieldGet(this, _HTTPResponse_headers, "f");
+        return this.#headers;
     }
     request() {
-        return __classPrivateFieldGet(this, _HTTPResponse_request, "f");
+        return this.#request;
     }
     fromCache() {
-        return __classPrivateFieldGet(this, _HTTPResponse_fromCache, "f");
+        return this.#fromCache;
     }
     timing() {
-        return __classPrivateFieldGet(this, _HTTPResponse_timings, "f");
+        return this.#timings;
     }
     frame() {
-        return __classPrivateFieldGet(this, _HTTPResponse_request, "f").frame();
+        return this.#request.frame();
     }
 }
 exports.HTTPResponse = HTTPResponse;
-_HTTPResponse_request = new WeakMap(), _HTTPResponse_remoteAddress = new WeakMap(), _HTTPResponse_status = new WeakMap(), _HTTPResponse_statusText = new WeakMap(), _HTTPResponse_url = new WeakMap(), _HTTPResponse_fromCache = new WeakMap(), _HTTPResponse_headers = new WeakMap(), _HTTPResponse_timings = new WeakMap();
 //# sourceMappingURL=HTTPResponse.js.map

@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _WaitTask_world, _WaitTask_polling, _WaitTask_root, _WaitTask_fn, _WaitTask_args, _WaitTask_timeout, _WaitTask_result, _WaitTask_poller, _WaitTask_signal, _TaskManager_tasks;
 import { Deferred } from '../util/Deferred.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { stringifyFunction } from '../util/Function.js';
@@ -34,86 +22,86 @@ import { LazyArg } from './LazyArg.js';
  * @internal
  */
 export class WaitTask {
+    #world;
+    #polling;
+    #root;
+    #fn;
+    #args;
+    #timeout;
+    #result = Deferred.create();
+    #poller;
+    #signal;
     constructor(world, options, fn, ...args) {
-        _WaitTask_world.set(this, void 0);
-        _WaitTask_polling.set(this, void 0);
-        _WaitTask_root.set(this, void 0);
-        _WaitTask_fn.set(this, void 0);
-        _WaitTask_args.set(this, void 0);
-        _WaitTask_timeout.set(this, void 0);
-        _WaitTask_result.set(this, Deferred.create());
-        _WaitTask_poller.set(this, void 0);
-        _WaitTask_signal.set(this, void 0);
-        __classPrivateFieldSet(this, _WaitTask_world, world, "f");
-        __classPrivateFieldSet(this, _WaitTask_polling, options.polling, "f");
-        __classPrivateFieldSet(this, _WaitTask_root, options.root, "f");
-        __classPrivateFieldSet(this, _WaitTask_signal, options.signal, "f");
-        __classPrivateFieldGet(this, _WaitTask_signal, "f")?.addEventListener('abort', () => {
-            void this.terminate(__classPrivateFieldGet(this, _WaitTask_signal, "f")?.reason);
+        this.#world = world;
+        this.#polling = options.polling;
+        this.#root = options.root;
+        this.#signal = options.signal;
+        this.#signal?.addEventListener('abort', () => {
+            void this.terminate(this.#signal?.reason);
         }, {
             once: true,
         });
         switch (typeof fn) {
             case 'string':
-                __classPrivateFieldSet(this, _WaitTask_fn, `() => {return (${fn});}`, "f");
+                this.#fn = `() => {return (${fn});}`;
                 break;
             default:
-                __classPrivateFieldSet(this, _WaitTask_fn, stringifyFunction(fn), "f");
+                this.#fn = stringifyFunction(fn);
                 break;
         }
-        __classPrivateFieldSet(this, _WaitTask_args, args, "f");
-        __classPrivateFieldGet(this, _WaitTask_world, "f").taskManager.add(this);
+        this.#args = args;
+        this.#world.taskManager.add(this);
         if (options.timeout) {
-            __classPrivateFieldSet(this, _WaitTask_timeout, setTimeout(() => {
+            this.#timeout = setTimeout(() => {
                 void this.terminate(new TimeoutError(`Waiting failed: ${options.timeout}ms exceeded`));
-            }, options.timeout), "f");
+            }, options.timeout);
         }
         void this.rerun();
     }
     get result() {
-        return __classPrivateFieldGet(this, _WaitTask_result, "f").valueOrThrow();
+        return this.#result.valueOrThrow();
     }
     async rerun() {
         try {
-            switch (__classPrivateFieldGet(this, _WaitTask_polling, "f")) {
+            switch (this.#polling) {
                 case 'raf':
-                    __classPrivateFieldSet(this, _WaitTask_poller, await __classPrivateFieldGet(this, _WaitTask_world, "f").evaluateHandle(({ RAFPoller, createFunction }, fn, ...args) => {
+                    this.#poller = await this.#world.evaluateHandle(({ RAFPoller, createFunction }, fn, ...args) => {
                         const fun = createFunction(fn);
                         return new RAFPoller(() => {
                             return fun(...args);
                         });
                     }, LazyArg.create(context => {
                         return context.puppeteerUtil;
-                    }), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
+                    }), this.#fn, ...this.#args);
                     break;
                 case 'mutation':
-                    __classPrivateFieldSet(this, _WaitTask_poller, await __classPrivateFieldGet(this, _WaitTask_world, "f").evaluateHandle(({ MutationPoller, createFunction }, root, fn, ...args) => {
+                    this.#poller = await this.#world.evaluateHandle(({ MutationPoller, createFunction }, root, fn, ...args) => {
                         const fun = createFunction(fn);
                         return new MutationPoller(() => {
                             return fun(...args);
                         }, root || document);
                     }, LazyArg.create(context => {
                         return context.puppeteerUtil;
-                    }), __classPrivateFieldGet(this, _WaitTask_root, "f"), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
+                    }), this.#root, this.#fn, ...this.#args);
                     break;
                 default:
-                    __classPrivateFieldSet(this, _WaitTask_poller, await __classPrivateFieldGet(this, _WaitTask_world, "f").evaluateHandle(({ IntervalPoller, createFunction }, ms, fn, ...args) => {
+                    this.#poller = await this.#world.evaluateHandle(({ IntervalPoller, createFunction }, ms, fn, ...args) => {
                         const fun = createFunction(fn);
                         return new IntervalPoller(() => {
                             return fun(...args);
                         }, ms);
                     }, LazyArg.create(context => {
                         return context.puppeteerUtil;
-                    }), __classPrivateFieldGet(this, _WaitTask_polling, "f"), __classPrivateFieldGet(this, _WaitTask_fn, "f"), ...__classPrivateFieldGet(this, _WaitTask_args, "f")), "f");
+                    }), this.#polling, this.#fn, ...this.#args);
                     break;
             }
-            await __classPrivateFieldGet(this, _WaitTask_poller, "f").evaluate(poller => {
+            await this.#poller.evaluate(poller => {
                 void poller.start();
             });
-            const result = await __classPrivateFieldGet(this, _WaitTask_poller, "f").evaluateHandle(poller => {
+            const result = await this.#poller.evaluateHandle(poller => {
                 return poller.result();
             });
-            __classPrivateFieldGet(this, _WaitTask_result, "f").resolve(result);
+            this.#result.resolve(result);
             await this.terminate();
         }
         catch (error) {
@@ -124,21 +112,21 @@ export class WaitTask {
         }
     }
     async terminate(error) {
-        __classPrivateFieldGet(this, _WaitTask_world, "f").taskManager.delete(this);
-        if (__classPrivateFieldGet(this, _WaitTask_timeout, "f")) {
-            clearTimeout(__classPrivateFieldGet(this, _WaitTask_timeout, "f"));
+        this.#world.taskManager.delete(this);
+        if (this.#timeout) {
+            clearTimeout(this.#timeout);
         }
-        if (error && !__classPrivateFieldGet(this, _WaitTask_result, "f").finished()) {
-            __classPrivateFieldGet(this, _WaitTask_result, "f").reject(error);
+        if (error && !this.#result.finished()) {
+            this.#result.reject(error);
         }
-        if (__classPrivateFieldGet(this, _WaitTask_poller, "f")) {
+        if (this.#poller) {
             try {
-                await __classPrivateFieldGet(this, _WaitTask_poller, "f").evaluateHandle(async (poller) => {
+                await this.#poller.evaluateHandle(async (poller) => {
                     await poller.stop();
                 });
-                if (__classPrivateFieldGet(this, _WaitTask_poller, "f")) {
-                    await __classPrivateFieldGet(this, _WaitTask_poller, "f").dispose();
-                    __classPrivateFieldSet(this, _WaitTask_poller, undefined, "f");
+                if (this.#poller) {
+                    await this.#poller.dispose();
+                    this.#poller = undefined;
                 }
             }
             catch {
@@ -169,37 +157,32 @@ export class WaitTask {
             }
             return error;
         }
-        // @ts-expect-error TODO: uncomment once cause is supported in Node types.
         return new Error('WaitTask failed with an error', {
             cause: error,
         });
     }
 }
-_WaitTask_world = new WeakMap(), _WaitTask_polling = new WeakMap(), _WaitTask_root = new WeakMap(), _WaitTask_fn = new WeakMap(), _WaitTask_args = new WeakMap(), _WaitTask_timeout = new WeakMap(), _WaitTask_result = new WeakMap(), _WaitTask_poller = new WeakMap(), _WaitTask_signal = new WeakMap();
 /**
  * @internal
  */
 export class TaskManager {
-    constructor() {
-        _TaskManager_tasks.set(this, new Set());
-    }
+    #tasks = new Set();
     add(task) {
-        __classPrivateFieldGet(this, _TaskManager_tasks, "f").add(task);
+        this.#tasks.add(task);
     }
     delete(task) {
-        __classPrivateFieldGet(this, _TaskManager_tasks, "f").delete(task);
+        this.#tasks.delete(task);
     }
     terminateAll(error) {
-        for (const task of __classPrivateFieldGet(this, _TaskManager_tasks, "f")) {
+        for (const task of this.#tasks) {
             void task.terminate(error);
         }
-        __classPrivateFieldGet(this, _TaskManager_tasks, "f").clear();
+        this.#tasks.clear();
     }
     async rerunAll() {
-        await Promise.all([...__classPrivateFieldGet(this, _TaskManager_tasks, "f")].map(task => {
+        await Promise.all([...this.#tasks].map(task => {
             return task.rerun();
         }));
     }
 }
-_TaskManager_tasks = new WeakMap();
 //# sourceMappingURL=WaitTask.js.map

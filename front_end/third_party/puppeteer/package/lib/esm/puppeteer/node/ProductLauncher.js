@@ -1,15 +1,3 @@
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _ProductLauncher_product;
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  *
@@ -41,16 +29,24 @@ import { PipeTransport } from './PipeTransport.js';
  * @public
  */
 export class ProductLauncher {
+    #product;
+    /**
+     * @internal
+     */
+    puppeteer;
+    /**
+     * @internal
+     */
+    actualBrowserRevision;
     /**
      * @internal
      */
     constructor(puppeteer, product) {
-        _ProductLauncher_product.set(this, void 0);
         this.puppeteer = puppeteer;
-        __classPrivateFieldSet(this, _ProductLauncher_product, product, "f");
+        this.#product = product;
     }
     get product() {
-        return __classPrivateFieldGet(this, _ProductLauncher_product, "f");
+        return this.#product;
     }
     async launch(options = {}) {
         const { dumpio = false, env = process.env, handleSIGINT = true, handleSIGTERM = true, handleSIGHUP = true, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, slowMo = 0, timeout = 30000, waitForInitialPage = true, protocol, protocolTimeout, } = options;
@@ -83,7 +79,7 @@ export class ProductLauncher {
             await this.closeBrowser(browserProcess, connection);
         };
         try {
-            if (__classPrivateFieldGet(this, _ProductLauncher_product, "f") === 'firefox' && protocol === 'webDriverBiDi') {
+            if (this.#product === 'firefox' && protocol === 'webDriverBiDi') {
                 browser = await this.createBiDiBrowser(browserProcess, browserCloseCallback, {
                     timeout,
                     protocolTimeout,
@@ -289,5 +285,4 @@ export class ProductLauncher {
         return executablePath;
     }
 }
-_ProductLauncher_product = new WeakMap();
 //# sourceMappingURL=ProductLauncher.js.map

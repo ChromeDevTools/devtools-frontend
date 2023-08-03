@@ -213,6 +213,7 @@ cq_main = struct(
         "devtools_frontend_linux_dbg",
         "devtools_frontend_linux_dbg_fastbuild",
         "devtools_frontend_linux_rel",
+        "devtools_frontend_parallel_linux_rel",
         "devtools_frontend_mac_rel",
         "devtools_frontend_win64_rel",
         "dtf_presubmit_linux",

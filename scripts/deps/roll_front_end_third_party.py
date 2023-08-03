@@ -17,30 +17,6 @@ import argparse
 DEVTOOLS_PATH = os.path.dirname(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-THIRD_PARTY_NPM_PACKAGE_NAMES = [{
-    "package_name": "puppeteer-core",
-    "folder_name": "puppeteer",
-    "package_root": "lib/esm",
-}, {
-    "package_name": "@puppeteer/replay",
-    "folder_name": "puppeteer-replay",
-    "package_root": "lib",
-}]
-
-parser = argparse.ArgumentParser()
-parser.add_argument("-cb",
-                    "--create-branch",
-                    dest="create_branch",
-                    help="Creates a new branch for each dependency",
-                    action='store_true')
-parser.add_argument("-u",
-                    "--upload-cl",
-                    dest="upload_cl",
-                    help="Uploads a CL for each dependency",
-                    action='store_true')
-
-args = parser.parse_args()
-
 
 def get_start_and_end_endex_for_gn_var(content, variable):
     startIndex = None
@@ -106,12 +82,19 @@ def update_readme_version(file, ver):
                         content[lineIndex + 1:]))
 
 
-for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
-    package_name = package_info["package_name"]
-    folder_name = package_info["folder_name"]
-    package_root = package_info["package_root"]
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('package_name')
+    parser.add_argument('output_dir')
+    parser.add_argument('library_dir')
 
-    path = DEVTOOLS_PATH + f'/front_end/third_party/{folder_name}'
+    args = parser.parse_args()
+
+    package_name = args.package_name
+    output_dir = args.output_dir
+    library_dir = args.library_dir
+
+    path = DEVTOOLS_PATH + f'/front_end/third_party/{output_dir}'
     package_path = f'{path}/package'
 
     old_package_json = json.load(open(f'{package_path}/package.json'))
@@ -122,13 +105,7 @@ for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
     # Version check
     version = parse_version(package_json['version'])
     if parse_version(old_package_json['version']) >= version:
-        continue
-
-    if args.create_branch:
-        subprocess.check_call(['git', 'checkout', 'main'], cwd=DEVTOOLS_PATH)
-        subprocess.check_call(
-            ['git', 'checkout', '-b', f'update-{folder_name}-{version}'],
-            cwd=DEVTOOLS_PATH)
+        return
 
     # Remove the old package
     shutil.rmtree(package_path)
@@ -145,18 +122,18 @@ for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
 
     try:
         excluded_sources = set(
-            read_gn_var(f'./front_end/third_party/{folder_name}/BUILD.gn',
+            read_gn_var(f'./front_end/third_party/{output_dir}/BUILD.gn',
                         'EXCLUDED_SOURCES'))
     except BaseException:
         excluded_sources = set()
 
     # Update BUILD.gn
     update_gn_var(
-        f'./front_end/third_party/{folder_name}/BUILD.gn', 'SOURCES', [
-            f'{folder_name}-tsconfig.json',
+        f'./front_end/third_party/{output_dir}/BUILD.gn', 'SOURCES', [
+            f'{output_dir}-tsconfig.json',
         ] + [
             name
-            for name in members if name.startswith(f'package/{package_root}/')
+            for name in members if name.startswith(f'package/{library_dir}/')
             and name not in excluded_sources and
             (name.endswith('.js') or name.endswith('.js.map')
              or name.endswith('.d.ts') or name.endswith('.d.ts.map'))
@@ -165,32 +142,23 @@ for package_info in THIRD_PARTY_NPM_PACKAGE_NAMES:
     # Update devtools_grd_files.gni
     update_gn_var(
         './config/gni/devtools_grd_files.gni', 'grd_files_debug_sources', [
-            f'front_end/third_party/{folder_name}/' + name
-            for name in members if name.startswith(f'package/{package_root}/')
+            f'front_end/third_party/{output_dir}/' + name
+            for name in members if name.startswith(f'package/{library_dir}/')
             and name not in excluded_sources and name.endswith('.js')
         ] + [
             name for name in read_gn_var('./config/gni/devtools_grd_files.gni',
                                          'grd_files_debug_sources')
-            if not name.startswith(f'front_end/third_party/{folder_name}/')
+            if not name.startswith(f'front_end/third_party/{output_dir}/')
         ])
 
     # Update README.chromium
     update_readme_version(
-        f'./front_end/third_party/{folder_name}/README.chromium', version)
+        f'./front_end/third_party/{output_dir}/README.chromium', version)
 
     tar.close()
 
     subprocess.check_call(['git', 'cl', 'format'], cwd=DEVTOOLS_PATH)
-    if args.upload_cl:
-        subprocess.check_call(['git', 'add', '-A'], cwd=DEVTOOLS_PATH)
-        subprocess.check_call(
-            ['git', 'commit', '-m', f'Update {package_name} to {version}'],
-            cwd=DEVTOOLS_PATH)
-        subprocess.check_call([
-            'git', 'cl', 'upload', '-b', 'none', '-f', '-d', '--r-owners',
-            '-s', '-a'
-        ],
-                              cwd=DEVTOOLS_PATH)
 
-if args.create_branch:
-    subprocess.check_call(['git', 'checkout', 'main'], cwd=DEVTOOLS_PATH)
+
+if __name__ == '__main__':
+    main()

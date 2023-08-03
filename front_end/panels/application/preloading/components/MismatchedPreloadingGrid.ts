@@ -170,8 +170,9 @@ export class MismatchedPreloadingGrid extends LegacyWrapper.LegacyWrapper.Wrappa
 
   #buildReportRows(): DataGrid.DataGridUtils.Row[] {
     function urlRenderer(url: string, pageURL: string): LitHtml.TemplateResult {
-      function span(additionalProps: {'color'?: string}, s: string): LitHtml.TemplateResult {
-        // Don't insert spaces/newlines to prevent spaces for inline blocks.
+      function span(
+          additionalProps: {'color'?: string, 'text-decoration'?: string}, s: string): LitHtml.TemplateResult {
+        // Don't insert spaces to prevent spaces for inline blocks.
         // clang-format off
         return LitHtml.html`<span style=${LitHtml.Directives.styleMap(additionalProps)}>${s}</span>`;
         // clang-format on
@@ -184,11 +185,11 @@ export class MismatchedPreloadingGrid extends LegacyWrapper.LegacyWrapper.Wrappa
           case Diff.Diff.Operation.Equal:
             return span({}, s);
           case Diff.Diff.Operation.Insert:
-            return span({'color': 'var(--sys-color-green)'}, s);
+            return span({'color': 'var(--sys-color-green)', 'text-decoration': 'line-through'}, s);
           case Diff.Diff.Operation.Delete:
             return span({'color': 'var(--sys-color-error)'}, s);
           case Diff.Diff.Operation.Edit:
-            return span({'color': 'var(--sys-color-green)'}, s);
+            return span({'color': 'var(--sys-color-green)', 'text-decoration': 'line-through'}, s);
           default:
             throw new Error('unreachable');
         }

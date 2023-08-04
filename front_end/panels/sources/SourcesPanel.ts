@@ -1010,6 +1010,22 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       const subtype = data.subtype;
       const indent = data.indent;
 
+      if (subtype === 'map') {
+        if (this instanceof Map) {
+          const elements = Array.from(this.entries());
+          const literal = elements.length === 0 ? '' : JSON.stringify(elements, null, indent);
+          return `new Map(${literal})`;
+        }
+        return undefined;
+      }
+      if (subtype === 'set') {
+        if (this instanceof Set) {
+          const values = Array.from(this.values());
+          const literal = values.length === 0 ? '' : JSON.stringify(values, null, indent);
+          return `new Set(${literal})`;
+        }
+        return undefined;
+      }
       if (subtype === 'node') {
         return this instanceof Element ? this.outerHTML : undefined;
       }

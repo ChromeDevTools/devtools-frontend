@@ -178,7 +178,6 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       event.consume(true);
     });
     this.element.addEventListener('focusout', event => {
-      this.updateGridAccessibleName(/* text */ '');
       event.consume(true);
     });
 
@@ -354,13 +353,18 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.element.classList.toggle('no-selection', !hasSelected);
   }
 
-  updateGridAccessibleName(text?: string): void {
-    // Update the label with the provided text or the current selected node
-    const accessibleText =
-        (this.selectedNode && this.selectedNode.existingElement()) ? this.selectedNode.nodeAccessibleText : '';
-    if (this.element === Platform.DOMUtilities.deepActiveElement(this.element.ownerDocument)) {
-      // Only alert if the datagrid has focus
-      UI.ARIAUtils.alert(text ? text : accessibleText);
+  announceSelectedGridNode(): void {
+    // Only alert if the datagrid has focus
+    if (this.element === Platform.DOMUtilities.deepActiveElement(this.element.ownerDocument) && this.selectedNode &&
+        this.selectedNode.existingElement()) {
+      // Update the expand/collapse state for the current selected node
+      let expandText;
+      if (this.selectedNode.hasChildren()) {
+        expandText = this.selectedNode.expanded ? i18nString(UIStrings.expanded) : i18nString(UIStrings.collapsed);
+      }
+      const accessibleText =
+          expandText ? `${this.selectedNode.nodeAccessibleText}, ${expandText}` : this.selectedNode.nodeAccessibleText;
+      UI.ARIAUtils.alert(accessibleText);
     }
   }
 
@@ -2121,7 +2125,7 @@ export class DataGridNode<T> {
 
     this.expandedInternal = false;
     if (this.selected && this.dataGrid) {
-      this.dataGrid.updateGridAccessibleName(/* text */ i18nString(UIStrings.collapsed));
+      this.dataGrid.announceSelectedGridNode();
     }
 
     for (let i = 0; i < this.children.length; ++i) {
@@ -2180,7 +2184,7 @@ export class DataGridNode<T> {
       this.elementInternal.classList.add('expanded');
     }
     if (this.selected && this.dataGrid) {
-      this.dataGrid.updateGridAccessibleName(/* text */ i18nString(UIStrings.expanded));
+      this.dataGrid.announceSelectedGridNode();
     }
 
     this.expandedInternal = true;
@@ -2224,7 +2228,7 @@ export class DataGridNode<T> {
     if (this.elementInternal) {
       this.elementInternal.classList.add('selected');
       this.dataGrid.setHasSelection(true);
-      this.dataGrid.updateGridAccessibleName();
+      this.dataGrid.announceSelectedGridNode();
     }
 
     if (!supressSelectedEvent) {
@@ -2251,7 +2255,6 @@ export class DataGridNode<T> {
     if (this.elementInternal) {
       this.elementInternal.classList.remove('selected');
       this.dataGrid.setHasSelection(false);
-      this.dataGrid.updateGridAccessibleName('');
     }
 
     if (!supressDeselectedEvent) {

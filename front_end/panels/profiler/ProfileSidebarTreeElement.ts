@@ -94,6 +94,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     if (statusUpdate.subtitle !== null) {
       this.subtitleElement.textContent = statusUpdate.subtitle || '';
       this.titlesElement.classList.toggle('no-subtitle', !statusUpdate.subtitle);
+      UI.ARIAUtils.setLabel(this.listItemElement, `${this.profile.title}, ${statusUpdate.subtitle}`);
     }
     if (typeof statusUpdate.wait === 'boolean' && this.listItemElement) {
       this.iconElement.classList.toggle('spinner', statusUpdate.wait);

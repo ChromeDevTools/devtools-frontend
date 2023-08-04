@@ -7,7 +7,6 @@ import type * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Common from '../../../core/common/common.js';
-import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
 import * as SplitView from '../../../ui/components/split_view/split_view.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -68,53 +67,6 @@ const UIStrings = {
    *@description Text in grid and details: Preloading failed.
    */
   statusFailure: 'Failure',
-  /**
-   *@description Title in infobar
-   */
-  warningTitlePrefetchDisabledByHoldback: 'Prefetch was disabled, but is force-enabled now',
-  /**
-   *@description Detail in infobar
-   */
-  warningDetailPrefetchDisabledByHoldback:
-      'Prefetch is forced-enabled because DevTools is open. When DevTools is closed, prefetch will be disabled because this browser session is part of a holdback group used for performance comparisons.',
-  /**
-   *@description Title in infobar
-   */
-  warningTitlePrerenderingDisabledByHoldback: 'Prerendering was disabled, but is force-enabled now',
-  /**
-   *@description Detail in infobar
-   */
-  warningDetailPrerenderingDisabledByHoldback:
-      'Prerendering is forced-enabled because DevTools is open. When DevTools is closed, prerendering will be disabled because this browser session is part of a holdback group used for performance comparisons.',
-  /**
-   *@description Title of preloading state disabled warning in infobar
-   */
-  warningTitlePreloadingStateDisabled: 'Preloading is disabled',
-  /**
-   *@description Detail of preloading state disabled warning in infobar
-   *@example {chrome://settings/preloading} PH1
-   *@example {chrome://extensions} PH2
-   */
-  warningDetailPreloadingStateDisabled:
-      'Preloading is disabled because of user settings or an extension. Go to {PH1} to learn more, or go to {PH2} to disable the extension.',
-  /**
-   *@description Detail in infobar when preloading is disabled by data saver.
-   */
-  warningDetailPreloadingDisabledByDatasaver:
-      'Preloading is disabled because of the operating system\'s Data Saver mode.',
-  /**
-   *@description Detail in infobar when preloading is disabled by data saver.
-   */
-  warningDetailPreloadingDisabledByBatterysaver:
-      'Preloading is disabled because of the operating system\'s Battery Saver mode.',
-  /**
-   *@description Text of Preload pages settings
-   */
-  preloadingPageSettings: 'Preload pages settings',
-  /**
-   *@description Text of Extension settings
-   */
-  extensionSettings: 'Extensions settings',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/PreloadingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -265,6 +217,8 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
 
     this.registerCSSFiles([emptyWidgetStyles, preloadingViewStyles]);
 
+    this.warningsView.wasShown();
+
     this.render();
   }
 
@@ -396,6 +350,8 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
 
     this.registerCSSFiles([emptyWidgetStyles, preloadingViewStyles]);
 
+    this.warningsView.wasShown();
+
     this.render();
   }
 
@@ -506,6 +462,8 @@ export class PreloadingResultView extends UI.Widget.VBox {
     super.wasShown();
 
     this.registerCSSFiles([emptyWidgetStyles, preloadingViewStyles]);
+
+    this.warningsView.wasShown();
 
     this.render();
   }
@@ -645,80 +603,21 @@ class PreloadingRuleSetSelector implements UI.Toolbar.Provider,
 }
 
 export class PreloadingWarningsView extends UI.Widget.VBox {
-  private warningsProcessed: boolean = false;
+  private readonly infobar = new PreloadingComponents.PreloadingDisabledInfobar.PreloadingDisabledInfobar();
 
   constructor() {
     super(/* isWebComponent */ false, /* delegatesFocus */ false);
   }
 
-  onWarningsUpdated(args: Common.EventTarget.EventTargetEvent<Protocol.Preload.PreloadEnabledStateUpdatedEvent>): void {
-    // TODO(crbug.com/1384419): Add more information in PreloadEnabledState from
-    // backend to distinguish the details of the reasons why preloading is
-    // disabled.
-    function createDisabledMessages(event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): HTMLDivElement|null {
-      const detailsMessage = document.createElement('div');
-      let shouldShowWarning = false;
+  override wasShown(): void {
+    super.wasShown();
 
-      if (event.disabledByPreference) {
-        const preloadingSettingLink = new ChromeLink.ChromeLink.ChromeLink();
-        preloadingSettingLink.href = 'chrome://settings/preloading';
-        preloadingSettingLink.textContent = i18nString(UIStrings.preloadingPageSettings);
-        const extensionSettingLink = new ChromeLink.ChromeLink.ChromeLink();
-        extensionSettingLink.href = 'chrome://extensions';
-        extensionSettingLink.textContent = i18nString(UIStrings.extensionSettings);
-        detailsMessage.appendChild(i18n.i18n.getFormatLocalizedString(
-            str_, UIStrings.warningDetailPreloadingStateDisabled,
-            {PH1: preloadingSettingLink, PH2: extensionSettingLink}));
-        shouldShowWarning = true;
-      }
+    this.registerCSSFiles([emptyWidgetStyles]);
 
-      if (event.disabledByDataSaver) {
-        const element = document.createElement('div');
-        element.append(i18nString(UIStrings.warningDetailPreloadingDisabledByDatasaver));
-        detailsMessage.appendChild(element);
-        shouldShowWarning = true;
-      }
-
-      if (event.disabledByBatterySaver) {
-        const element = document.createElement('div');
-        element.append(i18nString(UIStrings.warningDetailPreloadingDisabledByBatterysaver));
-        detailsMessage.appendChild(element);
-        shouldShowWarning = true;
-      }
-
-      return shouldShowWarning ? detailsMessage : null;
-    }
-
-    if (this.warningsProcessed) {
-      return;
-    }
-
-    this.warningsProcessed = true;
-
-    const event = args.data;
-    const detailsMessage = createDisabledMessages(event);
-    if (detailsMessage !== null) {
-      this.showInfobar(i18nString(UIStrings.warningTitlePreloadingStateDisabled), detailsMessage);
-    } else {
-      if (event.disabledByHoldbackPrefetchSpeculationRules) {
-        this.showInfobar(
-            i18nString(UIStrings.warningTitlePrefetchDisabledByHoldback),
-            i18nString(UIStrings.warningDetailPrefetchDisabledByHoldback));
-      }
-
-      if (event.disabledByHoldbackPrerenderSpeculationRules) {
-        this.showInfobar(
-            i18nString(UIStrings.warningTitlePrerenderingDisabledByHoldback),
-            i18nString(UIStrings.warningDetailPrerenderingDisabledByHoldback));
-      }
-    }
+    this.contentElement.append(this.infobar);
   }
 
-  private showInfobar(titleText: string, detailsMessage: string|Element): void {
-    const infobar = new UI.Infobar.Infobar(
-        UI.Infobar.Type.Warning, /* text */ titleText, /* actions? */ undefined, /* disableSetting? */ undefined);
-    infobar.setParentView(this);
-    infobar.createDetailsRowMessage(detailsMessage);
-    this.contentElement.appendChild(infobar.element);
+  onWarningsUpdated(args: Common.EventTarget.EventTargetEvent<Protocol.Preload.PreloadEnabledStateUpdatedEvent>): void {
+    this.infobar.data = args.data;
   }
 }

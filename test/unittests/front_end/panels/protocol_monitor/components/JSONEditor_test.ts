@@ -13,6 +13,8 @@ import {
   raf,
 } from '../../../helpers/DOMHelpers.js';
 import * as ProtocolComponents from '../../../../../../front_end/panels/protocol_monitor/components/components.js';
+import type * as IconButton from '../../../../../../front_end/ui/components/icon_button/icon_button.js';
+
 import type * as RecorderComponents from '../../../../../../front_end/panels/recorder/components/components.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import * as Menus from '../../../../../../front_end/ui/components/menus/menus.js';
@@ -254,6 +256,34 @@ describeWithEnvironment('JSONEditor', () => {
       throw new Error('No input shown');
     }
     return paramInput;
+  };
+
+  const renderWarningIcon =
+      async(command: string, enumsByName?: Map<string, Record<string, string>>): Promise<IconButton.Icon.Icon> => {
+    const jsonEditor = renderJSONEditor();
+    await populateMetadata(jsonEditor);
+    jsonEditor.command = command;
+    if (enumsByName) {
+      jsonEditor.enumsByName = enumsByName;
+    }
+    jsonEditor.populateParametersForCommandWithDefaultValues();
+    await jsonEditor.updateComplete;
+
+    // inputs[0] corresponds to the devtools-recorder-input of the command
+    const input = jsonEditor.renderRoot.querySelectorAll('devtools-recorder-input')[1];
+    if (!input) {
+      throw Error('No editable content displayed');
+    }
+    input.value = 'Not an accepted value';
+    await jsonEditor.updateComplete;
+    input.focus();
+    input.blur();
+    await jsonEditor.updateComplete;
+    const warningIcon = jsonEditor.renderRoot.querySelector('devtools-icon');
+    if (!warningIcon) {
+      throw Error('No icon displayed');
+    }
+    return warningIcon;
   };
 
   describe('Binding input bar', () => {
@@ -789,6 +819,30 @@ describeWithEnvironment('JSONEditor', () => {
          };
 
          assert.deepStrictEqual(response.data.parameters, expectedParameters);
+       });
+  });
+
+  describe('Verify the type of the entered value', async () => {
+    it('should show a warning icon if the type of the parameter is number but the entered value is not', async () => {
+      const command = 'Test.test8';
+
+      const warningIcon = await renderWarningIcon(command);
+      assert.isNotNull(warningIcon);
+    });
+    it('should show a warning icon if the type of the parameter is boolean but the entered value is not true or false',
+       async () => {
+         const command = 'Test.test4';
+         const warningIcon = await renderWarningIcon(command);
+         assert.isNotNull(warningIcon);
+       });
+    it('should show a warning icon if the type of the parameter is enum but the entered value is not among the accepted values',
+       async () => {
+         const enumsByName = new Map([
+           ['Test.testRef', {'Test': 'test', 'Test1': 'test1', 'Test2': 'test2'}],
+         ]);
+         const command = 'Test.test';
+         const warningIcon = await renderWarningIcon(command, enumsByName);
+         assert.isNotNull(warningIcon);
        });
   });
 

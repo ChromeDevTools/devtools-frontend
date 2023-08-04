@@ -78,3 +78,7 @@ devtools-editable-content:focus ~ devtools-suggestion-box {
   background-color: var(--color-primary);
   color: var(--color-background);
 }
+
+.incorrect-type {
+  text-decoration: line-through;
+}

@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {expectError, type ErrorExpectation} from '../../conductor/events.js';
 import {
   getBrowserAndPages,
   getResourcesPath,
@@ -15,7 +16,17 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {getCurrentUrl} from '../helpers/layers-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
+let errorException: ErrorExpectation;
+
 describe('The Layers Panel', async () => {
+  beforeEach(async () => {
+    errorException = expectError('Unable to create texture');
+  });
+
+  afterEach(async () => {
+    errorException.drop();
+  });
+
   it('should keep the currently inspected url as an attribute', async () => {
     const targetUrl = 'layers/default.html';
     await goToResource(targetUrl);

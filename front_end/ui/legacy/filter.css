@@ -124,15 +124,18 @@
   border: 1px solid var(--sys-color-neutral-outline);
   border-radius: 4px;
   width: 163px;
+
+  &:focus-within {
+    border-color: var(--sys-color-state-focus-ring);
+  }
+
+  &:hover:not(:focus-within) {
+    background: var(--sys-color-state-hover-on-subtle);
+  }
 }
 
-.filter-input-container:hover {
-  box-shadow: 0 0 0 1px var(--ref-palette-neutral90);
-}
-
-.filter-input-container:focus-within,
 .filter-text-filter:not(.filter-text-empty) .filter-input-container {
-  box-shadow: var(--legacy-focus-ring-active-shadow);
+  border-color: var(--sys-color-state-focus-ring);
 }
 
 .filter-input-clear-button {

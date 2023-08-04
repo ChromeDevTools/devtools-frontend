@@ -20,25 +20,25 @@
 }
 
 .properties-widget-filter-box > input {
-  border: solid 1px var(--sys-color-neutral-outline);
+  border: 1px solid var(--sys-color-neutral-outline);
   border-radius: 4px;
   width: 100%;
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
   padding-left: 4px;
   margin: 3px;
 
-  &:hover {
-    box-shadow: 0 0 0 1px var(--ref-palette-neutral90);
+  &:focus,
+  &:not(:placeholder-shown) {
+    border-color: var(--sys-color-state-focus-ring);
   }
-}
 
-.properties-widget-filter-box > input:focus,
-.properties-widget-filter-box > input:not(:placeholder-shown) {
-  box-shadow: var(--legacy-focus-ring-active-shadow);
-}
+  &:hover:not(:focus) {
+    background: var(--sys-color-state-hover-on-subtle);
+  }
 
-.properties-widget-filter-box > input::placeholder {
-  color: var(--color-text-secondary);
+  &::placeholder {
+    color: var(--color-text-secondary);
+  }
 }
 
 @media (forced-colors: active) {

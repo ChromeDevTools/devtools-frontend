@@ -42,7 +42,7 @@
 }
 
 .profile-view .data-grid tr:hover td:not(.bottom-filler-td) {
-  background-color: var(--color-background-hover-overlay);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .profile-view .data-grid td.numeric-column {

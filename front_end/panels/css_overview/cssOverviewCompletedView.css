@@ -292,7 +292,7 @@
 }
 
 .overview-completed-view .font-family:nth-child(2n+1) {
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
 }
 
 .overview-completed-view .font-family:first-of-type {

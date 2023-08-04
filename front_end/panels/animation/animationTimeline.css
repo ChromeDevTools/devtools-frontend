@@ -364,7 +364,7 @@ text.animation-timeline-grid-label {
 .animation-paused::before,
 .animation-paused::after {
   content: "";
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
   width: 7px;
   height: 20px;
   border-radius: 2px;
@@ -475,7 +475,7 @@ text.animation-timeline-grid-label {
   }
 
   .animation-node-description:focus-visible {
-    background-color: var(--color-background);
+    background-color: var(--sys-color-cdt-base-container);
     forced-color-adjust: none;
   }
 

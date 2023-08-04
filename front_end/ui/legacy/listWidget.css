@@ -120,15 +120,15 @@
   box-shadow: var(--legacy-focus-ring-inactive-shadow);
   border-radius: 2px;
   width: 100%;
-  background-color: var(--color-background);
-}
+  background-color: var(--sys-color-cdt-base-container);
 
-.text-prompt-container:focus {
-  box-shadow: var(--legacy-focus-ring-active-shadow);
-}
+  &:focus {
+    border: 1px solid var(--sys-color-state-focus-ring);
+  }
 
-.text-prompt-container .text-prompt {
-  width: 100%;
+  & .text-prompt {
+    width: 100%;
+  }
 }
 
 @media (forced-colors: active) {

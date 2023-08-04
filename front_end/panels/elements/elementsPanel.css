@@ -40,7 +40,7 @@
 
 .style-panes-wrapper {
   overflow: hidden scroll;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
 
   & > div:not(:last-child) {
     border-bottom: 1px solid var(--sys-color-divider);

@@ -26,12 +26,13 @@
   --icon-folder-primary: var(--color-on-surface-variant);
   --icon-folder-deployed: var(--color-primary-bright);
   --icon-folder-workspace: var(--color-orange);
-  --icon-force-white: var(--color-on-primary);
-  --icon-gap-default: var(--color-background);
-  --icon-gap-force-white: var(--legacy-selection-bg-color);
-  --icon-gap-inactive: var(--legacy-selection-inactive-bg-color);
-  --icon-gap-toolbar: var(--color-background-elevation-1);
-  --icon-gap-toolbar-hover: var(--color-background-elevation-2);
+  --icon-force-white: var(--sys-color-on-tonal-container);
+  --icon-gap-focus-selected: var(--sys-color-tonal-container);
+  --icon-gap-default: var(--sys-color-cdt-base-container);
+  --icon-gap-inactive: var(--sys-color-neutral-container);
+  --icon-gap-hover: var(--sys-color-state-hover-on-subtle);
+  --icon-gap-toolbar: var(--sys-color-surface1);
+  --icon-gap-toolbar-hover: var(--sys-color-state-header-hover);
   --icon-info: var(--color-primary-bright);
   --icon-link: var(--color-primary-bright);
   --icon-no-request: var(--color-orange-bright);
@@ -54,4 +55,7 @@
   --text-selection: var(--sys-color-state-ripple-primary);
   --color-grid-stripe: var(--sys-color-surface1);
   --color-grid-default: var(--sys-color-surface);
+  --color-grid-focus-selected: var(--sys-color-tonal-container);
+  --color-grid-selected: var(--sys-color-neutral-container);
+  --color-grid-hovered: var(--sys-color-state-hover-on-subtle);
 }

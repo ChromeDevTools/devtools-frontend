@@ -56,7 +56,7 @@
 
 .issue-category + .children .issue,
 .issue.expanded {
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
 }
 
 .issue.expanded {

@@ -22,7 +22,7 @@
 }
 
 .diff-line-marker {
-  border-right: 1px solid var(--color-details-hairline);
+  border-right: 1px solid var(--sys-color-divider);
   width: 20px;
   text-align: center;
 }

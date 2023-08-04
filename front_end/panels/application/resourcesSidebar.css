@@ -22,7 +22,7 @@ li.storage-group-list-item {
 }
 
 li.storage-group-list-item:not(:first-child) {
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
 }
 
 li.storage-group-list-item::before {

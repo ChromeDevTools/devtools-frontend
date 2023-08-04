@@ -218,7 +218,7 @@
 }
 
 .data-grid tbody tr.revealed.selected {
-  background-color: var(--color-background-highlight);
+  background-color: var(--sys-color-neutral-container);
   color: inherit;
 }
 
@@ -231,8 +231,8 @@
 }
 
 .data-grid:focus tbody tr.selected {
-  background-color: var(--color-selected-option-background);
-  color: var(--color-selected-option);
+  background-color: var(--sys-color-tonal-container);
+  color: var(--sys-color-on-tonal-container);
 }
 
 .data-grid tbody tr.selected.dirty {

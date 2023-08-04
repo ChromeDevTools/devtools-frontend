@@ -36,11 +36,11 @@ li {
 
 .tree-outline li:hover:not(.selected) .selection {
   display: block;
-  background-color: var(--item-hover-color);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 [is="ui-icon"].cross-circle {
-  background-color: var(--icon-error);
+  background-color: var(--sys-color-error-bright);
 }
 
 [is="ui-icon"].warning {

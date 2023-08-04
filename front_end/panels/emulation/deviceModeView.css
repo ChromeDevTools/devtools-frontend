@@ -8,13 +8,13 @@
   overflow: hidden;
   align-items: stretch;
   flex: auto;
-  background-color: var(--color-background-elevation-0);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 .device-mode-toolbar {
   flex: none;
-  background-color: var(--color-background-elevation-0);
-  border-bottom: 1px solid var(--color-details-hairline);
+  background-color: var(--sys-color-cdt-base);
+  border-bottom: 1px solid var(--sys-color-divider);
   display: flex;
   flex-direction: row;
   align-items: stretch;
@@ -51,7 +51,7 @@
 .device-mode-media-container {
   flex: none;
   overflow: hidden;
-  box-shadow: inset 0 -1px var(--color-details-hairline);
+  box-shadow: inset 0 -1px var(--sys-color-divider);
 }
 
 .device-mode-content-clip:not(.device-mode-outline-visible) .device-mode-media-container {
@@ -67,9 +67,9 @@
   flex: auto;
   justify-content: center;
   position: relative;
-  background-color: var(--color-background-elevation-2);
-  border: 2px solid var(--color-background-elevation-0);
-  border-bottom: 2px solid var(--color-background-elevation-0);
+  background-color: var(--sys-color-surface1);
+  /* border: 2px solid var(--color-background-elevation-0); */
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .device-mode-presets-container:hover {
@@ -85,8 +85,8 @@
 }
 
 .device-mode-preset-bar {
-  border-left: 2px solid var(--color-background-elevation-0);
-  border-right: 2px solid var(--color-background-elevation-0);
+  border-left: 2px solid var(--sys-color-on-base-divider);
+  border-right: 2px solid var(--sys-color-on-base-divider);
   pointer-events: auto;
   text-align: center;
   flex: none;
@@ -101,7 +101,7 @@
 .device-mode-preset-bar:hover {
   transition: background-color 0.1s;
   transition-delay: 50ms;
-  background-color: var(--color-background-highlight);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .device-mode-preset-bar > span {
@@ -158,7 +158,7 @@
 }
 
 .device-mode-resizer:hover {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-state-hover-on-subtle);
   opacity: 100%;
 }
 
@@ -193,7 +193,7 @@
   top: 0;
   right: -20px;
   bottom: -20px;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface1);
 }
 
 .device-mode-bottom-left-resizer {
@@ -249,7 +249,7 @@
   width: 0;
   height: 0;
   display: flex;
-  background-color: var(--color-background-elevation-0);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 .device-mode-ruler {

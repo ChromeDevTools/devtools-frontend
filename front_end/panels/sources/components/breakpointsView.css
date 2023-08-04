@@ -35,7 +35,7 @@ input {
 }
 
 details {
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
 }
 
 details:not(.active) {

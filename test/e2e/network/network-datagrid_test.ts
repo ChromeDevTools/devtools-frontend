@@ -427,8 +427,7 @@ describe('The Network Tab', async function() {
       return document.querySelector('.network-log-grid tbody tr.selected')?.getAttribute('style');
     });
 
-    assert.deepStrictEqual(
-        await getSelectedRequestBgColor(), 'background-color: var(--network-grid-focus-selected-color);');
+    assert.deepStrictEqual(await getSelectedRequestBgColor(), 'background-color: var(--color-grid-focus-selected);');
   });
 
   it('shows the request panel when clicked during a websocket message (https://crbug.com/1222382)', async () => {

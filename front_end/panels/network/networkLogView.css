@@ -174,11 +174,7 @@
 .network-log-grid.data-grid:focus tr.selected,
 .network-log-grid.data-grid:focus tr.selected .network-cell-subtitle,
 .network-log-grid.data-grid:focus tr.selected .network-dim-cell {
-  color: var(--legacy-selection-fg-color);
-}
-
-.network-log-grid.data-grid:focus-within tr.selected [is="ui-icon"] {
-  background-color: var(--icon-force-white);
+  color: var(--sys-color-on-tonal-container);
 }
 
 .network-header-subtitle {
@@ -230,17 +226,8 @@
   margin-right: 3px;
 }
 
-.network-log-grid.data-grid:focus-within .data-grid-data-grid-node.selected div.icon:not(.image) {
-  filter: brightness(0) invert(1);
-}
-
 .network-log-grid.data-grid:focus-within .network-error-row.selected div.icon:not(.image) {
   filter: none;
-}
-
-.network-log-grid.data-grid:focus-within .data-grid-data-grid-node.selected [is="ui-icon"].icon-mask {
-  --network-grid-selected-color: #dadce0;
-  --override-icon-mask-background-color: var(--network-grid-selected-color);
 }
 
 .data-grid-data-grid-node [is="ui-icon"].arrow-up-down-circle {
@@ -332,7 +319,7 @@
 
 .network-status-pane {
   color: var(--color-text-secondary);
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   z-index: 500;
   display: flex;
   justify-content: center;
@@ -430,9 +417,9 @@
   .network-log-grid {
     --color-grid-default: canvas;
     --color-grid-stripe: canvas;
-    --network-grid-hovered-color: Highlight;
-    --network-grid-selected-color: ButtonText;
-    --network-grid-focus-selected-color: Highlight;
+    --color-grid-hovered: Highlight;
+    --color-grid-selected: ButtonText;
+    --color-grid-focus-selected: Highlight;
   }
 
   #network-container.no-node-selected:focus-within,

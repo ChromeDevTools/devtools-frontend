@@ -52,10 +52,15 @@ h1 {
 
 .keybinds-list-item:not(.keybinds-category-header) {
   padding: 4px 0 4px 20px;
+  border-radius: 7px;
+}
+
+.keybinds-list-item:not(.keybinds-category-header):last-child {
+  margin-bottom: 5px;
 }
 
 .keybinds-list-item.keybinds-editing {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-neutral-container);
 }
 
 .keybinds-list-text.keybinds-action-name {
@@ -144,12 +149,12 @@ h1 {
 }
 
 .keybinds-category-header:not(:nth-child(2)) {
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
 }
 
 .keybinds-list-item:not(.keybinds-category-header):hover,
 .keybinds-list-item:not(.keybinds-editing):focus-within {
-  background: var(--color-background-elevation-1);
+  background: var(--sys-color-state-hover-on-subtle);
 }
 
 .keybinds-set-select {

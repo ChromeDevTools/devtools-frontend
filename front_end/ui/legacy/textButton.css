@@ -13,7 +13,7 @@
   padding: 0 12px;
   font-weight: 500;
   color: var(--legacy-accent-fg-color);
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   flex: none;
   white-space: nowrap;
 }

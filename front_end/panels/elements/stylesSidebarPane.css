@@ -183,17 +183,17 @@
     border: solid 1px var(--sys-color-neutral-outline);
     border-radius: 4px;
     width: 100%;
-    background: var(--color-background);
+    background: var(--sys-color-cdt-base-container);
     padding-left: 4px;
     margin: 3px;
 
-    &:hover {
-      box-shadow: 0 0 0 1px var(--ref-palette-neutral90);
-    }
-
     &:focus,
     &:not(:placeholder-shown) {
-      box-shadow: var(--legacy-focus-ring-active-shadow);
+      border-color: var(--sys-color-state-focus-ring);
+    }
+
+    &:hover:not(:focus) {
+      background: var(--sys-color-state-hover-on-subtle);
     }
 
     &::placeholder {

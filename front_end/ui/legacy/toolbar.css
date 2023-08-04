@@ -327,7 +327,6 @@ select.toolbar-item {
   min-width: 38px;
   appearance: none;
   border: 1px solid transparent;
-  border-radius: 0;
   padding: 0 13px 0 5px;
   margin-right: -10px;
   position: relative;
@@ -342,12 +341,13 @@ select.toolbar-item:disabled {
 
 button.toolbar-item:focus-visible,
 select.toolbar-item:focus-visible {
-  background: var(--color-background-elevation-2);
+  background: var(--sys-color-state-hover-on-subtle);
   border-radius: 2px;
 }
 
 select.toolbar-item:focus-visible > * {
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
+  border-radius: 7px;
 }
 /* Input */
 
@@ -356,24 +356,24 @@ select.toolbar-item:focus-visible > * {
   height: 19px;
   padding: 4px 3px 3px;
   margin: 1px 3px;
-  background-color: var(--sys-color-cdt-base-container);
+  background: var(--sys-color-cdt-base-container);
   border: 1px solid var(--sys-color-neutral-outline);
   border-radius: 4px;
   min-width: 35px;
 
-  &:hover {
-    box-shadow: 0 0 0 1px var(--ref-palette-neutral90);
+  &.focused,
+  &:not(.toolbar-input-empty) {
+    border-color: var(--sys-color-state-focus-ring);
   }
-}
 
-.toolbar-input.focused,
-.toolbar-input:not(.toolbar-input-empty) {
-  box-shadow: var(--legacy-focus-ring-active-shadow);
-}
+  &:hover:not(.focused) {
+    background: var(--sys-color-state-hover-on-subtle);
+  }
 
-.toolbar-input > input {
-  border: none;
-  flex-grow: 1;
+  & > input {
+    border: none;
+    flex-grow: 1;
+  }
 }
 
 .toolbar-input-clear-button {
@@ -409,7 +409,7 @@ select.toolbar-item:focus-visible > * {
 /* Separator */
 
 .toolbar-divider {
-  background-color: var(--sys-color-divider);
+  background-color: var(--sys-color-on-base-divider);
   width: 1px;
   margin: 5px 4px;
   height: 16px;
@@ -460,13 +460,13 @@ input[is="history-input"] {
   color: var(--color-text-primary);
 }
 
-input[is="history-input"]:hover {
-  box-shadow: 0 0 0 1px var(--ref-palette-neutral90);
-}
-
 input[is="history-input"]:focus,
 input[is="history-input"]:not(:placeholder-shown) {
-  box-shadow: var(--legacy-focus-ring-active-shadow);
+  border-color: var(--sys-color-state-focus-ring);
+}
+
+input[is="history-input"]:hover:not(:focus) {
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .toolbar-item.highlight::before {
@@ -477,24 +477,20 @@ input[is="history-input"]:not(:placeholder-shown) {
   right: 2px;
   bottom: 2px;
   border-radius: 2px;
-  background: var(--color-primary-old);
+  background: var(--sys-color-neutral-container);
   z-index: -1;
 }
 
-.toolbar-item.highlight > .title {
-  color: var(--color-button-primary-text);
+.toolbar-item.highlight:focus-visible {
+  background: var(--sys-color-tonal-container);
+
+  & > .title {
+    color: var(--sys-color-on-tonal-container);
+  }
 }
 
 .toolbar-item.highlight:hover:not(:active) > .title {
   color: var(--color-button-primary-text-hover);
-}
-
-.toolbar-item.highlight:focus-visible {
-  background: var(--color-primary-variant);
-}
-
-.toolbar-item.highlight > .icon-mask {
-  background: var(--color-button-primary-text);
 }
 
 devtools-icon.leading-issue-icon {

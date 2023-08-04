@@ -932,15 +932,16 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       if (firstNodeTarget) {
         this.cpuProfiler = firstNodeTarget.model(SDK.CPUProfilerModel.CPUProfilerModel);
       }
-      if (this.cpuProfiler) {
-        this.setUIControlsEnabled(false);
-        this.hideLandingPage();
-
-        await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');
-        await this.cpuProfiler.startRecording();
-
-        this.recordingStarted();
+      this.setUIControlsEnabled(false);
+      this.hideLandingPage();
+      if (!this.cpuProfiler) {
+        this.recordingFailed('No Node target is found.');
+        return;
       }
+      await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');
+      await this.cpuProfiler.startRecording();
+
+      this.recordingStarted();
     }
   }
 

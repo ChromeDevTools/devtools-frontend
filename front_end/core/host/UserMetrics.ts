@@ -901,9 +901,10 @@ export enum DevtoolsExperiments {
   'setAllBreakpointsEagerly' = 74,
   'selfXssWarning' = 75,
   'useSourceMapScopes' = 76,
+  'storageBucketsTree' = 77,
 
   // Increment this when new experiments are added.
-  'MaxValue' = 77,
+  'MaxValue' = 78,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

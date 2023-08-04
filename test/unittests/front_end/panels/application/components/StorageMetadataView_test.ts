@@ -2,11 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as ApplicationComponents from '../../../../../../front_end/panels/application/components/components.js';
 import * as Coordinator from '../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../../../front_end/ui/components/report_view/report_view.js';
+import * as UI from '../../../../../../front_end/ui/legacy/legacy.js';
 import {
+  assertElement,
   assertShadowRoot,
   getCleanTextContentFromElements,
   getElementWithinComponent,
@@ -18,9 +21,14 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
 
-async function makeView(storageKeyOrBucketInfo: string|Protocol.Storage.StorageBucketInfo) {
+async function makeView(
+    storageKeyOrBucketInfo: string|Protocol.Storage.StorageBucketInfo,
+    storageBucketsModel?: SDK.StorageBucketsModel.StorageBucketsModel) {
   const component = new ApplicationComponents.StorageMetadataView.StorageMetadataView();
   renderElementIntoDOM(component);
+  if (storageBucketsModel) {
+    component.enableStorageBucketControls(storageBucketsModel);
+  }
   if (typeof storageKeyOrBucketInfo === 'string') {
     component.setStorageKey(storageKeyOrBucketInfo);
   } else {
@@ -164,5 +172,49 @@ describeWithLocale('SharedStorageMetadataView', () => {
       '4.1 kB',
       (new Date(42000)).toLocaleString(),
     ]);
+  });
+
+  it('renders bucket controls', async () => {
+    const storageBucketsModel = {
+      deleteBucket: sinon.spy(),
+      target: () => ({
+        model: () => ({
+          getBucketByName: () => null,
+        }),
+      }),
+    };
+
+    const storageBucket = {
+      storageKey: 'https://example.com/^31',
+      name: 'My Bucket',
+    };
+
+    const component = await makeView(
+        {
+          bucket: storageBucket,
+          id: 'BUCKET_ID',
+          persistent: true,
+          durability: Protocol.Storage.StorageBucketsDurability.Relaxed,
+          quota: 4096,
+          expiration: 42,
+        },
+        storageBucketsModel as unknown as SDK.StorageBucketsModel.StorageBucketsModel);
+
+    assertShadowRoot(component.shadowRoot);
+
+    const buttons = component.shadowRoot.querySelectorAll('devtools-button');
+
+    assert.strictEqual(buttons.length, 1);
+    assertElement(buttons[0], HTMLElement);
+
+    const deleteButton = buttons[0];
+    assert.strictEqual(deleteButton.textContent?.trim(), 'Delete bucket');
+
+    const showDialog = sinon.stub(UI.UIUtils.ConfirmDialog, 'show').resolves(true);
+    deleteButton.click();
+    assert.isTrue(showDialog.calledOnce);
+
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isTrue(storageBucketsModel.deleteBucket.calledOnceWithExactly(storageBucket));
   });
 });

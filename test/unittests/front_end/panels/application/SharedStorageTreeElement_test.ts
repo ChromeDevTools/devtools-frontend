@@ -86,6 +86,7 @@ describeWithMockConnection('SharedStorageTreeElement', function() {
       stubNoopSettings();
       target = targetFactory();
       Root.Runtime.experiments.register(Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL, '', false);
+      Root.Runtime.experiments.register(Root.Runtime.ExperimentName.STORAGE_BUCKETS_TREE, '', false);
 
       sharedStorageModel = target.model(Application.SharedStorageModel.SharedStorageModel) as
           Application.SharedStorageModel.SharedStorageModel;

@@ -311,6 +311,7 @@ export enum ExperimentName {
   SET_ALL_BREAKPOINTS_EAGERLY = 'setAllBreakpointsEagerly',
   SELF_XSS_WARNING = 'selfXssWarning',
   USE_SOURCE_MAP_SCOPES = 'useSourceMapScopes',
+  STORAGE_BUCKETS_TREE = 'storageBucketsTree',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

@@ -3080,6 +3080,9 @@
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Shared storage"
   },
+  "panels/application/StorageBucketsTreeElement.ts | storageBuckets": {
+    "message": "Storage Buckets"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Clear all"
   },

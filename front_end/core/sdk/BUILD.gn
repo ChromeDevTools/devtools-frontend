@@ -43,6 +43,7 @@ devtools_module("sdk") {
     "FrameAssociated.ts",
     "FrameManager.ts",
     "HeapProfilerModel.ts",
+    "HttpReasonPhraseStrings.ts",
     "IOModel.ts",
     "IsolateManager.ts",
     "IssuesModel.ts",

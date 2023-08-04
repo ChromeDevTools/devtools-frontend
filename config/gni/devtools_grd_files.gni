@@ -764,6 +764,7 @@ grd_files_debug_sources = [
   "front_end/core/sdk/FrameAssociated.js",
   "front_end/core/sdk/FrameManager.js",
   "front_end/core/sdk/HeapProfilerModel.js",
+  "front_end/core/sdk/HttpReasonPhraseStrings.js",
   "front_end/core/sdk/IOModel.js",
   "front_end/core/sdk/IsolateManager.js",
   "front_end/core/sdk/IssuesModel.js",

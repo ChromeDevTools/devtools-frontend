@@ -574,6 +574,8 @@ def _CheckObsoleteScreenshotGoldens(input_api, output_api):
 def _RunCannedChecks(input_api, output_api):
     results = []
     results.extend(
+        input_api.canned_checks.CheckForCommitObjects(input_api, output_api))
+    results.extend(
         input_api.canned_checks.CheckOwnersFormat(input_api, output_api))
     results.extend(input_api.canned_checks.CheckOwners(input_api, output_api))
     results.extend(

@@ -63,6 +63,9 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
             Capability.IO | Capability.Media | Capability.Inspector;
         break;
+      case Type.SharedStorageWorklet:
+        this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Inspector;
+        break;
       case Type.Worker:
         this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
             Capability.IO | Capability.Media | Capability.Emulation;
@@ -247,6 +250,7 @@ export enum Type {
   ServiceWorker = 'service-worker',
   Worker = 'worker',
   SharedWorker = 'shared-worker',
+  SharedStorageWorklet = 'shared-storage-worklet',
   Node = 'node',
   Browser = 'browser',
   AuctionWorklet = 'auction-worklet',

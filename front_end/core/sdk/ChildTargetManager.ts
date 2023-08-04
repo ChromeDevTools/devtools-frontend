@@ -158,6 +158,8 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
       type = Type.Worker;
     } else if (targetInfo.type === 'shared_worker') {
       type = Type.SharedWorker;
+    } else if (targetInfo.type === 'shared_storage_worklet') {
+      type = Type.SharedStorageWorklet;
     } else if (targetInfo.type === 'service_worker') {
       type = Type.ServiceWorker;
     } else if (targetInfo.type === 'auction_worklet') {

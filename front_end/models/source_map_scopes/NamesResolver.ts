@@ -715,7 +715,19 @@ async function getFunctionNameFromScopeStart(
     return null;
   }
 
-  const name = sourceMap.findEntry(lineNumber, columnNumber)?.name;
+  const mappingEntry = sourceMap.findEntry(lineNumber, columnNumber);
+  if (!mappingEntry || !mappingEntry.sourceURL) {
+    return null;
+  }
+
+  const scopeName =
+      sourceMap.findScopeEntry(mappingEntry.sourceURL, mappingEntry.sourceLineNumber, mappingEntry.sourceColumnNumber)
+          ?.scopeName();
+  if (scopeName) {
+    return scopeName;
+  }
+
+  const name = mappingEntry.name;
   if (!name) {
     return null;
   }

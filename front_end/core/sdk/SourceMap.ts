@@ -35,6 +35,7 @@
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
+import * as Root from '../root/root.js';
 
 /**
  * Type of the base source map JSON object, which contains the sources and the mappings at the very least, plus
@@ -56,6 +57,8 @@ export type SourceMapV3Object = {
   'x_google_linecount'?: number,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   'x_google_ignoreList'?: number[],
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  'x_com_bloomberg_sourcesFunctionMappings'?: string[],
   // clang-format on
 };
 
@@ -128,6 +131,42 @@ export class SourceMapEntry {
   }
 }
 
+interface Position {
+  lineNumber: number;
+  columnNumber: number;
+}
+
+function comparePositions(a: Position, b: Position): number {
+  return a.lineNumber - b.lineNumber || a.columnNumber - b.columnNumber;
+}
+
+export interface ScopeEntry {
+  scopeName(): string;
+  start(): Position;
+  end(): Position;
+}
+
+class ScopeTreeEntry implements ScopeEntry {
+  children: ScopeTreeEntry[] = [];
+
+  constructor(
+      readonly startLineNumber: number, readonly startColumnNumber: number, readonly endLineNumber: number,
+      readonly endColumnNumber: number, readonly name: string) {
+  }
+
+  scopeName(): string {
+    return this.name;
+  }
+
+  start(): Position {
+    return {lineNumber: this.startLineNumber, columnNumber: this.startColumnNumber};
+  }
+
+  end(): Position {
+    return {lineNumber: this.endLineNumber, columnNumber: this.endColumnNumber};
+  }
+}
+
 const base64Digits = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const base64Map = new Map<string, number>();
 
@@ -141,6 +180,7 @@ interface SourceInfo {
   content: string|null;
   ignoreListHint: boolean;
   reverseMappings: number[]|null;
+  scopeTree: ScopeTreeEntry[]|null;
 }
 
 export class SourceMap {
@@ -425,7 +465,7 @@ export class SourceMap {
       if (!this.#sourceInfos.has(url)) {
         const content = source ?? null;
         const ignoreListHint = ignoreList.has(i);
-        this.#sourceInfos.set(url, {content, ignoreListHint, reverseMappings: null});
+        this.#sourceInfos.set(url, {content, ignoreListHint, reverseMappings: null, scopeTree: null});
       }
     }
     sourceMapToSourceList.set(sourceMap, sourcesList);
@@ -486,6 +526,109 @@ export class SourceMap {
       nameIndex += this.decodeVLQ(stringCharIterator);
       this.mappings().push(new SourceMapEntry(
           lineNumber, columnNumber, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
+    }
+
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.USE_SOURCE_MAP_SCOPES)) {
+      this.parseScopes(map);
+    }
+  }
+
+  private parseScopes(map: SourceMapV3Object): void {
+    if (!map.x_com_bloomberg_sourcesFunctionMappings) {
+      return;
+    }
+    const sources = sourceMapToSourceList.get(map);
+    if (!sources) {
+      return;
+    }
+    const names = map.names ?? [];
+    const scopeList = map.x_com_bloomberg_sourcesFunctionMappings;
+
+    for (let i = 0; i < sources?.length; i++) {
+      if (!scopeList[i] || !sources[i]) {
+        continue;
+      }
+      const sourceInfo = this.#sourceInfos.get(sources[i]);
+      if (!sourceInfo) {
+        continue;
+      }
+      const scopes = scopeList[i];
+
+      let nameIndex = 0;
+      let startLineNumber = 0;
+      let startColumnNumber = 0;
+      let endLineNumber = 0;
+      let endColumnNumber = 0;
+
+      const stringCharIterator = new SourceMap.StringCharIterator(scopes);
+      const entries: ScopeTreeEntry[] = [];
+      let atStart = true;
+      while (stringCharIterator.hasNext()) {
+        if (atStart) {
+          atStart = false;
+        } else if (stringCharIterator.peek() === ',') {
+          stringCharIterator.next();
+        } else {
+          // Unexpected character.
+          return;
+        }
+        nameIndex += this.decodeVLQ(stringCharIterator);
+        startLineNumber += this.decodeVLQ(stringCharIterator);
+        startColumnNumber += this.decodeVLQ(stringCharIterator);
+        endLineNumber += this.decodeVLQ(stringCharIterator);
+        endColumnNumber += this.decodeVLQ(stringCharIterator);
+        entries.push(new ScopeTreeEntry(
+            startLineNumber, startColumnNumber, endLineNumber, endColumnNumber, names[nameIndex] ?? '<invalid>'));
+      }
+      sourceInfo.scopeTree = this.buildScopeTree(entries);
+    }
+  }
+
+  private buildScopeTree(entries: ScopeTreeEntry[]): ScopeTreeEntry[] {
+    const toplevel: ScopeTreeEntry[] = [];
+    entries.sort((l, r) => comparePositions(l.start(), r.start()));
+
+    const stack: ScopeTreeEntry[] = [];
+
+    for (const entry of entries) {
+      const start = entry.start();
+      // Pop all the scopes that precede the current entry.
+      while (stack.length > 0) {
+        const top = stack[stack.length - 1];
+        if (comparePositions(top.end(), start) < 0) {
+          stack.pop();
+        } else {
+          break;
+        }
+      }
+
+      if (stack.length > 0) {
+        stack[stack.length - 1].children.push(entry);
+      } else {
+        toplevel.push(entry);
+      }
+      stack.push(entry);
+    }
+    return toplevel;
+  }
+
+  findScopeEntry(sourceURL: Platform.DevToolsPath.UrlString, sourceLineNumber: number, sourceColumnNumber: number):
+      ScopeEntry|null {
+    const sourceInfo = this.#sourceInfos.get(sourceURL);
+    if (!sourceInfo || !sourceInfo.scopeTree) {
+      return null;
+    }
+    const position: Position = {lineNumber: sourceLineNumber, columnNumber: sourceColumnNumber};
+
+    let current: ScopeTreeEntry|null = null;
+    while (true) {
+      const children: ScopeTreeEntry[] = current?.children ?? sourceInfo.scopeTree;
+      const match = children.find(
+          child => comparePositions(child.start(), position) <= 0 && comparePositions(position, child.end()) <= 0);
+      if (!match) {
+        return current;
+      }
+      current = match;
     }
   }
 

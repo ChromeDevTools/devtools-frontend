@@ -8,7 +8,9 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
+
 import {encodeSourceMap} from '../../helpers/SourceMapEncoder.js';
+import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 const sourceUrlFoo = '<foo>' as Platform.DevToolsPath.UrlString;
 
@@ -49,7 +51,7 @@ describe('SourceMapEntry', () => {
   });
 });
 
-describe('SourceMap', () => {
+describeWithEnvironment('SourceMap', () => {
   const compiledUrl = 'compiled.js' as Platform.DevToolsPath.UrlString;
   const sourceMapJsonUrl = 'source-map.json' as Platform.DevToolsPath.UrlString;
   const sourceUrlExample = 'example.js' as Platform.DevToolsPath.UrlString;

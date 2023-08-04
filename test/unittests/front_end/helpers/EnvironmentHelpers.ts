@@ -124,6 +124,7 @@ const REGISTERED_EXPERIMENTS = [
   'setAllBreakpointsEagerly',
   'selfXssWarning',
   'evaluateExpressionsWithSourceMaps',
+  'useSourceMapScopes',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {

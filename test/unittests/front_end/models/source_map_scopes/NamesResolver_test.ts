@@ -9,6 +9,7 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {MockProtocolBackend} from '../../helpers/MockScopeChain.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
@@ -421,6 +422,40 @@ describeWithMockConnection('NameResolver', () => {
       const functionName = await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(
           {scriptId, columnNumber, lineNumber}, target);
       assert.strictEqual(functionName, 'unminified');
+    });
+  });
+
+  describe('Function name resolving from scopes', () => {
+    it('resolves function scope name at scope start for a debugger frame', async () => {
+      Root.Runtime.experiments.enableForTest('useSourceMapScopes');
+
+      const sourceMapUrl = 'file:///tmp/example.js.min.map';
+      const sourceMapContent = JSON.stringify({
+        'version': 3,
+        'names': [
+          '<toplevel>',
+          '<anonymous>',
+          'log',
+          'main',
+        ],
+        'sources': ['main.js'],
+        'sourcesContent': [
+          '(function () {\n  function log(m) {\n    console.log(m);\n  }\n\n  function main() {\n\t  log("hello");\n\t  log("world");\n  }\n  \n  main();\n})();',
+        ],
+        'mappings': 'CAAA,WACE,SAAS,EAAI,GACX,QAAQ,IAAI,EACd,CAEA,SAAS,IACR,EAAI,SACJ,EAAI,QACL,CAEA,GACD,EAXD',
+        'x_com_bloomberg_sourcesFunctionMappings': ['AAAWK,CACAJ,CCCRE,CIAKA'],
+      });
+
+      const source = '(function(){function o(o){console.log(o)}function n(){o("hello");o("world")}n()})();\n';
+      const scopes = '                                                   {                       }';
+
+      const callFrame = await backend.createCallFrame(
+          target, {url: URL, content: source + `//# sourceMappingURL=${sourceMapUrl}`}, scopes,
+          {url: sourceMapUrl, content: sourceMapContent});
+
+      const functionName = await SourceMapScopes.NamesResolver.resolveDebuggerFrameFunctionName(callFrame);
+      assert.strictEqual(functionName, 'main');
+      Root.Runtime.experiments.disableForTest('useSourceMapScopes');
     });
   });
 

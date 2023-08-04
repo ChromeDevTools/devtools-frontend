@@ -53,6 +53,7 @@ copy_to_gen("traces") {
     "sync-like-timings.json.gz",
     "threejs-gpu.json.gz",
     "timings-track.json.gz",
+    "two-workers.json.gz",
     "user-timings-complex.json.gz",
     "user-timings.json.gz",
     "web-dev.json.gz",

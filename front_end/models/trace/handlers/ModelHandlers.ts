@@ -17,3 +17,4 @@ export * as Screenshots from './ScreenshotsHandler.js';
 export * as UserInteractions from './UserInteractionsHandler.js';
 export * as UserTimings from './UserTimingsHandler.js';
 export * as Warnings from './WarningsHandler.js';
+export * as Workers from './WorkersHandler.js';

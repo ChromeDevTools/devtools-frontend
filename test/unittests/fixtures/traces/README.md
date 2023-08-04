@@ -125,4 +125,8 @@ Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/f
 
 Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/forced-layout-main-thread. Has a large recalc style event.
 
+### two-workers
+
+Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/two-workers. Runs two workers that both calculcate fibonnaci numbers.
+
 

@@ -491,6 +491,22 @@ export interface TraceEventTracingStartedInBrowser extends TraceEventInstant {
   };
 }
 
+export interface TraceEventTracingSessionIdForWorker extends TraceEventInstant {
+  name: 'TracingSessionIdForWorker';
+  args: TraceEventArgs&{
+    data?: TraceEventArgsData & {
+      url: string,
+      workerId: string,
+      workerThreadId: ThreadID,
+      frame: string,
+    },
+  };
+}
+export function isTraceEventTracingSessionIdForWorker(event: TraceEventData):
+    event is TraceEventTracingSessionIdForWorker {
+  return event.name === 'TracingSessionIdForWorker';
+}
+
 export interface TraceEventFrameCommittedInBrowser extends TraceEventInstant {
   name: 'FrameCommittedInBrowser';
   args: TraceEventArgs&{

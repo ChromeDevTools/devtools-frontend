@@ -22,6 +22,7 @@ ts_library("handlers") {
     "UserInteractionsHandler_test.ts",
     "UserTimingsHandler_test.ts",
     "WarningsHandler_test.ts",
+    "WorkersHandler_test.ts",
   ]
 
   deps = [

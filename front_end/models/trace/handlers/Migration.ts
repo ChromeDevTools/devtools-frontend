@@ -14,6 +14,7 @@ import type * as Samples from './SamplesHandler.js';
 import * as UserInteractions from './UserInteractionsHandler.js';
 import * as UserTimings from './UserTimingsHandler.js';
 import * as Warnings from './WarningsHandler.js';
+import * as Workers from './WorkersHandler.js';
 
 import type * as Types from './types.js';
 
@@ -31,6 +32,7 @@ export const ENABLED_TRACE_HANDLERS = {
   Memory,
   NetworkRequests,
   Warnings,
+  Workers,
 };
 
 export type EnabledHandlersDuringMigration = typeof ENABLED_TRACE_HANDLERS;

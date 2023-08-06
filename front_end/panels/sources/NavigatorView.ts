@@ -97,7 +97,7 @@ const UIStrings = {
   /**
    *@description Text in Navigator View of the Sources panel
    */
-  areYouSureYouWantToDeleteAll: 'Are you sure you want to delete all overrides contained in this folder?',
+  areYouSureYouWantToDeleteAll: 'Are you sure you want to delete all overrides in this folder?',
   /**
    *@description A context menu item in the Navigator View of the Sources panel
    */

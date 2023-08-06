@@ -171,4 +171,62 @@ describe('The Overrides Panel', async function() {
       await click('aria/Close coffees.json');
     });
   });
+
+  it('overrides indicator on the Network panel title', async () => {
+    await step('no indicator when overrides setting is disabled', async () => {
+      await goToResource('network/fetch-json.html');
+
+      await openNetworkTab();
+      const networkPanel = await waitFor('.tabbed-pane-header-tab.selected');
+      const icons = await networkPanel.$$('.tabbed-pane-header-tab-icon');
+
+      assert.strictEqual(icons.length, 0);
+    });
+
+    await step('shows indicator when overrides setting is enabled', async () => {
+      // Set up & enable overrides
+      await selectRequestByName('coffees.json', {button: 'right'});
+      await click('aria/Override content');
+
+      // File permission pop up
+      const infoBar = await waitForAria('Select a folder to store override files in.');
+      await click('.infobar-main-row .infobar-button', {root: infoBar});
+      await waitFor('[aria-label="coffees.json, file"]');
+
+      await openNetworkTab();
+      const networkPanel = await waitFor('.tabbed-pane-header-tab.selected');
+      const icons = await networkPanel.$$('.tabbed-pane-header-tab-icon');
+      const iconTitleElement = await icons[0].$('aria/Requests may be rewritten by local overrides');
+
+      assert.strictEqual(icons.length, 1);
+      assert.isDefined(iconTitleElement);
+    });
+
+    await step('no indicator after clearing overrides configuration', async () => {
+      await selectRequestByName('coffees.json', {button: 'right'});
+      await click('aria/Override content');
+      await click('aria/Clear configuration');
+
+      await openNetworkTab();
+      const networkPanel = await waitFor('.tabbed-pane-header-tab.selected');
+      const icons = await networkPanel.$$('.tabbed-pane-header-tab-icon');
+
+      assert.strictEqual(icons.length, 0);
+    });
+
+    await step('shows indicator after enabling override in Overrides tab', async () => {
+      await click('aria/Sources');
+      await click('aria/Select folder for overrides');
+      await clickOnContextMenu(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
+      await waitFor('[aria-label="NewFile, file"]');
+
+      await openNetworkTab();
+      const networkPanel = await waitFor('.tabbed-pane-header-tab.selected');
+      const icons = await networkPanel.$$('.tabbed-pane-header-tab-icon');
+      const iconTitleElement = await icons[0].$('aria/Requests may be rewritten by local overrides');
+
+      assert.strictEqual(icons.length, 1);
+      assert.isDefined(iconTitleElement);
+    });
+  });
 });

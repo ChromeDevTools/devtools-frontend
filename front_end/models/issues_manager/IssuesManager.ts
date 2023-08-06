@@ -250,7 +250,9 @@ export class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
           (frame.resourceTreeModel().target() === issue.model()?.target())) {
         keptIssues.set(key, issue);
         // Keep BounceTrackingIssues alive for non-user-initiated navigations.
-      } else if (issue.code() === Protocol.Audits.InspectorIssueCode.BounceTrackingIssue) {
+      } else if (
+          issue.code() === Protocol.Audits.InspectorIssueCode.BounceTrackingIssue ||
+          issue.code() === Protocol.Audits.InspectorIssueCode.CookieIssue) {
         const networkManager = frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
         if (networkManager?.requestForLoaderId(frame.loaderId as Protocol.Network.LoaderId)?.hasUserGesture() ===
             false) {

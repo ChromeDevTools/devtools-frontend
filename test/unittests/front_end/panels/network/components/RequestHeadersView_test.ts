@@ -335,7 +335,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     assert.strictEqual(linkElements[0].title, 'https://goo.gle/devtools-override');
 
     assertElement(linkElements[1], HTMLElement);
-    assert.strictEqual(linkElements[1].textContent?.trim(), 'Header overrides');
+    assert.strictEqual(linkElements[1].textContent?.trim(), Persistence.NetworkPersistenceManager.HEADERS_FILENAME);
   });
 
   it('does not render a link to \'.headers\' if a matching \'.headers\' does not exist', async () => {

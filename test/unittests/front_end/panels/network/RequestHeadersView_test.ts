@@ -73,7 +73,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     assertElement(headersTitle, HTMLElement);
     const button = headersTitle.querySelector('button.headers-link');
     assertElement(button, HTMLButtonElement);
-    assert.strictEqual(button.textContent, 'Header overrides');
+    assert.strictEqual(button.textContent, Persistence.NetworkPersistenceManager.HEADERS_FILENAME);
     component.detach();
   });
 

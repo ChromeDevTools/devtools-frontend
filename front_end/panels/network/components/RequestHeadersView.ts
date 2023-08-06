@@ -62,11 +62,6 @@ const UIStrings = {
    */
   general: 'General',
   /**
-   *@description Label for a link from the network panel's headers view to the file in which
-   * header overrides are defined in the sources panel.
-   */
-  headerOverrides: 'Header overrides',
-  /**
    *@description Label for a checkbox to switch between raw and parsed headers
    */
   raw: 'Raw',
@@ -278,7 +273,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
         </${IconButton.Icon.Icon.litTagName}
       ></x-link>
       <x-link @click=${revealHeadersFile} class="link devtools-link" title=${UIStrings.revealHeaderOverrides}>
-        ${fileIcon}${i18nString(UIStrings.headerOverrides)}
+        ${fileIcon}${Persistence.NetworkPersistenceManager.HEADERS_FILENAME}
       </x-link>
     `;
     // clang-format on

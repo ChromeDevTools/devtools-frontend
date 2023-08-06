@@ -15,7 +15,7 @@ const UIStrings = {
   /**
    *@description Icon title in Network Panel Indicator of the Network panel
    */
-  requestsMayBeRewrittenByLocal: 'Requests may be rewritten by local overrides',
+  requestsMayBeOverridden: 'Requests may be overridden locally',
   /**
    *@description Icon title in Network Panel Indicator of the Network panel
    */
@@ -49,7 +49,7 @@ export class NetworkPanelIndicator {
       if (manager.isThrottling()) {
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.networkThrottlingIsEnabled));
       } else if (SDK.NetworkManager.MultitargetNetworkManager.instance().isIntercepting()) {
-        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.requestsMayBeRewrittenByLocal));
+        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.requestsMayBeOverridden));
       } else if (manager.isBlocking()) {
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.requestsMayBeBlocked));
       } else if (manager.isAcceptedEncodingOverrideSet()) {

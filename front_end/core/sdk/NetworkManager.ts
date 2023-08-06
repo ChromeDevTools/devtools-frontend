@@ -1693,6 +1693,7 @@ export class InterceptedRequest {
       const setCookieHeadersFromOverrides = responseHeaders.filter(header => header.name === 'set-cookie');
       this.networkRequest.setCookieHeaders =
           InterceptedRequest.mergeSetCookieHeaders(originalSetCookieHeaders, setCookieHeadersFromOverrides);
+      this.networkRequest.hasOverriddenContent = isBodyOverridden;
     }
 
     void this.#fetchAgent.invoke_fulfillRequest({requestId: this.requestId, responseCode, body, responseHeaders});

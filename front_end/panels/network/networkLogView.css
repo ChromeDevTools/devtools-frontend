@@ -383,12 +383,21 @@
 }
 
 .network-override-marker {
-  background: rgb(175 75 246); /* stylelint-disable-line plugin/use_theme_colors */
+  position: relative;
+  float: left;
+}
+
+.network-override-marker::before {
+  background-color: var(--color-purple-bright);
+  content: url("Images/empty.svg");
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  width: 8px;
-  height: 8px;
-  display: inline-block;
-  margin-right: 3px;
+  outline: 1px solid var(--icon-gap-toolbar);
+  left: 8px;
+  position: absolute;
+  top: 10px;
+  z-index: 1;
 }
 
 @media (forced-colors: active) {

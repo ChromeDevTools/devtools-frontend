@@ -197,6 +197,7 @@ grd_files_release_sources = [
   "front_end/Images/send.svg",
   "front_end/Images/settings_14x14_icon.svg",
   "front_end/Images/shadow.svg",
+  "front_end/Images/small-status-dot.svg",
   "front_end/Images/smallIcons.svg",
   "front_end/Images/snippet.svg",
   "front_end/Images/star.svg",

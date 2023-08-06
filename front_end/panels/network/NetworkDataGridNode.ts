@@ -273,10 +273,17 @@ const UIStrings = {
   dnsAlpnH3JobWonRace:
       '`Chrome` used a `HTTP/3` connection due to the `DNS record` indicating `HTTP/3` support, which won a race against establishing a connection using a different `HTTP` version.',
   /**
-   *@description Tooltip text for a small circular icon which signifies that (some) response headers of this request have been overridden
+   *@description Tooltip to explain the resource's overridden status
    */
-  hasOverriddenHeaders: 'Request has overridden headers',
-
+  requestContentHeadersOverridden: 'Both request content and headers are overridden',
+  /**
+   *@description Tooltip to explain the resource's overridden status
+   */
+  requestContentOverridden: 'Request content is overridden',
+  /**
+   *@description Tooltip to explain the resource's overridden status
+   */
+  requestHeadersOverridden: 'Request headers are overridden',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1065,6 +1072,31 @@ export class NetworkRequestNode extends NetworkNode {
           color: 'var(--icon-error)',
         };
         iconElement = setIcon(iconData, type.title());
+        iconElement.classList.add('icon');
+      } else if (this.requestInternal.wasIntercepted()) {
+        const iconData = {
+          iconName: 'document',
+          color: 'var(--icon-default)',
+        };
+
+        let title: Common.UIString.LocalizedString;
+        const isHeaderOverriden = this.requestInternal.hasOverriddenHeaders();
+        const isContentOverriden = this.requestInternal.hasOverriddenContent;
+
+        if (isHeaderOverriden && isContentOverriden) {
+          title = i18nString(UIStrings.requestContentHeadersOverridden);
+        } else if (isContentOverriden) {
+          title = i18nString(UIStrings.requestContentOverridden);
+        } else {
+          title = i18nString(UIStrings.requestHeadersOverridden);
+        }
+
+        const iconChildElement = setIcon(iconData, title);
+        iconChildElement.classList.add('icon');
+
+        iconElement = document.createElement('div');
+        iconElement.classList.add('network-override-marker');
+        iconElement.appendChild(iconChildElement);
       } else if (this.requestInternal.resourceType() === Common.ResourceType.resourceTypes.Image) {
         const previewImage = document.createElement('img');
         previewImage.classList.add('image-network-icon-preview');
@@ -1072,13 +1104,13 @@ export class NetworkRequestNode extends NetworkNode {
         void this.requestInternal.populateImageSource((previewImage as HTMLImageElement));
 
         iconElement = document.createElement('div');
-        iconElement.classList.add('image');
+        iconElement.classList.add('image', 'icon');
         iconElement.appendChild(previewImage);
       } else {
         const iconData = iconDataForResourceType(type);
         iconElement = setIcon(iconData, type.title());
+        iconElement.classList.add('icon');
       }
-      iconElement.classList.add('icon');
 
       cell.appendChild(iconElement);
     }
@@ -1220,12 +1252,6 @@ export class NetworkRequestNode extends NetworkNode {
           cell, i18nString(UIStrings.corsError),
           i18nString(UIStrings.crossoriginResourceSharingErrorS, {PH1: corsErrorStatus.corsError}));
     } else if (this.requestInternal.statusCode) {
-      if (this.requestInternal.hasOverriddenHeaders()) {
-        const markerDiv = document.createElement('div');
-        markerDiv.classList.add('network-override-marker');
-        markerDiv.title = i18nString(UIStrings.hasOverriddenHeaders);
-        cell.appendChild(markerDiv);
-      }
       UI.UIUtils.createTextChild(cell, String(this.requestInternal.statusCode));
       this.appendSubtitle(cell, this.requestInternal.statusText);
       UI.Tooltip.Tooltip.install(cell, this.requestInternal.statusCode + ' ' + this.requestInternal.statusText);

@@ -196,6 +196,7 @@ devtools_svg_sources = [
   "send.svg",
   "settings_14x14_icon.svg",
   "shadow.svg",
+  "small-status-dot.svg",
   "smallIcons.svg",
   "snippet.svg",
   "star.svg",

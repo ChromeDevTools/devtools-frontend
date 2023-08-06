@@ -17,21 +17,71 @@ describeWithEnvironment('NetworkLogView', () => {
         '' as Platform.DevToolsPath.UrlString, null, null, null);
     request.statusCode = 200;
 
+    request.setWasIntercepted(true);
     request.responseHeaders = [{name: 'foo', value: 'overridden'}];
     request.originalResponseHeaders = [{name: 'foo', value: 'original'}];
-    let networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
-        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    let el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'status');
-    let marker = el.querySelector('.network-override-marker');
-    assertElement(marker, HTMLDivElement);
 
-    request.responseHeaders = [{name: 'foo', value: 'original'}];
-    networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
         {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
-    el = document.createElement('div');
-    networkRequestNode.renderCell(el, 'status');
-    marker = el.querySelector('.network-override-marker');
+    const el = document.createElement('div');
+    networkRequestNode.renderCell(el, 'name');
+    const marker = el.querySelector('.network-override-marker');
+    const tooltip = el.querySelector('[title="Request headers are overridden"]');
+    assertElement(marker, HTMLDivElement);
+    assert.isNotNull(tooltip);
+  });
+
+  it('adds marker to requests with overridden content', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.statusCode = 200;
+
+    request.setWasIntercepted(true);
+    request.hasOverriddenContent = true;
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+    const el = document.createElement('div');
+    networkRequestNode.renderCell(el, 'name');
+    const marker = el.querySelector('.network-override-marker');
+    const tooltip = el.querySelector('[title="Request content is overridden"]');
+    assertElement(marker, HTMLDivElement);
+    assert.isNotNull(tooltip);
+  });
+
+  it('adds marker to requests with overridden headers and content', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.statusCode = 200;
+
+    request.setWasIntercepted(true);
+    request.hasOverriddenContent = true;
+    request.responseHeaders = [{name: 'foo', value: 'overridden'}];
+    request.originalResponseHeaders = [{name: 'foo', value: 'original'}];
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+    const el = document.createElement('div');
+    networkRequestNode.renderCell(el, 'name');
+    const marker = el.querySelector('.network-override-marker');
+    const tooltip = el.querySelector('[title="Both request content and headers are overridden"]');
+    assertElement(marker, HTMLDivElement);
+    assert.isNotNull(tooltip);
+  });
+
+  it('does not add marker to unoverridden request', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.statusCode = 200;
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+    const el = document.createElement('div');
+    networkRequestNode.renderCell(el, 'name');
+    const marker = el.querySelector('.network-override-marker');
     assert.isNull(marker);
   });
 

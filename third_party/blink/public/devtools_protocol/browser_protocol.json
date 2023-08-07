@@ -106,7 +106,7 @@
                         },
                         {
                             "name": "nativeSource",
-                            "description": "The native markup source for this value, e.g. a <label> element.",
+                            "description": "The native markup source for this value, e.g. a `<label>` element.",
                             "optional": true,
                             "$ref": "AXValueNativeSourceType"
                         },
@@ -1009,7 +1009,8 @@
                         "WarnSameSiteLaxCrossDowngradeStrict",
                         "WarnSameSiteLaxCrossDowngradeLax",
                         "WarnAttributeValueExceedsMaxSize",
-                        "WarnDomainNonASCII"
+                        "WarnDomainNonASCII",
+                        "WarnThirdPartyPhaseout"
                     ]
                 },
                 {
@@ -3085,7 +3086,7 @@
                         },
                         {
                             "name": "isMutable",
-                            "description": "Whether this stylesheet is mutable. Inline stylesheets become mutable\nafter they have been modified via CSSOM API.\n<link> element's stylesheets become mutable only if DevTools modifies them.\nConstructed stylesheets (new CSSStyleSheet()) are mutable immediately after creation.",
+                            "description": "Whether this stylesheet is mutable. Inline stylesheets become mutable\nafter they have been modified via CSSOM API.\n`<link>` element's stylesheets become mutable only if DevTools modifies them.\nConstructed stylesheets (new CSSStyleSheet()) are mutable immediately after creation.",
                             "type": "boolean"
                         },
                         {
@@ -4972,7 +4973,7 @@
         },
         {
             "domain": "DOM",
-            "description": "This domain exposes DOM read/write operations. Each DOM Node is represented with its mirror object\nthat has an `id`. This `id` can be used to get additional information on the Node, resolve it into\nthe JavaScript object wrapper, etc. It is important that client receives DOM events only for the\nnodes that are known to the client. Backend keeps track of the nodes that were sent to the client\nand never sends the same node twice. It is client's responsibility to collect information about\nthe nodes that were sent to the client.<p>Note that `iframe` owner elements will return\ncorresponding document elements as their child nodes.</p>",
+            "description": "This domain exposes DOM read/write operations. Each DOM Node is represented with its mirror object\nthat has an `id`. This `id` can be used to get additional information on the Node, resolve it into\nthe JavaScript object wrapper, etc. It is important that client receives DOM events only for the\nnodes that are known to the client. Backend keeps track of the nodes that were sent to the client\nand never sends the same node twice. It is client's responsibility to collect information about\nthe nodes that were sent to the client. Note that `iframe` owner elements will return\ncorresponding document elements as their child nodes.",
             "dependencies": [
                 "Runtime"
             ],
@@ -8979,7 +8980,7 @@
             "types": [
                 {
                     "id": "StreamHandle",
-                    "description": "This is either obtained from another method or specified as `blob:&lt;uuid&gt;` where\n`&lt;uuid&gt` is an UUID of a Blob.",
+                    "description": "This is either obtained from another method or specified as `blob:<uuid>` where\n`<uuid>` is an UUID of a Blob.",
                     "type": "string"
                 }
             ],
@@ -12209,7 +12210,8 @@
                         "SchemefulSameSiteUnspecifiedTreatedAsLax",
                         "SamePartyFromCrossPartyContext",
                         "SamePartyConflictsWithOtherAttributes",
-                        "NameValuePairExceedsMaxSize"
+                        "NameValuePairExceedsMaxSize",
+                        "DisallowedCharacter"
                     ]
                 },
                 {
@@ -12566,7 +12568,7 @@
                         },
                         {
                             "name": "headerIntegrity",
-                            "description": "Signed exchange header integrity hash in the form of \"sha256-<base64-hash-value>\".",
+                            "description": "Signed exchange header integrity hash in the form of `sha256-<base64-hash-value>`.",
                             "type": "string"
                         }
                     ]
@@ -17444,6 +17446,13 @@
                                 "ReturnAsBase64",
                                 "ReturnAsStream"
                             ]
+                        },
+                        {
+                            "name": "generateTaggedPDF",
+                            "description": "Whether or not to generate tagged (accessible) PDF. Defaults to embedder choice.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ],
                     "returns": [
@@ -18067,7 +18076,7 @@
                         },
                         {
                             "name": "backendNodeId",
-                            "description": "Input node id. Only present for file choosers opened via an <input type=\"file\"> element.",
+                            "description": "Input node id. Only present for file choosers opened via an `<input type=\"file\">` element.",
                             "experimental": true,
                             "optional": true,
                             "$ref": "DOM.BackendNodeId"
@@ -20014,7 +20023,8 @@
                         "destinationReportingLimitReached",
                         "destinationGlobalLimitReached",
                         "destinationBothLimitsReached",
-                        "reportingOriginsPerSiteLimitReached"
+                        "reportingOriginsPerSiteLimitReached",
+                        "exceedsMaxChannelCapacity"
                     ]
                 }
             ],
@@ -22290,7 +22300,7 @@
                 },
                 {
                     "name": "getResponseBody",
-                    "description": "Causes the body of the response to be received from the server and\nreturned as a single string. May only be issued for a request that\nis paused in the Response stage and is mutually exclusive with\ntakeResponseBodyForInterceptionAsStream. Calling other methods that\naffect the request or disabling fetch domain before body is received\nresults in an undefined behavior.",
+                    "description": "Causes the body of the response to be received from the server and\nreturned as a single string. May only be issued for a request that\nis paused in the Response stage and is mutually exclusive with\ntakeResponseBodyForInterceptionAsStream. Calling other methods that\naffect the request or disabling fetch domain before body is received\nresults in an undefined behavior.\nNote that the response body is not available for redirects. Requests\npaused in the _redirect received_ state may be differentiated by\n`responseCode` and presence of `location` response header, see\ncomments to `requestPaused` for details.",
                     "parameters": [
                         {
                             "name": "requestId",
@@ -22331,7 +22341,7 @@
             "events": [
                 {
                     "name": "requestPaused",
-                    "description": "Issued when the domain is enabled and the request URL matches the\nspecified filter. The request is paused until the client responds\nwith one of continueRequest, failRequest or fulfillRequest.\nThe stage of the request can be determined by presence of responseErrorReason\nand responseStatusCode -- the request is at the response stage if either\nof these fields is present and in the request stage otherwise.",
+                    "description": "Issued when the domain is enabled and the request URL matches the\nspecified filter. The request is paused until the client responds\nwith one of continueRequest, failRequest or fulfillRequest.\nThe stage of the request can be determined by presence of responseErrorReason\nand responseStatusCode -- the request is at the response stage if either\nof these fields is present and in the request stage otherwise.\nRedirect responses and subsequent requests are reported similarly to regular\nresponses and requests. Redirect responses may be distinguished by the value\nof `responseStatusCode` (which is one of 301, 302, 303, 307, 308) along with\npresence of the `location` header. Requests resulting from a redirect will\nhave `redirectedRequestId` field set.",
                     "parameters": [
                         {
                             "name": "requestId",
@@ -23570,12 +23580,12 @@
                         },
                         {
                             "name": "sourceText",
-                            "description": "Source text of JSON representing the rule set. If it comes from\n<script> tag, it is the textContent of the node. Note that it is\na JSON for valid case.\n\nSee also:\n- https://wicg.github.io/nav-speculation/speculation-rules.html\n- https://github.com/WICG/nav-speculation/blob/main/triggers.md",
+                            "description": "Source text of JSON representing the rule set. If it comes from\n`<script>` tag, it is the textContent of the node. Note that it is\na JSON for valid case.\n\nSee also:\n- https://wicg.github.io/nav-speculation/speculation-rules.html\n- https://github.com/WICG/nav-speculation/blob/main/triggers.md",
                             "type": "string"
                         },
                         {
                             "name": "backendNodeId",
-                            "description": "A speculation rule set is either added through an inline\n<script> tag or through an external resource via the\n'Speculation-Rules' HTTP header. For the first case, we include\nthe BackendNodeId of the relevant <script> tag. For the second\ncase, we include the external URL where the rule set was loaded\nfrom, and also RequestId if Network domain is enabled.\n\nSee also:\n- https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-script\n- https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-header",
+                            "description": "A speculation rule set is either added through an inline\n`<script>` tag or through an external resource via the\n'Speculation-Rules' HTTP header. For the first case, we include\nthe BackendNodeId of the relevant `<script>` tag. For the second\ncase, we include the external URL where the rule set was loaded\nfrom, and also RequestId if Network domain is enabled.\n\nSee also:\n- https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-script\n- https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-header",
                             "optional": true,
                             "$ref": "DOM.BackendNodeId"
                         },
@@ -23712,7 +23722,6 @@
                         "AudioOutputDeviceRequested",
                         "MixedContent",
                         "TriggerBackgrounded",
-                        "EmbedderTriggeredAndCrossOriginRedirected",
                         "MemoryLimitExceeded",
                         "FailToGetMemoryUsage",
                         "DataSaverEnabled",
@@ -23746,7 +23755,8 @@
                         "MemoryPressureAfterTriggered",
                         "PrerenderingDisabledByDevTools",
                         "ResourceLoadBlockedByClient",
-                        "SpeculationRuleRemoved"
+                        "SpeculationRuleRemoved",
+                        "ActivatedWithAuxiliaryBrowsingContexts"
                     ]
                 },
                 {

@@ -549,9 +549,6 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
       return i18nString(UIStrings.prerenderFinalStatusMixedContent);
     case Protocol.Preload.PrerenderFinalStatus.TriggerBackgrounded:
       return i18nString(UIStrings.prerenderFinalStatusTriggerBackgrounded);
-    case Protocol.Preload.PrerenderFinalStatus.EmbedderTriggeredAndCrossOriginRedirected:
-      // Not used.
-      return i18n.i18n.lockedString('Internal error');
     case Protocol.Preload.PrerenderFinalStatus.MemoryLimitExceeded:
       return i18nString(UIStrings.prerenderFinalStatusMemoryLimitExceeded);
     case Protocol.Preload.PrerenderFinalStatus.FailToGetMemoryUsage:
@@ -633,6 +630,8 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
       return i18nString(UIStrings.prerenderFinalStatusResourceLoadBlockedByClient);
     case Protocol.Preload.PrerenderFinalStatus.SpeculationRuleRemoved:
       return i18nString(UIStrings.prerenderFinalStatusSpeculationRuleRemoved);
+    case Protocol.Preload.PrerenderFinalStatus.ActivatedWithAuxiliaryBrowsingContexts:
+      return i18n.i18n.lockedString('Unknown');
     default:
       // Note that we use switch and exhaustiveness check to prevent to
       // forget updating these strings, but allow to handle unknown

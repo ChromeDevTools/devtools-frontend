@@ -992,13 +992,13 @@
       is_animation_property: true,
     },
     {
-      name: "transition-animation-type",
+      name: "transition-behavior",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal", "InitialValue"],
       typedom_types: ["Keyword"],
       separator: ",",
       style_builder_template: "transition",
       style_builder_template_args: {
-        attribute: "Mode",
+        attribute: "Behavior",
       },
       valid_for_marker: true,
       is_animation_property: true,
@@ -1177,7 +1177,7 @@
       name_for_methods: "SizeAdjust",
       converter: "ConvertFontSizeAdjust",
       priority: "High",
-      keywords: ["none", "ex-height", "cap-height", "ch-width", "ic-width"],
+      keywords: ["none", "ex-height", "cap-height", "ch-width", "ic-width", "from-font"],
       typedom_types: ["Keyword", "Number"],
       valid_for_first_letter: true,
       valid_for_first_line: true,
@@ -1547,7 +1547,6 @@
       // Setting zoom affects the _EffectiveZoom_, which in turns affects every px value
       // stored on ComputedStyle; see CSSToLengthConversionData::ZoomedComputedPixels.
       supports_incremental_style: false,
-      runtime_flag: "CSSZoom",
     },
     {
       name: "accent-color",
@@ -4888,6 +4887,17 @@
       typedom_types: ["Keyword"],
     },
     {
+      name: "text-autospace",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      inherited: true,
+      field_group: "*",
+      field_template: "keyword",
+      keywords: ["normal", "no-autospace"],
+      default_value: "normal",
+      typedom_types: ["Keyword"],
+      runtime_flag: "CSSTextAutoSpace",
+    },
+    {
       name: "text-box-trim",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       field_group: "box",
@@ -6144,7 +6154,6 @@
       typedom_types: ["Keyword"],
       valid_for_cue: true,
       valid_for_marker: true,
-      runtime_flag: "CSSTextWrap",
     },
     {
       name: "widows",
@@ -6192,7 +6201,7 @@
       field_group: "*",
       field_template: "keyword",
       // Word Break Values. Matches WinIE and CSS3
-      keywords: ["normal", "break-all", "keep-all", "break-word"],
+      keywords: ["normal", "break-all", "keep-all", "break-word", "auto-phrase"],
       default_value: "normal",
       typedom_types: ["Keyword"],
       valid_for_marker: true,
@@ -7386,7 +7395,8 @@
       name: "transition",
       longhands: [
         "transition-property", "transition-duration",
-        "transition-timing-function", "transition-delay"
+        "transition-timing-function", "transition-delay",
+        "transition-behavior",
       ],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
     },

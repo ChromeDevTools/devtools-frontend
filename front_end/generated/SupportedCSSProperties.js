@@ -1698,7 +1698,8 @@ export const generatedProperties = [
    "ex-height",
    "cap-height",
    "ch-width",
-   "ic-width"
+   "ic-width",
+   "from-font"
   ],
   "name": "font-size-adjust"
  },
@@ -3263,6 +3264,14 @@ export const generatedProperties = [
   "name": "text-anchor"
  },
  {
+  "inherited": true,
+  "keywords": [
+   "normal",
+   "no-autospace"
+  ],
+  "name": "text-autospace"
+ },
+ {
   "keywords": [
    "none",
    "start",
@@ -3525,12 +3534,13 @@ export const generatedProperties = [
    "transition-property",
    "transition-duration",
    "transition-timing-function",
-   "transition-delay"
+   "transition-delay",
+   "transition-behavior"
   ],
   "name": "transition"
  },
  {
-  "name": "transition-animation-type"
+  "name": "transition-behavior"
  },
  {
   "name": "transition-delay"
@@ -3684,7 +3694,8 @@ export const generatedProperties = [
    "normal",
    "break-all",
    "keep-all",
-   "break-word"
+   "break-word",
+   "auto-phrase"
   ],
   "name": "word-break"
  },
@@ -4565,7 +4576,8 @@ export const generatedPropertyValues = {
    "ex-height",
    "cap-height",
    "ch-width",
-   "ic-width"
+   "ic-width",
+   "from-font"
   ]
  },
  "font-stretch": {
@@ -5402,6 +5414,12 @@ export const generatedPropertyValues = {
    "end"
   ]
  },
+ "text-autospace": {
+  "values": [
+   "normal",
+   "no-autospace"
+  ]
+ },
  "text-box-trim": {
   "values": [
    "none",
@@ -5683,7 +5701,8 @@ export const generatedPropertyValues = {
    "normal",
    "break-all",
    "keep-all",
-   "break-word"
+   "break-word",
+   "auto-phrase"
   ]
  },
  "word-spacing": {

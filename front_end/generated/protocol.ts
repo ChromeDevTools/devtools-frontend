@@ -101,7 +101,7 @@ export namespace Accessibility {
      */
     superseded?: boolean;
     /**
-     * The native markup source for this value, e.g. a <label> element.
+     * The native markup source for this value, e.g. a `<label>` element.
      */
     nativeSource?: AXValueNativeSourceType;
     /**
@@ -718,6 +718,7 @@ export namespace Audits {
     WarnSameSiteLaxCrossDowngradeLax = 'WarnSameSiteLaxCrossDowngradeLax',
     WarnAttributeValueExceedsMaxSize = 'WarnAttributeValueExceedsMaxSize',
     WarnDomainNonASCII = 'WarnDomainNonASCII',
+    WarnThirdPartyPhaseout = 'WarnThirdPartyPhaseout',
   }
 
   export const enum CookieOperation {
@@ -2048,7 +2049,7 @@ export namespace CSS {
     /**
      * Whether this stylesheet is mutable. Inline stylesheets become mutable
      * after they have been modified via CSSOM API.
-     * <link> element's stylesheets become mutable only if DevTools modifies them.
+     * `<link>` element's stylesheets become mutable only if DevTools modifies them.
      * Constructed stylesheets (new CSSStyleSheet()) are mutable immediately after creation.
      */
     isMutable: boolean;
@@ -3280,8 +3281,8 @@ export namespace Cast {
  * the JavaScript object wrapper, etc. It is important that client receives DOM events only for the
  * nodes that are known to the client. Backend keeps track of the nodes that were sent to the client
  * and never sends the same node twice. It is client's responsibility to collect information about
- * the nodes that were sent to the client.<p>Note that `iframe` owner elements will return
- * corresponding document elements as their child nodes.</p>
+ * the nodes that were sent to the client. Note that `iframe` owner elements will return
+ * corresponding document elements as their child nodes.
  */
 export namespace DOM {
 
@@ -5878,8 +5879,8 @@ export namespace HeadlessExperimental {
 export namespace IO {
 
   /**
-   * This is either obtained from another method or specified as `blob:&lt;uuid&gt;` where
-   * `&lt;uuid&gt` is an UUID of a Blob.
+   * This is either obtained from another method or specified as `blob:<uuid>` where
+   * `<uuid>` is an UUID of a Blob.
    */
   export type StreamHandle = OpaqueIdentifier<string, 'Protocol.IO.StreamHandle'>;
 
@@ -8200,6 +8201,7 @@ export namespace Network {
     SamePartyFromCrossPartyContext = 'SamePartyFromCrossPartyContext',
     SamePartyConflictsWithOtherAttributes = 'SamePartyConflictsWithOtherAttributes',
     NameValuePairExceedsMaxSize = 'NameValuePairExceedsMaxSize',
+    DisallowedCharacter = 'DisallowedCharacter',
   }
 
   /**
@@ -8473,7 +8475,7 @@ export namespace Network {
      */
     signatures: SignedExchangeSignature[];
     /**
-     * Signed exchange header integrity hash in the form of "sha256-<base64-hash-value>".
+     * Signed exchange header integrity hash in the form of `sha256-<base64-hash-value>`.
      */
     headerIntegrity: string;
   }
@@ -11853,6 +11855,10 @@ export namespace Page {
      * return as stream
      */
     transferMode?: PrintToPDFRequestTransferMode;
+    /**
+     * Whether or not to generate tagged (accessible) PDF. Defaults to embedder choice.
+     */
+    generateTaggedPDF?: boolean;
   }
 
   export interface PrintToPDFResponse extends ProtocolResponseWithError {
@@ -12206,7 +12212,7 @@ export namespace Page {
      */
     mode: FileChooserOpenedEventMode;
     /**
-     * Input node id. Only present for file choosers opened via an <input type="file"> element.
+     * Input node id. Only present for file choosers opened via an `<input type="file">` element.
      */
     backendNodeId?: DOM.BackendNodeId;
   }
@@ -13429,6 +13435,7 @@ export namespace Storage {
     DestinationGlobalLimitReached = 'destinationGlobalLimitReached',
     DestinationBothLimitsReached = 'destinationBothLimitsReached',
     ReportingOriginsPerSiteLimitReached = 'reportingOriginsPerSiteLimitReached',
+    ExceedsMaxChannelCapacity = 'exceedsMaxChannelCapacity',
   }
 
   export interface GetStorageKeyForFrameRequest {
@@ -14959,6 +14966,11 @@ export namespace Fetch {
    * The stage of the request can be determined by presence of responseErrorReason
    * and responseStatusCode -- the request is at the response stage if either
    * of these fields is present and in the request stage otherwise.
+   * Redirect responses and subsequent requests are reported similarly to regular
+   * responses and requests. Redirect responses may be distinguished by the value
+   * of `responseStatusCode` (which is one of 301, 302, 303, 307, 308) along with
+   * presence of the `location` header. Requests resulting from a redirect will
+   * have `redirectedRequestId` field set.
    */
   export interface RequestPausedEvent {
     /**
@@ -15698,7 +15710,7 @@ export namespace Preload {
     loaderId: Network.LoaderId;
     /**
      * Source text of JSON representing the rule set. If it comes from
-     * <script> tag, it is the textContent of the node. Note that it is
+     * `<script>` tag, it is the textContent of the node. Note that it is
      * a JSON for valid case.
      *
      * See also:
@@ -15708,9 +15720,9 @@ export namespace Preload {
     sourceText: string;
     /**
      * A speculation rule set is either added through an inline
-     * <script> tag or through an external resource via the
+     * `<script>` tag or through an external resource via the
      * 'Speculation-Rules' HTTP header. For the first case, we include
-     * the BackendNodeId of the relevant <script> tag. For the second
+     * the BackendNodeId of the relevant `<script>` tag. For the second
      * case, we include the external URL where the rule set was loaded
      * from, and also RequestId if Network domain is enabled.
      *
@@ -15816,7 +15828,6 @@ export namespace Preload {
     AudioOutputDeviceRequested = 'AudioOutputDeviceRequested',
     MixedContent = 'MixedContent',
     TriggerBackgrounded = 'TriggerBackgrounded',
-    EmbedderTriggeredAndCrossOriginRedirected = 'EmbedderTriggeredAndCrossOriginRedirected',
     MemoryLimitExceeded = 'MemoryLimitExceeded',
     FailToGetMemoryUsage = 'FailToGetMemoryUsage',
     DataSaverEnabled = 'DataSaverEnabled',
@@ -15851,6 +15862,7 @@ export namespace Preload {
     PrerenderingDisabledByDevTools = 'PrerenderingDisabledByDevTools',
     ResourceLoadBlockedByClient = 'ResourceLoadBlockedByClient',
     SpeculationRuleRemoved = 'SpeculationRuleRemoved',
+    ActivatedWithAuxiliaryBrowsingContexts = 'ActivatedWithAuxiliaryBrowsingContexts',
   }
 
   /**

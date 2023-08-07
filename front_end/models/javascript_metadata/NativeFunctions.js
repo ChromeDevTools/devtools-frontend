@@ -1049,7 +1049,7 @@ export const NativeFunctions = [
   },
   {
     name: 'connect',
-    signatures: [['readerName','accessMode','?preferredProtocols']],
+    signatures: [['readerName','accessMode','?options']],
     receivers: ['SmartCardContext']
   },
   {
@@ -2935,8 +2935,19 @@ export const NativeFunctions = [
     receivers: ['PerformanceObserver']
   },
   {
+    name: 'observe',
+    signatures: [['handle','?options']],
+    receivers: ['FileSystemObserver']
+  },
+  {
     name: 'unobserve',
-    signatures: [['target']]
+    signatures: [['target']],
+    receivers: ['IntersectionObserver','ResizeObserver']
+  },
+  {
+    name: 'unobserve',
+    signatures: [['handle']],
+    receivers: ['FileSystemObserver']
   },
   {
     name: 'getModifierState',
@@ -6393,6 +6404,10 @@ export const NativeFunctions = [
     signatures: [['type','?eventInitDict']]
   },
   {
+    name: 'fetchLater',
+    signatures: [['input','?init']]
+  },
+  {
     name: 'Headers',
     signatures: [['?init']]
   },
@@ -7053,7 +7068,7 @@ export const NativeFunctions = [
   },
   {
     name: 'beginLayer',
-    signatures: [['?filter']]
+    signatures: [['?options']]
   },
   {
     name: 'scrollPathIntoView',
@@ -7186,6 +7201,10 @@ export const NativeFunctions = [
     signatures: [['?descriptor']]
   },
   {
+    name: 'FileSystemObserver',
+    signatures: [['callback']]
+  },
+  {
     name: 'showOpenFilePicker',
     signatures: [['?options']]
   },
@@ -7308,10 +7327,6 @@ export const NativeFunctions = [
   {
     name: 'takePhoto',
     signatures: [['?photoSettings']]
-  },
-  {
-    name: 'batchGetAll',
-    signatures: [['?keys','?count']]
   },
   {
     name: 'only',
@@ -7889,11 +7904,11 @@ export const NativeFunctions = [
   },
   {
     name: 'startTransaction',
-    signatures: [['transaction']]
+    signatures: [['transaction','?options']]
   },
   {
     name: 'getStatusChange',
-    signatures: [['readerStates','signal']]
+    signatures: [['readerStates','?options']]
   },
   {
     name: 'SmartCardError',
@@ -8170,14 +8185,6 @@ export const NativeFunctions = [
   {
     name: 'releaseVideoImageWEBGL',
     signatures: [['target']]
-  },
-  {
-    name: 'importVideoFrame',
-    signatures: [['videoFrame']]
-  },
-  {
-    name: 'releaseVideoFrame',
-    signatures: [['handle']]
   },
   {
     name: 'requestAdapterInfo',

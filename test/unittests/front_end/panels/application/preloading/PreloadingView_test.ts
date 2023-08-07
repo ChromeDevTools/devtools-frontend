@@ -736,7 +736,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
     );
   });
 
-  it('shows prerender details with Investigate and Activate (disabled) buttons for Running', async () => {
+  it('shows prerender details with Investigate button for Running', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
     const view = createAttemptView(emulator.primaryTarget);
@@ -789,18 +789,16 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
-      ['Action', 'prerenderInspectActivate'],
+      ['Action', 'prerenderInspect'],
       ['Status', 'Preloading is running.'],
     ]);
 
     const buttons = report.querySelectorAll('devtools-report-value:nth-of-type(2) devtools-button');
     assert.strictEqual(buttons[0].textContent?.trim(), 'Inspect');
     assert.strictEqual(buttons[0].getAttribute('disabled'), null);
-    assert.strictEqual(buttons[1].textContent?.trim(), 'Activate');
-    assert.strictEqual(buttons[1].getAttribute('disabled'), '');
   });
 
-  it('shows prerender details with Investigate and Activate buttons for Ready', async () => {
+  it('shows prerender details with Investigate button for Ready', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
     const view = createAttemptView(emulator.primaryTarget);
@@ -862,18 +860,16 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
-      ['Action', 'prerenderInspectActivate'],
+      ['Action', 'prerenderInspect'],
       ['Status', 'Preloading finished and the result is ready for the next navigation.'],
     ]);
 
     const buttons = report.querySelectorAll('devtools-report-value:nth-of-type(2) devtools-button');
     assert.strictEqual(buttons[0].textContent?.trim(), 'Inspect');
     assert.strictEqual(buttons[0].getAttribute('disabled'), null);
-    assert.strictEqual(buttons[1].textContent?.trim(), 'Activate');
-    assert.strictEqual(buttons[1].getAttribute('disabled'), null);
   });
 
-  it('shows prerender details with Investigate (disabled) and Activate (disabled) buttons for Failure', async () => {
+  it('shows prerender details with Investigate (disabled) button for Failure', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
     const view = createAttemptView(emulator.primaryTarget);
@@ -943,7 +939,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
-      ['Action', 'prerenderInspectActivate'],
+      ['Action', 'prerenderInspect'],
       ['Status', 'Preloading failed.'],
       [
         'Failure reason',
@@ -954,8 +950,6 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
     const buttons = report.querySelectorAll('devtools-report-value:nth-of-type(2) devtools-button');
     assert.strictEqual(buttons[0].textContent?.trim(), 'Inspect');
     assert.strictEqual(buttons[0].getAttribute('disabled'), '');
-    assert.strictEqual(buttons[1].textContent?.trim(), 'Activate');
-    assert.strictEqual(buttons[1].getAttribute('disabled'), '');
   });
 });
 

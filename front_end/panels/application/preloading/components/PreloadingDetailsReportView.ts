@@ -80,14 +80,6 @@ const UIStrings = {
    */
   buttonClickToInspect: 'Click to inspect prerendered page',
   /**
-   *@description button: Contents of button to activate prerendered page
-   */
-  buttonActivate: 'Activate',
-  /**
-   *@description button: Title of button to activate prerendered page
-   */
-  buttonClickToActivate: 'Click to activate prerendered page',
-  /**
    *@description button: Title of button to reveal rule set
    */
   buttonClickToRevealRuleSet: 'Click to reveal rule set',
@@ -291,42 +283,6 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
       // clang-format on
     })();
 
-    let maybeActivateButton: LitHtml.LitTemplate = LitHtml.nothing;
-    ((): void => {
-      if (attempt.action !== Protocol.Preload.SpeculationAction.Prerender) {
-        return;
-      }
-
-      const target = SDK.TargetManager.TargetManager.instance().scopeTarget();
-      if (target === null) {
-        return;
-      }
-
-      // Prevents prerender activation for non primary targets.
-      if (target !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
-        return;
-      }
-
-      const disabled = (attempt.status !== SDK.PreloadingModel.PreloadingStatus.Ready);
-      const activate = (): void => {
-        void target.pageAgent().invoke_navigate({url: attempt.key.url});
-      };
-      // Disabled until https://crbug.com/1079231 is fixed.
-      // clang-format off
-      maybeActivateButton = LitHtml.html`
-          <${Buttons.Button.Button.litTagName}
-            @click=${activate}
-            .title=${i18nString(UIStrings.buttonClickToActivate)}
-            .size=${Buttons.Button.Size.SMALL}
-            .variant=${Buttons.Button.Variant.SECONDARY}
-            .disabled=${disabled}
-          >
-            ${i18nString(UIStrings.buttonActivate)}
-          </${Buttons.Button.Button.litTagName}>
-      `;
-      // clang-format on
-    })();
-
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return LitHtml.html`
@@ -336,7 +292,6 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
           <div class="text-ellipsis" title="">
             ${action}
             ${maybeInspectButton}
-            ${maybeActivateButton}
           </div>
         </${ReportView.ReportView.ReportValue.litTagName}>
     `;

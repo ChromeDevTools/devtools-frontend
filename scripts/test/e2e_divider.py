@@ -89,10 +89,10 @@ def divide_run(chunks,
 
         return commands
 
-    divided_test_files = [[] for i in range(chunks)]
-
-    for i in range(len(test_files)):
-        divided_test_files[i % chunks].append(test_files[i])
+    divided_test_files = []
+    chunk_size = math.ceil(len(test_files) / chunks)
+    for i in range(0, len(test_files), chunk_size):
+        divided_test_files.append(test_files[i:i + chunk_size])
 
     for l in divided_test_files:
         if l:

@@ -22,6 +22,7 @@ generate_css("css_files") {
 
 devtools_module("timeline") {
   sources = [
+    "AnimationsTrackAppender.ts",
     "AppenderUtils.ts",
     "CLSLinkifier.ts",
     "CompatibilityTracksAppender.ts",

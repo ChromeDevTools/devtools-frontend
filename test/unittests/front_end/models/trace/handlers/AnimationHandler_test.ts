@@ -11,12 +11,12 @@ describe('AnimationHandler', function() {
     const events = await TraceLoader.rawEvents(this, 'animation.json.gz');
 
     for (const event of events) {
-      TraceModel.Handlers.ModelHandlers.Animation.handleEvent(event);
+      TraceModel.Handlers.ModelHandlers.Animations.handleEvent(event);
     }
 
-    await TraceModel.Handlers.ModelHandlers.Animation.finalize();
+    await TraceModel.Handlers.ModelHandlers.Animations.finalize();
 
-    const eventsAmount = TraceModel.Handlers.ModelHandlers.Animation.data().animationsSyntheticEvents.length;
+    const eventsAmount = TraceModel.Handlers.ModelHandlers.Animations.data().animations.length;
     assert.strictEqual(eventsAmount, 1);
   });
 
@@ -24,12 +24,12 @@ describe('AnimationHandler', function() {
     const events = await TraceLoader.rawEvents(this, 'animation.json.gz');
 
     for (const event of events) {
-      TraceModel.Handlers.ModelHandlers.Animation.handleEvent(event);
+      TraceModel.Handlers.ModelHandlers.Animations.handleEvent(event);
     }
 
-    await TraceModel.Handlers.ModelHandlers.Animation.finalize();
+    await TraceModel.Handlers.ModelHandlers.Animations.finalize();
 
-    const eventDuration = TraceModel.Handlers.ModelHandlers.Animation.data().animationsSyntheticEvents[0].dur;
+    const eventDuration = TraceModel.Handlers.ModelHandlers.Animations.data().animations[0].dur;
     assert.strictEqual(eventDuration, 2006450);
   });
 });

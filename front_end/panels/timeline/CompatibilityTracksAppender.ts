@@ -20,6 +20,7 @@ import {GPUTrackAppender} from './GPUTrackAppender.js';
 import {LayoutShiftsTrackAppender} from './LayoutShiftsTrackAppender.js';
 import {getEventLevel} from './AppenderUtils.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
+import {AnimationsTrackAppender} from './AnimationsTrackAppender.js';
 
 export type HighlightedEntryInfo = {
   title: string,
@@ -77,7 +78,7 @@ export interface TrackAppender {
   highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo;
 }
 
-export const TrackNames = ['Timings', 'Interactions', 'GPU', 'LayoutShifts', 'Thread'] as const;
+export const TrackNames = ['Animations', 'Timings', 'Interactions', 'GPU', 'LayoutShifts', 'Thread'] as const;
 // Network track will use TrackAppender interface, but it won't be shown in Main flamechart.
 // So manually add it to TrackAppenderName.
 export type TrackAppenderName = typeof TrackNames[number]|'Network';
@@ -103,6 +104,7 @@ export class CompatibilityTracksAppender {
   #legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl;
   #legacyEntryTypeByLevel: EntryType[];
   #timingsTrackAppender: TimingsTrackAppender;
+  #animationsTrackAppender: AnimationsTrackAppender;
   #interactionsTrackAppender: InteractionsTrackAppender;
   #gpuTrackAppender: GPUTrackAppender;
   #layoutShiftsTrackAppender: LayoutShiftsTrackAppender;
@@ -143,6 +145,9 @@ export class CompatibilityTracksAppender {
     this.#interactionsTrackAppender =
         new InteractionsTrackAppender(this, this.#flameChartData, this.#traceParsedData, this.#colorGenerator);
     this.#allTrackAppenders.push(this.#interactionsTrackAppender);
+
+    this.#animationsTrackAppender = new AnimationsTrackAppender(this, this.#traceParsedData);
+    this.#allTrackAppenders.push(this.#animationsTrackAppender);
 
     this.#gpuTrackAppender = new GPUTrackAppender(this, this.#traceParsedData);
     this.#allTrackAppenders.push(this.#gpuTrackAppender);
@@ -194,6 +199,10 @@ export class CompatibilityTracksAppender {
 
   timingsTrackAppender(): TimingsTrackAppender {
     return this.#timingsTrackAppender;
+  }
+
+  animationsTrackAppender(): AnimationsTrackAppender {
+    return this.#animationsTrackAppender;
   }
 
   interactionsTrackAppender(): InteractionsTrackAppender {

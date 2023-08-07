@@ -78,7 +78,7 @@ describeWithEnvironment('TraceProcessor', async function() {
 
   it('can be given a subset of handlers to run and will run just those along with the meta handler', async function() {
     const processor = new TraceModel.Processor.TraceProcessor({
-      Animation: TraceModel.Handlers.ModelHandlers.Animation,
+      Animation: TraceModel.Handlers.ModelHandlers.Animations,
     });
     const events = await TraceLoader.rawEvents(this, 'animation.json.gz');
     await processor.parse(events);

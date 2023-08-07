@@ -7,6 +7,7 @@ import("../../../../../../third_party/typescript/typescript.gni")
 ts_library("track_appenders") {
   testonly = true
   sources = [
+    "AnimationsTrackAppender_test.ts",
     "AppenderUtils_test.ts",
     "CompatibilityTracksAppender_test.ts",
     "GPUTrackAppender_test.ts",

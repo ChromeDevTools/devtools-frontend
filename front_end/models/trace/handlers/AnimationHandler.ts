@@ -11,7 +11,7 @@ const animations: Types.TraceEvents.TraceEventAnimation[] = [];
 const animationsSyntheticEvents: Types.TraceEvents.TraceEventSyntheticNestableAsyncEvent[] = [];
 
 export interface AnimationData {
-  animationsSyntheticEvents: readonly Types.TraceEvents.TraceEventSyntheticNestableAsyncEvent[];
+  animations: readonly Types.TraceEvents.TraceEventSyntheticNestableAsyncEvent[];
 }
 let handlerState = HandlerState.UNINITIALIZED;
 
@@ -53,7 +53,7 @@ function matchBeginningAndEndEvents(): Map<string, {
       continue;
     }
 
-    const syntheticId = `${event.cat}:${id}:${event.name}`;
+    const syntheticId = `${event.cat}:${id.local}:${event.name}`;
 
     const otherEventsWithID = Platform.MapUtilities.getWithDefault(matchedEvents, syntheticId, () => {
       return {begin: null, end: null};
@@ -131,6 +131,6 @@ export function data(): AnimationData {
   }
 
   return {
-    animationsSyntheticEvents: Array.from(animationsSyntheticEvents),
+    animations: Array.from(animationsSyntheticEvents),
   };
 }

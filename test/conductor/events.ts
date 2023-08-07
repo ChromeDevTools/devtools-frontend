@@ -34,6 +34,7 @@ const ALLOWED_ASSERTION_FAILURES = [
   'Request Runtime.evaluate failed. {"code":-32602,"message":"uniqueContextId not found"}',
   'uniqueContextId not found',
   'Request Storage.getStorageKeyForFrame failed. {"code":-32602,"message":"Frame tree node for given frame not found"}',
+  'Unable to create texture',
 ];
 
 const logLevels = {

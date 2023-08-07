@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {expectError, type ErrorExpectation} from '../../conductor/events.js';
 import {
   assertNotNullOrUndefined,
   click,
@@ -36,8 +35,6 @@ import {
   stopRecording,
 } from '../helpers/performance-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
-
-let errorException: ErrorExpectation;
 
 describe('A user can navigate across', async function() {
   // These tests move between panels, which takes time.
@@ -117,14 +114,6 @@ describe('A user can move tabs', async function() {
 });
 
 describe('A user can open panels via the "panel" query param', async function() {
-  beforeEach(async () => {
-    errorException = expectError('Unable to create texture');
-  });
-
-  afterEach(async () => {
-    errorException.drop();
-  });
-
   it('Layers is shown', async () => {
     await reloadDevTools({queryParams: {panel: 'layers'}});
     await tabExistsInMainPanel(LAYERS_TAB_SELECTOR);

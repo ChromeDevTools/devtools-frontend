@@ -90,6 +90,7 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
           widthWeighting: 20,
           hideable: false,
           visible: true,
+          sortable: true,
         },
         {
           id: 'status',
@@ -97,6 +98,7 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
           widthWeighting: 80,
           hideable: false,
           visible: true,
+          sortable: true,
         },
       ],
       rows: this.#buildReportRows(),

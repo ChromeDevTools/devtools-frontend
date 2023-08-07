@@ -64,6 +64,23 @@ def update_gn_var(file, variable, files):
         f.write(''.join(newContent))
 
 
+def update_tsconfig(file, files):
+    files.sort()
+    with open(file, 'w') as f:
+        f.write("""{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": [\n""")
+        last = files.pop()
+        for file in files:
+            f.write(f"    \"{file}\",\n")
+        f.write(f"    \"{last}\"\n")
+        f.write("""  ]
+}
+""")
+
+
 def update_readme_version(file, ver):
     content = None
     with open(file) as f:
@@ -126,6 +143,14 @@ def main():
                         'EXCLUDED_SOURCES'))
     except BaseException:
         excluded_sources = set()
+
+    # Update {package-name}-tsconfig.json
+    update_tsconfig(
+        f'./front_end/third_party/{output_dir}/{output_dir}-tsconfig.json', [
+            name
+            for name in members if name.startswith(f'package/{library_dir}/')
+            and name not in excluded_sources and name.endswith('.js')
+        ])
 
     # Update BUILD.gn
     update_gn_var(

@@ -47,6 +47,10 @@ export const UIStrings = {
    */
   CSSSelectorInternalMediaControlsOverlayCastButton: "The `disableRemotePlayback` attribute should be used in order to disable the default Cast integration instead of using `-internal-media-controls-overlay-cast-button` selector.",
   /**
+   * @description Warning displayed to developers to let them know the CSS appearance property values they used are deprecated and will be removed.
+   */
+  CSSValueAppearanceNonStandard: "CSS appearance values  `inner-spin-button`, `media-slider`, `media-sliderthumb`, `media-volume-slider`, `media-volume-sliderthumb`, `push-button`, `searchfield-cancel-button`, `slider-horizontal`, `sliderthumb-horizontal`, `sliderthumb-vertical`, `square-button` are not standardized and will no longer be supported.",
+  /**
    * @description Warning displayed to developers when a data: URL is assigned to SVGUseElement to let them know that the support is deprecated.
    */
   DataUrlInSvgUse: "Support for data: URLs in SVGUseElement is deprecated and it will be removed in the future.",
@@ -255,6 +259,9 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   },
   "CSSSelectorInternalMediaControlsOverlayCastButton": {
     "chromeStatusFeature": 5714245488476160
+  },
+  "CSSValueAppearanceNonStandard": {
+    "chromeStatusFeature": 5066630972833792
   },
   "CanRequestURLHTTPContainingNewline": {
     "chromeStatusFeature": 5735596811091968

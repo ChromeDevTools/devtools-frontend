@@ -63,8 +63,7 @@ const UIStrings = {
    */
   buttonClickToRevealInNetworkPanel: 'Click to reveal in Network panel',
 };
-const str_ =
-    i18n.i18n.registerUIStrings('panels/application/preloading/components/RuleSetDetailsReportView.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/RuleSetDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 class PreloadingUIUtils {
@@ -83,25 +82,25 @@ class PreloadingUIUtils {
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-export type RuleSetDetailsReportViewData = RuleSet|null;
+export type RuleSetDetailsViewData = RuleSet|null;
 
-export class RuleSetDetailsReportView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
+export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
   static readonly litTagName = LitHtml.literal`devtools-resources-rulesets-details-report-view`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #data: RuleSetDetailsReportViewData = null;
+  #data: RuleSetDetailsViewData = null;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [preloadingDetailsReportViewStyles];
   }
 
-  set data(data: RuleSetDetailsReportViewData) {
+  set data(data: RuleSetDetailsViewData) {
     this.#data = data;
     void this.#render();
   }
 
   async #render(): Promise<void> {
-    await coordinator.write('RuleSetDetailsReportView render', () => {
+    await coordinator.write('RuleSetDetailsView render', () => {
       if (this.#data === null) {
         LitHtml.render(LitHtml.nothing, this.#shadow, {host: this});
         return;
@@ -302,12 +301,11 @@ export class RuleSetDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappa
   }
 }
 
-ComponentHelpers.CustomElements.defineComponent(
-    'devtools-resources-rulesets-details-report-view', RuleSetDetailsReportView);
+ComponentHelpers.CustomElements.defineComponent('devtools-resources-rulesets-details-view', RuleSetDetailsView);
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
-    'devtools-resources-rulesets-details-report-view': RuleSetDetailsReportView;
+    'devtools-resources-rulesets-details-view': RuleSetDetailsView;
   }
 }

@@ -24,7 +24,7 @@ devtools_module("components") {
     "PreloadingDisabledInfobar.ts",
     "PreloadingGrid.ts",
     "PreloadingString.ts",
-    "RuleSetDetailsReportView.ts",
+    "RuleSetDetailsView.ts",
     "RuleSetGrid.ts",
     "UsedPreloadingView.ts",
   ]

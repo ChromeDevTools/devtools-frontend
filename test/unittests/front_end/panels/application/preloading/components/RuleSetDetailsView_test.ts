@@ -24,9 +24,9 @@ const zip2 = <T, S>(xs: T[], ys: S[]): [T, S][] => {
   return Array.from(xs.map((_, i) => [xs[i], ys[i]]));
 };
 
-async function renderRuleSetDetailsReportView(
-    data: PreloadingComponents.RuleSetDetailsReportView.RuleSetDetailsReportViewData): Promise<HTMLElement> {
-  const component = new PreloadingComponents.RuleSetDetailsReportView.RuleSetDetailsReportView();
+async function renderRuleSetDetailsView(data: PreloadingComponents.RuleSetDetailsView.RuleSetDetailsViewData):
+    Promise<HTMLElement> {
+  const component = new PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView();
   component.data = data;
   renderElementIntoDOM(component);
   assertShadowRoot(component.shadowRoot);
@@ -35,11 +35,11 @@ async function renderRuleSetDetailsReportView(
   return component;
 }
 
-describeWithEnvironment('RuleSetDetailsReportView', async () => {
+describeWithEnvironment('RuleSetDetailsView', async () => {
   it('renders nothing if not selected', async () => {
     const data = null;
 
-    const component = await renderRuleSetDetailsReportView(data);
+    const component = await renderRuleSetDetailsView(data);
     assertShadowRoot(component.shadowRoot);
 
     assert.strictEqual(component.shadowRoot.textContent, '');
@@ -62,7 +62,7 @@ describeWithEnvironment('RuleSetDetailsReportView', async () => {
       backendNodeId: 1 as Protocol.DOM.BackendNodeId,
     };
 
-    const component = await renderRuleSetDetailsReportView(data);
+    const component = await renderRuleSetDetailsView(data);
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
@@ -92,7 +92,7 @@ describeWithEnvironment('RuleSetDetailsReportView', async () => {
       requestId: 'reqeustId' as Protocol.Network.RequestId,
     };
 
-    const component = await renderRuleSetDetailsReportView(data);
+    const component = await renderRuleSetDetailsView(data);
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
@@ -119,7 +119,7 @@ describeWithEnvironment('RuleSetDetailsReportView', async () => {
       errorMessage: 'Line: 6, column: 1, Syntax error.',
     };
 
-    const component = await renderRuleSetDetailsReportView(data);
+    const component = await renderRuleSetDetailsView(data);
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
@@ -150,7 +150,7 @@ describeWithEnvironment('RuleSetDetailsReportView', async () => {
       errorMessage: 'A list rule must have a "urls" array.',
     };
 
-    const component = await renderRuleSetDetailsReportView(data);
+    const component = await renderRuleSetDetailsView(data);
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
 
     const keys = getCleanTextContentFromElements(report, 'devtools-report-key');

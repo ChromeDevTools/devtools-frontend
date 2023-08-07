@@ -168,7 +168,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
   private readonly warningsView = new PreloadingWarningsView();
   private readonly hsplit: SplitView.SplitView.SplitView;
   private readonly ruleSetGrid = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
-  private readonly ruleSetDetails = new PreloadingComponents.RuleSetDetailsReportView.RuleSetDetailsReportView();
+  private readonly ruleSetDetails = new PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView();
 
   constructor(model: SDK.PreloadingModel.PreloadingModel) {
     super(/* isWebComponent */ true, /* delegatesFocus */ false);
@@ -189,10 +189,10 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     //        +- leftContainer
     //             +- RuleSetGrid
     //        +- rightContainer
-    //             +- RuleSetDetailsReportView
+    //             +- RuleSetDetailsView
     //
-    // - If an row of RuleSetGrid selected, RuleSetDetailsReportView shows details of it.
-    // - If not, RuleSetDetailsReportView hides.
+    // - If an row of RuleSetGrid selected, RuleSetDetailsView shows details of it.
+    // - If not, RuleSetDetailsView hides.
 
     this.warningsContainer = document.createElement('div');
     this.warningsContainer.classList.add('flex-none');
@@ -278,7 +278,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     return this.ruleSetGrid;
   }
 
-  getRuleSetDetailsForTest(): PreloadingComponents.RuleSetDetailsReportView.RuleSetDetailsReportView {
+  getRuleSetDetailsForTest(): PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView {
     return this.ruleSetDetails;
   }
 }

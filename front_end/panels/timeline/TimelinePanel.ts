@@ -935,7 +935,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.setUIControlsEnabled(false);
       this.hideLandingPage();
       if (!this.cpuProfiler) {
-        this.recordingFailed('No Node target is found.');
+        await this.recordingFailed('No Node target is found.');
         return;
       }
       await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');

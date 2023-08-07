@@ -13,7 +13,7 @@ import * as IconButton from '../../../../ui/components/icon_button/icon_button.j
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import * as NetworkForward from '../../../network/forward/forward.js';
-
+import type * as Platform from '../../../../core/platform/platform.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
 
 import * as PreloadingHelper from '../helper/helper.js';
@@ -23,7 +23,7 @@ import * as PreloadingString from './PreloadingString.js';
 
 const UIStrings = {
   /**
-   *@description Column header: 'Main_Page' or filename of out-of-document rules.
+   *@description Column header: Short URL of rule set.
    */
   ruleSet: 'Rule set',
   /**
@@ -50,6 +50,11 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/RuleSetGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export interface RuleSetGridData {
+  rows: RuleSetGridRow[];
+  pageURL: Platform.DevToolsPath.UrlString;
+}
+
 export interface RuleSetGridRow {
   ruleSet: Protocol.Preload.RuleSet;
   preloadsStatusSummary: string;
@@ -60,19 +65,23 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
   static readonly litTagName = LitHtml.literal`devtools-resources-ruleset-grid`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #rows: RuleSetGridRow[] = [];
+  #data: RuleSetGridData|null = null;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [ruleSetGridStyles];
     this.#render();
   }
 
-  update(rows: RuleSetGridRow[]): void {
-    this.#rows = rows;
+  update(data: RuleSetGridData): void {
+    this.#data = data;
     this.#render();
   }
 
   #render(): void {
+    if (this.#data === null) {
+      return;
+    }
+
     const reportsGridData: DataGrid.DataGridController.DataGridControllerData = {
       columns: [
         {
@@ -107,14 +116,17 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
   }
 
   #buildReportRows(): DataGrid.DataGridUtils.Row[] {
-    return this.#rows.map(
+    assertNotNullOrUndefined(this.#data);
+
+    const pageURL = this.#data.pageURL;
+    return this.#data.rows.map(
         row => ({
           cells: [
             {columnId: 'id', value: row.ruleSet.id},
             {
               columnId: 'ruleSet',
               value: null,
-              renderer: () => ruleSetRenderer(row.ruleSet),
+              renderer: () => ruleSetRenderer(row.ruleSet, pageURL),
             },
             {
               columnId: 'status',
@@ -134,7 +146,8 @@ declare global {
   }
 }
 
-function ruleSetRenderer(ruleSet: Protocol.Preload.RuleSet): LitHtml.TemplateResult {
+function ruleSetRenderer(
+    ruleSet: Protocol.Preload.RuleSet, pageURL: Platform.DevToolsPath.UrlString): LitHtml.TemplateResult {
   function ruleSetRendererInnerDocument(ruleSet: Protocol.Preload.RuleSet, location: string): LitHtml.TemplateResult {
     assertNotNullOrUndefined(ruleSet.backendNodeId);
 
@@ -231,7 +244,7 @@ function ruleSetRenderer(ruleSet: Protocol.Preload.RuleSet): LitHtml.TemplateRes
     // clang-format on
   }
 
-  const location = PreloadingString.ruleSetLocationShort(ruleSet);
+  const location = PreloadingString.ruleSetLocationShort(ruleSet, pageURL);
 
   if (ruleSet.backendNodeId !== undefined) {
     return ruleSetRendererInnerDocument(ruleSet, location);

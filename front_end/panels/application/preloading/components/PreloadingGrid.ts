@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
+import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
@@ -10,10 +12,11 @@ import * as IconButton from '../../../../ui/components/icon_button/icon_button.j
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
-import * as PreloadingString from './PreloadingString.js';
-
+import type * as Platform from '../../../../core/platform/platform.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+
+import * as PreloadingString from './PreloadingString.js';
 
 import preloadingGridStyles from './preloadingGrid.css.js';
 
@@ -36,11 +39,15 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const {render, html} = LitHtml;
 
+export interface PreloadingGridData {
+  rows: PreloadingGridRow[];
+  pageURL: Platform.DevToolsPath.UrlString;
+}
+
 export interface PreloadingGridRow {
   id: string;
   attempt: SDK.PreloadingModel.PreloadingAttempt;
   ruleSets: Protocol.Preload.RuleSet[];
-  securityOrigin: string|null;
 }
 
 // Grid component to show prerendering attempts.
@@ -48,19 +55,23 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
   static readonly litTagName = LitHtml.literal`devtools-resources-preloading-grid`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #rows: PreloadingGridRow[] = [];
+  #data: PreloadingGridData|null = null;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [preloadingGridStyles];
     this.#render();
   }
 
-  update(rows: PreloadingGridRow[]): void {
-    this.#rows = rows;
+  update(data: PreloadingGridData): void {
+    this.#data = data;
     this.#render();
   }
 
   #render(): void {
+    if (this.#data === null) {
+      return;
+    }
+
     const reportsGridData: DataGrid.DataGridController.DataGridControllerData = {
       columns: [
         {
@@ -140,15 +151,19 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
       // clang-format on
     }
 
-    return this.#rows.map(
+    assertNotNullOrUndefined(this.#data);
+
+    const pageURL = this.#data.pageURL;
+    const securityOrigin = pageURL === '' ? null : (new Common.ParsedURL.ParsedURL(pageURL)).securityOrigin();
+    return this.#data.rows.map(
         row => ({
           cells: [
             {columnId: 'id', value: row.id},
-            {columnId: 'url', value: this.#urlShort(row)},
+            {columnId: 'url', value: this.#urlShort(row, securityOrigin)},
             {columnId: 'action', value: PreloadingString.action(row.attempt)},
             {
               columnId: 'ruleSet',
-              value: row.ruleSets.length === 0 ? '' : PreloadingString.ruleSetLocationShort(row.ruleSets[0]),
+              value: row.ruleSets.length === 0 ? '' : PreloadingString.ruleSetLocationShort(row.ruleSets[0], pageURL),
             },
             {
               columnId: 'status',
@@ -160,10 +175,9 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
   }
 
   // Shorten URL if a preloading attempt is same-origin.
-  #urlShort(row: PreloadingGridRow): string {
+  #urlShort(row: PreloadingGridRow, securityOrigin: string|null): string {
     const url = row.attempt.key.url;
-    const origin = row.securityOrigin;
-    return origin && url.startsWith(origin) ? url.slice(origin.length) : url;
+    return securityOrigin && url.startsWith(securityOrigin) ? url.slice(securityOrigin.length) : url;
   }
 }
 

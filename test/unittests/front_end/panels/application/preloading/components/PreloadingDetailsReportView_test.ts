@@ -85,6 +85,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
 `,
         },
       ],
+      pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
     };
 
     const component = await renderPreloadingDetailsReportView(data);
@@ -96,7 +97,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
       ['URL', url],
       ['Action', 'prerender'],
       ['Status', 'Preloading is running.'],
-      ['Rule set', 'Main_Page'],
+      ['Rule set', 'example.com/'],
     ]);
   });
 
@@ -135,6 +136,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
 `,
         },
       ],
+      pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
     };
 
     const component = await renderPreloadingDetailsReportView(data);
@@ -150,7 +152,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
         'Failure reason',
         'The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
       ],
-      ['Rule set', 'Main_Page'],
+      ['Rule set', 'example.com/'],
     ]);
   });
 
@@ -193,6 +195,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
 `,
         },
       ],
+      pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
       requestResolver: fakeRequestResolver,
     };
 
@@ -209,7 +212,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
       ['Action', 'prefetch'],
       ['Status', 'Preloading failed.'],
       ['Failure reason', 'The prefetch failed because of a non-2xx HTTP response status code.'],
-      ['Rule set', 'Main_Page'],
+      ['Rule set', 'example.com/'],
     ]);
   });
 
@@ -253,6 +256,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
           url: 'https://example.com/speculation-rules.json',
         },
       ],
+      pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
       requestResolver: fakeRequestResolver,
     };
 

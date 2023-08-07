@@ -37,7 +37,7 @@ function assertGridContents(
 }
 
 async function assertRenderResult(
-    rowsInput: PreloadingComponents.PreloadingGrid.PreloadingGridRow[], headerExpected: string[],
+    rowsInput: PreloadingComponents.PreloadingGrid.PreloadingGridData, headerExpected: string[],
     rowsExpected: string[][]): Promise<DataGrid.DataGrid.DataGrid> {
   const component = new PreloadingComponents.PreloadingGrid.PreloadingGrid();
   component.update(rowsInput);
@@ -54,26 +54,27 @@ async function assertRenderResult(
 describeWithEnvironment('PreloadingGrid', async () => {
   it('renders grid', async () => {
     await assertRenderResult(
-        [{
-          id: 'id',
-          attempt: {
-            action: Protocol.Preload.SpeculationAction.Prefetch,
-            key: {
-              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+        {
+          rows: [{
+            id: 'id',
+            attempt: {
               action: Protocol.Preload.SpeculationAction.Prefetch,
-              url: 'https://example.com/prefetched.html' as Platform.DevToolsPath.UrlString,
-            },
-            status: SDK.PreloadingModel.PreloadingStatus.Running,
-            prefetchStatus: null,
-            requestId: 'requestId:1' as Protocol.Network.RequestId,
-            ruleSetIds: ['ruleSetId:0.1'] as Protocol.Preload.RuleSetId[],
-            nodeIds: [1] as Protocol.DOM.BackendNodeId[],
-          } as SDK.PreloadingModel.PreloadingAttempt,
-          ruleSets: [
-            {
-              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
-              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-              sourceText: `
+              key: {
+                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                action: Protocol.Preload.SpeculationAction.Prefetch,
+                url: 'https://example.com/prefetched.html' as Platform.DevToolsPath.UrlString,
+              },
+              status: SDK.PreloadingModel.PreloadingStatus.Running,
+              prefetchStatus: null,
+              requestId: 'requestId:1' as Protocol.Network.RequestId,
+              ruleSetIds: ['ruleSetId:0.1'] as Protocol.Preload.RuleSetId[],
+              nodeIds: [1] as Protocol.DOM.BackendNodeId[],
+            } as SDK.PreloadingModel.PreloadingAttempt,
+            ruleSets: [
+              {
+                id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                sourceText: `
 {
   "prefetch":[
     {
@@ -83,39 +84,41 @@ describeWithEnvironment('PreloadingGrid', async () => {
   ]
 }
 `,
-            },
-          ],
-          securityOrigin: 'https://example.com',
-        }],
+              },
+            ],
+          }],
+          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+        },
         ['URL', 'Action', 'Rule set', 'Status'],
         [
-          ['/prefetched.html', 'prefetch', 'Main_Page', 'Running'],
+          ['/prefetched.html', 'prefetch', 'example.com/', 'Running'],
         ],
     );
   });
 
   it('shows full URL for cross-origin preloading', async () => {
     await assertRenderResult(
-        [{
-          id: 'id',
-          attempt: {
-            action: Protocol.Preload.SpeculationAction.Prefetch,
-            key: {
-              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+        {
+          rows: [{
+            id: 'id',
+            attempt: {
               action: Protocol.Preload.SpeculationAction.Prefetch,
-              url: 'https://cross-origin.example.com/prefetched.html' as Platform.DevToolsPath.UrlString,
-            },
-            status: SDK.PreloadingModel.PreloadingStatus.Running,
-            prefetchStatus: null,
-            requestId: 'requestId:1' as Protocol.Network.RequestId,
-            ruleSetIds: ['ruleSetId:0.1'] as Protocol.Preload.RuleSetId[],
-            nodeIds: [1] as Protocol.DOM.BackendNodeId[],
-          } as SDK.PreloadingModel.PreloadingAttempt,
-          ruleSets: [
-            {
-              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
-              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-              sourceText: `
+              key: {
+                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                action: Protocol.Preload.SpeculationAction.Prefetch,
+                url: 'https://cross-origin.example.com/prefetched.html' as Platform.DevToolsPath.UrlString,
+              },
+              status: SDK.PreloadingModel.PreloadingStatus.Running,
+              prefetchStatus: null,
+              requestId: 'requestId:1' as Protocol.Network.RequestId,
+              ruleSetIds: ['ruleSetId:0.1'] as Protocol.Preload.RuleSetId[],
+              nodeIds: [1] as Protocol.DOM.BackendNodeId[],
+            } as SDK.PreloadingModel.PreloadingAttempt,
+            ruleSets: [
+              {
+                id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                sourceText: `
 {
   "prefetch":[
     {
@@ -125,39 +128,41 @@ describeWithEnvironment('PreloadingGrid', async () => {
   ]
 }
 `,
-            },
-          ],
-          securityOrigin: 'https://example.com',
-        }],
+              },
+            ],
+          }],
+          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+        },
         ['URL', 'Action', 'Rule set', 'Status'],
         [
-          ['https://cross-origin.example.com/prefetched.html', 'prefetch', 'Main_Page', 'Running'],
+          ['https://cross-origin.example.com/prefetched.html', 'prefetch', 'example.com/', 'Running'],
         ],
     );
   });
 
   it('shows filename for out-of-document speculation rules', async () => {
     await assertRenderResult(
-        [{
-          id: 'id',
-          attempt: {
-            action: Protocol.Preload.SpeculationAction.Prefetch,
-            key: {
-              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+        {
+          rows: [{
+            id: 'id',
+            attempt: {
               action: Protocol.Preload.SpeculationAction.Prefetch,
-              url: 'https://example.com/prefetched.html' as Platform.DevToolsPath.UrlString,
-            },
-            status: SDK.PreloadingModel.PreloadingStatus.Running,
-            prefetchStatus: null,
-            requestId: 'requestId:1' as Protocol.Network.RequestId,
-            ruleSetIds: ['ruleSetId:0.1'] as Protocol.Preload.RuleSetId[],
-            nodeIds: [] as Protocol.DOM.BackendNodeId[],
-          } as SDK.PreloadingModel.PreloadingAttempt,
-          ruleSets: [
-            {
-              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
-              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-              sourceText: `
+              key: {
+                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                action: Protocol.Preload.SpeculationAction.Prefetch,
+                url: 'https://example.com/prefetched.html' as Platform.DevToolsPath.UrlString,
+              },
+              status: SDK.PreloadingModel.PreloadingStatus.Running,
+              prefetchStatus: null,
+              requestId: 'requestId:1' as Protocol.Network.RequestId,
+              ruleSetIds: ['ruleSetId:0.1'] as Protocol.Preload.RuleSetId[],
+              nodeIds: [] as Protocol.DOM.BackendNodeId[],
+            } as SDK.PreloadingModel.PreloadingAttempt,
+            ruleSets: [
+              {
+                id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                sourceText: `
 {
   "prefetch":[
     {
@@ -167,11 +172,12 @@ describeWithEnvironment('PreloadingGrid', async () => {
   ]
 }
 `,
-              url: 'https://example.com/assets/speculation-rules.json',
-            },
-          ],
-          securityOrigin: 'https://example.com',
-        }],
+                url: 'https://example.com/assets/speculation-rules.json',
+              },
+            ],
+          }],
+          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+        },
         ['URL', 'Action', 'Rule set', 'Status'],
         [
           ['/prefetched.html', 'prefetch', 'example.com/assets/speculation-rules.json', 'Running'],
@@ -181,45 +187,45 @@ describeWithEnvironment('PreloadingGrid', async () => {
 
   it('shows the only first speculation rules', async () => {
     await assertRenderResult(
-        [
-          {
-            id: 'id',
-            attempt: {
-              action: Protocol.Preload.SpeculationAction.Prefetch,
-              key: {
-                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+        {
+          rows: [
+            {
+              id: 'id',
+              attempt: {
                 action: Protocol.Preload.SpeculationAction.Prefetch,
-                url: 'https://example.com/rule-set-missing.html' as Platform.DevToolsPath.UrlString,
-              },
-              status: SDK.PreloadingModel.PreloadingStatus.Running,
-              prefetchStatus: null,
-              requestId: 'requestId:1' as Protocol.Network.RequestId,
-              ruleSetIds: ['ruleSetId:0.1'] as Protocol.Preload.RuleSetId[],
-              nodeIds: [1] as Protocol.DOM.BackendNodeId[],
-            } as SDK.PreloadingModel.PreloadingAttempt,
-            ruleSets: [],
-            securityOrigin: 'https://example.com',
-          },
-          {
-            id: 'id',
-            attempt: {
-              action: Protocol.Preload.SpeculationAction.Prefetch,
-              key: {
-                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                key: {
+                  loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                  action: Protocol.Preload.SpeculationAction.Prefetch,
+                  url: 'https://example.com/rule-set-missing.html' as Platform.DevToolsPath.UrlString,
+                },
+                status: SDK.PreloadingModel.PreloadingStatus.Running,
+                prefetchStatus: null,
+                requestId: 'requestId:1' as Protocol.Network.RequestId,
+                ruleSetIds: ['ruleSetId:0.1'] as Protocol.Preload.RuleSetId[],
+                nodeIds: [1] as Protocol.DOM.BackendNodeId[],
+              } as SDK.PreloadingModel.PreloadingAttempt,
+              ruleSets: [],
+            },
+            {
+              id: 'id',
+              attempt: {
                 action: Protocol.Preload.SpeculationAction.Prefetch,
-                url: 'https://example.com/multiple-rule-sets.html' as Platform.DevToolsPath.UrlString,
-              },
-              status: SDK.PreloadingModel.PreloadingStatus.Running,
-              prefetchStatus: null,
-              requestId: 'requestId:2' as Protocol.Network.RequestId,
-              ruleSetIds: ['ruleSetId:0.2', 'ruleSetId:0.3'] as Protocol.Preload.RuleSetId[],
-              nodeIds: [1] as Protocol.DOM.BackendNodeId[],
-            } as SDK.PreloadingModel.PreloadingAttempt,
-            ruleSets: [
-              {
-                id: 'ruleSetId:0.2' as Protocol.Preload.RuleSetId,
-                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-                sourceText: `
+                key: {
+                  loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                  action: Protocol.Preload.SpeculationAction.Prefetch,
+                  url: 'https://example.com/multiple-rule-sets.html' as Platform.DevToolsPath.UrlString,
+                },
+                status: SDK.PreloadingModel.PreloadingStatus.Running,
+                prefetchStatus: null,
+                requestId: 'requestId:2' as Protocol.Network.RequestId,
+                ruleSetIds: ['ruleSetId:0.2', 'ruleSetId:0.3'] as Protocol.Preload.RuleSetId[],
+                nodeIds: [1] as Protocol.DOM.BackendNodeId[],
+              } as SDK.PreloadingModel.PreloadingAttempt,
+              ruleSets: [
+                {
+                  id: 'ruleSetId:0.2' as Protocol.Preload.RuleSetId,
+                  loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                  sourceText: `
 {
   "prefetch":[
     {
@@ -229,11 +235,11 @@ describeWithEnvironment('PreloadingGrid', async () => {
   ]
 }
 `,
-              },
-              {
-                id: 'ruleSetId:0.3' as Protocol.Preload.RuleSetId,
-                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-                sourceText: `
+                },
+                {
+                  id: 'ruleSetId:0.3' as Protocol.Preload.RuleSetId,
+                  loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                  sourceText: `
 {
   "prefetch":[
     {
@@ -243,43 +249,45 @@ describeWithEnvironment('PreloadingGrid', async () => {
   ]
 }
 `,
-                url: 'https://example.com/assets/speculation-rules.json',
-              },
-            ],
-            securityOrigin: 'https://example.com',
-          },
-        ],
+                  url: 'https://example.com/assets/speculation-rules.json',
+                },
+              ],
+            },
+          ],
+          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+        },
         ['URL', 'Action', 'Rule set', 'Status'],
         [
           ['/rule-set-missing.html', 'prefetch', '', 'Running'],
-          ['/multiple-rule-sets.html', 'prefetch', 'Main_Page', 'Running'],
+          ['/multiple-rule-sets.html', 'prefetch', 'example.com/', 'Running'],
         ],
     );
   });
 
   it('shows composed status for failure', async () => {
     const grid = await assertRenderResult(
-        [{
-          id: 'id',
-          attempt: {
-            action: Protocol.Preload.SpeculationAction.Prerender,
-            key: {
-              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+        {
+          rows: [{
+            id: 'id',
+            attempt: {
               action: Protocol.Preload.SpeculationAction.Prerender,
-              url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
-            },
-            status: SDK.PreloadingModel.PreloadingStatus.Failure,
-            prerenderStatus: Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
-            disallowedMojoInterface: 'device.mojom.GamepadMonitor',
-            requestId: 'requestId:1' as Protocol.Network.RequestId,
-            ruleSetIds: ['ruleSetId:0.1'] as Protocol.Preload.RuleSetId[],
-            nodeIds: [1] as Protocol.DOM.BackendNodeId[],
-          } as SDK.PreloadingModel.PreloadingAttempt,
-          ruleSets: [
-            {
-              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
-              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-              sourceText: `
+              key: {
+                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                action: Protocol.Preload.SpeculationAction.Prerender,
+                url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
+              },
+              status: SDK.PreloadingModel.PreloadingStatus.Failure,
+              prerenderStatus: Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
+              disallowedMojoInterface: 'device.mojom.GamepadMonitor',
+              requestId: 'requestId:1' as Protocol.Network.RequestId,
+              ruleSetIds: ['ruleSetId:0.1'] as Protocol.Preload.RuleSetId[],
+              nodeIds: [1] as Protocol.DOM.BackendNodeId[],
+            } as SDK.PreloadingModel.PreloadingAttempt,
+            ruleSets: [
+              {
+                id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                sourceText: `
 {
   "prerender":[
     {
@@ -289,16 +297,17 @@ describeWithEnvironment('PreloadingGrid', async () => {
   ]
 }
 `,
-            },
-          ],
-          securityOrigin: 'https://example.com',
-        }],
+              },
+            ],
+          }],
+          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+        },
         ['URL', 'Action', 'Rule set', 'Status'],
         [
           [
             '/prerendered.html',
             'prerender',
-            'Main_Page',
+            'example.com/',
             ' Failure - The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
           ],
         ],

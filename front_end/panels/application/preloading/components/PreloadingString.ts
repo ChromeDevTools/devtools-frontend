@@ -643,12 +643,10 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
   }
 }
 
-export function ruleSetLocationShort(ruleSet: Protocol.Preload.RuleSet): string {
-  if (ruleSet.url === undefined) {
-    return i18n.i18n.lockedString('Main_Page');
-  }
-
-  return Bindings.ResourceUtils.displayNameForURL(ruleSet.url as Platform.DevToolsPath.UrlString);
+export function ruleSetLocationShort(
+    ruleSet: Protocol.Preload.RuleSet, pageURL: Platform.DevToolsPath.UrlString): string {
+  const url = ruleSet.url === undefined ? pageURL : ruleSet.url as Platform.DevToolsPath.UrlString;
+  return Bindings.ResourceUtils.displayNameForURL(url);
 }
 
 export function action({key}: SDK.PreloadingModel.PreloadingAttempt): string {

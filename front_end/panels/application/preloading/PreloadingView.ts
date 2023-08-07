@@ -6,7 +6,7 @@ import type * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 
 import {assertNotNullOrUndefined} from '../../../core/platform/platform.js';
 import * as Platform from '../../../core/platform/platform.js';
-import * as Common from '../../../core/common/common.js';
+import type * as Common from '../../../core/common/common.js';
 import * as SplitView from '../../../ui/components/split_view/split_view.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -148,13 +148,15 @@ class PreloadingUIUtils {
   // to
   // front_end/panels/application/preloading/helper/PreloadingString.ts
   // and use PreloadingString.ruleSetLocationShort.
-  static ruleSetLocationShort(ruleSet: Protocol.Preload.RuleSet): string {
-    if (ruleSet.url === undefined) {
-      return i18n.i18n.lockedString('Main_Page');
-    }
-
-    return Bindings.ResourceUtils.displayNameForURL(ruleSet.url as Platform.DevToolsPath.UrlString);
+  static ruleSetLocationShort(ruleSet: Protocol.Preload.RuleSet, pageURL: Platform.DevToolsPath.UrlString): string {
+    const url = ruleSet.url === undefined ? pageURL : ruleSet.url as Platform.DevToolsPath.UrlString;
+    return Bindings.ResourceUtils.displayNameForURL(url);
   }
+}
+
+function pageURL(): Platform.DevToolsPath.UrlString {
+  return SDK.TargetManager.TargetManager.instance().scopeTarget()?.inspectedURL() ||
+      ('' as Platform.DevToolsPath.UrlString);
 }
 
 export class PreloadingRuleSetView extends UI.Widget.VBox {
@@ -256,7 +258,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
         preloadsStatusSummary: PreloadingUIUtils.preloadsStatusSummary(countsByStatus),
       };
     });
-    this.ruleSetGrid.update(ruleSetRows);
+    this.ruleSetGrid.update({rows: ruleSetRows, pageURL: pageURL()});
 
     this.updateRuleSetDetails();
   }
@@ -378,6 +380,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
       this.preloadingDetails.data = {
         preloadingAttempt,
         ruleSets,
+        pageURL: pageURL(),
       };
     }
   }
@@ -385,9 +388,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
   render(): void {
     // Update preloaidng grid
     const filteringRuleSetId = this.ruleSetSelector.getSelected();
-    const url = SDK.TargetManager.TargetManager.instance().inspectedURL();
-    const securityOrigin = url ? (new Common.ParsedURL.ParsedURL(url)).securityOrigin() : null;
-    const preloadingAttemptRows = this.model.getPreloadingAttempts(filteringRuleSetId).map(({id, value}) => {
+    const rows = this.model.getPreloadingAttempts(filteringRuleSetId).map(({id, value}) => {
       const attempt = value;
       const ruleSets = attempt.ruleSetIds.flatMap(id => {
         const ruleSet = this.model.getRuleSetById(id);
@@ -397,10 +398,9 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
         id,
         attempt,
         ruleSets,
-        securityOrigin,
       };
     });
-    this.preloadingGrid.update(preloadingAttemptRows);
+    this.preloadingGrid.update({rows, pageURL: pageURL()});
 
     this.updatePreloadingDetails();
   }
@@ -564,7 +564,7 @@ class PreloadingRuleSetSelector implements UI.Toolbar.Provider,
       return i18n.i18n.lockedString('Internal error');
     }
 
-    return PreloadingUIUtils.ruleSetLocationShort(ruleSet);
+    return PreloadingUIUtils.ruleSetLocationShort(ruleSet, pageURL());
   }
 
   subtitleFor(id: Protocol.Preload.RuleSetId|null): string {

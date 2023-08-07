@@ -6,6 +6,7 @@ import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/plat
 import * as Protocol from '../../../../../../../front_end/generated/protocol.js';
 import * as PreloadingComponents from '../../../../../../../front_end/panels/application/preloading/components/components.js';
 import * as DataGrid from '../../../../../../../front_end/ui/components/data_grid/data_grid.js';
+import type * as Platform from '../../../../../../../front_end/core/platform/platform.js';
 import * as Coordinator from '../../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../helpers/EnvironmentHelpers.js';
@@ -34,7 +35,7 @@ function assertGridContents(
 }
 
 async function assertRenderResult(
-    rowsInput: PreloadingComponents.RuleSetGrid.RuleSetGridRow[], headerExpected: string[],
+    rowsInput: PreloadingComponents.RuleSetGrid.RuleSetGridData, headerExpected: string[],
     rowsExpected: string[][]): Promise<DataGrid.DataGrid.DataGrid> {
   const component = new PreloadingComponents.RuleSetGrid.RuleSetGrid();
   component.update(rowsInput);
@@ -51,11 +52,12 @@ async function assertRenderResult(
 describeWithEnvironment('RuleSetGrid', async () => {
   it('renders grid', async () => {
     await assertRenderResult(
-        [{
-          ruleSet: {
-            id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
-            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-            sourceText: `
+        {
+          rows: [{
+            ruleSet: {
+              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+              sourceText: `
 {
   "prefetch":[
     {
@@ -65,23 +67,26 @@ describeWithEnvironment('RuleSetGrid', async () => {
   ]
 }
 `,
-          },
-          preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
-        }],
+            },
+            preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
+          }],
+          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+        },
         ['Rule set', 'Status'],
         [
-          ['Main_Page', '1 Not triggered, 2 Ready, 3 Failure'],
+          ['example.com/', '1 Not triggered, 2 Ready, 3 Failure'],
         ],
     );
   });
 
   it('shows short url for out-of-document speculation rules', async () => {
     await assertRenderResult(
-        [{
-          ruleSet: {
-            id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
-            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-            sourceText: `
+        {
+          rows: [{
+            ruleSet: {
+              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+              sourceText: `
 {
   "prefetch":[
     {
@@ -91,10 +96,12 @@ describeWithEnvironment('RuleSetGrid', async () => {
   ]
 }
 `,
-            url: 'https://example.com/assets/speculation-rules.json',
-          },
-          preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
-        }],
+              url: 'https://example.com/assets/speculation-rules.json',
+            },
+            preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
+          }],
+          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+        },
         ['Rule set', 'Status'],
         [
           ['example.com/assets/speculation-rules.json', '1 Not triggered, 2 Ready, 3 Failure'],
@@ -104,12 +111,13 @@ describeWithEnvironment('RuleSetGrid', async () => {
 
   it('shows error counts', async () => {
     await assertRenderResult(
-        [
-          {
-            ruleSet: {
-              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
-              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-              sourceText: `
+        {
+          rows: [
+            {
+              ruleSet: {
+                id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                sourceText: `
 {
   "prefetch":[
     {
@@ -119,28 +127,30 @@ describeWithEnvironment('RuleSetGrid', async () => {
   ]
 }
 `,
-              errorType: Protocol.Preload.RuleSetErrorType.InvalidRulesSkipped,
-              errorMessage: 'fake error message',
+                errorType: Protocol.Preload.RuleSetErrorType.InvalidRulesSkipped,
+                errorMessage: 'fake error message',
+              },
+              preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
             },
-            preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
-          },
-          {
-            ruleSet: {
-              id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
-              loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
-              sourceText: `
+            {
+              ruleSet: {
+                id: 'ruleSetId:0.1' as Protocol.Preload.RuleSetId,
+                loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+                sourceText: `
 {"invalidJson"
 `,
-              errorType: Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject,
-              errorMessage: 'fake error message',
+                errorType: Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject,
+                errorMessage: 'fake error message',
+              },
+              preloadsStatusSummary: '',
             },
-            preloadsStatusSummary: '',
-          },
-        ],
+          ],
+          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+        },
         ['Rule set', 'Status'],
         [
-          ['Main_Page', '1 error 1 Not triggered, 2 Ready, 3 Failure'],
-          ['Main_Page', '1 error'],
+          ['example.com/', '1 error 1 Not triggered, 2 Ready, 3 Failure'],
+          ['example.com/', '1 error'],
         ],
     );
   });

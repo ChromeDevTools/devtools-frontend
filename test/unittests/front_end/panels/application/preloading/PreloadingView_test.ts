@@ -336,7 +336,7 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
         ruleSetGridComponent,
         ['Rule set', 'Status'],
         [
-          ['Main_Page', '1 Running'],
+          ['example.com/', '1 Running'],
         ],
     );
   });
@@ -365,7 +365,7 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
         ruleSetGridComponent,
         ['Rule set', 'Status'],
         [
-          ['Main_Page', '1 error'],
+          ['example.com/', '1 error'],
         ],
 
     );
@@ -500,7 +500,7 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
         ruleSetGridComponent,
         ['Rule set', 'Status'],
         [
-          ['Main_Page', ''],
+          ['example.com/', ''],
         ],
     );
   });
@@ -677,13 +677,13 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
           [
             '/subresource2.js',
             'prefetch',
-            'Main_Page',
+            'example.com/',
             'Running',
           ],
           [
             '/prerendered3.html',
             'prerender',
-            'Main_Page',
+            'example.com/',
             'Running',
           ],
         ],
@@ -694,7 +694,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
 
     await coordinator.done();
 
-    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'Main_Page');
+    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'example.com/');
 
     assertGridContents(
         preloadingGridComponent,
@@ -703,7 +703,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
           [
             '/subresource2.js',
             'prefetch',
-            'Main_Page',
+            'example.com/',
             'Running',
           ],
         ],
@@ -723,13 +723,13 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
           [
             '/subresource2.js',
             'prefetch',
-            'Main_Page',
+            'example.com/',
             'Running',
           ],
           [
             '/prerendered3.html',
             'prerender',
-            'Main_Page',
+            'example.com/',
             'Running',
           ],
         ],

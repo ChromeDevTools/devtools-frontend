@@ -17,6 +17,7 @@ import * as RequestLinkIcon from '../../../../ui/components/request_link_icon/re
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import * as PreloadingHelper from '../helper/helper.js';
+import type * as Platform from '../../../../core/platform/platform.js';
 
 import preloadingDetailsReportViewStyles from './preloadingDetailsReportView.css.js';
 import {prefetchFailureReason, prerenderFailureReason, ruleSetLocationShort} from './PreloadingString.js';
@@ -138,6 +139,7 @@ export type PreloadingDetailsReportViewData = PreloadingDetailsReportViewDataInt
 interface PreloadingDetailsReportViewDataInternal {
   preloadingAttempt: SDK.PreloadingModel.PreloadingAttempt;
   ruleSets: Protocol.Preload.RuleSet[];
+  pageURL: Platform.DevToolsPath.UrlString;
   requestResolver?: Logs.RequestResolver.RequestResolver;
 }
 
@@ -173,6 +175,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
       }
 
       const detailedStatus = PreloadingUIUtils.detailedStatus(this.#data.preloadingAttempt);
+      const pageURL = this.#data.pageURL;
 
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
@@ -193,7 +196,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
           ${this.#maybePrefetchFailureReason()}
           ${this.#maybePrerenderFailureReason()}
 
-          ${this.#data.ruleSets.map(ruleSet => this.#renderRuleSet(ruleSet))}
+          ${this.#data.ruleSets.map(ruleSet => this.#renderRuleSet(ruleSet, pageURL))}
         </${ReportView.ReportView.Report.litTagName}>
       `, this.#shadow, {host: this});
       // clang-format on
@@ -384,11 +387,11 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
     `;
   }
 
-  #renderRuleSet(ruleSet: Protocol.Preload.RuleSet): LitHtml.LitTemplate {
+  #renderRuleSet(ruleSet: Protocol.Preload.RuleSet, pageURL: Platform.DevToolsPath.UrlString): LitHtml.LitTemplate {
     const revealRuleSetView = (): void => {
       void Common.Revealer.reveal(new PreloadingHelper.PreloadingForward.RuleSetView(ruleSet.id));
     };
-    const location = ruleSetLocationShort(ruleSet);
+    const location = ruleSetLocationShort(ruleSet, pageURL);
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off

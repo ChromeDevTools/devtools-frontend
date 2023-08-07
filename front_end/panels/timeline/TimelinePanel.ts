@@ -868,19 +868,37 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     await aboutBlankNavigationComplete;
   }
 
-  private async startRecording(): Promise<void> {
-    console.assert(!this.statusPane, 'Status pane is already opened.');
-    this.setState(State.StartPending);
+  async #startCPUProfilingRecording(): Promise<void> {
+    try {
+      // Only profile the first target devtools connects to. If we profile all target, but this will cause some bugs
+      // like time for the function is calculated wrong, because the profiles will be concated and sorted together,
+      // so the total time will be amplified.
+      // Multiple targets problem might happen when you inspect multiple node servers on different port at same time,
+      // or when you let DevTools listen to both locolhost:9229 & 127.0.0.1:9229.
+      const firstNodeTarget =
+          SDK.TargetManager.TargetManager.instance().targets().find(target => target.type() === SDK.Target.Type.Node);
+      if (!firstNodeTarget) {
+        throw new Error('Could not load any Node target.');
+      }
+      if (firstNodeTarget) {
+        this.cpuProfiler = firstNodeTarget.model(SDK.CPUProfilerModel.CPUProfilerModel);
+      }
+      this.setUIControlsEnabled(false);
+      this.hideLandingPage();
+      if (!this.cpuProfiler) {
+        throw new Error('No Node target is found.');
+      }
+      await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');
+      await this.cpuProfiler.startRecording();
 
-    if (!isNode) {
-      const recordingOptions = {
-        enableJSSampling: !this.disableCaptureJSProfileSetting.get(),
-        capturePictures: this.captureLayersAndPicturesSetting.get(),
-        captureFilmStrip: this.showScreenshotsSetting.get(),
-      };
+      this.recordingStarted();
+    } catch (e) {
+      await this.recordingFailed(e.message);
+    }
+  }
 
-      this.showRecordingStarted();
-
+  async #startTraceRecording(): Promise<void> {
+    try {
       const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
       if (!primaryPageTarget) {
         throw new Error('Could not load primary page target.');
@@ -897,51 +915,43 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
 
       const urlToTrace = await this.#evaluateInspectedURL();
-
-      try {
-        // If we are doing "Reload & record", we first navigate the page to
-        // about:blank. This is to ensure any data on the timeline from any
-        // previous performance recording is lost, avoiding the problem where a
-        // timeline will show data & screenshots from a previous page load that
-        // was not relevant.
-        if (this.recordingPageReload) {
-          await this.#navigateToAboutBlank();
-        }
-        // Order is important here: we tell the controller to start recording, which enables tracing.
-        const response = await this.controller.startRecording(recordingOptions);
-        if (response.getError()) {
-          throw new Error(response.getError());
-        }
-        // Once we get here, we know tracing is active.
-        // This is when, if the user has hit "Reload & Record" that we now need to navigate to the original URL.
-        // If the user has just hit "record", we don't do any navigating.
-        const recordingConfig = this.recordingPageReload ? {navigateToUrl: urlToTrace} : undefined;
-        this.recordingStarted(recordingConfig);
-      } catch (e) {
-        void this.recordingFailed(e.message);
+      // If we are doing "Reload & record", we first navigate the page to
+      // about:blank. This is to ensure any data on the timeline from any
+      // previous performance recording is lost, avoiding the problem where a
+      // timeline will show data & screenshots from a previous page load that
+      // was not relevant.
+      if (this.recordingPageReload) {
+        await this.#navigateToAboutBlank();
       }
+      const recordingOptions = {
+        enableJSSampling: !this.disableCaptureJSProfileSetting.get(),
+        capturePictures: this.captureLayersAndPicturesSetting.get(),
+        captureFilmStrip: this.showScreenshotsSetting.get(),
+      };
+      // Order is important here: we tell the controller to start recording, which enables tracing.
+      const response = await this.controller.startRecording(recordingOptions);
+      if (response.getError()) {
+        throw new Error(response.getError());
+      }
+      // Once we get here, we know tracing is active.
+      // This is when, if the user has hit "Reload & Record" that we now need to navigate to the original URL.
+      // If the user has just hit "record", we don't do any navigating.
+      const recordingConfig = this.recordingPageReload ? {navigateToUrl: urlToTrace} : undefined;
+      this.recordingStarted(recordingConfig);
+    } catch (e) {
+      await this.recordingFailed(e.message);
+    }
+  }
+
+  private async startRecording(): Promise<void> {
+    console.assert(!this.statusPane, 'Status pane is already opened.');
+    this.setState(State.StartPending);
+    this.showRecordingStarted();
+
+    if (isNode) {
+      await this.#startCPUProfilingRecording();
     } else {
-      this.showRecordingStarted();
-      // Only profile the first target devtools connects to. If we profile all target, but this will cause some bugs
-      // like time for the function is calculated wrong, because the profiles will be concated and sorted together,
-      // so the total time will be amplified.
-      // Multiple targets problem might happen when you inspect multiple node servers on different port at same time,
-      // or when you let DevTools listen to both locolhost:9229 & 127.0.0.1:9229.
-      const firstNodeTarget =
-          SDK.TargetManager.TargetManager.instance().targets().find(target => target.type() === SDK.Target.Type.Node);
-      if (firstNodeTarget) {
-        this.cpuProfiler = firstNodeTarget.model(SDK.CPUProfilerModel.CPUProfilerModel);
-      }
-      this.setUIControlsEnabled(false);
-      this.hideLandingPage();
-      if (!this.cpuProfiler) {
-        await this.recordingFailed('No Node target is found.');
-        return;
-      }
-      await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');
-      await this.cpuProfiler.startRecording();
-
-      this.recordingStarted();
+      await this.#startTraceRecording();
     }
   }
 
@@ -984,6 +994,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           showProgress: undefined,
           showTimer: undefined,
         },
+        // When recording failed, we should load null to go back to the landing page.
         () => this.loadingComplete(null));
     this.statusPane.showPane(this.statusPaneContainer);
     this.statusPane.updateStatus(i18nString(UIStrings.recordingFailed));
@@ -1047,6 +1058,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private clear(): void {
+    if (this.statusPane) {
+      this.statusPane.remove();
+    }
     this.showLandingPage();
     this.reset();
   }

@@ -918,7 +918,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         const recordingConfig = this.recordingPageReload ? {navigateToUrl: urlToTrace} : undefined;
         this.recordingStarted(recordingConfig);
       } catch (e) {
-        this.recordingFailed(e.message);
+        void this.recordingFailed(e.message);
       }
     } else {
       this.showRecordingStarted();
@@ -955,7 +955,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.performanceModel = this.controller.getPerformanceModel();
       await this.controller.stopRecording();
       this.setUIControlsEnabled(true);
-      this.controller.dispose();
+      await this.controller.dispose();
       this.controller = null;
       return;
     }
@@ -971,7 +971,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
   }
 
-  private recordingFailed(error: string): void {
+  private async recordingFailed(error: string): Promise<void> {
     if (this.statusPane) {
       this.statusPane.remove();
     }
@@ -991,7 +991,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.performanceModel = null;
     this.setUIControlsEnabled(true);
     if (this.controller) {
-      this.controller.dispose();
+      await this.controller.dispose();
       this.controller = null;
     }
     // Ensure we resume all targets, otherwise DevTools remains unresponsive in the event of an error.
@@ -1114,7 +1114,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       // We therefore now should navigate back to the original URL that the user wants to profile.
       const resourceModel = this.controller?.primaryPageTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
       if (!resourceModel) {
-        this.recordingFailed('Could not navigate to original URL');
+        void this.recordingFailed('Could not navigate to original URL');
         return;
       }
       // We don't need to await this because we are purposefully showing UI
@@ -1311,7 +1311,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         traceParsedData: traceData,
       });
     } catch (error) {
-      this.recordingFailed(error.message);
+      void this.recordingFailed(error.message);
       console.error(error);
     }
   }

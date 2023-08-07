@@ -59,6 +59,23 @@ export class TracingManager extends SDK.SDKModel.SDKModel<void> {
     this.#finishing = false;
   }
 
+  async reset(): Promise<void> {
+    // If we have an active client, we should try to stop
+    // it before resetting it, else we will leave the
+    // backend in a broken state where it thinks we are in
+    // the middle of tracing, but we think we are not.
+    // Then, any subsequent attempts to record will fail
+    // because the backend will not let us start a second
+    // tracing session.
+    if (this.#activeClient) {
+      await this.#tracingAgent.invoke_end();
+    }
+    this.#eventBufferSize = 0;
+    this.#eventsRetrieved = 0;
+    this.#activeClient = null;
+    this.#finishing = false;
+  }
+
   // TODO(petermarshall): Use the traceConfig argument instead of deprecated
   // categories + options.
   async start(client: TracingManagerClient, categoryFilter: string, options: string):

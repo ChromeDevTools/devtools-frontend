@@ -57,7 +57,10 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.CPUProfilerModel.CPUProfilerModel, this);
   }
 
-  dispose(): void {
+  async dispose(): Promise<void> {
+    if (this.tracingManager) {
+      await this.tracingManager.reset();
+    }
     SDK.TargetManager.TargetManager.instance().unobserveModels(SDK.CPUProfilerModel.CPUProfilerModel, this);
   }
 

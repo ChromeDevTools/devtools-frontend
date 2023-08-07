@@ -67,6 +67,10 @@ const UIStrings = {
    */
   documentation: 'Documentation',
   /**
+   *@description Text to open the CDP editor with the selected command
+   */
+  editAndResend: 'Edit and Resend',
+  /**
    *@description Cell text content in Protocol Monitor of the Protocol Monitor tab
    *@example {30} PH1
    */
@@ -290,13 +294,28 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
              row: Readonly<DataGrid.DataGridUtils.Row>): void => {
               const methodColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'method');
               const typeColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'type');
+              /**
+               * You can click the "Edit and resend" item in the context menu to be
+               * taken to the CDP editor with the filled with the selected command.
+               */
+              menu.editSection().appendItem(i18nString(UIStrings.editAndResend), () => {
+                if (!methodColumn.value) {
+                  return;
+                }
+                const parameters = this.infoWidget.request;
+                const command = String(methodColumn.value);
+                if (splitWidget.showMode() === UI.SplitWidget.ShowMode.OnlyMain) {
+                  splitWidget.toggleSidebar();
+                }
+                this.dispatchEventToListeners(Events.CommandChange, {command, parameters});
+              });
 
               /**
                * You can click the "Filter" item in the context menu to filter the
                * protocol monitor entries to those that match the method of the
                * current row.
                */
-              menu.defaultSection().appendItem(i18nString(UIStrings.filter), () => {
+              menu.editSection().appendItem(i18nString(UIStrings.filter), () => {
                 const methodColumn = DataGrid.DataGridUtils.getRowEntryForColumnId(row, 'method');
                 this.textFilterUI.setValue(`method:${methodColumn.value}`, true);
               });
@@ -305,7 +324,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
                * You can click the "Documentation" item in the context menu to be
                * taken to the CDP Documentation site entry for the given method.
                */
-              menu.defaultSection().appendItem(i18nString(UIStrings.documentation), () => {
+              menu.footerSection().appendItem(i18nString(UIStrings.documentation), () => {
                 if (!methodColumn.value) {
                   return;
                 }
@@ -340,7 +359,6 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
     split.show(this.contentElement);
     split.setMainWidget(this.dataGridIntegrator);
     split.setSidebarWidget(this.infoWidget);
-
     const keys = ['method', 'request', 'response', 'type', 'target', 'session'];
     this.filterParser = new TextUtils.TextUtils.FilterParser(keys);
     this.suggestionBuilder = new UI.FilterSuggestionBuilder.FilterSuggestionBuilder(keys);
@@ -690,6 +708,7 @@ export class CommandAutocompleteSuggestionProvider {
 
 export class InfoWidget extends UI.Widget.VBox {
   private readonly tabbedPane: UI.TabbedPane.TabbedPane;
+  request: {[x: string]: unknown};
   constructor() {
     super();
     this.tabbedPane = new UI.TabbedPane.TabbedPane();
@@ -697,6 +716,7 @@ export class InfoWidget extends UI.Widget.VBox {
     this.tabbedPane.appendTab('response', i18nString(UIStrings.response), new UI.Widget.Widget());
     this.tabbedPane.show(this.contentElement);
     this.tabbedPane.selectTab('response');
+    this.request = {};
     this.render(null);
   }
 
@@ -719,6 +739,7 @@ export class InfoWidget extends UI.Widget.VBox {
     }
 
     const requestParsed = JSON.parse(String(data.request.value) || 'null');
+    this.request = requestParsed;
     this.tabbedPane.changeTabView('request', SourceFrame.JSONView.JSONView.createViewSync(requestParsed));
     const responseParsed =
         data.response.value === '(pending)' ? null : JSON.parse(String(data.response.value) || 'null');

@@ -283,6 +283,7 @@ export class JSONEditor extends LitElement {
       typeRef: schema?.typeRef,
       value,
       description,
+      isCorrectType: schema ? this.#isValueOfCorrectType(schema, value as string) : true,
     } as Parameter;
   }
 
@@ -430,7 +431,6 @@ export class JSONEditor extends LitElement {
 
   populateParametersForCommandWithDefaultValues(): void {
     const commandParameters = this.metadataByCommand.get(this.command)?.parameters;
-
     if (!commandParameters) {
       return;
     }

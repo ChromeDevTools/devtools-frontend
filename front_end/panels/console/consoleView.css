@@ -39,6 +39,7 @@
   --override-focused-message-border-color: hsl(214deg 67% 88%);
   --override-focused-message-background-color: hsl(214deg 48% 95%);
   --override-console-warning-text-color: hsl(39deg 100% 18%);
+  --message-corner-rounder-background: (--sys-color-cdt-base-container);
 }
 
 .-theme-with-dark-background .console-view {
@@ -304,34 +305,35 @@
 .console-message-wrapper .nesting-level-marker {
   width: 14px;
   flex: 0 0 auto;
-  border-right: 1px solid var(--color-details-hairline);
   position: relative;
   margin-bottom: -1px;
   margin-top: -1px;
+  background-color: var(--sys-color-cdt-base-container);
 }
 
-.console-message-wrapper .nesting-level-marker::before {
-  border-bottom: 1px solid var(--color-details-hairline);
+.console-message-wrapper .nesting-level-marker + .console-message::after {
   position: absolute;
+  left: -30px;
   top: 0;
-  left: 0;
-  margin-left: 100%;
-  width: 3px;
+  width: 6px;
   height: 100%;
   box-sizing: border-box;
-}
-
-.console-message-wrapper:last-child .nesting-level-marker::before,
-.console-message-wrapper .nesting-level-marker.group-closed::before {
+  background-color: var(--sys-color-surface-yellow);
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
   content: "";
 }
 
 .console-error-level {
   background-color: var(--sys-color-surface-error);
+
+  --message-corner-rounder-background: var(--sys-color-surface-error);
 }
 
 .console-warning-level {
   background-color: var(--sys-color-surface-yellow);
+
+  --message-corner-rounder-background: var(--sys-color-surface-yellow);
 }
 
 .console-warning-level .console-message-text {

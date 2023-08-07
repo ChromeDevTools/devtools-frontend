@@ -556,7 +556,9 @@ export enum Action {
   OverrideContentContextMenuActivateDisabled = 94,
   OverrideContentContextMenuOpenExistingFile = 95,
   OverrideContentContextMenuSaveNewFile = 96,
-  MaxValue = 97,
+  ShowAllOverridesFromSourcesContextMenu = 97,
+  ShowAllOverridesFromNetworkContextMenu = 98,
+  MaxValue = 99,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

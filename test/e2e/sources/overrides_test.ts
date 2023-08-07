@@ -229,4 +229,36 @@ describe('The Overrides Panel', async function() {
       assert.isDefined(iconTitleElement);
     });
   });
+
+  it('can show all overrides in the Sources panel', async () => {
+    await step('when overrides setting is disabled', async () => {
+      await goToResource('network/fetch-json.html');
+
+      await openNetworkTab();
+      await selectRequestByName('coffees.json', {button: 'right'});
+      await click('aria/Show all overrides');
+
+      // In the Sources panel
+      await waitForAria('Select folder for overrides');
+
+      const assertElements = await $$('Select folder for overrides', undefined, 'aria');
+      assert.strictEqual(assertElements.length, 1);
+    });
+
+    await step('when overrides setting is enabled', async () => {
+      // Set up & enable overrides in the Sources panel
+      await click('aria/Select folder for overrides');
+      await clickOnContextMenu(OVERRIDES_FILESYSTEM_SELECTOR, 'New file');
+
+      await openNetworkTab();
+      await selectRequestByName('coffees.json', {button: 'right'});
+      await click('aria/Show all overrides');
+
+      // In the Sources panel
+      await waitForAria('Enable Local Overrides');
+
+      const assertElements = await $$('Enable Local Overrides', undefined, 'aria');
+      assert.strictEqual(assertElements.length, 1);
+    });
+  });
 });

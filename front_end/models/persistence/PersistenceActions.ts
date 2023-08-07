@@ -8,7 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 
 import type * as TextUtils from '../text_utils/text_utils.js';
-import type * as UI from '../../ui/legacy/legacy.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
@@ -23,6 +23,10 @@ const UIStrings = {
    *@description Context menu item for saving an image
    */
   saveImage: 'Save image',
+  /**
+   *@description Context menu item for showing all overridden files
+   */
+  showOverrides: 'Show all overrides',
   /**
    *@description A context menu item in the Persistence Actions of the Workspace settings in Settings
    */
@@ -110,7 +114,18 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideFont);
         }
       });
+    } else {
+      contextMenu.overrideSection().appendItem(i18nString(UIStrings.overrideContent), () => {}, true);
     }
+
+    contextMenu.overrideSection().appendItem(i18nString(UIStrings.showOverrides), async () => {
+      await UI.ViewManager.ViewManager.instance().showView('navigator-overrides');
+      if (contentProvider instanceof SDK.NetworkRequest.NetworkRequest) {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.ShowAllOverridesFromNetworkContextMenu);
+      } else {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.ShowAllOverridesFromSourcesContextMenu);
+      }
+    });
 
     const binding = uiSourceCode && PersistenceImpl.instance().binding(uiSourceCode);
     const fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();

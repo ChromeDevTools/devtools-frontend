@@ -11,6 +11,7 @@ import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {createTarget, deinitializeGlobalVars, initializeGlobalVars} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {createWorkspaceProject, setUpEnvironment} from '../../helpers/OverridesHelpers.js';
@@ -75,6 +76,39 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
 
     assert.isTrue(saveSpy.calledOnce, 'should override content once');
     assert.isTrue(actual, 'should complete override successfully');
+  });
+});
+
+describeWithMockConnection('NetworkPersistenceManager', () => {
+  it('does not create interception patterns for forbidden URLs', async () => {
+    SDK.NetworkManager.MultitargetNetworkManager.dispose();
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
+    const target = createTarget();
+
+    const networkPersistenceManager =
+        await createWorkspaceProject('file:///path/to/overrides' as Platform.DevToolsPath.UrlString, [
+          {name: 'helloWorld.html', path: 'www.example.com/', content: 'Hello World!'},
+          {name: 'forbidden.html', path: 'chromewebstore.google.com/', content: 'Chrome Web Store'},
+          {name: 'flags', path: 'chrome:/', content: 'Chrome Flags'},
+          {name: 'index.html', path: 'chrome.google.com/', content: 'Chrome'},
+          {name: 'allowed.html', path: 'www.google.com/', content: 'Google Search'},
+        ]);
+
+    const stub = sinon.stub(target.fetchAgent(), 'invoke_enable');
+    await networkPersistenceManager.updateInterceptionPatternsForTests();
+
+    const patterns = stub.lastCall.args[0].patterns;
+    const expected = [
+      {
+        urlPattern: 'http?://www.example.com/helloWorld.html',
+        requestStage: Protocol.Fetch.RequestStage.Response,
+      },
+      {
+        urlPattern: 'http?://www.google.com/allowed.html',
+        requestStage: Protocol.Fetch.RequestStage.Response,
+      },
+    ];
+    assert.deepStrictEqual(patterns, expected);
   });
 });
 

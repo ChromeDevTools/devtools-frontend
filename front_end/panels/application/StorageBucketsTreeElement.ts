@@ -14,6 +14,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import {ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {type ResourcesPanel} from './ResourcesPanel.js';
 import {StorageMetadataView} from './components/components.js';
+import {IndexedDBTreeElement} from './ApplicationPanelSidebar.js';
 
 const UIStrings = {
   /**
@@ -140,6 +141,9 @@ export class StorageBucketsTreeElement extends ExpandableApplicationPanelTreeEle
   }
 
   initialize(): void {
+    const {bucket} = this.bucketInfo;
+    const indexedDBTreeElement = new IndexedDBTreeElement(this.resourcesPanel, bucket);
+    this.appendChild(indexedDBTreeElement);
   }
 
   override get itemURL(): Platform.DevToolsPath.UrlString {

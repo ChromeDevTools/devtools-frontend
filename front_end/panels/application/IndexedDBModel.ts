@@ -508,6 +508,10 @@ export class DatabaseId {
     this.name = name;
   }
 
+  inBucket(storageBucket: Protocol.Storage.StorageBucket): boolean {
+    return this.storageBucket.name === storageBucket.name;
+  }
+
   equals(databaseId: DatabaseId): boolean {
     return this.name === databaseId.name && this.storageBucket.name === databaseId.storageBucket.name &&
         this.storageBucket.storageKey === databaseId.storageBucket.storageKey;

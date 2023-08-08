@@ -1273,11 +1273,13 @@ export class ClearStorageTreeElement extends ApplicationPanelTreeElement {
 
 export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement {
   private idbDatabaseTreeElements: IDBDatabaseTreeElement[];
-  constructor(storagePanel: ResourcesPanel) {
+  private storageBucket?: Protocol.Storage.StorageBucket;
+  constructor(storagePanel: ResourcesPanel, storageBucket?: Protocol.Storage.StorageBucket) {
     super(storagePanel, i18nString(UIStrings.indexeddb), 'IndexedDB');
     const icon = UI.Icon.Icon.create('database', 'resource-tree-item');
     this.setLeadingIcons([icon]);
     this.idbDatabaseTreeElements = [];
+    this.storageBucket = storageBucket;
     this.initialize();
   }
 
@@ -1333,6 +1335,13 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
     }
   }
 
+  private databaseInTree(databaseId: DatabaseId): boolean {
+    if (this.storageBucket) {
+      return databaseId.inBucket(this.storageBucket);
+    }
+    return true;
+  }
+
   private indexedDBAdded({
     data: {databaseId, model},
   }: Common.EventTarget.EventTargetEvent<{databaseId: DatabaseId, model: IndexedDBModel}>): void {
@@ -1340,6 +1349,9 @@ export class IndexedDBTreeElement extends ExpandableApplicationPanelTreeElement 
   }
 
   private addIndexedDB(model: IndexedDBModel, databaseId: DatabaseId): void {
+    if (!this.databaseInTree(databaseId)) {
+      return;
+    }
     const idbDatabaseTreeElement = new IDBDatabaseTreeElement(this.resourcesPanel, model, databaseId);
     this.idbDatabaseTreeElements.push(idbDatabaseTreeElement);
     this.appendChild(idbDatabaseTreeElement);

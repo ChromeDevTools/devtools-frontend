@@ -197,7 +197,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       return sinon.spy(object, components[1]);
     }
 
-    const MOCK_ITEM = {
+    const MOCK_EVENT_ITEM = {
       addEventListener: () => {},
       securityOrigin: 'https://example.com',
       databaseId: new Application.IndexedDBModel.DatabaseId({storageKey: ''}, ''),
@@ -210,7 +210,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       const expectedCall = await getExpectedCall(expectedCallString);
       const model = target.model(modelClass);
       assertNotNullOrUndefined(model);
-      const data = [{...MOCK_ITEM, model}] as Common.EventTarget.EventPayloadToRestParameters<Events, T>;
+      const data = [{...MOCK_EVENT_ITEM, model}] as Common.EventTarget.EventPayloadToRestParameters<Events, T>;
       model.dispatchEventToListeners(event as Platform.TypeScriptUtilities.NoUnion<T>, ...data);
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.strictEqual(expectedCall.called, inScope);
@@ -260,6 +260,10 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
            Application.SharedStorageModel.Events.SharedStorageAdded, Application.SharedStorageModel.SharedStorageModel,
            'sharedStorageListTreeElement.appendChild', false));
 
+    const MOCK_GETTER_ITEM = {
+      ...MOCK_EVENT_ITEM,
+      ...MOCK_EVENT_ITEM.databaseId,
+    };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const testUiUpdateOnScopeChange = <T extends SDK.SDKModel.SDKModel<any>>(
         modelClass: new (arg1: SDK.Target.Target) => T, getter: keyof T, expectedCallString: string) => async () => {
@@ -267,7 +271,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       const expectedCall = await getExpectedCall(expectedCallString);
       const model = target.model(modelClass);
       assertNotNullOrUndefined(model);
-      sinon.stub(model, getter).returns([MOCK_ITEM]);
+      sinon.stub(model, getter).returns([MOCK_GETTER_ITEM]);
       SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.strictEqual(expectedCall.called, true);

@@ -122,9 +122,7 @@ export async function setThrottlingMethod(throttlingMethod: 'simulate'|'devtools
 }
 
 export async function clickStartButton() {
-  const panel = await waitFor('.lighthouse-start-view');
-  const button = await waitFor('button', panel);
-  await button.click();
+  await click('.lighthouse-start-view button');
 }
 
 export async function isGenerateReportButtonDisabled() {

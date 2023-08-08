@@ -56,6 +56,8 @@ ul {
 
 .optionalParameter {
   color: var(--color-syntax-3);
+
+  --override-color-recorder-input: var(--color-syntax-1);
 }
 
 .undefinedParameter {

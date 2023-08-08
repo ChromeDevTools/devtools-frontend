@@ -14,7 +14,7 @@
 devtools-editable-content {
   background: transparent;
   border: none;
-  color: var(--sys-color-on-surface);
+  color: var(--override-color-recorder-input, var(--sys-color-on-surface));
   cursor: text;
   display: inline-block;
   line-height: 18px;

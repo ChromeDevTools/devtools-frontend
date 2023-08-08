@@ -133,6 +133,19 @@ describeWithEnvironment('JSONEditor', () => {
             description: 'Description9.',
             replyArgs: ['Test9'],
           },
+          'Test.test10': {
+            parameters: [
+              {
+                'name': 'NoTypeRef',
+                'type': 'object',
+                'optional': true,
+                'description': '',
+                'typeRef': 'NoTypeRef',
+              },
+            ],
+            description: 'Description9.',
+            replyArgs: ['Test9'],
+          },
         },
       },
     ] as Iterable<ProtocolMonitor.ProtocolMonitor.ProtocolDomain>;
@@ -965,5 +978,94 @@ describeWithEnvironment('JSONEditor', () => {
     // for the name of the parameter (traceConfig)
     assert.deepStrictEqual(parameters.length, 6);
   });
+
+  it('should return the parameters in a format understandable by the ProtocolMonitor when sending a command with object parameter that has no typeRef',
+     async () => {
+       const command = 'Test.test10';
+       const typesByName = new Map();
+       // We set the map typesBynames without the key NoTypeRef
+       typesByName.set('Tracing.TraceConfig', [
+         {
+           'name': 'memoryDumpConfig',
+           'type': 'object',
+           'optional': true,
+           'description':
+               'Configuration for memory dump triggers. Used only when \\"memory-infra\\" category is enabled.',
+           'typeRef':
+               'Tracing.MemoryDumpConfig',  // This typeref is on purpose not added to show that this param will be treated as a string parameter
+         },
+       ]);
+
+       const jsonEditor = renderJSONEditor();
+
+       await populateMetadata(jsonEditor);
+       jsonEditor.typesByName = typesByName;
+       jsonEditor.command = command;
+       jsonEditor.populateParametersForCommandWithDefaultValues();
+       await jsonEditor.updateComplete;
+       const shadowRoot = jsonEditor.renderRoot;
+       const parameters = shadowRoot.querySelector('.parameter');
+
+       await renderHoveredElement(parameters);
+
+       const addParamButton = jsonEditor.renderRoot.querySelector('devtools-button[title="Add custom property"]');
+       if (!addParamButton) {
+         throw new Error('No button');
+       }
+       // We click two times to display two parameters with key/value pairs
+       dispatchClickEvent(addParamButton, {
+         bubbles: true,
+         composed: true,
+       });
+       dispatchClickEvent(addParamButton, {
+         bubbles: true,
+         composed: true,
+       });
+
+       await jsonEditor.updateComplete;
+       const editors = shadowRoot.querySelectorAll('devtools-recorder-input');
+
+       // Editors[0] refers to the command editor, so we start at index 1
+       // We populate the key/value pairs
+       editors[1].value = 'testName1';
+       await jsonEditor.updateComplete;
+       editors[1].focus();
+       editors[1].blur();
+       await jsonEditor.updateComplete;
+
+       editors[2].value = 'testValue1';
+       await jsonEditor.updateComplete;
+       editors[2].focus();
+       editors[2].blur();
+       await jsonEditor.updateComplete;
+
+       editors[3].value = 'testName2';
+       await jsonEditor.updateComplete;
+       editors[3].focus();
+       editors[3].blur();
+       await jsonEditor.updateComplete;
+
+       editors[4].value = 'testValue2';
+       await jsonEditor.updateComplete;
+       editors[4].focus();
+       editors[4].blur();
+       await jsonEditor.updateComplete;
+
+       const responsePromise = getEventPromise(jsonEditor, ProtocolComponents.JSONEditor.SubmitEditorEvent.eventName);
+
+       // We send the command
+       dispatchKeyDownEvent(jsonEditor, {key: 'Enter', ctrlKey: true, metaKey: true});
+
+       const response = await responsePromise as ProtocolComponents.JSONEditor.SubmitEditorEvent;
+
+       const expectedParameters = {
+         'NoTypeRef': {
+           'testName1': 'testValue1',
+           'testName2': 'testValue2',
+         },
+       };
+
+       assert.deepStrictEqual(response.data.parameters, expectedParameters);
+     });
 
 });

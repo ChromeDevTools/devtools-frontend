@@ -15,6 +15,7 @@ import {ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeEleme
 import {type ResourcesPanel} from './ResourcesPanel.js';
 import {StorageMetadataView} from './components/components.js';
 import {IndexedDBTreeElement} from './ApplicationPanelSidebar.js';
+import {ServiceWorkerCacheTreeElement} from './ServiceWorkerCacheTreeElement.js';
 
 const UIStrings = {
   /**
@@ -144,6 +145,9 @@ export class StorageBucketsTreeElement extends ExpandableApplicationPanelTreeEle
     const {bucket} = this.bucketInfo;
     const indexedDBTreeElement = new IndexedDBTreeElement(this.resourcesPanel, bucket);
     this.appendChild(indexedDBTreeElement);
+    const serviceWorkerCacheTreeElement = new ServiceWorkerCacheTreeElement(this.resourcesPanel, bucket);
+    this.appendChild(serviceWorkerCacheTreeElement);
+    serviceWorkerCacheTreeElement.initialize();
   }
 
   override get itemURL(): Platform.DevToolsPath.UrlString {

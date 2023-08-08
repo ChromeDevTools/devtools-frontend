@@ -8,7 +8,7 @@ In order to make changes to DevTools frontend, build, run, test, and submit chan
 
 As a standalone project, Chrome DevTools frontend can be checked out and built independently from Chromium. The main advantage is not having to check out and build Chromium.
 
-However, to run layout tests, you need to use the [integrated checkout](#Integrated-checkout).
+However, to run layout tests, you need to use the [chromium checkout](#Chromium-checkout).
 
 #### Checking out source
 
@@ -48,6 +48,22 @@ To update to latest tip of tree version:
 git fetch origin; git checkout origin/main  # or, alternatively: git rebase-update
 gclient sync
 ```
+
+#### Out of sync dependencies and cross-repo changes
+
+The revisions of git dependencies must always be in sync between the entry in DEPS and the git submodule. PRESUBMIT will
+reject CLs that try to submit changes to one but not the other.
+It can happen that dependencies go out of sync for three main reasons:
+1. The developer attempted a manual roll by only updating the DEPS file (which was the process before migrating to git
+   submodules, see [below](#Managing-dependencies)),
+1. after switching branches or checking out new commit the developer didn't run `gclient sync`, or
+1. they are working across repositories including changes in both.
+
+In the first case, follow the [manual roll process](#Managing-dependencies). In the second case,
+running `gclient sync` is necessary. If the changes to the submodule versions were already added to any commits (this
+happens when commits were created using `git add -A`, for example), it's necessary to unstage them (for example using
+`git checkout -p origin/main`). The latter also applies in the third case: Create a CL excluding the dependency changes
+and a separate CL with a proper roll.
 
 #### Run in a pre-built Chromium
 
@@ -112,112 +128,7 @@ $ google-chrome http://localhost:8000/inspector.html?ws=localhost:9222/devtools/
 
 ### Integrated checkout
 
-The integrated workflow offers the best of both worlds, and allows for working on both Chromium and DevTools frontend side-by-side. This is strongly recommended for folks working primarily on DevTools.
-
-This workflow will ensure that your local setup is equivalent to how Chromium infrastructure tests your change. It comes in two flavors.
-
-A full [Chromium checkout](#Chromium-checkout) is a pre-requisite for the following steps.
-
-#### Remove existing devtools-frontend sub-repository
-
-First, you need to remove the existing devtools-frontend sub-repo from the Chromium checkout in `chromium/src/`.
-
-In `chromium/src`, run `gclient sync` to make sure you have installed all required submodules.
-
-```bash
-gclient sync
-```
-
-Then, disable `gclient sync` for DevTools frontend inside of Chromium by editing `.gclient` config. From `chromium/src/`, run
-
-```bash
-vim "$(gclient root)/.gclient"
-```
-
-In the `custom_deps` section, insert this line:
-
-```python
-"src/third_party/devtools-frontend/src": None,
-```
-
-Then run
-
-```bash
-gclient sync -D
-```
-
-This removes the DevTools frontend dependency. We now create a symlink to refer to the standalone checkout (execute in `chromium/src` and make sure that `third_party/devtools-frontend` exists):
-
-**(Note that the folder names do NOT include the trailing slash)**
-
-Following this step, there are two approaches to integrating the standalone devtools.
-
-#### Flavor 1: separate gclient projects
-
-The first approach is to have separate gclient projects, one for each repository, and manually
-create a symlink. First, get a checkout of [DevTools frontend](#Standalone-checkout).
-
-To then create the symlink:
-
-```bash
-ln -s path/to/standalone/devtools-frontend third_party/devtools-frontend/src
-```
-
-Running `gclient sync` in `chromium/src/` will update dependencies for the Chromium checkout.
-Running `gclient sync` in `chromium/src/third_party/devtools-frontend/src` will update dependencies for the standalone checkout.
-
-#### Flavor 2: a single gclient project
-
-The second approach is to have a single gclient project that automatically gclient sync's all dependencies for both repositories
-
-After removing your devtools dependency, modify the .gclient file for `chromium/src`
-to add the devtools project and a hook to automatically symlink (comments are optional):
-
-```python
-solutions = [
-  {
-    # Chromium src project
-    "name": "src",
-    "url": "https://chromium.googlesource.com/chromium/src.git",
-    "custom_deps": {
-      "src/third_party/devtools-frontend/src": None,
-    },
-  },
-  {
-    # devtools-frontend project
-    "name": "devtools-frontend",
-    "url": "https://chromium.googlesource.com/devtools/devtools-frontend.git",
-  }
-]
-```
-
-Run `gclient sync` once in `chromium/src/` to get the new devtools frontend checkout.
-
-To automatically symlink between `devtools-frontend` and `chromium/src`, you can add the following
-hook to your `.gclient` file to manage your `chromium/src` repository after your list of solutions.
-
-```python
-hooks = [
-  {
-    # Ensure devtools is symlinked in the correct location on every gclient sync
-    'name': 'Symlink Depot Tools',
-    'pattern': '.',
-    'action': [
-        'python3',
-        '<path>/<to>/devtools-frontend/scripts/deps/ensure_symlink.py',
-        '<path>/<to>/chromium/src',
-        '<path>/<to>/devtools-frontend'
-    ],
-  }
-]
-```
-
-If the hook doesn't work, check that
-
-  - all paths are relative to the gclient file (don't use `~`) and
-  - python > 3.8 is installed on your system.
-
-Running `gclient sync` anywhere within `chromium/src/` or `chromium/src/third_party/devtools-frontend/src` will update dependencies for both checkouts. Running `gclient sync -D` will not remove your symlink.
+The integrated workflow isn't available anymore after the migration to git submodules.
 
 ### Chromium checkout
 
@@ -297,6 +208,13 @@ Bug: 123456
 
 ```
 ## Managing dependencies
+
+If you need to manually roll a git dependency, it's not sufficient to update the revision in the DEPS file. Instead, use
+the gclient tool:
+```bash
+gclient setdep -r DEP@REV # for example build@afe0125ef9e10b400d9ec145aa18fca932369346
+```
+This will simultaneously update both the DEPS entry as well as the gitlink entry for the corresponding git submodule.
 
 To sync dependencies from Chromium to DevTools frontend, use `scripts/deps/roll_deps.py && npm run generate-protocol-resources`.
 Note that this may:

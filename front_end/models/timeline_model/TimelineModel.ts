@@ -2251,18 +2251,15 @@ export class TimelineAsyncEventTracker {
 
 export class EventOnTimelineData {
   warning: string|null;
-  previewElement: Element|null;
   url: Platform.DevToolsPath.UrlString|null;
   backendNodeIds: Protocol.DOM.BackendNodeId[];
   stackTrace: Protocol.Runtime.CallFrame[]|null;
   picture: TraceEngine.Legacy.ObjectSnapshot|null;
   private initiatorInternal: TraceEngine.Legacy.Event|null;
   frameId: Protocol.Page.FrameId|null;
-  timeWaitingForMainThread?: number;
 
   constructor() {
     this.warning = null;
-    this.previewElement = null;
     this.url = null;
     this.backendNodeIds = [];
     this.stackTrace = null;

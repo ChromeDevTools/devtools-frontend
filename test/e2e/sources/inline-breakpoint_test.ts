@@ -76,6 +76,8 @@ describe('The Sources Tab', () => {
     await addBreakpointForLine(frontend, 3);
 
     await step('click the second inline breakpoint', async () => {
+      await checkLineDecorationDescriptor(3, '    var p = @Promise.%resolve().%then(() => console.%log(42)%)');
+
       await enableInlineBreakpointForLine(3, 2);
 
       await checkLineDecorationDescriptor(3, '    var p = @Promise.@resolve().%then(() => console.%log(42)%)');

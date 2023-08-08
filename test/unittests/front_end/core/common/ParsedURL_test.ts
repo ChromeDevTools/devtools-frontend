@@ -536,6 +536,12 @@ describe('Parsed URL', () => {
         parsedUrl.lastPathComponentWithFragment(), 'path', 'last path component with fragmen returned is incorrect');
   });
 
+  it('uses the lastPathComponentWithFragment function to return for a URL with a path and trailing slash', () => {
+    const parsedUrl = new ParsedURL('http://www.example.com/test/path/');
+    assert.strictEqual(
+        parsedUrl.lastPathComponentWithFragment(), 'path/', 'last path component with fragmen returned is incorrect');
+  });
+
   it('uses the lastPathComponentWithFragment function to return for a URL with a path and a fragment', () => {
     const parsedUrl = new ParsedURL('http://www.example.com/test/path#testFragment');
     assert.strictEqual(

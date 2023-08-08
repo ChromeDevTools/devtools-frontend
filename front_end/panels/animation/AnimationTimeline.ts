@@ -231,12 +231,17 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     const toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
     const topToolbar = new UI.Toolbar.Toolbar('animation-timeline-toolbar', toolbarContainer);
     this.#clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear');
-    this.#clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.reset.bind(this));
+    this.#clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationGroupsCleared);
+      this.reset();
+    });
     topToolbar.appendToolbarItem(this.#clearButton);
     topToolbar.appendSeparator();
 
     this.#pauseButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.pauseAll), 'pause', 'resume');
-    this.#pauseButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.togglePauseAll.bind(this));
+    this.#pauseButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+      this.togglePauseAll();
+    });
     topToolbar.appendToolbarItem(this.#pauseButton);
 
     const playbackRateControl = toolbarContainer.createChild('div', 'animation-playback-rate-control');
@@ -367,6 +372,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
   private togglePauseAll(): void {
     this.#allPaused = !this.#allPaused;
+    Host.userMetrics.actionTaken(
+        this.#allPaused ? Host.UserMetrics.Action.AnimationsPaused : Host.UserMetrics.Action.AnimationsResumed,
+    );
     if (this.#pauseButton) {
       this.#pauseButton.setToggled(this.#allPaused);
     }
@@ -377,6 +385,14 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   }
 
   private setPlaybackRate(playbackRate: number): void {
+    if (playbackRate !== this.#playbackRate) {
+      Host.userMetrics.animationPlaybackRateChanged(
+          playbackRate === 0.1      ? Host.UserMetrics.AnimationsPlaybackRate.Percent10 :
+              playbackRate === 0.25 ? Host.UserMetrics.AnimationsPlaybackRate.Percent25 :
+              playbackRate === 1    ? Host.UserMetrics.AnimationsPlaybackRate.Percent100 :
+                                      Host.UserMetrics.AnimationsPlaybackRate.Other);
+    }
+
     this.#playbackRate = playbackRate;
     for (const animationModel of SDK.TargetManager.TargetManager.instance().models(AnimationModel, {scoped: true})) {
       animationModel.setPlaybackRate(this.#allPaused ? 0 : this.#playbackRate);
@@ -401,6 +417,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     if (this.#controlState === ControlState.Play) {
       this.togglePause(false);
     } else if (this.#controlState === ControlState.Replay) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationGroupReplayed);
       this.replay();
     } else {
       this.togglePause(true);
@@ -868,6 +885,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       this.#scrubberPlayer.play();
       this.#scrubberPlayer.currentTime = currentTime;
     }
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationGroupScrubbed);
     this.#currentTime.window().requestAnimationFrame(this.updateScrubber.bind(this));
   }
 }
@@ -901,7 +919,13 @@ export class NodeUI {
     }
     this.#node = node;
     this.nodeChanged();
-    void Common.Linkifier.Linkifier.linkify(node).then(link => this.#description.appendChild(link));
+    void Common.Linkifier.Linkifier.linkify(node).then(link => {
+      link.addEventListener('click', () => {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimatedNodeDescriptionClicked);
+      });
+
+      this.#description.appendChild(link);
+    });
     if (!node.ownerDocument) {
       this.nodeRemoved();
     }

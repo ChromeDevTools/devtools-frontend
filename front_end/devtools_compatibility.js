@@ -448,6 +448,8 @@ const EnumeratedHistogram = {
   BreakpointsRestoredFromStorageCount: 'DevTools.BreakpointsRestoredFromStorageCount',
   SwatchActivated: 'DevTools.SwatchActivated',
   BadgeActivated: 'DevTools.BadgeActivated',
+  AnimationPlaybackRateChanged: 'DevTools.AnimationPlaybackRateChanged',
+  AnimationPointDragged: 'DevTools.AnimationPointDragged',
 };
 
 /**

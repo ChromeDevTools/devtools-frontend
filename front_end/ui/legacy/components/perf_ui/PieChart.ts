@@ -4,6 +4,7 @@
 
 import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
+
 import pieChartStyles from './pieChart.css.js';
 
 const {render, html, svg} = LitHtml;
@@ -114,7 +115,7 @@ export class PieChart extends HTMLElement {
           <div class="pie-chart-legend-row ${this.totalSelected ? 'selected' : ''}"
               @click=${this.selectTotal} tabIndex=${this.totalSelected ? '0' : '-1'}>
             <div class="pie-chart-size">${this.formatter(this.total)}</div>
-            <div class="pie-chart-swatch pie-chart-empty-swatch"></div>
+            <div class="pie-chart-swatch"></div>
             <div class="pie-chart-name">${i18nString(UIStrings.total)}</div>
           </div>
         </div>

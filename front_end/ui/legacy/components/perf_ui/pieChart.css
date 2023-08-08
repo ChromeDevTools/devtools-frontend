@@ -76,10 +76,6 @@
   /* See: crbug.com/1152736 for color variable migration. */
 }
 
-.pie-chart-swatch.pie-chart-empty-swatch {
-  border: none;
-}
-
 .pie-chart-name {
   display: inline-block;
 }

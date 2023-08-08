@@ -10,7 +10,7 @@ import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/
 describe('Animations track', () => {
   preloadForCodeCoverage('performance_panel/track_example.html');
 
-  const urlForTest = 'performance_panel/track_example.html?track=Animation&fileName=animation';
+  const urlForTest = 'performance_panel/track_example.html?track=Animations&fileName=animation';
 
   itScreenshot('renders the expanded animations track correctly', async () => {
     await loadComponentDocExample(`${urlForTest}&expanded=true`);

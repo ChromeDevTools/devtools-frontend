@@ -1047,16 +1047,21 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     }
 
     if (project.type() === Workspace.Workspace.projectTypes.FileSystem) {
-      contextMenu.defaultSection().appendAction('sources.add-folder-to-workspace', undefined, true);
-      if (node instanceof NavigatorGroupTreeNode) {
-        contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeFolderFromWorkspace), async () => {
-          const shouldRemove = await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.areYouSureYouWantToRemoveThis));
-          if (shouldRemove) {
-            project.remove();
-          }
-        });
-      }
-      if ((project as Persistence.FileSystemWorkspaceBinding.FileSystem).fileSystem().type() === 'overrides') {
+      const isFileOverrides =
+          (project as Persistence.FileSystemWorkspaceBinding.FileSystem).fileSystem().type() === 'overrides';
+
+      if (!isFileOverrides) {
+        contextMenu.defaultSection().appendAction('sources.add-folder-to-workspace', undefined, true);
+        if (node instanceof NavigatorGroupTreeNode) {
+          contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeFolderFromWorkspace), async () => {
+            const shouldRemove =
+                await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.areYouSureYouWantToRemoveThis));
+            if (shouldRemove) {
+              project.remove();
+            }
+          });
+        }
+      } else {
         contextMenu.defaultSection().appendItem(
             i18nString(UIStrings.deleteAllOverrides), this.handleDeleteOverrides.bind(this, node));
       }

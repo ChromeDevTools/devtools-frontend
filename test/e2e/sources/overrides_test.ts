@@ -31,7 +31,7 @@ import {
 
 const OVERRIDES_FILESYSTEM_SELECTOR = '[aria-label="overrides, fs"]';
 
-describe('The Overrides Panel', async function() {
+describe('Overrides panel', async function() {
   afterEach(async () => {
     await openSourcesPanel();
     await click('[aria-label="Overrides"]');
@@ -128,7 +128,7 @@ describe('The Overrides Panel', async function() {
       const infoBar = await waitForAria('Select a folder to store override files in.');
       await click('.infobar-main-row .infobar-button', {root: infoBar});
 
-      // Open & clsoe the file in the Sources panel
+      // Open & close the file in the Sources panel
       const fileTab = await waitFor('[aria-label="coffees.json, file"]');
       assert.isNotNull(fileTab);
 
@@ -260,5 +260,97 @@ describe('The Overrides Panel', async function() {
       const assertElements = await $$('Enable Local Overrides', undefined, 'aria');
       assert.strictEqual(assertElements.length, 1);
     });
+  });
+
+  it('has correct context menu for overrides files', async () => {
+    await goToResource('network/fetch-json.html');
+    await openNetworkTab();
+    await selectRequestByName('coffees.json', {button: 'right'});
+    await click('aria/Override content');
+
+    // File permission pop up
+    const infoBar = await waitForAria('Select a folder to store override files in.');
+    await click('.infobar-main-row .infobar-button', {root: infoBar});
+
+    // Open the file in the Sources panel
+    const fileTab = await waitFor('[aria-label="coffees.json, file"]');
+    await fileTab.click({button: 'right'});
+
+    const assertShowAllElements = await $$('Show all overrides', undefined, 'aria');
+    const assertAddFolderElements = await $$('Add folder to workspace', undefined, 'aria');
+    const assertOverrideContentElements = await $$('Override content', undefined, 'aria');
+    const assertOpenInElements = await $$('Open in containing folder', undefined, 'aria');
+
+    assert.strictEqual(assertShowAllElements.length, 0);
+    assert.strictEqual(assertAddFolderElements.length, 0);
+    assert.strictEqual(assertOverrideContentElements.length, 0);
+    assert.strictEqual(assertOpenInElements.length, 1);
+  });
+
+  it('has correct context menu for main overrides folder', async () => {
+    await goToResource('network/fetch-json.html');
+    await openNetworkTab();
+    await selectRequestByName('coffees.json', {button: 'right'});
+    await click('aria/Override content');
+
+    // File permission pop up
+    const infoBar = await waitForAria('Select a folder to store override files in.');
+    await click('.infobar-main-row .infobar-button', {root: infoBar});
+
+    // Open the main folder in the Sources panel
+    await waitFor('[aria-label="coffees.json, file"]');
+    const folderTab = await waitFor('.navigator-folder-tree-item');
+    await folderTab.click({button: 'right'});
+
+    const assertAddFolderElements = await $$('Add folder to workspace', undefined, 'aria');
+    const assertRemoveFolderElements = await $$('Remove folder from workspace', undefined, 'aria');
+    const assertDeleteAllElements = await $$('Delete all overrides', undefined, 'aria');
+
+    assert.strictEqual(assertAddFolderElements.length, 0);
+    assert.strictEqual(assertRemoveFolderElements.length, 0);
+    assert.strictEqual(assertDeleteAllElements.length, 1);
+  });
+
+  it('has correct context menu for sub overrides folder', async () => {
+    await goToResource('network/fetch-json.html');
+    await openNetworkTab();
+    await selectRequestByName('coffees.json', {button: 'right'});
+    await click('aria/Override content');
+
+    // File permission pop up
+    const infoBar = await waitForAria('Select a folder to store override files in.');
+    await click('.infobar-main-row .infobar-button', {root: infoBar});
+
+    // Open the sub folder in the Sources panel
+    await waitFor('[aria-label="coffees.json, file"]');
+    const subfolderTab = await waitFor('[role="group"] > .navigator-folder-tree-item');
+    await subfolderTab.click({button: 'right'});
+
+    const assertAddFolderElements = await $$('Add folder to workspace', undefined, 'aria');
+    const assertRemoveFolderElements = await $$('Remove folder from workspace', undefined, 'aria');
+    const assertDeleteAllElements = await $$('Delete all overrides', undefined, 'aria');
+
+    assert.strictEqual(assertAddFolderElements.length, 0);
+    assert.strictEqual(assertRemoveFolderElements.length, 0);
+    assert.strictEqual(assertDeleteAllElements.length, 1);
+  });
+});
+
+describe('Overrides panel', () => {
+  it('appends correct overrides context menu for Sources > Page file', async () => {
+    await goToResource('network/stylesheet-resources.html');
+    await openNetworkTab();
+    await selectRequestByName('stylesheet-resources.css', {button: 'right'});
+    await click('aria/Open in Sources panel');
+
+    // Open the file in the Sources panel
+    const file = await waitFor('[aria-label="stylesheet-resources.css, file"]');
+    await file.click({button: 'right'});
+
+    const assertShowAllElements = await $$('Show all overrides', undefined, 'aria');
+    const assertOverridesContentElements = await $$('Override content', undefined, 'aria');
+
+    assert.strictEqual(assertShowAllElements.length, 0);
+    assert.strictEqual(assertOverridesContentElements.length, 1);
   });
 });

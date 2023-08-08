@@ -86,6 +86,23 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
     // Retrieve uiSourceCode by URL to pick network resources everywhere.
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(contentProvider.contentURL());
     const networkPersistenceManager = NetworkPersistenceManager.instance();
+
+    const binding = uiSourceCode && PersistenceImpl.instance().binding(uiSourceCode);
+    const fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
+
+    if (fileURL.startsWith('file://')) {
+      const path = Common.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host.Platform.isWin());
+      contextMenu.revealSection().appendItem(
+          i18nString(UIStrings.openInContainingFolder),
+          () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path));
+    }
+
+    if (contentProvider instanceof Workspace.UISourceCode.UISourceCode &&
+        contentProvider.project().type() === Workspace.Workspace.projectTypes.FileSystem) {
+      // Do not append in Sources > Filesystem & Overrides tab
+      return;
+    }
+
     if (uiSourceCode && networkPersistenceManager.isUISourceCodeOverridable(uiSourceCode)) {
       contextMenu.overrideSection().appendItem(i18nString(UIStrings.overrideContent), async () => {
         const isSuccess = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
@@ -118,22 +135,11 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
       contextMenu.overrideSection().appendItem(i18nString(UIStrings.overrideContent), () => {}, true);
     }
 
-    contextMenu.overrideSection().appendItem(i18nString(UIStrings.showOverrides), async () => {
-      await UI.ViewManager.ViewManager.instance().showView('navigator-overrides');
-      if (contentProvider instanceof SDK.NetworkRequest.NetworkRequest) {
+    if (contentProvider instanceof SDK.NetworkRequest.NetworkRequest) {
+      contextMenu.overrideSection().appendItem(i18nString(UIStrings.showOverrides), async () => {
+        await UI.ViewManager.ViewManager.instance().showView('navigator-overrides');
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.ShowAllOverridesFromNetworkContextMenu);
-      } else {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.ShowAllOverridesFromSourcesContextMenu);
-      }
-    });
-
-    const binding = uiSourceCode && PersistenceImpl.instance().binding(uiSourceCode);
-    const fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
-    if (fileURL.startsWith('file://')) {
-      const path = Common.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host.Platform.isWin());
-      contextMenu.revealSection().appendItem(
-          i18nString(UIStrings.openInContainingFolder),
-          () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path));
+      });
     }
   }
 }

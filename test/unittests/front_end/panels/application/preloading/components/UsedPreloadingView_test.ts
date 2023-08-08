@@ -81,7 +81,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
     assert.strictEqual(headers.length, 1);
-    assert.strictEqual(sections.length, 1);
+    assert.strictEqual(sections.length, 2);
 
     assert.include(headers[0]?.textContent, 'Preloading status');
     assert.include(sections[0]?.textContent, 'This page was successfully prefetched.');
@@ -128,7 +128,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
     assert.strictEqual(headers.length, 1);
-    assert.strictEqual(sections.length, 1);
+    assert.strictEqual(sections.length, 2);
 
     assert.include(headers[0]?.textContent, 'Preloading status');
     assert.include(sections[0]?.textContent, 'This page was successfully prerendered.');
@@ -175,7 +175,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
     assert.strictEqual(headers.length, 1);
-    assert.strictEqual(sections.length, 2);
+    assert.strictEqual(sections.length, 3);
 
     assert.include(headers[0]?.textContent, 'Preloading status');
     assert.include(
@@ -233,7 +233,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
     assert.strictEqual(headers.length, 1);
-    assert.strictEqual(sections.length, 2);
+    assert.strictEqual(sections.length, 3);
 
     assert.include(headers[0]?.textContent, 'Preloading status');
     assert.include(
@@ -291,7 +291,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
     assert.strictEqual(headers.length, 1);
-    assert.strictEqual(sections.length, 2);
+    assert.strictEqual(sections.length, 3);
 
     assert.include(headers[0]?.textContent, 'Preloading status');
     assert.include(
@@ -322,7 +322,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
     assert.strictEqual(headers.length, 1);
-    assert.strictEqual(sections.length, 1);
+    assert.strictEqual(sections.length, 2);
 
     assert.include(headers[0]?.textContent, 'Preloading status');
     assert.include(sections[0]?.textContent, 'The initiating page did not attempt to preload this page\'s URL.');
@@ -369,7 +369,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
     assert.strictEqual(headers.length, 3);
-    assert.strictEqual(sections.length, 3);
+    assert.strictEqual(sections.length, 4);
 
     assert.include(headers[0]?.textContent, 'Preloading status');
     assert.include(sections[0]?.textContent, 'The initiating page did not attempt to preload this page\'s URL.');

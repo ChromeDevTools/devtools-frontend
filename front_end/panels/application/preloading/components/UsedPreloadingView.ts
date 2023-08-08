@@ -65,6 +65,10 @@ const UIStrings = {
    *@description Header for mismatched preloads.
    */
   preloadedURLs: 'URLs being preloaded by the initiating page',
+  /**
+   *@description Link to learn more about Preloading
+   */
+  learnMore: 'Learn more',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/UsedPreloadingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -213,6 +217,10 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
         ${maybeFailureReason}
 
         ${this.#maybeMismatchedSections(kind)}
+
+        <${ReportView.ReportView.ReportSection.litTagName}>
+          ${UI.XLink.XLink.create('https://developer.chrome.com/blog/prerender-pages/', i18nString(UIStrings.learnMore), 'link')}
+        </${ReportView.ReportView.ReportSection.litTagName}>
       </${ReportView.ReportView.Report.litTagName}>
     `;
     // clang-format on

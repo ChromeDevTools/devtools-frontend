@@ -17,3 +17,11 @@ devtools-report-section-header {
 devtools-report-section-header:nth-of-type(1) {
   padding-top: 1em;
 }
+
+.link {
+  color: var(--color-link);
+  text-decoration: underline;
+  cursor: pointer;
+  outline-offset: 2px;
+  padding: 0;
+}

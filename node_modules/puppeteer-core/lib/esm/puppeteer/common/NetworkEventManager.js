@@ -13,85 +13,77 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _NetworkEventManager_requestWillBeSentMap, _NetworkEventManager_requestPausedMap, _NetworkEventManager_httpRequestsMap, _NetworkEventManager_responseReceivedExtraInfoMap, _NetworkEventManager_queuedRedirectInfoMap, _NetworkEventManager_queuedEventGroupMap;
 /**
  * Helper class to track network events by request ID
  *
  * @internal
  */
 export class NetworkEventManager {
-    constructor() {
-        /**
-         * There are four possible orders of events:
-         * A. `_onRequestWillBeSent`
-         * B. `_onRequestWillBeSent`, `_onRequestPaused`
-         * C. `_onRequestPaused`, `_onRequestWillBeSent`
-         * D. `_onRequestPaused`, `_onRequestWillBeSent`, `_onRequestPaused`,
-         * `_onRequestWillBeSent`, `_onRequestPaused`, `_onRequestPaused`
-         * (see crbug.com/1196004)
-         *
-         * For `_onRequest` we need the event from `_onRequestWillBeSent` and
-         * optionally the `interceptionId` from `_onRequestPaused`.
-         *
-         * If request interception is disabled, call `_onRequest` once per call to
-         * `_onRequestWillBeSent`.
-         * If request interception is enabled, call `_onRequest` once per call to
-         * `_onRequestPaused` (once per `interceptionId`).
-         *
-         * Events are stored to allow for subsequent events to call `_onRequest`.
-         *
-         * Note that (chains of) redirect requests have the same `requestId` (!) as
-         * the original request. We have to anticipate series of events like these:
-         * A. `_onRequestWillBeSent`,
-         * `_onRequestWillBeSent`, ...
-         * B. `_onRequestWillBeSent`, `_onRequestPaused`,
-         * `_onRequestWillBeSent`, `_onRequestPaused`, ...
-         * C. `_onRequestWillBeSent`, `_onRequestPaused`,
-         * `_onRequestPaused`, `_onRequestWillBeSent`, ...
-         * D. `_onRequestPaused`, `_onRequestWillBeSent`,
-         * `_onRequestPaused`, `_onRequestWillBeSent`, `_onRequestPaused`,
-         * `_onRequestWillBeSent`, `_onRequestPaused`, `_onRequestPaused`, ...
-         * (see crbug.com/1196004)
-         */
-        _NetworkEventManager_requestWillBeSentMap.set(this, new Map());
-        _NetworkEventManager_requestPausedMap.set(this, new Map());
-        _NetworkEventManager_httpRequestsMap.set(this, new Map());
-        /*
-         * The below maps are used to reconcile Network.responseReceivedExtraInfo
-         * events with their corresponding request. Each response and redirect
-         * response gets an ExtraInfo event, and we don't know which will come first.
-         * This means that we have to store a Response or an ExtraInfo for each
-         * response, and emit the event when we get both of them. In addition, to
-         * handle redirects, we have to make them Arrays to represent the chain of
-         * events.
-         */
-        _NetworkEventManager_responseReceivedExtraInfoMap.set(this, new Map());
-        _NetworkEventManager_queuedRedirectInfoMap.set(this, new Map());
-        _NetworkEventManager_queuedEventGroupMap.set(this, new Map());
-    }
+    /**
+     * There are four possible orders of events:
+     * A. `_onRequestWillBeSent`
+     * B. `_onRequestWillBeSent`, `_onRequestPaused`
+     * C. `_onRequestPaused`, `_onRequestWillBeSent`
+     * D. `_onRequestPaused`, `_onRequestWillBeSent`, `_onRequestPaused`,
+     * `_onRequestWillBeSent`, `_onRequestPaused`, `_onRequestPaused`
+     * (see crbug.com/1196004)
+     *
+     * For `_onRequest` we need the event from `_onRequestWillBeSent` and
+     * optionally the `interceptionId` from `_onRequestPaused`.
+     *
+     * If request interception is disabled, call `_onRequest` once per call to
+     * `_onRequestWillBeSent`.
+     * If request interception is enabled, call `_onRequest` once per call to
+     * `_onRequestPaused` (once per `interceptionId`).
+     *
+     * Events are stored to allow for subsequent events to call `_onRequest`.
+     *
+     * Note that (chains of) redirect requests have the same `requestId` (!) as
+     * the original request. We have to anticipate series of events like these:
+     * A. `_onRequestWillBeSent`,
+     * `_onRequestWillBeSent`, ...
+     * B. `_onRequestWillBeSent`, `_onRequestPaused`,
+     * `_onRequestWillBeSent`, `_onRequestPaused`, ...
+     * C. `_onRequestWillBeSent`, `_onRequestPaused`,
+     * `_onRequestPaused`, `_onRequestWillBeSent`, ...
+     * D. `_onRequestPaused`, `_onRequestWillBeSent`,
+     * `_onRequestPaused`, `_onRequestWillBeSent`, `_onRequestPaused`,
+     * `_onRequestWillBeSent`, `_onRequestPaused`, `_onRequestPaused`, ...
+     * (see crbug.com/1196004)
+     */
+    #requestWillBeSentMap = new Map();
+    #requestPausedMap = new Map();
+    #httpRequestsMap = new Map();
+    /*
+     * The below maps are used to reconcile Network.responseReceivedExtraInfo
+     * events with their corresponding request. Each response and redirect
+     * response gets an ExtraInfo event, and we don't know which will come first.
+     * This means that we have to store a Response or an ExtraInfo for each
+     * response, and emit the event when we get both of them. In addition, to
+     * handle redirects, we have to make them Arrays to represent the chain of
+     * events.
+     */
+    #responseReceivedExtraInfoMap = new Map();
+    #queuedRedirectInfoMap = new Map();
+    #queuedEventGroupMap = new Map();
     forget(networkRequestId) {
-        __classPrivateFieldGet(this, _NetworkEventManager_requestWillBeSentMap, "f").delete(networkRequestId);
-        __classPrivateFieldGet(this, _NetworkEventManager_requestPausedMap, "f").delete(networkRequestId);
-        __classPrivateFieldGet(this, _NetworkEventManager_queuedEventGroupMap, "f").delete(networkRequestId);
-        __classPrivateFieldGet(this, _NetworkEventManager_queuedRedirectInfoMap, "f").delete(networkRequestId);
-        __classPrivateFieldGet(this, _NetworkEventManager_responseReceivedExtraInfoMap, "f").delete(networkRequestId);
+        this.#requestWillBeSentMap.delete(networkRequestId);
+        this.#requestPausedMap.delete(networkRequestId);
+        this.#queuedEventGroupMap.delete(networkRequestId);
+        this.#queuedRedirectInfoMap.delete(networkRequestId);
+        this.#responseReceivedExtraInfoMap.delete(networkRequestId);
     }
     responseExtraInfo(networkRequestId) {
-        if (!__classPrivateFieldGet(this, _NetworkEventManager_responseReceivedExtraInfoMap, "f").has(networkRequestId)) {
-            __classPrivateFieldGet(this, _NetworkEventManager_responseReceivedExtraInfoMap, "f").set(networkRequestId, []);
+        if (!this.#responseReceivedExtraInfoMap.has(networkRequestId)) {
+            this.#responseReceivedExtraInfoMap.set(networkRequestId, []);
         }
-        return __classPrivateFieldGet(this, _NetworkEventManager_responseReceivedExtraInfoMap, "f").get(networkRequestId);
+        return this.#responseReceivedExtraInfoMap.get(networkRequestId);
     }
     queuedRedirectInfo(fetchRequestId) {
-        if (!__classPrivateFieldGet(this, _NetworkEventManager_queuedRedirectInfoMap, "f").has(fetchRequestId)) {
-            __classPrivateFieldGet(this, _NetworkEventManager_queuedRedirectInfoMap, "f").set(fetchRequestId, []);
+        if (!this.#queuedRedirectInfoMap.has(fetchRequestId)) {
+            this.#queuedRedirectInfoMap.set(fetchRequestId, []);
         }
-        return __classPrivateFieldGet(this, _NetworkEventManager_queuedRedirectInfoMap, "f").get(fetchRequestId);
+        return this.#queuedRedirectInfoMap.get(fetchRequestId);
     }
     queueRedirectInfo(fetchRequestId, redirectInfo) {
         this.queuedRedirectInfo(fetchRequestId).push(redirectInfo);
@@ -101,7 +93,7 @@ export class NetworkEventManager {
     }
     inFlightRequestsCount() {
         let inFlightRequestCounter = 0;
-        for (const request of __classPrivateFieldGet(this, _NetworkEventManager_httpRequestsMap, "f").values()) {
+        for (const request of this.#httpRequestsMap.values()) {
             if (!request.response()) {
                 inFlightRequestCounter++;
             }
@@ -109,41 +101,40 @@ export class NetworkEventManager {
         return inFlightRequestCounter;
     }
     storeRequestWillBeSent(networkRequestId, event) {
-        __classPrivateFieldGet(this, _NetworkEventManager_requestWillBeSentMap, "f").set(networkRequestId, event);
+        this.#requestWillBeSentMap.set(networkRequestId, event);
     }
     getRequestWillBeSent(networkRequestId) {
-        return __classPrivateFieldGet(this, _NetworkEventManager_requestWillBeSentMap, "f").get(networkRequestId);
+        return this.#requestWillBeSentMap.get(networkRequestId);
     }
     forgetRequestWillBeSent(networkRequestId) {
-        __classPrivateFieldGet(this, _NetworkEventManager_requestWillBeSentMap, "f").delete(networkRequestId);
+        this.#requestWillBeSentMap.delete(networkRequestId);
     }
     getRequestPaused(networkRequestId) {
-        return __classPrivateFieldGet(this, _NetworkEventManager_requestPausedMap, "f").get(networkRequestId);
+        return this.#requestPausedMap.get(networkRequestId);
     }
     forgetRequestPaused(networkRequestId) {
-        __classPrivateFieldGet(this, _NetworkEventManager_requestPausedMap, "f").delete(networkRequestId);
+        this.#requestPausedMap.delete(networkRequestId);
     }
     storeRequestPaused(networkRequestId, event) {
-        __classPrivateFieldGet(this, _NetworkEventManager_requestPausedMap, "f").set(networkRequestId, event);
+        this.#requestPausedMap.set(networkRequestId, event);
     }
     getRequest(networkRequestId) {
-        return __classPrivateFieldGet(this, _NetworkEventManager_httpRequestsMap, "f").get(networkRequestId);
+        return this.#httpRequestsMap.get(networkRequestId);
     }
     storeRequest(networkRequestId, request) {
-        __classPrivateFieldGet(this, _NetworkEventManager_httpRequestsMap, "f").set(networkRequestId, request);
+        this.#httpRequestsMap.set(networkRequestId, request);
     }
     forgetRequest(networkRequestId) {
-        __classPrivateFieldGet(this, _NetworkEventManager_httpRequestsMap, "f").delete(networkRequestId);
+        this.#httpRequestsMap.delete(networkRequestId);
     }
     getQueuedEventGroup(networkRequestId) {
-        return __classPrivateFieldGet(this, _NetworkEventManager_queuedEventGroupMap, "f").get(networkRequestId);
+        return this.#queuedEventGroupMap.get(networkRequestId);
     }
     queueEventGroup(networkRequestId, event) {
-        __classPrivateFieldGet(this, _NetworkEventManager_queuedEventGroupMap, "f").set(networkRequestId, event);
+        this.#queuedEventGroupMap.set(networkRequestId, event);
     }
     forgetQueuedEventGroup(networkRequestId) {
-        __classPrivateFieldGet(this, _NetworkEventManager_queuedEventGroupMap, "f").delete(networkRequestId);
+        this.#queuedEventGroupMap.delete(networkRequestId);
     }
 }
-_NetworkEventManager_requestWillBeSentMap = new WeakMap(), _NetworkEventManager_requestPausedMap = new WeakMap(), _NetworkEventManager_httpRequestsMap = new WeakMap(), _NetworkEventManager_responseReceivedExtraInfoMap = new WeakMap(), _NetworkEventManager_queuedRedirectInfoMap = new WeakMap(), _NetworkEventManager_queuedEventGroupMap = new WeakMap();
 //# sourceMappingURL=NetworkEventManager.js.map

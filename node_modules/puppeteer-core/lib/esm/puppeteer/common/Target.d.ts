@@ -17,6 +17,7 @@ import { Protocol } from 'devtools-protocol';
 import type { Browser } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
 import { Page } from '../api/Page.js';
+import { Target, TargetType } from '../api/Target.js';
 import { Deferred } from '../util/Deferred.js';
 import { CDPSession } from './Connection.js';
 import { Viewport } from './PuppeteerViewport.js';
@@ -31,14 +32,9 @@ export declare enum InitializationStatus {
     ABORTED = "aborted"
 }
 /**
- * Target represents a
- * {@link https://chromedevtools.github.io/devtools-protocol/tot/Target/ | CDP target}.
- * In CDP a target is something that can be debugged such a frame, a page or a
- * worker.
- *
- * @public
+ * @internal
  */
-export declare class Target {
+export declare class CDPTarget extends Target {
     #private;
     /**
      * @internal
@@ -53,9 +49,11 @@ export declare class Target {
      */
     _targetId: string;
     /**
+     * To initialize the target for use, call initialize.
+     *
      * @internal
      */
-    constructor(targetInfo: Protocol.Target.TargetInfo, session: CDPSession | undefined, browserContext: BrowserContext, targetManager: TargetManager, sessionFactory: (isAutoAttachEmulated: boolean) => Promise<CDPSession>);
+    constructor(targetInfo: Protocol.Target.TargetInfo, session: CDPSession | undefined, browserContext: BrowserContext | undefined, targetManager: TargetManager | undefined, sessionFactory: ((isAutoAttachEmulated: boolean) => Promise<CDPSession>) | undefined);
     /**
      * @internal
      */
@@ -64,10 +62,9 @@ export declare class Target {
      * @internal
      */
     protected _sessionFactory(): (isAutoAttachEmulated: boolean) => Promise<CDPSession>;
-    /**
-     * Creates a Chrome Devtools Protocol session attached to the target.
-     */
     createCDPSession(): Promise<CDPSession>;
+    url(): string;
+    type(): TargetType;
     /**
      * @internal
      */
@@ -76,30 +73,8 @@ export declare class Target {
      * @internal
      */
     _getTargetInfo(): Protocol.Target.TargetInfo;
-    /**
-     * If the target is not of type `"service_worker"` or `"shared_worker"`, returns `null`.
-     */
-    worker(): Promise<WebWorker | null>;
-    url(): string;
-    /**
-     * Identifies what kind of target this is.
-     *
-     * @remarks
-     *
-     * See {@link https://developer.chrome.com/extensions/background_pages | docs} for more info about background pages.
-     */
-    type(): 'page' | 'background_page' | 'service_worker' | 'shared_worker' | 'other' | 'browser' | 'webview';
-    /**
-     * Get the browser the target belongs to.
-     */
     browser(): Browser;
-    /**
-     * Get the browser context the target belongs to.
-     */
     browserContext(): BrowserContext;
-    /**
-     * Get the target that opened this target. Top-level targets return `null`.
-     */
     opener(): Target | undefined;
     /**
      * @internal
@@ -108,41 +83,36 @@ export declare class Target {
     /**
      * @internal
      */
-    protected _initialize(): void;
+    _initialize(): void;
     /**
      * @internal
      */
     protected _checkIfInitialized(): void;
-    /**
-     * If the target is not of type `"page"`, `"webview"` or `"background_page"`,
-     * returns `null`.
-     */
-    page(): Promise<Page | null>;
 }
 /**
  * @internal
  */
-export declare class PageTarget extends Target {
+export declare class PageTarget extends CDPTarget {
     #private;
     protected pagePromise?: Promise<Page>;
     /**
      * @internal
      */
     constructor(targetInfo: Protocol.Target.TargetInfo, session: CDPSession | undefined, browserContext: BrowserContext, targetManager: TargetManager, sessionFactory: (isAutoAttachEmulated: boolean) => Promise<CDPSession>, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null, screenshotTaskQueue: TaskQueue);
-    protected _initialize(): void;
+    _initialize(): void;
     page(): Promise<Page | null>;
     _checkIfInitialized(): void;
 }
 /**
  * @internal
  */
-export declare class WorkerTarget extends Target {
+export declare class WorkerTarget extends CDPTarget {
     #private;
     worker(): Promise<WebWorker | null>;
 }
 /**
  * @internal
  */
-export declare class OtherTarget extends Target {
+export declare class OtherTarget extends CDPTarget {
 }
 //# sourceMappingURL=Target.d.ts.map

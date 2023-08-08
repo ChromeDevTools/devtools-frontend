@@ -19,16 +19,11 @@ import { CDPSession } from './Connection.js';
 import type { CDPElementHandle } from './ElementHandle.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { EvaluateFuncWith, HandleFor, HandleOr } from './types.js';
-declare const __JSHandleSymbol: unique symbol;
 /**
  * @internal
  */
 export declare class CDPJSHandle<T = unknown> extends JSHandle<T> {
     #private;
-    /**
-     * Used for nominally typing {@link JSHandle}.
-     */
-    [__JSHandleSymbol]?: T;
     get disposed(): boolean;
     constructor(context: ExecutionContext, remoteObject: Protocol.Runtime.RemoteObject);
     executionContext(): ExecutionContext;
@@ -55,5 +50,4 @@ export declare class CDPJSHandle<T = unknown> extends JSHandle<T> {
     get id(): string | undefined;
     remoteObject(): Protocol.Runtime.RemoteObject;
 }
-export {};
 //# sourceMappingURL=JSHandle.d.ts.map

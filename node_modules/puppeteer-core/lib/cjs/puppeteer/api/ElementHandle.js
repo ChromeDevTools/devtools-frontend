@@ -14,12 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _ElementHandle_instances, _ElementHandle_checkVisibility, _ElementHandle_asSVGElementHandle, _ElementHandle_getOwnerSVGElement;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ElementHandle = void 0;
 const GetQueryHandler_js_1 = require("../common/GetQueryHandler.js");
@@ -65,9 +59,12 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
     /**
      * @internal
      */
+    handle;
+    /**
+     * @internal
+     */
     constructor(handle) {
         super();
-        _ElementHandle_instances.add(this);
         this.handle = handle;
     }
     /**
@@ -304,19 +301,32 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
         const { updatedSelector, QueryHandler } = (0, GetQueryHandler_js_1.getQueryHandlerAndSelector)(selector);
         return (await QueryHandler.waitFor(this, updatedSelector, options));
     }
+    async #checkVisibility(visibility) {
+        const element = await this.frame.isolatedRealm().adoptHandle(this);
+        try {
+            return await this.frame.isolatedRealm().evaluate(async (PuppeteerUtil, element, visibility) => {
+                return Boolean(PuppeteerUtil.checkVisibility(element, visibility));
+            }, LazyArg_js_1.LazyArg.create(context => {
+                return context.puppeteerUtil;
+            }), element, visibility);
+        }
+        finally {
+            await element.dispose();
+        }
+    }
     /**
      * Checks if an element is visible using the same mechanism as
      * {@link ElementHandle.waitForSelector}.
      */
     async isVisible() {
-        return __classPrivateFieldGet(this, _ElementHandle_instances, "m", _ElementHandle_checkVisibility).call(this, true);
+        return this.#checkVisibility(true);
     }
     /**
      * Checks if an element is hidden using the same mechanism as
      * {@link ElementHandle.waitForSelector}.
      */
     async isHidden() {
-        return __classPrivateFieldGet(this, _ElementHandle_instances, "m", _ElementHandle_checkVisibility).call(this, false);
+        return this.#checkVisibility(false);
     }
     /**
      * @deprecated Use {@link ElementHandle.waitForSelector} with the `xpath`
@@ -602,9 +612,9 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
     async isIntersectingViewport(options) {
         await this.assertConnectedElement();
         const { threshold = 0 } = options ?? {};
-        const svgHandle = await __classPrivateFieldGet(this, _ElementHandle_instances, "m", _ElementHandle_asSVGElementHandle).call(this, this);
+        const svgHandle = await this.#asSVGElementHandle(this);
         const intersectionTarget = svgHandle
-            ? await __classPrivateFieldGet(this, _ElementHandle_instances, "m", _ElementHandle_getOwnerSVGElement).call(this, svgHandle)
+            ? await this.#getOwnerSVGElement(svgHandle)
             : this;
         try {
             return await intersectionTarget.evaluate(async (element, threshold) => {
@@ -639,46 +649,37 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
         });
     }
     /**
+     * Returns true if an element is an SVGElement (included svg, path, rect
+     * etc.).
+     */
+    async #asSVGElementHandle(handle) {
+        if (await handle.evaluate(element => {
+            return element instanceof SVGElement;
+        })) {
+            return handle;
+        }
+        else {
+            return null;
+        }
+    }
+    async #getOwnerSVGElement(handle) {
+        // SVGSVGElement.ownerSVGElement === null.
+        return await handle.evaluateHandle(element => {
+            if (element instanceof SVGSVGElement) {
+                return element;
+            }
+            return element.ownerSVGElement;
+        });
+    }
+    /**
      * @internal
      */
     assertElementHasWorld() {
         (0, assert_js_1.assert)(this.executionContext()._world);
     }
+    autofill() {
+        throw new Error('Not implemented');
+    }
 }
 exports.ElementHandle = ElementHandle;
-_ElementHandle_instances = new WeakSet(), _ElementHandle_checkVisibility = async function _ElementHandle_checkVisibility(visibility) {
-    const element = await this.frame.isolatedRealm().adoptHandle(this);
-    try {
-        return await this.frame.isolatedRealm().evaluate(async (PuppeteerUtil, element, visibility) => {
-            return Boolean(PuppeteerUtil.checkVisibility(element, visibility));
-        }, LazyArg_js_1.LazyArg.create(context => {
-            return context.puppeteerUtil;
-        }), element, visibility);
-    }
-    finally {
-        await element.dispose();
-    }
-}, _ElementHandle_asSVGElementHandle = 
-/**
- * Returns true if an element is an SVGElement (included svg, path, rect
- * etc.).
- */
-async function _ElementHandle_asSVGElementHandle(handle) {
-    if (await handle.evaluate(element => {
-        return element instanceof SVGElement;
-    })) {
-        return handle;
-    }
-    else {
-        return null;
-    }
-}, _ElementHandle_getOwnerSVGElement = async function _ElementHandle_getOwnerSVGElement(handle) {
-    // SVGSVGElement.ownerSVGElement === null.
-    return await handle.evaluateHandle(element => {
-        if (element instanceof SVGSVGElement) {
-            return element;
-        }
-        return element.ownerSVGElement;
-    });
-};
 //# sourceMappingURL=ElementHandle.js.map

@@ -14,18 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _FirefoxTargetManager_instances, _FirefoxTargetManager_connection, _FirefoxTargetManager_discoveredTargetsByTargetId, _FirefoxTargetManager_availableTargetsByTargetId, _FirefoxTargetManager_availableTargetsBySessionId, _FirefoxTargetManager_ignoredTargets, _FirefoxTargetManager_targetFilterCallback, _FirefoxTargetManager_targetFactory, _FirefoxTargetManager_targetInterceptors, _FirefoxTargetManager_attachedToTargetListenersBySession, _FirefoxTargetManager_initializeDeferred, _FirefoxTargetManager_targetsIdsForInit, _FirefoxTargetManager_onSessionDetached, _FirefoxTargetManager_onTargetCreated, _FirefoxTargetManager_onTargetDestroyed, _FirefoxTargetManager_onAttachedToTarget, _FirefoxTargetManager_finishInitializationIfReady;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FirefoxTargetManager = void 0;
 const assert_js_1 = require("../util/assert.js");
@@ -47,152 +35,152 @@ const EventEmitter_js_1 = require("./EventEmitter.js");
  *   @internal
  */
 class FirefoxTargetManager extends EventEmitter_js_1.EventEmitter {
+    #connection;
+    /**
+     * Keeps track of the following events: 'Target.targetCreated',
+     * 'Target.targetDestroyed'.
+     *
+     * A target becomes discovered when 'Target.targetCreated' is received.
+     * A target is removed from this map once 'Target.targetDestroyed' is
+     * received.
+     *
+     * `targetFilterCallback` has no effect on this map.
+     */
+    #discoveredTargetsByTargetId = new Map();
+    /**
+     * Keeps track of targets that were created via 'Target.targetCreated'
+     * and which one are not filtered out by `targetFilterCallback`.
+     *
+     * The target is removed from here once it's been destroyed.
+     */
+    #availableTargetsByTargetId = new Map();
+    /**
+     * Tracks which sessions attach to which target.
+     */
+    #availableTargetsBySessionId = new Map();
+    /**
+     * If a target was filtered out by `targetFilterCallback`, we still receive
+     * events about it from CDP, but we don't forward them to the rest of Puppeteer.
+     */
+    #ignoredTargets = new Set();
+    #targetFilterCallback;
+    #targetFactory;
+    #targetInterceptors = new WeakMap();
+    #attachedToTargetListenersBySession = new WeakMap();
+    #initializeDeferred = Deferred_js_1.Deferred.create();
+    #targetsIdsForInit = new Set();
     constructor(connection, targetFactory, targetFilterCallback) {
         super();
-        _FirefoxTargetManager_instances.add(this);
-        _FirefoxTargetManager_connection.set(this, void 0);
-        /**
-         * Keeps track of the following events: 'Target.targetCreated',
-         * 'Target.targetDestroyed'.
-         *
-         * A target becomes discovered when 'Target.targetCreated' is received.
-         * A target is removed from this map once 'Target.targetDestroyed' is
-         * received.
-         *
-         * `targetFilterCallback` has no effect on this map.
-         */
-        _FirefoxTargetManager_discoveredTargetsByTargetId.set(this, new Map());
-        /**
-         * Keeps track of targets that were created via 'Target.targetCreated'
-         * and which one are not filtered out by `targetFilterCallback`.
-         *
-         * The target is removed from here once it's been destroyed.
-         */
-        _FirefoxTargetManager_availableTargetsByTargetId.set(this, new Map());
-        /**
-         * Tracks which sessions attach to which target.
-         */
-        _FirefoxTargetManager_availableTargetsBySessionId.set(this, new Map());
-        /**
-         * If a target was filtered out by `targetFilterCallback`, we still receive
-         * events about it from CDP, but we don't forward them to the rest of Puppeteer.
-         */
-        _FirefoxTargetManager_ignoredTargets.set(this, new Set());
-        _FirefoxTargetManager_targetFilterCallback.set(this, void 0);
-        _FirefoxTargetManager_targetFactory.set(this, void 0);
-        _FirefoxTargetManager_targetInterceptors.set(this, new WeakMap());
-        _FirefoxTargetManager_attachedToTargetListenersBySession.set(this, new WeakMap());
-        _FirefoxTargetManager_initializeDeferred.set(this, Deferred_js_1.Deferred.create());
-        _FirefoxTargetManager_targetsIdsForInit.set(this, new Set());
-        _FirefoxTargetManager_onSessionDetached.set(this, (session) => {
-            this.removeSessionListeners(session);
-            __classPrivateFieldGet(this, _FirefoxTargetManager_targetInterceptors, "f").delete(session);
-            __classPrivateFieldGet(this, _FirefoxTargetManager_availableTargetsBySessionId, "f").delete(session.id());
-        });
-        _FirefoxTargetManager_onTargetCreated.set(this, async (event) => {
-            if (__classPrivateFieldGet(this, _FirefoxTargetManager_discoveredTargetsByTargetId, "f").has(event.targetInfo.targetId)) {
-                return;
-            }
-            __classPrivateFieldGet(this, _FirefoxTargetManager_discoveredTargetsByTargetId, "f").set(event.targetInfo.targetId, event.targetInfo);
-            if (event.targetInfo.type === 'browser' && event.targetInfo.attached) {
-                const target = __classPrivateFieldGet(this, _FirefoxTargetManager_targetFactory, "f").call(this, event.targetInfo, undefined);
-                __classPrivateFieldGet(this, _FirefoxTargetManager_availableTargetsByTargetId, "f").set(event.targetInfo.targetId, target);
-                __classPrivateFieldGet(this, _FirefoxTargetManager_instances, "m", _FirefoxTargetManager_finishInitializationIfReady).call(this, target._targetId);
-                return;
-            }
-            if (__classPrivateFieldGet(this, _FirefoxTargetManager_targetFilterCallback, "f") &&
-                !__classPrivateFieldGet(this, _FirefoxTargetManager_targetFilterCallback, "f").call(this, event.targetInfo)) {
-                __classPrivateFieldGet(this, _FirefoxTargetManager_ignoredTargets, "f").add(event.targetInfo.targetId);
-                __classPrivateFieldGet(this, _FirefoxTargetManager_instances, "m", _FirefoxTargetManager_finishInitializationIfReady).call(this, event.targetInfo.targetId);
-                return;
-            }
-            const target = __classPrivateFieldGet(this, _FirefoxTargetManager_targetFactory, "f").call(this, event.targetInfo, undefined);
-            __classPrivateFieldGet(this, _FirefoxTargetManager_availableTargetsByTargetId, "f").set(event.targetInfo.targetId, target);
-            this.emit("targetAvailable" /* TargetManagerEmittedEvents.TargetAvailable */, target);
-            __classPrivateFieldGet(this, _FirefoxTargetManager_instances, "m", _FirefoxTargetManager_finishInitializationIfReady).call(this, target._targetId);
-        });
-        _FirefoxTargetManager_onTargetDestroyed.set(this, (event) => {
-            __classPrivateFieldGet(this, _FirefoxTargetManager_discoveredTargetsByTargetId, "f").delete(event.targetId);
-            __classPrivateFieldGet(this, _FirefoxTargetManager_instances, "m", _FirefoxTargetManager_finishInitializationIfReady).call(this, event.targetId);
-            const target = __classPrivateFieldGet(this, _FirefoxTargetManager_availableTargetsByTargetId, "f").get(event.targetId);
-            if (target) {
-                this.emit("targetGone" /* TargetManagerEmittedEvents.TargetGone */, target);
-                __classPrivateFieldGet(this, _FirefoxTargetManager_availableTargetsByTargetId, "f").delete(event.targetId);
-            }
-        });
-        _FirefoxTargetManager_onAttachedToTarget.set(this, async (parentSession, event) => {
-            const targetInfo = event.targetInfo;
-            const session = __classPrivateFieldGet(this, _FirefoxTargetManager_connection, "f").session(event.sessionId);
-            if (!session) {
-                throw new Error(`Session ${event.sessionId} was not created.`);
-            }
-            const target = __classPrivateFieldGet(this, _FirefoxTargetManager_availableTargetsByTargetId, "f").get(targetInfo.targetId);
-            (0, assert_js_1.assert)(target, `Target ${targetInfo.targetId} is missing`);
-            this.setupAttachmentListeners(session);
-            __classPrivateFieldGet(this, _FirefoxTargetManager_availableTargetsBySessionId, "f").set(session.id(), __classPrivateFieldGet(this, _FirefoxTargetManager_availableTargetsByTargetId, "f").get(targetInfo.targetId));
-            for (const hook of __classPrivateFieldGet(this, _FirefoxTargetManager_targetInterceptors, "f").get(parentSession) || []) {
-                if (!(parentSession instanceof Connection_js_1.Connection)) {
-                    (0, assert_js_1.assert)(__classPrivateFieldGet(this, _FirefoxTargetManager_availableTargetsBySessionId, "f").has(parentSession.id()));
-                }
-                await hook(target, parentSession instanceof Connection_js_1.Connection
-                    ? null
-                    : __classPrivateFieldGet(this, _FirefoxTargetManager_availableTargetsBySessionId, "f").get(parentSession.id()));
-            }
-        });
-        __classPrivateFieldSet(this, _FirefoxTargetManager_connection, connection, "f");
-        __classPrivateFieldSet(this, _FirefoxTargetManager_targetFilterCallback, targetFilterCallback, "f");
-        __classPrivateFieldSet(this, _FirefoxTargetManager_targetFactory, targetFactory, "f");
-        __classPrivateFieldGet(this, _FirefoxTargetManager_connection, "f").on('Target.targetCreated', __classPrivateFieldGet(this, _FirefoxTargetManager_onTargetCreated, "f"));
-        __classPrivateFieldGet(this, _FirefoxTargetManager_connection, "f").on('Target.targetDestroyed', __classPrivateFieldGet(this, _FirefoxTargetManager_onTargetDestroyed, "f"));
-        __classPrivateFieldGet(this, _FirefoxTargetManager_connection, "f").on('sessiondetached', __classPrivateFieldGet(this, _FirefoxTargetManager_onSessionDetached, "f"));
-        this.setupAttachmentListeners(__classPrivateFieldGet(this, _FirefoxTargetManager_connection, "f"));
+        this.#connection = connection;
+        this.#targetFilterCallback = targetFilterCallback;
+        this.#targetFactory = targetFactory;
+        this.#connection.on('Target.targetCreated', this.#onTargetCreated);
+        this.#connection.on('Target.targetDestroyed', this.#onTargetDestroyed);
+        this.#connection.on('sessiondetached', this.#onSessionDetached);
+        this.setupAttachmentListeners(this.#connection);
     }
     addTargetInterceptor(client, interceptor) {
-        const interceptors = __classPrivateFieldGet(this, _FirefoxTargetManager_targetInterceptors, "f").get(client) || [];
+        const interceptors = this.#targetInterceptors.get(client) || [];
         interceptors.push(interceptor);
-        __classPrivateFieldGet(this, _FirefoxTargetManager_targetInterceptors, "f").set(client, interceptors);
+        this.#targetInterceptors.set(client, interceptors);
     }
     removeTargetInterceptor(client, interceptor) {
-        const interceptors = __classPrivateFieldGet(this, _FirefoxTargetManager_targetInterceptors, "f").get(client) || [];
-        __classPrivateFieldGet(this, _FirefoxTargetManager_targetInterceptors, "f").set(client, interceptors.filter(currentInterceptor => {
+        const interceptors = this.#targetInterceptors.get(client) || [];
+        this.#targetInterceptors.set(client, interceptors.filter(currentInterceptor => {
             return currentInterceptor !== interceptor;
         }));
     }
     setupAttachmentListeners(session) {
         const listener = (event) => {
-            return __classPrivateFieldGet(this, _FirefoxTargetManager_onAttachedToTarget, "f").call(this, session, event);
+            return this.#onAttachedToTarget(session, event);
         };
-        (0, assert_js_1.assert)(!__classPrivateFieldGet(this, _FirefoxTargetManager_attachedToTargetListenersBySession, "f").has(session));
-        __classPrivateFieldGet(this, _FirefoxTargetManager_attachedToTargetListenersBySession, "f").set(session, listener);
+        (0, assert_js_1.assert)(!this.#attachedToTargetListenersBySession.has(session));
+        this.#attachedToTargetListenersBySession.set(session, listener);
         session.on('Target.attachedToTarget', listener);
     }
+    #onSessionDetached = (session) => {
+        this.removeSessionListeners(session);
+        this.#targetInterceptors.delete(session);
+        this.#availableTargetsBySessionId.delete(session.id());
+    };
     removeSessionListeners(session) {
-        if (__classPrivateFieldGet(this, _FirefoxTargetManager_attachedToTargetListenersBySession, "f").has(session)) {
-            session.off('Target.attachedToTarget', __classPrivateFieldGet(this, _FirefoxTargetManager_attachedToTargetListenersBySession, "f").get(session));
-            __classPrivateFieldGet(this, _FirefoxTargetManager_attachedToTargetListenersBySession, "f").delete(session);
+        if (this.#attachedToTargetListenersBySession.has(session)) {
+            session.off('Target.attachedToTarget', this.#attachedToTargetListenersBySession.get(session));
+            this.#attachedToTargetListenersBySession.delete(session);
         }
     }
     getAvailableTargets() {
-        return __classPrivateFieldGet(this, _FirefoxTargetManager_availableTargetsByTargetId, "f");
+        return this.#availableTargetsByTargetId;
     }
     dispose() {
-        __classPrivateFieldGet(this, _FirefoxTargetManager_connection, "f").off('Target.targetCreated', __classPrivateFieldGet(this, _FirefoxTargetManager_onTargetCreated, "f"));
-        __classPrivateFieldGet(this, _FirefoxTargetManager_connection, "f").off('Target.targetDestroyed', __classPrivateFieldGet(this, _FirefoxTargetManager_onTargetDestroyed, "f"));
+        this.#connection.off('Target.targetCreated', this.#onTargetCreated);
+        this.#connection.off('Target.targetDestroyed', this.#onTargetDestroyed);
     }
     async initialize() {
-        await __classPrivateFieldGet(this, _FirefoxTargetManager_connection, "f").send('Target.setDiscoverTargets', {
+        await this.#connection.send('Target.setDiscoverTargets', {
             discover: true,
             filter: [{}],
         });
-        __classPrivateFieldSet(this, _FirefoxTargetManager_targetsIdsForInit, new Set(__classPrivateFieldGet(this, _FirefoxTargetManager_discoveredTargetsByTargetId, "f").keys()), "f");
-        await __classPrivateFieldGet(this, _FirefoxTargetManager_initializeDeferred, "f").valueOrThrow();
+        this.#targetsIdsForInit = new Set(this.#discoveredTargetsByTargetId.keys());
+        await this.#initializeDeferred.valueOrThrow();
+    }
+    #onTargetCreated = async (event) => {
+        if (this.#discoveredTargetsByTargetId.has(event.targetInfo.targetId)) {
+            return;
+        }
+        this.#discoveredTargetsByTargetId.set(event.targetInfo.targetId, event.targetInfo);
+        if (event.targetInfo.type === 'browser' && event.targetInfo.attached) {
+            const target = this.#targetFactory(event.targetInfo, undefined);
+            target._initialize();
+            this.#availableTargetsByTargetId.set(event.targetInfo.targetId, target);
+            this.#finishInitializationIfReady(target._targetId);
+            return;
+        }
+        const target = this.#targetFactory(event.targetInfo, undefined);
+        if (this.#targetFilterCallback && !this.#targetFilterCallback(target)) {
+            this.#ignoredTargets.add(event.targetInfo.targetId);
+            this.#finishInitializationIfReady(event.targetInfo.targetId);
+            return;
+        }
+        target._initialize();
+        this.#availableTargetsByTargetId.set(event.targetInfo.targetId, target);
+        this.emit("targetAvailable" /* TargetManagerEmittedEvents.TargetAvailable */, target);
+        this.#finishInitializationIfReady(target._targetId);
+    };
+    #onTargetDestroyed = (event) => {
+        this.#discoveredTargetsByTargetId.delete(event.targetId);
+        this.#finishInitializationIfReady(event.targetId);
+        const target = this.#availableTargetsByTargetId.get(event.targetId);
+        if (target) {
+            this.emit("targetGone" /* TargetManagerEmittedEvents.TargetGone */, target);
+            this.#availableTargetsByTargetId.delete(event.targetId);
+        }
+    };
+    #onAttachedToTarget = async (parentSession, event) => {
+        const targetInfo = event.targetInfo;
+        const session = this.#connection.session(event.sessionId);
+        if (!session) {
+            throw new Error(`Session ${event.sessionId} was not created.`);
+        }
+        const target = this.#availableTargetsByTargetId.get(targetInfo.targetId);
+        (0, assert_js_1.assert)(target, `Target ${targetInfo.targetId} is missing`);
+        this.setupAttachmentListeners(session);
+        this.#availableTargetsBySessionId.set(session.id(), this.#availableTargetsByTargetId.get(targetInfo.targetId));
+        for (const hook of this.#targetInterceptors.get(parentSession) || []) {
+            if (!(parentSession instanceof Connection_js_1.Connection)) {
+                (0, assert_js_1.assert)(this.#availableTargetsBySessionId.has(parentSession.id()));
+            }
+            await hook(target, parentSession instanceof Connection_js_1.Connection
+                ? null
+                : this.#availableTargetsBySessionId.get(parentSession.id()));
+        }
+    };
+    #finishInitializationIfReady(targetId) {
+        this.#targetsIdsForInit.delete(targetId);
+        if (this.#targetsIdsForInit.size === 0) {
+            this.#initializeDeferred.resolve();
+        }
     }
 }
 exports.FirefoxTargetManager = FirefoxTargetManager;
-_FirefoxTargetManager_connection = new WeakMap(), _FirefoxTargetManager_discoveredTargetsByTargetId = new WeakMap(), _FirefoxTargetManager_availableTargetsByTargetId = new WeakMap(), _FirefoxTargetManager_availableTargetsBySessionId = new WeakMap(), _FirefoxTargetManager_ignoredTargets = new WeakMap(), _FirefoxTargetManager_targetFilterCallback = new WeakMap(), _FirefoxTargetManager_targetFactory = new WeakMap(), _FirefoxTargetManager_targetInterceptors = new WeakMap(), _FirefoxTargetManager_attachedToTargetListenersBySession = new WeakMap(), _FirefoxTargetManager_initializeDeferred = new WeakMap(), _FirefoxTargetManager_targetsIdsForInit = new WeakMap(), _FirefoxTargetManager_onSessionDetached = new WeakMap(), _FirefoxTargetManager_onTargetCreated = new WeakMap(), _FirefoxTargetManager_onTargetDestroyed = new WeakMap(), _FirefoxTargetManager_onAttachedToTarget = new WeakMap(), _FirefoxTargetManager_instances = new WeakSet(), _FirefoxTargetManager_finishInitializationIfReady = function _FirefoxTargetManager_finishInitializationIfReady(targetId) {
-    __classPrivateFieldGet(this, _FirefoxTargetManager_targetsIdsForInit, "f").delete(targetId);
-    if (__classPrivateFieldGet(this, _FirefoxTargetManager_targetsIdsForInit, "f").size === 0) {
-        __classPrivateFieldGet(this, _FirefoxTargetManager_initializeDeferred, "f").resolve();
-    }
-};
 //# sourceMappingURL=FirefoxTargetManager.js.map

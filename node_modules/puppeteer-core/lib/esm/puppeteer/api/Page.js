@@ -13,19 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Page_handlerMap;
 import { EventEmitter } from '../common/EventEmitter.js';
 import { NetworkManagerEmittedEvents, } from '../common/NetworkManager.js';
 import { paperFormats, } from '../common/PDFOptions.js';
 import { importFSPromises, isNumber, isString, waitForEvent, withSourcePuppeteerURLIfNone, } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
-import { Locator } from './Locator.js';
+import { FunctionLocator, Locator, NodeLocator, } from './locators/locators.js';
 /**
  * Page provides methods to interact with a single tab or
  * {@link https://developer.chrome.com/extensions/background_pages | extension background page}
@@ -76,12 +70,12 @@ import { Locator } from './Locator.js';
  * @public
  */
 export class Page extends EventEmitter {
+    #handlerMap = new WeakMap();
     /**
      * @internal
      */
     constructor() {
         super();
-        _Page_handlerMap.set(this, new WeakMap());
     }
     /**
      * `true` if the service worker are being bypassed, `false` otherwise.
@@ -114,13 +108,13 @@ export class Page extends EventEmitter {
      */
     on(eventName, handler) {
         if (eventName === 'request') {
-            const wrap = __classPrivateFieldGet(this, _Page_handlerMap, "f").get(handler) ||
+            const wrap = this.#handlerMap.get(handler) ||
                 ((event) => {
                     event.enqueueInterceptAction(() => {
                         return handler(event);
                     });
                 });
-            __classPrivateFieldGet(this, _Page_handlerMap, "f").set(handler, wrap);
+            this.#handlerMap.set(handler, wrap);
             return super.on(eventName, wrap);
         }
         return super.on(eventName, handler);
@@ -132,7 +126,7 @@ export class Page extends EventEmitter {
     }
     off(eventName, handler) {
         if (eventName === 'request') {
-            handler = __classPrivateFieldGet(this, _Page_handlerMap, "f").get(handler) || handler;
+            handler = this.#handlerMap.get(handler) || handler;
         }
         return super.off(eventName, handler);
     }
@@ -167,6 +161,12 @@ export class Page extends EventEmitter {
      * Page is guaranteed to have a main frame which persists during navigations.
      */
     mainFrame() {
+        throw new Error('Not implemented');
+    }
+    /**
+     * Creates a Chrome Devtools Protocol session attached to the page.
+     */
+    createCDPSession() {
         throw new Error('Not implemented');
     }
     /**
@@ -243,16 +243,13 @@ export class Page extends EventEmitter {
     getDefaultTimeout() {
         throw new Error('Not implemented');
     }
-    /**
-     * Creates a locator for the provided `selector`. See {@link Locator} for
-     * details and supported actions.
-     *
-     * @remarks
-     * Locators API is experimental and we will not follow semver for breaking
-     * change in the Locators API.
-     */
-    locator(selector) {
-        return Locator.create(this, selector);
+    locator(selectorOrFunc) {
+        if (typeof selectorOrFunc === 'string') {
+            return NodeLocator.create(this, selectorOrFunc);
+        }
+        else {
+            return FunctionLocator.create(this, selectorOrFunc);
+        }
     }
     /**
      * A shortcut for {@link Locator.race} that does not require static imports.
@@ -443,11 +440,22 @@ export class Page extends EventEmitter {
     async setCookie() {
         throw new Error('Not implemented');
     }
-    async addScriptTag() {
-        throw new Error('Not implemented');
+    /**
+     * Adds a `<script>` tag into the page with the desired URL or content.
+     *
+     * @remarks
+     * Shortcut for
+     * {@link Frame.addScriptTag | page.mainFrame().addScriptTag(options)}.
+     *
+     * @param options - Options for the script.
+     * @returns An {@link ElementHandle | element handle} to the injected
+     * `<script>` element.
+     */
+    async addScriptTag(options) {
+        return this.mainFrame().addScriptTag(options);
     }
-    async addStyleTag() {
-        throw new Error('Not implemented');
+    async addStyleTag(options) {
+        return this.mainFrame().addStyleTag(options);
     }
     async exposeFunction() {
         throw new Error('Not implemented');
@@ -1017,8 +1025,59 @@ export class Page extends EventEmitter {
     async waitForSelector(selector, options = {}) {
         return await this.mainFrame().waitForSelector(selector, options);
     }
-    waitForXPath() {
-        throw new Error('Not implemented');
+    /**
+     * Wait for the `xpath` to appear in page. If at the moment of calling the
+     * method the `xpath` already exists, the method will return immediately. If
+     * the `xpath` doesn't appear after the `timeout` milliseconds of waiting, the
+     * function will throw.
+     *
+     * @example
+     * This method works across navigation
+     *
+     * ```ts
+     * import puppeteer from 'puppeteer';
+     * (async () => {
+     *   const browser = await puppeteer.launch();
+     *   const page = await browser.newPage();
+     *   let currentURL;
+     *   page
+     *     .waitForXPath('//img')
+     *     .then(() => console.log('First URL with image: ' + currentURL));
+     *   for (currentURL of [
+     *     'https://example.com',
+     *     'https://google.com',
+     *     'https://bbc.com',
+     *   ]) {
+     *     await page.goto(currentURL);
+     *   }
+     *   await browser.close();
+     * })();
+     * ```
+     *
+     * @param xpath - A
+     * {@link https://developer.mozilla.org/en-US/docs/Web/XPath | xpath} of an
+     * element to wait for
+     * @param options - Optional waiting parameters
+     * @returns Promise which resolves when element specified by xpath string is
+     * added to DOM. Resolves to `null` if waiting for `hidden: true` and xpath is
+     * not found in DOM, otherwise resolves to `ElementHandle`.
+     * @remarks
+     * The optional Argument `options` have properties:
+     *
+     * - `visible`: A boolean to wait for element to be present in DOM and to be
+     *   visible, i.e. to not have `display: none` or `visibility: hidden` CSS
+     *   properties. Defaults to `false`.
+     *
+     * - `hidden`: A boolean wait for element to not be found in the DOM or to be
+     *   hidden, i.e. have `display: none` or `visibility: hidden` CSS properties.
+     *   Defaults to `false`.
+     *
+     * - `timeout`: A number which is maximum time to wait for in milliseconds.
+     *   Defaults to `30000` (30 seconds). Pass `0` to disable timeout. The default
+     *   value can be changed by using the {@link Page.setDefaultTimeout} method.
+     */
+    waitForXPath(xpath, options) {
+        return this.mainFrame().waitForXPath(xpath, options);
     }
     /**
      * Waits for a function to finish evaluating in the page's context.
@@ -1084,7 +1143,6 @@ export class Page extends EventEmitter {
         throw new Error('Not implemented');
     }
 }
-_Page_handlerMap = new WeakMap();
 /**
  * @internal
  */

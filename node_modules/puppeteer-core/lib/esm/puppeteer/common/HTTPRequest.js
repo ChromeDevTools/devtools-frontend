@@ -1,15 +1,3 @@
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var _HTTPRequest_instances, _HTTPRequest_client, _HTTPRequest_isNavigationRequest, _HTTPRequest_allowInterception, _HTTPRequest_interceptionHandled, _HTTPRequest_url, _HTTPRequest_resourceType, _HTTPRequest_method, _HTTPRequest_postData, _HTTPRequest_headers, _HTTPRequest_frame, _HTTPRequest_continueRequestOverrides, _HTTPRequest_responseForRequest, _HTTPRequest_abortErrorReason, _HTTPRequest_interceptResolutionState, _HTTPRequest_interceptHandlers, _HTTPRequest_initiator, _HTTPRequest_continue, _HTTPRequest_respond, _HTTPRequest_abort;
 import { headersArray, HTTPRequest as BaseHTTPRequest, InterceptResolutionAction, STATUS_TEXTS, } from '../api/HTTPRequest.js';
 import { assert } from '../util/assert.js';
 import { debugError, isString } from './util.js';
@@ -17,121 +5,124 @@ import { debugError, isString } from './util.js';
  * @internal
  */
 export class HTTPRequest extends BaseHTTPRequest {
+    _requestId;
+    _interceptionId;
+    _failureText = null;
+    _response = null;
+    _fromMemoryCache = false;
+    _redirectChain;
+    #client;
+    #isNavigationRequest;
+    #allowInterception;
+    #interceptionHandled = false;
+    #url;
+    #resourceType;
+    #method;
+    #postData;
+    #headers = {};
+    #frame;
+    #continueRequestOverrides;
+    #responseForRequest = null;
+    #abortErrorReason = null;
+    #interceptResolutionState = {
+        action: InterceptResolutionAction.None,
+    };
+    #interceptHandlers;
+    #initiator;
     get client() {
-        return __classPrivateFieldGet(this, _HTTPRequest_client, "f");
+        return this.#client;
     }
     constructor(client, frame, interceptionId, allowInterception, data, redirectChain) {
         super();
-        _HTTPRequest_instances.add(this);
-        this._failureText = null;
-        this._response = null;
-        this._fromMemoryCache = false;
-        _HTTPRequest_client.set(this, void 0);
-        _HTTPRequest_isNavigationRequest.set(this, void 0);
-        _HTTPRequest_allowInterception.set(this, void 0);
-        _HTTPRequest_interceptionHandled.set(this, false);
-        _HTTPRequest_url.set(this, void 0);
-        _HTTPRequest_resourceType.set(this, void 0);
-        _HTTPRequest_method.set(this, void 0);
-        _HTTPRequest_postData.set(this, void 0);
-        _HTTPRequest_headers.set(this, {});
-        _HTTPRequest_frame.set(this, void 0);
-        _HTTPRequest_continueRequestOverrides.set(this, void 0);
-        _HTTPRequest_responseForRequest.set(this, null);
-        _HTTPRequest_abortErrorReason.set(this, null);
-        _HTTPRequest_interceptResolutionState.set(this, {
-            action: InterceptResolutionAction.None,
-        });
-        _HTTPRequest_interceptHandlers.set(this, void 0);
-        _HTTPRequest_initiator.set(this, void 0);
-        __classPrivateFieldSet(this, _HTTPRequest_client, client, "f");
+        this.#client = client;
         this._requestId = data.requestId;
-        __classPrivateFieldSet(this, _HTTPRequest_isNavigationRequest, data.requestId === data.loaderId && data.type === 'Document', "f");
+        this.#isNavigationRequest =
+            data.requestId === data.loaderId && data.type === 'Document';
         this._interceptionId = interceptionId;
-        __classPrivateFieldSet(this, _HTTPRequest_allowInterception, allowInterception, "f");
-        __classPrivateFieldSet(this, _HTTPRequest_url, data.request.url, "f");
-        __classPrivateFieldSet(this, _HTTPRequest_resourceType, (data.type || 'other').toLowerCase(), "f");
-        __classPrivateFieldSet(this, _HTTPRequest_method, data.request.method, "f");
-        __classPrivateFieldSet(this, _HTTPRequest_postData, data.request.postData, "f");
-        __classPrivateFieldSet(this, _HTTPRequest_frame, frame, "f");
+        this.#allowInterception = allowInterception;
+        this.#url = data.request.url;
+        this.#resourceType = (data.type || 'other').toLowerCase();
+        this.#method = data.request.method;
+        this.#postData = data.request.postData;
+        this.#frame = frame;
         this._redirectChain = redirectChain;
-        __classPrivateFieldSet(this, _HTTPRequest_continueRequestOverrides, {}, "f");
-        __classPrivateFieldSet(this, _HTTPRequest_interceptHandlers, [], "f");
-        __classPrivateFieldSet(this, _HTTPRequest_initiator, data.initiator, "f");
+        this.#continueRequestOverrides = {};
+        this.#interceptHandlers = [];
+        this.#initiator = data.initiator;
         for (const [key, value] of Object.entries(data.request.headers)) {
-            __classPrivateFieldGet(this, _HTTPRequest_headers, "f")[key.toLowerCase()] = value;
+            this.#headers[key.toLowerCase()] = value;
         }
     }
     url() {
-        return __classPrivateFieldGet(this, _HTTPRequest_url, "f");
+        return this.#url;
     }
     continueRequestOverrides() {
-        assert(__classPrivateFieldGet(this, _HTTPRequest_allowInterception, "f"), 'Request Interception is not enabled!');
-        return __classPrivateFieldGet(this, _HTTPRequest_continueRequestOverrides, "f");
+        assert(this.#allowInterception, 'Request Interception is not enabled!');
+        return this.#continueRequestOverrides;
     }
     responseForRequest() {
-        assert(__classPrivateFieldGet(this, _HTTPRequest_allowInterception, "f"), 'Request Interception is not enabled!');
-        return __classPrivateFieldGet(this, _HTTPRequest_responseForRequest, "f");
+        assert(this.#allowInterception, 'Request Interception is not enabled!');
+        return this.#responseForRequest;
     }
     abortErrorReason() {
-        assert(__classPrivateFieldGet(this, _HTTPRequest_allowInterception, "f"), 'Request Interception is not enabled!');
-        return __classPrivateFieldGet(this, _HTTPRequest_abortErrorReason, "f");
+        assert(this.#allowInterception, 'Request Interception is not enabled!');
+        return this.#abortErrorReason;
     }
     interceptResolutionState() {
-        if (!__classPrivateFieldGet(this, _HTTPRequest_allowInterception, "f")) {
+        if (!this.#allowInterception) {
             return { action: InterceptResolutionAction.Disabled };
         }
-        if (__classPrivateFieldGet(this, _HTTPRequest_interceptionHandled, "f")) {
+        if (this.#interceptionHandled) {
             return { action: InterceptResolutionAction.AlreadyHandled };
         }
-        return { ...__classPrivateFieldGet(this, _HTTPRequest_interceptResolutionState, "f") };
+        return { ...this.#interceptResolutionState };
     }
     isInterceptResolutionHandled() {
-        return __classPrivateFieldGet(this, _HTTPRequest_interceptionHandled, "f");
+        return this.#interceptionHandled;
     }
     enqueueInterceptAction(pendingHandler) {
-        __classPrivateFieldGet(this, _HTTPRequest_interceptHandlers, "f").push(pendingHandler);
+        this.#interceptHandlers.push(pendingHandler);
     }
     async finalizeInterceptions() {
-        await __classPrivateFieldGet(this, _HTTPRequest_interceptHandlers, "f").reduce((promiseChain, interceptAction) => {
+        await this.#interceptHandlers.reduce((promiseChain, interceptAction) => {
             return promiseChain.then(interceptAction);
         }, Promise.resolve());
         const { action } = this.interceptResolutionState();
         switch (action) {
             case 'abort':
-                return __classPrivateFieldGet(this, _HTTPRequest_instances, "m", _HTTPRequest_abort).call(this, __classPrivateFieldGet(this, _HTTPRequest_abortErrorReason, "f"));
+                return this.#abort(this.#abortErrorReason);
             case 'respond':
-                if (__classPrivateFieldGet(this, _HTTPRequest_responseForRequest, "f") === null) {
+                if (this.#responseForRequest === null) {
                     throw new Error('Response is missing for the interception');
                 }
-                return __classPrivateFieldGet(this, _HTTPRequest_instances, "m", _HTTPRequest_respond).call(this, __classPrivateFieldGet(this, _HTTPRequest_responseForRequest, "f"));
+                return this.#respond(this.#responseForRequest);
             case 'continue':
-                return __classPrivateFieldGet(this, _HTTPRequest_instances, "m", _HTTPRequest_continue).call(this, __classPrivateFieldGet(this, _HTTPRequest_continueRequestOverrides, "f"));
+                return this.#continue(this.#continueRequestOverrides);
         }
     }
     resourceType() {
-        return __classPrivateFieldGet(this, _HTTPRequest_resourceType, "f");
+        return this.#resourceType;
     }
     method() {
-        return __classPrivateFieldGet(this, _HTTPRequest_method, "f");
+        return this.#method;
     }
     postData() {
-        return __classPrivateFieldGet(this, _HTTPRequest_postData, "f");
+        return this.#postData;
     }
     headers() {
-        return __classPrivateFieldGet(this, _HTTPRequest_headers, "f");
+        return this.#headers;
     }
     response() {
         return this._response;
     }
     frame() {
-        return __classPrivateFieldGet(this, _HTTPRequest_frame, "f");
+        return this.#frame;
     }
     isNavigationRequest() {
-        return __classPrivateFieldGet(this, _HTTPRequest_isNavigationRequest, "f");
+        return this.#isNavigationRequest;
     }
     initiator() {
-        return __classPrivateFieldGet(this, _HTTPRequest_initiator, "f");
+        return this.#initiator;
     }
     redirectChain() {
         return this._redirectChain.slice();
@@ -146,153 +137,155 @@ export class HTTPRequest extends BaseHTTPRequest {
     }
     async continue(overrides = {}, priority) {
         // Request interception is not supported for data: urls.
-        if (__classPrivateFieldGet(this, _HTTPRequest_url, "f").startsWith('data:')) {
+        if (this.#url.startsWith('data:')) {
             return;
         }
-        assert(__classPrivateFieldGet(this, _HTTPRequest_allowInterception, "f"), 'Request Interception is not enabled!');
-        assert(!__classPrivateFieldGet(this, _HTTPRequest_interceptionHandled, "f"), 'Request is already handled!');
+        assert(this.#allowInterception, 'Request Interception is not enabled!');
+        assert(!this.#interceptionHandled, 'Request is already handled!');
         if (priority === undefined) {
-            return __classPrivateFieldGet(this, _HTTPRequest_instances, "m", _HTTPRequest_continue).call(this, overrides);
+            return this.#continue(overrides);
         }
-        __classPrivateFieldSet(this, _HTTPRequest_continueRequestOverrides, overrides, "f");
-        if (__classPrivateFieldGet(this, _HTTPRequest_interceptResolutionState, "f").priority === undefined ||
-            priority > __classPrivateFieldGet(this, _HTTPRequest_interceptResolutionState, "f").priority) {
-            __classPrivateFieldSet(this, _HTTPRequest_interceptResolutionState, {
+        this.#continueRequestOverrides = overrides;
+        if (this.#interceptResolutionState.priority === undefined ||
+            priority > this.#interceptResolutionState.priority) {
+            this.#interceptResolutionState = {
                 action: InterceptResolutionAction.Continue,
                 priority,
-            }, "f");
+            };
             return;
         }
-        if (priority === __classPrivateFieldGet(this, _HTTPRequest_interceptResolutionState, "f").priority) {
-            if (__classPrivateFieldGet(this, _HTTPRequest_interceptResolutionState, "f").action === 'abort' ||
-                __classPrivateFieldGet(this, _HTTPRequest_interceptResolutionState, "f").action === 'respond') {
+        if (priority === this.#interceptResolutionState.priority) {
+            if (this.#interceptResolutionState.action === 'abort' ||
+                this.#interceptResolutionState.action === 'respond') {
                 return;
             }
-            __classPrivateFieldGet(this, _HTTPRequest_interceptResolutionState, "f").action =
+            this.#interceptResolutionState.action =
                 InterceptResolutionAction.Continue;
         }
         return;
     }
+    async #continue(overrides = {}) {
+        const { url, method, postData, headers } = overrides;
+        this.#interceptionHandled = true;
+        const postDataBinaryBase64 = postData
+            ? Buffer.from(postData).toString('base64')
+            : undefined;
+        if (this._interceptionId === undefined) {
+            throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.continueRequest');
+        }
+        await this.#client
+            .send('Fetch.continueRequest', {
+            requestId: this._interceptionId,
+            url,
+            method,
+            postData: postDataBinaryBase64,
+            headers: headers ? headersArray(headers) : undefined,
+        })
+            .catch(error => {
+            this.#interceptionHandled = false;
+            return handleError(error);
+        });
+    }
     async respond(response, priority) {
         // Mocking responses for dataURL requests is not currently supported.
-        if (__classPrivateFieldGet(this, _HTTPRequest_url, "f").startsWith('data:')) {
+        if (this.#url.startsWith('data:')) {
             return;
         }
-        assert(__classPrivateFieldGet(this, _HTTPRequest_allowInterception, "f"), 'Request Interception is not enabled!');
-        assert(!__classPrivateFieldGet(this, _HTTPRequest_interceptionHandled, "f"), 'Request is already handled!');
+        assert(this.#allowInterception, 'Request Interception is not enabled!');
+        assert(!this.#interceptionHandled, 'Request is already handled!');
         if (priority === undefined) {
-            return __classPrivateFieldGet(this, _HTTPRequest_instances, "m", _HTTPRequest_respond).call(this, response);
+            return this.#respond(response);
         }
-        __classPrivateFieldSet(this, _HTTPRequest_responseForRequest, response, "f");
-        if (__classPrivateFieldGet(this, _HTTPRequest_interceptResolutionState, "f").priority === undefined ||
-            priority > __classPrivateFieldGet(this, _HTTPRequest_interceptResolutionState, "f").priority) {
-            __classPrivateFieldSet(this, _HTTPRequest_interceptResolutionState, {
+        this.#responseForRequest = response;
+        if (this.#interceptResolutionState.priority === undefined ||
+            priority > this.#interceptResolutionState.priority) {
+            this.#interceptResolutionState = {
                 action: InterceptResolutionAction.Respond,
                 priority,
-            }, "f");
+            };
             return;
         }
-        if (priority === __classPrivateFieldGet(this, _HTTPRequest_interceptResolutionState, "f").priority) {
-            if (__classPrivateFieldGet(this, _HTTPRequest_interceptResolutionState, "f").action === 'abort') {
+        if (priority === this.#interceptResolutionState.priority) {
+            if (this.#interceptResolutionState.action === 'abort') {
                 return;
             }
-            __classPrivateFieldGet(this, _HTTPRequest_interceptResolutionState, "f").action = InterceptResolutionAction.Respond;
+            this.#interceptResolutionState.action = InterceptResolutionAction.Respond;
         }
+    }
+    async #respond(response) {
+        this.#interceptionHandled = true;
+        const responseBody = response.body && isString(response.body)
+            ? Buffer.from(response.body)
+            : response.body || null;
+        const responseHeaders = {};
+        if (response.headers) {
+            for (const header of Object.keys(response.headers)) {
+                const value = response.headers[header];
+                responseHeaders[header.toLowerCase()] = Array.isArray(value)
+                    ? value.map(item => {
+                        return String(item);
+                    })
+                    : String(value);
+            }
+        }
+        if (response.contentType) {
+            responseHeaders['content-type'] = response.contentType;
+        }
+        if (responseBody && !('content-length' in responseHeaders)) {
+            responseHeaders['content-length'] = String(Buffer.byteLength(responseBody));
+        }
+        const status = response.status || 200;
+        if (this._interceptionId === undefined) {
+            throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.fulfillRequest');
+        }
+        await this.#client
+            .send('Fetch.fulfillRequest', {
+            requestId: this._interceptionId,
+            responseCode: status,
+            responsePhrase: STATUS_TEXTS[status],
+            responseHeaders: headersArray(responseHeaders),
+            body: responseBody ? responseBody.toString('base64') : undefined,
+        })
+            .catch(error => {
+            this.#interceptionHandled = false;
+            return handleError(error);
+        });
     }
     async abort(errorCode = 'failed', priority) {
         // Request interception is not supported for data: urls.
-        if (__classPrivateFieldGet(this, _HTTPRequest_url, "f").startsWith('data:')) {
+        if (this.#url.startsWith('data:')) {
             return;
         }
         const errorReason = errorReasons[errorCode];
         assert(errorReason, 'Unknown error code: ' + errorCode);
-        assert(__classPrivateFieldGet(this, _HTTPRequest_allowInterception, "f"), 'Request Interception is not enabled!');
-        assert(!__classPrivateFieldGet(this, _HTTPRequest_interceptionHandled, "f"), 'Request is already handled!');
+        assert(this.#allowInterception, 'Request Interception is not enabled!');
+        assert(!this.#interceptionHandled, 'Request is already handled!');
         if (priority === undefined) {
-            return __classPrivateFieldGet(this, _HTTPRequest_instances, "m", _HTTPRequest_abort).call(this, errorReason);
+            return this.#abort(errorReason);
         }
-        __classPrivateFieldSet(this, _HTTPRequest_abortErrorReason, errorReason, "f");
-        if (__classPrivateFieldGet(this, _HTTPRequest_interceptResolutionState, "f").priority === undefined ||
-            priority >= __classPrivateFieldGet(this, _HTTPRequest_interceptResolutionState, "f").priority) {
-            __classPrivateFieldSet(this, _HTTPRequest_interceptResolutionState, {
+        this.#abortErrorReason = errorReason;
+        if (this.#interceptResolutionState.priority === undefined ||
+            priority >= this.#interceptResolutionState.priority) {
+            this.#interceptResolutionState = {
                 action: InterceptResolutionAction.Abort,
                 priority,
-            }, "f");
+            };
             return;
         }
     }
-}
-_HTTPRequest_client = new WeakMap(), _HTTPRequest_isNavigationRequest = new WeakMap(), _HTTPRequest_allowInterception = new WeakMap(), _HTTPRequest_interceptionHandled = new WeakMap(), _HTTPRequest_url = new WeakMap(), _HTTPRequest_resourceType = new WeakMap(), _HTTPRequest_method = new WeakMap(), _HTTPRequest_postData = new WeakMap(), _HTTPRequest_headers = new WeakMap(), _HTTPRequest_frame = new WeakMap(), _HTTPRequest_continueRequestOverrides = new WeakMap(), _HTTPRequest_responseForRequest = new WeakMap(), _HTTPRequest_abortErrorReason = new WeakMap(), _HTTPRequest_interceptResolutionState = new WeakMap(), _HTTPRequest_interceptHandlers = new WeakMap(), _HTTPRequest_initiator = new WeakMap(), _HTTPRequest_instances = new WeakSet(), _HTTPRequest_continue = async function _HTTPRequest_continue(overrides = {}) {
-    const { url, method, postData, headers } = overrides;
-    __classPrivateFieldSet(this, _HTTPRequest_interceptionHandled, true, "f");
-    const postDataBinaryBase64 = postData
-        ? Buffer.from(postData).toString('base64')
-        : undefined;
-    if (this._interceptionId === undefined) {
-        throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.continueRequest');
-    }
-    await __classPrivateFieldGet(this, _HTTPRequest_client, "f")
-        .send('Fetch.continueRequest', {
-        requestId: this._interceptionId,
-        url,
-        method,
-        postData: postDataBinaryBase64,
-        headers: headers ? headersArray(headers) : undefined,
-    })
-        .catch(error => {
-        __classPrivateFieldSet(this, _HTTPRequest_interceptionHandled, false, "f");
-        return handleError(error);
-    });
-}, _HTTPRequest_respond = async function _HTTPRequest_respond(response) {
-    __classPrivateFieldSet(this, _HTTPRequest_interceptionHandled, true, "f");
-    const responseBody = response.body && isString(response.body)
-        ? Buffer.from(response.body)
-        : response.body || null;
-    const responseHeaders = {};
-    if (response.headers) {
-        for (const header of Object.keys(response.headers)) {
-            const value = response.headers[header];
-            responseHeaders[header.toLowerCase()] = Array.isArray(value)
-                ? value.map(item => {
-                    return String(item);
-                })
-                : String(value);
+    async #abort(errorReason) {
+        this.#interceptionHandled = true;
+        if (this._interceptionId === undefined) {
+            throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.failRequest');
         }
+        await this.#client
+            .send('Fetch.failRequest', {
+            requestId: this._interceptionId,
+            errorReason: errorReason || 'Failed',
+        })
+            .catch(handleError);
     }
-    if (response.contentType) {
-        responseHeaders['content-type'] = response.contentType;
-    }
-    if (responseBody && !('content-length' in responseHeaders)) {
-        responseHeaders['content-length'] = String(Buffer.byteLength(responseBody));
-    }
-    const status = response.status || 200;
-    if (this._interceptionId === undefined) {
-        throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.fulfillRequest');
-    }
-    await __classPrivateFieldGet(this, _HTTPRequest_client, "f")
-        .send('Fetch.fulfillRequest', {
-        requestId: this._interceptionId,
-        responseCode: status,
-        responsePhrase: STATUS_TEXTS[status],
-        responseHeaders: headersArray(responseHeaders),
-        body: responseBody ? responseBody.toString('base64') : undefined,
-    })
-        .catch(error => {
-        __classPrivateFieldSet(this, _HTTPRequest_interceptionHandled, false, "f");
-        return handleError(error);
-    });
-}, _HTTPRequest_abort = async function _HTTPRequest_abort(errorReason) {
-    __classPrivateFieldSet(this, _HTTPRequest_interceptionHandled, true, "f");
-    if (this._interceptionId === undefined) {
-        throw new Error('HTTPRequest is missing _interceptionId needed for Fetch.failRequest');
-    }
-    await __classPrivateFieldGet(this, _HTTPRequest_client, "f")
-        .send('Fetch.failRequest', {
-        requestId: this._interceptionId,
-        errorReason: errorReason || 'Failed',
-    })
-        .catch(handleError);
-};
+}
 const errorReasons = {
     aborted: 'Aborted',
     accessdenied: 'AccessDenied',

@@ -16,15 +16,15 @@
 import { Protocol } from 'devtools-protocol';
 import { CDPSession } from './Connection.js';
 import { EventEmitter } from './EventEmitter.js';
-import { Target } from './Target.js';
+import { CDPTarget } from './Target.js';
 /**
  * @internal
  */
-export type TargetFactory = (targetInfo: Protocol.Target.TargetInfo, session?: CDPSession) => Target;
+export type TargetFactory = (targetInfo: Protocol.Target.TargetInfo, session?: CDPSession) => CDPTarget;
 /**
  * @internal
  */
-export type TargetInterceptor = (createdTarget: Target, parentTarget: Target | null) => void;
+export type TargetInterceptor = (createdTarget: CDPTarget, parentTarget: CDPTarget | null) => void;
 /**
  * TargetManager encapsulates all interactions with CDP targets and is
  * responsible for coordinating the configuration of targets with the rest of
@@ -37,7 +37,7 @@ export type TargetInterceptor = (createdTarget: Target, parentTarget: Target | n
  * @internal
  */
 export interface TargetManager extends EventEmitter {
-    getAvailableTargets(): Map<string, Target>;
+    getAvailableTargets(): Map<string, CDPTarget>;
     initialize(): Promise<void>;
     dispose(): void;
     addTargetInterceptor(session: CDPSession, interceptor: TargetInterceptor): void;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import { ElementHandle as BaseElementHandle, ClickOptions } from '../../api/ElementHandle.js';
+import { AutofillData, ElementHandle as BaseElementHandle, BoundingBox, ClickOptions } from '../../api/ElementHandle.js';
 import { KeyPressOptions, KeyboardTypeOptions } from '../../api/Input.js';
 import { KeyInput } from '../USKeyboardLayout.js';
 import { Frame } from './Frame.js';
@@ -26,15 +26,17 @@ import { Realm } from './Realm.js';
 export declare class ElementHandle<ElementType extends Node = Element> extends BaseElementHandle<ElementType> {
     #private;
     handle: JSHandle<ElementType>;
-    constructor(realm: Realm, remoteValue: Bidi.CommonDataTypes.RemoteValue, frame: Frame);
+    constructor(realm: Realm, remoteValue: Bidi.Script.RemoteValue, frame: Frame);
     get frame(): Frame;
     context(): Realm;
     get isPrimitiveValue(): boolean;
-    remoteValue(): Bidi.CommonDataTypes.RemoteValue;
+    remoteValue(): Bidi.Script.RemoteValue;
     /**
      * @internal
      */
     assertElementHasWorld(): asserts this;
+    autofill(data: AutofillData): Promise<void>;
+    boundingBox(): Promise<BoundingBox | null>;
     click(this: ElementHandle<Element>, options?: Readonly<ClickOptions>): Promise<void>;
     hover(this: ElementHandle<Element>): Promise<void>;
     tap(this: ElementHandle<Element>): Promise<void>;

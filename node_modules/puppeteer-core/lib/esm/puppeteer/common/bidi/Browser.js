@@ -13,25 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Browser_browserName, _Browser_browserVersion, _Browser_process, _Browser_closeCallback, _Browser_connection, _Browser_defaultViewport, _Browser_defaultContext;
 import { Browser as BrowserBase, } from '../../api/Browser.js';
 import { BrowserContext } from './BrowserContext.js';
+import { BrowsingContext, BrowsingContextEmittedEvents, } from './BrowsingContext.js';
+import { BiDiBrowserTarget, BiDiBrowsingContextTarget, BiDiPageTarget, } from './Target.js';
 import { debugError } from './utils.js';
 /**
  * @internal
  */
 export class Browser extends BrowserBase {
+    // TODO: Update generator to include fully module
+    static subscribeModules = [
+        'browsingContext',
+        'network',
+        'log',
+    ];
+    static subscribeCdpEvents = [
+        // Coverage
+        'cdp.Debugger.scriptParsed',
+        'cdp.CSS.styleSheetAdded',
+        'cdp.Runtime.executionContextsCleared',
+        // Tracing
+        'cdp.Tracing.tracingComplete',
+        // TODO: subscribe to all CDP events in the future.
+        'cdp.Network.requestWillBeSent',
+        'cdp.Debugger.scriptParsed',
+    ];
     static async create(opts) {
         let browserName = '';
         let browserVersion = '';
@@ -56,66 +63,151 @@ export class Browser extends BrowserBase {
                 ? Browser.subscribeModules
                 : [...Browser.subscribeModules, ...Browser.subscribeCdpEvents],
         });
-        return new Browser({
+        const browser = new Browser({
             ...opts,
             browserName,
             browserVersion,
         });
+        await browser.#getTree();
+        return browser;
     }
+    #browserName = '';
+    #browserVersion = '';
+    #process;
+    #closeCallback;
+    #connection;
+    #defaultViewport;
+    #defaultContext;
+    #targets = new Map();
+    #contexts = [];
+    #browserTarget;
+    #connectionEventHandlers = new Map([
+        ['browsingContext.contextCreated', this.#onContextCreated.bind(this)],
+        ['browsingContext.contextDestroyed', this.#onContextDestroyed.bind(this)],
+        ['browsingContext.domContentLoaded', this.#onContextDomLoaded.bind(this)],
+        ['browsingContext.fragmentNavigated', this.#onContextNavigation.bind(this)],
+        ['browsingContext.navigationStarted', this.#onContextNavigation.bind(this)],
+    ]);
     constructor(opts) {
         super();
-        _Browser_browserName.set(this, '');
-        _Browser_browserVersion.set(this, '');
-        _Browser_process.set(this, void 0);
-        _Browser_closeCallback.set(this, void 0);
-        _Browser_connection.set(this, void 0);
-        _Browser_defaultViewport.set(this, void 0);
-        _Browser_defaultContext.set(this, void 0);
-        __classPrivateFieldSet(this, _Browser_process, opts.process, "f");
-        __classPrivateFieldSet(this, _Browser_closeCallback, opts.closeCallback, "f");
-        __classPrivateFieldSet(this, _Browser_connection, opts.connection, "f");
-        __classPrivateFieldSet(this, _Browser_defaultViewport, opts.defaultViewport, "f");
-        __classPrivateFieldSet(this, _Browser_browserName, opts.browserName, "f");
-        __classPrivateFieldSet(this, _Browser_browserVersion, opts.browserVersion, "f");
-        __classPrivateFieldGet(this, _Browser_process, "f")?.once('close', () => {
-            __classPrivateFieldGet(this, _Browser_connection, "f").dispose();
+        this.#process = opts.process;
+        this.#closeCallback = opts.closeCallback;
+        this.#connection = opts.connection;
+        this.#defaultViewport = opts.defaultViewport;
+        this.#browserName = opts.browserName;
+        this.#browserVersion = opts.browserVersion;
+        this.#process?.once('close', () => {
+            this.#connection.dispose();
             this.emit("disconnected" /* BrowserEmittedEvents.Disconnected */);
         });
-        __classPrivateFieldSet(this, _Browser_defaultContext, new BrowserContext(this, {
-            defaultViewport: __classPrivateFieldGet(this, _Browser_defaultViewport, "f"),
+        this.#defaultContext = new BrowserContext(this, {
+            defaultViewport: this.#defaultViewport,
             isDefault: true,
-        }), "f");
+        });
+        this.#browserTarget = new BiDiBrowserTarget(this.#defaultContext);
+        this.#contexts.push(this.#defaultContext);
+        for (const [eventName, handler] of this.#connectionEventHandlers) {
+            this.#connection.on(eventName, handler);
+        }
+    }
+    #onContextDomLoaded(event) {
+        const context = this.#connection.getBrowsingContext(event.context);
+        context.url = event.url;
+        const target = this.#targets.get(event.context);
+        if (target) {
+            this.emit("targetchanged" /* BrowserEmittedEvents.TargetChanged */, target);
+        }
+    }
+    #onContextNavigation(event) {
+        const context = this.#connection.getBrowsingContext(event.context);
+        context.url = event.url;
+        const target = this.#targets.get(event.context);
+        if (target) {
+            this.emit("targetchanged" /* BrowserEmittedEvents.TargetChanged */, target);
+            target
+                .browserContext()
+                .emit("targetchanged" /* BrowserContextEmittedEvents.TargetChanged */, target);
+        }
+    }
+    #onContextCreated(event) {
+        const context = new BrowsingContext(this.#connection, event);
+        this.#connection.registerBrowsingContexts(context);
+        // TODO: once more browsing context types are supported, this should be
+        // updated to support those. Currently, all top-level contexts are treated
+        // as pages.
+        const browserContext = this.browserContexts().at(-1);
+        if (!browserContext) {
+            throw new Error('Missing browser contexts');
+        }
+        const target = !context.parent
+            ? new BiDiPageTarget(browserContext, context)
+            : new BiDiBrowsingContextTarget(browserContext, context);
+        this.#targets.set(event.context, target);
+        this.emit("targetcreated" /* BrowserEmittedEvents.TargetCreated */, target);
+        target
+            .browserContext()
+            .emit("targetcreated" /* BrowserContextEmittedEvents.TargetCreated */, target);
+        if (context.parent) {
+            const topLevel = this.#connection.getTopLevelContext(context.parent);
+            topLevel.emit(BrowsingContextEmittedEvents.Created, context);
+        }
+    }
+    async #getTree() {
+        const { result } = await this.#connection.send('browsingContext.getTree', {});
+        for (const context of result.contexts) {
+            this.#onContextCreated(context);
+        }
+    }
+    async #onContextDestroyed(event) {
+        const context = this.#connection.getBrowsingContext(event.context);
+        const topLevelContext = this.#connection.getTopLevelContext(event.context);
+        topLevelContext.emit(BrowsingContextEmittedEvents.Destroyed, context);
+        const target = this.#targets.get(event.context);
+        const page = await target?.page();
+        await page?.close().catch(debugError);
+        this.#targets.delete(event.context);
+        if (target) {
+            this.emit("targetdestroyed" /* BrowserEmittedEvents.TargetDestroyed */, target);
+            target
+                .browserContext()
+                .emit("targetdestroyed" /* BrowserContextEmittedEvents.TargetDestroyed */, target);
+        }
     }
     get connection() {
-        return __classPrivateFieldGet(this, _Browser_connection, "f");
+        return this.#connection;
     }
     wsEndpoint() {
-        return __classPrivateFieldGet(this, _Browser_connection, "f").url;
+        return this.#connection.url;
     }
     async close() {
-        if (__classPrivateFieldGet(this, _Browser_connection, "f").closed) {
+        for (const [eventName, handler] of this.#connectionEventHandlers) {
+            this.#connection.off(eventName, handler);
+        }
+        if (this.#connection.closed) {
             return;
         }
         // TODO: implement browser.close.
         // await this.#connection.send('browser.close', {});
-        __classPrivateFieldGet(this, _Browser_connection, "f").dispose();
-        await __classPrivateFieldGet(this, _Browser_closeCallback, "f")?.call(null);
+        this.#connection.dispose();
+        await this.#closeCallback?.call(null);
     }
     isConnected() {
-        return !__classPrivateFieldGet(this, _Browser_connection, "f").closed;
+        return !this.#connection.closed;
     }
     process() {
-        return __classPrivateFieldGet(this, _Browser_process, "f") ?? null;
+        return this.#process ?? null;
     }
     async createIncognitoBrowserContext(_options) {
         // TODO: implement incognito context https://github.com/w3c/webdriver-bidi/issues/289.
-        return new BrowserContext(this, {
-            defaultViewport: __classPrivateFieldGet(this, _Browser_defaultViewport, "f"),
+        const context = new BrowserContext(this, {
+            defaultViewport: this.#defaultViewport,
             isDefault: false,
         });
+        this.#contexts.push(context);
+        return context;
     }
     async version() {
-        return `${__classPrivateFieldGet(this, _Browser_browserName, "f")}/${__classPrivateFieldGet(this, _Browser_browserVersion, "f")}`;
+        return `${this.#browserName}/${this.#browserVersion}`;
     }
     /**
      * Returns an array of all open browser contexts. In a newly created browser, this will
@@ -123,30 +215,40 @@ export class Browser extends BrowserBase {
      */
     browserContexts() {
         // TODO: implement incognito context https://github.com/w3c/webdriver-bidi/issues/289.
-        return [__classPrivateFieldGet(this, _Browser_defaultContext, "f")];
+        return this.#contexts;
+    }
+    async _closeContext(browserContext) {
+        this.#contexts = this.#contexts.filter(c => {
+            return c !== browserContext;
+        });
+        for (const target of browserContext.targets()) {
+            const page = await target?.page();
+            await page?.close().catch(error => {
+                debugError(error);
+            });
+        }
     }
     /**
      * Returns the default browser context. The default browser context cannot be closed.
      */
     defaultBrowserContext() {
-        return __classPrivateFieldGet(this, _Browser_defaultContext, "f");
+        return this.#defaultContext;
     }
     newPage() {
-        return __classPrivateFieldGet(this, _Browser_defaultContext, "f").newPage();
+        return this.#defaultContext.newPage();
+    }
+    targets() {
+        return [this.#browserTarget, ...Array.from(this.#targets.values())];
+    }
+    _getTargetById(id) {
+        const target = this.#targets.get(id);
+        if (!target) {
+            throw new Error('Target not found');
+        }
+        return target;
+    }
+    target() {
+        return this.#browserTarget;
     }
 }
-_Browser_browserName = new WeakMap(), _Browser_browserVersion = new WeakMap(), _Browser_process = new WeakMap(), _Browser_closeCallback = new WeakMap(), _Browser_connection = new WeakMap(), _Browser_defaultViewport = new WeakMap(), _Browser_defaultContext = new WeakMap();
-Browser.subscribeModules = [
-    'browsingContext',
-    'network',
-    'log',
-];
-Browser.subscribeCdpEvents = [
-    // Coverage
-    'cdp.Debugger.scriptParsed',
-    'cdp.CSS.styleSheetAdded',
-    'cdp.Runtime.executionContextsCleared',
-    // Tracing
-    'cdp.Tracing.tracingComplete',
-];
 //# sourceMappingURL=Browser.js.map

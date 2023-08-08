@@ -25,6 +25,9 @@ const LazyArg_js_1 = require("./LazyArg.js");
  * @internal
  */
 class QueryHandler {
+    // Either one of these may be implemented, but at least one must be.
+    static querySelectorAll;
+    static querySelector;
     static get _querySelector() {
         if (this.querySelector) {
             return this.querySelector;

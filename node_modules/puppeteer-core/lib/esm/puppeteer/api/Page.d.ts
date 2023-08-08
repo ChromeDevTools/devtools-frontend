@@ -20,11 +20,11 @@ import { Protocol } from 'devtools-protocol';
 import type { HTTPRequest } from '../api/HTTPRequest.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { Accessibility } from '../common/Accessibility.js';
+import type { CDPSession } from '../common/Connection.js';
 import type { ConsoleMessage } from '../common/ConsoleMessage.js';
 import type { Coverage } from '../common/Coverage.js';
 import { Device } from '../common/Device.js';
 import { DeviceRequestPrompt } from '../common/DeviceRequestPrompt.js';
-import type { Dialog } from '../common/Dialog.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import type { FileChooser } from '../common/FileChooser.js';
@@ -33,18 +33,19 @@ import type { PuppeteerLifeCycleEvent } from '../common/LifecycleWatcher.js';
 import { Credentials, NetworkConditions } from '../common/NetworkManager.js';
 import { ParsedPDFOptions, PDFOptions } from '../common/PDFOptions.js';
 import type { Viewport } from '../common/PuppeteerViewport.js';
-import type { Target } from '../common/Target.js';
 import type { Tracing } from '../common/Tracing.js';
-import type { EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from '../common/types.js';
+import type { Awaitable, EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from '../common/types.js';
 import type { WebWorker } from '../common/WebWorker.js';
 import { Deferred } from '../util/Deferred.js';
 import type { Browser } from './Browser.js';
 import type { BrowserContext } from './BrowserContext.js';
+import type { Dialog } from './Dialog.js';
 import type { ClickOptions, ElementHandle } from './ElementHandle.js';
 import type { Frame, FrameAddScriptTagOptions, FrameAddStyleTagOptions, FrameWaitForFunctionOptions } from './Frame.js';
-import { Keyboard, Mouse, Touchscreen, KeyboardTypeOptions } from './Input.js';
+import { Keyboard, KeyboardTypeOptions, Mouse, Touchscreen } from './Input.js';
 import type { JSHandle } from './JSHandle.js';
-import { Locator } from './Locator.js';
+import { AwaitedLocator, Locator } from './locators/locators.js';
+import type { Target } from './Target.js';
 /**
  * @public
  */
@@ -516,6 +517,10 @@ export declare class Page extends EventEmitter {
      */
     mainFrame(): Frame;
     /**
+     * Creates a Chrome Devtools Protocol session attached to the page.
+     */
+    createCDPSession(): Promise<CDPSession>;
+    /**
      * {@inheritDoc Keyboard}
      */
     get keyboard(): Keyboard;
@@ -663,20 +668,29 @@ export declare class Page extends EventEmitter {
      */
     getDefaultTimeout(): number;
     /**
-     * Creates a locator for the provided `selector`. See {@link Locator} for
+     * Creates a locator for the provided selector. See {@link Locator} for
      * details and supported actions.
      *
      * @remarks
      * Locators API is experimental and we will not follow semver for breaking
      * change in the Locators API.
      */
-    locator(selector: string): Locator;
+    locator<Selector extends string>(selector: Selector): Locator<NodeFor<Selector>>;
+    /**
+     * Creates a locator for the provided function. See {@link Locator} for
+     * details and supported actions.
+     *
+     * @remarks
+     * Locators API is experimental and we will not follow semver for breaking
+     * change in the Locators API.
+     */
+    locator<Ret>(func: () => Awaitable<Ret>): Locator<Ret>;
     /**
      * A shortcut for {@link Locator.race} that does not require static imports.
      *
      * @internal
      */
-    locatorRace(locators: Locator[]): Locator;
+    locatorRace<Locators extends readonly unknown[] | []>(locators: Locators): Locator<AwaitedLocator<Locators[number]>>;
     /**
      * Runs `document.querySelector` within the page. If no element matches the
      * selector, the return value resolves to `null`.
@@ -951,7 +965,6 @@ export declare class Page extends EventEmitter {
      */
     addStyleTag(options: Omit<FrameAddStyleTagOptions, 'url'>): Promise<ElementHandle<HTMLStyleElement>>;
     addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLLinkElement>>;
-    addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLStyleElement | HTMLLinkElement>>;
     /**
      * The method adds a function called `name` on the page's `window` object.
      * When called, the function executes `puppeteerFunction` in node.js and

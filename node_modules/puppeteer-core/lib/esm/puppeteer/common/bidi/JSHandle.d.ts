@@ -20,7 +20,7 @@ import { EvaluateFuncWith, HandleFor, HandleOr } from '../../common/types.js';
 import { Realm } from './Realm.js';
 export declare class JSHandle<T = unknown> extends BaseJSHandle<T> {
     #private;
-    constructor(realm: Realm, remoteValue: Bidi.CommonDataTypes.RemoteValue);
+    constructor(realm: Realm, remoteValue: Bidi.Script.RemoteValue);
     context(): Realm;
     get disposed(): boolean;
     evaluate<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
@@ -34,6 +34,6 @@ export declare class JSHandle<T = unknown> extends BaseJSHandle<T> {
     get isPrimitiveValue(): boolean;
     toString(): string;
     get id(): string | undefined;
-    remoteValue(): Bidi.CommonDataTypes.RemoteValue;
+    remoteValue(): Bidi.Script.RemoteValue;
 }
 //# sourceMappingURL=JSHandle.d.ts.map

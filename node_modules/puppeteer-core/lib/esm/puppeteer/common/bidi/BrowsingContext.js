@@ -1,21 +1,10 @@
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _CDPSessionWrapper_context, _CDPSessionWrapper_sessionId, _BrowsingContext_timeoutSettings, _BrowsingContext_id, _BrowsingContext_url, _BrowsingContext_cdpSession;
 import { assert } from '../../util/assert.js';
 import { Deferred } from '../../util/Deferred.js';
-import { ProtocolError, TimeoutError } from '../Errors.js';
+import { ProtocolError, TargetCloseError, TimeoutError } from '../Errors.js';
 import { EventEmitter } from '../EventEmitter.js';
 import { getPageContent, setPageContent, waitWithTimeout } from '../util.js';
 import { Realm } from './Realm.js';
+import { debugError } from './utils.js';
 /**
  * @internal
  */
@@ -27,94 +16,136 @@ export const lifeCycleToSubscribedEvent = new Map([
  * @internal
  */
 const lifeCycleToReadinessState = new Map([
-    ['load', 'complete'],
-    ['domcontentloaded', 'interactive'],
+    ['load', "complete" /* Bidi.BrowsingContext.ReadinessState.Complete */],
+    ['domcontentloaded', "interactive" /* Bidi.BrowsingContext.ReadinessState.Interactive */],
 ]);
 /**
  * @internal
  */
+export const cdpSessions = new Map();
+/**
+ * @internal
+ */
 export class CDPSessionWrapper extends EventEmitter {
-    constructor(context) {
+    #context;
+    #sessionId = Deferred.create();
+    #detached = false;
+    constructor(context, sessionId) {
         super();
-        _CDPSessionWrapper_context.set(this, void 0);
-        _CDPSessionWrapper_sessionId.set(this, Deferred.create());
-        __classPrivateFieldSet(this, _CDPSessionWrapper_context, context, "f");
-        context.connection
-            .send('cdp.getSession', {
-            context: context.id,
-        })
-            .then(session => {
-            __classPrivateFieldGet(this, _CDPSessionWrapper_sessionId, "f").resolve(session.result.session);
-        })
-            .catch(err => {
-            __classPrivateFieldGet(this, _CDPSessionWrapper_sessionId, "f").reject(err);
-        });
+        this.#context = context;
+        if (sessionId) {
+            this.#sessionId.resolve(sessionId);
+            cdpSessions.set(sessionId, this);
+        }
+        else {
+            context.connection
+                .send('cdp.getSession', {
+                context: context.id,
+            })
+                .then(session => {
+                this.#sessionId.resolve(session.result.session);
+                cdpSessions.set(session.result.session, this);
+            })
+                .catch(err => {
+                this.#sessionId.reject(err);
+            });
+        }
     }
     connection() {
         return undefined;
     }
     async send(method, ...paramArgs) {
-        const session = await __classPrivateFieldGet(this, _CDPSessionWrapper_sessionId, "f").valueOrThrow();
-        const result = await __classPrivateFieldGet(this, _CDPSessionWrapper_context, "f").connection.send('cdp.sendCommand', {
+        if (this.#detached) {
+            throw new TargetCloseError(`Protocol error (${method}): Session closed. Most likely the page has been closed.`);
+        }
+        const session = await this.#sessionId.valueOrThrow();
+        const { result } = await this.#context.connection.send('cdp.sendCommand', {
             method: method,
             params: paramArgs[0],
             session,
         });
         return result.result;
     }
-    detach() {
-        throw new Error('Method not implemented.');
+    async detach() {
+        cdpSessions.delete(this.id());
+        await this.#context.cdpSession.send('Target.detachFromTarget', {
+            sessionId: this.id(),
+        });
+        this.#detached = true;
     }
     id() {
-        const val = __classPrivateFieldGet(this, _CDPSessionWrapper_sessionId, "f").value();
+        const val = this.#sessionId.value();
         return val instanceof Error || val === undefined ? '' : val;
     }
 }
-_CDPSessionWrapper_context = new WeakMap(), _CDPSessionWrapper_sessionId = new WeakMap();
+/**
+ * Internal events that the BrowsingContext class emits.
+ *
+ * @internal
+ */
+export const BrowsingContextEmittedEvents = {
+    /**
+     * Emitted on the top-level context, when a descendant context is created.
+     */
+    Created: Symbol('BrowsingContext.created'),
+    /**
+     * Emitted on the top-level context, when a descendant context or the
+     * top-level context itself is destroyed.
+     */
+    Destroyed: Symbol('BrowsingContext.destroyed'),
+};
 /**
  * @internal
  */
 export class BrowsingContext extends Realm {
-    constructor(connection, timeoutSettings, info) {
+    #id;
+    #url;
+    #cdpSession;
+    #parent;
+    constructor(connection, info) {
         super(connection, info.context);
-        _BrowsingContext_timeoutSettings.set(this, void 0);
-        _BrowsingContext_id.set(this, void 0);
-        _BrowsingContext_url.set(this, void 0);
-        _BrowsingContext_cdpSession.set(this, void 0);
         this.connection = connection;
-        __classPrivateFieldSet(this, _BrowsingContext_timeoutSettings, timeoutSettings, "f");
-        __classPrivateFieldSet(this, _BrowsingContext_id, info.context, "f");
-        __classPrivateFieldSet(this, _BrowsingContext_url, info.url, "f");
-        __classPrivateFieldSet(this, _BrowsingContext_cdpSession, new CDPSessionWrapper(this), "f");
-        this.on('browsingContext.fragmentNavigated', (info) => {
-            __classPrivateFieldSet(this, _BrowsingContext_url, info.url, "f");
-        });
+        this.#id = info.context;
+        this.#url = info.url;
+        this.#parent = info.parent;
+        this.#cdpSession = new CDPSessionWrapper(this);
+        this.on('browsingContext.domContentLoaded', this.#updateUrl.bind(this));
+        this.on('browsingContext.load', this.#updateUrl.bind(this));
+    }
+    #updateUrl(info) {
+        this.url = info.url;
     }
     createSandboxRealm(sandbox) {
-        return new Realm(this.connection, __classPrivateFieldGet(this, _BrowsingContext_id, "f"), sandbox);
+        return new Realm(this.connection, this.#id, sandbox);
     }
     get url() {
-        return __classPrivateFieldGet(this, _BrowsingContext_url, "f");
+        return this.#url;
+    }
+    set url(value) {
+        this.#url = value;
     }
     get id() {
-        return __classPrivateFieldGet(this, _BrowsingContext_id, "f");
+        return this.#id;
+    }
+    get parent() {
+        return this.#parent;
     }
     get cdpSession() {
-        return __classPrivateFieldGet(this, _BrowsingContext_cdpSession, "f");
+        return this.#cdpSession;
     }
     navigated(url) {
-        __classPrivateFieldSet(this, _BrowsingContext_url, url, "f");
+        this.#url = url;
     }
-    async goto(url, options = {}) {
-        const { waitUntil = 'load', timeout = __classPrivateFieldGet(this, _BrowsingContext_timeoutSettings, "f").navigationTimeout(), } = options;
+    async goto(url, options) {
+        const { waitUntil = 'load', timeout } = options;
         const readinessState = lifeCycleToReadinessState.get(getWaitUntilSingle(waitUntil));
         try {
             const { result } = await waitWithTimeout(this.connection.send('browsingContext.navigate', {
                 url: url,
-                context: __classPrivateFieldGet(this, _BrowsingContext_id, "f"),
+                context: this.#id,
                 wait: readinessState,
             }), 'Navigation', timeout);
-            __classPrivateFieldSet(this, _BrowsingContext_url, result.url, "f");
+            this.#url = result.url;
             return result.navigation;
         }
         catch (error) {
@@ -127,16 +158,16 @@ export class BrowsingContext extends Realm {
             throw error;
         }
     }
-    async reload(options = {}) {
-        const { waitUntil = 'load', timeout = __classPrivateFieldGet(this, _BrowsingContext_timeoutSettings, "f").navigationTimeout(), } = options;
+    async reload(options) {
+        const { waitUntil = 'load', timeout } = options;
         const readinessState = lifeCycleToReadinessState.get(getWaitUntilSingle(waitUntil));
         await waitWithTimeout(this.connection.send('browsingContext.reload', {
-            context: __classPrivateFieldGet(this, _BrowsingContext_id, "f"),
+            context: this.#id,
             wait: readinessState,
         }), 'Navigation', timeout);
     }
     async setContent(html, options) {
-        const { waitUntil = 'load', timeout = __classPrivateFieldGet(this, _BrowsingContext_timeoutSettings, "f").navigationTimeout(), } = options;
+        const { waitUntil = 'load', timeout } = options;
         const waitUntilEvent = lifeCycleToSubscribedEvent.get(getWaitUntilSingle(waitUntil));
         await Promise.all([
             setPageContent(this, html),
@@ -151,7 +182,7 @@ export class BrowsingContext extends Realm {
         return await this.evaluate(getPageContent);
     }
     async sendCDPCommand(method, ...paramArgs) {
-        return __classPrivateFieldGet(this, _BrowsingContext_cdpSession, "f").send(method, ...paramArgs);
+        return this.#cdpSession.send(method, ...paramArgs);
     }
     title() {
         return this.evaluate(() => {
@@ -160,10 +191,10 @@ export class BrowsingContext extends Realm {
     }
     dispose() {
         this.removeAllListeners();
-        this.connection.unregisterBrowsingContexts(__classPrivateFieldGet(this, _BrowsingContext_id, "f"));
+        this.connection.unregisterBrowsingContexts(this.#id);
+        void this.#cdpSession.detach().catch(debugError);
     }
 }
-_BrowsingContext_timeoutSettings = new WeakMap(), _BrowsingContext_id = new WeakMap(), _BrowsingContext_url = new WeakMap(), _BrowsingContext_cdpSession = new WeakMap();
 /**
  * @internal
  */

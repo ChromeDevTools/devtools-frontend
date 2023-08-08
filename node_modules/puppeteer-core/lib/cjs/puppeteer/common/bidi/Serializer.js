@@ -172,15 +172,19 @@ class BidiSerializer {
     static deserializeLocalValue(result) {
         switch (result.type) {
             case 'array':
-                // TODO: Check expected output when value is undefined
-                return result.value?.map(value => {
-                    return BidiSerializer.deserializeLocalValue(value);
-                });
+                if (result.value) {
+                    return result.value.map(value => {
+                        return BidiSerializer.deserializeLocalValue(value);
+                    });
+                }
+                break;
             case 'set':
-                // TODO: Check expected output when value is undefined
-                return result.value.reduce((acc, value) => {
-                    return acc.add(BidiSerializer.deserializeLocalValue(value));
-                }, new Set());
+                if (result.value) {
+                    return result.value.reduce((acc, value) => {
+                        return acc.add(BidiSerializer.deserializeLocalValue(value));
+                    }, new Set());
+                }
+                break;
             case 'object':
                 if (result.value) {
                     return result.value.reduce((acc, tuple) => {
@@ -191,10 +195,13 @@ class BidiSerializer {
                 }
                 break;
             case 'map':
-                return result.value.reduce((acc, tuple) => {
-                    const { key, value } = BidiSerializer.deserializeTuple(tuple);
-                    return acc.set(key, value);
-                }, new Map());
+                if (result.value) {
+                    return result.value?.reduce((acc, tuple) => {
+                        const { key, value } = BidiSerializer.deserializeTuple(tuple);
+                        return acc.set(key, value);
+                    }, new Map());
+                }
+                break;
             case 'promise':
                 return {};
             case 'regexp':

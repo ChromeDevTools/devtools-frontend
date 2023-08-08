@@ -4,7 +4,6 @@ import { WaitForOptions } from '../../api/Page.js';
 import type { CDPSession, Connection as CDPConnection } from '../Connection.js';
 import { EventEmitter } from '../EventEmitter.js';
 import { PuppeteerLifeCycleEvent } from '../LifecycleWatcher.js';
-import { TimeoutSettings } from '../TimeoutSettings.js';
 import { Connection } from './Connection.js';
 import { Realm } from './Realm.js';
 /**
@@ -14,34 +13,58 @@ export declare const lifeCycleToSubscribedEvent: Map<PuppeteerLifeCycleEvent, st
 /**
  * @internal
  */
+export declare const cdpSessions: Map<string, CDPSessionWrapper>;
+/**
+ * @internal
+ */
 export declare class CDPSessionWrapper extends EventEmitter implements CDPSession {
     #private;
-    constructor(context: BrowsingContext);
+    constructor(context: BrowsingContext, sessionId?: string);
     connection(): CDPConnection | undefined;
     send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
     detach(): Promise<void>;
     id(): string;
 }
 /**
+ * Internal events that the BrowsingContext class emits.
+ *
+ * @internal
+ */
+export declare const BrowsingContextEmittedEvents: {
+    /**
+     * Emitted on the top-level context, when a descendant context is created.
+     */
+    readonly Created: symbol;
+    /**
+     * Emitted on the top-level context, when a descendant context or the
+     * top-level context itself is destroyed.
+     */
+    readonly Destroyed: symbol;
+};
+/**
  * @internal
  */
 export declare class BrowsingContext extends Realm {
     #private;
-    constructor(connection: Connection, timeoutSettings: TimeoutSettings, info: Bidi.BrowsingContext.Info);
+    constructor(connection: Connection, info: Bidi.BrowsingContext.Info);
     createSandboxRealm(sandbox: string): Realm;
     get url(): string;
+    set url(value: string);
     get id(): string;
+    get parent(): string | undefined | null;
     get cdpSession(): CDPSession;
     navigated(url: string): void;
-    goto(url: string, options?: {
+    goto(url: string, options: {
         referer?: string;
         referrerPolicy?: string;
-        timeout?: number;
+        timeout: number;
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     }): Promise<string | null>;
-    reload(options?: WaitForOptions): Promise<void>;
+    reload(options: WaitForOptions & {
+        timeout: number;
+    }): Promise<void>;
     setContent(html: string, options: {
-        timeout?: number;
+        timeout: number;
         waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
     }): Promise<void>;
     content(): Promise<string>;

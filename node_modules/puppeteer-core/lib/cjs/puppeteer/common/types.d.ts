@@ -19,7 +19,7 @@ import type { LazyArg } from './LazyArg.js';
 /**
  * @internal
  */
-export type BindingPayload = {
+export interface BindingPayload {
     type: string;
     name: string;
     seq: number;
@@ -28,7 +28,7 @@ export type BindingPayload = {
      * Determines whether the arguments of the payload are trivial.
      */
     isTrivial: boolean;
-};
+}
 /**
  * @internal
  */

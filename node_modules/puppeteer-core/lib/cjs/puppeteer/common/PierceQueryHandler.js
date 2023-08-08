@@ -21,12 +21,12 @@ const QueryHandler_js_1 = require("./QueryHandler.js");
  * @internal
  */
 class PierceQueryHandler extends QueryHandler_js_1.QueryHandler {
+    static querySelector = (element, selector, { pierceQuerySelector }) => {
+        return pierceQuerySelector(element, selector);
+    };
+    static querySelectorAll = (element, selector, { pierceQuerySelectorAll }) => {
+        return pierceQuerySelectorAll(element, selector);
+    };
 }
 exports.PierceQueryHandler = PierceQueryHandler;
-PierceQueryHandler.querySelector = (element, selector, { pierceQuerySelector }) => {
-    return pierceQuerySelector(element, selector);
-};
-PierceQueryHandler.querySelectorAll = (element, selector, { pierceQuerySelectorAll }) => {
-    return pierceQuerySelectorAll(element, selector);
-};
 //# sourceMappingURL=PierceQueryHandler.js.map

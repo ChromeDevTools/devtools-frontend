@@ -15,14 +15,14 @@
  */
 import { Protocol } from 'devtools-protocol';
 import { ElementHandle } from '../api/ElementHandle.js';
-import { Frame as BaseFrame, FrameAddScriptTagOptions, FrameAddStyleTagOptions } from '../api/Frame.js';
+import { Frame as BaseFrame } from '../api/Frame.js';
 import { HTTPResponse } from '../api/HTTPResponse.js';
 import { Page, WaitTimeoutOptions } from '../api/Page.js';
 import { CDPSession } from './Connection.js';
 import { DeviceRequestPrompt, DeviceRequestPromptManager } from './DeviceRequestPrompt.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { FrameManager } from './FrameManager.js';
-import { IsolatedWorld, IsolatedWorldChart } from './IsolatedWorld.js';
+import { IsolatedWorld } from './IsolatedWorld.js';
 import { PuppeteerLifeCycleEvent } from './LifecycleWatcher.js';
 import { EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from './types.js';
 /**
@@ -30,11 +30,9 @@ import { EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from './types.js';
  */
 export declare class Frame extends BaseFrame {
     #private;
-    worlds: IsolatedWorldChart;
     _frameManager: FrameManager;
     _id: string;
     _loaderId: string;
-    _name?: string;
     _hasStartedLoading: boolean;
     _lifecycleEvents: Set<string>;
     _parentId?: string;
@@ -79,9 +77,6 @@ export declare class Frame extends BaseFrame {
     parentFrame(): Frame | null;
     childFrames(): Frame[];
     isDetached(): boolean;
-    addScriptTag(options: FrameAddScriptTagOptions): Promise<ElementHandle<HTMLScriptElement>>;
-    addStyleTag(options: Omit<FrameAddStyleTagOptions, 'url'>): Promise<ElementHandle<HTMLStyleElement>>;
-    addStyleTag(options: FrameAddStyleTagOptions): Promise<ElementHandle<HTMLLinkElement>>;
     title(): Promise<string>;
     _deviceRequestPromptManager(): DeviceRequestPromptManager;
     waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;

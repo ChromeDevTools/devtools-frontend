@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _PQueryEngine_instances, _PQueryEngine_input, _PQueryEngine_complexSelector, _PQueryEngine_compoundSelector, _PQueryEngine_selector, _PQueryEngine_next, _DepthCalculator_cache;
 import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { ariaQuerySelectorAll } from './ARIAQuerySelector.js';
 import { customQuerySelectors } from './CustomQuerySelector.js';
@@ -42,20 +30,20 @@ class SelectorError extends Error {
     }
 }
 class PQueryEngine {
+    #input;
+    #complexSelector;
+    #compoundSelector = [];
+    #selector = undefined;
+    elements;
     constructor(element, input, complexSelector) {
-        _PQueryEngine_instances.add(this);
-        _PQueryEngine_input.set(this, void 0);
-        _PQueryEngine_complexSelector.set(this, void 0);
-        _PQueryEngine_compoundSelector.set(this, []);
-        _PQueryEngine_selector.set(this, undefined);
         this.elements = [element];
-        __classPrivateFieldSet(this, _PQueryEngine_input, input, "f");
-        __classPrivateFieldSet(this, _PQueryEngine_complexSelector, complexSelector, "f");
-        __classPrivateFieldGet(this, _PQueryEngine_instances, "m", _PQueryEngine_next).call(this);
+        this.#input = input;
+        this.#complexSelector = complexSelector;
+        this.#next();
     }
     async run() {
-        if (typeof __classPrivateFieldGet(this, _PQueryEngine_selector, "f") === 'string') {
-            switch (__classPrivateFieldGet(this, _PQueryEngine_selector, "f").trimStart()) {
+        if (typeof this.#selector === 'string') {
+            switch (this.#selector.trimStart()) {
                 case ':scope':
                     // `:scope` has some special behavior depending on the node. It always
                     // represents the current node within a compound selector, but by
@@ -63,13 +51,13 @@ class PQueryEngine {
                     // represented by `<html>`, but any HTMLElement is not represented by
                     // itself (i.e. `null`). This can be troublesome if our combinators
                     // are used right after so we treat this selector specially.
-                    __classPrivateFieldGet(this, _PQueryEngine_instances, "m", _PQueryEngine_next).call(this);
+                    this.#next();
                     break;
             }
         }
-        for (; __classPrivateFieldGet(this, _PQueryEngine_selector, "f") !== undefined; __classPrivateFieldGet(this, _PQueryEngine_instances, "m", _PQueryEngine_next).call(this)) {
-            const selector = __classPrivateFieldGet(this, _PQueryEngine_selector, "f");
-            const input = __classPrivateFieldGet(this, _PQueryEngine_input, "f");
+        for (; this.#selector !== undefined; this.#next()) {
+            const selector = this.#selector;
+            const input = this.#input;
             if (typeof selector === 'string') {
                 // The regular expression tests if the selector is a type/universal
                 // selector. Any other case means we want to apply the selector onto
@@ -125,38 +113,36 @@ class PQueryEngine {
             }
         }
     }
+    #next() {
+        if (this.#compoundSelector.length !== 0) {
+            this.#selector = this.#compoundSelector.shift();
+            return;
+        }
+        if (this.#complexSelector.length === 0) {
+            this.#selector = undefined;
+            return;
+        }
+        const selector = this.#complexSelector.shift();
+        switch (selector) {
+            case ">>>>" /* PCombinator.Child */: {
+                this.elements = AsyncIterableUtil.flatMap(this.elements, pierce);
+                this.#next();
+                break;
+            }
+            case ">>>" /* PCombinator.Descendent */: {
+                this.elements = AsyncIterableUtil.flatMap(this.elements, pierceAll);
+                this.#next();
+                break;
+            }
+            default:
+                this.#compoundSelector = selector;
+                this.#next();
+                break;
+        }
+    }
 }
-_PQueryEngine_input = new WeakMap(), _PQueryEngine_complexSelector = new WeakMap(), _PQueryEngine_compoundSelector = new WeakMap(), _PQueryEngine_selector = new WeakMap(), _PQueryEngine_instances = new WeakSet(), _PQueryEngine_next = function _PQueryEngine_next() {
-    if (__classPrivateFieldGet(this, _PQueryEngine_compoundSelector, "f").length !== 0) {
-        __classPrivateFieldSet(this, _PQueryEngine_selector, __classPrivateFieldGet(this, _PQueryEngine_compoundSelector, "f").shift(), "f");
-        return;
-    }
-    if (__classPrivateFieldGet(this, _PQueryEngine_complexSelector, "f").length === 0) {
-        __classPrivateFieldSet(this, _PQueryEngine_selector, undefined, "f");
-        return;
-    }
-    const selector = __classPrivateFieldGet(this, _PQueryEngine_complexSelector, "f").shift();
-    switch (selector) {
-        case ">>>>" /* PCombinator.Child */: {
-            this.elements = AsyncIterableUtil.flatMap(this.elements, pierce);
-            __classPrivateFieldGet(this, _PQueryEngine_instances, "m", _PQueryEngine_next).call(this);
-            break;
-        }
-        case ">>>" /* PCombinator.Descendent */: {
-            this.elements = AsyncIterableUtil.flatMap(this.elements, pierceAll);
-            __classPrivateFieldGet(this, _PQueryEngine_instances, "m", _PQueryEngine_next).call(this);
-            break;
-        }
-        default:
-            __classPrivateFieldSet(this, _PQueryEngine_compoundSelector, selector, "f");
-            __classPrivateFieldGet(this, _PQueryEngine_instances, "m", _PQueryEngine_next).call(this);
-            break;
-    }
-};
 class DepthCalculator {
-    constructor() {
-        _DepthCalculator_cache.set(this, new WeakMap());
-    }
+    #cache = new WeakMap();
     calculate(node, depth = []) {
         if (node === null) {
             return depth;
@@ -164,7 +150,7 @@ class DepthCalculator {
         if (node instanceof ShadowRoot) {
             node = node.host;
         }
-        const cachedDepth = __classPrivateFieldGet(this, _DepthCalculator_cache, "f").get(node);
+        const cachedDepth = this.#cache.get(node);
         if (cachedDepth) {
             return [...cachedDepth, ...depth];
         }
@@ -173,11 +159,10 @@ class DepthCalculator {
             ++index;
         }
         const value = this.calculate(node.parentNode, [index]);
-        __classPrivateFieldGet(this, _DepthCalculator_cache, "f").set(node, value);
+        this.#cache.set(node, value);
         return [...value, ...depth];
     }
 }
-_DepthCalculator_cache = new WeakMap();
 const compareDepths = (a, b) => {
     if (a.length + b.length === 0) {
         return 0;

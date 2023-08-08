@@ -18,11 +18,11 @@ import { QueryHandler } from './QueryHandler.js';
  * @internal
  */
 export class PQueryHandler extends QueryHandler {
+    static querySelectorAll = (element, selector, { pQuerySelectorAll }) => {
+        return pQuerySelectorAll(element, selector);
+    };
+    static querySelector = (element, selector, { pQuerySelector }) => {
+        return pQuerySelector(element, selector);
+    };
 }
-PQueryHandler.querySelectorAll = (element, selector, { pQuerySelectorAll }) => {
-    return pQuerySelectorAll(element, selector);
-};
-PQueryHandler.querySelector = (element, selector, { pQuerySelector }) => {
-    return pQuerySelector(element, selector);
-};
 //# sourceMappingURL=PQueryHandler.js.map

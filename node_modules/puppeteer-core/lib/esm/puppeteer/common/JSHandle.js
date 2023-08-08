@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var _CDPJSHandle_disposed, _CDPJSHandle_context, _CDPJSHandle_remoteObject;
 import { JSHandle } from '../api/JSHandle.js';
 import { assert } from '../util/assert.js';
 import { createJSHandle, releaseObject, valueFromRemoteObject, withSourcePuppeteerURLIfNone, } from './util.js';
@@ -32,22 +20,22 @@ import { createJSHandle, releaseObject, valueFromRemoteObject, withSourcePuppete
  * @internal
  */
 export class CDPJSHandle extends JSHandle {
+    #disposed = false;
+    #context;
+    #remoteObject;
     get disposed() {
-        return __classPrivateFieldGet(this, _CDPJSHandle_disposed, "f");
+        return this.#disposed;
     }
     constructor(context, remoteObject) {
         super();
-        _CDPJSHandle_disposed.set(this, false);
-        _CDPJSHandle_context.set(this, void 0);
-        _CDPJSHandle_remoteObject.set(this, void 0);
-        __classPrivateFieldSet(this, _CDPJSHandle_context, context, "f");
-        __classPrivateFieldSet(this, _CDPJSHandle_remoteObject, remoteObject, "f");
+        this.#context = context;
+        this.#remoteObject = remoteObject;
     }
     executionContext() {
-        return __classPrivateFieldGet(this, _CDPJSHandle_context, "f");
+        return this.#context;
     }
     get client() {
-        return __classPrivateFieldGet(this, _CDPJSHandle_context, "f")._client;
+        return this.#context._client;
     }
     /**
      * @see {@link ExecutionContext.evaluate} for more details.
@@ -69,11 +57,11 @@ export class CDPJSHandle extends JSHandle {
         }, propertyName);
     }
     async getProperties() {
-        assert(__classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f").objectId);
+        assert(this.#remoteObject.objectId);
         // We use Runtime.getProperties rather than iterative building because the
         // iterative approach might create a distorted snapshot.
         const response = await this.client.send('Runtime.getProperties', {
-            objectId: __classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f").objectId,
+            objectId: this.#remoteObject.objectId,
             ownProperties: true,
         });
         const result = new Map();
@@ -81,13 +69,13 @@ export class CDPJSHandle extends JSHandle {
             if (!property.enumerable || !property.value) {
                 continue;
             }
-            result.set(property.name, createJSHandle(__classPrivateFieldGet(this, _CDPJSHandle_context, "f"), property.value));
+            result.set(property.name, createJSHandle(this.#context, property.value));
         }
         return result;
     }
     async jsonValue() {
-        if (!__classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f").objectId) {
-            return valueFromRemoteObject(__classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f"));
+        if (!this.#remoteObject.objectId) {
+            return valueFromRemoteObject(this.#remoteObject);
         }
         const value = await this.evaluate(object => {
             return object;
@@ -105,25 +93,24 @@ export class CDPJSHandle extends JSHandle {
         return null;
     }
     async dispose() {
-        if (__classPrivateFieldGet(this, _CDPJSHandle_disposed, "f")) {
+        if (this.#disposed) {
             return;
         }
-        __classPrivateFieldSet(this, _CDPJSHandle_disposed, true, "f");
-        await releaseObject(this.client, __classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f"));
+        this.#disposed = true;
+        await releaseObject(this.client, this.#remoteObject);
     }
     toString() {
-        if (!__classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f").objectId) {
-            return 'JSHandle:' + valueFromRemoteObject(__classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f"));
+        if (!this.#remoteObject.objectId) {
+            return 'JSHandle:' + valueFromRemoteObject(this.#remoteObject);
         }
-        const type = __classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f").subtype || __classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f").type;
+        const type = this.#remoteObject.subtype || this.#remoteObject.type;
         return 'JSHandle@' + type;
     }
     get id() {
-        return __classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f").objectId;
+        return this.#remoteObject.objectId;
     }
     remoteObject() {
-        return __classPrivateFieldGet(this, _CDPJSHandle_remoteObject, "f");
+        return this.#remoteObject;
     }
 }
-_CDPJSHandle_disposed = new WeakMap(), _CDPJSHandle_context = new WeakMap(), _CDPJSHandle_remoteObject = new WeakMap();
 //# sourceMappingURL=JSHandle.js.map

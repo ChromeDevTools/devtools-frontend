@@ -19,19 +19,19 @@ import { BrowsingContext } from './BrowsingContext.js';
  * @internal
  */
 export declare class BidiSerializer {
-    static serializeNumber(arg: number): Bidi.CommonDataTypes.LocalValue;
-    static serializeObject(arg: object | null): Bidi.CommonDataTypes.LocalValue;
-    static serializeRemoveValue(arg: unknown): Bidi.CommonDataTypes.LocalValue;
-    static serialize(arg: unknown, context: BrowsingContext): Promise<Bidi.CommonDataTypes.LocalValue | Bidi.CommonDataTypes.RemoteValue>;
-    static deserializeNumber(value: Bidi.CommonDataTypes.SpecialNumber | number): number;
-    static deserializeLocalValue(result: Bidi.CommonDataTypes.RemoteValue): unknown;
+    static serializeNumber(arg: number): Bidi.Script.LocalValue;
+    static serializeObject(arg: object | null): Bidi.Script.LocalValue;
+    static serializeRemoveValue(arg: unknown): Bidi.Script.LocalValue;
+    static serialize(arg: unknown, context: BrowsingContext): Promise<Bidi.Script.LocalValue>;
+    static deserializeNumber(value: Bidi.Script.SpecialNumber | number): number;
+    static deserializeLocalValue(result: Bidi.Script.RemoteValue): unknown;
     static deserializeTuple([serializedKey, serializedValue]: [
-        Bidi.CommonDataTypes.RemoteValue | string,
-        Bidi.CommonDataTypes.RemoteValue
+        Bidi.Script.RemoteValue | string,
+        Bidi.Script.RemoteValue
     ]): {
         key: unknown;
         value: unknown;
     };
-    static deserialize(result: Bidi.CommonDataTypes.RemoteValue): any;
+    static deserialize(result: Bidi.Script.RemoteValue): any;
 }
 //# sourceMappingURL=Serializer.d.ts.map

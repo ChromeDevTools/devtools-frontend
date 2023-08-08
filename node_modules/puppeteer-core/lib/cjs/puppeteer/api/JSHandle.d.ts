@@ -18,7 +18,6 @@ import { CDPSession } from '../common/Connection.js';
 import { ExecutionContext } from '../common/ExecutionContext.js';
 import { EvaluateFuncWith, HandleFor, HandleOr } from '../common/types.js';
 import { ElementHandle } from './ElementHandle.js';
-declare const __JSHandleSymbol: unique symbol;
 /**
  * Represents a reference to a JavaScript object. Instances can be created using
  * {@link Page.evaluateHandle}.
@@ -44,7 +43,7 @@ export declare class JSHandle<T = unknown> {
     /**
      * Used for nominally typing {@link JSHandle}.
      */
-    [__JSHandleSymbol]?: T;
+    _?: T;
     /**
      * @internal
      */
@@ -131,5 +130,4 @@ export declare class JSHandle<T = unknown> {
      */
     remoteObject(): Protocol.Runtime.RemoteObject;
 }
-export {};
 //# sourceMappingURL=JSHandle.d.ts.map

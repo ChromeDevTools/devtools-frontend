@@ -14,45 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Keyboard_context, _Mouse_context, _Mouse_lastMovePoint, _Touchscreen_context;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Touchscreen = exports.Mouse = exports.Keyboard = void 0;
-const Bidi = __importStar(require("chromium-bidi/lib/cjs/protocol/protocol.js"));
 const Input_js_1 = require("../../api/Input.js");
+var SourceActionsType;
+(function (SourceActionsType) {
+    SourceActionsType["None"] = "none";
+    SourceActionsType["Key"] = "key";
+    SourceActionsType["Pointer"] = "pointer";
+    SourceActionsType["Wheel"] = "wheel";
+})(SourceActionsType || (SourceActionsType = {}));
+var ActionType;
+(function (ActionType) {
+    ActionType["Pause"] = "pause";
+    ActionType["KeyDown"] = "keyDown";
+    ActionType["KeyUp"] = "keyUp";
+    ActionType["PointerUp"] = "pointerUp";
+    ActionType["PointerDown"] = "pointerDown";
+    ActionType["PointerMove"] = "pointerMove";
+    ActionType["Scroll"] = "scroll";
+})(ActionType || (ActionType = {}));
 const getBidiKeyValue = (key) => {
     switch (key) {
         case '\r':
@@ -279,24 +260,24 @@ const getBidiKeyValue = (key) => {
  * @internal
  */
 class Keyboard extends Input_js_1.Keyboard {
+    #context;
     /**
      * @internal
      */
     constructor(context) {
         super();
-        _Keyboard_context.set(this, void 0);
-        __classPrivateFieldSet(this, _Keyboard_context, context, "f");
+        this.#context = context;
     }
     async down(key, _options) {
-        await __classPrivateFieldGet(this, _Keyboard_context, "f").connection.send('input.performActions', {
-            context: __classPrivateFieldGet(this, _Keyboard_context, "f").id,
+        await this.#context.connection.send('input.performActions', {
+            context: this.#context.id,
             actions: [
                 {
-                    type: Bidi.Input.SourceActionsType.Key,
+                    type: SourceActionsType.Key,
                     id: "__puppeteer_keyboard" /* InputId.Keyboard */,
                     actions: [
                         {
-                            type: Bidi.Input.ActionType.KeyDown,
+                            type: ActionType.KeyDown,
                             value: getBidiKeyValue(key),
                         },
                     ],
@@ -305,15 +286,15 @@ class Keyboard extends Input_js_1.Keyboard {
         });
     }
     async up(key) {
-        await __classPrivateFieldGet(this, _Keyboard_context, "f").connection.send('input.performActions', {
-            context: __classPrivateFieldGet(this, _Keyboard_context, "f").id,
+        await this.#context.connection.send('input.performActions', {
+            context: this.#context.id,
             actions: [
                 {
-                    type: Bidi.Input.SourceActionsType.Key,
+                    type: SourceActionsType.Key,
                     id: "__puppeteer_keyboard" /* InputId.Keyboard */,
                     actions: [
                         {
-                            type: Bidi.Input.ActionType.KeyUp,
+                            type: ActionType.KeyUp,
                             value: getBidiKeyValue(key),
                         },
                     ],
@@ -325,25 +306,25 @@ class Keyboard extends Input_js_1.Keyboard {
         const { delay = 0 } = options;
         const actions = [
             {
-                type: Bidi.Input.ActionType.KeyDown,
+                type: ActionType.KeyDown,
                 value: getBidiKeyValue(key),
             },
         ];
         if (delay > 0) {
             actions.push({
-                type: Bidi.Input.ActionType.Pause,
+                type: ActionType.Pause,
                 duration: delay,
             });
         }
         actions.push({
-            type: Bidi.Input.ActionType.KeyUp,
+            type: ActionType.KeyUp,
             value: getBidiKeyValue(key),
         });
-        await __classPrivateFieldGet(this, _Keyboard_context, "f").connection.send('input.performActions', {
-            context: __classPrivateFieldGet(this, _Keyboard_context, "f").id,
+        await this.#context.connection.send('input.performActions', {
+            context: this.#context.id,
             actions: [
                 {
-                    type: Bidi.Input.SourceActionsType.Key,
+                    type: SourceActionsType.Key,
                     id: "__puppeteer_keyboard" /* InputId.Keyboard */,
                     actions,
                 },
@@ -359,10 +340,10 @@ class Keyboard extends Input_js_1.Keyboard {
         if (delay <= 0) {
             for (const value of values) {
                 actions.push({
-                    type: Bidi.Input.ActionType.KeyDown,
+                    type: ActionType.KeyDown,
                     value,
                 }, {
-                    type: Bidi.Input.ActionType.KeyUp,
+                    type: ActionType.KeyUp,
                     value,
                 });
             }
@@ -370,22 +351,22 @@ class Keyboard extends Input_js_1.Keyboard {
         else {
             for (const value of values) {
                 actions.push({
-                    type: Bidi.Input.ActionType.KeyDown,
+                    type: ActionType.KeyDown,
                     value,
                 }, {
-                    type: Bidi.Input.ActionType.Pause,
+                    type: ActionType.Pause,
                     duration: delay,
                 }, {
-                    type: Bidi.Input.ActionType.KeyUp,
+                    type: ActionType.KeyUp,
                     value,
                 });
             }
         }
-        await __classPrivateFieldGet(this, _Keyboard_context, "f").connection.send('input.performActions', {
-            context: __classPrivateFieldGet(this, _Keyboard_context, "f").id,
+        await this.#context.connection.send('input.performActions', {
+            context: this.#context.id,
             actions: [
                 {
-                    type: Bidi.Input.SourceActionsType.Key,
+                    type: SourceActionsType.Key,
                     id: "__puppeteer_keyboard" /* InputId.Keyboard */,
                     actions,
                 },
@@ -394,7 +375,6 @@ class Keyboard extends Input_js_1.Keyboard {
     }
 }
 exports.Keyboard = Keyboard;
-_Keyboard_context = new WeakMap();
 const getBidiButton = (button) => {
     switch (button) {
         case Input_js_1.MouseButton.Left:
@@ -413,35 +393,35 @@ const getBidiButton = (button) => {
  * @internal
  */
 class Mouse extends Input_js_1.Mouse {
+    #context;
+    #lastMovePoint;
     /**
      * @internal
      */
     constructor(context) {
         super();
-        _Mouse_context.set(this, void 0);
-        _Mouse_lastMovePoint.set(this, void 0);
-        __classPrivateFieldSet(this, _Mouse_context, context, "f");
+        this.#context = context;
     }
     async reset() {
-        __classPrivateFieldSet(this, _Mouse_lastMovePoint, undefined, "f");
-        await __classPrivateFieldGet(this, _Mouse_context, "f").connection.send('input.releaseActions', {
-            context: __classPrivateFieldGet(this, _Mouse_context, "f").id,
+        this.#lastMovePoint = undefined;
+        await this.#context.connection.send('input.releaseActions', {
+            context: this.#context.id,
         });
     }
     async move(x, y, options = {}) {
-        __classPrivateFieldSet(this, _Mouse_lastMovePoint, {
+        this.#lastMovePoint = {
             x,
             y,
-        }, "f");
-        await __classPrivateFieldGet(this, _Mouse_context, "f").connection.send('input.performActions', {
-            context: __classPrivateFieldGet(this, _Mouse_context, "f").id,
+        };
+        await this.#context.connection.send('input.performActions', {
+            context: this.#context.id,
             actions: [
                 {
-                    type: Bidi.Input.SourceActionsType.Pointer,
+                    type: SourceActionsType.Pointer,
                     id: "__puppeteer_mouse" /* InputId.Mouse */,
                     actions: [
                         {
-                            type: Bidi.Input.ActionType.PointerMove,
+                            type: ActionType.PointerMove,
                             x,
                             y,
                             duration: (options.steps ?? 0) * 50,
@@ -453,15 +433,15 @@ class Mouse extends Input_js_1.Mouse {
         });
     }
     async down(options = {}) {
-        await __classPrivateFieldGet(this, _Mouse_context, "f").connection.send('input.performActions', {
-            context: __classPrivateFieldGet(this, _Mouse_context, "f").id,
+        await this.#context.connection.send('input.performActions', {
+            context: this.#context.id,
             actions: [
                 {
-                    type: Bidi.Input.SourceActionsType.Pointer,
+                    type: SourceActionsType.Pointer,
                     id: "__puppeteer_mouse" /* InputId.Mouse */,
                     actions: [
                         {
-                            type: Bidi.Input.ActionType.PointerDown,
+                            type: ActionType.PointerDown,
                             button: getBidiButton(options.button ?? Input_js_1.MouseButton.Left),
                         },
                     ],
@@ -470,15 +450,15 @@ class Mouse extends Input_js_1.Mouse {
         });
     }
     async up(options = {}) {
-        await __classPrivateFieldGet(this, _Mouse_context, "f").connection.send('input.performActions', {
-            context: __classPrivateFieldGet(this, _Mouse_context, "f").id,
+        await this.#context.connection.send('input.performActions', {
+            context: this.#context.id,
             actions: [
                 {
-                    type: Bidi.Input.SourceActionsType.Pointer,
+                    type: SourceActionsType.Pointer,
                     id: "__puppeteer_mouse" /* InputId.Mouse */,
                     actions: [
                         {
-                            type: Bidi.Input.ActionType.PointerUp,
+                            type: ActionType.PointerUp,
                             button: getBidiButton(options.button ?? Input_js_1.MouseButton.Left),
                         },
                     ],
@@ -489,18 +469,18 @@ class Mouse extends Input_js_1.Mouse {
     async click(x, y, options = {}) {
         const actions = [
             {
-                type: Bidi.Input.ActionType.PointerMove,
+                type: ActionType.PointerMove,
                 x,
                 y,
                 origin: options.origin,
             },
         ];
         const pointerDownAction = {
-            type: Bidi.Input.ActionType.PointerDown,
+            type: ActionType.PointerDown,
             button: getBidiButton(options.button ?? Input_js_1.MouseButton.Left),
         };
         const pointerUpAction = {
-            type: Bidi.Input.ActionType.PointerUp,
+            type: ActionType.PointerUp,
             button: pointerDownAction.button,
         };
         for (let i = 1; i < (options.count ?? 1); ++i) {
@@ -509,16 +489,16 @@ class Mouse extends Input_js_1.Mouse {
         actions.push(pointerDownAction);
         if (options.delay) {
             actions.push({
-                type: Bidi.Input.ActionType.Pause,
+                type: ActionType.Pause,
                 duration: options.delay,
             });
         }
         actions.push(pointerUpAction);
-        await __classPrivateFieldGet(this, _Mouse_context, "f").connection.send('input.performActions', {
-            context: __classPrivateFieldGet(this, _Mouse_context, "f").id,
+        await this.#context.connection.send('input.performActions', {
+            context: this.#context.id,
             actions: [
                 {
-                    type: Bidi.Input.SourceActionsType.Pointer,
+                    type: SourceActionsType.Pointer,
                     id: "__puppeteer_mouse" /* InputId.Mouse */,
                     actions,
                 },
@@ -526,16 +506,16 @@ class Mouse extends Input_js_1.Mouse {
         });
     }
     async wheel(options = {}) {
-        await __classPrivateFieldGet(this, _Mouse_context, "f").connection.send('input.performActions', {
-            context: __classPrivateFieldGet(this, _Mouse_context, "f").id,
+        await this.#context.connection.send('input.performActions', {
+            context: this.#context.id,
             actions: [
                 {
-                    type: Bidi.Input.SourceActionsType.Wheel,
+                    type: SourceActionsType.Wheel,
                     id: "__puppeteer_wheel" /* InputId.Wheel */,
                     actions: [
                         {
-                            type: Bidi.Input.ActionType.Scroll,
-                            ...(__classPrivateFieldGet(this, _Mouse_lastMovePoint, "f") ?? {
+                            type: ActionType.Scroll,
+                            ...(this.#lastMovePoint ?? {
                                 x: 0,
                                 y: 0,
                             }),
@@ -549,42 +529,41 @@ class Mouse extends Input_js_1.Mouse {
     }
 }
 exports.Mouse = Mouse;
-_Mouse_context = new WeakMap(), _Mouse_lastMovePoint = new WeakMap();
 /**
  * @internal
  */
 class Touchscreen extends Input_js_1.Touchscreen {
+    #context;
     /**
      * @internal
      */
     constructor(context) {
         super();
-        _Touchscreen_context.set(this, void 0);
-        __classPrivateFieldSet(this, _Touchscreen_context, context, "f");
+        this.#context = context;
     }
     async tap(x, y, options = {}) {
         await this.touchStart(x, y, options);
         await this.touchEnd();
     }
     async touchStart(x, y, options = {}) {
-        await __classPrivateFieldGet(this, _Touchscreen_context, "f").connection.send('input.performActions', {
-            context: __classPrivateFieldGet(this, _Touchscreen_context, "f").id,
+        await this.#context.connection.send('input.performActions', {
+            context: this.#context.id,
             actions: [
                 {
-                    type: Bidi.Input.SourceActionsType.Pointer,
+                    type: SourceActionsType.Pointer,
                     id: "__puppeteer_finger" /* InputId.Finger */,
                     parameters: {
-                        pointerType: Bidi.Input.PointerType.Touch,
+                        pointerType: "touch" /* Bidi.Input.PointerType.Touch */,
                     },
                     actions: [
                         {
-                            type: Bidi.Input.ActionType.PointerMove,
+                            type: ActionType.PointerMove,
                             x,
                             y,
                             origin: options.origin,
                         },
                         {
-                            type: Bidi.Input.ActionType.PointerDown,
+                            type: ActionType.PointerDown,
                             button: 0,
                         },
                     ],
@@ -593,18 +572,18 @@ class Touchscreen extends Input_js_1.Touchscreen {
         });
     }
     async touchMove(x, y, options = {}) {
-        await __classPrivateFieldGet(this, _Touchscreen_context, "f").connection.send('input.performActions', {
-            context: __classPrivateFieldGet(this, _Touchscreen_context, "f").id,
+        await this.#context.connection.send('input.performActions', {
+            context: this.#context.id,
             actions: [
                 {
-                    type: Bidi.Input.SourceActionsType.Pointer,
+                    type: SourceActionsType.Pointer,
                     id: "__puppeteer_finger" /* InputId.Finger */,
                     parameters: {
-                        pointerType: Bidi.Input.PointerType.Touch,
+                        pointerType: "touch" /* Bidi.Input.PointerType.Touch */,
                     },
                     actions: [
                         {
-                            type: Bidi.Input.ActionType.PointerMove,
+                            type: ActionType.PointerMove,
                             x,
                             y,
                             origin: options.origin,
@@ -615,18 +594,18 @@ class Touchscreen extends Input_js_1.Touchscreen {
         });
     }
     async touchEnd() {
-        await __classPrivateFieldGet(this, _Touchscreen_context, "f").connection.send('input.performActions', {
-            context: __classPrivateFieldGet(this, _Touchscreen_context, "f").id,
+        await this.#context.connection.send('input.performActions', {
+            context: this.#context.id,
             actions: [
                 {
-                    type: Bidi.Input.SourceActionsType.Pointer,
+                    type: SourceActionsType.Pointer,
                     id: "__puppeteer_finger" /* InputId.Finger */,
                     parameters: {
-                        pointerType: Bidi.Input.PointerType.Touch,
+                        pointerType: "touch" /* Bidi.Input.PointerType.Touch */,
                     },
                     actions: [
                         {
-                            type: Bidi.Input.ActionType.PointerUp,
+                            type: ActionType.PointerUp,
                             button: 0,
                         },
                     ],
@@ -636,5 +615,4 @@ class Touchscreen extends Input_js_1.Touchscreen {
     }
 }
 exports.Touchscreen = Touchscreen;
-_Touchscreen_context = new WeakMap();
 //# sourceMappingURL=Input.js.map

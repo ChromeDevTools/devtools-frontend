@@ -37,20 +37,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _PuppeteerURL_functionName, _PuppeteerURL_siteString;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPageContent = exports.setPageContent = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.waitWithTimeout = exports.pageBindingInitString = exports.addPageBinding = exports.evaluationString = exports.createJSHandle = exports.waitForEvent = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.removeEventListeners = exports.addEventListener = exports.releaseObject = exports.valueFromRemoteObject = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.createClientError = exports.createEvaluationError = exports.debugError = void 0;
+exports.validateDialogType = exports.getPageContent = exports.setPageContent = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.waitWithTimeout = exports.pageBindingInitString = exports.addPageBinding = exports.evaluationString = exports.createJSHandle = exports.waitForEvent = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.removeEventListeners = exports.addEventListener = exports.releaseObject = exports.valueFromRemoteObject = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.createClientError = exports.createEvaluationError = exports.debugError = void 0;
 const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
@@ -168,43 +156,40 @@ const SOURCE_URL = Symbol('Source URL for Puppeteer evaluation scripts');
  * @internal
  */
 class PuppeteerURL {
-    constructor() {
-        _PuppeteerURL_functionName.set(this, void 0);
-        _PuppeteerURL_siteString.set(this, void 0);
-    }
+    static INTERNAL_URL = 'pptr:internal';
     static fromCallSite(functionName, site) {
         const url = new PuppeteerURL();
-        __classPrivateFieldSet(url, _PuppeteerURL_functionName, functionName, "f");
-        __classPrivateFieldSet(url, _PuppeteerURL_siteString, site.toString(), "f");
+        url.#functionName = functionName;
+        url.#siteString = site.toString();
         return url;
     }
+    static parse = (url) => {
+        url = url.slice('pptr:'.length);
+        const [functionName = '', siteString = ''] = url.split(';');
+        const puppeteerUrl = new PuppeteerURL();
+        puppeteerUrl.#functionName = functionName;
+        puppeteerUrl.#siteString = decodeURIComponent(siteString);
+        return puppeteerUrl;
+    };
+    static isPuppeteerURL = (url) => {
+        return url.startsWith('pptr:');
+    };
+    #functionName;
+    #siteString;
     get functionName() {
-        return __classPrivateFieldGet(this, _PuppeteerURL_functionName, "f");
+        return this.#functionName;
     }
     get siteString() {
-        return __classPrivateFieldGet(this, _PuppeteerURL_siteString, "f");
+        return this.#siteString;
     }
     toString() {
         return `pptr:${[
-            __classPrivateFieldGet(this, _PuppeteerURL_functionName, "f"),
-            encodeURIComponent(__classPrivateFieldGet(this, _PuppeteerURL_siteString, "f")),
+            this.#functionName,
+            encodeURIComponent(this.#siteString),
         ].join(';')}`;
     }
 }
 exports.PuppeteerURL = PuppeteerURL;
-_PuppeteerURL_functionName = new WeakMap(), _PuppeteerURL_siteString = new WeakMap();
-PuppeteerURL.INTERNAL_URL = 'pptr:internal';
-PuppeteerURL.parse = (url) => {
-    url = url.slice('pptr:'.length);
-    const [functionName = '', siteString = ''] = url.split(';');
-    const puppeteerUrl = new PuppeteerURL();
-    __classPrivateFieldSet(puppeteerUrl, _PuppeteerURL_functionName, functionName, "f");
-    __classPrivateFieldSet(puppeteerUrl, _PuppeteerURL_siteString, decodeURIComponent(siteString), "f");
-    return puppeteerUrl;
-};
-PuppeteerURL.isPuppeteerURL = (url) => {
-    return url.startsWith('pptr:');
-};
 /**
  * @internal
  */
@@ -344,16 +329,19 @@ async function waitForEvent(emitter, eventName, predicate, timeout, abortPromise
             deferred.resolve(event);
         }
     });
-    return Deferred_js_1.Deferred.race([deferred, abortPromise]).then(r => {
-        removeEventListeners([listener]);
-        if ((0, ErrorLike_js_1.isErrorLike)(r)) {
-            throw r;
+    try {
+        const response = await Deferred_js_1.Deferred.race([deferred, abortPromise]);
+        if ((0, ErrorLike_js_1.isErrorLike)(response)) {
+            throw response;
         }
-        return r;
-    }, error => {
-        removeEventListeners([listener]);
+        return response;
+    }
+    catch (error) {
         throw error;
-    });
+    }
+    finally {
+        removeEventListeners([listener]);
+    }
 }
 exports.waitForEvent = waitForEvent;
 /**
@@ -564,4 +552,22 @@ function getPageContent() {
     return content;
 }
 exports.getPageContent = getPageContent;
+/**
+ * @internal
+ */
+function validateDialogType(type) {
+    let dialogType = null;
+    const validDialogTypes = new Set([
+        'alert',
+        'confirm',
+        'prompt',
+        'beforeunload',
+    ]);
+    if (validDialogTypes.has(type)) {
+        dialogType = type;
+    }
+    (0, assert_js_1.assert)(dialogType, `Unknown javascript dialog type: ${type}`);
+    return dialogType;
+}
+exports.validateDialogType = validateDialogType;
 //# sourceMappingURL=util.js.map

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 export type CSSSelector = string;
-export type PPseudoSelector = {
+export interface PPseudoSelector {
     name: string;
     value: string;
-};
+}
 export declare const enum PCombinator {
     Descendent = ">>>",
     Child = ">>>>"

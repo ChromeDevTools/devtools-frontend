@@ -15,6 +15,7 @@
  */
 export * from './Browser.js';
 export * from './BrowserContext.js';
+export * from './Dialog.js';
 export * from './Page.js';
 export * from './JSHandle.js';
 export * from './ElementHandle.js';
@@ -22,5 +23,6 @@ export * from './Input.js';
 export * from './Frame.js';
 export * from './HTTPResponse.js';
 export * from './HTTPRequest.js';
-export * from './Locator.js';
+export * from './locators/locators.js';
+export * from './Target.js';
 //# sourceMappingURL=api.d.ts.map

@@ -1,16 +1,4 @@
 "use strict";
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Tracing_client, _Tracing_recording, _Tracing_path;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tracing = void 0;
 /**
@@ -49,14 +37,14 @@ const util_js_1 = require("./util.js");
  * @public
  */
 class Tracing {
+    #client;
+    #recording = false;
+    #path;
     /**
      * @internal
      */
     constructor(client) {
-        _Tracing_client.set(this, void 0);
-        _Tracing_recording.set(this, false);
-        _Tracing_path.set(this, void 0);
-        __classPrivateFieldSet(this, _Tracing_client, client, "f");
+        this.#client = client;
     }
     /**
      * Starts a trace for the current page.
@@ -66,7 +54,7 @@ class Tracing {
      * @param options - Optional `TracingOptions`.
      */
     async start(options = {}) {
-        (0, assert_js_1.assert)(!__classPrivateFieldGet(this, _Tracing_recording, "f"), 'Cannot start recording trace while already recording trace.');
+        (0, assert_js_1.assert)(!this.#recording, 'Cannot start recording trace while already recording trace.');
         const defaultCategories = [
             '-*',
             'devtools.timeline',
@@ -94,9 +82,9 @@ class Tracing {
         const includedCategories = categories.filter(cat => {
             return !cat.startsWith('-');
         });
-        __classPrivateFieldSet(this, _Tracing_path, path, "f");
-        __classPrivateFieldSet(this, _Tracing_recording, true, "f");
-        await __classPrivateFieldGet(this, _Tracing_client, "f").send('Tracing.start', {
+        this.#path = path;
+        this.#recording = true;
+        await this.#client.send('Tracing.start', {
             transferMode: 'ReturnAsStream',
             traceConfig: {
                 excludedCategories,
@@ -110,10 +98,10 @@ class Tracing {
      */
     async stop() {
         const contentDeferred = Deferred_js_1.Deferred.create();
-        __classPrivateFieldGet(this, _Tracing_client, "f").once('Tracing.tracingComplete', async (event) => {
+        this.#client.once('Tracing.tracingComplete', async (event) => {
             try {
-                const readable = await (0, util_js_1.getReadableFromProtocolStream)(__classPrivateFieldGet(this, _Tracing_client, "f"), event.stream);
-                const buffer = await (0, util_js_1.getReadableAsBuffer)(readable, __classPrivateFieldGet(this, _Tracing_path, "f"));
+                const readable = await (0, util_js_1.getReadableFromProtocolStream)(this.#client, event.stream);
+                const buffer = await (0, util_js_1.getReadableAsBuffer)(readable, this.#path);
                 contentDeferred.resolve(buffer ?? undefined);
             }
             catch (error) {
@@ -125,11 +113,10 @@ class Tracing {
                 }
             }
         });
-        await __classPrivateFieldGet(this, _Tracing_client, "f").send('Tracing.end');
-        __classPrivateFieldSet(this, _Tracing_recording, false, "f");
+        await this.#client.send('Tracing.end');
+        this.#recording = false;
         return contentDeferred.valueOrThrow();
     }
 }
 exports.Tracing = Tracing;
-_Tracing_client = new WeakMap(), _Tracing_recording = new WeakMap(), _Tracing_path = new WeakMap();
 //# sourceMappingURL=Tracing.js.map

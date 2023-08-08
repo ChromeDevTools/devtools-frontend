@@ -18,8 +18,8 @@ import { QueryHandler } from './QueryHandler.js';
  * @internal
  */
 export class TextQueryHandler extends QueryHandler {
+    static querySelectorAll = (element, selector, { textQuerySelectorAll }) => {
+        return textQuerySelectorAll(element, selector);
+    };
 }
-TextQueryHandler.querySelectorAll = (element, selector, { textQuerySelectorAll }) => {
-    return textQuerySelectorAll(element, selector);
-};
 //# sourceMappingURL=TextQueryHandler.js.map

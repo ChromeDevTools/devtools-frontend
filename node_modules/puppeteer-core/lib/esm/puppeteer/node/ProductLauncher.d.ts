@@ -8,12 +8,12 @@ import { PuppeteerNode } from './PuppeteerNode.js';
 /**
  * @internal
  */
-export type ResolvedLaunchArgs = {
+export interface ResolvedLaunchArgs {
     isTempUserDataDir: boolean;
     userDataDir: string;
     executablePath: string;
     args: string[];
-};
+}
 /**
  * Describes a launcher - a class that is able to create and launch a browser instance.
  *

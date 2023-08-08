@@ -40,6 +40,30 @@ exports.DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = 0;
  */
 class HTTPRequest {
     /**
+     * @internal
+     */
+    _requestId = '';
+    /**
+     * @internal
+     */
+    _interceptionId;
+    /**
+     * @internal
+     */
+    _failureText = null;
+    /**
+     * @internal
+     */
+    _response = null;
+    /**
+     * @internal
+     */
+    _fromMemoryCache = false;
+    /**
+     * @internal
+     */
+    _redirectChain = [];
+    /**
      * Warning! Using this client can break Puppeteer. Use with caution.
      *
      * @experimental
@@ -50,28 +74,7 @@ class HTTPRequest {
     /**
      * @internal
      */
-    constructor() {
-        /**
-         * @internal
-         */
-        this._requestId = '';
-        /**
-         * @internal
-         */
-        this._failureText = null;
-        /**
-         * @internal
-         */
-        this._response = null;
-        /**
-         * @internal
-         */
-        this._fromMemoryCache = false;
-        /**
-         * @internal
-         */
-        this._redirectChain = [];
-    }
+    constructor() { }
     /**
      * The URL of the request
      */

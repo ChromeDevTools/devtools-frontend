@@ -150,4 +150,8 @@ export declare function setPageContent(page: Pick<Page, 'evaluate'>, content: st
  * @internal
  */
 export declare function getPageContent(): string;
+/**
+ * @internal
+ */
+export declare function validateDialogType(type: string): 'alert' | 'confirm' | 'prompt' | 'beforeunload';
 //# sourceMappingURL=util.d.ts.map

@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _LifecycleWatcher_instances, _LifecycleWatcher_expectedLifecycle, _LifecycleWatcher_frameManager, _LifecycleWatcher_frame, _LifecycleWatcher_timeout, _LifecycleWatcher_navigationRequest, _LifecycleWatcher_eventListeners, _LifecycleWatcher_initialLoaderId, _LifecycleWatcher_terminationDeferred, _LifecycleWatcher_sameDocumentNavigationDeferred, _LifecycleWatcher_lifecycleDeferred, _LifecycleWatcher_newDocumentNavigationDeferred, _LifecycleWatcher_hasSameDocumentNavigation, _LifecycleWatcher_swapped, _LifecycleWatcher_navigationResponseReceived, _LifecycleWatcher_onRequest, _LifecycleWatcher_onRequestFailed, _LifecycleWatcher_onResponse, _LifecycleWatcher_onFrameDetached, _LifecycleWatcher_terminate, _LifecycleWatcher_navigatedWithinDocument, _LifecycleWatcher_navigated, _LifecycleWatcher_frameSwapped, _LifecycleWatcher_checkLifecycleComplete;
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { CDPSessionEmittedEvents } from './Connection.js';
@@ -41,149 +29,156 @@ const puppeteerToProtocolLifecycle = new Map([
  * @internal
  */
 export class LifecycleWatcher {
+    #expectedLifecycle;
+    #frameManager;
+    #frame;
+    #timeout;
+    #navigationRequest = null;
+    #eventListeners;
+    #initialLoaderId;
+    #terminationDeferred;
+    #sameDocumentNavigationDeferred = Deferred.create();
+    #lifecycleDeferred = Deferred.create();
+    #newDocumentNavigationDeferred = Deferred.create();
+    #hasSameDocumentNavigation;
+    #swapped;
+    #navigationResponseReceived;
     constructor(frameManager, frame, waitUntil, timeout) {
-        _LifecycleWatcher_instances.add(this);
-        _LifecycleWatcher_expectedLifecycle.set(this, void 0);
-        _LifecycleWatcher_frameManager.set(this, void 0);
-        _LifecycleWatcher_frame.set(this, void 0);
-        _LifecycleWatcher_timeout.set(this, void 0);
-        _LifecycleWatcher_navigationRequest.set(this, null);
-        _LifecycleWatcher_eventListeners.set(this, void 0);
-        _LifecycleWatcher_initialLoaderId.set(this, void 0);
-        _LifecycleWatcher_terminationDeferred.set(this, void 0);
-        _LifecycleWatcher_sameDocumentNavigationDeferred.set(this, Deferred.create());
-        _LifecycleWatcher_lifecycleDeferred.set(this, Deferred.create());
-        _LifecycleWatcher_newDocumentNavigationDeferred.set(this, Deferred.create());
-        _LifecycleWatcher_hasSameDocumentNavigation.set(this, void 0);
-        _LifecycleWatcher_swapped.set(this, void 0);
-        _LifecycleWatcher_navigationResponseReceived.set(this, void 0);
         if (Array.isArray(waitUntil)) {
             waitUntil = waitUntil.slice();
         }
         else if (typeof waitUntil === 'string') {
             waitUntil = [waitUntil];
         }
-        __classPrivateFieldSet(this, _LifecycleWatcher_initialLoaderId, frame._loaderId, "f");
-        __classPrivateFieldSet(this, _LifecycleWatcher_expectedLifecycle, waitUntil.map(value => {
+        this.#initialLoaderId = frame._loaderId;
+        this.#expectedLifecycle = waitUntil.map(value => {
             const protocolEvent = puppeteerToProtocolLifecycle.get(value);
             assert(protocolEvent, 'Unknown value for options.waitUntil: ' + value);
             return protocolEvent;
-        }), "f");
-        __classPrivateFieldSet(this, _LifecycleWatcher_frameManager, frameManager, "f");
-        __classPrivateFieldSet(this, _LifecycleWatcher_frame, frame, "f");
-        __classPrivateFieldSet(this, _LifecycleWatcher_timeout, timeout, "f");
-        __classPrivateFieldSet(this, _LifecycleWatcher_eventListeners, [
-            addEventListener(frameManager.client, CDPSessionEmittedEvents.Disconnected, __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_terminate).bind(this, new Error('Navigation failed because browser has disconnected!'))),
-            addEventListener(__classPrivateFieldGet(this, _LifecycleWatcher_frameManager, "f"), FrameManagerEmittedEvents.LifecycleEvent, __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_checkLifecycleComplete).bind(this)),
-            addEventListener(__classPrivateFieldGet(this, _LifecycleWatcher_frameManager, "f"), FrameManagerEmittedEvents.FrameNavigatedWithinDocument, __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_navigatedWithinDocument).bind(this)),
-            addEventListener(__classPrivateFieldGet(this, _LifecycleWatcher_frameManager, "f"), FrameManagerEmittedEvents.FrameNavigated, __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_navigated).bind(this)),
-            addEventListener(__classPrivateFieldGet(this, _LifecycleWatcher_frameManager, "f"), FrameManagerEmittedEvents.FrameSwapped, __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_frameSwapped).bind(this)),
-            addEventListener(__classPrivateFieldGet(this, _LifecycleWatcher_frameManager, "f"), FrameManagerEmittedEvents.FrameDetached, __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_onFrameDetached).bind(this)),
-            addEventListener(__classPrivateFieldGet(this, _LifecycleWatcher_frameManager, "f").networkManager, NetworkManagerEmittedEvents.Request, __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_onRequest).bind(this)),
-            addEventListener(__classPrivateFieldGet(this, _LifecycleWatcher_frameManager, "f").networkManager, NetworkManagerEmittedEvents.Response, __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_onResponse).bind(this)),
-            addEventListener(__classPrivateFieldGet(this, _LifecycleWatcher_frameManager, "f").networkManager, NetworkManagerEmittedEvents.RequestFailed, __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_onRequestFailed).bind(this)),
-        ], "f");
-        __classPrivateFieldSet(this, _LifecycleWatcher_terminationDeferred, Deferred.create({
-            timeout: __classPrivateFieldGet(this, _LifecycleWatcher_timeout, "f"),
-            message: `Navigation timeout of ${__classPrivateFieldGet(this, _LifecycleWatcher_timeout, "f")} ms exceeded`,
-        }), "f");
-        __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_checkLifecycleComplete).call(this);
+        });
+        this.#frameManager = frameManager;
+        this.#frame = frame;
+        this.#timeout = timeout;
+        this.#eventListeners = [
+            addEventListener(frameManager.client, CDPSessionEmittedEvents.Disconnected, this.#terminate.bind(this, new Error('Navigation failed because browser has disconnected!'))),
+            addEventListener(this.#frameManager, FrameManagerEmittedEvents.LifecycleEvent, this.#checkLifecycleComplete.bind(this)),
+            addEventListener(this.#frameManager, FrameManagerEmittedEvents.FrameNavigatedWithinDocument, this.#navigatedWithinDocument.bind(this)),
+            addEventListener(this.#frameManager, FrameManagerEmittedEvents.FrameNavigated, this.#navigated.bind(this)),
+            addEventListener(this.#frameManager, FrameManagerEmittedEvents.FrameSwapped, this.#frameSwapped.bind(this)),
+            addEventListener(this.#frameManager, FrameManagerEmittedEvents.FrameDetached, this.#onFrameDetached.bind(this)),
+            addEventListener(this.#frameManager.networkManager, NetworkManagerEmittedEvents.Request, this.#onRequest.bind(this)),
+            addEventListener(this.#frameManager.networkManager, NetworkManagerEmittedEvents.Response, this.#onResponse.bind(this)),
+            addEventListener(this.#frameManager.networkManager, NetworkManagerEmittedEvents.RequestFailed, this.#onRequestFailed.bind(this)),
+        ];
+        this.#terminationDeferred = Deferred.create({
+            timeout: this.#timeout,
+            message: `Navigation timeout of ${this.#timeout} ms exceeded`,
+        });
+        this.#checkLifecycleComplete();
+    }
+    #onRequest(request) {
+        if (request.frame() !== this.#frame || !request.isNavigationRequest()) {
+            return;
+        }
+        this.#navigationRequest = request;
+        // Resolve previous navigation response in case there are multiple
+        // navigation requests reported by the backend. This generally should not
+        // happen by it looks like it's possible.
+        this.#navigationResponseReceived?.resolve();
+        this.#navigationResponseReceived = Deferred.create();
+        if (request.response() !== null) {
+            this.#navigationResponseReceived?.resolve();
+        }
+    }
+    #onRequestFailed(request) {
+        if (this.#navigationRequest?._requestId !== request._requestId) {
+            return;
+        }
+        this.#navigationResponseReceived?.resolve();
+    }
+    #onResponse(response) {
+        if (this.#navigationRequest?._requestId !== response.request()._requestId) {
+            return;
+        }
+        this.#navigationResponseReceived?.resolve();
+    }
+    #onFrameDetached(frame) {
+        if (this.#frame === frame) {
+            this.#terminationDeferred.resolve(new Error('Navigating frame was detached'));
+            return;
+        }
+        this.#checkLifecycleComplete();
     }
     async navigationResponse() {
         // Continue with a possibly null response.
-        await __classPrivateFieldGet(this, _LifecycleWatcher_navigationResponseReceived, "f")?.valueOrThrow();
-        return __classPrivateFieldGet(this, _LifecycleWatcher_navigationRequest, "f") ? __classPrivateFieldGet(this, _LifecycleWatcher_navigationRequest, "f").response() : null;
+        await this.#navigationResponseReceived?.valueOrThrow();
+        return this.#navigationRequest ? this.#navigationRequest.response() : null;
+    }
+    #terminate(error) {
+        this.#terminationDeferred.resolve(error);
     }
     sameDocumentNavigationPromise() {
-        return __classPrivateFieldGet(this, _LifecycleWatcher_sameDocumentNavigationDeferred, "f").valueOrThrow();
+        return this.#sameDocumentNavigationDeferred.valueOrThrow();
     }
     newDocumentNavigationPromise() {
-        return __classPrivateFieldGet(this, _LifecycleWatcher_newDocumentNavigationDeferred, "f").valueOrThrow();
+        return this.#newDocumentNavigationDeferred.valueOrThrow();
     }
     lifecyclePromise() {
-        return __classPrivateFieldGet(this, _LifecycleWatcher_lifecycleDeferred, "f").valueOrThrow();
+        return this.#lifecycleDeferred.valueOrThrow();
     }
     terminationPromise() {
-        return __classPrivateFieldGet(this, _LifecycleWatcher_terminationDeferred, "f").valueOrThrow();
+        return this.#terminationDeferred.valueOrThrow();
+    }
+    #navigatedWithinDocument(frame) {
+        if (frame !== this.#frame) {
+            return;
+        }
+        this.#hasSameDocumentNavigation = true;
+        this.#checkLifecycleComplete();
+    }
+    #navigated(frame) {
+        if (frame !== this.#frame) {
+            return;
+        }
+        this.#checkLifecycleComplete();
+    }
+    #frameSwapped(frame) {
+        if (frame !== this.#frame) {
+            return;
+        }
+        this.#swapped = true;
+        this.#checkLifecycleComplete();
+    }
+    #checkLifecycleComplete() {
+        // We expect navigation to commit.
+        if (!checkLifecycle(this.#frame, this.#expectedLifecycle)) {
+            return;
+        }
+        this.#lifecycleDeferred.resolve();
+        if (this.#hasSameDocumentNavigation) {
+            this.#sameDocumentNavigationDeferred.resolve(undefined);
+        }
+        if (this.#swapped || this.#frame._loaderId !== this.#initialLoaderId) {
+            this.#newDocumentNavigationDeferred.resolve(undefined);
+        }
+        function checkLifecycle(frame, expectedLifecycle) {
+            for (const event of expectedLifecycle) {
+                if (!frame._lifecycleEvents.has(event)) {
+                    return false;
+                }
+            }
+            for (const child of frame.childFrames()) {
+                if (child._hasStartedLoading &&
+                    !checkLifecycle(child, expectedLifecycle)) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
     dispose() {
-        removeEventListeners(__classPrivateFieldGet(this, _LifecycleWatcher_eventListeners, "f"));
-        __classPrivateFieldGet(this, _LifecycleWatcher_terminationDeferred, "f").resolve(new Error('LifecycleWatcher disposed'));
+        removeEventListeners(this.#eventListeners);
+        this.#terminationDeferred.resolve(new Error('LifecycleWatcher disposed'));
     }
 }
-_LifecycleWatcher_expectedLifecycle = new WeakMap(), _LifecycleWatcher_frameManager = new WeakMap(), _LifecycleWatcher_frame = new WeakMap(), _LifecycleWatcher_timeout = new WeakMap(), _LifecycleWatcher_navigationRequest = new WeakMap(), _LifecycleWatcher_eventListeners = new WeakMap(), _LifecycleWatcher_initialLoaderId = new WeakMap(), _LifecycleWatcher_terminationDeferred = new WeakMap(), _LifecycleWatcher_sameDocumentNavigationDeferred = new WeakMap(), _LifecycleWatcher_lifecycleDeferred = new WeakMap(), _LifecycleWatcher_newDocumentNavigationDeferred = new WeakMap(), _LifecycleWatcher_hasSameDocumentNavigation = new WeakMap(), _LifecycleWatcher_swapped = new WeakMap(), _LifecycleWatcher_navigationResponseReceived = new WeakMap(), _LifecycleWatcher_instances = new WeakSet(), _LifecycleWatcher_onRequest = function _LifecycleWatcher_onRequest(request) {
-    if (request.frame() !== __classPrivateFieldGet(this, _LifecycleWatcher_frame, "f") || !request.isNavigationRequest()) {
-        return;
-    }
-    __classPrivateFieldSet(this, _LifecycleWatcher_navigationRequest, request, "f");
-    // Resolve previous navigation response in case there are multiple
-    // navigation requests reported by the backend. This generally should not
-    // happen by it looks like it's possible.
-    __classPrivateFieldGet(this, _LifecycleWatcher_navigationResponseReceived, "f")?.resolve();
-    __classPrivateFieldSet(this, _LifecycleWatcher_navigationResponseReceived, Deferred.create(), "f");
-    if (request.response() !== null) {
-        __classPrivateFieldGet(this, _LifecycleWatcher_navigationResponseReceived, "f")?.resolve();
-    }
-}, _LifecycleWatcher_onRequestFailed = function _LifecycleWatcher_onRequestFailed(request) {
-    if (__classPrivateFieldGet(this, _LifecycleWatcher_navigationRequest, "f")?._requestId !== request._requestId) {
-        return;
-    }
-    __classPrivateFieldGet(this, _LifecycleWatcher_navigationResponseReceived, "f")?.resolve();
-}, _LifecycleWatcher_onResponse = function _LifecycleWatcher_onResponse(response) {
-    if (__classPrivateFieldGet(this, _LifecycleWatcher_navigationRequest, "f")?._requestId !== response.request()._requestId) {
-        return;
-    }
-    __classPrivateFieldGet(this, _LifecycleWatcher_navigationResponseReceived, "f")?.resolve();
-}, _LifecycleWatcher_onFrameDetached = function _LifecycleWatcher_onFrameDetached(frame) {
-    if (__classPrivateFieldGet(this, _LifecycleWatcher_frame, "f") === frame) {
-        __classPrivateFieldGet(this, _LifecycleWatcher_terminationDeferred, "f").resolve(new Error('Navigating frame was detached'));
-        return;
-    }
-    __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_checkLifecycleComplete).call(this);
-}, _LifecycleWatcher_terminate = function _LifecycleWatcher_terminate(error) {
-    __classPrivateFieldGet(this, _LifecycleWatcher_terminationDeferred, "f").resolve(error);
-}, _LifecycleWatcher_navigatedWithinDocument = function _LifecycleWatcher_navigatedWithinDocument(frame) {
-    if (frame !== __classPrivateFieldGet(this, _LifecycleWatcher_frame, "f")) {
-        return;
-    }
-    __classPrivateFieldSet(this, _LifecycleWatcher_hasSameDocumentNavigation, true, "f");
-    __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_checkLifecycleComplete).call(this);
-}, _LifecycleWatcher_navigated = function _LifecycleWatcher_navigated(frame) {
-    if (frame !== __classPrivateFieldGet(this, _LifecycleWatcher_frame, "f")) {
-        return;
-    }
-    __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_checkLifecycleComplete).call(this);
-}, _LifecycleWatcher_frameSwapped = function _LifecycleWatcher_frameSwapped(frame) {
-    if (frame !== __classPrivateFieldGet(this, _LifecycleWatcher_frame, "f")) {
-        return;
-    }
-    __classPrivateFieldSet(this, _LifecycleWatcher_swapped, true, "f");
-    __classPrivateFieldGet(this, _LifecycleWatcher_instances, "m", _LifecycleWatcher_checkLifecycleComplete).call(this);
-}, _LifecycleWatcher_checkLifecycleComplete = function _LifecycleWatcher_checkLifecycleComplete() {
-    // We expect navigation to commit.
-    if (!checkLifecycle(__classPrivateFieldGet(this, _LifecycleWatcher_frame, "f"), __classPrivateFieldGet(this, _LifecycleWatcher_expectedLifecycle, "f"))) {
-        return;
-    }
-    __classPrivateFieldGet(this, _LifecycleWatcher_lifecycleDeferred, "f").resolve();
-    if (__classPrivateFieldGet(this, _LifecycleWatcher_hasSameDocumentNavigation, "f")) {
-        __classPrivateFieldGet(this, _LifecycleWatcher_sameDocumentNavigationDeferred, "f").resolve(undefined);
-    }
-    if (__classPrivateFieldGet(this, _LifecycleWatcher_swapped, "f") || __classPrivateFieldGet(this, _LifecycleWatcher_frame, "f")._loaderId !== __classPrivateFieldGet(this, _LifecycleWatcher_initialLoaderId, "f")) {
-        __classPrivateFieldGet(this, _LifecycleWatcher_newDocumentNavigationDeferred, "f").resolve(undefined);
-    }
-    function checkLifecycle(frame, expectedLifecycle) {
-        for (const event of expectedLifecycle) {
-            if (!frame._lifecycleEvents.has(event)) {
-                return false;
-            }
-        }
-        for (const child of frame.childFrames()) {
-            if (child._hasStartedLoading &&
-                !checkLifecycle(child, expectedLifecycle)) {
-                return false;
-            }
-        }
-        return true;
-    }
-};
 //# sourceMappingURL=LifecycleWatcher.js.map

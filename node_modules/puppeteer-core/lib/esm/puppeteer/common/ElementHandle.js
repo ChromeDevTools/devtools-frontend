@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _CDPElementHandle_instances, _CDPElementHandle_frame, _CDPElementHandle_frameManager_get, _CDPElementHandle_page_get, _CDPElementHandle_getOOPIFOffsets, _CDPElementHandle_getBoxModel, _CDPElementHandle_fromProtocolQuad, _CDPElementHandle_intersectQuadWithViewport;
 import { ElementHandle, } from '../api/ElementHandle.js';
 import { assert } from '../util/assert.js';
 import { CDPJSHandle } from './JSHandle.js';
@@ -42,11 +30,10 @@ const applyOffsetsToQuad = (quad, offsetX, offsetY) => {
  * @internal
  */
 export class CDPElementHandle extends ElementHandle {
+    #frame;
     constructor(context, remoteObject, frame) {
         super(new CDPJSHandle(context, remoteObject));
-        _CDPElementHandle_instances.add(this);
-        _CDPElementHandle_frame.set(this, void 0);
-        __classPrivateFieldSet(this, _CDPElementHandle_frame, frame, "f");
+        this.#frame = frame;
     }
     /**
      * @internal
@@ -63,8 +50,14 @@ export class CDPElementHandle extends ElementHandle {
     remoteObject() {
         return this.handle.remoteObject();
     }
+    get #frameManager() {
+        return this.#frame._frameManager;
+    }
+    get #page() {
+        return this.#frame.page();
+    }
     get frame() {
-        return __classPrivateFieldGet(this, _CDPElementHandle_frame, "f");
+        return this.#frame;
     }
     async $(selector) {
         return super.$(selector);
@@ -82,7 +75,7 @@ export class CDPElementHandle extends ElementHandle {
         if (typeof nodeInfo.node.frameId !== 'string') {
             return null;
         }
-        return __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_frameManager_get).frame(nodeInfo.node.frameId);
+        return this.#frameManager.frame(nodeInfo.node.frameId);
     }
     async scrollIntoView() {
         await this.assertConnectedElement();
@@ -97,6 +90,33 @@ export class CDPElementHandle extends ElementHandle {
             await super.scrollIntoView();
         }
     }
+    async #getOOPIFOffsets(frame) {
+        let offsetX = 0;
+        let offsetY = 0;
+        let currentFrame = frame;
+        while (currentFrame && currentFrame.parentFrame()) {
+            const parent = currentFrame.parentFrame();
+            if (!currentFrame.isOOPFrame() || !parent) {
+                currentFrame = parent;
+                continue;
+            }
+            const { backendNodeId } = await parent._client().send('DOM.getFrameOwner', {
+                frameId: currentFrame._id,
+            });
+            const result = await parent._client().send('DOM.getBoxModel', {
+                backendNodeId: backendNodeId,
+            });
+            if (!result) {
+                break;
+            }
+            const contentBoxQuad = result.model.content;
+            const topLeftCorner = this.#fromProtocolQuad(contentBoxQuad)[0];
+            offsetX += topLeftCorner.x;
+            offsetY += topLeftCorner.y;
+            currentFrame = parent;
+        }
+        return { offsetX, offsetY };
+    }
     async clickablePoint(offset) {
         const [result, layoutMetrics] = await Promise.all([
             this.client
@@ -104,7 +124,7 @@ export class CDPElementHandle extends ElementHandle {
                 objectId: this.id,
             })
                 .catch(debugError),
-            __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get)._client().send('Page.getLayoutMetrics'),
+            this.#page._client().send('Page.getLayoutMetrics'),
         ]);
         if (!result || !result.quads.length) {
             throw new Error('Node is either not clickable or not an HTMLElement');
@@ -112,16 +132,16 @@ export class CDPElementHandle extends ElementHandle {
         // Filter out quads that have too small area to click into.
         // Fallback to `layoutViewport` in case of using Firefox.
         const { clientWidth, clientHeight } = layoutMetrics.cssLayoutViewport || layoutMetrics.layoutViewport;
-        const { offsetX, offsetY } = await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_getOOPIFOffsets).call(this, __classPrivateFieldGet(this, _CDPElementHandle_frame, "f"));
+        const { offsetX, offsetY } = await this.#getOOPIFOffsets(this.#frame);
         const quads = result.quads
             .map(quad => {
-            return __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_fromProtocolQuad).call(this, quad);
+            return this.#fromProtocolQuad(quad);
         })
             .map(quad => {
             return applyOffsetsToQuad(quad, offsetX, offsetY);
         })
             .map(quad => {
-            return __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_intersectQuadWithViewport).call(this, quad, clientWidth, clientHeight);
+            return this.#intersectQuadWithViewport(quad, clientWidth, clientHeight);
         })
             .filter(quad => {
             return computeQuadArea(quad) > 1;
@@ -162,6 +182,30 @@ export class CDPElementHandle extends ElementHandle {
             y: y / 4,
         };
     }
+    #getBoxModel() {
+        const params = {
+            objectId: this.id,
+        };
+        return this.client.send('DOM.getBoxModel', params).catch(error => {
+            return debugError(error);
+        });
+    }
+    #fromProtocolQuad(quad) {
+        return [
+            { x: quad[0], y: quad[1] },
+            { x: quad[2], y: quad[3] },
+            { x: quad[4], y: quad[5] },
+            { x: quad[6], y: quad[7] },
+        ];
+    }
+    #intersectQuadWithViewport(quad, width, height) {
+        return quad.map(point => {
+            return {
+                x: Math.min(Math.max(point.x, 0), width),
+                y: Math.min(Math.max(point.y, 0), height),
+            };
+        });
+    }
     /**
      * This method scrolls element into view if needed, and then
      * uses {@link Page.mouse} to hover over the center of the element.
@@ -170,7 +214,7 @@ export class CDPElementHandle extends ElementHandle {
     async hover() {
         await this.scrollIntoViewIfNeeded();
         const { x, y } = await this.clickablePoint();
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).mouse.move(x, y);
+        await this.#page.mouse.move(x, y);
     }
     /**
      * This method scrolls element into view if needed, and then
@@ -180,38 +224,38 @@ export class CDPElementHandle extends ElementHandle {
     async click(options = {}) {
         await this.scrollIntoViewIfNeeded();
         const { x, y } = await this.clickablePoint(options.offset);
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).mouse.click(x, y, options);
+        await this.#page.mouse.click(x, y, options);
     }
     /**
      * This method creates and captures a dragevent from the element.
      */
     async drag(target) {
-        assert(__classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).isDragInterceptionEnabled(), 'Drag Interception is not enabled!');
+        assert(this.#page.isDragInterceptionEnabled(), 'Drag Interception is not enabled!');
         await this.scrollIntoViewIfNeeded();
         const start = await this.clickablePoint();
-        return await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).mouse.drag(start, target);
+        return await this.#page.mouse.drag(start, target);
     }
     async dragEnter(data = { items: [], dragOperationsMask: 1 }) {
         await this.scrollIntoViewIfNeeded();
         const target = await this.clickablePoint();
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).mouse.dragEnter(target, data);
+        await this.#page.mouse.dragEnter(target, data);
     }
     async dragOver(data = { items: [], dragOperationsMask: 1 }) {
         await this.scrollIntoViewIfNeeded();
         const target = await this.clickablePoint();
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).mouse.dragOver(target, data);
+        await this.#page.mouse.dragOver(target, data);
     }
     async drop(data = { items: [], dragOperationsMask: 1 }) {
         await this.scrollIntoViewIfNeeded();
         const destination = await this.clickablePoint();
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).mouse.drop(destination, data);
+        await this.#page.mouse.drop(destination, data);
     }
     async dragAndDrop(target, options) {
-        assert(__classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).isDragInterceptionEnabled(), 'Drag Interception is not enabled!');
+        assert(this.#page.isDragInterceptionEnabled(), 'Drag Interception is not enabled!');
         await this.scrollIntoViewIfNeeded();
         const startPoint = await this.clickablePoint();
         const targetPoint = await target.clickablePoint();
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).mouse.dragAndDrop(startPoint, targetPoint, options);
+        await this.#page.mouse.dragAndDrop(startPoint, targetPoint, options);
     }
     async uploadFile(...filePaths) {
         const isMultiple = await this.evaluate(element => {
@@ -264,37 +308,37 @@ export class CDPElementHandle extends ElementHandle {
     async tap() {
         await this.scrollIntoViewIfNeeded();
         const { x, y } = await this.clickablePoint();
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).touchscreen.touchStart(x, y);
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).touchscreen.touchEnd();
+        await this.#page.touchscreen.touchStart(x, y);
+        await this.#page.touchscreen.touchEnd();
     }
     async touchStart() {
         await this.scrollIntoViewIfNeeded();
         const { x, y } = await this.clickablePoint();
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).touchscreen.touchStart(x, y);
+        await this.#page.touchscreen.touchStart(x, y);
     }
     async touchMove() {
         await this.scrollIntoViewIfNeeded();
         const { x, y } = await this.clickablePoint();
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).touchscreen.touchMove(x, y);
+        await this.#page.touchscreen.touchMove(x, y);
     }
     async touchEnd() {
         await this.scrollIntoViewIfNeeded();
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).touchscreen.touchEnd();
+        await this.#page.touchscreen.touchEnd();
     }
     async type(text, options) {
         await this.focus();
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).keyboard.type(text, options);
+        await this.#page.keyboard.type(text, options);
     }
     async press(key, options) {
         await this.focus();
-        await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).keyboard.press(key, options);
+        await this.#page.keyboard.press(key, options);
     }
     async boundingBox() {
-        const result = await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_getBoxModel).call(this);
+        const result = await this.#getBoxModel();
         if (!result) {
             return null;
         }
-        const { offsetX, offsetY } = await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_getOOPIFOffsets).call(this, __classPrivateFieldGet(this, _CDPElementHandle_frame, "f"));
+        const { offsetX, offsetY } = await this.#getOOPIFOffsets(this.#frame);
         const quad = result.model.border;
         const x = Math.min(quad[0], quad[2], quad[4], quad[6]);
         const y = Math.min(quad[1], quad[3], quad[5], quad[7]);
@@ -303,17 +347,17 @@ export class CDPElementHandle extends ElementHandle {
         return { x: x + offsetX, y: y + offsetY, width, height };
     }
     async boxModel() {
-        const result = await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_getBoxModel).call(this);
+        const result = await this.#getBoxModel();
         if (!result) {
             return null;
         }
-        const { offsetX, offsetY } = await __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_getOOPIFOffsets).call(this, __classPrivateFieldGet(this, _CDPElementHandle_frame, "f"));
+        const { offsetX, offsetY } = await this.#getOOPIFOffsets(this.#frame);
         const { content, padding, border, margin, width, height } = result.model;
         return {
-            content: applyOffsetsToQuad(__classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_fromProtocolQuad).call(this, content), offsetX, offsetY),
-            padding: applyOffsetsToQuad(__classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_fromProtocolQuad).call(this, padding), offsetX, offsetY),
-            border: applyOffsetsToQuad(__classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_fromProtocolQuad).call(this, border), offsetX, offsetY),
-            margin: applyOffsetsToQuad(__classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_fromProtocolQuad).call(this, margin), offsetX, offsetY),
+            content: applyOffsetsToQuad(this.#fromProtocolQuad(content), offsetX, offsetY),
+            padding: applyOffsetsToQuad(this.#fromProtocolQuad(padding), offsetX, offsetY),
+            border: applyOffsetsToQuad(this.#fromProtocolQuad(border), offsetX, offsetY),
+            margin: applyOffsetsToQuad(this.#fromProtocolQuad(margin), offsetX, offsetY),
             width,
             height,
         };
@@ -322,7 +366,7 @@ export class CDPElementHandle extends ElementHandle {
         let needsViewportReset = false;
         let boundingBox = await this.boundingBox();
         assert(boundingBox, 'Node is either not visible or not an HTMLElement');
-        const viewport = __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).viewport();
+        const viewport = this.#page.viewport();
         if (viewport &&
             (boundingBox.width > viewport.width ||
                 boundingBox.height > viewport.height)) {
@@ -330,7 +374,7 @@ export class CDPElementHandle extends ElementHandle {
                 width: Math.max(viewport.width, Math.ceil(boundingBox.width)),
                 height: Math.max(viewport.height, Math.ceil(boundingBox.height)),
             };
-            await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).setViewport(Object.assign({}, viewport, newViewport));
+            await this.#page.setViewport(Object.assign({}, viewport, newViewport));
             needsViewportReset = true;
         }
         await this.scrollIntoViewIfNeeded();
@@ -344,67 +388,27 @@ export class CDPElementHandle extends ElementHandle {
         const clip = Object.assign({}, boundingBox);
         clip.x += pageX;
         clip.y += pageY;
-        const imageData = await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).screenshot(Object.assign({}, {
+        const imageData = await this.#page.screenshot(Object.assign({}, {
             clip,
         }, options));
         if (needsViewportReset && viewport) {
-            await __classPrivateFieldGet(this, _CDPElementHandle_instances, "a", _CDPElementHandle_page_get).setViewport(viewport);
+            await this.#page.setViewport(viewport);
         }
         return imageData;
     }
-}
-_CDPElementHandle_frame = new WeakMap(), _CDPElementHandle_instances = new WeakSet(), _CDPElementHandle_frameManager_get = function _CDPElementHandle_frameManager_get() {
-    return __classPrivateFieldGet(this, _CDPElementHandle_frame, "f")._frameManager;
-}, _CDPElementHandle_page_get = function _CDPElementHandle_page_get() {
-    return __classPrivateFieldGet(this, _CDPElementHandle_frame, "f").page();
-}, _CDPElementHandle_getOOPIFOffsets = async function _CDPElementHandle_getOOPIFOffsets(frame) {
-    let offsetX = 0;
-    let offsetY = 0;
-    let currentFrame = frame;
-    while (currentFrame && currentFrame.parentFrame()) {
-        const parent = currentFrame.parentFrame();
-        if (!currentFrame.isOOPFrame() || !parent) {
-            currentFrame = parent;
-            continue;
-        }
-        const { backendNodeId } = await parent._client().send('DOM.getFrameOwner', {
-            frameId: currentFrame._id,
+    async autofill(data) {
+        const nodeInfo = await this.client.send('DOM.describeNode', {
+            objectId: this.handle.id,
         });
-        const result = await parent._client().send('DOM.getBoxModel', {
-            backendNodeId: backendNodeId,
+        const fieldId = nodeInfo.node.backendNodeId;
+        const frameId = this.#frame._id;
+        await this.client.send('Autofill.trigger', {
+            fieldId,
+            frameId,
+            card: data.creditCard,
         });
-        if (!result) {
-            break;
-        }
-        const contentBoxQuad = result.model.content;
-        const topLeftCorner = __classPrivateFieldGet(this, _CDPElementHandle_instances, "m", _CDPElementHandle_fromProtocolQuad).call(this, contentBoxQuad)[0];
-        offsetX += topLeftCorner.x;
-        offsetY += topLeftCorner.y;
-        currentFrame = parent;
     }
-    return { offsetX, offsetY };
-}, _CDPElementHandle_getBoxModel = function _CDPElementHandle_getBoxModel() {
-    const params = {
-        objectId: this.id,
-    };
-    return this.client.send('DOM.getBoxModel', params).catch(error => {
-        return debugError(error);
-    });
-}, _CDPElementHandle_fromProtocolQuad = function _CDPElementHandle_fromProtocolQuad(quad) {
-    return [
-        { x: quad[0], y: quad[1] },
-        { x: quad[2], y: quad[3] },
-        { x: quad[4], y: quad[5] },
-        { x: quad[6], y: quad[7] },
-    ];
-}, _CDPElementHandle_intersectQuadWithViewport = function _CDPElementHandle_intersectQuadWithViewport(quad, width, height) {
-    return quad.map(point => {
-        return {
-            x: Math.min(Math.max(point.x, 0), width),
-            y: Math.min(Math.max(point.y, 0), height),
-        };
-    });
-};
+}
 function computeQuadArea(quad) {
     /* Compute sum of all directed areas of adjacent triangles
        https://en.wikipedia.org/wiki/Polygon#Simple_polygons

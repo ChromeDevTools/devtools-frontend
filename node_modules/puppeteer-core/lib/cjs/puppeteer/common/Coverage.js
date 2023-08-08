@@ -14,18 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Coverage_jsCoverage, _Coverage_cssCoverage, _JSCoverage_instances, _JSCoverage_client, _JSCoverage_enabled, _JSCoverage_scriptURLs, _JSCoverage_scriptSources, _JSCoverage_eventListeners, _JSCoverage_resetOnNavigation, _JSCoverage_reportAnonymousScripts, _JSCoverage_includeRawScriptCoverage, _JSCoverage_onExecutionContextsCleared, _JSCoverage_onScriptParsed, _CSSCoverage_instances, _CSSCoverage_client, _CSSCoverage_enabled, _CSSCoverage_stylesheetURLs, _CSSCoverage_stylesheetSources, _CSSCoverage_eventListeners, _CSSCoverage_resetOnNavigation, _CSSCoverage_onExecutionContextsCleared, _CSSCoverage_onStyleSheet;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CSSCoverage = exports.JSCoverage = exports.Coverage = void 0;
 const assert_js_1 = require("../util/assert.js");
@@ -68,11 +56,11 @@ const util_js_1 = require("./util.js");
  * @public
  */
 class Coverage {
+    #jsCoverage;
+    #cssCoverage;
     constructor(client) {
-        _Coverage_jsCoverage.set(this, void 0);
-        _Coverage_cssCoverage.set(this, void 0);
-        __classPrivateFieldSet(this, _Coverage_jsCoverage, new JSCoverage(client), "f");
-        __classPrivateFieldSet(this, _Coverage_cssCoverage, new CSSCoverage(client), "f");
+        this.#jsCoverage = new JSCoverage(client);
+        this.#cssCoverage = new CSSCoverage(client);
     }
     /**
      * @param options - Set of configurable options for coverage defaults to
@@ -88,7 +76,7 @@ class Coverage {
      * comment is present, in which case that will the be URL).
      */
     async startJSCoverage(options = {}) {
-        return await __classPrivateFieldGet(this, _Coverage_jsCoverage, "f").start(options);
+        return await this.#jsCoverage.start(options);
     }
     /**
      * Promise that resolves to the array of coverage reports for
@@ -99,7 +87,7 @@ class Coverage {
      * However, scripts with sourceURLs are reported.
      */
     async stopJSCoverage() {
-        return await __classPrivateFieldGet(this, _Coverage_jsCoverage, "f").stop();
+        return await this.#jsCoverage.stop();
     }
     /**
      * @param options - Set of configurable options for coverage, defaults to
@@ -107,7 +95,7 @@ class Coverage {
      * @returns Promise that resolves when coverage is started.
      */
     async startCSSCoverage(options = {}) {
-        return await __classPrivateFieldGet(this, _Coverage_cssCoverage, "f").start(options);
+        return await this.#cssCoverage.start(options);
     }
     /**
      * Promise that resolves to the array of coverage reports
@@ -118,68 +106,94 @@ class Coverage {
      * without sourceURLs.
      */
     async stopCSSCoverage() {
-        return await __classPrivateFieldGet(this, _Coverage_cssCoverage, "f").stop();
+        return await this.#cssCoverage.stop();
     }
 }
 exports.Coverage = Coverage;
-_Coverage_jsCoverage = new WeakMap(), _Coverage_cssCoverage = new WeakMap();
 /**
  * @public
  */
 class JSCoverage {
+    #client;
+    #enabled = false;
+    #scriptURLs = new Map();
+    #scriptSources = new Map();
+    #eventListeners = [];
+    #resetOnNavigation = false;
+    #reportAnonymousScripts = false;
+    #includeRawScriptCoverage = false;
     constructor(client) {
-        _JSCoverage_instances.add(this);
-        _JSCoverage_client.set(this, void 0);
-        _JSCoverage_enabled.set(this, false);
-        _JSCoverage_scriptURLs.set(this, new Map());
-        _JSCoverage_scriptSources.set(this, new Map());
-        _JSCoverage_eventListeners.set(this, []);
-        _JSCoverage_resetOnNavigation.set(this, false);
-        _JSCoverage_reportAnonymousScripts.set(this, false);
-        _JSCoverage_includeRawScriptCoverage.set(this, false);
-        __classPrivateFieldSet(this, _JSCoverage_client, client, "f");
+        this.#client = client;
     }
     async start(options = {}) {
-        (0, assert_js_1.assert)(!__classPrivateFieldGet(this, _JSCoverage_enabled, "f"), 'JSCoverage is already enabled');
+        (0, assert_js_1.assert)(!this.#enabled, 'JSCoverage is already enabled');
         const { resetOnNavigation = true, reportAnonymousScripts = false, includeRawScriptCoverage = false, useBlockCoverage = true, } = options;
-        __classPrivateFieldSet(this, _JSCoverage_resetOnNavigation, resetOnNavigation, "f");
-        __classPrivateFieldSet(this, _JSCoverage_reportAnonymousScripts, reportAnonymousScripts, "f");
-        __classPrivateFieldSet(this, _JSCoverage_includeRawScriptCoverage, includeRawScriptCoverage, "f");
-        __classPrivateFieldSet(this, _JSCoverage_enabled, true, "f");
-        __classPrivateFieldGet(this, _JSCoverage_scriptURLs, "f").clear();
-        __classPrivateFieldGet(this, _JSCoverage_scriptSources, "f").clear();
-        __classPrivateFieldSet(this, _JSCoverage_eventListeners, [
-            (0, util_js_1.addEventListener)(__classPrivateFieldGet(this, _JSCoverage_client, "f"), 'Debugger.scriptParsed', __classPrivateFieldGet(this, _JSCoverage_instances, "m", _JSCoverage_onScriptParsed).bind(this)),
-            (0, util_js_1.addEventListener)(__classPrivateFieldGet(this, _JSCoverage_client, "f"), 'Runtime.executionContextsCleared', __classPrivateFieldGet(this, _JSCoverage_instances, "m", _JSCoverage_onExecutionContextsCleared).bind(this)),
-        ], "f");
+        this.#resetOnNavigation = resetOnNavigation;
+        this.#reportAnonymousScripts = reportAnonymousScripts;
+        this.#includeRawScriptCoverage = includeRawScriptCoverage;
+        this.#enabled = true;
+        this.#scriptURLs.clear();
+        this.#scriptSources.clear();
+        this.#eventListeners = [
+            (0, util_js_1.addEventListener)(this.#client, 'Debugger.scriptParsed', this.#onScriptParsed.bind(this)),
+            (0, util_js_1.addEventListener)(this.#client, 'Runtime.executionContextsCleared', this.#onExecutionContextsCleared.bind(this)),
+        ];
         await Promise.all([
-            __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Profiler.enable'),
-            __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Profiler.startPreciseCoverage', {
-                callCount: __classPrivateFieldGet(this, _JSCoverage_includeRawScriptCoverage, "f"),
+            this.#client.send('Profiler.enable'),
+            this.#client.send('Profiler.startPreciseCoverage', {
+                callCount: this.#includeRawScriptCoverage,
                 detailed: useBlockCoverage,
             }),
-            __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Debugger.enable'),
-            __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Debugger.setSkipAllPauses', { skip: true }),
+            this.#client.send('Debugger.enable'),
+            this.#client.send('Debugger.setSkipAllPauses', { skip: true }),
         ]);
     }
+    #onExecutionContextsCleared() {
+        if (!this.#resetOnNavigation) {
+            return;
+        }
+        this.#scriptURLs.clear();
+        this.#scriptSources.clear();
+    }
+    async #onScriptParsed(event) {
+        // Ignore puppeteer-injected scripts
+        if (util_js_1.PuppeteerURL.isPuppeteerURL(event.url)) {
+            return;
+        }
+        // Ignore other anonymous scripts unless the reportAnonymousScripts option is true.
+        if (!event.url && !this.#reportAnonymousScripts) {
+            return;
+        }
+        try {
+            const response = await this.#client.send('Debugger.getScriptSource', {
+                scriptId: event.scriptId,
+            });
+            this.#scriptURLs.set(event.scriptId, event.url);
+            this.#scriptSources.set(event.scriptId, response.scriptSource);
+        }
+        catch (error) {
+            // This might happen if the page has already navigated away.
+            (0, util_js_1.debugError)(error);
+        }
+    }
     async stop() {
-        (0, assert_js_1.assert)(__classPrivateFieldGet(this, _JSCoverage_enabled, "f"), 'JSCoverage is not enabled');
-        __classPrivateFieldSet(this, _JSCoverage_enabled, false, "f");
+        (0, assert_js_1.assert)(this.#enabled, 'JSCoverage is not enabled');
+        this.#enabled = false;
         const result = await Promise.all([
-            __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Profiler.takePreciseCoverage'),
-            __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Profiler.stopPreciseCoverage'),
-            __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Profiler.disable'),
-            __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Debugger.disable'),
+            this.#client.send('Profiler.takePreciseCoverage'),
+            this.#client.send('Profiler.stopPreciseCoverage'),
+            this.#client.send('Profiler.disable'),
+            this.#client.send('Debugger.disable'),
         ]);
-        (0, util_js_1.removeEventListeners)(__classPrivateFieldGet(this, _JSCoverage_eventListeners, "f"));
+        (0, util_js_1.removeEventListeners)(this.#eventListeners);
         const coverage = [];
         const profileResponse = result[0];
         for (const entry of profileResponse.result) {
-            let url = __classPrivateFieldGet(this, _JSCoverage_scriptURLs, "f").get(entry.scriptId);
-            if (!url && __classPrivateFieldGet(this, _JSCoverage_reportAnonymousScripts, "f")) {
+            let url = this.#scriptURLs.get(entry.scriptId);
+            if (!url && this.#reportAnonymousScripts) {
                 url = 'debugger://VM' + entry.scriptId;
             }
-            const text = __classPrivateFieldGet(this, _JSCoverage_scriptSources, "f").get(entry.scriptId);
+            const text = this.#scriptSources.get(entry.scriptId);
             if (text === undefined || url === undefined) {
                 continue;
             }
@@ -188,7 +202,7 @@ class JSCoverage {
                 flattenRanges.push(...func.ranges);
             }
             const ranges = convertToDisjointRanges(flattenRanges);
-            if (!__classPrivateFieldGet(this, _JSCoverage_includeRawScriptCoverage, "f")) {
+            if (!this.#includeRawScriptCoverage) {
                 coverage.push({ url, ranges, text });
             }
             else {
@@ -199,73 +213,70 @@ class JSCoverage {
     }
 }
 exports.JSCoverage = JSCoverage;
-_JSCoverage_client = new WeakMap(), _JSCoverage_enabled = new WeakMap(), _JSCoverage_scriptURLs = new WeakMap(), _JSCoverage_scriptSources = new WeakMap(), _JSCoverage_eventListeners = new WeakMap(), _JSCoverage_resetOnNavigation = new WeakMap(), _JSCoverage_reportAnonymousScripts = new WeakMap(), _JSCoverage_includeRawScriptCoverage = new WeakMap(), _JSCoverage_instances = new WeakSet(), _JSCoverage_onExecutionContextsCleared = function _JSCoverage_onExecutionContextsCleared() {
-    if (!__classPrivateFieldGet(this, _JSCoverage_resetOnNavigation, "f")) {
-        return;
-    }
-    __classPrivateFieldGet(this, _JSCoverage_scriptURLs, "f").clear();
-    __classPrivateFieldGet(this, _JSCoverage_scriptSources, "f").clear();
-}, _JSCoverage_onScriptParsed = async function _JSCoverage_onScriptParsed(event) {
-    // Ignore puppeteer-injected scripts
-    if (util_js_1.PuppeteerURL.isPuppeteerURL(event.url)) {
-        return;
-    }
-    // Ignore other anonymous scripts unless the reportAnonymousScripts option is true.
-    if (!event.url && !__classPrivateFieldGet(this, _JSCoverage_reportAnonymousScripts, "f")) {
-        return;
-    }
-    try {
-        const response = await __classPrivateFieldGet(this, _JSCoverage_client, "f").send('Debugger.getScriptSource', {
-            scriptId: event.scriptId,
-        });
-        __classPrivateFieldGet(this, _JSCoverage_scriptURLs, "f").set(event.scriptId, event.url);
-        __classPrivateFieldGet(this, _JSCoverage_scriptSources, "f").set(event.scriptId, response.scriptSource);
-    }
-    catch (error) {
-        // This might happen if the page has already navigated away.
-        (0, util_js_1.debugError)(error);
-    }
-};
 /**
  * @public
  */
 class CSSCoverage {
+    #client;
+    #enabled = false;
+    #stylesheetURLs = new Map();
+    #stylesheetSources = new Map();
+    #eventListeners = [];
+    #resetOnNavigation = false;
     constructor(client) {
-        _CSSCoverage_instances.add(this);
-        _CSSCoverage_client.set(this, void 0);
-        _CSSCoverage_enabled.set(this, false);
-        _CSSCoverage_stylesheetURLs.set(this, new Map());
-        _CSSCoverage_stylesheetSources.set(this, new Map());
-        _CSSCoverage_eventListeners.set(this, []);
-        _CSSCoverage_resetOnNavigation.set(this, false);
-        __classPrivateFieldSet(this, _CSSCoverage_client, client, "f");
+        this.#client = client;
     }
     async start(options = {}) {
-        (0, assert_js_1.assert)(!__classPrivateFieldGet(this, _CSSCoverage_enabled, "f"), 'CSSCoverage is already enabled');
+        (0, assert_js_1.assert)(!this.#enabled, 'CSSCoverage is already enabled');
         const { resetOnNavigation = true } = options;
-        __classPrivateFieldSet(this, _CSSCoverage_resetOnNavigation, resetOnNavigation, "f");
-        __classPrivateFieldSet(this, _CSSCoverage_enabled, true, "f");
-        __classPrivateFieldGet(this, _CSSCoverage_stylesheetURLs, "f").clear();
-        __classPrivateFieldGet(this, _CSSCoverage_stylesheetSources, "f").clear();
-        __classPrivateFieldSet(this, _CSSCoverage_eventListeners, [
-            (0, util_js_1.addEventListener)(__classPrivateFieldGet(this, _CSSCoverage_client, "f"), 'CSS.styleSheetAdded', __classPrivateFieldGet(this, _CSSCoverage_instances, "m", _CSSCoverage_onStyleSheet).bind(this)),
-            (0, util_js_1.addEventListener)(__classPrivateFieldGet(this, _CSSCoverage_client, "f"), 'Runtime.executionContextsCleared', __classPrivateFieldGet(this, _CSSCoverage_instances, "m", _CSSCoverage_onExecutionContextsCleared).bind(this)),
-        ], "f");
+        this.#resetOnNavigation = resetOnNavigation;
+        this.#enabled = true;
+        this.#stylesheetURLs.clear();
+        this.#stylesheetSources.clear();
+        this.#eventListeners = [
+            (0, util_js_1.addEventListener)(this.#client, 'CSS.styleSheetAdded', this.#onStyleSheet.bind(this)),
+            (0, util_js_1.addEventListener)(this.#client, 'Runtime.executionContextsCleared', this.#onExecutionContextsCleared.bind(this)),
+        ];
         await Promise.all([
-            __classPrivateFieldGet(this, _CSSCoverage_client, "f").send('DOM.enable'),
-            __classPrivateFieldGet(this, _CSSCoverage_client, "f").send('CSS.enable'),
-            __classPrivateFieldGet(this, _CSSCoverage_client, "f").send('CSS.startRuleUsageTracking'),
+            this.#client.send('DOM.enable'),
+            this.#client.send('CSS.enable'),
+            this.#client.send('CSS.startRuleUsageTracking'),
         ]);
     }
+    #onExecutionContextsCleared() {
+        if (!this.#resetOnNavigation) {
+            return;
+        }
+        this.#stylesheetURLs.clear();
+        this.#stylesheetSources.clear();
+    }
+    async #onStyleSheet(event) {
+        const header = event.header;
+        // Ignore anonymous scripts
+        if (!header.sourceURL) {
+            return;
+        }
+        try {
+            const response = await this.#client.send('CSS.getStyleSheetText', {
+                styleSheetId: header.styleSheetId,
+            });
+            this.#stylesheetURLs.set(header.styleSheetId, header.sourceURL);
+            this.#stylesheetSources.set(header.styleSheetId, response.text);
+        }
+        catch (error) {
+            // This might happen if the page has already navigated away.
+            (0, util_js_1.debugError)(error);
+        }
+    }
     async stop() {
-        (0, assert_js_1.assert)(__classPrivateFieldGet(this, _CSSCoverage_enabled, "f"), 'CSSCoverage is not enabled');
-        __classPrivateFieldSet(this, _CSSCoverage_enabled, false, "f");
-        const ruleTrackingResponse = await __classPrivateFieldGet(this, _CSSCoverage_client, "f").send('CSS.stopRuleUsageTracking');
+        (0, assert_js_1.assert)(this.#enabled, 'CSSCoverage is not enabled');
+        this.#enabled = false;
+        const ruleTrackingResponse = await this.#client.send('CSS.stopRuleUsageTracking');
         await Promise.all([
-            __classPrivateFieldGet(this, _CSSCoverage_client, "f").send('CSS.disable'),
-            __classPrivateFieldGet(this, _CSSCoverage_client, "f").send('DOM.disable'),
+            this.#client.send('CSS.disable'),
+            this.#client.send('DOM.disable'),
         ]);
-        (0, util_js_1.removeEventListeners)(__classPrivateFieldGet(this, _CSSCoverage_eventListeners, "f"));
+        (0, util_js_1.removeEventListeners)(this.#eventListeners);
         // aggregate by styleSheetId
         const styleSheetIdToCoverage = new Map();
         for (const entry of ruleTrackingResponse.ruleUsage) {
@@ -281,10 +292,10 @@ class CSSCoverage {
             });
         }
         const coverage = [];
-        for (const styleSheetId of __classPrivateFieldGet(this, _CSSCoverage_stylesheetURLs, "f").keys()) {
-            const url = __classPrivateFieldGet(this, _CSSCoverage_stylesheetURLs, "f").get(styleSheetId);
+        for (const styleSheetId of this.#stylesheetURLs.keys()) {
+            const url = this.#stylesheetURLs.get(styleSheetId);
             (0, assert_js_1.assert)(typeof url !== 'undefined', `Stylesheet URL is undefined (styleSheetId=${styleSheetId})`);
-            const text = __classPrivateFieldGet(this, _CSSCoverage_stylesheetSources, "f").get(styleSheetId);
+            const text = this.#stylesheetSources.get(styleSheetId);
             (0, assert_js_1.assert)(typeof text !== 'undefined', `Stylesheet text is undefined (styleSheetId=${styleSheetId})`);
             const ranges = convertToDisjointRanges(styleSheetIdToCoverage.get(styleSheetId) || []);
             coverage.push({ url, ranges, text });
@@ -293,30 +304,6 @@ class CSSCoverage {
     }
 }
 exports.CSSCoverage = CSSCoverage;
-_CSSCoverage_client = new WeakMap(), _CSSCoverage_enabled = new WeakMap(), _CSSCoverage_stylesheetURLs = new WeakMap(), _CSSCoverage_stylesheetSources = new WeakMap(), _CSSCoverage_eventListeners = new WeakMap(), _CSSCoverage_resetOnNavigation = new WeakMap(), _CSSCoverage_instances = new WeakSet(), _CSSCoverage_onExecutionContextsCleared = function _CSSCoverage_onExecutionContextsCleared() {
-    if (!__classPrivateFieldGet(this, _CSSCoverage_resetOnNavigation, "f")) {
-        return;
-    }
-    __classPrivateFieldGet(this, _CSSCoverage_stylesheetURLs, "f").clear();
-    __classPrivateFieldGet(this, _CSSCoverage_stylesheetSources, "f").clear();
-}, _CSSCoverage_onStyleSheet = async function _CSSCoverage_onStyleSheet(event) {
-    const header = event.header;
-    // Ignore anonymous scripts
-    if (!header.sourceURL) {
-        return;
-    }
-    try {
-        const response = await __classPrivateFieldGet(this, _CSSCoverage_client, "f").send('CSS.getStyleSheetText', {
-            styleSheetId: header.styleSheetId,
-        });
-        __classPrivateFieldGet(this, _CSSCoverage_stylesheetURLs, "f").set(header.styleSheetId, header.sourceURL);
-        __classPrivateFieldGet(this, _CSSCoverage_stylesheetSources, "f").set(header.styleSheetId, response.text);
-    }
-    catch (error) {
-        // This might happen if the page has already navigated away.
-        (0, util_js_1.debugError)(error);
-    }
-};
 function convertToDisjointRanges(nestedRanges) {
     const points = [];
     for (const range of nestedRanges) {

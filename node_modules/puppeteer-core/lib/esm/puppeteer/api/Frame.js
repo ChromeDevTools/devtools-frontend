@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 import { getQueryHandlerAndSelector } from '../common/GetQueryHandler.js';
-import { Locator } from './Locator.js';
+import { LazyArg } from '../common/LazyArg.js';
+import { importFSPromises } from '../common/util.js';
+import { FunctionLocator, NodeLocator } from './locators/locators.js';
 /**
  * Represents a DOM frame.
  *
@@ -72,12 +74,27 @@ export class Frame {
     /**
      * @internal
      */
-    constructor() {
-        /**
-         * @internal
-         */
-        this._hasStartedLoading = false;
-    }
+    _id;
+    /**
+     * @internal
+     */
+    _parentId;
+    /**
+     * @internal
+     */
+    worlds;
+    /**
+     * @internal
+     */
+    _name;
+    /**
+     * @internal
+     */
+    _hasStartedLoading = false;
+    /**
+     * @internal
+     */
+    constructor() { }
     /**
      * The page associated with the frame.
      */
@@ -127,16 +144,13 @@ export class Frame {
     async evaluate() {
         throw new Error('Not implemented');
     }
-    /**
-     * Creates a locator for the provided `selector`. See {@link Locator} for
-     * details and supported actions.
-     *
-     * @remarks
-     * Locators API is experimental and we will not follow semver for breaking
-     * change in the Locators API.
-     */
-    locator(selector) {
-        return Locator.create(this, selector);
+    locator(selectorOrFunc) {
+        if (typeof selectorOrFunc === 'string') {
+            return NodeLocator.create(this, selectorOrFunc);
+        }
+        else {
+            return FunctionLocator.create(this, selectorOrFunc);
+        }
     }
     async $() {
         throw new Error('Not implemented');
@@ -302,11 +316,89 @@ export class Frame {
     isDetached() {
         throw new Error('Not implemented');
     }
-    async addScriptTag() {
-        throw new Error('Not implemented');
+    /**
+     * Adds a `<script>` tag into the page with the desired url or content.
+     *
+     * @param options - Options for the script.
+     * @returns An {@link ElementHandle | element handle} to the injected
+     * `<script>` element.
+     */
+    async addScriptTag(options) {
+        let { content = '', type } = options;
+        const { path } = options;
+        if (+!!options.url + +!!path + +!!content !== 1) {
+            throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
+        }
+        if (path) {
+            const fs = await importFSPromises();
+            content = await fs.readFile(path, 'utf8');
+            content += `//# sourceURL=${path.replace(/\n/g, '')}`;
+        }
+        type = type ?? 'text/javascript';
+        return this.mainRealm().transferHandle(await this.isolatedRealm().evaluateHandle(async ({ Deferred }, { url, id, type, content }) => {
+            const deferred = Deferred.create();
+            const script = document.createElement('script');
+            script.type = type;
+            script.text = content;
+            if (url) {
+                script.src = url;
+                script.addEventListener('load', () => {
+                    return deferred.resolve();
+                }, { once: true });
+                script.addEventListener('error', event => {
+                    deferred.reject(new Error(event.message ?? 'Could not load script'));
+                }, { once: true });
+            }
+            else {
+                deferred.resolve();
+            }
+            if (id) {
+                script.id = id;
+            }
+            document.head.appendChild(script);
+            await deferred.valueOrThrow();
+            return script;
+        }, LazyArg.create(context => {
+            return context.puppeteerUtil;
+        }), { ...options, type, content }));
     }
-    async addStyleTag() {
-        throw new Error('Not implemented');
+    async addStyleTag(options) {
+        let { content = '' } = options;
+        const { path } = options;
+        if (+!!options.url + +!!path + +!!content !== 1) {
+            throw new Error('Exactly one of `url`, `path`, or `content` must be specified.');
+        }
+        if (path) {
+            const fs = await importFSPromises();
+            content = await fs.readFile(path, 'utf8');
+            content += '/*# sourceURL=' + path.replace(/\n/g, '') + '*/';
+            options.content = content;
+        }
+        return this.mainRealm().transferHandle(await this.isolatedRealm().evaluateHandle(async ({ Deferred }, { url, content }) => {
+            const deferred = Deferred.create();
+            let element;
+            if (!url) {
+                element = document.createElement('style');
+                element.appendChild(document.createTextNode(content));
+            }
+            else {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = url;
+                element = link;
+            }
+            element.addEventListener('load', () => {
+                deferred.resolve();
+            }, { once: true });
+            element.addEventListener('error', event => {
+                deferred.reject(new Error(event.message ?? 'Could not load style'));
+            }, { once: true });
+            document.head.appendChild(element);
+            await deferred.valueOrThrow();
+            return element;
+        }, LazyArg.create(context => {
+            return context.puppeteerUtil;
+        }), options));
     }
     /**
      * Clicks the first element found that matches `selector`.

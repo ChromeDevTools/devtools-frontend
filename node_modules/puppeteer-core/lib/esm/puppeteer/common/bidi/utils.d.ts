@@ -22,7 +22,7 @@ export declare const debugError: (...args: unknown[]) => void;
 /**
  * @internal
  */
-export declare function releaseReference(client: Realm, remoteReference: Bidi.CommonDataTypes.RemoteReference): Promise<void>;
+export declare function releaseReference(client: Realm, remoteReference: Bidi.Script.RemoteReference): Promise<void>;
 /**
  * @internal
  */

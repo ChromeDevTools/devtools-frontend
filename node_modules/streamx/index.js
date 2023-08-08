@@ -391,7 +391,7 @@ class ReadableState {
   }
 
   updateCallback () {
-    if ((this.stream._readableState & READ_UPDATE_SYNC_STATUS) === READ_PRIMARY) this.update()
+    if ((this.stream._duplexState & READ_UPDATE_SYNC_STATUS) === READ_PRIMARY) this.update()
     else this.updateNextTick()
   }
 

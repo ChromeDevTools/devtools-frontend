@@ -37,18 +37,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
-    if (kind === "m") throw new TypeError("Private method is not writable");
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
-};
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _Page_instances, _Page_accessibility, _Page_timeoutSettings, _Page_browserContext, _Page_connection, _Page_frameTree, _Page_networkManager, _Page_viewport, _Page_closedDeferred, _Page_subscribedEvents, _Page_networkManagerEvents, _Page_tracing, _Page_coverage, _Page_emulationManager, _Page_mouse, _Page_touchscreen, _Page_keyboard, _Page_onFrameLoaded, _Page_onFrameDOMContentLoaded, _Page_onFrameAttached, _Page_onFrameNavigated, _Page_onFrameDetached, _Page_removeFramesRecursively, _Page_onLogEntryAdded;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Page = void 0;
 const Page_js_1 = require("../../api/Page.js");
@@ -65,6 +53,7 @@ const TimeoutSettings_js_1 = require("../TimeoutSettings.js");
 const Tracing_js_1 = require("../Tracing.js");
 const util_js_1 = require("../util.js");
 const BrowsingContext_js_1 = require("./BrowsingContext.js");
+const Dialog_js_1 = require("./Dialog.js");
 const Frame_js_1 = require("./Frame.js");
 const Input_js_1 = require("./Input.js");
 const NetworkManager_js_2 = require("./NetworkManager.js");
@@ -74,127 +63,248 @@ const Serializer_js_1 = require("./Serializer.js");
  * @internal
  */
 class Page extends Page_js_1.Page {
-    constructor(browserContext, info) {
+    #accessibility;
+    #timeoutSettings = new TimeoutSettings_js_1.TimeoutSettings();
+    #connection;
+    #frameTree = new FrameTree_js_1.FrameTree();
+    #networkManager;
+    #viewport = null;
+    #closedDeferred = Deferred_js_1.Deferred.create();
+    #subscribedEvents = new Map([
+        ['log.entryAdded', this.#onLogEntryAdded.bind(this)],
+        ['browsingContext.load', this.#onFrameLoaded.bind(this)],
+        [
+            'browsingContext.domContentLoaded',
+            this.#onFrameDOMContentLoaded.bind(this),
+        ],
+        [
+            'browsingContext.navigationStarted',
+            this.#onFrameNavigationStarted.bind(this),
+        ],
+        ['browsingContext.userPromptOpened', this.#onDialog.bind(this)],
+    ]);
+    #networkManagerEvents = new Map([
+        [
+            NetworkManager_js_1.NetworkManagerEmittedEvents.Request,
+            this.emit.bind(this, "request" /* PageEmittedEvents.Request */),
+        ],
+        [
+            NetworkManager_js_1.NetworkManagerEmittedEvents.RequestServedFromCache,
+            this.emit.bind(this, "requestservedfromcache" /* PageEmittedEvents.RequestServedFromCache */),
+        ],
+        [
+            NetworkManager_js_1.NetworkManagerEmittedEvents.RequestFailed,
+            this.emit.bind(this, "requestfailed" /* PageEmittedEvents.RequestFailed */),
+        ],
+        [
+            NetworkManager_js_1.NetworkManagerEmittedEvents.RequestFinished,
+            this.emit.bind(this, "requestfinished" /* PageEmittedEvents.RequestFinished */),
+        ],
+        [
+            NetworkManager_js_1.NetworkManagerEmittedEvents.Response,
+            this.emit.bind(this, "response" /* PageEmittedEvents.Response */),
+        ],
+    ]);
+    #browsingContextEvents = new Map([
+        [BrowsingContext_js_1.BrowsingContextEmittedEvents.Created, this.#onContextCreated.bind(this)],
+        [
+            BrowsingContext_js_1.BrowsingContextEmittedEvents.Destroyed,
+            this.#onContextDestroyed.bind(this),
+        ],
+    ]);
+    #tracing;
+    #coverage;
+    #emulationManager;
+    #mouse;
+    #touchscreen;
+    #keyboard;
+    #browsingContext;
+    #browserContext;
+    constructor(browsingContext, browserContext) {
         super();
-        _Page_instances.add(this);
-        _Page_accessibility.set(this, void 0);
-        _Page_timeoutSettings.set(this, new TimeoutSettings_js_1.TimeoutSettings());
-        _Page_browserContext.set(this, void 0);
-        _Page_connection.set(this, void 0);
-        _Page_frameTree.set(this, new FrameTree_js_1.FrameTree());
-        _Page_networkManager.set(this, void 0);
-        _Page_viewport.set(this, null);
-        _Page_closedDeferred.set(this, Deferred_js_1.Deferred.create());
-        _Page_subscribedEvents.set(this, new Map([
-            ['log.entryAdded', __classPrivateFieldGet(this, _Page_instances, "m", _Page_onLogEntryAdded).bind(this)],
-            ['browsingContext.load', __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameLoaded).bind(this)],
-            [
-                'browsingContext.domContentLoaded',
-                __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameDOMContentLoaded).bind(this),
-            ],
-            ['browsingContext.contextCreated', __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameAttached).bind(this)],
-            ['browsingContext.contextDestroyed', __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameDetached).bind(this)],
-            ['browsingContext.fragmentNavigated', __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameNavigated).bind(this)],
-        ]));
-        _Page_networkManagerEvents.set(this, new Map([
-            [
-                NetworkManager_js_1.NetworkManagerEmittedEvents.Request,
-                this.emit.bind(this, "request" /* PageEmittedEvents.Request */),
-            ],
-            [
-                NetworkManager_js_1.NetworkManagerEmittedEvents.RequestServedFromCache,
-                this.emit.bind(this, "requestservedfromcache" /* PageEmittedEvents.RequestServedFromCache */),
-            ],
-            [
-                NetworkManager_js_1.NetworkManagerEmittedEvents.RequestFailed,
-                this.emit.bind(this, "requestfailed" /* PageEmittedEvents.RequestFailed */),
-            ],
-            [
-                NetworkManager_js_1.NetworkManagerEmittedEvents.RequestFinished,
-                this.emit.bind(this, "requestfinished" /* PageEmittedEvents.RequestFinished */),
-            ],
-            [
-                NetworkManager_js_1.NetworkManagerEmittedEvents.Response,
-                this.emit.bind(this, "response" /* PageEmittedEvents.Response */),
-            ],
-        ]));
-        _Page_tracing.set(this, void 0);
-        _Page_coverage.set(this, void 0);
-        _Page_emulationManager.set(this, void 0);
-        _Page_mouse.set(this, void 0);
-        _Page_touchscreen.set(this, void 0);
-        _Page_keyboard.set(this, void 0);
-        __classPrivateFieldSet(this, _Page_browserContext, browserContext, "f");
-        __classPrivateFieldSet(this, _Page_connection, browserContext.connection, "f");
-        __classPrivateFieldSet(this, _Page_networkManager, new NetworkManager_js_2.NetworkManager(__classPrivateFieldGet(this, _Page_connection, "f"), this), "f");
-        __classPrivateFieldGet(this, _Page_instances, "m", _Page_onFrameAttached).call(this, {
-            ...info,
-            url: info.url ?? 'about:blank',
-            children: info.children ?? [],
-        });
-        for (const [event, subscriber] of __classPrivateFieldGet(this, _Page_subscribedEvents, "f")) {
-            __classPrivateFieldGet(this, _Page_connection, "f").on(event, subscriber);
+        this.#browsingContext = browsingContext;
+        this.#browserContext = browserContext;
+        this.#connection = browsingContext.connection;
+        for (const [event, subscriber] of this.#browsingContextEvents) {
+            this.#browsingContext.on(event, subscriber);
         }
-        for (const [event, subscriber] of __classPrivateFieldGet(this, _Page_networkManagerEvents, "f")) {
-            __classPrivateFieldGet(this, _Page_networkManager, "f").on(event, subscriber);
+        this.#networkManager = new NetworkManager_js_2.NetworkManager(this.#connection, this);
+        for (const [event, subscriber] of this.#subscribedEvents) {
+            this.#connection.on(event, subscriber);
         }
+        for (const [event, subscriber] of this.#networkManagerEvents) {
+            this.#networkManager.on(event, subscriber);
+        }
+        const frame = new Frame_js_1.Frame(this, this.#browsingContext, this.#timeoutSettings, this.#browsingContext.parent);
+        this.#frameTree.addFrame(frame);
+        this.emit("frameattached" /* PageEmittedEvents.FrameAttached */, frame);
         // TODO: https://github.com/w3c/webdriver-bidi/issues/443
-        __classPrivateFieldSet(this, _Page_accessibility, new Accessibility_js_1.Accessibility(this.mainFrame().context().cdpSession), "f");
-        __classPrivateFieldSet(this, _Page_tracing, new Tracing_js_1.Tracing(this.mainFrame().context().cdpSession), "f");
-        __classPrivateFieldSet(this, _Page_coverage, new Coverage_js_1.Coverage(this.mainFrame().context().cdpSession), "f");
-        __classPrivateFieldSet(this, _Page_emulationManager, new EmulationManager_js_1.EmulationManager(this.mainFrame().context().cdpSession), "f");
-        __classPrivateFieldSet(this, _Page_mouse, new Input_js_1.Mouse(this.mainFrame().context()), "f");
-        __classPrivateFieldSet(this, _Page_touchscreen, new Input_js_1.Touchscreen(this.mainFrame().context()), "f");
-        __classPrivateFieldSet(this, _Page_keyboard, new Input_js_1.Keyboard(this.mainFrame().context()), "f");
+        this.#accessibility = new Accessibility_js_1.Accessibility(this.mainFrame().context().cdpSession);
+        this.#tracing = new Tracing_js_1.Tracing(this.mainFrame().context().cdpSession);
+        this.#coverage = new Coverage_js_1.Coverage(this.mainFrame().context().cdpSession);
+        this.#emulationManager = new EmulationManager_js_1.EmulationManager(this.mainFrame().context().cdpSession);
+        this.#mouse = new Input_js_1.Mouse(this.mainFrame().context());
+        this.#touchscreen = new Input_js_1.Touchscreen(this.mainFrame().context());
+        this.#keyboard = new Input_js_1.Keyboard(this.mainFrame().context());
+    }
+    _setBrowserContext(browserContext) {
+        this.#browserContext = browserContext;
     }
     get accessibility() {
-        return __classPrivateFieldGet(this, _Page_accessibility, "f");
+        return this.#accessibility;
     }
     get tracing() {
-        return __classPrivateFieldGet(this, _Page_tracing, "f");
+        return this.#tracing;
     }
     get coverage() {
-        return __classPrivateFieldGet(this, _Page_coverage, "f");
+        return this.#coverage;
     }
     get mouse() {
-        return __classPrivateFieldGet(this, _Page_mouse, "f");
+        return this.#mouse;
     }
     get touchscreen() {
-        return __classPrivateFieldGet(this, _Page_touchscreen, "f");
+        return this.#touchscreen;
     }
     get keyboard() {
-        return __classPrivateFieldGet(this, _Page_keyboard, "f");
+        return this.#keyboard;
     }
     browser() {
-        return __classPrivateFieldGet(this, _Page_browserContext, "f").browser();
+        return this.browserContext().browser();
     }
     browserContext() {
-        return __classPrivateFieldGet(this, _Page_browserContext, "f");
+        return this.#browserContext;
     }
     mainFrame() {
-        const mainFrame = __classPrivateFieldGet(this, _Page_frameTree, "f").getMainFrame();
+        const mainFrame = this.#frameTree.getMainFrame();
         (0, assert_js_1.assert)(mainFrame, 'Requesting main frame too early!');
         return mainFrame;
     }
     frames() {
-        return Array.from(__classPrivateFieldGet(this, _Page_frameTree, "f").frames());
+        return Array.from(this.#frameTree.frames());
     }
     frame(frameId) {
-        return __classPrivateFieldGet(this, _Page_frameTree, "f").getById(frameId ?? '') || null;
+        return this.#frameTree.getById(frameId ?? '') || null;
     }
     childFrames(frameId) {
-        return __classPrivateFieldGet(this, _Page_frameTree, "f").childFrames(frameId);
+        return this.#frameTree.childFrames(frameId);
     }
-    getNavigationResponse(id) {
-        return __classPrivateFieldGet(this, _Page_networkManager, "f").getNavigationResponse(id);
+    #onFrameLoaded(info) {
+        const frame = this.frame(info.context);
+        if (frame && this.mainFrame() === frame) {
+            this.emit("load" /* PageEmittedEvents.Load */);
+        }
     }
-    async close() {
-        if (__classPrivateFieldGet(this, _Page_closedDeferred, "f").finished()) {
+    #onFrameDOMContentLoaded(info) {
+        const frame = this.frame(info.context);
+        if (frame && this.mainFrame() === frame) {
+            this.emit("domcontentloaded" /* PageEmittedEvents.DOMContentLoaded */);
+        }
+    }
+    #onContextCreated(context) {
+        if (!this.frame(context.id) &&
+            (this.frame(context.parent ?? '') || !this.#frameTree.getMainFrame())) {
+            const frame = new Frame_js_1.Frame(this, context, this.#timeoutSettings, context.parent);
+            this.#frameTree.addFrame(frame);
+            if (frame !== this.mainFrame()) {
+                this.emit("frameattached" /* PageEmittedEvents.FrameAttached */, frame);
+            }
+        }
+    }
+    async #onFrameNavigationStarted(info) {
+        const frameId = info.context;
+        const frame = this.frame(frameId);
+        if (frame) {
+            // TODO: Investigate if a navigationCompleted event should be in Spec
+            const predicate = (event) => {
+                if (event.context === frame?._id) {
+                    return true;
+                }
+                return false;
+            };
+            await Deferred_js_1.Deferred.race([
+                (0, util_js_1.waitForEvent)(this.#connection, 'browsingContext.domContentLoaded', predicate, 0, this.#closedDeferred.valueOrThrow()).catch(util_js_1.debugError),
+                (0, util_js_1.waitForEvent)(this.#connection, 'browsingContext.fragmentNavigated', predicate, 0, this.#closedDeferred.valueOrThrow()).catch(util_js_1.debugError),
+            ]);
+            this.emit("framenavigated" /* PageEmittedEvents.FrameNavigated */, frame);
+        }
+    }
+    #onContextDestroyed(context) {
+        const frame = this.frame(context.id);
+        if (frame) {
+            if (frame === this.mainFrame()) {
+                this.emit("close" /* PageEmittedEvents.Close */);
+            }
+            this.#removeFramesRecursively(frame);
+        }
+    }
+    #removeFramesRecursively(frame) {
+        for (const child of frame.childFrames()) {
+            this.#removeFramesRecursively(child);
+        }
+        frame.dispose();
+        this.#networkManager.clearMapAfterFrameDispose(frame);
+        this.#frameTree.removeFrame(frame);
+        this.emit("framedetached" /* PageEmittedEvents.FrameDetached */, frame);
+    }
+    #onLogEntryAdded(event) {
+        const frame = this.frame(event.source.context);
+        if (!frame) {
             return;
         }
-        __classPrivateFieldGet(this, _Page_closedDeferred, "f").resolve(new Errors_js_1.TargetCloseError('Page closed!'));
-        __classPrivateFieldGet(this, _Page_networkManager, "f").dispose();
-        await __classPrivateFieldGet(this, _Page_connection, "f").send('browsingContext.close', {
+        if (isConsoleLogEntry(event)) {
+            const args = event.args.map(arg => {
+                return (0, Realm_js_1.getBidiHandle)(frame.context(), arg, frame);
+            });
+            const text = args
+                .reduce((value, arg) => {
+                const parsedValue = arg.isPrimitiveValue
+                    ? Serializer_js_1.BidiSerializer.deserialize(arg.remoteValue())
+                    : arg.toString();
+                return `${value} ${parsedValue}`;
+            }, '')
+                .slice(1);
+            this.emit("console" /* PageEmittedEvents.Console */, new ConsoleMessage_js_1.ConsoleMessage(event.method, text, args, getStackTraceLocations(event.stackTrace)));
+        }
+        else if (isJavaScriptLogEntry(event)) {
+            let message = event.text ?? '';
+            if (event.stackTrace) {
+                for (const callFrame of event.stackTrace.callFrames) {
+                    const location = callFrame.url +
+                        ':' +
+                        callFrame.lineNumber +
+                        ':' +
+                        callFrame.columnNumber;
+                    const functionName = callFrame.functionName || '<anonymous>';
+                    message += `\n    at ${functionName} (${location})`;
+                }
+            }
+            const error = new Error(message);
+            error.stack = ''; // Don't capture Puppeteer stacktrace.
+            this.emit("pageerror" /* PageEmittedEvents.PageError */, error);
+        }
+        else {
+            (0, util_js_1.debugError)(`Unhandled LogEntry with type "${event.type}", text "${event.text}" and level "${event.level}"`);
+        }
+    }
+    #onDialog(event) {
+        const frame = this.frame(event.context);
+        if (!frame) {
+            return;
+        }
+        const type = (0, util_js_1.validateDialogType)(event.type);
+        const dialog = new Dialog_js_1.Dialog(frame.context(), type, event.message);
+        this.emit("dialog" /* PageEmittedEvents.Dialog */, dialog);
+    }
+    getNavigationResponse(id) {
+        return this.#networkManager.getNavigationResponse(id);
+    }
+    async close() {
+        if (this.#closedDeferred.finished()) {
+            return;
+        }
+        this.#closedDeferred.resolve(new Errors_js_1.TargetCloseError('Page closed!'));
+        this.#networkManager.dispose();
+        await this.#connection.send('browsingContext.close', {
             context: this.mainFrame()._id,
         });
         this.emit("close" /* PageEmittedEvents.Close */);
@@ -217,7 +327,12 @@ class Page extends Page_js_1.Page {
                 return (response.request().isNavigationRequest() &&
                     response.url() === this.url());
             }),
-            this.mainFrame().context().reload(options),
+            this.mainFrame()
+                .context()
+                .reload({
+                ...options,
+                timeout: options?.timeout ?? this.#timeoutSettings.navigationTimeout(),
+            }),
         ]);
         return response;
     }
@@ -225,13 +340,13 @@ class Page extends Page_js_1.Page {
         return this.mainFrame().url();
     }
     setDefaultNavigationTimeout(timeout) {
-        __classPrivateFieldGet(this, _Page_timeoutSettings, "f").setDefaultNavigationTimeout(timeout);
+        this.#timeoutSettings.setDefaultNavigationTimeout(timeout);
     }
     setDefaultTimeout(timeout) {
-        __classPrivateFieldGet(this, _Page_timeoutSettings, "f").setDefaultTimeout(timeout);
+        this.#timeoutSettings.setDefaultTimeout(timeout);
     }
     getDefaultTimeout() {
-        return __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout();
+        return this.#timeoutSettings.timeout();
     }
     async setContent(html, options = {}) {
         await this.mainFrame().setContent(html, options);
@@ -240,47 +355,48 @@ class Page extends Page_js_1.Page {
         return this.mainFrame().content();
     }
     isJavaScriptEnabled() {
-        return __classPrivateFieldGet(this, _Page_emulationManager, "f").javascriptEnabled;
+        return this.#emulationManager.javascriptEnabled;
     }
     async setGeolocation(options) {
-        return await __classPrivateFieldGet(this, _Page_emulationManager, "f").setGeolocation(options);
+        return await this.#emulationManager.setGeolocation(options);
     }
     async setJavaScriptEnabled(enabled) {
-        return await __classPrivateFieldGet(this, _Page_emulationManager, "f").setJavaScriptEnabled(enabled);
+        return await this.#emulationManager.setJavaScriptEnabled(enabled);
     }
     async emulateMediaType(type) {
-        return await __classPrivateFieldGet(this, _Page_emulationManager, "f").emulateMediaType(type);
+        return await this.#emulationManager.emulateMediaType(type);
     }
     async emulateCPUThrottling(factor) {
-        return await __classPrivateFieldGet(this, _Page_emulationManager, "f").emulateCPUThrottling(factor);
+        return await this.#emulationManager.emulateCPUThrottling(factor);
     }
     async emulateMediaFeatures(features) {
-        return await __classPrivateFieldGet(this, _Page_emulationManager, "f").emulateMediaFeatures(features);
+        return await this.#emulationManager.emulateMediaFeatures(features);
     }
     async emulateTimezone(timezoneId) {
-        return await __classPrivateFieldGet(this, _Page_emulationManager, "f").emulateTimezone(timezoneId);
+        return await this.#emulationManager.emulateTimezone(timezoneId);
     }
     async emulateIdleState(overrides) {
-        return await __classPrivateFieldGet(this, _Page_emulationManager, "f").emulateIdleState(overrides);
+        return await this.#emulationManager.emulateIdleState(overrides);
     }
     async emulateVisionDeficiency(type) {
-        return await __classPrivateFieldGet(this, _Page_emulationManager, "f").emulateVisionDeficiency(type);
+        return await this.#emulationManager.emulateVisionDeficiency(type);
     }
     async setViewport(viewport) {
-        const needsReload = await __classPrivateFieldGet(this, _Page_emulationManager, "f").emulateViewport(viewport);
-        __classPrivateFieldSet(this, _Page_viewport, viewport, "f");
+        const needsReload = await this.#emulationManager.emulateViewport(viewport);
+        this.#viewport = viewport;
         if (needsReload) {
             // TODO: reload seems to hang in BiDi.
             // await this.reload();
         }
     }
     viewport() {
-        return __classPrivateFieldGet(this, _Page_viewport, "f");
+        return this.#viewport;
     }
     async pdf(options = {}) {
         const { path = undefined } = options;
-        const { printBackground: background, margin, landscape, width, height, pageRanges, scale, preferCSSPageSize, timeout, } = this._getPDFOptions(options, 'cm');
-        const { result } = await (0, util_js_1.waitWithTimeout)(__classPrivateFieldGet(this, _Page_connection, "f").send('browsingContext.print', {
+        const { printBackground: background, margin, landscape, width, height, pageRanges: ranges, scale, preferCSSPageSize, timeout, } = this._getPDFOptions(options, 'cm');
+        const pageRanges = ranges ? ranges.split(', ') : [];
+        const { result } = await (0, util_js_1.waitWithTimeout)(this.#connection.send('browsingContext.print', {
             context: this.mainFrame()._id,
             background,
             margin,
@@ -289,7 +405,7 @@ class Page extends Page_js_1.Page {
                 width,
                 height,
             },
-            pageRanges: pageRanges.split(', '),
+            pageRanges,
             scale,
             shrinkToFit: !preferCSSPageSize,
         }), 'browsingContext.print', timeout);
@@ -315,7 +431,7 @@ class Page extends Page_js_1.Page {
         if (Object.keys(args).length >= 1) {
             throw new Error('BiDi only supports "encoding" and "path" options');
         }
-        const { result } = await __classPrivateFieldGet(this, _Page_connection, "f").send('browsingContext.captureScreenshot', {
+        const { result } = await this.#connection.send('browsingContext.captureScreenshot', {
             context: this.mainFrame()._id,
         });
         if (encoding === 'base64') {
@@ -326,8 +442,8 @@ class Page extends Page_js_1.Page {
         return buffer;
     }
     waitForRequest(urlOrPredicate, options = {}) {
-        const { timeout = __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout() } = options;
-        return (0, util_js_1.waitForEvent)(__classPrivateFieldGet(this, _Page_networkManager, "f"), NetworkManager_js_1.NetworkManagerEmittedEvents.Request, async (request) => {
+        const { timeout = this.#timeoutSettings.timeout() } = options;
+        return (0, util_js_1.waitForEvent)(this.#networkManager, NetworkManager_js_1.NetworkManagerEmittedEvents.Request, async (request) => {
             if ((0, util_js_1.isString)(urlOrPredicate)) {
                 return urlOrPredicate === request.url();
             }
@@ -335,11 +451,11 @@ class Page extends Page_js_1.Page {
                 return !!(await urlOrPredicate(request));
             }
             return false;
-        }, timeout, __classPrivateFieldGet(this, _Page_closedDeferred, "f").valueOrThrow());
+        }, timeout, this.#closedDeferred.valueOrThrow());
     }
     waitForResponse(urlOrPredicate, options = {}) {
-        const { timeout = __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout() } = options;
-        return (0, util_js_1.waitForEvent)(__classPrivateFieldGet(this, _Page_networkManager, "f"), NetworkManager_js_1.NetworkManagerEmittedEvents.Response, async (response) => {
+        const { timeout = this.#timeoutSettings.timeout() } = options;
+        return (0, util_js_1.waitForEvent)(this.#networkManager, NetworkManager_js_1.NetworkManagerEmittedEvents.Response, async (response) => {
             if ((0, util_js_1.isString)(urlOrPredicate)) {
                 return urlOrPredicate === response.url();
             }
@@ -347,100 +463,26 @@ class Page extends Page_js_1.Page {
                 return !!(await urlOrPredicate(response));
             }
             return false;
-        }, timeout, __classPrivateFieldGet(this, _Page_closedDeferred, "f").valueOrThrow());
+        }, timeout, this.#closedDeferred.valueOrThrow());
     }
     async waitForNetworkIdle(options = {}) {
-        const { idleTime = 500, timeout = __classPrivateFieldGet(this, _Page_timeoutSettings, "f").timeout() } = options;
-        await this._waitForNetworkIdle(__classPrivateFieldGet(this, _Page_networkManager, "f"), idleTime, timeout, __classPrivateFieldGet(this, _Page_closedDeferred, "f"));
+        const { idleTime = 500, timeout = this.#timeoutSettings.timeout() } = options;
+        await this._waitForNetworkIdle(this.#networkManager, idleTime, timeout, this.#closedDeferred);
     }
     title() {
         return this.mainFrame().title();
     }
+    async createCDPSession() {
+        const { sessionId } = await this.mainFrame()
+            .context()
+            .cdpSession.send('Target.attachToTarget', {
+            targetId: this.mainFrame()._id,
+            flatten: true,
+        });
+        return new BrowsingContext_js_1.CDPSessionWrapper(this.mainFrame().context(), sessionId);
+    }
 }
 exports.Page = Page;
-_Page_accessibility = new WeakMap(), _Page_timeoutSettings = new WeakMap(), _Page_browserContext = new WeakMap(), _Page_connection = new WeakMap(), _Page_frameTree = new WeakMap(), _Page_networkManager = new WeakMap(), _Page_viewport = new WeakMap(), _Page_closedDeferred = new WeakMap(), _Page_subscribedEvents = new WeakMap(), _Page_networkManagerEvents = new WeakMap(), _Page_tracing = new WeakMap(), _Page_coverage = new WeakMap(), _Page_emulationManager = new WeakMap(), _Page_mouse = new WeakMap(), _Page_touchscreen = new WeakMap(), _Page_keyboard = new WeakMap(), _Page_instances = new WeakSet(), _Page_onFrameLoaded = function _Page_onFrameLoaded(info) {
-    const frame = this.frame(info.context);
-    if (frame && this.mainFrame() === frame) {
-        this.emit("load" /* PageEmittedEvents.Load */);
-    }
-}, _Page_onFrameDOMContentLoaded = function _Page_onFrameDOMContentLoaded(info) {
-    const frame = this.frame(info.context);
-    if (frame && this.mainFrame() === frame) {
-        this.emit("domcontentloaded" /* PageEmittedEvents.DOMContentLoaded */);
-    }
-}, _Page_onFrameAttached = function _Page_onFrameAttached(info) {
-    if (!this.frame(info.context) &&
-        (this.frame(info.parent ?? '') || !__classPrivateFieldGet(this, _Page_frameTree, "f").getMainFrame())) {
-        const context = new BrowsingContext_js_1.BrowsingContext(__classPrivateFieldGet(this, _Page_connection, "f"), __classPrivateFieldGet(this, _Page_timeoutSettings, "f"), info);
-        __classPrivateFieldGet(this, _Page_connection, "f").registerBrowsingContexts(context);
-        const frame = new Frame_js_1.Frame(this, context, __classPrivateFieldGet(this, _Page_timeoutSettings, "f"), info.parent);
-        __classPrivateFieldGet(this, _Page_frameTree, "f").addFrame(frame);
-        this.emit("frameattached" /* PageEmittedEvents.FrameAttached */, frame);
-    }
-}, _Page_onFrameNavigated = async function _Page_onFrameNavigated(info) {
-    const frameId = info.context;
-    let frame = this.frame(frameId);
-    // Detach all child frames first.
-    if (frame) {
-        frame = await __classPrivateFieldGet(this, _Page_frameTree, "f").waitForFrame(frameId);
-        this.emit("framenavigated" /* PageEmittedEvents.FrameNavigated */, frame);
-    }
-}, _Page_onFrameDetached = function _Page_onFrameDetached(info) {
-    const frame = this.frame(info.context);
-    if (frame) {
-        if (frame === this.mainFrame()) {
-            this.emit("close" /* PageEmittedEvents.Close */);
-        }
-        __classPrivateFieldGet(this, _Page_instances, "m", _Page_removeFramesRecursively).call(this, frame);
-    }
-}, _Page_removeFramesRecursively = function _Page_removeFramesRecursively(frame) {
-    for (const child of frame.childFrames()) {
-        __classPrivateFieldGet(this, _Page_instances, "m", _Page_removeFramesRecursively).call(this, child);
-    }
-    frame.dispose();
-    __classPrivateFieldGet(this, _Page_networkManager, "f").clearMapAfterFrameDispose(frame);
-    __classPrivateFieldGet(this, _Page_frameTree, "f").removeFrame(frame);
-    this.emit("framedetached" /* PageEmittedEvents.FrameDetached */, frame);
-}, _Page_onLogEntryAdded = function _Page_onLogEntryAdded(event) {
-    const frame = this.frame(event.source.context);
-    if (!frame) {
-        return;
-    }
-    if (isConsoleLogEntry(event)) {
-        const args = event.args.map(arg => {
-            return (0, Realm_js_1.getBidiHandle)(frame.context(), arg, frame);
-        });
-        const text = args
-            .reduce((value, arg) => {
-            const parsedValue = arg.isPrimitiveValue
-                ? Serializer_js_1.BidiSerializer.deserialize(arg.remoteValue())
-                : arg.toString();
-            return `${value} ${parsedValue}`;
-        }, '')
-            .slice(1);
-        this.emit("console" /* PageEmittedEvents.Console */, new ConsoleMessage_js_1.ConsoleMessage(event.method, text, args, getStackTraceLocations(event.stackTrace)));
-    }
-    else if (isJavaScriptLogEntry(event)) {
-        let message = event.text ?? '';
-        if (event.stackTrace) {
-            for (const callFrame of event.stackTrace.callFrames) {
-                const location = callFrame.url +
-                    ':' +
-                    callFrame.lineNumber +
-                    ':' +
-                    callFrame.columnNumber;
-                const functionName = callFrame.functionName || '<anonymous>';
-                message += `\n    at ${functionName} (${location})`;
-            }
-        }
-        const error = new Error(message);
-        error.stack = ''; // Don't capture Puppeteer stacktrace.
-        this.emit("pageerror" /* PageEmittedEvents.PageError */, error);
-    }
-    else {
-        (0, util_js_1.debugError)(`Unhandled LogEntry with type "${event.type}", text "${event.text}" and level "${event.level}"`);
-    }
-};
 function isConsoleLogEntry(event) {
     return event.type === 'console';
 }

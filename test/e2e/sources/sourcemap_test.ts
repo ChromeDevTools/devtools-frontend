@@ -350,8 +350,7 @@ describe('The Sources Tab', async function() {
     });
   });
 
-  // TODO(crbug.com/1346228) Flaky - timeouts.
-  it.skip('[crbug.com/1346228] automatically ignore-lists third party code from source maps', async function() {
+  it('automatically ignore-lists third party code from source maps', async function() {
     const {target} = getBrowserAndPages();
     await openSourceCodeEditorForFile('webpack-main.js', 'webpack-index.html');
 

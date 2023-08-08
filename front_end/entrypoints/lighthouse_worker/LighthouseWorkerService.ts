@@ -136,7 +136,7 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
       return await self.runLighthouse(url, flags, config, connection);
     }
 
-    const {mainFrameId, mainSessionId, targetInfos} = args;
+    const {mainFrameId, mainTargetId, mainSessionId, targetInfos} = args;
     cdpConnection = new ConnectionProxy(mainSessionId);
     puppeteerHandle = await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnection({
       connection: cdpConnection,
@@ -150,7 +150,8 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
         }
         // TODO only connect to iframes that are related to the main target. This requires refactoring in Puppeteer: https://github.com/puppeteer/puppeteer/issues/3667.
         return (
-            targetInfo.targetId === mainFrameId || targetInfo.openerId === mainFrameId || targetInfo.type === 'iframe');
+            targetInfo.targetId === mainTargetId || targetInfo.openerId === mainTargetId ||
+            targetInfo.type === 'iframe');
       },
       // Lighthouse can only audit normal pages.
       isPageTargetCallback: targetInfo => targetInfo.type === 'page',

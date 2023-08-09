@@ -451,6 +451,22 @@ const cookieWarnThirdPartyPhaseoutRead: LazyMarkdownIssueDescription = {
   }],
 };
 
+const cookieExcludeThirdPartyPhaseoutSet: LazyMarkdownIssueDescription = {
+  file: 'cookieExcludeThirdPartyPhaseoutSet.md',
+  links: [{
+    link: 'https://developer.chrome.com/docs/privacy-sandbox/third-party-cookie-phase-out/',
+    linkTitle: i18nLazyString(UIStrings.thirdPartyPhaseoutExplained),
+  }],
+};
+
+const cookieExcludeThirdPartyPhaseoutRead: LazyMarkdownIssueDescription = {
+  file: 'cookieExcludeThirdPartyPhaseoutRead.md',
+  links: [{
+    link: 'https://developer.chrome.com/docs/privacy-sandbox/third-party-cookie-phase-out/',
+    linkTitle: i18nLazyString(UIStrings.thirdPartyPhaseoutExplained),
+  }],
+};
+
 const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   // These two don't have a deprecation date yet, but they need to be fixed eventually.
   ['CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie', sameSiteUnspecifiedWarnRead],
@@ -494,4 +510,6 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   ],
   ['CookieIssue::WarnThirdPartyPhaseout::ReadCookie', cookieWarnThirdPartyPhaseoutRead],
   ['CookieIssue::WarnThirdPartyPhaseout::SetCookie', cookieWarnThirdPartyPhaseoutSet],
+  ['CookieIssue::ExcludeThirdPartyPhaseout::ReadCookie', cookieExcludeThirdPartyPhaseoutRead],
+  ['CookieIssue::ExcludeThirdPartyPhaseout::SetCookie', cookieExcludeThirdPartyPhaseoutSet],
 ]);

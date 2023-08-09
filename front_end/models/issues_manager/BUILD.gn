@@ -158,6 +158,8 @@ devtools_issue_description_files = [
   "SameSiteWarnCrossDowngradeSet.md",
   "cookieWarnThirdPartyPhaseoutSet.md",
   "cookieWarnThirdPartyPhaseoutRead.md",
+  "cookieExcludeThirdPartyPhaseoutSet.md",
+  "cookieExcludeThirdPartyPhaseoutRead.md",
   "SameSiteWarnStrictLaxDowngradeStrict.md",
   "sharedArrayBuffer.md",
   "stylesheetLateImport.md",

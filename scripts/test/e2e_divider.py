@@ -89,25 +89,25 @@ def divide_run(chunks,
 
         return commands
 
-    divided_test_files = []
     chunk_size = math.ceil(len(test_files) / chunks)
-    for i in range(0, len(test_files), chunk_size):
-        divided_test_files.append(test_files[i:i + chunk_size])
 
-    for l in divided_test_files:
-        if l:
-            commands.append({
-                'env': {},
-                'command': [
-                    node_path(),
-                    str(
-                        Path(
-                            f'{devtools_root_path()}/scripts/test/run_test_suite.js'
-                        )),
-                    f'--config={Path(f"{test_suite_source_dir}/test-runner-config.json")}',
-                    '--test-file-pattern=' + ','.join(l)
-                ]
-            })
+    for l in [
+            test_files[i:i + chunk_size]
+            for i in range(0, len(test_files), chunk_size)
+            if test_files[i:i + chunk_size]
+    ]:
+        commands.append({
+            'env': {},
+            'command': [
+                node_path(),
+                str(
+                    Path(
+                        f'{devtools_root_path()}/scripts/test/run_test_suite.js'
+                    )),
+                f'--config={Path(f"{test_suite_source_dir}/test-runner-config.json")}',
+                '--test-file-pattern=' + ','.join(l)
+            ]
+        })
 
     return commands
 

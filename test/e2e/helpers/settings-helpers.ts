@@ -5,6 +5,7 @@
 import {
   click,
   clickElement,
+  hover,
   scrollElementIntoView,
   waitFor,
   waitForAria,
@@ -16,8 +17,7 @@ export const openPanelViaMoreTools = async (panelTitle: string) => {
   await click('aria/Customize and control DevTools');
 
   // Open the “More Tools” option.
-  const moreTools = await waitForAria('More tools[role="menuitem"]');
-  await moreTools.hover();
+  await hover('aria/More tools[role="menuitem"]');
 
   // Click the desired menu item
   await click(`aria/${panelTitle}[role="menuitem"]`);

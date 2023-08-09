@@ -172,6 +172,13 @@ describeWithEnvironment('TextEditor', () => {
       assert.strictEqual(editor.state.facet(CodeMirror.indentUnit), '\t');
       Common.Settings.Settings.instance().moduleSetting('textEditorIndent').set('    ');
     });
+
+    it('does not treat dashes as word chars in CSS', () => {
+      const state = makeState('.some-selector {}', CodeMirror.css.cssLanguage);
+      const range = state.wordAt(1);
+      assertNotNullOrUndefined(range);
+      assert.strictEqual(state.sliceDoc(range.from, range.to), 'some');
+    });
   });
 
   describe('autocompletion', () => {

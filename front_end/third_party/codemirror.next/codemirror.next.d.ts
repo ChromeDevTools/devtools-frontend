@@ -6002,42 +6002,6 @@ property changed to `mac`.)
 declare const standardKeymap: readonly KeyBinding[];
 
 /**
-Create a completion source for a CSS dialect, providing a
-predicate for determining what kind of syntax node can act as a
-completable variable. This is used by language modes like Sass and
-Less to reuse this package's completion logic.
-*/
-declare const defineCSSCompletionSource: (isVariable: (node: SyntaxNodeRef) => boolean) => CompletionSource;
-/**
-CSS property, variable, and value keyword completion source.
-*/
-declare const cssCompletionSource: CompletionSource;
-
-/**
-A language provider based on the [Lezer CSS
-parser](https://github.com/lezer-parser/css), extended with
-highlighting and indentation information.
-*/
-declare const cssLanguage: LRLanguage;
-/**
-Language support for CSS.
-*/
-declare function css(): LanguageSupport;
-
-declare const index_d$2_css: typeof css;
-declare const index_d$2_cssCompletionSource: typeof cssCompletionSource;
-declare const index_d$2_cssLanguage: typeof cssLanguage;
-declare const index_d$2_defineCSSCompletionSource: typeof defineCSSCompletionSource;
-declare namespace index_d$2 {
-  export {
-    index_d$2_css as css,
-    index_d$2_cssCompletionSource as cssCompletionSource,
-    index_d$2_cssLanguage as cssLanguage,
-    index_d$2_defineCSSCompletionSource as defineCSSCompletionSource,
-  };
-}
-
-/**
 Type used to specify tags to complete.
 */
 interface TagSpec {
@@ -6312,6 +6276,11 @@ declare function angular(): Promise<typeof _codemirror_lang_angular>;
 declare function clojure(): Promise<StreamLanguage<unknown>>;
 declare function coffeescript(): Promise<StreamLanguage<unknown>>;
 declare function cpp(): Promise<typeof _codemirror_lang_cpp>;
+declare const css: {
+    cssCompletionSource: CompletionSource;
+    cssLanguage: LRLanguage;
+    css(): LanguageSupport;
+};
 declare function dart(): Promise<StreamLanguage<unknown>>;
 declare function gss(): Promise<StreamLanguage<unknown>>;
 declare function go(): Promise<StreamLanguage<unknown>>;
@@ -6331,4 +6300,4 @@ declare function vue(): Promise<typeof _codemirror_lang_vue>;
 declare function wast(): Promise<typeof _codemirror_lang_wast>;
 declare function xml(): Promise<typeof _codemirror_lang_xml>;
 
-export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MapMode, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, angular, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, closeCompletion, codeFolding, coffeescript, completeAnyWord, completionStatus, cpp, index_d$2 as css, cssStreamParser, currentCompletions, cursorGroupLeft, cursorGroupRight, cursorMatchingBracket, cursorSyntaxLeft, cursorSyntaxRight, dart, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, go, gss, gutter, gutters, highlightSelectionMatches, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, insertNewlineAndIndent, java, index_d as javascript, json, keymap, kotlin, less, lineNumberMarkers, lineNumbers, markdown, moveCompletionSelection, php, placeholder, python, redo, redoSelection, repositionTooltips, sass, scala, scrollPastEnd, selectGroupLeft, selectGroupRight, selectMatchingBracket, selectNextOccurrence, selectSyntaxLeft, selectSyntaxRight, selectedCompletion, selectedCompletionIndex, shell, showPanel, showTooltip, standardKeymap, startCompletion, svelte, syntaxHighlighting, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, vue, wast, xml };
+export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MapMode, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, angular, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, closeCompletion, codeFolding, coffeescript, completeAnyWord, completionStatus, cpp, css, cssStreamParser, currentCompletions, cursorGroupLeft, cursorGroupRight, cursorMatchingBracket, cursorSyntaxLeft, cursorSyntaxRight, dart, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, go, gss, gutter, gutters, highlightSelectionMatches, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, insertNewlineAndIndent, java, index_d as javascript, json, keymap, kotlin, less, lineNumberMarkers, lineNumbers, markdown, moveCompletionSelection, php, placeholder, python, redo, redoSelection, repositionTooltips, sass, scala, scrollPastEnd, selectGroupLeft, selectGroupRight, selectMatchingBracket, selectNextOccurrence, selectSyntaxLeft, selectSyntaxRight, selectedCompletion, selectedCompletionIndex, shell, showPanel, showTooltip, standardKeymap, startCompletion, svelte, syntaxHighlighting, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, vue, wast, xml };

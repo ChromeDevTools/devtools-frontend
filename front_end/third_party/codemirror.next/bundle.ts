@@ -4,7 +4,9 @@
 // Note that this file is also used as a TypeScript source to bundle
 // the .d.ts files.
 
-import {StreamLanguage} from "@codemirror/language";
+import {parser as cssParser} from "@lezer/css";
+import {LRLanguage, continuedIndent, indentNodeProp, foldNodeProp, foldInside, LanguageSupport, StreamLanguage} from "@codemirror/language";
+import {cssCompletionSource} from "@codemirror/lang-css";
 
 export {
   acceptCompletion, autocompletion, closeBrackets, closeBracketsKeymap,
@@ -19,7 +21,6 @@ export {
   selectGroupLeft, selectGroupRight, selectSyntaxLeft, selectSyntaxRight,
   standardKeymap, toggleComment, undo, undoSelection
 } from '@codemirror/commands';
-export * as css from '@codemirror/lang-css';
 export * as html from '@codemirror/lang-html';
 export * as javascript from '@codemirror/lang-javascript';
 export { bracketMatching,
@@ -61,6 +62,34 @@ export async function coffeescript() {
 export function cpp() {
   return import('@codemirror/lang-cpp');
 }
+// We need to define our own "css" language here (which is basically a copy of lang-css/src/css.ts)
+// because we want to match VS code behavior regarding treating dashes as word chars.
+// See https://crbug.com/1471354 for background.
+const cssLanguage = LRLanguage.define({
+  name: 'css',
+  parser: cssParser.configure({
+    props: [
+      indentNodeProp.add({
+        Declaration: continuedIndent(),
+      }),
+      foldNodeProp.add({
+        'Block KeyframeList': foldInside,
+      }),
+    ]
+  }),
+  languageData: {
+    commentTokens: {block: {open: '/*', close: '*/'}},
+    indentOnInput: /^\s*\}$/,
+    wordChars: '',
+  }
+});
+export const css = {
+  cssCompletionSource,
+  cssLanguage,
+  css() {
+    return new LanguageSupport(cssLanguage, cssLanguage.data.of({autocomplete: cssCompletionSource}));
+  },
+};
 export async function dart() {
   return StreamLanguage.define((await import('@codemirror/legacy-modes/mode/clike')).dart);
 }

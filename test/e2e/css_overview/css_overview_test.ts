@@ -12,6 +12,7 @@ const CONTRAST_BUTTON_SELECTOR = '[data-type="contrast"]';
 const CONTRAST_ISSUE_IN_GRID_SELECTOR = '.contrast-container-in-grid';
 const OVERVIEW_SUMMARY_SIDEBAR_ITEM_SELECTOR = 'div[data-id="summary"]';
 const COLORS_SIDEBAR_ITEM_SELECTOR = 'div[data-id="colors"]';
+const FONT_INFO_SIDEBAR_ITEM_SELECTOR = 'div[data-id="font-info"]';
 
 describe('CSS Overview experiment', async () => {
   it('can display low contrast issues', async () => {
@@ -28,7 +29,7 @@ describe('CSS Overview experiment', async () => {
     assert.strictEqual(text.replace(/\n/gmi, ' '), 'Aa 1 AA AAA');
   });
 
-  it('can navigate sidebar panel through keyboard', async () => {
+  it('can navigate sidebar panel through keyboard tab key', async () => {
     await goToResource('elements/low-contrast.html');
     await navigateToCssOverviewTab();
     await startCaptureCSSOverview();
@@ -39,5 +40,21 @@ describe('CSS Overview experiment', async () => {
     const colorsSidebarItem = await waitFor(COLORS_SIDEBAR_ITEM_SELECTOR);
     const isSelected = await colorsSidebarItem?.evaluate(e => e.classList.contains('selected'));
     assert.isTrue(isSelected);
+  });
+
+  it('can navigate sidebar panel through keyboard arrow keys', async () => {
+    await goToResource('elements/low-contrast.html');
+    await navigateToCssOverviewTab();
+    await startCaptureCSSOverview();
+    const {frontend} = getBrowserAndPages();
+    await click(OVERVIEW_SUMMARY_SIDEBAR_ITEM_SELECTOR);
+    await frontend.keyboard.press('ArrowDown');
+    const colorsSidebarItem = await waitFor(COLORS_SIDEBAR_ITEM_SELECTOR);
+    assert.isTrue(await colorsSidebarItem?.evaluate(e => e.classList.contains('selected')));
+    await frontend.keyboard.press('ArrowDown');
+    const fontInfoSidebarItem = await waitFor(FONT_INFO_SIDEBAR_ITEM_SELECTOR);
+    assert.isTrue(await fontInfoSidebarItem?.evaluate(e => e.classList.contains('selected')));
+    await frontend.keyboard.press('ArrowUp');
+    assert.isTrue(await colorsSidebarItem?.evaluate(e => e.classList.contains('selected')));
   });
 });

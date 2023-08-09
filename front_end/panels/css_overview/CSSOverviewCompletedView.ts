@@ -277,7 +277,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.#sideBar.addItem(i18nString(UIStrings.fontInfo), 'font-info');
     this.#sideBar.addItem(i18nString(UIStrings.unusedDeclarations), 'unused-declarations');
     this.#sideBar.addItem(i18nString(UIStrings.mediaQueries), 'media-queries');
-    this.#sideBar.select('summary');
+    this.#sideBar.select('summary', false);
 
     this.#sideBar.addEventListener(SidebarEvents.ItemSelected, this.#sideBarItemSelected, this);
     this.#sideBar.addEventListener(SidebarEvents.Reset, this.#sideBarReset, this);
@@ -315,7 +315,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
     section.scrollIntoView();
     // Set focus for keyboard invoked event
-    if (!data.isMouseEvent) {
+    if (!data.isMouseEvent && data.key === 'Enter') {
       const focusableElement: HTMLElement|null = section.querySelector('button, [tabindex="0"]');
       focusableElement?.focus();
     }
@@ -331,7 +331,7 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     this.#elementContainer.closeTabs();
     this.#viewMap = new Map();
     CSSOverviewCompletedView.pushedNodes.clear();
-    this.#sideBar.select('summary');
+    this.#sideBar.select('summary', false);
   }
 
   #onClick(evt: Event): void {

@@ -78,6 +78,11 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
         uiSourceCode1.fullDisplayName(), uiSourceCode2.fullDisplayName());
   }
 
+  private static urlComparator(
+      uiSourceCode1: Workspace.UISourceCode.UISourceCode, uiSourceCode2: Workspace.UISourceCode.UISourceCode): number {
+    return Platform.StringUtilities.naturalOrderComparator(uiSourceCode1.url(), uiSourceCode2.url());
+  }
+
   performIndexing(progress: Common.Progress.Progress): void {
     this.stopSearch();
 
@@ -141,7 +146,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
 
   private projectFilesMatchingFileQuery(
       project: Workspace.Workspace.Project, searchConfig: Workspace.Workspace.ProjectSearchConfig,
-      dirtyOnly?: boolean): Platform.DevToolsPath.UrlString[] {
+      dirtyOnly?: boolean): Workspace.UISourceCode.UISourceCode[] {
     const result = [];
     for (const uiSourceCode of project.uiSourceCodes()) {
       if (!uiSourceCode.contentType().isTextType()) {
@@ -157,33 +162,29 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
       if (searchConfig.filePathMatchesFileQuery(
               uiSourceCode.fullDisplayName() as Platform.DevToolsPath.UrlString |
               Platform.DevToolsPath.EncodedPathString)) {
-        result.push(uiSourceCode.url());
+        result.push(uiSourceCode);
       }
     }
-    result.sort(Platform.StringUtilities.naturalOrderComparator);
+    result.sort(SourcesSearchScope.urlComparator);
     return result;
   }
 
   private processMatchingFilesForProject(
       searchId: number, project: Workspace.Workspace.Project, searchConfig: Workspace.Workspace.ProjectSearchConfig,
-      filesMatchingFileQuery: string[], files: string[]): void {
+      filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[],
+      files: Workspace.UISourceCode.UISourceCode[]): void {
     if (searchId !== this.searchId && this.searchFinishedCallback) {
       this.searchFinishedCallback(false);
       return;
     }
 
-    files.sort(Platform.StringUtilities.naturalOrderComparator);
-    files = Platform.ArrayUtilities.intersectOrdered(
-        files, filesMatchingFileQuery, Platform.StringUtilities.naturalOrderComparator);
+    files.sort(SourcesSearchScope.urlComparator);
+    files = Platform.ArrayUtilities.intersectOrdered(files, filesMatchingFileQuery, SourcesSearchScope.urlComparator);
     const dirtyFiles = this.projectFilesMatchingFileQuery(project, searchConfig, true);
-    files = Platform.ArrayUtilities.mergeOrdered(files, dirtyFiles, Platform.StringUtilities.naturalOrderComparator);
+    files = Platform.ArrayUtilities.mergeOrdered(files, dirtyFiles, SourcesSearchScope.urlComparator);
 
     const uiSourceCodes = [];
-    for (const file of files) {
-      const uiSourceCode = project.uiSourceCodeForURL(file as Platform.DevToolsPath.UrlString);
-      if (!uiSourceCode) {
-        continue;
-      }
+    for (const uiSourceCode of files) {
       const script = Bindings.DefaultScriptMapping.DefaultScriptMapping.scriptForUISourceCode(uiSourceCode);
       if (script && !script.isAnonymousScript()) {
         continue;

@@ -120,5 +120,9 @@ if __name__ == '__main__':
                           iterations=int(args.iterations),
                           shuffle=args.shuffle)
     for command in commands:
-        print(' '.join([f'{k}={v}' for k, v in command['env'].items()] +
-                       command['command']))
+        command_text = ' '.join(
+            [f'{k}={v}'
+             for k, v in command['env'].items()] + command['command'])
+        assert len(command_text) < 8191,\
+          'Command is too long for Windows, consider increasing the number of shards'
+        print(command_text)

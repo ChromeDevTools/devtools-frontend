@@ -5,7 +5,7 @@
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Types from '../types/types.js';
 
-export async function forNewRecording(recordStartTime?: number): Promise<Types.File.MetaData|undefined> {
+export async function forNewRecording(recordStartTime?: number): Promise<Types.File.MetaData> {
   try {
     const cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
 
@@ -44,7 +44,7 @@ export async function forNewRecording(recordStartTime?: number): Promise<Types.F
   } catch {
     // If anything went wrong, it does not really matter. The impact is that we
     // will not save the metadata when we save the trace to disk, but that is
-    // not really important, so just return undefined and move on
-    return undefined;
+    // not really important, so just return empty object and move on
+    return {};
   }
 }

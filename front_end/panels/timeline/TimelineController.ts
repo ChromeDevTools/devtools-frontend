@@ -214,7 +214,7 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     this.injectCpuProfileEvents();
     await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
     this.tracingModel.tracingComplete();
-    await this.client.loadingComplete(this.tracingModel, null);
+    await this.client.loadingComplete(this.tracingModel, /* exclusiveFilter= */ null, /* isCpuProfile= */ false);
     this.client.loadingCompleteForTest();
   }
 
@@ -356,7 +356,8 @@ export interface Client {
   loadingProgress(progress?: number): void;
   loadingComplete(
       tracingModel: TraceEngine.Legacy.TracingModel|null,
-      exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null): Promise<void>;
+      exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null,
+      isCpuProfile: boolean): Promise<void>;
   loadingCompleteForTest(): void;
 }
 export interface RecordingOptions {

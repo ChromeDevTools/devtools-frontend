@@ -8,6 +8,11 @@ export type TraceFile = {
   metadata: MetaData,
 };
 
+export const enum DataOrigin {
+  CPUProfile = 'CPUProfile',
+  TraceEvents = 'TraceEvents',
+}
+
 /**
  * Trace metadata that we persist to the file. This will allow us to
  * store specifics for the trace, e.g., which tracks should be visible
@@ -19,6 +24,7 @@ export interface MetaData {
   networkThrottling?: string;
   cpuThrottling?: number;
   hardwareConcurrency?: number;
+  dataOrigin?: DataOrigin;
 }
 
 export type Contents = TraceFile|TraceEventData[];

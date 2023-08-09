@@ -12,6 +12,8 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 
+import {type Client} from './TimelineController.js';
+
 const UIStrings = {
   /**
    *@description Text in Timeline Loader of the Performance panel
@@ -57,6 +59,10 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   private totalSize!: number;
   private readonly jsonTokenizer: TextUtils.TextUtils.BalancedJSONTokenizer;
   private filter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null;
+
+  #traceFinalizedCallbackForTest?: () => void;
+  #traceFinalizedPromiseForTest: Promise<void>;
+
   constructor(client: Client, title?: string) {
     this.client = client;
     this.tracingModel = new TraceEngine.Legacy.TracingModel(title);
@@ -68,6 +74,10 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     this.loadedBytes = 0;
     this.jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(this.writeBalancedJSON.bind(this), true);
     this.filter = null;
+
+    this.#traceFinalizedPromiseForTest = new Promise<void>(resolve => {
+      this.#traceFinalizedCallbackForTest = resolve;
+    });
   }
 
   static async loadFromFile(file: File, client: Client): Promise<TimelineLoader> {
@@ -75,12 +85,15 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     const fileReader = new Bindings.FileUtils.ChunkedFileReader(file, TransferChunkLengthBytes);
     loader.canceledCallback = fileReader.cancel.bind(fileReader);
     loader.totalSize = file.size;
-    const success = await fileReader.read(loader);
-    if (!success && fileReader.error()) {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      loader.reportErrorAndCancelLoading((fileReader.error() as any).message);
-    }
+    // We'll resolve and return the loader instance before finalizing the trace.
+    setTimeout(async () => {
+      const success = await fileReader.read(loader);
+      if (!success && fileReader.error()) {
+        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        loader.reportErrorAndCancelLoading((fileReader.error() as any).message);
+      }
+    });
     return loader;
   }
 
@@ -102,6 +115,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
 
   static loadFromCpuProfile(profile: Protocol.Profiler.Profile|null, client: Client, title?: string): TimelineLoader {
     const loader = new TimelineLoader(client, title);
+    loader.state = State.LoadingCPUProfileFromRecording;
 
     try {
       const events = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
@@ -136,7 +150,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
       const txt = stream.data();
       const trace = JSON.parse(txt);
       if (Array.isArray(trace.nodes)) {
-        loader.state = State.LoadingCPUProfileFormat;
+        loader.state = State.LoadingCPUProfileFromFile;
         loader.buffer = txt;
         await loader.close();
         return;
@@ -163,7 +177,8 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   async cancel(): Promise<void> {
     this.tracingModel = null;
     if (this.client) {
-      await this.client.loadingComplete(null, null);
+      await this.client.loadingComplete(
+          /* tracingModel= */ null, /* exclusiveFilter= */ null, /* isCpuProfile= */ false);
       this.client = null;
     }
     if (this.canceledCallback) {
@@ -193,7 +208,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
 
     if (this.state === State.Initial) {
       if (chunk.match(/^{(\s)*"nodes":(\s)*\[/)) {
-        this.state = State.LoadingCPUProfileFormat;
+        this.state = State.LoadingCPUProfileFromFile;
       } else if (chunk[0] === '{') {
         this.state = State.LookingForEvents;
       } else if (chunk[0] === '[') {
@@ -204,7 +219,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
       }
     }
 
-    if (this.state === State.LoadingCPUProfileFormat) {
+    if (this.state === State.LoadingCPUProfileFromFile) {
       this.buffer += chunk;
       return Promise.resolve();
     }
@@ -294,13 +309,22 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     await this.finalizeTrace();
   }
 
+  private isCpuProfile(): boolean {
+    return this.state === State.LoadingCPUProfileFromFile || this.state === State.LoadingCPUProfileFromRecording;
+  }
+
   private async finalizeTrace(): Promise<void> {
-    if (this.state === State.LoadingCPUProfileFormat) {
+    if (this.state === State.LoadingCPUProfileFromFile) {
       this.parseCPUProfileFormat(this.buffer);
       this.buffer = '';
     }
     (this.tracingModel as TraceEngine.Legacy.TracingModel).tracingComplete();
-    await (this.client as Client).loadingComplete(this.tracingModel, this.filter);
+    await (this.client as Client).loadingComplete(this.tracingModel, this.filter, this.isCpuProfile());
+    this.#traceFinalizedCallbackForTest?.();
+  }
+
+  traceFinalizedForTest(): Promise<void> {
+    return this.#traceFinalizedPromiseForTest;
   }
 
   private parseCPUProfileFormat(text: string): void {
@@ -320,18 +344,6 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
 
 export const TransferChunkLengthBytes = 5000000;
 
-export interface Client {
-  loadingStarted(): Promise<void>;
-
-  loadingProgress(progress?: number): Promise<void>;
-
-  processingStarted(): Promise<void>;
-
-  loadingComplete(
-      tracingModel: TraceEngine.Legacy.TracingModel|null,
-      exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null): Promise<void>;
-}
-
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum State {
@@ -339,5 +351,6 @@ export enum State {
   LookingForEvents = 'LookingForEvents',
   ReadingEvents = 'ReadingEvents',
   SkippingTail = 'SkippingTail',
-  LoadingCPUProfileFormat = 'LoadingCPUProfileFormat',
+  LoadingCPUProfileFromFile = 'LoadingCPUProfileFromFile',
+  LoadingCPUProfileFromRecording = 'LoadingCPUProfileFromRecording',
 }

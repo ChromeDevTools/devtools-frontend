@@ -16,6 +16,7 @@ import {TraceProcessor, TraceParseProgressEvent} from './Processor.js';
 
 export interface ParseConfig {
   metadata?: Types.File.MetaData;
+  // Unused but will eventually be consumed by UIUtils Linkifier, etc.
   isFreshRecording?: boolean;
 }
 

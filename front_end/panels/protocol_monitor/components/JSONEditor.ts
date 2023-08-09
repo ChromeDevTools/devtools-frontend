@@ -231,7 +231,8 @@ export class JSONEditor extends LitElement {
   }
 
   // Displays a command entered in the input bar inside the editor
-  displayCommand(command: string, parameters: Record<string, unknown>): void {
+  displayCommand(command: string, parameters: Record<string, unknown>, targetId?: string): void {
+    this.targetId = targetId;
     this.command = command;
     const schema = this.metadataByCommand.get(this.command);
     if (!schema?.parameters) {
@@ -783,6 +784,11 @@ export class JSONEditor extends LitElement {
     // clang-format on
   }
 
+  #onTargetSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
+    this.targetId = event.itemValue as string;
+    this.requestUpdate();
+  }
+
   #computeDropdownValues(parameter: Parameter): string[] {
     // The suggestion box should only be shown for parameters of type string and boolean
     if (parameter.type === ParameterType.String) {
@@ -794,11 +800,6 @@ export class JSONEditor extends LitElement {
       return ['true', 'false'];
     }
     return [];
-  }
-
-  #onTargetSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
-    this.targetId = event.itemValue as string;
-    this.requestUpdate();
   }
 
   #renderInlineButton(opts: {

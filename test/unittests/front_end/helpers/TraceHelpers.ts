@@ -89,11 +89,17 @@ export async function getMainFlameChartWithLegacyTrack(
   // The data provider still needs a reference to the legacy model to
   // work properly.
   dataProvider.setModel(performanceModel, traceParsedData);
-  const track = timelineModel.tracks().find(track => track.type === trackType);
-  if (!track) {
+  // We use filter() here because some tracks (e.g. Rasterizer) actually can
+  // have N tracks for a given trace, depending on how many
+  // CompositorTileWorker threads there were. So in this case, we want to
+  // render all of them, not just the first one we find.
+  const tracks = timelineModel.tracks().filter(track => track.type === trackType);
+  if (tracks.length === 0) {
     throw new Error(`Legacy track with of type ${trackType} not found in timeline model.`);
   }
-  dataProvider.appendLegacyTrackData(track, expanded);
+  for (const track of tracks) {
+    dataProvider.appendLegacyTrackData(track, expanded);
+  }
   const delegate = new MockFlameChartDelegate();
   const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
   const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);

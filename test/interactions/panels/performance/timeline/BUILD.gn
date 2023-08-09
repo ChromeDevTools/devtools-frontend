@@ -14,6 +14,7 @@ node_ts_library("timeline") {
     "main_thread_test.ts",
     "network_track_test.ts",
     "overview_test.ts",
+    "rasterizer_tracks_test.ts",
     "timeline_test.ts",
     "timings_track_test.ts",
   ]

@@ -94,6 +94,9 @@ export class Page extends PageBase {
     #keyboard;
     #browsingContext;
     #browserContext;
+    _client() {
+        return this.mainFrame().context().cdpSession;
+    }
     constructor(browsingContext, browserContext) {
         super();
         this.#browsingContext = browsingContext;
@@ -271,6 +274,9 @@ export class Page extends PageBase {
     }
     getNavigationResponse(id) {
         return this.#networkManager.getNavigationResponse(id);
+    }
+    isClosed() {
+        return this.#closedDeferred.finished();
     }
     async close() {
         if (this.#closedDeferred.finished()) {
@@ -454,6 +460,11 @@ export class Page extends PageBase {
             flatten: true,
         });
         return new CDPSessionWrapper(this.mainFrame().context(), sessionId);
+    }
+    async bringToFront() {
+        await this.#connection.send('browsingContext.activate', {
+            context: this.mainFrame()._id,
+        });
     }
 }
 function isConsoleLogEntry(event) {

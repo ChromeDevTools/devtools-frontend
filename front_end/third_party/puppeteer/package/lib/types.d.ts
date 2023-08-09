@@ -684,6 +684,7 @@ export declare interface BrowserLaunchArgumentOptions {
 export declare class CDPSession extends EventEmitter {
     /* Excluded from this release type: __constructor */
     connection(): Connection | undefined;
+    /* Excluded from this release type: parentSession */
     send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /**
      * Detaches the cdpSession from the target. Once detached, the cdpSession object

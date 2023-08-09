@@ -37,6 +37,10 @@ interface Commands {
         params: Bidi.Script.AddPreloadScriptParameters;
         returnType: Bidi.Script.AddPreloadScriptResult;
     };
+    'browsingContext.activate': {
+        params: Bidi.BrowsingContext.ActivateParameters;
+        returnType: Bidi.EmptyResult;
+    };
     'browsingContext.create': {
         params: Bidi.BrowsingContext.CreateParameters;
         returnType: Bidi.BrowsingContext.CreateResult;

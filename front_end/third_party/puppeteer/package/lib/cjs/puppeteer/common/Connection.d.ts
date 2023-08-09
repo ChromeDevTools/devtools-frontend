@@ -163,6 +163,12 @@ export declare class CDPSession extends EventEmitter {
      */
     constructor();
     connection(): Connection | undefined;
+    /**
+     * Parent session in terms of CDP's auto-attach mechanism.
+     *
+     * @internal
+     */
+    parentSession(): CDPSession | undefined;
     send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /**
      * Detaches the cdpSession from the target. Once detached, the cdpSession object
@@ -182,8 +188,9 @@ export declare class CDPSessionImpl extends CDPSession {
     /**
      * @internal
      */
-    constructor(connection: Connection, targetType: string, sessionId: string);
+    constructor(connection: Connection, targetType: string, sessionId: string, parentSessionId: string | undefined);
     connection(): Connection | undefined;
+    parentSession(): CDPSession | undefined;
     send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /**
      * @internal

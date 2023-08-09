@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getWaitUntilSingle = exports.BrowsingContext = exports.BrowsingContextEmittedEvents = exports.CDPSessionWrapper = exports.cdpSessions = exports.lifeCycleToSubscribedEvent = void 0;
 const assert_js_1 = require("../../util/assert.js");
 const Deferred_js_1 = require("../../util/Deferred.js");
+const Connection_js_1 = require("../Connection.js");
 const Errors_js_1 = require("../Errors.js");
-const EventEmitter_js_1 = require("../EventEmitter.js");
 const util_js_1 = require("../util.js");
 const Realm_js_1 = require("./Realm.js");
 const utils_js_1 = require("./utils.js");
@@ -29,7 +29,7 @@ exports.cdpSessions = new Map();
 /**
  * @internal
  */
-class CDPSessionWrapper extends EventEmitter_js_1.EventEmitter {
+class CDPSessionWrapper extends Connection_js_1.CDPSession {
     #context;
     #sessionId = Deferred_js_1.Deferred.create();
     #detached = false;

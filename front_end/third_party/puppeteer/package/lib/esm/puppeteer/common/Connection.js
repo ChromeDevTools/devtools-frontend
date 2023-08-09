@@ -229,7 +229,7 @@ export class Connection extends EventEmitter {
         const object = JSON.parse(message);
         if (object.method === 'Target.attachedToTarget') {
             const sessionId = object.params.sessionId;
-            const session = new CDPSessionImpl(this, object.params.targetInfo.type, sessionId);
+            const session = new CDPSessionImpl(this, object.params.targetInfo.type, sessionId, object.sessionId);
             this.#sessions.set(sessionId, session);
             this.emit('sessionattached', session);
             const parentSession = this.#sessions.get(object.sessionId);
@@ -363,6 +363,14 @@ export class CDPSession extends EventEmitter {
     connection() {
         throw new Error('Not implemented');
     }
+    /**
+     * Parent session in terms of CDP's auto-attach mechanism.
+     *
+     * @internal
+     */
+    parentSession() {
+        return undefined;
+    }
     send() {
         throw new Error('Not implemented');
     }
@@ -388,17 +396,26 @@ export class CDPSessionImpl extends CDPSession {
     #targetType;
     #callbacks = new CallbackRegistry();
     #connection;
+    #parentSessionId;
     /**
      * @internal
      */
-    constructor(connection, targetType, sessionId) {
+    constructor(connection, targetType, sessionId, parentSessionId) {
         super();
         this.#connection = connection;
         this.#targetType = targetType;
         this.#sessionId = sessionId;
+        this.#parentSessionId = parentSessionId;
     }
     connection() {
         return this.#connection;
+    }
+    parentSession() {
+        if (!this.#parentSessionId) {
+            return;
+        }
+        const parent = this.#connection?.session(this.#parentSessionId);
+        return parent ?? undefined;
     }
     send(method, ...paramArgs) {
         if (!this.#connection) {

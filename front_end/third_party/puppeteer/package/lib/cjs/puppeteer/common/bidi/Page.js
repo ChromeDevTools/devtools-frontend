@@ -120,6 +120,9 @@ class Page extends Page_js_1.Page {
     #keyboard;
     #browsingContext;
     #browserContext;
+    _client() {
+        return this.mainFrame().context().cdpSession;
+    }
     constructor(browsingContext, browserContext) {
         super();
         this.#browsingContext = browsingContext;
@@ -297,6 +300,9 @@ class Page extends Page_js_1.Page {
     }
     getNavigationResponse(id) {
         return this.#networkManager.getNavigationResponse(id);
+    }
+    isClosed() {
+        return this.#closedDeferred.finished();
     }
     async close() {
         if (this.#closedDeferred.finished()) {
@@ -480,6 +486,11 @@ class Page extends Page_js_1.Page {
             flatten: true,
         });
         return new BrowsingContext_js_1.CDPSessionWrapper(this.mainFrame().context(), sessionId);
+    }
+    async bringToFront() {
+        await this.#connection.send('browsingContext.activate', {
+            context: this.mainFrame()._id,
+        });
     }
 }
 exports.Page = Page;

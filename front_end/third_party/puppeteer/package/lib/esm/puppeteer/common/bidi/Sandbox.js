@@ -34,7 +34,6 @@ export const PUPPETEER_SANDBOX = Symbol('puppeteerSandbox');
  * @internal
  */
 export class Sandbox {
-    #document;
     #realm;
     #timeoutSettings;
     #taskManager = new TaskManager();
@@ -46,13 +45,11 @@ export class Sandbox {
         return this.#taskManager;
     }
     async document() {
-        if (this.#document) {
-            return this.#document;
-        }
-        this.#document = await this.#realm.evaluateHandle(() => {
+        // TODO(jrandolf): We should try to cache this because we need to dispose
+        // this when it's unused.
+        return await this.#realm.evaluateHandle(() => {
             return document;
         });
-        return this.#document;
     }
     async $(selector) {
         const document = await this.document();

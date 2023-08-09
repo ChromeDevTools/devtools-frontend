@@ -132,6 +132,10 @@ export class Page extends PageBase {
   #browsingContext: BrowsingContext;
   #browserContext: BrowserContext;
 
+  _client(): CDPSession {
+    return this.mainFrame().context().cdpSession;
+  }
+
   constructor(
     browsingContext: BrowsingContext,
     browserContext: BrowserContext
@@ -392,6 +396,10 @@ export class Page extends PageBase {
 
   getNavigationResponse(id: string | null): HTTPResponse | null {
     return this.#networkManager.getNavigationResponse(id);
+  }
+
+  override isClosed(): boolean {
+    return this.#closedDeferred.finished();
   }
 
   override async close(): Promise<void> {
@@ -711,6 +719,12 @@ export class Page extends PageBase {
         flatten: true,
       });
     return new CDPSessionWrapper(this.mainFrame().context(), sessionId);
+  }
+
+  override async bringToFront(): Promise<void> {
+    await this.#connection.send('browsingContext.activate', {
+      context: this.mainFrame()._id,
+    });
   }
 }
 

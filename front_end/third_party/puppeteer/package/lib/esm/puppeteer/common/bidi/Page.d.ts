@@ -37,6 +37,7 @@ import { Keyboard, Mouse, Touchscreen } from './Input.js';
  */
 export declare class Page extends PageBase {
     #private;
+    _client(): CDPSession;
     constructor(browsingContext: BrowsingContext, browserContext: BrowserContext);
     _setBrowserContext(browserContext: BrowserContext): void;
     get accessibility(): Accessibility;
@@ -52,6 +53,7 @@ export declare class Page extends PageBase {
     frame(frameId?: string): Frame | null;
     childFrames(frameId: string): Frame[];
     getNavigationResponse(id: string | null): HTTPResponse | null;
+    isClosed(): boolean;
     close(): Promise<void>;
     evaluateHandle<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     evaluate<Params extends unknown[], Func extends EvaluateFunc<Params> = EvaluateFunc<Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
@@ -100,5 +102,6 @@ export declare class Page extends PageBase {
     }): Promise<void>;
     title(): Promise<string>;
     createCDPSession(): Promise<CDPSession>;
+    bringToFront(): Promise<void>;
 }
 //# sourceMappingURL=Page.d.ts.map

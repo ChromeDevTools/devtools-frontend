@@ -30,6 +30,7 @@ class Browser extends Browser_js_1.Browser {
         'browsingContext',
         'network',
         'log',
+        'script',
     ];
     static subscribeCdpEvents = [
         // Coverage

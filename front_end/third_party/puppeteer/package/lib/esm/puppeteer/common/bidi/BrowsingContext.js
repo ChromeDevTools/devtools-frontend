@@ -1,7 +1,7 @@
 import { assert } from '../../util/assert.js';
 import { Deferred } from '../../util/Deferred.js';
+import { CDPSession } from '../Connection.js';
 import { ProtocolError, TargetCloseError, TimeoutError } from '../Errors.js';
-import { EventEmitter } from '../EventEmitter.js';
 import { getPageContent, setPageContent, waitWithTimeout } from '../util.js';
 import { Realm } from './Realm.js';
 import { debugError } from './utils.js';
@@ -26,7 +26,7 @@ export const cdpSessions = new Map();
 /**
  * @internal
  */
-export class CDPSessionWrapper extends EventEmitter {
+export class CDPSessionWrapper extends CDPSession {
     #context;
     #sessionId = Deferred.create();
     #detached = false;

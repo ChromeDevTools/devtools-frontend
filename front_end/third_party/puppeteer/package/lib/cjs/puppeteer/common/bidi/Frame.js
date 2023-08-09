@@ -72,6 +72,9 @@ class Frame extends Frame_js_1.Frame {
         puppeteerRealm.setFrame(this);
         context.setFrame(this);
     }
+    _client() {
+        return this.context().cdpSession;
+    }
     mainRealm() {
         return this.sandboxes[Sandbox_js_1.MAIN_SANDBOX];
     }

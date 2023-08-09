@@ -27,6 +27,7 @@ export class Browser extends BrowserBase {
         'browsingContext',
         'network',
         'log',
+        'script',
     ];
     static subscribeCdpEvents = [
         // Coverage

@@ -83,6 +83,132 @@ class CDPPage extends Page_js_1.Page {
     #sessionCloseDeferred = Deferred_js_1.Deferred.create();
     #serviceWorkerBypassed = false;
     #userDragInterceptionEnabled = false;
+    #frameManagerHandlers = new Map([
+        [
+            FrameManager_js_1.FrameManagerEmittedEvents.FrameAttached,
+            event => {
+                return this.emit("frameattached" /* PageEmittedEvents.FrameAttached */, event);
+            },
+        ],
+        [
+            FrameManager_js_1.FrameManagerEmittedEvents.FrameDetached,
+            event => {
+                return this.emit("framedetached" /* PageEmittedEvents.FrameDetached */, event);
+            },
+        ],
+        [
+            FrameManager_js_1.FrameManagerEmittedEvents.FrameNavigated,
+            event => {
+                return this.emit("framenavigated" /* PageEmittedEvents.FrameNavigated */, event);
+            },
+        ],
+    ]);
+    #networkManagerHandlers = new Map([
+        [
+            NetworkManager_js_1.NetworkManagerEmittedEvents.Request,
+            event => {
+                return this.emit("request" /* PageEmittedEvents.Request */, event);
+            },
+        ],
+        [
+            NetworkManager_js_1.NetworkManagerEmittedEvents.RequestServedFromCache,
+            event => {
+                return this.emit("requestservedfromcache" /* PageEmittedEvents.RequestServedFromCache */, event);
+            },
+        ],
+        [
+            NetworkManager_js_1.NetworkManagerEmittedEvents.Response,
+            event => {
+                return this.emit("response" /* PageEmittedEvents.Response */, event);
+            },
+        ],
+        [
+            NetworkManager_js_1.NetworkManagerEmittedEvents.RequestFailed,
+            event => {
+                return this.emit("requestfailed" /* PageEmittedEvents.RequestFailed */, event);
+            },
+        ],
+        [
+            NetworkManager_js_1.NetworkManagerEmittedEvents.RequestFinished,
+            event => {
+                return this.emit("requestfinished" /* PageEmittedEvents.RequestFinished */, event);
+            },
+        ],
+    ]);
+    #sessionHandlers = new Map([
+        [
+            Connection_js_1.CDPSessionEmittedEvents.Disconnected,
+            () => {
+                return this.#sessionCloseDeferred.resolve(new Errors_js_1.TargetCloseError('Target closed'));
+            },
+        ],
+        [
+            'Page.domContentEventFired',
+            () => {
+                return this.emit("domcontentloaded" /* PageEmittedEvents.DOMContentLoaded */);
+            },
+        ],
+        [
+            'Page.loadEventFired',
+            () => {
+                return this.emit("load" /* PageEmittedEvents.Load */);
+            },
+        ],
+        [
+            'Page.loadEventFired',
+            () => {
+                return this.emit("load" /* PageEmittedEvents.Load */);
+            },
+        ],
+        [
+            'Runtime.consoleAPICalled',
+            event => {
+                return this.#onConsoleAPI(event);
+            },
+        ],
+        [
+            'Runtime.bindingCalled',
+            event => {
+                return this.#onBindingCalled(event);
+            },
+        ],
+        [
+            'Page.javascriptDialogOpening',
+            event => {
+                return this.#onDialog(event);
+            },
+        ],
+        [
+            'Runtime.exceptionThrown',
+            exception => {
+                return this.#handleException(exception.exceptionDetails);
+            },
+        ],
+        [
+            'Inspector.targetCrashed',
+            () => {
+                return this.#onTargetCrashed();
+            },
+        ],
+        [
+            'Performance.metrics',
+            event => {
+                return this.#emitMetrics(event);
+            },
+        ],
+        [
+            'Log.entryAdded',
+            event => {
+                return this.#onLogEntryAdded(event);
+            },
+        ],
+        [
+            'Page.fileChooserOpened',
+            event => {
+                return this.#onFileChooser(event);
+            },
+        ],
+    ]);
     /**
      * @internal
      */
@@ -100,70 +226,24 @@ class CDPPage extends Page_js_1.Page {
         this.#coverage = new Coverage_js_1.Coverage(client);
         this.#screenshotTaskQueue = screenshotTaskQueue;
         this.#viewport = null;
+        this.#setupEventListeners();
+    }
+    #setupEventListeners() {
         this.#target
             ._targetManager()
             .addTargetInterceptor(this.#client, this.#onAttachedToTarget);
         this.#target
             ._targetManager()
             .on("targetGone" /* TargetManagerEmittedEvents.TargetGone */, this.#onDetachedFromTarget);
-        this.#frameManager.on(FrameManager_js_1.FrameManagerEmittedEvents.FrameAttached, event => {
-            return this.emit("frameattached" /* PageEmittedEvents.FrameAttached */, event);
-        });
-        this.#frameManager.on(FrameManager_js_1.FrameManagerEmittedEvents.FrameDetached, event => {
-            return this.emit("framedetached" /* PageEmittedEvents.FrameDetached */, event);
-        });
-        this.#frameManager.on(FrameManager_js_1.FrameManagerEmittedEvents.FrameNavigated, event => {
-            return this.emit("framenavigated" /* PageEmittedEvents.FrameNavigated */, event);
-        });
-        const networkManager = this.#frameManager.networkManager;
-        networkManager.on(NetworkManager_js_1.NetworkManagerEmittedEvents.Request, event => {
-            return this.emit("request" /* PageEmittedEvents.Request */, event);
-        });
-        networkManager.on(NetworkManager_js_1.NetworkManagerEmittedEvents.RequestServedFromCache, event => {
-            return this.emit("requestservedfromcache" /* PageEmittedEvents.RequestServedFromCache */, event);
-        });
-        networkManager.on(NetworkManager_js_1.NetworkManagerEmittedEvents.Response, event => {
-            return this.emit("response" /* PageEmittedEvents.Response */, event);
-        });
-        networkManager.on(NetworkManager_js_1.NetworkManagerEmittedEvents.RequestFailed, event => {
-            return this.emit("requestfailed" /* PageEmittedEvents.RequestFailed */, event);
-        });
-        networkManager.on(NetworkManager_js_1.NetworkManagerEmittedEvents.RequestFinished, event => {
-            return this.emit("requestfinished" /* PageEmittedEvents.RequestFinished */, event);
-        });
-        client.once(Connection_js_1.CDPSessionEmittedEvents.Disconnected, () => {
-            return this.#sessionCloseDeferred.resolve(new Errors_js_1.TargetCloseError('Target closed'));
-        });
-        client.on('Page.domContentEventFired', () => {
-            return this.emit("domcontentloaded" /* PageEmittedEvents.DOMContentLoaded */);
-        });
-        client.on('Page.loadEventFired', () => {
-            return this.emit("load" /* PageEmittedEvents.Load */);
-        });
-        client.on('Runtime.consoleAPICalled', event => {
-            return this.#onConsoleAPI(event);
-        });
-        client.on('Runtime.bindingCalled', event => {
-            return this.#onBindingCalled(event);
-        });
-        client.on('Page.javascriptDialogOpening', event => {
-            return this.#onDialog(event);
-        });
-        client.on('Runtime.exceptionThrown', exception => {
-            return this.#handleException(exception.exceptionDetails);
-        });
-        client.on('Inspector.targetCrashed', () => {
-            return this.#onTargetCrashed();
-        });
-        client.on('Performance.metrics', event => {
-            return this.#emitMetrics(event);
-        });
-        client.on('Log.entryAdded', event => {
-            return this.#onLogEntryAdded(event);
-        });
-        client.on('Page.fileChooserOpened', event => {
-            return this.#onFileChooser(event);
-        });
+        for (const [eventName, handler] of this.#frameManagerHandlers) {
+            this.#frameManager.on(eventName, handler);
+        }
+        for (const [eventName, handler] of this.#networkManagerHandlers) {
+            this.#frameManager.networkManager.on(eventName, handler);
+        }
+        for (const [eventName, handler] of this.#sessionHandlers) {
+            this.#client.on(eventName, handler);
+        }
         this.#target._isClosedDeferred
             .valueOrThrow()
             .then(() => {

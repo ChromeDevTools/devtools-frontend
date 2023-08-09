@@ -302,8 +302,7 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
   }
 
   async findFilesMatchingSearchRequest(
-      searchConfig: Workspace.Workspace.ProjectSearchConfig,
-      filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[],
+      searchConfig: Workspace.SearchConfig.SearchConfig, filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[],
       progress: Common.Progress.Progress): Promise<Workspace.UISourceCode.UISourceCode[]> {
     let workingFileSet: string[] = filesMatchingFileQuery.map(uiSoureCode => uiSoureCode.url());
     const queriesToRun = searchConfig.queries().slice();

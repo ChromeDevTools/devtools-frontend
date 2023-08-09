@@ -184,8 +184,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
   }
 
   async findFilesMatchingSearchRequest(
-      searchConfig: Workspace.Workspace.ProjectSearchConfig,
-      filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[],
+      searchConfig: Workspace.SearchConfig.SearchConfig, filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[],
       progress: Common.Progress.Progress): Promise<Workspace.UISourceCode.UISourceCode[]> {
     const result: Workspace.UISourceCode.UISourceCode[] = [];
     progress.setTotalWork(filesMatchingFileQuery.length);

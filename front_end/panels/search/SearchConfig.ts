@@ -21,7 +21,7 @@ export interface SearchResult {
 
 export interface SearchScope {
   performSearch(
-      searchConfig: Workspace.Workspace.ProjectSearchConfig, progress: Common.Progress.Progress,
+      searchConfig: Workspace.SearchConfig.SearchConfig, progress: Common.Progress.Progress,
       searchResultCallback: (arg0: SearchResult) => void,
       searchFinishedCallback: (arg0: boolean) => void): void|Promise<void>;
 

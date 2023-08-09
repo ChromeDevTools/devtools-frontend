@@ -41,7 +41,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
   private searchResultCandidates: Workspace.UISourceCode.UISourceCode[];
   private searchResultCallback: ((arg0: Search.SearchConfig.SearchResult) => void)|null;
   private searchFinishedCallback: ((arg0: boolean) => void)|null;
-  private searchConfig: Workspace.Workspace.ProjectSearchConfig|null;
+  private searchConfig: Workspace.SearchConfig.SearchConfig|null;
   constructor() {
     // FIXME: Add title once it is used by search controller.
     this.searchId = 0;
@@ -115,7 +115,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
   }
 
   performSearch(
-      searchConfig: Workspace.Workspace.ProjectSearchConfig, progress: Common.Progress.Progress,
+      searchConfig: Workspace.SearchConfig.SearchConfig, progress: Common.Progress.Progress,
       searchResultCallback: (arg0: Search.SearchConfig.SearchResult) => void,
       searchFinishedCallback: (arg0: boolean) => void): void {
     this.stopSearch();
@@ -145,7 +145,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
   }
 
   private projectFilesMatchingFileQuery(
-      project: Workspace.Workspace.Project, searchConfig: Workspace.Workspace.ProjectSearchConfig,
+      project: Workspace.Workspace.Project, searchConfig: Workspace.SearchConfig.SearchConfig,
       dirtyOnly?: boolean): Workspace.UISourceCode.UISourceCode[] {
     const result = [];
     for (const uiSourceCode of project.uiSourceCodes()) {
@@ -170,7 +170,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
   }
 
   private processMatchingFilesForProject(
-      searchId: number, project: Workspace.Workspace.Project, searchConfig: Workspace.Workspace.ProjectSearchConfig,
+      searchId: number, project: Workspace.Workspace.Project, searchConfig: Workspace.SearchConfig.SearchConfig,
       filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[],
       files: Workspace.UISourceCode.UISourceCode[]): void {
     if (searchId !== this.searchId && this.searchFinishedCallback) {
@@ -253,7 +253,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
 
       progress.incrementWorked(1);
       let matches: TextUtils.ContentProvider.SearchMatch[] = [];
-      const searchConfig = (this.searchConfig as Workspace.Workspace.ProjectSearchConfig);
+      const searchConfig = (this.searchConfig as Workspace.SearchConfig.SearchConfig);
       const queries = searchConfig.queries();
       if (content !== null) {
         for (let i = 0; i < queries.length; ++i) {

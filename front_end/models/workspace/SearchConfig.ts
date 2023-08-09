@@ -4,9 +4,7 @@
 
 import * as Platform from '../../core/platform/platform.js';
 
-import {type ProjectSearchConfig} from './WorkspaceImpl.js';
-
-export class SearchConfig implements ProjectSearchConfig {
+export class SearchConfig {
   private readonly queryInternal: string;
   private readonly ignoreCaseInternal: boolean;
   private readonly isRegexInternal: boolean;

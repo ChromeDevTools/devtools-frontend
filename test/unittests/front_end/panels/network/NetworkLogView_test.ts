@@ -275,9 +275,8 @@ describeWithMockConnection('NetworkLogView', () => {
       networkLogView.markAsRoot();
       networkLogView.show(document.body);
       const rootNode = networkLogView.columns().dataGrid().rootNode();
-      const hideExtCheckbox =
-          filterBar.element.querySelector('[title="Hide requests to \'chrome-extension://\' URLs"] span')
-              ?.shadowRoot?.querySelector('input') ||
+      const hideExtCheckbox = filterBar.element.querySelector('[title="Hide \'chrome-extension://\' URLs"] span')
+                                  ?.shadowRoot?.querySelector('input') ||
           null;
 
       assertElement(hideExtCheckbox, HTMLInputElement);

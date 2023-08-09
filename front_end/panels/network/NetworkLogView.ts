@@ -88,7 +88,7 @@ const UIStrings = {
   /**
    *@description Data urlfilter ui element title in Network Log View of the Network panel
    */
-  hidesDataAndBlobUrls: 'Hides data: and blob: URLs',
+  hidesDataAndBlobUrls: 'Hide \'data:\' and \'blob:\' URLs',
   /**
    * @description Label for a filter in the Network panel
    */
@@ -96,7 +96,7 @@ const UIStrings = {
   /**
    * @description Tooltip for a filter in the Network panel
    */
-  hideChromeExtension: 'Hide requests to \'chrome-extension://\' URLs',
+  hideChromeExtension: 'Hide \'chrome-extension://\' URLs',
   /**
    *@description Aria accessible name in Network Log View of the Network panel
    */

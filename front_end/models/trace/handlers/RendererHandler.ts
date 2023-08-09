@@ -24,6 +24,14 @@ import * as Types from '../types/types.js';
  */
 
 const processes = new Map<Types.TraceEvents.ProcessID, RendererProcess>();
+
+// We track the compositor tile worker thread name events so that at the end we
+// can return these keyed by the process ID. These are used in the frontend to
+// show the user the rasterization thread(s) on the main frame as tracks.
+const compositorTileWorkers = Array<{
+  pid: Types.TraceEvents.ProcessID,
+  tid: Types.TraceEvents.ThreadID,
+}>();
 const entryToNode = new Map<RendererEntry, RendererEntryNode>();
 const allRendererEvents: Types.TraceEvents.TraceEventRendererEvent[] = [];
 let nodeIdCount = 0;
@@ -72,6 +80,7 @@ export function reset(): void {
   entryToNode.clear();
   allRendererEvents.length = 0;
   completeEventStack.length = 0;
+  compositorTileWorkers.length = 0;
   nodeIdCount = -1;
   handlerState = HandlerState.UNINITIALIZED;
 }
@@ -87,6 +96,13 @@ export function initialize(): void {
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   if (handlerState !== HandlerState.INITIALIZED) {
     throw new Error('Renderer Handler is not initialized');
+  }
+
+  if (Types.TraceEvents.isThreadName(event) && event.args.name?.startsWith('CompositorTileWorker')) {
+    compositorTileWorkers.push({
+      pid: event.pid,
+      tid: event.tid,
+    });
   }
 
   if (Types.TraceEvents.isTraceEventBegin(event) || Types.TraceEvents.isTraceEventEnd(event)) {
@@ -130,9 +146,20 @@ export function data(): RendererHandlerData {
 
   return {
     processes: new Map(processes),
+    compositorTileWorkers: new Map(gatherCompositorThreads()),
     entryToNode: new Map(entryToNode),
     allRendererEvents: [...allRendererEvents],
   };
+}
+
+function gatherCompositorThreads(): Map<Types.TraceEvents.ProcessID, Types.TraceEvents.ThreadID[]> {
+  const threadsByProcess = new Map<Types.TraceEvents.ProcessID, Types.TraceEvents.ThreadID[]>();
+  for (const worker of compositorTileWorkers) {
+    const byProcess = threadsByProcess.get(worker.pid) || [];
+    byProcess.push(worker.tid);
+    threadsByProcess.set(worker.pid, byProcess);
+  }
+  return threadsByProcess;
 }
 
 /**
@@ -461,6 +488,11 @@ export function deps(): TraceEventHandlerName[] {
 
 export interface RendererHandlerData {
   processes: Map<Types.TraceEvents.ProcessID, RendererProcess>;
+  /**
+   * A map of all compositor workers (which we show in the UI as Rasterizers)
+   * by the process ID.
+   */
+  compositorTileWorkers: Map<Types.TraceEvents.ProcessID, Types.TraceEvents.ThreadID[]>;
   entryToNode: Map<RendererEntry, RendererEntryNode>;
   /**
    * All trace events and synthetic profile calls made from

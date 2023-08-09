@@ -1172,4 +1172,26 @@ describeWithEnvironment('RendererHandler', function() {
 .......`);
     });
   });
+
+  it('identifies and returns rasterizer threads', async () => {
+    const {Renderer} = await handleEventsFromTraceFile(this, 'web-dev.json.gz');
+    assert.deepEqual(Array.from(Renderer.compositorTileWorkers.entries()), [
+      [
+        TraceModel.Types.TraceEvents.ProcessID(68481),
+        [
+          TraceModel.Types.TraceEvents.ThreadID(81675),
+        ],
+      ],
+      [
+        TraceModel.Types.TraceEvents.ProcessID(73704),
+        [
+          TraceModel.Types.TraceEvents.ThreadID(23299),
+          TraceModel.Types.TraceEvents.ThreadID(22275),
+          TraceModel.Types.TraceEvents.ThreadID(41475),
+          TraceModel.Types.TraceEvents.ThreadID(40451),
+          TraceModel.Types.TraceEvents.ThreadID(22531),
+        ],
+      ],
+    ]);
+  });
 });

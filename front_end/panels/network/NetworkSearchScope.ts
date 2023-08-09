@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import type * as TextUtils from '../../models/text_utils/text_utils.js';
+import type * as Workspace from '../../models/workspace/workspace.js';
 import type * as Search from '../search/search.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 
@@ -27,7 +28,7 @@ export class NetworkSearchScope implements Search.SearchConfig.SearchScope {
   }
 
   async performSearch(
-      searchConfig: Search.SearchConfig.SearchConfig, progress: Common.Progress.Progress,
+      searchConfig: Workspace.SearchConfig.SearchConfig, progress: Common.Progress.Progress,
       searchResultCallback: (arg0: Search.SearchConfig.SearchResult) => void,
       searchFinishedCallback: (arg0: boolean) => void): Promise<void> {
     const promises = [];
@@ -54,7 +55,7 @@ export class NetworkSearchScope implements Search.SearchConfig.SearchScope {
   }
 
   private async searchRequest(
-      searchConfig: Search.SearchConfig.SearchConfig, request: SDK.NetworkRequest.NetworkRequest,
+      searchConfig: Workspace.SearchConfig.SearchConfig, request: SDK.NetworkRequest.NetworkRequest,
       progress: Common.Progress.Progress): Promise<NetworkSearchResult|null> {
     let bodyMatches: TextUtils.ContentProvider.SearchMatch[] = [];
     if (request.contentType().isTextType()) {

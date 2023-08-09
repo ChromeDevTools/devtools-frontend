@@ -5,11 +5,12 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import searchViewStyles from './searchView.css.js';
 
-import {SearchConfig, type SearchResult, type SearchScope} from './SearchConfig.js';
+import {type SearchResult, type SearchScope} from './SearchConfig.js';
 import {SearchResultsPane} from './SearchResultsPane.js';
 
 const UIStrings = {
@@ -89,8 +90,8 @@ export class SearchView extends UI.Widget.VBox {
   private nonEmptySearchResultsCount: number;
   private searchingView: UI.Widget.Widget|null;
   private notFoundView: UI.Widget.Widget|null;
-  private searchConfig: SearchConfig|null;
-  private pendingSearchConfig: SearchConfig|null;
+  private searchConfig: Workspace.SearchConfig.SearchConfig|null;
+  private pendingSearchConfig: Workspace.SearchConfig.SearchConfig|null;
   private searchResultsPane: SearchResultsPane|null;
   private progressIndicator: UI.ProgressIndicator.ProgressIndicator|null;
   private visiblePane: UI.Widget.Widget|null;
@@ -172,7 +173,7 @@ export class SearchView extends UI.Widget.VBox {
     this.searchResultsMessageElement = searchStatusBarElement.createChild('div', 'search-message');
 
     this.advancedSearchConfig = Common.Settings.Settings.instance().createLocalSetting(
-        settingKey + 'SearchConfig', new SearchConfig('', true, false).toPlainObject());
+        settingKey + 'SearchConfig', new Workspace.SearchConfig.SearchConfig('', true, false).toPlainObject());
 
     this.load();
     this.searchScope = null;
@@ -187,8 +188,9 @@ export class SearchView extends UI.Widget.VBox {
     return toggle;
   }
 
-  private buildSearchConfig(): SearchConfig {
-    return new SearchConfig(this.search.value, !this.matchCaseButton.toggled(), this.regexButton.toggled());
+  private buildSearchConfig(): Workspace.SearchConfig.SearchConfig {
+    return new Workspace.SearchConfig.SearchConfig(
+        this.search.value, !this.matchCaseButton.toggled(), this.regexButton.toggled());
   }
 
   async toggle(queryCandidate: string, searchImmediately?: boolean): Promise<void> {
@@ -279,7 +281,7 @@ export class SearchView extends UI.Widget.VBox {
       return;
     }
     if (!this.searchResultsPane) {
-      this.searchResultsPane = new SearchResultsPane((this.searchConfig as SearchConfig));
+      this.searchResultsPane = new SearchResultsPane((this.searchConfig as Workspace.SearchConfig.SearchConfig));
       this.showPane(this.searchResultsPane);
     }
     this.searchResultsPane.addSearchResult(searchResult);
@@ -297,7 +299,7 @@ export class SearchView extends UI.Widget.VBox {
     UI.ARIAUtils.alert(this.searchMessageElement.textContent + ' ' + this.searchResultsMessageElement.textContent);
   }
 
-  private async startSearch(searchConfig: SearchConfig): Promise<void> {
+  private async startSearch(searchConfig: Workspace.SearchConfig.SearchConfig): Promise<void> {
     this.resetSearch();
     ++this.searchId;
     this.initScope();
@@ -307,7 +309,7 @@ export class SearchView extends UI.Widget.VBox {
     this.pendingSearchConfig = searchConfig;
   }
 
-  private innerStartSearch(searchConfig: SearchConfig): void {
+  private innerStartSearch(searchConfig: Workspace.SearchConfig.SearchConfig): void {
     this.searchConfig = searchConfig;
     if (this.progressIndicator) {
       this.progressIndicator.done();
@@ -477,7 +479,7 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   private load(): void {
-    const searchConfig = SearchConfig.fromPlainObject(this.advancedSearchConfig.get());
+    const searchConfig = Workspace.SearchConfig.SearchConfig.fromPlainObject(this.advancedSearchConfig.get());
     this.search.value = searchConfig.query();
     this.matchCaseButton.setToggled(!searchConfig.ignoreCase());
     this.regexButton.setToggled(searchConfig.isRegex());

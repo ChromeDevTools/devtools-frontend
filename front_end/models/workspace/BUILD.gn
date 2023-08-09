@@ -9,6 +9,7 @@ import("../visibility.gni")
 devtools_module("workspace") {
   sources = [
     "FileManager.ts",
+    "SearchConfig.ts",
     "UISourceCode.ts",
     "WorkspaceImpl.ts",
   ]

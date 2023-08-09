@@ -6,12 +6,13 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import type * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import searchResultsPaneStyles from './searchResultsPane.css.js';
 
-import {type SearchConfig, type SearchResult} from './SearchConfig.js';
+import {type SearchResult} from './SearchConfig.js';
 
 const UIStrings = {
   /**
@@ -34,13 +35,13 @@ const str_ = i18n.i18n.registerUIStrings('panels/search/SearchResultsPane.ts', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SearchResultsPane extends UI.Widget.VBox {
-  private readonly searchConfig: SearchConfig;
+  private readonly searchConfig: Workspace.SearchConfig.SearchConfig;
   private readonly searchResults: SearchResult[];
   private readonly treeElements: SearchResultsTreeElement[];
   private treeOutline: UI.TreeOutline.TreeOutlineInShadow;
   private matchesExpandedCount: number;
 
-  constructor(searchConfig: SearchConfig) {
+  constructor(searchConfig: Workspace.SearchConfig.SearchConfig) {
     super(true);
     this.searchConfig = searchConfig;
 
@@ -95,12 +96,12 @@ export const matchesExpandedByDefault = 200;
 export const matchesShownAtOnce = 20;
 
 export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
-  private searchConfig: SearchConfig;
+  private searchConfig: Workspace.SearchConfig.SearchConfig;
   private searchResult: SearchResult;
   private initialized: boolean;
   override toggleOnClick: boolean;
 
-  constructor(searchConfig: SearchConfig, searchResult: SearchResult) {
+  constructor(searchConfig: Workspace.SearchConfig.SearchConfig, searchResult: SearchResult) {
     super('', true);
     this.searchConfig = searchConfig;
     this.searchResult = searchResult;

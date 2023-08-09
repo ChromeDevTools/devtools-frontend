@@ -968,6 +968,7 @@ grd_files_debug_sources = [
   "front_end/models/trace/types/Timing.js",
   "front_end/models/trace/types/TraceEvents.js",
   "front_end/models/workspace/FileManager.js",
+  "front_end/models/workspace/SearchConfig.js",
   "front_end/models/workspace/UISourceCode.js",
   "front_end/models/workspace/WorkspaceImpl.js",
   "front_end/models/workspace_diff/WorkspaceDiff.js",

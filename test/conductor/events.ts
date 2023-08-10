@@ -127,7 +127,7 @@ export function installPageErrorHandlers(page: puppeteer.Page): void {
 }
 
 function isExpectedError(consoleMessage: puppeteer.ConsoleMessage) {
-  if (ALLOWED_ASSERTION_FAILURES.some(f => f.includes(consoleMessage.text()))) {
+  if (ALLOWED_ASSERTION_FAILURES.some(f => consoleMessage.text().includes(f))) {
     return true;
   }
   for (const expectation of pendingErrorExpectations) {

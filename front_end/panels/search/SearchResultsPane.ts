@@ -12,7 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import searchResultsPaneStyles from './searchResultsPane.css.js';
 
-import {type SearchResult} from './SearchScope.js';
+import {type SearchResult} from './SearchConfig.js';
 
 const UIStrings = {
   /**

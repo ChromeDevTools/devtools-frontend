@@ -16,8 +16,8 @@ generate_css("css_files") {
 
 devtools_module("search") {
   sources = [
+    "SearchConfig.ts",
     "SearchResultsPane.ts",
-    "SearchScope.ts",
     "SearchView.ts",
   ]
 

@@ -258,7 +258,7 @@ const UIStrings = {
    *  Description text for PrerenderFinalStatus::kSameSiteCrossOriginNavigationNotOptInInInitialNavigation.
    */
   prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation:
-      'The prerendered page navigated itself to a cross-origin same-site URL, but the destination response did not include the appropriate Supports-Loading-Mode header.',
+      'The prerendering navigation failed because it was to a cross-origin same-site URL, but the destination response did not include the appropriate Supports-Loading-Mode header.',
   /**
    *  Description text for PrerenderFinalStatus::kActivationNavigationParameterMismatch.
    */

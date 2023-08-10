@@ -5,17 +5,21 @@
 import * as Platform from '../../core/platform/platform.js';
 
 export class SearchConfig {
-  private readonly queryInternal: string;
-  private readonly ignoreCaseInternal: boolean;
-  private readonly isRegexInternal: boolean;
-  private fileQueries?: QueryTerm[];
-  private queriesInternal?: string[];
-  private fileRegexQueries?: RegexQuery[];
+  readonly #query: string;
+  readonly #ignoreCase: boolean;
+  readonly #isRegex: boolean;
+
+  readonly #queries: string[];
+  readonly #fileRegexQueries: RegexQuery[];
+
   constructor(query: string, ignoreCase: boolean, isRegex: boolean) {
-    this.queryInternal = query;
-    this.ignoreCaseInternal = ignoreCase;
-    this.isRegexInternal = isRegex;
-    this.parse();
+    this.#query = query;
+    this.#ignoreCase = ignoreCase;
+    this.#isRegex = isRegex;
+
+    const {queries, fileRegexQueries} = SearchConfig.#parse(query, ignoreCase, isRegex);
+    this.#queries = queries;
+    this.#fileRegexQueries = fileRegexQueries;
   }
 
   static fromPlainObject(object: {
@@ -26,16 +30,25 @@ export class SearchConfig {
     return new SearchConfig(object.query, object.ignoreCase, object.isRegex);
   }
 
+  filePathMatchesFileQuery(filePath: Platform.DevToolsPath.RawPathString|
+                           Platform.DevToolsPath.EncodedPathString|Platform.DevToolsPath.UrlString): boolean {
+    return this.#fileRegexQueries.every(({regex, shouldMatch}) => (Boolean(filePath.match(regex)) === shouldMatch));
+  }
+
+  queries(): string[] {
+    return this.#queries;
+  }
+
   query(): string {
-    return this.queryInternal;
+    return this.#query;
   }
 
   ignoreCase(): boolean {
-    return this.ignoreCaseInternal;
+    return this.#ignoreCase;
   }
 
   isRegex(): boolean {
-    return this.isRegexInternal;
+    return this.#isRegex;
   }
 
   toPlainObject(): {
@@ -46,7 +59,8 @@ export class SearchConfig {
     return {query: this.query(), ignoreCase: this.ignoreCase(), isRegex: this.isRegex()};
   }
 
-  private parse(): void {
+  static #parse(query: string, ignoreCase: boolean, isRegex: boolean):
+      {queries: string[], fileRegexQueries: RegexQuery[]} {
     // Inside double quotes: any symbol except double quote and backslash or any symbol escaped with a backslash.
     const quotedPattern = /"([^\\"]|\\.)+"/;
     // A word is a sequence of any symbols except space and backslash or any symbols escaped with a backslash, that does not start with file:.
@@ -59,70 +73,44 @@ export class SearchConfig {
       '(' + unquotedPattern + ')',
     ].join('|');
     const regexp = new RegExp(pattern, 'g');
-    const queryParts = this.queryInternal.match(regexp) || [];
-    this.fileQueries = [];
+    const queryParts = query.match(regexp) || [];
 
-    this.queriesInternal = [];
+    const queries: string[] = [];
+    const fileRegexQueries: RegexQuery[] = [];
 
-    for (let i = 0; i < queryParts.length; ++i) {
-      const queryPart = queryParts[i];
+    for (const queryPart of queryParts) {
       if (!queryPart) {
         continue;
       }
-      const fileQuery = this.parseFileQuery(queryPart);
+      const fileQuery = SearchConfig.#parseFileQuery(queryPart);
       if (fileQuery) {
-        this.fileQueries.push(fileQuery);
-        this.fileRegexQueries = this.fileRegexQueries || [];
-        this.fileRegexQueries.push(
-            {regex: new RegExp(fileQuery.text, this.ignoreCase() ? 'i' : ''), isNegative: fileQuery.isNegative});
-        continue;
-      }
-      if (this.isRegexInternal) {
-        this.queriesInternal.push(queryPart);
-        continue;
-      }
-      if (queryPart.startsWith('"')) {
-        if (!queryPart.endsWith('"')) {
-          continue;
-        }
-        this.queriesInternal.push(this.parseQuotedQuery(queryPart));
-        continue;
-      }
-      this.queriesInternal.push(this.parseUnquotedQuery(queryPart));
-    }
-  }
-
-  filePathMatchesFileQuery(filePath: Platform.DevToolsPath.RawPathString|
-                           Platform.DevToolsPath.EncodedPathString|Platform.DevToolsPath.UrlString): boolean {
-    if (!this.fileRegexQueries) {
-      return true;
-    }
-    for (let i = 0; i < this.fileRegexQueries.length; ++i) {
-      if (Boolean(filePath.match(this.fileRegexQueries[i].regex)) === this.fileRegexQueries[i].isNegative) {
-        return false;
+        const regex = new RegExp(fileQuery.text, ignoreCase ? 'i' : '');
+        fileRegexQueries.push({regex, shouldMatch: fileQuery.shouldMatch});
+      } else if (isRegex) {
+        queries.push(queryPart);
+      } else if (queryPart.startsWith('"') && queryPart.endsWith('"')) {
+        queries.push(SearchConfig.#parseQuotedQuery(queryPart));
+      } else {
+        queries.push(SearchConfig.#parseUnquotedQuery(queryPart));
       }
     }
-    return true;
+
+    return {queries, fileRegexQueries};
   }
 
-  queries(): string[] {
-    return this.queriesInternal || [];
-  }
-
-  private parseUnquotedQuery(query: string): string {
+  static #parseUnquotedQuery(query: string): string {
     return query.replace(/\\(.)/g, '$1');
   }
 
-  private parseQuotedQuery(query: string): string {
+  static #parseQuotedQuery(query: string): string {
     return query.substring(1, query.length - 1).replace(/\\(.)/g, '$1');
   }
 
-  private parseFileQuery(query: string): QueryTerm|null {
+  static #parseFileQuery(query: string): QueryTerm|null {
     const match = query.match(FilePatternRegex);
     if (!match) {
       return null;
     }
-    const isNegative = Boolean(match[1]);
     query = match[3];
     let result = '';
     for (let i = 0; i < query.length; ++i) {
@@ -142,23 +130,20 @@ export class SearchConfig {
         result += query.charAt(i);
       }
     }
-    return new QueryTerm(result, isNegative);
+    const shouldMatch = !Boolean(match[1]);
+    return {text: result, shouldMatch};
   }
 }
 
 // After file: prefix: any symbol except space and backslash or any symbol escaped with a backslash.
 const FilePatternRegex = /(-)?f(ile)?:((?:[^\\ ]|\\.)+)/;
 
-class QueryTerm {
+interface QueryTerm {
   text: string;
-  isNegative: boolean;
-  constructor(text: string, isNegative: boolean) {
-    this.text = text;
-    this.isNegative = isNegative;
-  }
+  shouldMatch: boolean;
 }
 
-export interface RegexQuery {
+interface RegexQuery {
   regex: RegExp;
-  isNegative: boolean;
+  shouldMatch: boolean;
 }

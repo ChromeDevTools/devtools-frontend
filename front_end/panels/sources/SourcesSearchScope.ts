@@ -36,10 +36,10 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import type * as Search from '../search/search.js';
 
-export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
+export class SourcesSearchScope implements Search.SearchScope.SearchScope {
   private searchId: number;
   private searchResultCandidates: Workspace.UISourceCode.UISourceCode[];
-  private searchResultCallback: ((arg0: Search.SearchConfig.SearchResult) => void)|null;
+  private searchResultCallback: ((arg0: Search.SearchScope.SearchResult) => void)|null;
   private searchFinishedCallback: ((arg0: boolean) => void)|null;
   private searchConfig: Workspace.SearchConfig.SearchConfig|null;
   constructor() {
@@ -116,7 +116,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
 
   performSearch(
       searchConfig: Workspace.SearchConfig.SearchConfig, progress: Common.Progress.Progress,
-      searchResultCallback: (arg0: Search.SearchConfig.SearchResult) => void,
+      searchResultCallback: (arg0: Search.SearchScope.SearchResult) => void,
       searchFinishedCallback: (arg0: boolean) => void): void {
     this.stopSearch();
     this.searchResultCandidates = [];
@@ -280,7 +280,7 @@ export class SourcesSearchScope implements Search.SearchConfig.SearchScope {
   }
 }
 
-export class FileBasedSearchResult implements Search.SearchConfig.SearchResult {
+export class FileBasedSearchResult implements Search.SearchScope.SearchResult {
   private readonly uiSourceCode: Workspace.UISourceCode.UISourceCode;
   private readonly searchMatches: TextUtils.ContentProvider.SearchMatch[];
   constructor(

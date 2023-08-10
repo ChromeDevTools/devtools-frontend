@@ -993,7 +993,8 @@
                         "ExcludeInvalidSameParty",
                         "ExcludeSamePartyCrossPartyContext",
                         "ExcludeDomainNonASCII",
-                        "ExcludeThirdPartyCookieBlockedInFirstPartySet"
+                        "ExcludeThirdPartyCookieBlockedInFirstPartySet",
+                        "ExcludeThirdPartyPhaseout"
                     ]
                 },
                 {

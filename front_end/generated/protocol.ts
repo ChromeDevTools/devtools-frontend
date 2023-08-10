@@ -705,6 +705,7 @@ export namespace Audits {
     ExcludeSamePartyCrossPartyContext = 'ExcludeSamePartyCrossPartyContext',
     ExcludeDomainNonASCII = 'ExcludeDomainNonASCII',
     ExcludeThirdPartyCookieBlockedInFirstPartySet = 'ExcludeThirdPartyCookieBlockedInFirstPartySet',
+    ExcludeThirdPartyPhaseout = 'ExcludeThirdPartyPhaseout',
   }
 
   export const enum CookieWarningReason {

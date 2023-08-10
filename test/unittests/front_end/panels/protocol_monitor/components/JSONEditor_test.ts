@@ -146,6 +146,14 @@ describeWithEnvironment('JSONEditor', () => {
             description: 'Description9.',
             replyArgs: ['Test9'],
           },
+          'Test.test11': {
+            parameters: [{
+              'optional': false,
+              'type': 'array',
+              'name': 'test11',
+              'typeRef': 'Test.arrayTypeRef',
+            }],
+          },
         },
       },
     ] as Iterable<ProtocolMonitor.ProtocolMonitor.ProtocolDomain>;
@@ -518,6 +526,58 @@ describeWithEnvironment('JSONEditor', () => {
       const suggestions = await renderSuggestionBox(command);
 
       assert.deepStrictEqual(suggestions, ['false', 'true']);
+    });
+
+    it('should show the suggestion box for enum parameters nested inside arrays', async () => {
+      const enumsByName = new Map([
+        ['Test.arrayTypeRef', {'Test': 'test', 'Test1': 'test1', 'Test2': 'test2'}],
+      ]);
+      const command = 'Test.test11';
+
+      const jsonEditor = renderJSONEditor();
+
+      await populateMetadata(jsonEditor);
+      jsonEditor.enumsByName = enumsByName;
+      jsonEditor.command = command;
+      jsonEditor.populateParametersForCommandWithDefaultValues();
+
+      await jsonEditor.updateComplete;
+
+      const param = jsonEditor.renderRoot.querySelector('[data-paramId]');
+      await renderHoveredElement(param);
+
+      const addParamButton = jsonEditor.renderRoot.querySelector('devtools-button[title="Add a parameter"]');
+      if (!addParamButton) {
+        throw new Error('No button');
+      }
+      dispatchClickEvent(addParamButton, {
+        bubbles: true,
+        composed: true,
+      });
+
+      await jsonEditor.updateComplete;
+
+      const inputs = jsonEditor.renderRoot.querySelectorAll('devtools-recorder-input');
+      // inputs[0] corresponds to the devtools-recorder-input of the command
+      const suggestionInput = inputs[1];
+      // Reset the value to empty string because for boolean it will be set to false by default and the correct suggestions will not show
+      suggestionInput.value = '';
+      suggestionInput.focus();
+
+      await suggestionInput.updateComplete;
+      const suggestionBox = suggestionInput.renderRoot.querySelector('devtools-suggestion-box');
+
+      if (!suggestionBox) {
+        throw new Error('No suggestion box shown');
+      }
+      const suggestions = Array.from(suggestionBox.renderRoot.querySelectorAll('li')).map(item => {
+        if (!item.textContent) {
+          throw new Error('No text inside suggestion');
+        }
+        return (item.textContent.replaceAll(/\s/g, ''));
+      });
+
+      assert.deepStrictEqual(suggestions, ['test', 'test1', 'test2']);
     });
 
     it('should not display suggestion box when the parameter is neither a string or a boolean', async () => {

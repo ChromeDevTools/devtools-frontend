@@ -606,39 +606,39 @@ export class JSONEditor extends LitElement {
     return false;
   }
 
-  #handleAddParameter(parameterId: string): void {
-    const createNestedParameter = (type: Parameter, name: string): Parameter => {
-      if (type.type === ParameterType.Object) {
-        const typeRef = type.typeRef;
-        if (!typeRef) {
-          throw Error('Every object parameters should have a type ref');
-        }
-        const nestedType = this.typesByName.get(typeRef) ?? [];
-
-        const nestedValue: Parameter[] =
-            nestedType.map(nestedType => createNestedParameter(nestedType, nestedType.name));
-
-        return {
-          type: ParameterType.Object,
-          name: name,
-          optional: type.optional,
-          typeRef: typeRef,
-          value: nestedValue,
-          isCorrectType: true,
-          description: type.description,
-        };
+  #createNestedParameter(type: Parameter, name: string): Parameter {
+    if (type.type === ParameterType.Object) {
+      const typeRef = type.typeRef;
+      if (!typeRef) {
+        throw Error('Every object parameters should have a type ref');
       }
+      const nestedTypes = this.typesByName.get(typeRef) ?? [];
+
+      const nestedValue: Parameter[] =
+          nestedTypes.map(nestedType => this.#createNestedParameter(nestedType, nestedType.name));
+
       return {
-        type: type.type,
+        type: ParameterType.Object,
         name: name,
         optional: type.optional,
+        typeRef: typeRef,
+        value: nestedValue,
         isCorrectType: true,
-        typeRef: type.typeRef,
-        value: defaultValueByType.get(type.type),
         description: type.description,
-      } as Parameter;
-    };
+      };
+    }
+    return {
+      type: type.type,
+      name: name,
+      optional: type.optional,
+      isCorrectType: true,
+      typeRef: type.typeRef,
+      value: defaultValueByType.get(type.type),
+      description: type.description,
+    } as Parameter;
+  }
 
+  #handleAddParameter(parameterId: string): void {
     const pathArray = parameterId.split('.');
     const {parameter} = this.#getChildByPath(pathArray);
 
@@ -654,13 +654,35 @@ export class JSONEditor extends LitElement {
         }
 
         const nestedType = this.typesByName.get(typeRef) ?? [];
-        const nestedValue: Parameter[] = nestedType.map(type => createNestedParameter(type, type.name));
+        const nestedValue: Parameter[] = nestedType.map(type => this.#createNestedParameter(type, type.name));
+
+        let type = this.#isTypePrimitive(typeRef) ? typeRef : ParameterType.Object;
+
+        // If the typeRef is actually a ref to an enum type, the type of the nested param should be a string
+        if (nestedType.length === 0) {
+          if (this.enumsByName.get(typeRef)) {
+            type = ParameterType.String;
+          }
+        }
+
+        // The typeRef for a enum should be without the domain name
+        // To remove the domain name we split the typeRef and get only the second part
+        const computeTypeRef = (): string|undefined => {
+          const splittedTypeRef = parameter.typeRef?.split('.')[1];
+          if (parameter.typeRef?.includes('.')) {
+            if (splittedTypeRef === '') {
+              throw new Error('Invalid typeref');
+            }
+            return splittedTypeRef;
+          }
+          return parameter.typeRef;
+        };
 
         parameter.value.push({
-          type: this.#isTypePrimitive(typeRef) ? typeRef : ParameterType.Object,
+          type: type,
           name: String(parameter.value.length),
           optional: true,
-          typeRef: typeRef,
+          typeRef: this.enumsByName.get(typeRef) ? computeTypeRef() : typeRef,
           value: nestedValue.length !== 0 ? nestedValue : '',
           description: '',
           isCorrectType: true,
@@ -686,7 +708,7 @@ export class JSONEditor extends LitElement {
         }
         const nestedType = this.typesByName.get(typeRef) ?? [];
         const nestedValue: Parameter[] =
-            nestedType.map(nestedType => createNestedParameter(nestedType, nestedType.name));
+            nestedType.map(nestedType => this.#createNestedParameter(nestedType, nestedType.name));
 
         parameter.value.push({
           type: ParameterType.Object,

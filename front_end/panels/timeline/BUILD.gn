@@ -24,6 +24,7 @@ devtools_module("timeline") {
   sources = [
     "AnimationsTrackAppender.ts",
     "AppenderUtils.ts",
+    "Breadcrumbs.ts",
     "CLSLinkifier.ts",
     "CompatibilityTracksAppender.ts",
     "CountersGraph.ts",

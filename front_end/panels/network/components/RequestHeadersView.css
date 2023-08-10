@@ -80,6 +80,9 @@ div.raw-headers-row {
 
 .header-value {
   word-break: break-all;
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .green-circle::before,

@@ -375,7 +375,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       return LitHtml.nothing;
     }
 
-    const statusClasses = [];
+    const statusClasses = ['status'];
     if (this.#request.statusCode < 300 || this.#request.statusCode === 304) {
       statusClasses.push('green-circle');
     } else if (this.#request.statusCode < 400) {
@@ -384,26 +384,26 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       statusClasses.push('red-circle');
     }
 
-    let statusText = this.#request.statusCode + ' ' + this.#request.statusText;
+    let comment = '';
     if (this.#request.cachedInMemory()) {
-      statusText += ' ' + i18nString(UIStrings.fromMemoryCache);
-      statusClasses.push('status-with-comment');
+      comment = i18nString(UIStrings.fromMemoryCache);
     } else if (this.#request.fetchedViaServiceWorker) {
-      statusText += ' ' + i18nString(UIStrings.fromServiceWorker);
-      statusClasses.push('status-with-comment');
+      comment = i18nString(UIStrings.fromServiceWorker);
     } else if (this.#request.redirectSourceSignedExchangeInfoHasNoErrors()) {
-      statusText += ' ' + i18nString(UIStrings.fromSignedexchange);
-      statusClasses.push('status-with-comment');
+      comment = i18nString(UIStrings.fromSignedexchange);
     } else if (this.#request.webBundleInnerRequestInfo()) {
-      statusText += ' ' + i18nString(UIStrings.fromWebBundle);
-      statusClasses.push('status-with-comment');
+      comment = i18nString(UIStrings.fromWebBundle);
     } else if (this.#request.fromPrefetchCache()) {
-      statusText += ' ' + i18nString(UIStrings.fromPrefetchCache);
-      statusClasses.push('status-with-comment');
+      comment = i18nString(UIStrings.fromPrefetchCache);
     } else if (this.#request.cached()) {
-      statusText += ' ' + i18nString(UIStrings.fromDiskCache);
+      comment = i18nString(UIStrings.fromDiskCache);
+    }
+
+    if (comment) {
       statusClasses.push('status-with-comment');
     }
+
+    const statusText = [this.#request.statusCode, this.#request.statusText, comment].join(' ');
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off

@@ -108,7 +108,16 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private readonly headerLabelXPadding: number;
   private readonly headerLabelYPadding: number;
   private highlightedMarkerIndex: number;
+  /**
+   * Represents the index of the entry that the user's mouse cursor is over.
+   * Note that this is updated as the user moves their cursor: they do not have
+   * to click for this to be updated.
+   **/
   private highlightedEntryIndex: number;
+  /**
+   * Represents the index of the entry that is selected. For an entry to be
+   * selected, it has to be clicked by the user.
+   **/
   private selectedEntryIndex: number;
   private rawTimelineDataLength: number;
   private readonly markerPositions: Map<number, {
@@ -165,6 +174,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.canvas.addEventListener('mouseout', this.onMouseOut.bind(this), false);
     this.canvas.addEventListener('click', this.onClick.bind(this), false);
     this.canvas.addEventListener('keydown', this.onKeyDown.bind(this), false);
+    this.canvas.addEventListener('contextmenu', this.#onContextMenu.bind(this), false);
 
     this.entryInfo = this.viewportElement.createChild('div', 'flame-chart-entry-info');
     this.markerHighlighElement = this.viewportElement.createChild('div', 'flame-chart-marker-highlight-element');
@@ -602,6 +612,31 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
                                        i18nString(UIStrings.sCollapsed, {PH1: groupName});
       UI.ARIAUtils.alert(content);
     }
+  }
+
+  #onContextMenu(_event: Event): void {
+    // The context menu only applies if the user is hovering over an individual entry.
+    if (this.highlightedEntryIndex === -1) {
+      return;
+    }
+    const data = this.timelineData();
+    if (!data) {
+      return;
+    }
+    const group = data.groups.at(this.selectedGroup);
+    // Early exit here if there is no group or:
+    // 1. The group is not expanded: it needs to be expanded to allow the
+    //    context menu actions to occur.
+    // 2. The group does not have the showStackContextMenu flag which indicates
+    //    that it does not show entries that support the stack actions.
+    if (!group || !group.expanded || !group.showStackContextMenu) {
+      return;
+    }
+    // TODO(crbug.com/1469887): implement a context menu that supports stack editing options. See bug for more details.
+    // At this point once a context menu is implemented we will also want to
+    // update the selected index to match the highlighted index, which
+    // represents the entry under the cursor where the user has right clicked
+    // to trigger a context menu.
   }
 
   private onKeyDown(e: KeyboardEvent): void {
@@ -2248,6 +2283,8 @@ export interface Group {
   selectable?: boolean;
   style: GroupStyle;
   track?: TimelineModel.TimelineModel.Track|null;
+  // Should be turned on if the track supports user editable stacks.
+  showStackContextMenu?: boolean;
 }
 
 export interface GroupStyle {

@@ -17,19 +17,19 @@ const USER_DEFINED_COVERAGE_FOLDERS = process.env['COVERAGE_FOLDERS'];
 // false by default
 const DEBUG_ENABLED = Boolean(process.env['DEBUG_TEST']);
 const REPEAT_ENABLED = Boolean(process.env['REPEAT']);
-const COVERAGE_ENABLED = Boolean(process.env['COVERAGE']) || Boolean(USER_DEFINED_COVERAGE_FOLDERS);
+const COVERAGE_ENABLED_BY_USER = Boolean(process.env['COVERAGE']) || Boolean(USER_DEFINED_COVERAGE_FOLDERS);
 const EXPANDED_REPORTING = Boolean(process.env['EXPANDED_REPORTING']);
 const KARMA_TIMEOUT = process.env['KARMA_TIMEOUT'] ? Number(process.env['KARMA_TIMEOUT']) : undefined;
 
 const MOCHA_FGREP = process.env['MOCHA_FGREP'] || undefined;
 
-// true by default
-const TEXT_COVERAGE_ENABLED = COVERAGE_ENABLED && !process.env['NO_TEXT_COVERAGE'];
-// true by default
-const HTML_COVERAGE_ENABLED = COVERAGE_ENABLED && !process.env['NO_HTML_COVERAGE'];
 const COVERAGE_OUTPUT_DIRECTORY = 'karma-coverage';
 
-if (COVERAGE_ENABLED) {
+// Initially set this to true if the user has enabled it, but we then check
+// because coverage only gives accurate results in debug builds, so if this
+// build is not a debug build, we disable coverage and log a warning.
+let coverageEnabled = COVERAGE_ENABLED_BY_USER;
+if (coverageEnabled) {
   /* Clear out the old coverage directory so you can't accidentally open old,
    * out of date coverage output.
    */
@@ -41,21 +41,28 @@ if (COVERAGE_ENABLED) {
   debugCheck(__dirname).then(isDebug => {
     if (!isDebug) {
       const warning = `The unit tests appear to be running against a non-debug build and
-your coverage report will likely be incomplete due to bundling.
+your coverage report will be inaccurate and incomplete due to the bundle being rolled-up.
+
+Therefore, coverage has been disabled.
 
 In order to get a complete coverage report please run against a
 target with is_debug = true in the args.gn file.`;
       console.warn(colors.magenta(warning));
+      coverageEnabled = false;
     }
   });
 }
+// true by default
+const TEXT_COVERAGE_ENABLED = coverageEnabled && !process.env['NO_TEXT_COVERAGE'];
+// true by default
+const HTML_COVERAGE_ENABLED = coverageEnabled && !process.env['NO_HTML_COVERAGE'];
 
 const GEN_DIRECTORY = path.join(__dirname, '..', '..');
 const ROOT_DIRECTORY = path.join(GEN_DIRECTORY, '..', '..', '..');
 const singleRun = !(DEBUG_ENABLED || REPEAT_ENABLED);
 
-const coverageReporters = COVERAGE_ENABLED ? ['coverage'] : [];
-const coveragePreprocessors = COVERAGE_ENABLED ? ['coverage'] : [];
+const coverageReporters = coverageEnabled ? ['coverage'] : [];
+const coveragePreprocessors = coverageEnabled ? ['coverage'] : [];
 const commonIstanbulReporters = [{type: 'json-summary'}, {type: 'json'}];
 const istanbulReportOutputs = commonIstanbulReporters;
 

@@ -379,16 +379,10 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
 
     await coordinator.done();
 
-    const report = getElementWithinComponent(ruleSetDetailsComponent, 'devtools-report', ReportView.ReportView.Report);
-
-    const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
-    const values = getCleanTextContentFromElements(report, 'devtools-report-value');
-    assert.deepEqual(zip2(keys, values), [
-      ['Validity', 'Invalid; source is not a JSON object'],
-      ['Error', 'fake error message'],
-      ['Location', '<script>'],
-      ['Source', '{"prerender":[{"source": "list",'],
-    ]);
+    assert.deepEqual(
+        ruleSetDetailsComponent.shadowRoot?.getElementById('ruleset-url')?.textContent, 'https://example.com/');
+    assert.deepEqual(
+        ruleSetDetailsComponent.shadowRoot?.getElementById('error-message-text')?.textContent, 'fake error message');
   });
 
   // TODO(https://crbug.com/1384419): Check that preloading attempts for

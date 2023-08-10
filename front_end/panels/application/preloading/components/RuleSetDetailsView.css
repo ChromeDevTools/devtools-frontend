@@ -1,0 +1,18 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.ruleset-header {
+  padding: 12px 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid var(--sys-color-divider);
+  grid-template-columns: min-content 1fr;
+}
+
+.ruleset-header devtools-icon {
+  vertical-align: sub;
+}

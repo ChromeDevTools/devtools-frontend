@@ -5,24 +5,16 @@
 import * as Protocol from '../../../../../../../front_end/generated/protocol.js';
 import * as PreloadingComponents from '../../../../../../../front_end/panels/application/preloading/components/components.js';
 import * as Coordinator from '../../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import * as ReportView from '../../../../../../../front_end/ui/components/report_view/report_view.js';
 import {
   assertShadowRoot,
-  getCleanTextContentFromElements,
-  getElementWithinComponent,
   renderElementIntoDOM,
 } from '../../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../helpers/EnvironmentHelpers.js';
+import type * as TextEditor from '../../../../../../../front_end/ui/components/text_editor/text_editor.js';
 
 const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
-const zip2 = <T, S>(xs: T[], ys: S[]): [T, S][] => {
-  assert.strictEqual(xs.length, ys.length);
-
-  return Array.from(xs.map((_, i) => [xs[i], ys[i]]));
-};
 
 async function renderRuleSetDetailsView(data: PreloadingComponents.RuleSetDetailsView.RuleSetDetailsViewData):
     Promise<HTMLElement> {
@@ -41,7 +33,6 @@ describeWithEnvironment('RuleSetDetailsView', async () => {
 
     const component = await renderRuleSetDetailsView(data);
     assertShadowRoot(component.shadowRoot);
-
     assert.strictEqual(component.shadowRoot.textContent, '');
   });
 
@@ -61,17 +52,11 @@ describeWithEnvironment('RuleSetDetailsView', async () => {
 `,
       backendNodeId: 1 as Protocol.DOM.BackendNodeId,
     };
-
     const component = await renderRuleSetDetailsView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
+    assert.deepEqual(component.shadowRoot?.getElementById('error-message-text')?.textContent, undefined);
 
-    const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
-    const values = getCleanTextContentFromElements(report, 'devtools-report-value');
-    assert.deepEqual(zip2(keys, values), [
-      ['Validity', 'Valid'],
-      ['Location', '<script>'],
-      ['Source', '{"prefetch":[{"source":"list","urls":["/subresource.js"]}]}'],
-    ]);
+    const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
+    assert.strictEqual(textEditor.state.doc.toString(), data.sourceText);
   });
 
   it('renders rule set from Speculation-Rules HTTP header', async () => {
@@ -91,17 +76,10 @@ describeWithEnvironment('RuleSetDetailsView', async () => {
       url: 'https://example.com/speculationrules.json',
       requestId: 'reqeustId' as Protocol.Network.RequestId,
     };
-
     const component = await renderRuleSetDetailsView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
-
-    const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
-    const values = getCleanTextContentFromElements(report, 'devtools-report-value');
-    assert.deepEqual(zip2(keys, values), [
-      ['Validity', 'Valid'],
-      ['Location', 'https://example.com/speculationrules.json'],
-      ['Source', '{"prefetch":[{"source":"list","urls":["/subresource.js"]}]}'],
-    ]);
+    assert.deepEqual(component.shadowRoot?.getElementById('error-message-text')?.textContent, undefined);
+    const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
+    assert.strictEqual(textEditor.state.doc.toString(), data.sourceText);
   });
 
   it('renders invalid rule set', async () => {
@@ -118,18 +96,11 @@ describeWithEnvironment('RuleSetDetailsView', async () => {
       errorType: Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject,
       errorMessage: 'Line: 6, column: 1, Syntax error.',
     };
-
     const component = await renderRuleSetDetailsView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
-
-    const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
-    const values = getCleanTextContentFromElements(report, 'devtools-report-value');
-    assert.deepEqual(zip2(keys, values), [
-      ['Validity', 'Invalid; source is not a JSON object'],
-      ['Error', 'Line: 6, column: 1, Syntax error.'],
-      ['Location', '<script>'],
-      ['Source', '{"prefetch": [{"source": "list",'],
-    ]);
+    assert.deepEqual(
+        component.shadowRoot?.getElementById('error-message-text')?.textContent, 'Line: 6, column: 1, Syntax error.');
+    const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
+    assert.strictEqual(textEditor.state.doc.toString(), data.sourceText);
   });
 
   it('renders invalid rule set', async () => {
@@ -149,17 +120,11 @@ describeWithEnvironment('RuleSetDetailsView', async () => {
       errorType: Protocol.Preload.RuleSetErrorType.InvalidRulesSkipped,
       errorMessage: 'A list rule must have a "urls" array.',
     };
-
     const component = await renderRuleSetDetailsView(data);
-    const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
-
-    const keys = getCleanTextContentFromElements(report, 'devtools-report-key');
-    const values = getCleanTextContentFromElements(report, 'devtools-report-value');
-    assert.deepEqual(zip2(keys, values), [
-      ['Validity', 'Some rules are invalid and ignored'],
-      ['Error', 'A list rule must have a "urls" array.'],
-      ['Location', '<script>'],
-      ['Source', '{"prefetch":[{"source":"list"}]}'],
-    ]);
+    assert.deepEqual(
+        component.shadowRoot?.getElementById('error-message-text')?.textContent,
+        'A list rule must have a "urls" array.');
+    const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
+    assert.strictEqual(textEditor.state.doc.toString(), data.sourceText);
   });
 });

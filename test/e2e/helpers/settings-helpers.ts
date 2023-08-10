@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {
+  $,
   click,
   clickElement,
   hover,
@@ -16,8 +17,11 @@ export const openPanelViaMoreTools = async (panelTitle: string) => {
   // Head to the triple dot menu.
   await click('aria/Customize and control DevTools');
 
-  // Open the “More Tools” option.
-  await hover('aria/More tools[role="menuitem"]');
+  await waitForFunction(async () => {
+    // Open the “More Tools” option.
+    await hover('aria/More tools[role="menuitem"]');
+    return $(`${panelTitle}[role="menuitem"]`, undefined, 'aria');
+  });
 
   // Click the desired menu item
   await click(`aria/${panelTitle}[role="menuitem"]`);

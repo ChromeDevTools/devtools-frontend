@@ -53,7 +53,6 @@ describe('Recorder', function() {
 
     const {target} = getBrowserAndPages();
     await target.bringToFront();
-    await target.waitForSelector('#test');
     await target.click('#test');
 
     const recording = await stopRecording();

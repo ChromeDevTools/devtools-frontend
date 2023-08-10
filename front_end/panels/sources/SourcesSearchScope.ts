@@ -152,6 +152,10 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
       if (!uiSourceCode.contentType().isTextType()) {
         continue;
       }
+      if (Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+              uiSourceCode)) {
+        continue;
+      }
       const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
       if (binding && binding.network === uiSourceCode) {
         continue;

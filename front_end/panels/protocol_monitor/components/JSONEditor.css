@@ -29,10 +29,6 @@
   flex-wrap: wrap;
 }
 
-.deleteIcon {
-  margin-left: 5px;
-}
-
 .row,
 .row-icons {
   display: flex;
@@ -54,13 +50,13 @@ ul {
   padding-left: 2em;
 }
 
-.optionalParameter {
+.optional-parameter {
   color: var(--color-syntax-3);
 
   --override-color-recorder-input: var(--color-syntax-1);
 }
 
-.undefinedParameter {
+.undefined-parameter {
   color: var(--color-text-disabled);
 }
 
@@ -73,12 +69,23 @@ ul {
   padding-top: 0.5em;
 }
 
-.deleteButton {
+.clear-button,
+.add-button,
+.delete-button {
   opacity: 0%;
   transition: opacity 0.3s ease-in-out;
 }
 
-.row:focus-within .deleteButton,
-.row:hover .deleteButton {
+.clear-button,
+.delete-button {
+  margin-left: 5px;
+}
+
+.row:focus-within .delete-button,
+.row:focus-within .add-button,
+.row:focus-within .clear-button,
+.row:hover .delete-button,
+.row:hover .add-button,
+.row:hover .clear-button {
   opacity: 100%;
 }

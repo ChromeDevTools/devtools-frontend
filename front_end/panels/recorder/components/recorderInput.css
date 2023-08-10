@@ -79,6 +79,6 @@ devtools-editable-content:focus ~ devtools-suggestion-box {
   color: var(--sys-color-cdt-base-container);
 }
 
-.incorrect-type {
+.strikethrough {
   text-decoration: line-through;
 }

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import '../../recorder/components/components.js';
 
+import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -14,11 +15,15 @@ const {customElement} = Decorators;
 
 const UIStrings = {
   /**
-   *@description The title of a the button that sends a CDP command.
+   * @description The title of a the button that sends a CDP command.
    */
-  sendCommand: 'Send command - Ctrl + Enter',
+  sendCommandCtrlEnter: 'Send command - Ctrl+Enter',
   /**
-   *@description he title of a the button that copies a CDP command.
+   * @description The title of a the button that sends a CDP command.
+   */
+  sendCommandCmdEnter: 'Send command - ⌘+Enter',
+  /**
+   * @description he title of a the button that copies a CDP command.
    */
   copyCommand: 'Copy command',
 };
@@ -73,7 +78,7 @@ export class Toolbar extends LitElement {
         ></${Buttons.Button.Button.litTagName}>
         <${Buttons.Button.Button.litTagName}
           .size=${Buttons.Button.Size.SMALL}
-          title=${i18nString(UIStrings.sendCommand)}
+          title=${Host.Platform.isMac() ? i18nString(UIStrings.sendCommandCmdEnter) : i18nString(UIStrings.sendCommandCtrlEnter)}
           .iconUrl=${sendIconUrl}
           .variant=${Buttons.Button.Variant.PRIMARY_TOOLBAR}
           @click=${this.#handleSend}

@@ -69,7 +69,7 @@ const UIStrings = {
   /**
    *@description Text to open the CDP editor with the selected command
    */
-  editAndResend: 'Edit and Resend',
+  editAndResend: 'Edit and resend',
   /**
    *@description Cell text content in Protocol Monitor of the Protocol Monitor tab
    *@example {30} PH1
@@ -386,14 +386,15 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
 
     const populateToolbarInput = (): void => {
       const editorWidget = splitWidget.sidebarWidget();
-      if (editorWidget instanceof EditorWidget) {
-        this.#selectedTargetId = editorWidget.jsonEditor.targetId;
-        const commandJson = editorWidget.jsonEditor.getCommandJson();
-        if (commandJson) {
-          this.#commandInput.setValue(commandJson);
-        }
+      if (!(editorWidget instanceof EditorWidget)) {
+        return;
+      }
+      const commandJson = editorWidget.jsonEditor.getCommandJson();
+      if (commandJson) {
+        this.#commandInput.setValue(commandJson);
       }
     };
+
     splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, (event => {
                                    if (event.data === 'OnlyMain') {
                                      populateToolbarInput();

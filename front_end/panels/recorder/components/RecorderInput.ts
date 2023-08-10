@@ -237,7 +237,7 @@ export class RecorderInput extends LitElement {
   @property() declare placeholder: string;
   @property() declare value: string;
   @property({type: Boolean}) declare disabled: boolean;
-  @property() declare isCorrectInput: boolean;
+  @property() declare strikethrough: boolean;
   @property() declare mimeType: string;
 
   constructor() {
@@ -249,7 +249,7 @@ export class RecorderInput extends LitElement {
     this.placeholder = '';
     this.value = '';
     this.disabled = false;
-    this.isCorrectInput = true;
+    this.strikethrough = true;
     this.mimeType = '';
     this.autocomplete = true;
     this.addEventListener('blur', this.#handleBlurEvent);
@@ -320,7 +320,7 @@ export class RecorderInput extends LitElement {
     return html`<devtools-editable-content
         ?disabled=${this.disabled}
         class=${classMap({
-          'incorrect-type': !this.isCorrectInput,
+          'strikethrough': !this.strikethrough,
         })}
         .enterKeyHint=${'done'}
         .value=${this.value}

@@ -276,6 +276,20 @@
   };
 
   /**
+   * Tests that Recorder tab can be open.
+   */
+  TestSuite.prototype.testShowRecorderTab = function() {
+    this.showPanel('chrome_recorder')
+        .then(() => {
+          this.releaseControl();
+        })
+        .catch(err => {
+          this.fail('Loading Recorder panel failed: ' + err.message);
+        });
+    this.takeControl();
+  };
+
+  /**
    * Tests that scripts list contains content scripts.
    */
   TestSuite.prototype.testContentScriptIsPresent = function() {

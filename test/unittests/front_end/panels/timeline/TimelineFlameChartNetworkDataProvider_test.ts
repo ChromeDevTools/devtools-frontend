@@ -54,6 +54,25 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     assert.strictEqual(dataProvider.preferredHeight(), 17 * 4);
   });
 
+  it('filters navigations to only return those that happen on the main frame', async function() {
+    const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+    const traceParsedData = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
+
+    const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);
+    const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.max);
+
+    dataProvider.setModel(traceParsedData);
+    dataProvider.setWindowTimes(minTime, maxTime);
+
+    const mainFrameID = traceParsedData.Meta.mainFrameId;
+    const navigations = dataProvider.navStartTimes();
+    const navigationEvents = Array.from(navigations.values());
+    // Ensure that every navigation event that we return is for the main frame.
+    assert.isTrue(navigationEvents.every(navEvent => {
+      return navEvent.args.frame === mainFrameID;
+    }));
+  });
+
   it('does not render the network track if there is no network requests', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
     const {traceParsedData} = await TraceLoader.allModels(this, 'basic.json.gz');

@@ -358,7 +358,31 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     return false;
   }
 
+  /**
+   * Returns a map of navigations that happened in the main frame, ignoring any
+   * that happened in other frames.
+   * The map's key is the frame ID.
+   **/
   navStartTimes(): Map<string, TraceEngine.Types.TraceEvents.TraceEventNavigationStart> {
-    return this.#traceEngineData?.Meta.navigationsByNavigationId || new Map();
+    if (!this.#traceEngineData) {
+      return new Map();
+    }
+
+    const {mainFrameId, navigationsByFrameId} = this.#traceEngineData.Meta;
+
+    const mainFrameNavigations = navigationsByFrameId.get(mainFrameId);
+    if (!mainFrameNavigations) {
+      return new Map();
+    }
+    // We now have all the main frame navigations, and need to return a map of
+    // these, where the key is the navigation ID.
+    const mainFrameNavigationsByFrameID = new Map<string, TraceEngine.Types.TraceEvents.TraceEventNavigationStart>();
+    for (const navigation of mainFrameNavigations.values()) {
+      if (!navigation.args.data) {
+        continue;
+      }
+      mainFrameNavigationsByFrameID.set(navigation.args.data.navigationId, navigation);
+    }
+    return mainFrameNavigationsByFrameID;
   }
 }

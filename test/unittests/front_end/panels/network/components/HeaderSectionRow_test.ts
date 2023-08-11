@@ -27,9 +27,12 @@ async function renderHeaderSectionRow(header: NetworkComponents.HeaderSectionRow
   component: NetworkComponents.HeaderSectionRow.HeaderSectionRow,
   nameEditable: HTMLSpanElement | null,
   valueEditable: HTMLSpanElement | null,
+  scrollIntoViewSpy: sinon.SinonSpy,
 }> {
   const component = new NetworkComponents.HeaderSectionRow.HeaderSectionRow();
+  const scrollIntoViewSpy = sinon.spy(component, 'scrollIntoView');
   renderElementIntoDOM(component);
+  assert.isTrue(scrollIntoViewSpy.notCalled);
   component.data = {header};
   await coordinator.done();
   assertShadowRoot(component.shadowRoot);
@@ -54,7 +57,7 @@ async function renderHeaderSectionRow(header: NetworkComponents.HeaderSectionRow
     assertElement(valueEditable, HTMLSpanElement);
   }
 
-  return {component, nameEditable, valueEditable};
+  return {component, nameEditable, valueEditable, scrollIntoViewSpy};
 }
 
 const hasReloadPrompt = (shadowRoot: ShadowRoot): boolean => {
@@ -68,8 +71,9 @@ describeWithEnvironment('HeaderSectionRow', () => {
       name: Platform.StringUtilities.toLowerCaseString('some-header-name'),
       value: 'someHeaderValue',
     };
-    const {component} = await renderHeaderSectionRow(headerData);
+    const {component, scrollIntoViewSpy} = await renderHeaderSectionRow(headerData);
     assertShadowRoot(component.shadowRoot);
+    assert.isTrue(scrollIntoViewSpy.notCalled);
 
     const spy = sinon.spy(Host.userMetrics, 'actionTaken');
     const headerValue = component.shadowRoot.querySelector('.header-value');
@@ -184,10 +188,11 @@ describeWithEnvironment('HeaderSectionRow', () => {
       value: 'someHeaderValue',
       highlight: true,
     };
-    const {component} = await renderHeaderSectionRow(headerData);
+    const {component, scrollIntoViewSpy} = await renderHeaderSectionRow(headerData);
     assertShadowRoot(component.shadowRoot);
     const headerRowElement = component.shadowRoot.querySelector('.row.header-highlight');
     assertElement(headerRowElement, HTMLDivElement);
+    assert.isTrue(scrollIntoViewSpy.calledOnce);
   });
 
   it('allows editing header name and header value', async () => {

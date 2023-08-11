@@ -127,6 +127,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
     this.#request.addEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this.#refreshHeadersView, this);
     this.#request.addEventListener(
         SDK.NetworkRequest.Events.ResponseHeadersChanged, this.#resetAndRefreshHeadersView, this);
+    this.#toReveal = undefined;
     this.#refreshHeadersView();
   }
 

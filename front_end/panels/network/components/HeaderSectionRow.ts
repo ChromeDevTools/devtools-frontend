@@ -222,6 +222,10 @@ export class HeaderSectionRow extends HTMLElement {
       ${this.#maybeRenderBlockedDetails(this.#header.blockedDetails)}
     `, this.#shadow, {host: this});
     // clang-format on
+
+    if (this.#header.highlight) {
+      this.scrollIntoView({behavior: 'auto'});
+    }
   }
 
   #renderHeaderValue(): LitHtml.LitTemplate {

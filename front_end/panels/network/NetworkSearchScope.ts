@@ -20,7 +20,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkSearchScope.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class NetworkSearchScope implements Search.SearchConfig.SearchScope {
+export class NetworkSearchScope implements Search.SearchScope.SearchScope {
   performIndexing(progress: Common.Progress.Progress): void {
     queueMicrotask(() => {
       progress.done();
@@ -29,7 +29,7 @@ export class NetworkSearchScope implements Search.SearchConfig.SearchScope {
 
   async performSearch(
       searchConfig: Workspace.SearchConfig.SearchConfig, progress: Common.Progress.Progress,
-      searchResultCallback: (arg0: Search.SearchConfig.SearchResult) => void,
+      searchResultCallback: (arg0: Search.SearchScope.SearchResult) => void,
       searchFinishedCallback: (arg0: boolean) => void): Promise<void> {
     const promises = [];
     const requests = Logs.NetworkLog.NetworkLog.instance().requests().filter(
@@ -109,7 +109,7 @@ export class NetworkSearchScope implements Search.SearchConfig.SearchScope {
   }
 }
 
-export class NetworkSearchResult implements Search.SearchConfig.SearchResult {
+export class NetworkSearchResult implements Search.SearchScope.SearchResult {
   private readonly request: SDK.NetworkRequest.NetworkRequest;
   private readonly locations: NetworkForward.UIRequestLocation.UIRequestLocation[];
 

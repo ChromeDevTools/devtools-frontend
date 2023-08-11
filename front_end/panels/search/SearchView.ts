@@ -10,7 +10,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import searchViewStyles from './searchView.css.js';
 
-import {type SearchResult, type SearchScope} from './SearchConfig.js';
+import {type SearchResult, type SearchScope} from './SearchScope.js';
 import {SearchResultsPane} from './SearchResultsPane.js';
 
 const UIStrings = {

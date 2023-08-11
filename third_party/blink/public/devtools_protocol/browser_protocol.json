@@ -3868,6 +3868,58 @@
                     ]
                 },
                 {
+                    "id": "CSSPropertyRegistration",
+                    "description": "Representation of a custom property registration through CSS.registerProperty",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "propertyName",
+                            "type": "string"
+                        },
+                        {
+                            "name": "initialValue",
+                            "optional": true,
+                            "$ref": "Value"
+                        },
+                        {
+                            "name": "inherits",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "syntax",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
+                    "id": "CSSPropertyRule",
+                    "description": "CSS property at-rule representation.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "styleSheetId",
+                            "description": "The css style sheet identifier (absent for user agent stylesheet and user-specified\nstylesheet rules) this rule came from.",
+                            "optional": true,
+                            "$ref": "StyleSheetId"
+                        },
+                        {
+                            "name": "origin",
+                            "description": "Parent stylesheet's origin.",
+                            "$ref": "StyleSheetOrigin"
+                        },
+                        {
+                            "name": "propertyName",
+                            "description": "Associated property name.",
+                            "$ref": "Value"
+                        },
+                        {
+                            "name": "style",
+                            "description": "Associated style declaration.",
+                            "$ref": "CSSStyle"
+                        }
+                    ]
+                },
+                {
                     "id": "CSSKeyframeRule",
                     "description": "CSS keyframe rule representation.",
                     "type": "object",
@@ -4163,6 +4215,24 @@
                             "type": "array",
                             "items": {
                                 "$ref": "CSSPositionFallbackRule"
+                            }
+                        },
+                        {
+                            "name": "cssPropertyRules",
+                            "description": "A list of CSS at-property rules matching this node.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSSPropertyRule"
+                            }
+                        },
+                        {
+                            "name": "cssPropertyRegistrations",
+                            "description": "A list of CSS property registrations matching this node.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSSPropertyRegistration"
                             }
                         },
                         {
@@ -23989,7 +24059,8 @@
                     "type": "string",
                     "enum": [
                         "AccountChooser",
-                        "AutoReauthn"
+                        "AutoReauthn",
+                        "ConfirmIdpSignin"
                     ]
                 },
                 {

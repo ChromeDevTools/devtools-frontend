@@ -265,7 +265,8 @@ export class DebuggerPlugin extends Plugin {
     this.scriptFileForDebuggerModel = new Map();
 
     this.loader = SDK.PageResourceLoader.PageResourceLoader.instance();
-    this.loader.addEventListener(SDK.PageResourceLoader.Events.Update, this.showSourceMapInfobar, this);
+    this.loader.addEventListener(
+        SDK.PageResourceLoader.Events.Update, this.showSourceMapInfobarIfNeeded.bind(this), this);
 
     this.ignoreListCallback = this.showIgnoreListInfobarIfNeeded.bind(this);
     Bindings.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
@@ -1436,6 +1437,7 @@ export class DebuggerPlugin extends Plugin {
         this.updateScriptFile(debuggerModel);
       }
     }
+    this.showSourceMapInfobarIfNeeded();
   }
 
   private updateScriptFile(debuggerModel: SDK.DebuggerModel.DebuggerModel): void {
@@ -1461,9 +1463,6 @@ export class DebuggerPlugin extends Plugin {
     newScriptFile.addEventListener(
         Bindings.ResourceScriptMapping.ResourceScriptFile.Events.DidDivergeFromVM, this.didDivergeFromVM, this);
     newScriptFile.checkMapping();
-    if (newScriptFile.hasSourceMapURL()) {
-      this.showSourceMapInfobar();
-    }
 
     void newScriptFile.missingSymbolFiles().then(resources => {
       if (resources) {
@@ -1502,6 +1501,17 @@ export class DebuggerPlugin extends Plugin {
     this.attachInfobar(this.missingDebugInfoBar);
   }
 
+  private scriptHasSourceMap(): boolean {
+    for (const debuggerModel of SDK.TargetManager.TargetManager.instance().models(SDK.DebuggerModel.DebuggerModel)) {
+      const scriptFile = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(
+          this.uiSourceCode, debuggerModel);
+      if (scriptFile && scriptFile.hasSourceMapURL()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private getSourceMapResource(): SDK.PageResourceLoader.PageResource|null {
     const resourceMap = this.loader.getResourcesLoaded();
     for (const [debuggerModel, script] of this.scriptFileForDebuggerModel.entries()) {
@@ -1522,11 +1532,14 @@ export class DebuggerPlugin extends Plugin {
     return null;
   }
 
-  private showSourceMapInfobar(): void {
+  private showSourceMapInfobarIfNeeded(): void {
     if (this.sourceMapInfobar) {
       return;
     }
     if (!Common.Settings.Settings.instance().moduleSetting('jsSourceMapsEnabled').get()) {
+      return;
+    }
+    if (!this.scriptHasSourceMap()) {
       return;
     }
 

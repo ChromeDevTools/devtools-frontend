@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -516,9 +515,5 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
 
   canJumpToEntry(_entryIndex: number): boolean {
     return false;
-  }
-
-  mainFrameNavigationStartEvents(): readonly TraceEngine.Legacy.Event[] {
-    return [];
   }
 }

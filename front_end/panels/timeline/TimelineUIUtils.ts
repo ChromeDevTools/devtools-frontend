@@ -2269,16 +2269,23 @@ export class TimelineUIUtils {
       case recordTypes.MarkFCP:
       case recordTypes.MarkLoad:
       case recordTypes.MarkDOMContent: {
-        const adjustedEventTimeStamp = timeStampForEventAdjustedForClosestNavigationIfPossible(
-            event,
-            model,
-            traceParseData,
-        );
+        // Because the TimingsTrack has been migrated to the new engine, we
+        // know that this conditonal will be true, but it is here to satisfy
+        // TypeScript. That is also why there is no else branch for this -
+        // there is no way in which timings here can be the legacy
+        // SDKTraceEvent class.
+        if (traceParseData && TraceEngine.Legacy.eventIsFromNewEngine(event)) {
+          const adjustedEventTimeStamp = timeStampForEventAdjustedForClosestNavigationIfPossible(
+              event,
+              traceParseData,
+          );
 
-        contentHelper.appendTextRow(
-            i18nString(UIStrings.timestamp), i18n.TimeUtilities.preciseMillisToString(adjustedEventTimeStamp, 1));
-        contentHelper.appendElementRow(
-            i18nString(UIStrings.details), TimelineUIUtils.buildDetailsNodeForPerformanceEvent(event));
+          contentHelper.appendTextRow(
+              i18nString(UIStrings.timestamp), i18n.TimeUtilities.preciseMillisToString(adjustedEventTimeStamp, 1));
+          contentHelper.appendElementRow(
+              i18nString(UIStrings.details), TimelineUIUtils.buildDetailsNodeForPerformanceEvent(event));
+        }
+
         break;
       }
 
@@ -3672,34 +3679,20 @@ export interface TimelineMarkerStyle {
  * substracting the timestamp of the previous navigation. This helps in cases
  * where the user has navigated multiple times in the trace, so that we can show
  * the LCP (for example) relative to the last navigation.
- *
- * Currently this helper lives here and can deal with legacy events or new
- * events, preferring to use the new engine's data structure if possible. In the
- * future, once the old engine is removed, we can move this method into the
- * TraceEngine helpers, and not have it take the legacy model.
  **/
 export function timeStampForEventAdjustedForClosestNavigationIfPossible(
-    event: TraceEngine.Legacy.CompatibleTraceEvent, model: TimelineModel.TimelineModel.TimelineModelImpl,
+    event: TraceEngine.Types.TraceEvents.TraceEventData,
     traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData|null): TraceEngine.Types.Timing.MilliSeconds {
-  const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
-  if (TraceEngine.Legacy.eventIsFromNewEngine(event) && traceParsedData) {
-    const time = TraceEngine.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
-        event,
-        traceParsedData.Meta.traceBounds,
-        traceParsedData.Meta.navigationsByNavigationId,
-        traceParsedData.Meta.navigationsByFrameId,
-    );
-    return TraceEngine.Helpers.Timing.microSecondsToMilliseconds(time);
+  if (!traceParsedData) {
+    const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
+    return startTime;
   }
 
-  let eventTimeStamp = startTime - model.minimumRecordTime();
-  const {navigationId} = event.args.data;
-  if (navigationId) {
-    const navStartTime = model.navStartTimes().get(navigationId);
-    if (navStartTime) {
-      eventTimeStamp = startTime - navStartTime.startTime;
-    }
-  }
-
-  return TraceEngine.Types.Timing.MilliSeconds(eventTimeStamp);
+  const time = TraceEngine.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
+      event,
+      traceParsedData.Meta.traceBounds,
+      traceParsedData.Meta.navigationsByNavigationId,
+      traceParsedData.Meta.navigationsByFrameId,
+  );
+  return TraceEngine.Helpers.Timing.microSecondsToMilliseconds(time);
 }

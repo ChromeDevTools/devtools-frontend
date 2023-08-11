@@ -35,7 +35,6 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
 
 let colorGeneratorInstance: Common.Color.Generator|null = null;
 
@@ -134,10 +133,6 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
 
   textColor(_entryIndex: number): string {
     return '#333';
-  }
-
-  mainFrameNavigationStartEvents(): readonly TraceEngine.Legacy.Event[] {
-    return [];
   }
 
   entryNodesLength(): number {

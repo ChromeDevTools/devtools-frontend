@@ -1001,7 +1001,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.drawFlowEvents(context, canvasWidth, canvasHeight);
     this.drawMarkerLines();
     const dividersData = TimelineGrid.calculateGridOffsets(this);
-    const navStartTimes = this.dataProvider.mainFrameNavigationStartEvents();
+    const navStartTimes = this.dataProvider.mainFrameNavigationStartEvents?.() || [];
 
     let navStartTimeIndex = 0;
     const drawAdjustedTime = (time: number): string => {
@@ -1014,9 +1014,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const hasNextNavStartTime = navStartTimes.length > navStartTimeIndex + 1;
       if (hasNextNavStartTime) {
         const nextNavStartTime = navStartTimes[navStartTimeIndex + 1];
-        const nextNavStartTimeStartTimestamp = TraceEngine.Legacy.eventIsFromNewEngine(nextNavStartTime) ?
-            TraceEngine.Helpers.Timing.microSecondsToMilliseconds(nextNavStartTime.ts) :
-            nextNavStartTime.startTime;
+        const nextNavStartTimeStartTimestamp =
+            TraceEngine.Helpers.Timing.microSecondsToMilliseconds(nextNavStartTime.ts);
         if (time > nextNavStartTimeStartTimestamp) {
           navStartTimeIndex++;
         }
@@ -1025,9 +1024,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       // Adjust the time by the nearest nav start marker's value.
       const nearestMarker = navStartTimes[navStartTimeIndex];
       if (nearestMarker) {
-        const nearestMarkerStartTime = TraceEngine.Legacy.eventIsFromNewEngine(nearestMarker) ?
-            TraceEngine.Helpers.Timing.microSecondsToMilliseconds(nearestMarker.ts) :
-            nearestMarker.startTime;
+        const nearestMarkerStartTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(nearestMarker.ts);
         time -= nearestMarkerStartTime - this.zeroTime();
       }
 
@@ -2191,7 +2188,7 @@ export interface FlameChartDataProvider {
 
   textColor(entryIndex: number): string;
 
-  mainFrameNavigationStartEvents(): readonly TraceEngine.Legacy.CompatibleTraceEvent[];
+  mainFrameNavigationStartEvents?(): readonly TraceEngine.Types.TraceEvents.TraceEventNavigationStart[];
 }
 
 export interface FlameChartMarker {

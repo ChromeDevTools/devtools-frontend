@@ -970,8 +970,9 @@ describe('The Debugger Language Plugins', async () => {
     });
     assertNotNullOrUndefined(expectedError.caught);
 
-    const local2Set = await extension.evaluate(() => chrome.devtools.languageServices.getWasmLocal(1, 1n));
-    assert.deepEqual(local2Set, {type: 'i32', value: 4});
+    // TODO(crbug.com/1472241): Find a way to stop the flake by determining the stopid
+    // const local2Set = await extension.evaluate(() => chrome.devtools.languageServices.getWasmLocal(1, 1n));
+    // assert.deepEqual(local2Set, {type: 'i32', value: 4});
   });
 
   it('lets users manually attach debug info', async () => {

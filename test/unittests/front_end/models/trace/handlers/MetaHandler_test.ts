@@ -153,6 +153,23 @@ describe('MetaHandler', function() {
 
       assert.strictEqual(firstNavigation.args.data.documentLoaderURL, 'test1');
     });
+
+    it('provides a list of main frame only navigations', async function() {
+      const events = await TraceLoader.rawEvents(this, 'multiple-navigations-with-iframes.json.gz');
+      TraceModel.Handlers.ModelHandlers.Meta.reset();
+      TraceModel.Handlers.ModelHandlers.Meta.initialize();
+      for (const event of events) {
+        TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
+      }
+
+      await TraceModel.Handlers.ModelHandlers.Meta.finalize();
+      const data = TraceModel.Handlers.ModelHandlers.Meta.data();
+      const allNavigationsCount = data.navigationsByNavigationId.size;
+      assert.isTrue(data.mainFrameNavigations.length < allNavigationsCount);
+      assert.isTrue(data.mainFrameNavigations.every(event => {
+        return event.args.frame === data.mainFrameId;
+      }));
+    });
   });
 
   describe('frames', function() {
@@ -195,7 +212,6 @@ describe('MetaHandler', function() {
       const [{url}] = framesInProcess.values();
       assert.strictEqual(url, 'https://example.com/');
     });
-
   });
 
   describe('finding GPU thread and main frame', function() {

@@ -43,9 +43,15 @@ const traceBounds: Types.Timing.TraceWindow = {
  *
  * Note that these Maps will have the same values in them; these are just keyed
  * differently to make look-ups easier.
+ *
+ * We also additionally maintain an array of only navigations that occured on
+ * the main frame. In many places in the UI we only care about highlighting
+ * main frame navigations, so calculating this list here is better than
+ * filtering either of the below maps over and over again at the UI layer.
  */
 const navigationsByFrameId = new Map<string, Types.TraceEvents.TraceEventNavigationStart[]>();
 const navigationsByNavigationId = new Map<string, Types.TraceEvents.TraceEventNavigationStart>();
+const mainFrameNavigations: Types.TraceEvents.TraceEventNavigationStart[] = [];
 
 // Represents all the threads in the trace, organized by process. This is mostly for internal
 // bookkeeping so that during the finalize pass we can obtain the main and browser thread IDs.
@@ -64,6 +70,7 @@ let handlerState = HandlerState.UNINITIALIZED;
 export function reset(): void {
   navigationsByFrameId.clear();
   navigationsByNavigationId.clear();
+  mainFrameNavigations.length = 0;
 
   browserProcessId = Types.TraceEvents.ProcessID(-1);
   browserThreadId = Types.TraceEvents.ThreadID(-1);
@@ -243,6 +250,9 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     const existingFrameNavigations = navigationsByFrameId.get(frameId) || [];
     existingFrameNavigations.push(event);
     navigationsByFrameId.set(frameId, existingFrameNavigations);
+    if (frameId === mainFrameId) {
+      mainFrameNavigations.push(event);
+    }
     return;
   }
 }
@@ -326,6 +336,7 @@ type MetaHandlerData = {
               rendererProcessesByFrame: FrameProcessData,
               topLevelRendererIds: Set<Types.TraceEvents.ProcessID>,
               frameByProcessId: Map<Types.TraceEvents.ProcessID, Map<string, Types.TraceEvents.TraceFrame>>,
+              mainFrameNavigations: Types.TraceEvents.TraceEventNavigationStart[],
 };
 
 export type FrameProcessData =
@@ -352,5 +363,6 @@ export function data(): MetaHandlerData {
     rendererProcessesByFrame: new Map(rendererProcessesByFrameId),
     topLevelRendererIds: new Set(topLevelRendererIds),
     frameByProcessId: new Map(framesByProcessId),
+    mainFrameNavigations: [...mainFrameNavigations],
   };
 }

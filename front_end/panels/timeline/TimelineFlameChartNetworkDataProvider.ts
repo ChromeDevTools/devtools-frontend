@@ -367,10 +367,6 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     if (!this.#traceEngineData) {
       return [];
     }
-
-    const {mainFrameId, navigationsByFrameId} = this.#traceEngineData.Meta;
-
-    const mainFrameNavigations = navigationsByFrameId.get(mainFrameId);
-    return mainFrameNavigations || [];
+    return this.#traceEngineData.Meta.mainFrameNavigations;
   }
 }

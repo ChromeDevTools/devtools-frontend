@@ -91,7 +91,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private readonly flameChartDelegate: FlameChartDelegate;
   private chartViewport: ChartViewport;
   private dataProvider: FlameChartDataProvider;
-  private candyStripeCanvas: HTMLCanvasElement;
+  private candyStripePattern: CanvasPattern|null;
   private viewportElement: HTMLElement;
   private canvas: HTMLCanvasElement;
   private entryInfo: HTMLElement;
@@ -151,11 +151,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.chartViewport.show(this.contentElement);
 
     this.dataProvider = dataProvider;
-    this.candyStripeCanvas = document.createElement('canvas');
-    this.createCandyStripePattern();
 
     this.viewportElement = this.chartViewport.viewportElement;
     this.canvas = (this.viewportElement.createChild('canvas', 'fill') as HTMLCanvasElement);
+    this.candyStripePattern = null;
 
     this.canvas.tabIndex = 0;
     UI.ARIAUtils.setLabel(this.canvas, i18nString(UIStrings.flameChart));
@@ -256,16 +255,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.dispatchEventToListeners(Events.EntryHighlighted, -1);
   }
 
-  private createCandyStripePattern(): void {
+  private createCandyStripePattern(): CanvasPattern {
     // Set the candy stripe pattern to 17px so it repeats well.
     const size = 17;
-    this.candyStripeCanvas.width = size;
-    this.candyStripeCanvas.height = size;
-
-    const ctx = this.candyStripeCanvas.getContext('2d');
-    if (!ctx) {
-      return;
-    }
+    const candyStripeCanvas = document.createElement('canvas');
+    candyStripeCanvas.width = size;
+    candyStripeCanvas.height = size;
+    const ctx = candyStripeCanvas.getContext('2d') as CanvasRenderingContext2D;
 
     // Rotate the stripe by 45deg to the right.
     ctx.translate(size * 0.5, size * 0.5);
@@ -276,6 +272,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     for (let x = -size; x < size * 2; x += 3) {
       ctx.fillRect(x, -size, 1, size * 3);
     }
+    // Because we're using a canvas, we know createPattern won't return null
+    // https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-createpattern-dev
+    return ctx.createPattern(candyStripeCanvas, 'repeat') as CanvasPattern;
   }
 
   private resetCanvas(): void {
@@ -1079,7 +1078,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         sortDecorationsForRenderingOrder(decorationsForEvent);
       }
       const entryStartTime = entryStartTimes[entryIndex];
-      const candyStripePattern = context.createPattern(this.candyStripeCanvas, 'repeat');
 
       for (const decoration of decorationsForEvent) {
         const duration = entryTotalTimes[entryIndex];
@@ -1088,6 +1086,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           if (duration < candyStripeStartTime) {
             // If the duration of the event is less than the start time to draw the candy stripes, then we have no stripes to draw.
             continue;
+          }
+          if (!this.candyStripePattern) {
+            this.candyStripePattern = this.createCandyStripePattern();
           }
 
           context.save();
@@ -1100,10 +1101,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
             startX: barXStart,
             width: barXEnd - barXStart,
           });
-          if (candyStripePattern) {
-            context.fillStyle = candyStripePattern;
-            context.fill();
-          }
+          context.fillStyle = this.candyStripePattern;
+          context.fill();
           context.restore();
 
         } else if (decoration.type === 'WARNING_TRIANGLE') {

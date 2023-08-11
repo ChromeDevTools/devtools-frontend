@@ -309,12 +309,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return eventsFromAppenderSystem || group.track?.eventsForTreeView() || null;
   }
 
-  navStartTimes(): Map<string, TraceEngine.Legacy.PayloadEvent> {
+  mainFrameNavigationStartEvents(): readonly TraceEngine.Legacy.PayloadEvent[] {
     if (!this.legacyTimelineModel) {
-      return new Map();
+      return [];
     }
 
-    return this.legacyTimelineModel.navStartTimes();
+    return Array.from(this.legacyTimelineModel.navStartTimes().values());
   }
 
   entryTitle(entryIndex: number): string|null {

@@ -136,8 +136,8 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
     return '#333';
   }
 
-  navStartTimes(): Map<string, TraceEngine.Legacy.Event> {
-    return new Map();
+  mainFrameNavigationStartEvents(): readonly TraceEngine.Legacy.Event[] {
+    return [];
   }
 
   entryNodesLength(): number {

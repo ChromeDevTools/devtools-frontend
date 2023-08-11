@@ -518,7 +518,7 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
     return false;
   }
 
-  navStartTimes(): Map<string, TraceEngine.Legacy.Event> {
-    return new Map();
+  mainFrameNavigationStartEvents(): readonly TraceEngine.Legacy.Event[] {
+    return [];
   }
 }

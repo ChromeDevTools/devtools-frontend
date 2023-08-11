@@ -521,8 +521,8 @@ export class FakeFlameChartProvider implements PerfUI.FlameChart.FlameChartDataP
     return 'black';
   }
 
-  navStartTimes(): Map<string, TraceEngine.Legacy.Event> {
-    return new Map();
+  mainFrameNavigationStartEvents(): readonly TraceEngine.Legacy.Event[] {
+    return [];
   }
 
   timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {

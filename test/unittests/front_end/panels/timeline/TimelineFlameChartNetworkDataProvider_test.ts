@@ -65,8 +65,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     dataProvider.setWindowTimes(minTime, maxTime);
 
     const mainFrameID = traceParsedData.Meta.mainFrameId;
-    const navigations = dataProvider.navStartTimes();
-    const navigationEvents = Array.from(navigations.values());
+    const navigationEvents = dataProvider.mainFrameNavigationStartEvents();
     // Ensure that every navigation event that we return is for the main frame.
     assert.isTrue(navigationEvents.every(navEvent => {
       return navEvent.args.frame === mainFrameID;

@@ -1002,7 +1002,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.drawFlowEvents(context, canvasWidth, canvasHeight);
     this.drawMarkerLines();
     const dividersData = TimelineGrid.calculateGridOffsets(this);
-    const navStartTimes = Array.from(this.dataProvider.navStartTimes().values());
+    const navStartTimes = this.dataProvider.mainFrameNavigationStartEvents();
 
     let navStartTimeIndex = 0;
     const drawAdjustedTime = (time: number): string => {
@@ -2192,7 +2192,7 @@ export interface FlameChartDataProvider {
 
   textColor(entryIndex: number): string;
 
-  navStartTimes(): Map<string, TraceEngine.Legacy.CompatibleTraceEvent>;
+  mainFrameNavigationStartEvents(): readonly TraceEngine.Legacy.CompatibleTraceEvent[];
 }
 
 export interface FlameChartMarker {

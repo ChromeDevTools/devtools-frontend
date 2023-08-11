@@ -39,7 +39,11 @@ export abstract class ContentProvider {
 }
 
 export class SearchMatch {
-  constructor(public lineNumber: number, public lineContent: string, public columnNumber?: number|undefined) {
+  constructor(readonly lineNumber: number, readonly lineContent: string, readonly columnNumber?: number) {
+  }
+
+  static comparator(a: SearchMatch, b: SearchMatch): number {
+    return a.lineNumber - b.lineNumber;
   }
 }
 

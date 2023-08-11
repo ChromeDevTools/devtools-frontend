@@ -250,11 +250,6 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
 
     function contentLoaded(
         this: SourcesSearchScope, uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string): void {
-      function matchesComparator(
-          a: TextUtils.ContentProvider.SearchMatch, b: TextUtils.ContentProvider.SearchMatch): number {
-        return a.lineNumber - b.lineNumber;
-      }
-
       progress.incrementWorked(1);
       let matches: TextUtils.ContentProvider.SearchMatch[] = [];
       const searchConfig = (this.searchConfig as Workspace.SearchConfig.SearchConfig);
@@ -263,7 +258,8 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
         for (let i = 0; i < queries.length; ++i) {
           const nextMatches = TextUtils.TextUtils.performSearchInContent(
               content, queries[i], !searchConfig.ignoreCase(), searchConfig.isRegex());
-          matches = Platform.ArrayUtilities.mergeOrdered(matches, nextMatches, matchesComparator);
+          matches = Platform.ArrayUtilities.mergeOrdered(
+              matches, nextMatches, TextUtils.ContentProvider.SearchMatch.comparator);
         }
         if (!searchConfig.queries().length) {
           matches = [new TextUtils.ContentProvider.SearchMatch(0, (new TextUtils.Text.Text(content)).lineAt(0))];

@@ -113,7 +113,8 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
       setMockConnectionResponseHandler('Storage.setSharedStorageTracking', () => ({}));
     });
 
-    it('shows cookies for all frames', async () => {
+    // Flaking on multiple bots on CQ.
+    it.skip('[crbug.com/1472237] shows cookies for all frames', async () => {
       Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
       const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
@@ -288,7 +289,6 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     it('adds indexed db after scope change',
        testUiUpdateOnScopeChange(
            Application.IndexedDBModel.IndexedDBModel, 'databases', 'indexedDBListTreeElement.appendChild'));
-
   };
   describe('without tab target', () => tests(() => createTarget()));
   describe('with tab target', () => tests(() => {

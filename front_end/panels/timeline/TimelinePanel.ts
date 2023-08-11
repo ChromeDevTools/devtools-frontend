@@ -39,7 +39,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as PanelFeedback from '../../ui/components/panel_feedback/panel_feedback.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -1107,7 +1107,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       for (const profile of model.timelineModel().cpuProfiles()) {
         PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(profile.cpuProfileData, profile.target);
       }
-      this.setMarkersForMinimap(model.timelineModel());
       this.flameChart.setSelection(null);
       this.#minimapComponent.setWindowTimes(model.window().left, model.window().right);
     }
@@ -1404,24 +1403,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (this.loader) {
       void this.loader.cancel();
     }
-  }
-
-  private setMarkersForMinimap(timelineModel: TimelineModel.TimelineModel.TimelineModelImpl): void {
-    const markers = new Map<number, Element>();
-    const recordTypes = TimelineModel.TimelineModel.RecordType;
-    const zeroTime = timelineModel.minimumRecordTime();
-    for (const event of timelineModel.timeMarkerEvents()) {
-      if (event.name === recordTypes.TimeStamp || event.name === recordTypes.ConsoleTime) {
-        continue;
-      }
-      markers.set(event.startTime, TimelineUIUtils.createEventDivider(event, zeroTime));
-    }
-
-    // Add markers for navigation start times.
-    for (const navStartTimeEvent of timelineModel.navStartTimes().values()) {
-      markers.set(navStartTimeEvent.startTime, TimelineUIUtils.createEventDivider(navStartTimeEvent, zeroTime));
-    }
-    this.#minimapComponent.setMarkers(markers);
   }
 
   private async loadEventFired(

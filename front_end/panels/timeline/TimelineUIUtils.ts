@@ -2895,10 +2895,12 @@ export class TimelineUIUtils {
     return stylesContainer;
   }
 
-  static createEventDivider(event: TraceEngine.Legacy.Event, zeroTime: number): Element {
+  static createEventDivider(event: TraceEngine.Legacy.CompatibleTraceEvent, zeroTime: number): Element {
     const eventDivider = document.createElement('div');
     eventDivider.classList.add('resources-event-divider');
-    const startTime = i18n.TimeUtilities.millisToString(event.startTime - zeroTime);
+    const {startTime: eventStartTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
+
+    const startTime = i18n.TimeUtilities.millisToString(eventStartTime - zeroTime);
     UI.Tooltip.Tooltip.install(
         eventDivider, i18nString(UIStrings.sAtS, {PH1: TimelineUIUtils.eventTitle(event), PH2: startTime}));
     const style = TimelineUIUtils.markerStyleForEvent(event);

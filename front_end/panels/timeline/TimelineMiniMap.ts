@@ -7,6 +7,8 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {TimelineUIUtils} from './TimelineUIUtils.js';
+
 import {
   TimelineEventOverviewCPUActivity,
   TimelineEventOverviewNetwork,
@@ -70,13 +72,33 @@ export class TimelineMiniMap extends
     this.#overviewComponent.setWindowTimes(left, right);
   }
 
-  setMarkers(markers: Map<number, Element>): void {
+  #setMarkers(traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData): void {
+    const markers = new Map<number, Element>();
+
+    const {Meta, PageLoadMetrics} = traceParsedData;
+
+    // Add markers for navigation start times.
+    const navStartEvents = Meta.mainFrameNavigations;
+    const minTimeInMilliseconds = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(Meta.traceBounds.min);
+
+    for (const event of navStartEvents) {
+      const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
+      markers.set(startTime, TimelineUIUtils.createEventDivider(event, minTimeInMilliseconds));
+    }
+
+    // Now add markers for the page load events
+    for (const event of PageLoadMetrics.allMarkerEvents) {
+      const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
+      markers.set(startTime, TimelineUIUtils.createEventDivider(event, minTimeInMilliseconds));
+    }
+
     this.#overviewComponent.setMarkers(markers);
   }
 
   updateControls(data: OverviewData): void {
     this.#controls = [];
     if (data.traceParsedData) {
+      this.#setMarkers(data.traceParsedData);
       this.#controls.push(new TimelineEventOverviewResponsiveness(data.traceParsedData));
     }
     this.#controls.push(new TimelineEventOverviewCPUActivity());

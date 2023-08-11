@@ -156,4 +156,19 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
       assert.strictEqual(dataProvider.timelineData().entryStartTimes.length, eventCountBeforeIgnoreList);
     });
   });
+
+  it('filters navigations to only return those that happen on the main frame', async function() {
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const {traceParsedData, performanceModel} =
+        await TraceLoader.allModels(this, 'multiple-navigations-with-iframes.json.gz');
+
+    dataProvider.setModel(performanceModel, traceParsedData);
+
+    const mainFrameID = traceParsedData.Meta.mainFrameId;
+    const navigationEvents = dataProvider.mainFrameNavigationStartEvents();
+    // Ensure that every navigation event that we return is for the main frame.
+    assert.isTrue(navigationEvents.every(navEvent => {
+      return navEvent.args.frame === mainFrameID;
+    }));
+  });
 });

@@ -309,12 +309,15 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return eventsFromAppenderSystem || group.track?.eventsForTreeView() || null;
   }
 
-  mainFrameNavigationStartEvents(): readonly TraceEngine.Legacy.PayloadEvent[] {
-    if (!this.legacyTimelineModel) {
+  mainFrameNavigationStartEvents(): readonly TraceEngine.Types.TraceEvents.TraceEventNavigationStart[] {
+    if (!this.traceEngineData) {
       return [];
     }
 
-    return Array.from(this.legacyTimelineModel.navStartTimes().values());
+    const {mainFrameId, navigationsByFrameId} = this.traceEngineData.Meta;
+
+    const mainFrameNavigations = navigationsByFrameId.get(mainFrameId);
+    return mainFrameNavigations || [];
   }
 
   entryTitle(entryIndex: number): string|null {

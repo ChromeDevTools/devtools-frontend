@@ -50,6 +50,7 @@ export class ChartViewport extends UI.Widget.VBox {
   private lastMouseOffsetX!: number;
   private minimumBoundary!: number;
   private totalTime!: number;
+  private isUpdateScheduled?: boolean;
   private cancelWindowTimesAnimation?: (() => void)|null;
 
   constructor(delegate: ChartViewportDelegate) {
@@ -141,6 +142,7 @@ export class ChartViewport extends UI.Widget.VBox {
     this.totalHeight = 0;
     this.targetLeftTime = 0;
     this.targetRightTime = 0;
+    this.isUpdateScheduled = false;
     this.updateContentElementSize();
   }
 
@@ -414,10 +416,14 @@ export class ChartViewport extends UI.Widget.VBox {
   }
 
   scheduleUpdate(): void {
-    if (this.cancelWindowTimesAnimation) {
+    if (this.cancelWindowTimesAnimation || this.isUpdateScheduled) {
       return;
     }
-    void coordinator.write(() => this.update());
+    this.isUpdateScheduled = true;
+    void coordinator.write(() => {
+      this.isUpdateScheduled = false;
+      this.update();
+    });
   }
 
   private update(): void {

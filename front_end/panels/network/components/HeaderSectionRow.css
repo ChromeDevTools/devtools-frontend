@@ -49,6 +49,7 @@
 .header-value {
   display: flex;
   overflow-wrap: anywhere;
+  margin-inline-end: 14px;
 }
 
 .header-badge-text {

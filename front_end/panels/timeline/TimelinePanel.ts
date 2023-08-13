@@ -304,6 +304,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private cpuThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   private fileSelectorElement?: HTMLInputElement;
   private selection?: TimelineSelection|null;
+  private traceLoadStart!: number|null;
   private primaryPageTargetPromiseCallback = (_target: SDK.Target.Target): void => {};
   // Note: this is technically unused, but we need it to define the promiseCallback function above.
   private primaryPageTargetPromise = new Promise<SDK.Target.Target>(res => {
@@ -336,6 +337,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#historyManager = new TimelineHistoryManager();
 
     this.performanceModel = null;
+    this.traceLoadStart = null;
 
     this.disableCaptureJSProfileSetting =
         Common.Settings.Settings.instance().createSetting('timelineDisableJSSampling', false);
@@ -995,6 +997,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.setState(State.RecordingFailed);
     this.performanceModel = null;
+    this.traceLoadStart = null;
     this.setUIControlsEnabled(true);
     if (this.controller) {
       await this.controller.dispose();
@@ -1236,6 +1239,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (!this.loader) {
       this.statusPane.finish();
     }
+    this.traceLoadStart = performance.now();
     await this.loadingProgress(0);
   }
 
@@ -1324,7 +1328,26 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     } catch (error) {
       void this.recordingFailed(error.message);
       console.error(error);
+    } finally {
+      this.recordTraceLoadMetric();
     }
+  }
+
+  recordTraceLoadMetric(): void {
+    if (!this.traceLoadStart) {
+      return;
+    }
+    const start = this.traceLoadStart;
+    // Right *now* is the end of trace parsing and model building, but the flamechart rendering
+    // isn't complete yet. To capture that we'll do a rAF+setTimeout to give the most accurate timestamp
+    // for the first paint of the flamechart
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const end = performance.now();
+        const measure = performance.measure('TraceLoad', {start, end});
+        Host.userMetrics.performanceTraceLoad(measure);
+      }, 0);
+    });
   }
 
   /**

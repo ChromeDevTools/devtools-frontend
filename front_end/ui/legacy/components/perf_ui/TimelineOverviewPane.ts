@@ -29,9 +29,9 @@
  */
 
 import * as Common from '../../../../core/common/common.js';
-import type * as TraceEngine from '../../../../models/trace/trace.js';
-import * as UI from '../../legacy.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as TraceEngine from '../../../../models/trace/trace.js';
+import * as UI from '../../legacy.js';
 
 import {Events as OverviewGridEvents, OverviewGrid, type WindowChangedWithPositionEvent} from './OverviewGrid.js';
 import {type Calculator} from './TimelineGrid.js';
@@ -147,7 +147,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.cursorEnabled = true;
   }
 
-  setNavStartTimes(navStartTimes: Map<string, TraceEngine.Legacy.Event>): void {
+  setNavStartTimes(navStartTimes: readonly TraceEngine.Types.TraceEvents.TraceEventNavigationStart[]): void {
     this.overviewCalculator.setNavStartTimes(navStartTimes);
   }
 
@@ -273,7 +273,7 @@ export class TimelineOverviewCalculator implements Calculator {
   private minimumBoundaryInternal!: number;
   private maximumBoundaryInternal!: number;
   private workingArea!: number;
-  private navStartTimes?: Map<string, TraceEngine.Legacy.Event>;
+  private navStartTimes?: readonly TraceEngine.Types.TraceEvents.TraceEventNavigationStart[];
 
   constructor() {
     this.reset();
@@ -292,7 +292,7 @@ export class TimelineOverviewCalculator implements Calculator {
     this.maximumBoundaryInternal = maximumBoundary;
   }
 
-  setNavStartTimes(navStartTimes: Map<string, TraceEngine.Legacy.Event>): void {
+  setNavStartTimes(navStartTimes: readonly TraceEngine.Types.TraceEvents.TraceEventNavigationStart[]): void {
     this.navStartTimes = navStartTimes;
   }
 
@@ -309,10 +309,13 @@ export class TimelineOverviewCalculator implements Calculator {
     if (this.navStartTimes) {
       // Find the latest possible nav start time which is considered earlier
       // than the value passed through.
-      const navStartTimes = Array.from(this.navStartTimes.values());
-      for (let i = navStartTimes.length - 1; i >= 0; i--) {
-        if (value > navStartTimes[i].startTime) {
-          value -= (navStartTimes[i].startTime - this.zeroTime());
+      for (let i = this.navStartTimes.length - 1; i >= 0; i--) {
+        const startTimeMilliseconds = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
+            this.navStartTimes[i].ts,
+        );
+
+        if (value > startTimeMilliseconds) {
+          value -= (startTimeMilliseconds - this.zeroTime());
           break;
         }
       }

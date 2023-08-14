@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as PerfUI from '../../../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import type * as TraceEngine from '../../../../../../../front_end/models/trace/trace.js';
+import * as PerfUI from '../../../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {describeWithLocale} from '../../../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
@@ -46,12 +46,10 @@ describeWithLocale('TimelineOverviewCalculator', () => {
     calculator.setDisplayWidth(200);
     calculator.setBounds(0, 100);
     const fakeNavStart = {
-      startTime: 100,
-    } as unknown as TraceEngine.Legacy.Event;
-    const navStartTimes = new Map([
-      ['fake-navigation-id', fakeNavStart],
-    ]);
-    calculator.setNavStartTimes(navStartTimes);
+      // TraceEngine events are in microseconds
+      ts: 100_000,
+    } as unknown as TraceEngine.Types.TraceEvents.TraceEventNavigationStart;
+    calculator.setNavStartTimes([fakeNavStart]);
     // There is a navigation at 100ms, so this time gets changed to 5ms
     const result = calculator.formatValue(105);
     assert.deepEqual(result, '5\u00A0ms');

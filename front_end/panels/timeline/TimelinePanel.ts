@@ -39,6 +39,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as PanelFeedback from '../../ui/components/panel_feedback/panel_feedback.js';
@@ -47,24 +48,19 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
-import timelinePanelStyles from './timelinePanel.css.js';
-import timelineStatusDialogStyles from './timelineStatusDialog.css.js';
-
 import {Events, PerformanceModel, type WindowChangedEvent} from './PerformanceModel.js';
-
-import {TimelineController, type Client} from './TimelineController.js';
-import {TimelineMiniMap} from './TimelineMiniMap.js';
-
+import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
+import {type Client, TimelineController} from './TimelineController.js';
 import {TimelineFlameChartView} from './TimelineFlameChartView.js';
 import {TimelineHistoryManager} from './TimelineHistoryManager.js';
 import {TimelineLoader} from './TimelineLoader.js';
+import {TimelineMiniMap} from './TimelineMiniMap.js';
+import timelinePanelStyles from './timelinePanel.css.js';
+import {TimelineSelection} from './TimelineSelection.js';
+import timelineStatusDialogStyles from './timelineStatusDialog.css.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
-import type * as Protocol from '../../generated/protocol.js';
-import {traceJsonGenerator, cpuprofileJsonGenerator} from './SaveFileFormatter.js';
-
-import {TimelineSelection} from './TimelineSelection.js';
 
 const UIStrings = {
   /**
@@ -748,7 +744,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private updateOverviewControls(): void {
     const traceParsedData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
 
-    this.#minimapComponent.updateControls({
+    this.#minimapComponent.setData({
       performanceModel: this.performanceModel,
       traceParsedData,
       settings: {
@@ -1098,9 +1094,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.updateOverviewControls();
     this.#minimapComponent.reset();
+
     if (model && this.performanceModel) {
       this.performanceModel.addEventListener(Events.WindowChanged, this.onModelWindowChanged, this);
-      this.#minimapComponent.setNavStartTimes(model.timelineModel().navStartTimes());
       this.#minimapComponent.setBounds(
           model.timelineModel().minimumRecordTime(), model.timelineModel().maximumRecordTime());
       PerfUI.LineLevelProfile.Performance.instance().reset();
@@ -1110,6 +1106,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.flameChart.setSelection(null);
       this.#minimapComponent.setWindowTimes(model.window().left, model.window().right);
     }
+
     this.updateOverviewControls();
     if (this.flameChart) {
       this.flameChart.resizeToPreferredHeights();

@@ -18,7 +18,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
     minimap.markAsRoot();
     minimap.show(container);
 
-    minimap.updateControls({
+    minimap.setData({
       traceParsedData: models.traceParsedData,
       performanceModel: models.performanceModel,
       settings: {
@@ -46,7 +46,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
     minimap.markAsRoot();
     minimap.show(container);
 
-    minimap.updateControls({
+    minimap.setData({
       traceParsedData: models.traceParsedData,
       performanceModel: models.performanceModel,
       settings: {

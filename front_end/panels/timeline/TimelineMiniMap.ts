@@ -7,19 +7,17 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {TimelineUIUtils} from './TimelineUIUtils.js';
-
+import {type PerformanceModel} from './PerformanceModel.js';
 import {
+  type TimelineEventOverview,
   TimelineEventOverviewCPUActivity,
+  TimelineEventOverviewMemory,
   TimelineEventOverviewNetwork,
   TimelineEventOverviewResponsiveness,
-  type TimelineEventOverview,
   TimelineFilmStripOverview,
-  TimelineEventOverviewMemory,
 } from './TimelineEventOverview.js';
-
-import {type PerformanceModel} from './PerformanceModel.js';
 import miniMapStyles from './timelineMiniMap.css.js';
+import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export interface OverviewData {
   performanceModel: PerformanceModel|null;
@@ -60,10 +58,6 @@ export class TimelineMiniMap extends
     this.#overviewComponent.reset();
   }
 
-  setNavStartTimes(navStartTimes: Map<string, TraceEngine.Legacy.Event>): void {
-    this.#overviewComponent.setNavStartTimes(navStartTimes);
-  }
-
   setBounds(min: number, max: number): void {
     this.#overviewComponent.setBounds(min, max);
   }
@@ -95,10 +89,15 @@ export class TimelineMiniMap extends
     this.#overviewComponent.setMarkers(markers);
   }
 
-  updateControls(data: OverviewData): void {
+  #setNavigationStartEvents(traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData): void {
+    this.#overviewComponent.setNavStartTimes(traceParsedData.Meta.mainFrameNavigations);
+  }
+
+  setData(data: OverviewData): void {
     this.#controls = [];
     if (data.traceParsedData) {
       this.#setMarkers(data.traceParsedData);
+      this.#setNavigationStartEvents(data.traceParsedData);
       this.#controls.push(new TimelineEventOverviewResponsiveness(data.traceParsedData));
     }
     this.#controls.push(new TimelineEventOverviewCPUActivity());

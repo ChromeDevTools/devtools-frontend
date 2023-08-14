@@ -213,14 +213,15 @@ describeWithEnvironment('TimelineModel', function() {
       assert.isTrue(timelineModel.isMarkerEvent(timestampEvent));
     });
     it('is true for a Mark First Paint event that is on the main frame', async function() {
-      const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
+      const {timelineModel, traceParsedData} =
+          await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
       const markFirstPaintEventOnMainFrame = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkFirstPaint,
         ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
         args: {
-          frame: timelineModel.mainFrameID(),
+          frame: traceParsedData.Meta.mainFrameId,
           data: {},
         },
       });
@@ -228,14 +229,15 @@ describeWithEnvironment('TimelineModel', function() {
     });
 
     it('is true for a Mark FCP event that is on the main frame', async function() {
-      const {timelineModel} = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
+      const {timelineModel, traceParsedData} =
+          await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
       const markFCPEventOnMainFrame = makeFakeSDKEventFromPayload({
         categories: [DevToolsTimelineCategory],
         name: TimelineModel.TimelineModel.RecordType.MarkFCP,
         ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
         ts: 1,
         args: {
-          frame: timelineModel.mainFrameID(),
+          frame: traceParsedData.Meta.mainFrameId,
           data: {},
         },
       });

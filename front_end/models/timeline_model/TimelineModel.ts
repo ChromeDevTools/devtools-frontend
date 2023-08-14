@@ -116,7 +116,6 @@ export class TimelineModelImpl {
   private tracksInternal!: Track[];
   private namedTracks!: Map<TrackType, Track>;
   private inspectedTargetEventsInternal!: TraceEngine.Legacy.Event[];
-  private timeMarkerEventsInternal!: TraceEngine.Legacy.Event[];
   private sessionId!: string|null;
   private mainFrameNodeId!: number|null;
   private pageFrames!: Map<Protocol.Page.FrameId, PageFrame>;
@@ -251,10 +250,6 @@ export class TimelineModelImpl {
       index--;
     }
     return Math.max(index, 0);
-  }
-
-  mainFrameID(): string {
-    return this.mainFrame.frameId;
   }
 
   /**
@@ -878,9 +873,6 @@ export class TimelineModelImpl {
         }
         eventStack.push(event);
       }
-      if (this.isMarkerEvent(event)) {
-        this.timeMarkerEventsInternal.push(event);
-      }
 
       track.events.push(event);
       this.inspectedTargetEventsInternal.push(event);
@@ -1378,7 +1370,6 @@ export class TimelineModelImpl {
     this.tracksInternal = [];
     this.namedTracks = new Map();
     this.inspectedTargetEventsInternal = [];
-    this.timeMarkerEventsInternal = [];
     this.sessionId = null;
     this.mainFrameNodeId = null;
     this.cpuProfilesInternal = [];
@@ -1417,10 +1408,6 @@ export class TimelineModelImpl {
 
   isEmpty(): boolean {
     return this.minimumRecordTime() === 0 && this.maximumRecordTime() === 0;
-  }
-
-  timeMarkerEvents(): TraceEngine.Legacy.Event[] {
-    return this.timeMarkerEventsInternal;
   }
 
   rootFrames(): PageFrame[] {

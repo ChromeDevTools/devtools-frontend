@@ -61,32 +61,36 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     });
   });
 
-  it('adds candy stripe decorations to long tasks in the main thread', async function() {
+  it('adds candy stripe and triangle decorations to long tasks in the main thread', async function() {
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'one-second-interaction.json.gz');
     dataProvider.setModel(performanceModel, traceParsedData);
 
     const {entryDecorations} = dataProvider.timelineData();
+    const stripingTitles: string[] = [];
+    const triangleTitles: string[] = [];
 
-    const definedDecorationIndexes: number[] = [];
-    entryDecorations.forEach((decorationsForEvent, index) => {
-      if (decorationsForEvent && decorationsForEvent.length > 0) {
-        definedDecorationIndexes.push(index);
+    Object.entries(entryDecorations).forEach(([index, decorationsForEvent]) => {
+      const entryTitle = dataProvider.entryTitle(parseInt(index, 10)) ?? '';
+      for (const decoration of decorationsForEvent) {
+        if (decoration.type === 'CANDY') {
+          stripingTitles.push(entryTitle);
+        }
+        if (decoration.type === 'WARNING_TRIANGLE') {
+          triangleTitles.push(entryTitle);
+        }
       }
     });
 
-    // Expect two decorations: the striping on the interaction, and the
-    // striping on the long task.
-    assert.lengthOf(definedDecorationIndexes, 2);
-
-    const titles = definedDecorationIndexes.map(index => {
-      return dataProvider.entryTitle(index);
-    });
-
-    assert.deepEqual(titles, [
+    assert.deepEqual(stripingTitles, [
       'Pointer',  // The interaction event in the Interactions track for the pointer event.
       'Task',     // The Long task that was caused by the pointer and contributed to the long time.
     ]);
+    assert.deepEqual(triangleTitles, [
+      'Task',          // The Long task that was caused by the pointer and contributed to the long time.
+      'Event: click',  // The click EventDispatch that's also marked with a triangle
+    ]);
+    assert.lengthOf(Object.keys(entryDecorations), 3);
   });
 
   it('populates the frames track with frames and screenshots', async function() {

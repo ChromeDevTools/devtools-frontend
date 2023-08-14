@@ -989,8 +989,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     for (const [color, {indexes}] of colorBuckets) {
       this.#drawGenericEvents(context, timelineData, color, indexes);
-      this.#drawDecorations(context, timelineData, indexes);
     }
+    const allIndexes = Array.from(colorBuckets.values()).map(x => x.indexes).flat();
+    this.#drawDecorations(context, timelineData, allIndexes);
 
     this.drawMarkers(context, timelineData, markerIndices);
 

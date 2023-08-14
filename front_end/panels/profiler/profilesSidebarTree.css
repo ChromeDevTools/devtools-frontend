@@ -57,6 +57,10 @@ ol.tree-outline {
   display: none;
 }
 
+.title-container > .save-link:focus-visible {
+  outline-width: unset;
+}
+
 li.selected .title-container > .save-link {
   display: block;
   cursor: pointer;

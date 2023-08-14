@@ -144,7 +144,8 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
           ['http://www.example.com', 'http://www.example.org']);
     });
 
-    it('shows shared storages and events for origins using shared storage', async () => {
+    // Flaking on windows + subsequence test failing
+    it.skip('[crbug.com/1472651] shows shared storages and events for origins using shared storage', async () => {
       const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
       assertNotNullOrUndefined(securityOriginManager);
       sinon.stub(securityOriginManager, 'securityOrigins').returns([

@@ -10,8 +10,7 @@ import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
 
 import {AsyncScope} from './async-scope.js';
 import {getEnvVar} from './config.js';
-
-import {platform, type Platform} from './helper.js';
+import {platform, type Platform, stepDescription} from './helper.js';
 
 export {beforeEach} from 'mocha';
 
@@ -145,12 +144,21 @@ async function timeoutHook(this: Mocha.Runnable, done: Mocha.Done|undefined, err
     }
   }
 
+  const msgs = [];
+  if (stepDescription) {
+    msgs.push(`Timed out during step: ${stepDescription}`);
+  }
+
   const stacks = Array.from(joinStacks());
   if (stacks.length > 0) {
-    const msg = `Pending async operations during timeout:\n${stacks.join('\n\n')}`;
-    console.error(msg);
+    msgs.push(`Pending async operations during timeout:\n${stacks.join('\n\n')}`);
+  }
+  if (msgs.length) {
+    for (const msg of msgs) {
+      console.error(msg);
+    }
     if (err && err instanceof Error) {
-      err.cause = new Error(msg);
+      err.cause = new Error(msgs.join('\n'));
     }
   }
   if (err && !getEnvVar('DEBUG_TEST')) {

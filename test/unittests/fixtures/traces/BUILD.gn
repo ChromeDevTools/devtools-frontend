@@ -21,6 +21,7 @@ copy_to_gen("traces") {
     "idle-callback.json.gz",
     "idle-tasks.json.gz",
     "interactive-time.json.gz",
+    "invalid-animation-events.json.gz",
     "invalidate-style-class-name-change.json.gz",
     "large-layout-small-recalc.json.gz",
     "large-recalc-style.json.gz",

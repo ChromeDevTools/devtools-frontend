@@ -5,7 +5,7 @@
  */
 
 .root {
-  align-items: center;
+  align-items: flex-start; /* keep chart at top so it doesnt change position as the legend changes height */
   display: flex;
   min-width: fit-content;
   white-space: nowrap;

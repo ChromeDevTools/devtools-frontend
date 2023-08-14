@@ -82,7 +82,7 @@ select:not([disabled]):focus-visible {
 }
 
 select option {
-  background-color: var(--sys-color-state-hover-on-subtle);
+  background-color: var(--sys-color-cdt-base-container);
   color: var(--sys-color-on-surface);
 }
 

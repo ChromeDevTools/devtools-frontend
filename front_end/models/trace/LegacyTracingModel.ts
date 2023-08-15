@@ -7,9 +7,8 @@
 import * as Common from '../../core/common/common.js';
 
 import * as Helpers from './helpers/helpers.js';
-import * as Types from './types/types.js';
-
 import {type EventPayload} from './TracingManager.js';
+import * as Types from './types/types.js';
 
 type IgnoreListArgs = {
   [key: string]: string|number|ObjectSnapshot,
@@ -27,7 +26,6 @@ export class TracingModel {
   readonly #openNestableAsyncEvents: Map<string, AsyncEvent[]>;
   readonly #profileGroups: Map<string, ProfileEventsGroup>;
   readonly #parsedCategories: Map<string, Set<string>>;
-  readonly #mainFrameNavStartTimes: Map<string, PayloadEvent>;
   readonly #allEventsPayload: EventPayload[] = [];
 
   constructor(title?: string) {
@@ -42,7 +40,6 @@ export class TracingModel {
     this.#openNestableAsyncEvents = new Map();
     this.#profileGroups = new Map();
     this.#parsedCategories = new Map();
-    this.#mainFrameNavStartTimes = new Map();
   }
 
   static isTopLevelEvent(event: CompatibleTraceEvent): boolean {
@@ -147,25 +144,6 @@ export class TracingModel {
       this.#minimumRecordTimeInternal = timestamp;
     }
 
-    // Track only main thread navigation start items. This is done by tracking
-    // isOutermostMainFrame, and whether documentLoaderURL is set.
-    if (payload.name === 'navigationStart') {
-      const data = (payload.args.data as {
-        isLoadingMainFrame: boolean,
-        documentLoaderURL: string,
-        navigationId: string,
-        isOutermostMainFrame?: boolean,
-      } | null);
-      if (data) {
-        const {isLoadingMainFrame, documentLoaderURL, navigationId, isOutermostMainFrame} = data;
-        if ((isOutermostMainFrame ?? isLoadingMainFrame) && documentLoaderURL !== '') {
-          const thread = process.threadById(payload.tid);
-          const navStartEvent = PayloadEvent.fromPayload(payload, thread);
-          this.#mainFrameNavStartTimes.set(navigationId, navStartEvent);
-        }
-      }
-    }
-
     if (eventPhasesOfInterestForTraceBounds.has(payload.ph as Types.TraceEvents.Phase)) {
       const endTimeStamp = (payload.ts + (payload.dur || 0)) / 1000;
       this.#maximumRecordTimeInternal = Math.max(this.#maximumRecordTimeInternal, endTimeStamp);
@@ -234,10 +212,6 @@ export class TracingModel {
 
   maximumRecordTime(): number {
     return this.#maximumRecordTimeInternal;
-  }
-
-  navStartTimes(): Map<string, PayloadEvent> {
-    return this.#mainFrameNavStartTimes;
   }
 
   sortedProcesses(): Process[] {

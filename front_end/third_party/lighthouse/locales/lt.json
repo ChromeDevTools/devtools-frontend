@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Atributai „`[aria-*]`“ atitinka savo vaidmenis"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Kai nenurodytas pasiekiamasis elemento pavadinimas, ekrano skaitytuvai apie jį praneša naudodami bendrąjį pavadinimą, todėl jo negali naudoti ekrano skaitytuvo naudotojai. [Sužinokite, kaip komandų elementus padaryti lengviau pasiekiamus](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Nurodyti neįgaliesiems pritaikyti elementų „`button`“, „`link`“ ir „`menuitem`“ pavadinimai"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "ARIA dialogo elementai be pasiekiamųjų pavadinimų gali neleisti ekrano skaitytuvų naudotojams matyti šių elementų tikslo. [Sužinokite, kaip padaryti ARIA dialogo elementus lengviau pasiekiamus](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Elementuose su `role=\"dialog\"` arba `role=\"alertdialog\"` nėra pasiekiamųjų pavadinimų."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Elementuose su `role=\"dialog\"` arba `role=\"alertdialog\"` yra pasiekiamųjų pavadinimų."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Pagalbinės technologijos, pvz., ekrano skaitytuvai, veikia nenuosekliai, kai dokumente „`<body>`“ nustatytas elementas „`aria-hidden=\"true\"`“. [Sužinokite, kaip „`aria-hidden`“ paveikia dokumento turinį](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "Elemento „`[role]`“ vertės yra tinkamos"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Pridėjus `role=text` aplink teksto mazgo padalijimą pagal žymėjimą, „VoiceOver“ gali laikyti jį viena fraze, bet išryškinami elemento poelemenčiai nebus skelbiami. [Sužinokite daugiau apie atributą „`role=text`“](https://dequeuniversity.com/rules/axe/4.7/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Elementuose su atributu „`role=text`“ yra suaktyvinamų poelemenčių."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Elementuose su atributu „`role=text`“ nėra suaktyvinamų poelemenčių."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "Kai nenurodytas pasiekiamasis perjungimo lauko pavadinimas, ekrano skaitytuvai apie jį praneša naudodami bendrąjį pavadinimą, todėl jo negali naudoti ekrano skaitytuvo naudotojai. [Sužinokite daugiau apie laukų perjungimą](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ARIA ID yra unikalūs"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Antraštė, kurioje nėra turinio, ar nepasiekiamas tekstas neleidžia ekrano skaitytuvų naudotojams pasiekti puslapio struktūros informacijos. [Sužinokite daugiau apie antraštes](https://dequeuniversity.com/rules/axe/4.7/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Antraštės elementuose nėra turinio."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Visuose antraštės elementuose yra turinio."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "Apie formos laukus su keliomis etiketėmis gali klaidinančiai pranešti pagalbinės technologijos, pvz., ekrano skaitytuvai, naudojantys pirmą, paskutinę arba visas etiketes. [Sužinokite, kaip naudoti formų etiketes](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "Elemente „`<html>`“ yra atributas „`[xml:lang]`“, kurio pagrindinė kalba sutampa su atributo „`[lang]`“ kalba."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Nuorodų su ta pačia paskirties vieta aprašas turi būti toks pats, kad naudotojai lengviau suprastų nuorodos tikslą ir nuspręstų, ar ją naudoti. [Sužinokite daugiau apie identiškas nuorodas](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Identiškų nuorodų tikslas nėra tas pats."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Identiškų nuorodų tikslas yra tas pats."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Informaciniuose elementuose turėtų būti pateiktas trumpas, aprašomasis alternatyvus tekstas. Dekoratyvinių elementų galima nepaisyti nurodžius tuščią alternatyvų atributą. [Sužinokite daugiau apie atributą „`alt`“](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Vaizdo elementuose yra atributų „`[alt]`“"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Jei prie įvesties mygtukų pridėsite pastebimą ir pasiekiamą tekstą, ekrano skaitytuvo naudotojams bus lengviau suprasti įvesties mygtuko paskirtį. [Sužinokite daugiau apie įvesties mygtukus](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "Elementuose „`<input type=\"image\">`“ yra „`[alt]`“ teksto"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "Etiketės užtikrina, kad pagalbinės technologijos, pvz., ekrano skaitytuvai, tinkamai praneštų apie formų valdiklius. [Sužinokite daugiau apie formų elementų etiketes](https://dequeuniversity.com/rules/axe/4.7/label)."
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "Formos elementuose yra atitinkamų etikečių"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Vienas pagrindinis orientyras padeda ekrano skaitytuvo naudotojams naršyti tinklalapį. [Sužinokite daugiau apie orientyrus](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Dokumente nėra pagrindinio orientyro."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Dokumente yra pagrindinis orientyras."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Mažo kontrasto tekstą daugumai naudotojų yra sudėtinga arba neįmanoma perskaityti. Atskiriamas nuorodos tekstas pagerina patirtį sutrikusio regėjimo naudotojams. [Sužinokite, kaip nuorodas padaryti atskiriamas](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Nuorodas galima atskirti pagal spalvą."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Nuorodas galima atskirti ne pagal spalvą."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "Aiškus ir unikalus nuorodos tekstas (ir alternatyvusis vaizdų tekstas, kai jie naudojami kaip nuorodos), į kurį lengva sutelkti dėmesį, pagerina naršymo patirtį ekrano skaitytuvų naudotojams. [Sužinokite, kaip nuorodas padaryti pasiekiamas](https://dequeuniversity.com/rules/axe/4.7/link-name)."
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "Elementuose „`<object>`“ yra alternatyviojo teksto"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Dėl formos elementų be veiksmingų etikečių ekrano skaitytuvo naudotojams gali būti nepatogu naudotis funkcijomis. [Sužinokite daugiau apie elementą „`select`“](https://dequeuniversity.com/rules/axe/4.7/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Kai kuriuose elementuose nėra susietų etikečių elementų."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Pasirinktuose elementuose yra susijusių etikečių elementų."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Didesnė nei 0 vertė aiškiai nurodo naršymo tvarką. Iš tiesų tai yra tinkamas sprendimas, tačiau dažnai erzina pagalbinių technologijų naudotojus. [Sužinokite daugiau apie atributą „`tabindex`“](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Nėra elemento su didesne nei 0 „`[tabindex]`“ verte"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Ekrano skaitytuvuose naudojamos funkcijos, padedančios lengviau naršyti lenteles. Užtikrinus, kad lentelėse naudojamas faktinis subtitrų elementas, o ne langeliai su atributu „`[colspan]`“, gali būti pagerinta ekrano skaitytuvų naudotojų patirtis. [Sužinokite daugiau apie subtitrus.](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "Lentelėse naudojamas skirtukas „`<caption>`“ vietoje langelių su atributu „`[colspan]`“ antraštei nurodyti."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Jutiklinės sritys arba jų tarpai nepakankamo dydžio."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Jutiklinių sričių ir jų tarpų dydis yra pakankamas."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "Ekrano skaitytuvuose naudojamos funkcijos, padedančios lengviau naršyti lenteles. Užtikrinus, kad elementai „`<td>`“ didelėje lentelėje (trys ar daugiau langelių iš pločio ir aukščio) turi susietą lentelės antraštę, gali būti pagerinta ekrano skaitytuvų naudotojų patirtis. [Sužinokite daugiau apie lentelių antraštes](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "Puslapyje nėra aprašo <link> URL"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Neaptikta atitinkančio pagalbinio „JavaScript“ failo. Gali reikėti iš naujo įkelti puslapį arba patikrinti, ar dabartinis pagalbinis „JavaScript“ failas apima aprašo apimtį ir pradžios URL."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Nepavyko patikrinti pagalbinio „JavaScript“ failo, nes apraše nėra lauko „start_url“"
   },
@@ -969,7 +1083,7 @@
     "message": "„prefer_related_applications“ palaikoma tik beta versijos „Chrome“ ir pastoviuose kanaluose sistemoje „Android“."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "„Lighthouse“ nepavyko nustatyti, ar buvo pagalbinis „JavaScript“ failas. Bandykite naudodami naujesnės versijos „Chrome“."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Aprašo URL schema ({scheme}) nepalaikoma sistemoje „Android“."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Nustatant kaupiamąjį išdėstymo poslinkį įvertinamas peržiūros srityje matomų elementų judėjimas. [Sužinokite daugiau apie kaupiamojo išdėstymo poslinkio metriką](https://web.dev/cls/)."
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Laikas nuo sąveikos iki kito žymėjimo įvertina puslapio atsako laiką: kiek laiko praeina, kol matomas puslapio atsakas į naudotojo įvestį. [Sužinokite daugiau apie laiką nuo sąveikos iki kito žymėjimo](https://web.dev/inp/)."
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Pirmas turiningas žymėjimas nurodo laiką, kada pažymimas pirmasis tekstas ar vaizdas. [Sužinokite daugiau apie pirmo turiningo žymėjimo metriką](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Pirmasis reikšmingas parodymas nurodo, kada parodomas pagrindinis puslapio turinys. [Sužinokite daugiau apie pirmojo reikšmingo parodymo metriką](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Laikas nuo sąveikos iki kito žymėjimo įvertina puslapio atsako laiką: kiek laiko praeina, kol matomas puslapio atsakas į naudotojo įvestį. [Sužinokite daugiau apie laiką nuo sąveikos iki kito žymėjimo](https://web.dev/inp/)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Laikas iki sąveikos yra vertė, nurodanti, kiek laiko reikia, kol puslapis tampa visiškai interaktyvus. [Sužinokite daugiau apie laiko iki sąveikos metriką](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Venkite kelių puslapio peradresavimų"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Kad nustatytumėte puslapio išteklių kiekio ir dydžio biudžetus, pridėkite biudžeto .json failą. [Sužinokite daugiau apie našumo biudžetus](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{Viena užklausa • {byteCount, number, bytes} KiB}one{# užklausa • {byteCount, number, bytes} KiB}few{# užklausos • {byteCount, number, bytes} KiB}many{# užklausos • {byteCount, number, bytes} KiB}other{# užklausų • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Pasistenkite neteikti daug užklausų ir neperkelti daug duomenų"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Standartizuotos nuorodos siūlo, kurį URL rodyti paieškos rezultatuose. [Sužinokite daugiau apie standartizuotas nuorodas](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Pradinio serverio atsako laikas buvo trumpas"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "Pagalbinis „JavaScript“ failas – tai technologija, įgalinanti jūsų programą naudoti daug laipsniškosios žiniatinklio programos funkcijų, pvz., naudoti neprisijungus, pridėti prie pagrindinio ekrano ar naudoti iš karto gaunamus pranešimus. [Sužinokite daugiau apie pagalbinius „JavaScript“ failus](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Šis puslapis valdomas naudojant pagalbinį „JavaScript“ failą, tačiau `start_url` nerasta, nes aprašo nepavyko analizuoti kaip galiojančio JSON"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Šs puslapis valdomas naudojant pagalbinį „JavaScript“ failą, tačiau `start_url` ({startUrl}) nepatenka į pagalbinio „JavaScript“ failo aprėptį ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Šis puslapis valdomas naudojant pagalbinį „JavaScript“ failą, tačiau neaptikta `start_url`, nes neįkeltas joks aprašas."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Šiame pradiniame puslapyje yra vienas ar daugiau pagalbinių „JavaScript“ failų, tačiau puslapis ({pageUrl}) neįtrauktas."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Neregistruojamas pagalbinis „JavaScript“ failas, naudojamas puslapiams ir `start_url` valdyti"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Registruojamas pagalbinis „JavaScript“ failas, naudojamas puslapiams ir `start_url` valdyti"
   },
   "core/audits/splash-screen.js | description": {
     "message": "Teminis prisistatymo langas užtikrina kokybišką patirtį naudotojui paleidžiant jūsų programą iš pagrindinio ekrano. [Sužinokite daugiau apie prisistatymo langus](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
@@ -1623,7 +1707,7 @@
     "message": "Geriausia praktika"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Atlikę šias patikras sužinosite, kaip galite [geriau pritaikyti žiniatinklio programą](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatiškai galima aptikti tik dalį pritaikomumo problemų, todėl rekomenduojama atlikti ir neautomatinį tikrinimą."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Šie elementai apima sritis, kurių automatinio bandymo įrankis negali aprėpti. Mūsų vadove sužinokite daugiau apie tai, kaip [atlikti pritaikomumo peržiūrą](https://web.dev/how-to-review/)."
@@ -2769,7 +2853,7 @@
     "message": "Įdiekite [„Drupal“ modulį](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search), kuris galėtų įkelti vaizdus naudojant atidėtąjį įkėlimą. Naudojant tokius modulius galima atidėti bet kokius ne ekraninius vaizdus, kad būtų padidintas našumas."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Apsvarstykite galimybę naudoti modulį, kad galėtumėte įterpti svarbią CSS kalbą ir „JavaScript“ arba galimai nesinchronizuotai įkelti išteklius naudodami „JavaScript“, pvz., [išplėstinio CSS kalbos ir (arba) JS apibendrinimo](https://www.drupal.org/project/advagg) modulį. Atminkite, kad dėl šio modulio teikiamo optimizavimo gali būti pažeistos jūsų svetainės funkcijos, todėl tikriausiai turėsite atlikti kodo pakeitimų."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Temos, moduliai ir serverio specifikacijos – visa tai turi įtakos serverio atsako laikui. Galbūt vertėtų surasti geriau optimizuotą temą, atidžiai pasirinkti optimizavimo modulį ir (arba) naujovinti serverį. Prieglobos serveriai turėtų naudoti PHP operacijos kodų talpyklą, atminties talpyklą, kad sumažintų duomenų bazės užklausų skaičių, pvz., „Redis“ ar „Memcached“, bei optimizuotą programos logiką, kad puslapiai būtų sparčiau parengti."
@@ -2778,10 +2862,10 @@
     "message": "Apsvarstykite galimybę naudoti [interaktyvių vaizdų stilius](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8), kad sumažintumėte puslapyje įkeliamus vaizdus. Jei naudojate rodinius keliems turinio elementams rodyti puslapyje, apsvarstykite galimybę įdiegti puslapių numeravimą, kad apribotumėte nurodytame puslapyje rodomų turinio elementų skaičių."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Būtinai įgalinkite funkciją „Apibendrinti CSS kalbos failus“ puslapyje „Administravimas“ » „Konfigūravimas“ » „Diegimas“. Be to, galite konfigūruoti išplėstines apibendrinimo parinktis naudodami [papildomus modulius](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search), kad svetainė sparčiau veiktų, sujungiant, suglaudinant CSS kalbos stilius ir pašalinant jų nereikalingus duomenis."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Būtinai įgalinkite funkciją „Apibendrinti „JavaScript“ failus“ puslapyje „Administravimas“ » „Konfigūravimas“ » „Diegimas“. Be to, galite konfigūruoti išplėstines apibendrinimo parinktis naudodami [papildomus modulius](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search), kad svetainė sparčiau veiktų, sujungiant, suglaudinant „JavaScript“ išteklius ir pašalinant jų nereikalingus duomenis."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Apsvarstykite galimybę pašalinti nenaudojamas CSS kalbos taisykles ir pridėti tik reikalingas „Drupal“ bibliotekas prie atitinkamo puslapio ar komponento puslapyje. Jei reikia išsamios informacijos, žr. [„Drupal“ dokumentų nuorodą](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Kad nustatytumėte pridėtas bibliotekas, pridedančias nesusijusios CSS kalbos, pabandykite vykdyti [kodo aprėpties procesą](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) naudodami „Chrome DevTools“. Susijusią temą ir (arba) modulį galite nustatyti pagal stiliaus aprašo URL, kai CSS kalbos apibendrinimas išjungtas „Drupal“ svetainėje. Ieškokite temų ir (arba) modulių, kurių sąraše pateikta daug stiliaus aprašų, kurių kodo aprėptyje yra daug raudonos spalvos. Tema ir (arba) modulis įtraukti stiliaus aprašą į eilę turėtų tik tokiu atveju, jei jis tikrai naudojamas puslapyje."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Įgalinkite glaudinimą Next.js serveryje. [Sužinokite daugiau](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Naudokite komponentą „`nuxt/image`“ ir nustatykite „`format=\"webp\"`“. [Sužinokite daugiau](https://image.nuxtjs.org/components/nuxt-img#format)."
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Naudokite „React“ kūrimo įrankių analizės įrankį (kurį naudojant pasitelkiama analizės įrankio API) komponentų pateikimo našumui įvertinti. [Sužinokite daugiau.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Įdėkite vaizdo įrašus į „`VideoBoxes`“, tinkinkite juos naudodami „`Video Masks`“ arba pridėkite „`Transparent Videos`“. [Sužinokite daugiau](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Įkelkite vaizdus naudodami „`Wix Media Manager`“, kad jie būtų automatiškai teikiami kaip „WebP“. Raskite [daugiau būdų optimizuoti](https://support.wix.com/en/article/site-performance-optimizing-your-media) svetainės mediją."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Svetainės informacijos suvestinės skirtuke „`Custom Code`“ pridėdami [trečiosios šalies kodą](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site), kodo pabaigoje patikrinkite, ar jis yra atidėtas arba įkeltas. Jei įmanoma, naudokite „Wix“ [integravimą](https://support.wix.com/en/article/about-marketing-integrations) svetainėje įterpdami rinkodaros įrankių. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "„Wix“ naudoja TPT ir saugojimą talpykloje, kad kuo greičiau pateiktų atsakymus daugumai lankytojų. Apsvarstykite galimybę [neautomatiškai įgalinti saugojimo talpykloje funkciją](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) svetainėje, ypač jei naudojate „`Velo`“."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Svetainės informacijos suvestinės skirtuke „`Custom Code`“ peržiūrėkite trečiosios šalies kodą, kurį pridėjote prie svetainės, ir palikite tik paslaugas, kurios būtinos jūsų svetainei. [Sužinokite daugiau](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Apsvarstykite galimybę įkelti savo GIF į paslaugą, kuri leis jį įterpti kaip HTML5 vaizdo įrašą."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Išsaugoti kaip JSON"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Atidaryti naudojant žiūriklį"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Vertės yra apytikslės ir gali skirtis. [Našumo įvertinimas apskaičiuojamas](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) tiesiogiai pagal šias metrikas."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Žr. pradinį pėdsaką"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Žr. pėdsaką"

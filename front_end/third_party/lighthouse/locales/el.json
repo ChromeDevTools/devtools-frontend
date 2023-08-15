@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Τα χαρακτηριστικά `[aria-*]` αντιστοιχούν στους ρόλους τους"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Όταν ένα στοιχείο δεν έχει προσβάσιμο όνομα, οι αναγνώστες οθόνης το περιγράφουν με ένα γενικό όνομα, με αποτέλεσμα να μην μπορεί να χρησιμοποιηθεί από χρήστες που βασίζονται σε αναγνώστες οθόνης. [Μάθετε πώς μπορείτε να κάνετε πιο προσιτά τα στοιχεία εντολών](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Τα στοιχεία `button`, `link` και `menuitem` έχουν προσβάσιμα ονόματα"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "Τα στοιχεία παραθύρου διαλόγου ARIA χωρίς προσβάσιμα ονόματα ενδέχεται να εμποδίζουν τους χρήστες του αναγνώστη οθόνης να διακρίνουν τον σκοπό αυτών των στοιχείων. [Μάθετε πώς μπορείτε να κάνετε τα στοιχεία διαλόγου ARIA πιο προσβάσιμα](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Τα στοιχεία με `role=\"dialog\"` ή `role=\"alertdialog\"` δεν έχουν προσβάσιμα ονόματα."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Τα στοιχεία με `role=\"dialog\"` ή `role=\"alertdialog\"` έχουν προσβάσιμα ονόματα."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Οι τεχνολογίες υποβοήθησης, όπως οι αναγνώστες οθόνης, λειτουργούν με μη συνεπή τρόπο όταν το `aria-hidden=\"true\"` έχει οριστεί στο έγγραφο `<body>`. [Μάθετε πώς το `aria-hidden` επηρεάζει το σώμα του εγγράφου](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "Οι τιμές `[role]` είναι έγκυρες"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Η προσθήκη του `role=text` γύρω από έναν κόμβο κειμένου που διαχωρίζεται κατά σήμανση επιτρέπει στο VoiceOver να το μεταχειρίζεται ως φράση, αλλά τα θυγατρικά στοιχεία με δυνατότητα εστίασης δεν θα ανακοινώνονται. [Μάθετε περισσότερα σχετικά με το χαρακτηριστικό `role=text`](https://dequeuniversity.com/rules/axe/4.7/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Τα στοιχεία με το χαρακτηριστικό `role=text` έχουν θυγατρικά στοιχεία με δυνατότητα εστίασης."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Τα στοιχεία με το χαρακτηριστικό `role=text` δεν έχουν θυγατρικά στοιχεία με δυνατότητα εστίασης."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "Όταν ένα πεδίο εναλλαγής δεν έχει προσβάσιμο όνομα, οι αναγνώστες οθόνης το περιγράφουν με ένα γενικό όνομα, με αποτέλεσμα να μην μπορεί να χρησιμοποιηθεί από χρήστες που βασίζονται σε αναγνώστες οθόνης. [Μάθετε περισσότερα σχετικά με τα πεδία εναλλαγής](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "Τα αναγνωριστικά ARIA είναι μοναδικά"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Μια επικεφαλίδα χωρίς περιεχόμενο ή με μη προσβάσιμο κείμενο εμποδίζει την πρόσβαση των χρηστών του αναγνώστη οθόνης σε πληροφορίες σχετικά με τη δομή της σελίδας. [Μάθετε περισσότερα σχετικά με τις κεφαλίδες](https://dequeuniversity.com/rules/axe/4.7/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Τα στοιχεία κεφαλίδας δεν διαθέτουν περιεχόμενο."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Όλα τα στοιχεία κεφαλίδας περιλαμβάνουν περιεχόμενο."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "Τα πεδία φόρμας με πολλές ετικέτες ενδέχεται να ανακοινώνονται με τρόπο που δημιουργεί σύγχυση στους χρήστες τεχνολογιών υποβοήθησης, όπως με τους αναγνώστες οθόνης που χρησιμοποιούν είτε την πρώτη, είτε την τελευταία, είτε όλες τις ετικέτες. [Μάθετε πώς μπορείτε να χρησιμοποιήσετε ετικέτες φόρμας](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "Το στοιχείο `<html>` έχει ένα χαρακτηριστικό `[xml:lang]` με την ίδια βασική γλώσσα με το χαρακτηριστικό `[lang]`."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Οι σύνδεσμοι με τον ίδιο προορισμό θα πρέπει να έχουν την ίδια περιγραφή, ώστε να βοηθούν τους χρήστες να κατανοήσουν τον σκοπό του συνδέσμου και να αποφασίσουν αν θα τον ακολουθήσουν. [Μάθετε περισσότερα σχετικά με τους πανομοιότυπους συνδέσμους](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Οι πανομοιότυποι σύνδεσμοι δεν έχουν τον ίδιο σκοπό."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Οι πανομοιότυποι σύνδεσμοι έχουν τον ίδιο σκοπό."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Τα πληροφοριακά στοιχεία θα πρέπει να στοχεύουν σε σύντομο και περιγραφικό εναλλακτικό κείμενο. Τα διακοσμητικά στοιχεία μπορούν να παραβλεφθούν με ένα κενό χαρακτηριστικό alt. [Μάθετε περισσότερα σχετικά με το χαρακτηριστικό `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Τα στοιχεία εικόνας έχουν χαρακτηριστικά `[alt]`"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Η προσθήκη ευανάγνωστου και προσβάσιμου κειμένου στα κουμπιά εισόδου μπορεί να βοηθήσει τους χρήστες του αναγνώστη οθόνης να κατανοήσουν τον σκοπό των κουμπιών. [Μάθετε περισσότερα σχετικά με τα κουμπιά εισόδου](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "Τα στοιχεία `<input type=\"image\">` έχουν κείμενο `[alt]`"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "Οι ετικέτες διασφαλίζουν ότι οι τεχνολογίες υποβοήθησης, όπως οι αναγνώστες οθόνης, εκφωνούν σωστά τα στοιχεία ελέγχου φόρμας. [Μάθετε περισσότερα σχετικά με τις ετικέτες στοιχείων φόρμας](https://dequeuniversity.com/rules/axe/4.7/label)."
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "Τα στοιχεία φόρμας έχουν συσχετισμένες ετικέτες"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Ένα κύριο ορόσημο βοηθά τους χρήστες του αναγνώστη οθόνης να πλοηγηθούν σε μια ιστοσελίδα. [Μάθετε περισσότερα σχετικά με τα ορόσημα](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Το έγγραφο δεν διαθέτει κύριο ορόσημο."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Το έγγραφο έχει ένα κύριο ορόσημο."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Ένα κείμενο χαμηλής αντίθεσης είναι δύσκολο ή αδύνατο να αναγνωστεί. Το κείμενο συνδέσμου που είναι ευανάγνωστο βελτιώνει την εμπειρία για τους χρήστες με χαμηλή όραση. [Μάθετε πώς μπορείτε να κάνετε τους συνδέσμους διακριτούς](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Οι σύνδεσμοι βασίζονται στο χρώμα για να είναι διακριτοί."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Οι σύνδεσμοι διακρίνονται χωρίς να βασίζονται στο χρώμα."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "Το κείμενο συνδέσμων (και το εναλλακτικό κείμενο για εικόνες όταν χρησιμοποιούνται ως σύνδεσμοι) που είναι διακριτό, μοναδικό και έχει δυνατότητα εστίασης βελτιώνει την εμπειρία πλοήγησης για τους χρήστες των αναγνωστών οθόνης. [Μάθετε πώς μπορείτε να κάνετε προσβάσιμους τους συνδέσμους](https://dequeuniversity.com/rules/axe/4.7/link-name)."
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "Τα στοιχεία `<object>` έχουν εναλλακτικό κείμενο"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Τα στοιχεία φόρμας χωρίς αποτελεσματικές ετικέτες μπορούν να δημιουργήσουν ενοχλητικές εμπειρίες για τους χρήστες του αναγνώστη οθόνης. [Μάθετε περισσότερα σχετικά με το στοιχείο `select`](https://dequeuniversity.com/rules/axe/4.7/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Κάποια στοιχεία δεν έχουν συσχετισμένα στοιχεία ετικέτας."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Ορισμένα επιλεγμένα στοιχεία έχουν συσχετισμένα στοιχεία ετικέτας."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Μια τιμή μεγαλύτερη από 0 υποδηλώνει μια ρητή σειρά πλοήγησης. Εάν και ορθό από τεχνικής άποψης, αυτό συχνά επηρεάζει αρνητικά την εμπειρία των χρηστών που βασίζονται στις τεχνολογίες υποβοήθησης. [Μάθετε περισσότερα σχετικά με το χαρακτηριστικό `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Κανένα στοιχείο δεν έχει τιμή `[tabindex]` μεγαλύτερη από 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Οι αναγνώστες οθόνης έχουν λειτουργίες που διευκολύνουν την πλοήγηση στους πίνακες. Διασφαλίζοντας ότι οι πίνακες χρησιμοποιούν το πραγματικό στοιχείο υποτίτλων αντί για κελιά με το χαρακτηριστικό `[colspan]`, ενδέχεται να βελτιωθεί η εμπειρία για τους χρήστες των αναγνωστών οθόνης. [Μάθετε περισσότερα σχετικά με τους υπότιτλους](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "Οι πίνακες χρησιμοποιούν το στοιχείο `<caption>` αντί για κελιά με το χαρακτηριστικό `[colspan]`, για να υποδεικνύουν έναν υπότιτλο."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Οι στόχοι αφής δεν έχουν επαρκές μέγεθος ή απόσταση."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Οι στόχοι αφής έχουν επαρκές μέγεθος και απόσταση."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "Οι αναγνώστες οθόνης έχουν λειτουργίες που διευκολύνουν την πλοήγηση στους πίνακες. Διασφαλίζοντας ότι τα στοιχεία `<td>` σε έναν μεγάλο πίνακα (3 ή περισσότερα κελιά σε πλάτος και ύψος) έχουν μια συσχετισμένη κεφαλίδα πίνακα, ενδέχεται να βελτιωθεί η εμπειρία για τους χρήστες των αναγνωστών οθόνης. [Μάθετε περισσότερα σχετικά με τις κεφαλίδες πίνακα](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "Η σελίδα δεν περιέχει <link> URL μανιφέστου"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Δεν εντοπίστηκε service worker που να αντιστοιχεί. Μπορεί να χρειαστεί να επαναφορτώσετε τη σελίδα ή να ελέγξετε ότι το εύρος του service worker για την τρέχουσα σελίδα περικλείει το εύρος του URL έναρξης από το μανιφέστο."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Δεν ήταν δυνατός ο έλεγχος του service worker χωρίς πεδίο \"start_url\" στο μανιφέστο."
   },
@@ -969,7 +1083,7 @@
     "message": "Η παράμετρος prefer_related_applications υποστηρίζεται μόνο σε κανάλια Chrome Beta και κανάλια σταθερής έκδοσης σε Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Το Lighthouse δεν κατόρθωσε να ανιχνεύσει service worker. Δοκιμάστε με μια νεότερη έκδοση του Chrome."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Το URL μανιφέστου ({scheme}) δεν υποστηρίζεται στο Android."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Οι Συνολικές αλλαγές διάταξης μετρούν την κίνηση των ορατών στοιχείων εντός της θύρας προβολής. [Μάθετε περισσότερα σχετικά με τη μέτρηση Συνολικές αλλαγές διάταξης](https://web.dev/cls/)."
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Το Interaction to Next Paint μετρά την ανταπόκριση της σελίδας και τον χρόνο που χρειάζεται η σελίδα για να ανταποκριθεί εμφανώς στην εισαγωγή στοιχείων από τους χρήστες. [Μάθετε περισσότερα σχετικά με τη μέτρηση Interaction to Next Paint](https://web.dev/inp/)."
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Η Πρώτη σχεδίαση περιεχομένου (FCP) επισημαίνει πότε σχεδιάζεται το πρώτο κείμενο ή η πρώτη εικόνα. [Μάθετε περισσότερα σχετικά με τη μέτρηση Πρώτη σχεδίαση περιεχομένου (FCP)](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Η Πρώτη χρήσιμη μορφή υπολογίζει πότε καθίσταται ορατό το κύριο περιεχόμενο μιας σελίδας. [Μάθετε περισσότερα σχετικά με τη μέτρηση Πρώτη χρήσιμη μορφή](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Το Interaction to Next Paint μετρά την ανταπόκριση της σελίδας και τον χρόνο που χρειάζεται η σελίδα για να ανταποκριθεί εμφανώς στην εισαγωγή στοιχείων από τους χρήστες. [Μάθετε περισσότερα σχετικά με τη μέτρηση Interaction to Next Paint](https://web.dev/inp/)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Ο χρόνος για Αλληλεπίδραση είναι το χρονικό διάστημα που απαιτείται προκειμένου η σελίδα να γίνει πλήρως διαδραστική. [Μάθετε περισσότερα σχετικά με τη μέτρηση Χρόνος για Αλληλεπίδραση](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Αποφυγή ανακατευθύνσεων πολλών σελίδων"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Για τον ορισμό προϋπολογισμών για την ποσότητα και το μέγεθος των πόρων σελίδας, προσθέστε ένα αρχείο budget.json. [Μάθετε περισσότερα σχετικά με τους προϋπολογισμούς απόδοσης](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 αίτημα • {byteCount, number, bytes} KiB}other{# αιτήματα • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Φροντίστε να διατηρείτε το πλήθος των αιτημάτων χαμηλό και το μέγεθος των μεταφορών μικρό"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Οι κανονικοί σύνδεσμοι προτείνουν το URL που πρέπει να εμφανιστεί στα αποτελέσματα αναζήτησης. [Μάθετε περισσότερα σχετικά με τους κανονικούς συνδέσμους](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Ο αρχικός χρόνος απόκρισης διακομιστή ήταν σύντομος"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "Το service worker είναι η τεχνολογία που επιτρέπει στην εφαρμογή σας να χρησιμοποιεί πολλές λειτουργίες προηγμένων εφαρμογών ιστού, όπως είναι η λειτουργία εκτός σύνδεσης, η προσθήκη στην αρχική οθόνη και οι ειδοποιήσεις push. [Μάθετε περισσότερα σχετικά με τα service worker](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Αυτή η σελίδα ελέγχεται από ένα service worker, αλλά δεν βρέθηκε κανένα `start_url` επειδή το μανιφέστο απέτυχε να αναλυθεί ως έγκυρο JSON"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Αυτή η σελίδα ελέγχεται από ένα service worker, αλλά το `start_url` ({startUrl}) δεν βρίσκεται στο εύρος του service worker ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Αυτή η σελίδα ελέγχεται από ένα service worker, αλλά δεν βρέθηκε κανένα `start_url` επειδή δεν έγινε λήψη μανιφέστου."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Αυτή η προέλευση διαθέτει ένα περισσότερα service worker, αλλά η σελίδα ({pageUrl}) βρίσκεται εκτός εύρους."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Δεν καταγράφει service worker που ελέγχει τη σελίδα και το `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Καταγράφει ένα service worker που ελέγχει μια σελίδα και το `start_url`"
   },
   "core/audits/splash-screen.js | description": {
     "message": "Μια θεματική οθόνη εκκίνησης διασφαλίζει μια εμπειρία υψηλής ποιότητας όταν οι χρήστες εκκινούν την εφαρμογή σας από την αρχική οθόνη τους. [Μάθετε περισσότερα σχετικά με τις οθόνες εκκίνησης](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
@@ -1623,7 +1707,7 @@
     "message": "Βέλτιστες πρακτικές"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Αυτοί οι έλεγχοι επισημαίνουν ευκαιρίες για τη [βελτίωση της προσβασιμότητας της εφαρμογής ιστού σας](https://developer.chrome.com/docs/lighthouse/accessibility/). Μόνο ένα μέρος των ζητημάτων προσβασιμότητας μπορεί να εντοπιστεί αυτόματα. Ως εκ τούτου, συνιστάται να προβείτε και σε μη αυτόματες δοκιμές."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Αυτά τα στοιχεία σχετίζονται με τομείς τους οποίους δεν μπορεί να καλύψει ένα εργαλείο αυτοματοποιημένων δοκιμών. Μάθετε περισσότερα στον οδηγό μας σχετικά με τη [διεξαγωγή ενός ελέγχου προσβασιμότητας](https://web.dev/how-to-review/)."
@@ -2769,7 +2853,7 @@
     "message": "Εγκαταστήστε [μια λειτουργική μονάδα Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) η οποία μπορεί να εκτελέσει αργή φόρτωση εικόνων. Αυτού του είδους οι λειτουργικές μονάδες παρέχουν τη δυνατότητα αναβολής φόρτωσης των εικόνων εκτός οθόνης, για τη βελτίωση της απόδοσης."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Εξετάστε το ενδεχόμενο χρήσης μιας λειτουργικής μονάδας για την ενσωμάτωση σημαντικών στοιχείων CSS και JavaScript ή ενδεχομένως για την ασύγχρονη φόρτωση στοιχείων μέσω JavaScript, όπως τη λειτουργική μονάδα [Σύνθετη συγκέντρωση CSS/JS](https://www.drupal.org/project/advagg). Λάβετε υπόψη ότι οι βελτιστοποιήσεις που παρέχονται από αυτήν τη λειτουργική μονάδα μπορεί να προκαλέσουν προβλήματα στη λειτουργία του ιστοτόπου σας. Συνεπώς, είναι πιθανό να χρειαστεί να κάνετε αλλαγές στον κώδικα."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Τα θέματα, οι ενότητες και οι προδιαγραφές διακομιστή συμβάλλουν στον χρόνο απόκρισης του διακομιστή. Αν θέλετε, μπορείτε να ψάξετε για ένα περισσότερο βελτιστοποιημένο θέμα, να επιλέξετε προσεκτικά μια ενότητα βελτιστοποίησης ή/και να αναβαθμίσετε τον διακομιστή σας. Οι διακομιστές φιλοξενίας σας θα πρέπει να χρησιμοποιούν την προσωρινή αποθήκευση κώδικα λειτουργίας (opcode) PHP, την προσωρινή αποθήκευση μνήμης για τη μείωση των χρόνων ερωτημάτων βάσης δεδομένων, όπως στα Redis και Memcached, καθώς και βελτιστοποιημένη λογική εφαρμογής για την πιο γρήγορη προετοιμασία σελίδων."
@@ -2778,10 +2862,10 @@
     "message": "Εξετάστε το ενδεχόμενο χρήσης [Στιλ αποκριτικών εικόνων](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) για να μειώσετε το μέγεθος των εικόνων που φορτώνονται στη σελίδα σας. Εάν χρησιμοποιείτε τις Προβολές για την εμφάνιση πολλαπλών στοιχείων περιεχομένου σε μια σελίδα, εξετάστε το ενδεχόμενο ενσωμάτωσης σελιδοποίησης προκειμένου να περιορίσετε τον αριθμό των στοιχειών περιεχομένου σε μια συγκεκριμένη σελίδα."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Βεβαιωθείτε ότι έχετε ενεργοποιήσετε τη Συγκέντρωση αρχείων CSS στη σελίδα Διαχείριση » Διαμόρφωση » Ανάπτυξη. Μπορείτε επίσης να διαμορφώσετε πιο σύνθετες επιλογές συγκέντρωσης μέσω [πρόσθετων ενοτήτων](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search), για να αυξήσετε την ταχύτητα του ιστοτόπου σας συνενώνοντας, ελαχιστοποιώντας και συμπιέζοντας τα στιλ CSS που χρησιμοποιείτε."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Βεβαιωθείτε ότι έχετε ενεργοποιήσετε τη Συγκέντρωση αρχείων JavaScript στη σελίδα Διαχείριση » Διαμόρφωση » Ανάπτυξη. Μπορείτε επίσης να διαμορφώσετε πιο σύνθετες επιλογές συγκέντρωσης μέσω [πρόσθετων ενοτήτων](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search), για να αυξήσετε την ταχύτητα του ιστοτόπου σας συνενώνοντας, ελαχιστοποιώντας και συμπιέζοντας τα στοιχεία JavaScript που χρησιμοποιείτε."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Εξετάστε το ενδεχόμενο να καταργήσετε τους κανόνες CSS που δεν χρησιμοποιούνται και να προσαρτήσετε μόνο τις αναγκαίες βιβλιοθήκες Drupal στη σχετική σελίδα ή στο σχετικό στοιχείο σε μια σελίδα. Για λεπτομέρειες, ανατρέξτε στον [σύνδεσμο τεκμηρίωσης Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Για να προσδιορίσετε τις προσαρτημένες βιβλιοθήκες που προσθέτουν περιττό κώδικα CSS, δοκιμάστε να εκτελέσετε [κάλυψη κώδικα](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) στο Chrome DevTools. Μπορείτε να προσδιορίσετε το θέμα/την ενότητα που ευθύνεται μέσω του URL του φύλλου στιλ όταν η συγκέντρωση CSS είναι απενεργοποιημένη στον ιστότοπό σας στο Drupal. Αναζητήστε θέματα/ενότητες που διαθέτουν πολλά φύλλα στιλ στη λίστα, στα οποία ένα μεγάλο μέρος της κάλυψης κώδικα έχει κόκκινο χρώμα. Ένα θέμα/μια ενότητα θα πρέπει να τοποθετεί στην ουρά ένα φύλλο στιλ, μόνο αν χρησιμοποιείται στη σελίδα."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Ενεργοποιήστε τη συμπίεση στον διακομιστή Next.js. [Μάθετε περισσότερα](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Χρησιμοποιήστε το στοιχείο `nuxt/image` και ορίστε το `format=\"webp\"`. [Μάθετε περισσότερα](https://image.nuxtjs.org/components/nuxt-img#format)."
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Χρησιμοποιήστε το React DevTools Profiler, το οποίο χρησιμοποιεί το API του Profiler, για να μετρήσετε τις επιδόσεις απόδοσης των στοιχείων σας. [Μάθετε περισσότερα.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Τοποθετήστε βίντεο εντός του `VideoBoxes`, προσαρμόστε τα χρησιμοποιώντας το `Video Masks` ή προσθέστε το `Transparent Videos`. [Μάθετε περισσότερα](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Ανεβάστε εικόνες χρησιμοποιώντας το `Wix Media Manager`, για να διασφαλίσετε ότι θα προβάλλονται αυτόματα ως WebP. Βρείτε [περισσότερους τρόπους βελτιστοποίησης](https://support.wix.com/en/article/site-performance-optimizing-your-media) των μέσων του ιστοτόπου σας."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Κατά την [προσθήκη κώδικα τρίτου μέρους](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) στην καρτέλα `Custom Code` του πίνακα ελέγχου του ιστοτόπου σας, βεβαιωθείτε ότι αναβάλλεται ή φορτώνεται στο τέλος του σώματος κώδικα. Όπου είναι δυνατόν, χρησιμοποιήστε τις [ενσωματώσεις](https://support.wix.com/en/article/about-marketing-integrations) του Wix, για να ενσωματώσετε εργαλεία μάρκετινγκ στον ιστότοπό σας. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Το Wix χρησιμοποιεί ΔΠΠ και αποθήκευση στην κρυφή μνήμη, για να προβάλλει απαντήσεις όσο το δυνατόν πιο γρήγορα. Σκεφτείτε το ενδεχόμενο [μη αυτόματης ενεργοποίησης της αποθήκευσης στην κρυφή μνήμη](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) για τον ιστότοπό σας, ειδικά αν χρησιμοποιείτε το `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Ελέγξτε τυχόν κώδικα τρίτου μέρους που έχετε προσθέσει στον ιστότοπό σας στην καρτέλα `Custom Code` του πίνακα ελέγχου του ιστοτόπου σας και διατηρήστε μόνο τις υπηρεσίες που είναι απαραίτητες για τον ιστότοπο. [Μάθετε περισσότερα](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Εξετάστε το ενδεχόμενο να ανεβάσετε το GIF σε μια υπηρεσία η οποία θα το διαθέσει για ενσωμάτωση ως βίντεο HTML5."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Αποθήκευση ως JSON"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Άνοιγμα στο πρόγραμμα προβολής"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Οι τιμές εκτιμώνται και μπορεί να ποικίλουν. Η [βαθμολογία απόδοσης υπολογίζεται](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) απευθείας από αυτές τις μετρήσεις."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Προβολή αρχικού ίχνους"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Προβολή ίχνους"

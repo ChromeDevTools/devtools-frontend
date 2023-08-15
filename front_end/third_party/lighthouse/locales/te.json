@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "'`[aria-*]`' లక్షణాలు వాటి పాత్రలతో సరిపోలాలి"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "ఏదైనా ఎలిమెంట్‌కు యాక్సెస్ చేయదగిన పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దాన్ని సాధారణ పేరుతో బయటకు చదువుతాయి, స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు దీని వల్ల ఉపయోగం ఉండకుండా పోతుంది. [కమాండ్ ఎలిమెంట్‌లను మరింత యాక్సెస్ చేయదగినవిగా ఎలా చేయాలో తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "`button`, `link`, `menuitem` ఎలిమెంట్‌లు యాక్సెస్ చేయగల పేర్లను కలిగి ఉన్నాయి"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "యాక్సెస్ చేయగల పేర్లు లేని ARIA డైలాగ్ ఎలిమెంట్‌లు స్క్రీన్ రీడర్ యూజర్‌లను ఈ ఎలిమెంట్‌ల ప్రయోజనాన్ని గుర్తించకుండా నిరోధించవచ్చు. [ARIA డైలాగ్ ఎలిమెంట్‌లను వాటికి మరింత యాక్సెస్ ఉండేలా చేయడం ఎలాగో తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "`role=\"dialog\"` లేదా `role=\"alertdialog\"`తో ఉన్న ఎలిమెంట్‌లకు యాక్సెస్ చేయగల పేర్లు లేవు."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "`role=\"dialog\"` లేదా `role=\"alertdialog\"` ఉన్న ఎలిమెంట్‌లు యాక్సెస్ చేయగల పేర్లను కలిగి ఉన్నాయి."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "`<body>` డాక్యుమెంట్‌లో `aria-hidden=\"true\"`‌ను సెట్ చేసినప్పుడు స్క్రీన్ రీడర్‌ల లాంటి సహాయక టెక్నాలజీలు స్థిరంగా పని చేయవు. [డాక్యుమెంట్‌లోని కంటెంట్‌ను `aria-hidden` ఎలా ప్రభావితం చేస్తుందో తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]` విలువలు చెల్లుబాటు అయ్యేవి"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "మార్కప్ ద్వారా స్ప్లిట్ చేయబడిన టెక్స్ట్ నోడ్ చుట్టూ `role=text`ను జోడించడం, వాయిస్‌ఓవర్‌ను ఒక పదబంధంగా పరిగణించడాన్ని ఎనేబుల్ చేస్తుంది, కానీ ఎలిమెంట్‌కు చెందిన ఫోకస్ చేయదగిన సబ్-ఎలిమెంట్‌లు ప్రకటించబడవు. [`role=text` అట్రిబ్యూట్ గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "`role=text` అట్రిబ్యూట్ ఉన్న ఎలిమెంట్‌లు ఫోకస్ చేయదగిన డిసెండెంట్‌లను కలిగి ఉంటాయి."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "`role=text` అట్రిబ్యూట్ ఉన్న ఎలిమెంట్స్ ఫోకస్ చేయదగిన డిసెండెంట్‌లను కలిగి ఉండవు."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "ఏదైనా టోగుల్ ఫీల్డ్‌కు యాక్సెస్ చేయదగిన పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దాన్ని సాధారణ పేరుతో బయటకు చదువుతాయి, స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు దీని వల్ల ఉపయోగం ఉండకుండా పోతుంది. [టోగుల్ ఫీల్డ్‌ల గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ARIA IDలు విభిన్నంగా ఉన్నాయి"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "కంటెంట్ లేని హెడ్డింగ్ లేదా యాక్సెస్ చేయలేని టెక్స్ట్ స్క్రీన్ రీడర్ యూజర్‌లను పేజీ నిర్మాణంపై సమాచారాన్ని యాక్సెస్ చేయకుండా నిరోధిస్తుంది. [హెడ్డింగ్‌ల గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "హెడ్డింగ్ ఎలిమెంట్‌లు కంటెంట్‌ని కలిగి ఉండవు."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "హెడ్డింగ్ ఎలిమెంట్‌లు అన్నీ కంటెంట్‌ను కలిగి ఉంటాయి."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "మొదటి, చివరి లేదా అన్ని లేబుల్స్‌ను ఉపయోగించే స్క్రీన్ రీడర్‌ల వంటి సహాయక టెక్నాలజీలు, పలు లేబుల్స్ ఉండే ఫారమ్ ఫీల్డ్‌లను గందరగోళంగా బయటకు చదివే అవకాశం ఉంది. [ఫారమ్ లేబుల్స్‌ను ఎలా ఉపయోగించాలో తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "`[lang]` లక్షణం ఉన్న అదే భాషలో ఉన్న `[xml:lang]` లక్షణాన్ని `<html>` ఎలిమెంట్ కలిగి ఉంది."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "యూజర్‌లకు లింక్ ఉద్దేశ్యాన్ని అర్థం చేసుకోవడంలోను, దానిని ఫాలో అవ్వాలా వద్దా అని నిర్ణయించుకోవడంలోను సహాయపడేందుకు, ఒకే గమ్యస్థానానికి సంబంధించిన లింక్‌లు ఒకే వివరణను కలిగి ఉండాలి. [ఒకేలా ఉండే లింక్‌ల గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "ఒకే విధమైన లింక్‌లకు ఒకే ప్రయోజనం ఉండదు."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "ఒకే విధమైన లింక్‌లకు ఒకే ప్రయోజనం ఉంటుంది."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "సమాచారాత్మక ఎలిమెంట్‌లు చిన్నగా, అలాగే వివరణాత్మక ప్రత్యామ్నాయ టెక్స్ట్‌ను కలిగి ఉండాలి. అలంకార ఎలిమెంట్‌లను ఖాళీ alt లక్షణంతో విస్మరించవచ్చు. [`alt` లక్షణం గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "చిత్ర మూలకాలు '`[alt]`' లక్షణాలను కలిగి ఉన్నాయి"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "స్పష్టమైన, యాక్సెస్ చేయదగిన టెక్స్ట్‌ను ఇన్‌పుట్ బటన్‌లకు జోడించడం ద్వారా స్క్రీన్ రీడర్ యూజర్‌లు ఇన్‌పుట్ బటన్ ప్రయోజనాన్ని తెలుసుకోవడంలో సహాయపడవచ్చు. [ఇన్‌పుట్ బటన్‌ల గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "`<input type=\"image\">` ఎలిమెంట్‌లు `[alt]` టెక్స్ట్‌ను కలిగి ఉన్నాయి"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "స్క్రీన్ రీడర్‌ల లాంటి సహాయక టెక్నాలజీలు, ఫారమ్ కంట్రోల్స్‌ను సక్రమంగా చదివి వినిపించేలా లేబుల్స్ చూసుకుంటాయి. [ఫారమ్ ఎలిమెంట్ లేబుల్స్ గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/label)."
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "ఫారమ్ మూలకాలు అనుబంధిత లేబుళ్లను కలిగి ఉన్నాయి"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "ఒక ప్రధాన ల్యాండ్‌మార్క్ స్క్రీన్ రీడర్ యూజర్‌లకు వెబ్ పేజీని నావిగేట్ చేయడంలో సహాయపడుతుంది. [ల్యాండ్‌మార్క్‌ల గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "డాక్యుమెంట్‌లో ప్రధాన ల్యాండ్‌మార్క్ లేదు."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "డాక్యుమెంట్ ప్రధాన ల్యాండ్‌మార్క్‌ను కలిగి ఉంది."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "తక్కువ కాంట్రాస్ట్ గల టెక్స్ట్ అనేది చాలా మంది యూజర్‌లు కష్టపడి చదవాల్సి వచ్చేలా లేదా అస్సలు చదవలేనిదిగా ఉంటుంది. గుర్తించదగిన లింక్ టెక్స్ట్ చూపు తక్కువగా ఉన్న యూజర్‌లకు ఎక్స్‌పీరియన్స్‌ను మెరుగుపరుస్తుంది. [లింక్‌లను గుర్తించగలిగేలా చేయడం ఎలాగో తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "లింక్‌లను గుర్తుపట్టేందుకు రంగుపై ఆధారపడవలసి ఉంటుంది."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "రంగుపై ఆధారపడకుండా లింక్‌లను గుర్తుపట్టవచ్చు."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "గుర్తించదగిన, విభిన్నమైన, ఇంకా ఫోకస్ చేయదగిన లింక్ టెక్స్ట్ (అలాగే ఇమేజ్‌లను లింక్‌లుగా ఉపయోగించినప్పుడు వాటి ప్రత్యామ్నాయ టెక్స్ట్) సహాయంతో స్క్రీన్ రీడర్ యూజర్‌లకు నావిగేషన్ అనుభవం మెరుగవుతుంది. [లింక్‌లను యాక్సెస్ చేయదగినవిగా ఎలా చేయాలో తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/link-name)."
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "`<object>` ఎలిమెంట్‌లు ప్రత్యామ్నాయ టెక్స్ట్‌ను కలిగి ఉన్నాయి"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "ప్రభావవంతమైన లేబుల్స్ లేని ఫారమ్ ఎలిమెంట్స్ స్క్రీన్ రీడర్ యూజర్‌లకు నిరాశపరిచే ఎక్స్‌పీరియన్స్‌లను క్రియేట్ చేయగలవు. [ `select` ఎలిమెంట్](https://dequeuniversity.com/rules/axe/4.7/select-name) గురించి మరింత తెలుసుకోండి."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "ఎలిమెంట్‌లకు అనుబంధిత లేబుల్ ఎలిమెంట్‌లు లేవు."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "ఎంపిక చేసిన ఎలిమెంట్‌లు అనుబంధిత లేబుల్ ఎలిమెంట్‌లను కలిగి ఉంటాయి."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "0 కంటే పెద్ద విలువ, స్పష్టమైన నావిగేషన్ క్రమాన్ని సూచిస్తుంది. టెక్నికల్‌గా చెల్లుబాటే అయినప్పటికీ, సహాయక టెక్నాలజీలపై ఆధారపడే యూజర్‌లకు ఇది తరచుగా విసుగు తెప్పిస్తూ ఉంటుంది. [`tabindex` లక్షణం గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "ఏ మూలకానికీ సున్నా కంటే పెద్ద ``[tabindex]`` విలువ లేదు"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "టేబుల్స్‌ను నావిగేట్ చేయడం సులభతరం చేసే ఫీచర్‌లను స్క్రీన్ రీడర్‌లు కలిగి ఉన్నాయి. `[colspan]` లక్షణంతో ఉన్న సెల్స్‌కు బదులుగా టేబుల్స్ అసలు క్యాప్షన్ ఎలిమెంట్‌ను ఉపయోగించేలా చూసుకుంటే, అది స్క్రీన్ రీడర్ యూజర్‌ల అనుభవాన్ని మెరుగుపరచవచ్చు. [క్యాప్షన్‌ల గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "క్యాప్షన్‌ను సూచించడానికి `[colspan]` లక్షణంతో ఉన్న సెల్స్‌కు బదలుగా టేబుల్స్ `<caption>`‌ను ఉపయోగిస్తాయి."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "టచ్ టార్గెట్‌లకు తగినంత సైజు, లేదా స్పేసింగ్ లేవు."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "టచ్ టార్గెట్‌లు తగినంత సైజును, స్పేసింగ్‌ను కలిగి ఉంటాయి."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "టేబుల్స్‌ను నావిగేట్ చేయడం సులభతరం చేసే ఫీచర్‌లను స్క్రీన్ రీడర్‌లు కలిగి ఉన్నాయి. పెద్ద టేబుల్ (3 లేదా అంతకంటే ఎక్కువ సెల్స్ వెడల్పు, ఎత్తు ఉన్నది)లోని `<td>` ఎలిమెంట్‌లకు అనుబంధించిన టేబుల్ హెడర్ ఉండేలా చూసుకుంటే, అది స్క్రీన్ రీడర్ యూజర్‌ల అనుభవాన్ని మెరుగుపరచవచ్చు. [టేబుల్ రీడర్‌ల గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "పేజీకి మ్యానిఫెస్ట్ <link> URL లేదు"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "మ్యాచ్ అవుతున్న సర్వీస్ వర్కర్ ఏదీ గుర్తించలేదు. మీరు పేజీని రీలోడ్ చేయాల్సి రావచ్చు లేదా ప్రస్తుత పేజీ కోసం సర్వీస్ వర్కర్ పరిధిలో మానిఫెస్ట్ నుండి పరిధి, ప్రారంభ URL ఉన్నాయో లేదో చూసుకోండి."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "మ్యానిఫెస్ట్‌లో 'start_url' ఫీల్డ్ లేకుండా సర్వీస్ వర్కర్‌ను చెక్ చేయడం సాధ్యపడదు"
   },
@@ -969,7 +1083,7 @@
     "message": "కేవలం Chrome బీటా మరియు Androidలోని స్థిర ఛానెళ్లలో మాత్రమే prefer_related_applicationsకి సపోర్ట్ ఉంది."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "సర్వీస్ వర్కర్ ఉన్నారో, లేదో Lighthouse గుర్తించలేకపోయింది. దయచేసి Chrome కొత్త వెర్షన్‌తో ట్రై చేయండి."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "మ్యానిఫెస్ట్ URL స్కీమ్ ({scheme})కు Androidలో సపోర్ట్ లేదు."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "వీక్షణ పోర్ట్‌లో కనిపించే ఎలిమెంట్‌ల కదలికను క్యుములేటివ్ లేఅవుట్ షిఫ్ట్ కొలుస్తుంది. [క్యుములేటివ్ లేఅవుట్ షిఫ్ట్ కొలమానం గురించి మరింత తెలుసుకోండి](https://web.dev/cls/)."
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Interaction to Next Paint పేజీ ప్రతిస్పందనా తీరును కొలుస్తుంది, అంటే యూజర్ ఇన్‌పుట్‌కు ప్రత్యక్షంగా ప్రతిస్పందించడానికి పేజీకి ఎంత సమయం పడుతుందో కొలుస్తుంది. [Interaction to Next Paint కొలమానం గురించి మరింత తెలుసుకోండి](https://web.dev/inp/)."
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "ఫస్ట్ కంటెంట్‌ఫుల్ పెయింట్ అనేది, మొదటి టెక్స్ట్ లేదా ఇమేజ్ పెయింట్ చేయబడిన సమయాన్ని గుర్తిస్తుంది. [ఫస్ట్ కంటెంట్‌ఫుల్ పెయింట్ కొలమానం గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "పేజీకి సంబంధించిన ప్రధాన కంటెంట్ ఎప్పుడు కనిపిస్తుంది అనే దాన్ని ఫస్ట్ మీనింగ్‌ఫుల్ పెయింట్ కొలుస్తుంది. [ఫస్ట్ మీనింగ్‌ఫుల్ పెయింట్ కొలమానం గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Interaction to Next Paint పేజీ ప్రతిస్పందనా తీరును కొలుస్తుంది, అంటే యూజర్ ఇన్‌పుట్‌కు ప్రత్యక్షంగా ప్రతిస్పందించడానికి పేజీకి ఎంత సమయం పడుతుందో కొలుస్తుంది. [Interaction to Next Paint కొలమానం గురించి మరింత తెలుసుకోండి](https://web.dev/inp/)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "పూర్తిగా ఇంటరాక్టివ్ అవ్వడానికి పేజీకి ఎంత సమయం పడుతుందో, దాన్నే ఇంటరాక్షన్ టైమ్ అని అంటారు. [ఇంటరాక్షన్ టైమ్ కొలమానం గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "అనేక పేజీ మళ్లింపులను నివారించండి"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "పేజీ రిసోర్స్‌ల పరిమాణానికి, ఇంకా సైజుకు బడ్జెట్‌లను సెట్ చేయడానికి, budget.json ఫైల్‌ను జోడించండి. [పనితీరుకు సంబంధించిన బడ్జెట్‌ల గురించి మరింత తెలుసుకోండి](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 రిక్వెస్ట్ • {byteCount, number, bytes} KiB}other{# రిక్వెస్ట్‌లు • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "రిక్వెస్ట్‌ల సంఖ్యను తగ్గించుకోండి, బదిలీ పరిమాణాలు తక్కువగా ఉండేలా చూసుకోండి"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "సెర్చ్ ఫలితాలలో ఏ URLను చూపాలో కనోనికల్ లింక్‌లు సూచిస్తాయి. [కనోనికల్ లింక్‌ల గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "ప్రారంభ సర్వర్ ప్రతిస్పందన సమయం తక్కువగా ఉంది"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "సర్వీస్ వర్కర్ టెక్నాలజీ అనేది, ఆఫ్‌లైన్ వినియోగం, హోమ్‌స్క్రీన్‌కు జోడించడం, పుష్ నోటిఫికేషన్‌ల లాంటి అనేక ప్రోగ్రెసివ్ వెబ్ యాప్ ఫీచర్‌లను ఉపయోగించే వీలు మీ యాప్‌నకు కల్పిస్తుంది. [సర్వీస్ వర్కర్‌ల గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "ఈ పేజీ ఒక సర్వీస్ వర్కర్ ద్వారా నియంత్రించబడినప్పటికీ, చెల్లుబాటయ్యే JSON ఫార్మాట్‌లో అన్వయించడంలో మానిఫెస్ట్ విఫలమైనందున '`start_url`' ఏదీ కనుగొనబడలేదు"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "ఈ పేజీ ఒక సర్వీస్ వర్కర్ ద్వారా నియంత్రించబడినప్పటికీ, '`start_url`' ({startUrl}) అన్నది సర్వీస్ వర్కర్ పరిధి ({scopeUrl})లో లేదు"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "ఈ పేజీ ఒక సర్వీస్ వర్కర్ ద్వారా నియంత్రించబడినప్పటికీ, మానిఫెస్ట్ ఏదీ పొందనందున '`start_url`' ఏదీ కనుగొనబడలేదు."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "ఈ మూలాధారంలో ఒకటి లేదా అంతకంటే ఎక్కువ సర్వీస్ వర్కర్‌లు ఉన్నప్పటికీ, పేజీ ({pageUrl}) పరిధిలో లేదు."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "పేజీని, '`start_url`'ను నియంత్రించే సర్వీస్ వర్కర్ ఏదీ నమోదు చేయబడలేదు"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "పేజీని, '`start_url`'ను నియంత్రించే సర్వీస్ వర్కర్ నమోదు చేయబడింది"
   },
   "core/audits/splash-screen.js | description": {
     "message": "థీమ్‌తో కూడిన స్ప్లాష్ స్క్రీన్ వలన, యూజర్‌లు వారి హోమ్‌స్క్రీన్‌ల నుండి మీ యాప్‌ను లాంచ్ చేసినప్పుడు, అధిక క్వాలిటీ గల అనుభవం అందించబడుతుంది. [స్ప్లాష్ స్క్రీన్‌ల గురించి మరింత తెలుసుకోండి](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
@@ -1623,7 +1707,7 @@
     "message": "ఉత్తమ అభ్యాసాలు"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "[మీ వెబ్ యాప్ యొక్క యాక్సెసిబిలిటీని మెరుగుపరచగల](https://developer.chrome.com/docs/lighthouse/accessibility/) అవకాశాలను ఈ తనిఖీలు హైలైట్ చేస్తాయి. యాక్సెసిబిలిటీ సమస్యలలోని ఒక సబ్‌సెట్‌ను మాత్రమే ఆటోమేటిక్‌గా గుర్తించడం సాధ్యపడుతుంది, కనుక మాన్యువల్ పరీక్ష కూడా చేయాల్సిందిగా సిఫార్సు చేస్తున్నాము."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "ఆటోమేటెడ్ పరీక్ష సాధనం కవర్ చేయని ప్రాంతాలను ఈ అంశాలు పేర్కొంటాయి. [యాక్సెసిబిలిటీ రివ్యూను నిర్వహించడం](https://web.dev/how-to-review/) గురించి మా గైడ్‌లో మరింత తెలుసుకోండి."
@@ -2769,7 +2853,7 @@
     "message": "లేజీ ఇమేజ్‌లను లోడ్ చేయగల [ఒక Drupal మాడ్యూల్](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search)ను ఇన్‌స్టాల్ చేయండి. అలాంటి మాడ్యూల్‌లు, పనితీరును మెరుగుపరచడానికి ఎలాంటి ఆఫ్‌స్క్రీన్ ఇమేజ్‌లను అయినా మినహాయించగల సామర్థ్యాన్ని అందిస్తాయి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "కీలకమైన CSS, JavaSciptను ఇన్‌లైన్‌లో ఉంచడానికి, లేదా [అధునాతన CSS/JS అగ్రిగేషన్](https://www.drupal.org/project/advagg) మాడ్యూల్ లాంటి JavaScript ద్వారా అస్సెట్‌లను అసమకాలికంగా లోడ్ చేసే అవకాశం ఉండటానికి, మాడ్యూల్‌ను ఉపయోగించడానికి ప్రయత్నించండి. ఈ మాడ్యూల్ ద్వారా అందించబడే ఆప్టిమైజేషన్‌లు మీ సైట్‌ను విడగొట్టవచ్చని గుర్తుంచుకోండి, కనుక మీరు కోడ్‌కు మార్పులు చేయాల్సి రావచ్చు."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "థీమ్‌లు, మాడ్యూల్‌లు, సర్వర్ నిర్దేశాలన్నీ కూడా సర్వర్ ప్రతిస్పందన సమయాన్ని ప్రభావితం చేస్తాయి. చాలా జాగ్రత్తగా ఆప్టిమైజేషన్ మాడ్యూల్‌ను ఎంచుకోవడం, మరియు/లేదా మీ సర్వర్‌ను అప్‌గ్రేడ్ చేయడం ద్వారా, మరింత ఆప్టిమైజ్ చేయబడిన థీమ్‌ను కనుగొనడానికి ప్రయత్నించండి. మీ హోస్టింగ్ సర్వర్‌లు Redis లేదా Memcached లాంటి డేటాబేస్ క్వెరీ సమయాలను తగ్గించడానికి PHP opcode కాషింగ్, మెమరీ-కాషింగ్‌లను ఉపయోగించాలి, అలాగే పేజీలను వేగవంతంగా సిద్ధం చేయడానికి ఆప్టిమైజ్ చేయబడిన అప్లికేషన్ లాజిక్‌ను ఉపయోగించాలి."
@@ -2778,10 +2862,10 @@
     "message": "మీ పేజీలో లోడ్ చేయబడిన ఇమేజ్‌ల సైజ్‌ను తగ్గించడానికి [ప్రతిస్పందనాత్మక ఇమేజ్ స్టయిల్‌ల](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)ను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి. మీరు పేజీలో అనేక కంటెంట్ ఐటెమ్‌లను చూపించడానికి వీక్షణలను ఉపయోగిస్తున్నట్లయితే, ఇవ్వబడిన పేజీలో చూపబడే కంటెంట్ ఐటెమ్‌ల సంఖ్యను పరిమితం చేయడానికి పేజీల రూపకల్పనను అమలు చేయవచ్చు, దాన్ని పరిశీలించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "మీరు \"సముదాయ CSS ఫైళ్ల\"ను \"అడ్మినిస్ట్రేషన్ » కాన్ఫిగరేషన్ » డెవలప్మెంట్\" పేజీలో ఎనేబుల్ చేశారని నిర్ధారించుకోండి. మీ CSS స్టయిల్‌లను సంగ్రహించడం, సైజు తగ్గించడం ఇంకా కుదించడం ద్వారా మీ సైట్‌ను వేగవంతం చేయడానికి, మీరు [అదనపు మాడ్యూల్‌ల](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) ద్వారా మరింత అధునాతన సముదాయ ఆప్షన్‌లను కూడా కాన్ఫిగర్ చేయవచ్చు."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "మీరు \"సముదాయ JavaScript ఫైల్స్\"ను \"అడ్మినిస్ట్రేషన్ » కాన్ఫిగరేషన్ » డెవలప్మెంట్\" పేజీలో ఎనేబుల్ చేశారని నిర్ధారించుకోండి. మీ JavaScript అస్సెట్‌లను సంగ్రహించడం, సైజు తగ్గించడం ఇంకా కుదించడం ద్వారా మీ సైట్‌ను వేగవంతం చేయడానికి, మీరు [అదనపు మాడ్యూల్‌ల](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) ద్వారా మరింత అధునాతన సముదాయ ఆప్షన్‌లను కూడా కాన్ఫిగర్ చేయవచ్చు."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "ఉపయోగించని CSS నియమాలను తీసివేయవచ్చు, దాన్ని పరిశీలించండి, సంబంధిత పేజీకి లేదా పేజీలోని భాగానికి అవసరమైన Drupal లైబ్రరీలను మాత్రమే అటాచ్ చేయండి. వివరాల కోసం [Drupal డాక్యుమెంటేషన్ లింక్‌](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library)ను చూడండి. అసంబద్ధమైన CSSను జోడిస్తున్న 'అటాచ్ చేయబడిన' లైబ్రరీలను గుర్తించడానికి, Chrome DevToolsలో [కోడ్ కవరేజీ](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)ని రన్ చేయడానికి ట్రై చేయండి. మీ Drupal సైట్‌లో CSS సముదాయం డిజేబుల్ చేయబడినప్పుడు అందుకు కారణమైన థీమ్/మాడ్యూల్‌ను, స్టయిల్‌షీట్‌కు చెందిన URL నుండి మీరు గుర్తించవచ్చు. కోడ్ కవరేజీలో ఎక్కువ ఎరుపు రంగు కలిగి ఉన్న లిస్ట్‌లో అనేక స్టయిల్‌షీట్‌లను కలిగి ఉన్న థీమ్/మాడ్యూల్‌ల కోసం చూడండి. నిజంగా థీమ్/మాడ్యూల్‌ను ఆ పేజీలో ఉపయోగించినప్పుడు మాత్రమే స్టయిల్‌షీట్‌కు జత చేయాలి."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "మీ Next.js సర్వర్‌లో కుదింపును ఎనేబుల్ చేయండి. [మరింత తెలుసుకోండి](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "`nuxt/image` కాంపోనెంట్‌ను ఉపయోగించి, `format=\"webp\"`ను సెట్ చేయండి. [మరింత తెలుసుకోండి](https://image.nuxtjs.org/components/nuxt-img#format)."
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "మీ కాంపొనెంట్‌ల అమలు పనితీరును అంచనా వేయడానికి, ప్రొఫైలర్ API వినియోగించబడే రియాక్ట్ DevTools ప్రొఫైలర్‌ను ఉపయోగించండి. [మరింత తెలుసుకోండి.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "వీడియోలను `VideoBoxes` లోపల ఉంచండి, `Video Masks`ను ఉపయోగించి వాటిని అనుకూలంగా మార్చండి లేదా `Transparent Videos`ను జోడించండి. [మరింత తెలుసుకోండి](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "ఇమేజ్‌లు ఆటోమేటిక్‌గా WebPగా సర్వ్ చేయబడుతున్నాయని నిర్ధారించుకోవడానికి `Wix Media Manager`ను ఉపయోగించి అప్‌లోడ్ చేయండి. మీ సైట్ మీడియాను [ఆప్టిమైజ్ చేయడానికి మరిన్ని మార్గాలను](https://support.wix.com/en/article/site-performance-optimizing-your-media) కనుగొనండి."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "మీ సైట్ డ్యాష్‌బోర్డ్‌లోని `Custom Code`ట్యాబ్‌లో [థర్డ్-పార్టీ కోడ్‌ను జోడించినప్పుడు](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) అది వాయిదా వేయబడిందని లేదా కోడ్ బాడీ చివరిలో లోడ్ చేయబడిందని నిర్ధారించుకోండి. సాధ్యమైన చోట, మీ సైట్‌లో మార్కెటింగ్ సాధనాలను పొందుపరచడానికి Wix [ఇంటిగ్రేషన్‌లను](https://support.wix.com/en/article/about-marketing-integrations) ఉపయోగించండి. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix చాలా మంది సందర్శకులకు వీలైనంత వేగంగా సమాధానాలను అందించడానికి CDNలను, కాషింగ్‌ను ఉపయోగిస్తుంది. మీ సైట్ కోసం [మాన్యువల్‌గా కాషింగ్‌ను ఎనేబుల్ చేయడాన్ని](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) పరిగణించండి, ముఖ్యంగా `Velo`ని ఉపయోగిస్తున్న పక్షంలో."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "మీ సైట్ డ్యాష్‌బోర్డ్‌లోని `Custom Code` ట్యాబ్‌లో మీరు మీ సైట్‌కి జోడించిన ఏదైనా థర్డ్-పార్టీ కోడ్‌ను రివ్యూ చేయండి, మీ సైట్‌కు అవసరమైన సర్వీస్‌లను మాత్రమే ఉంచండి. [మరింత సమాచారాన్ని కనుగొనండి](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "మీ GIFను HTML5 వీడియోగా పొందుపరచడానికి అందుబాటులో ఉండేలా చేసే సర్వీస్‌కు దానిని అప్‌లోడ్ చేయవచ్చు, దాన్ని పరిశీలించండి."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "JSON లాగా సేవ్ చేయండి"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "వ్యూయర్‌లో తెరువు"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "విలువలు కేవలం అంచనా మాత్రమే, ఇవి మారే అవకాశం ఉంది. నేరుగా ఈ కొలమానాల ఆధారంగా [పనితీరు స్కోరు లెక్కించబడుతుంది](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/)."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "అసలైన ట్రేస్‌ను చూపించు"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "ట్రేస్‌ను చూపించు"

@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Атрибути `[aria-*]` відповідають своїм ролям"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Без доступної назви програма зачитує тільки загальну назву (тобто роль або тип) елемента, що незручно для користувачів, які застосовують програми зчитування з екрана. [Дізнайтесь, як зробити командні елементи доступнішими.](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)"
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Елементи з ролями `button`, `link` і `menuitem` мають зрозумілі назви для зчитування з екрана"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "Якщо елементи вікна ARIA не мають доступних назв, користувачі програм зчитування з екрана не зможуть зрозуміти призначення цих елементів. [Дізнайтесь, як зробити елементи вікон ARIA доступнішими.](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Елементи з атрибутами `role=\"dialog\"` або `role=\"alertdialog\"` не мають доступних назв."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Елементи з атрибутами `role=\"dialog\"` або `role=\"alertdialog\"` мають доступні назви."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Технології для людей з обмеженими можливостями, як-от програми зчитування з екрана, працюють неналежно, коли `aria-hidden=\"true\"` налаштовано в документі `<body>`. [Дізнайтесь, як `aria-hidden` впливає на текст документа.](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)"
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "Значення `[role]` дійсні"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Якщо додати атрибут `role=text` навколо текстового вузла, розділеного за допомогою розмітки, VoiceOver зможе обробляти його як одну фразу, але не озвучуватиме фокусованих нащадків елемента. [Докладніше про атрибут `role=text`.](https://dequeuniversity.com/rules/axe/4.7/aria-text)"
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Елементи з атрибутом `role=text` мають фокусованих нащадків."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Елементи з атрибутом `role=text` не мають фокусованих нащадків."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "Без доступної назви програма зачитує тільки загальну назву (тобто роль або тип) перемикача, що незручно для користувачів спеціальних можливостей. [Докладніше про поля для перемикачів.](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)"
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "Ідентифікатори ARIA унікальні"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Якщо заголовок містить недоступний текст або не містить контенту взагалі, це заважає користувачам програм зчитування з екрана отримувати доступ до структури сторінки. [Докладніше про заголовки.](https://dequeuniversity.com/rules/axe/4.7/empty-heading)"
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Елементи <heading> не містять контенту."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Усі елементи <heading> містять контент."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "Поля форми з кількома мітками можуть помилково озвучуватися технологіями для людей з обмеженими можливостями (наприклад, програмами зчитування з екрана), які використовують першу, останню або всі мітки. [Дізнайтесь, як використовувати мітки форм.](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)"
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "Елемент `<html>` містить атрибут `[xml:lang]`, який має таку саму базову мову, що й атрибут `[lang]`."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Посилання, що спрямовують на ту саму сторінку, повинні мати однаковий опис, щоб користувачі могли зрозуміти їх призначення й вирішити, чи слід за ними переходити. [Докладніше про однакові посилання.](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)"
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Однакові посилання мають різне призначення."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Однакові посилання мають таке саме призначення."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Інформативні елементи повинні містити короткий, описовий текст заміщення. Декоративні елементи можуть ігноруватись і мати порожній атрибут alt. [Докладніше про атрибут `alt`.](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Зображення мають атрибути `[alt]`"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Читабельний і зрозумілий текст на кнопках введення дасть користувачам програми зчитування з екрана змогу розпізнати їх призначення. [Докладніше про кнопки введення.](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "Елементи `<input type=\"image\">` містять текст `[alt]`"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "Завдяки міткам технології для людей з обмеженими можливостями, як-от програми зчитування з екрана, правильно озвучують елементи керування формою. [Докладніше про мітки для елементів форми.](https://dequeuniversity.com/rules/axe/4.7/label)"
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "Елементи форми мають пов’язані мітки"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Один основний орієнтир допомагає користувачам програм зчитування з екрана переходити веб-сторінкою. [Докладніше про орієнтири.](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)"
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Документ не містить основного орієнтира."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Документ містить основний орієнтир."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Для багатьох користувачів складно або неможливо читати текст із низькою контрастністю. Помітний текст посилання допомагає користувачам із поганим зором працювати зручніше. [Докладніше про те, як зробити посилання помітними.](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)"
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Посилання можна відрізнити лише за кольором."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Посилання можна відрізнити не лише за кольором."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "Унікальний і доступний для виділення текст посилання (а також текст заміщення для зображень, коли вони застосовуються як посилання), що можна розпізнати, покращує навігацію для користувачів програм зчитування з екрана. [Дізнайтесь, як зробити посилання доступними.](https://dequeuniversity.com/rules/axe/4.7/link-name)"
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "Елементи `<object>` містять текст заміщення"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Якщо елементи <form> не мають ефективних міток, користувачам програм зчитування з екрана буде незручно їх заповнювати. [Докладніше про елемент `select`.](https://dequeuniversity.com/rules/axe/4.7/select-name)"
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Елементи <select> не мають пов’язаних елементів <label>."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Елементи <select> мають пов’язані елементи міток."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Значення, що перевищує 0, передбачає явне встановлення порядку навігації. Хоча технічно воно дійсне, це часто ускладнює взаємодію для користувачів, які застосовують технології для людей з обмеженими можливостями. [Докладніше про атрибут `tabindex`.](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Жоден елемент не має значення `[tabindex]`, що перевищує 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Програми зчитування з екрана мають функції, які полегшують навігацію в таблицях. Якщо в таблицях замість клітинок з атрибутом `[colspan]` використовується елемент заголовка, користувачам програми зчитування з екрана може бути зручніше працювати з ними. [Докладніше про заголовки.](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "Для позначення заголовків у таблицях замість клітинок з атрибутом `[colspan]` використовується елемент `<caption>`."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Області дотику мають недостатній розмір або інтервали."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Області дотику мають достатній розмір і інтервали."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "Програми зчитування з екрана мають функції, які полегшують навігацію в таблицях. Якщо елементи `<td>` у великій таблиці (принаймні 3 клітинки у ширину й висоту) матимуть пов’язаний заголовок таблиці, користувачам програми зчитування з екрана може бути зручніше працювати з нею. [Докладніше про заголовки таблиць.](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "На сторінці немає URL-адреси маніфесту в тегах <link>"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Не виявлено відповідного синтаксису Service Worker. Можливо, потрібно перезавантажити сторінку або перевірити, чи область дії синтаксису Service Worker для поточної сторінки включає область дії та початкову URL-адресу з маніфесту."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Не вдалося перевірити синтаксис Service Worker без поля start_url у маніфесті"
   },
@@ -969,7 +1083,7 @@
     "message": "Властивість prefer_related_applications підтримується лише в бета-версії Chrome і стабільних версіях на Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Сервісу Lighthouse не вдалося знайти синтаксис Service Worker. Повторіть спробу в новішій версії Chrome."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Схема URL-адреси маніфесту ({scheme}) не підтримується на Android."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Сукупне зміщення макета вимірює рух видимих елементів у межах області перегляду. [Докладніше про показник \"Сукупне зміщення макета\".](https://web.dev/cls/)"
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Показник Interaction to Next Paint вимірює, наскільки швидко сторінка може відповідати на ввід користувача. [Докладніше про показник Interaction to Next Paint.](https://web.dev/inp/)"
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Перша візуалізація контенту показує, коли з’являється текст чи зображення. [Докладніше про показник \"Перша візуалізація контенту\".](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Перше значуще відображення вказує, коли видно основний контент сторінки. [Докладніше про показник \"Перше значуще відображення\".](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Показник Interaction to Next Paint вимірює, наскільки швидко сторінка може відповідати на ввід користувача. [Докладніше про показник Interaction to Next Paint.](https://web.dev/inp/)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Час до повного завантаження – це період часу, через який сторінка стане повністю інтерактивною. [Докладніше про показник \"Час до повного завантаження\".](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Уникайте переспрямувань кількох сторінок"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Щоб установити бюджет відповідно до кількості та розміру ресурсів на сторінці, додайте файл budget.json. [Докладніше про бюджети продуктивності.](https://web.dev/use-lighthouse-for-performance-budgets/)"
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 запит • {byteCount, number, bytes} КіБ}one{# запит • {byteCount, number, bytes} КіБ}few{# запити • {byteCount, number, bytes} КіБ}many{# запитів • {byteCount, number, bytes} КіБ}other{# запиту • {byteCount, number, bytes} КіБ}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Не надсилайте багато запитів і передавайте вміст малого розміру"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Канонічні посилання вказують, які URL-адреси відображати в результатах пошуку. [Докладніше про канонічні посилання.](https://developer.chrome.com/docs/lighthouse/seo/canonical/)"
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Сервер відповідає швидко"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "Синтаксис Service Worker – це технологія, яка дає змогу додатку використовувати багато функцій прогресивного веб-додатка, як-от режим офлайн, додавання на головний екран і push-сповіщення. [Докладніше про синтаксис Service Worker.](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)"
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Цією сторінкою керує синтаксис Service Worker, однак `start_url` не знайдено, оскільки не вдалося виконати синтаксичний аналіз маніфесту як дійсного файлу JSON"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Цією сторінкою керує синтаксис Service Worker, однак параметр `start_url` ({startUrl}) перебуває за межами дії служби ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Цією сторінкою керує синтаксис Service Worker, однак `start_url` не знайдено, оскільки маніфест не завантажено."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Це джерело містить один або кілька синтаксисів Service Worker, але сторінка ({pageUrl}) перебуває за межами дії служби."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Немає синтаксису Service Worker, який керує сторінкою та `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Наявний синтаксис Service Worker, який керує сторінкою та `start_url`"
   },
   "core/audits/splash-screen.js | description": {
     "message": "Тематична заставка покращує взаємодію з користувачами під час запуску додатка з головного екрана. [Докладніше про заставки.](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)"
@@ -1623,7 +1707,7 @@
     "message": "Практичні поради"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Ці перевірки визначають можливості для [покращення доступності веб-додатка](https://developer.chrome.com/docs/lighthouse/accessibility/). Радимо також проводити перевірки вручну, оскільки не всі проблеми з доступністю визначаються автоматично."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Ці елементи опрацьовують області, які не може охопити автоматизований інструмент перевірки. Докладніше читайте в нашому посібнику з [перевірки доступності](https://web.dev/how-to-review/)."
@@ -2769,7 +2853,7 @@
     "message": "Установіть [модуль Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search), який може відкладено завантажувати зображення. Такі модулі дають змогу відкласти завантаження закадрових зображень для покращення ефективності."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Скористайтеся модулем, щоб вбудувати важливі таблиці CSS і фрагменти JavaScript, або завантажуйте об'єкти асинхронно через JavaScript, як-от модуль [розширеного зведення CSS/JS](https://www.drupal.org/project/advagg). Зауважте, що така оптимізація може порушити роботу сайту, тож доведеться змінити код."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Теми, модулі та характеристики сервера впливають на час відповіді. Спробуйте знайти більш оптимізовану тему, підібрати модуль для оптимізації та/або оновити сервер. Сервери хостингу повинні використовувати кешування коду операції PHP та кешування пам'яті, щоб зменшити час запитів до баз даних, як-от Redis або Memcached, а також оптимізовану логіку додатка для швидшої підготовки сторінок."
@@ -2778,10 +2862,10 @@
     "message": "Застосуйте [стилі адаптивних зображень](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8), щоб зменшити розмір зображень, що завантажуються на сторінці. Якщо для показу кількох елементів контенту на сторінці використовується опція \"Перегляди\", застосуйте поділ на сторінки, щоб обмежити їхню кількість на певній сторінці."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Переконайтеся, що функцію \"Звести файли CSS\" на сторінці \"Керування\" » \"Налаштування\" » \"Розробка\" ввімкнено. За допомогою [додаткових модулів](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) можна також налаштувати інші параметри зведення, щоб пришвидшити свій сайт, поєднуючи, зменшуючи та стискаючи стилі CSS."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Переконайтеся, що функцію \"Звести файли JavaScript\" на сторінці \"Керування\" » \"Налаштування\" » \"Розробка\" ввімкнено. За допомогою [додаткових модулів](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) можна також налаштувати інші параметри зведення, щоб пришвидшити свій сайт, поєднуючи, зменшуючи та стискаючи об'єкти JavaScript."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Видаліть правила CSS, що не використовуються, і додайте лише потрібні бібліотеки Drupal на відповідну сторінку чи в компонент сторінки. Щоб дізнатися більше, перегляньте [документацію Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) за цим посиланням. Щоб визначити долучені бібліотеки, які додають зайві таблиці CSS, перевірте [покриття коду](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) в Chrome DevTools. Ви можете визначити тему чи модуль через URL-адресу таблиці стилів, коли зведення CSS вимкнено на вашому сайті Drupal. У покритті коду знайдіть теми чи модулі з багатьма таблицями стилів за великим обсягом червоного тексту. Тема чи модуль мають ставити таблицю стилів у чергу, лише коли вона дійсно використовується на сторінці."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Увімкніть стиснення на сервері Next.js. [Докладніше.](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Скористайтеся компонентом `nuxt/image`, щоб налаштувати значення `format=\"webp\"`. [Докладніше](https://image.nuxtjs.org/components/nuxt-img#format)"
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Скористайтеся профілювальником React DevTools, який застосовує Profiler API, щоб визначити ефективність обробки ваших компонентів. [Докладніше.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Розмістіть відео всередині контейнерів `VideoBoxes`, налаштуйте їх за допомогою функції `Video Masks` або додайте `Transparent Videos`. [Докладніше.](https://support.wix.com/en/article/wix-video-about-wix-video)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Завантажуйте зображення за допомогою `Wix Media Manager`, щоб автоматично конвертувати їх у формат WebP. Також перегляньте [інші способи оптимізації](https://support.wix.com/en/article/site-performance-optimizing-your-media) реклами на сайті."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "[Додавши сторонній код](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) на вкладці `Custom Code` інформаційної панелі вашого сайту, переконайтеся, що він завантажується відкладено або наприкінці тіла коду. За можливості використовуйте [інтеграції](https://support.wix.com/en/article/about-marketing-integrations) Wix, щоб вставляти маркетингові інструменти на свій сайт. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix використовує мережі CDN і кешування, щоб якомога швидше надавати відповіді для більшості відвідувачів. Спробуйте [вручну ввімкнути кешування](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) для свого сайту, особливо якщо ви використовуєте `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Перейшовши на вкладку `Custom Code` інформаційної панелі вашого сайту, перегляньте сторонній код, який ви додали на веб-сайт, і збережіть лише потрібні сервіси. [Докладніше.](https://support.wix.com/en/article/site-performance-removing-unused-javascript)"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Спробуйте завантажити анімацію GIF у сервіс, де її можна вставити як відео HTML5."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Зберегти як JSON"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Відкрити в засобі перегляду"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Значення приблизні й можуть відрізнятися. [Значення ефективності визначено](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) на основі цих показників."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Переглянути оригінальне трасування"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Переглянути трасування"

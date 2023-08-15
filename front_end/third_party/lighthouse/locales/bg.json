@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Атрибутите `[aria-*]` съответстват на ролите си"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Когато даден елемент няма достъпно име, екранните четци ще произнасят за него общо име и той ще бъде неизползваем за потребителите, разчитащи на тази технология. [Научете как да направите по-достъпни елементите, свързани с команди](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Елементите `button`, `link` и `menuitem` имат достъпни имена"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "Елементите ARIA в диалоговите прозорци без достъпни имена може да попречат на потребителите на екранни четци да разберат целта на тези елементи. [Научете как да направите по-достъпни елементите ARIA в диалоговите прозорци](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Елементите с `role=\"dialog\"` или `role=\"alertdialog\"` нямат достъпни имена."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Елементите с `role=\"dialog\"` или `role=\"alertdialog\"` имат достъпни имена."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Помощните технологии, например екранни четци, работят непоследователно, когато за `<body>` за документа е зададено `aria-hidden=\"true\"`. [Научете как `aria-hidden` влияе върху основния текст на документа](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "Стойностите на `[role]` са валидни"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Добавянето на `role=text` около текстов възел, разделен с маркиране, дава възможност на VoiceOver да го третира като една фраза, но дъщерните елементи, които могат да се откроят, няма да бъдат съобщени. [Научете повече за атрибута `role=text`](https://dequeuniversity.com/rules/axe/4.7/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Елементите с атрибута `role=text` имат дъщерни елементи, които могат да се откроят."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Елементите с атрибута `role=text` нямат дъщерни елементи, които могат да се откроят."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "Когато дадено поле за превключване няма достъпно име, екранните четци ще произнасят за него общо име и то ще бъде неизползваемо за потребителите, разчитащи на тази технология. [Научете повече за полетата за превключване](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "Идентификаторите за ARIA са уникални"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Заглавие без съдържание или недостъпен текст не позволяват на потребителите на екранни четци да стигнат до информация за структурата на страницата. [Научете повече за заглавията](https://dequeuniversity.com/rules/axe/4.7/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Заглавните елементи нямат съдържание."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Всички елементи heading имат съдържание."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "Когато полетата във формуляри имат няколко етикета, е възможно да бъдат произнесени объркващо от помощните технологии, например екранни четци, които използват първия, последния или всички етикети. [Научете как да използвате етикети за формуляри](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "Елементът `<html>` има атрибут `[xml:lang]` със същия основен език като атрибута `[lang]`."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Връзките с една и съща дестинация трябва да имат едно и също описание, за да могат потребителите да разберат целта на връзката и да решат дали да я отворят. [Научете повече за идентичните връзки](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Идентичните връзки нямат една и съща цел."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Идентичните връзки имат една и съща цел."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Информативните елементи трябва да имат кратък, описателен алтернативен текст. При декоративните елементи атрибутът alt може да бъде оставен без стойност. [Научете повече за атрибута `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Графичните елементи имат атрибути `[alt]`"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Добавянето на забележим и достъпен текст към бутоните за въвеждане може да помогне на потребителите на екранни четци да разберат за какво служи съответният бутон. [Научете повече за бутоните за въвеждане](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "Елементите `<input type=\"image\">` имат алтернативен текст (`[alt]`)"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "Етикетите дават възможност на помощните технологии, като например екранни четци, да четат правилно контролите във формуляри. [Научете повече за етикетите на елементи във формуляри](https://dequeuniversity.com/rules/axe/4.7/label)."
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "Елементите на формуляра имат свързани етикети"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Един главен участък помага на потребителите на екранни четци да навигират в дадена уеб страница. [Научете повече за участъците](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Документът няма главен участък."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Документът има главен участък."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Четенето на текст с нисък контраст е трудно или невъзможно за много потребители. Текстът на връзките, който се отличава, подобрява практическата работа за потребителите със слабо зрение. [Научете как да направите връзките да се отличават от текста](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Връзките разчитат на цвят, за да се отличават от текста."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Връзките се отличават от текста, без да разчитат на цвета."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "Текстът на връзките (и алтернативният текст за изображения, когато се използват за връзки), който е различим, уникален и дава възможност фокусът да бъде поставен върху него, подобрява навигирането за потребителите на екранни четци. [Научете как да направите връзките достъпни](https://dequeuniversity.com/rules/axe/4.7/link-name)."
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "`<object>` елемента имат алтернативен текст"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Елементите на формуляра без ефективни етикети могат да влошат практическата работа на потребителите на екранни четци. [Научете повече за елемента `select`](https://dequeuniversity.com/rules/axe/4.7/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "С елементите select не са свързани елементи label."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "С елементите select са свързани елементи label."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Ако стойността е по-голяма от 0, значи се използва изричен ред на навигиране. Въпреки че е технически валидно, това често създава неудобства за потребителите, които разчитат на помощни технологии. [Научете повече за атрибута `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Никой от елементите няма атрибут `[tabindex]` със стойност, по-голяма от 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Екранните четци имат функции за улесняване на навигирането в таблици. Когато в таблиците се използва елементът caption вместо клетки с атрибута `[colspan]`, това може да подобри практическата работа за потребителите на екранни четци. [Научете повече за надписите](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "В таблиците се използва `<caption>` вместо клетки с атрибута `[colspan]`, за да се посочи надпис."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Целите за докосване не са достатъчно големи или разстоянието помежду им не е достатъчно."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Целите за докосване са с достатъчна големина и разстояние помежду им."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "Екранните четци имат функции за улесняване на навигирането в таблици. Когато елементите `<td>` в голяма таблица (с повече от 3 колони или реда) имат свързана заглавка на таблицата, това може да подобри практическата работа за потребителите на екранни четци. [Научете повече за заглавките на таблиците](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "В страницата не е зададен URL адрес на манифеста чрез маркера <link>"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Не бе открит съответстващ файл service worker. Може да се наложи да презаредите страницата или да се уверите, че зададените в манифеста обхват и URL адрес за стартиране попадат в обхвата на service worker за текущата страница."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Файлът service worker не бе проверен, тъй като за него липсваше поле start_url в манифеста"
   },
@@ -969,7 +1083,7 @@
     "message": "prefer_related_applications се поддържа само в бета- и стабилния канал на Chrome за Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse не успя да установи дали е налице service worker. Опитайте с по-нова версия на Chrome."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Схемата ({scheme}) на URL адреса на манифеста не се поддържа под Android."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Показателят „Кумулативни структурни промени (CLS)“ измерва движението на видимите елементи в прозоречния изглед. [Научете повече за този показател](https://web.dev/cls/)."
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Показателят „Изобразяване след взаимодействие“ измерва колко време е необходимо на страницата, за да реагира визуално след входящи данни от действие на потребител. [Научете повече за този показател](https://web.dev/inp/)."
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Показателят „Първо изобразяване на съдържание (FCP)“ указва след колко време се изобразява първият текстов или графичен елемент. [Научете повече за този показател](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Показателят „Първо значимо изобразяване“ измерва времето, за което основното съдържание на страницата става видимо. [Научете повече за този показател](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Показателят „Изобразяване след взаимодействие“ измерва колко време е необходимо на страницата, за да реагира визуално след входящи данни от действие на потребител. [Научете повече за този показател](https://web.dev/inp/)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Времето до интерактивност показва след колко време страницата става напълно интерактивна. [Научете повече за този показател](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Не използвайте пренасочвания през няколко страници"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "За да определите лимити за количеството и размера на ресурсите на страницата, добавете файл budget.json. [Научете повече за лимитите за показатели с въздействие върху ефективността](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 заявка • {byteCount, number, bytes} KiB}other{# заявки • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Поддържайте малък брой заявки и неголям обем на прехвърляните данни"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Каноничните връзки указват кой URL адрес да се показва в резултатите от търсенето. [Научете повече за каноничните връзки](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Началното време за реакция на сървъра бе кратко"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "Service worker е технологията, която дава възможност на приложението ви да използва много от функциите на прогресивните уеб приложения (PWA), като например работа офлайн, добавяне към началния екран и насочени известия. [Научете повече за service worker](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Тази страница е контролирана от service worker, но не бе намерен параметър `start_url`, тъй като при синтактичния анализ бе установено, че манифестът не е във валиден формат JSON"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Тази страница се контролира от файл service worker, но `start_url` ({startUrl}) не е в обхвата му ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Тази страница се контролира от service worker, но не бе намерен параметър `start_url`, тъй като не бе извлечен манифест."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Този източник има един или повече файлове service worker, но страницата ({pageUrl}) не е в обхвата им."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Няма регистриран service worker, който контролира страницата и `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Регистриран е service worker, който контролира страницата и `start_url`"
   },
   "core/audits/splash-screen.js | description": {
     "message": "Тематичният първоначален екран гарантира висококачествена практическа работа, когато потребителите стартират приложението ви от началния екран. [Научете повече за първоначалните екрани](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
@@ -1623,7 +1707,7 @@
     "message": "Най-добри практики"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Тези проверки открояват възможности за [подобряване на достъпността на уеб приложението ви](https://developer.chrome.com/docs/lighthouse/accessibility/). Само определени проблеми с достъпността могат да бъдат открити автоматично. Затова ръчното тестване също е препоръчително."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Тези проверки покриват области, които са извън обхвата на автоматичните инструменти за тестване. Научете повече в ръководството ни за [извършване на преглед на достъпността](https://web.dev/how-to-review/)."
@@ -2769,7 +2853,7 @@
     "message": "Инсталирайте [модул на Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search), който поддържа забавено зареждане на изображенията. Тези модули дават възможност за отлагане на зареждането на изображенията извън видимата част на екрана, за да се подобри ефективността."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Добре е да използвате модул за вграждане на важния CSS и JavaScript код или за потенциално асинхронно зареждане на активите чрез JavaScript, като например модула [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg). Имайте предвид, че оптимизациите, които той извършва, може да възпрепятстват работата на сайта ви, така че вероятно ще се наложи да промените кода."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Времето за реакция на сървъра зависи от спецификациите му, темите и модулите. Добре е да намерите по-оптимизирана тема, внимателно да изберете модул за оптимизиране и/или да надстроите сървъра си. Сървърите ви за хостинг трябва да използват функциите на PHP за кеширане на операционните кодове и кеширане в паметта чрез услуги като Redis или Memcached, за да се намали времето за подаване на заявки към базата от данни, както и оптимизирана логика за приложенията, така че страниците да се подготвят по-бързо."
@@ -2778,10 +2862,10 @@
     "message": "Бихте могли да използвате [стилове за адаптивни изображения](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8), за да намалите размера на графичните файлове, зареждани на страницата ви. Ако си служите с изгледи, за да показвате няколко елемента със съдържание на една страница, можете да внедрите функция за страниране, за да ограничите броя елементи, които да се извеждат на страница."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Трябва да активирате опцията Aggregate CSS files на страницата Administration » Configuration » Development. Можете също да конфигурирате по-разширени опции за агрегиране чрез [допълнителни модули](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search), за да подобрите скоростта на сайта си чрез обединяване, минимизиране и компресиране на CSS стиловете."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Трябва да активирате опцията Aggregate JavaScript files на страницата Administration » Configuration » Development. Можете също да конфигурирате по-разширени опции за агрегиране чрез [допълнителни модули](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search), за да подобрите скоростта на сайта си чрез обединяване, минимизиране и компресиране на JavaScript активите."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Бихте могли да премахнете неизползваните правила на CSS и да добавите само необходимите библиотеки на Drupal към съответната страница или компонент в нея. За подробности отворете връзката към [документацията на Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). За да откриете включените библиотеки, които добавят ненужен CSS код, стартирайте инструмента за [покритие на кода](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) в Chrome DevTools. Можете да намерите проблемните тема/модул в URL адреса на листа със стилове, когато агрегирането на CSS е деактивирано в сайта ви на Drupal. Търсете теми/модули с много листове със стилове в списъка, за които преобладава червеният цвят в диаграмата на инструмента. Даден лист със стилове трябва да бъде поставен в опашката на тема/модул само ако действително се използва в страницата."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Активирайте компресирането в Next.js сървъра си. [Научете повече](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Използвайте компонента `nuxt/image` и задайте `format=\"webp\"`. [Научете повече](https://image.nuxtjs.org/components/nuxt-img#format)."
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Използвайте инструмента за анализ в React DevTools, който използва съответното API, за да измерите ефективността на компонентите си при рендериране. [Научете повече](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Поставете видеоклиповете във `VideoBoxes`, персонализирайте ги чрез `Video Masks` или добавете `Transparent Videos`. [Научете повече](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Качете изображения чрез `Wix Media Manager`, за да се показват автоматично като WebP. Намерете [още начини за оптимизиране](https://support.wix.com/en/article/site-performance-optimizing-your-media) на мултимедийното съдържание на сайта си."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Когато [добавяте код на трета страна](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) в раздела „`Custom Code`“ на таблото за управление на сайта си, постарайте се зареждането му да бъде отложено или той да се зарежда в края на основния код. Където е възможно, използвайте [интеграциите](https://support.wix.com/en/article/about-marketing-integrations) на Wix, за да вградите маркетингови инструменти в сайта си. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix използва CDN и кеширане, за да изпраща отговори възможно най-бързо за повечето посетители. Помислете дали да не [активирате ръчно кеширането](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) на сайта си, особено ако използвате `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "В раздела „`Custom Code`“ на таблото за управление прегледайте кода на трети страни, който сте добавили към сайта, и запазете само услугите, които са необходими за сайта. [Научете повече](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Добре е да качите GIF файла си в услуга, която ще даде възможност да бъде вграден като видеоклип с HTML5."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Запазване като JSON"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Отваряне във визуализатора"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Стойностите са приблизителни и може да варират. [Рейтингът за ефективността се изчислява](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) директно от тези показатели."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Преглед на първоначалното трасиране"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Преглед на трасирането"

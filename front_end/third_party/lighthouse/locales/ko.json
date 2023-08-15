@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` 속성이 역할과 일치함"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "요소에 액세스 가능한 이름이 없는 경우 스크린 리더가 일반적인 이름으로 읽기 때문에 스크린 리더에 의존하는 사용자는 해당 요소를 사용할 수 없게 됩니다. [명령어 요소의 접근성을 높이는 방법 알아보기](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)"
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "`button`, `link` 및 `menuitem` 요소에 접근성을 위한 이름이 있음"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "액세스 가능한 이름이 없는 ARIA 대화상자 요소로 인해 스크린 리더 사용자가 이러한 요소의 용도를 파악하지 못할 수 있습니다. [ARIA 대화상자 요소의 접근성을 높이는 방법 알아보기](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "`role=\"dialog\"` 또는 `role=\"alertdialog\"`가 있는 요소에 액세스 가능한 이름이 없습니다."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "`role=\"dialog\"` 또는 `role=\"alertdialog\"`가 있는 요소에 액세스 가능한 이름이 있습니다."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "스크린 리더와 같은 보조 기술은 `aria-hidden=\"true\"`가 문서 `<body>`에 설정된 경우 일관성 없게 작동합니다. [`aria-hidden`이 문서 본문에 미치는 영향 알아보기](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)"
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]` 값이 유효함"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "마크업으로 분할된 텍스트 노드 주위에 `role=text`를 추가하면 VoiceOver가 이를 하나의 구문으로 취급할 수 있지만, 요소의 포커스 가능한 하위 요소는 표시되지 않습니다. [`role=text` 속성에 관해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/aria-text)"
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "`role=text` 속성이 있는 요소에 포커스 가능한 하위 요소가 있습니다."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "`role=text` 속성이 있는 요소에는 포커스 가능한 하위 요소가 없습니다."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "전환 버튼 입력란에 액세스 가능한 이름이 없는 경우 스크린 리더가 일반적인 이름으로 읽기 때문에 스크린 리더에 의존하는 사용자는 해당 입력란을 사용할 수 없게 됩니다. [전환 버튼 입력란에 관해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)"
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "중복되는 ARIA ID가 없음"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "콘텐츠가 없는 제목이나 액세스 불가한 텍스트를 포함하는 제목이 있는 경우 스크린 리더 사용자가 페이지 구조의 정보를 얻는 데 어려움을 겪습니다. [제목에 관해 자세히 알아보세요](https://dequeuniversity.com/rules/axe/4.7/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "제목 요소에 콘텐츠가 포함되어 있지 않습니다."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "모든 제목 요소에 콘텐츠가 포함되어 있습니다."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "라벨이 여러 개인 양식 입력란은 첫 번째, 마지막 또는 모든 라벨을 사용하는 스크린 리더와 같은 보조 기술에서 잘못 읽을 수 있습니다. [양식 라벨 사용 방법 알아보기](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)"
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "`<html>` 요소에는 `[lang]` 속성과 동일한 기본 언어를 사용하는 `[xml:lang]` 속성이 있습니다."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "도착 페이지가 동일한 링크에는 동일한 설명을 제공하여 사용자가 링크의 목적을 이해하고 링크 사용 여부를 결정할 수 있도록 해야 합니다. [동일한 링크에 관해 자세히 알아보세요](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "동일한 링크의 목적이 동일하지 않습니다."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "동일한 링크의 목적이 동일합니다."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "정보 요소는 짧아야 하며 설명을 제공하는 대체 텍스트를 목표로 해야 합니다. 장식 요소는 Alt 속성이 비어 있는 경우 무시될 수 있습니다. [`alt` 속성에 관해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "이미지 요소에 `[alt]` 속성이 있음"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "입력 버튼에 식별 가능하고 액세스 가능한 텍스트를 추가하면 스크린 리더 사용자가 입력 버튼의 목적을 이해하는 데 도움이 될 수 있습니다. [입력 버튼에 관해 자세히 알아보세요](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "`<input type=\"image\">` 요소에 `[alt]` 텍스트가 있음"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "라벨을 사용하면 스크린 리더와 같은 보조 기술에서 양식 컨트롤을 올바르게 읽을 수 있습니다. [양식 요소 라벨에 관해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/label)"
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "양식 요소에 관련 라벨이 포함되어 있습니다"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "주요 랜드마크가 하나 있으면 스크린 리더 사용자가 웹페이지를 탐색하는 데 도움이 됩니다. [랜드마크에 관해 자세히 알아보세요](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "문서에 주요 랜드마크가 없습니다."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "문서에 주요 랜드마크가 있습니다."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "많은 사용자가 저대비 텍스트를 읽는 데 어려움을 겪거나 전혀 읽지 못합니다. 눈에 잘 띄는 링크 텍스트는 시력이 낮은 사용자의 사용 경험을 개선합니다. [링크가 눈에 잘 띄게 만드는 방법을 알아보세요](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "색상에 의존하여 링크를 구분할 수 있습니다."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "색상에 의존하지 않고 링크를 구분할 수 있습니다."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "인식하기 쉽고, 고유하고, 초점을 맞추기 쉬운 링크 텍스트(및 이미지가 링크로 사용되는 경우 이미지의 대체 텍스트)를 사용하면 스크린 리더 사용자의 탐색 환경을 개선할 수 있습니다. [링크 접근성을 높이는 방법 알아보기](https://dequeuniversity.com/rules/axe/4.7/link-name)"
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "`<object>` 요소에 대체 텍스트가 있음"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "효과적인 라벨이 없는 양식 요소로 인해 스크린 리더 사용자가 불편을 겪을 수 있습니다. [`select` 요소에 관해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/select-name)"
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "선택 요소에 연결된 라벨 요소가 없습니다."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "선택 요소에 연결된 라벨 요소가 있습니다."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "0보다 큰 값은 명시적인 탐색 순서를 나타냅니다. 기술적으로는 유효하나 보조 기술에 의존하는 사용자에게 불편한 환경이 생기는 경우가 많습니다. [`tabindex` 속성에 관해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "`[tabindex]` 값이 0보다 큰 요소가 없음"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "스크린 리더에는 표를 좀 더 쉽게 탐색하는 기능이 있습니다. 표에서 `[colspan]` 속성이 있는 셀 대신 실제 자막 요소를 사용하면 스크린 리더 사용자 환경을 개선할 수 있습니다. [자막에 관해 자세히 알아보세요](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "표에서 자막을 나타내기 위해 `[colspan]` 속성이 있는 셀 대신 `<caption>`을(를) 사용합니다."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "터치 영역의 크기 또는 간격이 충분하지 않습니다."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "터치 영역의 크기와 간격이 충분합니다."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "스크린 리더에는 표를 좀 더 쉽게 탐색하는 기능이 있습니다. 큰 표(너비와 높이의 셀이 3개 이상)의 `<td>` 요소에 표 헤더가 연결되어 있는지 확인하면 스크린 리더 사용자의 환경을 개선할 수 있습니다. [표 헤더에 관해 자세히 알아보세요](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "페이지에 매니페스트 <link> URL이 없습니다."
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "일치하는 서비스 워커가 감지되지 않았습니다. 페이지를 새로고침하거나 현재 페이지에 관한 서비스 워커의 범위가 범위와 매니페스트의 시작 URL을 포괄하는지 확인하세요."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "매니페스트에 'start_url' 필드가 없는 서비스 워크를 확인할 수 없습니다."
   },
@@ -969,7 +1083,7 @@
     "message": "prefer_related_applications는 Android의 Chrome 베타 및 공개 버전 채널에서만 지원됩니다."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse에서 서비스 워커의 유무를 판단할 수 없습니다. 최신 버전의 Chrome을 사용해 시도해 보세요."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Android에서 지원되지 않는 매니페스트 URL 스키마({scheme})입니다."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "레이아웃 변경 횟수는 표시 영역 안에 보이는 요소의 이동을 측정합니다. [레이아웃 변경 횟수 측정항목에 관해 자세히 알아보기](https://web.dev/cls/)"
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Interaction to Next Paint(다음 페인트와의 상호작용)은 페이지 응답성, 즉 페이지가 사용자 입력에 시각적으로 반응하는 데 걸리는 시간을 측정합니다. [Interaction to Next Paint(다음 페인트와의 상호작용) 측정항목에 관해 자세히 알아보기](https://web.dev/inp/)"
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "콘텐츠가 포함된 첫 페인트는 첫 번째 텍스트 또는 이미지가 표시되는 시간을 나타냅니다. [콘텐츠가 포함된 첫 페인트 측정항목에 관해 자세히 알아보기](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "유의미한 첫 페인트는 페이지의 기본 콘텐츠가 표시되는 경우를 측정합니다. [유의미한 첫 페인트 측정항목에 관해 자세히 알아보기](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Interaction to Next Paint(다음 페인트와의 상호작용)은 페이지 응답성, 즉 페이지가 사용자 입력에 시각적으로 반응하는 데 걸리는 시간을 측정합니다. [Interaction to Next Paint(다음 페인트와의 상호작용) 측정항목에 관해 자세히 알아보기](https://web.dev/inp/)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "상호작용 시작 시간은 페이지와 완전히 상호작용할 수 있게 될 때까지 걸리는 시간입니다. [상호작용 시작 시간 측정항목에 관해 자세히 알아보기](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "여러 차례의 페이지 리디렉션 피하기"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "페이지 리소스의 수량과 크기와 관련해 예산을 설정하려면 budget.json 파일을 추가하세요. [성능 예산에 관해 자세히 알아보기](https://web.dev/use-lighthouse-for-performance-budgets/)"
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{요청 1개 • {byteCount, number, bytes}KiB}other{요청 #개 • {byteCount, number, bytes}KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "요청 수는 낮게, 전송 크기는 작게 유지하기"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "표준 링크는 검색결과에 어떤 URL을 표시할지 알려줍니다. [표준 링크에 관해 자세히 알아보기](https://developer.chrome.com/docs/lighthouse/seo/canonical/)"
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "초기 서버 응답 시간 짧음"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "서비스 워커는 앱에서 오프라인, 홈 화면에 추가, 푸시 알림 등 다양한 프로그레시브 웹 앱 기능을 사용할 수 있도록 설정하는 기술입니다. [서비스 워커에 관해 자세히 알아보기](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)"
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "이 페이지는 서비스 워커로 인해 제어되지만 매니페스트가 유효한 JSON으로 파싱하는 데 실패했으므로 `start_url`을(를) 찾지 못했습니다."
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "이 페이지는 서비스 워커로 인해 제어되지만 `start_url`({startUrl})이(가) 서비스 워커의 범위({scopeUrl})에 있지 않습니다."
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "이 페이지는 서비스 워커로 인해 제어되지만 가져온 매니페스트가 없으므로 `start_url`을(를) 찾지 못했습니다."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "이 원본에 하나 이상의 서비스 워커가 있지만 페이지({pageUrl})가 범위 내에 있지 않습니다."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "페이지와 `start_url`을(를) 제어하는 서비스 워커를 등록하지 않음"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "페이지와 `start_url`을(를) 제어하는 서비스 워커를 등록함"
   },
   "core/audits/splash-screen.js | description": {
     "message": "테마 스플래시 화면을 사용하면 사용자가 홈 화면에서 앱을 실행했을 때 고품질의 환경을 경험할 수 있습니다. [스플래시 화면에 관해 자세히 알아보기](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)"
@@ -1623,7 +1707,7 @@
     "message": "권장사항"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "이 검사에서는 [웹 앱의 접근성을 개선](https://developer.chrome.com/docs/lighthouse/accessibility/)하도록 추천된 사항을 강조합니다. 접근성 문제의 일부만 자동으로 감지되므로 직접 테스트하는 것도 좋습니다."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "자동화된 테스트 도구가 처리할 수 없는 영역을 다루는 항목입니다. [접근성 검토 실시](https://web.dev/how-to-review/)에 관한 가이드에서 자세히 알아보세요."
@@ -2769,7 +2853,7 @@
     "message": "이미지를 지연 로드할 수 있는 [Drupal 모듈](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search)을 설치하세요. 이러한 모듈은 오프스크린 이미지를 지연하여 성능을 개선해 줍니다."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "모듈을 사용하여 중요 CSS 및 자바스크립트를 인라인으로 표시해 보세요. 또는 [고급 CSS/JS 집계](https://www.drupal.org/project/advagg) 모듈과 같은 자바스크립트를 통해 애셋을 비동기식으로 로드할 수 있습니다. 이 모듈에서 제공하는 최적화로 인해 사용 중인 사이트가 제대로 작동하지 않을 수 있으므로 코드를 변경해야 할 가능성이 큽니다."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "테마, 모듈, 서버 사양은 모두 서버 응답 시간에 영향을 미칩니다. 더욱 최적화된 테마를 찾고, 최적화 모듈을 신중하게 선택하고, 서버를 업그레이드해 보세요. 호스팅 서버에서는 PHP opcode 캐싱 및 데이터베이스 쿼리 시간을 단축하기 위한 Redis나 Memcached 등의 메모리 캐싱을 사용하고, 페이지를 더 빠르게 준비하기 위해 최적화된 애플리케이션 로직을 사용해야 합니다."
@@ -2778,10 +2862,10 @@
     "message": "페이지에서 로드되는 이미지의 크기를 줄이려면 [반응형 이미지 스타일](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)을 사용해 보세요. 페이지에 여러 콘텐츠 항목을 표시하는 데 Views를 사용하고 있다면 페이지로 나누기를 구현하여 주어진 페이지에 표시되는 콘텐츠 항목의 수를 제한하는 것이 좋습니다."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "'Administration(관리) » Configuration(구성) » Development(개발)' 페이지에서 'Aggregate CSS files(CSS 파일 집계)'를 사용 설정했는지 확인합니다. [추가 모듈](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search)을 통해 고급 집계 옵션을 구성하면 CSS 스타일을 연결, 축소, 압축함으로써 사이트 속도를 높일 수 있습니다."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "'Administration(관리) » Configuration(구성) » Development(개발)' 페이지에서 'Aggregate JavaScript files(자바스크립트 파일 집계)'를 사용 설정했는지 확인합니다. [추가 모듈](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search)을 통해 고급 집계 옵션을 구성하면 자바스크립트 애셋을 연결, 축소, 압축함으로써 사이트 속도를 높일 수 있습니다."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "미사용 CSS 규칙을 삭제하는 방안을 고려하고, 관련 페이지 또는 페이지의 구성요소에 필요한 Drupal 라이브러리만 연결합니다. 자세한 정보는 [Drupal 문서 링크](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library)를 참고하세요. 연결된 라이브러리 중 불필요한 CSS를 추가하는 라이브러리를 확인하려면 Chrome DevTools의 [코드 범위](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)를 실행해 보세요. Drupal 사이트에서 CSS 집계가 사용 중지되어 있으면 스타일시트의 URL에서 원인이 되는 테마 또는 모듈을 확인할 수 있습니다. 목록에서 코드 범위에 빨간색이 많이 보이는 스타일시트가 여러 개 있는 테마 또는 모듈을 찾아보세요. 테마 또는 모듈은 페이지에서 실제 사용되는 스타일시트만 대기열에 포함해야 합니다."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Next.js 서버에서 압축 기능을 사용하세요. [자세히 알아보기](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "`nuxt/image` 구성요소를 사용해 `format=\"webp\"` 형식을 설정하세요. [자세히 알아보기](https://image.nuxtjs.org/components/nuxt-img#format)"
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Profiler API를 활용하는 React 개발자 도구 프로파일러를 사용하여 구성요소의 렌더링 성능을 측정합니다. [자세히 알아보기](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "`VideoBoxes`에 동영상을 배치하거나 `Video Masks`를 사용하여 맞춤설정하거나 `Transparent Videos`를 추가하세요. [자세히 알아보기](https://support.wix.com/en/article/wix-video-about-wix-video)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "WebP로 자동 제공되도록 `Wix Media Manager`를 사용하여 이미지를 업로드합니다. 사이트 미디어를 [최적화하는 다양한 방법](https://support.wix.com/en/article/site-performance-optimizing-your-media)을 알아보세요."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "사이트 대시보드의 `Custom Code` 탭에서 [서드 파티 코드를 추가](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site)할 때 코드가 지연되거나 코드 본문 끝에 로드되는지 확인합니다. 가능한 경우 Wix의 [통합](https://support.wix.com/en/article/about-marketing-integrations)을 사용하여 사이트에 마케팅 도구를 삽입합니다. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix는 CDN과 캐싱을 활용하여 대부분의 방문자에게 최대한 빠르게 응답을 제공합니다. 특히 `Velo`를 사용하는 경우 사이트에 [캐싱을 수동으로 사용 설정](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed)하는 것이 좋습니다."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "사이트 대시보드의 `Custom Code` 탭에서 사이트에 추가한 서드 파티 코드를 검토하고 사이트에 필요한 서비스만 유지합니다. [자세히 알아보세요](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "GIF를 HTML5 동영상으로 삽입할 수 있게 해 주는 서비스에 GIF를 업로드해 보세요."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "JSON으로 저장"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "뷰어에서 열기"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "값은 추정치이며 달라질 수 있습니다. 이러한 측정항목에서 [성능 점수가 직접 계산됩니다](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/)."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "출처 흔적 보기"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "흔적 보기"

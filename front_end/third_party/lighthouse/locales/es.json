@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Los atributos `[aria-*]` coinciden con sus funciones"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Si un elemento no tiene un nombre accesible, los lectores de pantalla lo leen diciendo un nombre genérico, lo que hace que el elemento no resulte útil a los usuarios que necesitan lectores de pantalla. [Consulta cómo hacer que los elementos de comando sean más accesibles](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)"
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Los elementos `button`, `link` y `menuitem` tienen nombres accesibles"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "Los elementos del cuadro de diálogo de ARIA sin nombres accesibles pueden impedir que los usuarios de lectores de pantalla distingan la finalidad de esos elementos. [Consulta cómo hacer que los elementos del cuadro de diálogo de ARIA sean más accesibles](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Los elementos con `role=\"dialog\"` o `role=\"alertdialog\"` no tienen nombres accesibles."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Los elementos con `role=\"dialog\"` o `role=\"alertdialog\"` tienen nombres accesibles."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Las tecnologías asistenciales, como los lectores de pantalla, funcionan de forma inestable cuando se establece `aria-hidden=\"true\"` en el documento `<body>`. [Consulta cómo afecta `aria-hidden` al cuerpo del documento](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)"
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "Los valores de `[role]` son válidos"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Añadir `role=text` alrededor de un nodo de texto dividido por etiquetas permite que VoiceOver lo trate como una sola frase, pero no se anunciarán los descendientes enfocables de ese elemento. [Obtén más información sobre el atributo `role=text`](https://dequeuniversity.com/rules/axe/4.7/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Los elementos con el atributo `role=text` tienen descendientes enfocables."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Los elementos con el atributo `role=text` no tienen descendientes enfocables."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "Si un campo de interruptor no tiene un nombre accesible, los lectores de pantalla lo leerán en voz alta con un nombre genérico, lo que hace que el campo no resulte útil a los usuarios que necesitan lectores de pantalla. [Más información sobre los campos de interruptores](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)"
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "Los ID de ARIA son únicos"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Un <heading> sin contenido o con texto inaccesible impide que los usuarios de lectores de pantalla accedan a la información de la estructura de la página. [Obtén más información sobre los <heading>](https://dequeuniversity.com/rules/axe/4.7/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Los elementos <heading> no incluyen contenido."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Todos los elementos <heading> incluyen contenido."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "Las tecnologías asistenciales, como los lectores de pantalla, pueden leer de forma confusa los campos de formulario que tienen varias etiquetas, ya que pueden usar la primera etiqueta, la última o todas. [Consulta cómo utilizar las etiquetas de formularios](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)"
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "El elemento `<html>` tiene un atributo `[xml:lang]` con el mismo idioma base que el atributo `[lang]`."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Los enlaces con el mismo destino deben tener la misma descripción para que los usuarios puedan entender su finalidad y decidir si quieren seguirlo. [Obtén más información sobre los enlaces idénticos](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Los enlaces idénticos no tienen la misma finalidad."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Los enlaces idénticos tienen la misma finalidad."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Los elementos informativos deberían incluir textos alternativos cortos y descriptivos. Los elementos decorativos se pueden omitir usando un atributo \"alt\" vacío. [Más información sobre el atributo `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Los elementos de imagen tienen atributos `[alt]`"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Añadir texto reconocible y accesible a los botones de entrada puede ayudar a los usuarios de lectores de pantalla a entender la finalidad de estos botones. [Más información sobre los botones de entrada](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "Los elementos `<input type=\"image\">` tienen texto `[alt]`"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "Las etiquetas facilitan que las tecnologías asistenciales, como los lectores de pantalla, puedan leer los controles de los formularios de forma correcta. [Más información sobre las etiquetas de elementos de formulario](https://dequeuniversity.com/rules/axe/4.7/label)"
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "Los elementos de formulario tienen etiquetas asociadas"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Los puntos de referencia principal ayudan a los usuarios de lectores de pantalla a desplazarse por una página web. [Obtén más información sobre los puntos de referencia](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "El documento no tiene un punto de referencia principal."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "El documento tiene un punto de referencia principal."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Los textos con poco contraste resultan difíciles o imposibles de leer para muchos usuarios. Usar textos de enlace que sean reconocibles mejora la experiencia para los usuarios con baja visión. [Obtén más información sobre cómo crear enlaces distinguibles](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Los enlaces se distinguen por el color."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Los enlaces se distinguen sin depender del color."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "Usar textos de enlace (y textos alternativos para las imágenes, si estas se usan como enlaces) que sean reconocibles, únicos y que se puedan seleccionar mejora la experiencia de navegación de los usuarios de lectores de pantalla. [Consulta cómo hacer que los enlaces sean accesibles](https://dequeuniversity.com/rules/axe/4.7/link-name)"
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "Los elementos `<object>` tienen texto alternativo"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Los elementos <form> sin <label> eficaz pueden causar experiencias frustrantes para los usuarios de lectores de pantalla. [Obtén más información sobre el elemento `select`](https://dequeuniversity.com/rules/axe/4.7/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Los elementos <select> no tienen elementos <label> asociados."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Los elementos <select> tienen elementos <label> asociados."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Si el valor es superior a 0, significa que el orden de navegación es explícito. Aunque técnicamente es válido, esto suele producir experiencias frustrantes para los usuarios que necesitan usar tecnologías asistenciales. [Más información sobre el atributo `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "No hay ningún elemento con un valor de `[tabindex]` superior a 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Los lectores de pantalla incluyen funciones para facilitar la navegación por las tablas. Si te aseguras de que las tablas usan el elemento de título correcto en lugar de celdas con el atributo `[colspan]`, es posible que mejore la experiencia de los usuarios de lectores de pantalla. [Más información sobre títulos](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "Las tablas usan `<caption>` en lugar de celdas con el atributo `[colspan]` para indicar un título."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Las áreas táctiles no tienen un tamaño o un espaciado suficientes."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Las áreas táctiles deben tener un tamaño y un espaciado suficientes."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "Los lectores de pantalla incluyen funciones para facilitar la navegación por las tablas. Si te aseguras de que los elementos `<td>` de una tabla grande (3 o más celdas de ancho y alto) tienen un encabezado de tabla asociado, es posible que mejore la experiencia de los usuarios de lectores de pantalla. [Más información sobre los encabezados de tabla](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "La página no tiene ninguna URL del archivo de manifiesto <link>"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "No se ha detectado ningún service worker que coincida. Es posible que tengas que volver a cargar la página, o comprueba que el alcance del service worker en la página actual incluya el alcance y la URL de inicio del archivo de manifiesto."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "No se ha podido comprobar el service worker porque no hay ningún campo \"start_url\" en el archivo de manifiesto"
   },
@@ -969,7 +1083,7 @@
     "message": "\"prefer_related_applications\" solo es compatible con Chrome Beta y con canales estables de Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse no ha podido determinar si había un service worker. Inténtalo con una versión más reciente de Chrome."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "El esquema de URL del archivo de manifiesto ({scheme}) no es compatible con Android."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Los cambios de diseño acumulados miden el movimiento de los elementos visibles dentro del viewport. [Más información sobre la métrica Cambios de diseño acumulados](https://web.dev/cls/)"
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Interacción con el siguiente renderizado mide la capacidad de respuesta de la página, es decir, el tiempo que tarda la página en responder de forma visible a la entrada del usuario. [Más información sobre la métrica Interacción con el siguiente renderizado](https://web.dev/inp/)"
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "El primer renderizado con contenido indica el momento en el que se renderiza el primer texto o la primera imagen. [Más información sobre la métrica Primer renderizado con contenido](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "El primer renderizado significativo mide el momento en que se muestra el contenido principal de la página. [Más información sobre la métrica Primer renderizado significativo](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Interacción con el siguiente renderizado mide la capacidad de respuesta de la página, es decir, el tiempo que tarda la página en responder de forma visible a la entrada del usuario. [Más información sobre la métrica Interacción con el siguiente renderizado](https://web.dev/inp/)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "La métrica Time to Interactive mide el tiempo que tarda una página en ser totalmente interactiva. [Más información sobre la métrica Time to Interactive](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Evita que haya varias redirecciones de página"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Para definir la cantidad y el tamaño de los recursos de la página, añade un archivo budget.json. [Más información sobre los límites de rendimiento](https://web.dev/use-lighthouse-for-performance-budgets/)"
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 solicitud • {byteCount, number, bytes} KiB}other{# solicitudes • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Reduce el número de solicitudes y el tamaño de las transferencias"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Los enlaces canónicos sugieren qué URL se debe mostrar en los resultados de búsqueda. [Más información sobre los enlaces canónicos](https://developer.chrome.com/docs/lighthouse/seo/canonical/)"
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "El tiempo de respuesta inicial del servidor fue breve"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "El service worker es la tecnología que te permite usar en tu aplicación las funciones de las aplicaciones web progresivas, como el modo sin conexión, poder añadirlas a la pantalla de inicio y las notificaciones push. [Más información sobre los service workers](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)"
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Un service worker controla esta página, pero no se ha encontrado ninguna propiedad `start_url` porque el archivo de manifiesto no es un JSON válido"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Un service worker controla esta página, pero la propiedad `start_url` ({startUrl}) está fuera del rango del service worker ({scopeUrl})."
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Un service worker controla esta página, pero no se ha encontrado la propiedad `start_url` porque no se ha recuperado ningún archivo de manifiesto."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Este origen tiene al menos un service worker, pero la página ({pageUrl}) no está dentro del rango."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "No registra un service worker que controle la página y la propiedad `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Hay un service worker que controla la página y la propiedad `start_url`"
   },
   "core/audits/splash-screen.js | description": {
     "message": "Una pantalla de inicio personalizada asegura una experiencia de calidad cuando los usuarios ejecuten tu aplicación desde sus pantallas de inicio. [Más información sobre las pantallas de inicio](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)"
@@ -1623,7 +1707,7 @@
     "message": "Prácticas recomendadas"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Estas comprobaciones incluyen consejos para [mejorar la accesibilidad de tu aplicación web](https://developer.chrome.com/docs/lighthouse/accessibility/). Solo se pueden detectar un subconjunto de problemas de accesibilidad de forma automática. Por eso, te recomendamos realizar pruebas manuales."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Estos elementos se ocupan de áreas que las herramientas de prueba automáticas no pueden analizar. Consulta más información sobre cómo [revisar la accesibilidad](https://web.dev/how-to-review/) en nuestra guía."
@@ -2769,7 +2853,7 @@
     "message": "Instala [un módulo de Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) que pueda cargar imágenes en diferido. Estos módulos proporcionan la capacidad de posponer las imágenes que no aparecen en pantalla para mejorar el rendimiento."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Considera utilizar un módulo para insertar CSS y JavaScript crítico, o cargar recursos de forma asíncrona mediante JavaScript, como el módulo [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg). Ten en cuenta que las optimizaciones que ofrece este módulo pueden hacer que tu sitio no funcione correctamente, por lo que es probable que tengas que hacer cambios en el código."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Los temas, los módulos y las especificaciones del servidor afectan al tiempo de respuesta. Considera buscar un tema más optimizado, seleccionar un módulo de optimización pertinente o actualizar tu servidor. Tus servidores de alojamiento deben utilizar almacenamiento en caché de opcode PHP y almacenamiento en caché de memoria para reducir los tiempos de consulta a la base de datos como Redis o Memcached, así como una lógica de aplicaciones optimizada para preparar más rápido las páginas."
@@ -2778,10 +2862,10 @@
     "message": "Considera utilizar [Estilos de imagen adaptable](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) para reducir el tamaño de las imágenes que se cargan en tu página. Si utilizas Vistas para mostrar varios elementos de contenido en una página, plantéate implementar la paginación para limitar el número de elementos de contenido que se muestran en una página determinada."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Comprueba que has habilitado \"Agregar archivos de CSS\" en la página Administración > Configuración > Desarrollo. También puedes configurar opciones más avanzadas de agregación mediante [módulos adicionales](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) que pueden concatenar, minificar y comprimir los estilos de CSS para acelerar tu sitio web."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Comprueba que has habilitado \"Agregar archivos de JavaScript\" en la página Administración > Configuración > Desarrollo. También puedes configurar opciones más avanzadas de agregación mediante [módulos adicionales](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) que pueden concatenar, minificar y comprimir los recursos de JavaScript para acelerar tu sitio web."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Considera eliminar las reglas de CSS no utilizadas y adjunta únicamente las bibliotecas de Drupal necesarias para la página o el componente relevantes de una página. Consulta el [enlace a la documentación de Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) para obtener información más detallada. Para identificar las bibliotecas adjuntas que añaden archivos CSS no pertinentes, ejecuta la [cobertura de código](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) en DevTools de Chrome. Puedes identificar el tema o módulo responsable en la URL de la hoja de estilos cuando la agregación de CSS está inhabilitada en tu sitio web de Drupal. Presta atención a los temas o módulos con varias hojas de estilo en la lista y con muchos elementos en rojo en la cobertura de código. Un tema o módulo solo debería poner en cola una hoja de estilos si esta se usa en la página."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Habilita la compresión en tu servidor Next.js. [Más información](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Usa el componente `nuxt/image` y establece `format=\"webp\"`. [Más información](https://image.nuxtjs.org/components/nuxt-img#format)"
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Usa DevTools Profiler de React, que utiliza la API del profiler, para medir el rendimiento de tus componentes al renderizar. [Más información](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Coloca vídeos dentro de `VideoBoxes`, personalízalos mediante `Video Masks` o añade `Transparent Videos`. [Obtén más información](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Sube imágenes mediante `Wix Media Manager` para asegurarte de que se publiquen automáticamente como WebP. Encuentra [más formas de optimizar](https://support.wix.com/en/article/site-performance-optimizing-your-media) el contenido multimedia de tu sitio."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Cuando [añadas código de terceros](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) en la pestaña `Custom Code` del panel de control de tu sitio, asegúrate de que se aplace o se cargue al final del cuerpo del código. Si es posible, usa las [integraciones](https://support.wix.com/en/article/about-marketing-integrations) de Wix para insertar herramientas de marketing en el sitio. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix usa CDNs y el almacenamiento en caché para publicar respuestas lo más rápido posible para la mayoría de los visitantes. Te recomendamos que [habilites manualmente el almacenamiento en caché](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) para tu sitio, sobre todo si usas `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Revisa el código de terceros que hayas añadido a tu sitio en la pestaña `Custom Code` del panel de control del sitio y mantén solo los servicios necesarios. [Obtén más información](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Considera subir tu GIF a un servicio que permita insertarlo como un vídeo HTML5."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Guardar como JSON"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Abrir en el visor"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Los valores son estimaciones y pueden variar. La [puntuación del rendimiento se calcula](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) directamente a partir de estas métricas."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Ver rastro original"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Ver rastro"

@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` பண்புக்கூறுகள் அவற்றின் பங்களிப்புகளுடன் பொருந்துகின்றன"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "ஓர் உறுப்புக்குத் தெளிவான பெயர் இல்லை எனில் ஸ்கிரீன் ரீடர்கள் பொதுவான பெயரைப் பயன்படுத்தி அதை அறிவிக்கும். ஸ்கிரீன் ரீடர்களைப் பயன்படுத்துபவர்களுக்கு இது உதவியாக இருக்காது. [கட்டளை உறுப்புகளை அதிகம் அணுகத்தக்கதாக மாற்றுவது எப்படி என அறிக](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "`button`, `link`, `menuitem` ஆகிய உறுப்புகளுக்குத் தெளிவான பெயர்கள் உள்ளன"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "ARIA உரையாடல் உறுப்புகளின் பெயர்கள் தெளிவாக இல்லை என்றால் ஸ்கிரீன் ரீடர் பயனர்கள் அவற்றின் நோக்கத்தைப் புரிந்துகொள்வது கடினம். [ARIA உரையாடல் உறுப்புகளை மேலும் தெளிவாக்குவது எப்படி என அறிக](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "`role=\"dialog\"` அல்லது `role=\"alertdialog\"` உள்ள உறுப்புகளுக்குத் தெளிவான பெயர்கள் இல்லை."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "`role=\"dialog\"` அல்லது `role=\"alertdialog\"` உள்ள உறுப்புகளுக்குத் தெளிவான பெயர்கள் உள்ளன."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "`<body>` ஆவணத்தில் `aria-hidden=\"true\"` அமைக்கப்பட்டிருக்கும்போது ஸ்கிரீன் ரீடர்கள் போன்ற உதவிகரமான தொழில்நுட்பங்கள் சீராக இயங்காது. [`aria-hidden` ஆவண அங்கத்தை எப்படிப் பாதிக்கிறது என அறிக](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]` செல்லுபடியாகும் மதிப்புகளைக் கொண்டுள்ளன"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "மார்க்-அப் மூலம் பிரிக்கப்பட்ட டெக்ஸ்ட் நோடில் `role=text` சேர்த்தால் வாய்ஸ் ஓவர் சேவை அதை ஒரே வாக்கியமாகக் கருதும், ஆனால் அந்தப் பகுதியில் இருக்கும் ஃபோகஸ் செய்யக்கூடிய டிசன்டென்ட்டுகள் அறிவிக்கப்படாது. [`role=text` பண்புக்கூறு குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "`role=text` பண்புக்கூறு உள்ள உறுப்புகளுக்கு ஃபோகஸ் செய்யக்கூடிய டிசன்டென்ட்டுகள் உள்ளன."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "`role=text` பண்புக்கூறு உள்ள உறுப்புகளில் ஃபோகஸ் செய்யக்கூடிய டிசன்டென்ட்டுகள் இல்லை."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "நிலைமாற்றுப் புலம் ஒன்றுக்குத் தெளிவான பெயர் இல்லை எனில் ஸ்கிரீன் ரீடர்கள் அதைப் பொதுவான பெயரைப் பயன்படுத்தி அறிவிக்கும். இது ஸ்கிரீன் ரீடர்களைப் பயன்படுத்தும் பயனர்களுக்கு உதவியாக இருக்காது. [நிலைமாற்றுப் புலங்கள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ARIA ஐடிகள் பிரத்தியேகமானவையாக உள்ளன"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "தலைப்பில் உள்ளடக்கம் இல்லை என்றாலோ புரியாத வார்த்தைகள் இருந்தாலோ ஸ்கிரீன் ரீடர் பயனர்கள் அந்த இணையப் பக்கத்தில் உள்ள தகவல்களை அணுகுவது கடினம். [தலைப்புகள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "தலைப்பு உறுப்புகளில் உள்ளடக்கம் இல்லை."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "தலைப்பு உறுப்புகள் அனைத்திலும் உள்ளடக்கம் உள்ளது."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "ஸ்கிரீன் ரீடர்கள் போன்ற உதவிகரமான தொழில்நுட்பங்கள் முதல் லேபிள், இறுதி லேபிள் அல்லது அனைத்து லேபிள்களையும் பயன்படுத்தும் என்பதால் படிவத்தில் பல லேபிள்கள் இருப்பது தெளிவற்ற அறிவிப்புகளுக்கு வழிவகுக்கலாம். [படிவ லேபிள்களைப் பயன்படுத்துவது எப்படி என அறிக](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "`[lang]` பண்புக்கூறில் உள்ள அதே அடிப்படை மொழிப் பண்புக்கூறை `<html>` உறுப்பில் உள்ள `[xml:lang]` பண்புக்கூறு கொண்டுள்ளது."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "இணைப்பின் நோக்கத்தைப் பயனர்கள் புரிந்துகொள்ளவும், அதைப் பின்பற்றுவதைக் குறித்துத் தீர்மானிக்கவும், ஒரே இலக்கைக் கொண்ட இணைப்புகளுக்கு விளக்கமும் ஒன்றாக இருக்க வேண்டும். [ஒரே மாதிரியான இணைப்புகள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "ஒரே மாதிரியான இணைப்புகளுக்கு ஒரே நோக்கம் இல்லை."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "ஒரே மாதிரியான இணைப்புகளுக்கு ஒரே நோக்கம் உள்ளது."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "தகவல் உறுப்புகளில் சுருக்கமான, விளக்கமான மாற்று வார்த்தைகள் இருக்க வேண்டும். அலங்கார உறுப்புகளில் காலியான மாற்றுப் பண்புக்கூறு இருக்கலாம். [`alt` பண்புக்கூறு குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "பட உறுப்புகள் `[alt]` பண்புக்கூறுகளைக் கொண்டுள்ளன"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "தெளிவான மற்றும் அணுகக்கூடிய வார்த்தைகளை உள்ளீட்டு பட்டன்களில் சேர்ப்பது ஸ்கிரீன் ரீடரைப் பயன்படுத்துபவர்களுக்கு அந்த பட்டனின் நோக்கத்தைப் புரிந்துகொள்ள உதவலாம். [உள்ளீட்டு பட்டன்கள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "`<input type=\"image\">` உறுப்புகளில் `[alt]` வார்த்தைகள் உள்ளன"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "ஸ்கிரீன் ரீடர்கள் போன்ற உதவிகரமான தொழில்நுட்பங்களால் சரியாக அறிவிக்கப்படும் வகையில் படிவக் கட்டுப்பாடுகள் இருப்பதை லேபிள்கள் உறுதிசெய்கின்றன. [படிவ உறுப்பு லேபிள்கள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/label)."
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "படிவ உறுப்புகளுக்கு, தொடர்புடைய லேபிள்கள் உள்ளன"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "ஒரு முக்கிய லேண்ட்மார்க் இருந்தால் ஸ்கிரீன் ரீடர் பயனர்கள் இணையப் பக்கத்தைக் கையாள உதவியாக இருக்கும். [லேண்ட்மார்க்குகள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "ஆவணத்தில் முக்கிய லேண்ட்மார்க் இல்லை."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "ஆவணத்தில் முக்கிய லேண்ட்மார்க் உள்ளது."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "பல பயனர்களால் குறைவான ஒளி மாறுபாடுள்ள வார்த்தைகளைப் படிக்க முடியாது அல்லது அவை படிக்கக் கடினமாக இருக்கும். தெளிவாக அடையாளம் காணக்கூடிய வார்த்தைகள் உள்ள இணைப்பு, பார்வைக் குறைபாடு உள்ள பயனர்களின் அனுபவத்தை மேம்படுத்தும். [அடையாளம் காணக்கூடிய வகையில் இணைப்புகளை மாற்றுவது எப்படி என அறிக](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "வண்ணங்களின் உதவி இல்லாமல் இணைப்புகளை அடையாளங்காண முடியாது."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "வண்ணங்களின் உதவி இல்லாமல் இணைப்புகளை அடையாளங்காணலாம்."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "தெளிவான, தனித்துவமான, மையப்படுத்தக்கூடிய இணைப்பு வார்த்தைகள் (மற்றும் இணைப்புகளாகப் பயன்படுத்தப்படும் படங்களுக்கான மாற்று வார்த்தைகள்) ஸ்கிரீன் ரீடர் பயனர்களுக்கான வழிகாட்டும் அனுபவத்தை மேம்படுத்தும். [இணைப்புகளின் தெளிவுத்தன்மையை அதிகப்படுத்துவது எப்படி என அறிக](https://dequeuniversity.com/rules/axe/4.7/link-name)."
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "`<object>` உறுப்புகளில் மாற்று வார்த்தைகள் உள்ளன"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "படிவத்திலுள்ள பகுதிகளின் லேபிள்கள் சரியாக இல்லாவிட்டால் ஸ்கிரீன் ரீடர் பயனர்களின் அனுபவம் மோசமாகிவிடக் கூடும். [`select` உறுப்பு குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "குறிப்பிட்ட உறுப்புகளில் தொடர்புடைய லேபிள் உறுப்புகள் இல்லை."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "குறிப்பிட்ட உறுப்புகளில் தொடர்புடைய லேபிள் உறுப்புகள் உள்ளன."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "0க்கு அதிகமான மதிப்பு வெளிப்படையான ஒரு வழிசெலுத்தல் வரிசை முறையைக் குறிப்பிடுகிறது. தொழில்நுட்பரீதியாகச் செல்லுபடியாகும் என்றாலும், உதவிகரமான தொழில்நுட்பங்களைச் சார்ந்திருக்கும் பயனர்களுக்கு இது பெரும்பாலும் குழப்பமான அனுபவத்தையே உருவாக்கும். [`tabindex` பண்புக்கூறு குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "எந்த உறுப்புக்கும் `[tabindex]` மதிப்பு 0க்கு அதிகமாக இல்லை"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "அட்டவணைகளில் எளிதாகச் செல்வதற்கு ஸ்கிரீன் ரீடர்களில் அம்சங்கள் உள்ளன. கலங்களுடன் இருக்கும் `[colspan]` பண்புக்கூறுக்குப் பதிலாக அசல் தலைப்பை அட்டவணைகள் பயன்படுத்துவதை உறுதிசெய்வது ஸ்கிரீன் ரீடரைப் பயன்படுத்துபவர்களின் அனுபவத்தை மேம்படுத்தலாம். [தலைப்புகள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "தலைப்பைக் குறிப்பிட கலங்களுடன் இருக்கும் `[colspan]` பண்புக்கூறுக்குப் பதிலாக `<caption>` ஐ அட்டவணைகள் பயன்படுத்தும்."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "டச் டார்கெட்டுகள் தெளிவான அளவில் சீரான இடைவெளிகளுடன் இல்லை."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "டச் டார்கெட்டுகள் தெளிவான அளவில் சீரான இடைவெளிகளுடன் உள்ளன."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "அட்டவணைகளில் எளிதாகச் செல்வதற்கு ஸ்கிரீன் ரீடர்களில் அம்சங்கள் உள்ளன. பெரிய அட்டவணையில் உள்ள (அகலம் மற்றும் உயரத்தில் 3 அல்லது அதற்கு மேற்பட்ட கலங்கள்) `<td>` உறுப்புகள் தொடர்புடைய அட்டவணைத் தலைப்பைக் கொண்டிருப்பதை உறுதிசெய்வது ஸ்கிரீன் ரீடரைப் பயன்படுத்தும் பயனர்களின் அனுபவத்தை மேம்படுத்தலாம். [அட்டவணைத் தலைப்புகள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "பக்கம் மெனிஃபெஸ்ட் <link> URLலைக் கொண்டிருக்கவில்லை"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "பொருந்தும் service worker எதுவும் கண்டறியப்படவில்லை. பக்கத்தை ரெஃப்ரெஷ் செய்ய வேண்டியிருக்கலாம் அல்லது தற்போதைய பக்கத்திற்கான service workerரின் நோக்கம் மெனிஃபெஸ்ட்டின் ஸ்கோப் மற்றும் ஸ்டார்ட் URLலைக் கொண்டுள்ளதா எனச் சரிபார்க்கவும்."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "மெனிஃபெஸ்ட்டில், 'start_url' இல்லாத service workerரைச் சரிபார்க்க முடியவில்லை"
   },
@@ -969,7 +1083,7 @@
     "message": "Chrome பீட்டாவிலும் Androidல் நிலையான சேனல்களிலும் மட்டுமே prefer_related_applications ஆதரிக்கப்படும்."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse கருவியால் service worker இருந்ததா என்பதைத் தீர்மானிக்க முடியவில்லை. Chromeமின் புதிய பதிப்பில் முயலவும்."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Androidல் மெனிஃபெஸ்ட் URL ஸ்கீம் ({scheme}) ஆதரிக்கப்படவில்லை."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "காட்சிப் பகுதிக்குள் தெரியக்கூடிய கூறுகளின் நகர்வை கியூமுலேட்டிவ் லேஅவுட் ஷிஃப்ட் அளவிடுகிறது. [கியூமுலேட்டிவ் லேஅவுட் ஷிஃப்ட் அளவீடு குறித்து மேலும் அறிக](https://web.dev/cls/)."
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "செயல்-காட்சி நேரம் என்பது பக்கத்தின் பதிலளிக்கும் தன்மையை அளவிடுகிறது, அதாவது பயனர் உள்ளீட்டிற்குப் பக்கத்தின் தெரிவுநிலை எந்த அளவிற்கு உள்ளது என்பதை அளவிடுவது. [செயல்-காட்சி நேர அளவீடு குறித்து மேலும் அறிக](https://web.dev/inp/)."
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "'உள்ளடக்கத்துடன் முதல் தோற்றம்' என்பது வார்த்தைகளோ படமோ முதலில் தோன்றும் நேரத்தைக் குறிக்கிறது. ['உள்ளடக்கத்துடன் முதல் தோற்றம்' அளவீடு குறித்து மேலும் அறிக](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "'பயனுள்ள முதல் தோற்றம்' என்பது பக்கத்தின் முதன்மை உள்ளடக்கம் எப்போது தெரிகிறது என்பதை அளவிடுகிறது. ['பயனுள்ள முதல் தோற்றம்' அளவீடு குறித்து மேலும் அறிக](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "செயல்-காட்சி நேரம் என்பது பக்கத்தின் பதிலளிக்கும் தன்மையை அளவிடுகிறது, அதாவது பயனர் உள்ளீட்டிற்குப் பக்கத்தின் தெரிவுநிலை எந்த அளவிற்கு உள்ளது என்பதை அளவிடுவது. [செயல்-காட்சி நேர அளவீடு குறித்து மேலும் அறிக](https://web.dev/inp/)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "பக்கம் முழுமையாகப் பங்கேற்கத்தக்க வகையில் ஏற்றப்பட எடுத்துக்கொள்ளும் நேரம் எதிர்வினை நேரம் எனப்படும். ['எதிர்வினை நேரம்' அளவீடு குறித்து மேலும் அறிக](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "பல பக்கங்களுக்குத் திசைதிருப்புவதைத் தவிர்க்கவும்"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "பக்க ஆதாரங்களின் அளவிற்கும் எண்ணிக்கைக்கும் பட்ஜெட்களை அமைக்க budget.json ஃபைலைச் சேர்க்கவும். [செயல்திறன் பட்ஜெட்கள் குறித்து மேலும் அறிக](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 கோரிக்கை • {byteCount, number, bytes} KiB}other{# கோரிக்கைகள் • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "கோரிக்கை எண்ணிக்கைகளைக் குறைவாகவும் பரிமாற்ற அளவுகளை சிறியதாகவும் வைத்திருங்கள்"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "தேடல் முடிவுகளில் எந்த URLலைக் காட்ட வேண்டும் என்பதை 'முன்னுரிமை இணைப்புகள்' பரிந்துரைக்கும். [முன்னுரிமை இணைப்புகள் குறித்து மேலும் அறிக](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "சேவையகப் பதிலளிப்புக்கான தொடக்க நேரம் குறைவானது"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "Service worker என்பது ஆஃப்லைனில் இயங்குதல், முகப்புத்திரையில் சேர்த்தல், புஷ் அறிவிப்புகள் போன்ற நவீன இணைய ஆப்ஸின் பல்வேறு அம்சங்களை உங்கள் ஆப்ஸ் பயன்படுத்த அனுமதிக்கும் தொழில்நுட்பமாகும். [Service Workerகள் குறித்து மேலும் அறிக](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "சேவைச் செயலாக்கி மூலம் இந்தப் பக்கம் கட்டுப்படுத்தப்படுகிறது, இருப்பினும் சரியான JSON ஆக மெனிஃபெஸ்ட்டைப் பாகுபடுத்த முடியாத காரணத்தால் `start_url` கண்டறியப்படவில்லை"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "இந்தப் பக்கம் சேவைச் செயலாக்கி மூலம் கட்டுப்படுத்தப்படுகிறது, இருப்பினும் `start_url` ({startUrl}) சேவைச் செயாலாக்கியின் நோக்கத்தில் ({scopeUrl}) இல்லை"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "இந்தப் பக்கம் சேவைச் செயலாக்கி மூலம் கட்டுப்படுத்தப்படுகிறது, இருப்பினும் மெனிஃபெஸ்ட் எதுவும் பெறப்படவில்லை என்பதால் `start_url` கண்டறியப்படவில்லை."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "இந்த இணையதளத்தில் ஒன்றோ அதற்கு மேற்பட்ட சேவைச் செயலாக்கிகளோ உள்ளன, இருப்பினும் இந்தப் பக்கம் ({pageUrl}) நோக்கத்தில் இல்லை."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "பக்கம், `start_url` போன்றவற்றைக் கட்டுப்படுத்துவதற்கான சேவைச் செயலாக்கி பதிவு செய்யப்படவில்லை"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "பக்கம், `start_url` போன்றவற்றைக் கட்டுப்படுத்தும் சேவைச் செயலாக்கியைப் பதிவுசெய்யும்."
   },
   "core/audits/splash-screen.js | description": {
     "message": "பயனர்கள் அவர்களது முகப்புத் திரைகளில் இருந்து உங்கள் ஆப்ஸைத் தொடங்கும்போது உயர்தரமான அனுபவத்தைப் பெறுவதை தீம் அமைக்கப்பட்ட ஸ்பிளாஷ் திரை உறுதிப்படுத்தும். [ஸ்பிளாஷ் திரைகள் குறித்து மேலும் அறிக](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
@@ -1623,7 +1707,7 @@
     "message": "சிறந்த நடைமுறைகள்"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "இந்த சரிபார்ப்புகள் [உங்கள் இணைய ஆப்ஸின் அணுகல்தன்மையை மேம்படுத்துவதற்கான](https://developer.chrome.com/docs/lighthouse/accessibility/) வாய்ப்புகளைத் தனிப்படுத்திக் காட்டுகின்றன. அணுகல்தன்மை சிக்கல்களில் சிலவற்றை மட்டுமே தானாகக் கண்டறிய முடியும் என்பதால் நேரடி பரிசோதனையையும் செய்ய ஊக்குவிக்கிறோம்."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "தானியங்கி சோதனைக் கருவியால் சோதிக்க முடியாத பகுதிகளை இவை சோதிக்கும். எங்கள் வழிகாட்டியில் [அணுகல்தன்மை மதிப்பாய்வை நடத்துவதைப்](https://web.dev/how-to-review/) பற்றி மேலும் தெரிந்துகொள்ளலாம்."
@@ -2769,7 +2853,7 @@
     "message": "படங்களைத் தேவையுள்ளபோது ஏற்றும் [Drupal மாடியூலை](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) நிறுவவும். செயல்திறனை மேம்படுத்துவதற்காக இந்த மாடியூல்கள் திரைக்கு வெளியில் உள்ள படங்களை மெதுவாக ஏற்றும் வசதியை வழங்குகின்றன."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "முக்கியமான CSS & JavaScriptடை முன்னிலைப்படுத்த, மாடியூலைப் பயன்படுத்தவும் அல்லது [மேம்பட்ட CSS/JS ஒருங்கிணைப்பு](https://www.drupal.org/project/advagg) மாடியூல் போன்ற JavaScript மூலம் ஒத்திசைவின்றி அசெட்டுகளை ஏற்றவும். இந்த மாடியூல் வழங்கும் மேம்படுத்துதல்கள் உங்கள் இணையதளத்தைப் பாதிக்கலாம் என்பதால் நீங்கள் குறியீட்டில் மாற்றங்களைச் செய்ய வேண்டியிருக்கும்."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "தீம்கள், மாடியூல்கள், சேவையக விவரக்குறிப்புகள் ஆகிய அனைத்தும் சேவையகத்தின் வேகத்தை நிர்ணயிக்கின்றன. மேலும் மேம்படுத்தப்பட்ட தீமினைக் கண்டறிந்து, மேம்படுத்தல் மாடியூலைக் கவனமாகத் தேர்ந்தெடுக்கவும் மற்றும்/அல்லது சேவையகத்தை மேம்படுத்தவும். PHP ஆப்கோட் தற்காலிகச் சேமிப்பு, Redis/Memcached போன்ற தரவுத்தள வினவல் நேரங்களைக் குறைப்பதற்கான தற்காலிக நினைவகச் சேமிப்பு, பக்கங்கள் விரைவாக ஏற்றப்படுவதற்கான மேம்பட்ட பயன்பாட்டு லாஜிக் ஆகியவற்றை உங்கள் ஹோஸ்டிங் சேவையகங்கள் பயன்படுத்த அனுமதிக்க வேண்டும்."
@@ -2778,10 +2862,10 @@
     "message": "உங்கள் பக்கத்தில் ஏற்றப்படும் படங்களின் அளவைக் குறைக்க [திரைக்கு ஏற்ப அளவு மாறும் பட ஸ்டைல்களைப்](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) பயன்படுத்தவும். பக்கத்தில் பல உள்ளடக்கத்தைக் காட்டுவதற்கு ’காட்சிகளைப்’ பயன்படுத்தினால் அந்தப் பக்கத்தில் காட்டப்படும் உள்ளடக்கத்தின் எண்ணிக்கையை வரம்பிட அதைப் பக்கங்களாகப் பிரிக்கவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "\"நிர்வாகம் » உள்ளமைவு » மேம்பாடு\" என்ற பக்கத்தில் “ஒருங்கிணைப்பு CSS கோப்புகளை” இயக்கியுள்ளதை உறுதிசெய்துகொள்ளவும். CSS ஸ்டைல்களை ஒன்றிணைத்தும் சிறிதாக்கியும் சுருக்கியும் உங்கள் தளத்தின் செயல்பாட்டை வேகப்படுத்த, [கூடுதல் மாடியூல்கள்](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) மூலமாகவும் மேலும் மேம்பட்ட ஒருங்கிணைப்பு விருப்பங்களை உள்ளமைக்கலாம்."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "\"நிர்வாகம் » உள்ளமைவு » மேம்பாடு\" என்ற பக்கத்தில் “JavaScript கோப்புகளை ஒருங்கிணை” என்பதை இயக்கியுள்ளதை உறுதிசெய்துகொள்ளவும். JavaScript அசெட்டுகளை ஒன்றிணைத்தும் சிறிதாக்கியும் சுருக்கியும் உங்கள் தளத்தின் செயல்பாட்டை வேகப்படுத்த, [கூடுதல் மாடியூல்கள்](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) மூலமாகவும் மேலும் மேம்பட்ட ஒருங்கிணைப்பு விருப்பங்களை உள்ளமைக்கலாம்."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "பயன்படுத்தப்படாத CSS விதிகளை அகற்றிவிட்டு தொடர்புடைய பக்கம்/பக்கத்தில் உள்ள காம்பனென்ட்டில் தேவையான Drupal லைப்ரரிகளை மட்டும் இணைக்கவும். விவரங்களுக்கு [Drupal ஆவணமாக்கல் இணைப்பைப்](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) பார்க்கவும். பொருத்தமற்ற CSSஸைச் சேர்க்கும் இணைக்கப்பட்ட லைப்ரரிகளை அடையாளம் காண, Chrome DevToolsஸில் [குறியீட்டுக் கவரேஜை](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) இயக்கிப் பார்க்கவும். Drupal தளத்தில் CSS ஒருங்கிணைப்பு முடக்கப்பட்டிருக்கும்போது ஸ்டைல்ஷீட்டின் URLலில் இதற்குக் காரணமான தீம்/மாடியூலைக் கண்டறியலாம். அதிகளவு சிவப்பில் உள்ள குறியீட்டுக் கவரேஜைக் கொண்ட பட்டியலில் பல ஸ்டைல்ஷீட்களைக் கொண்ட தீம்கள்/மாடியூல்களைக் கண்டறியவும். பக்கத்தில் பயன்படுத்தும் பட்சத்தில் ஒரு தீம்/மாடியூல் ஒரு ஸ்டைல்ஷீட்டை மட்டுமே வரிசையில் சேர்க்க வேண்டும்."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "உங்கள் Next.js சேவையகத்தில் சுருக்குதலை இயக்கவும். [மேலும் அறிக](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "`nuxt/image` காம்பனென்ட்டைப் பயன்படுத்தி, `format=\"webp\"` வடிவமைப்பை அமைக்கவும். [மேலும் அறிக](https://image.nuxtjs.org/components/nuxt-img#format)."
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "உங்கள் கூறுகளின் ரெண்டரிங் செயல்திறனை அளவிட Profiler APIயைப் பயன்படுத்தும் React DevTools Profilerரைப் பயன்படுத்தவும். [மேலும் அறிக.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "வீடியோக்களை `VideoBoxes` உள்ளே காட்டவும், `Video Masks` பயன்படுத்தி அவற்றைப் பிரத்தியேகமாக்கவும் அல்லது `Transparent Videos` சேர்க்கவும். [மேலும் அறிக](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "படங்களின் வகை WebP என்று தானாகவே வழங்கப்படுவதை உறுதிசெய்ய, அவற்றை `Wix Media Manager` பயன்படுத்திப் பதிவேற்றவும். உங்கள் தளத்தின் மீடியாவை [மேம்படுத்த கூடுதல் வழிகளைக்](https://support.wix.com/en/article/site-performance-optimizing-your-media) கண்டறியவும்."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "உங்கள் தளத்தின் டாஷ்போர்டில் உள்ள `Custom Code` பிரிவில் [மூன்றாம் தரப்புக் குறியீட்டைச் சேர்க்கும்போது](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site), குறியீட்டு உள்ளடக்கத்தின் முடிவில் அது ஒத்திவைக்கப்பட்டுள்ளதா அல்லது ஏற்றப்பட்டுள்ளதா என்பதை உறுதிசெய்துகொள்ளவும். உங்கள் தளத்தில் வாய்ப்புள்ள இடங்களில் எல்லாம் மார்க்கெட்டிங் கருவிகளை உட்பொதிக்க Wix [ஒருங்கிணைப்புகளைப்](https://support.wix.com/en/article/about-marketing-integrations) பயன்படுத்தவும். "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "அதிகளவிலான பார்வையாளர்களுக்கு முடிந்தவரை விரைவாகப் பதில்களை வழங்க, CDNகளையும் தற்காலிகச் சேமிப்பையும் Wix பயன்படுத்துகிறது. குறிப்பாக, `Velo` பயன்படுத்தினால் உங்கள் தளத்திற்கு [நீங்களே தற்காலிகச் சேமிப்பை இயக்குவதைப்](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) பரிந்துரைக்கிறோம்."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "உங்கள் தளத்தில் நீங்கள் சேர்த்துள்ள மூன்றாம் தரப்புக் குறியீடுகள் அனைத்தையும் உங்கள் தளத்தின் டாஷ்போர்டில் உள்ள `Custom Code` பிரிவில் சரிபார்த்து, உங்கள் தளத்திற்குத் தேவையான சேவைகளை மட்டுமே வைத்துக்கொள்ளவும். [மேலும் தெரிந்துகொள்ளுங்கள்](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "GIFஐ HTML5 வீடியோவாக உட்பொதிக்க உதவும் சேவையில் அதைப் பதிவேற்றவும்."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "JSONனாக சேமி"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "வியூவரில் திற"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "மதிப்புகள் தோராயமானவை, மாறுபடக்கூடியவை. இந்த அளவீடுகளிலிருந்து நேரடியாக [செயல்திறன் ஸ்கோர் கணக்கிடப்படும்](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/)."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "அசல் டிரேஸைக் காட்டு"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "டிரேஸைக் காட்டு"

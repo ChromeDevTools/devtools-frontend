@@ -170,14 +170,6 @@ const UIStrings = {
    */
   clearStorage: 'Clear storage',
   /**
-   * @description Text of checkbox to use the legacy Lighthouse navigation mode
-   */
-  legacyNavigation: 'Legacy navigation',
-  /**
-   * @description Tooltip text that appears when hovering over the 'Legacy navigation' checkbox in the settings pane opened by clicking the setting cog in the start view of the audits panel. "Navigation mode" is a Lighthouse mode that analyzes a page navigation.
-   */
-  useLegacyNavigation: 'Analyze the page using classic Lighthouse when in navigation mode.',
-  /**
    * @description Tooltip text of checkbox to reset storage features prior to running audits in
    * Lighthouse. Resetting the storage clears/empties it to a neutral state.
    */
@@ -397,7 +389,6 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
 
   getFlags(): {
     formFactor: (string|undefined),
-    legacyNavigation: boolean,
     mode: string,
   } {
     const flags = {};
@@ -406,7 +397,6 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     }
     return flags as {
       formFactor: (string | undefined),
-      legacyNavigation: boolean,
       mode: string,
     };
   }
@@ -455,16 +445,12 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     });
   }
 
-  private recordMetrics(flags: {mode: string, legacyNavigation: boolean}): void {
+  private recordMetrics(flags: {mode: string}): void {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseStarted);
 
     switch (flags.mode) {
       case 'navigation':
-        if (flags.legacyNavigation) {
-          Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.LegacyNavigation);
-        } else {
-          Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.Navigation);
-        }
+        Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.Navigation);
         break;
       case 'timespan':
         Host.userMetrics.lighthouseModeRun(Host.UserMetrics.LighthouseModeRun.Timespan);
@@ -766,17 +752,6 @@ export const RuntimeSettings: RuntimeSetting[] = [
     description: i18nLazyString(UIStrings.resetStorageLocalstorage),
     setFlags: (flags: Flags, value: string|boolean): void => {
       flags.disableStorageReset = !value;
-    },
-    options: undefined,
-    learnMore: undefined,
-  },
-  {
-    setting: Common.Settings.Settings.instance().createSetting(
-        'lighthouse.legacy_navigation', false, Common.Settings.SettingStorageType.Synced),
-    title: i18nLazyString(UIStrings.legacyNavigation),
-    description: i18nLazyString(UIStrings.useLegacyNavigation),
-    setFlags: (flags: Flags, value: string|boolean): void => {
-      flags.legacyNavigation = value;
     },
     options: undefined,
     learnMore: undefined,

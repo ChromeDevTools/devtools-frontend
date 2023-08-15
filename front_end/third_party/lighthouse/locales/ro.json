@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Atributele `[aria-*]` se potrivesc cu rolurile"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Când un element nu are un nume accesibil, cititoarele de ecran îl anunță cu o denumire generică, făcându-l inutil pentru utilizatorii care se bazează pe cititoarele de ecran. [Află cum să faci elementele de comandă mai accesibile](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Elementele `button`, `link` și `menuitem` au nume accesibile"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "Elementele de dialog ARIA fără nume accesibile pot împiedica utilizatorii cititoarelor de ecran să distingă scopul acestor elemente. [Află cum să faci elementele de dialog ARIA mai accesibile](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Elementele cu `role=\"dialog\"` sau `role=\"alertdialog\"` nu au nume accesibile."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Elementele cu `role=\"dialog\"` sau `role=\"alertdialog\"` au nume accesibile."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Tehnologiile de asistare, precum cititoarele de ecran, funcționează inconsecvent atunci când `aria-hidden=\"true\"` este setat pentru documentul `<body>`. [Află cum `aria-hidden` afectează corpul documentului](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "Valorile `[role]` sunt valide"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Dacă adaugi `role=text` în jurul unui nod de text împărțit folosind limbaj de markup, VoiceOver îl va trata ca pe o expresie, dar descendenții focalizabili ai elementului nu vor fi anunțați. [Află mai multe despre atributul `role=text`](https://dequeuniversity.com/rules/axe/4.7/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Elementele cu atributul `role=text` au descendenți focalizabili."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Elementele cu atributul `role=text` nu au descendenți focalizabili."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "Când un câmp de comutare nu are un nume accesibil, cititoarele de ecran îl anunță cu o denumire generică, făcându-l inutil pentru utilizatorii care se bazează pe cititoarele de ecran. [Află mai multe despre câmpurile de comutare](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ID-urile ARIA sunt unice"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Un titlu fără conținut sau textul inaccesibil împiedică utilizatorii cititoarelor de ecran să acceseze informații din structura paginii. [Află mai multe despre titluri](https://dequeuniversity.com/rules/axe/4.7/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Elementele titlului nu includ conținut."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Toate elementele titlului includ conținut."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "Câmpurile de formular cu etichete multiple pot fi anunțate în mod derutant de tehnologiile de asistare, precum cititoarele de ecran care folosesc prima, ultima sau toate etichetele. [Află cum să folosești etichetele de formular](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "Elementul `<html>` are un atribut `[xml:lang]` cu aceeași limbă de bază ca atributul `[lang]`."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Linkurile cu aceeași destinație trebuie să aibă aceeași descriere pentru a ajuta utilizatorii să înțeleagă scopul linkului și să decidă dacă îl accesează. [Află mai multe despre linkurile identice](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Linkurile identice nu au același scop."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Linkurile identice au același scop."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Elementele informative ar trebui să conțină texte alternative descriptive scurte. Elementele decorative pot fi ignorate cu un atribut Alt gol. [Află mai multe despre atributul `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Elementele imagine au atribute `[alt]`"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Adăugarea de text vizibil și accesibil la butoanele de introducere poate ajuta utilizatorii cititoarelor de ecran să înțeleagă scopul butonului de introducere. [Află mai multe despre butoanele de introducere](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "Elementele `<input type=\"image\">` au text `[alt]`"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "Etichetele asigură că opțiunile formularelor sunt anunțate corect de tehnologiile de asistare, precum cititoarele de ecran. [Află mai multe despre etichetele elementelor de formular](https://dequeuniversity.com/rules/axe/4.7/label)."
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "Elementele formularului au etichete asociate"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Reperul principal îi ajută pe utilizatorii cititoarelor de ecran să navigheze într-o pagină web. [Află mai multe despre repere](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Documentul nu are un reper principal."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Documentul are un reper principal."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Textul cu un contrast redus este dificil sau imposibil de citit pentru mulți utilizatori. Textul care se poate distinge îmbunătățește experiența utilizatorilor cu vedere slabă. [Află cum să creezi linkuri distincte](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Pentru a fi distincte, linkurile se bazează pe culoare."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Linkurile sunt distincte fără a se baza pe culoare."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "Textul linkurilor (și textul alternativ pentru imagini, când sunt folosite ca linkuri) care se poate distinge, unic și pe care se poate focaliza, îmbunătățește navigarea pentru utilizatorii de cititoare de ecran. [Află cum să creezi linkuri accesibile](https://dequeuniversity.com/rules/axe/4.7/link-name)."
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "Elementele `<object>` au text alternativ"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Elementele de formular fără etichete eficiente pot crea frustrări utilizatorilor cititoarelor de ecran. [Află mai multe despre elementul `select`](https://dequeuniversity.com/rules/axe/4.7/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Anumite elemente nu au elemente de etichetă asociate."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Anumite elemente au elemente de etichetă asociate."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "O valoare mai mare decât 0 implică o ordine explicită de navigare. Deși valid din punct de vedere tehnic, acest lucru creează adesea frustrări utilizatorilor care se bazează pe tehnologii de asistare. [Află mai multe despre atributul `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Niciun element nu are o valoare `[tabindex]` mai mare decât 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Cititoarele de ecran au funcții care facilitează navigarea în tabele. Dacă te asiguri că tabelele folosesc elementul de subtitrare în locul celulelor cu atributul `[colspan]`, experiența utilizatorilor de cititoare de ecran poate fi îmbunătățită. [Află mai multe despre subtitrări](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "Tabelele folosesc `<caption>` în locul celulelor cu atributul `[colspan]` pentru a indica o legendă."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Țintele de atins nu au o dimensiune sau o spațiere suficientă."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Țintele de atins au o dimensiune și o spațiere suficiente."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "Cititoarele de ecran au funcții care facilitează navigarea în tabele. Dacă te asiguri că elementele `<td>` dintr-un tabel mare (trei sau mai multe celule în lățime și înălțime) au un antet de tabel asociat, experiența poate fi îmbunătățită pentru utilizatorii cititoarelor de ecran. [Află mai multe despre antetele tabelelor](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "Pagina nu include adresa URL <link> a manifestului"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Nu s-a detectat niciun service worker care corespunde. Poate fi necesar să reîncarci pagina sau să verifici dacă aria de acoperire a service workerului pentru pagina actuală include aria de acoperire și adresa URL inițială din manifest."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Nu s-a putut verifica service workerul fără câmpul „start_url” în manifest"
   },
@@ -969,7 +1083,7 @@
     "message": "Proprietatea prefer_related_applications este acceptată numai în Chrome Beta și pe canale stabile de pe Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse nu a putut stabili dacă este vorba despre un service worker. Încearcă folosind o versiune mai nouă de Chrome."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Schema adresei URL a manifestului ({scheme}) nu este acceptată pe Android."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Cumulative Layout Shift măsoară deplasarea elementelor vizibile în aria vizibilă. [Află mai multe despre valoarea Cumulative Layout Shift](https://web.dev/cls/)."
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Interacțiunea cu următoarea reprezentare măsoară receptivitatea paginii, adică timpul necesar pentru ca pagina să răspundă în mod vizibil la comanda utilizatorului. [Află mai multe despre valoarea Interacțiunea cu următoarea reprezentare](https://web.dev/inp/)."
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "First Contentful Paint arată momentul când se redă primul text sau prima imagine. [Află mai multe despre valoarea First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "First Meaningful Paint arată momentul când este vizibil conținutul principal al unei pagini. [Află mai multe despre valoarea First Meaningful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Interacțiunea cu următoarea reprezentare măsoară receptivitatea paginii, adică timpul necesar pentru ca pagina să răspundă în mod vizibil la comanda utilizatorului. [Află mai multe despre valoarea Interacțiunea cu următoarea reprezentare](https://web.dev/inp/)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Time to Interactive este timpul necesar pentru ca pagina să devină complet interactivă. [Află mai multe despre valoarea Time to Interactive](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Evită mai multe redirecționări ale paginii"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Ca să setezi limitele pentru cantitatea și dimensiunea resurselor de pagină, adaugă un fișier budget.json. [Află mai multe despre limitele de funcționare](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{O solicitare • {byteCount, number, bytes} KiB}few{# solicitări • {byteCount, number, bytes} KiB}other{# de solicitări • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Păstrează numărul de solicitări scăzut și dimensiunea transferurilor redusă"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Linkurile canonice sugerează care adresă URL să se afișeze în rezultatele căutării. [Află mai multe despre linkurile canonice](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Durata inițială de răspuns de la server a fost scurtă"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "Service worker este tehnologia care îi permite aplicației să folosească mai multe funcții de aplicații web progresive, cum ar fi cele offline, adăugarea în ecranul de pornire și notificările push. [Află mai multe despre elementele service worker](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Pagina este controlată de un service worker, dar nu s-a găsit niciun `start_url`, deoarece manifestul nu s-a putut analiza ca un JSON valid"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Pagina este controlată de un service worker, dar `start_url` ({startUrl}) nu este în aria de acoperire a acestuia ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Pagina este controlată de un service worker, dar nu s-a găsit un `start_url`, deoarece nu s-a preluat niciun manifest."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Această origine are unul sau mai multe elemente service worker, însă pagina ({pageUrl}) nu este în aria de acoperire."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Nu înregistrează un service worker care să controleze pagina și `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Înregistrează un service worker care să controleze pagina și `start_url`"
   },
   "core/audits/splash-screen.js | description": {
     "message": "Un ecran de întâmpinare tematic asigură o experiență de calitate atunci când utilizatorii lansează aplicația din ecranele de pornire. [Află mai multe despre ecranele de întâmpinare](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
@@ -1623,7 +1707,7 @@
     "message": "Cele mai bune practici"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Aceste verificări evidențiază oportunitățile pentru a [îmbunătăți accesibilitatea aplicației web](https://developer.chrome.com/docs/lighthouse/accessibility/). Doar un subset de probleme de accesibilitate pot fi detectate automat, astfel încât se recomandă și testarea manuală."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Aceste elemente se adresează zonelor pe care un instrument de testare automată nu le poate acoperi. Află mai multe din ghidul nostru despre [realizarea unei evaluări a accesibilității](https://web.dev/how-to-review/)."
@@ -2769,7 +2853,7 @@
     "message": "Instalează [un modul Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) care poate încărca lent imagini. Aceste module oferă opțiunea de a amâna imaginile din afara ecranului pentru a îmbunătăți performanța."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Îți recomandăm să folosești un modul pentru a activa inline elementele CSS și JavaScript critice sau să încarci în mod asincron elemente prin JavaScript, de exemplu, modulul [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg). Atenție, optimizările oferite de acest modul pot să întrerupă site-ul, astfel că probabil va trebui să modifici codul."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Temele, modulele și specificațiile serverului contribuie toate la timpul de răspuns al serverului. Îți recomandăm să găsești o temă mai optimizată, selectând cu atenție un modul de optimizare și/sau făcând upgrade la server. Serverele de găzduire ar trebui să folosească stocarea în memoria cache opcode a codului PHP pentru a reduce duratele de interogare a bazei de date, de exemplu, Redis sau Memcached, precum și logica optimizată a aplicației pentru a pregăti paginile mai rapid."
@@ -2778,10 +2862,10 @@
     "message": "Îți recomandăm să folosești [Stilurile de imagini adaptabile](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) pentru a reduce dimensiunea imaginilor încărcate în pagină. Dacă folosești Views pentru a afișa mai multe elemente de conținut într-o pagină, îți recomandăm să implementezi paginarea pentru a limita numărul elementelor de conținut afișate într-o anumită pagină."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Activează opțiunea „Aggregate CSS files” (Agregă fișierele CSS) în pagina „Administration » Configuration » Development” (Administrare » Configurare » Dezvoltare). Poți să configurezi și opțiuni de agregare mai avansate folosind [module suplimentare](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search), ca să accelerezi site-ul prin concatenarea, minimizarea și comprimarea stilurilor CSS."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Activează opțiunea „Aggregate JavaScript files” (Agregă fișierele JavaScript) în pagina „Administration » Configuration » Development” (Administrare » Configurare » Dezvoltare). Poți să configurezi și opțiuni de agregare mai avansate folosind [module suplimentare](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search), ca să accelerezi site-ul prin concatenarea, minimizarea și comprimarea elementelor JavaScript."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Îți recomandăm să elimini regulile CSS nefolosite și să atașezi numai bibliotecile Drupal necesare la pagina sau componenta relevantă dintr-o pagină. Accesează [linkul spre documentația Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) pentru detalii. Ca să identifici bibliotecile atașate care adaugă conținut CSS neesențial, rulează [acoperirea codului](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) în Chrome DevTools. Poți identifica tema/modulul responsabil din adresa URL a foii de stil dacă dezactivezi agregarea CSS pe site-ul Drupal. Caută teme/module care au multe foi de stil în listă cu mult roșu în bara acoperirii codului. O temă/un modul ar trebui să pună în coadă o foaie de stil numai dacă este într-adevăr folosită în pagină."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Activează comprimarea pe serverul Next.js. [Află mai multe](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Folosește componenta `nuxt/image` și setează `format=\"webp\"`. [Află mai multe](https://image.nuxtjs.org/components/nuxt-img#format)."
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Folosește React DevTools Profiler, care beneficiază de API-ul Profiler pentru a măsura performanța de redare a componentelor. [Află mai multe.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Plasează videoclipuri în `VideoBoxes`, personalizează-le folosind `Video Masks` sau adaugă `Transparent Videos`. [Află mai multe](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Încarcă imagini folosind `Wix Media Manager` pentru a te asigura că sunt difuzate automat ca WebP. Găsește [mai multe modalități de optimizare](https://support.wix.com/en/article/site-performance-optimizing-your-media) a conținutului media din site."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Când [adaugi un cod terță parte](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) în fila `Custom Code` din tabloul de bord al site-ului, asigură-te că acesta este amânat sau încărcat la sfârșitul corpului codului. Dacă este posibil, folosește [integrările](https://support.wix.com/en/article/about-marketing-integrations) Wix pentru a încorpora instrumente de marketing în site. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix folosește CDN-uri și stocarea în memoria cache pentru a oferi cât mai rapid răspunsuri pentru majoritatea vizitatorilor. Îți recomandăm să [activezi manual stocarea în memoria cache](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) pentru site, mai ales dacă folosești `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Examinează codul terță parte pe care l-ai adăugat în site în fila `Custom Code` din tabloul de bord al site-ului și păstrează numai serviciile necesare pentru site. [Află mai multe](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Îți recomandăm să încarci GIF-ul într-un serviciu care îl va pune la dispoziție pentru încorporare ca videoclip HTML5."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Salvează ca JSON"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Deschide în vizualizator"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Valorile sunt estimate și pot varia. [Scorul de performanță este calculat](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) direct folosind aceste valori."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Vezi urma inițială"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Vezi urma"

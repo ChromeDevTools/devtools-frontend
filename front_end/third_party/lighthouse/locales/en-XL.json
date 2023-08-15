@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` ât́t̂ŕîb́ût́êś m̂át̂ćĥ t́ĥéîŕ r̂ól̂éŝ"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ÂŔÎÁ `role`ŝ én̂áb̂ĺê áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝíêś t̂ó k̂ńôẃ t̂h́ê ŕôĺê óf̂ éâćĥ él̂ém̂én̂t́ ôń t̂h́ê ẃêb́ p̂áĝé. Îf́ t̂h́ê `role` v́âĺûéŝ ár̂é m̂íŝśp̂él̂ĺêd́, n̂ót̂ éx̂íŝt́îńĝ ÁR̂ÍÂ `role` v́âĺûéŝ, ór̂ áb̂śt̂ŕâćt̂ ŕôĺêś, t̂h́êń t̂h́ê ṕûŕp̂óŝé ôf́ t̂h́ê él̂ém̂én̂t́ ŵíl̂ĺ n̂ót̂ b́ê ćôḿm̂ún̂íĉát̂éd̂ t́ô úŝér̂ś ôf́ âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ ÁR̂ÍÂ ŕôĺêś](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "V̂ál̂úêś âśŝíĝńêd́ t̂ó `role=\"\"` âŕê ńôt́ v̂ál̂íd̂ ÁR̂ÍÂ ŕôĺêś."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "V̂ál̂úêś âśŝíĝńêd́ t̂ó `role=\"\"` âŕê v́âĺîd́ ÂŔÎÁ r̂ól̂éŝ."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Ŵh́êń âń êĺêḿêńt̂ d́ôéŝń't̂ h́âv́ê án̂ áĉćêśŝíb̂ĺê ńâḿê, śĉŕêén̂ ŕêád̂ér̂ś âńn̂óûńĉé ît́ ŵít̂h́ â ǵêńêŕîć n̂ám̂é, m̂ák̂ín̂ǵ ît́ ûńûśâb́l̂é f̂ór̂ úŝér̂ś ŵh́ô ŕêĺŷ ón̂ śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ h́ôẃ t̂ó m̂ák̂é ĉóm̂ḿâńd̂ él̂ém̂én̂t́ŝ ḿôŕê áĉćêśŝíb̂ĺê](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
@@ -326,6 +335,15 @@
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Îḿâǵê él̂ém̂én̂t́ŝ h́âv́ê `[alt]` át̂t́r̂íb̂út̂éŝ"
   },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Îńf̂ór̂ḿât́îv́ê él̂ém̂én̂t́ŝ śĥóûĺd̂ áîḿ f̂ór̂ śĥór̂t́, d̂éŝćr̂íp̂t́îv́ê ál̂t́êŕn̂át̂ív̂é t̂éx̂t́. Âĺt̂ér̂ńât́îv́ê t́êx́t̂ t́ĥát̂ íŝ éx̂áĉt́l̂ý t̂h́ê śâḿê áŝ t́ĥé t̂éx̂t́ âd́ĵáĉén̂t́ t̂ó t̂h́ê ĺîńk̂ ór̂ ím̂áĝé îś p̂ót̂én̂t́îál̂ĺŷ ćôńf̂úŝín̂ǵ f̂ór̂ śĉŕêén̂ ŕêád̂ér̂ úŝér̂ś, b̂éĉáûśê t́ĥé t̂éx̂t́ ŵíl̂ĺ b̂é r̂éâd́ t̂ẃîćê. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé `alt` ât́t̂ŕîb́ût́ê](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Îḿâǵê él̂ém̂én̂t́ŝ h́âv́ê `[alt]` át̂t́r̂íb̂út̂éŝ t́ĥát̂ ár̂é r̂éd̂ún̂d́âńt̂ t́êx́t̂."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Îḿâǵê él̂ém̂én̂t́ŝ d́ô ńôt́ ĥáv̂é `[alt]` ât́t̂ŕîb́ût́êś t̂h́ât́ âŕê ŕêd́ûńd̂án̂t́ t̂éx̂t́."
+  },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Âd́d̂ín̂ǵ d̂íŝćêŕn̂áb̂ĺê án̂d́ âćĉéŝśîb́l̂é t̂éx̂t́ t̂ó îńp̂út̂ b́ût́t̂ón̂ś m̂áŷ h́êĺp̂ śĉŕêén̂ ŕêád̂ér̂ úŝér̂ś ûńd̂ér̂śt̂án̂d́ t̂h́ê ṕûŕp̂óŝé ôf́ t̂h́ê ín̂ṕût́ b̂út̂t́ôń. [L̂éâŕn̂ ḿôŕê áb̂óût́ îńp̂út̂ b́ût́t̂ón̂ś](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
   },
@@ -343,6 +361,15 @@
   },
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "`<input type=\"image\">` êĺêḿêńt̂ś ĥáv̂é `[alt]` t̂éx̂t́"
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "V̂íŝíb̂ĺê t́êx́t̂ ĺâb́êĺŝ t́ĥát̂ d́ô ńôt́ m̂át̂ćĥ t́ĥé âćĉéŝśîb́l̂é n̂ám̂é ĉán̂ ŕêśûĺt̂ ín̂ á ĉón̂f́ûśîńĝ éx̂ṕêŕîén̂ćê f́ôŕ ŝćr̂éêń r̂éâd́êŕ ûśêŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ áĉćêśŝíb̂ĺê ńâḿêś](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Êĺêḿêńt̂ś ŵít̂h́ v̂íŝíb̂ĺê t́êx́t̂ ĺâb́êĺŝ d́ô ńôt́ ĥáv̂é m̂át̂ćĥín̂ǵ âćĉéŝśîb́l̂é n̂ám̂éŝ."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Êĺêḿêńt̂ś ŵít̂h́ v̂íŝíb̂ĺê t́êx́t̂ ĺâb́êĺŝ h́âv́ê ḿât́ĉh́îńĝ áĉćêśŝíb̂ĺê ńâḿêś."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "L̂áb̂él̂ś êńŝúr̂é t̂h́ât́ f̂ór̂ḿ ĉón̂t́r̂ól̂ś âŕê án̂ńôún̂ćêd́ p̂ŕôṕêŕl̂ý b̂ý âśŝíŝt́îv́ê t́êćĥńôĺôǵîéŝ, ĺîḱê śĉŕêén̂ ŕêád̂ér̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ f̂ór̂ḿ êĺêḿêńt̂ ĺâb́êĺŝ](https://dequeuniversity.com/rules/axe/4.7/label)."
@@ -434,6 +461,15 @@
   "core/audits/accessibility/select-name.js | title": {
     "message": "Ŝél̂éĉt́ êĺêḿêńt̂ś ĥáv̂é âśŝóĉíât́êd́ l̂áb̂él̂ él̂ém̂én̂t́ŝ."
   },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Îńĉĺûd́îńĝ á ŝḱîṕ l̂ín̂ḱ ĉán̂ h́êĺp̂ úŝér̂ś ŝḱîṕ t̂ó t̂h́ê ḿâín̂ ćôńt̂én̂t́ t̂ó ŝáv̂é t̂ím̂é. [L̂éâŕn̂ ḿôŕê áb̂óût́ ŝḱîṕ l̂ín̂ḱŝ](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Ŝḱîṕ l̂ín̂ḱŝ ár̂é n̂ót̂ f́ôćûśâb́l̂é."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Ŝḱîṕ l̂ín̂ḱŝ ár̂é f̂óĉúŝáb̂ĺê."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Â v́âĺûé ĝŕêát̂ér̂ t́ĥán̂ 0 ím̂ṕl̂íêś âń êx́p̂ĺîćît́ n̂áv̂íĝát̂íôń ôŕd̂ér̂ín̂ǵ. Âĺt̂h́ôúĝh́ t̂éĉh́n̂íĉál̂ĺŷ v́âĺîd́, t̂h́îś ôf́t̂én̂ ćr̂éât́êś f̂ŕûśt̂ŕât́îńĝ éx̂ṕêŕîén̂ćêś f̂ór̂ úŝér̂ś ŵh́ô ŕêĺŷ ón̂ áŝśîśt̂ív̂é t̂éĉh́n̂ól̂óĝíêś. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê `tabindex` át̂t́r̂íb̂út̂é](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
@@ -442,6 +478,15 @@
   },
   "core/audits/accessibility/tabindex.js | title": {
     "message": "N̂ó êĺêḿêńt̂ h́âś â `[tabindex]` v́âĺûé ĝŕêát̂ér̂ t́ĥán̂ 0"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "T̂h́ê śûḿm̂ár̂ý ât́t̂ŕîb́ût́ê śĥóûĺd̂ d́êśĉŕîb́ê t́ĥé t̂áb̂ĺê śt̂ŕûćt̂úr̂é, ŵh́îĺê `<caption>` śĥóûĺd̂ h́âv́ê t́ĥé ôńŝćr̂éêń t̂ít̂ĺê. Áĉćûŕât́ê t́âb́l̂é m̂ár̂ḱ-ûṕ ĥél̂ṕŝ úŝér̂ś ôf́ ŝćr̂éêń r̂éâd́êŕŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ śûḿm̂ár̂ý âńd̂ ćâṕt̂íôń](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "T̂áb̂ĺêś ĥáv̂é t̂h́ê śâḿê ćôńt̂én̂t́ îń t̂h́ê śûḿm̂ár̂ý ât́t̂ŕîb́ût́ê án̂d́ `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "T̂áb̂ĺêś ĥáv̂é d̂íf̂f́êŕêńt̂ ćôńt̂én̂t́ îń t̂h́ê śûḿm̂ár̂ý ât́t̂ŕîb́ût́ê án̂d́ `<caption>`."
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Ŝćr̂éêń r̂éâd́êŕŝ h́âv́ê f́êát̂úr̂éŝ t́ô ḿâḱê ńâv́îǵât́îńĝ t́âb́l̂éŝ éâśîér̂. Én̂śûŕîńĝ t́ĥát̂ t́âb́l̂éŝ úŝé t̂h́ê áĉt́ûál̂ ćâṕt̂íôń êĺêḿêńt̂ ín̂śt̂éâd́ ôf́ ĉél̂ĺŝ ẃît́ĥ t́ĥé `[colspan]` ât́t̂ŕîb́ût́ê ḿâý îḿp̂ŕôv́ê t́ĥé êx́p̂ér̂íêńĉé f̂ór̂ śĉŕêén̂ ŕêád̂ér̂ úŝér̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ ĉáp̂t́îón̂ś](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
@@ -453,7 +498,7 @@
     "message": "T̂áb̂ĺêś ûśê `<caption>` ín̂śt̂éâd́ ôf́ ĉél̂ĺŝ ẃît́ĥ t́ĥé `[colspan]` ât́t̂ŕîb́ût́ê t́ô ín̂d́îćât́ê á ĉáp̂t́îón̂."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "T̂óûćĥ t́âŕĝét̂ś ŵít̂h́ ŝúf̂f́îćîén̂t́ ŝíẑé âńd̂ śp̂áĉín̂ǵ ĥél̂ṕ ûśêŕŝ ẃĥó m̂áŷ h́âv́ê d́îf́f̂íĉúl̂t́ŷ t́âŕĝét̂ín̂ǵ ŝḿâĺl̂ ćôńt̂ŕôĺŝ áĉt́îv́ât́ê t́ĥé t̂ár̂ǵêt́ŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ôúĉh́ t̂ár̂ǵêt́ŝ](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "T̂óûćĥ t́âŕĝét̂ś ŵít̂h́ ŝúf̂f́îćîén̂t́ ŝíẑé âńd̂ śp̂áĉín̂ǵ ĥél̂ṕ ûśêŕŝ ẃĥó m̂áŷ h́âv́ê d́îf́f̂íĉúl̂t́ŷ t́âŕĝét̂ín̂ǵ ŝḿâĺl̂ ćôńt̂ŕôĺŝ t́ô áĉt́îv́ât́ê t́ĥé t̂ár̂ǵêt́ŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ôúĉh́ t̂ár̂ǵêt́ŝ](https://dequeuniversity.com/rules/axe/4.7/target-size)."
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "T̂óûćĥ t́âŕĝét̂ś d̂ó n̂ót̂ h́âv́ê śûf́f̂íĉíêńt̂ śîźê ór̂ śp̂áĉín̂ǵ."
@@ -1010,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "P̂áĝé ĥáŝ ńô ḿâńîf́êśt̂ <ĺîńk̂> ÚR̂Ĺ"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "N̂ó m̂át̂ćĥín̂ǵ ŝér̂v́îćê ẃôŕk̂ér̂ d́êt́êćt̂éd̂. Ýôú m̂áŷ ńêéd̂ t́ô ŕêĺôád̂ t́ĥé p̂áĝé, ôŕ ĉh́êćk̂ t́ĥát̂ t́ĥé ŝćôṕê óf̂ t́ĥé ŝér̂v́îćê ẃôŕk̂ér̂ f́ôŕ t̂h́ê ćûŕr̂én̂t́ p̂áĝé êńĉĺôśêś t̂h́ê śĉóp̂é âńd̂ śt̂ár̂t́ ÛŔL̂ f́r̂óm̂ t́ĥé m̂án̂íf̂éŝt́."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Ĉóûĺd̂ ńôt́ ĉh́êćk̂ śêŕv̂íĉé ŵór̂ḱêŕ ŵít̂h́ôút̂ á 'ŝt́âŕt̂_úr̂ĺ' f̂íêĺd̂ ín̂ t́ĥé m̂án̂íf̂éŝt́"
   },
@@ -1041,7 +1083,7 @@
     "message": "p̂ŕêf́êŕ_r̂él̂át̂éd̂_áp̂ṕl̂íĉát̂íôńŝ íŝ ón̂ĺŷ śûṕp̂ór̂t́êd́ ôń Ĉh́r̂óm̂é B̂ét̂á âńd̂ Śt̂áb̂ĺê ćĥán̂ńêĺŝ ón̂ Án̂d́r̂óîd́."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "L̂íĝh́t̂h́ôúŝé ĉóûĺd̂ ńôt́ d̂ét̂ér̂ḿîńê íf̂ t́ĥér̂é ŵáŝ á ŝér̂v́îćê ẃôŕk̂ér̂. Ṕl̂éâśê t́r̂ý ŵít̂h́ â ńêẃêŕ v̂ér̂śîón̂ óf̂ Ćĥŕôḿê."
+    "message": "L̂íĝh́t̂h́ôúŝé ĉóûĺd̂ ńôt́ d̂ét̂ér̂ḿîńê íf̂ t́ĥé p̂áĝé îś îńŝt́âĺl̂áb̂ĺê. Ṕl̂éâśê t́r̂ý ŵít̂h́ â ńêẃêŕ v̂ér̂śîón̂ óf̂ Ćĥŕôḿê."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "T̂h́ê ḿâńîf́êśt̂ ÚR̂Ĺ ŝćĥém̂é ({scheme}) îś n̂ót̂ śûṕp̂ór̂t́êd́ ôń Âńd̂ŕôíd̂."
@@ -1184,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Ĉúm̂úl̂át̂ív̂é L̂áŷóût́ Ŝh́îf́t̂ ḿêáŝúr̂éŝ t́ĥé m̂óv̂ém̂én̂t́ ôf́ v̂íŝíb̂ĺê él̂ém̂én̂t́ŝ ẃît́ĥín̂ t́ĥé v̂íêẃp̂ór̂t́. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê Ćûḿûĺât́îv́ê Ĺâýôút̂ Śĥíf̂t́ m̂ét̂ŕîć](https://web.dev/cls/)."
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Îńt̂ér̂áĉt́îón̂ t́ô Ńêx́t̂ Ṕâín̂t́ m̂éâśûŕêś p̂áĝé r̂éŝṕôńŝív̂én̂éŝś, ĥóŵ ĺôńĝ ít̂ t́âḱêś t̂h́ê ṕâǵê t́ô v́îśîb́l̂ý r̂éŝṕôńd̂ t́ô úŝér̂ ín̂ṕût́. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê Ín̂t́êŕâćt̂íôń t̂ó N̂éx̂t́ P̂áîńt̂ ḿêt́r̂íĉ](https://web.dev/inp/)."
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "F̂ír̂śt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́ m̂ár̂ḱŝ t́ĥé t̂ím̂é ât́ ŵh́îćĥ t́ĥé f̂ír̂śt̂ t́êx́t̂ ór̂ ím̂áĝé îś p̂áîńt̂éd̂. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé F̂ír̂śt̂ Ćôńt̂én̂t́f̂úl̂ Ṕâín̂t́ m̂ét̂ŕîć](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "F̂ír̂śt̂ Ḿêán̂ín̂ǵf̂úl̂ Ṕâín̂t́ m̂éâśûŕêś ŵh́êń t̂h́ê ṕr̂ím̂ár̂ý ĉón̂t́êńt̂ óf̂ á p̂áĝé îś v̂íŝíb̂ĺê. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé F̂ír̂śt̂ Ḿêán̂ín̂ǵf̂úl̂ Ṕâín̂t́ m̂ét̂ŕîć](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Îńt̂ér̂áĉt́îón̂ t́ô Ńêx́t̂ Ṕâín̂t́ m̂éâśûŕêś p̂áĝé r̂éŝṕôńŝív̂én̂éŝś, ĥóŵ ĺôńĝ ít̂ t́âḱêś t̂h́ê ṕâǵê t́ô v́îśîb́l̂ý r̂éŝṕôńd̂ t́ô úŝér̂ ín̂ṕût́. [L̂éâŕn̂ ḿôŕê áb̂óût́ t̂h́ê Ín̂t́êŕâćt̂íôń t̂ó N̂éx̂t́ P̂áîńt̂ ḿêt́r̂íĉ](https://web.dev/inp/)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "T̂ím̂é t̂ó Îńt̂ér̂áĉt́îv́ê íŝ t́ĥé âḿôún̂t́ ôf́ t̂ím̂é ît́ t̂ák̂éŝ f́ôŕ t̂h́ê ṕâǵê t́ô b́êćôḿê f́ûĺl̂ý îńt̂ér̂áĉt́îv́ê. [Ĺêár̂ń m̂ór̂é âb́ôút̂ t́ĥé T̂ím̂é t̂ó Îńt̂ér̂áĉt́îv́ê ḿêt́r̂íĉ](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1285,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Âv́ôíd̂ ḿûĺt̂íp̂ĺê ṕâǵê ŕêd́îŕêćt̂ś"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "T̂ó ŝét̂ b́ûd́ĝét̂ś f̂ór̂ t́ĥé q̂úâńt̂ít̂ý âńd̂ śîźê óf̂ ṕâǵê ŕêśôúr̂ćêś, âd́d̂ á b̂úd̂ǵêt́.ĵśôń f̂íl̂é. [L̂éâŕn̂ ḿôŕê áb̂óût́ p̂ér̂f́ôŕm̂án̂ćê b́ûd́ĝét̂ś](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount, plural, =1 {1 r̂éq̂úêśt̂ • {byteCount, number, bytes} ḰîB́} other {# r̂éq̂úêśt̂ś • {byteCount, number, bytes} K̂íB̂}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "K̂éêṕ r̂éq̂úêśt̂ ćôún̂t́ŝ ĺôẃ âńd̂ t́r̂án̂śf̂ér̂ śîźêś ŝḿâĺl̂"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Ĉán̂ón̂íĉál̂ ĺîńk̂ś ŝúĝǵêśt̂ ẃĥíĉh́ ÛŔL̂ t́ô śĥóŵ ín̂ śêár̂ćĥ ŕêśûĺt̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ ĉán̂ón̂íĉál̂ ĺîńk̂ś](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1483,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Îńît́îál̂ śêŕv̂ér̂ ŕêśp̂ón̂śê t́îḿê ẃâś ŝh́ôŕt̂"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "T̂h́ê śêŕv̂íĉé ŵór̂ḱêŕ îś t̂h́ê t́êćĥńôĺôǵŷ t́ĥát̂ én̂áb̂ĺêś ŷóûŕ âṕp̂ t́ô úŝé m̂án̂ý P̂ŕôǵr̂éŝśîv́ê Ẃêb́ Âṕp̂ f́êát̂úr̂éŝ, śûćĥ áŝ óf̂f́l̂ín̂é, âd́d̂ t́ô h́ôḿêśĉŕêén̂, án̂d́ p̂úŝh́ n̂ót̂íf̂íĉát̂íôńŝ. [Ĺêár̂ń m̂ór̂é âb́ôút̂ Śêŕv̂íĉé Ŵór̂ḱêŕŝ](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "T̂h́îś p̂áĝé îś ĉón̂t́r̂ól̂ĺêd́ b̂ý â śêŕv̂íĉé ŵór̂ḱêŕ, ĥóŵév̂ér̂ ńô `start_url` ẃâś f̂óûńd̂ b́êćâúŝé m̂án̂íf̂éŝt́ f̂áîĺêd́ t̂ó p̂ár̂śê áŝ v́âĺîd́ ĴŚÔŃ"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "T̂h́îś p̂áĝé îś ĉón̂t́r̂ól̂ĺêd́ b̂ý â śêŕv̂íĉé ŵór̂ḱêŕ, ĥóŵév̂ér̂ t́ĥé `start_url` ({startUrl}) îś n̂ót̂ ín̂ t́ĥé ŝér̂v́îćê ẃôŕk̂ér̂'ś ŝćôṕê ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "T̂h́îś p̂áĝé îś ĉón̂t́r̂ól̂ĺêd́ b̂ý â śêŕv̂íĉé ŵór̂ḱêŕ, ĥóŵév̂ér̂ ńô `start_url` ẃâś f̂óûńd̂ b́êćâúŝé n̂ó m̂án̂íf̂éŝt́ ŵáŝ f́êt́ĉh́êd́."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "T̂h́îś ôŕîǵîń ĥáŝ ón̂é ôŕ m̂ór̂é ŝér̂v́îćê ẃôŕk̂ér̂ś, ĥóŵév̂ér̂ t́ĥé p̂áĝé ({pageUrl}) îś n̂ót̂ ín̂ śĉóp̂é."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "D̂óêś n̂ót̂ ŕêǵîśt̂ér̂ á ŝér̂v́îćê ẃôŕk̂ér̂ t́ĥát̂ ćôńt̂ŕôĺŝ ṕâǵê án̂d́ `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "R̂éĝíŝt́êŕŝ á ŝér̂v́îćê ẃôŕk̂ér̂ t́ĥát̂ ćôńt̂ŕôĺŝ ṕâǵê án̂d́ `start_url`"
   },
   "core/audits/splash-screen.js | description": {
     "message": "Â t́ĥém̂éd̂ śp̂ĺâśĥ śĉŕêén̂ én̂śûŕêś â h́îǵĥ-q́ûál̂ít̂ý êx́p̂ér̂íêńĉé ŵh́êń ûśêŕŝ ĺâún̂ćĥ ýôúr̂ áp̂ṕ f̂ŕôḿ t̂h́êír̂ h́ôḿêśĉŕêén̂ś. [L̂éâŕn̂ ḿôŕê áb̂óût́ ŝṕl̂áŝh́ ŝćr̂éêńŝ](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
@@ -1695,7 +1707,7 @@
     "message": "B̂éŝt́ p̂ŕâćt̂íĉéŝ"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "T̂h́êśê ćĥéĉḱŝ h́îǵĥĺîǵĥt́ ôṕp̂ór̂t́ûńît́îéŝ t́ô [ím̂ṕr̂óv̂é t̂h́ê áĉćêśŝíb̂íl̂ít̂ý ôf́ ŷóûŕ ŵéb̂ áp̂ṕ](https://developer.chrome.com/docs/lighthouse/accessibility/). Ôńl̂ý â śûb́ŝét̂ óf̂ áĉćêśŝíb̂íl̂ít̂ý îśŝúêś ĉán̂ b́ê áût́ôḿât́îćâĺl̂ý d̂ét̂éĉt́êd́ ŝó m̂án̂úâĺ t̂éŝt́îńĝ íŝ ál̂śô én̂ćôúr̂áĝéd̂."
+    "message": "T̂h́êśê ćĥéĉḱŝ h́îǵĥĺîǵĥt́ ôṕp̂ór̂t́ûńît́îéŝ t́ô [ím̂ṕr̂óv̂é t̂h́ê áĉćêśŝíb̂íl̂ít̂ý ôf́ ŷóûŕ ŵéb̂ áp̂ṕ](https://developer.chrome.com/docs/lighthouse/accessibility/). Âút̂óm̂át̂íĉ d́êt́êćt̂íôń ĉán̂ ón̂ĺŷ d́êt́êćt̂ á ŝúb̂śêt́ ôf́ îśŝúêś âńd̂ d́ôéŝ ńôt́ ĝúâŕâńt̂éê t́ĥé âćĉéŝśîb́îĺît́ŷ óf̂ ýôúr̂ ẃêb́ âṕp̂, śô [ḿâńûál̂ t́êśt̂ín̂ǵ](https://web.dev/how-to-review/) îś âĺŝó êńĉóûŕâǵêd́."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "T̂h́êśê ít̂ém̂ś âd́d̂ŕêśŝ ár̂éâś ŵh́îćĥ án̂ áût́ôḿât́êd́ t̂éŝt́îńĝ t́ôól̂ ćâńn̂ót̂ ćôv́êŕ. L̂éâŕn̂ ḿôŕê ín̂ óûŕ ĝúîd́ê ón̂ [ćôńd̂úĉt́îńĝ án̂ áĉćêśŝíb̂íl̂ít̂ý r̂év̂íêẃ](https://web.dev/how-to-review/)."
@@ -2841,7 +2853,7 @@
     "message": "Îńŝt́âĺl̂ [á D̂ŕûṕâĺ m̂ód̂úl̂é](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) t̂h́ât́ ĉán̂ ĺâźŷ ĺôád̂ ím̂áĝéŝ. Śûćĥ ḿôd́ûĺêś p̂ŕôv́îd́ê t́ĥé âb́îĺît́ŷ t́ô d́êf́êŕ âńŷ óf̂f́ŝćr̂éêń îḿâǵêś t̂ó îḿp̂ŕôv́ê ṕêŕf̂ór̂ḿâńĉé."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Ĉón̂śîd́êŕ ûśîńĝ á m̂ód̂úl̂é t̂ó îńl̂ín̂é ĉŕît́îćâĺ ĈŚŜ án̂d́ Ĵáv̂áŜćr̂íp̂t́, ôŕ p̂ót̂én̂t́îál̂ĺŷ ĺôád̂ áŝśêt́ŝ áŝýn̂ćĥŕôńôúŝĺŷ v́îá Ĵáv̂áŜćr̂íp̂t́ ŝúĉh́ âś t̂h́ê [Ád̂v́âńĉéd̂ ĆŜŚ/ĴŚ Âǵĝŕêǵât́îón̂](https://www.drupal.org/project/advagg) ḿôd́ûĺê. B́êẃâŕê t́ĥát̂ óp̂t́îḿîźât́îón̂ś p̂ŕôv́îd́êd́ b̂ý t̂h́îś m̂ód̂úl̂é m̂áŷ b́r̂éâḱ ŷóûŕ ŝít̂é, ŝó ŷóû ẃîĺl̂ ĺîḱêĺŷ ńêéd̂ t́ô ḿâḱê ćôd́ê ćĥán̂ǵêś."
+    "message": "Ĉón̂śîd́êŕ ûśîńĝ á m̂ód̂úl̂é t̂ó îńl̂ín̂é ĉŕît́îćâĺ ĈŚŜ án̂d́ Ĵáv̂áŜćr̂íp̂t́, âńd̂ úŝé t̂h́ê d́êf́êŕ ât́t̂ŕîb́ût́ê f́ôŕ n̂ón̂-ćr̂ít̂íĉál̂ ĆŜŚ ôŕ Ĵáv̂áŜćr̂íp̂t́."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "T̂h́êḿêś, m̂ód̂úl̂éŝ, án̂d́ ŝér̂v́êŕ ŝṕêćîf́îćât́îón̂ś âĺl̂ ćôńt̂ŕîb́ût́ê t́ô śêŕv̂ér̂ ŕêśp̂ón̂śê t́îḿê. Ćôńŝíd̂ér̂ f́îńd̂ín̂ǵ â ḿôŕê óp̂t́îḿîźêd́ t̂h́êḿê, ćâŕêf́ûĺl̂ý ŝél̂éĉt́îńĝ án̂ óp̂t́îḿîźât́îón̂ ḿôd́ûĺê, án̂d́/ôŕ ûṕĝŕâd́îńĝ ýôúr̂ śêŕv̂ér̂. Ýôúr̂ h́ôśt̂ín̂ǵ ŝér̂v́êŕŝ śĥóûĺd̂ ḿâḱê úŝé ôf́ P̂H́P̂ óp̂ćôd́ê ćâćĥín̂ǵ, m̂ém̂ór̂ý-ĉáĉh́îńĝ t́ô ŕêd́ûćê d́ât́âb́âśê q́ûér̂ý t̂ím̂éŝ śûćĥ áŝ Ŕêd́îś ôŕ M̂ém̂ćâćĥéd̂, áŝ ẃêĺl̂ áŝ óp̂t́îḿîźêd́ âṕp̂ĺîćât́îón̂ ĺôǵîć t̂ó p̂ŕêṕâŕê ṕâǵêś f̂áŝt́êŕ."
@@ -2850,10 +2862,10 @@
     "message": "Ĉón̂śîd́êŕ ûśîńĝ [Ŕêśp̂ón̂śîv́ê Ím̂áĝé Ŝt́ŷĺêś](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) t̂ó r̂éd̂úĉé t̂h́ê śîźê óf̂ ím̂áĝéŝ ĺôád̂éd̂ ón̂ ýôúr̂ ṕâǵê. Íf̂ ýôú âŕê úŝín̂ǵ V̂íêẃŝ t́ô śĥóŵ ḿûĺt̂íp̂ĺê ćôńt̂én̂t́ ît́êḿŝ ón̂ á p̂áĝé, ĉón̂śîd́êŕ îḿp̂ĺêḿêńt̂ín̂ǵ p̂áĝín̂át̂íôń t̂ó l̂ím̂ít̂ t́ĥé n̂úm̂b́êŕ ôf́ ĉón̂t́êńt̂ ít̂ém̂ś ŝh́ôẃn̂ ón̂ á ĝív̂én̂ ṕâǵê."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Êńŝúr̂é ŷóû h́âv́ê én̂áb̂ĺêd́ \"Âǵĝŕêǵât́ê ĆŜŚ f̂íl̂éŝ\" ín̂ t́ĥé \"Âd́m̂ín̂íŝt́r̂át̂íôń » Ĉón̂f́îǵûŕât́îón̂ » D́êv́êĺôṕm̂én̂t́\" p̂áĝé. Ŷóû ćâń âĺŝó ĉón̂f́îǵûŕê ḿôŕê ád̂v́âńĉéd̂ áĝǵr̂éĝát̂íôń ôṕt̂íôńŝ t́ĥŕôúĝh́ [âd́d̂ít̂íôńâĺ m̂ód̂úl̂éŝ](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) t́ô śp̂éêd́ ûṕ ŷóûŕ ŝít̂é b̂ý ĉón̂ćât́êńât́îńĝ, ḿîńîf́ŷín̂ǵ, âńd̂ ćôḿp̂ŕêśŝín̂ǵ ŷóûŕ ĈŚŜ śt̂ýl̂éŝ."
+    "message": "Êńŝúr̂é ŷóû h́âv́ê én̂áb̂ĺêd́ \"Âǵĝŕêǵât́ê ĆŜŚ f̂íl̂éŝ\" ín̂ t́ĥé \"Âd́m̂ín̂íŝt́r̂át̂íôń » Ĉón̂f́îǵûŕât́îón̂ » D́êv́êĺôṕm̂én̂t́\" p̂áĝé.  Êńŝúr̂é ŷóûŕ D̂ŕûṕâĺ ŝít̂é îś r̂ún̂ńîńĝ át̂ ĺêáŝt́ D̂ŕûṕâĺ 10.1 f̂ór̂ ím̂ṕr̂óv̂éd̂ áŝśêt́ âǵĝŕêǵât́îón̂ śûṕp̂ór̂t́."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Êńŝúr̂é ŷóû h́âv́ê én̂áb̂ĺêd́ \"Âǵĝŕêǵât́ê J́âv́âŚĉŕîṕt̂ f́îĺêś\" îń t̂h́ê \"Ád̂ḿîńîśt̂ŕât́îón̂ » Ćôńf̂íĝúr̂át̂íôń » D̂év̂él̂óp̂ḿêńt̂\" ṕâǵê. Ýôú ĉán̂ ál̂śô ćôńf̂íĝúr̂é m̂ór̂é âd́v̂án̂ćêd́ âǵĝŕêǵât́îón̂ óp̂t́îón̂ś t̂h́r̂óûǵĥ [ád̂d́ît́îón̂ál̂ ḿôd́ûĺêś](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) t̂ó ŝṕêéd̂ úp̂ ýôúr̂ śît́ê b́ŷ ćôńĉát̂én̂át̂ín̂ǵ, m̂ín̂íf̂ýîńĝ, án̂d́ ĉóm̂ṕr̂éŝśîńĝ ýôúr̂ J́âv́âŚĉŕîṕt̂ áŝśêt́ŝ."
+    "message": "Êńŝúr̂é ŷóû h́âv́ê én̂áb̂ĺêd́ \"Âǵĝŕêǵât́ê J́âv́âŚĉŕîṕt̂ f́îĺêś\" îń t̂h́ê \"Ád̂ḿîńîśt̂ŕât́îón̂ » Ćôńf̂íĝúr̂át̂íôń » D̂év̂él̂óp̂ḿêńt̂\" ṕâǵê.  Én̂śûŕê ýôúr̂ D́r̂úp̂ál̂ śît́ê íŝ ŕûńn̂ín̂ǵ ât́ l̂éâśt̂ D́r̂úp̂ál̂ 10.1 f́ôŕ îḿp̂ŕôv́êd́ âśŝét̂ áĝǵr̂éĝát̂íôń ŝúp̂ṕôŕt̂."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Ĉón̂śîd́êŕ r̂ém̂óv̂ín̂ǵ ûńûśêd́ ĈŚŜ ŕûĺêś âńd̂ ón̂ĺŷ át̂t́âćĥ t́ĥé n̂éêd́êd́ D̂ŕûṕâĺ l̂íb̂ŕâŕîéŝ t́ô t́ĥé r̂él̂év̂án̂t́ p̂áĝé ôŕ ĉóm̂ṕôńêńt̂ ín̂ á p̂áĝé. Ŝéê t́ĥé [D̂ŕûṕâĺ d̂óĉúm̂én̂t́ât́îón̂ ĺîńk̂](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) f́ôŕ d̂ét̂áîĺŝ. T́ô íd̂én̂t́îf́ŷ át̂t́âćĥéd̂ ĺîb́r̂ár̂íêś t̂h́ât́ âŕê ád̂d́îńĝ éx̂t́r̂án̂éôúŝ ĆŜŚ, t̂ŕŷ ŕûńn̂ín̂ǵ [ĉód̂é ĉóv̂ér̂áĝé](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) îń Ĉh́r̂óm̂é D̂év̂T́ôól̂ś. Ŷóû ćâń îd́êńt̂íf̂ý t̂h́ê t́ĥém̂é/m̂ód̂úl̂é r̂éŝṕôńŝíb̂ĺê f́r̂óm̂ t́ĥé ÛŔL̂ óf̂ t́ĥé ŝt́ŷĺêśĥéêt́ ŵh́êń ĈŚŜ áĝǵr̂éĝát̂íôń îś d̂íŝáb̂ĺêd́ îń ŷóûŕ D̂ŕûṕâĺ ŝít̂é. L̂óôḱ ôút̂ f́ôŕ t̂h́êḿêś/m̂ód̂úl̂éŝ t́ĥát̂ h́âv́ê ḿâńŷ śt̂ýl̂éŝh́êét̂ś îń t̂h́ê ĺîśt̂ ẃĥíĉh́ ĥáv̂é â ĺôt́ ôf́ r̂éd̂ ín̂ ćôd́ê ćôv́êŕâǵê. Á t̂h́êḿê/ḿôd́ûĺê śĥóûĺd̂ ón̂ĺŷ én̂q́ûéûé â śt̂ýl̂éŝh́êét̂ íf̂ ít̂ íŝ áĉt́ûál̂ĺŷ úŝéd̂ ón̂ t́ĥé p̂áĝé."
@@ -3052,6 +3064,48 @@
   },
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Êńâb́l̂é ĉóm̂ṕr̂éŝśîón̂ ón̂ ýôúr̂ Ńêx́t̂.j́ŝ śêŕv̂ér̂. [Ĺêár̂ń m̂ór̂é](https://nextjs.org/docs/api-reference/next.config.js/compression)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Ĉón̂t́âćt̂ ýôúr̂ áĉćôún̂t́ m̂án̂áĝér̂ t́ô én̂áb̂ĺê [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Ćôńf̂íĝúr̂ín̂ǵ ît́ ŵíl̂ĺ p̂ŕîór̂ít̂íẑé âńd̂ óp̂t́îḿîźê ýôúr̂ ṕâǵê ŕêńd̂ér̂ín̂ǵ p̂ér̂f́ôŕm̂án̂ćê."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Ûśê t́ĥé [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) ôṕt̂íôń îń N̂ít̂ŕôṔâćk̂ t́ô śêt́ â d́êśîŕêd́ v̂ál̂úê f́ôŕ t̂h́ê ĆŜŚ f̂ón̂t́-d̂íŝṕl̂áŷ ŕûĺê."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Ûśê [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) t́ô áût́ôḿât́îćâĺl̂ý ĉón̂v́êŕt̂ ýôúr̂ ím̂áĝéŝ t́ô Ẃêb́P̂."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "D̂éf̂ér̂ óf̂f́ŝćr̂éêń îḿâǵêś b̂ý êńâb́l̂ín̂ǵ [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Êńâb́l̂é [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) îń N̂ít̂ŕôṔâćk̂ f́ôŕ f̂áŝt́êŕ îńît́îál̂ ĺôád̂ t́îḿêś."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Îḿp̂ŕôv́ê śêŕv̂ér̂ ŕêśp̂ón̂śê t́îḿê án̂d́ ôṕt̂ím̂íẑé p̂ér̂ćêív̂éd̂ ṕêŕf̂ór̂ḿâńĉé b̂ý âćt̂ív̂át̂ín̂ǵ [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Êńâb́l̂é [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) îń ŷóûŕ Ĉáĉh́îńĝ śêt́t̂ín̂ǵŝ t́ô ŕêd́ûćê t́ĥé ŝíẑé ôf́ ŷóûŕ ĈŚŜ, H́T̂ḾL̂, án̂d́ Ĵáv̂áŜćr̂íp̂t́ f̂íl̂éŝ f́ôŕ f̂áŝt́êŕ l̂óâd́ t̂ím̂éŝ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Êńâb́l̂é [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) îń ŷóûŕ Ĉáĉh́îńĝ śêt́t̂ín̂ǵŝ t́ô ŕêd́ûćê t́ĥé ŝíẑé ôf́ ŷóûŕ ĴŚ, ĤT́M̂Ĺ, âńd̂ ĆŜŚ f̂íl̂éŝ f́ôŕ f̂áŝt́êŕ l̂óâd́ t̂ím̂éŝ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Êńâb́l̂é [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) t̂ó r̂ém̂óv̂é ĈŚŜ ŕûĺêś t̂h́ât́ âŕê ńôt́ âṕp̂ĺîćâb́l̂é t̂ó t̂h́îś p̂áĝé."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Ĉón̂f́îǵûŕê [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) ín̂ Ńît́r̂óP̂áĉḱ t̂ó d̂él̂áŷ ĺôád̂ín̂ǵ ôf́ ŝćr̂íp̂t́ŝ ún̂t́îĺ t̂h́êý âŕê ńêéd̂éd̂."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Ĝó t̂ó t̂h́ê [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) f́êát̂úr̂é îń t̂h́ê `Caching` ḿêńû án̂d́ âd́ĵúŝt́ ŷóûŕ p̂áĝé ĉáĉh́ê éx̂ṕîŕât́îón̂ t́îḿê t́ô ím̂ṕr̂óv̂é l̂óâd́îńĝ t́îḿêś âńd̂ úŝér̂ éx̂ṕêŕîén̂ćê."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Âút̂óm̂át̂íĉál̂ĺŷ ćôḿp̂ŕêśŝ, óp̂t́îḿîźê, án̂d́ ĉón̂v́êŕt̂ ýôúr̂ ím̂áĝéŝ ín̂t́ô Ẃêb́P̂ b́ŷ én̂áb̂ĺîńĝ t́ĥé [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) ŝét̂t́îńĝ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Êńâb́l̂é [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) t̂ó p̂ŕêém̂ṕt̂ív̂él̂ý ôṕt̂ím̂íẑé ŷóûŕ îḿâǵêś âńd̂ ḿâḱê t́ĥém̂ ḿât́ĉh́ t̂h́ê d́îḿêńŝíôńŝ óf̂ t́ĥé ĉón̂t́âín̂ér̂ś t̂h́êý’r̂é d̂íŝṕl̂áŷéd̂ ín̂ áĉŕôśŝ ál̂ĺ d̂év̂íĉéŝ."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Ûśê [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ín̂ Ńît́r̂óP̂áĉḱ t̂ó r̂éd̂úĉé t̂h́ê śîźê óf̂ t́ĥé f̂íl̂éŝ t́ĥát̂ ár̂é ŝén̂t́ t̂ó t̂h́ê b́r̂óŵśêŕ."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Ûśê t́ĥé `nuxt/image` ĉóm̂ṕôńêńt̂ án̂d́ ŝét̂ `format=\"webp\"`. [Ĺêár̂ń m̂ór̂é](https://image.nuxtjs.org/components/nuxt-img#format)."
@@ -3257,6 +3311,9 @@
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Ôṕêń îń V̂íêẃêŕ"
   },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "V̂íêẃ Ûńt̂h́r̂ót̂t́l̂éd̂ T́r̂áĉé"
+  },
   "report/renderer/report-utils.js | errorLabel": {
     "message": "Êŕr̂ór̂!"
   },
@@ -3373,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "V̂ál̂úêś âŕê éŝt́îḿât́êd́ âńd̂ ḿâý v̂ár̂ý. T̂h́ê [ṕêŕf̂ór̂ḿâńĉé ŝćôŕê íŝ ćâĺĉúl̂át̂éd̂](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) d́îŕêćt̂ĺŷ f́r̂óm̂ t́ĥéŝé m̂ét̂ŕîćŝ."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "V̂íêẃ Ôŕîǵîńâĺ T̂ŕâćê"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "V̂íêẃ T̂ŕâćê"

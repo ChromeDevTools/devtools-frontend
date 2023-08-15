@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]`-attributterne stemmer overens med deres roller"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Hvis et element ikke har et tilgængeligt navn, giver skærmlæsere feltet et generisk navn, så det ikke kan anvendes af brugere, der får læst indhold op af skærmlæsere. [Få flere oplysninger om, hvordan du gør kommandoelementer mere tilgængelige](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Elementerne `button`, `link` og `menuitem` har tilgængelige navne"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "ARIA-dialogbokselementer uden tilgængelighedsnavne kan forhindre brugere med skærmlæser i at forstå formålet med disse elementer. [Se, hvordan du gør ARIA-dialogboksselementer mere brugervenlige](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Elementer med `role=\"dialog\"` eller `role=\"alertdialog\"` har ikke tilgængelighedsnavne."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Elementer med `role=\"dialog\"` eller `role=\"alertdialog\"` har tilgængelighedsnavne."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Hjælpeteknologier såsom skærmlæsere fungerer ikke optimalt, når `aria-hidden=\"true\"` er angivet for dokumentet `<body>`. [Få flere oplysninger om, hvordan `aria-hidden` påvirker dokumentets brødtekst](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]`-værdierne er gyldige"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Hvis du tilføjer `role=text` rundt om en tekstnode opdelt efter opmærkning, kan VoiceOver behandle den som én sætning, men elementets fokuserbare underelementer oplæses ikke. [Få flere oplysninger om attributten `role=text`](https://dequeuniversity.com/rules/axe/4.7/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Elementer med attributten `role=text` har fokuserbare underelementer."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Elementer med attributten `role=text` har ikke fokuserbare underelementer."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "Hvis et felt med en til/fra-kontakt ikke har et tilgængeligt navn, giver skærmlæsere feltet et generisk navn, så det ikke kan anvendes af brugere, der får læst indhold op af skærmlæsere. [Få flere oplysninger om felter med en til/fra-kontakt](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ARIA-id'erne er unikke"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "En overskrift uden indhold eller med utilgængelig tekst forhindrer brugere med skærmlæser i at få adgang til oplysninger om sidens struktur. [Få flere oplysninger om overskrifter](https://dequeuniversity.com/rules/axe/4.7/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Overskriftselementerne har ikke noget indhold."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Alle overskriftselementer har indhold."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "Formularfelter med flere etiketter kan blive forvekslet og læst op af hjælpeteknologier såsom skærmlæsere, der anvender den første, den sidste eller alle etiketter. [Få flere oplysninger om, hvordan du bruger formularetiketter](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "`<html>`-elementet har en `[xml:lang]`-attribut med det samme basissprog som `[lang]`-attributten."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Links med samme destination skal have den samme beskrivelse, så det er nemmere for brugerne at forstå formålet med linket og beslutte, om de vil tilgå det. [Få flere oplysninger om identiske links](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Identiske links har ikke det samme formål."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Identiske links har samme formål."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Informative elementer bør anvende en kort, beskrivende alternativ tekst. Dekorative elementer kan ignoreres med en tom alt-attribut. [Få flere oplysninger om attributten `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Billedelementerne indeholder `[alt]`-attributter"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Tilføjelse af læsbar og tilgængelig tekst til inputknapper kan hjælpe brugere med skærmlæsere med at forstå formålet med inputknappen. [Få flere oplysninger om inputknapper](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "`<input type=\"image\">`-elementerne har `[alt]`-tekst"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "Etiketter sikrer, at formularstyring oplæses korrekt af hjælpeteknologier som f.eks. skærmlæsere. [Få flere oplysninger om formularelementetiketter](https://dequeuniversity.com/rules/axe/4.7/label)."
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "Formularelementerne har tilknyttede etiketter"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Et primært landmark hjælper brugere med skærmlæser med at navigere på en webside. [Få flere oplysninger om landmarks](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Dokumentet har ikke et primært landmark."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Dokumentet har et primært landmark."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Tekst med lav kontrast er for mange brugere svær eller umulig at læse. Når du gør et links tekst nemmere at læse, får brugere med stærkt nedsat syn en bedre oplevelse. [Se, hvordan du gør links nemmere at læse](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Farver er nødvendige for at kunne skelne mellem links."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Der kan skelnes mellem links uden brug af farver."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "Linktekst (og alternativ tekst til billeder, når de bruges som links), der er skelnelig, unik og fokuserbar, gør det nemmere for brugere af skærmlæsere at finde rundt. [Få flere oplysninger om, hvordan du gør links tilgængelige](https://dequeuniversity.com/rules/axe/4.7/link-name)."
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "`<object>`-elementerne har alternativ tekst"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Formularelementer uden effektive etiketter kan skabe frustrerende oplevelser for brugere med skærmlæsere. [Få flere oplysninger om elementet `select`](https://dequeuniversity.com/rules/axe/4.7/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Udvalgte elementer har ikke tilknyttede etiketelementer."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Udvalgte elementer har tilknyttede etiketelementer."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "En værdi over 0 antyder en utvetydig sortering af navigation. Selvom dette teknisk er gyldigt, skaber det ofte en frustrerende oplevelse for brugere, der anvender hjælpeteknologier. [Få flere oplysninger om attributten `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Ingen af elementerne har en `[tabindex]`-værdi, der overstiger 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Skærmlæsere har funktioner, der gør det nemmere at finde rundt i tabeller. Du kan give brugere med skærmlæsere en bedre oplevelse ved at sikre, at tabeller anvender det faktiske caption-elemente i stedet for celler med attributten `[colspan]`. [Få flere oplysninger om caption-elementer](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "Tabeller anvender `<caption>` i stedet for celler med attributten `[colspan]` for at angive et caption-element."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Berøringsområdernes størrelse eller afstand er ikke tilfredsstillende."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Berøringsområdernes størrelse og afstand er tilfredsstillende."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "Skærmlæsere har funktioner, der gør det nemmere at finde rundt i tabeller. Du kan give brugere med skærmlæsere en bedre oplevelse ved at sikre, at `<td>`-elementer i en stor tabel (3 eller flere celler i bredde og højde) har en tilknyttet tabeloverskrift. [Få flere oplysninger om tabeloverskrifter](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "Siden har ikke nogen <link>-webadresse for manifestet"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Der blev ikke registreret nogen matchende scripttjeneste. Du skal muligvis genindlæse siden eller tjekke, at omfanget af scripttjenesten for den aktuelle side omslutter omfanget og startwebadressen fra manifestet."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Scripttjenesten kunne ikke tjekkes, da feltet \"start_url\" i manifestet ikke var angivet"
   },
@@ -969,7 +1083,7 @@
     "message": "prefer_related_applications understøttes kun i betaversionen af Chrome og stabile kanaler i Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse kunne ikke fastslå, om der var en scripttjeneste. Prøv med en nyere version af Chrome."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Manifestets webadresseskema ({scheme}) understøttes ikke i Android."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Akkumuleret layoutskift måler synlige elementers bevægelse i det synlige område. [Få flere oplysninger om metric'en Akkumuleret layoutskift](https://web.dev/cls/)."
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Interaktion indtil næste visning måler sidens svartid, dvs. hvor lang tid det tager, før siden reagerer på brugerinput på en synlig måde. [Få flere oplysninger om metric'en for interaktion indtil næste visning](https://web.dev/inp/)."
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Første visning af indhold markerer tidspunktet, hvor den første tekst eller det første billede vises. [Få flere oplysninger om metric'en Første visning af indhold](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Første meningsfulde visning måler, hvornår det primære indhold på en side kan ses. [Få flere oplysninger om metric'en Første meningsfulde visning](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Interaktion indtil næste visning måler sidens svartid, dvs. hvor lang tid det tager, før siden reagerer på brugerinput på en synlig måde. [Få flere oplysninger om metric'en for interaktion indtil næste visning](https://web.dev/inp/)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Tid inden interaktiv tilstand er den mængde tid, det tager, før siden er helt interaktiv. [Få flere oplysninger om metric'en Tid inden interaktiv tilstand](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Undgå mange sideomdirigeringer"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Tilføj en budget.json-fil for at angive budgetter for antallet af og størrelsen på sideressourcer. [Få flere oplysninger om budgetter for ydeevne](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 anmodning • {byteCount, number, bytes} KiB}one{# anmodning • {byteCount, number, bytes} KiB}other{# anmodninger • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Sørg for, at antallet af anmodninger er lavt, og at overførslerne ikke er for store"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Kanoniske links foreslår, hvilken webadresse der skal vises i søgeresultater. [Få flere oplysninger om kanoniske links](https://developer.chrome.com/docs/lighthouse/seo/canonical/)"
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Den indledende serversvartid var kort"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "Scripttjenesten er den teknologi, der gør det muligt for din app at bruge mange funktioner til progressive webapps, f.eks. offline, tilføjelse på startskærme og push-notifikationer. [Få flere oplysninger om scripttjenester](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Denne side styres af en scripttjeneste, men der blev ikke fundet noget `start_url`, fordi manifestet ikke kunne parse den som en gyldig JSON-fil"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Denne side styres af en scripttjeneste, men `start_url` ({startUrl}) er ikke omfattet af scripttjenesten ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Denne side styres af en scripttjeneste, men der blev ikke fundet nogen `start_url`, da der ikke blev hentet noget manifest."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Dette website har én eller flere scripttjenester, men siden ({pageUrl}) er ikke omfattet af disse."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Registrerer ikke en scripttjeneste, der styrer siden og `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Registrerer en scripttjeneste, der styrer siden og `start_url`"
   },
   "core/audits/splash-screen.js | description": {
     "message": "En splash-skærm med tema sikrer, at brugerne får en god oplevelse, når de starter din app på deres startskærm. [Få flere oplysninger om splash-skærme](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
@@ -1623,7 +1707,7 @@
     "message": "Optimale løsninger"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Disse kontroller fremhæver muligheder for at [forbedre tilgængeligheden af din webapp](https://developer.chrome.com/docs/lighthouse/accessibility/). Det er kun visse tilgængelighedsproblemer, der kan registreres automatisk, og derfor anbefales det også at teste manuelt."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Disse elementer omhandler områder, som et automatisk testværktøj ikke kan dække. Få flere oplysninger ved at læse vores vejledning i, hvordan du [udfører en gennemgang af hjælpefunktioner](https://web.dev/how-to-review/)."
@@ -2769,7 +2853,7 @@
     "message": "Installer [et Drupal-modul](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) til udskudt indlæsning af billeder. Denne slags moduler gør det muligt at udskyde billeder, som ikke er på skærmen, og på den måde forbedre ydeevnen."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Overvej at bruge et modul til at indlejre vigtig CSS og JavaScript eller indlæse aktiver asynkront via JavaScript som f.eks. modulet [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg). Vær opmærksom på, at optimeringer via dette modul kan ødelægge dit website. Du bliver derfor sandsynligvis nødt til at foretage kodeændringer."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Temaer, moduler og serverspecifikationer påvirker alle serverens svartid. Overvej at finde et mere optimeret tema, vælge et modul til optimering og/eller opgradere din server. Dine hostingservere skal bruge PHP-opkodningscachelagring, hukommelsescachelagring for at reducere forespørgselstider i databaser, f.eks. Redis eller Memcached, samt optimeret applogik for hurtigere forberedelse af sider."
@@ -2778,10 +2862,10 @@
     "message": "Overvej at bruge [responsive billedformater](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) for at reducere størrelsen på de billeder, der indlæses på din side. Hvis du bruger Visninger til at vise flere indholdselementer på en side, kan du overveje at implementere sideinddeling for at begrænse mængden af indholdselementer, der vises på en bestemt side."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Sørg for, at du har aktiveret \"Sammenlæg CSS-filer\" på siden \"Administration » Konfiguration » Udvikling\". Du kan også konfigurere flere avancerede sammenlægningsmuligheder gennem [yderligere moduler](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) for at gøre dit website hurtigere ved at sammenkæde, formindske og komprimere CSS-formater."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Sørg for, at du har aktiveret \"Sammenlæg JavaScript-filer\" på siden \"Administration » Konfiguration » Udvikling\". Du kan også konfigurere flere avancerede sammenlægningsmuligheder gennem [yderligere moduler](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) for at gøre dit website hurtigere ved at sammenkæde, formindske og komprimere JavaScript-aktiver."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Overvej at fjerne ubrugte CSS-regler og kun vedhæfte de nødvendige Drupal-samlinger til den relevante side eller komponent på en side. Du kan finde flere oplysninger via [linket til Drupal-dokumentation](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Hvis du vil identificere vedhæftede samlinger, der tilføjer irrelevant CSS, kan du prøve at køre [kodedækning](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) i Chrome DevTools. Du kan identificere det problematiske tema/modul via webadressen for typografiarket, når CSS-sammenlægning er deaktiveret på dit Drupal-website. Kig efter temaer/moduler med mange typografiark på listen, som indeholder meget rødt i kodedækningen. Et tema/modul bør kun sætte et typografiark i kø, hvis det rent faktisk anvendes på siden."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Aktivér komprimering på din Next.js-server. [Få flere oplysninger](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Brug komponenten `nuxt/image`, og angiv `format=\"webp\"`. [Få flere oplysninger](https://image.nuxtjs.org/components/nuxt-img#format)."
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Brug React DevTools Profiler, som anvender Profiler API til at måle effektiviteten og gengivelsen af dine komponenter. [Få flere oplysninger.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Placer videoer i `VideoBoxes`, tilpas dem ved hjælp af `Video Masks`, eller tilføj `Transparent Videos`. [Få flere oplysninger](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Upload billeder via `Wix Media Manager` for at sikre, at de vises som WebP automatisk. Find [flere måder at optimere](https://support.wix.com/en/article/site-performance-optimizing-your-media) dit websites medier på."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Når du [tilføjer tredjepartskode](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) på fanen `Custom Code` i dit websites kontrolpanel, skal du sørge for, at koden er udskudt eller indlæst i slutningen af koden. Hvor det er muligt, skal du bruge Wix' [integrationer](https://support.wix.com/en/article/about-marketing-integrations) til at integrere marketingværktøjer på dit website. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix anvender CDN'er og cachelagring til at vise svar så hurtigt som muligt for de fleste besøgende. Overvej at [ aktivere cachelagring manuelt](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) for dit website, især hvis du bruger `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Gennemgå al tredjepartskode, du har føjet til dit website, på fanen `Custom Code` i dit websites kontrolpanel, og behold kun de tjenester, der er nødvendige for dit website. [Få flere oplysninger](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Overvej at uploade din gif til en tjeneste, hvor den kan indlejres som en HTML5-video."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Gem som JSON"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Åbn i fremviser"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Værdierne er estimater og kan variere. [Resultatet beregnes](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) direkte på baggrund af disse metrics."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Se oprindeligt spor"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Se spor"

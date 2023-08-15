@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]` özellikleri rolleriyle eşleşiyor"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Bir öğenin erişilebilir özellikli adı olmadığında ekran okuyucular tarafından genel adla okunur ve öğe, ekran okuyuculardan yararlanan kullanıcılar için kullanılamaz hale gelir. [Komut öğelerini nasıl daha erişilebilir hale getireceğinizi öğrenin](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "`button`, `link` ve `menuitem` öğelerinin erişilebilir özellikli adları var."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "Erişilebilir özellikli adları olmayan ARIA iletişim öğeleri, ekran okuyucu kullanıcılarının bu öğelerin amacını ayırt etmesini engelleyebilir. [ARIA iletişim öğelerinin nasıl daha erişilebilir hale getirileceğini öğrenin](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "`role=\"dialog\"` veya `role=\"alertdialog\"` içeren öğelerin erişilebilir özellikli adları yok."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "`role=\"dialog\"` veya `role=\"alertdialog\"` içeren öğelerin erişilebilir özellikli adları var."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Ekran okuyucular gibi yardımcı teknolojiler, `aria-hidden=\"true\"` öğesi dokümanın `<body>` kısmında ayarlandığında tutarsız çalışır. [`aria-hidden` öğesinin doküman gövdesini nasıl etkilediğini öğrenin](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]` değerleri geçerli"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "İşaretlemeyle bölünmüş bir metin düğümünün etrafına `role=text` eklenmesi, VoiceOver'ın bunu tek bir ifade olarak değerlendirmesini sağlar ancak öğenin odaklanılabilir alt öğeleri duyurulmaz. [`role=text` özelliği hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "`role=text` özelliğine sahip öğelerin odaklanılabilir alt öğeleri var."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "`role=text` özelliğine sahip öğelerin odaklanılabilir alt öğeleri yok."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "Bir açma/kapatma alanının erişilebilir özellikli bir adı yoksa ekran okuyucular bu alanı genel adla okuyacağı için bu, ekran okuyuculardan yararlanan kullanıcılar için yararlı olmaz. [Açma/kapatma alanları hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ARIA kimlikleri benzersiz"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "İçeriği olmayan veya metnine erişilemeyen başlıklar, ekran okuyucu kullanıcılarının sayfanın yapısındaki bilgilere erişmesini engeller. [Başlıklar hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "<heading> öğeleri içerik barındırmıyor."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Tüm <heading> öğeleri içerik barındırıyor."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "Birden çok etikete sahip form alanları etiketlerin ilkini, sonuncusunu veya tümünü kullanan ekran okuyucular gibi yardımcı teknolojiler tarafından karışıklık yaratacak şekilde okunabilir. [Form etiketlerini nasıl kullanacağınızı öğrenin](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "`<html>` öğesi, `[lang]` özelliğiyle aynı temel dile sahip bir `[xml:lang]` özelliği içeriyor."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Aynı hedefe sahip bağlantıların açıklaması da aynı olmalıdır. Bu, kullanıcıların bağlantının amacını anlamasına ve onu takip edip etmeyeceğine karar vermesine yardımcı olur. [Özdeş bağlantılar hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Özdeş bağlantılar aynı amaca sahip değil."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Özdeş bağlantılar aynı amaca sahiptir."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Bilgilendirme amaçlı öğelerin hedefi, kısa ve açıklayıcı alternatif metinler olmalıdır. Dekoratif öğeler boş bir alt özelliğiyle yok sayılabilir. [`alt` özelliği hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Resim öğelerinin `[alt]` özellikleri var"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Giriş düğmelerine fark edilebilir ve erişilebilir metin eklemeniz, ekran okuyucu kullanıcılarının giriş düğmesinin amacını anlamalarına yardımcı olabilir. [Giriş düğmeleri hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "`<input type=\"image\">` öğelerinin `[alt]` metni var"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "Etiketler, form kontrollerinin ekran okuyucular gibi yardımcı teknolojiler tarafından düzgün bir şekilde duyurulmasını sağlar. [Form öğesi etiketleri hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/label)."
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "Form öğelerinin ilişkili etiketleri var"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Bir tane ana belirgin işaret, ekran okuyucu kullanıcılarının web sayfasında gezinmesine yardımcı olur. [Önemli noktalar hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Dokümanda ana belirgin işaret yok."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Dokümanda ana belirgin işaret var."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Birçok kullanıcı, düşük kontrastlı metni okumakta zorlanır veya okuyamaz. Ayırt edilebilen bağlantı metinleri, az gören kullanıcıların deneyimini iyileştirir. [Bağlantıları nasıl ayırt edilebilir hale getireceğinizi öğrenin](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Bağlantılar renge dayalı olarak ayırt edilebilir."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Bağlantılar, renkten bağımsız olarak ayırt edilebilir."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "Ayırt edilebilir, benzersiz ve odaklanılabilir bağlantı metni (ve bağlantı olarak kullanıldığında resimler için alternatif metin), ekran okuyucu kullanıcılarına daha iyi bir gezinme deneyimi sunar. [Bağlantıları nasıl erişilebilir hale getireceğinizi öğrenin](https://dequeuniversity.com/rules/axe/4.7/link-name)."
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "`<object>` öğelerinin alternatif metni var"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Etkili etiket içermeyen <form> öğeleri, ekran okuyucu kullanıcılarının can sıkıcı deneyimler yaşamasına neden olabilir. [`select` öğesi hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "<select> öğelerinin ilişkili <label> öğeleri yok."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "<select> öğelerinin ilişkili <label> öğeleri var."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "0'dan büyük bir değer, açık bir gezinme sıralamasını belirtir. Bu durum teknik olarak geçerli olsa da yardımcı teknolojilerden yararlanan kullanıcıların genellikle sinir bozucu deneyimler yaşamalarına neden olur. [`tabindex` özelliği hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Hiçbir öğe 0'dan büyük `[tabindex]` değeri içermiyor"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Ekran okuyucuların tablolarda daha kolay gezinmeyi sağlayan özellikleri vardır. Tabloların, `[colspan]` özelliğine sahip hücreler yerine gerçek başlık öğesini kullandığından emin olursanız ekran okuyucunun kullanıcılara daha iyi bir deneyim sunmasını sağlayabilirsiniz. [Altyazı hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "Tablolar, başlığı belirtmek için `[colspan]` özelliğine sahip hücreler yerine `<caption>` kullanıyor."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Dokunma hedefleri, yeterli boyut veya boşluğa sahip değil."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Dokunma hedefleri, yeterli boyut ve boşluğa sahip."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "Ekran okuyucuların tablolarda daha kolay gezinmeyi sağlayan özellikleri vardır. Büyük bir tablodaki (genişlik ve yüksekliği en az 3 hücre olan) `<td>` öğelerinin, ilişkili bir tablo başlığı içerdiğinden emin olursanız ekran okuyucunun kullanıcılara daha iyi bir deneyim sunmasını sağlayabilirsiniz. [Tablo başlıkları hakkında daha fazla bilgi edinin](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "Sayfada hiç manifest <link> URL'si yok"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Eşleşen hizmet çalışanı algılanamadı. Sayfayı yeniden yüklemeniz veya mevcut sayfaya ait hizmet çalışanı kapsamının, manifest dosyasındaki kapsamı ve başlangıç URL'sini içerdiğinden emin olmanız gerekir."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Manifest dosyasında \"start_url\" alanı olmadığından hizmet çalışanı kontrol edilemedi"
   },
@@ -969,7 +1083,7 @@
     "message": "prefer_related_applications, Android'de yalnızca Chrome Beta ve Mevcut ürün kanallarında desteklenir."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse bir hizmet çalışanının mevcut olup olmadığını belirleyemedi. Lütfen Chrome'un daha yeni bir sürümüyle deneyin."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Manifest dosyasının URL şeması ({scheme}) Android'de desteklenmiyor."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Cumulative Layout Shift, görüntü alanı içindeki görünür öğelerin hareketini ölçer. [Cumulative Layout Shift metriği hakkında daha fazla bilgi edinin](https://web.dev/cls/)."
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Sonraki Boyamayla Etkileşim, sayfanın tepkisini ve kullanıcı girişine görünür şekilde yanıt vermesinin ne kadar sürdüğünü ölçer. [Sonraki Boyamayla Etkileşim metriği hakkında daha fazla bilgi edinin](https://web.dev/inp/)."
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "İlk Zengin İçerikli Boyama, ilk metnin veya resmin boyandığı zamanı işaret eder. [İlk zengin içerikli boyama metriği hakkında daha fazla bilgi edinin](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "İlk Anlamlı Boyama, bir sayfanın ana içeriğinin ne zaman görünür hale geldiğini ölçer. [İlk anlamlı boyama metriği hakkında daha fazla bilgi edinin](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Sonraki Boyamayla Etkileşim, sayfanın tepkisini ve kullanıcı girişine görünür şekilde yanıt vermesinin ne kadar sürdüğünü ölçer. [Sonraki Boyamayla Etkileşim metriği hakkında daha fazla bilgi edinin](https://web.dev/inp/)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Etkileşime Hazır Olma Süresi, sayfanın tamamen etkileşime hazır hale gelmesi için geçmesi gereken süreyi ifade eder. [Etkileşime Hazır Olma Süresi metriği hakkında daha fazla bilgi edinin](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Birden çok sayfa yönlendirmesini önleyin"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Sayfa kaynaklarının miktarı ve büyüklüğü için bütçeler belirlemek üzere bir budget.json dosyası ekleyin. [Performans bütçeleri hakkında daha fazla bilgi edinin](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 istek • {byteCount, number, bytes} KiB}other{# istek • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "İstek sayısını az ve aktarma boyutlarını küçük tutun"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Standart bağlantılar, arama sonuçlarında hangi URL'nin gösterileceğini belirtir. [Standart bağlantılar hakkında daha fazla bilgi edinin](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "İlk sunucu yanıt süresi kısaydı"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "Servis çalışanı, uygulamanızın çevrimdışı çalışma, ana ekrana ekleme ve push bildirimleri gibi pek çok Progresif Web Uygulaması özelliğini kullanmasını sağlayan teknolojidir. [Hizmet çalışanları hakkında daha fazla bilgi edinin](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Sayfa bir hizmet çalışanı tarafından kontrol ediliyor ancak manifest dosyası geçerli JSON olarak ayrışmadığından `start_url` bulunamadı"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Sayfa bir hizmet çalışanı tarafından kontrol ediliyor ancak `start_url` ({startUrl}) öğesi hizmet çalışanının kapsamında ({scopeUrl}) değil"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Bu sayfa bir hizmet çalışanı tarafından yönetiliyor ancak manifest dosyası getirilmediğinden `start_url` öğesi bulunamadı."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Bu kaynak bir veya daha fazla hizmet çalışanına sahip ancak sayfa ({pageUrl}) kapsam içinde değil."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Sayfayı kontrol eden bir hizmet çalışanı ve `start_url` öğesi kaydedilmiyor"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Sayfayı kontrol eden bir hizmet çalışanı ve `start_url` öğesi kaydediliyor"
   },
   "core/audits/splash-screen.js | description": {
     "message": "Temalı başlangıç ekranı, kullanıcılar uygulamanızı ana ekranlarında başlattığında yüksek kaliteli bir deneyim sağlar. [Başlangıç ekranları hakkında daha fazla bilgi edinin](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
@@ -1623,7 +1707,7 @@
     "message": "En iyi uygulamalar"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Bu kontroller, [web uygulamanızın erişilebilirliğini iyileştirme](https://developer.chrome.com/docs/lighthouse/accessibility/) fırsatlarını ön plana çıkarır. Erişilebilirlik sorunlarının yalnızca bir alt kümesi otomatik olarak algılanabildiğinden manuel test yapılması da önerilir."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Bu öğeler, otomatik test aracının kapsamında yer almayan alanları ele alır. [Erişilebilirlik incelemesi gerçekleştirme](https://web.dev/how-to-review/) hakkında daha fazla bilgiyi rehberimizde bulabilirsiniz."
@@ -2769,7 +2853,7 @@
     "message": "Resimleri geç yükleyebilen [bir Drupal modülü](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) yükleyin. Bu tür modüller, performansı iyileştirmek için ekran dışındaki resimlerin yüklenmesini erteleme özelliği sunar."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "[Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg) modülü gibi bir modül kullanarak kritik CSS ve JavaScript'leri satır içi yapmayı veya JavaScript ile öğeleri potansiyel olarak eşzamansız bir şekilde yüklemeyi değerlendirin. Bu modülün sağlayacağı optimizasyonların sitenizi bozabileceğine dikkat edin. Bunu engellemek için muhtemelen kodda değişiklik yapmanız gerekecektir."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Temalar, modüller ve sunucu özellikleri öğelerinin tümü sunucunun yanıt süresini etkiler. Bir optimizayon modülünü dikkatle seçerek ve/veya sunucunuzu yeni sürüme geçirerek, daha ileri düzeyde optimize edilmiş bir tema bulmayı düşünün. Barındırma sunucularınız sorgu sürelerini azaltmak için Redis veya Memcached gibi sistemlerin kullandığı PHP işlem kodunu önbelleğe alma, belleği önbelleğe alma tekniklerinden ve sayfaları daha hızlı hazırlamak için optimize edilmiş uygulama mantığından yararlanmalıdır."
@@ -2778,10 +2862,10 @@
     "message": "Sayfanıza yüklenen resimlerin boyutunu azaltmak için [Duyarlı Resim Stilleri](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)'ni kullanmayı değerlendirin. Bir sayfada birden çok içerik öğesini göstermek için Görünümler'i kullanıyorsanız belirli bir sayfada gösterilen içerik öğelerinin sayısını sınırlamak üzere sayfalara ayırma işlevini uygulamayı değerlendirin."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "\"Administration (Yönetim) » Configuration (Yapılandırma) » Development (Geliştirme)\" sayfasında \"Aggregate CSS files (CSS dosyalarını topla)\" ayarını etkinleştirdiğinizden emin olun. CSS stillerini birleştirerek, küçülterek ve sıkıştırarak sitenizi hızlandırmak için [ek modüller](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) kullanarak daha gelişmiş toplama seçeneklerini de yapılandırabilirsiniz."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "\"Administration (Yönetim) » Configuration (Yapılandırma) » Development (Geliştirme)\" sayfasında \"Aggregate JavaScript files (JavaScript dosyalarını topla)\" ayarını etkinleştirdiğinizden emin olun. JavaScript öğelerinizi birleştirerek, küçülterek ve sıkıştırarak sitenizi hızlandırmak için [ek modüller](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) kullanarak daha gelişmiş toplama seçeneklerini de yapılandırabilirsiniz."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Kullanılmayan CSS kurallarını kaldırmayı ve gerekli Drupal kitaplıklarını yalnızca alakalı sayfaya veya bir sayfadaki alakalı bileşene eklemeyi değerlendirin. Ayrıntılar için [Drupal dokümanları bağlantısına](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) bakın. Gereksiz CSS ilave eden ekli kitaplıkları belirlemek için Chrome Geliştirici Araçları'nda [kod kapsamını](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) çalıştırmayı deneyin. Drupal sitenizde CSS toplama devre dışı bırakıldığında, sorumlu temayı/modülü stil sayfasının URL'sinden belirleyebilirsiniz. Listede çok sayıda stil sayfasına sahip olan ve kod kapsamında çok sayıda kırmızı işaret taşıyan temaları/modülleri arayın. Tema/modül sadece sayfada gerçekten kullanılan bir stil sayfasını kuyruğa almalıdır."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Next.js sunucunuzda sıkıştırmayı etkinleştirin. [Daha fazla bilgi](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "`nuxt/image` bileşenini kullanarak `format=\"webp\"` değerini ayarlayın. [Daha fazla bilgi](https://image.nuxtjs.org/components/nuxt-img#format)."
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Bileşenlerinizin oluşturma performansını ölçmek için Profil Oluşturucu API'sinden yararlanan React Geliştirme Araçları Profil Oluşturucu'yu kullanın. [Daha fazla bilgi](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Videoları `VideoBoxes` içine yerleştirin, `Video Masks` kullanarak özelleştirin veya `Transparent Videos` ekleyin. [Daha fazla bilgi edinin](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Otomatik olarak WebP biçiminde sunulması için resimleri `Wix Media Manager` kullanarak yükleyin. Sitenizdeki medya içeriklerini [optimize etmenin diğer yollarını](https://support.wix.com/en/article/site-performance-optimizing-your-media) öğrenin."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Sitenizin kontrol panelindeki `Custom Code` sekmesine [üçüncü taraf kodu eklerken](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) kodun ertelendiğinden veya kod gövdesinin sonunda yüklendiğinden emin olun. Mümkün olduğunda Wix'in [entegrasyonlarından](https://support.wix.com/en/article/about-marketing-integrations) yararlanarak sitenize pazarlama araçları yerleştirin. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix çoğu ziyaretçiye mümkün olduğunca hızlı yanıt vermek için CDN'lerden ve önbelleğe alma işlemlerinden yararlanır. Özellikle `Velo` kullanıyorsanız siteniz için [önbelleğe almayı manuel olarak etkinleştirmeyi](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) düşünebilirsiniz."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Sitenizin kontrol panelindeki `Custom Code` sekmesinde sitenize eklediğiniz tüm üçüncü taraf kodlarını inceleyin ve siteniz için gerekli olanlar dışındaki hizmetleri kaldırın. [Daha fazla bilgi edinin](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "GIF dosyanızı, HTML5 videosu olarak yerleştirmek için kullanılabilmesini sağlayacak bir hizmete yüklemeyi düşünün."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "JSON nesnesi olarak kaydet"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Görüntüleyicide aç"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Değerler tahminidir ve değişiklik gösterebilir. [Performance skorunun hesaplanması ](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/), doğrudan bu metriklerle yapılır."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Orijinal İzi Göster"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "İzi Göster"

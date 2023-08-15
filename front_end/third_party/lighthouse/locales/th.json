@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "แอตทริบิวต์ `[aria-*]` ตรงกับบทบาทของตน"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "เมื่อองค์ประกอบไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูวิธีทําให้องค์ประกอบคําสั่งเข้าถึงได้ง่ายขึ้น](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)"
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "องค์ประกอบ `button`, `link` และ `menuitem` มีชื่อสำหรับการช่วยเหลือพิเศษ"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "องค์ประกอบกล่องโต้ตอบ ARIA ที่ไม่มีชื่อที่เข้าถึงได้อาจทำให้ผู้ใช้โปรแกรมอ่านหน้าจอแยกแยะจุดประสงค์ขององค์ประกอบเหล่านี้ไม่ได้ [ดูวิธีทำให้องค์ประกอบกล่องโต้ตอบ ARIA เข้าถึงได้ง่ายขึ้น](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "องค์ประกอบที่มี `role=\"dialog\"` หรือ `role=\"alertdialog\"` ไม่มีชื่อที่เข้าถึงได้"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "องค์ประกอบที่มี `role=\"dialog\"` หรือ `role=\"alertdialog\"` มีชื่อที่เข้าถึงได้"
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "เทคโนโลยีความช่วยเหลือพิเศษ (เช่น โปรแกรมอ่านหน้าจอ) ทำงานไม่สอดคล้องกันเมื่อตั้งค่า `aria-hidden=\"true\"` ในเอกสาร `<body>` [ดูว่า `aria-hidden` ส่งผลอย่างไรต่อส่วนเนื้อหาของเอกสาร](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)"
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "ค่า `[role]` ถูกต้อง"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "การเพิ่ม `role=text` รอบโหนดข้อความที่แบ่งตามมาร์กอัปจะทำให้ VoiceOver ถือว่าโหนดเป็น 1 วลี แต่ระบบจะไม่ประกาศองค์ประกอบสืบทอดที่โฟกัสได้ขององค์ประกอบ [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `role=text`](https://dequeuniversity.com/rules/axe/4.7/aria-text)"
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "องค์ประกอบที่มีแอตทริบิวต์ `role=text` มีองค์ประกอบสืบทอดที่โฟกัสได้"
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "องค์ประกอบที่มีแอตทริบิวต์ `role=text` ไม่มีองค์ประกอบสืบทอดที่โฟกัสได้"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "เมื่อช่องสลับไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านปุ่มนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้ช่องสลับดังกล่าวไม่ได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับช่องสลับ](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)"
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ไม่มีรหัส ARIA ที่ซ้ำกัน"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "ส่วนหัวที่ไม่มีเนื้อหาหรือมีข้อความที่ไม่สามารถเข้าถึงได้จะทำให้ผู้ใช้โปรแกรมอ่านหน้าจอไม่สามารถเข้าถึงข้อมูลบนโครงสร้างของหน้าเว็บ [ดูข้อมูลเพิ่มเติมเกี่ยวกับส่วนหัว](https://dequeuniversity.com/rules/axe/4.7/empty-heading)"
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "องค์ประกอบส่วนหัวไม่มีเนื้อหา"
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "องค์ประกอบส่วนหัวทั้งหมดมีเนื้อหา"
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "ช่องในฟอร์มที่มีป้ายกำกับหลายรายการอาจทำให้เทคโนโลยีความช่วยเหลือพิเศษ (เช่น โปรแกรมอ่านหน้าจอ) สร้างความสับสนให้กับผู้ใช้ได้ โดยอาจอ่านป้ายกำกับแรก ป้ายกำกับสุดท้าย หรืออ่านทุกป้ายกำกับ [ดูวิธีใช้ป้ายกำกับในแบบฟอร์ม](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)"
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "องค์ประกอบ `<html>` มีแอตทริบิวต์ `[xml:lang]` ที่มีภาษาฐานเดียวกันกับแอตทริบิวต์ `[lang]`"
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "ลิงก์ที่มีปลายทางเดียวกันควรจะมีคำอธิบายเดียวกัน เพื่อช่วยให้ผู้ใช้เข้าใจวัตถุประสงค์ของลิงก์และตัดสินใจว่าจะคลิกเพื่อไปตามลิงก์หรือไม่ [ดูข้อมูลเพิ่มเติมเกี่ยวกับลิงก์ที่เหมือนกัน](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)"
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "ลิงก์ที่เหมือนกันมีวัตถุประสงค์ต่างกัน"
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "ลิงก์ที่เหมือนกันมีวัตถุประสงค์เดียวกัน"
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "องค์ประกอบเพื่อการให้ข้อมูลควรมีข้อความสำรองที่สั้นกระชับและสื่อความหมาย การใช้แอตทริบิวต์ Alt ที่ว่างเปล่าจะเป็นการเพิกเฉยต่อองค์ประกอบเพื่อการตกแต่ง [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "องค์ประกอบรูปภาพมีแอตทริบิวต์ `[alt]`"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "การเพิ่มข้อความช่วยการเข้าถึงซึ่งมองเห็นได้ลงในปุ่มอินพุตอาจช่วยให้ผู้ใช้โปรแกรมอ่านหน้าจอเข้าใจวัตถุประสงค์ของปุ่มอินพุต [ดูข้อมูลเพิ่มเติมเกี่ยวกับปุ่มอินพุต](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "องค์ประกอบ `<input type=\"image\">` มีข้อความ `[alt]`"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "ป้ายกำกับช่วยดูแลให้เทคโนโลยีความช่วยเหลือพิเศษอย่างเช่น โปรแกรมอ่านหน้าจอ อ่านส่วนควบคุมฟอร์มได้อย่างถูกต้อง [ดูข้อมูลเพิ่มเติมเกี่ยวกับป้ายกํากับองค์ประกอบแบบฟอร์ม](https://dequeuniversity.com/rules/axe/4.7/label)"
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "องค์ประกอบฟอร์มมีป้ายกำกับที่เชื่อมโยงอยู่"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "จุดสังเกตหลัก 1 จุดช่วยให้ผู้ใช้โปรแกรมอ่านหน้าจอไปยังส่วนต่างๆ ของหน้าเว็บได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับจุดสังเกต](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)"
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "เอกสารไม่มีจุดสังเกตหลัก"
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "เอกสารมีจุดสังเกตหลัก"
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "ข้อความคอนทราสต์ต่ำมักทำให้ผู้ใช้จำนวนมากอ่านได้ยากหรืออ่านไม่ได้เลย ข้อความลิงก์ที่มองเห็นได้ชัดเจนจะช่วยปรับปรุงประสบการณ์การใช้งานให้ดียิ่งขึ้นสำหรับผู้ใช้ที่มีสายตาเลือนราง [ดูวิธีทำให้ลิงก์โดดเด่น](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)"
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "ต้องใช้สีจึงจะแยกความแตกต่างของลิงก์ได้"
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "แยกความแตกต่างของลิงก์ได้โดยไม่ต้องใช้สี"
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "ข้อความลิงก์ (และข้อความสำรองสำหรับรูปภาพเมื่อใช้เป็นลิงก์) ที่แยกแยะได้ ไม่ซ้ำกัน และโฟกัสได้ ช่วยปรับปรุงประสบการณ์การไปยังส่วนต่างๆ สำหรับผู้ใช้โปรแกรมอ่านหน้าจอ [ดูวิธีทำให้ลิงก์เข้าถึงได้](https://dequeuniversity.com/rules/axe/4.7/link-name)"
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "องค์ประกอบ `<object>` มีข้อความแสดงแทน"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "องค์ประกอบแบบฟอร์มที่ไม่มีป้ายกำกับที่มีประสิทธิภาพจะสร้างประสบการณ์การใช้งานที่น่าผิดหวังสำหรับผู้ใช้โปรแกรมอ่านหน้าจอ [ดูข้อมูลเพิ่มเติมเกี่ยวกับองค์ประกอบ `select`](https://dequeuniversity.com/rules/axe/4.7/select-name)"
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "องค์ประกอบ Select ไม่มีองค์ประกอบป้ายกำกับที่เชื่อมโยง"
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "องค์ประกอบ Select มีองค์ประกอบป้ายกำกับที่เกี่ยวข้อง"
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "ค่าที่มากกว่า 0 หมายความว่ามีการจัดเรียงการนำทางที่ชัดเจน แม้ว่าการทำงานนี้จะไม่มีปัญหาในทางเทคนิค แต่มักก่อให้เกิดประสบการณ์การใช้งานที่น่าหงุดหงิดสำหรับผู้ใช้เทคโนโลยีความช่วยเหลือพิเศษ [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "ไม่มีองค์ประกอบที่มีค่า `[tabindex]` มากกว่า 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "โปรแกรมอ่านหน้าจอมีฟีเจอร์ที่ช่วยให้ไปยังส่วนต่างๆ ของตารางได้ง่ายขึ้น การตรวจสอบว่าตารางใช้องค์ประกอบคำบรรยายจริงแทนเซลล์ที่มีแอตทริบิวต์ `[colspan]` อาจช่วยปรับปรุงประสบการณ์การใช้งานของผู้ใช้โปรแกรมอ่านหน้าจอได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับคำบรรยาย](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "ตารางใช้ `<caption>` แทนเซลล์ที่มีแอตทริบิวต์ `[colspan]` ในการระบุคำบรรยาย"
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "เป้าหมายการสัมผัสไม่มีขนาดหรือระยะห่างที่เพียงพอ"
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "เป้าหมายการสัมผัสมีขนาดและระยะห่างที่เพียงพอ"
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "โปรแกรมอ่านหน้าจอมีฟีเจอร์ที่ช่วยให้ไปยังส่วนต่างๆ ของตารางได้ง่ายขึ้น การตรวจสอบว่าองค์ประกอบ `<td>` ในตารางขนาดใหญ่ (เซลล์อย่างน้อย 3 เซลล์มีขนาดกว้างและสูง) มีส่วนหัวตารางที่เชื่อมโยงอาจปรับปรุงประสบการณ์การใช้งานของผู้ใช้โปรแกรมอ่านหน้าจอได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับส่วนหัวของตาราง](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "หน้านี้ไม่มี <link> URL ของไฟล์ Manifest"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "ไม่พบ Service Worker ที่ตรงกัน คุณอาจต้องโหลดหน้านี้ซ้ำหรือตรวจสอบว่าขอบเขตของ Service Worker สำหรับหน้าปัจจุบันครอบคลุมขอบเขตและ URL เริ่มต้นจากไฟล์ Manifest"
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "ตรวจสอบ Service Worker โดยไม่มีช่อง \"start_url\" ในไฟล์ Manifest ไม่ได้"
   },
@@ -969,7 +1083,7 @@
     "message": "prefer_related_applications ใช้ได้เฉพาะใน Chrome เบต้า และเวอร์ชันเสถียรใน Android เท่านั้น"
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse ระบุไม่ได้ว่ามี Service Worker หรือไม่ โปรดลองใช้ Chrome เวอร์ชันใหม่กว่านี้"
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "รูปแบบ URL ของไฟล์ Manifest ({scheme}) ใช้ไม่ได้ใน Android"
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "การเปลี่ยนเลย์เอาต์สะสมจะวัดการเคลื่อนไหวขององค์ประกอบที่มองเห็นได้ภายในวิวพอร์ต [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก Cumulative Layout Shift](https://web.dev/cls/)"
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "การโต้ตอบกับ Next Paint จะวัดการตอบสนองของหน้าเว็บ ซึ่งเป็นระยะเวลาที่หน้าเว็บใช้ในการตอบสนองต่ออินพุตของผู้ใช้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก การโต้ตอบกับ Next Paint](https://web.dev/inp/)"
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "First Contentful Paint ระบุเวลาที่มีการแสดงผลข้อความหรือรูปภาพครั้งแรก [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "First Meaningful Paint วัดเมื่อเนื้อหาหลักของหน้าเว็บปรากฏ [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก First Meaningful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "การโต้ตอบกับ Next Paint จะวัดการตอบสนองของหน้าเว็บ ซึ่งเป็นระยะเวลาที่หน้าเว็บใช้ในการตอบสนองต่ออินพุตของผู้ใช้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริก การโต้ตอบกับ Next Paint](https://web.dev/inp/)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "เวลาในการตอบสนองคือระยะเวลาที่หน้าเว็บใช้ในการตอบสนองอย่างสมบูรณ์ [ดูข้อมูลเพิ่มเติมเกี่ยวกับเมตริกเวลาในการตอบสนอง](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "หลีกเลี่ยงการเปลี่ยนเส้นทางหลายหน้า"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "หากต้องการตั้งงบประมาณสำหรับจำนวนและขนาดของทรัพยากรหน้า ให้เพิ่มไฟล์ budget.json [ดูข้อมูลเพิ่มเติมเกี่ยวกับงบประมาณด้านประสิทธิภาพ](https://web.dev/use-lighthouse-for-performance-budgets/)"
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 คำขอ • {byteCount, number, bytes} KiB}other{# คำขอ • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "ควบคุมให้จำนวนคำขอมีไม่มากและการโอนมีขนาดเล็ก"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "ลิงก์ Canonical จะบอกถึง URL ที่จะแสดงในผลการค้นหา [ดูข้อมูลเพิ่มเติมเกี่ยวกับลิงก์ Canonical](https://developer.chrome.com/docs/lighthouse/seo/canonical/)"
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "การตอบกลับของเซิร์ฟเวอร์ขณะเริ่มแรกใช้เวลาน้อย"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "Service Worker เป็นเทคโนโลยีที่ช่วยให้แอปของคุณใช้ฟีเจอร์ของ Progressive Web App ได้หลายฟีเจอร์ เช่น ออฟไลน์ เพิ่มไปยังหน้าจอหลัก และข้อความ Push [ดูข้อมูลเพิ่มเติมเกี่ยวกับ Service Worker](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)"
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "หน้านี้ควบคุมโดย Service Worker แต่ไม่พบ `start_url` เนื่องจากไฟล์ Manifest แยกวิเคราะห์เป็น JSON ที่ถูกต้องไม่ได้"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "หน้านี้ควบคุมโดย Service Worker แต่ `start_url` ({startUrl}) ไม่ได้อยู่ในขอบเขตของ Service Worker นั้น ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "หน้านี้ควบคุมโดย Service Worker แต่ไม่พบ `start_url` เพราะไม่มีการดึงไฟล์ Manifest"
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "ต้นทางนี้มี Service Worker อย่างน้อย 1 ไฟล์ แต่หน้าเว็บ ({pageUrl}) ไม่อยู่ในขอบเขต"
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "ไม่ได้ลงทะเบียน Service Worker ที่ควบคุมหน้าเว็บและ `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "ลงทะเบียน Service Worker ที่ควบคุมหน้าเว็บและ `start_url`"
   },
   "core/audits/splash-screen.js | description": {
     "message": "หน้าจอแนะนำที่มีธีมช่วยให้ผู้ใช้ได้รับประสบการณ์ที่มีคุณภาพสูงเมื่อเปิดแอปของคุณจากหน้าจอหลัก [ดูข้อมูลเพิ่มเติมเกี่ยวกับหน้าจอแนะนำ](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)"
@@ -1623,7 +1707,7 @@
     "message": "แนวทางปฏิบัติที่ดีที่สุด"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "การตรวจสอบเหล่านี้ไฮไลต์โอกาสในการ[ปรับปรุงการช่วยเหลือพิเศษของเว็บแอป](https://developer.chrome.com/docs/lighthouse/accessibility/) โดยจะตรวจพบอัตโนมัติได้เฉพาะปัญหากลุ่มย่อยด้านการช่วยเหลือพิเศษ เราจึงขอแนะนำให้ตรวจสอบด้วยตนเองด้วย"
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "รายการเหล่านี้จัดการพื้นที่ที่เครื่องมือทดสอบอัตโนมัติไม่ครอบคลุม ดูข้อมูลเพิ่มเติมในคำแนะนำเกี่ยวกับ[การดำเนินการตรวจสอบการช่วยเหลือพิเศษ](https://web.dev/how-to-review/)"
@@ -2769,7 +2853,7 @@
     "message": "ติดตั้ง[โมดูล Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) ที่โหลดรูปภาพแบบ Lazy Loading ได้ โมดูลนี้จะช่วยเลื่อนเวลาโหลดรูปภาพนอกจอภาพเพื่อปรับปรุงประสิทธิภาพ"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "ลองใช้โมดูลเพื่อแทรก CSS และ JavaScript ที่สำคัญในหน้าหรือโมดูลที่อาจโหลดเนื้อหาแบบไม่พร้อมกันผ่าน JavaScript เช่น โมดูล[การรวม CSS/JS ขั้นสูง](https://www.drupal.org/project/advagg) โปรดระวังว่าการเพิ่มประสิทธิภาพโดยโมดูลนี้อาจทำให้เว็บไซต์เสียหาย ซึ่งน่าจะทำให้คุณต้องแก้ไขโค้ด"
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "ข้อกำหนดของธีม โมดูล และเซิร์ฟเวอร์ล้วนส่งผลต่อเวลาในการตอบสนองของเซิร์ฟเวอร์ ลองหาธีมที่เพิ่มประสิทธิภาพมากขึ้น พยายามเลือกโมดูลการเพิ่มประสิทธิภาพด้วยความระมัดระวัง และ/หรืออัปเกรดเซิร์ฟเวอร์ เซิร์ฟเวอร์โฮสติ้งควรใช้ประโยชน์จากการแคช PHP Opcode, การแคชหน่วยความจำเพื่อลดเวลาในการค้นหาฐานข้อมูล เช่น Redis หรือ Memcached รวมถึงตรรกะของแอปพลิเคชันที่เพิ่มประสิทธิภาพเพื่อให้เตรียมความพร้อมของหน้าได้เร็วขึ้น"
@@ -2778,10 +2862,10 @@
     "message": "ลองใช้[สไตล์รูปภาพที่ปรับเปลี่ยนตามพื้นที่โฆษณา](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)เพื่อลดขนาดของรูปภาพที่โหลดในหน้า หากคุณใช้มุมมองเพื่อดูรายการเนื้อหาหลายรายการในหน้า ให้ลองใช้การใส่เลขหน้าเพื่อจำกัดจำนวนของรายการเนื้อหาที่แสดงในหน้าหนึ่งๆ"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "ตรวจสอบว่าคุณได้เปิดใช้ \"รวมไฟล์ CSS\" ในหน้า \"การดูแลระบบ » การกำหนดค่า » การพัฒนา\" คุณกำหนดค่าตัวเลือกการรวมขั้นสูงยิ่งขึ้นผ่าน[โมดูลเพิ่มเติม](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search)ได้ด้วยเพื่อช่วยให้เว็บไซต์เร็วขึ้นได้ด้วยการเชื่อมโยง การลดขนาด และการบีบอัดสไตล์ CSS"
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "ตรวจสอบว่าคุณได้เปิดใช้ \"รวมไฟล์ JavaScript\" ในหน้า \"การดูแลระบบ » การกำหนดค่า » การพัฒนา\" คุณกำหนดค่าตัวเลือกการรวมขั้นสูงยิ่งขึ้นผ่าน[โมดูลเพิ่มเติม](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search)ได้ด้วยเพื่อช่วยให้เว็บไซต์เร็วขึ้นได้ด้วยการเชื่อมโยง การลดขนาด และการบีบเนื้อหา JavaScript"
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "ลองนำกฎ CSS ที่ไม่ได้ใช้ออกและแนบเฉพาะไลบรารี Drupal ที่จำเป็นลงในหน้าที่เกี่ยวข้องหรือคอมโพเนนต์ในหน้า ดูรายละเอียดได้ที่[ลิงก์เอกสารประกอบของ Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) หากต้องการระบุไลบรารีที่แนบซึ่งเพิ่ม CSS โดยไม่จำเป็น ลองเรียกใช้ [Code Coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) ใน DevTools ของ Chrome คุณระบุธีม/โมดูลที่รับผิดชอบได้จาก URL ของสไตล์ชีตเมื่อปิดใช้การรวม CSS ในเว็บไซต์ Drupal ของคุณ หาธีม/โมดูลที่มีสไตล์ชีตจำนวนมากอยู่ในรายการซึ่งมีสีแดงอยู่จำนวนมากใน Code Coverage ธีม/โมดูลควรเป็นเพียงตัวกำหนดลำดับของสไตล์ชีตเท่านั้นหากใช้ธีม/โมดูลในหน้าจริงๆ"
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "เปิดใช้การบีบอัดในเซิร์ฟเวอร์ Next.js ของคุณ [ดูข้อมูลเพิ่มเติม](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `format=\"webp\"` [ดูข้อมูลเพิ่มเติม](https://image.nuxtjs.org/components/nuxt-img#format)"
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "ใช้ React DevTools Profiler ซึ่งใช้ประโยชน์จาก Profiler API ในการวัดประสิทธิภาพในการแสดงผลของคอมโพเนนต์ [ดูข้อมูลเพิ่มเติม](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "วางวิดีโอไว้ใน `VideoBoxes` ปรับแต่งโดยใช้ `Video Masks` หรือเพิ่ม `Transparent Videos` [ดูข้อมูลเพิ่มเติม](https://support.wix.com/en/article/wix-video-about-wix-video)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "อัปโหลดรูปภาพโดยใช้ `Wix Media Manager` เพื่อให้แสดงเป็นรูปแบบ WebP โดยอัตโนมัติ ดู[วิธีอื่นๆ ในการเพิ่มประสิทธิภาพ](https://support.wix.com/en/article/site-performance-optimizing-your-media)สื่อในเว็บไซต์ของคุณ"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "เมื่อ[เพิ่มโค้ดของบุคคลที่สาม](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site)ในแท็บ `Custom Code` ของแดชบอร์ดเว็บไซต์ ให้ใช้การหน่วงเวลาหรือโหลดโค้ดที่ส่วนท้ายของเนื้อหาโค้ด ใช้[การผสานรวม](https://support.wix.com/en/article/about-marketing-integrations)ของ Wix เพื่อฝังเครื่องมือการตลาดในเว็บไซต์ หากทำได้ "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix ใช้ CDN และการแคชเพื่อแสดงคำตอบโดยเร็วที่สุดสำหรับผู้เข้าชมส่วนใหญ่ พิจารณา[เปิดใช้การแคชด้วยตนเอง](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed)สำหรับเว็บไซต์ของคุณ โดยเฉพาะในกรณีที่ใช้ `Velo`"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "ตรวจสอบโค้ดของบุคคลที่สามที่คุณเพิ่มลงในเว็บไซต์ได้ในแท็บ `Custom Code` ของแดชบอร์ดเว็บไซต์ และเก็บเฉพาะบริการที่จำเป็นสำหรับเว็บไซต์เท่านั้น [ดูข้อมูลเพิ่มเติม](https://support.wix.com/en/article/site-performance-removing-unused-javascript)"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "ลองอัปโหลด GIF ไปยังบริการซึ่งจะทำให้ใช้ GIF เพื่อฝังเป็นวิดีโอ HTML5 ได้"
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "บันทึกเป็น JSON"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "เปิดในโปรแกรมดู"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "ค่ามาจากการประมาณและอาจแตกต่างกันไป [คะแนนประสิทธิภาพคำนวณ](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/)จากเมตริกเหล่านี้โดยตรง"
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "ดูการติดตามดั้งเดิม"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "ดูการติดตาม"

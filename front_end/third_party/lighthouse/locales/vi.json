@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Các thuộc tính `[aria-*]` khớp với vai trò tương ứng"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Khi một phần tử không có tên thành phần hỗ trợ tiếp cận, trình đọc màn hình sẽ gọi phần tử đó bằng một tên gọi chung, dẫn đến việc người dùng trình đọc màn hình không sử dụng được phần tử này. [Tìm hiểu cách giúp các phần tử lệnh dễ tiếp cận hơn](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Các phần tử `button`, `link` và `menuitem` có tên dễ đọc"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "Các phần tử hộp thoại của ARIA không có tên thành phần hỗ trợ tiếp cận có thể khiến người dùng trình đọc màn hình không phân biệt được mục đích của các phần tử này. [Tìm hiểu cách giúp các phần tử hộp thoại của ARIA dễ tiếp cận hơn](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Các phần tử có `role=\"dialog\"` hoặc `role=\"alertdialog\"` không có tên thành phần hỗ trợ tiếp cận."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Các phần tử có `role=\"dialog\"` hoặc `role=\"alertdialog\"` có tên thành phần hỗ trợ tiếp cận."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Các công nghệ hỗ trợ, chẳng hạn như trình đọc màn hình, sẽ hoạt động không nhất quán khi đặt `aria-hidden=\"true\"` trên tài liệu `<body>`. [Tìm hiểu ảnh hưởng của `aria-hidden` đối với phần nội dung của tài liệu](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "Các giá trị của `[role]` là hợp lệ"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Nếu bạn thêm `role=text` quanh một nút văn bản được phân tách bằng thẻ đánh dấu, VoiceOver có thể coi nút đó là một cụm từ, nhưng con cháu có thể làm tâm điểm của phần tử này sẽ không được công bố. [Tìm hiểu thêm về thuộc tính `role=text`](https://dequeuniversity.com/rules/axe/4.7/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Các phần tử có thuộc tính `role=text` có con cháu có thể làm tâm điểm."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Các phần tử có thuộc tính `role=text` không có con cháu có thể làm tâm điểm."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "Khi một trường chuyển đổi không có tên thành phần hỗ trợ tiếp cận, thì trình đọc màn hình sẽ gọi trường đó bằng tên gọi chung, khiến người dùng trình đọc màn hình không dùng được trường này. [Tìm hiểu thêm về trường chuyển đổi](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "Mã nhận dạng của Ứng dụng Internet phong phú dễ dùng (ARIA) là duy nhất"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Tiêu đề không có nội dung hoặc có văn bản khó đọc sẽ khiến người dùng trình đọc màn hình không thể truy cập thông tin trên cấu trúc của trang. [Tìm hiểu thêm về tiêu đề](https://dequeuniversity.com/rules/axe/4.7/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Phần tử tiêu đề không chứa nội dung."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Tất cả phần tử tiêu đề đều chứa nội dung."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "Các công nghệ hỗ trợ, chẳng hạn như trình đọc màn hình, sử dụng nhãn đầu tiên, nhãn cuối cùng hoặc tất cả các nhãn có thể thông báo nhầm các trường biểu mẫu có nhiều nhãn. [Tìm hiểu cách sử dụng nhãn của biểu mẫu](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "Phần tử `<html>` sở hữu thuộc tính `[xml:lang]` có cùng ngôn ngữ cơ sở như thuộc tính `[lang]`."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Các đường liên kết có cùng một đích đến phải có cùng nội dung mô tả để giúp người dùng hiểu mục đích của đường liên kết và quyết định có nên truy cập hay không. [Tìm hiểu thêm về các đường liên kết giống hệt nhau](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Các đường liên kết giống hệt nhau không có cùng mục đích."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Các đường liên kết giống hệt nhau có cùng mục đích."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Các phần tử thông tin nên là đoạn văn bản thay thế ngắn, có tính mô tả. Có thể bỏ qua phần tử trang trí bằng một thuộc tính alt trống. [Tìm hiểu thêm về thuộc tính `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Các phần tử hình ảnh có thuộc tính `[alt]`"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Bạn nên thêm văn bản rõ ràng và dễ đọc vào các nút nhập để giúp người dùng trình đọc màn hình hiểu mục đích của nút nhập. [Tìm hiểu thêm về các nút nhập](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "Các thành phần `<input type=\"image\">` có văn bản `[alt]`"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "Các nhãn đảm bảo rằng những công nghệ hỗ trợ, chẳng hạn như trình đọc màn hình, thông báo các biện pháp kiểm soát biểu mẫu đúng cách. [Tìm hiểu thêm về nhãn phần tử biểu mẫu](https://dequeuniversity.com/rules/axe/4.7/label)."
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "Các phần tử biểu mẫu có nhãn liên quan"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Điểm mốc chính giúp người dùng trình đọc màn hình dễ dàng thao tác trên trang web. [Tìm hiểu thêm về điểm mốc](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Tài liệu không có điểm mốc chính."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Tài liệu có một điểm mốc chính."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Nhiều người dùng gặp khó khăn khi đọc hoặc không thể đọc được văn bản có độ tương phản thấp. Văn bản liên kết rõ ràng sẽ giúp người dùng có thị lực kém dễ đọc hơn. [Tìm hiểu cách giúp các đường liên kết dễ phân biệt](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Bạn cần dựa vào màu sắc để phân biệt các đường liên kết."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Bạn có thể phân biệt được các đường liên kết mà không cần dựa vào màu sắc."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "Văn bản liên kết (và văn bản thay thế cho hình ảnh, khi dùng làm phần tử liên kết) có thể thấy rõ, là duy nhất và có thể lấy tiêu điểm sẽ cải thiện trải nghiệm khám phá cho người dùng trình đọc màn hình. [Tìm hiểu cách giúp các phần tử liên kết trở nên dễ tiếp cận](https://dequeuniversity.com/rules/axe/4.7/link-name)."
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "Các thành phần `<object>` có văn bản thay thế"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Các phần tử biểu mẫu không có nhãn hữu ích có thể khiến người dùng trình đọc màn hình cảm thấy khó chịu. [Tìm hiểu thêm về phần tử `select`](https://dequeuniversity.com/rules/axe/4.7/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Các phần tử lựa chọn không có phần tử nhãn đi kèm."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Các phần tử lựa chọn có phần tử nhãn liên kết."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Giá trị lớn hơn 0 ngụ ý thứ tự điều hướng rõ ràng. Mặc dù hợp lệ về mặt kỹ thuật nhưng điều này thường tạo ra trải nghiệm khó chịu cho những người dùng bị lệ thuộc vào công nghệ hỗ trợ. [Tìm hiểu thêm về thuộc tính `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Không phần tử nào có giá trị `[tabindex]` lớn hơn 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Trình đọc màn hình có các tính năng giúp người dùng dễ dàng sử dụng bảng hơn. Các bảng cần sử dụng phần tử chú thích thực tế thay vì các ô có thuộc tính `[colspan]` để người dùng trình đọc màn hình có trải nghiệm tốt hơn. [Tìm hiểu thêm về chú thích](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "Bảng sử dụng `<caption>` thay vì các ô có thuộc tính `[colspan]` để biểu thị chú thích."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Đích chạm có kích thước hoặc khoảng giãn cách chưa phù hợp."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Đích chạm có kích thước và khoảng giãn cách phù hợp."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "Trình đọc màn hình có các tính năng giúp người dùng dễ dàng sử dụng bảng hơn. Các phần tử `<td>` trong bảng lớn (chiều rộng và chiều cao từ 3 ô trở lên) cần có tiêu đề bảng liên kết để người dùng trình đọc màn hình có trải nghiệm tốt hơn. [Tìm hiểu thêm về tiêu đề bảng](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "Trang không có URL <link> của tệp kê khai"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Không phát hiện thấy trình chạy dịch vụ phù hợp. Bạn có thể cần tải lại trang hoặc kiểm tra để đảm bảo rằng phạm vi của trình chạy dịch vụ cho trang hiện tại có bao gồm phạm vi và URL bắt đầu của tệp kê khai."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Không thể kiểm tra trình chạy dịch vụ nếu không có trường \"start_url\" trong tệp kê khai"
   },
@@ -969,7 +1083,7 @@
     "message": "Chỉ hỗ trợ prefer_related_applications cho các kênh Chính thức và Thử nghiệm của Chrome trên Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse không xác định được có trình chạy dịch vụ hay không. Vui lòng thử lại bằng một phiên bản Chrome mới hơn."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Lược đồ URL kê khai ({scheme}) không được hỗ trợ trên Android."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Điểm số tổng hợp về mức thay đổi bố cục đo lường mức độ dịch chuyển của các phần tử hiển thị trong khung nhìn. [Tìm hiểu thêm về chỉ số Điểm số tổng hợp về mức thay đổi bố cục](https://web.dev/cls/)."
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Hoạt động tương tác với thời gian hiển thị tiếp theo đo lường khả năng phản hồi của trang, thời gian trang cần để phản hồi hoạt động đầu vào của người dùng một cách rõ ràng. [Tìm hiểu thêm về chỉ số Hoạt động tương tác với thời gian hiển thị tiếp theo](https://web.dev/inp/)."
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Chỉ số Hiển thị nội dung đầu tiên đánh dấu thời điểm hiển thị văn bản hoặc hình ảnh đầu tiên. [Tìm hiểu thêm về chỉ số Hiển thị nội dung đầu tiên](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Chỉ số Hiển thị nội dung đầu tiên đo lường thời điểm hiển thị nội dung chính của trang. [Tìm hiểu thêm về chỉ số Hiển thị nội dung đầu tiên](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Hoạt động tương tác với thời gian hiển thị tiếp theo đo lường khả năng phản hồi của trang, thời gian trang cần để phản hồi hoạt động đầu vào của người dùng một cách rõ ràng. [Tìm hiểu thêm về chỉ số Hoạt động tương tác với thời gian hiển thị tiếp theo](https://web.dev/inp/)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Thời điểm tương tác là khoảng thời gian mà trang cần để trở nên hoàn toàn tương tác. [Tìm hiểu thêm về chỉ số Thời điểm tương tác](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Tránh chuyển hướng trang nhiều lần"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Để thiết lập ngân sách cho số lượng và quy mô của tài nguyên trang, hãy thêm tệp budget.json. [Tìm hiểu thêm về ngân sách hiệu suất](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 yêu cầu • {byteCount, number, bytes} KiB}other{# yêu cầu • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Giảm số lượng yêu cầu và chuyển những tài nguyên có kích thước nhỏ"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Đường liên kết chính tắc đề xuất URL nào nên hiển thị trong kết quả tìm kiếm. [Tìm hiểu thêm về đường liên kết chính tắc](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Thời gian phản hồi ban đầu của máy chủ là ngắn"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "Trình chạy dịch vụ là công nghệ cho phép ứng dụng của bạn dùng nhiều tính năng của Ứng dụng web tiến bộ, chẳng hạn như hoạt động khi không có mạng, thêm vào màn hình chính và thông báo đẩy. [Tìm hiểu thêm về Trình chạy dịch vụ](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Trang này do một trình chạy dịch vụ kiểm soát. Tuy nhiên, không tìm thấy `start_url` vì tệp kê khai không thể phân tích cú pháp thành tệp JSON hợp lệ"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Trang này do một trình chạy dịch vụ kiểm soát. Tuy nhiên, `start_url` ({startUrl}) không thuộc phạm vi của trình chạy dịch vụ này ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Trang này do một trình chạy dịch vụ kiểm soát. Tuy nhiên, không tìm thấy `start_url` vì không tìm nạp được tệp kê khai."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Nguồn gốc này có một hoặc nhiều trình chạy dịch vụ. Tuy nhiên, trang ({pageUrl}) không thuộc phạm vi của các trình chạy dịch vụ này."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Không đăng ký một trình chạy dịch vụ kiểm soát trang và `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Đăng ký một trình chạy dịch vụ kiểm soát trang và `start_url`"
   },
   "core/audits/splash-screen.js | description": {
     "message": "Màn hình chờ có giao diện giúp đảm bảo người dùng có trải nghiệm chất lượng cao khi chạy ứng dụng từ màn hình chính. [Tìm hiểu thêm về màn hình chờ](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
@@ -1623,7 +1707,7 @@
     "message": "Những phương pháp hay nhất"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Các hoạt động kiểm tra này giúp xác định cơ hội [cải thiện khả năng hỗ trợ tiếp cận của ứng dụng web](https://developer.chrome.com/docs/lighthouse/accessibility/). Các hoạt động này chỉ có thể tự động phát hiện một phần vấn đề liên quan đến khả năng hỗ trợ tiếp cận, do đó, bạn nên kiểm tra cả theo cách thủ công."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Các mục này nằm trong vùng không thể sử dụng công cụ kiểm tra tự động. Tìm hiểu thêm trong hướng dẫn của chúng tôi về cách [đánh giá khả năng hỗ trợ tiếp cận](https://web.dev/how-to-review/)."
@@ -2769,7 +2853,7 @@
     "message": "Cài đặt [một mô-đun Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) có thể tải từng phần hình ảnh. Những mô-đun như vậy cung cấp khả năng trì hoãn mọi hình ảnh ngoài màn hình nhằm cải thiện hiệu suất."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Hãy cân nhắc sử dụng một mô-đun cùng dòng với CSS và JavaScript quan trọng, hoặc có khả năng tải không đồng bộ các tài sản qua JavaScript, chẳng hạn như mô-đun [Tổng hợp CSS/JavaScript nâng cao](https://www.drupal.org/project/advagg). Hãy lưu ý rằng những tùy chọn tối ưu hóa mà mô-đun này cung cấp có thể làm hỏng trang web của bạn. Do đó, bạn có thể phải thay đổi mã."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Giao diện, mô-đun và thông số máy chủ đều tác động đến thời gian phản hồi của máy chủ. Hãy cân nhắc tìm một giao diện tối ưu hóa hơn, lựa chọn cẩn thận mô-đun tối ưu hóa và/hoặc nâng cấp máy chủ. Các máy chủ lưu trữ nên tận dụng tính năng lưu mã vận hành PHP vào bộ nhớ đệm, tính năng lưu vào bộ nhớ đệm để giảm thiểu số lần truy vấn cơ sở dữ liệu, chẳng hạn như Redis hoặc Memcached, cũng như tận dụng logic của ứng dụng được tối ưu hóa để tải trang nhanh hơn."
@@ -2778,10 +2862,10 @@
     "message": "Hãy cân nhắc sử dụng [Kiểu hình ảnh thích ứng](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) để giảm kích thước của hình ảnh tải trên trang. Nếu bạn đang sử dụng Views để hiển thị nhiều mục nội dung trên một trang, hãy cân nhắc triển khai quá trình phân trang để giới hạn số mục nội dung hiển thị trên trang cụ thể."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Đảm bảo bạn đã bật tùy chọn \"Aggregate CSS files\" (Tổng hợp các tệp CSS) trên trang \"Administration » Configuration » Development\" (Quản trị > Cấu hình > Phát triển). Bạn cũng có thể định cấu hình những tùy chọn tổng hợp nâng cao hơn thông qua các [mô-đun bổ sung](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) để tăng tốc độ của trang web bằng cách ghép nối, giảm kích thước và nén các kiểu CSS."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Đảm bảo bạn đã bật tùy chọn \"Aggregate JavaScript files\" (Tổng hợp các tệp JavaScript) trên trang \"Administration » Configuration » Development\" (Quản trị > Cấu hình > Phát triển). Bạn cũng có thể định cấu hình những tùy chọn tổng hợp nâng cao hơn thông qua các [mô-đun bổ sung](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) để tăng tốc độ của trang web bằng cách ghép nối, giảm kích thước và nén các tài sản JavaScript."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Hãy cân nhắc xóa các quy tắc CSS không dùng đến và chỉ đính kèm các thư viện Drupal cần thiết vào trang hoặc thành phần liên quan trên trang. Truy cập vào [đường liên kết đến tài liệu về Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) để biết thông tin chi tiết. Để xác định các thư viện đã đính kèm đang thêm CSS không liên quan, hãy thử chạy [phạm vi của mã](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) trong Chrome DevTools. Bạn có thể xác định giao diện/mô-đun gây ra tình trạng này từ URL của tệp định kiểu khi tính năng tổng hợp CSS bị tắt trên trang web Drupal. Hãy chú ý đến những giao diện/mô-đun có nhiều tệp định kiểu trong danh sách. Những giao diện/mô-đun này có nhiều màu đỏ trong phạm vi của mã. Mỗi giao diện/mô-đun chỉ nên thêm một tệp định kiểu vào hàng đợi nếu tệp định kiểu đó thực sự được sử dụng trên trang."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Hãy bật tính năng nén trên máy chủ Next.js của bạn. [Tìm hiểu thêm](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Sử dụng thành phần `nuxt/image` và thiết lập `format=\"webp\"`. [Tìm hiểu thêm](https://image.nuxtjs.org/components/nuxt-img#format)."
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Sử dụng Trình phân tích tài nguyên React DevTools, công cụ dùng API Trình phân tích tài nguyên để đo lường hiệu suất hiển thị của các thành phần. [Tìm hiểu thêm.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Đưa video vào `VideoBoxes`, tuỳ chỉnh video bằng `Video Masks` hoặc thêm `Transparent Videos`. [Tìm hiểu thêm](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Tải hình ảnh lên bằng cách sử dụng `Wix Media Manager` để đảm bảo hình ảnh tự động được phân phát dưới dạng WebP. Tìm hiểu [các giải pháp khác giúp bạn tối ưu hoá](https://support.wix.com/en/article/site-performance-optimizing-your-media) nội dung nghe nhìn trên trang web."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Khi bạn [thêm mã của bên thứ ba](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) vào thẻ `Custom Code` trên trang tổng quan của trang web, hãy đảm bảo mã đó được trì hoãn đến cuối nội dung mã hoặc tải ở cuối nội dung mã. Nếu có thể, hãy sử dụng [nội dung tích hợp](https://support.wix.com/en/article/about-marketing-integrations) của Wix để nhúng các công cụ tiếp thị vào trang web của bạn. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix sử dụng CDN và chức năng lưu vào bộ nhớ đệm để phân phát phản hồi nhanh nhất có thể cho hầu hết khách truy cập. Bạn có thể [bật chức năng lưu vào bộ nhớ đệm theo cách thủ công](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) cho trang web của mình, đặc biệt là khi sử dụng `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Xem lại mã của bên thứ ba (nếu có) mà bạn đã thêm vào thẻ `Custom Code` trên trang tổng quan của trang web và chỉ giữ lại các dịch vụ cần thiết cho trang web của bạn. [Tìm hiểu thêm](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Hãy cân nhắc tải ảnh GIF lên một dịch vụ để có thể nhúng ảnh đó ở dạng video HTML5."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Lưu dưới dạng JSON"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Mở trong trình xem"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Các giá trị chỉ là ước tính và có thể thay đổi. [Điểm hiệu quả được tính](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) trực tiếp từ những chỉ số này."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Xem dấu vết gốc"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Xem dấu vết"

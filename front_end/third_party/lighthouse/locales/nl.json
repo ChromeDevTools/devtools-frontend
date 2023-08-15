@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "`[aria-*]`-kenmerken komen overeen met hun rollen"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Als een element geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie over hoe je opdrachtelementen toegankelijker maakt](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)"
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "`button`- `link`- en `menuitem`-elementen hebben toegankelijke namen"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "ARIA-dialoogvensterelementen zonder toegankelijke namen kunnen voorkomen dat gebruikers van schermlezers het doel van deze elementen kunnen herkennen. [Meer informatie over hoe je ARIA-dialoogelementen toegankelijker maakt](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Elementen met `role=\"dialog\"` of `role=\"alertdialog\"` hebben geen toegankelijke namen."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Elementen met `role=\"dialog\"` of `role=\"alertdialog\"` hebben toegankelijke namen."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Ondersteunende technologieën, zoals schermlezers, werken inconsistent als `aria-hidden=\"true\"` is ingesteld in het document `<body>`. [Meer informatie over hoe `aria-hidden` invloed heeft op de hoofdtekst van het document](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)"
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "`[role]`-waarden zijn geldig"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Als je `role=text` toevoegt rond een tekstnode die is gesplitst door opmaak, kan VoiceOver dit behandelen als één woordgroep, maar worden de focusbare onderliggende elementen van het element niet aangekondigd. [Meer informatie over het kenmerk `role=text`](https://dequeuniversity.com/rules/axe/4.7/aria-text)"
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Elementen met het kenmerk `role=text` hebben focusbare onderliggende elementen."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Elementen met het kenmerk `role=text` hebben geen focusbare onderliggende elementen."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "Als een schakelveld geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie over het aan-/uitzetten van velden](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)"
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ARIA-ID's zijn uniek"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Een kop zonder content of met ontoegankelijke tekst voorkomt dat gebruikers van een schermlezer toegang kunnen krijgen tot informatie over de paginastructuur. [Meer informatie over koppen](https://dequeuniversity.com/rules/axe/4.7/empty-heading)"
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Heading-elementen bevatten geen content."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Alle heading-elementen bevatten content."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "Formuliervelden met meerdere labels kunnen verwarrend worden aangekondigd door ondersteunende technologieën, zoals schermlezers, die het eerste label, het laatste label of alle labels gebruiken. [Meer informatie over hoe je formulierlabels gebruikt](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)"
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "Het element `<html>` heeft een `[xml:lang]`-kenmerk met dezelfde basistaal als het kenmerk `[lang]`."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Links met dezelfde bestemming moeten dezelfde beschrijving hebben, zodat gebruikers het doel van de link kunnen begrijpen en kunnen beslissen of ze de link willen volgen. [Meer informatie over identieke links](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)"
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Identieke links hebben niet hetzelfde doel."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Identieke links hebben hetzelfde doel."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Voor informatieve elementen moet een korte, beschrijvende alternatieve tekst worden gebruikt. Decoratieve elementen kunnen worden genegeerd met een leeg alt-kenmerk. [Meer informatie over het kenmerk `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Afbeeldingselementen bevatten `[alt]`-kenmerken"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Als je onderscheidende en toegankelijke tekst aan invoerknoppen toevoegt, kunnen gebruikers van een schermlezer beter begrijpen wat het doel van de invoerknop is. [Meer informatie over invoerknoppen](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "`<input type=\"image\">`-elementen bevatten `[alt]`-tekst"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "Labels zorgen ervoor dat formulieropties juist worden aangekondigd door hulptechnologieën, zoals schermlezers. [Meer informatie over formulierelementlabels](https://dequeuniversity.com/rules/axe/4.7/label)"
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "Formulierelementen hebben bijbehorende labels"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Een hoofdoriëntatiepunt helpt gebruikers van een schermlezer om op een webpagina te navigeren. [Meer informatie over oriëntatiepunten](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)"
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Het document heeft geen hoofdoriëntatiepunt."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Het document heeft een hoofdoriëntatiepunt."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Voor veel gebruikers is tekst met weinig contrast moeilijk of onmogelijk te lezen. Met onderscheidbare linktekst wordt de gebruikerservaring voor slechtzienden verbeterd. [Meer informatie over hoe je links makkelijk te onderscheiden kunt maken](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)"
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Links zijn afhankelijk van de kleur om ze te kunnen onderscheiden."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Links zijn te onderscheiden zonder afhankelijk te zijn van kleur."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "Met linktekst (en alternatieve tekst voor afbeeldingen, indien gebruikt als links) die herkenbaar, uniek en focusbaar is, verbeter je de navigatiefunctionaliteit voor gebruikers van een schermlezer. [Meer informatie over hoe je links toegankelijk maakt](https://dequeuniversity.com/rules/axe/4.7/link-name)"
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "`<object>`-elementen bevatten alternatieve tekst"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Form-elementen zonder effectieve labels kunnen frustrerende gebruikerservaringen veroorzaken voor gebruikers van schermlezers. [Meer informatie over het element `select`](https://dequeuniversity.com/rules/axe/4.7/select-name)"
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Select-elementen hebben geen gekoppelde label-elementen."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Select-elementen hebben gekoppelde label-elementen."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Een waarde groter dan 0 impliceert een expliciete navigatievolgorde. Hoewel dit technisch geldig is, is dit vaak vervelend voor gebruikers die afhankelijk zijn van hulptechnologieën. [Meer informatie over het kenmerk `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Geen element dat een `[tabindex]`-waarde heeft die groter is dan 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Schermlezers hebben functies die navigeren in tabellen makkelijker maken. Als je zorgt dat tabellen het daadwerkelijke bijschriftelement gebruiken in plaats van cellen met het kenmerk `[colspan]`, kun je de functionaliteit verbeteren voor gebruikers van een schermlezer. [Meer informatie over bijschriften](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "Tabellen gebruiken `<caption>` in plaats van cellen met het kenmerk `[colspan]` om een bijschrift aan te geven."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Tikdoelen zijn niet groot genoeg of hebben niet voldoende lege ruimte."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Tikdoelen zijn groot genoeg en hebben voldoende lege ruimte."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "Schermlezers hebben functies die navigeren in tabellen makkelijker maken. Als je zorgt dat `<td>`-elementen in een grote tabel (3 of meer cellen in breedte en hoogte) een gekoppelde tabelkop hebben, kun je de functionaliteit verbeteren voor gebruikers van een schermlezer. [Meer informatie over tabelkoppen](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "De pagina heeft geen manifest-URL <link>"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Geen overeenkomende service worker gevonden. Laad de pagina opnieuw of check of het bereik van de service worker voor de huidige pagina het bereik en de start-URL van het manifest omvat."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Kan de service worker niet checken zonder een veld 'start_url' in het manifest"
   },
@@ -969,7 +1083,7 @@
     "message": "prefer_related_applications wordt alleen ondersteund op bèta- en stabiele kanalen van Chrome op Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse kan niet bepalen of er een service worker is. Probeer het met een nieuwere versie van Chrome."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Het URL-schema van het manifest ({scheme}) wordt niet ondersteund op Android."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Cumulatieve indelingsverschuiving (CLS) meet de beweging van zichtbare elementen binnen de viewport. [Meer informatie over de statistiek Cumulatieve indelingsverschuiving (CLS)](https://web.dev/cls/)"
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Interactie tot Volgende weergave meet de responsiviteit van de pagina, dat wil zeggen hoelang het duurt voordat de pagina zichtbaar reageert op gebruikersinvoer. [Meer informatie over de statistiek Interactie tot Volgende weergave](https://web.dev/inp/)"
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Eerste weergave met content (FCP) geeft de tijd aan waarbinnen de eerste tekst of afbeelding wordt weergegeven. [Meer informatie over de statistiek Eerste weergave met content (LCP)](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Eerste nuttige weergave (FMP) meet wanneer de primaire content van een pagina zichtbaar is. [Meer informatie over de statistiek Eerste nuttige weergave (FMP)](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Interactie tot Volgende weergave meet de responsiviteit van de pagina, dat wil zeggen hoelang het duurt voordat de pagina zichtbaar reageert op gebruikersinvoer. [Meer informatie over de statistiek Interactie tot Volgende weergave](https://web.dev/inp/)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Tijd tot interactief is de hoeveelheid tijd die nodig is voordat een pagina volledig interactief is. [Meer informatie over de statistiek Tijd tot interactief](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Vermijd meerdere pagina-omleidingen"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Voeg een budget.json-bestand toe om budgetten in te stellen voor de hoeveelheid en grootte van paginabronnen. [Meer informatie over prestatiebudgetten](https://web.dev/use-lighthouse-for-performance-budgets/)"
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 verzoek • {byteCount, number, bytes} KiB}other{# verzoeken • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Houd het aantal verzoeken laag en de overdrachtsgrootte klein"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Canonieke links geven een suggestie voor welke URL moet worden getoond in de zoekresultaten. [Meer informatie over canonieke links](https://developer.chrome.com/docs/lighthouse/seo/canonical/)"
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Eerste reactietijd van server was kort"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "De service worker is de technologie waarmee je app veel functies van progressive web-apps kan gebruiken, zoals offline functionaliteit, toevoegen aan het startscherm en pushmeldingen. [Meer informatie over service workers](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)"
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Deze pagina wordt beheerd door een service worker, maar er is geen `start_url` gevonden omdat het manifest niet kan worden geparseerd als geldig json-bestand"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Deze pagina wordt beheerd door een service worker, maar de `start_url` ({startUrl}) valt niet binnen het bereik van de service worker ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Deze pagina wordt beheerd door een service worker, maar er is geen `start_url` gevonden omdat er geen manifest is opgehaald."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Deze herkomst heeft een of meer service workers, maar de pagina ({pageUrl}) valt niet binnen het bereik."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Registreert geen service worker die de pagina en `start_url` beheert"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Registreert een service worker die de pagina en `start_url` beheert"
   },
   "core/audits/splash-screen.js | description": {
     "message": "Een startscherm met een thema zorgt voor een gebruikerservaring van hoge kwaliteit als gebruikers je app starten vanaf hun startscherm. [Meer informatie over startschermen](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)"
@@ -1623,7 +1707,7 @@
     "message": "Praktische tips"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Deze controles geven mogelijkheden aan om [de toegang tot je web-app te verbeteren](https://developer.chrome.com/docs/lighthouse/accessibility/). Alleen een subset van toegankelijkheidsproblemen kan automatisch worden gedetecteerd. Daarom wordt handmatig testen ook aangeraden."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Deze items gaan over gebieden die niet kunnen worden getest met een automatische testtool. Bekijk meer informatie in onze gids over [het uitvoeren van een toegankelijkheidscontrole](https://web.dev/how-to-review/)."
@@ -2769,7 +2853,7 @@
     "message": "Installeer [een Drupal-module](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) voor lazy loading van afbeeldingen. Met dergelijke modules kunnen afbeeldingen die niet in beeld zijn, worden uitgesteld om de prestaties te verbeteren."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Overweeg een module te gebruiken om kritieke css en JavaScript inline te plaatsen of items potentieel asynchroon te laden via JavaScript, zoals de module [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg). Bedenk wel dat de optimalisatie die deze module biedt, de werking van je site kan verstoren. Het is daarom goed mogelijk dat je de code moet wijzigen."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Thema's, modules en serverspecificaties zijn allemaal van invloed op de reactietijd van de server. Overweeg een thema te gebruiken dat beter is geoptimaliseerd, kies met zorg een optimalisatiemodule en/of upgrade je server. Je hostingservers moeten gebruikmaken van PHP-opcode-caching, geheugencaching (zoals Redis of Memcached) om de databasequerytijden te beperken en geoptimaliseerde app-logica om pagina's sneller voor te bereiden."
@@ -2778,10 +2862,10 @@
     "message": "Overweeg [responsieve afbeeldingsstijlen](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) te gebruiken om de grootte van geladen afbeeldingen op je pagina te verkleinen. Als je Views gebruikt om meerdere contentitems op een pagina te tonen, kun je overwegen paginering te gebruiken om het aantal zichtbare contentitems op een pagina te beperken."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Zorg ervoor dat je Aggregate CSS files (Css-bestanden aggregeren) hebt aangezet op de pagina Administration » Configuration » Development (Beheer > Configuratie > Ontwikkeling). Je kunt ook meer geavanceerde verzamelingsopties instellen via [extra modules](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) om je site te versnellen door je css-stijlen in te korten, te verkleinen en te comprimeren."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Zorg ervoor dat je Aggregate JavaScript files (JavaScript-bestanden aggregeren) hebt aangezet op de pagina Administration » Configuration » Development (Beheer > Configuratie > Ontwikkeling). Je kunt ook meer geavanceerde verzamelingsopties instellen via [extra modules](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) om je site te versnellen door je JavaScript-items in te korten, te verkleinen en te comprimeren."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Overweeg ongebruikte css-regels te verwijderen en alleen de benodigde Drupal-bibliotheken bij te voegen bij de relevante pagina of component op een pagina. Klik op de [link naar de Drupal-documentatie](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) voor meer informatie. Voer [codedekking](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) uit in Chrome DevTools als je bijgevoegde bibliotheken wilt identificeren die extra css toevoegen. Je kunt identificeren welk thema/welke module verantwoordelijk is voor de URL van de stylesheet als css-verzameling is uitgezet op je Drupal-site. Ga in de lijst op zoek naar thema's/modules met veel stylesheets en veel rood in de codedekking. Een thema/module zou een stylesheet alleen in de wachtrij moeten plaatsen als de stylesheet daadwerkelijk wordt gebruikt op de pagina."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Zet de compressie op je Next.js-server aan. [Meer informatie](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Gebruik de component `nuxt/image` en stel `format=\"webp\"` in. [Meer informatie](https://image.nuxtjs.org/components/nuxt-img#format)"
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Gebruik de React DevTools Profiler, die gebruikmaakt van de Profiler API, om de weergaveprestaties van je componenten te meten. [Meer informatie.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Plaats video's binnen `VideoBoxes`, pas ze aan met `Video Masks` of voeg `Transparent Videos` toe. [Meer informatie](https://support.wix.com/en/article/wix-video-about-wix-video)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Upload afbeeldingen met `Wix Media Manager` om ervoor te zorgen dat ze automatisch worden weergegeven als WebP. Ontdek [meer manieren om de media van je site te optimaliseren](https://support.wix.com/en/article/site-performance-optimizing-your-media)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Als je [code van derden toevoegt](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) op het tabblad `Custom Code` van het dashboard van je site, zorg je ervoor dat deze wordt uitgesteld of aan het einde van de codetekst wordt geladen. Gebruik waar mogelijk de [integraties](https://support.wix.com/en/article/about-marketing-integrations) van Wix om marketingtools in te sluiten op je site. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix gebruikt CDN's en cacheopslag om reacties voor de meeste bezoekers zo snel mogelijk weer te geven. Je kunt overwegen [handmatig cachen aan te zetten](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) voor je site, vooral als je `Velo` gebruikt."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Check op het tabblad `Custom Code` van je sitedashboard alle code van derden die je aan je site hebt toegevoegd en behoud alleen de services die nodig zijn voor je site. [Meer informatie](https://support.wix.com/en/article/site-performance-removing-unused-javascript)"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Overweeg je gif te uploaden naar een service waarmee het mogelijk is de gif in te sluiten als html5-video."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Opslaan als json"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Openen in viewer"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Waarden worden geschat en kunnen variëren. De [prestatiescore wordt rechtstreeks berekend](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) op basis van deze statistieken."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Oorspronkelijke tracering bekijken"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Tracering bekijken"

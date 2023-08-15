@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Atributy `[aria-*]` odpovídají příslušným rolím"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Když prvek nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je pak tento prvek v podstatě nepoužitelný. [Jak zajistit, aby příkazové prvky byly přístupnější](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Prvky `button`, `link` a `menuitem` mají přístupné názvy"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "Dialogové prvky ARIA bez přístupových názvů mohou uživatelům čteček obrazovky znemožňovat rozeznat účel těchto prvků. [Přečtěte si, jak dialogové prvky ARIA zpřístupnit](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Prvky s atributy `role=\"dialog\"` nebo `role=\"alertdialog\"` nemají přístupné názvy."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Prvky s atributy `role=\"dialog\"` nebo `role=\"alertdialog\"` mají přístupné názvy."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Když je u prvku `<body>` dokumentu nastaveno `aria-hidden=\"true\"`, asistenční technologie, jako jsou čtečky obrazovek, nefungují konzistentně. [Přečtěte si, jak `aria-hidden` ovlivňuje text dokumentu](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)"
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "Hodnoty atributů `[role]` jsou platné"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Přidáním atributu `role=text` k textovému uzlu rozdělenému značkami umožníte čtečce VoiceOver, aby ho považovala za jednu frázi. Nebudou však oznámeny vybratelné podřízené prvky. [Další informace o atributu `role=text`](https://dequeuniversity.com/rules/axe/4.7/aria-text)"
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Prvky s atributem `role=text` mají vybratelné podřízené prvky."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Prvky s atributem `role=text` nemají vypratelné podřízené prvky."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "Když přepínací pole nemá přístupný název, čtečky obrazovek oznamují obecný název a pro jejich uživatele je toto pole v podstatě nepoužitelné. [Další informace o přepínacích polích](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)"
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ID ARIA jsou unikátní"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Nadpis bez obsahu nebo nepřístupný text brání uživatelům čteček obrazovky v přístupu k informacím o struktuře stránky. [Další informace o nadpisech](https://dequeuniversity.com/rules/axe/4.7/empty-heading)"
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Prvky nadpisů nemají žádný obsah."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Všechny prvky nadpisů mají obsah."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "Pole formuláře s několika štítky mohou asistenční technologie, jako jsou čtečky obrazovky, oznamovat matoucím způsobem, protože použijí buď první štítek, poslední štítek, nebo všechny. [Jak ve formulářích používat štítky](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)"
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "Prvek `<html>` má atribut `[xml:lang]` se stejným základním jazykem, jaký je uveden v atributu `[lang]`."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Odkazy se stejným cílem by měly mít stejný popis, aby uživatelé věděli, k čemu slouží, a mohli se rozhodnout, zda na ně přejdou. [Další informace o identických odkazech](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Identické odkazy nemají stejný účel."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Stejné odkazy mají stejný účel."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Informativní prvky by měly mít krátký, popisný alternativní text. Dekorativní prvky lze ignorovat pomocí prázdného atributu alt. [Další informace o atributu `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)"
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Prvky obrázků mají atributy `[alt]`"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Přidání rozeznatelného a přístupného textu k tlačítkům vstupu může uživatelům čteček obrazovek pomoci pochopit účel tlačítka. [Další informace o tlačítkách vstupu](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "Prvky `<input type=\"image\">` mají text `[alt]`"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "Štítky zajišťují, aby asistenční technologie (například čtečky obrazovek) správně oznamovaly ovládací prvky formulářů. [Další informace o štítcích prvků formulářů](https://dequeuniversity.com/rules/axe/4.7/label)"
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "K prvkům formulářů jsou přidružené štítky"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Jeden hlavní orientační bod pomáhá uživatelům čteček obrazovky procházet webovou stránkou. [Další informace o orientačních bodech](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)"
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Dokument nemá hlavní orientační bod."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Dokument má hlavní orientační bod."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Text s nízkým kontrastem je pro mnoho uživatelů obtížně čitelný nebo nečitelný. Rozlišitelný text odkazů usnadňuje používání slabozrakým uživatelům. [Přečtěte si, jak odkazy odlišit](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)"
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Odkazy lze rozlišit pouze podle barvy."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Odkazy lze rozlišit i jinak než podle barvy."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "Text odkazů (a náhradní text obrázků, když jsou použité jako odkazy), který je rozeznatelný a jedinečný a který lze vybrat, uživatelům čteček obrazovek usnadňuje procházení stránek. [Jak zajistit přístupnost odkazů](https://dequeuniversity.com/rules/axe/4.7/link-name)"
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "Prvky `<object>` mají alternativní text"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Prvky formulářů bez efektivních štítků mohou být pro uživatele čteček obrazovek frustrující. [Další informace o prvku `select`](https://dequeuniversity.com/rules/axe/4.7/select-name)"
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Prvky select nemají přidružené prvky label."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Prvky select mají přidružené prvky label."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Hodnota větší než 0 naznačuje explicitní řazení navigace. Ačkoli je platná, často vede k chování, které je pro uživatele závislé na asistenčních technologiích nepříjemné. [Další informace o atributu `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Žádný prvek nemá hodnotu `[tabindex]` větší než 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Čtečky obrazovek mají funkce, které usnadňují procházení tabulek. Pokud v tabulkách namísto buněk s atributem `[colspan]` použijete skutečné prvky popisků (caption), může to zlepšit uživatelský dojem uživatelů čteček obrazovky. [Další informace o popiscích](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "V tabulkách jsou k označení popisků použity prvky `<caption>` (namísto buněk s atributem `[colspan]`)."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Místa dotyku nejsou dostatečně velká nebo nemají dostatečné rozestupy."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Místa dotyku jsou dostatečně velká a mají dostatečné rozestupy."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "Čtečky obrazovek mají funkce, které usnadňují procházení tabulek. Pokud prvky `<td>` ve velké tabulce (tři nebo více buněk na šířku a výšku) budou mít přidružené záhlaví tabulky, uživatelům čteček obrazovky to usnadní orientaci. [Další informace o záhlavích tabulek](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "Stránka neobsahuje prvek <link> s adresou URL manifestu"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Nebyl nalezen žádný odpovídající pracovní proces služby. Je možné, že stránku budete muset načíst znovu nebo zkontrolovat, zda rozsah (scope) skriptu pracovní proces služby pro aktuální stránku zahrnuje rozsah a počáteční URL (start_url) z manifestu."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Skript pracovní proces služby nelze zkontrolovat bez pole „start_url“ v manifestu"
   },
@@ -969,7 +1083,7 @@
     "message": "Parametr prefer_related_applications je podporován pouze v beta verzi Chromu a ve stabilních verzích v systému Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Nástroj Lighthouse nedokázal zjistit, zda byl spuštěn skript pracovní proces služby. Zkuste to s novější verzí Chromu."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Schéma adresy URL manifestu ({scheme}) není v systému Android podporováno."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Kumulativní změna rozvržení měří přesuny viditelných prvků v zobrazované oblasti. [Další informace o metrice Kumulativní změna rozvržení](https://web.dev/cls/)"
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Doba od interakce k dalšímu vykreslení měří rychlost odezvy stránky, tj. za jak dlouho stránka viditelně zareaguje na uživatelský vstup. [Další informace o metrice Doba od interakce k dalšímu vykreslení](https://web.dev/inp/)"
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "První vykreslení obsahu je okamžik vykreslení prvního textu nebo obrázku. [Další informace o metrice První vykreslení obsahu (FCP)](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)"
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "První smysluplné vykreslení udává, kdy začne být viditelný primární obsah stránky. [Další informace o metrice První smysluplné vykreslení](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)"
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Doba od interakce k dalšímu vykreslení měří rychlost odezvy stránky, tj. za jak dlouho stránka viditelně zareaguje na uživatelský vstup. [Další informace o metrice Doba od interakce k dalšímu vykreslení](https://web.dev/inp/)"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Doba do interaktivity udává, jak dlouho trvá, než stránka začne být plně interaktivní. [Další informace o metrice Doba do interaktivity](https://developer.chrome.com/docs/lighthouse/performance/interactive/)"
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Nepoužívejte několik přesměrování stránky"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Pokud chcete nastavit rozpočet pro množství a velikost zdrojů na stránce, přidejte soubor budget.json. [Další informace o rozpočtech výkonu](https://web.dev/use-lighthouse-for-performance-budgets/)"
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 požadavek • {byteCount, number, bytes} KiB}few{# požadavky • {byteCount, number, bytes} KiB}many{# požadavku • {byteCount, number, bytes} KiB}other{# požadavků • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Používejte málo požadavků a malé velikosti přenosů"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Odkazy na kanonické verze slouží jako návrhy, které adresy URL se mají zobrazovat ve výsledcích vyhledávání. [Další informace o kanonických odkazech](https://developer.chrome.com/docs/lighthouse/seo/canonical/)"
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Počáteční odpověď serveru byla rychlá"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "Pracovní proces služby je technologie, která aplikaci umožňuje využívat mnoho funkcí progresivní webové aplikace, jako je režim offline, přidání na plochu nebo oznámení push. [Další informace o skriptech service službě worker](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)"
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Tuto stránku ovládá soubor pracovní proces služby, nebyl ale nalezen atribut `start_url`, protože se manifest nepodařilo analyzovat jako platný soubor JSON"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Tuto stránku ovládá soubor pracovní proces služby, ale atribut `start_url` ({startUrl}) pod soubor pracovní proces služby ({scopeUrl}) nespadá."
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Tuto stránku ovládá soubor pracovní proces služby, ale atribut `start_url` nebyl nalezen, protože nebyl načten žádný manifest."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Tento zdroj má jeden či více souborů pracovní proces služby, ale stránka ({pageUrl}) pod něj nespadá."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Neregistruje soubor pracovní proces služby, který ovládá stránku a `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Registruje soubor pracovní proces služby, který ovládá stránku a atribut `start_url`"
   },
   "core/audits/splash-screen.js | description": {
     "message": "Stylová úvodní obrazovka zajišťuje kvalitní uživatelský dojem při spuštění aplikace z plochy. [Další informace o úvodních obrazovkách](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)"
@@ -1623,7 +1707,7 @@
     "message": "Rady a tipy pro odpovídání na recenze"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Tyto kontroly odhalují příležitosti ke [zlepšení přístupnosti webové aplikace](https://developer.chrome.com/docs/lighthouse/accessibility/). Automaticky lze odhalit jen část problémů s přístupností, proto obsah doporučujeme otestovat i ručně."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Tyto položky se týkají oblastí, které v současné době automatické testování nedokáže pokrýt. Další informace najdete v průvodci [provedením kontroly přístupnosti](https://web.dev/how-to-review/)."
@@ -2769,7 +2853,7 @@
     "message": "Nainstalujte [modul Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search), který umožňuje líné načítání obrázků. Tyto moduly umožňují odložit načítání obrázků mimo obrazovku za účelem zvýšení výkonu."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Zvažte použití modulu k vložení kritických stylů CSS a JavaScriptu, případně načítejte zdroje asynchronně pomocí JavaScriptu, což nabízí např. modul [Advanced CSS/JS Aggregation](https://www.drupal.org/project/advagg). Upozorňujeme, že optimalizace pomocí těchto modulů může narušit funkčnost vašeho webu. V kódu proto pravděpodobně budete muset provést změny."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Na reakční dobu serveru mají vliv motivy, moduly a specifikace serverů. Zvažte vyhledání optimalizovaného motivu, pečlivý výběr optimalizačního modulu či upgradování serveru. Za účelem zrychlení odezvy databáze doporučujeme na hostujících serverech používat ukládání operačního kódu do mezipaměti pomocí PHP. Slouží k tomu nástroje jako Redis nebo Memcached, případně lze použít optimalizovanou logiku aplikace k rychlejší přípravě stránek."
@@ -2778,10 +2862,10 @@
     "message": "Zvažte použití [responzivních stylů obrázků](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) ke snížení velikosti obrázků načítaných stránkou. Pokud používáte Zobrazení k prezentování více obsahových položek na stránce, zvažte implementaci stránkování za účelem omezení počtu obsahových položek na jedné stránce."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Na stránce Administrace » Konfigurace » Vývoj aktivujte funkci Agregovat soubory CSS. Můžete také nakonfigurovat pokročilejší možnosti agregace prostřednictvím [dodatečných modulů](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search). Díky zřetězení, minifikaci a kompresi stylů CSS tak zrychlíte svůj web."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Na stránce Administrace » Konfigurace » Vývoj aktivujte funkci Agregovat javascriptové soubory. Můžete také nakonfigurovat pokročilejší možnosti agregace prostřednictvím [dodatečných modulů](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search). Díky zřetězení, minifikaci a kompresi javascriptových zdrojů tak zrychlíte svůj web."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Zvažte odstranění nepoužívaných pravidel CSS a k odpovídající stránce nebo komponentě stránky připojte pouze nezbytné knihovny Drupal. Podrobnosti naleznete v [dokumentaci Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Připojené knihovny, které přidávají nadbytečný kód CSS, můžete vyhledat pomocí funkce [„využití kódu“](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástrojích pro vývojáře v Chromu. Odpovědný motiv či modul můžete identifikovat podle adresy URL šablony stylů, když je na vašem webu Drupal deaktivována agregace CSS. Hledejte motivy či moduly, které v seznamu mají mnoho šablon stylů, u nichž je při použití funkce „využití kódu“ velké množství kódu označeno červeně. Motiv či modul by měl šablonu stylů do fronty zařadit jen v případě, že se na stránce opravdu používá."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Zapněte na serveru Next.js kompresi. [Další informace](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Použijte komponentu `nuxt/image` a nastavte `format=\"webp\"`. [Další informace](https://image.nuxtjs.org/components/nuxt-img#format)"
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Změřte rychlost vykreslování komponent pomocí nástroje React DevTools Profiler, který využívá rozhraní Profiler API. [Další informace](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Umístěte videa do `VideoBoxes`, přizpůsobte je pomocí `Video Masks` nebo přidejte `Transparent Videos`. [Další informace](https://support.wix.com/en/article/wix-video-about-wix-video)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Obrázky nahrajte pomocí nástroje `Wix Media Manager`, aby byly automaticky poskytovány ve formátu WebP. [Další způsoby optimalizace médií na webu](https://support.wix.com/en/article/site-performance-optimizing-your-media)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Při [přidávání kódu třetí strany](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) na kartě `Custom Code` na hlavním panelu webu zajistěte, aby jeho načtení bylo odloženo nebo aby se načítal na konci hlavní části kódu. Pokud je to možné, použijte k vložení marketingových nástrojů na svůj web [integrace](https://support.wix.com/en/article/about-marketing-integrations) Wix. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "K co nejrychlejšímu poskytování odpovědí většině návštěvníků využívá Wix sítě CDN a ukládání do mezipaměti. Zvažte [ruční povolení ukládání do mezipaměti](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) pro svůj web, zejména pokud používáte `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Zkontrolujte veškerý kód třetích stran, který jste na svůj web přidali na kartě `Custom Code` na hlavním panelu webu a ponechte pouze služby, které jsou pro váš web nezbytné. [Další informace](https://support.wix.com/en/article/site-performance-removing-unused-javascript)"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Zvažte nahrání souboru GIF do služby, pomocí které ho bude možné vložit jako video HTML5."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Uložit jako JSON"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Otevřít v prohlížeči"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Hodnoty jsou odhady a mohou se lišit. [Skóre výkonu se počítá](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) přímo z těchto metrik."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Zobrazit původní trasovací protokol"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Zobrazit trasovací protokol"

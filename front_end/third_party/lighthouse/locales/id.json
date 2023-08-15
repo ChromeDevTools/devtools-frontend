@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Atribut `[aria-*]` cocok dengan perannya"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Jika elemen tidak memiliki label aksesibilitas, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari cara membuat elemen perintah agar lebih mudah diakses](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Elemen `button`, `link`, dan `menuitem` memiliki nama yang dapat diakses"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "Elemen \"dialog\" ARIA tanpa label aksesibilitas dapat membuat pengguna pembaca layar tidak memahami fungsi elemen ini. [Pelajari cara membuat elemen \"dialog\" ARIA yang lebih mudah diakses](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Elemen dengan `role=\"dialog\"` atau `role=\"alertdialog\"` tidak memiliki label aksesibilitas."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Elemen dengan `role=\"dialog\"` atau `role=\"alertdialog\"` memiliki label aksesibilitas."
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Teknologi pendukung seperti pembaca layar tidak berfungsi secara konsisten jika `aria-hidden=\"true\"` disetel pada`<body>` dokumen. [Pelajari cara `aria-hidden` memengaruhi isi dokumen](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "Nilai `[role]` valid"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Menambahkan `role=text` di sekitar node teks yang dipisahkan oleh markup memungkinkan VoiceOver memperlakukannya sebagai satu frasa, tetapi turunan elemen yang dapat difokuskan tidak akan diucapkan. [Pelajari atribut `role=text` lebih lanjut](https://dequeuniversity.com/rules/axe/4.7/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Elemen dengan atribut `role=text` memiliki turunan yang dapat difokuskan."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Elemen dengan atribut `role=text` tidak memiliki turunan yang dapat difokuskan."
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "Jika kolom tombol tidak memiliki label aksesibilitas, pembaca layar akan mengucapkannya dengan nama umum, sehingga tidak dapat digunakan oleh pengguna yang mengandalkan pembaca layar. [Pelajari lebih lanjut kolom tombol](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ID ARIA unik"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Judul tanpa konten atau teks yang tidak dapat diakses membuat pengguna pembaca layar tidak dapat mengakses informasi di struktur halaman. [Pelajari judul lebih lanjut](https://dequeuniversity.com/rules/axe/4.7/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Elemen \"heading\" tidak berisi konten."
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Semua elemen \"heading\" berisi konten."
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "Teknologi pendukung seperti pembaca layar yang menggunakan label pertama, terakhir, atau semua label mungkin akan salah mengucapkan kolom formulir yang memiliki beberapa label. [Pelajari cara menggunakan label formulir](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "Elemen `<html>` memiliki atribut `[xml:lang]` dengan bahasa dasar yang sama dengan atribut `[lang]`."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Link dengan tujuan yang sama harus memiliki deskripsi yang sama, untuk membantu pengguna memahami tujuan link dan memutuskan apakah akan mengikutinya atau tidak. [Pelajari tentang link yang identik lebih lanjut](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Link yang identik tidak memiliki fungsi yang sama."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Link yang identik memiliki fungsi yang sama."
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Elemen informatif harus memberikan teks alternatif yang singkat dan deskriptif. Elemen dekoratif dapat diabaikan dengan atribut alt kosong. [Pelajari atribut lebih lanjut `alt`](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Elemen halaman memiliki atribut `[alt]`"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Menambahkan teks yang jelas dan mudah diakses ke tombol input dapat membantu pengguna pembaca layar memahami tujuan tombol input. [Pelajari tombol input lebih lanjut](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "Elemen `<input type=\"image\">` memiliki teks `[alt]`"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "Label memastikan bahwa kontrol bentuk diucapkan dengan tepat oleh teknologi pendukung, seperti pembaca layar. [Pelajari lebih lanjut label elemen formulir](https://dequeuniversity.com/rules/axe/4.7/label)."
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "Elemen formulir memiliki label yang terkait"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Satu penanda utama membantu pengguna pembaca layar membuka halaman web. [Pelajari penanda lebih lanjut](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Dokumen tidak memiliki penanda utama."
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Dokumen memiliki penanda utama."
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Teks yang memiliki kontras rendah akan sulit atau tidak mungkin dibaca oleh kebanyakan pengguna. Teks link yang jelas meningkatkan pengalaman bagi pengguna dengan gangguan penglihatan. [Pelajari cara membuat link yang mudah dibedakan](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Link bergantung pada warna agar dapat dibedakan."
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Link dapat dibedakan tanpa bergantung pada warna."
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "Teks link (dan teks alternatif untuk gambar, saat digunakan sebagai link) yang mudah dilihat, unik, dan dapat difokuskan akan meningkatkan kualitas pengalaman navigasi bagi pengguna pembaca layar. [Pelajari cara membuat link dapat diakses](https://dequeuniversity.com/rules/axe/4.7/link-name)."
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "Elemen `<object>` memiliki teks alternatif"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Elemen \"form\" tanpa label yang efektif dapat menciptakan pengalaman yang membingungkan bagi pengguna pembaca layar. [Pelajari elemen `select` lebih lanjut ](https://dequeuniversity.com/rules/axe/4.7/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Elemen \"select\" tidak memiliki elemen label terkait."
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Elemen \"select\" memiliki elemen label terkait."
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Nilai yang lebih besar dari 0 menunjukkan pengurutan navigasi eksplisit. Walaupun secara teknis valid, hal ini sering menciptakan pengalaman yang membingungkan bagi pengguna yang mengandalkan teknologi pendukung. [Pelajari atribut lebih lanjut `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Tidak ada elemen yang memiliki nilai `[tabindex]` lebih besar dari 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Pembaca layar memiliki fitur yang memudahkan navigasi tabel. Memastikan tabel menggunakan elemen teks yang sebenarnya, bukan sel dengan atribut `[colspan]`, dapat meningkatkan pengalaman bagi pengguna pembaca layar. [Pelajari teks lebih lanjut](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "Tabel menggunakan `<caption>`, bukan sel dengan atribut `[colspan]` untuk menunjukkan teks."
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Target sentuh tidak memiliki ukuran atau spasi yang memadai."
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Target sentuh memiliki ukuran dan spasi yang memadai."
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "Pembaca layar memiliki fitur yang memudahkan navigasi tabel. Memastikan elemen `<td>` dalam tabel besar (lebar atau tinggi 3 sel atau lebih) memiliki header tabel terkait dapat meningkatkan kualitas pengalaman pengguna pembaca layar. [Pelajari lebih lanjut header tabel](https://dequeuniversity.com/rules/axe/4.7/td-has-header)."
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "Halaman tidak memiliki URL <link> manifes"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Pekerja layanan yang cocok tidak terdeteksi. Anda harus memuat ulang halaman, atau memeriksa apakah cakupan pekerja layanan untuk halaman saat ini menyertakan scope dan start_URL dari manifes."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Tidak dapat memeriksa pekerja layanan tanpa kolom 'start_url' di manifes"
   },
@@ -969,7 +1083,7 @@
     "message": "prefer_related_applications hanya didukung di saluran Beta dan Stabil Chrome di Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse tidak dapat menentukan apakah ada pekerja layanan. Coba lagi dengan versi Chrome yang lebih baru."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Skema URL manifes ({scheme}) tidak didukung di Android."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Pergeseran Tata Letak Kumulatif (CLS) mengukur perpindahan elemen yang terlihat dalam area pandang. [Pelajari lebih lanjut metrik Pergeseran Tata Letak Kumulatif](https://web.dev/cls/)."
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Interaction to Next Paint mengukur responsivitas halaman, yaitu waktu yang diperlukan halaman untuk merespons input pengguna secara jelas. [Pelajari lebih lanjut metrik Interaction to Next Paint](https://web.dev/inp/)."
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "First Contentful Paint menandai waktu saat teks atau gambar pertama di-paint. [Pelajari lebih lanjut metrik First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "First Meaningful Paint mengukur waktu saat konten utama halaman terlihat. [Pelajari lebih lanjut metrik First Meaningful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Interaction to Next Paint mengukur responsivitas halaman, yaitu waktu yang diperlukan halaman untuk merespons input pengguna secara jelas. [Pelajari lebih lanjut metrik Interaction to Next Paint](https://web.dev/inp/)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Waktu untuk Interaktif adalah lamanya waktu yang diperlukan halaman untuk menjadi interaktif sepenuhnya. [Pelajari lebih lanjut metrik Waktu untuk Interaktif](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Hindari pengalihan lebih dari satu halaman"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Untuk mengatur anggaran jumlah dan ukuran resource halaman, tambahkan file budget.json. [Pelajari lebih lanjut anggaran performa](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{1 permintaan • {byteCount, number, bytes} KiB}other{# permintaan • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Pertahankan jumlah permintaan tetap rendah dan ukuran transfer tetap kecil"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Link kanonis menyarankan URL yang akan ditampilkan dalam hasil penelusuran. [Pelajari lebih lanjut link kanonis](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Respons server awal memakan waktu singkat"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "Pekerja layanan adalah teknologi yang memungkinkan aplikasi Anda menggunakan banyak fitur Progressive Web App, seperti fitur offline, tambahkan ke layar utama, dan notifikasi push. [Pelajari lebih lanjut Pekerja Layanan](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Halaman ini dikontrol oleh pekerja layanan, tetapi `start_url` tidak ditemukan karena manifes gagal diurai sebagai JSON yang valid"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Halaman ini dikontrol oleh pekerja layanan, tetapi `start_url` ({startUrl}) tidak termasuk dalam cakupan pekerja layanan ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Halaman ini dikontrol oleh pekerja layanan, tetapi `start_url` tidak ditemukan karena tidak ada manifes yang diambil."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Asal memiliki satu pekerja layanan atau lebih, tetapi halaman ({pageUrl}) tidak termasuk dalam cakupan."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Tidak mendaftarkan pekerja layanan yang mengontrol halaman dan `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Mendaftarkan pekerja layanan yang mengontrol halaman dan `start_url`"
   },
   "core/audits/splash-screen.js | description": {
     "message": "Layar pembuka yang bertema akan memberikan pengalaman berkualitas tinggi saat pengguna meluncurkan aplikasi dari layar utama. [Pelajari lebih lanjut layar pembuka](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
@@ -1623,7 +1707,7 @@
     "message": "Praktik terbaik"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Pemeriksaan ini menandai peluang untuk [menyempurnakan aksesibilitas aplikasi web Anda](https://developer.chrome.com/docs/lighthouse/accessibility/). Hanya sejumlah kecil masalah aksesibilitas yang dapat terdeteksi secara otomatis, sehingga pengujian manual juga dianjurkan."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Item berikut ini menangani area yang tidak dapat dicakup oleh fitur pengujian otomatis. Pelajari lebih lanjut dalam panduan kami tentang [menjalankan tinjauan aksesibilitas](https://web.dev/how-to-review/)."
@@ -2769,7 +2853,7 @@
     "message": "Instal [modul Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) yang dapat memuat gambar dengan lambat. Modul tersebut mampu menunda pemuatan gambar di bagian halaman yang belum ditampilkan untuk meningkatkan performa."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Sebaiknya gunakan modul untuk menyejajarkan CSS dan JavaScript penting, atau memuat aset potensial secara asinkron melalui JavaScript, seperti modul [Agregasi CSS/JS Lanjutan](https://www.drupal.org/project/advagg). Harap berhati-hati karena pengoptimalan yang disediakan oleh modul ini dapat merusak situs, sehingga Anda cenderung perlu mengubah kode."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Semua spesifikasi tema, modul, dan server berkontribusi pada waktu respons server. Sebaiknya cari tema yang lebih optimal, pilih modul pengoptimalan dengan hati-hati, dan/atau upgrade server Anda. Server hosting Anda harus memanfaatkan cache opcode dan cache memori PHP untuk mengurangi waktu kueri database, seperti Redis atau Memcached, serta logika aplikasi yang dioptimalkan guna menyiapkan halaman dengan lebih cepat."
@@ -2778,10 +2862,10 @@
     "message": "Sebaiknya gunakan [Responsive Image Styles](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) untuk mengurangi ukuran gambar yang dimuat di halaman Anda. Jika Anda menggunakan Views untuk menampilkan beberapa item konten di halaman, sebaiknya implementasikan penomoran halaman guna membatasi jumlah item konten yang ditampilkan di halaman tersebut."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Pastikan Anda mengaktifkan \"Aggregate CSS files\" di halaman \"Administration » Configuration » Development\". Anda juga dapat mengonfigurasi opsi agregasi lanjutan lainnya melalui [modul tambahan](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search) untuk mempercepat situs dengan menyambungkan, meminifikasi, dan mengompresi gaya CSS Anda."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Pastikan Anda mengaktifkan \"Aggregate JavaScript files\" di halaman \"Administration » Configuration » Development\". Anda juga dapat mengonfigurasi opsi agregasi lanjutan lainnya melalui [modul tambahan](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search) untuk mempercepat situs dengan menyambungkan, meminifikasi, dan mengompresi aset JavaScript Anda."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Sebaiknya hapus aturan CSS yang tidak digunakan dan hanya lampirkan library Drupal yang diperlukan ke halaman atau komponen yang relevan di halaman. Buka [Link dokumentasi Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) untuk mengetahui detailnya. Untuk mengidentifikasi library yang dilampirkan yang menambahkan CSS tidak relevan, coba jalankan [cakupan kode](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) di Chrome DevTools. Anda dapat mengidentifikasi tema/modul yang bertanggung jawab dari URL stylesheet saat agregasi CSS dinonaktifkan di situs Drupal Anda. Cari tema/modul dengan banyak stylesheet dalam daftar yang memiliki banyak warna merah dalam cakupan kode. Tema/modul sebaiknya hanya menambahkan stylesheet ke antrean jika memang benar digunakan di halaman."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Aktifkan kompresi di server Next.js Anda. [Pelajari lebih lanjut](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Gunakan komponen `nuxt/image` dan setel `format=\"webp\"`. [Pelajari lebih lanjut](https://image.nuxtjs.org/components/nuxt-img#format)."
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Gunakan React DevTools Profiler, yang memanfaatkan Profiler API untuk mengukur performa rendering komponen Anda. [Pelajari lebih lanjut.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Tempatkan video di dalam `VideoBoxes`, sesuaikan menggunakan `Video Masks` atau tambahkan `Transparent Videos`. [Pelajari lebih lanjut](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Upload gambar menggunakan `Wix Media Manager` untuk memastikan gambar tersebut otomatis ditayangkan sebagai WebP. Temukan [banyak cara untuk mengoptimalkan](https://support.wix.com/en/article/site-performance-optimizing-your-media) media di situs Anda."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Saat [menambahkan kode pihak ketiga](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site) di tab `Custom Code` pada dasbor situs, pastikan kode ditangguhkan atau dimuat di akhir isi kode. Jika memungkinkan, gunakan [integrasi](https://support.wix.com/en/article/about-marketing-integrations) Wix untuk menyematkan alat pemasaran di situs Anda. "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Wix menggunakan CDN dan cache untuk memberikan respons secepat mungkin bagi sebagian besar pengunjung. Sebaiknya [aktifkan cache secara manual](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed) untuk situs Anda, terutama jika menggunakan `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Tinjau kode pihak ketiga yang telah Anda tambahkan ke situs di tab `Custom Code` pada dasbor situs dan hanya pertahankan layanan yang diperlukan bagi situs Anda. [Ketahui selengkapnya](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Sebaiknya upload GIF ke layanan yang akan menyediakannya untuk disematkan sebagai video HTML5."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Simpan sebagai JSON"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Buka di Penampil"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Nilai adalah hasil perkiraan dan dapat bervariasi. [Skor performa dihitung](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/) secara langsung dari metrik ini."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Lihat Trace Asli"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Lihat Trace"

@@ -107,10 +107,6 @@ export async function setToolbarCheckboxWithText(enabled: boolean, textContext: 
   }, enabled);
 }
 
-export async function setLegacyNavigation(enabled: boolean) {
-  return setToolbarCheckboxWithText(enabled, 'Legacy navigation');
-}
-
 export async function setThrottlingMethod(throttlingMethod: 'simulate'|'devtools') {
   const toolbarHandle = await waitFor('.lighthouse-settings-pane .toolbar');
   await toolbarHandle.evaluate((toolbar, throttlingMethod) => {

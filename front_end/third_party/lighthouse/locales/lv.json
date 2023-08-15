@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "Atribūti `[aria-*]` atbilst savām lomām"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Ja elementam nav pieejama nosaukuma, ekrāna lasītāji nolasa to ar vispārīgu nosaukumu, līdz ar to elements kļūst nelietojams ekrāna lasītāju lietotājiem. [Uzziniet, kā padarīt komandu elementus pieejamākus](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "Elementiem “`button`”, “`link`” un “`menuitem`” ir pieejami nosaukumi"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "Ja ARIA dialoglodziņu elementiem nav pieejamu nosaukumu, ekrāna lasītāju lietotāji var nesaprast šo elementu mērķi. [Uzziniet, kā padarīt ARIA dialoglodziņu elementus pieejamākus](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)."
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "Elementiem ar atribūtu “`role=\"dialog\"`” vai “`role=\"alertdialog\"`” nav pieejamu nosaukumu"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "Elementiem ar atribūtu “`role=\"dialog\"`” vai “`role=\"alertdialog\"`” ir pieejami nosaukumi"
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "Atbalsta tehnoloģijas, piemēram, ekrāna lasītāji, darbojas nekonsekventi, kad dokumenta elementam `<body>` ir iestatīts atribūts “`aria-hidden=\"true\"`”. [Uzziniet, kā atribūts “`aria-hidden`” ietekmē dokumenta pamattekstu](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)."
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "Atribūta `[role]` vērtības ir derīgas"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "Ja apkārt marķējuma sadalītam teksta mezglam pievienojat atribūtu “`role=text`”, funkcijā VoiceOver var apstrādāt šo teksta mezglu kā vienu frāzi, taču netiek paziņots par fokusējamiem elementa pēctečiem. [Uzziniet vairāk par atribūtu “`role=text`”](https://dequeuniversity.com/rules/axe/4.7/aria-text)."
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "Elementiem ar atribūtu “`role=text`” ir fokusējami pēcteči."
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "Elementiem ar atribūtu “`role=text`” nav fokusējamu pēcteču"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "Ja pārslēgšanas laukam nav pieejama nosaukuma, ekrāna lasītāji nolasa to ar vispārīgu nosaukumu, līdz ar to elements kļūst nelietojams ekrāna lasītāju lietotājiem. [Uzziniet vairāk par pārslēgšanas laukiem](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)."
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "ARIA identifikatori ir unikāli"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "Ja virsrakstā nav satura vai teksts nav pieejams, ekrāna lasītāju lietotāji nevar piekļūt informācijai par lapas struktūru. [Uzziniet vairāk par virsrakstiem](https://dequeuniversity.com/rules/axe/4.7/empty-heading)."
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "Virsraksta elementos nav satura"
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "Visos virsraksta elementos ir saturs"
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "Veidlapas laukus ar vairākām iezīmēm var nepareizi nolasīt atbalsta tehnoloģijas, piemēram, ekrāna lasītāji, kuri izmanto pirmo, pēdējo vai visas iezīmes. [Uzziniet, kā izmantot veidlapu iezīmes](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)."
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "Elementam `<html>` ir atribūts `[xml:lang]` ar tādu pašu pamata valodu kā atribūtam `[lang]`."
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "Ja saitēm ir viens galamērķis, arī saišu aprakstam jābūt vienādam, lai lietotāji varētu saprast katras saites mērķi un izlemt, vai sekot tai. [Uzziniet vairāk par identiskām saitēm](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)."
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "Identiskām saitēm ir atšķirīgi mērķi"
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "Identiskām saitēm ir vienāds mērķis"
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "Informatīvajiem elementiem ir nepieciešams īss, aprakstošs alternatīvais teksts. Dekoratīvajiem elementiem alternatīvo atribūtu var atstāt tukšu. [Uzziniet vairāk par atribūtu “`alt`”](https://dequeuniversity.com/rules/axe/4.7/image-alt)."
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "Attēlu elementiem ir atribūti `[alt]`"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Pievienojot ievades pogām saprotamu un pieejamu tekstu, varat palīdzēt ekrāna lasītāju lietotājiem saprast, kam ievades pogas ir paredzētas. [Uzziniet vairāk par ievades pogām.](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "Elementi `<input type=\"image\">` ietver tekstu `[alt]`"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "Ja norādīsiet iezīmes, atbalsta tehnoloģijas, piemēram, ekrāna lasītāji, varēs pareizi atskaņot veidlapu vadīklas. [Uzziniet vairāk par veidlapas elementu iezīmēm](https://dequeuniversity.com/rules/axe/4.7/label)."
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "Veidlapu elementiem ir saistītas iezīmes"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "Viens galvenais orientieris palīdz ekrāna lasītāja lietotājiem pārvietoties tīmekļa lapā. [Uzziniet vairāk par orientieriem](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)."
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "Dokumentā nav galvenā orientiera"
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "Dokumentam ir galvenais orientieris"
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "Daudziem lietotājiem ir grūti vai pat neiespējami izlasīt tekstu ar zemu kontrastu. Atšķirams saišu teksts uzlabo pieredzi vājredzīgiem lietotājiem. [Uzziniet, kā padarīt saites atšķiramas](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)."
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "Lai atšķirtu saites, jāpaļaujas uz krāsu"
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "Var atšķirt saites, nepaļaujoties uz krāsu"
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "Atšķirams, unikāls un fokusējams saites teksts (un alternatīvais teksts attēliem, kas tiek izmantoti kā saites) nodrošina labākas navigācijas iespējas lietotājiem, kuri izmanto ekrāna lasītājus. [Uzziniet, kā padarīt saites pieejamas](https://dequeuniversity.com/rules/axe/4.7/link-name)."
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "Elementi `<object>` ietver alternatīvo tekstu"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "Veidlapu elementi bez efektīvām iezīmēm var radīt neapmierinošu pieredzi ekrāna lasītāju lietotājiem. [Uzziniet vairāk par elementu “`select`”](https://dequeuniversity.com/rules/axe/4.7/select-name)."
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "Atlasītajiem elementiem nav saistītu iezīmju elementu"
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "Atlasītajiem elementiem ir saistīti iezīmju elementi"
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Ja vērtība ir lielāka par “0”, navigācijas secība ir noteikta. Lai gan tehniski šis risinājums ir derīgs, bieži vien tas mulsina lietotājus, kuri izmanto atbalsta tehnoloģijas. [Uzziniet vairāk par atribūtu “`tabindex`”](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "Nevienam elementam nav atribūta `[tabindex]` vērtības, kas augstāka par 0"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Ekrāna lasītāju funkcijas atvieglo pārvietošanos tabulās. Gādājot, lai tabulās tiktu izmantots elements “caption”, nevis šūnas ar atribūtu `[colspan]`, varat uzlabot lietošanas pieredzi lietotājiem, kuri izmanto ekrāna lasītājus. [Uzziniet vairāk par subtitriem.](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "Lai tabulās norādītu uzrakstus, tiek izmantots `<caption>`, nevis šūnas ar atribūtu `[colspan]`"
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "Skāriena mērķu izmēri un atstarpes nav pietiekamas"
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "Skāriena mērķiem ir pietiekami izmēri un atstarpes"
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "Ekrāna lasītāju funkcijas atvieglo pārvietošanos tabulās. Parūpējoties, lai lielā tabulā (tādā, kurā ir vismaz trīs rindas un trīs kolonnas) katram `<td>` elementam būtu saistīta tabulas galvene, varat uzlabot lietošanas pieredzi lietotājiem, kuri izmanto ekrāna lasītājus. [Uzziniet vairāk par tabulu galvenēm.](https://dequeuniversity.com/rules/axe/4.7/td-has-header)"
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "Lapā nav <link> taga ar manifesta vietrādi URL"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "Netika atrasts atbilstošs pakalpojumu skripts. Iespējams, būs atkārtoti jāielādē lapa vai jāpārliecinās, ka pašreizējās lapas pakalpojumu skripta tvērumā ir iekļauts manifestā norādītais tvērums un sākuma URL."
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "Nevarēja pārbaudīt pakalpojumu skriptu, jo manifestā nav lauka “start_url”"
   },
@@ -969,7 +1083,7 @@
     "message": "Rekvizīts “prefer_related_applications” tiek atbalstīts tikai pārlūkprogrammas Chrome beta un stabilās versijās operētājsistēmā Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse nevarēja noteikt, vai ir pieejams pakalpojumu skripts. Pamēģiniet izmantot jaunāku pārlūka Chrome versiju."
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "Manifesta URL shēma ({scheme}) netiek atbalstīta operētājsistēmā Android."
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "Cumulative Layout Shift norāda redzamo elementu kustību skatvietā. [Uzziniet vairāk par rādītāju “Cumulative Layout Shift”](https://web.dev/cls/)."
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "Interaction to Next Paint nosaka lapas atbildi — laiku, kas lapai nepieciešams, lai redzami reaģētu uz lietotāja ievadi. [Uzziniet vairāk par rādītāju “Interaction to Next Paint”](https://web.dev/inp/)."
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "Rādītājs “First Contentful Paint” ataino laiku, kad tiek atveidots pirmais teksts vai attēls. [Uzziniet vairāk par rādītāju “First Contentful Paint”](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "Rādītājs “Pirmais nozīmīgais satura atveidojums” ataino, kad kļūst redzams lapas galvenais saturs. [Uzziniet vairāk par rādītāju “Pirmais nozīmīgais satura atveidojums”](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)."
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "Interaction to Next Paint nosaka lapas atbildi — laiku, kas lapai nepieciešams, lai redzami reaģētu uz lietotāja ievadi. [Uzziniet vairāk par rādītāju “Interaction to Next Paint”](https://web.dev/inp/)."
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "Rādītājs “Time to Interactive” ir laiks, kas nepieciešams, lai lapa kļūtu pilnībā interaktīva. [Uzziniet vairāk par rādītāju “Time to Interactive”](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "Nepieļaujiet vairākas lapas novirzīšanas"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "Lai iestatītu lapas resursu daudzuma un lieluma budžetus, pievienojiet failu “budget.json”. [Uzziniet vairāk par izpildes budžetiem](https://web.dev/use-lighthouse-for-performance-budgets/)."
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{Viens pieprasījums • {byteCount, number, bytes} KiB}zero{# pieprasījumu • {byteCount, number, bytes} KiB}one{# pieprasījums • {byteCount, number, bytes} KiB}other{# pieprasījumi • {byteCount, number, bytes} KiB}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "Uzturiet nelielu pieprasījumu skaitu un mazu pārsūtīšanas failu lielumu"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "Kanoniskās saites iesaka, kurus URL rādīt meklēšanas rezultātos. [Uzziniet vairāk par kanoniskajām saitēm](https://developer.chrome.com/docs/lighthouse/seo/canonical/)."
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "Sākotnējās servera atbildes laika bija īss"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "Pakalpojumu skripts ir tehnoloģija, kas palīdz nodrošināt daudzas progresīvo tīmekļa lietotņu funkcijas, piemēram, lietotnes izmantošanu bezsaistē, pievienošanu sākuma ekrānam un informatīvos paziņojumus. [Uzziniet vairāk par pakalpojumu skriptiem](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)."
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "Lapu kontrolē pakalpojumu skripts, taču netika atrasts `start_url`, jo neizdevās analizēt manifestu kā derīgu JSON failu"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "Lapu kontrolē pakalpojumu skripts, taču vietrādis URL `start_url` ({startUrl}) nav ietverts pakalpojumu skripta tvērumā ({scopeUrl})"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "Lapu kontrolē pakalpojumu skripts, taču netika atrasts `start_url`, jo manifests netika ienests."
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "Šim sākumpunktam ir viens vai vairāki pakalpojumu skripti, taču attiecīgā lapa ({pageUrl}) nav tvērumā."
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "Nav reģistrēts pakalpojumu skripts, kas kontrolētu lapu un `start_url`"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "Ir reģistrēts pakalpojumu skripts, kas kontrolē lapu un `start_url`"
   },
   "core/audits/splash-screen.js | description": {
     "message": "Uzplaiksnījuma ekrāns ar piemērotu motīvu nodrošina labu pieredzi, lietotājiem palaižot lietotni no sākuma ekrāna. [Uzziniet vairāk par uzplaiksnījuma ekrāniem](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)."
@@ -1623,7 +1707,7 @@
     "message": "Paraugprakse"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "Šīs atzīmes parāda iespējas [uzlabot jūsu tīmekļa lietotnes pieejamību](https://developer.chrome.com/docs/lighthouse/accessibility/). Automātiski var noteikt tikai pieejamības problēmu apakškopu, tāpēc ir ieteicama arī manuālā testēšana."
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Šie vienumi norāda uz vietām, kurām automātiskais testēšanas rīks nevar piekļūt. Uzziniet vairāk mūsu ceļvedī par [pieejamības pārskata veikšanu](https://web.dev/how-to-review/)."
@@ -2769,7 +2853,7 @@
     "message": "Instalējiet [Drupal moduli](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search), ar ko var veikt attēlu atlikto ielādi. Šādi moduļi sniedz iespēju atlikt jebkādu ārpus ekrāna esošu attēlu ielādi, lai uzlabotu veiktspēju."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Ieteicams izmantot moduli, piemēram, moduli [Izvērstā CSS/JS apkopošana](https://www.drupal.org/project/advagg), lai iekļautu būtisku CSS un JavaScript kodu vai potenciāli ielādētu līdzekļus asinhronā veidā, izmantojot JavaScript. Ņemiet vērā, ka šī moduļa nodrošinātā optimizācija var traucēt vietnes darbībai, tādēļ, visticamāk, jums būs jāveic izmaiņas kodā."
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Motīvi, moduļi un servera specifikācijas ietekmē servera atbildes laiku. Ieteicams atrast optimizētu motīvu, rūpīgi izvēlēties optimizācijas moduli un/vai jaunināt serveri. Mitināšanas serveros ir jāievieš PHP operācijas koda saglabāšana kešatmiņā, atmiņas saglabāšana kešatmiņā, lai samazinātu datu bāzes vaicājumu apstrādei nepieciešamo laiku, piemēram, Redis vai Memcached, kā arī optimizēta lietojumprogrammas loģika, lai varētu ātrāk sagatavot lapas."
@@ -2778,10 +2862,10 @@
     "message": "Ieteicams izmantot [adaptīvo attēlu stilus](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8), lai samazinātu lapā ielādēto attēlu lielumu. Ja saskarni Views izmantojat, lai lapā rādītu vairākus satura elementus, ieteicams ieviest lapdali, lai ierobežotu attiecīgajā lapā redzamo satura elementu skaitu."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Lapā “Administrācija » Konfigurācija » Izstrāde” jābūt iespējotai funkcijai “Apkopot CSS failus”. Varat arī konfigurēt uzlabotas apkopošanas iespējas [papildu moduļos](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search), lai paātrinātu vietnes darbību, savienojot, samazinot un saspiežot CSS stilus."
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Lapā “Administrācija » Konfigurācija » Izstrāde” jābūt iespējotai funkcijai “Apkopot JavaScript failus”. Varat arī konfigurēt uzlabotas apkopošanas iespējas [papildu moduļos](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search), lai paātrinātu vietnes darbību, savienojot, samazinot un saspiežot JavaScript līdzekļus."
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Ieteicams noņemt neizmantotās CSS kārtulas un pievienot tikai vajadzīgās Drupal bibliotēkas atbilstošajām lapām vai komponentiem lapā. Lai iegūtu detalizētu informāciju, skatiet [Drupal dokumentācijas saiti](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Lai identificētu pievienotās bibliotēkas, kas pievieno lieku CSS kodu, mēģiniet izpildīt [koda pārklājumu](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage), izmantojot Chrome DevTools. Attiecīgo motīvu/moduli varat identificēt stilu lapas vietrādī URL, kad Drupal vietnē ir atspējota CSS apkopošana. Meklējiet motīvus/moduļus, kuriem sarakstā ir daudz stilu lapu ar daudz sarkanām atzīmēm koda pārklājumā. Motīvam/modulim ir jāievieto rindā stilu lapu tikai tad, ja tā faktiski tiek izmantota tīmekļa lapā."
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "Iespējojiet saspiešanu savā Next.js serverī. [Uzziniet vairāk](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Izmantojiet komponentu `nuxt/image` un iestatiet vērtību `format=\"webp\"`. [Uzziniet vairāk](https://image.nuxtjs.org/components/nuxt-img#format)."
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "Varat mērīt komponentu renderēšanas veiktspēju ar spraudni React DevTools Profiler, kurā tiek izmantots Profiler API. [Uzziniet vairāk.](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "Ievietojiet videoklipus `VideoBoxes` tagos, pielāgojiet tos, izmantojot `Video Masks`, vai pievienojiet `Transparent Videos`. [Uzziniet vairāk](https://support.wix.com/en/article/wix-video-about-wix-video)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "Augšupielādējiet attēlus, izmantojot rīku `Wix Media Manager`, lai tie automātiski tiktu rādīti formātā WebP. Uzziniet, [kā vēl var optimizēt](https://support.wix.com/en/article/site-performance-optimizing-your-media) vietnes multivides saturu."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "Savas vietnes informācijas paneļa cilnē `Custom Code` [pievienojot trešās puses kodu](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site), gādājiet, lai šis kods tiktu ielādēts ar aizkavi vai koda kopas beigās. Lai iegultu vietnē mārketinga rīkus, ja iespējams, izmantojiet [Wix integrācijas](https://support.wix.com/en/article/about-marketing-integrations). "
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "Platformā Wix, izmantojot satura nodrošināšanas tīklus un saglabāšanu kešatmiņā, vairumam apmeklētāju atbildes tiek nosūtītas pēc iespējas ātrāk. Ieteicams vietnei [manuāli iespējot saglabāšanu kešatmiņā](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed), īpaši tad, ja izmantojat `Velo`."
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "Pārskatiet trešās puses kodu, ko esat pievienojis vietnei, izmantojot vietnes informācijas paneļa cilni `Custom Code`, un paturiet tikai vietnei nepieciešamos pakalpojumus. [Uzziniet vairāk](https://support.wix.com/en/article/site-performance-removing-unused-javascript)."
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "Ieteicams augšupielādēt GIF failu pakalpojumā, kuru varēs izmantot, lai iegultu GIF failu kā HTML5 videoklipu."
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "Saglabāt kā JSON"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Atvērt skatītājā"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "Vērtības ir aptuvenas un var atšķirties. [Veiktspējas rezultāts tiek aprēķināts](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/), pamatojoties tieši uz šiem metrikas veidiem."
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "Skatīt sākotnējo trasējumu"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "Skatīt trasējumu"

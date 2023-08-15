@@ -17,6 +17,15 @@
   "core/audits/accessibility/aria-allowed-attr.js | title": {
     "message": "[ᐅ`[aria-*]`ᐊ åţţŕîбûţéš måţçĥ ţĥéîŕ ŕöļéš one two three four five six seven]"
   },
+  "core/audits/accessibility/aria-allowed-role.js | description": {
+    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
+    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+  },
+  "core/audits/accessibility/aria-allowed-role.js | title": {
+    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+  },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "[Ŵĥéñ åñ éļéméñţ ðöéšñ'ţ ĥåvé åñ åççéššîбļé ñåmé, šçŕééñ ŕéåðéŕš åññöûñçé îţ ŵîţĥ å ĝéñéŕîç ñåmé, måķîñĝ îţ ûñûšåбļé ƒöŕ ûšéŕš ŵĥö ŕéļý öñ šçŕééñ ŕéåðéŕš. ᐅ[ᐊĻéåŕñ ĥöŵ ţö måķé çömmåñð éļéméñţš möŕé åççéššîбļéᐅ](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight]"
   },
@@ -25,6 +34,15 @@
   },
   "core/audits/accessibility/aria-command-name.js | title": {
     "message": "[ᐅ`button`ᐊ, ᐅ`link`ᐊ, åñð ᐅ`menuitem`ᐊ éļéméñţš ĥåvé åççéššîбļé ñåméš one two three four five six seven eight nine ten]"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | description": {
+    "message": "[ÅŔÎÅ ðîåļöĝ éļéméñţš ŵîţĥöûţ åççéššîбļé ñåméš måý þŕévéñţ šçŕééñ ŕéåðéŕš ûšéŕš ƒŕöm ðîšçéŕñîñĝ ţĥé þûŕþöšé öƒ ţĥéšé éļéméñţš. ᐅ[ᐊĻéåŕñ ĥöŵ ţö måķé ÅŔÎÅ ðîåļöĝ éļéméñţš möŕé åççéššîбļéᐅ](https://dequeuniversity.com/rules/axe/4.7/aria-dialog-name)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | failureTitle": {
+    "message": "[Éļéméñţš ŵîţĥ ᐅ`role=\"dialog\"`ᐊ öŕ ᐅ`role=\"alertdialog\"`ᐊ ðö ñöţ ĥåvé åççéššîбļé ñåméš. one two three four five six seven eight nine ten eleven]"
+  },
+  "core/audits/accessibility/aria-dialog-name.js | title": {
+    "message": "[Éļéméñţš ŵîţĥ ᐅ`role=\"dialog\"`ᐊ öŕ ᐅ`role=\"alertdialog\"`ᐊ ĥåvé åççéššîбļé ñåméš. one two three four five six seven eight nine ten]"
   },
   "core/audits/accessibility/aria-hidden-body.js | description": {
     "message": "[Åššîšţîvé ţéçĥñöļöĝîéš, ļîķé šçŕééñ ŕéåðéŕš, ŵöŕķ îñçöñšîšţéñţļý ŵĥéñ ᐅ`aria-hidden=\"true\"`ᐊ îš šéţ öñ ţĥé ðöçûméñţ ᐅ`<body>`ᐊ. ᐅ[ᐊĻéåŕñ ĥöŵ ᐅ`aria-hidden`ᐊ åƒƒéçţš ţĥé ðöçûméñţ бöðýᐅ](https://dequeuniversity.com/rules/axe/4.7/aria-hidden-body)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
@@ -106,6 +124,15 @@
   },
   "core/audits/accessibility/aria-roles.js | title": {
     "message": "[ᐅ`[role]`ᐊ våļûéš åŕé våļîð one two three four five]"
+  },
+  "core/audits/accessibility/aria-text.js | description": {
+    "message": "[Åððîñĝ ᐅ`role=text`ᐊ åŕöûñð å ţéxţ ñöðé šþļîţ бý måŕķûþ éñåбļéš VöîçéÖvéŕ ţö ţŕéåţ îţ åš öñé þĥŕåšé, бûţ ţĥé éļéméñţ'š ƒöçûšåбļé ðéšçéñðéñţš ŵîļļ ñöţ бé åññöûñçéð. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţĥé ᐅ`role=text`ᐊ åţţŕîбûţéᐅ](https://dequeuniversity.com/rules/axe/4.7/aria-text)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
+  },
+  "core/audits/accessibility/aria-text.js | failureTitle": {
+    "message": "[Éļéméñţš ŵîţĥ ţĥé ᐅ`role=text`ᐊ åţţŕîбûţé ðö ĥåvé ƒöçûšåбļé ðéšçéñðéñţš. one two three four five six seven eight nine ten eleven twelve]"
+  },
+  "core/audits/accessibility/aria-text.js | title": {
+    "message": "[Éļéméñţš ŵîţĥ ţĥé ᐅ`role=text`ᐊ åţţŕîбûţé ðö ñöţ ĥåvé ƒöçûšåбļé ðéšçéñðéñţš. one two three four five six seven eight nine ten eleven twelve thirteen]"
   },
   "core/audits/accessibility/aria-toggle-field-name.js | description": {
     "message": "[Ŵĥéñ å ţöĝĝļé ƒîéļð ðöéšñ'ţ ĥåvé åñ åççéššîбļé ñåmé, šçŕééñ ŕéåðéŕš åññöûñçé îţ ŵîţĥ å ĝéñéŕîç ñåmé, måķîñĝ îţ ûñûšåбļé ƒöŕ ûšéŕš ŵĥö ŕéļý öñ šçŕééñ ŕéåðéŕš. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţöĝĝļé ƒîéļðšᐅ](https://dequeuniversity.com/rules/axe/4.7/aria-toggle-field-name)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
@@ -227,6 +254,15 @@
   "core/audits/accessibility/duplicate-id-aria.js | title": {
     "message": "[ÅŔÎÅ ÎÐš åŕé ûñîqûé one two three four]"
   },
+  "core/audits/accessibility/empty-heading.js | description": {
+    "message": "[Å ĥéåðîñĝ ŵîţĥ ñö çöñţéñţ öŕ îñåççéššîбļé ţéxţ þŕévéñţ šçŕééñ ŕéåðéŕ ûšéŕš ƒŕöm åççéššîñĝ îñƒöŕmåţîöñ öñ ţĥé þåĝé'š šţŕûçţûŕé. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ĥéåðîñĝšᐅ](https://dequeuniversity.com/rules/axe/4.7/empty-heading)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree]"
+  },
+  "core/audits/accessibility/empty-heading.js | failureTitle": {
+    "message": "[Ĥéåðîñĝ éļéméñţš ðö ñöţ çöñţåîñ çöñţéñţ. one two three four five six seven eight]"
+  },
+  "core/audits/accessibility/empty-heading.js | title": {
+    "message": "[Åļļ ĥéåðîñĝ éļéméñţš çöñţåîñ çöñţéñţ. one two three four five six seven eight]"
+  },
   "core/audits/accessibility/form-field-multiple-labels.js | description": {
     "message": "[Föŕm ƒîéļðš ŵîţĥ mûļţîþļé ļåбéļš çåñ бé çöñƒûšîñĝļý åññöûñçéð бý åššîšţîvé ţéçĥñöļöĝîéš ļîķé šçŕééñ ŕéåðéŕš ŵĥîçĥ ûšé éîţĥéŕ ţĥé ƒîŕšţ, ţĥé ļåšţ, öŕ åļļ öƒ ţĥé ļåбéļš. ᐅ[ᐊĻéåŕñ ĥöŵ ţö ûšé ƒöŕm ļåбéļšᐅ](https://dequeuniversity.com/rules/axe/4.7/form-field-multiple-labels)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven]"
   },
@@ -281,6 +317,15 @@
   "core/audits/accessibility/html-xml-lang-mismatch.js | title": {
     "message": "[ᐅ`<html>`ᐊ éļéméñţ ĥåš åñ ᐅ`[xml:lang]`ᐊ åţţŕîбûţé ŵîţĥ ţĥé šåmé бåšé ļåñĝûåĝé åš ţĥé ᐅ`[lang]`ᐊ åţţŕîбûţé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
   },
+  "core/audits/accessibility/identical-links-same-purpose.js | description": {
+    "message": "[Ļîñķš ŵîţĥ ţĥé šåmé ðéšţîñåţîöñ šĥöûļð ĥåvé ţĥé šåmé ðéšçŕîþţîöñ, ţö ĥéļþ ûšéŕš ûñðéŕšţåñð ţĥé ļîñķ'š þûŕþöšé åñð ðéçîðé ŵĥéţĥéŕ ţö ƒöļļöŵ îţ. ᐅ[ᐊĻéåŕñ möŕé åбöûţ îðéñţîçåļ ļîñķšᐅ](https://dequeuniversity.com/rules/axe/4.7/identical-links-same-purpose)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | failureTitle": {
+    "message": "[Îðéñţîçåļ ļîñķš ðö ñöţ ĥåvé ţĥé šåmé þûŕþöšé. one two three four five six seven eight nine]"
+  },
+  "core/audits/accessibility/identical-links-same-purpose.js | title": {
+    "message": "[Îðéñţîçåļ ļîñķš ĥåvé ţĥé šåmé þûŕþöšé. one two three four five six seven eight]"
+  },
   "core/audits/accessibility/image-alt.js | description": {
     "message": "[Îñƒöŕmåţîvé éļéméñţš šĥöûļð åîm ƒöŕ šĥöŕţ, ðéšçŕîþţîvé åļţéŕñåţé ţéxţ. Ðéçöŕåţîvé éļéméñţš çåñ бé îĝñöŕéð ŵîţĥ åñ émþţý åļţ åţţŕîбûţé. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţĥé ᐅ`alt`ᐊ åţţŕîбûţéᐅ](https://dequeuniversity.com/rules/axe/4.7/image-alt)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
   },
@@ -289,6 +334,15 @@
   },
   "core/audits/accessibility/image-alt.js | title": {
     "message": "[Îmåĝé éļéméñţš ĥåvé ᐅ`[alt]`ᐊ åţţŕîбûţéš one two three four five six seven]"
+  },
+  "core/audits/accessibility/image-redundant-alt.js | description": {
+    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
+    "message": "Image elements have `[alt]` attributes that are redundant text."
+  },
+  "core/audits/accessibility/image-redundant-alt.js | title": {
+    "message": "Image elements do not have `[alt]` attributes that are redundant text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "[Åððîñĝ ðîšçéŕñåбļé åñð åççéššîбļé ţéxţ ţö îñþûţ бûţţöñš måý ĥéļþ šçŕééñ ŕéåðéŕ ûšéŕš ûñðéŕšţåñð ţĥé þûŕþöšé öƒ ţĥé îñþûţ бûţţöñ. ᐅ[ᐊĻéåŕñ möŕé åбöûţ îñþûţ бûţţöñšᐅ](https://dequeuniversity.com/rules/axe/4.7/input-button-name)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
@@ -308,6 +362,15 @@
   "core/audits/accessibility/input-image-alt.js | title": {
     "message": "[ᐅ`<input type=\"image\">`ᐊ éļéméñţš ĥåvé ᐅ`[alt]`ᐊ ţéxţ one two three four five six]"
   },
+  "core/audits/accessibility/label-content-name-mismatch.js | description": {
+    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
+    "message": "Elements with visible text labels do not have matching accessible names."
+  },
+  "core/audits/accessibility/label-content-name-mismatch.js | title": {
+    "message": "Elements with visible text labels have matching accessible names."
+  },
   "core/audits/accessibility/label.js | description": {
     "message": "[Ļåбéļš éñšûŕé ţĥåţ ƒöŕm çöñţŕöļš åŕé åññöûñçéð þŕöþéŕļý бý åššîšţîvé ţéçĥñöļöĝîéš, ļîķé šçŕééñ ŕéåðéŕš. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ƒöŕm éļéméñţ ļåбéļšᐅ](https://dequeuniversity.com/rules/axe/4.7/label)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
   },
@@ -316,6 +379,24 @@
   },
   "core/audits/accessibility/label.js | title": {
     "message": "[Föŕm éļéméñţš ĥåvé åššöçîåţéð ļåбéļš one two three four five six seven eight]"
+  },
+  "core/audits/accessibility/landmark-one-main.js | description": {
+    "message": "[Öñé måîñ ļåñðmåŕķ ĥéļþš šçŕééñ ŕéåðéŕ ûšéŕš ñåvîĝåţé å ŵéб þåĝé. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ļåñðmåŕķšᐅ](https://dequeuniversity.com/rules/axe/4.7/landmark-one-main)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+  },
+  "core/audits/accessibility/landmark-one-main.js | failureTitle": {
+    "message": "[Ðöçûméñţ ðöéš ñöţ ĥåvé å måîñ ļåñðmåŕķ. one two three four five six seven eight]"
+  },
+  "core/audits/accessibility/landmark-one-main.js | title": {
+    "message": "[Ðöçûméñţ ĥåš å måîñ ļåñðmåŕķ. one two three four five six seven]"
+  },
+  "core/audits/accessibility/link-in-text-block.js | description": {
+    "message": "[Ļöŵ-çöñţŕåšţ ţéxţ îš ðîƒƒîçûļţ öŕ îmþöššîбļé ƒöŕ måñý ûšéŕš ţö ŕéåð. Ļîñķ ţéxţ ţĥåţ îš ðîšçéŕñîбļé îmþŕövéš ţĥé éxþéŕîéñçé ƒöŕ ûšéŕš ŵîţĥ ļöŵ vîšîöñ. ᐅ[ᐊĻéåŕñ ĥöŵ ţö måķé ļîñķš ðîšţîñĝûîšĥåбļéᐅ](https://dequeuniversity.com/rules/axe/4.7/link-in-text-block)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
+  },
+  "core/audits/accessibility/link-in-text-block.js | failureTitle": {
+    "message": "[Ļîñķš ŕéļý öñ çöļöŕ ţö бé ðîšţîñĝûîšĥåбļé. one two three four five six seven eight nine]"
+  },
+  "core/audits/accessibility/link-in-text-block.js | title": {
+    "message": "[Ļîñķš åŕé ðîšţîñĝûîšĥåбļé ŵîţĥöûţ ŕéļýîñĝ öñ çöļöŕ. one two three four five six seven eight nine ten eleven]"
   },
   "core/audits/accessibility/link-name.js | description": {
     "message": "[Ļîñķ ţéxţ (åñð åļţéŕñåţé ţéxţ ƒöŕ îmåĝéš, ŵĥéñ ûšéð åš ļîñķš) ţĥåţ îš ðîšçéŕñîбļé, ûñîqûé, åñð ƒöçûšåбļé îmþŕövéš ţĥé ñåvîĝåţîöñ éxþéŕîéñçé ƒöŕ šçŕééñ ŕéåðéŕ ûšéŕš. ᐅ[ᐊĻéåŕñ ĥöŵ ţö måķé ļîñķš åççéššîбļéᐅ](https://dequeuniversity.com/rules/axe/4.7/link-name)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven]"
@@ -371,6 +452,24 @@
   "core/audits/accessibility/object-alt.js | title": {
     "message": "[ᐅ`<object>`ᐊ éļéméñţš ĥåvé åļţéŕñåţé ţéxţ one two three four five six seven]"
   },
+  "core/audits/accessibility/select-name.js | description": {
+    "message": "[Föŕm éļéméñţš ŵîţĥöûţ éƒƒéçţîvé ļåбéļš çåñ çŕéåţé ƒŕûšţŕåţîñĝ éxþéŕîéñçéš ƒöŕ šçŕééñ ŕéåðéŕ ûšéŕš. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţĥé ᐅ`select`ᐊ éļéméñţᐅ](https://dequeuniversity.com/rules/axe/4.7/select-name)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
+  },
+  "core/audits/accessibility/select-name.js | failureTitle": {
+    "message": "[Šéļéçţ éļéméñţš ðö ñöţ ĥåvé åššöçîåţéð ļåбéļ éļéméñţš. one two three four five six seven eight nine ten eleven]"
+  },
+  "core/audits/accessibility/select-name.js | title": {
+    "message": "[Šéļéçţ éļéméñţš ĥåvé åššöçîåţéð ļåбéļ éļéméñţš. one two three four five six seven eight nine ten]"
+  },
+  "core/audits/accessibility/skip-link.js | description": {
+    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+  },
+  "core/audits/accessibility/skip-link.js | failureTitle": {
+    "message": "Skip links are not focusable."
+  },
+  "core/audits/accessibility/skip-link.js | title": {
+    "message": "Skip links are focusable."
+  },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "[Å våļûé ĝŕéåţéŕ ţĥåñ 0 îmþļîéš åñ éxþļîçîţ ñåvîĝåţîöñ öŕðéŕîñĝ. Åļţĥöûĝĥ ţéçĥñîçåļļý våļîð, ţĥîš öƒţéñ çŕéåţéš ƒŕûšţŕåţîñĝ éxþéŕîéñçéš ƒöŕ ûšéŕš ŵĥö ŕéļý öñ åššîšţîvé ţéçĥñöļöĝîéš. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţĥé ᐅ`tabindex`ᐊ åţţŕîбûţéᐅ](https://dequeuniversity.com/rules/axe/4.7/tabindex)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine]"
   },
@@ -380,6 +479,15 @@
   "core/audits/accessibility/tabindex.js | title": {
     "message": "[Ñö éļéméñţ ĥåš å ᐅ`[tabindex]`ᐊ våļûé ĝŕéåţéŕ ţĥåñ 0 one two three four five six seven eight nine]"
   },
+  "core/audits/accessibility/table-duplicate-name.js | description": {
+    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+  },
+  "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
+    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+  },
+  "core/audits/accessibility/table-duplicate-name.js | title": {
+    "message": "Tables have different content in the summary attribute and `<caption>`."
+  },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "[Šçŕééñ ŕéåðéŕš ĥåvé ƒéåţûŕéš ţö måķé ñåvîĝåţîñĝ ţåбļéš éåšîéŕ. Éñšûŕîñĝ ţĥåţ ţåбļéš ûšé ţĥé åçţûåļ çåþţîöñ éļéméñţ îñšţéåð öƒ çéļļš ŵîţĥ ţĥé ᐅ`[colspan]`ᐊ åţţŕîбûţé måý îmþŕövé ţĥé éxþéŕîéñçé ƒöŕ šçŕééñ ŕéåðéŕ ûšéŕš. ᐅ[ᐊĻéåŕñ möŕé åбöûţ çåþţîöñšᐅ](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone]"
   },
@@ -388,6 +496,15 @@
   },
   "core/audits/accessibility/table-fake-caption.js | title": {
     "message": "[Ţåбļéš ûšé ᐅ`<caption>`ᐊ îñšţéåð öƒ çéļļš ŵîţĥ ţĥé ᐅ`[colspan]`ᐊ åţţŕîбûţé ţö îñðîçåţé å çåþţîöñ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "core/audits/accessibility/target-size.js | description": {
+    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+  },
+  "core/audits/accessibility/target-size.js | failureTitle": {
+    "message": "[Ţöûçĥ ţåŕĝéţš ðö ñöţ ĥåvé šûƒƒîçîéñţ šîžé öŕ šþåçîñĝ. one two three four five six seven eight nine ten eleven]"
+  },
+  "core/audits/accessibility/target-size.js | title": {
+    "message": "[Ţöûçĥ ţåŕĝéţš ĥåvé šûƒƒîçîéñţ šîžé åñð šþåçîñĝ. one two three four five six seven eight nine ten]"
   },
   "core/audits/accessibility/td-has-header.js | description": {
     "message": "[Šçŕééñ ŕéåðéŕš ĥåvé ƒéåţûŕéš ţö måķé ñåvîĝåţîñĝ ţåбļéš éåšîéŕ. Éñšûŕîñĝ ţĥåţ ᐅ`<td>`ᐊ éļéméñţš îñ å ļåŕĝé ţåбļé (3 öŕ möŕé çéļļš îñ ŵîðţĥ åñð ĥéîĝĥţ) ĥåvé åñ åššöçîåţéð ţåбļé ĥéåðéŕ måý îmþŕövé ţĥé éxþéŕîéñçé ƒöŕ šçŕééñ ŕéåðéŕ ûšéŕš. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţåбļé ĥéåðéŕšᐅ](https://dequeuniversity.com/rules/axe/4.7/td-has-header)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree]"
@@ -938,9 +1055,6 @@
   "core/audits/installable-manifest.js | no-manifest": {
     "message": "[Þåĝé ĥåš ñö måñîƒéšţ <link> ÛŔĻ one two three four five six]"
   },
-  "core/audits/installable-manifest.js | no-matching-service-worker": {
-    "message": "[Ñö måţçĥîñĝ šéŕvîçé ŵöŕķéŕ ðéţéçţéð. Ýöû måý ñééð ţö ŕéļöåð ţĥé þåĝé, öŕ çĥéçķ ţĥåţ ţĥé šçöþé öƒ ţĥé šéŕvîçé ŵöŕķéŕ ƒöŕ ţĥé çûŕŕéñţ þåĝé éñçļöšéš ţĥé šçöþé åñð šţåŕţ ÛŔĻ ƒŕöm ţĥé måñîƒéšţ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
-  },
   "core/audits/installable-manifest.js | no-url-for-service-worker": {
     "message": "[Çöûļð ñöţ çĥéçķ šéŕvîçé ŵöŕķéŕ ŵîţĥöûţ å 'šţåŕţ_ûŕļ' ƒîéļð îñ ţĥé måñîƒéšţ one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
   },
@@ -969,7 +1083,7 @@
     "message": "[þŕéƒéŕ_ŕéļåţéð_åþþļîçåţîöñš îš öñļý šûþþöŕţéð öñ Çĥŕömé Бéţå åñð Šţåбļé çĥåññéļš öñ Åñðŕöîð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "[Ļîĝĥţĥöûšé çöûļð ñöţ ðéţéŕmîñé îƒ ţĥéŕé ŵåš å šéŕvîçé ŵöŕķéŕ. Þļéåšé ţŕý ŵîţĥ å ñéŵéŕ véŕšîöñ öƒ Çĥŕömé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
+    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
   },
   "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
     "message": "[Ţĥé måñîƒéšţ ÛŔĻ šçĥémé (ᐅ{scheme}ᐊ) îš ñöţ šûþþöŕţéð öñ Åñðŕöîð. one two three four five six seven eight nine ten eleven twelve]"
@@ -1112,14 +1226,14 @@
   "core/audits/metrics/cumulative-layout-shift.js | description": {
     "message": "[Çûmûļåţîvé Ļåýöûţ Šĥîƒţ méåšûŕéš ţĥé mövéméñţ öƒ vîšîбļé éļéméñţš ŵîţĥîñ ţĥé vîéŵþöŕţ. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţĥé Çûmûļåţîvé Ļåýöûţ Šĥîƒţ méţŕîçᐅ](https://web.dev/cls/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
   },
-  "core/audits/metrics/experimental-interaction-to-next-paint.js | description": {
-    "message": "[Îñţéŕåçţîöñ ţö Ñéxţ Þåîñţ méåšûŕéš þåĝé ŕéšþöñšîvéñéšš, ĥöŵ ļöñĝ îţ ţåķéš ţĥé þåĝé ţö vîšîбļý ŕéšþöñð ţö ûšéŕ îñþûţ. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţĥé Îñţéŕåçţîöñ ţö Ñéxţ Þåîñţ méţŕîçᐅ](https://web.dev/inp/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
-  },
   "core/audits/metrics/first-contentful-paint.js | description": {
     "message": "[Fîŕšţ Çöñţéñţƒûļ Þåîñţ måŕķš ţĥé ţîmé åţ ŵĥîçĥ ţĥé ƒîŕšţ ţéxţ öŕ îmåĝé îš þåîñţéð. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţĥé Fîŕšţ Çöñţéñţƒûļ Þåîñţ méţŕîçᐅ](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
   },
   "core/audits/metrics/first-meaningful-paint.js | description": {
     "message": "[Fîŕšţ Méåñîñĝƒûļ Þåîñţ méåšûŕéš ŵĥéñ ţĥé þŕîmåŕý çöñţéñţ öƒ å þåĝé îš vîšîбļé. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţĥé Fîŕšţ Méåñîñĝƒûļ Þåîñţ méţŕîçᐅ](https://developer.chrome.com/docs/lighthouse/performance/first-meaningful-paint/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
+  },
+  "core/audits/metrics/interaction-to-next-paint.js | description": {
+    "message": "[Îñţéŕåçţîöñ ţö Ñéxţ Þåîñţ méåšûŕéš þåĝé ŕéšþöñšîvéñéšš, ĥöŵ ļöñĝ îţ ţåķéš ţĥé þåĝé ţö vîšîбļý ŕéšþöñð ţö ûšéŕ îñþûţ. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţĥé Îñţéŕåçţîöñ ţö Ñéxţ Þåîñţ méţŕîçᐅ](https://web.dev/inp/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive]"
   },
   "core/audits/metrics/interactive.js | description": {
     "message": "[Ţîmé ţö Îñţéŕåçţîvé îš ţĥé åmöûñţ öƒ ţîmé îţ ţåķéš ƒöŕ ţĥé þåĝé ţö бéçömé ƒûļļý îñţéŕåçţîvé. ᐅ[ᐊĻéåŕñ möŕé åбöûţ ţĥé Ţîmé ţö Îñţéŕåçţîvé méţŕîçᐅ](https://developer.chrome.com/docs/lighthouse/performance/interactive/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
@@ -1213,15 +1327,6 @@
   },
   "core/audits/redirects.js | title": {
     "message": "[Åvöîð mûļţîþļé þåĝé ŕéðîŕéçţš one two three four five six seven]"
-  },
-  "core/audits/resource-summary.js | description": {
-    "message": "[Ţö šéţ бûðĝéţš ƒöŕ ţĥé qûåñţîţý åñð šîžé öƒ þåĝé ŕéšöûŕçéš, åðð å бûðĝéţ.ĵšöñ ƒîļé. ᐅ[ᐊĻéåŕñ möŕé åбöûţ þéŕƒöŕmåñçé бûðĝéţšᐅ](https://web.dev/use-lighthouse-for-performance-budgets/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty]"
-  },
-  "core/audits/resource-summary.js | displayValue": {
-    "message": "{requestCount,plural, =1{[1 ŕéqûéšţ • ᐅ{byteCount, number, bytes}ᐊ ĶîБ one two three four]}other{[# ŕéqûéšţš • ᐅ{byteCount, number, bytes}ᐊ ĶîБ one two three four five]}}"
-  },
-  "core/audits/resource-summary.js | title": {
-    "message": "[Ķééþ ŕéqûéšţ çöûñţš ļöŵ åñð ţŕåñšƒéŕ šîžéš šmåļļ one two three four five six seven eight nine ten]"
   },
   "core/audits/seo/canonical.js | description": {
     "message": "[Çåñöñîçåļ ļîñķš šûĝĝéšţ ŵĥîçĥ ÛŔĻ ţö šĥöŵ îñ šéåŕçĥ ŕéšûļţš. ᐅ[ᐊĻéåŕñ möŕé åбöûţ çåñöñîçåļ ļîñķšᐅ](https://developer.chrome.com/docs/lighthouse/seo/canonical/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
@@ -1411,27 +1516,6 @@
   },
   "core/audits/server-response-time.js | title": {
     "message": "[Îñîţîåļ šéŕvéŕ ŕéšþöñšé ţîmé ŵåš šĥöŕţ one two three four five six seven eight]"
-  },
-  "core/audits/service-worker.js | description": {
-    "message": "[Ţĥé šéŕvîçé ŵöŕķéŕ îš ţĥé ţéçĥñöļöĝý ţĥåţ éñåбļéš ýöûŕ åþþ ţö ûšé måñý Þŕöĝŕéššîvé Ŵéб Åþþ ƒéåţûŕéš, šûçĥ åš öƒƒļîñé, åðð ţö ĥöméšçŕééñ, åñð þûšĥ ñöţîƒîçåţîöñš. ᐅ[ᐊĻéåŕñ möŕé åбöûţ Šéŕvîçé Ŵöŕķéŕšᐅ](https://developer.chrome.com/docs/lighthouse/pwa/service-worker/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven]"
-  },
-  "core/audits/service-worker.js | explanationBadManifest": {
-    "message": "[Ţĥîš þåĝé îš çöñţŕöļļéð бý å šéŕvîçé ŵöŕķéŕ, ĥöŵévéŕ ñö ᐅ`start_url`ᐊ ŵåš ƒöûñð бéçåûšé måñîƒéšţ ƒåîļéð ţö þåŕšé åš våļîð ĴŠÖÑ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
-  },
-  "core/audits/service-worker.js | explanationBadStartUrl": {
-    "message": "[Ţĥîš þåĝé îš çöñţŕöļļéð бý å šéŕvîçé ŵöŕķéŕ, ĥöŵévéŕ ţĥé ᐅ`start_url`ᐊ (ᐅ{startUrl}ᐊ) îš ñöţ îñ ţĥé šéŕvîçé ŵöŕķéŕ'š šçöþé (ᐅ{scopeUrl}ᐊ) one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen]"
-  },
-  "core/audits/service-worker.js | explanationNoManifest": {
-    "message": "[Ţĥîš þåĝé îš çöñţŕöļļéð бý å šéŕvîçé ŵöŕķéŕ, ĥöŵévéŕ ñö ᐅ`start_url`ᐊ ŵåš ƒöûñð бéçåûšé ñö måñîƒéšţ ŵåš ƒéţçĥéð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
-  },
-  "core/audits/service-worker.js | explanationOutOfScope": {
-    "message": "[Ţĥîš öŕîĝîñ ĥåš öñé öŕ möŕé šéŕvîçé ŵöŕķéŕš, ĥöŵévéŕ ţĥé þåĝé (ᐅ{pageUrl}ᐊ) îš ñöţ îñ šçöþé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen]"
-  },
-  "core/audits/service-worker.js | failureTitle": {
-    "message": "[Ðöéš ñöţ ŕéĝîšţéŕ å šéŕvîçé ŵöŕķéŕ ţĥåţ çöñţŕöļš þåĝé åñð ᐅ`start_url`ᐊ one two three four five six seven eight nine ten eleven twelve]"
-  },
-  "core/audits/service-worker.js | title": {
-    "message": "[Ŕéĝîšţéŕš å šéŕvîçé ŵöŕķéŕ ţĥåţ çöñţŕöļš þåĝé åñð ᐅ`start_url`ᐊ one two three four five six seven eight nine ten eleven]"
   },
   "core/audits/splash-screen.js | description": {
     "message": "[Å ţĥéméð šþļåšĥ šçŕééñ éñšûŕéš å ĥîĝĥ-qûåļîţý éxþéŕîéñçé ŵĥéñ ûšéŕš ļåûñçĥ ýöûŕ åþþ ƒŕöm ţĥéîŕ ĥöméšçŕééñš. ᐅ[ᐊĻéåŕñ möŕé åбöûţ šþļåšĥ šçŕééñšᐅ](https://developer.chrome.com/docs/lighthouse/pwa/splash-screen/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
@@ -1623,7 +1707,7 @@
     "message": "[Бéšţ þŕåçţîçéš one two]"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "[Ţĥéšé çĥéçķš ĥîĝĥļîĝĥţ öþþöŕţûñîţîéš ţö ᐅ[ᐊîmþŕövé ţĥé åççéššîбîļîţý öƒ ýöûŕ ŵéб åþþᐅ](https://developer.chrome.com/docs/lighthouse/accessibility/)ᐊ. Öñļý å šûбšéţ öƒ åççéššîбîļîţý îššûéš çåñ бé åûţömåţîçåļļý ðéţéçţéð šö måñûåļ ţéšţîñĝ îš åļšö éñçöûŕåĝéð. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix]"
+    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "[Ţĥéšé îţémš åððŕéšš åŕéåš ŵĥîçĥ åñ åûţömåţéð ţéšţîñĝ ţööļ çåññöţ çövéŕ. Ļéåŕñ möŕé îñ öûŕ ĝûîðé öñ ᐅ[ᐊçöñðûçţîñĝ åñ åççéššîбîļîţý ŕévîéŵᐅ](https://web.dev/how-to-review/)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone]"
@@ -2769,7 +2853,7 @@
     "message": "[Îñšţåļļ ᐅ[ᐊå Ðŕûþåļ möðûļéᐅ](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search)ᐊ ţĥåţ çåñ ļåžý ļöåð îmåĝéš. Šûçĥ möðûļéš þŕövîðé ţĥé åбîļîţý ţö ðéƒéŕ åñý öƒƒšçŕééñ îmåĝéš ţö îmþŕövé þéŕƒöŕmåñçé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "[Çöñšîðéŕ ûšîñĝ å möðûļé ţö îñļîñé çŕîţîçåļ ÇŠŠ åñð ĴåvåŠçŕîþţ, öŕ þöţéñţîåļļý ļöåð åššéţš åšýñçĥŕöñöûšļý vîå ĴåvåŠçŕîþţ šûçĥ åš ţĥé ᐅ[ᐊÅðvåñçéð ÇŠŠ/ĴŠ Åĝĝŕéĝåţîöñᐅ](https://www.drupal.org/project/advagg)ᐊ möðûļé. Бéŵåŕé ţĥåţ öþţîmîžåţîöñš þŕövîðéð бý ţĥîš möðûļé måý бŕéåķ ýöûŕ šîţé, šö ýöû ŵîļļ ļîķéļý ñééð ţö måķé çöðé çĥåñĝéš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive]"
+    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "[Ţĥéméš, möðûļéš, åñð šéŕvéŕ šþéçîƒîçåţîöñš åļļ çöñţŕîбûţé ţö šéŕvéŕ ŕéšþöñšé ţîmé. Çöñšîðéŕ ƒîñðîñĝ å möŕé öþţîmîžéð ţĥémé, çåŕéƒûļļý šéļéçţîñĝ åñ öþţîmîžåţîöñ möðûļé, åñð/öŕ ûþĝŕåðîñĝ ýöûŕ šéŕvéŕ. Ýöûŕ ĥöšţîñĝ šéŕvéŕš šĥöûļð måķé ûšé öƒ ÞĤÞ öþçöðé çåçĥîñĝ, mémöŕý-çåçĥîñĝ ţö ŕéðûçé ðåţåбåšé qûéŕý ţîméš šûçĥ åš Ŕéðîš öŕ Mémçåçĥéð, åš ŵéļļ åš öþţîmîžéð åþþļîçåţîöñ ļöĝîç ţö þŕéþåŕé þåĝéš ƒåšţéŕ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix thirtyseven thirtyeight thirtynine forty one two three four five six seven eight nine ten eleven]"
@@ -2778,10 +2862,10 @@
     "message": "[Çöñšîðéŕ ûšîñĝ ᐅ[ᐊŔéšþöñšîvé Îmåĝé Šţýļéšᐅ](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)ᐊ ţö ŕéðûçé ţĥé šîžé öƒ îmåĝéš ļöåðéð öñ ýöûŕ þåĝé. Îƒ ýöû åŕé ûšîñĝ Vîéŵš ţö šĥöŵ mûļţîþļé çöñţéñţ îţémš öñ å þåĝé, çöñšîðéŕ îmþļéméñţîñĝ þåĝîñåţîöñ ţö ļîmîţ ţĥé ñûmбéŕ öƒ çöñţéñţ îţémš šĥöŵñ öñ å ĝîvéñ þåĝé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo]"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "[Éñšûŕé ýöû ĥåvé éñåбļéð \"Åĝĝŕéĝåţé ÇŠŠ ƒîļéš\" îñ ţĥé \"Åðmîñîšţŕåţîöñ » Çöñƒîĝûŕåţîöñ » Ðévéļöþméñţ\" þåĝé. Ýöû çåñ åļšö çöñƒîĝûŕé möŕé åðvåñçéð åĝĝŕéĝåţîöñ öþţîöñš ţĥŕöûĝĥ ᐅ[ᐊåððîţîöñåļ möðûļéšᐅ](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=css+aggregation&solrsort=iss_project_release_usage+desc&op=Search)ᐊ ţö šþééð ûþ ýöûŕ šîţé бý çöñçåţéñåţîñĝ, mîñîƒýîñĝ, åñð çömþŕéššîñĝ ýöûŕ ÇŠŠ šţýļéš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour]"
+    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "[Éñšûŕé ýöû ĥåvé éñåбļéð \"Åĝĝŕéĝåţé ĴåvåŠçŕîþţ ƒîļéš\" îñ ţĥé \"Åðmîñîšţŕåţîöñ » Çöñƒîĝûŕåţîöñ » Ðévéļöþméñţ\" þåĝé. Ýöû çåñ åļšö çöñƒîĝûŕé möŕé åðvåñçéð åĝĝŕéĝåţîöñ öþţîöñš ţĥŕöûĝĥ ᐅ[ᐊåððîţîöñåļ möðûļéšᐅ](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=javascript+aggregation&solrsort=iss_project_release_usage+desc&op=Search)ᐊ ţö šþééð ûþ ýöûŕ šîţé бý çöñçåţéñåţîñĝ, mîñîƒýîñĝ, åñð çömþŕéššîñĝ ýöûŕ ĴåvåŠçŕîþţ åššéţš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix]"
+    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "[Çöñšîðéŕ ŕémövîñĝ ûñûšéð ÇŠŠ ŕûļéš åñð öñļý åţţåçĥ ţĥé ñééðéð Ðŕûþåļ ļîбŕåŕîéš ţö ţĥé ŕéļévåñţ þåĝé öŕ çömþöñéñţ îñ å þåĝé. Šéé ţĥé ᐅ[ᐊÐŕûþåļ ðöçûméñţåţîöñ ļîñķᐅ](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library)ᐊ ƒöŕ ðéţåîļš. Ţö îðéñţîƒý åţţåçĥéð ļîбŕåŕîéš ţĥåţ åŕé åððîñĝ éxţŕåñéöûš ÇŠŠ, ţŕý ŕûññîñĝ ᐅ[ᐊçöðé çövéŕåĝéᐅ](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)ᐊ îñ Çĥŕömé ÐévŢööļš. Ýöû çåñ îðéñţîƒý ţĥé ţĥémé/möðûļé ŕéšþöñšîбļé ƒŕöm ţĥé ÛŔĻ öƒ ţĥé šţýļéšĥééţ ŵĥéñ ÇŠŠ åĝĝŕéĝåţîöñ îš ðîšåбļéð îñ ýöûŕ Ðŕûþåļ šîţé. Ļööķ öûţ ƒöŕ ţĥéméš/möðûļéš ţĥåţ ĥåvé måñý šţýļéšĥééţš îñ ţĥé ļîšţ ŵĥîçĥ ĥåvé å ļöţ öƒ ŕéð îñ çöðé çövéŕåĝé. Å ţĥémé/möðûļé šĥöûļð öñļý éñqûéûé å šţýļéšĥééţ îƒ îţ îš åçţûåļļý ûšéð öñ ţĥé þåĝé. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour thirtyfive thirtysix thirtyseven thirtyeight thirtynine forty one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine thirty thirtyone thirtytwo thirtythree thirtyfour]"
@@ -2981,6 +3065,48 @@
   "node_modules/lighthouse-stack-packs/packs/next.js | uses-text-compression": {
     "message": "[Éñåбļé çömþŕéššîöñ öñ ýöûŕ Ñéxţ.ĵš šéŕvéŕ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://nextjs.org/docs/api-reference/next.config.js/compression)ᐊ. one two three four five six seven eight nine ten eleven twelve]"
   },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
+    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
+    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
+    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
+    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
+    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
+    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
+    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
+    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
+    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
+    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
+    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
+    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+  },
+  "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
+    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+  },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "[Ûšé ţĥé ᐅ`nuxt/image`ᐊ çömþöñéñţ åñð šéţ ᐅ`format=\"webp\"`ᐊ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://image.nuxtjs.org/components/nuxt-img#format)ᐊ. one two three four five six seven eight nine ten eleven]"
   },
@@ -3061,6 +3187,21 @@
   },
   "node_modules/lighthouse-stack-packs/packs/react.js | user-timings": {
     "message": "[Ûšé ţĥé Ŕéåçţ ÐévŢööļš Þŕöƒîļéŕ, ŵĥîçĥ måķéš ûšé öƒ ţĥé Þŕöƒîļéŕ ÅÞÎ, ţö méåšûŕé ţĥé ŕéñðéŕîñĝ þéŕƒöŕmåñçé öƒ ýöûŕ çömþöñéñţš. ᐅ[ᐊĻéåŕñ möŕé.ᐅ](https://reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html)ᐊ one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | efficient-animated-content": {
+    "message": "[Þļåçé vîðéöš îñšîðé ᐅ`VideoBoxes`ᐊ, çûšţömîžé ţĥém ûšîñĝ ᐅ`Video Masks`ᐊ öŕ åðð ᐅ`Transparent Videos`ᐊ. ᐅ[ᐊĻéåŕñ möŕéᐅ](https://support.wix.com/en/article/wix-video-about-wix-video)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | modern-image-formats": {
+    "message": "[Ûþļöåð îmåĝéš ûšîñĝ ᐅ`Wix Media Manager`ᐊ ţö éñšûŕé ţĥéý åŕé åûţömåţîçåļļý šéŕvéð åš ŴéбÞ. Fîñð ᐅ[ᐊmöŕé ŵåýš ţö öþţîmîžéᐅ](https://support.wix.com/en/article/site-performance-optimizing-your-media)ᐊ ýöûŕ šîţé'š méðîå. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | render-blocking-resources": {
+    "message": "[Ŵĥéñ ᐅ[ᐊåððîñĝ ţĥîŕð-þåŕţý çöðéᐅ](https://support.wix.com/en/article/site-performance-using-third-party-code-on-your-site)ᐊ îñ ţĥé ᐅ`Custom Code`ᐊ ţåб öƒ ýöûŕ šîţé'š ðåšĥбöåŕð, måķé šûŕé îţ'š ðéƒéŕŕéð öŕ ļöåðéð åţ ţĥé éñð öƒ ţĥé çöðé бöðý. Ŵĥéŕé þöššîбļé, ûšé Ŵîx’š ᐅ[ᐊîñţéĝŕåţîöñšᐅ](https://support.wix.com/en/article/about-marketing-integrations)ᐊ ţö émбéð måŕķéţîñĝ ţööļš öñ ýöûŕ šîţé.  one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour twentyfive twentysix twentyseven twentyeight twentynine]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | server-response-time": {
+    "message": "[Ŵîx ûţîļîžéš ÇÐÑš åñð çåçĥîñĝ ţö šéŕvé ŕéšþöñšéš åš ƒåšţ åš þöššîбļé ƒöŕ möšţ vîšîţöŕš. Çöñšîðéŕ ᐅ[ᐊmåñûåļļý éñåбļîñĝ çåçĥîñĝᐅ](https://support.wix.com/en/article/site-performance-caching-pages-to-optimize-loading-speed)ᐊ ƒöŕ ýöûŕ šîţé, éšþéçîåļļý îƒ ûšîñĝ ᐅ`Velo`ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
+  },
+  "node_modules/lighthouse-stack-packs/packs/wix.js | unused-javascript": {
+    "message": "[Ŕévîéŵ åñý ţĥîŕð-þåŕţý çöðé ýöû'vé åððéð ţö ýöûŕ šîţé îñ ţĥé ᐅ`Custom Code`ᐊ ţåб öƒ ýöûŕ šîţé'š ðåšĥбöåŕð åñð öñļý ķééþ ţĥé šéŕvîçéš ţĥåţ åŕé ñéçéššåŕý ţö ýöûŕ šîţé. ᐅ[ᐊFîñð öûţ möŕéᐅ](https://support.wix.com/en/article/site-performance-removing-unused-javascript)ᐊ. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone twentytwo twentythree twentyfour]"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | efficient-animated-content": {
     "message": "[Çöñšîðéŕ ûþļöåðîñĝ ýöûŕ ĜÎF ţö å šéŕvîçé ŵĥîçĥ ŵîļļ måķé îţ åvåîļåбļé ţö émбéð åš åñ ĤŢMĻ5 vîðéö. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen]"
@@ -3166,6 +3307,9 @@
   },
   "report/renderer/report-utils.js | dropdownSaveJSON": {
     "message": "[Šåvé åš ĴŠÖÑ one two]"
+  },
+  "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
+    "message": "View Unthrottled Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "[Öþéñ îñ Vîéŵéŕ one two]"
@@ -3286,9 +3430,6 @@
   },
   "report/renderer/report-utils.js | varianceDisclaimer": {
     "message": "[Våļûéš åŕé éšţîmåţéð åñð måý våŕý. Ţĥé ᐅ[ᐊþéŕƒöŕmåñçé šçöŕé îš çåļçûļåţéðᐅ](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/)ᐊ ðîŕéçţļý ƒŕöm ţĥéšé méţŕîçš. one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen]"
-  },
-  "report/renderer/report-utils.js | viewOriginalTraceLabel": {
-    "message": "[Vîéŵ Öŕîĝîñåļ Ţŕåçé one two three]"
   },
   "report/renderer/report-utils.js | viewTraceLabel": {
     "message": "[Vîéŵ Ţŕåçé one two]"

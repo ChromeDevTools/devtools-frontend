@@ -68,7 +68,7 @@ const UIStrings = {
   /**
    *@description Link to learn more about Preloading
    */
-  learnMore: 'Learn more',
+  learnMore: 'Learn more: Preloading on developer.chrome.com',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/UsedPreloadingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

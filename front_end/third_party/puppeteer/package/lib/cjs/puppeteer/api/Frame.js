@@ -16,6 +16,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Frame = void 0;
+const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const GetQueryHandler_js_1 = require("../common/GetQueryHandler.js");
 const LazyArg_js_1 = require("../common/LazyArg.js");
 const util_js_1 = require("../common/util.js");
@@ -73,7 +74,7 @@ const locators_js_1 = require("./locators/locators.js");
  *
  * @public
  */
-class Frame {
+class Frame extends EventEmitter_js_1.EventEmitter {
     /**
      * @internal
      */
@@ -97,7 +98,9 @@ class Frame {
     /**
      * @internal
      */
-    constructor() { }
+    constructor() {
+        super();
+    }
     /**
      * The page associated with the frame.
      */

@@ -24,9 +24,13 @@ export type Predicate<From, To extends From = From> = ((value: From) => value is
 /**
  * @internal
  */
+export type HandlePredicate<From, To extends From = From> = ((value: HandleFor<From>, signal?: AbortSignal) => value is HandleFor<To>) | ((value: HandleFor<From>, signal?: AbortSignal) => Awaitable<boolean>);
+/**
+ * @internal
+ */
 export declare class FilteredLocator<From, To extends From> extends DelegatedLocator<From, To> {
     #private;
-    constructor(base: Locator<From>, predicate: Predicate<From, To>);
+    constructor(base: Locator<From>, predicate: HandlePredicate<From, To>);
     _clone(): FilteredLocator<From, To>;
     _wait(options?: Readonly<ActionOptions>): Observable<HandleFor<To>>;
 }

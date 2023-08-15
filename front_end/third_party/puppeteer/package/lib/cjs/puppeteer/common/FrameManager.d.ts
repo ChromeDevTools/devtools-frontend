@@ -40,8 +40,6 @@ export declare const FrameManagerEmittedEvents: {
     FrameSwapped: symbol;
     LifecycleEvent: symbol;
     FrameNavigatedWithinDocument: symbol;
-    ExecutionContextCreated: symbol;
-    ExecutionContextDestroyed: symbol;
 };
 /**
  * A frame manager manages the frames for a given {@link Page | page}.

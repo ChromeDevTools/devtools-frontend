@@ -406,7 +406,10 @@ export class Locator extends EventEmitter {
      * @public
      */
     map(mapper) {
-        return new MappedLocator(this._clone(), mapper);
+        return new MappedLocator(this._clone(), handle => {
+            // SAFETY: TypeScript cannot deduce the type.
+            return handle.evaluateHandle(mapper);
+        });
     }
     /**
      * Creates an expectation that is evaluated against located values.
@@ -416,7 +419,28 @@ export class Locator extends EventEmitter {
      * @public
      */
     filter(predicate) {
+        return new FilteredLocator(this._clone(), async (handle, signal) => {
+            await handle.frame.waitForFunction(predicate, { signal, timeout: this._timeout }, handle);
+            return true;
+        });
+    }
+    /**
+     * Creates an expectation that is evaluated against located handles.
+     *
+     * If the expectations do not match, then the locator will retry.
+     *
+     * @internal
+     */
+    filterHandle(predicate) {
         return new FilteredLocator(this._clone(), predicate);
+    }
+    /**
+     * Maps the locator using the provided mapper.
+     *
+     * @internal
+     */
+    mapHandle(mapper) {
+        return new MappedLocator(this._clone(), mapper);
     }
     click(options) {
         return firstValueFrom(this.#click(options));

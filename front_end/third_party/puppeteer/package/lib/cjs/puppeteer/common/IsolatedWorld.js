@@ -133,7 +133,7 @@ class IsolatedWorld {
     async setContent(html, options = {}) {
         const { waitUntil = ['load'], timeout = this.#timeoutSettings.navigationTimeout(), } = options;
         await (0, util_js_1.setPageContent)(this, html);
-        const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this.#frameManager, this.#frame, waitUntil, timeout);
+        const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this.#frameManager.networkManager, this.#frame, waitUntil, timeout);
         const error = await Deferred_js_1.Deferred.race([
             watcher.terminationPromise(),
             watcher.lifecyclePromise(),

@@ -44,8 +44,6 @@ exports.FrameManagerEmittedEvents = {
     FrameSwapped: Symbol('FrameManager.FrameSwapped'),
     LifecycleEvent: Symbol('FrameManager.LifecycleEvent'),
     FrameNavigatedWithinDocument: Symbol('FrameManager.FrameNavigatedWithinDocument'),
-    ExecutionContextCreated: Symbol('FrameManager.ExecutionContextCreated'),
-    ExecutionContextDestroyed: Symbol('FrameManager.ExecutionContextDestroyed'),
 };
 /**
  * A frame manager manages the frames for a given {@link Page | page}.
@@ -86,6 +84,12 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         this.#networkManager = new NetworkManager_js_1.NetworkManager(client, ignoreHTTPSErrors, this);
         this.#timeoutSettings = timeoutSettings;
         this.setupEventListeners(this.#client);
+        client.once(Connection_js_1.CDPSessionEmittedEvents.Disconnected, () => {
+            const mainFrame = this._frameTree.getMainFrame();
+            if (mainFrame) {
+                this.#removeFramesRecursively(mainFrame);
+            }
+        });
     }
     setupEventListeners(session) {
         session.on('Page.frameAttached', event => {
@@ -198,6 +202,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         }
         frame._onLifecycleEvent(event.loaderId, event.name);
         this.emit(exports.FrameManagerEmittedEvents.LifecycleEvent, frame);
+        frame.emit(Frame_js_1.FrameEmittedEvents.LifecycleEvent);
     }
     #onFrameStartedLoading(frameId) {
         const frame = this.frame(frameId);
@@ -213,6 +218,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         }
         frame._onLoadingStopped();
         this.emit(exports.FrameManagerEmittedEvents.LifecycleEvent, frame);
+        frame.emit(Frame_js_1.FrameEmittedEvents.LifecycleEvent);
     }
     #handleFrameTree(session, frameTree) {
         if (frameTree.frame.parentId) {
@@ -272,6 +278,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         frame = await this._frameTree.waitForFrame(frameId);
         frame._navigated(framePayload);
         this.emit(exports.FrameManagerEmittedEvents.FrameNavigated, frame);
+        frame.emit(Frame_js_1.FrameEmittedEvents.FrameNavigated);
     }
     async #createIsolatedWorld(session, name) {
         const key = `${session.id()}:${name}`;
@@ -306,7 +313,9 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         }
         frame._navigatedWithinDocument(url);
         this.emit(exports.FrameManagerEmittedEvents.FrameNavigatedWithinDocument, frame);
+        frame.emit(Frame_js_1.FrameEmittedEvents.FrameNavigatedWithinDocument);
         this.emit(exports.FrameManagerEmittedEvents.FrameNavigated, frame);
+        frame.emit(Frame_js_1.FrameEmittedEvents.FrameNavigated);
     }
     #onFrameDetached(frameId, reason) {
         const frame = this.frame(frameId);
@@ -320,6 +329,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         }
         else if (reason === 'swap') {
             this.emit(exports.FrameManagerEmittedEvents.FrameSwapped, frame);
+            frame?.emit(Frame_js_1.FrameEmittedEvents.FrameSwapped);
         }
     }
     #onExecutionContextCreated(contextPayload, session) {
@@ -381,6 +391,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         frame._detach();
         this._frameTree.removeFrame(frame);
         this.emit(exports.FrameManagerEmittedEvents.FrameDetached, frame);
+        frame.emit(Frame_js_1.FrameEmittedEvents.FrameDetached, frame);
     }
 }
 exports.FrameManager = FrameManager;

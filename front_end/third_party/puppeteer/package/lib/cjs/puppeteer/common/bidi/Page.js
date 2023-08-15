@@ -492,6 +492,19 @@ class Page extends Page_js_1.Page {
             context: this.mainFrame()._id,
         });
     }
+    async evaluateOnNewDocument(pageFunction, ...args) {
+        const expression = evaluationExpression(pageFunction, ...args);
+        const { result } = await this.#connection.send('script.addPreloadScript', {
+            functionDeclaration: expression,
+            // TODO: should change spec to accept browsingContext
+        });
+        return { identifier: result.script };
+    }
+    async removeScriptToEvaluateOnNewDocument(id) {
+        await this.#connection.send('script.removePreloadScript', {
+            script: id,
+        });
+    }
 }
 exports.Page = Page;
 function isConsoleLogEntry(event) {
@@ -512,5 +525,8 @@ function getStackTraceLocations(stackTrace) {
         }
     }
     return stackTraceLocations;
+}
+function evaluationExpression(fun, ...args) {
+    return `() => {${(0, util_js_1.evaluationString)(fun, ...args)}}`;
 }
 //# sourceMappingURL=Page.js.map

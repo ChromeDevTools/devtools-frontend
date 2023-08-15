@@ -18,6 +18,7 @@ import { HTTPResponse } from '../api/HTTPResponse.js';
 import { Page, WaitTimeoutOptions } from '../api/Page.js';
 import { CDPSession } from '../common/Connection.js';
 import { DeviceRequestPrompt } from '../common/DeviceRequestPrompt.js';
+import { EventEmitter } from '../common/EventEmitter.js';
 import { ExecutionContext } from '../common/ExecutionContext.js';
 import { IsolatedWorldChart, WaitForSelectorOptions } from '../common/IsolatedWorld.js';
 import { PuppeteerLifeCycleEvent } from '../common/LifecycleWatcher.js';
@@ -178,7 +179,7 @@ export interface FrameAddStyleTagOptions {
  *
  * @public
  */
-export declare class Frame {
+export declare class Frame extends EventEmitter {
     /**
      * @internal
      */

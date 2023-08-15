@@ -2141,7 +2141,7 @@ export declare type FlattenHandle<T> = T extends HandleOr<infer U> ? U : never;
  *
  * @public
  */
-export declare class Frame {
+export declare class Frame extends EventEmitter {
     /* Excluded from this release type: _id */
     /* Excluded from this release type: _parentId */
     /* Excluded from this release type: worlds */
@@ -2742,10 +2742,14 @@ export declare interface GeolocationOptions {
  */
 export declare type HandleFor<T> = T extends Node ? ElementHandle<T> : JSHandle<T>;
 
+/* Excluded from this release type: HandleMapper */
+
 /**
  * @public
  */
 export declare type HandleOr<T> = HandleFor<T> | JSHandle<T> | T;
+
+/* Excluded from this release type: HandlePredicate */
 
 /**
  * @public
@@ -3690,6 +3694,8 @@ export declare abstract class Locator<T> extends EventEmitter {
      * @public
      */
     filter<S extends T>(predicate: Predicate<T, S>): Locator<S>;
+    /* Excluded from this release type: filterHandle */
+    /* Excluded from this release type: mapHandle */
     click<ElementType extends Element>(this: Locator<ElementType>, options?: Readonly<LocatorClickOptions>): Promise<void>;
     /**
      * Fills out the input identified by the locator using the provided value. The

@@ -23,9 +23,13 @@ export type Mapper<From, To> = (value: From) => Awaitable<To>;
 /**
  * @internal
  */
+export type HandleMapper<From, To> = (value: HandleFor<From>, signal?: AbortSignal) => Awaitable<HandleFor<To>>;
+/**
+ * @internal
+ */
 export declare class MappedLocator<From, To> extends DelegatedLocator<From, To> {
     #private;
-    constructor(base: Locator<From>, mapper: Mapper<From, To>);
+    constructor(base: Locator<From>, mapper: HandleMapper<From, To>);
     _clone(): MappedLocator<From, To>;
     _wait(options?: Readonly<ActionOptions>): Observable<HandleFor<To>>;
 }

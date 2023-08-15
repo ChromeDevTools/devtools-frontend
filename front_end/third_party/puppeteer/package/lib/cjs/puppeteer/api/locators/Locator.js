@@ -409,7 +409,10 @@ class Locator extends EventEmitter_js_1.EventEmitter {
      * @public
      */
     map(mapper) {
-        return new locators_js_1.MappedLocator(this._clone(), mapper);
+        return new locators_js_1.MappedLocator(this._clone(), handle => {
+            // SAFETY: TypeScript cannot deduce the type.
+            return handle.evaluateHandle(mapper);
+        });
     }
     /**
      * Creates an expectation that is evaluated against located values.
@@ -419,7 +422,28 @@ class Locator extends EventEmitter_js_1.EventEmitter {
      * @public
      */
     filter(predicate) {
+        return new locators_js_1.FilteredLocator(this._clone(), async (handle, signal) => {
+            await handle.frame.waitForFunction(predicate, { signal, timeout: this._timeout }, handle);
+            return true;
+        });
+    }
+    /**
+     * Creates an expectation that is evaluated against located handles.
+     *
+     * If the expectations do not match, then the locator will retry.
+     *
+     * @internal
+     */
+    filterHandle(predicate) {
         return new locators_js_1.FilteredLocator(this._clone(), predicate);
+    }
+    /**
+     * Maps the locator using the provided mapper.
+     *
+     * @internal
+     */
+    mapHandle(mapper) {
+        return new locators_js_1.MappedLocator(this._clone(), mapper);
     }
     click(options) {
         return (0, rxjs_js_1.firstValueFrom)(this.#click(options));

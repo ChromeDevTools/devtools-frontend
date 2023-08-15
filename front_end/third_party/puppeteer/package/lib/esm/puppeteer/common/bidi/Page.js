@@ -25,7 +25,7 @@ import { FrameTree } from '../FrameTree.js';
 import { NetworkManagerEmittedEvents } from '../NetworkManager.js';
 import { TimeoutSettings } from '../TimeoutSettings.js';
 import { Tracing } from '../Tracing.js';
-import { debugError, isString, validateDialogType, waitForEvent, waitWithTimeout, withSourcePuppeteerURLIfNone, } from '../util.js';
+import { debugError, evaluationString, isString, validateDialogType, waitForEvent, waitWithTimeout, withSourcePuppeteerURLIfNone, } from '../util.js';
 import { BrowsingContextEmittedEvents, CDPSessionWrapper, } from './BrowsingContext.js';
 import { Dialog } from './Dialog.js';
 import { Frame } from './Frame.js';
@@ -466,6 +466,19 @@ export class Page extends PageBase {
             context: this.mainFrame()._id,
         });
     }
+    async evaluateOnNewDocument(pageFunction, ...args) {
+        const expression = evaluationExpression(pageFunction, ...args);
+        const { result } = await this.#connection.send('script.addPreloadScript', {
+            functionDeclaration: expression,
+            // TODO: should change spec to accept browsingContext
+        });
+        return { identifier: result.script };
+    }
+    async removeScriptToEvaluateOnNewDocument(id) {
+        await this.#connection.send('script.removePreloadScript', {
+            script: id,
+        });
+    }
 }
 function isConsoleLogEntry(event) {
     return event.type === 'console';
@@ -485,5 +498,8 @@ function getStackTraceLocations(stackTrace) {
         }
     }
     return stackTraceLocations;
+}
+function evaluationExpression(fun, ...args) {
+    return `() => {${evaluationString(fun, ...args)}}`;
 }
 //# sourceMappingURL=Page.js.map

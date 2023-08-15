@@ -17,7 +17,7 @@
 /// <reference types="node" />
 import type { Readable } from 'stream';
 import Protocol from 'devtools-protocol';
-import { GeolocationOptions, MediaFeature, Page as PageBase, ScreenshotOptions, WaitForOptions } from '../../api/Page.js';
+import { GeolocationOptions, MediaFeature, NewDocumentScriptEvaluation, Page as PageBase, ScreenshotOptions, WaitForOptions } from '../../api/Page.js';
 import { Accessibility } from '../Accessibility.js';
 import { CDPSession } from '../Connection.js';
 import { Coverage } from '../Coverage.js';
@@ -103,5 +103,7 @@ export declare class Page extends PageBase {
     title(): Promise<string>;
     createCDPSession(): Promise<CDPSession>;
     bringToFront(): Promise<void>;
+    evaluateOnNewDocument<Params extends unknown[], Func extends (...args: Params) => unknown = (...args: Params) => unknown>(pageFunction: Func | string, ...args: Params): Promise<NewDocumentScriptEvaluation>;
+    removeScriptToEvaluateOnNewDocument(id: string): Promise<void>;
 }
 //# sourceMappingURL=Page.d.ts.map

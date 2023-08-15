@@ -15,11 +15,11 @@
  */
 import { assert } from '../util/assert.js';
 import { isErrorLike } from '../util/ErrorLike.js';
-import { isTargetClosedError } from './Connection.js';
+import { CDPSessionEmittedEvents, isTargetClosedError, } from './Connection.js';
 import { DeviceRequestPromptManager } from './DeviceRequestPrompt.js';
 import { EventEmitter } from './EventEmitter.js';
 import { ExecutionContext } from './ExecutionContext.js';
-import { Frame as CDPFrame } from './Frame.js';
+import { Frame, FrameEmittedEvents } from './Frame.js';
 import { FrameTree } from './FrameTree.js';
 import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
 import { NetworkManager } from './NetworkManager.js';
@@ -41,8 +41,6 @@ export const FrameManagerEmittedEvents = {
     FrameSwapped: Symbol('FrameManager.FrameSwapped'),
     LifecycleEvent: Symbol('FrameManager.LifecycleEvent'),
     FrameNavigatedWithinDocument: Symbol('FrameManager.FrameNavigatedWithinDocument'),
-    ExecutionContextCreated: Symbol('FrameManager.ExecutionContextCreated'),
-    ExecutionContextDestroyed: Symbol('FrameManager.ExecutionContextDestroyed'),
 };
 /**
  * A frame manager manages the frames for a given {@link Page | page}.
@@ -83,6 +81,12 @@ export class FrameManager extends EventEmitter {
         this.#networkManager = new NetworkManager(client, ignoreHTTPSErrors, this);
         this.#timeoutSettings = timeoutSettings;
         this.setupEventListeners(this.#client);
+        client.once(CDPSessionEmittedEvents.Disconnected, () => {
+            const mainFrame = this._frameTree.getMainFrame();
+            if (mainFrame) {
+                this.#removeFramesRecursively(mainFrame);
+            }
+        });
     }
     setupEventListeners(session) {
         session.on('Page.frameAttached', event => {
@@ -195,6 +199,7 @@ export class FrameManager extends EventEmitter {
         }
         frame._onLifecycleEvent(event.loaderId, event.name);
         this.emit(FrameManagerEmittedEvents.LifecycleEvent, frame);
+        frame.emit(FrameEmittedEvents.LifecycleEvent);
     }
     #onFrameStartedLoading(frameId) {
         const frame = this.frame(frameId);
@@ -210,6 +215,7 @@ export class FrameManager extends EventEmitter {
         }
         frame._onLoadingStopped();
         this.emit(FrameManagerEmittedEvents.LifecycleEvent, frame);
+        frame.emit(FrameEmittedEvents.LifecycleEvent);
     }
     #handleFrameTree(session, frameTree) {
         if (frameTree.frame.parentId) {
@@ -239,7 +245,7 @@ export class FrameManager extends EventEmitter {
             }
             return;
         }
-        frame = new CDPFrame(this, frameId, parentFrameId, session);
+        frame = new Frame(this, frameId, parentFrameId, session);
         this._frameTree.addFrame(frame);
         this.emit(FrameManagerEmittedEvents.FrameAttached, frame);
     }
@@ -262,13 +268,14 @@ export class FrameManager extends EventEmitter {
             }
             else {
                 // Initial main frame navigation.
-                frame = new CDPFrame(this, frameId, undefined, this.#client);
+                frame = new Frame(this, frameId, undefined, this.#client);
             }
             this._frameTree.addFrame(frame);
         }
         frame = await this._frameTree.waitForFrame(frameId);
         frame._navigated(framePayload);
         this.emit(FrameManagerEmittedEvents.FrameNavigated, frame);
+        frame.emit(FrameEmittedEvents.FrameNavigated);
     }
     async #createIsolatedWorld(session, name) {
         const key = `${session.id()}:${name}`;
@@ -303,7 +310,9 @@ export class FrameManager extends EventEmitter {
         }
         frame._navigatedWithinDocument(url);
         this.emit(FrameManagerEmittedEvents.FrameNavigatedWithinDocument, frame);
+        frame.emit(FrameEmittedEvents.FrameNavigatedWithinDocument);
         this.emit(FrameManagerEmittedEvents.FrameNavigated, frame);
+        frame.emit(FrameEmittedEvents.FrameNavigated);
     }
     #onFrameDetached(frameId, reason) {
         const frame = this.frame(frameId);
@@ -317,6 +326,7 @@ export class FrameManager extends EventEmitter {
         }
         else if (reason === 'swap') {
             this.emit(FrameManagerEmittedEvents.FrameSwapped, frame);
+            frame?.emit(FrameEmittedEvents.FrameSwapped);
         }
     }
     #onExecutionContextCreated(contextPayload, session) {
@@ -378,6 +388,7 @@ export class FrameManager extends EventEmitter {
         frame._detach();
         this._frameTree.removeFrame(frame);
         this.emit(FrameManagerEmittedEvents.FrameDetached, frame);
+        frame.emit(FrameEmittedEvents.FrameDetached, frame);
     }
 }
 //# sourceMappingURL=FrameManager.js.map

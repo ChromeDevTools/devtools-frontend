@@ -32,7 +32,7 @@ class MappedLocator extends locators_js_1.DelegatedLocator {
     }
     _wait(options) {
         return this.delegate._wait(options).pipe((0, rxjs_js_1.mergeMap)(handle => {
-            return (0, rxjs_js_1.from)(handle.evaluateHandle(this.#mapper));
+            return (0, rxjs_js_1.from)(Promise.resolve(this.#mapper(handle, options?.signal)));
         }));
     }
 }

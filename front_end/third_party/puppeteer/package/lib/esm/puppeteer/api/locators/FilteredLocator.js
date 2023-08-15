@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { from, map, mergeMap, throwIfEmpty, } from '../../../third_party/rxjs/rxjs.js';
+import { filter, from, map, mergeMap, throwIfEmpty, } from '../../../third_party/rxjs/rxjs.js';
 import { DelegatedLocator } from './DelegatedLocator.js';
 /**
  * @internal
@@ -29,7 +29,9 @@ export class FilteredLocator extends DelegatedLocator {
     }
     _wait(options) {
         return this.delegate._wait(options).pipe(mergeMap(handle => {
-            return from(handle.frame.waitForFunction(this.#predicate, { signal: options?.signal, timeout: this._timeout }, handle)).pipe(map(() => {
+            return from(Promise.resolve(this.#predicate(handle, options?.signal))).pipe(filter(value => {
+                return value;
+            }), map(() => {
                 // SAFETY: It passed the predicate, so this is correct.
                 return handle;
             }));

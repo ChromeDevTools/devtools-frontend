@@ -26,6 +26,19 @@ import { IsolatedWorld } from './IsolatedWorld.js';
 import { PuppeteerLifeCycleEvent } from './LifecycleWatcher.js';
 import { EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from './types.js';
 /**
+ * We use symbols to prevent external parties listening to these events.
+ * They are internal to Puppeteer.
+ *
+ * @internal
+ */
+export declare const FrameEmittedEvents: {
+    FrameNavigated: symbol;
+    FrameSwapped: symbol;
+    LifecycleEvent: symbol;
+    FrameNavigatedWithinDocument: symbol;
+    FrameDetached: symbol;
+};
+/**
  * @internal
  */
 export declare class Frame extends BaseFrame {

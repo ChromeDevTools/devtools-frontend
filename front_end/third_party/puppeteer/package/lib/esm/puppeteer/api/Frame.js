@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { EventEmitter } from '../common/EventEmitter.js';
 import { getQueryHandlerAndSelector } from '../common/GetQueryHandler.js';
 import { LazyArg } from '../common/LazyArg.js';
 import { importFSPromises } from '../common/util.js';
@@ -70,7 +71,7 @@ import { FunctionLocator, NodeLocator } from './locators/locators.js';
  *
  * @public
  */
-export class Frame {
+export class Frame extends EventEmitter {
     /**
      * @internal
      */
@@ -94,7 +95,9 @@ export class Frame {
     /**
      * @internal
      */
-    constructor() { }
+    constructor() {
+        super();
+    }
     /**
      * The page associated with the frame.
      */

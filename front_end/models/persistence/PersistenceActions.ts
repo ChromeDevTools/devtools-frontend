@@ -98,7 +98,8 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
     }
 
     if (contentProvider instanceof Workspace.UISourceCode.UISourceCode &&
-        contentProvider.project().type() === Workspace.Workspace.projectTypes.FileSystem) {
+        (contentProvider.project().type() === Workspace.Workspace.projectTypes.FileSystem ||
+         uiSourceCode?.contentType().isFromSourceMap())) {
       // Do not append in Sources > Filesystem & Overrides tab
       return;
     }

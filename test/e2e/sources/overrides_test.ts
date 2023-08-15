@@ -353,4 +353,24 @@ describe('Overrides panel', () => {
     assert.strictEqual(assertShowAllElements.length, 0);
     assert.strictEqual(assertOverridesContentElements.length, 1);
   });
+
+  it('hide "Override content" for source mapped file', async () => {
+    await goToResource('sources/sourcemap-origin.html');
+    await openNetworkTab();
+    await selectRequestByName('sourcemap-origin.min.js', {button: 'right'});
+    await click('aria/Open in Sources panel');
+
+    // Actual file > Has override content
+    const file = await waitFor('[aria-label="sourcemap-origin.min.js, file"]');
+    await file.click({button: 'right'});
+    const assertHasOverridesContentElements = await $$('Override content', undefined, 'aria');
+
+    // Source mapped file > No override content
+    const mappedfile = await waitFor('[aria-label="sourcemap-origin.js, file"]');
+    await mappedfile.click({button: 'right'});
+    const assertNoOverridesContentElements = await $$('Override content', undefined, 'aria');
+
+    assert.strictEqual(assertHasOverridesContentElements.length, 1);
+    assert.strictEqual(assertNoOverridesContentElements.length, 0);
+  });
 });

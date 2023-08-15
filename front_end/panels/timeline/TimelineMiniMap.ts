@@ -58,7 +58,7 @@ export class TimelineMiniMap extends
     this.#overviewComponent.reset();
   }
 
-  setBounds(min: number, max: number): void {
+  setBounds(min: TraceEngine.Types.Timing.MilliSeconds, max: TraceEngine.Types.Timing.MilliSeconds): void {
     this.#overviewComponent.setBounds(min, max);
   }
 

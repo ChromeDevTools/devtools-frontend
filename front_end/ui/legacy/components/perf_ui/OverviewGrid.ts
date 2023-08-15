@@ -31,11 +31,12 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import * as TraceEngine from '../../../../models/trace/trace.js';
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
-import {TimelineGrid, type Calculator} from './TimelineGrid.js';
 import overviewGridStyles from './overviewGrid.css.legacy.js';
+import {type Calculator, TimelineGrid} from './TimelineGrid.js';
 
 const UIStrings = {
   /**
@@ -393,8 +394,10 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     if (!this.calculator) {
       return;
     }
-    const startValue = this.calculator.formatValue(this.getRawSliderValue(/* leftSlider */ true));
-    const endValue = this.calculator.formatValue(this.getRawSliderValue(/* leftSlider */ false));
+    const startValue = this.calculator.formatValue(
+        TraceEngine.Types.Timing.MilliSeconds(this.getRawSliderValue(/* leftSlider */ true)));
+    const endValue = this.calculator.formatValue(
+        TraceEngine.Types.Timing.MilliSeconds(this.getRawSliderValue(/* leftSlider */ false)));
     UI.ARIAUtils.setAriaValueText(this.leftResizeElement, String(startValue));
     UI.ARIAUtils.setAriaValueText(this.rightResizeElement, String(endValue));
   }

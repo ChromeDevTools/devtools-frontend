@@ -49,15 +49,13 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import * as Search from '../search/search.js';
 
 import {BlockedURLsPane} from './BlockedURLsPane.js';
-
 import {Events, type RequestActivatedEvent} from './NetworkDataGridNode.js';
 import {NetworkItemView} from './NetworkItemView.js';
 import {NetworkLogView} from './NetworkLogView.js';
 import {NetworkOverview} from './NetworkOverview.js';
 import networkPanelStyles from './networkPanel.css.js';
 import {NetworkSearchScope} from './NetworkSearchScope.js';
-
-import {NetworkTransferTimeCalculator, type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
+import {type NetworkTimeCalculator, NetworkTransferTimeCalculator} from './NetworkTimeCalculator.js';
 
 const UIStrings = {
   /**
@@ -780,7 +778,9 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     const request = event.data;
     this.calculator.updateBoundaries(request);
     // FIXME: Unify all time units across the frontend!
-    this.overviewPane.setBounds(this.calculator.minimumBoundary() * 1000, this.calculator.maximumBoundary() * 1000);
+    this.overviewPane.setBounds(
+        TraceEngine.Types.Timing.MilliSeconds(this.calculator.minimumBoundary() * 1000),
+        TraceEngine.Types.Timing.MilliSeconds(this.calculator.maximumBoundary() * 1000));
     this.networkOverview.updateRequest(request);
     this.overviewPane.scheduleUpdate();
   }

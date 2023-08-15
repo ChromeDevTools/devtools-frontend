@@ -37,10 +37,9 @@ import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
 import {ChartViewport, type ChartViewportDelegate} from './ChartViewport.js';
-
-import {TimelineGrid, type Calculator} from './TimelineGrid.js';
 import flameChartStyles from './flameChart.css.legacy.js';
 import {DEFAULT_FONT_SIZE, getFontFamilyForCanvas} from './Font.js';
+import {type Calculator, TimelineGrid} from './TimelineGrid.js';
 
 const UIStrings = {
   /**
@@ -2090,20 +2089,20 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return this.dataProvider.formatValue(value - this.zeroTime(), precision);
   }
 
-  maximumBoundary(): number {
-    return this.chartViewport.windowRightTime();
+  maximumBoundary(): TraceEngine.Types.Timing.MilliSeconds {
+    return TraceEngine.Types.Timing.MilliSeconds(this.chartViewport.windowRightTime());
   }
 
-  minimumBoundary(): number {
-    return this.chartViewport.windowLeftTime();
+  minimumBoundary(): TraceEngine.Types.Timing.MilliSeconds {
+    return TraceEngine.Types.Timing.MilliSeconds(this.chartViewport.windowLeftTime());
   }
 
-  zeroTime(): number {
-    return this.dataProvider.minimumBoundary();
+  zeroTime(): TraceEngine.Types.Timing.MilliSeconds {
+    return TraceEngine.Types.Timing.MilliSeconds(this.dataProvider.minimumBoundary());
   }
 
-  boundarySpan(): number {
-    return this.maximumBoundary() - this.minimumBoundary();
+  boundarySpan(): TraceEngine.Types.Timing.MilliSeconds {
+    return TraceEngine.Types.Timing.MilliSeconds(this.maximumBoundary() - this.minimumBoundary());
   }
 }
 

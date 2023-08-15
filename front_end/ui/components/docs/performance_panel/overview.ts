@@ -4,6 +4,7 @@
 
 import * as EnvironmentHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as TraceLoader from '../../../../../test/unittests/front_end/helpers/TraceLoader.js';
+import * as TraceEngine from '../../../../models/trace/trace.js';
 import * as Timeline from '../../../../panels/timeline/timeline.js';
 import * as ComponentSetup from '../../helpers/helpers.js';
 
@@ -28,7 +29,10 @@ async function renderMiniMap(containerSelector: string, options: {showMemory: bo
 
   const models = await TraceLoader.TraceLoader.allModels(null, fileName);
 
-  minimap.setBounds(models.timelineModel.minimumRecordTime(), models.timelineModel.maximumRecordTime());
+  minimap.setBounds(
+      TraceEngine.Types.Timing.MilliSeconds(models.timelineModel.minimumRecordTime()),
+      TraceEngine.Types.Timing.MilliSeconds(models.timelineModel.maximumRecordTime()),
+  );
   minimap.setWindowTimes(models.performanceModel.window().left, models.performanceModel.window().right);
   minimap.setData({
     traceParsedData: models.traceParsedData,

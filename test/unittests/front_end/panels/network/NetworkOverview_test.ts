@@ -3,13 +3,12 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../../../../front_end/core/common/common.js';
-import * as Network from '../../../../../front_end/panels/network/network.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Network from '../../../../../front_end/panels/network/network.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import type * as PerfUI from '../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
-
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
@@ -40,7 +39,8 @@ describeWithMockConnection('NetworkOverview', () => {
       zeroTime: sinon.stub(),
       boundarySpan: sinon.stub(),
     };
-    networkOverview.setCalculator(calculator as unknown as PerfUI.TimelineOverviewPane.TimelineOverviewCalculator);
+    networkOverview.setCalculator(
+        calculator as unknown as PerfUI.TimelineOverviewCalculator.TimelineOverviewCalculator);
     networkOverview.markAsRoot();
     networkOverview.show(document.body);
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);

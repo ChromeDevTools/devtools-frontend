@@ -4,9 +4,10 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as TraceEngine from '../../models/trace/trace.js';
+import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
-import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import {NetworkLogView} from './NetworkLogView.js';
 import {NetworkTimeBoundary} from './NetworkTimeCalculator.js';
@@ -102,8 +103,8 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     this.onResize();
   }
 
-  override calculator(): PerfUI.TimelineOverviewPane.TimelineOverviewCalculator {
-    return super.calculator() as PerfUI.TimelineOverviewPane.TimelineOverviewCalculator;
+  override calculator(): PerfUI.TimelineOverviewCalculator.TimelineOverviewCalculator {
+    return super.calculator() as PerfUI.TimelineOverviewCalculator.TimelineOverviewCalculator;
   }
 
   override onResize(): void {
@@ -147,7 +148,10 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
         this.span *= 1.25;
       }
 
-      calculator.setBounds(calculator.minimumBoundary(), calculator.minimumBoundary() + this.span);
+      calculator.setBounds(
+          calculator.minimumBoundary(),
+          TraceEngine.Types.Timing.MilliSeconds(calculator.minimumBoundary() + this.span));
+
       this.lastBoundary = new NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
     }
 
@@ -172,8 +176,8 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
         if (endTime === Number.MAX_VALUE) {
           endTime = calculator.maximumBoundary();
         }
-        const startX = calculator.computePosition(startTime);
-        const endX = calculator.computePosition(endTime) + 1;
+        const startX = calculator.computePosition(TraceEngine.Types.Timing.MilliSeconds(startTime));
+        const endX = calculator.computePosition(TraceEngine.Types.Timing.MilliSeconds(endTime)) + 1;
         context.fillRect(startX, y, endX - startX, _bandHeight);
         context.strokeRect(startX, y, endX - startX, _bandHeight);
       }
@@ -232,8 +236,10 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
 
       context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--legacy-selection-bg-color');
 
-      const start = timeRanges[0].start * 1000;
-      const end = timeRanges[0].end * 1000;
+      // The network overview works in seconds, but the calcululator deals in
+      // milliseconds, hence the multiplication by 1000.
+      const start = TraceEngine.Types.Timing.MilliSeconds(timeRanges[0].start * 1000);
+      const end = TraceEngine.Types.Timing.MilliSeconds(timeRanges[0].end * 1000);
       context.fillRect(
           calculator.computePosition(start) - borderSize, y - size / 2 - borderSize,
           calculator.computePosition(end) - calculator.computePosition(start) + 1 + 2 * borderSize, size * borderSize);
@@ -246,8 +252,8 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
               ThemeSupport.ThemeSupport.instance().getComputedValue(RequestTimeRangeNameToColor[type]);
           context.lineWidth = size;
 
-          const start = timeRanges[j].start * 1000;
-          const end = timeRanges[j].end * 1000;
+          const start = TraceEngine.Types.Timing.MilliSeconds(timeRanges[j].start * 1000);
+          const end = TraceEngine.Types.Timing.MilliSeconds(timeRanges[j].end * 1000);
           context.moveTo(calculator.computePosition(start) - 0, y);
           context.lineTo(calculator.computePosition(end) + 1, y);
           context.stroke();
@@ -260,7 +266,9 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     context.beginPath();
     context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue(NetworkLogView.getDCLEventColor());
     for (let i = this.domContentLoadedEvents.length - 1; i >= 0; --i) {
-      const x = Math.round(calculator.computePosition(this.domContentLoadedEvents[i])) + 0.5;
+      const position =
+          calculator.computePosition(TraceEngine.Types.Timing.MilliSeconds(this.domContentLoadedEvents[i]));
+      const x = Math.round(position) + 0.5;
       context.moveTo(x, 0);
       context.lineTo(x, height);
     }
@@ -269,7 +277,8 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     context.beginPath();
     context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue(NetworkLogView.getLoadEventColor());
     for (let i = this.loadEvents.length - 1; i >= 0; --i) {
-      const x = Math.round(calculator.computePosition(this.loadEvents[i])) + 0.5;
+      const position = calculator.computePosition(TraceEngine.Types.Timing.MilliSeconds(this.loadEvents[i]));
+      const x = Math.round(position) + 0.5;
       context.moveTo(x, 0);
       context.lineTo(x, height);
     }
@@ -279,7 +288,8 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
       context.lineWidth = 2;
       context.beginPath();
       context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--network-frame-divider-color');
-      const x = Math.round(calculator.computePosition(this.selectedFilmStripTime));
+      const timeInMilliseconds = TraceEngine.Types.Timing.MilliSeconds(this.selectedFilmStripTime);
+      const x = Math.round(calculator.computePosition(timeInMilliseconds));
       context.moveTo(x, 0);
       context.lineTo(x, height);
       context.stroke();

@@ -13,6 +13,7 @@ import * as NetworkPriorities from './NetworkPriorities.js';
 import * as OverviewGrid from './OverviewGrid.js';
 import * as PieChart from './PieChart.js';
 import * as TimelineGrid from './TimelineGrid.js';
+import * as TimelineOverviewCalculator from './TimelineOverviewCalculator.js';
 import * as TimelineOverviewPane from './TimelineOverviewPane.js';
 
 export {
@@ -27,5 +28,6 @@ export {
   OverviewGrid,
   PieChart,
   TimelineGrid,
+  TimelineOverviewCalculator,
   TimelineOverviewPane,
 };

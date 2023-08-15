@@ -39,6 +39,7 @@ devtools_module("perf_ui") {
     "OverviewGrid.ts",
     "PieChart.ts",
     "TimelineGrid.ts",
+    "TimelineOverviewCalculator.ts",
     "TimelineOverviewPane.ts",
   ]
 

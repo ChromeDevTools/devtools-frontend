@@ -349,7 +349,7 @@ export const waitForFunction =
     }
   };
   if (description) {
-    innerFunction = runWithDescription.bind(this, description, innerFunction);
+    innerFunction = runWithDescription.bind(null, description, innerFunction);
   }
   return await asyncScope.exec(innerFunction);
 };

@@ -1,0 +1,45 @@
+<!--
+  Copyright 2023 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<script>
+  CSS.registerProperty({
+    name: '--my-cssom-color',
+    inherits: false,
+    syntax: '<color>',
+    initialValue: 'orange',
+  });
+  const sheet = new CSSStyleSheet();
+  document.adoptedStyleSheets = [sheet];
+  sheet.insertRule("body { border-bottom-color: var(--my-cssom-color); }", 0);
+</script>
+<style>
+@property --my-color2 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #c0ffee;
+}
+@property --my-color {
+  syntax: "<length>";
+  inherits: false;
+}
+@property --my-color {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: red;
+}
+
+body {
+  --my-other-color: green;
+  --my-color: 0.5em;
+  --my-color2: gray;
+  color: var(--my-color);
+  background: var(--my-color2);
+  border-color: var(--my-other-color);
+}
+</style>
+
+<body>
+  content
+</body>

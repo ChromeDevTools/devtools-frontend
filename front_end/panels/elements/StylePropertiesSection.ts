@@ -40,7 +40,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
-
 import type * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -48,9 +47,8 @@ import {FontEditorSectionManager} from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
 import {linkifyDeferredNodeReference} from './DOMLinkifier.js';
 import {ElementsPanel} from './ElementsPanel.js';
+import {type Context, StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import stylesSectionTreeStyles from './stylesSectionTree.css.js';
-
-import {StylePropertyTreeElement, type Context} from './StylePropertyTreeElement.js';
 import {StylesSidebarPane} from './StylesSidebarPane.js';
 
 const UIStrings = {
@@ -154,11 +152,13 @@ export class StylePropertiesSection {
 
   // Used to keep track of Specificity Information
   static #nodeElementToSpecificity: WeakMap<Element, Protocol.CSS.Specificity> = new WeakMap();
+  #customHeaderText: string|undefined;
 
   constructor(
       parentPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
       style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, computedStyles: Map<string, string>|null,
-      parentsComputedStyles: Map<string, string>|null) {
+      parentsComputedStyles: Map<string, string>|null, headerText?: string) {
+    this.#customHeaderText = headerText;
     this.parentPane = parentPane;
     this.sectionIdx = sectionIdx;
     this.styleInternal = style;
@@ -352,7 +352,7 @@ export class StylePropertiesSection {
       return document.createTextNode('');
     }
 
-    const ruleLocation = this.getRuleLocationFromCSSRule(rule);
+    const ruleLocation = StylePropertiesSection.getRuleLocationFromCSSRule(rule);
 
     const header = rule.styleSheetId ? matchedStyles.cssModel().styleSheetHeaderForId(rule.styleSheetId) : null;
 
@@ -413,6 +413,12 @@ export class StylePropertiesSection {
     }
 
     return document.createTextNode('');
+  }
+
+  protected createRuleOriginNode(
+      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier,
+      rule: SDK.CSSRule.CSSRule|null): Node {
+    return StylePropertiesSection.createRuleOriginNode(matchedStyles, linkifier, rule);
   }
 
   private static getRuleLocationFromCSSRule(rule: SDK.CSSRule.CSSRule): TextUtils.TextRange.TextRange|null|undefined {
@@ -576,6 +582,9 @@ export class StylePropertiesSection {
   }
 
   headerText(): string {
+    if (this.#customHeaderText) {
+      return this.#customHeaderText;
+    }
     const node = this.matchedStyles.nodeForStyle(this.styleInternal);
     if (this.styleInternal.type === SDK.CSSStyleDeclaration.Type.Inline) {
       return this.matchedStyles.isInherited(this.styleInternal) ? i18nString(UIStrings.styleAttribute) :
@@ -1463,6 +1472,7 @@ export class StylePropertiesSection {
     if (!oldSelectorRange) {
       return Promise.resolve();
     }
+    this.#customHeaderText = undefined;
     return rule.setSelectorText(newContent).then(onSelectorsUpdated.bind(this, rule, Boolean(oldSelectorRange)));
   }
 
@@ -1471,8 +1481,8 @@ export class StylePropertiesSection {
 
   protected updateRuleOrigin(): void {
     this.selectorRefElement.removeChildren();
-    this.selectorRefElement.appendChild(StylePropertiesSection.createRuleOriginNode(
-        this.matchedStyles, this.parentPane.linkifier, this.styleInternal.parentRule));
+    this.selectorRefElement.appendChild(
+        this.createRuleOriginNode(this.matchedStyles, this.parentPane.linkifier, this.styleInternal.parentRule));
   }
 
   protected editingSelectorEnded(): void {
@@ -1614,6 +1624,28 @@ export class BlankStylePropertiesSection extends StylePropertiesSection {
     this.styleInternal = newRule.style;
     // FIXME: replace this instance by a normal StylePropertiesSection.
     this.normal = true;
+  }
+}
+
+export class RegisteredPropertiesSection extends StylePropertiesSection {
+  constructor(
+      stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+      style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number, propertyName: string,
+      expandedByDefault: boolean) {
+    super(stylesPane, matchedStyles, style, sectionIdx, null, null, propertyName);
+    if (!expandedByDefault) {
+      this.element.classList.add('hidden');
+    }
+    this.selectorElement.className = 'property-registration-key';
+  }
+
+  override createRuleOriginNode(
+      matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier,
+      rule: SDK.CSSRule.CSSRule|null): Node {
+    if (rule) {
+      return super.createRuleOriginNode(matchedStyles, linkifier, rule);
+    }
+    return document.createTextNode('CSS.registerProperty');
   }
 }
 

@@ -35,6 +35,8 @@ describeWithRealConnection('StylePropertyHighlighter', () => {
       animationsPayload: [],
       parentLayoutNodeId: undefined,
       positionFallbackRules: [],
+      propertyRules: [],
+      cssPropertyRegistrations: [],
     });
     const style = sinon.createStubInstance(SDK.CSSStyleDeclaration.CSSStyleDeclaration);
     style.leadingProperties.returns([]);

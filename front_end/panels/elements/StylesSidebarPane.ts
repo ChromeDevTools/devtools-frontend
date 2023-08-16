@@ -35,6 +35,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -51,27 +52,23 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as ElementsComponents from './components/components.js';
-
-import {ComputedStyleModel, type ComputedStyleChangedEvent} from './ComputedStyleModel.js';
+import {type ComputedStyleChangedEvent, ComputedStyleModel} from './ComputedStyleModel.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
+import * as LayersWidget from './LayersWidget.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
-import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
-import stylesSidebarPaneStyles from './stylesSidebarPane.css.js';
-
-import {activeHints, type StylePropertyTreeElement} from './StylePropertyTreeElement.js';
 import {
-  StylePropertiesSection,
   BlankStylePropertiesSection,
-  KeyframePropertiesSection,
   HighlightPseudoStylePropertiesSection,
+  KeyframePropertiesSection,
+  RegisteredPropertiesSection,
+  StylePropertiesSection,
   TryRuleSection,
 } from './StylePropertiesSection.js';
-
-import * as LayersWidget from './LayersWidget.js';
-import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
-
+import {StylePropertyHighlighter} from './StylePropertyHighlighter.js';
+import {activeHints, type StylePropertyTreeElement} from './StylePropertyTreeElement.js';
+import stylesSidebarPaneStyles from './stylesSidebarPane.css.js';
 import {WebCustomData} from './WebCustomData.js';
 
 const UIStrings = {
@@ -183,6 +180,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // Number of ms elapsed with no keypresses to determine is the input is finished, to announce results
 const FILTER_IDLE_PERIOD = 500;
+// Minimum number of @property rules for the @property section block to be folded initially
+const MIN_FOLDED_SECTIONS_COUNT = 5;
 
 // Highlightable properties are those that can be hovered in the sidebar to trigger a specific
 // highlighting mode on the current element.
@@ -1219,6 +1218,18 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       blocks.push(block);
     }
 
+    if (matchedStyles.registeredProperties().length > 0) {
+      const expandedByDefault = matchedStyles.registeredProperties().length <= MIN_FOLDED_SECTIONS_COUNT;
+      const block = SectionBlock.createRegisteredPropertiesBlock(expandedByDefault);
+      for (const propertyRule of matchedStyles.registeredProperties()) {
+        this.idleCallbackManager.schedule(() => {
+          block.sections.push(new RegisteredPropertiesSection(
+              this, matchedStyles, propertyRule.style(), sectionIdx, propertyRule.propertyName(), expandedByDefault));
+          sectionIdx++;
+        });
+      }
+      blocks.push(block);
+    }
     // If we have seen a layer in matched styles we enable
     // the layer widget button.
     if (sawLayers) {
@@ -1639,9 +1650,34 @@ const MAX_LINK_LENGTH = 23;
 export class SectionBlock {
   private readonly titleElementInternal: Element|null;
   sections: StylePropertiesSection[];
-  constructor(titleElement: Element|null) {
+  #expanded = false;
+  #icon: UI.Icon.Icon|undefined;
+  constructor(titleElement: Element|null, expandable?: boolean, expandedByDefault?: boolean) {
     this.titleElementInternal = titleElement;
     this.sections = [];
+    this.#expanded = expandedByDefault ?? false;
+
+    if (expandable && titleElement instanceof HTMLElement) {
+      this.#icon =
+          UI.Icon.Icon.create(this.#expanded ? 'triangle-down' : 'triangle-right', 'section-block-expand-icon');
+      titleElement.classList.toggle('empty-section', !this.#expanded);
+      UI.ARIAUtils.setExpanded(titleElement, this.#expanded);
+      titleElement.appendChild(this.#icon);
+      // Intercept focus to avoid highlight on click.
+      titleElement.tabIndex = -1;
+      titleElement.addEventListener('click', () => this.expand(!this.#expanded), false);
+    }
+  }
+
+  expand(expand: boolean): void {
+    if (!this.titleElementInternal || !this.#icon) {
+      return;
+    }
+    this.titleElementInternal.classList.toggle('empty-section', !expand);
+    this.#icon.setIconType(expand ? 'triangle-down' : 'triangle-right');
+    UI.ARIAUtils.setExpanded(this.titleElementInternal, expand);
+    this.#expanded = expand;
+    this.sections.forEach(section => section.element.classList.toggle('hidden', !expand));
   }
 
   static createPseudoTypeBlock(pseudoType: Protocol.DOM.PseudoType, pseudoArgument: string|null): SectionBlock {
@@ -1667,6 +1703,14 @@ export class SectionBlock {
     });
     separatorElement.appendChild(link);
     return new SectionBlock(separatorElement);
+  }
+
+  static createRegisteredPropertiesBlock(expandedByDefault: boolean): SectionBlock {
+    const separatorElement = document.createElement('div');
+    const block = new SectionBlock(separatorElement, true, expandedByDefault);
+    separatorElement.className = 'sidebar-separator';
+    separatorElement.appendChild(document.createTextNode('@property'));
+    return block;
   }
 
   static createKeyframesBlock(keyframesName: string): SectionBlock {

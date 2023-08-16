@@ -9,12 +9,11 @@ import * as Platform from '../platform/platform.js';
 import {CSSContainerQuery} from './CSSContainerQuery.js';
 import {CSSLayer} from './CSSLayer.js';
 import {CSSMedia} from './CSSMedia.js';
-import {CSSScope} from './CSSScope.js';
-import {CSSSupports} from './CSSSupports.js';
-
 import {type CSSModel, type Edit} from './CSSModel.js';
+import {CSSScope} from './CSSScope.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
 import {type CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
+import {CSSSupports} from './CSSSupports.js';
 
 export class CSSRule {
   readonly cssModelInternal: CSSModel;
@@ -218,6 +217,22 @@ export class CSSStyleRule extends CSSRule {
     this.supports.forEach(supports => supports.rebase(edit));
 
     super.rebase(edit);
+  }
+}
+
+export class CSSPropertyRule extends CSSRule {
+  #name: CSSValue;
+  constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSPropertyRule) {
+    super(cssModel, {origin: payload.origin, style: payload.style, styleSheetId: payload.styleSheetId});
+    this.#name = new CSSValue(payload.propertyName);
+  }
+
+  propertyName(): CSSValue {
+    return this.#name;
+  }
+
+  initialValue(): string|null {
+    return this.style.hasActiveProperty('initial-value') ? this.style.getPropertyValue('initial-value') : null;
   }
 }
 

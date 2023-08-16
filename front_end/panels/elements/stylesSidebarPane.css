@@ -224,6 +224,10 @@
   &.layer-separator {
     display: flex;
   }
+
+  &.empty-section {
+    border-bottom: none;
+  }
 }
 
 .sidebar-pane-section-toolbar {
@@ -307,4 +311,8 @@
 
   margin-top: 2em;
   left: calc(50% - var(--dimension) / 2);
+}
+
+.section-block-expand-icon {
+  margin-bottom: -4px;
 }

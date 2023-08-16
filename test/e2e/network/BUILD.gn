@@ -6,6 +6,7 @@ import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("network") {
   sources = [
+    "can-pretty-print-network_test.ts",
     "network-conditions_test.ts",
     "network-datagrid_test.ts",
     "network-filter_test.ts",

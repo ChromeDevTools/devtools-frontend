@@ -132,3 +132,11 @@ export async function getTextFromHeadersRow(row: puppeteer.ElementHandle<Element
 
   return [headerNameText.trim(), headerValueText];
 }
+
+export async function elementContainsTextWithSelector(
+    element: puppeteer.ElementHandle<Element>, textContent: string, selector: string): Promise<boolean> {
+  const selectedElements = await element.evaluate((node, selector) => {
+    return [...node.querySelectorAll(selector)].map(node => node.textContent || '') || [];
+  }, selector);
+  return selectedElements.includes(textContent);
+}

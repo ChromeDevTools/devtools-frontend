@@ -1,0 +1,6 @@
+200
+Date: Sun, 10 Oct 2010 23:26:07 GMT
+Connection: close
+Content-Type: application/ld+json; charset=utf-8
+
+{"Keys": [{"Key1": "Value1","Key2": "Value2","Key3": true},{"Key1": "Value1","Key2": "Value2","Key3": false}]}

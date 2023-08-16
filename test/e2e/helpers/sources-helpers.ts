@@ -871,3 +871,9 @@ export async function retrieveCodeMirrorEditorContent(): Promise<Array<string>> 
 export async function waitForLines(lineCount: number): Promise<void> {
   await waitFor(new Array(lineCount).fill('.cm-line').join(' ~ '));
 }
+
+export async function isPrettyPrinted(): Promise<boolean> {
+  const prettyButton = await waitFor('[aria-label="Pretty print"]');
+  const isPretty = await prettyButton.evaluate(e => e.ariaPressed);
+  return isPretty === 'true';
+}

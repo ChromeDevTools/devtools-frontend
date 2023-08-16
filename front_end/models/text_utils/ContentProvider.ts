@@ -47,6 +47,17 @@ export class SearchMatch {
   }
 }
 
+export class SearchMatchExact {
+  constructor(
+      readonly lineNumber: number, readonly lineContent: string, readonly columnNumber: number,
+      readonly matchLength: number) {
+  }
+
+  static comparator(a: SearchMatchExact, b: SearchMatchExact): number {
+    return a.lineNumber - b.lineNumber || a.columnNumber - b.columnNumber;
+  }
+}
+
 export const contentAsDataURL = function(
     content: string|null, mimeType: string, contentEncoded: boolean, charset?: string|null,
     limitSize: boolean = true): string|null {

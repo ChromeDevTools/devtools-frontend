@@ -30,7 +30,7 @@
 
 import * as Platform from '../../core/platform/platform.js';
 
-import {SearchMatch} from './ContentProvider.js';
+import {SearchMatch, SearchMatchExact} from './ContentProvider.js';
 import {Text} from './Text.js';
 
 export const Utils = {
@@ -300,6 +300,48 @@ export const performSearchInContent = function(
   }
   return result;
 };
+
+/**
+ * Similar to {@link performSearchInContent} but returns one entry per match,
+ * not per line.
+ */
+export const performExtendedSearchInContent = function(
+    content: string, query: string, caseSensitive: boolean, isRegex: boolean): SearchMatchExact[] {
+  const regex = Platform.StringUtilities.createSearchRegex(query, caseSensitive, isRegex);
+
+  const text = new Text(content);
+  const result = [];
+  for (let i = 0; i < text.lineCount(); ++i) {
+    const lineContent = text.lineAt(i);
+    const matches = lineContent.matchAll(regex);
+    for (const match of matches) {
+      result.push(new SearchMatchExact(i, lineContent, match.index as number, match[0].length));
+    }
+  }
+  return result;
+};
+
+/**
+ * Similar to {@link performExtendedSearchInContent} but doesn't search in a whole text but rather
+ * finds the exact matches on a prelminiary search result (i.e. lines with known matches).
+ * @param matches is deliberatedly not typed as {@link SearchMatch} so we can also pass the
+ *                CDP search result type.
+ */
+export const performExtendedSearchInSearchMatches = function(
+    matches: {lineNumber: number, lineContent: string}[], query: string, caseSensitive: boolean,
+    isRegex: boolean): SearchMatchExact[] {
+  const regex = Platform.StringUtilities.createSearchRegex(query, caseSensitive, isRegex);
+  const result = [];
+
+  for (const {lineNumber, lineContent} of matches) {
+    const matches = lineContent.matchAll(regex);
+    for (const match of matches) {
+      result.push(new SearchMatchExact(lineNumber, lineContent, match.index as number, match[0].length));
+    }
+  }
+  return result;
+};
+
 export interface ParsedFilter {
   key?: string;
   text?: string|null;

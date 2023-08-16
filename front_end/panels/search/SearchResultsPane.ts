@@ -178,11 +178,12 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     for (let i = fromIndex; i < toIndex; ++i) {
-      const lineContent = searchResult.matchLineContent(i).trim();
+      let lineContent = searchResult.matchLineContent(i).trim();
       let matchRanges: TextUtils.TextRange.SourceRange[] = [];
       for (let j = 0; j < regexes.length; ++j) {
         matchRanges = matchRanges.concat(this.regexMatchRanges(lineContent, regexes[j]));
       }
+      ({lineSegment: lineContent, matchRanges} = lineSegmentForMultipleMatches(lineContent, matchRanges));
 
       const anchor = Components.Linkifier.Linkifier.linkifyRevealable(searchResult.matchRevealable(i), '');
       anchor.classList.add('search-match-link');
@@ -225,16 +226,6 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private createContentSpan(lineContent: string, matchRanges: TextUtils.TextRange.SourceRange[]): Element {
-    let trimBy = 0;
-    if (matchRanges.length > 0 && matchRanges[0].offset > 20) {
-      trimBy = 15;
-    }
-    lineContent = lineContent.substring(trimBy, 1000 + trimBy);
-    if (trimBy) {
-      matchRanges =
-          matchRanges.map(range => new TextUtils.TextRange.SourceRange(range.offset - trimBy + 1, range.length));
-      lineContent = '…' + lineContent;
-    }
     const contentSpan = document.createElement('span');
     contentSpan.className = 'search-match-content';
     contentSpan.textContent = lineContent;
@@ -302,4 +293,27 @@ export function lineSegmentForMatch(
   const matchRange = new TextUtils.TextRange.SourceRange(rangeOffset, rangeLength);
 
   return {lineSegment, matchRange};
+}
+
+/**
+ * Takes a line and multiple match ranges and trims/cuts the line accordingly.
+ * The match ranges are then adjusted to reflect the transformation.
+ *
+ * Ideally prefer `lineSegmentForMatch`, it can center the line on the match
+ * whereas this method risks cutting matches out of the string.
+ */
+function lineSegmentForMultipleMatches(lineContent: string, ranges: TextUtils.TextRange.SourceRange[]):
+    {lineSegment: string, matchRanges: TextUtils.TextRange.SourceRange[]} {
+  let trimBy = 0;
+  let matchRanges = ranges;
+  if (matchRanges.length > 0 && matchRanges[0].offset > 20) {
+    trimBy = 15;
+  }
+  let lineSegment = lineContent.substring(trimBy, 1000 + trimBy);
+  if (trimBy) {
+    matchRanges =
+        matchRanges.map(range => new TextUtils.TextRange.SourceRange(range.offset - trimBy + 1, range.length));
+    lineSegment = '…' + lineSegment;
+  }
+  return {lineSegment, matchRanges};
 }

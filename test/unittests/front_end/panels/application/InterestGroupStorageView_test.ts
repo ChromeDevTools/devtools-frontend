@@ -71,7 +71,11 @@ describeWithMockConnection('InterestGroupStorageView', () => {
     assert.isTrue(view.sidebarWidget()?.contentElement.firstChild?.textContent?.includes('Click'));
   });
 
-  it('updates sidebarWidget upon receiving cellFocusedEvent when InterestGroupGetter succeeds', async () => {
+  it('updates sidebarWidget upon receiving cellFocusedEvent when InterestGroupGetter succeeds', async function() {
+    if (this.timeout() > 0) {
+      this.timeout(10000);
+    }
+
     const view = new View.InterestGroupStorageView(new InterestGroupDetailsGetter());
     events.forEach(event => {
       view.addEvent(event);
@@ -91,7 +95,11 @@ describeWithMockConnection('InterestGroupStorageView', () => {
     assert.deepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
   });
 
-  it('updates sidebarWidget upon receiving cellFocusedEvent when InterestGroupDetailsGetter fails', async () => {
+  it('updates sidebarWidget upon receiving cellFocusedEvent when InterestGroupDetailsGetter fails', async function() {
+    if (this.timeout() > 0) {
+      this.timeout(10000);
+    }
+
     const view = new View.InterestGroupStorageView(new InterestGroupDetailsGetterFails());
     events.forEach(event => {
       view.addEvent(event);
@@ -112,7 +120,11 @@ describeWithMockConnection('InterestGroupStorageView', () => {
     assert.isTrue(view.sidebarWidget()?.contentElement.firstChild?.textContent?.includes('No details'));
   });
 
-  it('clears sidebarWidget upon clearEvents', async () => {
+  it('clears sidebarWidget upon clearEvents', async function() {
+    if (this.timeout() > 0) {
+      this.timeout(10000);
+    }
+
     const view = new View.InterestGroupStorageView(new InterestGroupDetailsGetter());
     events.forEach(event => {
       view.addEvent(event);

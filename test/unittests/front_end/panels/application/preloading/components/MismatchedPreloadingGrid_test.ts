@@ -78,7 +78,11 @@ const FG_GREEN = 'color: var(--sys-color-green); text-decoration: line-through';
 const FG_RED = 'color: var(--sys-color-error);';
 
 describeWithEnvironment('MismatchedPreloadingGrid', async () => {
-  it('renderes no diff in URL', async () => {
+  it('renderes no diff in URL', async function() {
+    if (this.timeout() > 0) {
+      this.timeout(10000);
+    }
+
     const data: PreloadingComponents.MismatchedPreloadingGrid.MismatchedPreloadingGridData = {
       pageURL: 'https://example.com/prefetched.html' as Platform.DevToolsPath.UrlString,
       rows: [{

@@ -100,7 +100,14 @@ export class TimelineMiniMap extends
       this.#setNavigationStartEvents(data.traceParsedData);
       this.#controls.push(new TimelineEventOverviewResponsiveness(data.traceParsedData));
     }
-    this.#controls.push(new TimelineEventOverviewCPUActivity());
+
+    // CPU Activity is the only component that relies on the old model and will
+    // do so until we have finished migrating the Main Thread track to the new
+    // trace engine
+    if (data.performanceModel) {
+      this.#controls.push(new TimelineEventOverviewCPUActivity(data.performanceModel));
+    }
+
     if (data.traceParsedData) {
       this.#controls.push(new TimelineEventOverviewNetwork(data.traceParsedData));
     }
@@ -112,9 +119,6 @@ export class TimelineMiniMap extends
     }
     if (data.settings.showMemory && data.traceParsedData) {
       this.#controls.push(new TimelineEventOverviewMemory(data.traceParsedData));
-    }
-    for (const control of this.#controls) {
-      control.setModel(data.performanceModel);
     }
     this.#overviewComponent.setOverviewControls(this.#controls);
   }

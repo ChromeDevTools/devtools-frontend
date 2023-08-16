@@ -36,8 +36,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {type PerformanceModel} from './PerformanceModel.js';
-
-import {TimelineUIUtils, type TimelineCategory} from './TimelineUIUtils.js';
+import {type TimelineCategory, TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**
@@ -62,19 +61,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineEventOverview.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export abstract class TimelineEventOverview extends PerfUI.TimelineOverviewPane.TimelineOverviewBase {
-  protected model: PerformanceModel|null;
   constructor(id: string, title: string|null) {
     super();
     this.element.id = 'timeline-overview-' + id;
     this.element.classList.add('overview-strip');
-    this.model = null;
     if (title) {
       this.element.createChild('div', 'timeline-overview-strip-title').textContent = title;
     }
-  }
-
-  setModel(model: PerformanceModel|null): void {
-    this.model = model;
   }
 
   renderBar(begin: number, end: number, position: number, height: number, color: string): void {
@@ -151,8 +144,11 @@ const categoryToIndex = new WeakMap<TimelineCategory, number>();
 
 export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   private backgroundCanvas: HTMLCanvasElement;
-  constructor() {
+  #performanceModel: PerformanceModel|null = null;
+
+  constructor(model: PerformanceModel) {
     super('cpu-activity', i18nString(UIStrings.cpu));
+    this.#performanceModel = model;
     this.backgroundCanvas = (this.element.createChild('canvas', 'fill background') as HTMLCanvasElement);
   }
 
@@ -164,10 +160,10 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
 
   override update(): void {
     super.update();
-    if (!this.model) {
+    if (!this.#performanceModel) {
       return;
     }
-    const timelineModel = this.model.timelineModel();
+    const timelineModel = this.#performanceModel.timelineModel();
     const quantSizePx = 4 * window.devicePixelRatio;
     const width = this.width();
     const height = this.height();

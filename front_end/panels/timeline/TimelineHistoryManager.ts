@@ -8,15 +8,14 @@ import * as Platform from '../../core/platform/platform.js';
 import type * as TraceEngine from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
-
 import {type PerformanceModel} from './PerformanceModel.js';
 import {
+  type TimelineEventOverview,
   TimelineEventOverviewCPUActivity,
   TimelineEventOverviewNetwork,
   TimelineEventOverviewResponsiveness,
-  type TimelineEventOverview,
 } from './TimelineEventOverview.js';
+import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
 
 const UIStrings = {
   /**
@@ -84,7 +83,9 @@ export class TimelineHistoryManager {
   private readonly nextNumberByDomain: Map<string, number>;
   private readonly buttonInternal: ToolbarButton;
   private readonly allOverviews: {
-    constructor: (traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData) => TimelineEventOverview,
+    constructor:
+        (traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData, performanceModel: PerformanceModel) =>
+            TimelineEventOverview,
     height: number,
   }[];
   private totalHeight: number;
@@ -107,7 +108,11 @@ export class TimelineHistoryManager {
         },
         height: 3,
       },
-      {constructor: (): TimelineEventOverviewCPUActivity => new TimelineEventOverviewCPUActivity(), height: 20},
+      {
+        constructor: (_traceParsedData, performanceModel): TimelineEventOverviewCPUActivity =>
+            new TimelineEventOverviewCPUActivity(performanceModel),
+        height: 20,
+      },
       {
         constructor: (traceParsedData): TimelineEventOverviewNetwork =>
             new TimelineEventOverviewNetwork(traceParsedData),
@@ -328,10 +333,10 @@ export class TimelineHistoryManager {
 
     const ctx = canvas.getContext('2d');
     let yOffset = 0;
+
     for (const overview of this.allOverviews) {
-      const timelineOverviewComponent = overview.constructor(traceParsedData);
+      const timelineOverviewComponent = overview.constructor(traceParsedData, performanceModel);
       timelineOverviewComponent.setCanvasSize(previewWidth, overview.height);
-      timelineOverviewComponent.setModel(performanceModel);
       timelineOverviewComponent.update();
       const sourceContext = timelineOverviewComponent.context();
       const imageData = sourceContext.getImageData(0, 0, sourceContext.canvas.width, sourceContext.canvas.height);

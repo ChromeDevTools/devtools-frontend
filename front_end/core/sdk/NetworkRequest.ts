@@ -1030,6 +1030,20 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     });
   }
 
+  get overrideTypes(): OverrideType[] {
+    const types: OverrideType[] = [];
+
+    if (this.hasOverriddenContent) {
+      types.push('content');
+    }
+
+    if (this.hasOverriddenHeaders()) {
+      types.push('headers');
+    }
+
+    return types;
+  }
+
   get hasOverriddenContent(): boolean {
     return this.#hasOverriddenContent;
   }
@@ -1874,3 +1888,5 @@ export interface WebBundleInnerRequestInfo {
   bundleRequestId?: string;
   errorMessage?: string;
 }
+
+export type OverrideType = 'content'|'headers';

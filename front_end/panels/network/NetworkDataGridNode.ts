@@ -993,6 +993,10 @@ export class NetworkRequestNode extends NetworkNode {
         this.setTextAndTitle(cell, '');
         break;
       }
+      case 'has-overrides': {
+        this.setTextAndTitle(cell, this.requestInternal.overrideTypes.join(', '));
+        break;
+      }
       default: {
         this.setTextAndTitle(cell, this.requestInternal.responseHeaderValue(columnId) || '');
         break;

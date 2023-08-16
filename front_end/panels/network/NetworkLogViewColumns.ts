@@ -109,6 +109,10 @@ const UIStrings = {
   /**
    *@description Column header in the Network log view of the Network panel
    */
+  hasOverrides: 'Has overrides',
+  /**
+   *@description Column header in the Network log view of the Network panel
+   */
   initiatorAddressSpace: 'Initiator Address Space',
   /**
    *@description Text for web cookies
@@ -1036,6 +1040,11 @@ const _temporaryDefaultColumns = [
     isResponseHeader: true,
     title: i18n.i18n.lockedLazyString('ETag'),
     sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'etag'),
+  },
+  {
+    id: 'has-overrides',
+    title: i18nLazyString(UIStrings.hasOverrides),
+    sortingFunction: NetworkRequestNode.ResponseHeaderStringComparator.bind(null, 'has-overrides'),
   },
   {
     id: 'keep-alive',

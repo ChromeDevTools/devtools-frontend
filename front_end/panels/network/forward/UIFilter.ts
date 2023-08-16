@@ -7,6 +7,7 @@
 export enum FilterType {
   Domain = 'domain',
   HasResponseHeader = 'has-response-header',
+  HasOverrides = 'has-overrides',
   ResponseHeaderValueSetCookie = 'response-header-set-cookie',
   Is = 'is',
   LargerThan = 'larger-than',

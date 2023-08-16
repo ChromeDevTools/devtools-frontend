@@ -741,6 +741,30 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     return (String(request.statusCode)) === value;
   }
 
+  private static hasOverridesFilter(value: string, request: SDK.NetworkRequest.NetworkRequest): boolean {
+    if (!value) {
+      return false;
+    }
+
+    if (value === overrideFilter.no) {
+      return request.overrideTypes.length === 0;
+    }
+
+    if (value === overrideFilter.yes) {
+      return request.overrideTypes.length > 0;
+    }
+
+    if (value === overrideFilter.content) {
+      return request.overrideTypes.includes('content');
+    }
+
+    if (value === overrideFilter.headers) {
+      return request.overrideTypes.includes('headers');
+    }
+
+    return request.overrideTypes.join(',').includes(value);
+  }
+
   static getHTTPRequestsFilter(request: SDK.NetworkRequest.NetworkRequest): boolean {
     return request.parsedURL.isValid && (request.scheme in HTTPSchemas);
   }
@@ -923,6 +947,10 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.LargerThan, '10k');
     this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.LargerThan, '1M');
     this.textFilterUI.setSuggestionProvider(this.suggestionBuilder.completions.bind(this.suggestionBuilder));
+    this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.HasOverrides, overrideFilter.yes);
+    this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.HasOverrides, overrideFilter.no);
+    this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.HasOverrides, overrideFilter.content);
+    this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.HasOverrides, overrideFilter.headers);
   }
 
   private filterChanged(): void {
@@ -1942,6 +1970,9 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       case NetworkForward.UIFilter.FilterType.StatusCode:
         return NetworkLogView.statusCodeFilter.bind(null, value);
 
+      case NetworkForward.UIFilter.FilterType.HasOverrides:
+        return NetworkLogView.hasOverridesFilter.bind(null, value);
+
       case NetworkForward.UIFilter.FilterType.ResourceType:
         return NetworkLogView.resourceTypeFilter.bind(null, value);
 
@@ -2413,5 +2444,12 @@ export interface GroupLookupInterface {
   groupNodeForRequest(request: SDK.NetworkRequest.NetworkRequest): NetworkGroupNode|null;
   reset(): void;
 }
+
+export const overrideFilter = {
+  yes: 'yes',
+  no: 'no',
+  content: 'content',
+  headers: 'headers',
+};
 
 export type Filter = (request: SDK.NetworkRequest.NetworkRequest) => boolean;

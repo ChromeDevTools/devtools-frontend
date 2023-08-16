@@ -122,4 +122,74 @@ describeWithEnvironment('NetworkLogView', () => {
 
     assert.strictEqual(el.title, '305 Use Proxy');
   });
+
+  it('populate has-overrides: headers', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.statusCode = 200;
+
+    request.setWasIntercepted(true);
+    request.responseHeaders = [{name: 'foo', value: 'overridden'}];
+    request.originalResponseHeaders = [{name: 'foo', value: 'original'}];
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+    const el = document.createElement('div');
+    networkRequestNode.renderCell(el, 'has-overrides');
+    const marker = el.innerText;
+    assert.strictEqual(marker, 'headers');
+  });
+
+  it('populate has-overrides: content', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.statusCode = 200;
+
+    request.setWasIntercepted(true);
+    request.hasOverriddenContent = true;
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+    const el = document.createElement('div');
+    networkRequestNode.renderCell(el, 'has-overrides');
+    const marker = el.innerText;
+    assert.strictEqual(marker, 'content');
+  });
+
+  it('populate has-overrides: content, headers', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.statusCode = 200;
+
+    request.setWasIntercepted(true);
+    request.hasOverriddenContent = true;
+    request.responseHeaders = [{name: 'foo', value: 'overridden'}];
+    request.originalResponseHeaders = [{name: 'foo', value: 'original'}];
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+    const el = document.createElement('div');
+    networkRequestNode.renderCell(el, 'has-overrides');
+    const marker = el.innerText;
+    assert.strictEqual(marker, 'content, headers');
+  });
+
+  it('populate has-overrides: null', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.statusCode = 200;
+
+    request.setWasIntercepted(false);
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+    const el = document.createElement('div');
+    networkRequestNode.renderCell(el, 'has-overrides');
+    const marker = el.innerText;
+    assert.strictEqual(marker, '');
+  });
 });

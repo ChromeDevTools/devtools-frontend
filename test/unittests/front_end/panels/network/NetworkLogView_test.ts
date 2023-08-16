@@ -266,7 +266,7 @@ describeWithMockConnection('NetworkLogView', () => {
     it('replaces requests when switching scope with preserve log off', handlesSwitchingScope(false));
     it('appends requests when switching scope with preserve log on', handlesSwitchingScope(true));
 
-    it('Hide Chrome extension requests', async () => {
+    it('hide Chrome extension requests', async () => {
       createNetworkRequest('chrome-extension://url1', {target});
       createNetworkRequest('url2', {target});
       const filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
@@ -340,6 +340,123 @@ describeWithMockConnection('NetworkLogView', () => {
 
       networkLog.dispatchEventToListeners(Logs.NetworkLog.Events.RequestRemoved, request);
       assert.strictEqual(rootNode.children.length, 0);
+
+      networkLogView.detach();
+    });
+
+    function createOverrideRequests() {
+      const urlNotOverridden = 'url-not-overridden' as Platform.DevToolsPath.UrlString;
+      const urlHeaderOverridden = 'url-header-overridden' as Platform.DevToolsPath.UrlString;
+      const urlContentOverridden = 'url-content-overridden' as Platform.DevToolsPath.UrlString;
+      const urlHeaderAndContentOverridden = 'url-header-und-content-overridden' as Platform.DevToolsPath.UrlString;
+
+      createNetworkRequest(urlNotOverridden, {target});
+      const r2 = createNetworkRequest(urlHeaderOverridden, {target});
+      const r3 = createNetworkRequest(urlContentOverridden, {target});
+      const r4 = createNetworkRequest(urlHeaderAndContentOverridden, {target});
+
+      // set up overrides
+      r2.originalResponseHeaders = [{name: 'content-type', value: 'x'}];
+      r2.responseHeaders = [{name: 'content-type', value: 'overriden'}];
+      r3.hasOverriddenContent = true;
+      r4.originalResponseHeaders = [{name: 'age', value: 'x'}];
+      r4.responseHeaders = [{name: 'age', value: 'overriden'}];
+      r4.hasOverriddenContent = true;
+
+      return {urlNotOverridden, urlHeaderOverridden, urlContentOverridden, urlHeaderAndContentOverridden};
+    }
+
+    it('can apply filter - has-overrides:yes', async () => {
+      const {urlHeaderOverridden, urlContentOverridden, urlHeaderAndContentOverridden} = createOverrideRequests();
+
+      const filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+      networkLogView = createNetworkLogView(filterBar);
+      networkLogView.setTextFilterValue('has-overrides:yes');
+
+      networkLogView.markAsRoot();
+      networkLogView.show(document.body);
+      const rootNode = networkLogView.columns().dataGrid().rootNode();
+
+      assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
+        urlHeaderOverridden,
+        urlContentOverridden,
+        urlHeaderAndContentOverridden,
+      ]);
+
+      networkLogView.detach();
+    });
+
+    it('can apply filter - has-overrides:no', async () => {
+      const {urlNotOverridden} = createOverrideRequests();
+
+      const filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+      networkLogView = createNetworkLogView(filterBar);
+      networkLogView.setTextFilterValue('has-overrides:no');
+
+      networkLogView.markAsRoot();
+      networkLogView.show(document.body);
+      const rootNode = networkLogView.columns().dataGrid().rootNode();
+
+      assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
+        urlNotOverridden,
+      ]);
+
+      networkLogView.detach();
+    });
+
+    it('can apply filter - has-overrides:headers', async () => {
+      const {urlHeaderOverridden, urlHeaderAndContentOverridden} = createOverrideRequests();
+
+      const filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+      networkLogView = createNetworkLogView(filterBar);
+      networkLogView.setTextFilterValue('has-overrides:headers');
+
+      networkLogView.markAsRoot();
+      networkLogView.show(document.body);
+      const rootNode = networkLogView.columns().dataGrid().rootNode();
+
+      assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
+        urlHeaderOverridden,
+        urlHeaderAndContentOverridden,
+      ]);
+
+      networkLogView.detach();
+    });
+
+    it('can apply filter - has-overrides:content', async () => {
+      const {urlContentOverridden, urlHeaderAndContentOverridden} = createOverrideRequests();
+
+      const filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+      networkLogView = createNetworkLogView(filterBar);
+      networkLogView.setTextFilterValue('has-overrides:content');
+
+      networkLogView.markAsRoot();
+      networkLogView.show(document.body);
+      const rootNode = networkLogView.columns().dataGrid().rootNode();
+
+      assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
+        urlContentOverridden,
+        urlHeaderAndContentOverridden,
+      ]);
+
+      networkLogView.detach();
+    });
+
+    it('can apply filter - has-overrides:tent', async () => {
+      const {urlHeaderAndContentOverridden, urlContentOverridden} = createOverrideRequests();
+
+      const filterBar = new UI.FilterBar.FilterBar('networkPanel', true);
+      networkLogView = createNetworkLogView(filterBar);
+      networkLogView.setTextFilterValue('has-overrides:tent');  // partial text
+
+      networkLogView.markAsRoot();
+      networkLogView.show(document.body);
+      const rootNode = networkLogView.columns().dataGrid().rootNode();
+
+      assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
+        urlContentOverridden,
+        urlHeaderAndContentOverridden,
+      ]);
 
       networkLogView.detach();
     });

@@ -107,4 +107,19 @@ describeWithEnvironment('NetworkLogView', () => {
     const backgroundColorOfIcon = iconStyle.backgroundColor.toString();
     assert.strictEqual(backgroundColorOfIcon, 'var(--icon-error)');
   });
+
+  it('shows the corresponding status text of a status code', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.statusCode = 305;
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+    const el = document.createElement('div');
+
+    networkRequestNode.renderCell(el, 'status');
+
+    assert.strictEqual(el.title, '305 Use Proxy');
+  });
 });

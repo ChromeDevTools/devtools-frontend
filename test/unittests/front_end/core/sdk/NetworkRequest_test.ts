@@ -34,6 +34,30 @@ describe('NetworkRequest', () => {
     expectCookie(request.responseCookies[1], {name: 'baz', value: 'qux', size: 7});
   });
 
+  it('status text is given the corresponding value of a status code', () => {
+    const fakeRequest = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+        'fakeRequestId',
+        'url1' as Platform.DevToolsPath.UrlString,
+        'documentURL' as Platform.DevToolsPath.UrlString,
+        null,
+    );
+    fakeRequest.statusCode = 200;
+
+    assert.strictEqual(fakeRequest.statusText, 'OK');
+  });
+
+  it('invalid status code, with no corresponding status text', () => {
+    const fakeRequest = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+        'fakeRequestId',
+        'url1' as Platform.DevToolsPath.UrlString,
+        'documentURL' as Platform.DevToolsPath.UrlString,
+        null,
+    );
+    fakeRequest.statusCode = 999;
+
+    assert.strictEqual(fakeRequest.statusText, '');
+  });
+
   it('includes partition key in response cookies', () => {
     const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
         'requestId', 'url' as Platform.DevToolsPath.UrlString, 'documentURL' as Platform.DevToolsPath.UrlString, null);

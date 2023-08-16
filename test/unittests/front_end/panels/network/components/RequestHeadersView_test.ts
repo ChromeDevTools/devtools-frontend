@@ -144,6 +144,20 @@ describeWithMockConnection('RequestHeadersView', () => {
     ]);
   });
 
+  it('status text of a request from cache memory corresponds to the status code', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.statusCode = 200;
+    request.setFromMemoryCache();
+
+    component = await renderHeadersComponent(request);
+    assertShadowRoot(component.shadowRoot);
+
+    const statusCodeSection = component.shadowRoot.querySelector('.status-with-comment');
+    assert.strictEqual('200 OK (from memory cache)', statusCodeSection?.textContent);
+  });
+
   it('renders request and response headers', async () => {
     component = await renderHeadersComponent(defaultRequest);
     assertShadowRoot(component.shadowRoot);

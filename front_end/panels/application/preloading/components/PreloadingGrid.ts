@@ -163,7 +163,11 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
         row => ({
           cells: [
             {columnId: 'id', value: row.id},
-            {columnId: 'url', value: this.#urlShort(row, securityOrigin)},
+            {
+              columnId: 'url',
+              value: this.#urlShort(row, securityOrigin),
+              title: row.attempt.key.url,
+            },
             {columnId: 'action', value: PreloadingString.action(row.attempt)},
             {
               columnId: 'ruleSet',

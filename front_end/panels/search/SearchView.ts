@@ -137,7 +137,6 @@ export class SearchView extends UI.Widget.VBox {
     this.searchResultsElement.className = 'search-results';
 
     const searchContainer = document.createElement('div');
-    searchContainer.style.flex = 'auto';
     searchContainer.style.justifyContent = 'start';
     searchContainer.style.maxWidth = '300px';
     searchContainer.style.overflow = 'revert';

@@ -123,15 +123,16 @@ class MockConnection extends ProtocolClient.InspectorBackend.Connection {
         result = await result;
       }
 
-      // Since we allow the test author to omit the getError call, we
-      // need to add it in here on their behalf so that the calling code
-      // will succeed.
-      if (!('getError' in result)) {
-        result.getError = () => undefined;
-      }
-      this.messageCallback?.call(
-          undefined,
-          {id: outgoingMessage.id, method: outgoingMessage.method, result, sessionId: outgoingMessage.sessionId});
+      const errorMessage: string = ('getError' in result) ? result.getError() : undefined;
+      const error = errorMessage ? {message: errorMessage, code: -32000} : undefined;
+
+      this.messageCallback?.call(undefined, {
+        id: outgoingMessage.id,
+        method: outgoingMessage.method,
+        result,
+        error,
+        sessionId: outgoingMessage.sessionId,
+      });
     })();
   }
 }

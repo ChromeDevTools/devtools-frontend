@@ -121,13 +121,8 @@ describeWithMockConnection('Name resolving in the Performance panel', () => {
     setMockConnectionResponseHandler('Debugger.getScriptSource', getScriptSourceHandler);
 
     function getScriptSourceHandler(_: Protocol.Debugger.GetScriptSourceRequest):
-        Protocol.Debugger.GetScriptSourceResponse {
-      return {
-        scriptSource: SCRIPT_SOURCE,
-        getError() {
-          return 'Unknown script';
-        },
-      };
+        Omit<Protocol.Debugger.GetScriptSourceResponse, 'getError'> {
+      return {scriptSource: SCRIPT_SOURCE};
     }
   });
 

@@ -4,7 +4,6 @@
 
 import * as AnimationsTrackAppender from './AnimationsTrackAppender.js';
 import * as AppenderUtils from './AppenderUtils.js';
-import * as Breadcrumbs from './Breadcrumbs.js';
 import * as CLSLinkifier from './CLSLinkifier.js';
 import * as CompatibilityTracksAppender from './CompatibilityTracksAppender.js';
 import * as CountersGraph from './CountersGraph.js';
@@ -39,7 +38,6 @@ import * as UIDevtoolsUtils from './UIDevtoolsUtils.js';
 export {
   AnimationsTrackAppender,
   AppenderUtils,
-  Breadcrumbs,
   CLSLinkifier,
   CompatibilityTracksAppender,
   CountersGraph,

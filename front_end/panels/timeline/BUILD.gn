@@ -24,7 +24,6 @@ devtools_module("timeline") {
   sources = [
     "AnimationsTrackAppender.ts",
     "AppenderUtils.ts",
-    "Breadcrumbs.ts",
     "CLSLinkifier.ts",
     "CompatibilityTracksAppender.ts",
     "CountersGraph.ts",
@@ -76,7 +75,10 @@ devtools_module("timeline") {
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
     "../../ui/lit-html:bundle",
+    "./components:bundle",
   ]
+
+  visibility = [ "../../component_docs/*" ]
 }
 
 devtools_entrypoint("bundle") {

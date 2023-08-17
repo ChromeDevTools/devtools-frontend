@@ -17,6 +17,10 @@ export interface SearchResult {
   matchLineContent(index: number): string;
 
   matchRevealable(index: number): Object;
+
+  matchColumn(index: number): number|undefined;
+
+  matchLength(index: number): number|undefined;
 }
 
 export interface SearchScope {

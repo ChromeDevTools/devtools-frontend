@@ -315,4 +315,12 @@ export class FileBasedSearchResult implements Search.SearchScope.SearchResult {
   matchLabel(index: number): any {
     return this.searchMatches[index].lineNumber + 1;
   }
+
+  matchColumn(): undefined {
+    return undefined;
+  }
+
+  matchLength(): undefined {
+    return undefined;
+  }
 }

@@ -178,12 +178,25 @@ export class SearchResultsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     for (let i = fromIndex; i < toIndex; ++i) {
-      let lineContent = searchResult.matchLineContent(i).trim();
+      let lineContent = searchResult.matchLineContent(i);
       let matchRanges: TextUtils.TextRange.SourceRange[] = [];
-      for (let j = 0; j < regexes.length; ++j) {
-        matchRanges = matchRanges.concat(this.regexMatchRanges(lineContent, regexes[j]));
+      // Searching in scripts and network response bodies produces one result entry per match. We can skip re-doing the
+      // search since we have the exact match range.
+      // For matches found in headers or the request URL we re-do the search to find all match ranges.
+      const column = searchResult.matchColumn(i);
+      const matchLength = searchResult.matchLength(i);
+      if (column !== undefined && matchLength !== undefined) {
+        const {matchRange, lineSegment} =
+            lineSegmentForMatch(lineContent, new TextUtils.TextRange.SourceRange(column, matchLength));
+        lineContent = lineSegment;
+        matchRanges = [matchRange];
+      } else {
+        lineContent = lineContent.trim();
+        for (let j = 0; j < regexes.length; ++j) {
+          matchRanges = matchRanges.concat(this.regexMatchRanges(lineContent, regexes[j]));
+        }
+        ({lineSegment: lineContent, matchRanges} = lineSegmentForMultipleMatches(lineContent, matchRanges));
       }
-      ({lineSegment: lineContent, matchRanges} = lineSegmentForMultipleMatches(lineContent, matchRanges));
 
       const anchor = Components.Linkifier.Linkifier.linkifyRevealable(searchResult.matchRevealable(i), '');
       anchor.classList.add('search-match-link');

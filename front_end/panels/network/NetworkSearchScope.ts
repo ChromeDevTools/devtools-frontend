@@ -165,4 +165,12 @@ export class NetworkSearchResult implements Search.SearchScope.SearchResult {
     // @ts-expect-error
     return (location.searchMatch as TextUtils.ContentProvider.SearchMatch).lineNumber + 1;
   }
+
+  matchColumn(): undefined {
+    return undefined;
+  }
+
+  matchLength(): undefined {
+    return undefined;
+  }
 }

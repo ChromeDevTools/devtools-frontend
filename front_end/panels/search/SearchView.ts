@@ -137,6 +137,7 @@ export class SearchView extends UI.Widget.VBox {
     this.searchResultsElement.className = 'search-results';
 
     const searchContainer = document.createElement('div');
+    searchContainer.style.flex = 'auto';
     searchContainer.style.justifyContent = 'start';
     searchContainer.style.maxWidth = '300px';
     searchContainer.style.overflow = 'revert';
@@ -148,7 +149,7 @@ export class SearchView extends UI.Widget.VBox {
     this.search.placeholder = i18nString(UIStrings.search);
     this.search.setAttribute('type', 'text');
     this.search.setAttribute('results', '0');
-    this.search.setAttribute('size', '42');
+    this.search.setAttribute('size', '100');
     UI.ARIAUtils.setLabel(this.search, i18nString(UIStrings.searchQuery));
     const searchItem = new UI.Toolbar.ToolbarItem(searchContainer);
 

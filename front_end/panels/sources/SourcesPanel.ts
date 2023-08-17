@@ -251,7 +251,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
     // Create navigator tabbed pane with toolbar.
     this.navigatorTabbedLocation = UI.ViewManager.ViewManager.instance().createTabbedLocation(
-        this.revealNavigatorSidebar.bind(this), 'navigator-view', true);
+        this.revealNavigatorSidebar.bind(this), 'navigator-view', true, true);
     const tabbedPane = this.navigatorTabbedLocation.tabbedPane();
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.element.classList.add('navigator-tabbed-pane');

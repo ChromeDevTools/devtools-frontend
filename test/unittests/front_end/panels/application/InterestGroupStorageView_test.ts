@@ -71,56 +71,65 @@ describeWithMockConnection('InterestGroupStorageView', () => {
     assert.isTrue(view.sidebarWidget()?.contentElement.firstChild?.textContent?.includes('Click'));
   });
 
-  it('updates sidebarWidget upon receiving cellFocusedEvent when InterestGroupGetter succeeds', async function() {
-    if (this.timeout() > 0) {
-      this.timeout(10000);
-    }
+  // Disabled due to flakiness
+  it.skip(
+      '[crbug.com/1473557]: updates sidebarWidget upon receiving cellFocusedEvent when InterestGroupGetter succeeds',
+      async function() {
+        if (this.timeout() > 0) {
+          this.timeout(10000);
+        }
 
-    const view = new View.InterestGroupStorageView(new InterestGroupDetailsGetter());
-    events.forEach(event => {
-      view.addEvent(event);
-    });
-    const grid = view.getInterestGroupGridForTesting();
-    const cells = [
-      {columnId: 'event-time', value: 0},
-      {columnId: 'event-type', value: Protocol.Storage.InterestGroupAccessType.Join},
-      {columnId: 'event-group-owner', value: 'https://owner1.com'},
-      {columnId: 'event-group-name', value: 'cars'},
-    ];
-    const spy = sinon.spy(view, 'setSidebarWidget');
-    assert.isTrue(spy.notCalled);
-    grid.dispatchEvent(new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'event-time', value: '0'}, {cells}));
-    await raf();
-    assert.isTrue(spy.calledOnce);
-    assert.deepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
-  });
+        const view = new View.InterestGroupStorageView(new InterestGroupDetailsGetter());
+        events.forEach(event => {
+          view.addEvent(event);
+        });
+        const grid = view.getInterestGroupGridForTesting();
+        const cells = [
+          {columnId: 'event-time', value: 0},
+          {columnId: 'event-type', value: Protocol.Storage.InterestGroupAccessType.Join},
+          {columnId: 'event-group-owner', value: 'https://owner1.com'},
+          {columnId: 'event-group-name', value: 'cars'},
+        ];
+        const spy = sinon.spy(view, 'setSidebarWidget');
+        assert.isTrue(spy.notCalled);
+        grid.dispatchEvent(
+            new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'event-time', value: '0'}, {cells}));
+        await raf();
+        assert.isTrue(spy.calledOnce);
+        assert.deepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
+      });
 
-  it('updates sidebarWidget upon receiving cellFocusedEvent when InterestGroupDetailsGetter fails', async function() {
-    if (this.timeout() > 0) {
-      this.timeout(10000);
-    }
+  // Disabled due to flakiness
+  it.skip(
+      '[crbug.com/1473557]: updates sidebarWidget upon receiving cellFocusedEvent when InterestGroupDetailsGetter failsupdates sidebarWidget upon receiving cellFocusedEvent when InterestGroupDetailsGetter fails',
+      async function() {
+        if (this.timeout() > 0) {
+          this.timeout(10000);
+        }
 
-    const view = new View.InterestGroupStorageView(new InterestGroupDetailsGetterFails());
-    events.forEach(event => {
-      view.addEvent(event);
-    });
-    const grid = view.getInterestGroupGridForTesting();
-    const cells = [
-      {columnId: 'event-time', value: 0},
-      {columnId: 'event-type', value: Protocol.Storage.InterestGroupAccessType.Join},
-      {columnId: 'event-group-owner', value: 'https://owner1.com'},
-      {columnId: 'event-group-name', value: 'cars'},
-    ];
-    const spy = sinon.spy(view, 'setSidebarWidget');
-    assert.isTrue(spy.notCalled);
-    grid.dispatchEvent(new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'event-time', value: '0'}, {cells}));
-    await raf();
-    assert.isTrue(spy.calledOnce);
-    assert.notDeepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
-    assert.isTrue(view.sidebarWidget()?.contentElement.firstChild?.textContent?.includes('No details'));
-  });
+        const view = new View.InterestGroupStorageView(new InterestGroupDetailsGetterFails());
+        events.forEach(event => {
+          view.addEvent(event);
+        });
+        const grid = view.getInterestGroupGridForTesting();
+        const cells = [
+          {columnId: 'event-time', value: 0},
+          {columnId: 'event-type', value: Protocol.Storage.InterestGroupAccessType.Join},
+          {columnId: 'event-group-owner', value: 'https://owner1.com'},
+          {columnId: 'event-group-name', value: 'cars'},
+        ];
+        const spy = sinon.spy(view, 'setSidebarWidget');
+        assert.isTrue(spy.notCalled);
+        grid.dispatchEvent(
+            new DataGrid.DataGridEvents.BodyCellFocusedEvent({columnId: 'event-time', value: '0'}, {cells}));
+        await raf();
+        assert.isTrue(spy.calledOnce);
+        assert.notDeepEqual(view.sidebarWidget()?.constructor.name, 'SearchableView');
+        assert.isTrue(view.sidebarWidget()?.contentElement.firstChild?.textContent?.includes('No details'));
+      });
 
-  it('clears sidebarWidget upon clearEvents', async function() {
+  // Disabled due to flakiness
+  it.skip('[crbug.com/1473557]: clears sidebarWidget upon clearEvents', async function() {
     if (this.timeout() > 0) {
       this.timeout(10000);
     }

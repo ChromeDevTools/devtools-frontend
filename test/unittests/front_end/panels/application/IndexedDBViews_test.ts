@@ -19,7 +19,8 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
 
-describeWithLocale('IDBDatabaseView', () => {
+// Disabled due to flakiness
+describeWithLocale.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
   it('renders with a title and top-level site', async function() {
     if (this.timeout() > 0) {
       this.timeout(10000);

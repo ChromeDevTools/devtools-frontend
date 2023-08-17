@@ -1051,7 +1051,6 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
           (project as Persistence.FileSystemWorkspaceBinding.FileSystem).fileSystem().type() === 'overrides';
 
       if (!isFileOverrides) {
-        contextMenu.defaultSection().appendAction('sources.add-folder-to-workspace', undefined, true);
         if (node instanceof NavigatorGroupTreeNode) {
           contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeFolderFromWorkspace), async () => {
             const shouldRemove =

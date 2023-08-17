@@ -234,6 +234,13 @@ export class CSSPropertyRule extends CSSRule {
   initialValue(): string|null {
     return this.style.hasActiveProperty('initial-value') ? this.style.getPropertyValue('initial-value') : null;
   }
+
+  syntax(): string {
+    return this.style.getPropertyValue('syntax');
+  }
+  inherits(): boolean {
+    return this.style.getPropertyValue('inherits') === 'true';
+  }
 }
 
 export class CSSKeyframesRule {

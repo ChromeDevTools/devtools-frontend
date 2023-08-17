@@ -44,7 +44,7 @@ import type * as Formatter from '../../models/formatter/formatter.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as WorkspaceDiff from '../../models/workspace_diff/workspace_diff.js';
-import {formatCSSChangesFromDiff} from '../../panels/utils/utils.js';
+import {PanelUtils} from '../../panels/utils/utils.js';
 import * as DiffView from '../../ui/components/diff_view/diff_view.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
@@ -182,6 +182,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const FILTER_IDLE_PERIOD = 500;
 // Minimum number of @property rules for the @property section block to be folded initially
 const MIN_FOLDED_SECTIONS_COUNT = 5;
+// Title of the registered properties section
+export const REGISTERED_PROPERTY_SECTION_NAME = '@property';
 
 // Highlightable properties are those that can be hovered in the sidebar to trigger a specific
 // highlighting mode on the current element.
@@ -238,6 +240,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   #webCustomData?: WebCustomData;
   #hintPopoverHelper: UI.PopoverHelper.PopoverHelper;
   #evaluatedCSSVarPopoverHelper: UI.PopoverHelper.PopoverHelper;
+  #elementPopoverHooks = new WeakMap<Node, () => HTMLElement | undefined>();
 
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null;
   #urlToChangeTracker: Map<Platform.DevToolsPath.UrlString, ChangeTracker> = new Map();
@@ -395,29 +398,28 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
     // Bind cssVarSwatch Popover.
     this.#evaluatedCSSVarPopoverHelper = new UI.PopoverHelper.PopoverHelper(this.contentElement, event => {
-      const link = event.composedPath()[0];
-      if (!link || !(link instanceof Element) || !link.matches('.link-swatch-link')) {
-        return null;
+      for (let e = event.composedPath().length - 1; e >= 0; --e) {
+        const element = event.composedPath()[e] as Element;
+        const hook = this.#elementPopoverHooks.get(element);
+        const contents = hook ? hook() : undefined;
+        if (contents) {
+          return {
+            box: element.boxInWindow(),
+            show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+              popover.contentElement.appendChild(contents);
+              return true;
+            },
+          };
+        }
       }
-
-      const linkContainer = event.composedPath()[2];
-      if (!linkContainer || !(linkContainer instanceof Element) || !linkContainer.matches('.css-var-link')) {
-        return null;
-      }
-
-      const variableValue = link.getAttribute('data-title') || '';
-
-      return {
-        box: link.boxInWindow(),
-        show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
-          const popupElement = new ElementsComponents.CSSVariableValueView.CSSVariableValueView(variableValue);
-          popover.contentElement.appendChild(popupElement);
-          return true;
-        },
-      };
+      return null;
     });
     this.#evaluatedCSSVarPopoverHelper.setDisableOnClick(true);
     this.#evaluatedCSSVarPopoverHelper.setTimeout(500, 200);
+  }
+
+  addPopover(element: Node, contents: () => HTMLElement | undefined): void {
+    this.#elementPopoverHooks.set(element, contents);
   }
 
   private onScroll(_event: Event): void {
@@ -557,8 +559,12 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.update();
   }
 
-  jumpToProperty(propertyName: string): void {
-    this.decorator.findAndHighlightPropertyName(propertyName);
+  jumpToProperty(propertyName: string, sectionName?: string, blockName?: string): boolean {
+    return this.decorator.findAndHighlightPropertyName(propertyName, sectionName, blockName);
+  }
+
+  jumpToSection(sectionName: string, blockName: string): void {
+    this.decorator.findAndHighlightSection(sectionName, blockName);
   }
 
   jumpToSectionBlock(section: string): void {
@@ -1450,7 +1456,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       if (!diffResponse || diffResponse?.diff.length < 2) {
         continue;
       }
-      const changes = await formatCSSChangesFromDiff(diffResponse.diff);
+      const changes = await PanelUtils.formatCSSChangesFromDiff(diffResponse.diff);
       if (changes.length > 0) {
         allChanges += `/* ${escapeUrlAsCssComment(url)} */\n\n${changes}\n\n`;
       }
@@ -1709,7 +1715,7 @@ export class SectionBlock {
     const separatorElement = document.createElement('div');
     const block = new SectionBlock(separatorElement, true, expandedByDefault);
     separatorElement.className = 'sidebar-separator';
-    separatorElement.appendChild(document.createTextNode('@property'));
+    separatorElement.appendChild(document.createTextNode(REGISTERED_PROPERTY_SECTION_NAME));
     return block;
   }
 

@@ -7,3 +7,44 @@
 .variable-value-popup-wrapper {
   padding: 4px 8px;
 }
+
+.registered-property-popup-wrapper {
+  margin-top: 8px;
+  max-width: 232px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.monospace {
+  font-family: var(--monospace-font-family);
+  font-size: var(--monospace-font-size);
+}
+
+:host {
+  padding: 6px;
+}
+
+.registered-property-links {
+  margin-top: 8px;
+}
+
+.clickable {
+  color: var(--color-link);
+  cursor: pointer;
+}
+
+.underlined {
+  text-decoration: underline;
+}
+
+.unbreakable-text {
+  white-space: nowrap;
+}
+
+.css-property {
+  color: var(--webkit-css-property-color, var(--sys-color-token-property-special)); /* stylelint-disable-line plugin/use_theme_colors */ /* See: crbug.com/1152736 for color variable migration. */
+}
+
+.title {
+  color: var(--color-text-disabled);
+}

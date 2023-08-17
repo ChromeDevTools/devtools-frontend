@@ -32,6 +32,7 @@ class BaseLinkSwatch extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-base-link-swatch`;
   protected readonly shadow = this.attachShadow({mode: 'open'});
   protected onLinkActivate: (linkText: string, event: MouseEvent|KeyboardEvent) => void = () => undefined;
+  #linkElement: HTMLSpanElement|undefined;
 
   connectedCallback(): void {
     this.shadow.adoptedStyleSheets = [linkSwatchStyles];
@@ -54,6 +55,10 @@ class BaseLinkSwatch extends HTMLElement {
     this.render(data);
   }
 
+  get linkElement(): HTMLElement|undefined {
+    return this.#linkElement;
+  }
+
   private render(data: BaseLinkSwatchRenderData): void {
     const {isDefined, text, title} = data;
     const classes = Directives.classMap({
@@ -65,11 +70,14 @@ class BaseLinkSwatch extends HTMLElement {
 
     // We added var popover, so don't need the title attribute when no need for showing title and
     // only provide the data-title for the popover to get the data.
-    render(
+    const {startNode} = render(
         html`<span class=${classes} title=${LitHtml.Directives.ifDefined(data.showTitle ? title : null)} data-title=${
             LitHtml.Directives.ifDefined(!data.showTitle ? title : null)} @mousedown=${onActivate} @keydown=${
             onActivate} role="link" tabindex="-1">${text}</span>`,
         this.shadow, {host: this});
+    if (startNode?.nextSibling instanceof HTMLSpanElement) {
+      this.#linkElement = startNode?.nextSibling;
+    }
   }
 }
 
@@ -92,6 +100,7 @@ interface ParsedVariableFunction {
 export class CSSVarSwatch extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-css-var-swatch`;
   protected readonly shadow = this.attachShadow({mode: 'open'});
+  #link: BaseLinkSwatch|undefined;
 
   constructor() {
     super();
@@ -109,6 +118,10 @@ export class CSSVarSwatch extends HTMLElement {
 
   set data(data: CSSVarSwatchRenderData) {
     this.render(data);
+  }
+
+  get link(): BaseLinkSwatch|undefined {
+    return this.#link;
   }
 
   private parseVariableFunctionParts(text: string): ParsedVariableFunction|null {
@@ -153,13 +166,21 @@ export class CSSVarSwatch extends HTMLElement {
     }
 
     const isDefined = Boolean(computedValue) && !fromFallback;
-    const title = isDefined ? computedValue : i18nString(UIStrings.sIsNotDefined, {PH1: this.variableName(text)});
+    const title = isDefined ? computedValue ?? '' : i18nString(UIStrings.sIsNotDefined, {PH1: this.variableName(text)});
     const fallbackIncludeComma = functionParts.fallbackIncludeComma ? functionParts.fallbackIncludeComma : '';
 
+    this.#link = new BaseLinkSwatch();
+    this.#link.data = {
+      title,
+      showTitle: false,
+      text: functionParts.variableName,
+      isDefined,
+      onLinkActivate,
+    };
+    this.#link.classList.add('css-var-link');
+
     render(
-        html`<span data-title=${data.computedValue || ''}>${functionParts.pre}<${BaseLinkSwatch.litTagName} .data=${
-            {title, showTitle: false, text: functionParts.variableName, isDefined, onLinkActivate} as
-            LinkSwatchRenderData} class="css-var-link"></${BaseLinkSwatch.litTagName}>${fallbackIncludeComma}${
+        html`<span data-title=${data.computedValue || ''}>${functionParts.pre}${this.#link}${fallbackIncludeComma}${
             functionParts.post}</span>`,
         this.shadow, {host: this});
   }
@@ -188,7 +209,7 @@ export class LinkSwatch extends HTMLElement {
           isDefined,
           title,
           onLinkActivate,
-        } as LinkSwatchRenderData}></${BaseLinkSwatch.litTagName}></span>`,
+        } as BaseLinkSwatchRenderData}></${BaseLinkSwatch.litTagName}></span>`,
         this.shadow, {host: this});
   }
 }

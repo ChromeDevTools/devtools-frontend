@@ -7,14 +7,17 @@ import {assert} from 'chai';
 import {
   click,
   getBrowserAndPages,
+  hover,
   waitFor,
   waitForAria,
   waitForElementWithTextContent,
   waitForFunction,
   waitForMany,
+  waitForNone,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
+  ELEMENTS_PANEL_SELECTOR,
   getStyleRule,
   goToResourceAndWaitForStyleSection,
   SECTION_SUBTITLE_SELECTOR,
@@ -59,7 +62,7 @@ describe('The styles pane', () => {
     });
   });
 
-  it('shows a foldable Registered Properties section when there are 5 or less registered properties', async () => {
+  it('shows a foldable @property section when there are 5 or less registered properties', async () => {
     await goToResourceAndWaitForStyleSection('elements/at-property.html');
 
     const stylesPane = await waitFor('div.styles-pane');
@@ -78,7 +81,7 @@ describe('The styles pane', () => {
     }
   });
 
-  it('shows a collapsed Registered Properties section when there are more than 5 registered properties', async () => {
+  it('shows a collapsed @property section when there are more than 5 registered properties', async () => {
     await goToResourceAndWaitForStyleSection('elements/at-property.html');
     const {target, frontend} = getBrowserAndPages();
 
@@ -105,5 +108,47 @@ describe('The styles pane', () => {
       const rule = await getStyleRule('--my-color');
       await waitForFunction(() => rule.evaluate(e => !e.classList.contains('hidden')));
     }
+  });
+
+  it('shows registration information in a variable popover', async () => {
+    async function hoverVariable(label: string) {
+      const isValue = label.startsWith('var(');
+      if (isValue) {
+        const prop = await waitForAria(`CSS property value: ${label}`);
+        await hover('.link-swatch-link', {root: prop});
+      } else {
+        await hover(`aria/CSS property name: ${label}`);
+      }
+
+      const popover = await waitFor('.variable-value-popup-wrapper');
+      const popoverContents = (await popover.evaluate(e => e.textContent))?.trim()?.replaceAll(/\s\s+/g, ', ');
+
+      await hover(ELEMENTS_PANEL_SELECTOR);
+      await waitForNone('.variable-value-popup-wrapper');
+
+      return popoverContents;
+    }
+    await goToResourceAndWaitForStyleSection('elements/at-property.html');
+
+    assert.strictEqual(
+        await hoverVariable('var(--my-cssom-color)'),
+        'orange, Registered property, syntax: "<color>", inherits: false, initial-value: orange, Go to definition');
+
+    assert.strictEqual(
+        await hoverVariable('--my-color'),
+        'red, Registered property, syntax: "<color>", inherits: false, initial-value: red, Go to definition');
+    assert.strictEqual(
+        await hoverVariable('var(--my-color)'),
+        'red, Registered property, syntax: "<color>", inherits: false, initial-value: red, Go to definition');
+
+    assert.strictEqual(
+        await hoverVariable('--my-color2'),
+        'gray, Registered property, syntax: "<color>", inherits: false, initial-value: #c0ffee, Go to definition');
+    assert.strictEqual(
+        await hoverVariable('var(--my-color2)'),
+        'gray, Registered property, syntax: "<color>", inherits: false, initial-value: #c0ffee, Go to definition');
+
+    assert.strictEqual(await hoverVariable('--my-other-color'), 'green');
+    assert.strictEqual(await hoverVariable('var(--my-other-color)'), 'green');
   });
 });

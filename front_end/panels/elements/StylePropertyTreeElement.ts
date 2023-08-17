@@ -22,13 +22,17 @@ import {
   ShadowSwatchPopoverHelper,
 } from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
+import {cssRuleValidatorsMap, type Hint} from './CSSRuleValidator.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {StyleEditorWidget} from './StyleEditorWidget.js';
-
 import {type StylePropertiesSection} from './StylePropertiesSection.js';
-import {CSSPropertyPrompt, StylesSidebarPane, StylesSidebarPropertyRenderer} from './StylesSidebarPane.js';
 import {getCssDeclarationAsJavascriptProperty} from './StylePropertyUtils.js';
-import {cssRuleValidatorsMap, type Hint} from './CSSRuleValidator.js';
+import {
+  CSSPropertyPrompt,
+  REGISTERED_PROPERTY_SECTION_NAME,
+  StylesSidebarPane,
+  StylesSidebarPropertyRenderer,
+} from './StylesSidebarPane.js';
 
 const FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
 const GridEditor = ElementsComponents.StylePropertyEditor.GridEditor;
@@ -503,7 +507,18 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     const varSwatch = new InlineEditor.LinkSwatch.CSSVarSwatch();
     UI.UIUtils.createTextChild(varSwatch, text);
-    varSwatch.data = {text, computedValue, fromFallback, onLinkActivate: this.handleVarDefinitionActivate.bind(this)};
+    varSwatch.data = {
+      text,
+      computedValue,
+      fromFallback,
+      onLinkActivate: this.handleVarDefinitionActivate.bind(this),
+    };
+
+    if (varSwatch.link?.linkElement) {
+      const {textContent} = varSwatch.link.linkElement;
+      this.parentPaneInternal.addPopover(
+          varSwatch.link, () => textContent ? this.#getVariablePopoverContents(textContent, computedValue) : undefined);
+    }
 
     if (!computedValue || !Common.Color.parse(computedValue)) {
       return varSwatch;
@@ -515,7 +530,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private handleVarDefinitionActivate(variableName: string): void {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
     Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.VarLink);
-    this.parentPaneInternal.jumpToProperty(variableName);
+    this.parentPaneInternal.jumpToProperty(variableName) ||
+        this.parentPaneInternal.jumpToProperty('initial-value', variableName, REGISTERED_PROPERTY_SECTION_NAME);
   }
 
   private async addColorContrastInfo(swatchIcon: ColorSwatchPopoverIcon): Promise<void> {
@@ -884,6 +900,17 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
+  #getVariablePopoverContents(variableName: string, computedValue: string|null): HTMLElement|undefined {
+    const registration = this.matchedStyles().getRegisteredProperty(variableName);
+    const goToDefinition = (): void =>
+        this.parentPaneInternal.jumpToSection(variableName, REGISTERED_PROPERTY_SECTION_NAME);
+    if (!registration && !computedValue) {
+      return undefined;
+    }
+    return new ElementsComponents.CSSVariableValueView.CSSVariableValueView(
+        computedValue ?? '', registration ? {registration, goToDefinition} : undefined);
+  }
+
   updateTitleIfComputedValueChanged(): void {
     const computedValue = this.matchedStylesInternal.computeValue(this.property.ownerStyle, this.property.value);
     if (computedValue === this.lastComputedValue) {
@@ -926,8 +953,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.removeChildren();
     this.nameElement = (propertyRenderer.renderName() as HTMLElement);
     if (this.property.name.startsWith('--') && this.nameElement) {
-      UI.Tooltip.Tooltip.install(
-          this.nameElement, this.matchedStylesInternal.computeCSSVariable(this.style, this.property.name) || '');
+      this.parentPaneInternal.addPopover(
+          this.nameElement,
+          () => this.#getVariablePopoverContents(
+              this.property.name, this.matchedStylesInternal.computeCSSVariable(this.style, this.property.name)));
     }
     this.valueElement = (propertyRenderer.renderValue() as HTMLElement);
     if (!this.treeOutline) {

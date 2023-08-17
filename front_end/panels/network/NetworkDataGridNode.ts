@@ -51,7 +51,7 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {iconDataForResourceType} from '../utils/utils.js';
+import {PanelUtils} from '../utils/utils.js';
 
 import {type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 
@@ -1111,7 +1111,7 @@ export class NetworkRequestNode extends NetworkNode {
         iconElement.classList.add('image', 'icon');
         iconElement.appendChild(previewImage);
       } else {
-        const iconData = iconDataForResourceType(type);
+        const iconData = PanelUtils.iconDataForResourceType(type);
         iconElement = setIcon(iconData, type.title());
         iconElement.classList.add('icon');
       }

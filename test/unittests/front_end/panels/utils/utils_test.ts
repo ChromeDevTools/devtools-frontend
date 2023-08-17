@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as utils from '../../../../../front_end/panels/utils/utils.js';
+import * as PanelUtils from '../../../../../front_end/panels/utils/utils.js';
 import * as Diff from '../../../../../front_end/third_party/diff/diff.js';
 
 const {assert} = chai;
@@ -43,7 +43,7 @@ describe('panels/utils', async () => {
         }
       }`;
     const diff = Diff.Diff.DiffWrapper.lineDiff(original.split('\n'), current.split('\n'));
-    const changes = await utils.formatCSSChangesFromDiff(diff);
+    const changes = await PanelUtils.PanelUtils.formatCSSChangesFromDiff(diff);
     assert.strictEqual(
         changes, `.container {
   /* width: 10px; */

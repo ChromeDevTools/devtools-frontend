@@ -31,17 +31,16 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {PanelUtils} from '../utils/utils.js';
+
 import * as PanelComponents from './components/components.js';
-
-import settingsScreenStyles from './settingsScreen.css.js';
-
 import {type KeybindsSettingsTab} from './KeybindsSettingsTab.js';
-import {highlightElement} from '../utils/utils.js';
+import settingsScreenStyles from './settingsScreen.css.js';
 
 const UIStrings = {
   /**
@@ -394,7 +393,7 @@ export class GenericSettingsTab extends SettingsTab {
     if (setting instanceof Common.Settings.Setting) {
       const element = this.settingToControl.get(setting);
       if (element) {
-        highlightElement(element);
+        PanelUtils.highlightElement(element);
       }
     }
   }
@@ -526,7 +525,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
     if (experiment instanceof Root.Runtime.Experiment) {
       const element = this.experimentToControl.get(experiment);
       if (element) {
-        highlightElement(element);
+        PanelUtils.highlightElement(element);
       }
     }
   }

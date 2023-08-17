@@ -5,7 +5,6 @@
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Coordinator from '../../../components/render_coordinator/render_coordinator.js';
-import * as UI from '../../legacy.js';
 
 import {DataGridImpl, DataGridNode, type DataGridData, type Parameters} from './DataGrid.js';
 
@@ -73,7 +72,6 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
   }
 
   private onScroll(_event: Event|null): void {
-    this.stickToBottom = UI.UIUtils.isScrolledToBottom(this.scrollContainer);
     if (this.lastScrollTop !== this.scrollContainer.scrollTop) {
       this.scheduleUpdate(true);
     }
@@ -84,9 +82,6 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
   }
 
   scheduleUpdate(isFromUser?: boolean): void {
-    if (this.stickToBottom && isFromUser) {
-      this.stickToBottom = UI.UIUtils.isScrolledToBottom(this.scrollContainer);
-    }
     this.updateIsFromUser = this.updateIsFromUser || Boolean(isFromUser);
     void coordinator.write('ViewportDataGrid.render', this.update.bind(this));
   }
@@ -135,6 +130,9 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
     for (; i < size; ++i) {
       bottomPadding += nodes[i].nodeSelfHeight();
     }
+
+    // enable stick-to-bottom if the last item is visible
+    this.stickToBottom = end === nodes.length;
 
     return {
       topPadding: topPadding,

@@ -59,7 +59,9 @@ export interface Project {
       Promise<UISourceCode|null>;
   canCreateFile(): boolean;
   deleteFile(uiSourceCode: UISourceCode): void;
+  deleteDirectoryRecursively(path: Platform.DevToolsPath.EncodedPathString): Promise<boolean>;
   remove(): void;
+  removeUISourceCode(url: Platform.DevToolsPath.UrlString): void;
   searchInFileContent(uiSourceCode: UISourceCode, query: string, caseSensitive: boolean, isRegex: boolean):
       Promise<TextUtils.ContentProvider.SearchMatch[]>;
   findFilesMatchingSearchRequest(
@@ -178,6 +180,9 @@ export abstract class ProjectStore implements Project {
   excludeFolder(_path: Platform.DevToolsPath.UrlString): void {
   }
   deleteFile(_uiSourceCode: UISourceCode): void {
+  }
+  deleteDirectoryRecursively(_path: Platform.DevToolsPath.EncodedPathString): Promise<boolean> {
+    return Promise.resolve(false);
   }
   remove(): void {
   }

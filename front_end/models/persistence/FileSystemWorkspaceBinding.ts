@@ -407,6 +407,10 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
     });
   }
 
+  override deleteDirectoryRecursively(path: Platform.DevToolsPath.EncodedPathString): Promise<boolean> {
+    return this.fileSystemInternal.deleteDirectoryRecursively(path);
+  }
+
   override remove(): void {
     this.fileSystemWorkspaceBinding.isolatedFileSystemManager.removeFileSystem(this.fileSystemInternal);
   }

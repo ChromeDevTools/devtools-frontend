@@ -302,6 +302,34 @@ export class IsolatedFileSystem extends PlatformFileSystem {
     }
   }
 
+  override deleteDirectoryRecursively(path: Platform.DevToolsPath.EncodedPathString): Promise<boolean> {
+    let resolveCallback: (arg0: boolean) => void;
+    const promise = new Promise<boolean>(resolve => {
+      resolveCallback = resolve;
+    });
+    this.domFileSystem.root.getDirectory(
+        Common.ParsedURL.ParsedURL.encodedPathToRawPathString(path), undefined, dirEntryLoaded.bind(this),
+        errorHandler.bind(this));
+    return promise;
+
+    function dirEntryLoaded(this: IsolatedFileSystem, dirEntry: DirectoryEntry): void {
+      dirEntry.removeRecursively(dirEntryRemoved, errorHandler.bind(this));
+    }
+
+    function dirEntryRemoved(): void {
+      resolveCallback(true);
+    }
+
+    /**
+     * TODO(jsbell): Update externs replacing DOMError with DOMException. https://crbug.com/496901
+     */
+    function errorHandler(this: IsolatedFileSystem, error: DOMError): void {
+      const errorMessage = IsolatedFileSystem.errorMessage(error);
+      console.error(errorMessage + ' when deleting directory \'' + (this.path() + '/' + path) + '\'');
+      resolveCallback(false);
+    }
+  }
+
   override requestFileBlob(path: Platform.DevToolsPath.EncodedPathString): Promise<Blob|null> {
     return new Promise(resolve => {
       this.domFileSystem.root.getFile(Common.ParsedURL.ParsedURL.encodedPathToRawPathString(path), undefined, entry => {

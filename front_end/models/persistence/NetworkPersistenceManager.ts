@@ -379,6 +379,12 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     this.updateInterceptionPatterns();
   }
 
+  isActiveHeaderOverrides(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
+    // If this overriden file is actively in use at the moment.
+    return uiSourceCode.url().endsWith(HEADERS_FILENAME) &&
+        this.hasMatchingNetworkUISourceCodeForHeaderOverridesFile(uiSourceCode);
+  }
+
   isUISourceCodeOverridable(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     return uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network;
   }

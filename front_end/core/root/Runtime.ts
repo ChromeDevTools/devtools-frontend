@@ -312,6 +312,7 @@ export enum ExperimentName {
   SELF_XSS_WARNING = 'selfXssWarning',
   USE_SOURCE_MAP_SCOPES = 'useSourceMapScopes',
   STORAGE_BUCKETS_TREE = 'storageBucketsTree',
+  DELETE_OVERRIDES_TEMP_ENABLE = 'deleteOverridesTemporarilyEnable',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

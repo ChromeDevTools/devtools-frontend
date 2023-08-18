@@ -338,13 +338,13 @@ describe('Overrides panel', async function() {
 
 describe('Overrides panel', () => {
   it('appends correct overrides context menu for Sources > Page file', async () => {
-    await goToResource('network/stylesheet-resources.html');
+    await goToResource('elements/elements-panel-styles.html');
     await openNetworkTab();
-    await selectRequestByName('stylesheet-resources.css', {button: 'right'});
+    await selectRequestByName('elements-panel-styles.css', {button: 'right'});
     await click('aria/Open in Sources panel');
 
     // Open the file in the Sources panel
-    const file = await waitFor('[aria-label="stylesheet-resources.css, file"]');
+    const file = await waitFor('[aria-label="elements-panel-styles.css, file"]');
     await file.click({button: 'right'});
 
     const assertShowAllElements = await $$('Show all overrides', undefined, 'aria');

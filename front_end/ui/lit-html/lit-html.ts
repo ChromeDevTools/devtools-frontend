@@ -19,8 +19,8 @@ export {
   Decorators,
 } from '../../third_party/lit/lit.js';
 
-const {html, literal, flattenTemplate} = Static;
+const {html, literal, flattenTemplate, i18nTemplate} = Static;
 
 type LitTemplate = Lit.TemplateResult|typeof Lit.nothing;
 
-export {html, literal, flattenTemplate, type LitTemplate};
+export {html, literal, flattenTemplate, type LitTemplate, i18nTemplate};

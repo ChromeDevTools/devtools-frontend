@@ -33,7 +33,7 @@ const yargsObject = yargs(process.argv.slice(2), process.cwd()).option('web-test
                         .strict()
                         .argv;
 
-// `createPlainTextSearchRegex` is stolen string-utilities.ts.
+// `createPlainTextSearchRegex` is stolen from string-utilities.ts.
 const SPECIAL_REGEX_CHARACTERS = '^[]{}()\\.^$*+?|-,';
 const createPlainTextSearchRegex = function(query) {
   // This should be kept the same as the one in StringUtil.cpp.
@@ -103,3 +103,10 @@ for (const filePath of webTestPaths) {
   replacedContent = addImportIfNecessary(replacedContent, yargsObject.import);
   await fs.writeFile(filePath, replacedContent, {encoding: 'utf-8'});
 }
+
+const suggestedCommitMessage = `
+[DevTools] Replace \`${yargsObject.from}\` global with import
+
+Bug: chromium:1442410
+`.trim();
+console.log(suggestedCommitMessage);

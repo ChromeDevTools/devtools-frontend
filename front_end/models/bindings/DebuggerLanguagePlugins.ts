@@ -205,8 +205,6 @@ export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
   readonly #typeNameInternal: string;
   readonly #iconInternal: string|undefined;
   readonly #objectInternal: SourceScopeRemoteObject;
-  readonly #startLocationInternal: SDK.DebuggerModel.Location|null;
-  readonly #endLocationInternal: SDK.DebuggerModel.Location|null;
   constructor(
       callFrame: SDK.DebuggerModel.CallFrame, stopId: StopId, type: string, typeName: string, icon: string|undefined,
       plugin: DebuggerLanguagePlugin) {
@@ -218,8 +216,6 @@ export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
     this.#typeNameInternal = typeName;
     this.#iconInternal = icon;
     this.#objectInternal = new SourceScopeRemoteObject(callFrame, stopId, plugin);
-    this.#startLocationInternal = null;
-    this.#endLocationInternal = null;
   }
 
   async getVariableValue(name: string): Promise<SDK.RemoteObject.RemoteObject|null> {
@@ -255,12 +251,8 @@ export class SourceScope implements SDK.DebuggerModel.ScopeChainEntry {
     return undefined;
   }
 
-  startLocation(): SDK.DebuggerModel.Location|null {
-    return this.#startLocationInternal;
-  }
-
-  endLocation(): SDK.DebuggerModel.Location|null {
-    return this.#endLocationInternal;
+  range(): null {
+    return null;
   }
 
   object(): SourceScopeRemoteObject {

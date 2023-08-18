@@ -2157,11 +2157,11 @@ export async function computeScopeMappings(
   const scopeMappings:
       {scopeStart: number, scopeEnd: number, variableMap: Map<string, SDK.RemoteObject.RemoteObject>}[] = [];
   for (const scope of callFrame.scopeChain()) {
-    const scopeStart = await rawLocationToEditorOffset(scope.startLocation());
+    const scopeStart = await rawLocationToEditorOffset(scope.range()?.start ?? null);
     if (!scopeStart) {
       break;
     }
-    const scopeEnd = await rawLocationToEditorOffset(scope.endLocation());
+    const scopeEnd = await rawLocationToEditorOffset(scope.range()?.end ?? null);
     if (!scopeEnd) {
       break;
     }

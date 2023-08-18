@@ -120,14 +120,14 @@ const findScopeChain = function(
 
 export async function findScopeChainForDebuggerScope(scope: SDK.DebuggerModel.ScopeChainEntry):
     Promise<Formatter.FormatterWorkerPool.ScopeTreeNode[]> {
-  const startLocation = scope.startLocation();
-  const endLocation = scope.endLocation();
+  const startLocation = scope.range()?.start;
+  const endLocation = scope.range()?.end;
   if (!startLocation || !endLocation) {
     return [];
   }
 
   const script = startLocation.script();
-  if (!script || script !== endLocation.script()) {
+  if (!script) {
     return [];
   }
 
@@ -572,12 +572,11 @@ export const resolveThisObject =
 };
 
 export const resolveScopeInObject = function(scope: SDK.DebuggerModel.ScopeChainEntry): SDK.RemoteObject.RemoteObject {
-  const startLocation = scope.startLocation();
-  const endLocation = scope.endLocation();
-  const startLocationScript = startLocation ? startLocation.script() : null;
+  const endLocation = scope.range()?.end;
+  const startLocationScript = scope.range()?.start.script() ?? null;
 
   if (scope.type() === Protocol.Debugger.ScopeType.Global || !startLocationScript || !endLocation ||
-      !startLocationScript.sourceMapURL || startLocationScript !== endLocation.script()) {
+      !startLocationScript.sourceMapURL) {
     return scope.object();
   }
 
@@ -747,7 +746,7 @@ async function getFunctionNameFromScopeStart(
 }
 
 export async function resolveDebuggerFrameFunctionName(frame: SDK.DebuggerModel.CallFrame): Promise<string|null> {
-  const startLocation = frame.localScope()?.startLocation();
+  const startLocation = frame.localScope()?.range()?.start;
   if (!startLocation) {
     return null;
   }

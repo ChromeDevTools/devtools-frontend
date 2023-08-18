@@ -7,7 +7,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
-import {type Breadcrumb} from './Breadcrumbs.js';
+import {type Breadcrumb, flattenBreadcrumbs} from './Breadcrumbs.js';
 import breadcrumbsUIStyles from './breadcrumbsUI.css.js';
 
 const {render, html} = LitHtml;
@@ -36,15 +36,23 @@ export class BreadcrumbsUI extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
+  #renderElement(breadcrumb: Breadcrumb): LitHtml.TemplateResult {
+    // clang-format off
+    return html`
+          <div class="breadcrumb">
+              <span class="range">${breadcrumb.window.range} ms</span>
+              ${breadcrumb.child !== null ?
+                html`<${IconButton.Icon.Icon.litTagName}.data=${{iconName: 'chevron-right', color: 'var(--icon-default)', width: '20px', height: '20px'} as IconButton.Icon.IconWithName}>`
+                : ''}  
+          </div>
+      `;
+  }
+
   #render(): void {
     const output = html`
-      <div class="breadcrumb">
-        <span>${this.#breadcrumb.window.range} ms</span>
-        <${IconButton.Icon.Icon.litTagName} .data=${
-        {iconName: 'chevron-right', color: 'var(--icon-default)', width: '14px', height: '14px'} as
-        IconButton.Icon.IconWithName}>
-      </div>
-      `;
+      <div class="breadcrumbs">
+        ${flattenBreadcrumbs(this.#breadcrumb).map(breadcrumb => this.#renderElement(breadcrumb))}
+      </div>`;
     render(output, this.#shadow, {host: this});
   }
 }

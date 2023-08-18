@@ -8,3 +8,8 @@
   display: flex;
   align-items: center;
 }
+
+.breadcrumbs {
+  display: flex;
+  flex-direction: row;
+}

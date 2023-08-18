@@ -9,6 +9,21 @@ export interface Breadcrumb {
   child: Breadcrumb|null;
 }
 
+export function flattenBreadcrumbs(initialBreadcrumb: Breadcrumb): Breadcrumb[] {
+  const allBreadcrumbs: Breadcrumb[] = [initialBreadcrumb];
+  let breadcrumbsIter: Breadcrumb = initialBreadcrumb;
+
+  while (breadcrumbsIter.child !== null) {
+    const iterChild = breadcrumbsIter.child;
+    if (iterChild !== null) {
+      allBreadcrumbs.push(iterChild);
+      breadcrumbsIter = iterChild;
+    }
+  }
+
+  return allBreadcrumbs;
+}
+
 export class Breadcrumbs {
   readonly #initialBreadcrumb: Breadcrumb;
   #lastBreadcrumb: Breadcrumb;
@@ -51,20 +66,5 @@ export class Breadcrumbs {
 
     breadcrumbsIter.child = null;
     this.#lastBreadcrumb = breadcrumbsIter;
-  }
-
-  allCrumbs(): Breadcrumb[] {
-    const allBreadcrumbs: Breadcrumb[] = [this.#initialBreadcrumb];
-    let breadcrumbsIter: Breadcrumb = this.#initialBreadcrumb;
-
-    while (breadcrumbsIter.child !== null) {
-      const iterChild = breadcrumbsIter.child;
-      if (iterChild !== null) {
-        allBreadcrumbs.push(iterChild);
-        breadcrumbsIter = iterChild;
-      }
-    }
-
-    return allBreadcrumbs;
   }
 }

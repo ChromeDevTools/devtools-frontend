@@ -33,7 +33,9 @@ ts_library("timeline") {
     "../../../../../front_end/models/trace:bundle",
     "../../../../../front_end/models/workspace:bundle",
     "../../../../../front_end/panels/timeline:bundle",
+    "../../../../../front_end/panels/timeline/components:bundle",
     "../../helpers",
+    "./components",
     "./track_appenders",
   ]
 }

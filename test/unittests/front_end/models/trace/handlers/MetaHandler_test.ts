@@ -425,6 +425,28 @@ describe('MetaHandler', function() {
     assert.strictEqual(range, expectedMax - expectedMin, 'Range calculated incorrectly');
   });
 
+  it('calculates the min trace bound correctly if no TracingStartedInBrowser event is found', async function() {
+    const baseEvents = await TraceLoader.rawEvents(this, 'basic.json.gz');
+    // We are about to mutate these events, so copy them to avoid mutating the
+    // cached events from the TraceLoader.
+    const traceEvents = baseEvents.slice().filter(event => {
+      // Delete the tracing started in browser event to force the min bounds to
+      // be calculated based on the event with the smallest timestamp.
+      return event.name !== 'TracingStartedInBrowser';
+    });
+
+    TraceModel.Handlers.ModelHandlers.Meta.reset();
+    TraceModel.Handlers.ModelHandlers.Meta.initialize();
+    for (const event of traceEvents) {
+      TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
+    }
+    await TraceModel.Handlers.ModelHandlers.Meta.finalize();
+
+    const data = TraceModel.Handlers.ModelHandlers.Meta.data();
+    const expectedMin = 50_442_438_976;
+    assert.strictEqual(data.traceBounds.min, expectedMin, 'Min calculated incorrectly');
+  });
+
   it('ignores ::UMA Events', async function() {
     let traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[];
     try {

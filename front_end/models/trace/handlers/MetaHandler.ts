@@ -58,7 +58,7 @@ const mainFrameNavigations: Types.TraceEvents.TraceEventNavigationStart[] = [];
 const threadsInProcess =
     new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ThreadID, Types.TraceEvents.TraceEventThreadName>>();
 
-let traceStartedTime = Types.Timing.MicroSeconds(-1);
+let traceStartedTimeFromTracingStartedEvent = Types.Timing.MicroSeconds(-1);
 const eventPhasesOfInterestForTraceBounds = new Set([
   Types.TraceEvents.Phase.BEGIN,
   Types.TraceEvents.Phase.END,
@@ -85,7 +85,7 @@ export function reset(): void {
   traceBounds.min = Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY);
   traceBounds.max = Types.Timing.MicroSeconds(Number.NEGATIVE_INFINITY);
   traceBounds.range = Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY);
-  traceStartedTime = Types.Timing.MicroSeconds(-1);
+  traceStartedTimeFromTracingStartedEvent = Types.Timing.MicroSeconds(-1);
 
   handlerState = HandlerState.UNINITIALIZED;
 }
@@ -178,7 +178,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   // in scope at the start of the trace. We use this to identify the frame with
   // no parent, i.e. the top level frame.
   if (Types.TraceEvents.isTraceEventTracingStartedInBrowser(event)) {
-    traceStartedTime = event.ts;
+    traceStartedTimeFromTracingStartedEvent = event.ts;
 
     if (!event.args.data) {
       throw new Error('No frames found in trace data');
@@ -262,7 +262,14 @@ export async function finalize(): Promise<void> {
     throw new Error('Handler is not initialized');
   }
 
-  traceBounds.min = traceStartedTime;
+  // We try to set the minimum time by finding the event with the smallest
+  // timestamp. However, if we also got a timestamp from the
+  // TracingStartedInBrowser event, we should always use that.
+  // But in some traces (for example, CPU profiles) we do not get that event,
+  // hence why we need to check we got a timestamp from it before setting it.
+  if (traceStartedTimeFromTracingStartedEvent >= 0) {
+    traceBounds.min = traceStartedTimeFromTracingStartedEvent;
+  }
   traceBounds.range = Types.Timing.MicroSeconds(traceBounds.max - traceBounds.min);
 
   // If we go from foo.com to example.com we will get a new renderer, and

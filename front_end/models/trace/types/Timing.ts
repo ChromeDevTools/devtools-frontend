@@ -4,28 +4,18 @@
 
 /* eslint-disable no-unused-private-class-members */
 
-class MicroSecondsTag {
-  readonly #microSecondsTag: (symbol|undefined);
-}
-export type MicroSeconds = number&MicroSecondsTag;
+export type MicroSeconds = number&{_tag: 'MicroSeconds'};
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function MicroSeconds(value: number): MicroSeconds {
   return value as MicroSeconds;
 }
 
-class MilliSecondsTag {
-  readonly #milliSecondsTag: (symbol|undefined);
-}
-export type MilliSeconds = number&MilliSecondsTag;
+export type MilliSeconds = number&{_tag: 'MilliSeconds'};
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function MilliSeconds(value: number): MilliSeconds {
   return value as MilliSeconds;
 }
-
-class SecondsTag {
-  readonly #secondsTag: (symbol|undefined);
-}
-export type Seconds = number&SecondsTag;
+export type Seconds = number&{_tag: 'Seconds'};
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function Seconds(value: number): Seconds {
   return value as Seconds;

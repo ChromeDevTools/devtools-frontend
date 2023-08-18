@@ -300,7 +300,8 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   private registerDebugger(response: Protocol.Debugger.EnableResponse): void {
-    if (response.getError()) {
+    if (response.getError() || response.debuggerId === undefined) {
+      this.#debuggerEnabledInternal = false;
       return;
     }
     const {debuggerId} = response;

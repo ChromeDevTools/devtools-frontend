@@ -22,6 +22,10 @@ describeWithRealConnection('RecordingSession', () => {
     const setPrerenderingAllowedStub =
         sinon.stub(target.pageAgent(), 'invoke_setPrerenderingAllowed').resolves(undefined);
 
+    // We should not allow stealing the context because unit test runner might
+    // not recover from this.
+    sinon.stub(target.pageAgent(), 'invoke_bringToFront').resolves(undefined);
+
     const session = new Models.RecordingSession.RecordingSession(target, {
       title: 'test',
       selectorTypesToRecord: [Models.Schema.SelectorType.CSS],

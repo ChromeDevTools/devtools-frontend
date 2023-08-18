@@ -13,6 +13,7 @@ generate_css("legacy_css_files") {
     "imageView.css",
     "jsonView.css",
     "resourceSourceFrame.css",
+    "selfXssDialog.css",
     "xmlTree.css",
     "xmlView.css",
   ]

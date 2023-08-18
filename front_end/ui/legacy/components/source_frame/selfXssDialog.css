@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.widget {
+  padding: 20px;
+}
+
+.title {
+  font-size: larger;
+}
+
+.title,
+.message,
+.button,
+.text-input {
+  margin: 5px;
+}
+
+.button {
+  text-align: right;
+  margin-top: 10px;
+}
+
+.button button {
+  min-width: 80px;
+}
+
+.dialog-close-button {
+  position: absolute;
+  right: 9px;
+  top: 9px;
+  z-index: 1;
+}

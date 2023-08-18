@@ -2,9 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../../../../front_end/core/common/common.js';
+import * as Root from '../../../../../../../front_end/core/root/root.js';
 import type * as TextUtils from '../../../../../../../front_end/models/text_utils/text_utils.js';
 import * as SourceFrame from '../../../../../../../front_end/ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../../../../../../front_end/ui/legacy/legacy.js';
+import {
+  assertElement,
+  assertShadowRoot,
+  dispatchInputEvent,
+  dispatchPasteEvent,
+} from '../../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../helpers/EnvironmentHelpers.js';
 
 describeWithEnvironment('SourceFrame', () => {
@@ -55,5 +63,49 @@ describeWithEnvironment('SourceFrame', () => {
 
     assert.strictEqual(sourceFrame.textEditor.state.selection.main.from, 2);
     assert.strictEqual(sourceFrame.textEditor.state.selection.main.to, 3);
+  });
+
+  it('shows self-XSS warning which the user can disable', async () => {
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.SELF_XSS_WARNING);
+    const setting = Common.Settings.Settings.instance().createSetting(
+        'disableSelfXssWarning', false, Common.Settings.SettingStorageType.Synced);
+    assert.isFalse(setting.get());
+
+    const sourceFrame = await createSourceFrame('Example');
+    const codeMirror =
+        sourceFrame.element.querySelector('devtools-text-editor')?.shadowRoot?.querySelector('.cm-content') || null;
+    assertElement(codeMirror, HTMLDivElement);
+
+    const dt = new DataTransfer();
+    dt.setData('text/plain', 'foo');
+    dispatchPasteEvent(codeMirror, {clipboardData: dt, bubbles: true});
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const dialogShadowRoot = document.body.querySelector<HTMLDivElement>('[data-devtools-glass-pane]')
+                                 ?.shadowRoot?.querySelector('.widget')
+                                 ?.shadowRoot ||
+        null;
+    assertShadowRoot(dialogShadowRoot);
+
+    const title = dialogShadowRoot.querySelector('.title');
+    assertElement(title, HTMLDivElement);
+    assert.strictEqual(title.textContent, 'Do you trust this code?');
+
+    const input = dialogShadowRoot.querySelector('input');
+    assertElement(input, HTMLInputElement);
+    input.value = 'allow pasting';
+    dispatchInputEvent(input, {inputType: 'insertText', data: 'allow pasting', bubbles: true, composed: true});
+
+    const allowButton = dialogShadowRoot.querySelector('.primary-button');
+    assertElement(allowButton, HTMLButtonElement);
+    allowButton.click();
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    assert.isTrue(setting.get());
+
+    dispatchPasteEvent(codeMirror, {clipboardData: dt, bubbles: true});
+    await new Promise(resolve => setTimeout(resolve, 0));
+    const dialogContainer = document.body.querySelector<HTMLDivElement>('[data-devtools-glass-pane]');
+    assert.isNull(dialogContainer);
   });
 });

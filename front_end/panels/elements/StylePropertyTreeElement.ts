@@ -900,15 +900,20 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
-  #getVariablePopoverContents(variableName: string, computedValue: string|null): HTMLElement|undefined {
+  #getRegisteredPropertyDetails(variableName: string): ElementsComponents.CSSVariableValueView.RegisteredPropertyDetails
+      |undefined {
     const registration = this.matchedStyles().getRegisteredProperty(variableName);
     const goToDefinition = (): void =>
         this.parentPaneInternal.jumpToSection(variableName, REGISTERED_PROPERTY_SECTION_NAME);
-    if (!registration && !computedValue) {
+    return registration ? {registration, goToDefinition} : undefined;
+  }
+
+  #getVariablePopoverContents(variableName: string, computedValue: string|null): HTMLElement|undefined {
+    const registrationDetails = this.#getRegisteredPropertyDetails(variableName);
+    if (!registrationDetails && !computedValue) {
       return undefined;
     }
-    return new ElementsComponents.CSSVariableValueView.CSSVariableValueView(
-        computedValue ?? '', registration ? {registration, goToDefinition} : undefined);
+    return new ElementsComponents.CSSVariableValueView.CSSVariableValueView(computedValue ?? '', registrationDetails);
   }
 
   updateTitleIfComputedValueChanged(): void {
@@ -1016,9 +1021,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       // Avoid having longhands under an invalid shorthand.
       this.listItemElement.classList.add('not-parsed-ok');
 
+      const registrationDetails = this.#getRegisteredPropertyDetails(this.property.name);
+      const tooltip = registrationDetails ?
+          new ElementsComponents.CSSVariableValueView.CSSVariableParserError(registrationDetails) :
+          null;
       // Add a separate exclamation mark IMG element with a tooltip.
       this.listItemElement.insertBefore(
-          StylesSidebarPane.createExclamationMark(this.property, null), this.listItemElement.firstChild);
+          this.parentPaneInternal.createExclamationMark(this.property, tooltip), this.listItemElement.firstChild);
 
       // When the property is valid but the property value is invalid,
       // add line-through only to the property value.

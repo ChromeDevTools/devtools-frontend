@@ -40,6 +40,16 @@ describe('The styles pane', () => {
     await waitFor('.invalid-property-value:has(> [aria-label="CSS property name: --my-color"])');
   });
 
+  it('shows a parser error message popover on syntax mismatches', async () => {
+    await goToResourceAndWaitForStyleSection('elements/at-property.html');
+    await hover('.invalid-property-value:has(> [aria-label="CSS property name: --my-color"]) .exclamation-mark');
+
+    const popover = await waitFor('.variable-value-popup-wrapper');
+    const popoverContents = (await popover.evaluate(e => e.textContent))?.trim()?.replaceAll(/\s\s+/g, ', ');
+
+    assert.deepEqual(popoverContents, 'Invalid property value, expected type "<color>", Go to definition');
+  });
+
   it('correctly determines the computed value for non-overriden properties', async () => {
     await goToResourceAndWaitForStyleSection('elements/at-property.html');
     const myColorProp = await waitForAria('CSS property value: var(--my-cssom-color)');

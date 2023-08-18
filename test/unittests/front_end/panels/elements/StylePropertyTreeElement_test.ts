@@ -6,7 +6,7 @@ import * as Common from '../../../../../front_end/core/common/common.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as ElementsComponents from '../../../../../front_end/panels/elements/components/components.js';
-import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
+import * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
 import * as InlineEditor from '../../../../../front_end/ui/legacy/components/inline_editor/inline_editor.js';
 import type * as LegacyUI from '../../../../../front_end/ui/legacy/legacy.js';
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
@@ -35,6 +35,7 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
         'var(--b)': 'blue',
         'var(--space)': 'shorter hue',
         'var(--garbage-space)': 'this-is-garbage-text',
+        'var(--prop)': 'customproperty',
       };
 
       if (!mockVariableMap[param]) {
@@ -403,6 +404,35 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
       details.goToDefinition();
       assert.isTrue(jumpToSectionSpy.calledOnceWithExactly(
           '--prop', Elements.StylesSidebarPane.REGISTERED_PROPERTY_SECTION_NAME));
+    });
+
+    it('linkifies var functions to initial-value registrations', async () => {
+      const cssCustomPropertyDef = new SDK.CSSProperty.CSSProperty(
+          mockCssStyleDeclaration, 0, 'prop', 'var(--prop)', true, false, true, false, '', undefined);
+      mockMatchedStyles.computeCSSVariable.returns('computedvalue');
+      const renderValueSpy =
+          sinon.spy(ElementsModule.StylesSidebarPane.StylesSidebarPropertyRenderer.prototype, 'renderValue');
+      const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+        stylesPane: stylesSidebarPane,
+        matchedStyles: mockMatchedStyles,
+        property: cssCustomPropertyDef,
+        isShorthand: false,
+        inherited: false,
+        overloaded: false,
+        newProperty: true,
+      });
+
+      stylePropertyTreeElement.updateTitle();
+
+      const varSwatch =
+          renderValueSpy.returnValues.find(value => value.firstChild instanceof InlineEditor.LinkSwatch.CSSVarSwatch)
+                  ?.firstChild as InlineEditor.LinkSwatch.CSSVarSwatch |
+          undefined;
+      assertNotNullOrUndefined(varSwatch);
+      const jumpToPropertySpy = sinon.spy(stylesSidebarPane, 'jumpToProperty');
+      varSwatch.link?.linkElement?.dispatchEvent(new MouseEvent('mousedown'));
+      assert.isTrue(jumpToPropertySpy.calledWith(
+          'initial-value', '--prop', Elements.StylesSidebarPane.REGISTERED_PROPERTY_SECTION_NAME));
     });
   });
 });

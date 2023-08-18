@@ -18,7 +18,7 @@ const UIStrings = {
   /**
    *@description Command for showing the Workspace tool in Settings
    */
-  showWorkspace: 'Show Workspace',
+  showWorkspace: 'Show Workspace settings',
   /**
    *@description Title of a setting under the Persistence category in Settings
    */

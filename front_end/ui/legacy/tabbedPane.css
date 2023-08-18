@@ -49,39 +49,17 @@
   font-size: 14px;
   text-align: center;
   width: fit-content;
-  margin: 20px auto 0;
+  margin: 40px auto 0;
   text-shadow: var(--color-background-opacity-80) 0 1px 0;
   line-height: 28px;
 }
 
 .tabbed-pane-placeholder-row {
-  display: flex;
-  white-space: nowrap;
-  padding: 0 5px;
-  margin: 2px;
-}
+  margin-inline: 10px;
 
-.tabbed-pane-placeholder-row:focus-visible {
-  outline-width: unset;
-}
-
-.tabbed-pane-placeholder-key {
-  flex: 1;
-  text-align: right;
-  padding-right: 14px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.tabbed-pane-no-shortcut {
-  flex: 1;
-  text-align: center;
-}
-
-.tabbed-pane-placeholder-value {
-  flex: 1;
-  text-align: left;
-  padding-left: 14px;
+  & span {
+    padding-inline: 10px;
+  }
 }
 
 .tabbed-pane-header {

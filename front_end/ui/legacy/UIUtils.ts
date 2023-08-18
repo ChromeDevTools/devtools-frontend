@@ -1551,7 +1551,7 @@ export class MessageDialog {
 }
 
 export class ConfirmDialog {
-  static async show(message: string, where?: Element|Document): Promise<boolean> {
+  static async show(message: string, where?: Element|Document, options?: ConfirmDialogOptions): Promise<boolean> {
     const dialog = new Dialog();
     dialog.setSizeBehavior(SizeBehavior.MeasureContent);
     dialog.setDimmed(true);
@@ -1563,10 +1563,12 @@ export class ConfirmDialog {
     const buttonsBar = content.createChild('div', 'button');
     const result = await new Promise<boolean>(resolve => {
       const okButton = createTextButton(
-          /* text= */ i18nString(UIStrings.ok), /* clickHandler= */ () => resolve(true), /* className= */ '',
+          /* text= */ options?.okButtonLabel || i18nString(UIStrings.ok), /* clickHandler= */ () => resolve(true),
+          /* className= */ '',
           /* primary= */ true);
       buttonsBar.appendChild(okButton);
-      buttonsBar.appendChild(createTextButton(i18nString(UIStrings.cancel), () => resolve(false)));
+      buttonsBar.appendChild(
+          createTextButton(options?.cancelButtonLabel || i18nString(UIStrings.cancel), () => resolve(false)));
       dialog.setOutsideClickCallback(event => {
         event.consume();
         resolve(false);
@@ -1722,4 +1724,9 @@ export function getApplicableRegisteredRenderers(object: Object): RendererRegist
 export interface RendererRegistration {
   loadRenderer: () => Promise<Renderer>;
   contextTypes: () => Array<Function>;
+}
+
+export interface ConfirmDialogOptions {
+  okButtonLabel?: string;
+  cancelButtonLabel?: string;
 }

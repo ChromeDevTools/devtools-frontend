@@ -95,6 +95,10 @@ const UIStrings = {
    */
   delete: 'Delete',
   /**
+   *@description A button text to confirm an action to remove a folder. This is not the same as delete. It removes the folder from UI but do not delete them.
+   */
+  remove: 'Remove',
+  /**
    *@description Text in Navigator View of the Sources panel
    */
   areYouSureYouWantToDeleteAll: 'Are you sure you want to delete all overrides in this folder?',
@@ -107,17 +111,22 @@ const UIStrings = {
    */
   newFile: 'New file',
   /**
-   *@description A context menu item in the Navigator View of the Sources panel
+   *@description A context menu item in the Navigator View of the Sources panel to exclude a folder from workspace
    */
-  excludeFolder: 'Exclude folder',
+  excludeFolder: 'Exclude from workspace',
   /**
    *@description A context menu item in the Navigator View of the Sources panel
    */
-  removeFolderFromWorkspace: 'Remove folder from workspace',
+  removeFolderFromWorkspace: 'Remove from workspace',
   /**
    *@description Text in Navigator View of the Sources panel
+   * @example {a-folder-name} PH1
    */
-  areYouSureYouWantToRemoveThis: 'Are you sure you want to remove this folder?',
+  areYouSureYouWantToRemoveThis: 'Remove ‘{PH1}’ from Workspace?',
+  /**
+   *@description Text in Navigator View of the Sources panel. Warning message when user remove a folder.
+   */
+  workspaceStopSyncing: 'This will stop syncing changes from DevTools to your sources.',
   /**
    *@description A context menu item in the Navigator View of the Sources panel
    */
@@ -1053,8 +1062,12 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       if (!isFileOverrides) {
         if (node instanceof NavigatorGroupTreeNode) {
           contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeFolderFromWorkspace), async () => {
-            const shouldRemove =
-                await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.areYouSureYouWantToRemoveThis));
+            const warningMessage = `${i18nString(UIStrings.areYouSureYouWantToRemoveThis, {
+              PH1: (node as NavigatorGroupTreeNode).title,
+            })}\n${i18nString(UIStrings.workspaceStopSyncing)}`;
+            const shouldRemove = await UI.UIUtils.ConfirmDialog.show(warningMessage, undefined, {
+              okButtonLabel: i18nString(UIStrings.remove),
+            });
             if (shouldRemove) {
               project.remove();
             }

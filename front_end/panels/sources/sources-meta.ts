@@ -26,13 +26,13 @@ const UIStrings = {
    */
   sources: 'Sources',
   /**
-   *@description Command for showing the 'Filesystem' tool
+   *@description Command for showing the 'Workspace' tool
    */
-  showFilesystem: 'Show Filesystem',
+  showWorkspace: 'Show Workspace',
   /**
    *@description Title of the 'Filesystem' tool in the Files Navigator View, which is part of the Sources tool
    */
-  filesystem: 'Filesystem',
+  workspace: 'Workspace',
   /**
    *@description Command for showing the 'Snippets' tool
    */
@@ -193,6 +193,10 @@ const UIStrings = {
    *@description Title of an action in the sources tool to add folder to workspace
    */
   addFolderToWorkspace: 'Add folder to workspace',
+  /**
+   *@description Title of an action in the sources tool to add folder to workspace
+   */
+  addFolder: 'Add folder',
   /**
    *@description Title of an action in the debugger tool to previous call frame
    */
@@ -451,8 +455,8 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW,
   id: 'navigator-files',
-  commandPrompt: i18nLazyString(UIStrings.showFilesystem),
-  title: i18nLazyString(UIStrings.filesystem),
+  commandPrompt: i18nLazyString(UIStrings.showWorkspace),
+  title: i18nLazyString(UIStrings.workspace),
   order: 3,
   persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   async loadView() {
@@ -1855,6 +1859,7 @@ Common.Revealer.registerRevealer({
 UI.Toolbar.registerToolbarItem({
   actionId: 'sources.add-folder-to-workspace',
   location: UI.Toolbar.ToolbarItemLocation.FILES_NAVIGATION_TOOLBAR,
+  label: i18nLazyString(UIStrings.addFolder),
   showLabel: true,
   condition: Root.Runtime.ConditionName.NOT_SOURCES_HIDE_ADD_FOLDER,
   loadItem: undefined,

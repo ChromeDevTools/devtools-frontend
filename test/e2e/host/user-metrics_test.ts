@@ -458,9 +458,9 @@ describe('User Metrics for sidebar panes', () => {
     assert.notInclude(eventNames, 'DevTools.Elements.SidebarTabShown');
   });
 
-  it('dispatches sidebar panes events for switching to \'Filesystem\' tab in the \'Sources\' panel', async () => {
+  it('dispatches sidebar panes events for switching to \'Workspace\' tab in the \'Sources\' panel', async () => {
     await click('#tab-sources');
-    await navigateToSidePane('Filesystem');
+    await navigateToSidePane('Workspace');
 
     await assertHistogramEventsInclude([
       {

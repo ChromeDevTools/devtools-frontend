@@ -221,7 +221,7 @@ export class Toolbar {
     const button = action.toggleable() ? makeToggle() : makeButton();
 
     if (options.showLabel) {
-      button.setText(action.title());
+      button.setText(options.label?.() || action.title());
     }
 
     let handler = (_event: {
@@ -413,12 +413,13 @@ export class Toolbar {
 
     const filtered = extensions.filter(e => e.location === location);
     const items = await Promise.all(filtered.map(extension => {
-      const {separator, actionId, showLabel, loadItem} = extension;
+      const {separator, actionId, showLabel, label, loadItem} = extension;
       if (separator) {
         return new ToolbarSeparator();
       }
       if (actionId) {
-        return Toolbar.createActionButtonForId(actionId, {showLabel: Boolean(showLabel), userActionCode: undefined});
+        return Toolbar.createActionButtonForId(
+            actionId, {label, showLabel: Boolean(showLabel), userActionCode: undefined});
       }
       // TODO(crbug.com/1134103) constratint the case checked with this if using TS type definitions once UI is TS-authored.
       if (!loadItem) {
@@ -435,6 +436,7 @@ export class Toolbar {
   }
 }
 export interface ToolbarButtonOptions {
+  label?: () => Platform.UIString.LocalizedString;
   showLabel: boolean;
   userActionCode?: Host.UserMetrics.Action;
 }
@@ -1117,6 +1119,7 @@ export interface ToolbarItemRegistration {
   order?: number;
   location: ToolbarItemLocation;
   separator?: boolean;
+  label?: () => Platform.UIString.LocalizedString;
   showLabel?: boolean;
   actionId?: string;
   condition?: string;

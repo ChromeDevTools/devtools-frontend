@@ -36,11 +36,16 @@ const UIStrings = {
   /**
    *@description Text in Sources View of the Sources panel
    */
-  dropInAFolderToAddToWorkspace: 'Drop in a folder to add to workspace',
+  workspaceDropInAFolderToSyncSources: 'To sync edits to the workspace, drop a folder with your sources here',
   /**
    *@description Accessible label for Sources placeholder view actions list
    */
   sourceViewActions: 'Source View Actions',
+  /**
+   *@description Text in Sources View of the Sources panel
+   */
+  LearnMore: 'Learn more',
+
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -147,33 +152,31 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     const shortcuts = [
       {actionId: 'quickOpen.show', description: i18nString(UIStrings.openFile)},
       {actionId: 'commandMenu.show', description: i18nString(UIStrings.runCommand)},
-      {actionId: 'sources.add-folder-to-workspace', description: i18nString(UIStrings.dropInAFolderToAddToWorkspace)},
+      {
+        actionId: 'sources.add-folder-to-workspace',
+        description: i18nString(UIStrings.workspaceDropInAFolderToSyncSources),
+      },
     ];
 
-    const element = document.createElement('div');
-    const list = element.createChild('div', 'tabbed-pane-placeholder');
+    const list = document.createElement('div');
     list.addEventListener('keydown', this.placeholderOnKeyDown.bind(this), false);
     UI.ARIAUtils.markAsList(list);
     UI.ARIAUtils.setLabel(list, i18nString(UIStrings.sourceViewActions));
 
-    for (let i = 0; i < shortcuts.length; i++) {
-      const shortcut = shortcuts[i];
+    for (const shortcut of shortcuts) {
       const shortcutKeyText = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(shortcut.actionId);
-      const listItemElement = list.createChild('div');
+      const listItemElement = list.createChild('div', 'tabbed-pane-placeholder-row');
       UI.ARIAUtils.markAsListitem(listItemElement);
-      const row = (listItemElement.createChild('div', 'tabbed-pane-placeholder-row') as HTMLElement);
-      row.tabIndex = -1;
-      UI.ARIAUtils.markAsButton(row);
       if (shortcutKeyText) {
-        row.createChild('div', 'tabbed-pane-placeholder-key').textContent = shortcutKeyText;
-        row.createChild('div', 'tabbed-pane-placeholder-value').textContent = shortcut.description;
+        listItemElement.createChild('span').textContent = shortcutKeyText;
+        listItemElement.createChild('span').textContent = shortcut.description;
       } else {
-        row.createChild('div', 'tabbed-pane-no-shortcut').textContent = shortcut.description;
+        listItemElement.createChild('span').textContent = shortcut.description;
       }
       const action = UI.ActionRegistry.ActionRegistry.instance().action(shortcut.actionId);
       if (action) {
         this.placeholderOptionArray.push({
-          element: row,
+          element: listItemElement,
           handler(): void {
             void action.execute();
           },
@@ -181,10 +184,9 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       }
     }
 
-    element.appendChild(
-        UI.XLink.XLink.create('https://developer.chrome.com/docs/devtools/workspaces/', 'Learn more about Workspaces'));
+    list.appendChild(UI.XLink.XLink.create('https://goo.gle/devtools-workspace', i18nString(UIStrings.LearnMore)));
 
-    return element;
+    return list;
   }
 
   private placeholderOnKeyDown(event: Event): void {

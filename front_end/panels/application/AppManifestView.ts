@@ -1028,7 +1028,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
   parseSizes(
       sizes: string, resourceName: Platform.UIString.LocalizedString, imageUrl: string,
       imageResourceErrors: Platform.UIString.LocalizedString[]): ParsedSize[] {
-    const rawSizeArray = sizes.split(/\s+/);
+    const rawSizeArray = sizes ? sizes.split(/\s+/) : [];
     const parsedSizes: ParsedSize[] = [];
     for (const size of rawSizeArray) {
       if (size === 'any') {

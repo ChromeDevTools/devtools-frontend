@@ -623,6 +623,7 @@ export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode
     div.appendChild(linkContainer);
     const link = await this.dataGridInternal.dataDisplayDelegate().linkifyObject((this.snapshotNodeIndex as number));
     if (link) {
+      link.setAttribute('tabindex', '0');
       linkContainer.appendChild(link);
       this.linkElement = link;
     } else {

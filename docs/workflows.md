@@ -74,8 +74,22 @@ You can run a [build](#Build) of DevTools frontend in a pre-built Chromium in or
 This works with Chromium 79 or later.
 **(Requires `brew install coreutils` on Mac.)**
 
+To run on **Mac**:
+
 ```bash
-<path-to-devtools-frontend>/third_party/chrome/chrome-<platform>/chrome --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
+<path-to-devtools-frontend>./third_party/chrome/chrome-mac/Google\ Chrome\ for\ Testing.app/Contents/Mac OS/Google\ Chrome\ for\ Testing --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end) --use-mock-keychain
+```
+
+To run on **Linux**:
+
+```bash
+<path-to-devtools-frontend>./third_party/chrome/chrome-linux/chrome --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
+```
+
+To run on **Windows**:
+
+```bash
+<path-to-devtools-frontend>./third_party/chrome/chrome-win/chrome.exe --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
 ```
 
 Note that `$(realpath out/Default/gen/front_end)` expands to the absolute path to build artifacts for DevTools frontend.

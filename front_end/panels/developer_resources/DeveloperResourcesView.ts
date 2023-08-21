@@ -84,12 +84,12 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
 
   override async doUpdate(): Promise<void> {
     this.listView.reset();
-    this.listView.update(this.loader.getResourcesLoaded().values());
+    this.listView.update(this.loader.getScopedResourcesLoaded().values());
     this.updateStats();
   }
 
   private updateStats(): void {
-    const {loading, resources} = this.loader.getNumberOfResources();
+    const {loading, resources} = this.loader.getScopedNumberOfResources();
     if (loading > 0) {
       this.statusMessageElement.textContent =
           i18nString(UIStrings.resourcesCurrentlyLoading, {PH1: resources, PH2: loading});

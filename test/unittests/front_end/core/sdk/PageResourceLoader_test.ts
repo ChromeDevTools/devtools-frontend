@@ -78,7 +78,14 @@ describeWithLocale('PageResourceLoader', () => {
           isOutermostFrame() {
             return true;
           },
-        } as SDK.ResourceTreeModel.ResourceTreeFrame,
+          resourceTreeModel() {
+            return {
+              target() {
+                return null;
+              },
+            };
+          },
+        } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame,
         type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation,
       },
     });
@@ -230,5 +237,103 @@ describeWithMockConnection('PageResourceLoader', () => {
         assert.deepEqual(content, 'foo');
       });
     }
+  });
+});
+
+describeWithMockConnection('PageResourceLoader', () => {
+  const initiatorUrl = 'htp://example.com' as Platform.DevToolsPath.UrlString;
+  const foo1Url = 'foo1' as Platform.DevToolsPath.UrlString;
+  const foo2Url = 'foo2' as Platform.DevToolsPath.UrlString;
+  const foo3Url = 'foo3' as Platform.DevToolsPath.UrlString;
+
+  it('handles scoped resources', async () => {
+    const target = createTarget({id: 'main' as Protocol.Target.TargetID});
+    const prerenderTarget = createTarget({id: 'prerender' as Protocol.Target.TargetID});
+    const initiator = {target, frameId: null, initiatorUrl};
+    const prerenderInitiator = {target: prerenderTarget, frameId: null, initiatorUrl};
+    const load = async(): Promise<LoadResult> => {
+      await new Promise(() => {});
+      return {
+        success: true,
+        content: 'content',
+        errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
+      };
+    };
+    const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
+        {forceNew: true, loadOverride: load, maxConcurrentLoads: 500});
+
+    void loader.loadResource(foo1Url, initiator);
+    void loader.loadResource(foo2Url, initiator);
+    void loader.loadResource(foo3Url, prerenderInitiator);
+
+    assert.deepEqual(loader.getNumberOfResources(), {loading: 3, queued: 0, resources: 3});
+    assert.deepEqual(loader.getScopedNumberOfResources(), {loading: 2, resources: 2});
+
+    let resources = loader.getScopedResourcesLoaded();
+    let resourceUrls = [...resources.values()].map(x => x.url);
+    assert.deepEqual(resourceUrls, [foo1Url, foo2Url]);
+
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(prerenderTarget);
+    assert.deepEqual(loader.getScopedNumberOfResources(), {loading: 1, resources: 1});
+
+    resources = loader.getScopedResourcesLoaded();
+    resourceUrls = [...resources.values()].map(x => x.url);
+    assert.deepEqual(resourceUrls, [foo3Url]);
+  });
+
+  it('handles prerender activation', async () => {
+    const target = createTarget({id: 'main' as Protocol.Target.TargetID});
+    const prerenderTarget = createTarget({id: 'prerender' as Protocol.Target.TargetID});
+    const initiator = {target, frameId: null, initiatorUrl};
+    const prerenderInitiator = {target: prerenderTarget, frameId: null, initiatorUrl};
+
+    const load = async(url: string): Promise<LoadResult> => {
+      return {
+        success: true,
+        content: `${url} - content`,
+        errorDescription: {message: '', statusCode: 0, netError: 0, netErrorName: '', urlValid: true},
+      };
+    };
+    const loader = SDK.PageResourceLoader.PageResourceLoader.instance(
+        {forceNew: true, loadOverride: load, maxConcurrentLoads: 500});
+
+    await Promise.all([
+      loader.loadResource(foo1Url, initiator),
+      loader.loadResource(foo2Url, initiator),
+      loader.loadResource(foo3Url, prerenderInitiator),
+    ]);
+
+    assert.deepEqual(loader.getNumberOfResources(), {loading: 0, queued: 0, resources: 3});
+    assert.deepEqual(loader.getScopedNumberOfResources(), {loading: 0, resources: 2});
+
+    let resources = loader.getScopedResourcesLoaded();
+    let resourceUrls = [...resources.values()].map(x => x.url);
+    assert.deepEqual(resourceUrls, [foo1Url, foo2Url]);
+
+    loader.onPrimaryPageChanged({
+      data: {
+        frame: {
+          isOutermostFrame() {
+            return true;
+          },
+          resourceTreeModel() {
+            return {
+              target() {
+                return prerenderTarget;
+              },
+            };
+          },
+        } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame,
+        type: SDK.ResourceTreeModel.PrimaryPageChangeType.Activation,
+      },
+    });
+    assert.deepEqual(loader.getNumberOfResources(), {loading: 0, queued: 0, resources: 1});
+
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(prerenderTarget);
+    assert.deepEqual(loader.getScopedNumberOfResources(), {loading: 0, resources: 1});
+
+    resources = loader.getScopedResourcesLoaded();
+    resourceUrls = [...resources.values()].map(x => x.url);
+    assert.deepEqual(resourceUrls, [foo3Url]);
   });
 });

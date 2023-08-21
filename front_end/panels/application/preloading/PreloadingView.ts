@@ -109,7 +109,8 @@ class PreloadingUIUtils {
 
     return LIST.filter(status => (countsByStatus?.get(status) || 0) > 0)
         .map(status => (countsByStatus?.get(status) || 0) + ' ' + this.status(status))
-        .join(', ');
+        .join(', ')
+        .toLocaleLowerCase();
   }
 
   // Summary of error of rule set shown in grid.

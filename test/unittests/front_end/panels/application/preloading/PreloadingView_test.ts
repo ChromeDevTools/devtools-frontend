@@ -336,7 +336,7 @@ describeWithMockConnection('PreloadingRuleSetView', async () => {
         ruleSetGridComponent,
         ['Rule set', 'Status'],
         [
-          ['example.com/', '1 Running'],
+          ['example.com/', '1 running'],
         ],
     );
   });

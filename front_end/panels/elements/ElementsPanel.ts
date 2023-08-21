@@ -1262,8 +1262,8 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
     if (ElementsPanel.instance().element.isAncestor((event.target as Node))) {
       return;
     }
-    const commandCallback: () => void = Common.Revealer.reveal.bind(Common.Revealer.Revealer, object);
-    contextMenu.revealSection().appendItem(i18nString(UIStrings.revealInElementsPanel), commandCallback);
+    contextMenu.revealSection().appendItem(
+        i18nString(UIStrings.revealInElementsPanel), () => Common.Revealer.reveal(object));
   }
 
   static instance(): ContextMenuProvider {

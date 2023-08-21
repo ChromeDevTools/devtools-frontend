@@ -38,8 +38,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('core/common/Revealer.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-export abstract class Revealer {
-  abstract reveal(object: Object, omitFocus?: boolean): Promise<void>;
+export interface Revealer {
+  reveal(object: Object, omitFocus?: boolean): Promise<void>;
 }
 
 export let reveal = async function(revealable: Object|null, omitFocus?: boolean): Promise<void> {

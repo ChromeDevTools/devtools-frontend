@@ -76,7 +76,7 @@ Common.resourceTypes = CommonModule.ResourceType.resourceTypes;
 /**
  * @interface
  */
-Common.Revealer = CommonModule.Revealer.Revealer;
+Common.Revealer = {};
 Common.Revealer.reveal = CommonModule.Revealer.reveal;
 Common.Revealer.setRevealForTest = CommonModule.Revealer.setRevealForTest;
 

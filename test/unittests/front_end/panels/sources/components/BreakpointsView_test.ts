@@ -140,7 +140,7 @@ async function setUpTestWithOneBreakpointLocation(
   return {controller, groups: data.groups, location: locations[0]};
 }
 
-class MockRevealer extends Common.Revealer.Revealer {
+class MockRevealer implements Common.Revealer.Revealer {
   async reveal(_object: Object, _omitFocus?: boolean|undefined): Promise<void> {
   }
 }

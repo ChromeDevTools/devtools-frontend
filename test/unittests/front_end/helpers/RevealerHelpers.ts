@@ -6,10 +6,9 @@ import * as Common from '../../../../front_end/core/common/common.js';
 
 let originalReveal: null|((object: Object|null, omitFocus?: boolean|undefined) => Promise<void>) = null;
 
-export class TestRevealer extends Common.Revealer.Revealer {
+export class TestRevealer implements Common.Revealer.Revealer {
   #callback: (object: Object, omitFocus?: boolean|undefined) => Promise<void>;
   private constructor(callback: (object: Object, omitFocus?: boolean|undefined) => Promise<void>) {
-    super();
     this.#callback = callback;
   }
 

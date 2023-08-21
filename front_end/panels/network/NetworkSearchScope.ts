@@ -7,10 +7,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
-import * as TextUtils from '../../models/text_utils/text_utils.js';
+import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
-import * as NetworkForward from '../../panels/network/forward/forward.js';
 import type * as Search from '../search/search.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
 
 const UIStrings = {
   /**
@@ -57,12 +57,10 @@ export class NetworkSearchScope implements Search.SearchScope.SearchScope {
   private async searchRequest(
       searchConfig: Workspace.SearchConfig.SearchConfig, request: SDK.NetworkRequest.NetworkRequest,
       progress: Common.Progress.Progress): Promise<NetworkSearchResult|null> {
-    let bodyMatches: TextUtils.ContentProvider.SearchMatchExact[] = [];
+    let bodyMatches: TextUtils.ContentProvider.SearchMatch[] = [];
     if (request.contentType().isTextType()) {
-      const matches =
+      bodyMatches =
           await request.searchInContent(searchConfig.query(), !searchConfig.ignoreCase(), searchConfig.isRegex());
-      bodyMatches = TextUtils.TextUtils.performExtendedSearchInSearchMatches(
-          matches, searchConfig.query(), !searchConfig.ignoreCase(), searchConfig.isRegex());
     }
     if (progress.isCanceled()) {
       return null;
@@ -168,13 +166,11 @@ export class NetworkSearchResult implements Search.SearchScope.SearchResult {
     return (location.searchMatch as TextUtils.ContentProvider.SearchMatch).lineNumber + 1;
   }
 
-  matchColumn(index: number): number|undefined {
-    const location = this.locations[index];
-    return location.searchMatch?.columnNumber;
+  matchColumn(): undefined {
+    return undefined;
   }
 
-  matchLength(index: number): number|undefined {
-    const location = this.locations[index];
-    return location.searchMatch?.matchLength;
+  matchLength(): undefined {
+    return undefined;
   }
 }

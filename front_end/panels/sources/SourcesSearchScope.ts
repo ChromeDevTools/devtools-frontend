@@ -251,19 +251,18 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
     function contentLoaded(
         this: SourcesSearchScope, uiSourceCode: Workspace.UISourceCode.UISourceCode, content: string): void {
       progress.incrementWorked(1);
-      let matches: TextUtils.ContentProvider.SearchMatchExact[] = [];
+      let matches: TextUtils.ContentProvider.SearchMatch[] = [];
       const searchConfig = (this.searchConfig as Workspace.SearchConfig.SearchConfig);
       const queries = searchConfig.queries();
       if (content !== null) {
         for (let i = 0; i < queries.length; ++i) {
-          const nextMatches = TextUtils.TextUtils.performExtendedSearchInContent(
+          const nextMatches = TextUtils.TextUtils.performSearchInContent(
               content, queries[i], !searchConfig.ignoreCase(), searchConfig.isRegex());
           matches = Platform.ArrayUtilities.mergeOrdered(
-              matches, nextMatches, TextUtils.ContentProvider.SearchMatchExact.comparator);
+              matches, nextMatches, TextUtils.ContentProvider.SearchMatch.comparator);
         }
         if (!searchConfig.queries().length) {
-          matches =
-              [new TextUtils.ContentProvider.SearchMatchExact(0, (new TextUtils.Text.Text(content)).lineAt(0), 0, 0)];
+          matches = [new TextUtils.ContentProvider.SearchMatch(0, (new TextUtils.Text.Text(content)).lineAt(0))];
         }
       }
       if (matches && this.searchResultCallback) {
@@ -283,9 +282,9 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
 
 export class FileBasedSearchResult implements Search.SearchScope.SearchResult {
   private readonly uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  private readonly searchMatches: TextUtils.ContentProvider.SearchMatchExact[];
+  private readonly searchMatches: TextUtils.ContentProvider.SearchMatch[];
   constructor(
-      uiSourceCode: Workspace.UISourceCode.UISourceCode, searchMatches: TextUtils.ContentProvider.SearchMatchExact[]) {
+      uiSourceCode: Workspace.UISourceCode.UISourceCode, searchMatches: TextUtils.ContentProvider.SearchMatch[]) {
     this.uiSourceCode = uiSourceCode;
     this.searchMatches = searchMatches;
   }
@@ -317,11 +316,11 @@ export class FileBasedSearchResult implements Search.SearchScope.SearchResult {
     return this.searchMatches[index].lineNumber + 1;
   }
 
-  matchColumn(index: number): number {
-    return this.searchMatches[index].columnNumber;
+  matchColumn(): undefined {
+    return undefined;
   }
 
-  matchLength(index: number): number {
-    return this.searchMatches[index].matchLength;
+  matchLength(): undefined {
+    return undefined;
   }
 }

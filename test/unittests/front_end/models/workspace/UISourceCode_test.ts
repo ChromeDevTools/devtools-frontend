@@ -301,7 +301,7 @@ describe('UISourceCode', () => {
 
     const result = await sutObject.sut.searchInContent('Content', true, false);
 
-    assert.deepEqual(result, [{lineNumber: 0, lineContent: 'Example Content', columnNumber: 8}]);
+    assert.deepEqual(result, [{lineNumber: 0, lineContent: 'Example Content'}]);
   });
 
   it('can check if content is loaded', async () => {

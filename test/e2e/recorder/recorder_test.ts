@@ -574,7 +574,7 @@ describe('Recorder', function() {
     await title.click();
 
     const input = await step.waitForSelector(
-        ':scope >>>> devtools-recorder-step-editor >>>> div:nth-of-type(1) > devtools-recorder-input');
+        ':scope >>>> devtools-recorder-step-editor >>>> div:nth-of-type(1) > devtools-suggestion-input');
     assertNotNullOrUndefined(input);
     await input.focus();
 

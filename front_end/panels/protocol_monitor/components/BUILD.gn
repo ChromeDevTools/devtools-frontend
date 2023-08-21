@@ -20,10 +20,16 @@ devtools_module("components") {
   ]
 
   deps = [
+    "../../../core/host:bundle",
+    "../../../core/i18n:bundle",
+    "../../../core/sdk:bundle",
+    "../../../ui/components/buttons:bundle",
+    "../../../ui/components/icon_button:bundle",
+    "../../../ui/components/menus:bundle",
+    "../../../ui/components/suggestion_input:bundle",
+    "../../../ui/legacy:bundle",
     "../../../ui/lit-html:bundle",
-
-    # TODO(crbug.com/1454420): Remove this line after moving the RecorderInput component to the ui folder
-    "../../recorder/components:bundle",
+    "../../elements/components:bundle",
   ]
 }
 

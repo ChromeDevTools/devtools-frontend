@@ -10,6 +10,7 @@ ts_library("components") {
 
   deps = [
     "../../../../../../front_end/panels/protocol_monitor/components:bundle",
+    "../../../../../../front_end/ui/components/suggestion_input:bundle",
     "../../../helpers",
   ]
 }

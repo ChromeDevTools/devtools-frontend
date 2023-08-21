@@ -78,5 +78,8 @@ devtools_entrypoint("bundle") {
     "../../../../test/unittests/front_end/panels/elements/components",
     "../../../ui/components/docs/*",
     "../../application/components/*",
+
+    # TODO : Remove after moving CSSHintDetailView to ui folder
+    "../../protocol_monitor/*",
   ]
 }

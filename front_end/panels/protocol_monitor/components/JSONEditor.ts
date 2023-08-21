@@ -1,8 +1,6 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import '../../recorder/components/components.js';
-
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
@@ -10,10 +8,10 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
+import * as SuggestionInput from '../../../ui/components/suggestion_input/suggestion_input.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as ElementsComponents from '../../elements/components/components.js';
-import * as RecorderComponents from '../../recorder/components/components.js';
 
 import editorWidgetStyles from './JSONEditor.css.js';
 
@@ -519,7 +517,7 @@ export class JSONEditor extends LitElement {
   }
 
   #saveParameterValue = (event: Event): void => {
-    if (!(event.target instanceof RecorderComponents.RecorderInput.RecorderInput)) {
+    if (!(event.target instanceof SuggestionInput.SuggestionInput.SuggestionInput)) {
       return;
     }
     let value: string;
@@ -549,7 +547,7 @@ export class JSONEditor extends LitElement {
   };
 
   #saveNestedObjectParameterKey = (event: Event): void => {
-    if (!(event.target instanceof RecorderComponents.RecorderInput.RecorderInput)) {
+    if (!(event.target instanceof SuggestionInput.SuggestionInput.SuggestionInput)) {
       return;
     }
     const value = event.target.value;
@@ -565,7 +563,7 @@ export class JSONEditor extends LitElement {
   };
 
   #handleParameterInputKeydown = (event: KeyboardEvent): void => {
-    if (!(event.target instanceof RecorderComponents.RecorderInput.RecorderInput)) {
+    if (!(event.target instanceof SuggestionInput.SuggestionInput.SuggestionInput)) {
       return;
     }
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -574,7 +572,7 @@ export class JSONEditor extends LitElement {
   };
 
   #handleFocusParameter(event: Event): void {
-    if (!(event.target instanceof RecorderComponents.RecorderInput.RecorderInput)) {
+    if (!(event.target instanceof SuggestionInput.SuggestionInput.SuggestionInput)) {
       return;
     }
     const paramId = event.target.getAttribute('data-paramid');
@@ -589,7 +587,7 @@ export class JSONEditor extends LitElement {
   }
 
   #handleCommandInputBlur = async(event: Event): Promise<void> => {
-    if (event.target instanceof RecorderComponents.RecorderInput.RecorderInput) {
+    if (event.target instanceof SuggestionInput.SuggestionInput.SuggestionInput) {
       this.command = event.target.value;
     }
     this.populateParametersForCommandWithDefaultValues();
@@ -910,7 +908,7 @@ export class JSONEditor extends LitElement {
                       <!-- If an object parameter has no predefined keys, show an input to enter the key, otherwise show the name of the parameter -->
                       <div class=${classMap(parametersClasses)} data-paramId=${parameterId}>
                           ${hasNoKeys ?
-                            html`<devtools-recorder-input
+                            html`<devtools-suggestion-input
                               data-paramId=${parameterId}
                               isKey=${true}
                               .isCorrectInput=${live(parameter.isCorrectType)}
@@ -921,7 +919,7 @@ export class JSONEditor extends LitElement {
                               @blur=${handleParamKeyOnBlur}
                               @focus=${handleFocus}
                               @keydown=${handleKeydown}
-                            ></devtools-recorder-input>`:
+                            ></devtools-suggestion-input>`:
                             html`${parameter.name}`} <span class="separator">:</span>
                       </div>
 
@@ -957,7 +955,7 @@ export class JSONEditor extends LitElement {
                   <div class="row-icons">
                       <!-- If an object has no predefined keys, show an input to enter the value, and a delete icon to delete the whole key/value pair -->
                       ${hasNoKeys && isParentObject ?  html`
-                      <devtools-recorder-input
+                      <devtools-suggestion-input
                           data-paramId=${parameterId}
                           .isCorrectInput=${live(parameter.isCorrectType)}
                           .options=${hasOptions ? this.#computeDropdownValues(parameter) : []}
@@ -967,7 +965,7 @@ export class JSONEditor extends LitElement {
                           @blur=${handleInputOnBlur}
                           @focus=${handleFocus}
                           @keydown=${handleKeydown}
-                        ></devtools-recorder-input>
+                        ></devtools-suggestion-input>
 
                         ${this.#renderInlineButton({
                         title: i18nString(UIStrings.deleteParameter),
@@ -979,7 +977,7 @@ export class JSONEditor extends LitElement {
                     <!-- In case  the parameter is not optional or its value is not undefined render the input -->
                     ${isPrimitive && !hasNoKeys && (parameter.value !== undefined || !parameter.optional) && (!isParentArray) ?
                       html`
-                        <devtools-recorder-input
+                        <devtools-suggestion-input
                           data-paramId=${parameterId}
                           .strikethrough=${live(parameter.isCorrectType)}
                           .options=${hasOptions ? this.#computeDropdownValues(parameter) : []}
@@ -989,7 +987,7 @@ export class JSONEditor extends LitElement {
                           @blur=${handleInputOnBlur}
                           @focus=${handleFocus}
                           @keydown=${handleKeydown}
-                        ></devtools-recorder-input>` : nothing}
+                        ></devtools-suggestion-input>` : nothing}
 
                     <!-- Render the buttons to change the value from empty string to undefined for optional primitive parameters -->
                     ${isPrimitive &&!hasNoKeys && !isParentArray && parameter.optional && parameter.value !== undefined ?
@@ -1014,7 +1012,7 @@ export class JSONEditor extends LitElement {
                     ${isParentArray ? html`
                     <!-- If the parameter is an object we don't want to display the input field we just want the delete button-->
                     ${!isObject ? html`
-                    <devtools-recorder-input
+                    <devtools-suggestion-input
                       data-paramId=${parameterId}
                       .options=${hasOptions ? this.#computeDropdownValues(parameter) : []}
                       .autocomplete=${false}
@@ -1023,7 +1021,7 @@ export class JSONEditor extends LitElement {
                       @blur=${handleInputOnBlur}
                       @keydown=${handleKeydown}
                       class=${classMap(inputClasses)}
-                    ></devtools-recorder-input>` : nothing}
+                    ></devtools-suggestion-input>` : nothing}
 
                     ${this.#renderInlineButton({
                         title: i18nString(UIStrings.deleteParameter),
@@ -1048,13 +1046,13 @@ export class JSONEditor extends LitElement {
       ${this.#renderTargetSelectorRow()}
       <div class="row attribute padded">
         <div class="command">command<span class="separator">:</span></div>
-        <devtools-recorder-input
+        <devtools-suggestion-input
           .options=${[...this.metadataByCommand.keys()]}
           .value=${this.command}
           .placeholder=${'Enter your command...'}
           @blur=${this.#handleCommandInputBlur}
           class=${classMap({'json-input': true})}
-        ></devtools-recorder-input>
+        ></devtools-suggestion-input>
       </div>
       ${this.parameters.length ? html`
       <div class="row attribute padded">

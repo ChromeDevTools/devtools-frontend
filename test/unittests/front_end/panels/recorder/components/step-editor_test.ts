@@ -10,6 +10,7 @@ import type * as Components from '../../../../../../front_end/panels/recorder/co
 import * as Models from '../../../../../../front_end/panels/recorder/models/models.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import * as RecorderHelpers from '../helpers/RecorderHelpers.js';
+import type * as SuggestionInput from '../../../../../../front_end/ui/components/suggestion_input/suggestion_input.js';
 
 import {
   renderElementIntoDOM,
@@ -49,14 +50,14 @@ describeWithLocale('StepEditor', () => {
   function getInputByAttribute(
       editor: Components.StepEditor.StepEditor,
       attribute: string,
-      ): Components.RecorderInput.RecorderInput {
+      ): SuggestionInput.SuggestionInput.SuggestionInput {
     const input = editor.renderRoot.querySelector(
-        `.attribute[data-attribute="${attribute}"] devtools-recorder-input`,
+        `.attribute[data-attribute="${attribute}"] devtools-suggestion-input`,
     );
     if (!input) {
-      throw new Error(`${attribute} devtools-recorder-input not found`);
+      throw new Error(`${attribute} devtools-suggestion-input not found`);
     }
-    return input as Components.RecorderInput.RecorderInput;
+    return input as SuggestionInput.SuggestionInput.SuggestionInput;
   }
 
   function getAllInputValues(
@@ -64,7 +65,7 @@ describeWithLocale('StepEditor', () => {
       ): string[] {
     const result = [];
     const inputs = editor.renderRoot.querySelectorAll(
-        'devtools-recorder-input',
+        'devtools-suggestion-input',
     );
     for (const input of inputs) {
       result.push(input.value);
@@ -424,7 +425,7 @@ describeWithLocale('StepEditor', () => {
 
       assert.isTrue(
           editor.shadowRoot?.activeElement?.matches(
-              'devtools-recorder-input[data-path="frame.1"]',
+              'devtools-suggestion-input[data-path="frame.1"]',
               ),
       );
     }
@@ -441,7 +442,7 @@ describeWithLocale('StepEditor', () => {
 
       assert.isTrue(
           editor.shadowRoot?.activeElement?.matches(
-              'devtools-recorder-input[data-path="frame.0"]',
+              'devtools-suggestion-input[data-path="frame.0"]',
               ),
       );
     }
@@ -470,7 +471,7 @@ describeWithLocale('StepEditor', () => {
 
       assert.isTrue(
           editor.shadowRoot?.activeElement?.matches(
-              'devtools-recorder-input[data-path="selectors.0.1"]',
+              'devtools-suggestion-input[data-path="selectors.0.1"]',
               ),
       );
     }
@@ -488,7 +489,7 @@ describeWithLocale('StepEditor', () => {
 
       assert.isTrue(
           editor.shadowRoot?.activeElement?.matches(
-              'devtools-recorder-input[data-path="selectors.0.0"]',
+              'devtools-suggestion-input[data-path="selectors.0.0"]',
               ),
       );
     }
@@ -515,7 +516,7 @@ describeWithLocale('StepEditor', () => {
       ]);
       assert.isTrue(
           editor.shadowRoot?.activeElement?.matches(
-              'devtools-recorder-input[data-path="selectors.1.0"]',
+              'devtools-suggestion-input[data-path="selectors.1.0"]',
               ),
       );
     }
@@ -531,7 +532,7 @@ describeWithLocale('StepEditor', () => {
       assert.deepStrictEqual(getAllInputValues(editor), ['scroll', '.part1']);
       assert.isTrue(
           editor.shadowRoot?.activeElement?.matches(
-              'devtools-recorder-input[data-path="selectors.0.0"]',
+              'devtools-suggestion-input[data-path="selectors.0.0"]',
               ),
       );
     }
@@ -546,16 +547,16 @@ describeWithLocale('StepEditor', () => {
     await editor.updateComplete;
 
     for (const input of editor.renderRoot.querySelectorAll(
-             'devtools-recorder-input',
+             'devtools-suggestion-input',
              )) {
       assert.isTrue(input.disabled);
     }
   });
 
-  it('clears text selection when navigating away from devtools-recorder-input', async () => {
+  it('clears text selection when navigating away from devtools-suggestion-input', async () => {
     const editor = await renderEditor({type: Models.Schema.StepType.Scroll});
 
-    // Clicking on the type devtools-recorder-input should select the entire text in the field.
+    // Clicking on the type devtools-suggestion-input should select the entire text in the field.
     const input = getInputByAttribute(editor, 'type');
     input.focus();
     input.click();

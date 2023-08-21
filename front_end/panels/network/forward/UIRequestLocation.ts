@@ -41,14 +41,14 @@ export interface FilterOptions {
 export class UIRequestLocation {
   readonly request: SDK.NetworkRequest.NetworkRequest;
   readonly header: UIHeaderLocation|null;
-  readonly searchMatch: TextUtils.ContentProvider.SearchMatch|null;
+  readonly searchMatch: TextUtils.ContentProvider.SearchMatchExact|null;
   readonly isUrlMatch: boolean;
   readonly tab: UIRequestTabs|undefined;
   readonly filterOptions: FilterOptions|undefined;
 
   private constructor(
       request: SDK.NetworkRequest.NetworkRequest, header: UIHeaderLocation|null,
-      searchMatch: TextUtils.ContentProvider.SearchMatch|null, urlMatch: boolean, tab: UIRequestTabs|undefined,
+      searchMatch: TextUtils.ContentProvider.SearchMatchExact|null, urlMatch: boolean, tab: UIRequestTabs|undefined,
       filterOptions: FilterOptions|undefined) {
     this.request = request;
     this.header = header;
@@ -70,8 +70,9 @@ export class UIRequestLocation {
         request, {section: UIHeaderSection.Response, header}, null, false, undefined, undefined);
   }
 
-  static bodyMatch(request: SDK.NetworkRequest.NetworkRequest, searchMatch: TextUtils.ContentProvider.SearchMatch|null):
-      UIRequestLocation {
+  static bodyMatch(
+      request: SDK.NetworkRequest.NetworkRequest,
+      searchMatch: TextUtils.ContentProvider.SearchMatchExact|null): UIRequestLocation {
     return new UIRequestLocation(request, null, searchMatch, false, undefined, undefined);
   }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google Inc. All rights reserved.
+ * Copyright 2023 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { BrowsingContext } from './BrowsingContext.js';
+interface Viewport {
+    width: number;
+    height: number;
+}
 /**
  * @internal
  */
-export declare const PUPPETEER_REVISIONS: Readonly<{
-    chrome: "116.0.5845.96";
-    firefox: "latest";
-}>;
-//# sourceMappingURL=revisions.d.ts.map
+export declare class EmulationManager {
+    #private;
+    constructor(browsingContext: BrowsingContext);
+    emulateViewport(viewport: Viewport): Promise<void>;
+}
+export {};
+//# sourceMappingURL=EmulationManager.d.ts.map

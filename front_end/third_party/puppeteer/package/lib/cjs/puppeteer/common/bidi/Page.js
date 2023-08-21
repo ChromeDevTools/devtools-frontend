@@ -54,6 +54,7 @@ const Tracing_js_1 = require("../Tracing.js");
 const util_js_1 = require("../util.js");
 const BrowsingContext_js_1 = require("./BrowsingContext.js");
 const Dialog_js_1 = require("./Dialog.js");
+const EmulationManager_js_2 = require("./EmulationManager.js");
 const Frame_js_1 = require("./Frame.js");
 const Input_js_1 = require("./Input.js");
 const NetworkManager_js_2 = require("./NetworkManager.js");
@@ -114,6 +115,7 @@ class Page extends Page_js_1.Page {
     ]);
     #tracing;
     #coverage;
+    #cdpEmulationManager;
     #emulationManager;
     #mouse;
     #touchscreen;
@@ -145,7 +147,8 @@ class Page extends Page_js_1.Page {
         this.#accessibility = new Accessibility_js_1.Accessibility(this.mainFrame().context().cdpSession);
         this.#tracing = new Tracing_js_1.Tracing(this.mainFrame().context().cdpSession);
         this.#coverage = new Coverage_js_1.Coverage(this.mainFrame().context().cdpSession);
-        this.#emulationManager = new EmulationManager_js_1.EmulationManager(this.mainFrame().context().cdpSession);
+        this.#cdpEmulationManager = new EmulationManager_js_1.EmulationManager(this.mainFrame().context().cdpSession);
+        this.#emulationManager = new EmulationManager_js_2.EmulationManager(browsingContext);
         this.#mouse = new Input_js_1.Mouse(this.mainFrame().context());
         this.#touchscreen = new Input_js_1.Touchscreen(this.mainFrame().context());
         this.#keyboard = new Input_js_1.Keyboard(this.mainFrame().context());
@@ -361,34 +364,39 @@ class Page extends Page_js_1.Page {
         return this.mainFrame().content();
     }
     isJavaScriptEnabled() {
-        return this.#emulationManager.javascriptEnabled;
+        return this.#cdpEmulationManager.javascriptEnabled;
     }
     async setGeolocation(options) {
-        return await this.#emulationManager.setGeolocation(options);
+        return await this.#cdpEmulationManager.setGeolocation(options);
     }
     async setJavaScriptEnabled(enabled) {
-        return await this.#emulationManager.setJavaScriptEnabled(enabled);
+        return await this.#cdpEmulationManager.setJavaScriptEnabled(enabled);
     }
     async emulateMediaType(type) {
-        return await this.#emulationManager.emulateMediaType(type);
+        return await this.#cdpEmulationManager.emulateMediaType(type);
     }
     async emulateCPUThrottling(factor) {
-        return await this.#emulationManager.emulateCPUThrottling(factor);
+        return await this.#cdpEmulationManager.emulateCPUThrottling(factor);
     }
     async emulateMediaFeatures(features) {
-        return await this.#emulationManager.emulateMediaFeatures(features);
+        return await this.#cdpEmulationManager.emulateMediaFeatures(features);
     }
     async emulateTimezone(timezoneId) {
-        return await this.#emulationManager.emulateTimezone(timezoneId);
+        return await this.#cdpEmulationManager.emulateTimezone(timezoneId);
     }
     async emulateIdleState(overrides) {
-        return await this.#emulationManager.emulateIdleState(overrides);
+        return await this.#cdpEmulationManager.emulateIdleState(overrides);
     }
     async emulateVisionDeficiency(type) {
-        return await this.#emulationManager.emulateVisionDeficiency(type);
+        return await this.#cdpEmulationManager.emulateVisionDeficiency(type);
     }
     async setViewport(viewport) {
-        const needsReload = await this.#emulationManager.emulateViewport(viewport);
+        if (!this.#browsingContext.supportsCDP()) {
+            await this.#emulationManager.emulateViewport(viewport);
+            this.#viewport = viewport;
+            return;
+        }
+        const needsReload = await this.#cdpEmulationManager.emulateViewport(viewport);
         this.#viewport = viewport;
         if (needsReload) {
             // TODO: reload seems to hang in BiDi.

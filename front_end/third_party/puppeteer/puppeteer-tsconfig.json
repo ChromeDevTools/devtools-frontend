@@ -92,6 +92,7 @@
     "package/lib/esm/puppeteer/common/bidi/Context.js",
     "package/lib/esm/puppeteer/common/bidi/Dialog.js",
     "package/lib/esm/puppeteer/common/bidi/ElementHandle.js",
+    "package/lib/esm/puppeteer/common/bidi/EmulationManager.js",
     "package/lib/esm/puppeteer/common/bidi/Frame.js",
     "package/lib/esm/puppeteer/common/bidi/HTTPRequest.js",
     "package/lib/esm/puppeteer/common/bidi/HTTPResponse.js",

@@ -60,9 +60,6 @@ export class CustomQueryHandlerRegistry {
      * @internal
      */
     register(name, handler) {
-        if (this.#handlers.has(name)) {
-            throw new Error(`Cannot register over existing handler: ${name}`);
-        }
         assert(!this.#handlers.has(name), `Cannot register over existing handler: ${name}`);
         assert(/^[a-zA-Z]+$/.test(name), `Custom query handler names may only contain [a-zA-Z]`);
         assert(handler.queryAll || handler.queryOne, `At least one query method must be implemented.`);

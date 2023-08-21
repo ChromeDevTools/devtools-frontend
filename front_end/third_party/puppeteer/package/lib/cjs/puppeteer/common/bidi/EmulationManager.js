@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Copyright 2020 Google Inc. All rights reserved.
+ * Copyright 2023 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,21 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PUPPETEER_REVISIONS = void 0;
+exports.EmulationManager = void 0;
 /**
  * @internal
  */
-exports.PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '116.0.5845.96',
-    firefox: 'latest',
-});
-//# sourceMappingURL=revisions.js.map
+class EmulationManager {
+    #browsingContext;
+    constructor(browsingContext) {
+        this.#browsingContext = browsingContext;
+    }
+    async emulateViewport(viewport) {
+        await this.#browsingContext.connection.send('browsingContext.setViewport', {
+            context: this.#browsingContext.id,
+            viewport,
+        });
+    }
+}
+exports.EmulationManager = EmulationManager;
+//# sourceMappingURL=EmulationManager.js.map

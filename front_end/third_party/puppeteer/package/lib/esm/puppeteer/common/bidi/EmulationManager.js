@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Google Inc. All rights reserved.
+ * Copyright 2023 Google Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,16 @@
 /**
  * @internal
  */
-export declare const PUPPETEER_REVISIONS: Readonly<{
-    chrome: "116.0.5845.96";
-    firefox: "latest";
-}>;
-//# sourceMappingURL=revisions.d.ts.map
+export class EmulationManager {
+    #browsingContext;
+    constructor(browsingContext) {
+        this.#browsingContext = browsingContext;
+    }
+    async emulateViewport(viewport) {
+        await this.#browsingContext.connection.send('browsingContext.setViewport', {
+            context: this.#browsingContext.id,
+            viewport,
+        });
+    }
+}
+//# sourceMappingURL=EmulationManager.js.map

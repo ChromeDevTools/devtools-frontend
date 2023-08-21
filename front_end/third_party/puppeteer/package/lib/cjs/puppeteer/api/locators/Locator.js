@@ -259,6 +259,9 @@ class Locator extends EventEmitter_js_1.EventEmitter {
                 if (el instanceof HTMLSelectElement) {
                     return 'select';
                 }
+                if (el instanceof HTMLTextAreaElement) {
+                    return 'typeable-input';
+                }
                 if (el instanceof HTMLInputElement) {
                     if (new Set([
                         'textarea',

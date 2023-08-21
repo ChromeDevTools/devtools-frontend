@@ -19,7 +19,7 @@ import { Deferred } from '../../util/Deferred.js';
 import { Accessibility } from '../Accessibility.js';
 import { ConsoleMessage } from '../ConsoleMessage.js';
 import { Coverage } from '../Coverage.js';
-import { EmulationManager } from '../EmulationManager.js';
+import { EmulationManager as CDPEmulationManager } from '../EmulationManager.js';
 import { TargetCloseError } from '../Errors.js';
 import { FrameTree } from '../FrameTree.js';
 import { NetworkManagerEmittedEvents } from '../NetworkManager.js';
@@ -28,6 +28,7 @@ import { Tracing } from '../Tracing.js';
 import { debugError, evaluationString, isString, validateDialogType, waitForEvent, waitWithTimeout, withSourcePuppeteerURLIfNone, } from '../util.js';
 import { BrowsingContextEmittedEvents, CDPSessionWrapper, } from './BrowsingContext.js';
 import { Dialog } from './Dialog.js';
+import { EmulationManager } from './EmulationManager.js';
 import { Frame } from './Frame.js';
 import { Keyboard, Mouse, Touchscreen } from './Input.js';
 import { NetworkManager } from './NetworkManager.js';
@@ -88,6 +89,7 @@ export class Page extends PageBase {
     ]);
     #tracing;
     #coverage;
+    #cdpEmulationManager;
     #emulationManager;
     #mouse;
     #touchscreen;
@@ -119,7 +121,8 @@ export class Page extends PageBase {
         this.#accessibility = new Accessibility(this.mainFrame().context().cdpSession);
         this.#tracing = new Tracing(this.mainFrame().context().cdpSession);
         this.#coverage = new Coverage(this.mainFrame().context().cdpSession);
-        this.#emulationManager = new EmulationManager(this.mainFrame().context().cdpSession);
+        this.#cdpEmulationManager = new CDPEmulationManager(this.mainFrame().context().cdpSession);
+        this.#emulationManager = new EmulationManager(browsingContext);
         this.#mouse = new Mouse(this.mainFrame().context());
         this.#touchscreen = new Touchscreen(this.mainFrame().context());
         this.#keyboard = new Keyboard(this.mainFrame().context());
@@ -335,34 +338,39 @@ export class Page extends PageBase {
         return this.mainFrame().content();
     }
     isJavaScriptEnabled() {
-        return this.#emulationManager.javascriptEnabled;
+        return this.#cdpEmulationManager.javascriptEnabled;
     }
     async setGeolocation(options) {
-        return await this.#emulationManager.setGeolocation(options);
+        return await this.#cdpEmulationManager.setGeolocation(options);
     }
     async setJavaScriptEnabled(enabled) {
-        return await this.#emulationManager.setJavaScriptEnabled(enabled);
+        return await this.#cdpEmulationManager.setJavaScriptEnabled(enabled);
     }
     async emulateMediaType(type) {
-        return await this.#emulationManager.emulateMediaType(type);
+        return await this.#cdpEmulationManager.emulateMediaType(type);
     }
     async emulateCPUThrottling(factor) {
-        return await this.#emulationManager.emulateCPUThrottling(factor);
+        return await this.#cdpEmulationManager.emulateCPUThrottling(factor);
     }
     async emulateMediaFeatures(features) {
-        return await this.#emulationManager.emulateMediaFeatures(features);
+        return await this.#cdpEmulationManager.emulateMediaFeatures(features);
     }
     async emulateTimezone(timezoneId) {
-        return await this.#emulationManager.emulateTimezone(timezoneId);
+        return await this.#cdpEmulationManager.emulateTimezone(timezoneId);
     }
     async emulateIdleState(overrides) {
-        return await this.#emulationManager.emulateIdleState(overrides);
+        return await this.#cdpEmulationManager.emulateIdleState(overrides);
     }
     async emulateVisionDeficiency(type) {
-        return await this.#emulationManager.emulateVisionDeficiency(type);
+        return await this.#cdpEmulationManager.emulateVisionDeficiency(type);
     }
     async setViewport(viewport) {
-        const needsReload = await this.#emulationManager.emulateViewport(viewport);
+        if (!this.#browsingContext.supportsCDP()) {
+            await this.#emulationManager.emulateViewport(viewport);
+            this.#viewport = viewport;
+            return;
+        }
+        const needsReload = await this.#cdpEmulationManager.emulateViewport(viewport);
         this.#viewport = viewport;
         if (needsReload) {
             // TODO: reload seems to hang in BiDi.

@@ -27,7 +27,7 @@ import { TargetInterceptor, TargetFactory, TargetManager } from './TargetManager
  */
 export declare class ChromeTargetManager extends EventEmitter implements TargetManager {
     #private;
-    constructor(connection: Connection, targetFactory: TargetFactory, targetFilterCallback?: TargetFilterCallback);
+    constructor(connection: Connection, targetFactory: TargetFactory, targetFilterCallback?: TargetFilterCallback, waitForInitiallyDiscoveredTargets?: boolean);
     initialize(): Promise<void>;
     dispose(): void;
     getAvailableTargets(): Map<string, CDPTarget>;

@@ -45,7 +45,8 @@ export declare const BrowsingContextEmittedEvents: {
  */
 export declare class BrowsingContext extends Realm {
     #private;
-    constructor(connection: Connection, info: Bidi.BrowsingContext.Info);
+    constructor(connection: Connection, info: Bidi.BrowsingContext.Info, browserName: string);
+    supportsCDP(): boolean;
     createSandboxRealm(sandbox: string): Realm;
     get url(): string;
     set url(value: string);

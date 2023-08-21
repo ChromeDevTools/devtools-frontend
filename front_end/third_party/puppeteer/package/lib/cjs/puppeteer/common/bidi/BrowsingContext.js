@@ -36,6 +36,9 @@ class CDPSessionWrapper extends Connection_js_1.CDPSession {
     constructor(context, sessionId) {
         super();
         this.#context = context;
+        if (!this.#context.supportsCDP()) {
+            return;
+        }
         if (sessionId) {
             this.#sessionId.resolve(sessionId);
             exports.cdpSessions.set(sessionId, this);
@@ -58,6 +61,9 @@ class CDPSessionWrapper extends Connection_js_1.CDPSession {
         return undefined;
     }
     async send(method, ...paramArgs) {
+        if (!this.#context.supportsCDP()) {
+            throw new Error('CDP support is required for this feature. The current browser does not support CDP.');
+        }
         if (this.#detached) {
             throw new Errors_js_1.TargetCloseError(`Protocol error (${method}): Session closed. Most likely the page has been closed.`);
         }
@@ -71,9 +77,11 @@ class CDPSessionWrapper extends Connection_js_1.CDPSession {
     }
     async detach() {
         exports.cdpSessions.delete(this.id());
-        await this.#context.cdpSession.send('Target.detachFromTarget', {
-            sessionId: this.id(),
-        });
+        if (this.#context.supportsCDP()) {
+            await this.#context.cdpSession.send('Target.detachFromTarget', {
+                sessionId: this.id(),
+            });
+        }
         this.#detached = true;
     }
     id() {
@@ -106,15 +114,20 @@ class BrowsingContext extends Realm_js_1.Realm {
     #url;
     #cdpSession;
     #parent;
-    constructor(connection, info) {
+    #browserName = '';
+    constructor(connection, info, browserName) {
         super(connection, info.context);
         this.connection = connection;
         this.#id = info.context;
         this.#url = info.url;
         this.#parent = info.parent;
-        this.#cdpSession = new CDPSessionWrapper(this);
+        this.#browserName = browserName;
+        this.#cdpSession = new CDPSessionWrapper(this, undefined);
         this.on('browsingContext.domContentLoaded', this.#updateUrl.bind(this));
         this.on('browsingContext.load', this.#updateUrl.bind(this));
+    }
+    supportsCDP() {
+        return !this.#browserName.toLowerCase().includes('firefox');
     }
     #updateUrl(info) {
         this.url = info.url;

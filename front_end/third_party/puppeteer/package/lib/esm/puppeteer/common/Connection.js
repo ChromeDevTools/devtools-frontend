@@ -221,8 +221,8 @@ export class Connection extends EventEmitter {
      */
     async onMessage(message) {
         if (this.#delay) {
-            await new Promise(f => {
-                return setTimeout(f, this.#delay);
+            await new Promise(r => {
+                return setTimeout(r, this.#delay);
             });
         }
         debugProtocolReceive(message);

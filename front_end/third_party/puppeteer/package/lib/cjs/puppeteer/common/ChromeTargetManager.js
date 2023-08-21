@@ -63,11 +63,13 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
     #detachedFromTargetListenersBySession = new WeakMap();
     #initializeDeferred = Deferred_js_1.Deferred.create();
     #targetsIdsForInit = new Set();
-    constructor(connection, targetFactory, targetFilterCallback) {
+    #waitForInitiallyDiscoveredTargets = true;
+    constructor(connection, targetFactory, targetFilterCallback, waitForInitiallyDiscoveredTargets = true) {
         super();
         this.#connection = connection;
         this.#targetFilterCallback = targetFilterCallback;
         this.#targetFactory = targetFactory;
+        this.#waitForInitiallyDiscoveredTargets = waitForInitiallyDiscoveredTargets;
         this.#connection.on('Target.targetCreated', this.#onTargetCreated);
         this.#connection.on('Target.targetDestroyed', this.#onTargetDestroyed);
         this.#connection.on('Target.targetInfoChanged', this.#onTargetInfoChanged);
@@ -82,6 +84,9 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
             .catch(util_js_1.debugError);
     }
     #storeExistingTargetsForInit = () => {
+        if (!this.#waitForInitiallyDiscoveredTargets) {
+            return;
+        }
         for (const [targetId, targetInfo,] of this.#discoveredTargetsByTargetId.entries()) {
             const targetForFilter = new Target_js_1.CDPTarget(targetInfo, undefined, undefined, this, undefined);
             if ((!this.#targetFilterCallback ||

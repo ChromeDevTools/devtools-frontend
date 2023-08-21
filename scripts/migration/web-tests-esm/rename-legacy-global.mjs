@@ -97,8 +97,16 @@ const webTestPaths = await findWebTests(yargsObject.webTestDirectory);
 
 for (const filePath of webTestPaths) {
   const content = await fs.readFile(filePath, { encoding: 'utf-8'});
-  let replacedContent = content.replaceAll(fromRegex, yargsObject.to);
-  if (replacedContent === content) continue;
+
+  let replacedContent = content;
+  if (yargsObject.from === yargsObject.to && !content.match(fromRegex)) {
+    // If the before/after are the same, we only check for the presence
+    // and add the import if needed.
+    continue;
+  } else if (yargsObject.from !== yargsObject.to) {
+    replacedContent = content.replaceAll(fromRegex, yargsObject.to);
+    if (replacedContent === content) continue;
+  }
 
   replacedContent = addImportIfNecessary(replacedContent, yargsObject.import);
   await fs.writeFile(filePath, replacedContent, {encoding: 'utf-8'});

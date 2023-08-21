@@ -222,6 +222,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       this.updatePausedInDebuggerMessage();
     }
     await this.overlayAgent.invoke_setShowViewportSizeOnResize({show: this.#showViewportSizeOnResize});
+    this.#persistentHighlighter?.resetOverlay();
   }
 
   override async suspendModel(): Promise<void> {

@@ -32,6 +32,13 @@ import {GlassPane, MarginBehavior, SizeBehavior} from './GlassPane.js';
 import popoverStyles from './popover.css.legacy.js';
 
 export class PopoverHelper {
+  static createPopover = (): GlassPane => {
+    const popover = new GlassPane();
+    popover.registerRequiredCSS(popoverStyles);
+    popover.setSizeBehavior(SizeBehavior.MeasureContent);
+    popover.setMarginBehavior(MarginBehavior.Arrow);
+    return popover;
+  };
   private disableOnClick: boolean;
   private hasPadding: boolean;
   private getRequest: (arg0: MouseEvent) => PopoverRequest | null;
@@ -193,10 +200,7 @@ export class PopoverHelper {
   }
 
   private showPopover(document: Document): void {
-    const popover = new GlassPane();
-    popover.registerRequiredCSS(popoverStyles);
-    popover.setSizeBehavior(SizeBehavior.MeasureContent);
-    popover.setMarginBehavior(MarginBehavior.Arrow);
+    const popover = PopoverHelper.createPopover();
     const request = this.scheduledRequest;
     if (!request) {
       return;

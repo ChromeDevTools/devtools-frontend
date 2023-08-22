@@ -42,6 +42,7 @@ devtools_entrypoint("bundle") {
     "../../panels/changes/*",
     "../../panels/coverage/*",
     "../../panels/emulation/*",
+    "../../panels/explain/*",
     "../../panels/lighthouse/*",
     "../../panels/network/*",
     "../../panels/profiler/*",

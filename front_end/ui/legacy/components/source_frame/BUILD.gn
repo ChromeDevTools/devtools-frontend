@@ -62,6 +62,7 @@ devtools_entrypoint("bundle") {
     "../../../../../test/unittests/front_end/entrypoints/meta/*",
     "../../../../panels/application/*",
     "../../../../panels/coverage/*",
+    "../../../../panels/explain/*",
     "../../../../panels/network/*",
     "../../../../panels/protocol_monitor/*",
     "../../../../panels/sources/*",

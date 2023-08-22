@@ -299,6 +299,7 @@ export enum ActionCategory {
   DEBUGGER = 'DEBUGGER',
   SOURCES = 'SOURCES',
   RENDERING = 'RENDERING',
+  EXPLAIN = 'EXPLAIN',
 }
 
 export function getLocalizedActionCategory(category: ActionCategory): Platform.UIString.LocalizedString {

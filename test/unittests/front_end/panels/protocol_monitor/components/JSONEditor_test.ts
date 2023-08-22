@@ -174,6 +174,16 @@ describeWithEnvironment('JSONEditor', () => {
               'typeRef': 'Optional.Object',
             }],
           },
+          'Test.test13': {
+            parameters: [{
+              name: 'newTest',
+              type: 'string',
+              optional: false,
+              typeRef: 'Test.newTestRef',
+            }],
+            description: 'Description1.',
+            replyArgs: ['Test1'],
+          },
         },
       },
     ] as Iterable<ProtocolMonitor.ProtocolMonitor.ProtocolDomain>;
@@ -202,11 +212,9 @@ describeWithEnvironment('JSONEditor', () => {
     }
   };
 
-  const renderSuggestionBox =
-      async(command: string, enumsByName?: Map<string, Record<string, string>>): Promise<string[]> => {
-    const jsonEditor = renderJSONEditor();
-
-    await populateMetadata(jsonEditor);
+  const renderSuggestionBox = async(
+      command: string, jsonEditor: ProtocolComponents.JSONEditor.JSONEditor,
+      enumsByName?: Map<string, Record<string, string>>): Promise<string[]> => {
     jsonEditor.command = command;
     if (enumsByName) {
       jsonEditor.enumsByName = enumsByName;
@@ -536,14 +544,22 @@ describeWithEnvironment('JSONEditor', () => {
       ]);
       const command = 'Test.test';
 
-      const suggestions = await renderSuggestionBox(command, enumsByName);
+      const jsonEditor = renderJSONEditor();
+
+      await populateMetadata(jsonEditor);
+
+      const suggestions = await renderSuggestionBox(command, jsonEditor, enumsByName);
       assert.deepStrictEqual(suggestions, ['test', 'test1', 'test2']);
     });
 
     it('should display suggestion box with correct suggestions when the parameter is a boolean', async () => {
       const command = 'Test.test4';
 
-      const suggestions = await renderSuggestionBox(command);
+      const jsonEditor = renderJSONEditor();
+
+      await populateMetadata(jsonEditor);
+
+      const suggestions = await renderSuggestionBox(command, jsonEditor);
 
       assert.deepStrictEqual(suggestions, ['false', 'true']);
     });
@@ -600,10 +616,34 @@ describeWithEnvironment('JSONEditor', () => {
       assert.deepStrictEqual(suggestions, ['test', 'test1', 'test2']);
     });
 
+    it('should update the values inside the suggestion box when the command changes', async () => {
+      const enumsByName = new Map();
+      enumsByName.set('Test.testRef', {'Test': 'test', 'Test1': 'test1', 'Test2': 'test2'});
+      enumsByName.set('Test.newTestRef', {'NewTest': 'newtest', 'NewTest1': 'newtest1', 'NewTest2': 'newtest2'});
+
+      const command = 'Test.test';
+
+      const jsonEditor = renderJSONEditor();
+
+      await populateMetadata(jsonEditor);
+
+      await renderSuggestionBox(command, jsonEditor, enumsByName);
+
+      const newCommand = 'Test.test13';
+
+      const newSuggestions = await renderSuggestionBox(newCommand, jsonEditor, enumsByName);
+
+      assert.deepStrictEqual(newSuggestions, ['newtest', 'newtest1', 'newtest2']);
+    });
+
     it('should not display suggestion box when the parameter is neither a string or a boolean', async () => {
       const command = 'Test.test8';
 
-      const suggestions = await renderSuggestionBox(command);
+      const jsonEditor = renderJSONEditor();
+
+      await populateMetadata(jsonEditor);
+
+      const suggestions = await renderSuggestionBox(command, jsonEditor);
 
       assert.deepStrictEqual(suggestions, []);
     });
@@ -666,7 +706,6 @@ describeWithEnvironment('JSONEditor', () => {
          await jsonEditor.updateComplete;
 
          const param = jsonEditor.renderRoot.querySelector('[data-paramId]');
-
          await renderHoveredElement(param);
 
          const showDefaultValuesButton =

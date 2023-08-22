@@ -198,7 +198,7 @@ class SuggestionBox extends LitElement {
     if (changedProperties.has('options')) {
       this.options = Object.freeze([...this.options].sort());
     }
-    if (changedProperties.has('expression')) {
+    if (changedProperties.has('expression') || changedProperties.has('options')) {
       this.cursor = 0;
       this.#suggestions = this.options.filter(
           option => option.toLowerCase().startsWith(this.expression.toLowerCase()),

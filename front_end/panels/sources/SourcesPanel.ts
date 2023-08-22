@@ -1211,6 +1211,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     if (entry && entry.isDirectory) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.upgradeDraggedFileSystemPermissions(entry.filesystem);
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.WorkspaceDropFolder);
+      void UI.ViewManager.ViewManager.instance().showView('navigator-files');
     }
   }
 }

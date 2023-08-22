@@ -17,7 +17,7 @@ const UIStrings = {
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
-  speculationRules: 'Speculation Rules',
+  speculationRules: 'Speculation rules',
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
@@ -25,7 +25,7 @@ const UIStrings = {
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
-  thisPage: 'This Page',
+  thisPage: 'This page',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/PreloadingTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

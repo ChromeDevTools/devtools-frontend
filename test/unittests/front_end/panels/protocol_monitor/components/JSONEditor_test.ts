@@ -57,7 +57,7 @@ describeWithEnvironment('JSONEditor', () => {
           },
           'Test.test3': {
             parameters: [{
-              'optional': true,
+              'optional': false,
               'type': 'object',
               'value': [
                 {
@@ -125,7 +125,7 @@ describeWithEnvironment('JSONEditor', () => {
               {
                 'name': 'traceConfig',
                 'type': 'object',
-                'optional': true,
+                'optional': false,
                 'description': '',
                 'typeRef': 'Tracing.TraceConfig',
               },
@@ -152,6 +152,26 @@ describeWithEnvironment('JSONEditor', () => {
               'type': 'array',
               'name': 'test11',
               'typeRef': 'Test.arrayTypeRef',
+            }],
+          },
+          'Test.test12': {
+            parameters: [{
+              'optional': true,
+              'type': 'object',
+              'value': [
+                {
+                  'optional': false,
+                  'type': 'string',
+                  'name': 'param1',
+                },
+                {
+                  'optional': false,
+                  'type': 'number',
+                  'name': 'param2',
+                },
+              ],
+              'name': 'test12',
+              'typeRef': 'Optional.Object',
             }],
           },
         },
@@ -558,7 +578,7 @@ describeWithEnvironment('JSONEditor', () => {
       await jsonEditor.updateComplete;
 
       const inputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input');
-      // inputs[0] corresponds to the devtools-recorder-input of the command
+      // inputs[0] corresponds to the devtools-suggestion-input of the command
       const suggestionInput = inputs[1];
       // Reset the value to empty string because for boolean it will be set to false by default and the correct suggestions will not show
       suggestionInput.value = '';
@@ -621,6 +641,53 @@ describeWithEnvironment('JSONEditor', () => {
 
          assert.deepStrictEqual(value, expectedValue);
        });
+
+    it('should show the keys with default values when clicking of plus button for optional object parameters',
+       async () => {
+         const command = 'Test.test12';
+         const typesByName = new Map();
+         typesByName.set('Optional.Object', [
+           {
+             'optional': false,
+             'type': 'string',
+             'name': 'param1',
+           },
+           {
+             'optional': false,
+             'type': 'number',
+             'name': 'param2',
+           },
+         ]);
+         const jsonEditor = renderJSONEditor();
+         jsonEditor.typesByName = typesByName;
+         await populateMetadata(jsonEditor);
+         jsonEditor.command = command;
+         jsonEditor.populateParametersForCommandWithDefaultValues();
+         await jsonEditor.updateComplete;
+
+         const param = jsonEditor.renderRoot.querySelector('[data-paramId]');
+
+         await renderHoveredElement(param);
+
+         const showDefaultValuesButton =
+             jsonEditor.renderRoot.querySelector('devtools-button[title="Add a parameter"]');
+         if (!showDefaultValuesButton) {
+           throw new Error('No button');
+         }
+
+         dispatchClickEvent(showDefaultValuesButton, {
+           bubbles: true,
+           composed: true,
+         });
+
+         await jsonEditor.updateComplete;
+
+         // The -1 is need to not take into account the input for the command
+         const numberOfInputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input').length - 1;
+
+         assert.deepStrictEqual(numberOfInputs, 2);
+       });
+
   });
 
   describe('Reset to default values', () => {
@@ -702,6 +769,62 @@ describeWithEnvironment('JSONEditor', () => {
       const value = jsonEditor.parameters[0].value;
 
       assert.deepStrictEqual(value, []);
+    });
+
+    it('should reset the value of optional object parameter to undefined after clicking on clear button', async () => {
+      const command = 'Test.test12';
+      const typesByName = new Map();
+      typesByName.set('Optional.Object', [
+        {
+          'optional': false,
+          'type': 'string',
+          'name': 'param1',
+        },
+        {
+          'optional': false,
+          'type': 'number',
+          'name': 'param2',
+        },
+      ]);
+      const jsonEditor = renderJSONEditor();
+      jsonEditor.typesByName = typesByName;
+      await populateMetadata(jsonEditor);
+      jsonEditor.command = command;
+      jsonEditor.populateParametersForCommandWithDefaultValues();
+      await jsonEditor.updateComplete;
+
+      const param = jsonEditor.renderRoot.querySelector('[data-paramId]');
+      await renderHoveredElement(param);
+
+      const showDefaultValuesButton = jsonEditor.renderRoot.querySelector('devtools-button[title="Add a parameter"]');
+      if (!showDefaultValuesButton) {
+        throw new Error('No button');
+      }
+
+      dispatchClickEvent(showDefaultValuesButton, {
+        bubbles: true,
+        composed: true,
+      });
+
+      await jsonEditor.updateComplete;
+
+      await renderHoveredElement(param);
+      const clearButton = jsonEditor.renderRoot.querySelector('devtools-button[title="Reset to default value"]');
+
+      if (!clearButton) {
+        throw new Error('No clear button');
+      }
+
+      dispatchClickEvent(clearButton, {
+        bubbles: true,
+        composed: true,
+      });
+
+      await jsonEditor.updateComplete;
+      // The -1 is need to not take into account the input for the command
+      const numberOfInputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input').length - 1;
+
+      assert.deepStrictEqual(numberOfInputs, 0);
     });
   });
 

@@ -85,7 +85,7 @@ interface BooleanParameter extends BaseParameter {
 
 interface ObjectParameter extends BaseParameter {
   type: ParameterType.Object;
-  value: Parameter[];
+  value?: Parameter[];
 }
 
 export type Parameter = ArrayParameter|NumberParameter|StringParameter|BooleanParameter|ObjectParameter;
@@ -463,9 +463,9 @@ export class JSONEditor extends LitElement {
 
       return {
         ...parameter,
-        value: nestedParameters,
+        value: parameter.optional ? undefined : nestedParameters,
         isCorrectType: true,
-      };
+      } as Parameter;
     }
     if (parameter.type === ParameterType.Array) {
       return {
@@ -638,8 +638,7 @@ export class JSONEditor extends LitElement {
 
   #handleAddParameter(parameterId: string): void {
     const pathArray = parameterId.split('.');
-    const {parameter} = this.#getChildByPath(pathArray);
-
+    const {parameter, parentParameter} = this.#getChildByPath(pathArray);
     if (!parameter) {
       return;
     }
@@ -679,6 +678,9 @@ export class JSONEditor extends LitElement {
         if (!typeRef) {
           throw Error('Every object parameter must have a typeRef');
         }
+        if (!parameter.value) {
+          parameter.value = [];
+        }
         if (!this.typesByName.get(typeRef)) {
           parameter.value.push({
             type: ParameterType.String,
@@ -691,19 +693,27 @@ export class JSONEditor extends LitElement {
           });
           break;
         }
-        const nestedType = this.typesByName.get(typeRef) ?? [];
+        const nestedTypes = this.typesByName.get(typeRef) ?? [];
         const nestedValue: Parameter[] =
-            nestedType.map(nestedType => this.#createNestedParameter(nestedType, nestedType.name));
-
-        parameter.value.push({
-          type: ParameterType.Object,
-          name: '',
-          optional: true,
-          typeRef: typeRef,
-          value: nestedValue,
-          isCorrectType: true,
-          description: '',
+            nestedTypes.map(nestedType => this.#createNestedParameter(nestedType, nestedType.name));
+        const nestedParameters = nestedTypes.map(nestedType => {
+          return this.#populateParameterDefaults(nestedType);
         });
+
+        if (parentParameter) {
+          parameter.value.push({
+            type: ParameterType.Object,
+            name: '',
+            optional: true,
+            typeRef: typeRef,
+            value: nestedValue,
+            isCorrectType: true,
+            description: '',
+          });
+        } else {
+          parameter.value = nestedParameters;
+        }
+
         break;
       }
       default:
@@ -714,17 +724,21 @@ export class JSONEditor extends LitElement {
     this.requestUpdate();
   }
 
-  #handleClearParameter(parameter: Parameter): void {
-    if (!parameter) {
+  #handleClearParameter(parameter: Parameter, isParentArray?: boolean): void {
+    if (!parameter || parameter.value === undefined) {
       return;
     }
 
     switch (parameter.type) {
       case ParameterType.Object:
+        if (parameter.optional && !isParentArray) {
+          parameter.value = undefined;
+          break;
+        }
         if (!parameter.typeRef || !this.typesByName.get(parameter.typeRef)) {
           parameter.value = [];
         } else {
-          parameter.value.forEach(param => this.#handleClearParameter(param));
+          parameter.value.forEach(param => this.#handleClearParameter(param, isParentArray));
         }
         break;
 
@@ -872,12 +886,15 @@ export class JSONEditor extends LitElement {
           const isParentObject = parentParameter && parentParameter.type === ParameterType.Object;
 
           const isObject = parameter.type === ParameterType.Object;
+          const isParamValueUndefined = parameter.value === undefined;
+          const isParamOptional = parameter.optional;
           const hasTypeRef = isObject && parameter.typeRef && this.typesByName.get(parameter.typeRef) !== undefined;
           // This variable indicates that this parameter is a parameter nested inside an object parameter
           // that no keys defined inside the CDP documentation.
           const hasNoKeys = parameter.isKeyEditable;
           const isCustomEditorDisplayed = isObject && !hasTypeRef;
           const hasOptions = parameter.type === ParameterType.String || parameter.type === ParameterType.Boolean;
+          const canClearParameter = (isArray && !isParamValueUndefined && parameter.value.length !== 0) || (isObject && !isParamValueUndefined);
           const parametersClasses = {
             'optional-parameter': parameter.optional,
             'parameter': true,
@@ -920,21 +937,30 @@ export class JSONEditor extends LitElement {
                       `: nothing}
 
                       <!-- Render button to complete reset an array parameter or an object parameter-->
-                      ${(isArray && parameter.value.length !== 0) || isObject ?
+                      ${canClearParameter ?
                       this.#renderInlineButton({
                         title: i18nString(UIStrings.resetDefaultValue),
                         iconName: 'clear',
-                        onClick: () => this.#handleClearParameter(parameter),
+                        onClick: () => this.#handleClearParameter(parameter, isParentArray),
                         classMap: {'clear-button': true},
                       }) : nothing}
 
                       <!-- Render the buttons to change the value from undefined to empty string for optional primitive parameters -->
-                      ${isPrimitive && !isParentArray && parameter.optional && parameter.value === undefined ?
+                      ${isPrimitive && !isParentArray && isParamOptional && isParamValueUndefined ?
                           html`  ${this.#renderInlineButton({
                             title: i18nString(UIStrings.addParameter),
                             iconName: 'plus',
                             onClick: () => this.#handleAddParameter(parameterId),
-                            classMap: { 'delete-button': true },
+                            classMap: { 'add-button': true },
+                          })}` : nothing}
+
+                      <!-- Render the buttons to change the value from undefined to populate the values inside object with their default values -->
+                      ${isObject && isParamOptional && isParamValueUndefined ?
+                          html`  ${this.#renderInlineButton({
+                            title: i18nString(UIStrings.addParameter),
+                            iconName: 'plus',
+                            onClick: () => this.#handleAddParameter(parameterId),
+                            classMap: { 'add-button': true },
                           })}` : nothing}
                   </div>
 
@@ -961,7 +987,7 @@ export class JSONEditor extends LitElement {
                       })}`: nothing}
 
                     <!-- In case  the parameter is not optional or its value is not undefined render the input -->
-                    ${isPrimitive && !hasNoKeys && (parameter.value !== undefined || !parameter.optional) && (!isParentArray) ?
+                    ${isPrimitive && !hasNoKeys && (!isParamValueUndefined || !isParamOptional) && (!isParentArray) ?
                       html`
                         <devtools-suggestion-input
                           data-paramId=${parameterId}
@@ -976,7 +1002,7 @@ export class JSONEditor extends LitElement {
                         ></devtools-suggestion-input>` : nothing}
 
                     <!-- Render the buttons to change the value from empty string to undefined for optional primitive parameters -->
-                    ${isPrimitive &&!hasNoKeys && !isParentArray && parameter.optional && parameter.value !== undefined ?
+                    ${isPrimitive &&!hasNoKeys && !isParentArray && isParamOptional && !isParamValueUndefined ?
                         html`  ${this.#renderInlineButton({
                           title: i18nString(UIStrings.resetDefaultValue),
                           iconName: 'clear',

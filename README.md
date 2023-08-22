@@ -11,6 +11,7 @@ The client-side of the Chrome DevTools, including all JS & CSS to run the DevToo
 ### Source code
 
 The frontend is available on [chromium.googlesource.com](https://chromium.googlesource.com/devtools/devtools-frontend).
+Adding an arbitrary change for testing. Revert at any time.
 
 ### Project documentation
 

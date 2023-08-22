@@ -580,7 +580,9 @@ export enum Action {
   AnimationGroupReplayed = 104,
   OverrideTabDeleteFolderContextMenu = 105,
   OverrideTabDeleteOverridesContextMenu = 106,
-  MaxValue = 107,
+  WorkspaceDropFolder = 107,
+  WorkspaceSelectFolder = 108,
+  MaxValue = 109,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

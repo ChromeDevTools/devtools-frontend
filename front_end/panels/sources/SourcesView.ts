@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
@@ -15,11 +16,10 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Components from './components/components.js';
 import {EditingLocationHistoryManager} from './EditingLocationHistoryManager.js';
 import sourcesViewStyles from './sourcesView.css.js';
-
 import {
+  type EditorSelectedEvent,
   Events as TabbedEditorContainerEvents,
   TabbedEditorContainer,
-  type EditorSelectedEvent,
   type TabbedEditorContainerDelegate,
 } from './TabbedEditorContainer.js';
 import {Events as UISourceCodeFrameEvents, UISourceCodeFrame} from './UISourceCodeFrame.js';
@@ -34,17 +34,17 @@ const UIStrings = {
    */
   runCommand: 'Run command',
   /**
-   *@description Text in Sources View of the Sources panel
+   *@description Text in Sources View of the Sources panel. This sentence follows by a list of actions.
    */
-  workspaceDropInAFolderToSyncSources: 'To sync edits to the workspace, drop a folder with your sources here',
+  workspaceDropInAFolderToSyncSources: 'To sync edits to the workspace, drop a folder with your sources here or:',
+  /**
+   *@description Text in Sources View of the Sources panel.
+   */
+  selectFolder: 'select folder',
   /**
    *@description Accessible label for Sources placeholder view actions list
    */
   sourceViewActions: 'Source View Actions',
-  /**
-   *@description Text in Sources View of the Sources panel
-   */
-  LearnMore: 'Learn more',
 
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/SourcesView.ts', UIStrings);
@@ -155,6 +155,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       {
         actionId: 'sources.add-folder-to-workspace',
         description: i18nString(UIStrings.workspaceDropInAFolderToSyncSources),
+        isWorkspace: true,
       },
     ];
 
@@ -170,9 +171,17 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       if (shortcutKeyText) {
         listItemElement.createChild('span').textContent = shortcutKeyText;
         listItemElement.createChild('span').textContent = shortcut.description;
-      } else {
-        listItemElement.createChild('span').textContent = shortcut.description;
       }
+
+      if (shortcut.isWorkspace) {
+        const workspace = listItemElement.createChild('span', 'workspace');
+        workspace.textContent = shortcut.description;
+
+        const browseButton = workspace.createChild('button');
+        browseButton.textContent = i18nString(UIStrings.selectFolder);
+        browseButton.addEventListener('click', this.addFileSystemClicked.bind(this));
+      }
+
       const action = UI.ActionRegistry.ActionRegistry.instance().action(shortcut.actionId);
       if (action) {
         this.placeholderOptionArray.push({
@@ -184,9 +193,16 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
       }
     }
 
-    list.appendChild(UI.XLink.XLink.create('https://goo.gle/devtools-workspace', i18nString(UIStrings.LearnMore)));
-
     return list;
+  }
+
+  private async addFileSystemClicked(): Promise<void> {
+    const result = await Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addFileSystem();
+    if (!result) {
+      return;
+    }
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.WorkspaceDropFolder);
+    void UI.ViewManager.ViewManager.instance().showView('navigator-files');
   }
 
   private placeholderOnKeyDown(event: Event): void {

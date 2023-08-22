@@ -60,6 +60,22 @@
   & span {
     padding-inline: 10px;
   }
+
+  &:has(.workspace) {
+    max-width: 400px;
+    border: 2px dashed var(--color-background-elevation-2);
+    margin-block-start: 20px;
+    padding: 10px;
+    margin-inline: 20px;
+
+    & button {
+      background: transparent;
+      border: none;
+      padding: 0;
+      text-decoration: underline;
+      margin-inline: 4px;
+    }
+  }
 }
 
 .tabbed-pane-header {

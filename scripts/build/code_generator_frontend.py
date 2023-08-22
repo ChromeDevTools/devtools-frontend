@@ -307,12 +307,15 @@ class Generator:
         return description
 
     @staticmethod
-    def convert_json_parameter(json_parameter, domain_name):
+    def convert_json_parameter(json_parameter, domain_name, enum_name):
         json_param_name = json_parameter.get("name") or json_parameter["id"]
         json_param_description = json_param_description = Generator.format_description(
             json_parameter.get("description", ""))
 
         type_ref = json_parameter.get("$ref")
+        if type_ref:
+            type_ref = type_ref if '.' in type_ref else "%s.%s" % (domain_name,
+                                                                   type_ref)
         json_ref = ""
         js_bind_type = resolve_param_raw_type_js(json_parameter, domain_name)
 
@@ -328,6 +331,9 @@ class Generator:
             json_ref = json_parameter["$ref"]
             type_ref = json_ref if '.' in json_ref else "%s.%s" % (domain_name,
                                                                    json_ref)
+
+        if (json_parameter.get("enum") and enum_name):
+            type_ref = enum_name
 
         optional = json_parameter.get("optional", False)
         param_dict = {
@@ -346,7 +352,7 @@ class Generator:
         js_param_list = []
         for json_parameter in json_type:
             js_param_text = Generator.convert_json_parameter(
-                json_parameter, domain_name)
+                json_parameter, domain_name, None)
             js_param_list.append(js_param_text)
 
         js_parameters_text = ", ".join(js_param_list)
@@ -366,10 +372,14 @@ class Generator:
         if "parameters" in json_command:
             json_params = json_command["parameters"]
             js_param_list = []
-
+            enum_name = None
             for json_parameter in json_params:
+                if "enum" in json_parameter:
+                    enum_name = "%s.%sRequest%s" % (
+                        domain_name, to_title_case(json_command["name"]),
+                        to_title_case(json_parameter["name"]))
                 js_param_text = Generator.convert_json_parameter(
-                    json_parameter, domain_name)
+                    json_parameter, domain_name, enum_name)
                 js_param_list.append(js_param_text)
 
             js_parameters_text = ", ".join(js_param_list)

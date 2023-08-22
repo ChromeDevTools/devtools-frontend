@@ -663,24 +663,11 @@ export class JSONEditor extends LitElement {
           }
         }
 
-        // The typeRef for a enum should be without the domain name
-        // To remove the domain name we split the typeRef and get only the second part
-        const computeTypeRef = (): string|undefined => {
-          const splittedTypeRef = parameter.typeRef?.split('.')[1];
-          if (parameter.typeRef?.includes('.')) {
-            if (splittedTypeRef === '') {
-              throw new Error('Invalid typeref');
-            }
-            return splittedTypeRef;
-          }
-          return parameter.typeRef;
-        };
-
         parameter.value.push({
           type: type,
           name: String(parameter.value.length),
           optional: true,
-          typeRef: this.enumsByName.get(typeRef) ? computeTypeRef() : typeRef,
+          typeRef: typeRef,
           value: nestedValue.length !== 0 ? nestedValue : '',
           description: '',
           isCorrectType: true,
@@ -812,8 +799,7 @@ export class JSONEditor extends LitElement {
   #computeDropdownValues(parameter: Parameter): string[] {
     // The suggestion box should only be shown for parameters of type string and boolean
     if (parameter.type === ParameterType.String) {
-      const domainName = this.command.split('.')[0];
-      const enums = this.enumsByName.get(`${domainName}.${parameter.typeRef}`) ?? {};
+      const enums = this.enumsByName.get(`${parameter.typeRef}`) ?? {};
       return Object.values(enums);
     }
     if (parameter.type === ParameterType.Boolean) {

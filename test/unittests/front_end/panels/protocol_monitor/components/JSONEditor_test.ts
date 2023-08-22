@@ -42,7 +42,7 @@ describeWithEnvironment('JSONEditor', () => {
               name: 'test',
               type: 'string',
               optional: false,
-              typeRef: 'testRef',
+              typeRef: 'Test.testRef',
             }],
             description: 'Description1.',
             replyArgs: ['Test1'],

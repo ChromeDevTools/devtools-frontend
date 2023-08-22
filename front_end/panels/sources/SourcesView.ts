@@ -374,7 +374,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
   }
 
   showSourceLocation(
-      uiSourceCode: Workspace.UISourceCode.UISourceCode, location?: {lineNumber: number, columnNumber?: number}|number,
+      uiSourceCode: Workspace.UISourceCode.UISourceCode, location?: SourceFrame.SourceFrame.RevealPosition,
       omitFocus?: boolean, omitHighlight?: boolean): void {
     const currentFrame = this.currentSourceFrame();
     if (currentFrame) {

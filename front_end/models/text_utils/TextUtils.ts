@@ -295,7 +295,7 @@ export const performSearchInContent = function(
     regex.lastIndex = 0;
     const match = regex.exec(lineContent);
     if (match) {
-      result.push(new SearchMatch(i, lineContent));
+      result.push(new SearchMatch(i, lineContent, match.index));
     }
   }
   return result;

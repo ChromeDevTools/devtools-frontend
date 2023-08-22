@@ -159,7 +159,6 @@ export class IsolatedFileSystem extends PlatformFileSystem {
   private initializeFilePaths(): Promise<void> {
     return new Promise(fulfill => {
       let pendingRequests = 1;
-      let numberOfFilesLoaded = 0, numberOfDirectoriesTraversed = 1;
       const boundInnerCallback = innerCallback.bind(this);
       this.requestEntries(Platform.DevToolsPath.EmptyRawPathString, boundInnerCallback);
 
@@ -171,7 +170,6 @@ export class IsolatedFileSystem extends PlatformFileSystem {
                     entry.fullPath as Platform.DevToolsPath.RawPathString))) {
               continue;
             }
-            ++numberOfFilesLoaded;
             this.initialFilePathsInternal.add(Common.ParsedURL.ParsedURL.rawPathToEncodedPathString(
                 Common.ParsedURL.ParsedURL.substr(entry.fullPath as Platform.DevToolsPath.RawPathString, 1)));
           } else {
@@ -193,16 +191,12 @@ export class IsolatedFileSystem extends PlatformFileSystem {
                   Common.ParsedURL.ParsedURL.urlToRawPathString(url, Host.Platform.isWin()));
               continue;
             }
-            ++numberOfDirectoriesTraversed;
             ++pendingRequests;
             this.requestEntries(entry.fullPath as Platform.DevToolsPath.RawPathString, boundInnerCallback);
           }
         }
         if ((--pendingRequests === 0)) {
           fulfill();
-          if (this.type() === '') {
-            Host.userMetrics.workspacesNumberOfFiles(numberOfFilesLoaded, numberOfDirectoriesTraversed);
-          }
         }
       }
     });

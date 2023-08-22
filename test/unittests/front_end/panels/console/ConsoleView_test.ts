@@ -193,7 +193,7 @@ describeWithMockConnection('ConsoleView', () => {
       dispatchPasteEvent(messagesElement, {clipboardData: dt, bubbles: true});
       assert.strictEqual(
           Common.Console.Console.instance().messages()[0].text,
-          'Warning: Do not paste code you do not understand or have not checked yourself into the DevTools console. This could allow attackers to steal your identity or take control of your computer. Please type \'allow pasting\' below to allow pasting.');
+          'Warning: Don’t paste code into the DevTools Console that you don’t understand or haven’t reviewed yourself. This could allow attackers to steal your identity or take control of your computer. Please type ‘allow pasting’ below to allow pasting.');
     });
 
     it('is turned off when console history reaches a length of 5', async () => {

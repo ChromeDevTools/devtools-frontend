@@ -10,6 +10,7 @@ ts_library("perf_ui") {
     "FilmStripView_test.ts",
     "FlameChart_test.ts",
     "PieChart_test.ts",
+    "TimelineGrid_test.ts",
     "TimelineOverviewCalculator_test.ts",
   ]
 

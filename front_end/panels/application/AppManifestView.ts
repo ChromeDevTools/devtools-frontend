@@ -627,7 +627,8 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
 
     const description = stringProperty('description');
     this.descriptionField.textContent = description;
-    if (description.length > 324) {
+    // See https://crbug.com/1354304 for details.
+    if (description.length > 300) {
       warnings.push(i18nString(UIStrings.descriptionMayBeTruncated));
     }
 

@@ -448,9 +448,9 @@ export class JSONEditor extends LitElement {
 
   #populateParameterDefaults(parameter: Parameter): Parameter {
     if (parameter.type === ParameterType.Object) {
-      const typeRef = parameter.typeRef;
+      let typeRef = parameter.typeRef;
       if (!typeRef) {
-        throw Error('Every object parameters should have a type ref');
+        typeRef = DUMMY_DATA;
       }
 
       // Fallback to empty array is extremely rare.
@@ -606,9 +606,9 @@ export class JSONEditor extends LitElement {
 
   #createNestedParameter(type: Parameter, name: string): Parameter {
     if (type.type === ParameterType.Object) {
-      const typeRef = type.typeRef;
+      let typeRef = type.typeRef;
       if (!typeRef) {
-        throw Error('Every object parameters should have a type ref');
+        typeRef = DUMMY_DATA;
       }
       const nestedTypes = this.typesByName.get(typeRef) ?? [];
 
@@ -674,9 +674,9 @@ export class JSONEditor extends LitElement {
         break;
       }
       case ParameterType.Object: {
-        const typeRef = parameter.typeRef;
+        let typeRef = parameter.typeRef;
         if (!typeRef) {
-          throw Error('Every object parameter must have a typeRef');
+          typeRef = DUMMY_DATA;
         }
         if (!parameter.value) {
           parameter.value = [];
@@ -955,7 +955,7 @@ export class JSONEditor extends LitElement {
                           })}` : nothing}
 
                       <!-- Render the buttons to change the value from undefined to populate the values inside object with their default values -->
-                      ${isObject && isParamOptional && isParamValueUndefined ?
+                      ${isObject && isParamOptional && isParamValueUndefined && hasTypeRef ?
                           html`  ${this.#renderInlineButton({
                             title: i18nString(UIStrings.addParameter),
                             iconName: 'plus',

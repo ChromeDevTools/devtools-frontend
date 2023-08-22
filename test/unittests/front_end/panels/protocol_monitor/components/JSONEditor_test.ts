@@ -143,8 +143,8 @@ describeWithEnvironment('JSONEditor', () => {
                 'typeRef': 'NoTypeRef',
               },
             ],
-            description: 'Description9.',
-            replyArgs: ['Test9'],
+            description: 'Description10.',
+            replyArgs: ['Test10'],
           },
           'Test.test11': {
             parameters: [{
@@ -181,8 +181,20 @@ describeWithEnvironment('JSONEditor', () => {
               optional: false,
               typeRef: 'Test.newTestRef',
             }],
-            description: 'Description1.',
-            replyArgs: ['Test1'],
+            description: 'Description13.',
+            replyArgs: ['Test13'],
+          },
+          'Test.test14': {
+            parameters: [
+              {
+                'name': 'NoTypeRef',
+                'type': 'object',
+                'optional': true,
+                'description': '',
+              },
+            ],
+            description: 'Description14.',
+            replyArgs: ['Test14'],
           },
         },
       },
@@ -1201,7 +1213,7 @@ describeWithEnvironment('JSONEditor', () => {
     assert.deepStrictEqual(parameters.length, 6);
   });
 
-  it('should return the parameters in a format understandable by the ProtocolMonitor when sending a command with object parameter that has no typeRef',
+  it('should return the parameters in a format understandable by the ProtocolMonitor when sending a command with object parameter that has no typeRef found in map',
      async () => {
        const command = 'Test.test10';
        const typesByName = new Map();
@@ -1289,5 +1301,40 @@ describeWithEnvironment('JSONEditor', () => {
 
        assert.deepStrictEqual(response.data.parameters, expectedParameters);
      });
+
+  it('should show the custom editor for an object param that has no type ref', async () => {
+    const command = 'Test.test14';
+    const jsonEditor = renderJSONEditor();
+
+    await populateMetadata(jsonEditor);
+    jsonEditor.command = command;
+    jsonEditor.populateParametersForCommandWithDefaultValues();
+    await jsonEditor.updateComplete;
+    const shadowRoot = jsonEditor.renderRoot;
+    const parameters = shadowRoot.querySelector('.parameter');
+
+    await renderHoveredElement(parameters);
+
+    const addParamButton = jsonEditor.renderRoot.querySelector('devtools-button[title="Add custom property"]');
+    if (!addParamButton) {
+      throw new Error('No button');
+    }
+    // We click two times to display two parameters with key/value pairs
+    dispatchClickEvent(addParamButton, {
+      bubbles: true,
+      composed: true,
+    });
+    dispatchClickEvent(addParamButton, {
+      bubbles: true,
+      composed: true,
+    });
+
+    await jsonEditor.updateComplete;
+    // The -1 is need to not take into account the input for the command
+
+    const numberOfInputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input').length - 1;
+
+    assert.deepStrictEqual(numberOfInputs, 4);
+  });
 
 });

@@ -87,4 +87,52 @@ describe('The Network Tab', function() {
       assert.isTrue(await elementContainsTextWithSelector(editor, 'true', '.token-atom'));
     });
   });
+
+  it('can pretty print when there is only one json or json subtype file', async () => {
+    await navigateToNetworkTab('json-subtype-ld.rawresponse');
+    await waitForSomeRequestsToAppear(1);
+    await selectRequestByName('json-subtype-ld.rawresponse');
+
+    const networkView = await waitFor('.network-item-view');
+    await click('#tab-headersComponent', {
+      root: networkView,
+    });
+
+    await click('[aria-label=Response][role="tab"]', {
+      root: networkView,
+    });
+    await waitFor('[aria-label=Response][role=tab][aria-selected=true]', networkView);
+
+    const editor = await waitFor('[aria-label="Code editor"]');
+
+    await step('can pretty-print a json subtype', async () => {
+      const textFromResponse = await retrieveCodeMirrorEditorContent();
+
+      const expectedTextFromResponse = [
+        '{',
+        '    "Keys": [',
+        '        {',
+        '            "Key1": "Value1",',
+        '            "Key2": "Value2",',
+        '            "Key3": true',
+        '        },',
+        '        {',
+        '            "Key1": "Value1",',
+        '            "Key2": "Value2",',
+        '            "Key3": false',
+        '        }',
+        '    ]',
+        '}',
+      ];
+
+      assert.deepStrictEqual(textFromResponse, expectedTextFromResponse);
+    });
+
+    await step('can highlight the pretty-printed text', async () => {
+      assert.isTrue(await isPrettyPrinted());
+      assert.isTrue(await elementContainsTextWithSelector(editor, '"Value1"', '.token-string'));
+
+      assert.isTrue(await elementContainsTextWithSelector(editor, 'true', '.token-atom'));
+    });
+  });
 });

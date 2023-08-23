@@ -10,9 +10,20 @@ import '../inspector_main/inspector_main-meta.js';
 import '../../panels/issues/issues-meta.js';
 import '../../panels/mobile_throttling/mobile_throttling-meta.js';
 import '../../panels/timeline/timeline-meta.js';
+import '../../panels/rn_welcome/rn_welcome-meta.js';
 
 import * as Root from '../../core/root/root.js';
 import * as Main from '../main/main.js';
+
+Root.Runtime.experiments.register(
+  Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI,
+  'Show React Native-specific UI',
+  /* unstable */ false,
+);
+
+Root.Runtime.experiments.enableExperimentsByDefault(
+  [Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI],
+);
 
 // @ts-ignore Exposed for legacy layout tests
 self.runtime = Root.Runtime.Runtime.instance({forceNew: true});

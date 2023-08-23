@@ -15,6 +15,7 @@ devtools_image_files = [
   "navigationControls.png",
   "nodeIcon.avif",
   "popoverArrows.png",
+  "react_native/welcomeIcon.png",
   "toolbarResizerVertical.png",
   "touchCursor_2x.png",
   "touchCursor.png",

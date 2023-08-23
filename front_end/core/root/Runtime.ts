@@ -313,6 +313,7 @@ export enum ExperimentName {
   JS_PROFILER_TEMP_ENABLE = 'jsProfilerTemporarilyEnable',
   HIGHLIGHT_ERRORS_ELEMENTS_PANEL = 'highlightErrorsElementsPanel',
   SET_ALL_BREAKPOINTS_EAGERLY = 'setAllBreakpointsEagerly',
+  REACT_NATIVE_SPECIFIC_UI = 'reactNativeSpecificUI',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

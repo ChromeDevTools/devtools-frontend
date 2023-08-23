@@ -126,6 +126,11 @@ class SuggestionInitEvent extends Event {
   }
 }
 
+type SuggestionFilter = (option: string, query: string) => boolean;
+
+const defaultSuggestionFilter = (option: string, query: string): boolean =>
+    option.toLowerCase().startsWith(query.toLowerCase());
+
 /**
  * @fires SuggestionInitEvent#suggestioninit
  * @fires SuggestEvent#suggest
@@ -136,6 +141,7 @@ class SuggestionBox extends LitElement {
 
   @property(jsonPropertyOptions) declare options: Readonly<string[]>;
   @property() declare expression: string;
+  @property() declare suggestionFilter?: SuggestionFilter;
 
   @state() private declare cursor: number;
 
@@ -201,7 +207,7 @@ class SuggestionBox extends LitElement {
     if (changedProperties.has('expression') || changedProperties.has('options')) {
       this.cursor = 0;
       this.#suggestions = this.options.filter(
-          option => option.toLowerCase().startsWith(this.expression.toLowerCase()),
+          option => (this.suggestionFilter || defaultSuggestionFilter)(option, this.expression),
       );
     }
   }
@@ -240,6 +246,7 @@ export class SuggestionInput extends LitElement {
    */
   @property(jsonPropertyOptions) declare options: Readonly<string[]>;
   @property() declare autocomplete?: boolean;
+  @property() declare suggestionFilter?: SuggestionFilter;
   @state() declare expression: string;
 
   /**
@@ -348,6 +355,7 @@ export class SuggestionInput extends LitElement {
         @suggestioninit=${this.#handleSuggestionInitEvent}
         @suggest=${this.#handleSuggestEvent}
         .options=${this.options}
+        .suggestionFilter=${this.suggestionFilter}
         .expression=${this.autocomplete ? this.expression : ''}
       ></devtools-suggestion-box>`;
     // clang-format on

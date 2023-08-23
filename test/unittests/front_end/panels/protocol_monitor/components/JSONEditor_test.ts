@@ -1337,4 +1337,11 @@ describeWithEnvironment('JSONEditor', () => {
     assert.deepStrictEqual(numberOfInputs, 4);
   });
 
+  describe('Command suggestion filter', () => {
+    it('filters the commands by substring match', async () => {
+      assert(ProtocolComponents.JSONEditor.suggestionFilter('Test', 'Tes'));
+      assert(ProtocolComponents.JSONEditor.suggestionFilter('Test', 'est'));
+      assert(!ProtocolComponents.JSONEditor.suggestionFilter('Test', 'dest'));
+    });
+  });
 });

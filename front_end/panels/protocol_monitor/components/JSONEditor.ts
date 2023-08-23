@@ -132,6 +132,10 @@ const defaultValueByType = new Map<string, string|number|boolean>([
 const DUMMY_DATA = 'dummy';
 const EMPTY_STRING = '<empty_string>';
 
+export function suggestionFilter(option: string, query: string): boolean {
+  return option.toLowerCase().includes(query.toLowerCase());
+}
+
 @customElement('devtools-json-editor')
 export class JSONEditor extends LitElement {
   static override styles = [editorWidgetStyles];
@@ -1062,6 +1066,7 @@ export class JSONEditor extends LitElement {
           .options=${[...this.metadataByCommand.keys()]}
           .value=${this.command}
           .placeholder=${'Enter your command...'}
+          .suggestionFilter=${suggestionFilter}
           @blur=${this.#handleCommandInputBlur}
           class=${classMap({'json-input': true})}
         ></devtools-suggestion-input>

@@ -19,6 +19,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   openNetworkTab,
   selectRequestByName,
+  waitForSomeRequestsToAppear,
 } from '../helpers/network-helpers.js';
 import {
   readQuickOpenResults,
@@ -339,29 +340,28 @@ describe('Overrides panel', async function() {
 });
 
 describe('Overrides panel', () => {
-  // Flaky on mac
-  it.skipOnPlatforms(
-      ['mac'], '[crbug.com/1474334]: appends correct overrides context menu for Sources > Page file', async () => {
-        await goToResource('elements/elements-panel-styles.html');
-        await openNetworkTab();
-        await selectRequestByName('elements-panel-styles.css', {button: 'right'});
-        await click('aria/Open in Sources panel');
+  it('appends correct overrides context menu for Sources > Page file', async () => {
+    await goToResource('elements/elements-panel-styles.html');
+    await openNetworkTab();
+    await waitForSomeRequestsToAppear(2);
+    await selectRequestByName('elements-panel-styles.css', {button: 'right'});
+    await click('aria/Open in Sources panel');
 
-        // Open the file in the Sources panel
-        const file = await waitFor('[aria-label="elements-panel-styles.css, file"]');
-        await file.click({button: 'right'});
+    // Open the file in the Sources panel
+    const file = await waitFor('[aria-label="elements-panel-styles.css, file"]');
+    await file.click({button: 'right'});
 
-        const assertShowAllElements = await $$('Show all overrides', undefined, 'aria');
-        const assertOverridesContentElements = await $$('Override content', undefined, 'aria');
+    const assertShowAllElements = await $$('Show all overrides', undefined, 'aria');
+    const assertOverridesContentElements = await $$('Override content', undefined, 'aria');
 
-        assert.strictEqual(assertShowAllElements.length, 0);
-        assert.strictEqual(assertOverridesContentElements.length, 1);
-      });
+    assert.strictEqual(assertShowAllElements.length, 0);
+    assert.strictEqual(assertOverridesContentElements.length, 1);
+  });
 
-  // Flaky on mac
-  it.skipOnPlatforms(['mac'], '[crbug.com/1474334]: hide "Override content" for source mapped file', async () => {
+  it('hide "Override content" for source mapped file', async () => {
     await goToResource('sources/sourcemap-origin.html');
     await openNetworkTab();
+    await waitForSomeRequestsToAppear(4);
     await selectRequestByName('sourcemap-origin.min.js', {button: 'right'});
     await click('aria/Open in Sources panel');
 

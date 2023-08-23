@@ -75,7 +75,7 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
       <div class="ruleset-header">
         <${IconButton.Icon.Icon.litTagName}
           .data=${{
-            iconName: 'cross-circle-filled',
+            iconName: 'cross-circle',
             color: 'var(--icon-error)',
             width: '16px',
             height: '16px',

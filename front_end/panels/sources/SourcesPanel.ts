@@ -1241,6 +1241,24 @@ export class UILocationRevealer implements Common.Revealer.Revealer {
   }
 }
 
+export class UILocationRangeRevealer implements Common.Revealer.Revealer {
+  static #instance?: UILocationRangeRevealer;
+  static instance(opts: {forceNew: boolean} = {forceNew: false}): UILocationRangeRevealer {
+    if (!UILocationRangeRevealer.#instance || opts.forceNew) {
+      UILocationRangeRevealer.#instance = new UILocationRangeRevealer();
+    }
+    return UILocationRangeRevealer.#instance;
+  }
+
+  async reveal(uiLocationRange: Object, omitFocus?: boolean): Promise<void> {
+    if (!(uiLocationRange instanceof Workspace.UISourceCode.UILocationRange)) {
+      throw new Error('Internal error: Not a UILocationRange');
+    }
+    const {uiSourceCode, range: {start: from, end: to}} = uiLocationRange;
+    SourcesPanel.instance().showUISourceCode(uiSourceCode, {from, to}, omitFocus);
+  }
+}
+
 let debuggerLocationRevealerInstance: DebuggerLocationRevealer;
 
 export class DebuggerLocationRevealer implements Common.Revealer.Revealer {

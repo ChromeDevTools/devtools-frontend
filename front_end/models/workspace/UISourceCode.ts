@@ -629,6 +629,21 @@ export class UILocation {
 }
 
 /**
+ * A text range inside a specific {@link UISourceCode}.
+ *
+ * We use a class instead of an interface so we can implement a revealer for it.
+ */
+export class UILocationRange {
+  readonly uiSourceCode: UISourceCode;
+  readonly range: TextUtils.TextRange.TextRange;
+
+  constructor(uiSourceCode: UISourceCode, range: TextUtils.TextRange.TextRange) {
+    this.uiSourceCode = uiSourceCode;
+    this.range = range;
+  }
+}
+
+/**
  * A message associated with a range in a `UISourceCode`. The range will be
  * underlined starting at the range's start and ending at the line end (the
  * end of the range is currently disregarded).

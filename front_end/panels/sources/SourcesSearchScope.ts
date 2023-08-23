@@ -307,8 +307,9 @@ export class FileBasedSearchResult implements Search.SearchScope.SearchResult {
   }
 
   matchRevealable(index: number): Object {
-    const match = this.searchMatches[index];
-    return this.uiSourceCode.uiLocation(match.lineNumber, match.columnNumber);
+    const {lineNumber, columnNumber, matchLength} = this.searchMatches[index];
+    const range = new TextUtils.TextRange.TextRange(lineNumber, columnNumber, lineNumber, columnNumber + matchLength);
+    return new Workspace.UISourceCode.UILocationRange(this.uiSourceCode, range);
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)

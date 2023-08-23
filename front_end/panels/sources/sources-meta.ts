@@ -1807,6 +1807,19 @@ Common.Revealer.registerRevealer({
 Common.Revealer.registerRevealer({
   contextTypes() {
     return [
+      Workspace.UISourceCode.UILocationRange,
+    ];
+  },
+  destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
+  async loadRevealer() {
+    const Sources = await loadSourcesModule();
+    return Sources.SourcesPanel.UILocationRangeRevealer.instance();
+  },
+});
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [
       SDK.DebuggerModel.Location,
     ];
   },

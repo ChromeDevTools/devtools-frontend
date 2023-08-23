@@ -38,7 +38,7 @@ import type * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as UI from '../../legacy.js';
 
 import resourceSourceFrameStyles from './resourceSourceFrame.css.legacy.js';
-import {SourceFrameImpl, type SourceFrameOptions} from './SourceFrame.js';
+import {type RevealPosition, SourceFrameImpl, type SourceFrameOptions} from './SourceFrame.js';
 
 const UIStrings = {
   /**
@@ -104,7 +104,7 @@ export class SearchableContainer extends UI.Widget.VBox {
     });
   }
 
-  async revealPosition(lineNumber: number, columnNumber?: number): Promise<void> {
-    this.sourceFrame.revealPosition({lineNumber, columnNumber}, true);
+  async revealPosition(position: RevealPosition): Promise<void> {
+    this.sourceFrame.revealPosition(position, true);
   }
 }

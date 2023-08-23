@@ -35,16 +35,16 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as NetworkComponents from './components/components.js';
 import {EventSourceMessagesView} from './EventSourceMessagesView.js';
-
 import {type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
 import {RequestCookiesView} from './RequestCookiesView.js';
 import {RequestHeadersView} from './RequestHeadersView.js';
-import {RequestPayloadView} from './RequestPayloadView.js';
 import {RequestInitiatorView} from './RequestInitiatorView.js';
+import {RequestPayloadView} from './RequestPayloadView.js';
 import {RequestPreviewView} from './RequestPreviewView.js';
 import {RequestResponseView} from './RequestResponseView.js';
 import {RequestTimingView} from './RequestTimingView.js';
@@ -322,11 +322,9 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
     return this.requestInternal;
   }
 
-  async revealResponseBody(line?: number): Promise<void> {
+  async revealResponseBody(position: SourceFrame.SourceFrame.RevealPosition): Promise<void> {
     this.selectTabInternal(NetworkForward.UIRequestLocation.UIRequestTabs.Response);
-    if (this.responseView && typeof line === 'number') {
-      await this.responseView.revealLine((line as number));
-    }
+    await this.responseView?.revealPosition(position);
   }
 
   revealHeader(section: NetworkForward.UIRequestLocation.UIHeaderSection, header: string|undefined): void {

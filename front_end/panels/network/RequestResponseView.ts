@@ -140,10 +140,10 @@ export class RequestResponseView extends UI.Widget.VBox {
     return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData));
   }
 
-  async revealLine(line: number): Promise<void> {
+  async revealPosition(position: SourceFrame.SourceFrame.RevealPosition): Promise<void> {
     const view = await this.doShowPreview();
     if (view instanceof SourceFrame.ResourceSourceFrame.SearchableContainer) {
-      void view.revealPosition(line);
+      void view.revealPosition(position);
     }
   }
 }

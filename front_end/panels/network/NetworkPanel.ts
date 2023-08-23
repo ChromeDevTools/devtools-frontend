@@ -1056,7 +1056,12 @@ export class RequestLocationRevealer implements Common.Revealer.Revealer {
       return;
     }
     if (location.searchMatch) {
-      await view.revealResponseBody(location.searchMatch.lineNumber);
+      const {lineNumber, columnNumber, matchLength} = location.searchMatch;
+      const revealPosition = {
+        from: {lineNumber, columnNumber},
+        to: {lineNumber, columnNumber: columnNumber + matchLength},
+      };
+      await view.revealResponseBody(revealPosition);
     }
     if (location.header) {
       view.revealHeader(location.header.section, location.header.header?.name);

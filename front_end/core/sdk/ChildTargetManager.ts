@@ -134,6 +134,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
         '^chrome://file-manager/',
         '^chrome://feedback/',
         '^chrome://.*\\.top-chrome/$',
+        '^chrome://view-cert/$',
         '^devtools://',
       ];
       if (KNOWN_FRAME_PATTERNS.some(p => targetInfo.url.match(p))) {

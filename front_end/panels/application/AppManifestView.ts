@@ -375,10 +375,6 @@ const UIStrings = {
   screenshotPixelSize:
       'Screenshot {url} should specify a pixel size `[width]x[height]` instead of `"any"` as first size.',
   /**
-   *@description Link text for more information on the display override property in the Application panel
-   */
-  displayOverride: 'display-override',
-  /**
    *@description Message for Window Controls Overlay value succsessfully found with links to documnetation
    *@example {window-controls-overlay} PH1
    *@example {https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override} PH2
@@ -870,7 +866,7 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
 
     const displayOverrideLink = UI.XLink.XLink.create(
         'https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override',
-        i18nString(UIStrings.displayOverride));
+        i18n.i18n.lockedString('display-override'));
     const displayOverrideText = document.createElement('code');
     displayOverrideText.appendChild(displayOverrideLink);
 

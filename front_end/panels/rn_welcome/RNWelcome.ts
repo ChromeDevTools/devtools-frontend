@@ -47,10 +47,14 @@ export class RNWelcomeImpl extends UI.Widget.VBox {
   }
 
   render(): void {
+    const welcomeIconUrl = new URL(
+      "../../Images/react_native/welcomeIcon.png",
+      import.meta.url,
+    ).toString();
     render(html`
       <div class="rn-welcome-panel">
         <div class="rn-welcome-header">
-          <img class="rn-welcome-icon" src="/Images/react_native/welcomeIcon.png" role="presentation" />
+          <img class="rn-welcome-icon" src=${welcomeIconUrl} role="presentation" />
           <div class="rn-welcome-title">
             ${i18nString(UIStrings.debuggerBrandName)}
           </div>

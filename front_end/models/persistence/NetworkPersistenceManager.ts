@@ -314,9 +314,12 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
   async #unbind(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
     const binding = this.bindings.get(uiSourceCode);
+    const headerBinding = uiSourceCode.url().endsWith(HEADERS_FILENAME);
     if (binding) {
       const mutex = this.#getOrCreateMutex(binding.network);
       await mutex.run(this.#innerUnbind.bind(this, binding));
+    } else if (headerBinding) {
+      this.dispatchEventToListeners(Events.RequestsForHeaderOverridesFileChanged, uiSourceCode);
     }
   }
 
@@ -381,6 +384,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
 
   isActiveHeaderOverrides(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
     // If this overriden file is actively in use at the moment.
+    if (!this.enabledSetting.get()) {
+      return false;
+    }
     return uiSourceCode.url().endsWith(HEADERS_FILENAME) &&
         this.hasMatchingNetworkUISourceCodeForHeaderOverridesFile(uiSourceCode);
   }

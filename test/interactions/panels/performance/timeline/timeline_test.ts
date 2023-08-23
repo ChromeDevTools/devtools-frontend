@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, waitFor} from '../../../../shared/helper.js';
+import {click, waitFor, waitForFunction} from '../../../../shared/helper.js';
 import {describe} from '../../../../shared/mocha-extensions.js';
 import {assertElementScreenshotUnchanged, itScreenshot} from '../../../../shared/screenshots.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
@@ -41,7 +41,18 @@ describe('Performance panel', () => {
     await waitFor('div.tabbed-pane');
     await click('#tab-EventLog');
     const datagrid = await waitFor('.timeline-tree-view');
-    await assertElementScreenshotUnchanged(datagrid, 'performance/eventLog.png', 3);
+    // This value is obtained by waiting for the scroll of the datagrid to be completed
+    const TOP_OFFSET = 2938;
+    const scrollableDatagrid = await waitFor('.data-container');
+    // Wait for the scroll of the datagrid to be done before taking a screenshot
+    await waitForFunction(async () => {
+      const scrollablePosition = await scrollableDatagrid.evaluate(el => {
+        return el.scrollTop;
+      });
+      return scrollablePosition === TOP_OFFSET;
+    });
+
+    await assertElementScreenshotUnchanged(datagrid, 'performance/eventLog.png', 4);
   });
 
   itScreenshot('renders correctly the datagrid in the split widget of Bottom Up', async () => {

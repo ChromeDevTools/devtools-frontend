@@ -320,11 +320,15 @@
 }
 
 .timeline-tree-view .data-grid table.data {
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
+}
+
+.timeline-tree-view .data-grid .odd {
+  background-color: var(--sys-color-surface1);
 }
 
 .timeline-tree-view .data-grid tr:hover td:not(.bottom-filler-td) {
-  background-color: var(--color-background-hover-overlay);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .timeline-tree-view .data-grid td.numeric-column {
@@ -337,7 +341,7 @@
 }
 
 .timeline-tree-view .data-grid span.percent-column {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   width: 45px;
   display: inline-block;
 }

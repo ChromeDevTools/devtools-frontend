@@ -38,6 +38,10 @@
  */
 
 (function createTestSuite(window) {
+  // 'Tests.js' is loaded as a classic script so we can't use static imports for these modules.
+  /** @type {import('./core/common/common.js')} */
+  let Common;
+
   const TestSuite = class {
     /**
      * Test suite for interactive UI tests.
@@ -142,8 +146,10 @@
 
   TestSuite.prototype.setupLegacyFilesForTest = async function() {
     try {
+      // 'Tests.js' is executed on 'about:blank' so we can't use `import` directly without
+      // specifying the full devtools://devtools/bundled URL.
+      Common = await self.runtime.loadLegacyModule('core/common/common.js');
       await Promise.all([
-        self.runtime.loadLegacyModule('core/common/common-legacy.js'),
         self.runtime.loadLegacyModule('core/sdk/sdk-legacy.js'),
         self.runtime.loadLegacyModule('core/host/host-legacy.js'),
         self.runtime.loadLegacyModule('ui/legacy/legacy-legacy.js'),
@@ -759,7 +765,7 @@
       this.releaseControl();
     });
 
-    self.Common.settings.moduleSetting('activeKeybindSet').set('vsCode');
+    Common.Settings.moduleSetting('activeKeybindSet').set('vsCode');
   };
 
   TestSuite.prototype.testDispatchKeyEventDoesNotCrash = function() {
@@ -945,7 +951,8 @@
       }
     }
 
-    const captureFilmStripSetting = self.Common.settings.createSetting('timelineCaptureFilmStrip', false);
+    const captureFilmStripSetting =
+        Common.Settings.Settings.instance().createSetting('timelineCaptureFilmStrip', false);
     captureFilmStripSetting.set(true);
     test.evaluateInConsole_(performActionsInPage.toString(), function() {});
     test.invokeAsyncWithTimeline_('performActionsInPage', onTimelineDone);
@@ -1019,9 +1026,9 @@
     setTimeout(reset, 0);
 
     function createSettings() {
-      const localSetting = self.Common.settings.createLocalSetting('local', undefined);
+      const localSetting = Common.Settings.Settings.instance().createLocalSetting('local', undefined);
       localSetting.set({s: 'local', n: 1});
-      const globalSetting = self.Common.settings.createSetting('global', undefined);
+      const globalSetting = Common.Settings.Settings.instance().createSetting('global', undefined);
       globalSetting.set({s: 'global', n: 2});
     }
 
@@ -1033,11 +1040,11 @@
     function gotPreferences(prefs) {
       Main.Main.instanceForTest.createSettings(prefs);
 
-      const localSetting = self.Common.settings.createLocalSetting('local', undefined);
+      const localSetting = Common.Settings.Settings.instance().createLocalSetting('local', undefined);
       test.assertEquals('object', typeof localSetting.get());
       test.assertEquals('local', localSetting.get().s);
       test.assertEquals(1, localSetting.get().n);
-      const globalSetting = self.Common.settings.createSetting('global', undefined);
+      const globalSetting = Common.Settings.Settings.instance().createSetting('global', undefined);
       test.assertEquals('object', typeof globalSetting.get());
       test.assertEquals('global', globalSetting.get().s);
       test.assertEquals(2, globalSetting.get().n);
@@ -1590,7 +1597,7 @@
     }
 
     function showConsoleAndEvaluate() {
-      self.Common.console.showPromise().then(innerEvaluate.bind(this));
+      Common.Console.Console.instance().showPromise().then(innerEvaluate.bind(this));
     }
 
     if (!self.UI.context.flavor(SDK.ExecutionContext)) {

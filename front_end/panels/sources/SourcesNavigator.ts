@@ -199,7 +199,7 @@ export class FilesNavigatorView extends NavigatorView {
   }
 
   override sourceSelected(uiSourceCode: Workspace.UISourceCode.UISourceCode, focusSource: boolean): void {
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.FileSystemSourceSelected);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.WorkspaceSourceSelected);
     super.sourceSelected(uiSourceCode, focusSource);
   }
 

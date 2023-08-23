@@ -41,6 +41,8 @@
   // 'Tests.js' is loaded as a classic script so we can't use static imports for these modules.
   /** @type {import('./core/common/common.js')} */
   let Common;
+  /** @type {import('./core/host/host.js')} */
+  let HostModule;
 
   const TestSuite = class {
     /**
@@ -149,9 +151,15 @@
       // 'Tests.js' is executed on 'about:blank' so we can't use `import` directly without
       // specifying the full devtools://devtools/bundled URL.
       Common = await self.runtime.loadLegacyModule('core/common/common.js');
+      HostModule = await self.runtime.loadLegacyModule('core/host/host.js');
+
+      // We have to map 'Host.InspectorFrontendHost' as the C++ uses it directly.
+      self.Host = {};
+      self.Host.InspectorFrontendHost = HostModule.InspectorFrontendHost.InspectorFrontendHostInstance;
+      self.Host.InspectorFrontendHostAPI = HostModule.InspectorFrontendHostAPI;
+
       await Promise.all([
         self.runtime.loadLegacyModule('core/sdk/sdk-legacy.js'),
-        self.runtime.loadLegacyModule('core/host/host-legacy.js'),
         self.runtime.loadLegacyModule('ui/legacy/legacy-legacy.js'),
         self.runtime.loadLegacyModule('models/workspace/workspace-legacy.js'),
         self.runtime.loadLegacyModule('models/trace/trace-legacy.js'),
@@ -1436,7 +1444,7 @@
     const loggedHeaders = new Set(['cache-control', 'pragma']);
     function testCase(url, headers, expectedStatus, expectedHeaders, expectedContent) {
       return new Promise(fulfill => {
-        Host.ResourceLoader.load(url, headers, callback);
+        HostModule.ResourceLoader.load(url, headers, callback);
 
         function callback(success, headers, content, errorDescription) {
           test.assertEquals(expectedStatus, errorDescription.statusCode);

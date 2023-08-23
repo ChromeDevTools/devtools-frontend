@@ -88,6 +88,26 @@ describeWithMockConnection('AppManifestView', () => {
       const values = getCleanTextContentFromElements(manifestSections[4].getFieldElement(), '.wco');
       assert.deepEqual(values, ['window-controls-overlay']);
     });
+
+    it('can parse ‘sizes’-field', async () => {
+      view = new Application.AppManifestView.AppManifestView(emptyView, reportView, throttler);
+      const parsed =
+          view.parseSizes('512x512', 'Icon' as Platform.UIString.LocalizedString, 'https://web.dev/image.html', []);
+      const expected = [{
+        width: 512,
+        height: 512,
+        formatted: '512×512px',
+      } as Application.AppManifestView.ParsedSize];
+      assert.deepStrictEqual(parsed, expected);
+    });
+
+    it('can handle missing ‘sizes’-field', async () => {
+      view = new Application.AppManifestView.AppManifestView(emptyView, reportView, throttler);
+      const parsed = view.parseSizes(
+          undefined as unknown as string, 'Icon' as Platform.UIString.LocalizedString, 'https://web.dev/image.html',
+          []);
+      assert.deepStrictEqual(parsed, []);
+    });
   };
   describe('without tab target', () => tests(() => createTarget()));
   describe('with tab target', () => tests(() => {

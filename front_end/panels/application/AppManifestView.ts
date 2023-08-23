@@ -400,7 +400,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/AppManifestView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-type ParsedSize = {
+export type ParsedSize = {
   any: 'any',
   formatted: string,
 }|{

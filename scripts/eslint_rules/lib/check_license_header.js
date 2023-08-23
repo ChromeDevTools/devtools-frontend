@@ -18,6 +18,10 @@ const LINE_LICENSE_HEADER = [
   'Use of this source code is governed by a BSD-style license that can be',
   'found in the LICENSE file.',
 ];
+const META_LINE_LICENSE_HEADER = [
+  'Copyright \\(c\\) Meta Platforms, Inc. and affiliates.',
+  ...LINE_LICENSE_HEADER
+];
 
 const BLOCK_LICENSE_HEADER = [
   'Copyright \\(C\\) \\d{4} Google Inc. All rights reserved.',
@@ -51,13 +55,20 @@ const BLOCK_LICENSE_HEADER = [
 
 const LINE_REGEXES =
     LINE_LICENSE_HEADER.map(line => new RegExp('[ ]?' + line.replace(CURRENT_YEAR, '(\\(c\\) )?\\d{4}')));
+const META_LINE_REGEXES = [new RegExp('[ ]?' + META_LINE_LICENSE_HEADER[0]), ...LINE_REGEXES];
 const BLOCK_REGEX = new RegExp('[\\s\\\\n\\*]*' + BLOCK_LICENSE_HEADER.join('[\\s\\\\n\\*]*'), 'm');
 
 const LICENSE_HEADER_ADDITION = LINE_LICENSE_HEADER.map(line => `// ${line}`).join('\n') + '\n\n';
+const META_LICENSE_HEADER_ADDITION = META_LINE_LICENSE_HEADER.map(line => `// ${line}`).join('\n') + '\n\n';
 
 const EXCLUDED_FILES = [
   // FIXME: Diff bundles must be moved to third_party
   'diff/diff_match_patch.js',
+];
+
+const META_CODE_PATHS = [
+  'entrypoints/rn_inspector',
+  'panels/rn_welcome',
 ];
 
 const OTHER_LICENSE_HEADERS = [
@@ -107,9 +118,11 @@ const OTHER_LICENSE_HEADERS = [
 /**
  * Check each linecomment that should (combined) result in the LINE_LICENSE_HEADER.
  */
-function isMissingLineCommentLicense(comments) {
-  for (let i = 0; i < LINE_REGEXES.length; i++) {
-    if (!comments[i] || !LINE_REGEXES[i].test(comments[i].value)) {
+function isMissingLineCommentLicense(comments, licenseType) {
+  const regexes = licenseType === 'meta' ? META_LINE_REGEXES : LINE_REGEXES;
+
+  for (let i = 0; i < regexes.length; i++) {
+    if (!comments[i] || !regexes[i].test(comments[i].value)) {
       return true;
     }
   }
@@ -139,6 +152,11 @@ module.exports = {
     const fileName = context.getFilename();
     // Fix windows paths for exemptions
     const relativePath = path.relative(FRONT_END_FOLDER, fileName).replace(/\\/g, '/');
+    let licenseType = 'google';
+
+    if (META_CODE_PATHS.some(pathMatch => relativePath.startsWith(pathMatch))) {
+      licenseType = 'meta';
+    }
 
     if (relativePath.startsWith('third_party') || fileName.endsWith('TestRunner.js') ||
         EXCLUDED_FILES.includes(relativePath) || OTHER_LICENSE_HEADERS.includes(relativePath)) {
@@ -174,12 +192,15 @@ module.exports = {
         }
 
         if (firstCommentToCheck.type === 'Line') {
-          if (isMissingLineCommentLicense(commentsToCheck)) {
+          if (isMissingLineCommentLicense(commentsToCheck, licenseType)) {
             context.report({
               node,
               message: 'Incorrect line license header',
               fix(fixer) {
-                return fixer.insertTextBefore(firstCommentToCheck, LICENSE_HEADER_ADDITION);
+                return fixer.insertTextBefore(
+                  firstCommentToCheck,
+                  licenseType === 'meta' ? META_LICENSE_HEADER_ADDITION : LICENSE_HEADER_ADDITION,
+                );
               }
             });
           }

@@ -35,7 +35,6 @@ group("front_end") {
 
 group("legacy_entrypoints") {
   public_deps = [
-    "core/common:legacy",
     "core/host:legacy",
     "core/protocol_client:legacy",
     "core/root:legacy",

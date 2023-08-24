@@ -21,7 +21,6 @@ ts_library("legacy_test_runner-source") {
   sources = [ "legacy_test_runner.ts" ]
 
   deps = [
-    "../core/common:legacy",
     "../core/host:legacy",
     "../core/protocol_client:legacy",
     "../core/root:legacy",

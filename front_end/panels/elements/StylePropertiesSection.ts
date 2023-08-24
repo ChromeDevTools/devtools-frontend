@@ -825,10 +825,6 @@ export class StylePropertiesSection {
   }
 
   protected createScopeElement(scope: SDK.CSSScope.CSSScope): ElementsComponents.CSSQuery.CSSQuery|undefined {
-    if (!scope.text) {
-      return;
-    }
-
     let onQueryTextClick;
     if (scope.styleSheetId) {
       onQueryTextClick = this.handleQueryRuleClick.bind(this, scope);

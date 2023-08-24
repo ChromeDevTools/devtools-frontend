@@ -1068,54 +1068,9 @@ export class NetworkRequestNode extends NetworkNode {
         this.parentView().dispatchEventToListeners(Events.RequestActivated, {showPanel: true});
       });
       cell.addEventListener('focus', () => this.parentView().resetFocus());
-      let iconElement: HTMLElement;
-      const type = this.requestInternal.resourceType();
-      if (this.isFailed()) {
-        const iconData = {
-          iconName: 'cross-circle-filled',
-          color: 'var(--icon-error)',
-        };
-        iconElement = setIcon(iconData, type.title());
-        iconElement.classList.add('icon');
-      } else if (this.requestInternal.wasIntercepted()) {
-        const iconData = {
-          iconName: 'document',
-          color: 'var(--icon-default)',
-        };
 
-        let title: Common.UIString.LocalizedString;
-        const isHeaderOverriden = this.requestInternal.hasOverriddenHeaders();
-        const isContentOverriden = this.requestInternal.hasOverriddenContent;
-
-        if (isHeaderOverriden && isContentOverriden) {
-          title = i18nString(UIStrings.requestContentHeadersOverridden);
-        } else if (isContentOverriden) {
-          title = i18nString(UIStrings.requestContentOverridden);
-        } else {
-          title = i18nString(UIStrings.requestHeadersOverridden);
-        }
-
-        const iconChildElement = setIcon(iconData, title);
-        iconChildElement.classList.add('icon');
-
-        iconElement = document.createElement('div');
-        iconElement.classList.add('network-override-marker');
-        iconElement.appendChild(iconChildElement);
-      } else if (this.requestInternal.resourceType() === Common.ResourceType.resourceTypes.Image) {
-        const previewImage = document.createElement('img');
-        previewImage.classList.add('image-network-icon-preview');
-        previewImage.alt = this.requestInternal.resourceType().title();
-        void this.requestInternal.populateImageSource((previewImage as HTMLImageElement));
-
-        iconElement = document.createElement('div');
-        iconElement.classList.add('image', 'icon');
-        iconElement.appendChild(previewImage);
-      } else {
-        const iconData = PanelUtils.iconDataForResourceType(type);
-        iconElement = setIcon(iconData, type.title());
-        iconElement.classList.add('icon');
-      }
-
+      // render icons
+      const iconElement = this.getIcon(this.requestInternal);
       cell.appendChild(iconElement);
     }
 
@@ -1126,7 +1081,7 @@ export class NetworkRequestNode extends NetworkNode {
           iconName: 'bundle',
           color: 'var(--icon-info)',
         };
-        const secondIconElement = setIcon(iconData, i18nString(UIStrings.webBundleInnerRequest));
+        const secondIconElement = this.createIconElement(iconData, i18nString(UIStrings.webBundleInnerRequest));
         secondIconElement.classList.add('icon');
 
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.requestInternal);
@@ -1150,17 +1105,80 @@ export class NetworkRequestNode extends NetworkNode {
     } else if (text) {
       UI.UIUtils.createTextChild(cell, text);
     }
+  }
 
-    function setIcon(iconData: {iconName: string, color: string}, title: string): HTMLElement {
-      const iconElement = document.createElement('div');
-      iconElement.title = title;
-      iconElement.style.setProperty(
-          '-webkit-mask',
-          `url('${
-              new URL(`../../Images/${iconData.iconName}.svg`, import.meta.url).toString()}')  no-repeat center /99%`);
-      iconElement.style.setProperty('background-color', iconData.color);
+  private createIconElement(iconData: {iconName: string, color: string}, title: string): HTMLElement {
+    const iconElement = document.createElement('div');
+    iconElement.title = title;
+    iconElement.style.setProperty(
+        '-webkit-mask',
+        `url('${
+            new URL(`../../Images/${iconData.iconName}.svg`, import.meta.url).toString()}')  no-repeat center /99%`);
+    iconElement.style.setProperty('background-color', iconData.color);
+    return iconElement;
+  }
+
+  private getIcon(request: SDK.NetworkRequest.NetworkRequest): HTMLElement {
+    const type = request.resourceType();
+    let iconElement: HTMLElement;
+
+    if (this.isFailed()) {
+      const iconData = {
+        iconName: 'cross-circle-filled',
+        color: 'var(--icon-error)',
+      };
+      iconElement = this.createIconElement(iconData, type.title());
+      iconElement.classList.add('icon');
+
       return iconElement;
     }
+
+    if (request.wasIntercepted()) {
+      const iconData = {
+        iconName: 'document',
+        color: 'var(--icon-default)',
+      };
+
+      let title: Common.UIString.LocalizedString;
+      const isHeaderOverriden = request.hasOverriddenHeaders();
+      const isContentOverriden = request.hasOverriddenContent;
+
+      if (isHeaderOverriden && isContentOverriden) {
+        title = i18nString(UIStrings.requestContentHeadersOverridden);
+      } else if (isContentOverriden) {
+        title = i18nString(UIStrings.requestContentOverridden);
+      } else {
+        title = i18nString(UIStrings.requestHeadersOverridden);
+      }
+
+      const iconChildElement = this.createIconElement(iconData, title);
+      iconChildElement.classList.add('icon');
+
+      iconElement = document.createElement('div');
+      iconElement.classList.add('network-override-marker');
+      iconElement.appendChild(iconChildElement);
+
+      return iconElement;
+    }
+
+    if (request.resourceType() === Common.ResourceType.resourceTypes.Image) {
+      const previewImage = document.createElement('img');
+      previewImage.classList.add('image-network-icon-preview');
+      previewImage.alt = request.resourceType().title();
+      void request.populateImageSource((previewImage as HTMLImageElement));
+
+      iconElement = document.createElement('div');
+      iconElement.classList.add('image', 'icon');
+      iconElement.appendChild(previewImage);
+
+      return iconElement;
+    }
+
+    // Others
+    const iconData = PanelUtils.iconDataForResourceType(type);
+    iconElement = this.createIconElement(iconData, type.title());
+    iconElement.classList.add('icon');
+    return iconElement;
   }
 
   private renderStatusCell(cell: HTMLElement): void {

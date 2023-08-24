@@ -150,6 +150,7 @@ const _walkOrder = {
   'ReturnStatement': ['argument'],
   'SequenceExpression': ['expressions'],
   'SpreadElement': ['argument'],
+  'StaticBlock': ['body'],
   'Super': [],
   'SwitchCase': ['test', 'consequent'],
   'SwitchStatement': ['discriminant', 'cases'],

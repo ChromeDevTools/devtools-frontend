@@ -3,13 +3,12 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import * as Root from '../../core/root/root.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-
-import type * as Explain from './explain.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import type * as Sources from '../sources/sources.js';
 
-import {isAvailable} from './Bindings.js';
+import type * as Explain from './explain.js';
 
 const UIStrings = {
   /**
@@ -36,7 +35,7 @@ function maybeRetrieveContextTypes<T = unknown>(getClassCallBack: (sourcesModule
   return getClassCallBack(loadedSourcesModule);
 }
 
-if (isAvailable()) {
+if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
   UI.ActionRegistration.registerActionExtension({
     actionId: 'explain.code',
     category: UI.ActionRegistration.ActionCategory.EXPLAIN,

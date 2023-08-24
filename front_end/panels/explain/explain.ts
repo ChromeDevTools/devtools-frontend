@@ -4,5 +4,4 @@
 
 export * from './ExplainPopover.js';
 export * from './ActionDelegate.js';
-export * from './Bindings.js';
 export * from './ContextMenuProvider.js';

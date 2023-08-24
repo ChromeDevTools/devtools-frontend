@@ -450,7 +450,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     return null;
   }
 
-  explainCode: unknown;
+  doAidaConversation?: () => void = undefined;
 }
 
 // @ts-ignore Global injected by devtools-compatibility.js

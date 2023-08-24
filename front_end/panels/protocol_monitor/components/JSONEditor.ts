@@ -143,8 +143,8 @@ export class JSONEditor extends LitElement {
   declare metadataByCommand: Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>;
   @property() declare typesByName: Map<string, Parameter[]>;
   @property() declare enumsByName: Map<string, Record<string, string>>;
-  @property() declare targetManager;
   @state() declare parameters: Parameter[];
+  @state() declare targets: SDK.Target.Target[];
   @state() command: string = '';
   @state() targetId?: string;
 
@@ -153,8 +153,7 @@ export class JSONEditor extends LitElement {
   constructor() {
     super();
     this.parameters = [];
-    this.targetManager = SDK.TargetManager.TargetManager.instance();
-    this.targetId = this.targetManager.targets().length !== 0 ? this.targetManager.targets()[0].id() : undefined;
+    this.targets = [];
     this.addEventListener('keydown', event => {
       if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
         this.#handleParameterInputKeydown(event);
@@ -173,12 +172,26 @@ export class JSONEditor extends LitElement {
     this.#hintPopoverHelper.setDisableOnClick(true);
     this.#hintPopoverHelper.setTimeout(300);
     this.#hintPopoverHelper.setHasPadding(true);
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    targetManager.addEventListener(
+        SDK.TargetManager.Events.AvailableTargetsChanged, this.#handleAvailableTargetsChanged, this);
+    this.#handleAvailableTargetsChanged();
   }
 
   override disconnectedCallback(): void {
     super.disconnectedCallback();
     this.#hintPopoverHelper?.hidePopover();
     this.#hintPopoverHelper?.dispose();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    targetManager.removeEventListener(
+        SDK.TargetManager.Events.AvailableTargetsChanged, this.#handleAvailableTargetsChanged, this);
+  }
+
+  #handleAvailableTargetsChanged(): void {
+    this.targets = SDK.TargetManager.TargetManager.instance().targets();
+    if (this.targets.length && this.targetId === undefined) {
+      this.targetId = this.targets[0].id();
+    }
   }
 
   getParameters(): {[key: string]: unknown} {
@@ -597,7 +610,10 @@ export class JSONEditor extends LitElement {
     this.populateParametersForCommandWithDefaultValues();
   };
 
-  #computeTargetLabel(target: SDK.Target.Target): string {
+  #computeTargetLabel(target: SDK.Target.Target): string|void {
+    if (!target) {
+      return;
+    }
     return `${target.name()} (${target.inspectedURL()})`;
   }
 
@@ -777,8 +793,9 @@ export class JSONEditor extends LitElement {
   }
 
   #renderTargetSelectorRow(): LitHtml.TemplateResult|undefined {
-    const target = this.targetManager.targets().find(el => el.id() === this.targetId);
-    const targetLabel = target ? this.#computeTargetLabel(target) : '';
+    const target = this.targets.find(el => el.id() === this.targetId);
+    const targetLabel = target ? this.#computeTargetLabel(target) : this.#computeTargetLabel(this.targets[0]);
+
     // clang-format off
     return html`
     <div class="row attribute padded">
@@ -794,7 +811,7 @@ export class JSONEditor extends LitElement {
             .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
             .buttonTitle=${targetLabel}
           >
-          ${repeat(this.targetManager.targets(), target => {
+          ${repeat(this.targets, target => {
           return LitHtml.html`
                 <${Menus.Menu.MenuItem.litTagName}
                   .value=${target.id()}>

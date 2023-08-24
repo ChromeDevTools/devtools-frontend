@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
@@ -73,7 +75,7 @@ BindingsTestRunner.AutomappingTest.prototype = {
   addNetworkResources: function(assets) {
     for (const url in assets) {
       const asset = assets[url];
-      const contentType = asset.contentType || Common.resourceTypes.Script;
+      const contentType = asset.contentType || Common.ResourceType.resourceTypes.Script;
       const contentProvider = TextUtils.StaticContentProvider.fromString(url, contentType, asset.content);
       const metadata =
           (typeof asset.content === 'string' || asset.time ?

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
@@ -17,7 +19,7 @@ ApplicationTestRunner.resetState = async function() {
     if (target.type() === 'tab') {
       continue;
     }
-    const securityOrigin = new Common.ParsedURL(target.inspectedURL()).securityOrigin();
+    const securityOrigin = new Common.ParsedURL.ParsedURL(target.inspectedURL()).securityOrigin();
     await target.storageAgent().clearDataForOrigin(securityOrigin, Resources.StorageView.AllStorageTypes.join(','));
   }
 };

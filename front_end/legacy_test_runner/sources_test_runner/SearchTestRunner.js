@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
@@ -36,7 +38,7 @@ SourcesTestRunner.dumpSearchMatches = function(searchMatches) {
 
 SourcesTestRunner.runSearchAndDumpResults = function(scope, searchConfig, callback) {
   const searchResults = [];
-  const progress = new Common.Progress();
+  const progress = new Common.Progress.Progress();
   scope.performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback);
 
   function searchResultCallback(searchResult) {

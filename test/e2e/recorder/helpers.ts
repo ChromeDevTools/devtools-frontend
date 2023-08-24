@@ -71,12 +71,12 @@ export async function onReplayFinished(): Promise<unknown> {
 
 export async function enableUntrustedEventMode() {
   const {frontend} = getBrowserAndPages();
-  await frontend.evaluate(() => {
+  await frontend.evaluate(`(async () => {
     // TODO: have an explicit UI setting or perhaps a special event to configure this
     // instead of having a global setting.
-    // @ts-ignore
-    globalThis.Common.settings.createSetting('untrustedRecorderEvents', true);
-  });
+    const Common = await import('./core/common/common.js');
+    Common.Settings.Settings.instance().createSetting('untrustedRecorderEvents', true);
+  })()`);
 }
 
 export async function enableAndOpenRecorderPanel(path: string) {

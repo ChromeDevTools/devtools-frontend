@@ -42,12 +42,6 @@ import * as Worker from './Worker.js';
  */
 export {UIString} from '../platform/platform.js';
 
-/**
- * @type {!Settings.Settings}
- */
-// @ts-ignore typedef
-export let settings;
-
 export {
   App,
   AppProvider,

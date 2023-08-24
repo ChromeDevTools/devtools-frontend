@@ -160,8 +160,6 @@ export class MainImpl {
 
   #initializeGlobalsForLayoutTests(): void {
     // @ts-ignore layout test global
-    self.Common = self.Common || {};
-    // @ts-ignore layout test global
     self.UI = self.UI || {};
     // @ts-ignore layout test global
     self.UI.panels = self.UI.panels || {};
@@ -265,9 +263,6 @@ export class MainImpl {
     const syncedStorage = new Common.Settings.SettingsStorage(prefs, hostSyncedStorage, storagePrefix);
     const globalStorage = new Common.Settings.SettingsStorage(prefs, hostUnsyncedStorage, storagePrefix);
     Common.Settings.Settings.instance({forceNew: true, syncedStorage, globalStorage, localStorage});
-
-    // @ts-ignore layout test global
-    self.Common.settings = Common.Settings.Settings.instance();
 
     if (!Host.InspectorFrontendHost.isUnderTest()) {
       new Common.Settings.VersionController().updateVersion();

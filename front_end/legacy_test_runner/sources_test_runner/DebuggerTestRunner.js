@@ -7,6 +7,8 @@
  */
 self.SourcesTestRunner = self.SourcesTestRunner || {};
 
+import * as Common from '../../core/common/common.js';
+
 SourcesTestRunner.startDebuggerTest = async function(callback, quiet) {
   console.assert(TestRunner.debuggerModel.debuggerEnabled(), 'Debugger has to be enabled');
 
@@ -30,7 +32,7 @@ SourcesTestRunner.startDebuggerTestPromise = function(quiet) {
 };
 
 SourcesTestRunner.completeDebuggerTest = function() {
-  self.Common.settings.moduleSetting('breakpointsActive').set(true);
+  Common.Settings.moduleSetting('breakpointsActive').set(true);
   SourcesTestRunner.resumeExecution(TestRunner.completeTest.bind(TestRunner));
 };
 

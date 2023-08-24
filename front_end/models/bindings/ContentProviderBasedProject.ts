@@ -30,8 +30,8 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
-import type * as TextUtils from '../text_utils/text_utils.js';
+import * as Platform from '../../core/platform/platform.js';
+import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 const UIStrings = {
@@ -185,8 +185,9 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
 
   async findFilesMatchingSearchRequest(
       searchConfig: Workspace.SearchConfig.SearchConfig, filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[],
-      progress: Common.Progress.Progress): Promise<Workspace.UISourceCode.UISourceCode[]> {
-    const result: Workspace.UISourceCode.UISourceCode[] = [];
+      progress: Common.Progress.Progress):
+      Promise<Map<Workspace.UISourceCode.UISourceCode, TextUtils.ContentProvider.SearchMatchExact[]|null>> {
+    const result = new Map();
     progress.setTotalWork(filesMatchingFileQuery.length);
     await Promise.all(filesMatchingFileQuery.map(searchInContent.bind(this)));
     progress.done();
@@ -195,16 +196,26 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
     async function searchInContent(
         this: ContentProviderBasedProject, uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
       let allMatchesFound = true;
+      let allMatchesAreExact = true;
+      let matches: TextUtils.ContentProvider.SearchMatchExact[] = [];
       for (const query of searchConfig.queries().slice()) {
         const searchMatches =
             await this.searchInFileContent(uiSourceCode, query, !searchConfig.ignoreCase(), searchConfig.isRegex());
         if (!searchMatches.length) {
           allMatchesFound = false;
           break;
+        } else if (searchMatches[0] instanceof TextUtils.ContentProvider.SearchMatch) {
+          allMatchesAreExact = false;
+        } else {
+          matches = Platform.ArrayUtilities.mergeOrdered(
+              matches, searchMatches as TextUtils.ContentProvider.SearchMatchExact[],
+              TextUtils.ContentProvider.SearchMatch.comparator);
         }
       }
-      if (allMatchesFound) {
-        result.push(uiSourceCode);
+      if (allMatchesFound && allMatchesAreExact) {
+        result.set(uiSourceCode, matches);
+      } else if (allMatchesFound) {
+        result.set(uiSourceCode, null);
       }
       progress.incrementWorked(1);
     }

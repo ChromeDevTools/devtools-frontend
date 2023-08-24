@@ -303,7 +303,8 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
 
   async findFilesMatchingSearchRequest(
       searchConfig: Workspace.SearchConfig.SearchConfig, filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[],
-      progress: Common.Progress.Progress): Promise<Workspace.UISourceCode.UISourceCode[]> {
+      progress: Common.Progress.Progress):
+      Promise<Map<Workspace.UISourceCode.UISourceCode, TextUtils.ContentProvider.SearchMatch[]|null>> {
     let workingFileSet: string[] = filesMatchingFileQuery.map(uiSoureCode => uiSoureCode.url());
     const queriesToRun = searchConfig.queries().slice();
     if (!queriesToRun.length) {
@@ -319,11 +320,11 @@ export class FileSystem extends Workspace.Workspace.ProjectStore {
       progress.incrementWorked(1);
     }
 
-    const result = [];
+    const result = new Map();
     for (const file of workingFileSet) {
       const uiSourceCode = this.uiSourceCodeForURL(file as Platform.DevToolsPath.UrlString);
       if (uiSourceCode) {
-        result.push(uiSourceCode);
+        result.set(uiSourceCode, null);
       }
     }
 

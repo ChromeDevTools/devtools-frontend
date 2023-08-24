@@ -36,7 +36,7 @@ describe('ContentProviderBasedProject', () => {
       const result =
           await project.findFilesMatchingSearchRequest(searchConfig, uiSourceCodes, new Common.Progress.Progress());
 
-      assert.deepEqual(result, [uiSourceCodes[0]]);
+      assert.hasAllKeys(result, [uiSourceCodes[0]]);
     });
 
     it('only includes files if all query parts are found in that file', async () => {
@@ -59,7 +59,32 @@ describe('ContentProviderBasedProject', () => {
       const result =
           await project.findFilesMatchingSearchRequest(searchConfig, uiSourceCodes, new Common.Progress.Progress());
 
-      assert.deepEqual(result, [uiSourceCodes[1]]);
+      assert.hasAllKeys(result, [uiSourceCodes[1]]);
+    });
+
+    it('does not include inexact search matches in the result', async () => {
+      const {project, uiSourceCodes} = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: 'http://example.com/a.js' as UrlString,
+            mimeType: 'text/javascript',
+            content: 'Single line with "foo"\n',
+          },
+          {
+            url: 'http://example.com/b.js' as UrlString,
+            mimeType: 'text/javascript',
+            content: 'Single line with "bar"\n',
+          },
+        ],
+      });
+      const searchConfig = new Workspace.SearchConfig.SearchConfig('line', false, false);
+
+      const result =
+          await project.findFilesMatchingSearchRequest(searchConfig, uiSourceCodes, new Common.Progress.Progress());
+
+      assert.hasAllKeys(result, uiSourceCodes);
+      assert.isNull(result.get(uiSourceCodes[0]));
+      assert.isNull(result.get(uiSourceCodes[1]));
     });
 
     it('updates the progress per file', async () => {

@@ -66,7 +66,7 @@ export interface Project {
       Promise<TextUtils.ContentProvider.SearchMatch[]>;
   findFilesMatchingSearchRequest(
       searchConfig: SearchConfig, filesMatchingFileQuery: UISourceCode[],
-      progress: Common.Progress.Progress): Promise<UISourceCode[]>;
+      progress: Common.Progress.Progress): Promise<Map<UISourceCode, TextUtils.ContentProvider.SearchMatch[]|null>>;
   indexContent(progress: Common.Progress.Progress): void;
   uiSourceCodeForURL(url: Platform.DevToolsPath.UrlString): UISourceCode|null;
 
@@ -206,7 +206,7 @@ export abstract class ProjectStore implements Project {
       Promise<TextUtils.ContentProvider.SearchMatch[]>;
   abstract findFilesMatchingSearchRequest(
       searchConfig: SearchConfig, filesMatchingFileQuery: UISourceCode[],
-      progress: Common.Progress.Progress): Promise<UISourceCode[]>;
+      progress: Common.Progress.Progress): Promise<Map<UISourceCode, TextUtils.ContentProvider.SearchMatch[]|null>>;
 }
 
 let workspaceInstance: WorkspaceImpl|undefined;

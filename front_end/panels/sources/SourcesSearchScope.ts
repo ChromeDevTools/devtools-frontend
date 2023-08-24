@@ -176,12 +176,14 @@ export class SourcesSearchScope implements Search.SearchScope.SearchScope {
   private processMatchingFilesForProject(
       searchId: number, project: Workspace.Workspace.Project, searchConfig: Workspace.SearchConfig.SearchConfig,
       filesMatchingFileQuery: Workspace.UISourceCode.UISourceCode[],
-      files: Workspace.UISourceCode.UISourceCode[]): void {
+      filesWithPreliminaryResult:
+          Map<Workspace.UISourceCode.UISourceCode, TextUtils.ContentProvider.SearchMatch[]|null>): void {
     if (searchId !== this.searchId && this.searchFinishedCallback) {
       this.searchFinishedCallback(false);
       return;
     }
 
+    let files = [...filesWithPreliminaryResult.keys()];
     files.sort(SourcesSearchScope.urlComparator);
     files = Platform.ArrayUtilities.intersectOrdered(files, filesMatchingFileQuery, SourcesSearchScope.urlComparator);
     const dirtyFiles = this.projectFilesMatchingFileQuery(project, searchConfig, true);

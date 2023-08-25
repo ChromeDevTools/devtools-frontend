@@ -1127,6 +1127,11 @@ export class ConsoleView extends UI.Widget.VBox implements
       }
     }
 
+    if (consoleViewMessage) {
+      UI.Context.Context.instance().setFlavor(ConsoleViewMessage, consoleViewMessage);
+      contextMenu.appendApplicableItems(consoleViewMessage);
+    }
+
     void contextMenu.show();
   }
 

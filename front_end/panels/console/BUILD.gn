@@ -72,6 +72,7 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/entrypoints/missing_entrypoints/*",
     "../../../test/unittests/front_end/panels/console/*",
     "../../entrypoints/*",
+    "../../panels/explain/*",
   ]
 
   visibility += devtools_panels_visibility

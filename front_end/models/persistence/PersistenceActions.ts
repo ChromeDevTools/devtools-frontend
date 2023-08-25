@@ -5,10 +5,11 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-
-import type * as TextUtils from '../text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as Bindings from '../bindings/bindings.js';
+import type * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
@@ -35,6 +36,17 @@ const UIStrings = {
    *@description A context menu item in the Persistence Actions of the Workspace settings in Settings
    */
   openInContainingFolder: 'Open in containing folder',
+  /**
+   *@description A message in a confirmation dialog in the Persistence Actions
+   * @example {bundle.min.js} PH1
+   */
+  overrideSourceMappedFileWarning: 'Override ‘{PH1}’ instead?',
+  /**
+   *@description A message in a confirmation dialog to explain why the action is failed in the Persistence Actions
+   * @example {index.ts} PH1
+   */
+  overrideSourceMappedFileExplanation: '‘{PH1}’ is a source mapped file and cannot be overridden.',
+
 };
 const str_ = i18n.i18n.registerUIStrings('models/persistence/PersistenceActions.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -98,40 +110,25 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
     }
 
     if (contentProvider instanceof Workspace.UISourceCode.UISourceCode &&
-        (contentProvider.project().type() === Workspace.Workspace.projectTypes.FileSystem ||
-         uiSourceCode?.contentType().isFromSourceMap())) {
-      // Do not append in Sources > Filesystem & Overrides tab
+        (contentProvider.project().type() === Workspace.Workspace.projectTypes.FileSystem)) {
+      // Do not append in Sources > Workspace & Overrides tab
       return;
     }
 
     if (uiSourceCode && networkPersistenceManager.isUISourceCodeOverridable(uiSourceCode)) {
-      contextMenu.overrideSection().appendItem(i18nString(UIStrings.overrideContent), async () => {
-        const isSuccess = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
-        if (isSuccess) {
-          await Common.Revealer.reveal(uiSourceCode);
+      if (!uiSourceCode.contentType().isFromSourceMap()) {
+        contextMenu.overrideSection().appendItem(
+            i18nString(UIStrings.overrideContent),
+            async () => await this.handleOverrideContent(uiSourceCode, contentProvider));
+      } else {
+        // show redirect dialog for source mapped file
+        const deployedUiSourceCode = this.getDeployedUiSourceCode(uiSourceCode);
+        if (deployedUiSourceCode) {
+          contextMenu.overrideSection().appendItem(
+              i18nString(UIStrings.overrideContent),
+              async () => await this.redirectOverrideToDeployedUiSourceCode(deployedUiSourceCode, uiSourceCode));
         }
-
-        // Collect metrics: Context menu access point
-        if (contentProvider instanceof SDK.NetworkRequest.NetworkRequest) {
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentFromNetworkContextMenu);
-        } else if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentFromSourcesContextMenu);
-        }
-        // Collect metrics: Content type
-        if (uiSourceCode.isFetchXHR()) {
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideFetchXHR);
-        } else if (contentProvider.contentType().isScript()) {
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideScript);
-        } else if (contentProvider.contentType().isDocument()) {
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideDocument);
-        } else if (contentProvider.contentType().isStyleSheet()) {
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideStyleSheet);
-        } else if (contentProvider.contentType().isImage()) {
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideImage);
-        } else if (contentProvider.contentType().isFont()) {
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideFont);
-        }
-      });
+      }
     } else {
       contextMenu.overrideSection().appendItem(i18nString(UIStrings.overrideContent), () => {}, true);
     }
@@ -142,5 +139,81 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.ShowAllOverridesFromNetworkContextMenu);
       });
     }
+  }
+
+  private async handleOverrideContent(
+      uiSourceCode: Workspace.UISourceCode.UISourceCode,
+      contentProvider: TextUtils.ContentProvider.ContentProvider): Promise<void> {
+    const networkPersistenceManager = NetworkPersistenceManager.instance();
+    const isSuccess = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
+    if (isSuccess) {
+      await Common.Revealer.reveal(uiSourceCode);
+    }
+
+    // Collect metrics: Context menu access point
+    if (contentProvider instanceof SDK.NetworkRequest.NetworkRequest) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentFromNetworkContextMenu);
+    } else if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentFromSourcesContextMenu);
+    }
+    // Collect metrics: Content type
+    if (uiSourceCode.isFetchXHR()) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideFetchXHR);
+    } else if (contentProvider.contentType().isScript()) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideScript);
+    } else if (contentProvider.contentType().isDocument()) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideDocument);
+    } else if (contentProvider.contentType().isStyleSheet()) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideStyleSheet);
+    } else if (contentProvider.contentType().isImage()) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideImage);
+    } else if (contentProvider.contentType().isFont()) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideFont);
+    }
+  }
+
+  private async redirectOverrideToDeployedUiSourceCode(
+      deployedUiSourceCode: Workspace.UISourceCode.UISourceCode,
+      originalUiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuSourceMappedWarning);
+    const deployedUrl = deployedUiSourceCode.url();
+    const deployedName = Bindings.ResourceUtils.displayNameForURL(deployedUrl);
+
+    const originalUrl = originalUiSourceCode.url();
+    const originalName = Bindings.ResourceUtils.displayNameForURL(originalUrl);
+
+    const warningMessage = i18nString(UIStrings.overrideSourceMappedFileWarning, {PH1: deployedName}) + '\n' +
+        i18nString(UIStrings.overrideSourceMappedFileExplanation, {PH1: originalName});
+
+    const shouldJumpToDeployedFile = await UI.UIUtils.ConfirmDialog.show(warningMessage);
+
+    if (shouldJumpToDeployedFile) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuRedirectToDeployed);
+      await this.handleOverrideContent(deployedUiSourceCode, deployedUiSourceCode);
+    }
+  }
+
+  private getDeployedUiSourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode):
+      Workspace.UISourceCode.UISourceCode|null {
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+
+    for (const deployedScript of debuggerWorkspaceBinding.scriptsForUISourceCode(uiSourceCode)) {
+      const deployedUiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForScript(deployedScript);
+      if (deployedUiSourceCode) {
+        return deployedUiSourceCode;
+      }
+    }
+
+    const [deployedStylesUrl] = Bindings.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(uiSourceCode);
+
+    if (!deployedStylesUrl) {
+      return null;
+    }
+
+    const deployedUiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(deployedStylesUrl) ||
+        Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(
+            Common.ParsedURL.ParsedURL.urlWithoutHash(deployedStylesUrl) as Platform.DevToolsPath.UrlString);
+
+    return deployedUiSourceCode;
   }
 }

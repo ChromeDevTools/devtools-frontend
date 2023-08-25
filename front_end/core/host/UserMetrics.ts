@@ -575,7 +575,9 @@ export enum Action {
   OverrideTabDeleteOverridesContextMenu = 106,
   WorkspaceDropFolder = 107,
   WorkspaceSelectFolder = 108,
-  MaxValue = 109,
+  OverrideContentContextMenuSourceMappedWarning = 109,
+  OverrideContentContextMenuRedirectToDeployed = 110,
+  MaxValue = 111,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

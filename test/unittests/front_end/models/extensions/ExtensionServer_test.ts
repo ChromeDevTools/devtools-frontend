@@ -8,6 +8,8 @@ import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as Extensions from '../../../../../front_end/models/extensions/extensions.js';
+import type * as HAR from '../../../../../front_end/models/har/har.js';
+import * as Logs from '../../../../../front_end/models/logs/logs.js';
 import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
@@ -299,6 +301,22 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     }
   });
 
+  it('does not include blocked hosts in the HAR entries', async () => {
+    Logs.NetworkLog.NetworkLog.instance();
+    const target = createTarget({type: SDK.Target.Type.Frame});
+    target.setInspectedURL('http://example.com2' as Platform.DevToolsPath.UrlString);
+    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+    Platform.assertNotNullOrUndefined(networkManager);
+    const frameId = 'frame-id' as Protocol.Page.FrameId;
+    createRequest(networkManager, frameId, 'blocked-url-request-id' as Protocol.Network.RequestId, blockedUrl);
+    createRequest(networkManager, frameId, 'allowed-url-request-id' as Protocol.Network.RequestId, allowedUrl);
+    {
+      const result = await new Promise<object>(cb => context.chrome.devtools?.network.getHAR(cb)) as HAR.Log.LogDTO;
+      assert.exists(result.entries.find(e => e.request.url === allowedUrl));
+      assert.notExists(result.entries.find(e => e.request.url === blockedUrl));
+    }
+  });
+
   function setUpFrame(
       name: string, url: Platform.DevToolsPath.UrlString, parentFrame?: SDK.ResourceTreeModel.ResourceTreeFrame,
       executionContextOrigin?: Platform.DevToolsPath.UrlString) {
@@ -480,11 +498,11 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
       networkManager: SDK.NetworkManager.NetworkManager, frameId: Protocol.Page.FrameId,
       requestId: Protocol.Network.RequestId, url: Platform.DevToolsPath.UrlString): void {
     const dataProvider = () => Promise.resolve({content: 'content', encoded: false, error: null});
-    const allowedUrlRequest =
-        SDK.NetworkRequest.NetworkRequest.create(requestId, url, url, frameId, null, null, undefined);
-    allowedUrlRequest.setContentDataProvider(dataProvider);
-    allowedUrlRequest.finished = true;
-    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, allowedUrlRequest);
+    const request = SDK.NetworkRequest.NetworkRequest.create(requestId, url, url, frameId, null, null, undefined);
+    request.setContentDataProvider(dataProvider);
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestStarted, {request, originalRequest: null});
+    request.finished = true;
+    networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
   }
 
   it('blocks getting request contents on blocked urls', async () => {

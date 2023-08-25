@@ -20,6 +20,8 @@ describe('The test suite that you want to run', () => {
 });
 ```
 
+After that, run `npm run auto-unittest` again. This time, only the tests that you specified will be run.
+
 ## Obtaining code coverage
 
 We can collect code coverage for the source code that is tested with unit tests.

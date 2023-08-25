@@ -5,6 +5,7 @@
 const {assert} = chai;
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
+import * as Timeline from '../../../../../../front_end/panels/timeline/timeline.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
 import {
   getEventsIn,
@@ -87,6 +88,14 @@ describeWithEnvironment('RendererHandler', function() {
           'CompositorTileWorker3',
           'CompositorTileWorker4',
           'CrRendererMain',
+          'ThreadPoolForegroundWorker',
+          'ThreadPoolForegroundWorker',
+          'ThreadPoolForegroundWorker',
+          'ThreadPoolForegroundWorker',
+          'ThreadPoolForegroundWorker',
+          'ThreadPoolForegroundWorker',
+          'ThreadPoolForegroundWorker',
+          'ThreadPoolForegroundWorker',
           'ThreadPoolServiceThread',
         ],
         'Main frame thread names do not meet expectations before navigation');
@@ -124,25 +133,30 @@ describeWithEnvironment('RendererHandler', function() {
       return;
     }
     assert.deepEqual([...tree.roots], [
-      0,   1,   2,   3,   4,   9,   10,  11,  12,  13,  14,  16,  18,  19,  20,  21,  22,  23,  24,  28,  29,  30,  31,
-      35,  36,  37,  38,  45,  46,  48,  50,  52,  53,  54,  59,  60,  64,  65,  66,  67,  68,  69,  75,  76,  78,  79,
-      80,  81,  82,  83,  84,  86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  103, 104, 105, 106, 107, 108, 109,
-      110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 136, 142, 143, 144, 145, 146, 147, 148,
-      149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 172, 173, 174, 175,
-      176, 177, 178, 179, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 206, 207, 208, 209,
-      210, 211, 212, 216, 217, 218, 219, 220, 222, 226, 227, 228, 229, 230, 231, 233, 234, 235, 236, 237, 238, 239, 240,
-      241, 242, 243, 250, 251, 252, 258, 259, 260, 264, 265, 269, 270, 274, 275, 279, 280, 284, 285, 289, 290, 294, 295,
-      299, 300, 304, 305, 311, 312, 313, 314, 315, 321, 322, 323, 324, 325, 329, 330, 331, 332, 336, 337, 341, 342, 346,
-      347, 353, 354, 355, 356, 357, 358, 362, 363, 364, 368, 369, 370, 374, 375, 376, 380, 381, 382, 386, 387, 388, 389,
-      390, 396, 397, 398, 399, 413, 418, 419, 420, 421, 422, 429, 434, 435, 436, 437, 438, 439, 440, 441, 442, 443, 444,
-      445, 446, 447, 452, 453, 454, 455, 456, 457, 458, 459, 460, 461, 462, 463, 464, 465, 466, 467, 468, 469, 470, 471,
-      472, 473, 474, 486, 487, 491, 492, 493, 494, 495, 496, 497, 498, 499, 500, 501, 502, 503, 504, 505, 506, 507, 508,
-      509, 510, 511, 512, 513, 514, 515, 516, 517, 518, 519, 520, 525, 526, 527, 528, 529, 535, 536, 537, 538, 539, 540,
-      541, 542, 549, 550, 551, 552, 553, 554, 555, 556, 557, 558, 562, 563, 564, 566, 567, 571, 572, 573, 574, 575, 576,
-      577, 578, 579, 580, 581, 582, 583, 584, 585, 586, 591, 592, 593, 594, 595, 599, 600, 601, 605, 606, 607, 611, 612,
-      613, 614, 618, 619, 620, 621, 622, 628, 629, 630, 634, 635, 636, 642, 643, 644, 645, 649, 650, 651, 652, 656, 657,
-      661, 662, 666, 667, 668, 672, 673, 677, 678, 682, 683, 687, 688, 692, 693, 699, 700, 701, 702, 703, 707, 708, 709,
-      713, 714, 715, 719, 720, 721, 727, 728, 729, 730, 734, 736, 737, 738, 739, 740, 741, 742, 743, 747,
+      0,    1,    2,    3,    4,    5,    16,   18,   29,   38,   49,   58,   77,   183,  184,  185,  186,  188,  189,
+      190,  199,  200,  201,  202,  211,  212,  213,  214,  229,  230,  232,  237,  239,  240,  242,  251,  252,  261,
+      264,  265,  266,  267,  268,  279,  282,  284,  285,  286,  287,  288,  289,  290,  293,  294,  295,  296,  297,
+      298,  299,  300,  301,  302,  303,  304,  305,  306,  328,  329,  330,  331,  332,  333,  334,  335,  336,  337,
+      338,  339,  340,  341,  342,  343,  344,  345,  354,  355,  356,  359,  389,  408,  409,  410,  411,  412,  413,
+      414,  415,  416,  417,  418,  419,  420,  421,  422,  423,  424,  425,  426,  427,  428,  429,  430,  431,  432,
+      433,  441,  442,  443,  444,  445,  446,  447,  448,  455,  456,  457,  458,  459,  460,  461,  462,  463,  464,
+      465,  466,  467,  468,  469,  479,  480,  481,  482,  483,  484,  485,  492,  493,  494,  495,  496,  498,  506,
+      507,  508,  509,  510,  511,  516,  517,  518,  519,  520,  521,  522,  523,  524,  525,  526,  538,  540,  541,
+      552,  555,  556,  565,  566,  575,  576,  585,  586,  595,  596,  605,  606,  615,  616,  625,  626,  635,  636,
+      645,  646,  657,  660,  661,  662,  663,  674,  677,  678,  679,  680,  689,  690,  691,  692,  701,  702,  711,
+      712,  721,  722,  733,  734,  737,  738,  739,  740,  749,  750,  751,  760,  761,  762,  771,  772,  773,  782,
+      783,  784,  793,  794,  795,  796,  797,  808,  809,  810,  811,  835,  843,  844,  845,  846,  848,  861,  869,
+      870,  871,  872,  873,  874,  875,  876,  877,  878,  881,  882,  883,  884,  885,  886,  887,  888,  889,  890,
+      904,  905,  906,  907,  908,  909,  910,  911,  912,  913,  914,  915,  916,  917,  918,  919,  920,  921,  922,
+      931,  932,  933,  936,  966,  967,  983,  984,  985,  986,  987,  988,  989,  990,  991,  992,  993,  994,  995,
+      996,  997,  998,  999,  1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1020, 1021,
+      1022, 1023, 1024, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1048, 1049, 1050, 1051, 1052, 1053, 1054, 1055,
+      1056, 1057, 1064, 1065, 1066, 1068, 1069, 1077, 1078, 1079, 1080, 1081, 1082, 1083, 1084, 1085, 1086, 1087, 1088,
+      1089, 1090, 1091, 1092, 1102, 1104, 1105, 1106, 1107, 1116, 1117, 1118, 1127, 1128, 1129, 1138, 1139, 1140, 1141,
+      1150, 1151, 1152, 1153, 1154, 1165, 1166, 1167, 1176, 1177, 1178, 1189, 1192, 1193, 1194, 1203, 1204, 1205, 1206,
+      1215, 1216, 1225, 1226, 1235, 1236, 1237, 1246, 1247, 1256, 1257, 1266, 1267, 1276, 1277, 1286, 1287, 1298, 1301,
+      1302, 1303, 1304, 1313, 1314, 1315, 1324, 1325, 1326, 1335, 1336, 1337, 1348, 1351, 1352, 1353, 1362, 1364, 1365,
+      1366, 1367, 1368, 1369, 1370, 1371, 1378,
     ]);
   });
 
@@ -161,7 +175,7 @@ describeWithEnvironment('RendererHandler', function() {
       assert(false, 'Main thread has no tree of events');
       return;
     }
-    assert.deepEqual([...tree.roots], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19]);
+    assert.deepEqual([...tree.roots], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20]);
   });
 
   it('builds a hierarchy for the main frame\'s main thread in a real world profile', async () => {
@@ -188,48 +202,67 @@ describeWithEnvironment('RendererHandler', function() {
     const isIncluded =
         (node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntryNode,
          event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry) =>
-            !isRoot(node) || (isInstant(event) || isLong(event));
+            (!isRoot(node) || isInstant(event) || isLong(event)) &&
+        Timeline.EventUICategory.EventStyles.has(event.name as TraceModel.Types.TraceEvents.KnownEventName);
     assert.strictEqual(prettyPrint(tree, isIncluded), `
-...........
+............
 -RunTask [2.21ms]
+.
   -MajorGC [2.148ms]
-.................................................
+...........................................................
 -RunTask [15.436ms]
+.
   -EventDispatch (pagehide) [0.018ms]
   -EventDispatch (visibilitychange) [0.01ms]
   -EventDispatch (webkitvisibilitychange) [0.006ms]
+.
   -EventDispatch (unload) [0.006ms]
+......
   -ProfileCall (anonymous) [0.205ms]
     -ProfileCall (anonymous) [0.205ms]
-.....................
+.......................
 -RunTask [3.402ms]
   -ParseHTML [2.593ms]
+....
     -ParseHTML [0.064ms]
+...
     -EventDispatch (readystatechange) [0.008ms]
+.
     -EventDispatch (DOMContentLoaded) [0.004ms]
+...
     -EventDispatch (readystatechange) [0.01ms]
     -EventDispatch (beforeunload) [0.013ms]
+..
   -ParseHTML [0.01ms]
+..
   -EventDispatch (readystatechange) [0.008ms]
+.
   -EventDispatch (DOMContentLoaded) [0.035ms]
+.
   -UpdateLayoutTree [0.373ms]
     -InvalidateLayout [0ms]
+.
 -RunTask [2.675ms]
+.
   -Layout [0.854ms]
     -InvalidateLayout [0ms]
     -Layout [0.302ms]
       -UpdateLayoutTree [0.149ms]
+..
   -Paint [0.203ms]
-.................................
+...........................................
 -RunTask [1.605ms]
   -EventDispatch (pagehide) [0.014ms]
   -EventDispatch (visibilitychange) [0.038ms]
   -EventDispatch (webkitvisibilitychange) [0.009ms]
   -EventDispatch (unload) [0.004ms]
+.
   -ScheduleStyleRecalculation [0ms]
 ..............
 -RunTask [1.231ms]
+.
   -UpdateLayoutTree [0.093ms]
+..
   -Paint [0.063ms]
   -Paint [0.084ms]
   -UpdateLayer [0.022ms]
@@ -237,62 +270,82 @@ describeWithEnvironment('RendererHandler', function() {
   -CompositeLayers [0.311ms]
 ............
 -RunTask [1.663ms]
+.
   -EventDispatch (readystatechange) [0.009ms]
+.
   -EventDispatch (load) [0.014ms]
+..
   -EventDispatch (pageshow) [0.007ms]
 .......................................................................................
 -RunTask [1.42ms]
+..
   -HitTest [0.057ms]
   -EventDispatch (mousemove) [0.018ms]
+..
   -HitTest [0.022ms]
+..
   -HitTest [0.002ms]
   -ScheduleStyleRecalculation [0ms]
   -EventDispatch (mousedown) [0.018ms]
   -UpdateLayoutTree [0.146ms]
+..
   -HitTest [0.016ms]
   -ScheduleStyleRecalculation [0ms]
   -UpdateLayoutTree [0.031ms]
   -EventDispatch (focus) [0.014ms]
   -EventDispatch (focusin) [0.005ms]
   -EventDispatch (DOMFocusIn) [0.005ms]
-.....
+.......
 -RunTask [1.034ms]
+..
   -HitTest [0.038ms]
   -ScheduleStyleRecalculation [0ms]
   -EventDispatch (mouseup) [0.016ms]
   -EventDispatch (click) [0.44ms]
     -EventDispatch (beforeunload) [0.009ms]
+..
   -UpdateLayoutTree [0.137ms]
-..............
+......................
 -RunTask [8.203ms]
   -EventDispatch (pagehide) [0.016ms]
   -EventDispatch (visibilitychange) [0.006ms]
   -EventDispatch (webkitvisibilitychange) [0.004ms]
   -EventDispatch (unload) [0.008ms]
-......................
+...............................
 -RunTask [2.996ms]
   -ParseHTML [2.368ms]
+....
     -ParseHTML [0.074ms]
+...
     -EventDispatch (readystatechange) [0.01ms]
+.
     -EventDispatch (DOMContentLoaded) [0.005ms]
+...
     -EventDispatch (readystatechange) [0.008ms]
     -EventDispatch (beforeunload) [0.009ms]
+..
   -ParseHTML [0.009ms]
+..
   -EventDispatch (readystatechange) [0.007ms]
+.
   -EventDispatch (DOMContentLoaded) [0.005ms]
+.
   -UpdateLayoutTree [0.301ms]
     -InvalidateLayout [0ms]
-.
+..
 -RunTask [1.897ms]
+.
   -Layout [0.44ms]
     -InvalidateLayout [0ms]
+..
   -Paint [0.289ms]
-..................................
+...........................................
 -RunTask [1.304ms]
   -EventDispatch (pagehide) [0.016ms]
   -EventDispatch (visibilitychange) [0.009ms]
   -EventDispatch (webkitvisibilitychange) [0.004ms]
   -EventDispatch (unload) [0.015ms]
+.
   -ScheduleStyleRecalculation [0ms]
 ......................................................................................................................`);
   });
@@ -312,8 +365,11 @@ describeWithEnvironment('RendererHandler', function() {
       assert(false, 'Main thread has no tree of events');
       return;
     }
-
-    assert.strictEqual(prettyPrint(tree), `
+    const isIncluded =
+        (_node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntryNode,
+         event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry) =>
+            Timeline.EventUICategory.EventStyles.has(event.name as TraceModel.Types.TraceEvents.KnownEventName);
+    assert.strictEqual(prettyPrint(tree, isIncluded), `
 -RunTask [0.13ms]
 -RunTask [0.005ms]
 -RunTask [0.009ms]
@@ -333,7 +389,8 @@ describeWithEnvironment('RendererHandler', function() {
 -EventDispatch (pagehide) [0.012ms]
 -EventDispatch (visibilitychange) [0.007ms]
 -EventDispatch (webkitvisibilitychange) [0.016ms]
--EventDispatch (unload) [0.007ms]`);
+-EventDispatch (unload) [0.007ms]
+.`);
   });
 
   it('has some correct known roots for the main frame\'s main thread in a real world profile', async () => {
@@ -352,7 +409,7 @@ describeWithEnvironment('RendererHandler', function() {
       return;
     }
 
-    const event0 = getRootAt(thread, 0).entry;
+    const event0 = getRootAt(thread, 1).entry;
     assert.deepEqual(event0 as unknown, {
       'args': {},
       'cat': 'disabled-by-default-devtools.timeline',
@@ -367,7 +424,7 @@ describeWithEnvironment('RendererHandler', function() {
       'selfTime': 132,
     });
 
-    const event1 = getRootAt(thread, 1).entry;
+    const event1 = getRootAt(thread, 2).entry;
     assert.deepEqual(event1 as unknown, {
       'args': {},
       'cat': 'disabled-by-default-devtools.timeline',
@@ -394,7 +451,7 @@ describeWithEnvironment('RendererHandler', function() {
       'tid': 1,
       'ts': 643499551460,
       'tts': 949032,
-      'selfTime': 67,
+      'selfTime': 35,
     });
   });
 
@@ -444,19 +501,20 @@ describeWithEnvironment('RendererHandler', function() {
       'selfTime': 5,
     });
 
-    const eventLast = getRootAt(thread, tree.roots.size - 1).entry;
-    assert.deepEqual(eventLast as unknown, {
-      'args': {'data': {'type': 'unload'}},
-      'cat': 'devtools.timeline',
-      'dur': 7,
-      'name': 'EventDispatch',
+    const event2 = getRootAt(thread, 2).entry;
+
+    assert.deepEqual(event2 as unknown, {
+      'args': {},
+      'cat': 'disabled-by-default-devtools.timeline',
+      'dur': 9,
+      'name': 'RunTask',
       'ph': 'X',
       'pid': 2236065,
-      'tdur': 4,
+      'tdur': 9,
       'tid': 1,
-      'ts': 643494154134,
-      'tts': 63878,
-      'selfTime': 7,
+      'ts': 643492822242,
+      'tts': 62299,
+      'selfTime': 9,
     });
   });
 
@@ -976,7 +1034,7 @@ describeWithEnvironment('RendererHandler', function() {
 
   it('populates the map of trace events to tree nodes', async () => {
     const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    assert.strictEqual(renderers.entryToNode.size, 2590);
+    assert.strictEqual(renderers.entryToNode.size, 3591);
   });
   describe('Synthetic complete events', () => {
     async function handleEvents(traceEvents: TraceModel.Types.TraceEvents.TraceEventData[]):
@@ -1118,36 +1176,24 @@ describeWithEnvironment('RendererHandler', function() {
       const {Renderer} = await handleEventsFromTraceFile(this, 'recursive-counting-js.json.gz');
       const threadId = TraceModel.Types.TraceEvents.ThreadID(259);
       const firstProcessId = TraceModel.Types.TraceEvents.ProcessID(23239);
-
       const thread = Renderer.processes.get(firstProcessId)?.threads.get(threadId);
       if (!thread || !thread.tree) {
         throw new Error('Tree not found');
       }
       const onlyLongTasksPredicate =
           (_node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntryNode,
-           event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry) => Boolean(event.dur && event.dur > 1000);
+           event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry) => Boolean(event.dur && event.dur > 1000) &&
+          Timeline.EventUICategory.EventStyles.has(event.name as TraceModel.Types.TraceEvents.KnownEventName);
       assert.strictEqual(prettyPrint(thread.tree, onlyLongTasksPredicate), `
 .............
 -RunTask [17.269ms]
-.......................
+.............................
 -RunTask [1065.663ms]
   -ParseHTML [1065.609ms]
-    -EvaluateScript [1.433ms]
-...
-    -EvaluateScript [1063.887ms]
-...
-      -ProfileCall (anonymous) [1063.462ms]
-        -ProfileCall (foo) [1063.462ms]
-          -ProfileCall (foo) [1063.462ms]
-            -ProfileCall (foo) [1063.462ms]
-              -ProfileCall (foo) [1063.462ms]
-                -ProfileCall (count) [1.169ms]
-..
-                -ProfileCall (count) [1061.413ms]
-........
+.........
 -RunTask [1.12ms]
   -ParseHTML [1.082ms]
-.............................................................
+.........................................................
 -RunTask [1058.811ms]
   -TimerFire [1058.77ms]
     -FunctionCall [1058.693ms]
@@ -1157,8 +1203,9 @@ describeWithEnvironment('RendererHandler', function() {
           -ProfileCall (foo) [1058.548ms]
             -ProfileCall (foo) [1058.548ms]
               -ProfileCall (foo) [1058.548ms]
+..
                 -ProfileCall (count) [1058.422ms]
-......
+........
 -RunTask [1057.455ms]
   -TimerFire [1057.391ms]
     -FunctionCall [1057.27ms]
@@ -1169,7 +1216,7 @@ describeWithEnvironment('RendererHandler', function() {
             -ProfileCall (foo) [1056.51ms]
               -ProfileCall (foo) [1056.51ms]
                 -ProfileCall (count) [1056.51ms]
-.......`);
+........`);
     });
   });
 

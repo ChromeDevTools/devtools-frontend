@@ -29,6 +29,7 @@ ts_library("handlers") {
     "../../../../../../front_end/core/platform:bundle",
     "../../../../../../front_end/generated",
     "../../../../../../front_end/models/trace:bundle",
+    "../../../../../../front_end/panels/timeline:bundle",
     "../../../helpers",
   ]
 }

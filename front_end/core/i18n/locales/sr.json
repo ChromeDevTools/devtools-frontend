@@ -419,9 +419,6 @@
   "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
     "message": "Почетак фазе оцењивања продавца"
   },
-  "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
-    "message": "Блокирање читања из различитих извора (CORB) блокирало је одговор из различитих извора {PH1} са {PH2} MIME типом. Више детаља потражите на https://www.chromestatus.com/feature/5629709824032768."
-  },
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Брза 3G мрежа"
   },
@@ -857,6 +854,12 @@
   "entrypoints/inspector_main/InspectorMain.ts | tab": {
     "message": "Картица"
   },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "Страница: није изабрана"
+  },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetS": {
+    "message": "Страница: {PH1}"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Основни показатељи за веб"
   },
@@ -901,6 +904,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedmotion": {
     "message": "Намеће CSS функцију медија prefers-reduced-motion"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedtransparencyMedia": {
+    "message": "Намеће CSS функцију медија prefers-reduced-transparency"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Намеће тип медија за тестирање стилова штампања и екрана"
@@ -1026,7 +1032,7 @@
     "message": "Фиксирај са десне стране"
   },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
-    "message": "Фокусирај апликацију са отклоњеном грешком"
+    "message": "Фокусирање странице"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "Помоћ"
@@ -1101,7 +1107,7 @@
     "message": "Пронађи претходни резултат"
   },
   "entrypoints/main/main-meta.ts | focusDebuggee": {
-    "message": "Фокусирај апликацију са отклоњеном грешком"
+    "message": "Фокусирање странице"
   },
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "хоризонтално"
@@ -1278,7 +1284,7 @@
     "message": "Догађаји DOM мутације, укључујући DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument и DOMCharacterDataModified су застарели (https://w3c.github.io/uievents/#legacy-event-types) и биће уклоњени. Уместо њега користите MutationObserver."
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
-    "message": "Подршка за податке: URL-ови у SVG <use> елементу су застарели и биће уклоњени у будућности."
+    "message": "Подршка за податке: URL-ови у SVGUseElement-у су застарели и биће уклоњени у будућности."
   },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Попуштање смерница за исто порекло подешавањем атрибута document.domain је застарело и биће подразумевано онемогућено. Да бисте наставили да користите ову функцију онемогућите групе агената са кључевима према пореклу тако што ћете послати заглавље атрибута Origin-Agent-Cluster: ?0 заједно са HTTP одговором за документ и оквире. Погледајте https://developer.chrome.com/blog/immutable-document-domain/ за више детаља."
@@ -1547,6 +1553,9 @@
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "Објашњење SameSite колачића"
   },
+  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Припремите се за постепено укидање колачића треће стране"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Дељење ресурса из различитих извора (CORS)"
   },
@@ -1576,6 +1585,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML атрибут: аутоматско довршавање"
+  },
+  "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
+    "message": "Објашњење CORB-а"
   },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Портали – Канали за комуникацију истог порекла"
@@ -1688,14 +1700,17 @@
   "models/persistence/PersistenceActions.ts | openInContainingFolder": {
     "message": "Отвори у фолдеру који садржи ставку"
   },
+  "models/persistence/PersistenceActions.ts | overrideContent": {
+    "message": "Замени садржај"
+  },
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Сачувај као..."
   },
-  "models/persistence/PersistenceActions.ts | saveForOverrides": {
-    "message": "Сачувај за замене"
-  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Сачувај слику"
+  },
+  "models/persistence/PersistenceActions.ts | showOverrides": {
+    "message": "Прикажи све замене"
   },
   "models/persistence/PersistenceUtils.ts | linkedToS": {
     "message": "Повезано са: {PH1}"
@@ -2306,6 +2321,9 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Преузимање обавезне иконе из манифеста није успело"
   },
+  "panels/application/AppManifestView.ts | customizePwaTitleBar": {
+    "message": "Прилагодите преклопни елемент за контроле прозора за траку наслова у PWA-у."
+  },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
     "message": "Боја тамне позадине"
   },
@@ -2482,6 +2500,18 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Боја теме"
+  },
+  "panels/application/AppManifestView.ts | wcoFound": {
+    "message": "Chrome је пронашао вредност {PH1} за поље {PH2} у елементу {PH3}."
+  },
+  "panels/application/AppManifestView.ts | wcoNeedHelpReadMore": {
+    "message": "Треба вам помоћ? Прочитајте {PH1}."
+  },
+  "panels/application/AppManifestView.ts | wcoNotFound": {
+    "message": "Дефинишите {PH1} у манифесту да бисте користили API за преклопни елемент за контроле прозора и прилагодили насловну траку апликације."
+  },
+  "panels/application/AppManifestView.ts | windowControlsOverlay": {
+    "message": "Преклопни елемент за контроле прозора"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "Манифест апликације"
@@ -2808,7 +2838,7 @@
     "message": "Нису доступни никакви детаљи за изабрану групу интереса. Особа која прегледа је можда напустила групу."
   },
   "panels/application/InterestGroupTreeElement.ts | interestGroups": {
-    "message": "Групе интереса"
+    "message": "Интересна група"
   },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Приступ извору захтева"
@@ -2863,6 +2893,12 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Да"
+  },
+  "panels/application/PreloadingTreeElement.ts | preloads": {
+    "message": "Предучитавања"
+  },
+  "panels/application/PreloadingTreeElement.ts | speculationRules": {
+    "message": "Правила за спекулације"
   },
   "panels/application/PreloadingTreeElement.ts | thisPage": {
     "message": "Ова страница"
@@ -3077,6 +3113,9 @@
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Дељени меморијски простор"
   },
+  "panels/application/StorageBucketsTreeElement.ts | storageBuckets": {
+    "message": "Сегменти меморијског простора"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Обриши све"
   },
@@ -3202,6 +3241,12 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Заустави снимање догађаја"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
+    "message": "Недефинисано"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
+    "message": "Недефинисано"
   },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Само странице учитане преко GET захтева испуњавају услове за кеширање целе странице."
@@ -3542,14 +3587,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Странице са WebRTC-ом не могу да приступе кеширању целе странице."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
+    "message": "Кеширање целе странице је онемогућено зато што је коришћен WebRTC."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Странице које користе WebShare тренутно не испуњавају услове за кеширање целе странице."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Кеширање целих страница са WebSocket-ом није могуће."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
+    "message": "Кеширање целе странице је онемогућено јер је коришћен WebSocket."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Странице са WebTransport-ом не могу да приступе кеширању целе странице."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
+    "message": "Кеширање целе странице је онемогућено јер је коришћен WebTransport."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Странице које користе WebXR тренутно не испуњавају услове за кеширање целе странице."
@@ -3629,6 +3683,12 @@
   "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
     "message": "Проверавање потенцијалних сајтова за праћење посета само једне странице."
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureDisabled": {
+    "message": "Ублажавања праћења посета само једне странице су онемогућена. Да бисте их омогућили, подесите ознаку ({PH1}) на „Омогућено уз брисање“."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureFlag": {
+    "message": "Ознака за функцију ублажавања праћења посета само једне странице"
+  },
   "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
     "message": "Принудно покрени"
   },
@@ -3636,7 +3696,7 @@
     "message": "Сазнајте више: ублажавање праћења посета само једне странице"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
-    "message": "Стање није обрисано ни за један потенцијални сајт посете само једној страници. Ништа није идентификовано, ублажавање праћења посета само једне странице није омогућено или колачићи трећих страна нису блокирани."
+    "message": "Стање није обрисано ни за један потенцијални сајт посете само једној страници. Ништа није идентификовано или колачићи треће стране нису блокирани."
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
     "message": "Активно"
@@ -4106,6 +4166,15 @@
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Назив сегмента"
   },
+  "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
+    "message": "Желите да избришете сегмент „{PH1}“?"
+  },
+  "panels/application/components/StorageMetadataView.ts | defaultBucket": {
+    "message": "Подразумевани сегмент"
+  },
+  "panels/application/components/StorageMetadataView.ts | deleteBucket": {
+    "message": "Избриши сегмент"
+  },
   "panels/application/components/StorageMetadataView.ts | durability": {
     "message": "Отпорност"
   },
@@ -4175,17 +4244,17 @@
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Приватни токени за стање"
   },
-  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
-    "message": "Подешавања додатака"
+  "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
+    "message": "Сва предучитавања"
   },
-  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
-    "message": "Подешавања страница за предучитавање"
+  "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
+    "message": "Филтрирање према скупу правила"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Неуспешно"
   },
   "panels/application/preloading/PreloadingView.ts | statusNotTriggered": {
-    "message": "Није покренут"
+    "message": "Није покренуто"
   },
   "panels/application/preloading/PreloadingView.ts | statusPending": {
     "message": "На чекању"
@@ -4208,17 +4277,41 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Важеће"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
-    "message": "Предучитавање је онемогућено због режима уштеде батерије у оперативном систему."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | action": {
+    "message": "Радња"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
-    "message": "Учитавање унапред је онемогућено због режима уштеде података у оперативном систему."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | status": {
+    "message": "Статус"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
-    "message": "Учитавање унапред је онемогућено због подешавања корисника или додатка. Идите на {PH1} да бисте сазнали више или идите на {PH2} да бисте онемогућили додатак."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusFailure": {
+    "message": "Неуспешно"
   },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
-    "message": "Предучитавање је онемогућено"
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusNotTriggered": {
+    "message": "Није покренуто"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusPending": {
+    "message": "На чекању"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusReady": {
+    "message": "Спремно"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusRunning": {
+    "message": "Активно"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusSuccess": {
+    "message": "Успешно"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | url": {
+    "message": "URL"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToInspect": {
+    "message": "Кликните да бисте прегледали страницу која је приказана унапред"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToRevealRuleSet": {
+    "message": "Кликните да бисте открили скуп правила"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonInspect": {
+    "message": "Провери"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Предучитавање није успело."
@@ -4256,8 +4349,59 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Изаберите елемент за више детаља"
   },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
+    "message": "Предучитавање је онемогућено због режима уштеде батерије у оперативном систему."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
+    "message": "Учитавање унапред је онемогућено због режима уштеде података у оперативном систему."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "Приказивање унапред је принудно омогућено зато што су Алатке за програмере отворене. Када се Алатке за програмере затворе, предучитавање ће бити онемогућено јер је ова сесија прегледача део групе за задржавање која се користи за поређење учинка."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "Приказивање унапред је принудно омогућено зато што су Алатке за програмере отворене. Када се Алатке за програмере затворе, приказивање унапред ће бити онемогућено јер је ова сесија прегледача део групе за задржавање која се користи за поређење учинка."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
+    "message": "Предучитавање је онемогућено због подешавања корисника или додатка. Идите на {PH1} да бисте ажурирали подешавање. Идите на {PH2} да бисте онемогућили било који додатак који блокира предучитавање."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
+    "message": "Подешавања додатака"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | footerLearnMore": {
+    "message": "Сазнајте више"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByBatterySaver": {
+    "message": "Уштеда батерије"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByDataSaver": {
+    "message": "Уштеда података"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "Предучитавање је било онемогућено, али је сада принудно омогућено"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "Приказивање унапред је било онемогућено, али је сада принудно омогућено"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByPreference": {
+    "message": "Подешавања или додатак корисника"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
+    "message": "Предучитавање је онемогућено"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
+    "message": "Предучитавање је принудно омогућено"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
+    "message": "Подешавања страница за предучитавање"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
+    "message": "Разлози за спречавање предучитавања"
+  },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Радња"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | ruleSet": {
+    "message": "Скуп правила"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Статус"
@@ -4334,50 +4478,209 @@
   "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
     "message": "Дошло је до грешке на мрежи при покушају подешавања везе са проксијем за предучитавање."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "Унапред приказана страница је активирана током покретања навигације главног оквира странице."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "Приказивање унапред није коришћено јер ознаке у заштићеном окружењу или смернице за дозволе на почетној страници нису биле компатибилне са онима на страници за приказивање унапред."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "Приказивање унапред није коришћено јер су током времена активације израчунати различити параметри навигације (нпр. HTTP заглавља) него током првобитног захтева за навигацију приказивања унапред."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "Унапред приказана страница захтева аудио излаз, што тренутно није подржано."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "Приказивање унапред није обављено јер је корисник захтевао да прегледач користи мање батерије."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "Део оптерећења ресурса је блокиран."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "Навигација унапред је захтевала HTTP сертификат клијента."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "Навигација приказивања унапред није успела зато што је циљала URL адресу на више сајтова."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "Унапред приказана страница води до URL-а са другог сајта."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "Навигација приказивања унапред није успела зато што је унапред приказани URL преусмерен на URL са другог сајта."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "Страница са приказивањем унапред води до URL-а који се преусмерава на URL за више сајтова."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "Приказивање унапред није обављено јер је корисник захтевао да прегледач користи мање података."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
+    "message": "Унапред приказана страница је покушала да покрене преузимање, што тренутно није подржано."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "Приказивање унапред није обављено зато што је прегледач наишао на интерну грешку при покушају да утврди тренутно коришћење меморије."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "Почетна страница не може да обави приказивање унапред јер има ефикасан URL који се разликује од стандардног URL-а. (На пример, страница нове картице или хостоване апликације.)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "URL није испуњавао услове за приказивање унапред јер његова шема није била http: ни https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "Навигација приказивања унапред није успела зато што је преусмерена на URL адресу чија шема није била http: или https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "Навигација приказивања унапред је захтевала HTTP потврду идентитета, што тренутно није подржано."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "Приказивање унапред није обављено јер овај уређај нема довољно укупне меморије система да би подржао приказивање унапред."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "Унапред приказана страница сама води до другог URL-а, што тренутно није подржано."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "Приказивање унапред није обављено јер почетна страница већ садржи превише унапред приказаних страница. Уклоните друга правила спекулације да бисте омогућили даље приказивање унапред."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "Приказивање унапред није обављено зато што је прегледач премашио ограничење меморије за приказивање унапред."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "Унапред приказана страница је уклоњена јер је прегледач био под критичним оптерећењем меморије."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "Приказивање унапред није обављено јер је прегледач био под критичним оптерећењем меморије."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMixedContent": {
+    "message": "Страница која је приказана унапред представља мешовит садржај."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "Унапред приказана страница користи забрањени JavaScript API који тренутно није подржан. (Интерни Mojo интерфејс: {PH1})"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "Навигација приказивања унапред није успело због кода статуса HTTP одговора који није 2xx."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "Смернице за безбедност садржаја су блокирале навигацију унапред."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "Навигација приказивања унапред је приказала грешку на мрежи."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "Приказивање унапред није обављено јер је корисник онемогућио предучитавање у подешавањима прегледача."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
+    "message": "Приказивање унапред није обављено јер су Алатке за програмере коришћене да би се онемогућило приказивање унапред."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "Почетна страница је отказала."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "Почетна страница је обустављена."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "Унапред приказана страница је отказала."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "Унапред приказана страница је обустављена."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusResourceLoadBlockedByClient": {
+    "message": "Део оптерећења ресурса је блокиран."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "Унапред приказана страница води до URL-а са истог сајта различитог порекла, али одредишни одговор није садржао одговарајуће заглавље Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "Унапред приказана страница води до URL-а са истог сајта различитог порекла, али одредишни одговор није садржао одговарајуће заглавље Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "Навигација унапред није успела зато што је унапред приказани URL преусмерен на URL истог сајта различитог порекла, али одредишни одговор није садржао одговарајуће заглавље Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "Унапред приказана страница води до URL-а који се преусмерава на URL истог сајта различитог порекла, али одредишни одговор није садржао одговарајуће заглавље Supports-Loading-Mode."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSpeculationRuleRemoved": {
+    "message": "Непознато"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "Навигација приказивања унапред није успела због неважећег SSL сертификата."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "Почетна страница је дуго била у позадини, па је унапред приказана страница одбачена."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "Почетна страница је била у позадини, па је унапред приказана страница одбачена."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "Дошло је до промене корисничког агента током приказивања унапред."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusFailure": {
+    "message": "Неуспешно"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusNotTriggered": {
+    "message": "Није покренуто"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusPending": {
+    "message": "На чекању"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusReady": {
+    "message": "Спремно"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusRunning": {
+    "message": "Активно"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusSuccess": {
+    "message": "Успешно"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInElementsPanel": {
     "message": "Кликните да бисте открили у окну Елементи"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInNetworkPanel": {
     "message": "Кликните да бисте открили у окну Мрежа"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
-    "message": "Детаљне информације"
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
+    "message": "Откриј унапред учитане ставке повезане са овим скупом правила"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
-    "message": "Грешка"
+  "panels/application/preloading/components/RuleSetGrid.ts | errors": {
+    "message": "{errorCount,plural, =1{# грешка}one{# грешка}few{# грешке}other{# грешака}}"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
-    "message": "Локација"
+  "panels/application/preloading/components/RuleSetGrid.ts | ruleSet": {
+    "message": "Скуп правила"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
-    "message": "Извор"
+  "panels/application/preloading/components/RuleSetGrid.ts | status": {
+    "message": "Статус"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
-    "message": "Важење"
+  "panels/application/preloading/components/UsedPreloadingView.ts | currentURL": {
+    "message": "Актуелни URL"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityInvalid": {
-    "message": "Неважеће; извор није JSON објекат"
+  "panels/application/preloading/components/UsedPreloadingView.ts | detailsFailureReason": {
+    "message": "Разлог неуспеха"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validitySomeRulesInvalid": {
-    "message": "Нека правила су неважећа и занемарена"
+  "panels/application/preloading/components/UsedPreloadingView.ts | downgradedPrefetchUsed": {
+    "message": "Почетна страница је пробала да унапред прикаже URL ове странице. Приказивање унапред није успело, али је добијено тело одговора ипак коришћено као елемент за предучитавање."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
-    "message": "Важеће"
+  "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
+    "message": "Сазнајте више"
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | location": {
-    "message": "Локација"
+  "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
+    "message": "Почетна страница није пробала да предучита URL ове странице."
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
-    "message": "Важење"
+  "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
+    "message": "Почетна страница је пробала да предучита URL ове странице, али предучитавање није успело, па је обављена пуна навигација."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
-    "message": "За ову страницу се користе {PH1} предучитани ресурси"
+    "message": "Ова страница је предучитана."
   },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
-    "message": "Предучитавање је коришћено за ову страницу"
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
+    "message": "URL-ови које почетна страница предучитава"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
+    "message": "Статус предучитавања"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
+    "message": "Почетна страница је пробала да предучита URL ове странице, али предучитавање није успело, па је обављена пуна навигација."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
-    "message": "Ова страница је унапред приказана"
+    "message": "Ова страница је приказана унапред."
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "погодак преломне тачке"
@@ -4580,8 +4883,14 @@
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Уклоните израз: {PH1}"
   },
+  "panels/console/ConsolePrompt.ts | allowPasting": {
+    "message": "дозволи налепљивање"
+  },
   "panels/console/ConsolePrompt.ts | consolePrompt": {
     "message": "Упит у конзоли"
+  },
+  "panels/console/ConsolePrompt.ts | selfXssWarning": {
+    "message": "Упозорење: Не лепите кôд који не разумете или који нисте сами проверили у конзолу Алатке за програмере. То може да омогући нападачима да вам украду идентитет или преузму контролу над рачунаром. Унесите „{PH1}“ у наставку да бисте омогућили налепљивање."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Нема грешака}=1{# грешка}one{# грешка}few{# грешке}other{# грешака}}"
@@ -4612,9 +4921,6 @@
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Конзола је обрисана"
-  },
-  "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Налепљивање кода је блокирано на овој страници. Ако налепите кôд у алатке за програмере, нападачи ће моћи да преузму контролу над налогом."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Подешавања конзоле"
@@ -6698,9 +7004,6 @@
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
     "message": "JavaScript је онемогућен. Треба да омогућите JavaScript да бисте проверили ову страницу. Отворите командни мени и покренити команду Омогући JavaScript да бисте омогућили JavaScript."
   },
-  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
-    "message": "Застарела навигација"
-  },
   "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
     "message": "Режим Lighthouse"
   },
@@ -6763,9 +7066,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
     "message": "Режим за период анализира насумични период, који обично садржи интеракције корисника."
-  },
-  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Анализирајте страницу помоћу класичног Lighthouse-а када сте у режиму навигације."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL за веб"
@@ -7133,8 +7433,8 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
     "message": "Захтеви могу да се блокирају"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeRewrittenByLocal": {
-    "message": "Захтеви могу да се промене локалним изменама"
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
+    "message": "Захтеви могу да се замене локално"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Прилагођено"
@@ -7171,6 +7471,9 @@
   },
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Замена истовременог рада хардвера је омогућена"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingTooltip": {
+    "message": "Замените вредност коју пријављује navigator.hardwareConcurrency на страници"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Нема ограничавања"
@@ -7430,9 +7733,6 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Готово"
   },
-  "panels/network/NetworkDataGridNode.ts | hasOverriddenHeaders": {
-    "message": "Захтев има замењена заглавља"
-  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "1. ниво"
   },
@@ -7477,6 +7777,15 @@
   },
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "Преусмери"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentHeadersOverridden": {
+    "message": "Садржај захтева и заглавља су замењени"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentOverridden": {
+    "message": "Садржај захтева је замењен"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestHeadersOverridden": {
+    "message": "Заглавља захтева су замењена"
   },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + провера"
@@ -7601,6 +7910,9 @@
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Блокирани захтеви"
   },
+  "panels/network/NetworkLogView.ts | chromeExtensions": {
+    "message": "Сакриј URL-ове додатака"
+  },
   "panels/network/NetworkLogView.ts | clearBrowserCache": {
     "message": "Обриши кеш прегледача"
   },
@@ -7671,7 +7983,10 @@
     "message": "Заврши: {PH1}"
   },
   "panels/network/NetworkLogView.ts | hasBlockedCookies": {
-    "message": "Садржи блокиране колачиће"
+    "message": "Блокирани колачићи одговора"
+  },
+  "panels/network/NetworkLogView.ts | hideChromeExtension": {
+    "message": "Сакријте захтеве за URL-ове „chrome-extension://“"
   },
   "panels/network/NetworkLogView.ts | hideDataUrls": {
     "message": "Сакријте URL-ове података"
@@ -7697,8 +8012,8 @@
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "Приказује само блокиране захтеве"
   },
-  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
-    "message": "Приказујте само захтеве са блокираним колачићима за одговор"
+  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
+    "message": "Прикажи само захтеве са блокираним колачићима за одговор"
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "Приказује само захтеве са извором који се разликује од извора странице"
@@ -7863,7 +8178,7 @@
     "message": "Нема ниједног прилагођеног заглавља"
   },
   "panels/network/NetworkPanel.ts | captureScreenshots": {
-    "message": "Направи снимке екрана"
+    "message": "Снимци екрана"
   },
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Правите снимке екрана при учитавању странице"
@@ -7920,7 +8235,7 @@
     "message": "Приказује више информација у редовима за захтев"
   },
   "panels/network/NetworkPanel.ts | showOverview": {
-    "message": "Прикажи преглед"
+    "message": "Преглед"
   },
   "panels/network/NetworkPanel.ts | showOverviewOfNetworkRequests": {
     "message": "Прикажи преглед мрежних захтева"
@@ -7929,7 +8244,7 @@
     "message": "Ограничавање"
   },
   "panels/network/NetworkPanel.ts | useLargeRequestRows": {
-    "message": "Користи велике редове за захтев"
+    "message": "Велики редови са захтевима"
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
@@ -8018,9 +8333,6 @@
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Опште"
   },
-  "panels/network/RequestHeadersView.ts | headerOverrides": {
-    "message": "Замене заглавља"
-  },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Сазнајте више"
   },
@@ -8064,7 +8376,7 @@
     "message": "Кôд статуса"
   },
   "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Овом документу је забрањено учитавање уiframe-у са атрибутом sandbox јер је овај документ навео смернице за променљиву Opener из других извора."
+    "message": "Учитавање документа је блокирано у искачућем прозору који је отворио iframe у заштићеном окружењу јер овај документ наводи смернице за покретаче из других извора."
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
     "message": "Да би уградио овај оквир у документ, одговор треба да омогући смернице за уграђиваче из различитих извора навођењем следећег заглавља одговора:"
@@ -8468,9 +8780,6 @@
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Опште"
   },
-  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
-    "message": "Замене заглавља"
-  },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Необрађено"
   },
@@ -8565,7 +8874,7 @@
     "message": "Одаберите ову опцију само ако произвољни веб-сајт који обухвата овај ресурс не представља безбедносни ризик."
   },
   "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
-    "message": "Овом документу је забрањено учитавање уiframe-у са атрибутом sandbox јер је овај документ навео смернице за променљиву Opener из других извора."
+    "message": "Учитавање документа је блокирано у искачућем прозору који је отворио iframe у заштићеном окружењу јер овај документ наводи смернице за покретаче из других извора."
   },
   "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
     "message": "Да би уградио овај оквир у документ, одговор треба да омогући смернице за уграђиваче из различитих извора навођењем следећег заглавља одговора:"
@@ -9344,6 +9653,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Документација"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | editAndResend": {
+    "message": "Измени и поново пошаљи"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
     "message": "Протекло време"
   },
@@ -9397,6 +9709,18 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | type": {
     "message": "Тип"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | addParameter": {
+    "message": "Додај параметар"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | deleteParameter": {
+    "message": "Избриши параметар"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | resetDefaultValue": {
+    "message": "Ресетуј на подразумевану вредност"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | copyCommand": {
+    "message": "Копирај команду"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Монитор за протокол"
@@ -10868,6 +11192,9 @@
   "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
     "message": "Учитавање информација о отклањању грешака за {PH1} није успело."
   },
+  "panels/sources/DebuggerPlugin.ts | debuggingPowerReduced": {
+    "message": "Алатке за програмере не могу да приказују изворе аутора, али можете да отклоните грешке у примењеном коду."
+  },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{Онемогући преломну тачку}one{Онемогући све преломне тачке у реду}few{Онемогући све преломне тачке у реду}other{Онемогући све преломне тачке у реду}}"
   },
@@ -10877,8 +11204,20 @@
   "panels/sources/DebuggerPlugin.ts | enableBreakpoint": {
     "message": "{n,plural, =1{Омогући преломну тачку}one{Омогући све преломне тачке у реду}few{Омогући све преломне тачке у реду}other{Омогући све преломне тачке у реду}}"
   },
+  "panels/sources/DebuggerPlugin.ts | errorLoading": {
+    "message": "Грешка при учитавању URL-a {PH1}: {PH2}"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
+    "message": "Игнориши скрипте додатака"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
+    "message": "Игнориши овај фајл"
+  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Никада не паузирај овде"
+  },
+  "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
+    "message": "Да бисте поново омогућили, уверите се да се фајл не налази на листи за игнорисање и поново учитајте."
   },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n,plural, =1{Уклони преломну тачку}one{Уклони све преломне тачке у реду}few{Уклони све преломне тачке у реду}other{Уклони све преломне тачке у реду}}"
@@ -10886,11 +11225,14 @@
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "Уклони са листе за игнорисање"
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapDetected": {
-    "message": "Откривена је мапа извора."
+  "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
+    "message": "Учитавање мапе извора није успело."
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
-    "message": "Пронађена је мапа извора, али је занемарена јер је фајл на листи за игнорисање."
+  "panels/sources/DebuggerPlugin.ts | sourceMapLoaded": {
+    "message": "Изворна мапа је учитана."
+  },
+  "panels/sources/DebuggerPlugin.ts | sourceMapSkipped": {
+    "message": "Изворна мапа је прескочена за овај фајл."
   },
   "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
     "message": "Програм за отклањање грешака ће прескочити пролазак кроз ову скрипту и неће се зауставити на изузецима."
@@ -10933,9 +11275,6 @@
   },
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "Форматирај {PH1}"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
-    "message": "Желите ли стварно да избришете све замене из овог фолдера?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "Желите ли стварно да избришете овај фајл?"
@@ -11054,26 +11393,26 @@
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Обриши конфигурацију"
   },
-  "panels/sources/SourcesNavigator.ts | contentScriptsServedByExtensions": {
-    "message": "Овде се приказују скрипте садржаја које пружају додаци"
-  },
-  "panels/sources/SourcesNavigator.ts | createAndSaveCodeSnippetsFor": {
-    "message": "Направите и сачувајте фрагменте кода за каснију употребу"
-  },
   "panels/sources/SourcesNavigator.ts | createNewSnippet": {
     "message": "Направи нов фрагмент"
+  },
+  "panels/sources/SourcesNavigator.ts | explainContentScripts": {
+    "message": "Преглед скрипти садржаја које додаци приказују"
+  },
+  "panels/sources/SourcesNavigator.ts | explainLocalOverrides": {
+    "message": "Локално замените захтеве за мрежу и веб-садржај да бисте опонашали удаљене ресурсе"
+  },
+  "panels/sources/SourcesNavigator.ts | explainSnippets": {
+    "message": "Сачувајте JavaScript кôд који често покрећете да бисте га поново покретали у било ком тренутку"
+  },
+  "panels/sources/SourcesNavigator.ts | explainWorkspace": {
+    "message": "Подесите радни простор да бисте синхронизовали измене директно са изворима које развијате"
   },
   "panels/sources/SourcesNavigator.ts | learnMore": {
     "message": "Сазнајте више"
   },
-  "panels/sources/SourcesNavigator.ts | learnMoreAboutWorkspaces": {
-    "message": "Сазнајте више о радним просторима"
-  },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "Нов фрагмент"
-  },
-  "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
-    "message": "Замени елементе странице фајловима из локалног фолдера"
   },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "Уклони"
@@ -11089,9 +11428,6 @@
   },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Изаберите фолдер за замене"
-  },
-  "panels/sources/SourcesNavigator.ts | syncChangesInDevtoolsWithThe": {
-    "message": "Синхронизација се мења у Алаткама за програмере са локалним системом фајлова"
   },
   "panels/sources/SourcesPanel.ts | continueToHere": {
     "message": "Настави овде"
@@ -11167,9 +11503,6 @@
   },
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "Прекини актуелни JavaScript позив"
-  },
-  "panels/sources/SourcesView.ts | dropInAFolderToAddToWorkspace": {
-    "message": "Отпустите фолдер да бисте га додали у радни простор"
   },
   "panels/sources/SourcesView.ts | openFile": {
     "message": "Отвори фајл"
@@ -11411,9 +11744,6 @@
   "panels/sources/sources-meta.ts | file": {
     "message": "Фајл"
   },
-  "panels/sources/sources-meta.ts | filesystem": {
-    "message": "Систем фајлова"
-  },
   "panels/sources/sources-meta.ts | goTo": {
     "message": "Иди на"
   },
@@ -11488,9 +11818,6 @@
   },
   "panels/sources/sources-meta.ts | showBreakpoints": {
     "message": "Прикажи преломне тачке"
-  },
-  "panels/sources/sources-meta.ts | showFilesystem": {
-    "message": "Прикажи систем фајлова"
   },
   "panels/sources/sources-meta.ts | showQuickSource": {
     "message": "Прикажи брзи извор"
@@ -11570,6 +11897,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Надгледање"
   },
+  "panels/timeline/AnimationsTrackAppender.ts | animations": {
+    "message": "Анимације"
+  },
   "panels/timeline/AppenderUtils.ts | sSelfS": {
     "message": "{PH1} (самостално {PH2})"
   },
@@ -11615,6 +11945,15 @@
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
     "message": "Промене распореда"
   },
+  "panels/timeline/NetworkTrackAppender.ts | network": {
+    "message": "Мрежа"
+  },
+  "panels/timeline/ThreadAppender.ts | anonymous": {
+    "message": "(анонимно)"
+  },
+  "panels/timeline/ThreadAppender.ts | thread": {
+    "message": "Главна нит новог механизма"
+  },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Профил процесора за циљ није доступан."
   },
@@ -11627,17 +11966,11 @@
   "panels/timeline/TimelineDetailsView.ts | callTree": {
     "message": "Стабло позива"
   },
-  "panels/timeline/TimelineDetailsView.ts | estimated": {
-    "message": "процењено"
-  },
   "panels/timeline/TimelineDetailsView.ts | eventLog": {
     "message": "Евиденција догађаја"
   },
   "panels/timeline/TimelineDetailsView.ts | layers": {
     "message": "Слојеви"
-  },
-  "panels/timeline/TimelineDetailsView.ts | learnMore": {
-    "message": "Сазнајте више"
   },
   "panels/timeline/TimelineDetailsView.ts | paintProfiler": {
     "message": "Алатка за профиле приказа"
@@ -11647,9 +11980,6 @@
   },
   "panels/timeline/TimelineDetailsView.ts | summary": {
     "message": "Резиме"
-  },
-  "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
-    "message": "Укупно време блокирања: {PH1} ms {PH2}"
   },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "Процесор"
@@ -11662,9 +11992,6 @@
   },
   "panels/timeline/TimelineEventOverview.ts | sSDash": {
     "message": "{PH1}–{PH2}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | animation": {
-    "message": "Анимација"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "Отпуштен оквир"
@@ -11680,9 +12007,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Неактиван оквир"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
-    "message": "Дугачак оквир"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | main": {
     "message": "Главни"
@@ -12050,6 +12374,9 @@
   "panels/timeline/TimelineUIUtils.ts | commit": {
     "message": "Примени"
   },
+  "panels/timeline/TimelineUIUtils.ts | compilationCacheKind": {
+    "message": "Врста кеша компилације"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Величина кеша за компајлирање"
   },
@@ -12257,6 +12584,9 @@
   "panels/timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "URL слике"
   },
+  "panels/timeline/TimelineUIUtils.ts | initialPriority": {
+    "message": "Почетни приоритет"
+  },
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Иницијатор"
   },
@@ -12274,9 +12604,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Активирано временским ограничењем"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jank": {
-    "message": "сецкање"
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS оквир"
@@ -12529,9 +12856,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
     "message": "{PH1} указује на лош одзив странице."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
-    "message": "{PH1}. Дужа времена за кадар су индикатор за {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} од {PH2}"
@@ -12953,6 +13277,9 @@
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "Отказано је сортирање {PH1}"
   },
+  "ui/components/dialogs/IconDialog.ts | close": {
+    "message": "Затвори"
+  },
   "ui/components/dialogs/ShortcutDialog.ts | close": {
     "message": "Затвори"
   },
@@ -13208,8 +13535,8 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Не приказуј поново"
   },
-  "ui/legacy/Infobar.ts | learnMore": {
-    "message": "Сазнајте више"
+  "ui/legacy/Infobar.ts | showMore": {
+    "message": "Прикажи више"
   },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Затвори фиоку"
@@ -13618,9 +13945,6 @@
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showDBefore": {
     "message": "Прикажи {PH1} пре"
-  },
-  "ui/legacy/components/data_grid/ViewportDataGrid.ts | collapsed": {
-    "message": "скупљено"
   },
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | blur": {
     "message": "Замути"

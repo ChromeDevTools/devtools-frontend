@@ -419,9 +419,6 @@
   "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
     "message": "Eladók pontozási fázisának kezdete"
   },
-  "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
-    "message": "Az eredetek közötti olvasást letiltó függvény (Cross-Origin Read Blocking, CORB) letiltotta a(z) {PH2} MIME-típussal rendelkező {PH1} eredetek közötti választ. További információ: https://www.chromestatus.com/feature/5629709824032768."
-  },
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Gyors 3G"
   },
@@ -857,6 +854,12 @@
   "entrypoints/inspector_main/InspectorMain.ts | tab": {
     "message": "Lap"
   },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "Oldal: Nincs kiválasztva"
+  },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetS": {
+    "message": "Oldal: {PH1}"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Alapvető webes vitals-mutatók"
   },
@@ -901,6 +904,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedmotion": {
     "message": "A prefers-reduced-motion CSS-médiafüggvény kényszerítése"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedtransparencyMedia": {
+    "message": "prefers-reduced-transparency CSS-médiatulajdonságok kényszerítése"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Médiatípus kényszerítése nyomtatási és képernyőstílusok tesztelésére"
@@ -1026,7 +1032,7 @@
     "message": "Dokkolás jobbra"
   },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
-    "message": "Fókuszálás az elemre, amelyen hibakeresést végez"
+    "message": "Fókuszálás az oldalra"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "Súgó"
@@ -1101,7 +1107,7 @@
     "message": "Előző találat megkeresése"
   },
   "entrypoints/main/main-meta.ts | focusDebuggee": {
-    "message": "Fókuszálás az elemre, amelyen hibakeresést végez"
+    "message": "Fókuszálás az oldalra"
   },
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "vízszintes"
@@ -1278,7 +1284,7 @@
     "message": "A DOM-mutációs események, köztük a DOMSubtreeModified, a DOMNodeInserted, a DOMNodeRemoved, a DOMNodeRemovedFromDocument, a DOMNodeInsertedIntoDocument és a DOMCharacterDataModified elavultak (https://w3c.github.io/uievents/#legacy-event-types), és el lesznek távolítva. Használja helyettük a következőt: MutationObserver."
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
-    "message": "Adatok támogatása: az SVG <use> elemében lévő URL elavult, és a jövőben el fogjuk távolítani."
+    "message": "Adatok támogatása: az SVGUseElement elemben lévő URL-ek elavultak, és a jövőben el fogjuk távolítani őket."
   },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Az ugyanarra az eredetre vonatkozó házirendnek a document.domain beállításával történő enyhítésére szolgáló lehetőséget megszüntettük, és alapértelmezés szerint le lesz tiltva. A funkció használatának folytatásához iratkozzon le az eredetkulccsal rendelkező ügynökklaszterekről úgy, hogy a HTTP-válasszal együtt egy Origin-Agent-Cluster: ?0 fejlécet is elküld a dokumentumok és a keretek esetében. További részletek: https://developer.chrome.com/blog/immutable-document-domain/."
@@ -1512,7 +1518,7 @@
     "message": "Fájl írása…"
   },
   "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
-    "message": "Visszafordulás nyomon követésének mérséklései"
+    "message": "Visszafordulás-követés mérséklése"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints-infrastruktúra"
@@ -1547,6 +1553,9 @@
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "A SameSite cookie-k bemutatása"
   },
+  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Felkészülés a harmadik féltől származó cookie-k kivezetésére"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Eredeteken átívelő erőforrás-megosztás (CORS)"
   },
@@ -1576,6 +1585,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-attribútum: automatikus kiegészítés"
+  },
+  "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
+    "message": "CORB-magyarázó"
   },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Portálok – Ugyanolyan eredetű kommunikációs csatornák"
@@ -1688,14 +1700,17 @@
   "models/persistence/PersistenceActions.ts | openInContainingFolder": {
     "message": "Megnyitás az elemet tartalmazó mappában"
   },
+  "models/persistence/PersistenceActions.ts | overrideContent": {
+    "message": "Tartalom felülbírálása"
+  },
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Mentés másként…"
   },
-  "models/persistence/PersistenceActions.ts | saveForOverrides": {
-    "message": "Mentés a felülírásokhoz"
-  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Kép mentése"
+  },
+  "models/persistence/PersistenceActions.ts | showOverrides": {
+    "message": "Összes felülbírálás megjelenítése"
   },
   "models/persistence/PersistenceUtils.ts | linkedToS": {
     "message": "Összekapcsolva a következővel: {PH1}"
@@ -2306,6 +2321,9 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Nem sikerült letölteni a szükséges ikont a manifestből"
   },
+  "panels/application/AppManifestView.ts | customizePwaTitleBar": {
+    "message": "Személyre szabhatja a PWA címsávjának ablakvezérlőket tartalmazó fedvényét."
+  },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
     "message": "Sötét háttér színe"
   },
@@ -2483,6 +2501,18 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Témaszín"
   },
+  "panels/application/AppManifestView.ts | wcoFound": {
+    "message": "A Chrome sikeresen megtalálta a(z) {PH2} mező {PH1} értékét itt: {PH3}."
+  },
+  "panels/application/AppManifestView.ts | wcoNeedHelpReadMore": {
+    "message": "Segítségre szorul? Olvassa el a következőt: {PH1}."
+  },
+  "panels/application/AppManifestView.ts | wcoNotFound": {
+    "message": "Definiálja a(z) {PH1} paramétert a manifestben a Window Controls Overlay API használatához és az alkalmazás címsávjának személyre szabásához."
+  },
+  "panels/application/AppManifestView.ts | windowControlsOverlay": {
+    "message": "Window Controls Overlay"
+  },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "Alkalmazásmanifest"
   },
@@ -2547,7 +2577,7 @@
     "message": "IndexedDB frissítése"
   },
   "panels/application/ApplicationPanelSidebar.ts | sessionStorage": {
-    "message": "Programfolyamat-tárolás"
+    "message": "Munkamenettárhely"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "Tárhely"
@@ -2622,7 +2652,7 @@
     "message": "Időszakos háttérbeli szinkronizálás"
   },
   "panels/application/BackgroundServiceView.ts | pushMessaging": {
-    "message": "Push üzenetváltás"
+    "message": "Push üzenetek"
   },
   "panels/application/BackgroundServiceView.ts | recordingSActivity": {
     "message": "{PH1} tevékenység rögzítése…"
@@ -2655,7 +2685,7 @@
     "message": "Időbélyeg"
   },
   "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
-    "message": "Visszafordulás nyomon követésének mérséklései"
+    "message": "Visszafordulás-követés mérséklése"
   },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "Az összes cookie törlése"
@@ -2808,7 +2838,7 @@
     "message": "A kiválasztott érdeklődéscsoporttal kapcsolatban nem állnak rendelkezésre részletek. Lehet, hogy a böngésző kilépett a csoportból."
   },
   "panels/application/InterestGroupTreeElement.ts | interestGroups": {
-    "message": "Érdeklődéscsoportok"
+    "message": "Érdeklődésikör-csoportok"
   },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Hozzáférés a megnyitóhoz"
@@ -2864,6 +2894,12 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Igen"
   },
+  "panels/application/PreloadingTreeElement.ts | preloads": {
+    "message": "Előtöltések"
+  },
+  "panels/application/PreloadingTreeElement.ts | speculationRules": {
+    "message": "Spekulációra vonatkozó szabályok"
+  },
   "panels/application/PreloadingTreeElement.ts | thisPage": {
     "message": "Ez az oldal"
   },
@@ -2874,7 +2910,7 @@
     "message": "Reporting API"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
-    "message": "Gyorsítótár"
+    "message": "Gyorsítótár tárhelye"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
     "message": "Törlés"
@@ -3077,6 +3113,9 @@
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Megosztott tárhely"
   },
+  "panels/application/StorageBucketsTreeElement.ts | storageBuckets": {
+    "message": "Tárolócsoportok"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Összes törlése"
   },
@@ -3147,7 +3186,7 @@
     "message": "{PH1} (nem töltődött be)"
   },
   "panels/application/StorageView.ts | serviceWorkers": {
-    "message": "Service Workers"
+    "message": "Service workerek"
   },
   "panels/application/StorageView.ts | simulateCustomStorage": {
     "message": "Egyéni tárhelykvóta szimulálása"
@@ -3202,6 +3241,12 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Események rögzítésének felfüggesztése"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
+    "message": "Nincs megadva"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
+    "message": "Nincs megadva"
   },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Kizárólag a GET metódussal betöltött oldalak alkalmasak az előre-vissza gyorsítótárazásra."
@@ -3542,14 +3587,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "A WebRTC-vel készített oldalak nem kerülhetnek az előre-vissza gyorsítótárba."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
+    "message": "Az előre-vissza gyorsítótárazás le van tiltva a WebRTC használata miatt."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "A WebShare-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "A WebSocket használatával készített oldalak nem kerülhetnek az előre-vissza gyorsítótárba."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
+    "message": "Az előre-vissza gyorsítótárazás le van tiltva a WebSocket használata miatt."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "A WebTransport API-t tartalmazó oldalak nem kerülhetnek előre-vissza gyorsítótárba."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
+    "message": "Az előre-vissza gyorsítótárazás le van tiltva a WebTransport használata miatt."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "A WebXR-t használó oldalak jelenleg nem alkalmasak az előre-vissza gyorsítótárazásra."
@@ -3624,10 +3678,16 @@
     "message": "URL:"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
-    "message": "Visszafordulás nyomon követésének mérséklései"
+    "message": "Visszafordulás-követés mérséklése"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
     "message": "Lehetséges visszafordulást nyomon követő webhelyek keresése"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureDisabled": {
+    "message": "A visszafordulás-követés mérséklése ki van kapcsolva. Engedélyezéséhez állítsa a(z) {PH1} melletti jelzőt „Enabled with Deletion” (Engedélyezve törléssel) értékre."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureFlag": {
+    "message": "A visszafordulás-követés mérséklése funkció jelzője"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
     "message": "Kényszerített futtatás"
@@ -3636,7 +3696,7 @@
     "message": "További információ: Visszafordulás nyomon követésének mérséklései"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
-    "message": "A rendszer nem törölte az állapotot az esetleges visszafordulás-követő webhelyek esetében. Vagy egyiket sem azonosította a rendszer, vagy a visszafordulás nyomon követésének mérséklései nincsenek engedélyezve, illetve a harmadik féltől származó cookie-k nincsenek letiltva."
+    "message": "A rendszer nem törölte az állapotot az esetleges visszafordulás-követő webhelyek esetében. Vagy egyet sem azonosított a rendszer, vagy a harmadik féltől származó cookie-k nincsenek letiltva."
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
     "message": "Futtatás…"
@@ -4106,6 +4166,15 @@
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Csoportnév"
   },
+  "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
+    "message": "Törli a(z) „{PH1}” csoportot?"
+  },
+  "panels/application/components/StorageMetadataView.ts | defaultBucket": {
+    "message": "Alapértelmezett csoport"
+  },
+  "panels/application/components/StorageMetadataView.ts | deleteBucket": {
+    "message": "Csoport törlése"
+  },
   "panels/application/components/StorageMetadataView.ts | durability": {
     "message": "Tartósság"
   },
@@ -4175,11 +4244,11 @@
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Privát állapottokenek"
   },
-  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
-    "message": "Bővítmények beállításai"
+  "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
+    "message": "Minden előtöltés"
   },
-  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
-    "message": "Oldalak előtöltési beállításai"
+  "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
+    "message": "Szűrés szabálykészlet szerint"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Hiba"
@@ -4208,17 +4277,41 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Érvényes"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
-    "message": "Az előtöltés ki van kapcsolva az operációs rendszer Akkumulátorkímélő módja miatt."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | action": {
+    "message": "Művelet"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
-    "message": "Az előtöltés ki van kapcsolva az operációs rendszer Adatforgalom-csökkentő módja miatt."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | status": {
+    "message": "Állapot"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
-    "message": "Az előtöltés a felhasználói beállítások vagy valamilyen bővítmény miatt le van tiltva. További információ: {PH1}, bővítmény letiltása: {PH2}."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusFailure": {
+    "message": "Hiba"
   },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
-    "message": "Az előtöltés ki van kapcsolva"
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusNotTriggered": {
+    "message": "Nincs aktiválva"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusPending": {
+    "message": "Függőben"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusReady": {
+    "message": "Kész"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusRunning": {
+    "message": "Futtatás…"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusSuccess": {
+    "message": "Sikerült"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | url": {
+    "message": "URL"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToInspect": {
+    "message": "Kattintson az előmegjelenített oldal vizsgálatához"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToRevealRuleSet": {
+    "message": "Kattintson a szabálykészlet felfedéséhez"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonInspect": {
+    "message": "Vizsgálat"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Előtöltés sikertelen."
@@ -4248,7 +4341,7 @@
     "message": "A hiba oka"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
-    "message": "Szabályok"
+    "message": "Szabálykészlet"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Állapot"
@@ -4256,8 +4349,59 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Válassza ki a kívánt elemet a további részletekért"
   },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
+    "message": "Az előtöltés ki van kapcsolva az operációs rendszer Akkumulátorkímélő módja miatt."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
+    "message": "Az előtöltés ki van kapcsolva az operációs rendszer Adatforgalom-csökkentő módja miatt."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "A rendszer kényszerítette az előzetes lekérés engedélyezését, mert a DevTools meg van nyitva. A DevToolst bezárásakor az előzetes megjelenítés le lesz tiltva, mert ez a böngésző-munkamenet egy teljesítmény-összehasonlításokhoz használt visszatartási csoport része."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "A rendszer kényszerítette az előmegjelenítés engedélyezését, mert a DevTools meg van nyitva. Amikor a DevToolst bezárják, az előmegjelenítés le lesz tiltva, mert ez a böngésző-munkamenet egy teljesítmény-összehasonlításokhoz használt visszatartási csoport része."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
+    "message": "Az előtöltés a felhasználói beállítások vagy valamilyen bővítmény miatt le van tiltva. A következő oldalon módosíthatja a beállítást: {PH1}. Lépjen a(z) {PH2} webhelyre az összes olyan bővítmény kikapcsolásához, amely megakadályozza az előtöltést."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
+    "message": "Bővítmények beállításai"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | footerLearnMore": {
+    "message": "További információ"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByBatterySaver": {
+    "message": "Akkumulátorkímélő mód"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByDataSaver": {
+    "message": "Adatforgalom-csökkentő"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "Az előzetes lekérés le volt tiltva, de most a rendszer kényszerítette az engedélyezését"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "Az előmegjelenítés le volt tiltva, de most a rendszer kényszerítette az engedélyezését"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByPreference": {
+    "message": "Felhasználói beállítások vagy bővítmény"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
+    "message": "Az előtöltés ki van kapcsolva"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
+    "message": "A rendszer kényszerítette az előtöltés engedélyezését"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
+    "message": "Oldalak előtöltési beállításai"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
+    "message": "Az előtöltés megakadályozásának okai"
+  },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Művelet"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | ruleSet": {
+    "message": "Szabálykészlet"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Állapot"
@@ -4334,50 +4478,209 @@
   "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
     "message": "Hálózati hiba történt az előzetes lekérési proxyhoz való csatlakozás beállításakor."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
-    "message": "Kattintson az Elemek panel felfedéséhez"
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "Az előmegjelenített oldal aktiválva lett az oldal fő képkocka-navigációja során."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
-    "message": "Kattintson a Hálózat panel felfedéséhez"
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "Az előmegjelenítést nem használta a rendszer, mert a kezdeményező oldal sandboxjelzői vagy engedélyházirendjei nem kompatibilisek az előmegjelenítési oldalon lévőkkel."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
-    "message": "Részletes információk"
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "Az előmegjelenítést nem használta a rendszer, mert az aktiválási idő alatt eltérő navigációs paramétereket (pl. HTTP-fejléceket) számított ki, mint az eredeti előmegjelenítési navigációs kérelem során."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "Az előmegjelenített oldal hangkimenetet kért, amely jelenleg nem támogatott."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "Az előmegjelenítés végrehajtása sikertelen volt, mert a felhasználó azt kérte, hogy a böngésző kevesebb energiát fogyasszon."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "Egyes erőforrás-betöltések le vannak tiltva."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "Az előmegjelenítési navigációhoz HTTP-klienstanúsítványra volt szükség."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "Az előmegjelenítési navigáció nem sikerült, mert eltérő webhelyen található URL-t célzott meg,"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "Az előmegjelenített oldal eltérő webhelyen található URL-re navigált."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "Az előmegjelenítési navigáció nem sikerült, mert az előmegjelenített URL eltérő webhelyen található URL-re irányított át."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "Az előmegjelenített oldal olyan URL-re navigált, amely eltérő webhelyen található URL-re irányított át."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "Az előmegjelenítés végrehajtása sikertelen volt, mert a felhasználó azt kérte, hogy a böngésző kevesebb adatot fogyasszon."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
+    "message": "Az előmegjelenített oldal letöltést próbált kezdeményezni, de ez jelenleg nem támogatott."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "Az előmegjelenítés végrehajtása sikertelen volt, mert a böngészőben belső hiba lépett fel az aktuális memóriahasználat meghatározásakor."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "A kezdeményező oldal nem tud előmegjelenítést végrehajtani, mert az érvényben lévő URL-je eltér a normál URL-jétől. (Például az Új lap oldal vagy a tárolt alkalmazások.)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "Az URL előmegjelenítése nem mehetett végbe, mert a sémája nem http: vagy https: volt."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "Az előmegjelenítési navigáció nem sikerült, mert olyan URL-re irányított át, amelynek a sémája nem http: vagy https: volt."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "Az előmegjelenítési navigáció HTTP-hitelesítést igényelt, amely jelenleg nem támogatott."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "Az előmegjelenítés végrehajtása sikertelen volt, mert az eszköz nem rendelkezik elegendő teljes rendszermemóriával az előmegjelenítés támogatásához."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "Az előmegjelenített oldal olyan másik URL-re navigálta magát, amely jelenleg nem támogatott."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "Az előmegjelenítés végrehajtása sikertelen volt, mert a kezdeményező oldalon már túl sok előmegjelenítés van folyamatban. Távolítsa el a többi spekulációs szabályt a további előmegjelenítés lehetővé tételéhez."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "Az előmegjelenítés végrehajtása sikertelen volt, mert a böngésző túllépte az előmegjelenítésre vonatkozó memóriakorlátot."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "Az előmegjelenített oldal kiürült, mert a böngésző kritikus memóriaterhelés alatt állt."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "Az előmegjelenítés végrehajtása sikertelen volt, mert a böngésző kritikus memóriaterhelés alatt állt."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMixedContent": {
+    "message": "Az előmegjelenített oldalon vegyes tartalom szerepelt."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "Az előmegjelenített oldal tiltott JavaScript API-t használt, amely jelenleg nem támogatott. (A Mojo belső felülete: {PH1})"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "Az előmegjelenítési navigáció a nem 2xx HTTP-válasz állapotkódja miatt sikertelen volt."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "Az előmegjelenítési navigációt letiltotta egy tartalombiztonsági irányelv."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "Az előmegjelenítési navigáció hálózati hibába ütközött."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "Az előmegjelenítés végrehajtása sikertelen volt, mert a felhasználó letiltotta az előtöltést a böngésző beállításaiban."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
+    "message": "Az előmegjelenítés végrehajtása nem történt meg, mert a DevTools segítségével letiltották az előmegjelenítést."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "A kezdeményező oldal összeomlott."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "A kezdeményező oldalt a rendszer leállította."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "Az előmegjelenített oldal összeomlott."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "Az előmegjelenített oldalt leállította a rendszer."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusResourceLoadBlockedByClient": {
+    "message": "Egyes erőforrás-betöltések le vannak tiltva."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "Az előmegjelenített oldal az ugyanazon a webhelyen lévő, eltérő eredetű URL-re navigálta magát, de a célválasz nem tartalmazta a megfelelő Support-Loading-Mode fejlécet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "Az előmegjelenített oldal egy ugyanazon a webhelyen lévő, eltérő eredetű URL-re navigált, de a célválasz nem tartalmazta a megfelelő Support-Loading-Mode fejlécet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "Az előmegjelenítési navigáció nem sikerült, mert az előmegjelenített URL ugyanazon a webhelyen található, eltérő eredetű URL-re irányított át, a célválasz viszont nem tartalmazta a megfelelő Supports-Loading-Mode fejlécet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "Az előmegjelenített oldal egy olyan URL-re navigált, amely ugyanazon a webhelyen található, eltérő eredetű URL-re irányított, a célválasz viszont nem tartalmazta a megfelelő Supports-Loading-Mode fejlécet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSpeculationRuleRemoved": {
+    "message": "Ismeretlen"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "Az előmegjelenítési navigáció érvénytelen SSL-tanúsítvány miatt nem sikerült."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "A kezdeményező oldal hosszú ideig háttérbe került, ezért a rendszer elvetette az előmegjelenített oldalt."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "A kezdeményező oldal háttérbe került, ezért a rendszer elvetette az előmegjelenített oldalt."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "A felhasználói ügynök módosítása megtörtént az előmegjelenítési navigáció során."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusFailure": {
     "message": "Hiba"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
-    "message": "Hely"
+  "panels/application/preloading/components/PreloadingString.ts | statusNotTriggered": {
+    "message": "Nincs aktiválva"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
-    "message": "Forrás"
+  "panels/application/preloading/components/PreloadingString.ts | statusPending": {
+    "message": "Függőben"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
-    "message": "Érvényesség"
+  "panels/application/preloading/components/PreloadingString.ts | statusReady": {
+    "message": "Kész"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityInvalid": {
-    "message": "Érvénytelen; a forrás nem JSON-objektum"
+  "panels/application/preloading/components/PreloadingString.ts | statusRunning": {
+    "message": "Futtatás…"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validitySomeRulesInvalid": {
-    "message": "Egyes szabályok érvénytelenek, és mellőzi őket a rendszer"
+  "panels/application/preloading/components/PreloadingString.ts | statusSuccess": {
+    "message": "Sikerült"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
-    "message": "Érvényes"
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInElementsPanel": {
+    "message": "Kattintson az Elemek panel felfedéséhez"
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | location": {
-    "message": "Hely"
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "Kattintson a Hálózat panel felfedéséhez"
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
-    "message": "Érvényesség"
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
+    "message": "A szabálykészlethez kapcsolódó előtöltések felfedése"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | errors": {
+    "message": "{errorCount,plural, =1{# hiba}other{# hiba}}"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | ruleSet": {
+    "message": "Szabálykészlet"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | status": {
+    "message": "Állapot"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | currentURL": {
+    "message": "Jelenlegi URL"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | detailsFailureReason": {
+    "message": "A hiba oka"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | downgradedPrefetchUsed": {
+    "message": "A kezdeményező oldal megpróbálta előmegjeleníteni az oldal URL-jét. Az előmegjelenítés nem sikerült, de a kapott válasz törzsét felhasználta a rendszer az előzetes lekérésre."
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
+    "message": "További információ"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
+    "message": "A kezdeményező oldal nem kísérelte meg előre betölteni ennek az oldalnak az URL-jét."
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
+    "message": "A kezdeményező oldal megpróbálta előzetesen lekérni az oldal URL-jét, de az előzetes lekérés sikertelen volt, ezért helyette teljes navigációt végzett el."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
-    "message": "{PH1} előzetesen lekért forrás van használatban az oldalhoz"
+    "message": "Az oldal előzetes lekérése sikeresen megtörtént."
   },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
-    "message": "Az oldalhoz használt előtöltés"
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
+    "message": "A kezdeményező oldal által előtöltött URL-ek"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
+    "message": "Előtöltés állapota"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
+    "message": "A kezdeményező oldal megpróbálta előmegjeleníteni az oldal URL-jét, de az előmegjelenítés sikertelen volt, ezért helyette teljes navigációt végzett el."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
-    "message": "A lap előmegjelenítéssel lett renderelve"
+    "message": "Az oldal előmegjelenítése sikeres volt."
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "törésponttalálat"
@@ -4580,8 +4883,14 @@
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Kifejezés eltávolítása: {PH1}"
   },
+  "panels/console/ConsolePrompt.ts | allowPasting": {
+    "message": "beillesztés engedélyezése"
+  },
   "panels/console/ConsolePrompt.ts | consolePrompt": {
     "message": "Konzolprompt"
+  },
+  "panels/console/ConsolePrompt.ts | selfXssWarning": {
+    "message": "Figyelmeztetés: Ne illesszen be olyan kódot, amelyet nem ért, vagy amelyet nem ellenőrzött Ön is a DevTools konzolban. A támadók így eltulajdoníthatják az Ön személyazonosságát, vagy átvehetik az irányítást a számítógépe felett. A beillesztés engedélyezéséhez írja be alább a következőt: „{PH1}”."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Nincs hiba}=1{# hiba}other{# hiba}}"
@@ -4612,9 +4921,6 @@
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konzol kiürítve"
-  },
-  "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "A kód beillesztése le van tiltva ezen az oldalon. Ha kódot illeszt be a DevTools eszközbe, akkor a támadók átvehetik az irányítást a fiókja felett."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konzolbeállítások"
@@ -6698,9 +7004,6 @@
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
     "message": "A JavaScript le van tiltva. Az oldal auditálásához engedélyeznie kell a JavaScriptet. Nyissa meg a parancsmenüt, és futtassa az Enable JavaScript parancsot a JavaScript engedélyezéséhez."
   },
-  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
-    "message": "Régi navigáció"
-  },
   "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
     "message": "Lighthouse mód"
   },
@@ -6763,9 +7066,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
     "message": "Az Időtartam mód egy önkényesen kiválasztott időszakot elemez, általában olyat, amely felhasználói interakciókat tartalmaz."
-  },
-  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Az oldal elemzése a klasszikus Lighthouse használatával navigációs módban."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -7133,8 +7433,8 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
     "message": "Előfordulhat, hogy a kéréseket letiltja a rendszer"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeRewrittenByLocal": {
-    "message": "A kérések helyi felülbírálásokkal újraírhatók"
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
+    "message": "A kérelmek helyben felülbírálhatók"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Egyéni"
@@ -7171,6 +7471,9 @@
   },
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Hardver egyidejű felülbírálása engedélyezve"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingTooltip": {
+    "message": "A navigator.hardwareConcurrency által az oldalon jelentett érték felülbírálása"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "A sebesség nincs korlátozva"
@@ -7430,9 +7733,6 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Befejezve"
   },
-  "panels/network/NetworkDataGridNode.ts | hasOverriddenHeaders": {
-    "message": "A kérelem felülírta a fejléceket"
-  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "1. szint"
   },
@@ -7477,6 +7777,15 @@
   },
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "Átirányítás"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentHeadersOverridden": {
+    "message": "A kérelem tartalma és fejlécei is felül vannak írva"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentOverridden": {
+    "message": "A kérelem tartalma felülbírálva"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestHeadersOverridden": {
+    "message": "A kérelmek fejlécei felül vannak bírálva"
   },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + előzetes"
@@ -7601,6 +7910,9 @@
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Letiltott kérelmek"
   },
+  "panels/network/NetworkLogView.ts | chromeExtensions": {
+    "message": "Bővítmény-URL-ek elrejtése"
+  },
   "panels/network/NetworkLogView.ts | clearBrowserCache": {
     "message": "Böngésző gyorsítótárának törlése"
   },
@@ -7671,7 +7983,10 @@
     "message": "Befejezés: {PH1}"
   },
   "panels/network/NetworkLogView.ts | hasBlockedCookies": {
-    "message": "Letiltott cookie-k tartoznak hozzá"
+    "message": "Letiltott válaszcookie-k"
+  },
+  "panels/network/NetworkLogView.ts | hideChromeExtension": {
+    "message": "A „chrome-extension://” URL-ekre vonatkozó kérelmek elrejtése"
   },
   "panels/network/NetworkLogView.ts | hideDataUrls": {
     "message": "Adat-URL-ek elrejtése"
@@ -7695,13 +8010,13 @@
     "message": "Hálózati adatok rendelkezésre állnak"
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
-    "message": "Csak a letiltott kérések megjelenítése"
+    "message": "Csak a letiltott kérelmek megjelenítése"
   },
-  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
-    "message": "Csak a letiltott válaszcookie-kkal rendelkező kérések megjelenítése"
+  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
+    "message": "Csak a letiltott válaszcookie-kat tartalmazó kérések megjelenítése"
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
-    "message": "Csak az oldal eredetétől eltérő eredetű kérelmeket jeleníti meg"
+    "message": "Csak az oldal eredetétől eltérő eredetű kérelmek megjelenítése"
   },
   "panels/network/NetworkLogView.ts | overrideHeaders": {
     "message": "Fejlécek felülbírálása"
@@ -7863,7 +8178,7 @@
     "message": "Nincsenek egyéni fejlécek"
   },
   "panels/network/NetworkPanel.ts | captureScreenshots": {
-    "message": "Képernyőképek rögzítése"
+    "message": "Képernyőképek"
   },
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Képernyőképek készítése oldalak betöltésekor"
@@ -7920,7 +8235,7 @@
     "message": "További információ megjelenítése a kéréssorokban"
   },
   "panels/network/NetworkPanel.ts | showOverview": {
-    "message": "Áttekintés megjelenítése"
+    "message": "Áttekintés"
   },
   "panels/network/NetworkPanel.ts | showOverviewOfNetworkRequests": {
     "message": "Hálózati kérések áttekintésének megjelenítése"
@@ -7929,7 +8244,7 @@
     "message": "Korlátozás"
   },
   "panels/network/NetworkPanel.ts | useLargeRequestRows": {
-    "message": "Nagy kéréssorok használata"
+    "message": "Nagy kéréssorok"
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
@@ -8018,9 +8333,6 @@
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Általános"
   },
-  "panels/network/RequestHeadersView.ts | headerOverrides": {
-    "message": "Fejléc-felülbírálások"
-  },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "További információ"
   },
@@ -8064,7 +8376,7 @@
     "message": "Állapotkód"
   },
   "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Ez a dokumentum nem tölthető be az egyik sandbox attribútumú iframe keretben, mert ez a dokumentum eltérő eredetű megnyitókra vonatkozó házirendet határozott meg."
+    "message": "A dokumentum sandbox iframe keret által megnyitott előugró ablakban való betöltését letiltotta a rendszer, mert a dokumentum eltérő eredetű megnyitókra vonatkozó házirendet határozott meg."
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
     "message": "A keret dokumentumba való ágyazásához a válasznak engedélyeznie kell az eltérő eredetű beágyazóra vonatkozó házirendet a következő válaszfejléc megadásával:"
@@ -8468,9 +8780,6 @@
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Általános"
   },
-  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
-    "message": "Fejléc-felülbírálások"
-  },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Nyers"
   },
@@ -8565,7 +8874,7 @@
     "message": "Csak akkor válassza ezt a lehetőséget, ha az ezt a forrást tartalmazó adott webhely nem jelent biztonsági kockázatot."
   },
   "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
-    "message": "Ez a dokumentum nem tölthető be az egyik sandbox attribútumú iframe keretben, mert ez a dokumentum eltérő eredetű megnyitókra vonatkozó házirendet határozott meg."
+    "message": "A dokumentum sandbox iframe keret által megnyitott előugró ablakban való betöltését letiltotta a rendszer, mert a dokumentum eltérő eredetű megnyitókra vonatkozó házirendet határozott meg."
   },
   "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
     "message": "A keret dokumentumba való ágyazásához a válasznak engedélyeznie kell az eltérő eredetű beágyazóra vonatkozó házirendet a következő válaszfejléc megadásával:"
@@ -9344,6 +9653,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentáció"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | editAndResend": {
+    "message": "Szerkesztés és újraküldés"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
     "message": "Eltelt idő"
   },
@@ -9397,6 +9709,18 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | type": {
     "message": "Típus"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | addParameter": {
+    "message": "Paraméter hozzáadása"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | deleteParameter": {
+    "message": "Paraméter törlése"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | resetDefaultValue": {
+    "message": "Visszaállítás az alapértelmezett értékre"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | copyCommand": {
+    "message": "Parancs másolása"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protokollfigyelő"
@@ -10868,6 +11192,9 @@
   "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
     "message": "Nem sikerült betölteni a(z) {PH1} webhelyhez tartozó hibakeresési információkat."
   },
+  "panels/sources/DebuggerPlugin.ts | debuggingPowerReduced": {
+    "message": "A DevTools nem tudja megjeleníteni a megírt forrásokat, de Ön végezhet hibakeresést az alkalmazott kóddal kapcsolatban."
+  },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{Töréspont letiltása}other{A sorban lévő összes töréspont letiltása}}"
   },
@@ -10877,8 +11204,20 @@
   "panels/sources/DebuggerPlugin.ts | enableBreakpoint": {
     "message": "{n,plural, =1{Töréspont engedélyezése}other{A sorban lévő összes töréspont engedélyezése}}"
   },
+  "panels/sources/DebuggerPlugin.ts | errorLoading": {
+    "message": "Hiba történt a(z) {PH1} URL betöltése közben: {PH2}"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
+    "message": "Bővítményszkriptek figyelmen kívül hagyása"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
+    "message": "A fájl figyelmen kívül hagyása"
+  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Sose legyen itt szünet"
+  },
+  "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
+    "message": "Az újbóli engedélyezéshez győződjön meg arról, hogy a fájl nincs a mellőzési listán, és töltse be újra."
   },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n,plural, =1{Töréspont eltávolítása}other{A sorban lévő összes töréspont eltávolítása}}"
@@ -10886,11 +11225,14 @@
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "Eltávolítás a figyelmen kívül hagyott elemek listájáról"
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapDetected": {
-    "message": "Forrás-hozzárendelés észlelve."
+  "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
+    "message": "Nem sikerült betölteni a forrástérképet."
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
-    "message": "Található forrás-hozzárendelés, de a rendszer figyelmen kívül hagyja a mellőzési listán lévő fájlnál."
+  "panels/sources/DebuggerPlugin.ts | sourceMapLoaded": {
+    "message": "Forrástérkép betöltve."
+  },
+  "panels/sources/DebuggerPlugin.ts | sourceMapSkipped": {
+    "message": "A forrástérképet kihagyta a rendszer ennél a fájlnál."
   },
   "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
     "message": "A hibakereső kihagyja a szkripten való végighaladást, és nem áll meg a kivételeknél."
@@ -10933,9 +11275,6 @@
   },
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "{PH1} formázása"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
-    "message": "Biztosan törölni szeretné a mappában található összes felülbírálást?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "Biztosan törli ezt a fájlt?"
@@ -11054,26 +11393,26 @@
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Konfiguráció törlése"
   },
-  "panels/sources/SourcesNavigator.ts | contentScriptsServedByExtensions": {
-    "message": "A bővítmények által megjelenített tartalomszkriptek itt jelennek meg"
-  },
-  "panels/sources/SourcesNavigator.ts | createAndSaveCodeSnippetsFor": {
-    "message": "Hozzon létre kódrészleteket, és mentse el őket későbbi használatra"
-  },
   "panels/sources/SourcesNavigator.ts | createNewSnippet": {
     "message": "Új kódrészlet létrehozása"
+  },
+  "panels/sources/SourcesNavigator.ts | explainContentScripts": {
+    "message": "Bővítmények által megjelenített tartalomszkriptek megtekintése"
+  },
+  "panels/sources/SourcesNavigator.ts | explainLocalOverrides": {
+    "message": "A hálózati kérések és webes tartalmak helyi felülírása távoli források utánzása érdekében"
+  },
+  "panels/sources/SourcesNavigator.ts | explainSnippets": {
+    "message": "A gyakran futtatott JavaScript-kódot elmentheti, hogy bármikor újra futtathassa"
+  },
+  "panels/sources/SourcesNavigator.ts | explainWorkspace": {
+    "message": "Munkaterület beállítása a módosítások Ön által fejlesztett forrásokhoz való közvetlen szinkronizálásához"
   },
   "panels/sources/SourcesNavigator.ts | learnMore": {
     "message": "További információ"
   },
-  "panels/sources/SourcesNavigator.ts | learnMoreAboutWorkspaces": {
-    "message": "További információ a munkaterületekről"
-  },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "Új kódrészlet"
-  },
-  "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
-    "message": "Oldaltartalmak felülírása helyi mappából származó fájlokkal"
   },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "Eltávolítás"
@@ -11089,9 +11428,6 @@
   },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Válasszon mappát a felülírásokhoz"
-  },
-  "panels/sources/SourcesNavigator.ts | syncChangesInDevtoolsWithThe": {
-    "message": "A DevToolsban végzett módosítások szinkronizálása a helyi fájlrendszerrel"
   },
   "panels/sources/SourcesPanel.ts | continueToHere": {
     "message": "Folytatás ide"
@@ -11167,9 +11503,6 @@
   },
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "Jelenlegi JavaScript-hívás megszüntetése"
-  },
-  "panels/sources/SourcesView.ts | dropInAFolderToAddToWorkspace": {
-    "message": "Húzza be valamelyik mappába a munkaterülethez való hozzáadáshoz"
   },
   "panels/sources/SourcesView.ts | openFile": {
     "message": "Fájl megnyitása"
@@ -11411,9 +11744,6 @@
   "panels/sources/sources-meta.ts | file": {
     "message": "Fájl"
   },
-  "panels/sources/sources-meta.ts | filesystem": {
-    "message": "Fájlrendszer"
-  },
   "panels/sources/sources-meta.ts | goTo": {
     "message": "Ugrás"
   },
@@ -11488,9 +11818,6 @@
   },
   "panels/sources/sources-meta.ts | showBreakpoints": {
     "message": "Töréspontok megjelenítése"
-  },
-  "panels/sources/sources-meta.ts | showFilesystem": {
-    "message": "Fájlrendszer megjelenítése"
   },
   "panels/sources/sources-meta.ts | showQuickSource": {
     "message": "Gyors forrás megjelenítése"
@@ -11570,6 +11897,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Figyelés"
   },
+  "panels/timeline/AnimationsTrackAppender.ts | animations": {
+    "message": "Animációk"
+  },
   "panels/timeline/AppenderUtils.ts | sSelfS": {
     "message": "{PH1} (saját: {PH2})"
   },
@@ -11615,6 +11945,15 @@
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
     "message": "Elrendezésmozgások"
   },
+  "panels/timeline/NetworkTrackAppender.ts | network": {
+    "message": "Hálózat"
+  },
+  "panels/timeline/ThreadAppender.ts | anonymous": {
+    "message": "(névtelen)"
+  },
+  "panels/timeline/ThreadAppender.ts | thread": {
+    "message": "Új motor főszála"
+  },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Nincs rendelkezésre álló CPU-profil a célzáshoz."
   },
@@ -11627,17 +11966,11 @@
   "panels/timeline/TimelineDetailsView.ts | callTree": {
     "message": "Hívási fa"
   },
-  "panels/timeline/TimelineDetailsView.ts | estimated": {
-    "message": "becsült"
-  },
   "panels/timeline/TimelineDetailsView.ts | eventLog": {
     "message": "Eseménynapló"
   },
   "panels/timeline/TimelineDetailsView.ts | layers": {
     "message": "Rétegek"
-  },
-  "panels/timeline/TimelineDetailsView.ts | learnMore": {
-    "message": "További információ"
   },
   "panels/timeline/TimelineDetailsView.ts | paintProfiler": {
     "message": "Paint Profiler teljesítményelemző eszköz"
@@ -11647,9 +11980,6 @@
   },
   "panels/timeline/TimelineDetailsView.ts | summary": {
     "message": "Összegzés"
-  },
-  "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
-    "message": "Teljes tiltási idő: {PH1} ms {PH2}"
   },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
@@ -11662,9 +11992,6 @@
   },
   "panels/timeline/TimelineEventOverview.ts | sSDash": {
     "message": "{PH1} – {PH2}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | animation": {
-    "message": "Animáció"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "Visszaeső képkockák"
@@ -11680,9 +12007,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Tétlen keret"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
-    "message": "Hosszú képkocka"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | main": {
     "message": "Elsődleges"
@@ -12050,6 +12374,9 @@
   "panels/timeline/TimelineUIUtils.ts | commit": {
     "message": "Megerősítés"
   },
+  "panels/timeline/TimelineUIUtils.ts | compilationCacheKind": {
+    "message": "Fordítási gyorsítótár fajtája"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Fordítási gyorsítótár mérete"
   },
@@ -12257,6 +12584,9 @@
   "panels/timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "Képhez tartozó URL"
   },
+  "panels/timeline/TimelineUIUtils.ts | initialPriority": {
+    "message": "Kezdeti prioritás"
+  },
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Kezdeményező"
   },
@@ -12274,9 +12604,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Időtúllépés aktiválta"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jank": {
-    "message": "akadozás"
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS-keret"
@@ -12529,9 +12856,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
     "message": "A(z) {PH1} az oldal gyenge válaszadási hajlandóságát jelzi."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
-    "message": "{PH1}. A hosszú képkockaidők a következőt jelezhetik: {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2}/{PH1}"
@@ -12953,6 +13277,9 @@
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "{PH1} szerinti rendezés visszavonva"
   },
+  "ui/components/dialogs/IconDialog.ts | close": {
+    "message": "Bezárás"
+  },
   "ui/components/dialogs/ShortcutDialog.ts | close": {
     "message": "Bezárás"
   },
@@ -13208,8 +13535,8 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Ne jelenjen meg többé"
   },
-  "ui/legacy/Infobar.ts | learnMore": {
-    "message": "További információ"
+  "ui/legacy/Infobar.ts | showMore": {
+    "message": "Több megjelenítése"
   },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Fiók bezárása"
@@ -13618,9 +13945,6 @@
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showDBefore": {
     "message": "{PH1} megjelenítése a következő előtt:"
-  },
-  "ui/legacy/components/data_grid/ViewportDataGrid.ts | collapsed": {
-    "message": "összecsukva"
   },
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | blur": {
     "message": "Homályosítás"

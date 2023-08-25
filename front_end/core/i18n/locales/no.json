@@ -419,9 +419,6 @@
   "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
     "message": "Start for selgerpoengsumfase"
   },
-  "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
-    "message": "Cross-Origin Read Blocking (CORB) blokkerte kryssopprinnelse-respons {PH1} med MIME-type {PH2}. Se https://www.chromestatus.com/feature/5629709824032768 for mer informasjon."
-  },
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Rask 3G"
   },
@@ -857,6 +854,12 @@
   "entrypoints/inspector_main/InspectorMain.ts | tab": {
     "message": "Fane"
   },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "Side: ikke valgt"
+  },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetS": {
+    "message": "Side: {PH1}"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Kjernestatistikk for nett"
   },
@@ -901,6 +904,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedmotion": {
     "message": "Tvinger CSS prefers-reduced-motion-mediafunksjon"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedtransparencyMedia": {
+    "message": "Tvinger bruk av prefers-reduced-transparency-mediefunksjonen i CSS"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Tvinger medietype for testing av utskrifts- og skjermstiler"
@@ -1026,7 +1032,7 @@
     "message": "Dokk til høyre"
   },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
-    "message": "Fokus-feilsøking"
+    "message": "Fokuser på siden"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "Hjelp"
@@ -1101,7 +1107,7 @@
     "message": "Finn forrige resultat"
   },
   "entrypoints/main/main-meta.ts | focusDebuggee": {
-    "message": "Fokus-feilsøking"
+    "message": "Fokuser på siden"
   },
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "horisontal"
@@ -1278,7 +1284,7 @@
     "message": "DOM-mutasjonshendelser, inkludert DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument og DOMCharacterDataModified, er avviklet (https://w3c.github.io/uievents/#legacy-event-types) og kommer til å bli fjernet. Bruk MutationObserver i stedet."
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
-    "message": "Støtte for data:-nettadresser i <use>-elementer i SVG-filer er avviklet og kommer til å bli fjernet i fremtiden."
+    "message": "Støtte for data:-nettadresser i SVGUseElement er avviklet og blir fjernet i fremtiden."
   },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Oppmykning av samme opphav-reglene ved å angi document.domain er avviklet og kommer til å være avslått som standard. For å fortsette å bruke denne funksjonen, velg bort agentgrupper med opphavsnøkler ved å sende et Origin-Agent-Cluster: ?0-hode sammen med HTTP-svaret for dokumentet og rammene. Se https://developer.chrome.com/blog/immutable-document-domain/ for mer informasjon."
@@ -1547,6 +1553,9 @@
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "Forklaring av SameSite-informasjonskapsler"
   },
+  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Forbered deg på utfasing av informasjonskapsler fra tredjeparter"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Opphavsuavhengig ressursdeling (CORS)"
   },
@@ -1576,6 +1585,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-attributt: autocomplete"
+  },
+  "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
+    "message": "CORB-forklaringsmelding"
   },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Portaler – kommunikasjonskanaler med samme opphav"
@@ -1688,14 +1700,17 @@
   "models/persistence/PersistenceActions.ts | openInContainingFolder": {
     "message": "Åpne i overordnet mappe"
   },
+  "models/persistence/PersistenceActions.ts | overrideContent": {
+    "message": "Overstyr innhold"
+  },
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Lagre som…"
   },
-  "models/persistence/PersistenceActions.ts | saveForOverrides": {
-    "message": "Lagre til overstyringer"
-  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Lagre bilde"
+  },
+  "models/persistence/PersistenceActions.ts | showOverrides": {
+    "message": "Vis alle overstyringer"
   },
   "models/persistence/PersistenceUtils.ts | linkedToS": {
     "message": "Knyttet til {PH1}"
@@ -2306,6 +2321,9 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Kunne ikke laste ned et obligatorisk ikon fra manifestet"
   },
+  "panels/application/AppManifestView.ts | customizePwaTitleBar": {
+    "message": "Tilpass overlegget for vinduskontroller på tittellinjen til PWA-et."
+  },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
     "message": "Mørk bakgrunnsfarge"
   },
@@ -2482,6 +2500,18 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Temafarge"
+  },
+  "panels/application/AppManifestView.ts | wcoFound": {
+    "message": "Chrome har funnet {PH1}-verdien for {PH2}-feltet i {PH3}."
+  },
+  "panels/application/AppManifestView.ts | wcoNeedHelpReadMore": {
+    "message": "Trenger du hjelp? Les {PH1}."
+  },
+  "panels/application/AppManifestView.ts | wcoNotFound": {
+    "message": "Definer {PH1} i manifestet for å bruke Window Controls Overlay-API-et og tilpasse appens tittellinje."
+  },
+  "panels/application/AppManifestView.ts | windowControlsOverlay": {
+    "message": "Overlegg for vinduskontroller"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "Appmanifest"
@@ -2864,6 +2894,12 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ja"
   },
+  "panels/application/PreloadingTreeElement.ts | preloads": {
+    "message": "Forhåndslastinger"
+  },
+  "panels/application/PreloadingTreeElement.ts | speculationRules": {
+    "message": "Spekulasjonsregler"
+  },
   "panels/application/PreloadingTreeElement.ts | thisPage": {
     "message": "Denne siden"
   },
@@ -3077,6 +3113,9 @@
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "Delt lagring"
   },
+  "panels/application/StorageBucketsTreeElement.ts | storageBuckets": {
+    "message": "Toppmapper for lagring"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Fjern alt"
   },
@@ -3180,7 +3219,7 @@
     "message": "Nett-SQL"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
-    "message": "Private tilstandstokens"
+    "message": "Private tilstandstokener"
   },
   "panels/application/application-meta.ts | application": {
     "message": "Program"
@@ -3202,6 +3241,12 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Stopp opptak av hendelser"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
+    "message": "Udefinert"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
+    "message": "Udefinert"
   },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Kun sider som lastes inn via GET-forespørsler, kan lagres i frem-og-tilbake-bufferen."
@@ -3542,14 +3587,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Sider med WebRTC kan ikke lagres i frem-og-tilbake-bufferen."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
+    "message": "Frem-og-tilbake-bufferen er deaktivert fordi WebRTC er brukt."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Sider som bruker WebShare, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Sider med WebSocket kan ikke lagres i frem-og-tilbake-bufferen."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
+    "message": "Frem-og-tilbake-bufferen er deaktivert fordi WebSocket er brukt."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Sider med WebTransport kan ikke lagres i frem-og-tilbake-bufferen."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
+    "message": "Frem-og-tilbake-bufferen er deaktivert fordi WebTransport er brukt."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Sider som bruker WebXR, kan for tiden ikke lagres i frem-og-tilbake-bufferen."
@@ -3629,6 +3683,12 @@
   "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
     "message": "Ser etter nettsteder som muligens driver med avvisningssporing."
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureDisabled": {
+    "message": "Korrigeringer av avvisningssporing er deaktivert. For å slå dem på, endre flagget for {PH1} til «Aktivert med sletting»."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureFlag": {
+    "message": "Flagg for funksjonen for korrigeringer av avvisningssporing"
+  },
   "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
     "message": "Tving kjøring"
   },
@@ -3636,7 +3696,7 @@
     "message": "Finn ut mer: korrigeringer av avvisningssporing"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
-    "message": "Tilstanden ble ikke fjernet for eventuelle nettsteder som driver med avvisningssporing. Det kan skyldes at ingen slike ble identifisert, at korrigeringer av avvisningssporing ikke er påslått, eller at informasjonskapsler fra tredjeparter ikke blokkeres."
+    "message": "Tilstanden ble ikke fjernet for eventuelle nettsteder som driver med avvisningssporing. Enten ble ingen slike identifisert, eller så blokkeres ikke informasjonskapsler fra tredjeparter."
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
     "message": "Kjører"
@@ -4106,6 +4166,15 @@
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Navn på toppmappe"
   },
+  "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
+    "message": "Vil du slette toppmappen «{PH1}»?"
+  },
+  "panels/application/components/StorageMetadataView.ts | defaultBucket": {
+    "message": "Standard toppmappe"
+  },
+  "panels/application/components/StorageMetadataView.ts | deleteBucket": {
+    "message": "Slett toppmappen"
+  },
   "panels/application/components/StorageMetadataView.ts | durability": {
     "message": "Robusthet"
   },
@@ -4158,28 +4227,28 @@
     "message": "Ja, fordi nettstedet på toppnivå er ugjennomsiktig"
   },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
-    "message": "Alle lagrede private tilstandstokens som er tilgjengelige i denne nettleserforekomsten."
+    "message": "Alle lagrede private tilstandstokener som er tilgjengelige i denne nettleserforekomsten."
   },
   "panels/application/components/TrustTokensView.ts | deleteTrustTokens": {
-    "message": "Slett alle lagrede private tilstandstokens som er utstedt av {PH1}."
+    "message": "Slett alle lagrede private tilstandstokener som er utstedt av {PH1}."
   },
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Utsteder"
   },
   "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Ingen private tilstandstokens er lagret for øyeblikket."
+    "message": "Ingen private tilstandstokener er lagret for øyeblikket."
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Lagret tokenantall"
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
-    "message": "Private tilstandstokens"
+    "message": "Private tilstandstokener"
   },
-  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
-    "message": "Innstillinger for utvidelser"
+  "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
+    "message": "Alle forhåndslastinger"
   },
-  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
-    "message": "Innstillinger for forhåndslasting av sider"
+  "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
+    "message": "Filtrer etter regelsett"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Mislyktes"
@@ -4208,17 +4277,41 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Gyldig"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
-    "message": "Forhåndslasting er avslått fordi operativsystemet er i batterisparingsmodus."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | action": {
+    "message": "Handling"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
-    "message": "Forhåndslasting er avslått fordi operativsystemet er i datasparingsmodus."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | status": {
+    "message": "Status"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
-    "message": "Forhåndslasting er avslått på grunn av brukerinnstillinger eller en utvidelse. Gå til {PH1} for å finne ut mer, eller gå til {PH2} for å slå av utvidelsen."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusFailure": {
+    "message": "Mislyktes"
   },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
-    "message": "Forhåndslasting er slått av"
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusNotTriggered": {
+    "message": "Ikke utløst"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusPending": {
+    "message": "Venter"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusReady": {
+    "message": "Klar"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusRunning": {
+    "message": "Kjører"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusSuccess": {
+    "message": "Fullført"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | url": {
+    "message": "Nettadresse"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToInspect": {
+    "message": "Klikk for å inspisere den forhåndsgjengitte siden"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToRevealRuleSet": {
+    "message": "Klikk for å vise regelsettet"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonInspect": {
+    "message": "Inspiser"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Kunne ikke forhåndslaste."
@@ -4248,7 +4341,7 @@
     "message": "Årsak til feilen"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
-    "message": "Regel er angitt"
+    "message": "Regelsett"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "Status"
@@ -4256,8 +4349,59 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Velg et element for å se flere detaljer"
   },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
+    "message": "Forhåndslasting er avslått fordi operativsystemet er i batterisparingsmodus."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
+    "message": "Forhåndslasting er avslått fordi operativsystemet er i datasparingsmodus."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "Forhåndshenting er tvunget til å være aktivert fordi Utviklerverktøy er åpne. Når Utviklerverktøy er lukket, deaktiveres forhåndshenting fordi denne nettleserøkten er en del av en holdback-gruppe som brukes til sammenligning av resultater."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "Forhåndsgjengivelse er tvunget aktivert fordi Utviklerverktøy er åpent. Når Utviklerverktøy er lukket, deaktiveres forhåndsgjengivelse fordi denne nettleserøkten er en del av en holdback-gruppe som brukes til sammenligning av resultater."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
+    "message": "Forhåndslasting er avslått på grunn av brukerinnstillinger eller en utvidelse. Gå til {PH1} for å oppdatere innstillingen. Gå til {PH2} for å deaktivere utvidelser som blokkerer forhåndslasting."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
+    "message": "Innstillinger for utvidelser"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | footerLearnMore": {
+    "message": "Finn ut mer"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByBatterySaver": {
+    "message": "Batterisparing"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByDataSaver": {
+    "message": "Datasparing"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "Forhåndslasting var deaktivert, men er nå tvunget til å være aktivert"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "Forhåndsgjengivelse er deaktivert, men er tvunget aktivert nå"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByPreference": {
+    "message": "Brukerinnstillinger eller -utvidelse"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
+    "message": "Forhåndslasting er slått av"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
+    "message": "Forhåndslasting er tvunget til å være aktivert"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
+    "message": "Innstillinger for forhåndslasting av sider"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
+    "message": "Årsaker til at forhåndslasting ikke er mulig"
+  },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Handling"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | ruleSet": {
+    "message": "Regelsett"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
@@ -4334,50 +4478,209 @@
   "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
     "message": "Det oppsto en nettverksfeil under forsøket på å koble til proxy-tjeneren for forhåndshenting."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "Den forhåndsgjengitte siden ble aktivert under initiering av navigering i sidens hovedramme."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "Forhåndsgjengivelsen ble ikke brukt fordi sandkasseflaggene eller tillatelsesregelen for den initierende siden ikke var kompatibel med dem for forhåndsgjengivelsessiden."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "Forhåndsgjengivelsen ble ikke brukt, da forskjellige navigasjonsparametere (f.eks. HTTP-hoder) ble beregnet under aktiveringstiden enn under den opprinnelige navigasjonsforespørselen om forhåndsgjengivelse."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "Den forhåndsgjengitte siden forespurte lydutdata, noe som ikke støttes for øyeblikket."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "Forhåndsgjengivelsen ble ikke utført fordi brukeren ba nettleseren om å bruke mindre batteri."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "Noe ressurslasting ble blokkert."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "Navigeringen for forhåndsgjengivelse krevde et HTTP-klientsertifikat."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "Navigeringen for forhåndsgjengivelse mislyktes fordi målet var en nettadresse på et annet nettsted."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "Den forhåndsgjengitte siden navigerte til en nettadresse på et annet nettsted."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "Navigeringen for forhåndsgjengivelse mislyktes fordi den forhåndsgjengitte nettadressen viderekoblet til en nettadresse på et annet nettsted."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "Den forhåndsgjengitte siden navigerte til en nettadresse som viderekoblet til en nettadresse på et annet nettsted."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "Forhåndsgjengivelsen ble ikke utført fordi brukeren ba nettleseren om å bruke mindre data."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
+    "message": "Den forhåndsgjengitte siden prøvde å starte en nedlasting, noe som ikke støttes for øyeblikket."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "Forhåndsgjengivelsen ble ikke utført fordi nettleseren støtte på en intern feil da den prøvde å fastslå gjeldende minnebruk."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "Den initierende siden kan ikke utføre forhåndsgjengivelse fordi den har en annen effektiv nettadresse enn den vanlige nettadressen. (Eksempel: Ny fane-siden eller vertsbaserte apper.)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "Nettadressen var ikke kvalifisert for forhåndsgjengivelse fordi den hadde en annen protokoll enn http: og https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "Navigeringen for forhåndsgjengivelse mislyktes fordi den ble viderekoblet til en nettadresse med en annen protokoll enn http: og https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "Navigeringen for forhåndsgjengivelse krevde HTTP-autentisering, noe som ikke støttes for øyeblikket."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "Forhåndsgjengivelsen ble ikke utført fordi denne enheten ikke har nok systemminne totalt til å støtte forhåndsgjengivelse."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "Den forhåndsgjengitte siden navigerte seg selv til en annen nettadresse, noe som ikke støttes for øyeblikket."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "Forhåndsgjengivelsen ble ikke utført fordi den initierende siden allerede har for mange pågående forhåndsgjengivelser. Fjern andre spekulasjonsregler for å muliggjøre ytterligere forhåndsgjengivelse."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "Forhåndsgjengivelsen ble ikke utført fordi nettleseren overskred minnegrensen for forhåndsgjengivelse."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "Den forhåndsgjengitte siden ble lastet ut fordi nettleseren begynte å få kritisk lite minne."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "Forhåndsgjengivelsen ble ikke utført fordi nettleseren hadde kritisk lite minne."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMixedContent": {
+    "message": "Den forhåndsgjengitte siden inneholdt blandet innhold."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "Den forhåndsgjengitte siden brukte et forbudt JavaScript-API som ikke støttes for øyeblikket. (Internt Mojo-grensesnitt: {PH1})"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "Navigasjonen for forhåndsgjengivelse mislyktes fordi det ble returnert en HTTP-svarstatuskode utenfor 2xx-serien."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "Navigeringen for forhåndsgjengivelse ble blokkert av en Content Security Policy."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "Det oppsto en nettverksfeil under navigeringen for forhåndsgjengivelse."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "Forhåndsgjengivelsen ble ikke utført fordi brukeren har deaktivert forhåndslasting i nettleserinnstillingene."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
+    "message": "Forhåndsgjengivelsen ble ikke utført fordi Utviklerverktøy er brukt til å deaktivere forhåndsgjengivelse."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "Den initierende siden krasjet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "Prosessen for den initierende siden ble avsluttet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "Den forhåndsgjengitte siden krasjet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "Prosessen for forhåndsgjengivelse av siden ble avsluttet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusResourceLoadBlockedByClient": {
+    "message": "Noe ressurslasting ble blokkert."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "Den forhåndsgjengitte siden navigerte seg selv til en nettadresse med et annet opphav på samme nettsted, men destinasjonssvaret inneholdt ikke det riktige «Supports-Loading-Mode»-hodet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "Den forhåndsgjengitte siden navigerte til en nettadresse med et annet opphav på samme nettsted, men destinasjonssvaret inneholdt ikke det riktige «Supports-Loading-Mode»-hodet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "Navigeringen for forhåndsgjengivelse mislyktes fordi den forhåndsgjengitte nettadressen viderekoblet til en nettadresse med et annet opphav på samme nettsted, men destinasjonssvaret inneholdt ikke det riktige «Supports-Loading-Mode»-hodet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "Den forhåndsgjengitte siden navigerte til en nettadresse som viderekoblet til en nettadresse med et annet opphav på samme nettsted, men destinasjonssvaret inneholdt ikke det riktige «Supports-Loading-Mode»-hodet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSpeculationRuleRemoved": {
+    "message": "Ukjent"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "Navigasjonen for forhåndsgjengivelse mislyktes på grunn av et ugyldig SSL-sertifikat."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "Den initierende siden kjørte i bakgrunnen lenge, så den forhåndsgjengitte siden ble forkastet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "Den initierende siden kjørte i bakgrunnen, så den forhåndsgjengitte siden ble forkastet."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "Brukeragenten ble endret under navigeringen for forhåndsgjengivelse."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusFailure": {
+    "message": "Mislyktes"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusNotTriggered": {
+    "message": "Ikke utløst"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusPending": {
+    "message": "Venter"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusReady": {
+    "message": "Klar"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusRunning": {
+    "message": "Kjører"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusSuccess": {
+    "message": "Fullført"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInElementsPanel": {
     "message": "Klikk for å vise i Elementer-panelet"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInNetworkPanel": {
     "message": "Klikk for å vise i Nettverkspanel"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
-    "message": "Detaljert informasjon"
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
+    "message": "Se forhåndslastinger knyttet til dette regelsettet"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
-    "message": "Feil"
+  "panels/application/preloading/components/RuleSetGrid.ts | errors": {
+    "message": "{errorCount,plural, =1{# feil}other{# feil}}"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
-    "message": "Posisjon"
+  "panels/application/preloading/components/RuleSetGrid.ts | ruleSet": {
+    "message": "Regelsett"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
-    "message": "Kilde"
+  "panels/application/preloading/components/RuleSetGrid.ts | status": {
+    "message": "Status"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
-    "message": "Gyldighet"
+  "panels/application/preloading/components/UsedPreloadingView.ts | currentURL": {
+    "message": "Nåværende nettadresse"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityInvalid": {
-    "message": "Ugyldig. Kilden er ikke et JSON-objekt"
+  "panels/application/preloading/components/UsedPreloadingView.ts | detailsFailureReason": {
+    "message": "Årsak til feilen"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validitySomeRulesInvalid": {
-    "message": "Enkelte regler er ugyldige og ignorert"
+  "panels/application/preloading/components/UsedPreloadingView.ts | downgradedPrefetchUsed": {
+    "message": "Den initierende siden prøvde å forhåndsgjengi nettadressen til denne siden. Forhåndsgjengivelsen mislyktes, men den resulterende svarteksten ble likevel brukt som en forhåndshenting."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
-    "message": "Gyldig"
+  "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
+    "message": "Finn ut mer"
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | location": {
-    "message": "Posisjon"
+  "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
+    "message": "Den initierende siden prøvde ikke å forhåndslaste nettadressen til denne siden."
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
-    "message": "Gyldighet"
+  "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
+    "message": "Den initierende siden prøvde å forhåndshente nettadressen til denne siden, men forhåndshentingen mislyktes, så det ble utført en fullstendig navigering i stedet."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
-    "message": "{PH1} forhåndshentede ressurser brukes for denne siden"
+    "message": "Denne siden ble forhåndshentet."
   },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
-    "message": "Forhåndslasting brukes for denne siden"
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
+    "message": "Nettadresser som forhåndslastes av den initierende siden"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
+    "message": "Status for forhåndslasting"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
+    "message": "Den initierende siden prøvde å forhåndsgjengi nettadressen til denne siden, men forhåndsgjengivelsen mislyktes, så det ble utført en fullstendig navigering i stedet."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
-    "message": "Denne siden ble forhåndsgjengitt"
+    "message": "Denne siden ble forhåndsgjengitt."
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "stoppunkt truffet"
@@ -4580,8 +4883,14 @@
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Fjern uttrykk: {PH1}"
   },
+  "panels/console/ConsolePrompt.ts | allowPasting": {
+    "message": "tillat innliming"
+  },
   "panels/console/ConsolePrompt.ts | consolePrompt": {
     "message": "Konsoll-ledetekst"
+  },
+  "panels/console/ConsolePrompt.ts | selfXssWarning": {
+    "message": "Advarsel: Ikke lim inn kode du ikke forstår eller ikke har kontrollert selv, i Utviklerverktøy-konsollen. Dette kan gjøre det mulig for angripere å stjele identiteten din eller ta kontroll over datamaskinen din. Skriv inn «{PH1}» under for å tillate innliming."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Ingen feil}=1{# feil}other{# feil}}"
@@ -4612,9 +4921,6 @@
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsollen er tømt"
-  },
-  "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Innliming av kode er blokkert på denne siden. Innliming av kode i Utviklerverktøy kan gjøre det mulig for angripere å ta over kontoen din."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsollinnstillinger"
@@ -6698,9 +7004,6 @@
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
     "message": "JavaScript er deaktivert. Du må slå på JavaScript for å kontrollere denne siden. Åpne Kommando-menyen og kjør Slå på JavaScript-kommandoen for å slå på JavaScript."
   },
-  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
-    "message": "Navigasjon i eldre versjon"
-  },
   "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
     "message": "Lighthouse-modus"
   },
@@ -6763,9 +7066,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
     "message": "Tidsspennmodus analyserer en vilkårlig tidsperiode, vanligvis med brukerinteraksjoner."
-  },
-  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Analyser siden med den klassiske versjonen av Lighthouse når du er i navigeringsmodus."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Nett-SQL"
@@ -7133,8 +7433,8 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
     "message": "Forespørsler kan bli blokkert"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeRewrittenByLocal": {
-    "message": "Forespørsler kan bli overskrevet av lokale overstyringer"
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
+    "message": "Forespørsler kan overstyres lokalt"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Tilpasset"
@@ -7171,6 +7471,9 @@
   },
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Overstyring av maskinvarens parallellkjøring er aktivert"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingTooltip": {
+    "message": "Overstyr verdien som rapporteres av navigator.hardwareConcurrency på siden"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Ingen struping"
@@ -7430,9 +7733,6 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Ferdig"
   },
-  "panels/network/NetworkDataGridNode.ts | hasOverriddenHeaders": {
-    "message": "Forespørselen har overstyrte overskrifter"
-  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "nivå 1"
   },
@@ -7477,6 +7777,15 @@
   },
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "Viderekoble"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentHeadersOverridden": {
+    "message": "Både forespørselsinnhold og -hoder overstyres"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentOverridden": {
+    "message": "Forespørselsinnholdet overstyres"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestHeadersOverridden": {
+    "message": "Forespørselshoder overstyres"
   },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + forhåndskontroll"
@@ -7581,7 +7890,7 @@
     "message": "Detaljer om operasjonen for privat tilstandstoken"
   },
   "panels/network/NetworkItemView.ts | trustTokens": {
-    "message": "Private tilstandstokens"
+    "message": "Private tilstandstokener"
   },
   "panels/network/NetworkItemView.ts | websocketMessages": {
     "message": "WebSocket-meldinger"
@@ -7600,6 +7909,9 @@
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Blokkerte forespørsler"
+  },
+  "panels/network/NetworkLogView.ts | chromeExtensions": {
+    "message": "Skjul nettadressene for utvidelser"
   },
   "panels/network/NetworkLogView.ts | clearBrowserCache": {
     "message": "Tøm nettleserbufferen"
@@ -7671,7 +7983,10 @@
     "message": "Fullføring: {PH1}"
   },
   "panels/network/NetworkLogView.ts | hasBlockedCookies": {
-    "message": "Har blokkert informasjonskapsler"
+    "message": "Blokkerte svar-informasjonskapsler"
+  },
+  "panels/network/NetworkLogView.ts | hideChromeExtension": {
+    "message": "Skjul forespørsler til «chrome-extension://»-nettadresser"
   },
   "panels/network/NetworkLogView.ts | hideDataUrls": {
     "message": "Skjul datanettadresser"
@@ -7695,13 +8010,13 @@
     "message": "Nettverksdata er tilgjengelig"
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
-    "message": "Vis kun blokkerte forespørsler"
+    "message": "Vis bare blokkerte forespørsler"
   },
-  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
-    "message": "Vis kun forespørsler med blokkerte svar-informasjonskapsler"
+  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
+    "message": "Vis bare forespørslene med blokkerte svar-informasjonskapsler"
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
-    "message": "Viser bare forespørsler fra opprinnelse som er ulik sideopprinnelse"
+    "message": "Viser bare forespørsler fra andre opphav enn sideopphavet"
   },
   "panels/network/NetworkLogView.ts | overrideHeaders": {
     "message": "Overstyr hoder"
@@ -7863,7 +8178,7 @@
     "message": "Ingen egendefinerte hoder"
   },
   "panels/network/NetworkPanel.ts | captureScreenshots": {
-    "message": "Ta skjermdumper"
+    "message": "Skjermdumper"
   },
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Ta skjermdumper ved innlasting av sider"
@@ -7920,7 +8235,7 @@
     "message": "Vis mer informasjon i forespørselsrader"
   },
   "panels/network/NetworkPanel.ts | showOverview": {
-    "message": "Vis oversikt"
+    "message": "Oversikt"
   },
   "panels/network/NetworkPanel.ts | showOverviewOfNetworkRequests": {
     "message": "Vis oversikt over nettverksforespørsler"
@@ -7929,7 +8244,7 @@
     "message": "Struping"
   },
   "panels/network/NetworkPanel.ts | useLargeRequestRows": {
-    "message": "Bruk store forespørselsrader"
+    "message": "Store forespørselsrader"
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "Nettadresse"
@@ -8018,9 +8333,6 @@
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Generelt"
   },
-  "panels/network/RequestHeadersView.ts | headerOverrides": {
-    "message": "Hodeoverstyringer"
-  },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Finn ut mer"
   },
@@ -8064,7 +8376,7 @@
     "message": "Statuskode"
   },
   "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Dette dokumentet ble blokkert fra å lastes inn i en iframe med et sandbox-attributt, fordi dokumentet spesifiserte en regel for opphavsuavhengig åpner."
+    "message": "Dokumentet ble blokkert fra å lastes inn i et forgrunnsvindu som ble åpnet av et iframe-element i en sandkasse, fordi dokumentet spesifiserte en opphavsuavhengig åpningsregel."
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
     "message": "For at denne rammen skal kunne bygges inn i dokumentet, må responsen slå på regelen for opphavsuavhengig innebygging ved å spesifisere det følgende svarhodet:"
@@ -8468,9 +8780,6 @@
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Generelt"
   },
-  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
-    "message": "Hodeoverstyringer"
-  },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Uparsede"
   },
@@ -8565,7 +8874,7 @@
     "message": "Velg dette alternativet kun hvis et vilkårlig nettsted som inkluderer denne ressursen, ikke utgjør noen sikkerhetsrisiko."
   },
   "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
-    "message": "Dette dokumentet ble blokkert fra å lastes inn i et iframe-element med et sandbox-attributt, fordi dokumentet spesifiserte en regel for opphavsuavhengig åpning."
+    "message": "Dokumentet ble blokkert fra å lastes inn i et forgrunnsvindu som ble åpnet av et iframe-element i en sandkasse, fordi dokumentet spesifiserte en opphavsuavhengig åpningsregel."
   },
   "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
     "message": "For å bygge denne rammen inn i dokumentet må svaret slå på regelen for opphavsuavhengig innebygging ved å spesifisere det følgende svarhodet:"
@@ -9344,6 +9653,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentasjon"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | editAndResend": {
+    "message": "Rediger og send på nytt"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
     "message": "Forløpt tid"
   },
@@ -9397,6 +9709,18 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | type": {
     "message": "Type"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | addParameter": {
+    "message": "Legg til en parameter"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | deleteParameter": {
+    "message": "Slett parameter"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | resetDefaultValue": {
+    "message": "Tilbakestill til standardverdi"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | copyCommand": {
+    "message": "Kopier kommandoen"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protokollmonitor"
@@ -10868,6 +11192,9 @@
   "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
     "message": "Kunne ikke laste inn feilsøkingsinformasjon for {PH1}."
   },
+  "panels/sources/DebuggerPlugin.ts | debuggingPowerReduced": {
+    "message": "Utviklerverktøy kan ikke vise forfattede kilder, men du kan feilsøke den implementerte koden."
+  },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{Deaktiver stoppunkt}other{Deaktiver alle stoppunkter på linjen}}"
   },
@@ -10877,8 +11204,20 @@
   "panels/sources/DebuggerPlugin.ts | enableBreakpoint": {
     "message": "{n,plural, =1{Aktiver stoppunkt}other{Aktiver alle stoppunkter på linjen}}"
   },
+  "panels/sources/DebuggerPlugin.ts | errorLoading": {
+    "message": "Feil ved innlasting av nettadressen {PH1}: {PH2}"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
+    "message": "Ignorer utvidelsesskript"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
+    "message": "Ignorer denne filen"
+  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Pause aldri her"
+  },
+  "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
+    "message": "For å aktivere det igjen må du sjekke at filen ikke står på ignoreringslisten, og deretter laste inn siden på nytt."
   },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n,plural, =1{Fjern stoppunkt}other{Fjern alle stoppunkter på linjen}}"
@@ -10886,11 +11225,14 @@
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "Fjern fra ignoreringslisten"
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapDetected": {
-    "message": "Kildekart er oppdaget."
+  "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
+    "message": "Kunne ikke laste inn kildekartet."
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
-    "message": "Kildekart funnet, men ignorert for fil på ignoreringslisten."
+  "panels/sources/DebuggerPlugin.ts | sourceMapLoaded": {
+    "message": "Kildekartet er lastet inn."
+  },
+  "panels/sources/DebuggerPlugin.ts | sourceMapSkipped": {
+    "message": "Kildekartet er hoppet over for denne filen."
   },
   "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
     "message": "Feilsøkingsprogrammet hopper over trinnet med gjennomgang av dette skriptet, og vil ikke stoppe ved unntak."
@@ -10933,9 +11275,6 @@
   },
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "Formatér {PH1}"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
-    "message": "Er du sikker på at du vil slette alle overstyrringer i denne mappen?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "Er du sikker på at du vil slette denne filen?"
@@ -11054,26 +11393,26 @@
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Slett konfigurasjon"
   },
-  "panels/sources/SourcesNavigator.ts | contentScriptsServedByExtensions": {
-    "message": "Innholdsskripter servet av utvidelser synes her"
-  },
-  "panels/sources/SourcesNavigator.ts | createAndSaveCodeSnippetsFor": {
-    "message": "Opprett og lagre kodebiter for senere gjenbruk"
-  },
   "panels/sources/SourcesNavigator.ts | createNewSnippet": {
     "message": "Opprett nytt tekstutdrag"
+  },
+  "panels/sources/SourcesNavigator.ts | explainContentScripts": {
+    "message": "Se innholdsskript fra utvidelser"
+  },
+  "panels/sources/SourcesNavigator.ts | explainLocalOverrides": {
+    "message": "Overstyr nettverksforespørsler og nettinnhold lokalt for å etterligne eksterne ressurser"
+  },
+  "panels/sources/SourcesNavigator.ts | explainSnippets": {
+    "message": "Lagre JavaScript-koden du kjører ofte, for å kjøre den på nytt når som helst"
+  },
+  "panels/sources/SourcesNavigator.ts | explainWorkspace": {
+    "message": "Konfigurer arbeidsområdet for å synkronisere endringene direkte med kildene du utvikler"
   },
   "panels/sources/SourcesNavigator.ts | learnMore": {
     "message": "Finn ut mer"
   },
-  "panels/sources/SourcesNavigator.ts | learnMoreAboutWorkspaces": {
-    "message": "Finn ut mer om arbeidsområder"
-  },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "Nytt tekstutdrag"
-  },
-  "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
-    "message": "Overstyr sideelementer med filer fra en lokal mappe"
   },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "Fjern"
@@ -11089,9 +11428,6 @@
   },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Velg mappe for overstyringer"
-  },
-  "panels/sources/SourcesNavigator.ts | syncChangesInDevtoolsWithThe": {
-    "message": "Synkroniser endringer i utviklerverktøy med det lokale filsystemet"
   },
   "panels/sources/SourcesPanel.ts | continueToHere": {
     "message": "Fortsett hit"
@@ -11167,9 +11503,6 @@
   },
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "Terminer gjeldende JavaScript-anrop"
-  },
-  "panels/sources/SourcesView.ts | dropInAFolderToAddToWorkspace": {
-    "message": "Slipp inn en mappe for å legge den til arbeidsområde"
   },
   "panels/sources/SourcesView.ts | openFile": {
     "message": "Åpne fil"
@@ -11411,9 +11744,6 @@
   "panels/sources/sources-meta.ts | file": {
     "message": "Fil"
   },
-  "panels/sources/sources-meta.ts | filesystem": {
-    "message": "Filsystem"
-  },
   "panels/sources/sources-meta.ts | goTo": {
     "message": "Gå til"
   },
@@ -11488,9 +11818,6 @@
   },
   "panels/sources/sources-meta.ts | showBreakpoints": {
     "message": "Vis stoppunkter"
-  },
-  "panels/sources/sources-meta.ts | showFilesystem": {
-    "message": "Vis filsystem"
   },
   "panels/sources/sources-meta.ts | showQuickSource": {
     "message": "Vis hurtigkilde"
@@ -11570,6 +11897,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Se"
   },
+  "panels/timeline/AnimationsTrackAppender.ts | animations": {
+    "message": "Animasjoner"
+  },
   "panels/timeline/AppenderUtils.ts | sSelfS": {
     "message": "{PH1} (egen {PH2})"
   },
@@ -11615,6 +11945,15 @@
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
     "message": "Utseendeforskyvninger"
   },
+  "panels/timeline/NetworkTrackAppender.ts | network": {
+    "message": "Nettverk"
+  },
+  "panels/timeline/ThreadAppender.ts | anonymous": {
+    "message": "(anonym)"
+  },
+  "panels/timeline/ThreadAppender.ts | thread": {
+    "message": "Hovedtråd etter ny motor"
+  },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "CPU-profil for et mål er ikke tilgjengelig"
   },
@@ -11627,17 +11966,11 @@
   "panels/timeline/TimelineDetailsView.ts | callTree": {
     "message": "Anropstre"
   },
-  "panels/timeline/TimelineDetailsView.ts | estimated": {
-    "message": "beregnet"
-  },
   "panels/timeline/TimelineDetailsView.ts | eventLog": {
     "message": "Aktivitetslogg"
   },
   "panels/timeline/TimelineDetailsView.ts | layers": {
     "message": "Lag"
-  },
-  "panels/timeline/TimelineDetailsView.ts | learnMore": {
-    "message": "Finn ut mer"
   },
   "panels/timeline/TimelineDetailsView.ts | paintProfiler": {
     "message": "Profileringsverktøy for opptegning"
@@ -11647,9 +11980,6 @@
   },
   "panels/timeline/TimelineDetailsView.ts | summary": {
     "message": "Sammendrag"
-  },
-  "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
-    "message": "Total blokkeringstid: {PH1}ms{PH2}"
   },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
@@ -11662,9 +11992,6 @@
   },
   "panels/timeline/TimelineEventOverview.ts | sSDash": {
     "message": "{PH1}–{PH2}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | animation": {
-    "message": "Animasjon"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "Falt ramme"
@@ -11680,9 +12007,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Inaktiv ramme"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
-    "message": "Lang ramme"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | main": {
     "message": "Primært"
@@ -12050,6 +12374,9 @@
   "panels/timeline/TimelineUIUtils.ts | commit": {
     "message": "Avhending"
   },
+  "panels/timeline/TimelineUIUtils.ts | compilationCacheKind": {
+    "message": "Buffertype for kompilering"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Hurtigbufferstørrelse for kompilering"
   },
@@ -12257,6 +12584,9 @@
   "panels/timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "Nettadresse for bilde"
   },
+  "panels/timeline/TimelineUIUtils.ts | initialPriority": {
+    "message": "Innledende prioritet"
+  },
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Igangsetter"
   },
@@ -12274,9 +12604,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Påkalt av tidsavbrudd"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jank": {
-    "message": "gjengivelsespause"
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS-ramme"
@@ -12529,9 +12856,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
     "message": "{PH1} indikerer dårlig siderespons."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
-    "message": "{PH1}. Lange rammetider er en indikasjon på {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} av {PH2}"
@@ -12953,6 +13277,9 @@
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "Sorteringen av {PH1} er avbrutt"
   },
+  "ui/components/dialogs/IconDialog.ts | close": {
+    "message": "Lukk"
+  },
   "ui/components/dialogs/ShortcutDialog.ts | close": {
     "message": "Lukk"
   },
@@ -13062,7 +13389,7 @@
     "message": "Tilbakemelding"
   },
   "ui/components/panel_feedback/PanelFeedback.ts | previewFeature": {
-    "message": "Forhåndsvisningsfunksjon"
+    "message": "Førlanseringsfunksjon"
   },
   "ui/components/panel_feedback/PanelFeedback.ts | previewText": {
     "message": "Teamet vårt jobber aktivt med denne funksjonen, og vi ønsker din tilbakemelding."
@@ -13208,8 +13535,8 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Ikke vis igjen"
   },
-  "ui/legacy/Infobar.ts | learnMore": {
-    "message": "Finn ut mer"
+  "ui/legacy/Infobar.ts | showMore": {
+    "message": "Vis mer"
   },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Lukk uttrekksmenyen"
@@ -13359,7 +13686,7 @@
     "message": "Flere faner"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "Forhåndsvisningsfunksjon"
+    "message": "Førlanseringsfunksjon"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "Utviklerverktøy ble koblet fra siden."
@@ -13618,9 +13945,6 @@
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showDBefore": {
     "message": "Vis {PH1} før"
-  },
-  "ui/legacy/components/data_grid/ViewportDataGrid.ts | collapsed": {
-    "message": "skjules"
   },
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | blur": {
     "message": "Uskarphet"

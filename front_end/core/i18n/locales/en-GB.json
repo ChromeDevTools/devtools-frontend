@@ -419,9 +419,6 @@
   "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
     "message": "Seller scoring phase start"
   },
-  "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
-    "message": "Cross-Origin Read Blocking (CORB) blocked cross-origin response {PH1} with MIME type {PH2}. See https://www.chromestatus.com/feature/5629709824032768 for more details."
-  },
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Fast 3G"
   },
@@ -857,6 +854,12 @@
   "entrypoints/inspector_main/InspectorMain.ts | tab": {
     "message": "Tab"
   },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "Page: Not selected"
+  },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetS": {
+    "message": "Page: {PH1}"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Core Web Vitals"
   },
@@ -1029,7 +1032,7 @@
     "message": "Dock to right"
   },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
-    "message": "Focus debuggee"
+    "message": "Focus page"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "Help"
@@ -1104,7 +1107,7 @@
     "message": "Find previous result"
   },
   "entrypoints/main/main-meta.ts | focusDebuggee": {
-    "message": "Focus debuggee"
+    "message": "Focus page"
   },
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "horizontal"
@@ -1281,7 +1284,7 @@
     "message": "DOM mutation events, including DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument and DOMCharacterDataModified are deprecated (https://w3c.github.io/uievents/#legacy-event-types) and will be removed. Please use MutationObserver instead."
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
-    "message": "Support for data: URLs in SVG <use> element is deprecated and it will be removed in the future."
+    "message": "Support for data: URLs in SVGUseElement is deprecated and it will be removed in the future."
   },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Relaxing the same-origin policy by setting document.domain is deprecated, and will be disabled by default. To continue using this feature, please opt out of origin-keyed agent clusters by sending an Origin-Agent-Cluster: ?0 header along with the HTTP response for the document and frames. See https://developer.chrome.com/blog/immutable-document-domain/ for more details."
@@ -1550,6 +1553,9 @@
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "SameSite cookies explained"
   },
+  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Prepare for phasing out third-party cookies"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Cross-origin resource sharing (CORS)"
   },
@@ -1579,6 +1585,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML attribute: Autocomplete"
+  },
+  "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
+    "message": "CORB explainer"
   },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Portals – same-origin communication channels"
@@ -1691,14 +1700,17 @@
   "models/persistence/PersistenceActions.ts | openInContainingFolder": {
     "message": "Open in containing folder"
   },
+  "models/persistence/PersistenceActions.ts | overrideContent": {
+    "message": "Override content"
+  },
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Save as…"
   },
-  "models/persistence/PersistenceActions.ts | saveForOverrides": {
-    "message": "Save for overrides"
-  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Save image"
+  },
+  "models/persistence/PersistenceActions.ts | showOverrides": {
+    "message": "Show all overrides"
   },
   "models/persistence/PersistenceUtils.ts | linkedToS": {
     "message": "Linked to {PH1}"
@@ -2309,6 +2321,9 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Could not download a required icon from the manifest"
   },
+  "panels/application/AppManifestView.ts | customizePwaTitleBar": {
+    "message": "Customise the window controls overlay of your PWA's title bar."
+  },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
     "message": "Dark background colour"
   },
@@ -2485,6 +2500,18 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Theme colour"
+  },
+  "panels/application/AppManifestView.ts | wcoFound": {
+    "message": "Chrome has successfully found the {PH1} value for the {PH2} field in the {PH3}."
+  },
+  "panels/application/AppManifestView.ts | wcoNeedHelpReadMore": {
+    "message": "Need help? Read {PH1}."
+  },
+  "panels/application/AppManifestView.ts | wcoNotFound": {
+    "message": "Define {PH1} in the manifest to use the Window Controls Overlay API and customise your app's title bar."
+  },
+  "panels/application/AppManifestView.ts | windowControlsOverlay": {
+    "message": "Window Controls Overlay"
   },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "App manifest"
@@ -2867,6 +2894,12 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Yes"
   },
+  "panels/application/PreloadingTreeElement.ts | preloads": {
+    "message": "Preloads"
+  },
+  "panels/application/PreloadingTreeElement.ts | speculationRules": {
+    "message": "Speculation rules"
+  },
   "panels/application/PreloadingTreeElement.ts | thisPage": {
     "message": "This page"
   },
@@ -3081,7 +3114,7 @@
     "message": "Shared storage"
   },
   "panels/application/StorageBucketsTreeElement.ts | storageBuckets": {
-    "message": "Storage Buckets"
+    "message": "Storage buckets"
   },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Clear all"
@@ -3208,6 +3241,12 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Stop recording events"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
+    "message": "Undefined"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
+    "message": "Undefined"
   },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Only pages loaded via a GET request are eligible for back-forward cache."
@@ -3548,14 +3587,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Pages with WebRTC cannot enter back-forward cache."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
+    "message": "Back-forward cache is disabled because WebRTC has been used."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Pages that use WebShare are not currently eligible for back-forward cache."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Pages with WebSocket cannot enter back-forward cache."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
+    "message": "Back-forward cache is disabled because WebSocket has been used."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Pages with WebTransport cannot enter back-forward cache."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
+    "message": "Back-forward cache is disabled because WebTransport has been used."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Pages that use WebXR are not currently eligible for back-forward cache."
@@ -3635,6 +3683,12 @@
   "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
     "message": "Checking for potential bounce tracking sites."
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureDisabled": {
+    "message": "Bounce tracking mitigations are disabled. To enable them, set the flag at {PH1} to 'Enabled with deletion'."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureFlag": {
+    "message": "Bounce tracking mitigations feature flag"
+  },
   "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
     "message": "Force run"
   },
@@ -3642,7 +3696,7 @@
     "message": "Learn more: Bounce tracking mitigations"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
-    "message": "State was not cleared for any potential bounce tracking sites. Either none were identified, bounce tracking mitigations are not enabled or third-party cookies are not blocked."
+    "message": "State was not cleared for any potential bounce tracking sites. Either none were identified, or third-party cookies are not blocked."
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
     "message": "Running"
@@ -4112,6 +4166,15 @@
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Bucket name"
   },
+  "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
+    "message": "Delete the '{PH1}' bucket?"
+  },
+  "panels/application/components/StorageMetadataView.ts | defaultBucket": {
+    "message": "Default bucket"
+  },
+  "panels/application/components/StorageMetadataView.ts | deleteBucket": {
+    "message": "Delete bucket"
+  },
   "panels/application/components/StorageMetadataView.ts | durability": {
     "message": "Durability"
   },
@@ -4181,11 +4244,11 @@
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Private state tokens"
   },
-  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
-    "message": "Extensions settings"
+  "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
+    "message": "All preloads"
   },
-  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
-    "message": "Preload pages settings"
+  "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
+    "message": "Filter by rule set"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Failure"
@@ -4214,17 +4277,41 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Valid"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
-    "message": "Preloading is disabled because of the operating system's Battery Saver mode."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | action": {
+    "message": "Action"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
-    "message": "Preloading is disabled because of the operating system's Data Saver mode."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | status": {
+    "message": "Status"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
-    "message": "Preloading is disabled because of user settings or an extension. Go to {PH1} to learn more, or go to {PH2} to disable the extension."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusFailure": {
+    "message": "Failure"
   },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
-    "message": "Preloading is disabled"
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusNotTriggered": {
+    "message": "Not triggered"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusPending": {
+    "message": "Pending"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusReady": {
+    "message": "Ready"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusRunning": {
+    "message": "Running"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusSuccess": {
+    "message": "Success"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | url": {
+    "message": "URL"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToInspect": {
+    "message": "Click to inspect prerendered page"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToRevealRuleSet": {
+    "message": "Click to reveal rule set"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonInspect": {
+    "message": "Inspect"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Preloading failed."
@@ -4251,7 +4338,7 @@
     "message": "Detailed information"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
-    "message": "Reason for failure"
+    "message": "Failure reason"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
     "message": "Rule set"
@@ -4262,8 +4349,59 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Select an element for more details"
   },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
+    "message": "Preloading is disabled because of the operating system's Battery Saver mode."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
+    "message": "Preloading is disabled because of the operating system's Data Saver mode."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "Prefetch is forced-enabled because DevTools is open. When DevTools is closed, prefetchwill be disabled because this browser session is part of a holdback group used for performance comparisons."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "Prerendering is forced-enabled because DevTools is open. When DevTools is closed, prerendering will be disabled because this browser session is part of a holdback group used for performance comparisons."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
+    "message": "Preloading is disabled because of user settings or an extension. Go to {PH1} to update your preference. Go to {PH2} to disable any extension that blocks preloading."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
+    "message": "Extensions settings"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | footerLearnMore": {
+    "message": "Learn more"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByBatterySaver": {
+    "message": "Battery Saver"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByDataSaver": {
+    "message": "Data Saver"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "Prefetch was disabled, but is force-enabled now"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "Prerendering was disabled, but is force-enabled now"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByPreference": {
+    "message": "User settings or extension"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
+    "message": "Preloading is disabled"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
+    "message": "Preloading is force-enabled"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
+    "message": "Preload pages settings"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
+    "message": "Reasons preventing preloading"
+  },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Action"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | ruleSet": {
+    "message": "Rule set"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
@@ -4340,50 +4478,209 @@
   "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
     "message": "A network error was encountered when trying to set up a connection to the prefetching proxy."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "Prerendered page activated during initiating page's main frame navigation."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "The prerender was not used because the sandboxing flags or permissions policy of the initiating page was not compatible with those of the prerendering page."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "The prerender was not used because during activation time, different navigation parameters (e.g. HTTP headers) were calculated than during the original prerendering navigation request."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "The prerendered page requested audio output, which is not currently supported."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "The prerender was not performed because the user requested that the browser use less battery."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "Some resource load was blocked."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "The prerendering navigation required an HTTP client certificate."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "The prerendering navigation failed because it targeted a cross-site URL."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "The prerendered page navigated to a cross-site URL."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "The prerendering navigation failed because the prerendered URL redirected to a cross-site URL."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "The prerendered page navigated to a URL that redirected to a cross-site URL."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "The prerender was not performed because the user requested that the browser use less data."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
+    "message": "The prerendered page attempted to initiate a download, which is not currently supported."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "The prerender was not performed because the browser encountered an internal error while attempting to determine current memory usage."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "The initiating page cannot perform prerendering because it has an effective URL that is different from its normal URL. (For example, the New Tab Page or hosted apps.)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "The URL was not eligible to be prerendered because its scheme was not http: or https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "The prerendering navigation failed because it redirected to a URL whose scheme was not http: or https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "The prerendering navigation required HTTP authentication, which is not currently supported."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "The prerender was not performed because this device does not have enough total system memory to support prerendering."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "The prerendered page navigated itself to another URL, which is not currently supported."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "The prerender was not performed because the initiating page already has too many prerenders ongoing. Remove other speculation rules to enable further prerendering."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "The prerender was not performed because the browser exceeded the prerendering memory limit."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "The prerendered page was unloaded because the browser came under critical memory pressure."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "The prerender was not performed because the browser was under critical memory pressure."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMixedContent": {
+    "message": "The prerendered page contained mixed content."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "The prerendered page used a forbidden JavaScript API that is not currently supported. (Internal Mojo interface: {PH1})"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "The prerendering navigation failed because of a non-2xx HTTP response status code."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "The prerendering navigation was blocked by a Content Security Policy."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "The prerendering navigation encountered a network error."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "The prerender was not performed because the user disabled preloading in their browser settings."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
+    "message": "The prerender was not performed because DevTools has been used to disable prerendering."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "The initiating page crashed."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "The initiating page was killed."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "The prerendered page crashed."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "The prerendered page was killed."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusResourceLoadBlockedByClient": {
+    "message": "Some resource load was blocked."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "The prerendered page navigated itself to a cross-origin same-site URL, but the destination response did not include the appropriate Supports-Loading-Mode header."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "The prerendered page navigated to a cross-origin same-site URL, but the destination response did not include the appropriate Supports-Loading-Mode header."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "The prerendering navigation failed because the prerendered URL redirected to a cross-origin same-site URL, but the destination response did not include the appropriate Supports-Loading-Mode header."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "The prerendered page navigated to a URL that redirected to a cross-origin same-site URL, but the destination response did not include the appropriate Supports-Loading-Mode header."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSpeculationRuleRemoved": {
+    "message": "Unknown"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "The prerendering navigation failed because of an invalid SSL certificate."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "The initiating page was backgrounded for a long time, so the prerendered page was discarded."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "The initiating page was backgrounded, so the prerendered page was discarded."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "Changing user agent occurred in prerendering navigation."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusFailure": {
+    "message": "Failure"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusNotTriggered": {
+    "message": "Not triggered"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusPending": {
+    "message": "Pending"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusReady": {
+    "message": "Ready"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusRunning": {
+    "message": "Running"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusSuccess": {
+    "message": "Success"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInElementsPanel": {
     "message": "Click to reveal in Elements panel"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInNetworkPanel": {
     "message": "Click to reveal in Network panel"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
-    "message": "Detailed information"
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
+    "message": "Reveal preloads associated with this rule set"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
-    "message": "Error"
+  "panels/application/preloading/components/RuleSetGrid.ts | errors": {
+    "message": "{errorCount,plural, =1{# error}other{# errors}}"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
-    "message": "Location"
+  "panels/application/preloading/components/RuleSetGrid.ts | ruleSet": {
+    "message": "Rule set"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
-    "message": "Source"
+  "panels/application/preloading/components/RuleSetGrid.ts | status": {
+    "message": "Status"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
-    "message": "Validity"
+  "panels/application/preloading/components/UsedPreloadingView.ts | currentURL": {
+    "message": "Current URL"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityInvalid": {
-    "message": "Invalid: source is not a JSON object"
+  "panels/application/preloading/components/UsedPreloadingView.ts | detailsFailureReason": {
+    "message": "Failure reason"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validitySomeRulesInvalid": {
-    "message": "Some rules are invalid and ignored"
+  "panels/application/preloading/components/UsedPreloadingView.ts | downgradedPrefetchUsed": {
+    "message": "The initiating page attempted to prerender this page's URL. The prerender failed, but the resulting response body was still used as a prefetch."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
-    "message": "Valid"
+  "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
+    "message": "Learn more"
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | location": {
-    "message": "Location"
+  "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
+    "message": "The initiating page did not attempt to preload this page's URL."
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
-    "message": "Validity"
+  "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
+    "message": "The initiating page attempted to prefetch this page's URL, but the prefetch failed, so a full navigation was performed instead."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
-    "message": "{PH1} prefetched resources are used for this page"
+    "message": "This page was successfully prefetched."
   },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
-    "message": "Preloading used for this page"
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
+    "message": "URLs being preloaded by the initiating page"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
+    "message": "Preloading status"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
+    "message": "The initiating page attempted to prerender this page's URL, but the prerender failed, so a full navigation was performed instead."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
-    "message": "This page was prerendered"
+    "message": "This page was successfully prerendered."
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "breakpoint hit"
@@ -4586,8 +4883,14 @@
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Remove expression: {PH1}"
   },
+  "panels/console/ConsolePrompt.ts | allowPasting": {
+    "message": "allow pasting"
+  },
   "panels/console/ConsolePrompt.ts | consolePrompt": {
     "message": "Console prompt"
+  },
+  "panels/console/ConsolePrompt.ts | selfXssWarning": {
+    "message": "Warning: Do not paste code you do not understand or have not checked yourself into the DevTools console. This could allow attackers to steal your identity or take control of your computer. Please type ''{PH1}' below to allow pasting."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{No errors}=1{# error}other{# errors}}"
@@ -4618,9 +4921,6 @@
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Console cleared"
-  },
-  "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Pasting code is blocked on this page. Pasting code into DevTools can allow attackers to take over your account."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Console settings"
@@ -6704,9 +7004,6 @@
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
     "message": "JavaScript is disabled. You need to enable JavaScript to audit this page. Open the Command menu and run the Enable JavaScript command to enable JavaScript."
   },
-  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
-    "message": "Legacy navigation"
-  },
   "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
     "message": "Lighthouse mode"
   },
@@ -6769,9 +7066,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
     "message": "Timespan mode analyses an arbitrary period of time, typically containing user interactions."
-  },
-  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Analyse the page using classic Lighthouse when in navigation mode."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Web SQL"
@@ -7139,8 +7433,8 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
     "message": "Requests may be blocked"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeRewrittenByLocal": {
-    "message": "Requests may be rewritten by local overrides"
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
+    "message": "Requests may be overridden locally"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Custom"
@@ -7177,6 +7471,9 @@
   },
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Hardware concurrency override is enabled"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingTooltip": {
+    "message": "Override the value reported by navigator.hardwareConcurrency on the page"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "No throttling"
@@ -7436,9 +7733,6 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Finished"
   },
-  "panels/network/NetworkDataGridNode.ts | hasOverriddenHeaders": {
-    "message": "Request has overridden headers"
-  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "level 1"
   },
@@ -7483,6 +7777,15 @@
   },
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "Redirect"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentHeadersOverridden": {
+    "message": "Both request content and headers are overridden"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentOverridden": {
+    "message": "Request content is overridden"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestHeadersOverridden": {
+    "message": "Request headers are overridden"
   },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + pre-flight"
@@ -7607,6 +7910,9 @@
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "Blocked requests"
   },
+  "panels/network/NetworkLogView.ts | chromeExtensions": {
+    "message": "Hide extension URLs"
+  },
   "panels/network/NetworkLogView.ts | clearBrowserCache": {
     "message": "Clear browser cache"
   },
@@ -7677,7 +7983,10 @@
     "message": "Finish: {PH1}"
   },
   "panels/network/NetworkLogView.ts | hasBlockedCookies": {
-    "message": "Has blocked cookies"
+    "message": "Blocked response cookies"
+  },
+  "panels/network/NetworkLogView.ts | hideChromeExtension": {
+    "message": "Hide requests to 'chrome-extension://' URLs"
   },
   "panels/network/NetworkLogView.ts | hideDataUrls": {
     "message": "Hide data URLs"
@@ -7701,13 +8010,13 @@
     "message": "Network data available"
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
-    "message": "Only show blocked requests"
+    "message": "Show only blocked requests"
   },
-  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
-    "message": "Only show requests with blocked response cookies"
+  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
+    "message": "Show only the requests with blocked response cookies"
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
-    "message": "Shows only requests with origin different from page origin"
+    "message": "Show only requests with origin different from page origin"
   },
   "panels/network/NetworkLogView.ts | overrideHeaders": {
     "message": "Override headers"
@@ -7869,7 +8178,7 @@
     "message": "No custom headers"
   },
   "panels/network/NetworkPanel.ts | captureScreenshots": {
-    "message": "Capture screenshots"
+    "message": "Screenshots"
   },
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Capture screenshots when loading a page"
@@ -7926,7 +8235,7 @@
     "message": "Show more information in request rows"
   },
   "panels/network/NetworkPanel.ts | showOverview": {
-    "message": "Show overview"
+    "message": "Overview"
   },
   "panels/network/NetworkPanel.ts | showOverviewOfNetworkRequests": {
     "message": "Show overview of network requests"
@@ -7935,7 +8244,7 @@
     "message": "Throttling"
   },
   "panels/network/NetworkPanel.ts | useLargeRequestRows": {
-    "message": "Use large request rows"
+    "message": "Big request rows"
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
@@ -8024,9 +8333,6 @@
   "panels/network/RequestHeadersView.ts | general": {
     "message": "General"
   },
-  "panels/network/RequestHeadersView.ts | headerOverrides": {
-    "message": "Header overrides"
-  },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Learn more"
   },
@@ -8070,7 +8376,7 @@
     "message": "Status code"
   },
   "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "This document was blocked from loading in an iframe with a sandbox attribute because this document specified a cross-origin opener policy."
+    "message": "The document was blocked from loading in a pop-up opened by a sandboxed iframe because this document specified a cross-origin opener policy."
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
     "message": "To embed this frame in your document, the response needs to enable the cross-origin embedder policy by specifying the following response header:"
@@ -8474,9 +8780,6 @@
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "General"
   },
-  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
-    "message": "Header overrides"
-  },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Raw"
   },
@@ -8571,7 +8874,7 @@
     "message": "Only choose this option if an arbitrary website including this resource does not impose a security risk."
   },
   "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
-    "message": "This document was blocked from loading in an iframe with a sandbox attribute because this document specified a cross-origin opener policy."
+    "message": "The document was blocked from loading in a pop-up opened by a sandboxed iframe because this document specified a cross-origin opener policy."
   },
   "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
     "message": "To embed this frame in your document, the response needs to enable the cross-origin embedder policy by specifying the following response header:"
@@ -9350,6 +9653,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Documentation"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | editAndResend": {
+    "message": "Edit and resend"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
     "message": "Elapsed time"
   },
@@ -9403,6 +9709,18 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | type": {
     "message": "Type"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | addParameter": {
+    "message": "Add a parameter"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | deleteParameter": {
+    "message": "Delete parameter"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | resetDefaultValue": {
+    "message": "Reset to default value"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | copyCommand": {
+    "message": "Copy command"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protocol monitor"
@@ -10874,6 +11192,9 @@
   "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
     "message": "Failed to load any debug info for {PH1}."
   },
+  "panels/sources/DebuggerPlugin.ts | debuggingPowerReduced": {
+    "message": "DevTools can't show authored sources, but you can debug the deployed code."
+  },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{Disable breakpoint}other{Disable all breakpoints in line}}"
   },
@@ -10883,8 +11204,20 @@
   "panels/sources/DebuggerPlugin.ts | enableBreakpoint": {
     "message": "{n,plural, =1{Enable breakpoint}other{Enable all breakpoints in line}}"
   },
+  "panels/sources/DebuggerPlugin.ts | errorLoading": {
+    "message": "Error loading url {PH1}: {PH2}"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
+    "message": "Ignore extension scripts"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
+    "message": "Ignore this file"
+  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Never pause here"
+  },
+  "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
+    "message": "To enable again, make sure the file isn't on the ignore list and reload."
   },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n,plural, =1{Remove breakpoint}other{Remove all breakpoints in line}}"
@@ -10892,11 +11225,14 @@
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "Remove from ignore list"
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapDetected": {
-    "message": "Source map detected."
+  "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
+    "message": "Source map failed to load."
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
-    "message": "Source map found, but ignored for file on ignore list."
+  "panels/sources/DebuggerPlugin.ts | sourceMapLoaded": {
+    "message": "Source map loaded."
+  },
+  "panels/sources/DebuggerPlugin.ts | sourceMapSkipped": {
+    "message": "Source map skipped for this file."
   },
   "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
     "message": "The debugger will skip stepping through this script, and will not stop on exceptions."
@@ -10939,9 +11275,6 @@
   },
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "Format {PH1}"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
-    "message": "Are you sure that you want to delete all overrides contained in this folder?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "Are you sure that you want to delete this file?"
@@ -11060,26 +11393,26 @@
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Clear configuration"
   },
-  "panels/sources/SourcesNavigator.ts | contentScriptsServedByExtensions": {
-    "message": "Content scripts served by extensions appear here"
-  },
-  "panels/sources/SourcesNavigator.ts | createAndSaveCodeSnippetsFor": {
-    "message": "Create and save code snippets for later reuse"
-  },
   "panels/sources/SourcesNavigator.ts | createNewSnippet": {
     "message": "Create new snippet"
+  },
+  "panels/sources/SourcesNavigator.ts | explainContentScripts": {
+    "message": "View content scripts served by extensions"
+  },
+  "panels/sources/SourcesNavigator.ts | explainLocalOverrides": {
+    "message": "Override network requests and web content locally to mock remote resources"
+  },
+  "panels/sources/SourcesNavigator.ts | explainSnippets": {
+    "message": "Save the JavaScript code you run often to run it again at any time"
+  },
+  "panels/sources/SourcesNavigator.ts | explainWorkspace": {
+    "message": "Set up workspace to sync edits directly to the sources you develop"
   },
   "panels/sources/SourcesNavigator.ts | learnMore": {
     "message": "Learn more"
   },
-  "panels/sources/SourcesNavigator.ts | learnMoreAboutWorkspaces": {
-    "message": "Learn more about workspaces"
-  },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "New snippet"
-  },
-  "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
-    "message": "Override page assets with files from a local folder"
   },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "Remove"
@@ -11095,9 +11428,6 @@
   },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Select folder for overrides"
-  },
-  "panels/sources/SourcesNavigator.ts | syncChangesInDevtoolsWithThe": {
-    "message": "Sync changes in DevTools with the local filesystem"
   },
   "panels/sources/SourcesPanel.ts | continueToHere": {
     "message": "Continue to here"
@@ -11173,9 +11503,6 @@
   },
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "Terminate current JavaScript call"
-  },
-  "panels/sources/SourcesView.ts | dropInAFolderToAddToWorkspace": {
-    "message": "Drop in a folder to add to workspace"
   },
   "panels/sources/SourcesView.ts | openFile": {
     "message": "Open file"
@@ -11417,9 +11744,6 @@
   "panels/sources/sources-meta.ts | file": {
     "message": "File"
   },
-  "panels/sources/sources-meta.ts | filesystem": {
-    "message": "Filesystem"
-  },
   "panels/sources/sources-meta.ts | goTo": {
     "message": "Go to"
   },
@@ -11494,9 +11818,6 @@
   },
   "panels/sources/sources-meta.ts | showBreakpoints": {
     "message": "Show breakpoints"
-  },
-  "panels/sources/sources-meta.ts | showFilesystem": {
-    "message": "Show filesystem"
   },
   "panels/sources/sources-meta.ts | showQuickSource": {
     "message": "Show quick source"
@@ -11576,6 +11897,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Watch"
   },
+  "panels/timeline/AnimationsTrackAppender.ts | animations": {
+    "message": "Animations"
+  },
   "panels/timeline/AppenderUtils.ts | sSelfS": {
     "message": "{PH1} (self {PH2})"
   },
@@ -11621,6 +11945,15 @@
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
     "message": "Layout shifts"
   },
+  "panels/timeline/NetworkTrackAppender.ts | network": {
+    "message": "Network"
+  },
+  "panels/timeline/ThreadAppender.ts | anonymous": {
+    "message": "(anonymous)"
+  },
+  "panels/timeline/ThreadAppender.ts | thread": {
+    "message": "Main thread by new engine"
+  },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "CPU profile for a target is not available."
   },
@@ -11633,17 +11966,11 @@
   "panels/timeline/TimelineDetailsView.ts | callTree": {
     "message": "Call tree"
   },
-  "panels/timeline/TimelineDetailsView.ts | estimated": {
-    "message": "estimated"
-  },
   "panels/timeline/TimelineDetailsView.ts | eventLog": {
     "message": "Event log"
   },
   "panels/timeline/TimelineDetailsView.ts | layers": {
     "message": "Layers"
-  },
-  "panels/timeline/TimelineDetailsView.ts | learnMore": {
-    "message": "Learn more"
   },
   "panels/timeline/TimelineDetailsView.ts | paintProfiler": {
     "message": "Paint profiler"
@@ -11653,9 +11980,6 @@
   },
   "panels/timeline/TimelineDetailsView.ts | summary": {
     "message": "Summary"
-  },
-  "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
-    "message": "Total blocking time: {PH1}ms{PH2}"
   },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
@@ -11668,9 +11992,6 @@
   },
   "panels/timeline/TimelineEventOverview.ts | sSDash": {
     "message": "{PH1} – {PH2}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | animation": {
-    "message": "Animation"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "Dropped frame"
@@ -11686,9 +12007,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Idle frame"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
-    "message": "Long frame"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | main": {
     "message": "Main"
@@ -12056,6 +12374,9 @@
   "panels/timeline/TimelineUIUtils.ts | commit": {
     "message": "Commit"
   },
+  "panels/timeline/TimelineUIUtils.ts | compilationCacheKind": {
+    "message": "Compilation cache kind"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Compilation cache size"
   },
@@ -12263,6 +12584,9 @@
   "panels/timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "Image URL"
   },
+  "panels/timeline/TimelineUIUtils.ts | initialPriority": {
+    "message": "Initial priority"
+  },
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Initiator"
   },
@@ -12280,9 +12604,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Invoked by timeout"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jank": {
-    "message": "jank"
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS frame"
@@ -12535,9 +12856,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
     "message": "{PH1} is indicating poor page responsiveness."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
-    "message": "{PH1}. Long frame times are an indication of {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} of {PH2}"
@@ -12959,6 +13277,9 @@
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "{PH1} sorting cancelled"
   },
+  "ui/components/dialogs/IconDialog.ts | close": {
+    "message": "Close"
+  },
   "ui/components/dialogs/ShortcutDialog.ts | close": {
     "message": "Close"
   },
@@ -13214,8 +13535,8 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Don't show again"
   },
-  "ui/legacy/Infobar.ts | learnMore": {
-    "message": "Learn more"
+  "ui/legacy/Infobar.ts | showMore": {
+    "message": "Show more"
   },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Close drawer"
@@ -13624,9 +13945,6 @@
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showDBefore": {
     "message": "Show {PH1} before"
-  },
-  "ui/legacy/components/data_grid/ViewportDataGrid.ts | collapsed": {
-    "message": "collapsed"
   },
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | blur": {
     "message": "Blur"

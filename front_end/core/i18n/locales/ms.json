@@ -419,9 +419,6 @@
   "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
     "message": "Seller Scoring Phase Start"
   },
-  "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
-    "message": "Penyekatan Pembacaan Rentas Asalan (CORB) telah menyekat respons rentas asalan {PH1} dengan jenis MIME {PH2}. Lihat https://www.chromestatus.com/feature/5629709824032768 untuk mendapatkan butiran lanjut."
-  },
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "3G Laju"
   },
@@ -857,6 +854,12 @@
   "entrypoints/inspector_main/InspectorMain.ts | tab": {
     "message": "Tab"
   },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "Halaman: Tidak dipilih"
+  },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetS": {
+    "message": "Halaman: {PH1}"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Vital Web Teras"
   },
@@ -901,6 +904,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedmotion": {
     "message": "Memaksa ciri media prefers-reduced-motion CSS"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedtransparencyMedia": {
+    "message": "Memaksa ciri media prefers-reduced-transparency CSS"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Memaksa jenis media untuk menguji gaya cetakan dan skrin"
@@ -1026,7 +1032,7 @@
     "message": "Dokkan ke kanan"
   },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
-    "message": "Fokus pada apl yang dinyahpepijat"
+    "message": "Halaman fokus"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "Bantuan"
@@ -1101,7 +1107,7 @@
     "message": "Cari hasil carian yang sebelumnya"
   },
   "entrypoints/main/main-meta.ts | focusDebuggee": {
-    "message": "Fokus pada apl yang dinyahpepijat"
+    "message": "Halaman fokus"
   },
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "mendatar"
@@ -1278,7 +1284,7 @@
     "message": "DOM Mutation Events, termasuk DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument dan DOMCharacterDataModified telah ditamatkan (https://w3c.github.io/uievents/#legacy-event-types) dan akan dialih keluar. Sila gunakan MutationObserver."
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
-    "message": "Sokongan untuk data: URL dalam elemen <use> SVG telah ditamatkan dan akan dialih keluar pada masa akan datang."
+    "message": "Sokongan untuk data: URL dalam SVGUseElement sudah ditamatkan dan akan dialih keluar pada masa akan datang."
   },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Menenangkan dasar asalan sama dengan tetapan document.domain telah ditamatkan, dan akan dilumpuhkan secara lalai. Untuk terus menggunakan ciri ini, sila tarik diri daripada kelompok ejen kunci asalan dengan menghantar pengepala Origin-Agent-Cluster: ?0 bersama-sama dengan respons HTTP untuk dokumen dan bingkai. Lihat https://developer.chrome.com/blog/immutable-document-domain/ untuk mendapatkan butiran tambahan."
@@ -1512,7 +1518,7 @@
     "message": "Menulis fail…"
   },
   "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
-    "message": "Pengurangan Penjejakan Lantunan"
+    "message": "Pengurangan penjejakan lantunan"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Infrastruktur Client Hints"
@@ -1547,6 +1553,9 @@
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "Penjelasan tentang kuki SameSite"
   },
+  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Bersedia untuk menghentikan kuki pihak ketiga"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Perkongsian Sumber Rentas Asalan (CORS)"
   },
@@ -1576,6 +1585,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "Atribut HTML: autolengkap"
+  },
+  "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
+    "message": "Penjelas CORB"
   },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Portal - Saluran komunikasi sama asalan"
@@ -1688,14 +1700,17 @@
   "models/persistence/PersistenceActions.ts | openInContainingFolder": {
     "message": "Buka dalam folder kandungan"
   },
+  "models/persistence/PersistenceActions.ts | overrideContent": {
+    "message": "Kandungan penggantian"
+  },
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Simpan sebagai..."
   },
-  "models/persistence/PersistenceActions.ts | saveForOverrides": {
-    "message": "Simpan untuk penggantian"
-  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Simpan imej"
+  },
+  "models/persistence/PersistenceActions.ts | showOverrides": {
+    "message": "Tunjukkan semua penggantian"
   },
   "models/persistence/PersistenceUtils.ts | linkedToS": {
     "message": "Dipautkan kepada {PH1}"
@@ -2306,6 +2321,9 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Tidak dapat memuat turun ikon yang diperlukan daripada manifes"
   },
+  "panels/application/AppManifestView.ts | customizePwaTitleBar": {
+    "message": "Sesuaikan tindanan kawalan tetingkap bar tajuk PWA anda."
+  },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
     "message": "Warna latar belakang gelap"
   },
@@ -2483,6 +2501,18 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Warna tema"
   },
+  "panels/application/AppManifestView.ts | wcoFound": {
+    "message": "Chrome berjaya menemukan {PH1} nilai untuk medan {PH2} dalam {PH3}."
+  },
+  "panels/application/AppManifestView.ts | wcoNeedHelpReadMore": {
+    "message": "Perlukan bantuan? Baca {PH1}."
+  },
+  "panels/application/AppManifestView.ts | wcoNotFound": {
+    "message": "Takrifkan {PH1} dalam manifes untuk menggunakan Window Controls Overlay API dan sesuaikan bar tajuk apl anda."
+  },
+  "panels/application/AppManifestView.ts | windowControlsOverlay": {
+    "message": "Tindanan Kawalan Tetingkap"
+  },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "Manifes Apl"
   },
@@ -2493,7 +2523,7 @@
     "message": "Bar sisi panel aplikasi"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
-    "message": "Perkhidmatan Latar Belakang"
+    "message": "Perkhidmatan latar"
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: Minta untuk menatal ke bahagian ini dalam manifes"
@@ -2523,7 +2553,7 @@
     "message": "Fail Setempat"
   },
   "panels/application/ApplicationPanelSidebar.ts | localStorage": {
-    "message": "Storan Setempat"
+    "message": "Storan setempat"
   },
   "panels/application/ApplicationPanelSidebar.ts | manifest": {
     "message": "Manifes"
@@ -2547,7 +2577,7 @@
     "message": "Muat semula IndexedDB"
   },
   "panels/application/ApplicationPanelSidebar.ts | sessionStorage": {
-    "message": "Storan Sesi"
+    "message": "Storan sesi"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "Storan"
@@ -2577,13 +2607,13 @@
     "message": "Cache kembali-maju"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
-    "message": "Pengambilan Latar Belakang"
+    "message": "Pengambilan latar"
   },
   "panels/application/BackgroundServiceView.ts | backgroundServices": {
-    "message": "Perkhidmatan Latar Belakang"
+    "message": "Perkhidmatan latar"
   },
   "panels/application/BackgroundServiceView.ts | backgroundSync": {
-    "message": "Penyegerakan Latar Belakang"
+    "message": "Penyegerakan latar"
   },
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Kosongkan"
@@ -2616,13 +2646,13 @@
     "message": "Asalan"
   },
   "panels/application/BackgroundServiceView.ts | paymentHandler": {
-    "message": "Pengendali Pembayaran"
+    "message": "Pengendali pembayaran"
   },
   "panels/application/BackgroundServiceView.ts | periodicBackgroundSync": {
-    "message": "Penyegerakan Latar Belakang Berkala"
+    "message": "Penyegerakan latar berkala"
   },
   "panels/application/BackgroundServiceView.ts | pushMessaging": {
-    "message": "Pemesejan Tolak"
+    "message": "Pemesejan tolak"
   },
   "panels/application/BackgroundServiceView.ts | recordingSActivity": {
     "message": "Merakam aktiviti {PH1}..."
@@ -2655,7 +2685,7 @@
     "message": "Cap masa"
   },
   "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
-    "message": "Pengurangan Penjejakan Lantunan"
+    "message": "Pengurangan penjejakan lantunan"
   },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "Kosongkan semua kuki"
@@ -2808,7 +2838,7 @@
     "message": "Tiada butiran tersedia untuk kumpulan yang meminati yang dipilih. Penyemak imbas mungkin telah meninggalkan kumpulan."
   },
   "panels/application/InterestGroupTreeElement.ts | interestGroups": {
-    "message": "Kumpulan yang Meminati"
+    "message": "Kumpulan minat"
   },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Akses kepada pembuka"
@@ -2864,6 +2894,12 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ya"
   },
+  "panels/application/PreloadingTreeElement.ts | preloads": {
+    "message": "Pramuat"
+  },
+  "panels/application/PreloadingTreeElement.ts | speculationRules": {
+    "message": "Peraturan Spekulasi"
+  },
   "panels/application/PreloadingTreeElement.ts | thisPage": {
     "message": "Halaman Ini"
   },
@@ -2874,7 +2910,7 @@
     "message": "API Pelaporan"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
-    "message": "Storan Cache"
+    "message": "Storan cache"
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | delete": {
     "message": "Padam"
@@ -3048,7 +3084,7 @@
     "message": "Pilih nilai untuk dipratonton"
   },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
-    "message": "Storan Kongsi"
+    "message": "Storan kongsi"
   },
   "panels/application/SharedStorageItemsView.ts | sharedStorageFilteredItemsCleared": {
     "message": "Item yang ditapis bagi Storan Kongsi dikosongkan"
@@ -3075,7 +3111,10 @@
     "message": "Nilai"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
-    "message": "Storan Kongsi"
+    "message": "Storan kongsi"
+  },
+  "panels/application/StorageBucketsTreeElement.ts | storageBuckets": {
+    "message": "Baldi storan"
   },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Kosongkan Semua"
@@ -3147,7 +3186,7 @@
     "message": "{PH1} (gagal dimuatkan)"
   },
   "panels/application/StorageView.ts | serviceWorkers": {
-    "message": "Pekerja Perkhidmatan"
+    "message": "Pekerja perkhidmatan"
   },
   "panels/application/StorageView.ts | simulateCustomStorage": {
     "message": "Simulasikan kuota storan tersuai"
@@ -3180,7 +3219,7 @@
     "message": "SQL Web"
   },
   "panels/application/TrustTokensTreeElement.ts | trustTokens": {
-    "message": "Token Keadaan Sulit"
+    "message": "Token keadaan sulit"
   },
   "panels/application/application-meta.ts | application": {
     "message": "Aplikasi"
@@ -3202,6 +3241,12 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Hentikan rakaman peristiwa"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
+    "message": "Tidak ditentukan"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
+    "message": "Tidak ditentukan"
   },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Hanya halaman yang dimuatkan melalui permintaan GT layak untuk cache kembali/maju."
@@ -3542,14 +3587,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Halaman dengan WebRTC tidak boleh memasuki cache kembali/maju."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
+    "message": "Cache kembali-maju dilumpuhkan kerana WebRTC telah digunakan."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Halaman yang menggunakan WebShare tidak layak untuk cache kembali/maju pada masa ini."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Halaman dengan WebSocket tidak boleh memasuki cache kembali/maju."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
+    "message": "Cache kembali-maju dilumpuhkan kerana WebSocket telah digunakan."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Halaman dengan WebTransport tidak boleh memasuki cache kembali/maju."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
+    "message": "Cache kembali-maju dilumpuhkan kerana WebTransport telah digunakan."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Halaman yang menggunakan WebXR tidak layak untuk cache kembali/maju pada masa ini."
@@ -3624,10 +3678,16 @@
     "message": "URL:"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
-    "message": "Pengurangan Penjejakan Lantunan"
+    "message": "Pengurangan penjejakan lantunan"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
     "message": "Menyemak untuk kemungkinan laman penjejakan lantunan."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureDisabled": {
+    "message": "Pengurangan penjejakan lantunan dilumpuhkan. Untuk mendayakan pengurangan penjejakan lantunan, tetapkan bendera pada {PH1} kepada \"Dayakan Dengan Pemadaman\"."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureFlag": {
+    "message": "Bendera Ciri Pengurangan Penjejakan Lantunan"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
     "message": "Paksa jalankan"
@@ -3636,7 +3696,7 @@
     "message": "Ketahui lebih lanjut: Pengurangan Penjejakan Lantunan"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
-    "message": "Keadaan tidak dikosongkan daripada sebarang kemungkinan laman penjejakan lantunan. Kedua-dua keadaan ini dikenal pasti, pengurangan penjejakan lantunan tidak didayakan atau kuki pihak ketiga tidak disekat."
+    "message": "Keadaan tidak dikosongkan daripada sebarang kemungkinan laman penjejakan lantunan. Sama ada tiada yang dikenal pasti atau kuki pihak ketiga tidak disekat."
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
     "message": "Berlari"
@@ -4071,7 +4131,7 @@
     "message": "Asalan Pemilik"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Storan Kongsi"
+    "message": "Storan kongsi"
   },
   "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
     "message": "Baki kebocoran data yang dibenarkan dalam tempoh 24 jam untuk asalan ini dalam bit entropi"
@@ -4092,7 +4152,7 @@
     "message": "Tetapkan Semula Belanjawan"
   },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
-    "message": "Storan Kongsi"
+    "message": "Storan kongsi"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Tidak dapat memaparkan surih tindanan"
@@ -4105,6 +4165,15 @@
   },
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Nama baldi"
+  },
+  "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
+    "message": "Padam baldi \"{PH1}\"?"
+  },
+  "panels/application/components/StorageMetadataView.ts | defaultBucket": {
+    "message": "Baldi lalai"
+  },
+  "panels/application/components/StorageMetadataView.ts | deleteBucket": {
+    "message": "Padamkan baldi"
   },
   "panels/application/components/StorageMetadataView.ts | durability": {
     "message": "Ketahanan"
@@ -4158,28 +4227,28 @@
     "message": "Ya, kerana laman tahap teratas adalah legap"
   },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
-    "message": "Semua Token Keadaan Sulit yang disimpan tersedia dalam tika penyemak imbas ini."
+    "message": "Semua token keadaan sulit yang disimpan tersedia dalam tika penyemak imbas ini."
   },
   "panels/application/components/TrustTokensView.ts | deleteTrustTokens": {
-    "message": "Padamkan semua Token Keadaan Sulit yang disimpan yang dikeluarkan oleh {PH1}."
+    "message": "Padamkan semua token keadaan sulit yang disimpan yang dikeluarkan oleh {PH1}."
   },
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "Pengeluar"
   },
   "panels/application/components/TrustTokensView.ts | noTrustTokensStored": {
-    "message": "Tiada Token Keadaan Sulit yang disimpan pada masa ini."
+    "message": "Tiada token keadaan sulit disimpan pada masa ini."
   },
   "panels/application/components/TrustTokensView.ts | storedTokenCount": {
     "message": "Kiraan token yang disimpan"
   },
   "panels/application/components/TrustTokensView.ts | trustTokens": {
-    "message": "Token Keadaan Sulit"
+    "message": "Token keadaan sulit"
   },
-  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
-    "message": "Tetapan sambungan"
+  "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
+    "message": "Semua pramuat"
   },
-  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
-    "message": "Pramuat tetapan halaman"
+  "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
+    "message": "Tapis mengikut set peraturan"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Kegagalan"
@@ -4208,17 +4277,41 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Sah"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
-    "message": "Prapemuatan dilumpuhkan kerana mod Penjimat Bateri sistem operasi."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | action": {
+    "message": "Tindakan"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
-    "message": "Prapemuatan dilumpuhkan kerana mod Penjimat Data sistem operasi."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | status": {
+    "message": "Status"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
-    "message": "Prapemuatan dilumpuhkan kerana tetapan pengguna atau sambungan. Akses {PH1} untuk mengetahui lebih lanjut atau akses {PH2} untuk melumpuhkan sambungan."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusFailure": {
+    "message": "Kegagalan"
   },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
-    "message": "Prapemuatan dilumpuhkan"
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusNotTriggered": {
+    "message": "Tidak dicetuskan"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusPending": {
+    "message": "Belum selesai"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusReady": {
+    "message": "Sedia"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusRunning": {
+    "message": "Berlari"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusSuccess": {
+    "message": "Berjaya"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | url": {
+    "message": "URL"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToInspect": {
+    "message": "Klik untuk menyemak halaman prapemaparan"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToRevealRuleSet": {
+    "message": "Klik untuk mendedahkan set peraturan"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonInspect": {
+    "message": "Semak"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Prapemuatan gagal."
@@ -4256,8 +4349,59 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Pilih elemen untuk mendapatkan butiran lanjut"
   },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
+    "message": "Prapemuatan dilumpuhkan kerana mod Penjimat Bateri sistem operasi."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
+    "message": "Prapemuatan dilumpuhkan kerana mod Penjimat Data sistem operasi."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "Prapengambilan didayakan secara paksa kerana Alatan Pembangun dibuka. Apabila Alatan Pembangun ditutup, prapengambilan akan dilumpuhkan kerana sesi penyemak imbas ini adalah sebahagian daripada kumpulan penahanan yang digunakan untuk perbandingan prestasi."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "Prapemaparan didayakan secara paksa kerana Alatan Pembangun dibuka. Apabila Alatan Pembangun ditutup, prapemaparan akan dilumpuhkan kerana sesi penyemak imbas ini adalah sebahagian daripada kumpulan penahanan yang digunakan untuk perbandingan prestasi."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
+    "message": "Prapemuatan dilumpuhkan kerana tetapan pengguna atau sambungan. Akses {PH1} untuk mengemaskinikan pilihan anda. Akses {PH2} untuk melumpuhkan sebarang sambungan yang menyekat prapemuatan."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
+    "message": "Tetapan sambungan"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | footerLearnMore": {
+    "message": "Ketahui lebih lanjut"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByBatterySaver": {
+    "message": "Penjimat Bateri"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByDataSaver": {
+    "message": "Penjimat Data"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "Prapengambilan telah dilumpuhkan tetapi kini didayakan secara paksa"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "Prapemarahan telah dilumpuhkan, tetapi kini didayakan secara paksa"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByPreference": {
+    "message": "Tetapan pengguna atau sambungan"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
+    "message": "Prapemuatan dilumpuhkan"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
+    "message": "Prapemuatan didayakan secara paksa"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
+    "message": "Pramuat tetapan halaman"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
+    "message": "Sebab prapemuatan terhalang"
+  },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Tindakan"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | ruleSet": {
+    "message": "Set peraturan"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
@@ -4334,50 +4478,209 @@
   "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
     "message": "Ralat rangkaian telah berlaku semasa percubaan untuk menyediakan sambungan kepada proksi prapengambilan."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "Halaman prapemaparan diaktifkan semasa navigasi bingkai utama laman permulaan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "Prapemaparan tidak digunakan kerana bendera kotak pasir atau dasar kebenaran laman permulaan tidak serasi dengan laman prapemaparan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "Prapemaparan tidak digunakan kerana semasa tempoh pengaktifan, parameter navigasi berbeza (mis., pengepala HTTP) telah dikira berbanding semasa permintaan navigasi prapemaparan asal."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "Halaman prapemaparan meminta output audio yang tidak disokong pada masa ini."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "Prapemaparan tidak dijalankan kerana pengguna meminta pengurangan penggunaan bateri pada penyemak imbas."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "Sesetengah pemuatan sumber telah disekat."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "Navigasi prapemaparan memerlukan sijil klien HTTP."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "Navigasi prapemaparan gagal kerana navigasi tersebut menyasarkan URL silang laman."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "Halaman prapemaparan menavigasi URL silang laman."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "Navigasi prapemaparan gagal kerana URL prapemaparan diubah hala kepada URL silang laman."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "Halaman prapemaparan menavigasi ke URL yang diubah hala kepada URL silang laman."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "Prapemaparan tidak dijalankan kerana pengguna meminta pengurangan penggunaan data pada penyemak imbas."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
+    "message": "Halaman prapemaparan cuba untuk memulakan muat turun yang tidak disokong pada masa ini."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "Prapemaparan tidak dijalankan kerana penyemak imbas mengalami ralat dalaman semasa cuba menentukan penggunaan memori semasa."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "Laman permulaan tidak menjalankan prapemaparan kerana laman tersebut memiliki URL berkesan yang berbeza daripada URL normal laman itu. (Contohnya, Halaman Tab Baharu atau apl yang dihoskan.)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "URL tidak layak untuk menjalankan prapemaparan kerana skema URL bukan http: atau https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "Navigasi prapemaparan gagal kerana diubah hala kepada URL yang mengandungi skema bukan http: atau https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "Navigasi prapemaparan memerlukan pengesahan HTTP yang tidak disokong pada masa ini."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "Prapemaparan tidak dijalankan kerana peranti ini tidak memiliki jumlah memori sistem yang mencukupi untuk menyokong prapemaparan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "Halaman prapemaparan menavigasi ke URL lain yang tidak disokong pada masa ini."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "Prapemaparan tidak dijalankan kerana laman permulaan telah menjalankan terlalu banyak prapemaparan. Alih keluar peraturan spekulasi lain untuk mendayakan prapemaparan lanjut."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "Prapemaparan tidak dijalankan kerana penyemak imbas telah melebihi had memori prapemaparan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "Halaman prapemaparan dinyahmuat kerana penyemak imbas mengalami tekanan memori yang kritikal."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "Prapemaparan tidak dijalankan kerana penyemak imbas mengalami tekanan memori yang kritikal."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMixedContent": {
+    "message": "Halaman prapemaparan mengandungi kandungan campuran."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "Halaman prapemaparan menggunakan JavaScript API terlarang yang tidak disokong pada masa ini. (Antara muka Mojo dalaman: {PH1})"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "Navigasi prapemaparan gagal kerana kod status respons HTTP bukan 2xx."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "Navigasi prapemaparan disekat oleh Dasar Keselamatan Kandungan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "Navigasi prapemaparan mengalami ralat rangkaian."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "Prapemaparan tidak dijalankan kerana pengguna melumpuhkan prapemuatan dalam tetapan penyemak imbas."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
+    "message": "Prapemaparan tidak dijalankan kerana DevTools telah digunakan untuk melumpuhkan prapemaparan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "Laman permulaan ranap."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "Laman permulaan dihentikan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "Halaman prapemaparan ranap."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "Halaman prapemaparan dihentikan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusResourceLoadBlockedByClient": {
+    "message": "Sesetengah pemuatan sumber telah disekat."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "Halaman prapemaparan menavigasi ke URL silang asalan sama laman tetapi respons destinasi tidak merangkumi pengepala Supports-Loading-Mode yang bersesuaian."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "Halaman prapemaparan menavigasi ke URL silang asalan sama laman tetapi respons destinasi tidak merangkumi pengepala Supports-Loading-Mode yang bersesuaian."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "Navigasi prapemaparan gagal kerana URL prapemaparan diubah hala kepada URL silang asalan sama laman tetapi respons destinasi tidak merangkumi pengepala Supports-Loading-Mode yang bersesuaian."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "Halaman prapemaparan menavigasi ke URL yang diubah hala kepada URL silang asalan sama laman tetapi respons destinasi tidak merangkumi pengepala Supports-Loading-Mode yang bersesuaian."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSpeculationRuleRemoved": {
+    "message": "Tidak diketahui"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "Navigasi prapemaparan gagal kerana sijil SSL tidak sah."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "Laman permulaan diletakkan di latar untuk masa yang lama, oleh sebab itu halaman prapemaparan dibuang."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "Laman permulaan diletakkan di latar, oleh sebab itu halaman prapemaparan dibuang."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "Penukaran Agen Pengguna berlaku dalam navigasi prapemaparan."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusFailure": {
+    "message": "Kegagalan"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusNotTriggered": {
+    "message": "Tidak dicetuskan"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusPending": {
+    "message": "Belum selesai"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusReady": {
+    "message": "Sedia"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusRunning": {
+    "message": "Berlari"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusSuccess": {
+    "message": "Berjaya"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInElementsPanel": {
     "message": "Klik untuk mendedahkan dalam panel Unsur"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInNetworkPanel": {
     "message": "Klik untuk didedahkan dalam panel Rangkaian"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
-    "message": "Maklumat terperinci"
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
+    "message": "Dedahkan pramuat yang berkaitan dengan set peraturan ini"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
-    "message": "Ralat"
+  "panels/application/preloading/components/RuleSetGrid.ts | errors": {
+    "message": "{errorCount,plural, =1{# ralat}other{# ralat}}"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
-    "message": "Lokasi"
+  "panels/application/preloading/components/RuleSetGrid.ts | ruleSet": {
+    "message": "Set peraturan"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
-    "message": "Sumber"
+  "panels/application/preloading/components/RuleSetGrid.ts | status": {
+    "message": "Status"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
-    "message": "Kesahihan"
+  "panels/application/preloading/components/UsedPreloadingView.ts | currentURL": {
+    "message": "URL semasa"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityInvalid": {
-    "message": "Tidak sah; sumber bukan objek JSON"
+  "panels/application/preloading/components/UsedPreloadingView.ts | detailsFailureReason": {
+    "message": "Sebab kegagalan"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validitySomeRulesInvalid": {
-    "message": "Sesetengah peraturan tidak sah dan diabaikan"
+  "panels/application/preloading/components/UsedPreloadingView.ts | downgradedPrefetchUsed": {
+    "message": "Halaman permulaan cuba prapaparkan URL halaman ini. Prapemaparan gagal tetapi isi respons yang terhasil masih digunakan sebagai prapengambilan."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
-    "message": "Sah"
+  "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
+    "message": "Ketahui lebih lanjut"
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | location": {
-    "message": "Lokasi"
+  "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
+    "message": "Halaman permulaan ini tidak mencuba untuk pramuat URL halaman ini."
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
-    "message": "Kesahihan"
+  "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
+    "message": "Halaman permulaan mencuba untuk praambil URL halaman ini tetapi prapengambilan tersebut gagal, maka navigasi penuh dilaksanakan."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
-    "message": "{PH1} sumber dipraambil digunakan untuk halaman ini"
+    "message": "Halaman ini berjaya dipraambil."
   },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
-    "message": "Prapemuatan yang digunakan untuk halaman ini"
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
+    "message": "URL sedang dipramuat oleh halaman permulaan"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
+    "message": "Status prapemuatan"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
+    "message": "Halaman permulaan mencuba untuk prapaparkan URL halaman ini tetapi prapemaparan tersebut gagal, maka navigasi penuh dilakukan."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
-    "message": "Halaman ini diprapapar"
+    "message": "Halaman ini berjaya diprapaparkan."
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "titik putus yang dicapai"
@@ -4580,8 +4883,14 @@
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Alih keluar ungkapan: {PH1}"
   },
+  "panels/console/ConsolePrompt.ts | allowPasting": {
+    "message": "Penampalan dibenarkan"
+  },
   "panels/console/ConsolePrompt.ts | consolePrompt": {
     "message": "Gesaan konsol"
+  },
+  "panels/console/ConsolePrompt.ts | selfXssWarning": {
+    "message": "Amaran: Jangan tampal kod yang tidak anda fahami atau tidak diperiksa sendiri dalam konsol Alatan Pembangun. Tindakan ini akan membenarkan penyerang mencuri identiti anda atau mengawal komputer anda. Sila taip ''{PH1}'' di bawah untuk membolehkan penampalan."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Tiada ralat}=1{# ralat}other{# ralat}}"
@@ -4612,9 +4921,6 @@
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsol dikosongkan"
-  },
-  "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Penampalan kod disekat pada halaman ini. Penampalan kod pada alatan pembangun mungkin membolehkan penyerang mengambil alih akaun anda."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Tetapan konsol"
@@ -6698,14 +7004,11 @@
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
     "message": "JavaScript dilumpuhkan. Anda perlu mendayakan JavaScript untuk mengaudit halaman ini. Buka Menu Perintah dan jalankan arahan Dayakan JavaScript untuk mendayakan JavaScript."
   },
-  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
-    "message": "Navigasi lama"
-  },
   "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
     "message": "Mod Lighthouse"
   },
   "panels/lighthouse/LighthouseController.ts | localStorage": {
-    "message": "Storan Setempat"
+    "message": "Storan setempat"
   },
   "panels/lighthouse/LighthouseController.ts | mobile": {
     "message": "Mudah Alih"
@@ -6763,9 +7066,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
     "message": "Mod jangka masa menganalisis tempoh masa rambang, yang biasanya mengandungi interaksi pengguna."
-  },
-  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Analisis halaman menggunakan Lighthouse klasik apabila dalam mod navigasi."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "SQL Web"
@@ -7133,8 +7433,8 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
     "message": "Permintaan mungkin disekat"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeRewrittenByLocal": {
-    "message": "Permintaan boleh ditulis semula oleh penggantian setempat"
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
+    "message": "Permintaan mungkin dibatalkan secara setempat"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Tersuai"
@@ -7171,6 +7471,9 @@
   },
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Penggantian keserempakan perkakasan didayakan"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingTooltip": {
+    "message": "Penggantian nilai dilaporkan oleh navigator.hardwareConcurrency pada halaman tersebut"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Tiada pendikitan"
@@ -7430,9 +7733,6 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Selesai"
   },
-  "panels/network/NetworkDataGridNode.ts | hasOverriddenHeaders": {
-    "message": "Permintaan mengandungi tajuk yang telah diatasi"
-  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "tahap 1"
   },
@@ -7477,6 +7777,15 @@
   },
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "Ubah hala"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentHeadersOverridden": {
+    "message": "Kandungan dan pengepala permintaan dibatalkan"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentOverridden": {
+    "message": "Kandungan permintaan dibatalkan"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestHeadersOverridden": {
+    "message": "Pengepala permintaan dibatalkan"
   },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + Prapelancaran"
@@ -7581,7 +7890,7 @@
     "message": "Butiran operasi Token Keadaan Sulit"
   },
   "panels/network/NetworkItemView.ts | trustTokens": {
-    "message": "Token Keadaan Sulit"
+    "message": "Token keadaan sulit"
   },
   "panels/network/NetworkItemView.ts | websocketMessages": {
     "message": "Mesej WebSocket"
@@ -7599,7 +7908,10 @@
     "message": "Sekat URL permintaan"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
-    "message": "Permintaan Disekat"
+    "message": "Permintaan disekat"
+  },
+  "panels/network/NetworkLogView.ts | chromeExtensions": {
+    "message": "Sembunyikan URL sambungan"
   },
   "panels/network/NetworkLogView.ts | clearBrowserCache": {
     "message": "Kosongkan cache penyemak imbas"
@@ -7671,7 +7983,10 @@
     "message": "Selesai: {PH1}"
   },
   "panels/network/NetworkLogView.ts | hasBlockedCookies": {
-    "message": "Mempunyai kuki yang disekat"
+    "message": "Kuki respons yang disekat"
+  },
+  "panels/network/NetworkLogView.ts | hideChromeExtension": {
+    "message": "Menyembunyikan permintaan kepada URL 'chrome-extension://'"
   },
   "panels/network/NetworkLogView.ts | hideDataUrls": {
     "message": "Sembunyikan URL data"
@@ -7695,10 +8010,10 @@
     "message": "Data Rangkaian Tersedia"
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
-    "message": "Hanya paparkan permintaan yang disekat"
+    "message": "Memaparkan permintaan yang disekat sahaja"
   },
-  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
-    "message": "Hanya paparkan permintaan dengan kuki respons yang disekat"
+  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
+    "message": "Memaparkan permintaan dengan kuki respons yang disekat sahaja"
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "Memaparkan permintaan dengan asalan yang berbeza daripada asalan halaman sahaja"
@@ -7863,7 +8178,7 @@
     "message": "Tiada pengepala tersuai"
   },
   "panels/network/NetworkPanel.ts | captureScreenshots": {
-    "message": "Tangkap tangkapan skrin"
+    "message": "Tangkapan skrin"
   },
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Tangkap tangkapan skrin semasa memuatkan halaman"
@@ -7920,7 +8235,7 @@
     "message": "Paparkan lagi maklumat dalam baris permintaan"
   },
   "panels/network/NetworkPanel.ts | showOverview": {
-    "message": "Paparkan ikhtisar"
+    "message": "Ikhtisar"
   },
   "panels/network/NetworkPanel.ts | showOverviewOfNetworkRequests": {
     "message": "Paparkan ikhtisar permintaan rangkaian"
@@ -7929,7 +8244,7 @@
     "message": "Pendikitan"
   },
   "panels/network/NetworkPanel.ts | useLargeRequestRows": {
-    "message": "Gunakan baris permintaan yang besar"
+    "message": "Baris permintaan besar"
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
@@ -8018,9 +8333,6 @@
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Umum"
   },
-  "panels/network/RequestHeadersView.ts | headerOverrides": {
-    "message": "Penggantian pengepala"
-  },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Ketahui lebih lanjut"
   },
@@ -8064,7 +8376,7 @@
     "message": "Kod Status"
   },
   "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Dokumen ini telah disekat daripada dimuatkan dalam iframe dengan atribut sandbox kerana dokumen ini menetapkan dasar pembuka rentas asalan."
+    "message": "Dokumen disekat daripada memuatkan tetingkap timbul yang dibuka oleh iframe berkotak pasir kerana dokumen ini mengkhususkan dasar pembuka rentas asalan."
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
     "message": "Untuk membenamkan bingkai ini dalam dokumen anda, respons perlu mendayakan dasar pembenam rentas asalan dengan menyatakan pengepala respons berikut:"
@@ -8468,9 +8780,6 @@
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Umum"
   },
-  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
-    "message": "Penggantian pengepala"
-  },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Mentah"
   },
@@ -8565,7 +8874,7 @@
     "message": "Hanya pilih pilihan ini jika laman web rambang, termasuk sumber ini tidak menimbulkan risiko keselamatan."
   },
   "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
-    "message": "Dokumen ini telah disekat daripada dimuatkan dalam iframe dengan atribut sandbox kerana dokumen ini menetapkan dasar pembuka rentas asalan."
+    "message": "Dokumen disekat daripada memuatkan tetingkap timbul yang dibuka oleh iframe berkotak pasir kerana dokumen ini mengkhususkan dasar pembuka rentas asalan."
   },
   "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
     "message": "Untuk membenamkan bingkai ini dalam dokumen anda, respons perlu mendayakan dasar pembenam rentas asalan dengan menyatakan pengepala respons berikut:"
@@ -9344,6 +9653,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentasi"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | editAndResend": {
+    "message": "Edit dan Hantar Semula"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
     "message": "Masa berlalu"
   },
@@ -9397,6 +9709,18 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | type": {
     "message": "Jenis"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | addParameter": {
+    "message": "Tambahkan parameter"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | deleteParameter": {
+    "message": "Padam parameter"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | resetDefaultValue": {
+    "message": "Tetapkan semula untuk melalaikan nilai"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | copyCommand": {
+    "message": "Salin perintah"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Pemantau protokol"
@@ -10868,6 +11192,9 @@
   "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
     "message": "Gagal memuatkan apa-apa maklumat nyahpepijat untuk {PH1}."
   },
+  "panels/sources/DebuggerPlugin.ts | debuggingPowerReduced": {
+    "message": "Alatan Pembangun tidak boleh memaparkan sumber keizinan tetapi anda boleh nyahpepijat kod yang dikerahkan tugas."
+  },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{Lumpuhkan titik putus}other{Lumpuhkan semua titik putus dalam baris}}"
   },
@@ -10877,8 +11204,20 @@
   "panels/sources/DebuggerPlugin.ts | enableBreakpoint": {
     "message": "{n,plural, =1{Dayakan titik putus}other{Dayakan semua titik putus dalam baris}}"
   },
+  "panels/sources/DebuggerPlugin.ts | errorLoading": {
+    "message": "Ralat semasa memuatkan URL {PH1}: {PH2}"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
+    "message": "Abaikan skrip sambungan"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
+    "message": "Abaikan fail ini"
+  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Jangan jeda di sini"
+  },
+  "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
+    "message": "Untuk mendayakan semula, pastikan fail tiada dalam senarai abaikan dan muat semula."
   },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n,plural, =1{Alih keluar titik putus}other{Alih keluar semua titik putus dalam baris}}"
@@ -10886,11 +11225,14 @@
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "Alih keluar daripada senarai abai"
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapDetected": {
-    "message": "Peta sumber dikesan."
+  "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
+    "message": "Peta sumber gagal dimuatkan."
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
-    "message": "Peta sumber ditemukan, tetapi diabaikan untuk fail dalam senarai abai."
+  "panels/sources/DebuggerPlugin.ts | sourceMapLoaded": {
+    "message": "Peta sumber dimuatkan."
+  },
+  "panels/sources/DebuggerPlugin.ts | sourceMapSkipped": {
+    "message": "Peta sumber dilangkau untuk fail ini."
   },
   "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
     "message": "Penyahpepijat akan melangkau skrip ini dan tidak akan berhenti pada pengecualian."
@@ -10933,9 +11275,6 @@
   },
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "Formatkan {PH1}"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
-    "message": "Adakah anda pasti mahu memadamkan semua penggantian yang terkandung dalam folder ini?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "Adakah anda pasti mahu memadamkan fail ini?"
@@ -11054,26 +11393,26 @@
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Kosongkan konfigurasi"
   },
-  "panels/sources/SourcesNavigator.ts | contentScriptsServedByExtensions": {
-    "message": "Skrip kandungan yang disajikan oleh sambungan dipaparkan di sini"
-  },
-  "panels/sources/SourcesNavigator.ts | createAndSaveCodeSnippetsFor": {
-    "message": "Buat dan simpan coretan kod untuk digunakan semula kemudian"
-  },
   "panels/sources/SourcesNavigator.ts | createNewSnippet": {
     "message": "Buat coretan baharu"
+  },
+  "panels/sources/SourcesNavigator.ts | explainContentScripts": {
+    "message": "Lihat skrip kandungan yang disiarkan oleh sambungan"
+  },
+  "panels/sources/SourcesNavigator.ts | explainLocalOverrides": {
+    "message": "Permintaan rangkaian penggantian dan kandungan web secara setempat untuk membuat olokan sumber jarak jauh"
+  },
+  "panels/sources/SourcesNavigator.ts | explainSnippets": {
+    "message": "Simpan kod JavaScript yang kerap anda jalankan supaya dapat menjalankan kod itu lagi pada bila-bila masa"
+  },
+  "panels/sources/SourcesNavigator.ts | explainWorkspace": {
+    "message": "Tetapkan ruang kerja untuk segerakkan edit secara terus kepada sumber yang anda bangunkan"
   },
   "panels/sources/SourcesNavigator.ts | learnMore": {
     "message": "Ketahui lebih lanjut"
   },
-  "panels/sources/SourcesNavigator.ts | learnMoreAboutWorkspaces": {
-    "message": "Ketahui lebih lanjut tentang Ruang Kerja"
-  },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "Coretan baharu"
-  },
-  "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
-    "message": "Gantikan aset halaman dengan fail daripada folder setempat"
   },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "Alih keluar"
@@ -11089,9 +11428,6 @@
   },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Pilih folder untuk penggantian"
-  },
-  "panels/sources/SourcesNavigator.ts | syncChangesInDevtoolsWithThe": {
-    "message": "Segerakkan perubahan dalam DevTools dengan sistem fail setempat"
   },
   "panels/sources/SourcesPanel.ts | continueToHere": {
     "message": "Teruskan ke sini"
@@ -11167,9 +11503,6 @@
   },
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "Tamatkan panggilan JavaScript semasa"
-  },
-  "panels/sources/SourcesView.ts | dropInAFolderToAddToWorkspace": {
-    "message": "Lepaskan dalam folder untuk ditambahkan pada ruang kerja"
   },
   "panels/sources/SourcesView.ts | openFile": {
     "message": "Buka fail"
@@ -11411,9 +11744,6 @@
   "panels/sources/sources-meta.ts | file": {
     "message": "Fail"
   },
-  "panels/sources/sources-meta.ts | filesystem": {
-    "message": "Sistemfail"
-  },
   "panels/sources/sources-meta.ts | goTo": {
     "message": "Pergi ke"
   },
@@ -11488,9 +11818,6 @@
   },
   "panels/sources/sources-meta.ts | showBreakpoints": {
     "message": "Paparkan Titik Putus"
-  },
-  "panels/sources/sources-meta.ts | showFilesystem": {
-    "message": "Paparkan Sistem Fail"
   },
   "panels/sources/sources-meta.ts | showQuickSource": {
     "message": "Paparkan Sumber pantas"
@@ -11570,6 +11897,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Tonton"
   },
+  "panels/timeline/AnimationsTrackAppender.ts | animations": {
+    "message": "Animasi"
+  },
   "panels/timeline/AppenderUtils.ts | sSelfS": {
     "message": "{PH1} (berasingan {PH2})"
   },
@@ -11615,6 +11945,15 @@
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
     "message": "Peralihan Reka Letak"
   },
+  "panels/timeline/NetworkTrackAppender.ts | network": {
+    "message": "Rangkaian"
+  },
+  "panels/timeline/ThreadAppender.ts | anonymous": {
+    "message": "(awanama)"
+  },
+  "panels/timeline/ThreadAppender.ts | thread": {
+    "message": "Urutan Utama oleh enjin baharu"
+  },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "Profil CPU untuk sasaran tidak tersedia."
   },
@@ -11627,17 +11966,11 @@
   "panels/timeline/TimelineDetailsView.ts | callTree": {
     "message": "Pepohon Panggilan"
   },
-  "panels/timeline/TimelineDetailsView.ts | estimated": {
-    "message": "anggaran"
-  },
   "panels/timeline/TimelineDetailsView.ts | eventLog": {
     "message": "Log Peristiwa"
   },
   "panels/timeline/TimelineDetailsView.ts | layers": {
     "message": "Lapisan"
-  },
-  "panels/timeline/TimelineDetailsView.ts | learnMore": {
-    "message": "Ketahui lebih lanjut"
   },
   "panels/timeline/TimelineDetailsView.ts | paintProfiler": {
     "message": "Pemprofil Cat"
@@ -11647,9 +11980,6 @@
   },
   "panels/timeline/TimelineDetailsView.ts | summary": {
     "message": "Ringkasan"
-  },
-  "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
-    "message": "Jumlah masa penyekatan: {PH1}ms{PH2}"
   },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
@@ -11662,9 +11992,6 @@
   },
   "panels/timeline/TimelineEventOverview.ts | sSDash": {
     "message": "{PH1} – {PH2}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | animation": {
-    "message": "Animasi"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "Bingkai yang Dilepaskan"
@@ -11680,9 +12007,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Bingkai Melahu"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
-    "message": "Bingkai panjang"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | main": {
     "message": "Utama"
@@ -12050,6 +12374,9 @@
   "panels/timeline/TimelineUIUtils.ts | commit": {
     "message": "Lakukan"
   },
+  "panels/timeline/TimelineUIUtils.ts | compilationCacheKind": {
+    "message": "Kompilasi jenis cache"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Saiz cache penyusunan"
   },
@@ -12257,6 +12584,9 @@
   "panels/timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "URL imej"
   },
+  "panels/timeline/TimelineUIUtils.ts | initialPriority": {
+    "message": "Keutamaan Awal"
+  },
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Pemula"
   },
@@ -12274,9 +12604,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Diseru oleh Tamat Masa"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jank": {
-    "message": "jank"
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "Bingkai JS"
@@ -12529,9 +12856,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
     "message": "{PH1} menunjukkan responsif halaman yang lemah."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
-    "message": "{PH1}. Masa bingkai yang lama menunjukkan {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} daripada {PH2}"
@@ -12953,6 +13277,9 @@
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "Pengisihan {PH1} dibatalkan"
   },
+  "ui/components/dialogs/IconDialog.ts | close": {
+    "message": "Tutup"
+  },
   "ui/components/dialogs/ShortcutDialog.ts | close": {
     "message": "Tutup"
   },
@@ -13208,8 +13535,8 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Jangan tunjukkan lagi"
   },
-  "ui/legacy/Infobar.ts | learnMore": {
-    "message": "Ketahui lebih lanjut"
+  "ui/legacy/Infobar.ts | showMore": {
+    "message": "Tunjukkan lagi"
   },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Tutup laci"
@@ -13618,9 +13945,6 @@
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showDBefore": {
     "message": "Paparkan {PH1} sebelum"
-  },
-  "ui/legacy/components/data_grid/ViewportDataGrid.ts | collapsed": {
-    "message": "diruntuhkan"
   },
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | blur": {
     "message": "Kabur"

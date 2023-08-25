@@ -419,9 +419,6 @@
   "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
     "message": "Seller Scoring အဆင့် စတင်သည်"
   },
-  "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
-    "message": "ဇာစ်မြစ်အမျိုးမျိုး ဖတ်ရှုမှု ပိတ်ဆို့ခြင်း (CORB) သည် MIME အမျိုးအစား {PH2} နှင့် ဇာတ်မြစ်အမျိုးမျိုး တုံ့ပြန်ချက် {PH1} ကို ပိတ်ထားသည်။ နောက်ထပ်အသေးစိတ်အတွက် https://www.chromestatus.com/feature/5629709824032768 တွင် ကြည့်ပါ။"
-  },
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "မြန်နှုန်းမြင့် 3G"
   },
@@ -857,6 +854,12 @@
   "entrypoints/inspector_main/InspectorMain.ts | tab": {
     "message": "တဘ်"
   },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "စာမျက်နှာ- ရွေးမထားပါ"
+  },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetS": {
+    "message": "စာမျက်နှာ- {PH1}"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "ပင်မ Web Vitals"
   },
@@ -901,6 +904,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedmotion": {
     "message": "CSS prefers-reduced-motion မီဒီယာဝန်ဆောင်မှုကို မဖြစ်မနေအသုံးပြုစေသည်"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedtransparencyMedia": {
+    "message": "CSS prefers-reduced-transparency မီဒီယာဝန်ဆောင်မှုကို မဖြစ်မနေအသုံးပြုစေသည်"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "ပုံနှိပ်ထုတ်ယူမှုနှင့် ဖန်သားပြင်ပုံစံများ စစ်ဆေးရန်အတွက် မီဒီယာအမျိုးအစားကို မဖြစ်မနေအသုံးပြုစေသည်"
@@ -1026,7 +1032,7 @@
     "message": "ညာဘက်တွင် နေရာချရန်"
   },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
-    "message": "အမှားရှာပြင်ရမည့်အရာကို အထူးပြသရန်"
+    "message": "အထူးပြသည့် စာမျက်နှာ"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "အကူအညီ"
@@ -1101,7 +1107,7 @@
     "message": "ယခင်ရလဒ် ရှာခြင်း"
   },
   "entrypoints/main/main-meta.ts | focusDebuggee": {
-    "message": "အမှားရှာပြင်ရမည့်အရာကို အထူးပြသရန်"
+    "message": "အထူးပြသည့် စာမျက်နှာ"
   },
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "အလျားလိုက်"
@@ -1278,7 +1284,7 @@
     "message": "DOMSubtreeModified အပါဝင် DOM အသွင်ပြောင်းခြင်း ဖြစ်ရပ်များ၊ DOMNodeInserted၊ DOMNodeRemoved၊ DOMNodeRemovedFromDocument၊ DOMNodeInsertedIntoDocument နှင့် DOMCharacterDataModified တို့ကို ရပ်ဆိုင်းထားပြီး (https://w3c.github.io/uievents/#legacy-event-types) ဖယ်ရှားပါမည်။ ၎င်းအစား MutationObserver သုံးပါ။"
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
-    "message": "ဒေတာအတွက် ပံ့ပိုးမှု- SVG <use> အစိတ်အပိုင်းရှိ URL များကို ရပ်ဆိုင်းလိုက်သဖြင့် နောင်တွင် ၎င်းကိုဖယ်ရှားလိုက်ပါမည်။"
+    "message": "ဒေတာအတွက် ပံ့ပိုးမှု- SVGUse အစိတ်အပိုင်းရှိ URL များကို ရပ်ဆိုင်းလိုက်သဖြင့် နောင်တွင် ၎င်းကိုဖယ်ရှားလိုက်ပါမည်။"
   },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain သတ်မှတ်ခြင်းဖြင့် မူရင်းတူညီသည့် မူဝါဒ ဖယ်ရှားခြင်းကို ရပ်ဆိုင်းထားပြီး မူရင်းသတ်မှတ်ချက်အနေဖြင့် ပိတ်ပါမည်။ ဤဝန်ဆောင်မှု ဆက်လက်သုံးရန် မှတ်တမ်းနှင့် ဖရိမ်များအတွက် တုံ့ပြန်သည့် HTTP နှင့်အတူ Origin-Agent-Cluster: ?0 ခေါင်းစီး ပို့ပေးခြင်းဖြင့် ဇာစ်မြစ်အခြေခံထားသည့် ကိုယ်စားလှယ် အစုအဖွဲ့များမှ ထွက်ပါ။ နောက်ထပ်အသေးစိတ်အတွက် https://developer.chrome.com/blog/immutable-document-domain/ တွင် ကြည့်ပါ။"
@@ -1547,6 +1553,9 @@
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "ဝဘ်ဆိုက်တစ်ခုတည်း၏ ကွတ်ကီးများ ရှင်းပြထားသည်"
   },
+  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "ပြင်ပကုမ္ပဏီ၏ကွတ်ကီးများ ရပ်ဆိုင်းခြင်းအတွက် ပြင်ဆင်ရန်"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "ဇာစ်မြစ်အမျိုးမျိုးတွင် ရင်းမြစ်မျှဝေခြင်း (CORS)"
   },
@@ -1576,6 +1585,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML ရည်ညွှန်းချက်- အလိုအလျောက်ဖြည့်ခြင်း"
+  },
+  "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
+    "message": "CORB ရှင်းပြစနစ်"
   },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "ပေါ်တယ်များ - ဇစ်မြစ်တစ်ခုထဲဖြစ်သော ဆက်သွယ်ရေး ချန်နယ်များ"
@@ -1688,14 +1700,17 @@
   "models/persistence/PersistenceActions.ts | openInContainingFolder": {
     "message": "ပါဝင်သောဖိုင်တွဲတွင် ဖွင့်ရန်"
   },
+  "models/persistence/PersistenceActions.ts | overrideContent": {
+    "message": "အကြောင်းအရာ အစားထိုးရန်"
+  },
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "အောက်ပါအဖြစ် သိမ်းရန်..."
   },
-  "models/persistence/PersistenceActions.ts | saveForOverrides": {
-    "message": "အစာထိုးခြင်းများအတွက် သိမ်းရန်"
-  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "ပုံကို သိမ်းရန်"
+  },
+  "models/persistence/PersistenceActions.ts | showOverrides": {
+    "message": "အစားထိုးခြင်းအားလုံး ပြပါ"
   },
   "models/persistence/PersistenceUtils.ts | linkedToS": {
     "message": "{PH1} နှင့် လင့်ခ်ချိတ်ထားသည်"
@@ -2306,6 +2321,9 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "သတ်မှတ်ထားသောသင်္ကေတကို မန်နီးဖက်စ်မှ ဒေါင်းလုဒ်လုပ်၍မရပါ"
   },
+  "panels/application/AppManifestView.ts | customizePwaTitleBar": {
+    "message": "သင့် PWA ခေါင်းစဉ်ဘား၏ ဝင်းဒိုးသတ်မှတ်ချက်များ ထပ်ပိုးလွှာကို စိတ်ကြိုက်လုပ်ရန်"
+  },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
     "message": "မှောင်သည့် နောက်ခံအရောင်"
   },
@@ -2483,6 +2501,18 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "အပြင်အဆင် အရောင်"
   },
+  "panels/application/AppManifestView.ts | wcoFound": {
+    "message": "Chrome သည် {PH3} ရှိ {PH2} အကွက်တွင် {PH1} တန်ဖိုးကို တွေ့သွားပါပြီ။"
+  },
+  "panels/application/AppManifestView.ts | wcoNeedHelpReadMore": {
+    "message": "အကူအညီ လိုသလား။ {PH1} ကို ဖတ်ပါ။"
+  },
+  "panels/application/AppManifestView.ts | wcoNotFound": {
+    "message": "Window Controls Overlay API သုံးရန် မန်နီးဖက်စ်တွင် {PH1} ကို ဖွင့်ဆိုပြီး သင့်အက်ပ်၏ ခေါင်းစဉ်ဘားကို စိတ်ကြိုက်ပြင်ပါ။"
+  },
+  "panels/application/AppManifestView.ts | windowControlsOverlay": {
+    "message": "ဝင်းဒိုးသတ်မှတ်ချက်များ ထပ်ပိုးလွှာ"
+  },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "အက်ပ်မန်နီးဖက်စ်"
   },
@@ -2547,7 +2577,7 @@
     "message": "IndexedDB ပြန်လည် စတင်ရန်"
   },
   "panels/application/ApplicationPanelSidebar.ts | sessionStorage": {
-    "message": "စက်ရှင်သိုလှောင်ခန်း"
+    "message": "အပိုင်းသိုလှောင်ခန်း"
   },
   "panels/application/ApplicationPanelSidebar.ts | storage": {
     "message": "သိုလှောင်ခန်း"
@@ -2583,7 +2613,7 @@
     "message": "နောက်ခံ ဝန်ဆောင်မှုများ"
   },
   "panels/application/BackgroundServiceView.ts | backgroundSync": {
-    "message": "နောက်ခံတွင်စင့်ခ်လုပ်ခြင်း"
+    "message": "နောက်ခံတွင် စင့်ခ်လုပ်ခြင်း"
   },
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "ရှင်းထုတ်ရန်"
@@ -2808,7 +2838,7 @@
     "message": "ရွေးထားသည့် စိတ်ဝင်စားမှုအုပ်စုအတွက် အသေးစိတ်အချက်အလက် မရနိုင်ပါ။ ဘရောင်ဇာသည် အုပ်စုမှ ထွက်သွားခြင်းဖြစ်နိုင်သည်။"
   },
   "panels/application/InterestGroupTreeElement.ts | interestGroups": {
-    "message": "စိတ်ဝင်စားမှုအုပ်စုများ"
+    "message": "စိတ်ဝင်စားမှုတူသူများ အဖွဲ့"
   },
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "ဖွင့်သည့်စနစ်သို့ ဝင်ခွင့်"
@@ -2863,6 +2893,12 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Yes"
+  },
+  "panels/application/PreloadingTreeElement.ts | preloads": {
+    "message": "ကြိုဖွင့်ခြင်းများ"
+  },
+  "panels/application/PreloadingTreeElement.ts | speculationRules": {
+    "message": "ခန့်မှန်းတွက်ချက်မှု စည်းကမ်းများ"
   },
   "panels/application/PreloadingTreeElement.ts | thisPage": {
     "message": "ဤစာမျက်နှာ"
@@ -3077,6 +3113,9 @@
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "မျှသုံးသိုလှောင်ခန်း"
   },
+  "panels/application/StorageBucketsTreeElement.ts | storageBuckets": {
+    "message": "သိုလှောင်ခန်း အကွက်များ"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "အားလုံး ရှင်းထုတ်ရန်"
   },
@@ -3202,6 +3241,12 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "ဖြစ်ရပ်များ မှတ်တမ်းတင်မှု ရပ်ပါ"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
+    "message": "သတ်မှတ်မထားပါ"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
+    "message": "သတ်မှတ်မထားပါ"
   },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "GET တောင်းဆိုချက်မှတစ်ဆင့် ဖွင့်ထားသောစာမျက်နှာများသာ ရှေ့-နောက် ကက်ရှ်အတွက် အကျုံးဝင်ပါသည်။"
@@ -3542,14 +3587,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "WebRTC ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
+    "message": "WebRTC သုံးထားသောကြောင့် ရှေ့-နောက် ကက်ရှ် ပိတ်ထားသည်။"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "WebShare သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "WebSocket ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
+    "message": "WebSocket သုံးထားသောကြောင့် ရှေ့-နောက် ကက်ရှ် ပိတ်ထားသည်။"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "WebTransport ပါသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်တွင် ဝင်၍မရပါ။"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
+    "message": "WebTransport သုံးထားသောကြောင့် ရှေ့-နောက် ကက်ရှ် ပိတ်ထားသည်။"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "WebXR သုံးသော စာမျက်နှာများသည် ရှေ့-နောက် ကက်ရှ်အတွက် လောလောဆယ်အကျုံးမဝင်ပါ။"
@@ -3629,6 +3683,12 @@
   "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
     "message": "ဖြစ်နိုင်သော တစ်ဆင့်ပြန် ခြေရာခံသည့် ဝဘ်ဆိုက်များကို စစ်နေသည်။"
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureDisabled": {
+    "message": "တစ်ဆင့်ပြန် ခြေရာခံခြင်းဆိုင်ရာ လျှော့ပေါ့ပေးမှုများ ပိတ်ထားသည်။ ၎င်းတို့ကိုဖွင့်ရန် {PH1} တွင် အလံကို “ဖျက်ခြင်းနှင့်အတူ ဖွင့်ထားသည်” သို့ သတ်မှတ်ပါ။"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureFlag": {
+    "message": "တစ်ဆင့်ပြန် ခြေရာခံခြင်းဆိုင်ရာ လျှော့ပေါ့ပေးမှုများ ပြသမှုအလံ"
+  },
   "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
     "message": "မဖြစ်မနေ လုပ်ဆောင်ရန်"
   },
@@ -3636,7 +3696,7 @@
     "message": "ပိုမိုလေ့လာရန်- တစ်ဆင့်ပြန် ခြေရာခံခြင်းဆိုင်ရာ လျှော့ပေါ့ပေးမှုများ"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
-    "message": "ဖြစ်နိုင်ခြေရှိသော တစ်ဆင့်ပြန် ခြေရာခံသည့် ဝဘ်ဆိုက်များအတွက် အခြေအနေကို ရှင်းလင်းထားခြင်း မရှိပါ။ နှစ်မျိုးစလုံးကို ခွဲခြားဖော်ထုတ်မထားပါ- တစ်ဆင့်ပြန် ခြေရာခံခြင်းဆိုင်ရာ လျှော့ပေါ့ပေးမှုများကို ဖွင့်မထားပါ (သို့) ပြင်ပကုမ္ပဏီ၏ကွတ်ကီးများကို ပိတ်မထားပါ။"
+    "message": "ဖြစ်နိုင်ခြေရှိသော တစ်ဆင့်ပြန် ခြေရာခံသည့် ဝဘ်ဆိုက်များအတွက် အခြေအနေကို ရှင်းလင်းမထားပါ။ ဘာကိုမျှ ခွဲခြားဖော်ထုတ်မထားပါ (သို့) ပြင်ပကုမ္ပဏီ၏ကွတ်ကီးများကို ပိတ်မထားပါ။"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
     "message": "လုပ်ဆောင်နေသည်"
@@ -4106,6 +4166,15 @@
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "အကွက်အမည်"
   },
+  "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
+    "message": "“{PH1}” အကွက်ကို ဖျက်မလား။"
+  },
+  "panels/application/components/StorageMetadataView.ts | defaultBucket": {
+    "message": "မူရင်းအကွက်"
+  },
+  "panels/application/components/StorageMetadataView.ts | deleteBucket": {
+    "message": "အကွက်ကို ဖျက်ရန်"
+  },
   "panels/application/components/StorageMetadataView.ts | durability": {
     "message": "ကြာရှည်ခံမှု"
   },
@@ -4158,10 +4227,10 @@
     "message": "ထိပ်တန်းအဆင့် ဝဘ်ဆိုက်သည် အပိတ်ဖြစ်သောကြောင့်ဖြစ်သည်"
   },
   "panels/application/components/TrustTokensView.ts | allStoredTrustTokensAvailableIn": {
-    "message": "ဤဘရောင်ဇာအသုံးပြုမှုတွင် ရနိုင်သည့် သိမ်းထားသော ‘သီးသန့်အခြေအနေ တိုကင်’ အားလုံး။"
+    "message": "ဤဘရောင်ဇာအသုံးပြုမှုတွင် ရနိုင်သည့် သိမ်းထားသော သီးသန့်အခြေအနေတိုကင် အားလုံး။"
   },
   "panels/application/components/TrustTokensView.ts | deleteTrustTokens": {
-    "message": "{PH1} ထုတ်ပေးသည့် သိမ်းထားသော ‘သီးသန့်အခြေအနေ တိုကင်’ အားလုံးကို ဖျက်ရန်။"
+    "message": "{PH1} ထုတ်ပေးသည့် သိမ်းထားသော သီးသန့်အခြေအနေတိုကင် အားလုံးကို ဖျက်ရန်။"
   },
   "panels/application/components/TrustTokensView.ts | issuer": {
     "message": "ထုတ်ပေးသူ"
@@ -4175,11 +4244,11 @@
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "သီးသန့်အခြေအနေ တိုကင်"
   },
-  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
-    "message": "နောက်ဆက်တွဲ ဆက်တင်များ"
+  "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
+    "message": "ကြိုဖွင့်ခြင်းအားလုံး"
   },
-  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
-    "message": "ကြိုဖွင့်သည့် စာမျက်နှာ ဆက်တင်များ"
+  "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
+    "message": "စည်းမျဉ်းအလိုက် စစ်ထုတ်ရန် အစု"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "မအောင်မြင်ပါ"
@@ -4208,17 +4277,41 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "အကျုံးဝင်သည်"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
-    "message": "လည်ပတ်သည့်စနစ်၏ ‘ဘက်ထရီ အားထိန်း’ မုဒ်ကြောင့် ကြိုဖွင့်ခြင်းကို ပိတ်ထားသည်။"
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | action": {
+    "message": "လုပ်ဆောင်ချက်"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
-    "message": "လည်ပတ်သည့်စနစ်၏ ‘ဒေတာ ချွေတာမှု’ မုဒ်ကြောင့် ကြိုဖွင့်ခြင်းကို ပိတ်ထားသည်။"
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | status": {
+    "message": "အခြေအနေ"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
-    "message": "အသုံးပြုသူဆက်တင်များ (သို့) နောက်ဆက်တွဲတစ်ခုကြောင့် ကြိုဖွင့်ခြင်းကို ပိတ်ထားသည်။ ပိုမိုလေ့လာရန် {PH1} သို့ သွားပါ (သို့) နောက်ဆက်တွဲကို ပိတ်ရန် {PH2} သို့ သွားပါ။"
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusFailure": {
+    "message": "မအောင်မြင်ပါ"
   },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
-    "message": "ကြိုဖွင့်ခြင်းကို ပိတ်ထားသည်"
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusNotTriggered": {
+    "message": "စတင်မထားပါ"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusPending": {
+    "message": "ဆိုင်းငံ့ထားသည်"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusReady": {
+    "message": "အဆင်သင့်"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusRunning": {
+    "message": "လုပ်ဆောင်နေသည်"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusSuccess": {
+    "message": "အောင်မြင်ပါသည်"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | url": {
+    "message": "URL"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToInspect": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာကို စစ်ဆေးရန် နှိပ်ပါ"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToRevealRuleSet": {
+    "message": "သတ်မှတ်ထားသော စည်းမျဉ်းပြရန် နှိပ်ပါ"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonInspect": {
+    "message": "စုံစမ်းရန်"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "ကြိုတင်ဖွင့်၍မရပါ။"
@@ -4256,8 +4349,59 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "နောက်ထပ်အသေးစိတ်အတွက် အစိတ်အပိုင်းတစ်ခုရွေးရန်"
   },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
+    "message": "လည်ပတ်သည့်စနစ်၏ ‘ဘက်ထရီ အားထိန်း’ မုဒ်ကြောင့် ကြိုဖွင့်ခြင်းကို ပိတ်ထားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
+    "message": "လည်ပတ်သည့်စနစ်၏ ‘ဒေတာ ချွေတာမှု’ မုဒ်ကြောင့် ကြိုဖွင့်ခြင်းကို ပိတ်ထားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "‘ဆောဖ့်ဝဲတူးလ်များ’ ဖွင့်ထားသဖြင့် ကြိုတင်ရယူခြင်းကို မဖြစ်မနေ ဖွင့်ခိုင်းထားသည်။ ဤဘရောင်ဇာစက်ရှင်သည် စွမ်းဆောင်ရည်နှိုင်းယှဉ်ခြင်းများအတွက် အသုံးပြုထားသည့် ထိန်းချုပ်အုပ်စု၏ တစ်စိတ်တစ်ပိုင်းဖြစ်သောကြောင့် ‘ဆောဖ့်ဝဲတူးလ်များ’ ပိတ်ထားသောအခါ ကြိုတင်ရယူခြင်းကို ပိတ်ပါမည်။"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "‘ဆောဖ့်ဝဲတူးလ်များ’ ဖွင့်ထားသဖြင့် ကြိုတင်ပုံဖော်ခြင်းကို အတင်းအကျပ် ဖွင့်ထားသည်။ ဤဘရောင်ဇာစက်ရှင်သည် စွမ်းဆောင်ရည်နှိုင်းယှဉ်ခြင်းများအတွက် အသုံးပြုထားသည့် ထိန်းချုပ်အုပ်စု၏ တစ်စိတ်တစ်ပိုင်းဖြစ်သောကြောင့် ‘ဆောဖ့်ဝဲတူးလ်များ’ ပိတ်ထားသောအခါ ကြိုတင်ပုံဖော်ခြင်းကို ပိတ်ပါမည်။"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
+    "message": "အသုံးပြုသူဆက်တင်များ (သို့) နောက်ဆက်တွဲတစ်ခုကြောင့် ကြိုဖွင့်ခြင်းကို ပိတ်ထားသည်။ သင့်သတ်မှတ်ချက်ကို အပ်ဒိတ်လုပ်ရန် {PH1} သို့ သွားပါ။ ကြိုဖွင့်ခြင်းကို ပိတ်ထားသည့် နောက်ဆက်တွဲမှန်သမျှကို ပိတ်ရန် {PH2} သို့ သွားပါ။"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
+    "message": "နောက်ဆက်တွဲ ဆက်တင်များ"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | footerLearnMore": {
+    "message": "ပိုမိုလေ့လာရန်"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByBatterySaver": {
+    "message": "ဘက်ထရီ အားထိန်း"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByDataSaver": {
+    "message": "ဒေတာချွေတာမှု"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "ကြိုတင်ရယူခြင်းကို ပိတ်ထားသော်လည်း ယခုမဖြစ်မနေ ဖွင့်ခိုင်းလိုက်သည်"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "ကြိုတင်ပုံဖော်ခြင်းကို ပိတ်ထားသော်လည်း ယခုအတင်းအကျပ် ဖွင့်လိုက်သည်"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByPreference": {
+    "message": "အသုံးပြုသူဆက်တင်များ (သို့) နောက်ဆက်တွဲ"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
+    "message": "ကြိုဖွင့်ခြင်းကို ပိတ်ထားသည်"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
+    "message": "မဖြစ်မနေ ကြိုဖွင့်ခိုင်းထားသည်"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
+    "message": "ကြိုဖွင့်သည့် စာမျက်နှာ ဆက်တင်များ"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
+    "message": "ကြိုဖွင့်ခြင်းကို တားမြစ်သော အကြောင်းရင်းများ"
+  },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "လုပ်ဆောင်ချက်"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | ruleSet": {
+    "message": "စည်းမျဉ်းသတ်မှတ်ထားသည်"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "အခြေအနေ"
@@ -4334,50 +4478,209 @@
   "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
     "message": "ကြိုတင်ရယူသည့်ပရောက်စီတွင် ချိတ်ဆက်မှု စနစ်ထည့်သွင်းသောအခါ ကွန်ရက် အမှားအယွင်း ဖြစ်သွားသည်။"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "စာမျက်နှာ၏ ပင်မဖရိမ်လမ်းညွှန် စတင်နေစဉ်အတွင်း ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာကို စဖွင့်လိုက်သည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "စတင်ထားသော စာမျက်နှာ၏ လုံခြုံသည့်နေရာဆိုင်ရာ အလံပြခြင်းများ (သို့) ခွင့်ပြုချက်မူဝါဒများသည် ကြိုတင်ပုံဖော်ခြင်း စာမျက်နှာရှိ ၎င်းအချက်များနှင့် ကိုက်ညီမှု မရှိသောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို သုံးမထားပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "မူရင်း ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှု တောင်းဆိုချက် ကာလအတွင်းကဲ့သို့ မဟုတ်ဘဲ စဖွင့်ချိန်အတွင်း မတူညီသော လမ်းညွှန်ကန့်သတ်ချက်ဘောင်များ ( ဥပမာ- HTTP ခေါင်းစီးများ) ကို တွက်ချက်သောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို မသုံးထားပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာသည် လောလောဆယ် ပံ့ပိုးမထားသည့် အသံထွက်ပေါက်ကို တောင်းဆိုထားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "အသုံးပြုသူက ဘရောင်ဇာအား ဘက်ထရီလျှော့သုံးရန် တောင်းဆိုထားသောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို လုပ်ဆောင်မထားပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "ရင်းမြစ်အချို့ ဖွင့်ခြင်းကို ပိတ်ထားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုသည် HTTP ကလိုင်းယင့် အသိအမှတ်ပြုလက်မှတ် လိုအပ်သည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုသည် ပြင်ပဝဘ်ဆိုက် URL သို့ ပစ်မှတ်ထားခြင်းကြောင့် ၎င်းကို လုပ်၍မရပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာသည် ပြင်ပဝဘ်ဆိုက် URL သို့ လမ်းညွှန်သွားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော URL သည် ပြင်ပဝဘ်ဆိုက် URL သို့ တစ်ဆင့်ပြန်ညွှန်ပြနေသောကြောင့် ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုကို လုပ်၍မရပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာသည် ပြင်ပဝဘ်ဆိုက် URL သို့ တစ်ဆင့်ပြန်ညွှန်ပြသော URL သို့ လမ်းညွှန်သွားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "အသုံးပြုသူက ဘရောင်ဇာအား ဒေတာလျှော့သုံးရန် တောင်းဆိုထားသောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို လုပ်ဆောင်မထားပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာသည် လောလောဆယ် ပံ့ပိုးမထားသော ဒေါင်းလုဒ်တစ်ခုကို စတင်ရန် ကြိုးပမ်းထားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "ဘရောင်ဇာသည် လက်ရှိမှတ်ဉာဏ် အသုံးပြုမှုကို ဆုံးဖြတ်ရာ၌ အတွင်းပိုင်းအမှား တွေ့ထားသောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို လုပ်ဆောင်မထားပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "စတင်ထားသော စာမျက်နှာရှိ ထိရောက်သည့် URL သည် ၎င်း၏ပုံမှန် URL နှင့် ကွဲပြားနေသောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို မလုပ်ဆောင်နိုင်ပါ။ (ဥပမာ- ‘တဘ်အသစ် စာမျက်နှာ’ (သို့) လက်ခံလုပ်ဆောင်သော အက်ပ်များ။)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "URL ၏စနစ်သည် http: (သို့) https: မဟုတ်သောကြောင့် ၎င်းသည် ကြိုတင်ပုံဖော်ရန် သတ်မှတ်ချက်မပြည့်မီပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုသည် http: (သို့) https: စနစ်မဟုတ်သော URL သို့ တစ်ဆင့်ပြန်ညွှန်ပြသောကြောင့် ၎င်းကို လုပ်ဆောင်၍မရပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုသည် လောလောဆယ် ပံ့ပိုးမထားသော HTTPS အထောက်အထားစိစစ်ခြင်း လိုအပ်သည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "ကြိုတင်ပုံဖော်ခြင်းကို ပံ့ပိုးနိုင်ရန် ဤစက်ရှိ စနစ်မှတ်ဉာဏ် စုစုပေါင်းသည် လုံလောက်မှု မရှိသောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို လုပ်ဆောင်မထားပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာသည် လောလောဆယ် ပံ့ပိုးမထားသည့် အခြား URL သို့ ၎င်းကိုယ်တိုင် လမ်းညွှန်သွားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "စတင်နေသော စာမျက်နှာတွင် များလွန်းသော လုပ်လက်စ ကြိုတင်ပုံဖော်မှုများ ရှိပြီးသားဖြစ်သောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို လုပ်ဆောင်၍မရပါ။ နောက်ထပ် ကြိုတင်ပုံဖော်ခြင်း ဖွင့်ရန် အခြား ခန့်မှန်းတွက်ချက်မှု စည်းကမ်းများကို ဖယ်ရှားပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "ဘရောင်ဇာသည် ကြိုတင်ပုံဖော်ခြင်း မှတ်ဉာဏ်အကန့်အသတ် ကျော်သွားသောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို လုပ်ဆောင်မထားပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "ဘရောင်ဇာသည် မှတ်ဉာဏ်အလွန်နည်းပါးနေသောကြောင့် ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာကို ဖယ်ရှားထားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "ဘရောင်ဇာသည် မှတ်ဉာဏ်အလွန်နည်းပါးစွာ ရရှိသောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို လုပ်ဆောင်မထားပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMixedContent": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာတွင် အကြောင်းအရာများ ရောနှောပါဝင်နေသည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာသည် လောလောဆယ် ပံ့ပိုးမထားသည့် တားမြစ် JavaScript API ကို သုံးထားသည်။ (အတွင်းပိုင်း Mojo အင်တာဖေ့စ်- {PH1})"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "2xx မဟုတ်သော HTTP တုံ့ပြန်မှု အခြေအနေပြကုဒ်ကြောင့် ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုကို လုပ်၍မရပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုကို ‘အကြောင်းအရာ လုံခြုံရေးမူဝါဒ’ တစ်ခုက ပိတ်ထားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုသည် ကွန်ရက် အမှားအယွင်း တွေ့ထားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "အသုံးပြုသူက ကြိုဖွင့်ခြင်းကို ဘရောင်ဇာ ဆက်တင်များတွင် ပိတ်ထားသောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို လုပ်ဆောင်၍မရပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
+    "message": "ကြိုတင်ပုံဖော်ခြင်းကို ပိတ်ရန် ဆောဖ့်ဝဲတူးလ်များ သုံးထားသောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို လုပ်ဆောင်၍မရပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "စတင်နေသော စာမျက်နှာ ရပ်တန့်သွားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "စတင်နေသော စာမျက်နှာကို ပိတ်လိုက်သည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာ ရပ်တန့်သွားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာကို ရပ်လိုက်သည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusResourceLoadBlockedByClient": {
+    "message": "ရင်းမြစ်အချို့ ဖွင့်ခြင်းကို ပိတ်ထားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာသည် ဇာစ်မြစ်အမျိုးမျိုးရှိ တူညီသည့်ဝဘ်ဆိုက် URL သို့ ၎င်းကိုယ်တိုင် လမ်းညွှန်သွားသည်။ သို့သော် ပို့မည့်နေရာ တုံ့ပြန်မှုတွင် သင့်လျော်သော ‘ထောက်ပံ့မှုဖွင့်ခြင်းမုဒ်’ ခေါင်းစီး မပါဝင်ပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာသည် ဇာစ်မြစ်အမျိုးမျိုးရှိ တူညီသည့်ဝဘ်ဆိုက် URL သို့ လမ်းညွှန်ထားသည်။ သို့သော် ပို့မည့်နေရာ တုံ့ပြန်မှုတွင် သင့်လျော်သော ‘ထောက်ပံ့မှုဖွင့်ခြင်းမုဒ်’ ခေါင်းစီး မပါဝင်ပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော URL သည် ဇာစ်မြစ်အမျိုးမျိုးရှိ တူညီသောဝဘ်ဆိုက် URL သို့ တစ်ဆင့်ပြန်ညွှန်ပြထားသောကြောင့် ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုကို လုပ်ဆောင်၍မရပါ။ သို့သော် ပို့မည့်နေရာ တုံ့ပြန်မှုတွင် သင့်လျော်သော ‘ထောက်ပံ့မှုဖွင့်ခြင်းမုဒ်’ ခေါင်းစီး မပါဝင်ပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာသည် ဇာစ်မြစ်အမျိုးမျိုးရှိ တူညီသောဝဘ်ဆိုက် URL သို့ တစ်ဆင့်ပြန်ညွှန်ပြသော URL သို့ လမ်းညွှန်သွားသည်။ သို့သော် ပို့မည့်နေရာ တုံ့ပြန်မှုတွင် သင့်လျော်သော ‘ထောက်ပံ့မှုဖွင့်ခြင်းမုဒ်’ ခေါင်းစီး မပါဝင်ပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSpeculationRuleRemoved": {
+    "message": "မသိ"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "SSL အသိအမှတ်ပြုလက်မှတ် မမှန်သောကြောင့် ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုကို လုပ်ဆောင်၍မရပါ။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "စတင်နေသော စာမျက်နှာကို အချိန်ကြာမြင့်စွာ နောက်ခံသို့ ပို့ထားသောကြောင့် ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာကို ပိတ်လိုက်သည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "စတင်နေသော စာမျက်နှာကို နောက်ခံသို့ ပို့ထားသောကြောင့် ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာကို ပိတ်လိုက်သည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "ကြိုတင်ပုံဖော်ခြင်းဆိုင်ရာ လမ်းညွှန်မှုတွင် ‘အသုံးပြုသူ အေးဂျင့်’ အပြောင်းအလဲ ဖြစ်သွားသည်။"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusFailure": {
+    "message": "မအောင်မြင်ပါ"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusNotTriggered": {
+    "message": "စတင်မထားပါ"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusPending": {
+    "message": "ဆိုင်းငံ့ထားသည်"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusReady": {
+    "message": "အဆင်သင့်"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusRunning": {
+    "message": "လုပ်ဆောင်နေသည်"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusSuccess": {
+    "message": "အောင်မြင်ပါသည်"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInElementsPanel": {
     "message": "‘အစိတ်အပိုင်းများ’ အကန့်တွင် ဖော်ထုတ်ရန် နှိပ်ပါ"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInNetworkPanel": {
     "message": "‘ကွန်ရက် အကန့်’ တွင် ဖော်ထုတ်ရန် နှိပ်ပါ"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
-    "message": "အသေးစိတ် အချက်အလက်"
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
+    "message": "ဤစည်းကမ်းအစုနှင့် ဆက်စပ်သော ကြိုတင်ဖွင့်ခြင်းများ ပြပါ"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
-    "message": "အမှား"
+  "panels/application/preloading/components/RuleSetGrid.ts | errors": {
+    "message": "{errorCount,plural, =1{အမှား # ခု}other{အမှား # ခု}}"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
-    "message": "တည်နေရာ"
+  "panels/application/preloading/components/RuleSetGrid.ts | ruleSet": {
+    "message": "စည်းမျဉ်းသတ်မှတ်ထားသည်"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
-    "message": "ရင်းမြစ်"
+  "panels/application/preloading/components/RuleSetGrid.ts | status": {
+    "message": "အခြေအနေ"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
-    "message": "အကျုံးဝင်မှု"
+  "panels/application/preloading/components/UsedPreloadingView.ts | currentURL": {
+    "message": "လက်ရှိ URL"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityInvalid": {
-    "message": "မမှန်ပါ၊ ရင်းမြစ်သည် JSON ဖိုင် မဟုတ်ပါ"
+  "panels/application/preloading/components/UsedPreloadingView.ts | detailsFailureReason": {
+    "message": "မအောင်မြင်ရသည့် အကြောင်းရင်း"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validitySomeRulesInvalid": {
-    "message": "စည်းမျဉ်းအချို့ မမှန်ကန်သဖြင့် လျစ်လျူရှုလိုက်သည်"
+  "panels/application/preloading/components/UsedPreloadingView.ts | downgradedPrefetchUsed": {
+    "message": "စတင်နေသော စာမျက်နှာက ဤစာမျက်နှာ၏ URL ကို ကြိုတင်ပုံဖော်ရန် ကြိုးပမ်းထားသည်။ ကြိုတင်ပုံဖော်၍ မရခဲ့သော်လည်း ရလာသည့် တုံ့ပြန်မှုစာကိုယ်ကို ကြိုတင်ရယူခြင်းအဖြစ် သုံးထားသေးသည်။"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
-    "message": "အကျုံးဝင်သည်"
+  "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
+    "message": "ပိုမိုလေ့လာရန်"
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | location": {
-    "message": "တည်နေရာ"
+  "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
+    "message": "စတင်နေသော စာမျက်နှာသည် ဤစာမျက်နှာ၏ URL ကို ကြိုဖွင့်မထားပါ"
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
-    "message": "အကျုံးဝင်မှု"
+  "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
+    "message": "စတင်နေသော စာမျက်နှာက ဤစာမျက်နှာ၏ URL ကို ကြိုတင်ရယူရန် ကြိုးပမ်းထားသော်လည်း ကြိုတင်ရယူမှု မအောင်မြင်သောကြောင့် ၎င်းအစား အပြည့်အစုံရွှေ့ကြည့်ခြင်းကို လုပ်ဆောင်ထားသည်။"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
-    "message": "ကြိုတင်ရယူထားသော ရင်းမြစ် {PH1} ခုကို ဤစာမျက်နှာအတွက် သုံးထားသည်"
+    "message": "ဤစာမျက်နှာကို ကြိုတင်ရယူပြီးပြီ။"
   },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
-    "message": "ဤစာမျက်နှာအတွက် ကြိုဖွင့်ခြင်း သုံးသည်"
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
+    "message": "စတင်နေသော စာမျက်နှာက ကြိုဖွင့်ထားသော URL များ"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
+    "message": "အခြေအနေကို ကြိုဖွင့်ခြင်း"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
+    "message": "စတင်နေသော စာမျက်နှာသည် ဤစာမျက်နှာ၏ URL ကို ကြိုတင်ပုံဖော်ကြည့်သော်လည်း မအောင်မြင်သောကြောင့် ၎င်းအစား အပြည့်အစုံရွှေ့ကြည့်ခြင်းကို လုပ်ဆောင်ထားသည်။"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
-    "message": "ဤစာမျက်နှာကို ကြိုတင်ပုံဖော်ထားသည်"
+    "message": "ဤစာမျက်နှာကို ကြိုတင်ပုံဖော်ထားပြီးပြီ။"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ဖြတ်တောက်မှတ် ထိသည်"
@@ -4580,8 +4883,14 @@
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "ဖော်ပြချက် ဖယ်ရှားရန်- {PH1}"
   },
+  "panels/console/ConsolePrompt.ts | allowPasting": {
+    "message": "ကူးထည့်ခြင်း ခွင့်ပြုရန်"
+  },
   "panels/console/ConsolePrompt.ts | consolePrompt": {
     "message": "ကွန်ဆိုးလ် အတည်ပြုစနစ်"
+  },
+  "panels/console/ConsolePrompt.ts | selfXssWarning": {
+    "message": "သတိပေးချက်- နားမလည်သော (သို့) သင်ကိုယ်တိုင် မစစ်ဆေးရသေးသော ကုဒ်ကို ‘ဆောဖ့်ဝဲတူးလ်များ’ ကွန်ဆိုးလ်ထဲသို့ ကူးမထည့်ပါနှင့်။ ၎င်းသည် တိုက်ခိုက်သူများအား သင့်အထောက်အထားကို ခိုးယူခွင့်ပြုသည် (သို့) သင့်ကွန်ပျူတာကို ထိန်းချုပ်ခွင့်ပေးသည်။ ကူးထည့်ခြင်းခွင့်ပြုရန် အောက်တွင် “{PH1}” ဟု ရိုက်ပါ။"
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{အမှားမရှိပါ}=1{အမှား # ခု}other{အမှား # ခု}}"
@@ -4612,9 +4921,6 @@
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "ကွန်ဆိုးလ် ရှင်းထုတ်လိုက်သည်"
-  },
-  "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "ဤစာမျက်နှာတွင် ကုဒ်ကူးထည့်ခြင်းကို ပိတ်ထားသည်။ ဆောဖ့်ဝဲတူးလ်များအတွင်းသို့ ကုဒ်ကူးထည့်ခြင်းသည် တိုက်ခိုက်သူများအား သင့်အကောင့်ကို ထိန်းချုပ်ခွင့်ရစေသည်။"
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "ကွန်ဆိုးလ် ဆက်တင်များ"
@@ -6698,9 +7004,6 @@
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
     "message": "JavaScript ကို ပိတ်ထားသည်။ ဤစာမျက်နှာကို စစ်ဆေးရန် JavaScript ဖွင့်ရမည်။ JavaScript ဖွင့်ရန် ‘ကွန်မန်း မီနူး’ မှ ‘JavaScript ဖွင့်ခြင်း’ ကို လုပ်ဆောင်ပါ။"
   },
-  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
-    "message": "ဗားရှင်းဟောင်း လမ်းညွှန်မှုမုဒ်"
-  },
   "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
     "message": "Lighthouse မုဒ်"
   },
@@ -6763,9 +7066,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
     "message": "အချိန်ကာလမုဒ်က ပုံမှန်အားဖြင့် အသုံးပြုသူ၏ တုံ့ပြန်မှုများရှိသော မည်သည့်အချိန်အပိုင်းအခြားကိုမဆို စိတ်ဖြာသည်။"
-  },
-  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "လမ်းညွှန်မှုမုဒ် သုံးချိန်တွင် မူရင်း Lighthouse ဖြင့် စာမျက်နှာကို စိတ်ဖြာလေ့လာနိုင်သည်။"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "ဝဘ် SQL"
@@ -7133,8 +7433,8 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
     "message": "တောင်းဆိုချက်များကို ပိတ်ထားနိုင်သည်"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeRewrittenByLocal": {
-    "message": "တောင်းဆိုချက်များကို စက်တွင်းအစားထိုးမှုများက ပြင်ရေးထားနိုင်သည်"
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
+    "message": "တောင်းဆိုချက်များကို စက်အတွင်းတွင် အစားထိုးနိုင်သည်"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "စိတ်ကြိုက်"
@@ -7171,6 +7471,9 @@
   },
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "ဟာ့ဒ်ဝဲတွဲသုံးခြင်း အစားထိုးမှု ဖွင့်ထားသည်"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingTooltip": {
+    "message": "စာမျက်နှာပေါ်တွင် navigator.hardwareConcurrency က အစီရင်ခံထားသော တန်ဖိုးကို အစားထိုးရန်"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "မြန်နှုန်းထိန်းချုပ်ခြင်း မရှိပါ"
@@ -7430,9 +7733,6 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "ပြီးပြီ"
   },
-  "panels/network/NetworkDataGridNode.ts | hasOverriddenHeaders": {
-    "message": "တောင်းဆိုချက်သည် ခေါင်းစီးများကို အစားထိုးလိုက်သည်"
-  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "အဆင့် ၁"
   },
@@ -7477,6 +7777,15 @@
   },
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "တစ်ဆင့်ပြန်ညွှန်ပြခြင်း"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentHeadersOverridden": {
+    "message": "တောင်းဆိုချက်အကြောင်းအရာနှင့် ခေါင်းစီးနှစ်ခုစလုံးကို အစားထိုးလိုက်သည်"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentOverridden": {
+    "message": "တောင်းဆိုချက် အကြောင်းအရာကို အစားထိုးလိုက်သည်"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestHeadersOverridden": {
+    "message": "တောင်းဆိုချက်ခေါင်းစီးများကို အစားထိုးထားသည်"
   },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + မထွက်မီစစ်ဆေးမှု"
@@ -7601,6 +7910,9 @@
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "ပိတ်ထားသော တောင်းဆိုချက်များ"
   },
+  "panels/network/NetworkLogView.ts | chromeExtensions": {
+    "message": "နောက်ဆက်တွဲ URL များ ဖျောက်ထားရန်"
+  },
   "panels/network/NetworkLogView.ts | clearBrowserCache": {
     "message": "ဘရောင်ဇာကက်ရှ် ရှင်းထုတ်ရန်"
   },
@@ -7671,7 +7983,10 @@
     "message": "ပြီးပြီ- {PH1}"
   },
   "panels/network/NetworkLogView.ts | hasBlockedCookies": {
-    "message": "ပိတ်ထားသော ကွတ်ကီးများ ရှိသည်"
+    "message": "ပိတ်ထားသော တုံ့ပြန်မှု ကွတ်ကီးများ"
+  },
+  "panels/network/NetworkLogView.ts | hideChromeExtension": {
+    "message": "‘Chrome ပရိုဂရမ် အဆက်://’ URL များသို့ တောင်းဆိုချက်များ ဖျောက်ထားရန်"
   },
   "panels/network/NetworkLogView.ts | hideDataUrls": {
     "message": "ဒေတာ URL များ ဖျောက်ထားရန်"
@@ -7697,11 +8012,11 @@
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
     "message": "ပိတ်ထားသော တောင်းဆိုချက်များကိုသာ ပြရန်"
   },
-  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
-    "message": "ပိတ်ထားသော တုံ့ပြန်မှု ကွတ်ကီးများပါသည့် ရလဒ်များကိုသာ ပြသည်"
+  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
+    "message": "ပိတ်ထားသော တုံ့ပြန်မှု ကွတ်ကီးများပါသည့် ရလဒ်များကိုသာ ပြရန်"
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
-    "message": "ဇာစ်မြစ်သည် စာမျက်နှာဇာစ်မြစ်နှင့် မတူသော တောင်းဆိုချက်များကိုသာ ပြသည်"
+    "message": "ဇာစ်မြစ်သည် စာမျက်နှာဇာစ်မြစ်နှင့် မတူသော တောင်းဆိုချက်များကိုသာ ပြရန်"
   },
   "panels/network/NetworkLogView.ts | overrideHeaders": {
     "message": "ခေါင်းစီးများ အစားထိုးရန်"
@@ -7863,7 +8178,7 @@
     "message": "စိတ်ကြိုက် ခေါင်းစီးများ မရှိပါ"
   },
   "panels/network/NetworkPanel.ts | captureScreenshots": {
-    "message": "ဖန်သားပြင်ဓာတ်ပုံများ ရိုက်ကူးရန်"
+    "message": "ဖန်သားပြင်ဓာတ်ပုံများ"
   },
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "စာမျက်နှာကို ဖွင့်သောအခါ ဖန်သားပြင်ဓာတ်ပုံများကို ရိုက်ယူရန်"
@@ -7920,7 +8235,7 @@
     "message": "တောင်းဆိုချက်အတန်းများတွင် အချက်အလက်များ ပိုပြပါ"
   },
   "panels/network/NetworkPanel.ts | showOverview": {
-    "message": "အနှစ်ချုပ် ပြရန်"
+    "message": "အနှစ်ချုပ်"
   },
   "panels/network/NetworkPanel.ts | showOverviewOfNetworkRequests": {
     "message": "ကွန်ရက်တောင်းဆိုချက်များ၏ အနှစ်ချုပ်ကို ပြရန်"
@@ -7929,7 +8244,7 @@
     "message": "မြန်နှုန်းထိန်းချုပ်ခြင်း"
   },
   "panels/network/NetworkPanel.ts | useLargeRequestRows": {
-    "message": "ကြီးမားသော တောင်းဆိုချက်အတန်းများ သုံးရန်"
+    "message": "အကြီးစားတောင်းဆိုချက် အတန်းများ"
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
@@ -8018,9 +8333,6 @@
   "panels/network/RequestHeadersView.ts | general": {
     "message": "အထွေထွေ"
   },
-  "panels/network/RequestHeadersView.ts | headerOverrides": {
-    "message": "ခေါင်းစီး အစားထိုးရန်"
-  },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "ပိုမိုလေ့လာရန်"
   },
@@ -8064,7 +8376,7 @@
     "message": "အခြေအနေပြကုဒ်"
   },
   "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "ဤမှတ်တမ်းဖိုင်သည် ဇာစ်မြစ်အမျိုးမျိုး ဖွင့်စနစ်မူဝါဒကို သတ်မှတ်ထားသဖြင့် sandbox ရည်ညွှန်းချက်ဖြင့် iframe တွင် ဤမှတ်တမ်းဖွင့်ခြင်းကို ပိတ်ထားသည်။"
+    "message": "ဤမှတ်တမ်းဖိုင်သည် ဇာစ်မြစ်အမျိုးမျိုး ဖွင့်စနစ်မူဝါဒကို သတ်မှတ်ထားသဖြင့် လုံခြုံသည့် iframe ဖြင့် ဖွင့်ထားသောပေါ့ပ်အပ်တွင် ဤမှတ်တမ်းမဖွင့်ရန် ပိတ်ထားသည်။"
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
     "message": "သင်၏မှတ်တမ်းတွင် ဤဖရိမ်ကို မြှုပ်သွင်းရန်အတွက် တုံ့ပြန်ချက်သည် အောက်ပါတုံ့ပြန်မှုဆိုင်ရာ ခေါင်းစီးကို သတ်မှတ်ခြင်းဖြင့် ဇာစ်မြစ်အမျိုးမျိုးတွင် မြှုပ်သွင်းခြင်းစနစ် မူဝါဒကို ဖွင့်ထားရန်လိုသည်-"
@@ -8468,9 +8780,6 @@
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "အထွေထွေ"
   },
-  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
-    "message": "ခေါင်းစီး အစားထိုးရန်"
-  },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "အကြမ်း"
   },
@@ -8565,7 +8874,7 @@
     "message": "ဤရင်းမြစ်ထည့်သွင်းထားသော မည်သည့်ဝဘ်ဆိုက်တွင်မဆို လုံခြုံရေးဆိုင်ရာအန္တရာယ် မပေးသည့်အခါ၌သာ ဤနည်းလမ်းကို ရွေးပါ။"
   },
   "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
-    "message": "ဤမှတ်တမ်းဖိုင်သည် ဇာစ်မြစ်အမျိုးမျိုး ဖွင့်စနစ်မူဝါဒကို သတ်မှတ်ထားသဖြင့် sandbox ရည်ညွှန်းချက်ဖြင့် iframe တွင် ဤမှတ်တမ်းဖိုင်ဖွင့်ခြင်းကို ပိတ်ထားသည်။"
+    "message": "ဤမှတ်တမ်းဖိုင်သည် ဇာစ်မြစ်အမျိုးမျိုး ဖွင့်စနစ်မူဝါဒကို သတ်မှတ်ထားသဖြင့် လုံခြုံသည့် iframe ဖြင့် ဖွင့်ထားသောပေါ့ပ်အပ်တွင် ဤမှတ်တမ်းမဖွင့်ရန် ပိတ်ထားသည်။"
   },
   "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
     "message": "သင်၏မှတ်တမ်းဖိုင်တွင် ဤဖရိမ်ကို မြှုပ်သွင်းရန်အတွက် တုံ့ပြန်ချက်သည် အောက်ပါတုံ့ပြန်မှုဆိုင်ရာ ခေါင်းစီးကို သတ်မှတ်ခြင်းဖြင့် ဇာစ်မြစ်အမျိုးမျိုးတွင် မြှုပ်သွင်းခြင်းစနစ် မူဝါဒကို ဖွင့်ထားရန်လိုသည်-"
@@ -9344,6 +9653,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "မှတ်တမ်းတင်ခြင်း"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | editAndResend": {
+    "message": "တည်းဖြတ်ပြီး ပြန်ပို့ရန်"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
     "message": "ကုန်လွန်သွားချိန်"
   },
@@ -9397,6 +9709,18 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | type": {
     "message": "စာရိုက်ပါ"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | addParameter": {
+    "message": "သတ်မှတ်ချက် ထည့်ရန်"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | deleteParameter": {
+    "message": "သတ်မှတ်ချက်ကို ဖျက်ရန်"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | resetDefaultValue": {
+    "message": "မူရင်းတန်ဖိုးသို့ ပြင်ဆင်သတ်မှတ်ရန်"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | copyCommand": {
+    "message": "ကွန်မန်းမိတ္တူကူးရန်"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "ပရိုတိုကော စောင့်ကြည့်စစ်ဆေးမှု"
@@ -10868,6 +11192,9 @@
   "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
     "message": "{PH1} အတွက် အမှားရှာပြင် အချက်အလက် ဖွင့်၍မရပါ။"
   },
+  "panels/sources/DebuggerPlugin.ts | debuggingPowerReduced": {
+    "message": "‘ဆောဖ့်ဝဲတူးလ်များ’ သည် ရေးသားထားသောရင်းမြစ်များ မပြနိုင်သော်လည်း ထည့်သုံးထားသောကုဒ်ကို သင်က အမှားရှာပြင်နိုင်သည်။"
+  },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{ဖြတ်တောက်မှတ် ပိတ်ရန်}other{စာကြောင်းရှိ ဖြတ်တောက်မှတ်အားလုံးကို ပိတ်ရန်}}"
   },
@@ -10877,8 +11204,20 @@
   "panels/sources/DebuggerPlugin.ts | enableBreakpoint": {
     "message": "{n,plural, =1{ဖြတ်တောက်မှတ် ဖွင့်ရန်}other{စာကြောင်းရှိ ဖြတ်တောက်မှတ်အားလုံးကို ဖွင့်ရန်}}"
   },
+  "panels/sources/DebuggerPlugin.ts | errorLoading": {
+    "message": "{PH1} Url ဖွင့်ရာတွင် အမှားဖြစ်သွားသည်- {PH2}"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
+    "message": "နောက်ဆက်တွဲ ကွန်ပျူတာအက္ခရာများ လျစ်လျူရှုရန်"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
+    "message": "ဤဖိုင်ကို လျစ်လျူရှုရန်"
+  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "ဤနေရာတွင် ဘယ်တော့မှ ခဏမရပ်ပါနှင့်"
+  },
+  "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
+    "message": "ဖိုင်ကို လျစ်လျူရှုရန်စာရင်းတွင် မရှိအောင်လုပ်ပြီး ပြန်လည် စတင်ကာ ပြန်ဖွင့်နိုင်သည်။"
   },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n,plural, =1{ဖြတ်တောက်မှတ် ဖယ်ရှားရန်}other{စာကြောင်းရှိ ဖြတ်တောက်မှတ်အားလုံးကို ဖယ်ရှားရန်}}"
@@ -10886,11 +11225,14 @@
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "လျစ်လျူရှုစာရင်းမှ ဖယ်ရှားရန်"
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapDetected": {
-    "message": "‘ရင်းမြစ်မြေပုံ’ တွေ့ရှိသည်။"
+  "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
+    "message": "ရင်းမြစ်မြေပုံ ဖွင့်၍မရပါ။"
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
-    "message": "ရင်းမြစ်မြေပုံ တွေ့ထားသော်လည်း လျစ်လျူရှုစာရင်းရှိ ဖိုင်အတွက် လျစ်လျူရှုထားသည်။"
+  "panels/sources/DebuggerPlugin.ts | sourceMapLoaded": {
+    "message": "ရင်းမြစ်မြေပုံ ဖွင့်ထားသည်။"
+  },
+  "panels/sources/DebuggerPlugin.ts | sourceMapSkipped": {
+    "message": "ရင်းမြစ်မြေပုံကို ဤဖိုင်အတွက် ကျော်လိုက်သည်။"
   },
   "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
     "message": "အမှားရှာပြင်ကိရိယာသည် ဤ script မှတစ်ဆင့် ကျော်သွားမည်ဖြစ်ပြီး ခြွင်းချက်ပြဿနာများတွင် ရပ်တန့်မည်မဟုတ်ပါ။"
@@ -10933,9 +11275,6 @@
   },
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "{PH1} ဖော်မက်လုပ်ရန်"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
-    "message": "ဤဖိုင်တွဲရှိ အစားထိုးခြင်းအားလုံးကို ဖျက်လိုသည်မှာ သေချာသလား။"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "ဤဖိုင်ကို ဖျက်လိုသည်မှာ သေချာပါသလား။"
@@ -11054,26 +11393,26 @@
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "စီစဉ်သတ်မှတ်ချက်ကို ရှင်းထုတ်ရန်"
   },
-  "panels/sources/SourcesNavigator.ts | contentScriptsServedByExtensions": {
-    "message": "နောက်ဆက်တွဲများက ဝန်ဆောင်မှုပေးသော အကြောင်းအရာ script များကို ဤနေရာတွင်ပြသည်"
-  },
-  "panels/sources/SourcesNavigator.ts | createAndSaveCodeSnippetsFor": {
-    "message": "နောက်တွင်ပြန်သုံးရန် ကုဒ်အတိုအထွာပြုလုပ်ပြီး သိမ်းရန်"
-  },
   "panels/sources/SourcesNavigator.ts | createNewSnippet": {
     "message": "ဖြတ်စအသစ် ပြုလုပ်ရန်"
+  },
+  "panels/sources/SourcesNavigator.ts | explainContentScripts": {
+    "message": "နောက်ဆက်တွဲများက ဝန်ဆောင်မှုပေးသော အကြောင်းအရာ Script များကို ကြည့်နိုင်သည်"
+  },
+  "panels/sources/SourcesNavigator.ts | explainLocalOverrides": {
+    "message": "အဝေးထိန်းရင်းမြစ်များကို သဏ္ဌာန်လုပ်ရန် ကွန်ရက်တောင်းဆိုချက်များနှင့် ဝဘ်အကြောင်းအရာများကို စက်တွင်းအစားထိုးသည်"
+  },
+  "panels/sources/SourcesNavigator.ts | explainSnippets": {
+    "message": "သင်မကြာခဏ လုပ်ဆောင်သော JavaScript ကုဒ်ကို သိမ်းပြီး ၎င်းကို အချိန်မရွေး ထပ်လုပ်ဆောင်နိုင်သည်"
+  },
+  "panels/sources/SourcesNavigator.ts | explainWorkspace": {
+    "message": "သင်ထုတ်လုပ်သော ရင်းမြစ်များတွင် တည်းဖြတ်ချက်များ တိုက်ရိုက်စင့်ခ်လုပ်ရန် အလုပ်နေရာ စနစ်ထည့်သွင်းပါ"
   },
   "panels/sources/SourcesNavigator.ts | learnMore": {
     "message": "ပိုမိုလေ့လာရန်"
   },
-  "panels/sources/SourcesNavigator.ts | learnMoreAboutWorkspaces": {
-    "message": "‘အလုပ်နေရာများ’ အကြောင်း ပိုမိုလေ့လာရန်"
-  },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "ဖြတ်စအသစ်"
-  },
-  "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
-    "message": "စက်တွင်းဖိုင်တွဲမှ ဖိုင်များဖြင့် စာမျက်နှာရှိပစ္စည်းများကို အစားထိုးရန်"
   },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "ဖယ်ရှားရန်"
@@ -11089,9 +11428,6 @@
   },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "အစားထိုးသည့်အရာများအတွက် ဖိုင်တွဲ ရွေးရန်"
-  },
-  "panels/sources/SourcesNavigator.ts | syncChangesInDevtoolsWithThe": {
-    "message": "စက်တွင်းဖိုင်စနစ်ဖြင့် DevTools ရှိ အပြောင်းအလဲများကို စင့်ခ်လုပ်ရန်"
   },
   "panels/sources/SourcesPanel.ts | continueToHere": {
     "message": "ဤနေရာတွင် ရှေ့ဆက်ရန်"
@@ -11167,9 +11503,6 @@
   },
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "လက်ရှိ JavaScript ခေါ်ဆိုမှုကို ရပ်ဆိုင်းရန်"
-  },
-  "panels/sources/SourcesView.ts | dropInAFolderToAddToWorkspace": {
-    "message": "workspace တွင် ထည့်ရန် ဖိုင်တွဲကို လွှတ်ချပါ"
   },
   "panels/sources/SourcesView.ts | openFile": {
     "message": "ဖိုင်ဖွင့်ရန်"
@@ -11411,9 +11744,6 @@
   "panels/sources/sources-meta.ts | file": {
     "message": "ဖိုင်"
   },
-  "panels/sources/sources-meta.ts | filesystem": {
-    "message": "ဖိုင်စနစ်"
-  },
   "panels/sources/sources-meta.ts | goTo": {
     "message": "သို့ သွားပါ"
   },
@@ -11488,9 +11818,6 @@
   },
   "panels/sources/sources-meta.ts | showBreakpoints": {
     "message": "ဖြတ်တောက်မှတ်များ ပြရန်"
-  },
-  "panels/sources/sources-meta.ts | showFilesystem": {
-    "message": "ဖိုင်စနစ်ကို ပြရန်"
   },
   "panels/sources/sources-meta.ts | showQuickSource": {
     "message": "‘အမြန်’ ရင်းမြစ်ကို ပြရန်"
@@ -11570,6 +11897,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "စောင့်ကြည့်စရာ"
   },
+  "panels/timeline/AnimationsTrackAppender.ts | animations": {
+    "message": "လှုပ်ရှားသက်ဝင်ပုံများ"
+  },
   "panels/timeline/AppenderUtils.ts | sSelfS": {
     "message": "{PH1} (ကိုယ်တိုင် {PH2})"
   },
@@ -11615,6 +11945,15 @@
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
     "message": "အပြင်အဆင်ပြောင်းလဲမှုများ"
   },
+  "panels/timeline/NetworkTrackAppender.ts | network": {
+    "message": "ကွန်ရက်"
+  },
+  "panels/timeline/ThreadAppender.ts | anonymous": {
+    "message": "(အမည်မသိ)"
+  },
+  "panels/timeline/ThreadAppender.ts | thread": {
+    "message": "အင်ဂျင်သစ်၏ ပင်မ Thread"
+  },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "ပစ်မှတ်အတွက် CPU ပရိုဖိုင်ကို မရနိုင်ပါ။"
   },
@@ -11627,17 +11966,11 @@
   "panels/timeline/TimelineDetailsView.ts | callTree": {
     "message": "ဒေတာ ဖွဲ့စည်းပုံ"
   },
-  "panels/timeline/TimelineDetailsView.ts | estimated": {
-    "message": "ခန့်မှန်းခြေ"
-  },
   "panels/timeline/TimelineDetailsView.ts | eventLog": {
     "message": "ဖြစ်စဉ်မှတ်တမ်း"
   },
   "panels/timeline/TimelineDetailsView.ts | layers": {
     "message": "အလွှာများ"
-  },
-  "panels/timeline/TimelineDetailsView.ts | learnMore": {
-    "message": "ပိုမိုလေ့လာရန်"
   },
   "panels/timeline/TimelineDetailsView.ts | paintProfiler": {
     "message": "ဆေးခြယ်ရန် စိစစ်ရေးစနစ်"
@@ -11647,9 +11980,6 @@
   },
   "panels/timeline/TimelineDetailsView.ts | summary": {
     "message": "အနှစ်ချုပ်"
-  },
-  "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
-    "message": "ပိတ်ထားချိန် စုစုပေါင်း- {PH1}ms{PH2}"
   },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
@@ -11662,9 +11992,6 @@
   },
   "panels/timeline/TimelineEventOverview.ts | sSDash": {
     "message": "{PH1} – {PH2}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | animation": {
-    "message": "လှုပ်ရှားသက်ဝင်ပုံ"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "ဖြုတ်ထားသော ဖရိမ်"
@@ -11680,9 +12007,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "လှုပ်ရှားမှုမဲ့ ဖရိမ်"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
-    "message": "ရှည်လျားသော ဖရိမ်"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | main": {
     "message": "ပင်မ"
@@ -12050,6 +12374,9 @@
   "panels/timeline/TimelineUIUtils.ts | commit": {
     "message": "အတည်ပြုခြင်း"
   },
+  "panels/timeline/TimelineUIUtils.ts | compilationCacheKind": {
+    "message": "စုစည်းထားမှု ကက်ရှ်အမျိုးအစား"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "စုစည်းမှု ကက်ရှ်အရွယ်အစား"
   },
@@ -12257,6 +12584,9 @@
   "panels/timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "ပုံ URL"
   },
+  "panels/timeline/TimelineUIUtils.ts | initialPriority": {
+    "message": "ကနဦး ဦးစားပေး"
+  },
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "စတင်သူ"
   },
@@ -12274,9 +12604,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "အချိန်ကုန်သွားသည့်အတွက် ရုပ်သိမ်းလိုက်သည်"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jank": {
-    "message": "အလွန်ညံ့"
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS ဖရိမ်"
@@ -12529,9 +12856,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
     "message": "{PH1} သည် ဆိုးရွားသော စာမျက်နှာ အလိုက်သင့်တုံ့ပြန်မှုကို ညွှန်ပြနေသည်။"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
-    "message": "{PH1}။ ရှည်လျားသော ဖရိမ်ကြာချိန်များသည် {PH2} ၏ ရည်ညွှန်းချက် ဖြစ်သည်။"
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2} အနက် {PH1}"
@@ -12953,6 +13277,9 @@
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "{PH1} အစီအစဉ်တကျ စီခြင်းကို ပယ်ဖျက်လိုက်သည်"
   },
+  "ui/components/dialogs/IconDialog.ts | close": {
+    "message": "ပိတ်ရန်"
+  },
   "ui/components/dialogs/ShortcutDialog.ts | close": {
     "message": "ပိတ်ရန်"
   },
@@ -13208,8 +13535,8 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "ထပ်မပြပါနှင့်"
   },
-  "ui/legacy/Infobar.ts | learnMore": {
-    "message": "ပိုမိုလေ့လာရန်"
+  "ui/legacy/Infobar.ts | showMore": {
+    "message": "ပိုပြပါ"
   },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "အံဆွဲ ပိတ်ရန်"
@@ -13618,9 +13945,6 @@
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showDBefore": {
     "message": "{PH1} ကို အရင်ပြရန်"
-  },
-  "ui/legacy/components/data_grid/ViewportDataGrid.ts | collapsed": {
-    "message": "လျှော့ပြထားသည်"
   },
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | blur": {
     "message": "မှုန်ဝါးရန်"

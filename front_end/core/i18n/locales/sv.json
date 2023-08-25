@@ -419,9 +419,6 @@
   "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
     "message": "Start för fasen med säljarbedömning"
   },
-  "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
-    "message": "Cross-Origin Read Blocking (CORB) blockerade svaret {PH1} från olika källor med MIME-typen {PH2}. Läs mer på https://www.chromestatus.com/feature/5629709824032768."
-  },
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Snabbt 3G"
   },
@@ -857,6 +854,12 @@
   "entrypoints/inspector_main/InspectorMain.ts | tab": {
     "message": "Tabb"
   },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "Sida: Inte vald"
+  },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetS": {
+    "message": "Sida: {PH1}"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "Diagnos av huvudvärden för webben"
   },
@@ -901,6 +904,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedmotion": {
     "message": "Tvingar CSS-mediefunktionen för prefers-reduced-motion"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedtransparencyMedia": {
+    "message": "Tvingar CSS-mediefunktionen för prefers-reduced-transparency"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "Tvingar medietyp för test av utskrifts- och skärmformat"
@@ -1026,7 +1032,7 @@
     "message": "Docka till höger"
   },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
-    "message": "Fokus som felsöks"
+    "message": "Fokussida"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "Hjälp"
@@ -1101,7 +1107,7 @@
     "message": "Hitta tidigare resultat"
   },
   "entrypoints/main/main-meta.ts | focusDebuggee": {
-    "message": "Fokus som felsöks"
+    "message": "Fokussida"
   },
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "horisontell"
@@ -1278,7 +1284,7 @@
     "message": "DOM-mutationshändelser, inklusive DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument och DOMCharacterDataModified, har fasats ut (https://w3c.github.io/uievents/#legacy-event-types) och kommer att tas bort. Använd MutationObserver i stället."
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
-    "message": "Stöd för data: webbadresser i SVG-elementet <use> har fasats ut och tas bort i framtiden."
+    "message": "Stöd för data: webbadresser i SVGUseElement har fasats ut och tas bort i framtiden."
   },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "Funktionen för att lätta på principen gällande samma ursprung genom att ange document.domain är utfasad och inaktiveras som standard. Om du vill fortsätta använda den här funktionen ska du välja bort ursprungsbundna agentkluster genom att skicka ett Origin-Agent-Cluster: ?0-huvud tillsammans med HTTP-svaret för dokumentet och ramarna. Läs mer på https://developer.chrome.com/blog/immutable-document-domain/."
@@ -1547,6 +1553,9 @@
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "Beskrivning av SameSite-cookies"
   },
+  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Förbered dig för utfasning av tredjepartscookies"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Delning av resurser med korsursprung (CORS)"
   },
@@ -1576,6 +1585,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML-attribut: autocomplete"
+  },
+  "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
+    "message": "Förklaring av CORB"
   },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "Portaler – Kommunikationskanaler med samma ursprung"
@@ -1688,14 +1700,17 @@
   "models/persistence/PersistenceActions.ts | openInContainingFolder": {
     "message": "Öppna i undermapp"
   },
+  "models/persistence/PersistenceActions.ts | overrideContent": {
+    "message": "Åsidosätt innehåll"
+  },
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Spara som …"
   },
-  "models/persistence/PersistenceActions.ts | saveForOverrides": {
-    "message": "Spara för åsidosättningar"
-  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "Spara bild"
+  },
+  "models/persistence/PersistenceActions.ts | showOverrides": {
+    "message": "Visa alla åsidosättningar"
   },
   "models/persistence/PersistenceUtils.ts | linkedToS": {
     "message": "Länkat till {PH1}"
@@ -2306,6 +2321,9 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "Det gick inte att ladda ned en obligatorisk ikon från manifestet"
   },
+  "panels/application/AppManifestView.ts | customizePwaTitleBar": {
+    "message": "Anpassa Window Controls Overlay för fönsterstyrning i PWA:s namnlist."
+  },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
     "message": "Mörk bakgrundsfärg"
   },
@@ -2483,6 +2501,18 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Temafärg"
   },
+  "panels/application/AppManifestView.ts | wcoFound": {
+    "message": "Chrome har hittat värdet {PH1} för fältet {PH2} i {PH3}."
+  },
+  "panels/application/AppManifestView.ts | wcoNeedHelpReadMore": {
+    "message": "Behöver du hjälp? Läs {PH1}."
+  },
+  "panels/application/AppManifestView.ts | wcoNotFound": {
+    "message": "Definiera {PH1} i manifestet om du vill använda Window Controls Overlay API och anpassa appens namnlist."
+  },
+  "panels/application/AppManifestView.ts | windowControlsOverlay": {
+    "message": "Window Controls Overlay"
+  },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "Appmanifest"
   },
@@ -2583,7 +2613,7 @@
     "message": "Bakgrundstjänster"
   },
   "panels/application/BackgroundServiceView.ts | backgroundSync": {
-    "message": "Bakgrundssynkronisering"
+    "message": "Synkronisering i bakgrunden"
   },
   "panels/application/BackgroundServiceView.ts | clear": {
     "message": "Ta bort"
@@ -2864,6 +2894,12 @@
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ja"
   },
+  "panels/application/PreloadingTreeElement.ts | preloads": {
+    "message": "Inläsningar i förväg"
+  },
+  "panels/application/PreloadingTreeElement.ts | speculationRules": {
+    "message": "Spekulationsregler"
+  },
   "panels/application/PreloadingTreeElement.ts | thisPage": {
     "message": "Den här sidan"
   },
@@ -3048,7 +3084,7 @@
     "message": "Välj ett värde för att förhandsgranska"
   },
   "panels/application/SharedStorageItemsView.ts | sharedStorage": {
-    "message": "Delat lagringsutrymme"
+    "message": "Shared Storage"
   },
   "panels/application/SharedStorageItemsView.ts | sharedStorageFilteredItemsCleared": {
     "message": "Filtrerade objekt i det delade lagringsutrymmet rensades"
@@ -3075,7 +3111,10 @@
     "message": "Värde"
   },
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
-    "message": "Delat lagringsutrymme"
+    "message": "Shared Storage"
+  },
+  "panels/application/StorageBucketsTreeElement.ts | storageBuckets": {
+    "message": "Lagringsytor"
   },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "Ta bort alla"
@@ -3202,6 +3241,12 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "Sluta spela in händelser"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
+    "message": "Odefinierad"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
+    "message": "Odefinierad"
   },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "Bara sidor som lästs in via en GET-begäran kan placeras i vilocacheminnet."
@@ -3542,14 +3587,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "Sidor med WebRTC kan inte lagras i vilocacheminnet."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
+    "message": "Vilocacheminnet har inaktiverats eftersom WebRTC har använts."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "Sidor som använder WebShare kan för närvarande inte placeras i vilocacheminnet."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "Sidor med WebSocket kan inte lagras i vilocacheminnet."
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
+    "message": "Vilocacheminnet har inaktiverats eftersom WebSocket har använts."
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "Sidor med WebTransport kan inte lagras i vilocacheminnet."
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
+    "message": "Vilocacheminnet har inaktiverats eftersom WebTransport har använts."
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "Sidor som använder WebXR kan för närvarande inte placeras i vilocacheminnet."
@@ -3629,6 +3683,12 @@
   "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
     "message": "Söker efter potentiella webbplatser för omdirigeringsspårning."
   },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureDisabled": {
+    "message": "Begränsningar av omdirigeringsspårning är inaktiverade. Du kan aktivera dem genom att ställa in flaggan för {PH1} på aktiverad med radering."
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureFlag": {
+    "message": "Flagga för begränsningar av omdirigeringsspårning"
+  },
   "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
     "message": "Tvinga att köra"
   },
@@ -3636,7 +3696,7 @@
     "message": "Läs mer: Begränsningar av omdirigeringsspårning"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
-    "message": "Statusen rensades inte för potentiella webbplatser för omdirigeringsspårning. Det kan bero på att inga identifierades, begränsningar av omdirigeringsspårning inte har aktiverats eller att tredjepartscookies inte blockeras."
+    "message": "Statusen rensades inte för potentiella webbplatser för omdirigeringsspårning. Det kan bero på att inga identifierades eller att tredjepartscookies inte blockeras."
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
     "message": "Pågår"
@@ -4071,7 +4131,7 @@
     "message": "Ägarens ursprung"
   },
   "panels/application/components/SharedStorageAccessGrid.ts | sharedStorage": {
-    "message": "Delat lagringsutrymme"
+    "message": "Shared Storage"
   },
   "panels/application/components/SharedStorageMetadataView.ts | budgetExplanation": {
     "message": "Återstående dataläckage som tillåts inom en 24-timmarsperiod för detta ursprung i bitars entropi"
@@ -4092,7 +4152,7 @@
     "message": "Återställ budget"
   },
   "panels/application/components/SharedStorageMetadataView.ts | sharedStorage": {
-    "message": "Delat lagringsutrymme"
+    "message": "Shared Storage"
   },
   "panels/application/components/StackTrace.ts | cannotRenderStackTrace": {
     "message": "Det gick inte att rendera stackspårning"
@@ -4105,6 +4165,15 @@
   },
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "Namn på lagringsyta"
+  },
+  "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
+    "message": "Vill du radera lagringsytan {PH1}?"
+  },
+  "panels/application/components/StorageMetadataView.ts | defaultBucket": {
+    "message": "Standardlagringsyta"
+  },
+  "panels/application/components/StorageMetadataView.ts | deleteBucket": {
+    "message": "Radera lagringsyta"
   },
   "panels/application/components/StorageMetadataView.ts | durability": {
     "message": "Hållbarhet"
@@ -4175,11 +4244,11 @@
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "Förtroendetoken"
   },
-  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
-    "message": "Inställningar för tillägg"
+  "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
+    "message": "Alla inläsningar i förväg"
   },
-  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
-    "message": "Läs in sidinställningar i förväg"
+  "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
+    "message": "Filtrera efter regeluppsättning"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Fel"
@@ -4191,7 +4260,7 @@
     "message": "Väntar"
   },
   "panels/application/preloading/PreloadingView.ts | statusReady": {
-    "message": "Klart"
+    "message": "Klar"
   },
   "panels/application/preloading/PreloadingView.ts | statusRunning": {
     "message": "Pågår"
@@ -4208,17 +4277,41 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "Giltig"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
-    "message": "Inläsning i förväg har inaktiverats på grund av operativsystemets batterisparläge."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | action": {
+    "message": "Åtgärd"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
-    "message": "Inläsning i förväg har inaktiverats på grund av operativsystemets databesparingsläge."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | status": {
+    "message": "Status"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
-    "message": "Inläsning i förväg har inaktiverats på grund av användarinställningar eller ett tillägg. Besök {PH1} om du vill läsa mer eller besök {PH2} om du vill inaktivera tillägget."
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusFailure": {
+    "message": "Fel"
   },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
-    "message": "Inläsning i förväg har inaktiverats"
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusNotTriggered": {
+    "message": "Inte utlöst"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusPending": {
+    "message": "Väntar"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusReady": {
+    "message": "Klar"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusRunning": {
+    "message": "Pågår"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusSuccess": {
+    "message": "Klart"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | url": {
+    "message": "Webbadress"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToInspect": {
+    "message": "Klicka för att granska förrenderad sida"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToRevealRuleSet": {
+    "message": "Klicka för att visa regeluppsättning"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonInspect": {
+    "message": "Granska"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "Det gick inte att läsa in i förväg."
@@ -4256,8 +4349,59 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "Välj ett element för mer information"
   },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
+    "message": "Inläsning i förväg har inaktiverats på grund av operativsystemets batterisparläge."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
+    "message": "Inläsning i förväg har inaktiverats på grund av operativsystemets databesparingsläge."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "Förhämtning är tvångsaktiverat eftersom Verktyg för programmerare har öppnats. När Verktyg för programmerare stängs inaktiveras förhämtning eftersom den här webbläsarsessionen ingår i en begränsad grupp som används för prestandajämförelse."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "Förrendering är tvångsaktiverat eftersom Verktyg för programmerare har öppnats. När Verktyg för programmerare stängs inaktiveras förrendering eftersom den här webbläsarsessionen ingår i en begränsad grupp som används för prestandajämförelse."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
+    "message": "Inläsning i förväg har inaktiverats på grund av användarinställningar eller ett tillägg. Öppna {PH1} för att uppdatera dina inställningar. Öppna {PH2} för att inaktivera tillägg som blockerar förinläsning."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
+    "message": "Inställningar för tillägg"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | footerLearnMore": {
+    "message": "Läs mer"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByBatterySaver": {
+    "message": "Batterisparläge"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByDataSaver": {
+    "message": "Databesparing"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "Förhämtning har inaktiverats men är nu tvångsaktiverat"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "Förrendering har inaktiverats men är nu tvångsaktiverat."
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByPreference": {
+    "message": "Användarinställningar eller tillägg"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
+    "message": "Inläsning i förväg har inaktiverats"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
+    "message": "Inläsning i förväg har tvångsaktiverats"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
+    "message": "Läs in sidinställningar i förväg"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
+    "message": "Skäl till att förinläsning förhindras"
+  },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Åtgärd"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | ruleSet": {
+    "message": "Regeluppsättning"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "Status"
@@ -4334,50 +4478,209 @@
   "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
     "message": "Ett nätverksfel uppstod när anslutningen till förhämtningsproxyn upprättades."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
-    "message": "Klicka för att visa i elementpanelen"
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "Den förrenderade sidan aktiverades under den inledande sidans navigering i huvudramen."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
-    "message": "Klicka för att visa i nätverkspanelen"
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "Förrenderingen användes inte eftersom sandlådeflaggorna eller behörighetspolicyn som angetts på den inledande sidan inte var kompatibla med den förrenderade sidan."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
-    "message": "Detaljerad information"
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "Förrenderingen användes inte eftersom andra navigeringsparametrar (t.ex. HTTP-huvuden) beräknades under aktiveringstiden än under den ursprungliga navigeringsbegäran för förrendering."
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "Den förrenderade sidan begärde ljudutgång, vilket för närvarande inte stöds."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "Förrenderingen utfördes inte eftersom användaren begärde att webbläsaren skulle dra mindre batteri."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "Viss resursbelastning blockerades."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "Navigeringen vid förrenderingen krävde ett HTTP-klientcertifikat."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "Navigeringen vid förrenderingen misslyckades eftersom den var inriktad på en webbadress på en annan webbplats."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "Den förrenderade sidan navigerade till en webbadress på en annan webbplats."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "Navigeringen vid förrenderingen misslyckades eftersom den förrenderade webbadressen omdirigerade till en webbadress på en annan webbplats."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "Den förrenderade sidan navigerade till en webbadress som omdirigerade till en webbadress på en annan webbplats."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "Förrenderingen utfördes inte eftersom användaren begärde att webbläsaren skulle använda mindre data."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
+    "message": "Den förrenderade sidan försökte starta en nedladdning, vilket för närvarande inte stöds."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "Förrenderingen utfördes inte eftersom ett internt fel uppstod när webbläsaren försökte avgöra aktuell minnesanvändning."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "Den inledande sidan kan inte utföra förrenderingen eftersom den har en effektiv webbadress som skiljer sig från dess vanliga webbadress. (Till exempel sidan Ny flik eller värdlagrade appar.)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "Det gick inte att förrendera webbadressen eftersom schemat inte var http: eller https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "Navigeringen vid förrenderingen misslyckades eftersom den omdirigerade till en webbadress vars schema inte var http: eller https:."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "Navigeringen vid förrenderingen krävde HTTP-autentisering, vilket för närvarande inte stöds."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "Förrenderingen utfördes inte eftersom den här enheten inte har tillräckligt med systemminne för att stödja förrendering."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "Den förrenderade sidan navigerade automatiskt till en annan webbadress, som för närvarande inte stöds."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "Förrenderingen utfördes inte eftersom den inledande sidan redan har för många pågående förrenderingar. Ta bort andra spekulationsregler om du vill möjliggöra ytterligare förrenderingar."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "Förrenderingen utfördes inte eftersom webbläsaren överskred minnesgränsen för förrendering."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "Den förrenderade sidan togs bort på grund av kritisk minnesbelastning i webbläsaren."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "Förrenderingen utfördes inte på grund av kritisk minnesbelastning i webbläsaren."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMixedContent": {
+    "message": "Den förrenderade sidan innehöll blandat innehåll."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "Den förrenderade sidan använde ett förbjudet JavaScript-API som för närvarande inte stöds. (Internt Mojo-gränssnitt: {PH1})"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "Navigeringen vid förrenderingen misslyckades på grund av ett HTTP-svar med en statuskod som inte var 2xx."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "Navigeringen vid förrenderingen blockerades av en säkerhetspolicy för innehåll."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "Ett nätverksfel uppstod under navigeringen vid förrenderingen."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "Förrenderingen utfördes inte eftersom användaren inaktiverade inläsning i förväg i webbläsarinställningarna."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
+    "message": "Förrenderingen utfördes inte eftersom DevTools har använts för att inaktivera förrendering."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "Den inledande sidan kraschade."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "Den inledande sidan avslutades."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "Den förrenderade sidan kraschade."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "Den förrenderade sidan avslutades."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusResourceLoadBlockedByClient": {
+    "message": "Viss resursbelastning blockerades."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "Den förrenderade sidan navigerade automatiskt till en webbadress med korsursprung på samma webbplats där målsvaret inte inkluderade rätt Supports-Loading-Mode-huvud."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "Den förrenderade sidan navigerade till en webbadress med korsursprung på samma webbplats där målsvaret inte inkluderade rätt Supports-Loading-Mode-huvud."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "Navigeringen vid förrenderingen misslyckades eftersom den förrenderade webbadressen omdirigerade till en webbadress med korsursprung på samma webbplats där målsvaret inte inkluderade rätt Supports-Loading-Mode-huvud."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "Den förrenderade sidan navigerade till en webbadress som omdirigerade till en webbadress med korsursprung på samma webbplats där målsvaret inte inkluderade rätt Supports-Loading-Mode-huvud."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSpeculationRuleRemoved": {
+    "message": "Okänd"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "Navigeringen vid förrenderingen misslyckades på grund av ett ogiltigt SSL-certifikat."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "Den inledande sidan låg länge i bakgrunden, så den förrenderade sidan togs bort."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "Den inledande sidan låg i bakgrunden, så den förrenderade sidan togs bort."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "En ändring av användaragenten skedde under navigeringen vid förrenderingen."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusFailure": {
     "message": "Fel"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
-    "message": "Plats"
+  "panels/application/preloading/components/PreloadingString.ts | statusNotTriggered": {
+    "message": "Inte utlöst"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
-    "message": "Källa"
+  "panels/application/preloading/components/PreloadingString.ts | statusPending": {
+    "message": "Väntar"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
-    "message": "Giltighet"
+  "panels/application/preloading/components/PreloadingString.ts | statusReady": {
+    "message": "Klar"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityInvalid": {
-    "message": "Ogiltig. Källan är inte ett JSON-objekt"
+  "panels/application/preloading/components/PreloadingString.ts | statusRunning": {
+    "message": "Pågår"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validitySomeRulesInvalid": {
-    "message": "Vissa regler är ogiltiga och ignoreras"
+  "panels/application/preloading/components/PreloadingString.ts | statusSuccess": {
+    "message": "Klart"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
-    "message": "Giltig"
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInElementsPanel": {
+    "message": "Klicka för att visa i elementpanelen"
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | location": {
-    "message": "Plats"
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInNetworkPanel": {
+    "message": "Klicka för att visa i nätverkspanelen"
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
-    "message": "Giltighet"
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
+    "message": "Visa inläsningar i förväg kopplade till denna regeluppsättning"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | errors": {
+    "message": "{errorCount,plural, =1{# fel}other{# fel}}"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | ruleSet": {
+    "message": "Regeluppsättning"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | status": {
+    "message": "Status"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | currentURL": {
+    "message": "Aktuell webbadress"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | detailsFailureReason": {
+    "message": "Felorsak"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | downgradedPrefetchUsed": {
+    "message": "Den inledande sidan försökte förrendera den här sidans webbadress. Förrenderingen misslyckades, men svarstexten användes fortfarande som förhämtning."
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
+    "message": "Läs mer"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
+    "message": "Den inledande sidan försökte inte läsa in sidans webbadress i förväg."
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
+    "message": "Den inledande sidan försökte förhandshämta sidans webbadress, men förhandshämtningen misslyckades och en komplett navigering utfördes i stället."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
-    "message": "{PH1} förhämtade resurser används för sidan"
+    "message": "Den här sidan har förhämtats."
   },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
-    "message": "Inläsning i förväg används på den här sidan"
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
+    "message": "Webbadresser som läses in i förväg av den inledande sidan"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
+    "message": "Status för inläsning i förväg"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
+    "message": "Den inledande sidan försökte förrendera den här sidans webbadress, men förrenderingen misslyckades och en fullständig navigering utfördes i stället."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
-    "message": "Sidan förrenderades"
+    "message": "Den här sidan har förrenderats."
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "träffade brytpunkt"
@@ -4580,8 +4883,14 @@
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "Ta bort uttryck: {PH1}"
   },
+  "panels/console/ConsolePrompt.ts | allowPasting": {
+    "message": "tillåt inklistring"
+  },
   "panels/console/ConsolePrompt.ts | consolePrompt": {
     "message": "Uppmaningstext i konsol"
+  },
+  "panels/console/ConsolePrompt.ts | selfXssWarning": {
+    "message": "Varning! Klistra inte in kod som du inte förstår eller som du inte har kontrollerat själv i konsolen i Verktyg för programmerare. Detta kan göra det möjligt för angripare att stjäla din identitet eller ta kontroll över din dator. Skriv ”{PH1}” nedan för att tillåta inklistring."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Inga fel}=1{# fel}other{# fel}}"
@@ -4612,9 +4921,6 @@
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "Konsolen har rensats"
-  },
-  "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "Inklistring av kod har blockerats på den här sidan. Kod som klistras in i verktyg för programmerare kan tillåta angripare att ta över ditt konto."
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "Konsolinställningar"
@@ -6698,9 +7004,6 @@
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
     "message": "JavaScript är inaktiverat. Du måste aktivera JavaScript om du vill granska den här sidan. Öppna kommandomenyn och kör kommandot Aktivera JavaScript för att aktivera JavaScript."
   },
-  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
-    "message": "Äldre navigering"
-  },
   "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
     "message": "Lighthouse-läge"
   },
@@ -6763,9 +7066,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
     "message": "Med läget för tidsintervall kan du analysera en slumpmässig tidsperiod som oftast innehåller användarinteraktioner."
-  },
-  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "Analysera sidan med klassiska Lighthouse i navigeringsläget."
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "Webbversionen av SQL"
@@ -7133,8 +7433,8 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
     "message": "Förfrågningar kan blockeras"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeRewrittenByLocal": {
-    "message": "Förfrågningar kan skrivas om av lokala åsidosättningar"
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
+    "message": "Begäranden kan åsidosättas lokalt"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "Anpassa"
@@ -7171,6 +7471,9 @@
   },
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "Åsidosättande av maskinvarans parallellkörningsnivå har aktiverats"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingTooltip": {
+    "message": "Åsidosätt värdet som rapporterats av navigator.hardwareConcurrency på sidan"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Inga begränsningar"
@@ -7430,9 +7733,6 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Slutfört"
   },
-  "panels/network/NetworkDataGridNode.ts | hasOverriddenHeaders": {
-    "message": "Begäran har åsidosatta huvuden"
-  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "nivå 1"
   },
@@ -7477,6 +7777,15 @@
   },
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "Omdirigera"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentHeadersOverridden": {
+    "message": "Både innehåll och sidhuvuden åsidosätts för begäran"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentOverridden": {
+    "message": "Begärans innehåll åsidosätts"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestHeadersOverridden": {
+    "message": "Sidhuvuden för begäranden åsidosätts"
   },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + preliminär"
@@ -7599,7 +7908,10 @@
     "message": "Blockera webbadress för begäran"
   },
   "panels/network/NetworkLogView.ts | blockedRequests": {
-    "message": "Blockerade förfrågningar"
+    "message": "Blockerade begäranden"
+  },
+  "panels/network/NetworkLogView.ts | chromeExtensions": {
+    "message": "Dölj webbadresser för tillägg"
   },
   "panels/network/NetworkLogView.ts | clearBrowserCache": {
     "message": "Rensa webbläsarens cacheminne"
@@ -7671,7 +7983,10 @@
     "message": "Slutför: {PH1}"
   },
   "panels/network/NetworkLogView.ts | hasBlockedCookies": {
-    "message": "Har blockerat cookies"
+    "message": "Cookies för blockerade svar"
+  },
+  "panels/network/NetworkLogView.ts | hideChromeExtension": {
+    "message": "Dölj begäranden till webbadresser som inleds med chrome-extension://"
   },
   "panels/network/NetworkLogView.ts | hideDataUrls": {
     "message": "Dölj webbadresser till data"
@@ -7695,13 +8010,13 @@
     "message": "Nätverksdata tillgänglig"
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
-    "message": "Visa bara blockerade förfrågningar"
+    "message": "Visa endast blockerade begäranden"
   },
-  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
-    "message": "Visa endast förfrågningar med blockerade svarscookies"
+  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
+    "message": "Visa endast begäranden med blockerade svarscookies"
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
-    "message": "Visa endast förfrågningar med ett annat ursprung än sidans"
+    "message": "Visa endast begäranden med ett annat ursprung än sidans"
   },
   "panels/network/NetworkLogView.ts | overrideHeaders": {
     "message": "Åsidosätt huvuden"
@@ -7863,7 +8178,7 @@
     "message": "Inga anpassade huvuden"
   },
   "panels/network/NetworkPanel.ts | captureScreenshots": {
-    "message": "Ta skärmbilder"
+    "message": "Skärmbilder"
   },
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "Ta skärmbilder när en sida läses in"
@@ -7920,7 +8235,7 @@
     "message": "Visa mer information i förfrågningsraderna"
   },
   "panels/network/NetworkPanel.ts | showOverview": {
-    "message": "Visa översikt"
+    "message": "Översikt"
   },
   "panels/network/NetworkPanel.ts | showOverviewOfNetworkRequests": {
     "message": "Visa översikt över nätverksförfrågningar"
@@ -7929,7 +8244,7 @@
     "message": "Begränsning"
   },
   "panels/network/NetworkPanel.ts | useLargeRequestRows": {
-    "message": "Använd stora förfrågningsrader"
+    "message": "Rader med stora begäranden"
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "Webbadress"
@@ -8018,9 +8333,6 @@
   "panels/network/RequestHeadersView.ts | general": {
     "message": "Allmänt"
   },
-  "panels/network/RequestHeadersView.ts | headerOverrides": {
-    "message": "Åsidosättanden av huvuden"
-  },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "Läs mer"
   },
@@ -8064,7 +8376,7 @@
     "message": "Statuskod"
   },
   "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "Inläsning av detta dokument har blockerats i iframe med ett sandbox-attribut eftersom en princip för öppnare med korsursprung angavs av dokumentet."
+    "message": "Dokumentet blockerades från att läsas in i ett popup-fönster som öppnades via ett iframe-element i en sandlåda eftersom en Cross-Origin-Opener-Policy angetts för dokumentet."
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
     "message": "Om du vill bädda in den här ramen i dokumentet måste svaret aktivera principen för inbäddning av korsursprung genom att ange följande svarshuvud:"
@@ -8468,9 +8780,6 @@
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "Allmänt"
   },
-  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
-    "message": "Åsidosättanden av huvuden"
-  },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "Rå"
   },
@@ -8565,7 +8874,7 @@
     "message": "Välj endast det här alternativet om en slumpmässig webbplats med den här resursen inte utgör en säkerhetsrisk."
   },
   "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
-    "message": "Inläsning av detta dokument har blockerats i iframe med ett sandbox-attribut eftersom en princip för öppnare med korsursprung angavs av dokumentet."
+    "message": "Dokumentet blockerades från att läsas in i ett popup-fönster som öppnades via ett iframe-element i en sandlåda eftersom en Cross-Origin-Opener-Policy angetts för dokumentet."
   },
   "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
     "message": "Om du vill bädda in den här ramen i dokumentet måste svaret aktivera principen för inbäddning av korsursprung genom att ange följande svarshuvud:"
@@ -9344,6 +9653,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "Dokumentation"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | editAndResend": {
+    "message": "Redigera och skicka igen"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
     "message": "Förfluten tid"
   },
@@ -9397,6 +9709,18 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | type": {
     "message": "Typ"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | addParameter": {
+    "message": "Lägg till en parameter"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | deleteParameter": {
+    "message": "Radera parameter"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | resetDefaultValue": {
+    "message": "Återställ till standardvärdet"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | copyCommand": {
+    "message": "Kopiera kommando"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protokollövervakare"
@@ -10868,6 +11192,9 @@
   "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
     "message": "Det gick inte att läsa in felsökningsinformation för {PH1}."
   },
+  "panels/sources/DebuggerPlugin.ts | debuggingPowerReduced": {
+    "message": "Verktyg för programmerare kan inte visa skrivna källor, men du kan felsöka den implementerade koden."
+  },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{Inaktivera brytpunkt}other{Inaktivera alla brytpunkter på raden}}"
   },
@@ -10877,8 +11204,20 @@
   "panels/sources/DebuggerPlugin.ts | enableBreakpoint": {
     "message": "{n,plural, =1{Aktivera brytpunkt}other{Aktivera alla brytpunkter på raden}}"
   },
+  "panels/sources/DebuggerPlugin.ts | errorLoading": {
+    "message": "Fel vid inläsning av webbadress {PH1}: {PH2}"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
+    "message": "Ignorera tilläggsskript"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
+    "message": "Ignorera den här filen"
+  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "Pausa aldrig här"
+  },
+  "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
+    "message": "Om du vill aktivera igen ska du se till att filen inte finns med på ignoreringslistan och läsa in igen."
   },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n,plural, =1{Ta bort brytpunkt}other{Ta bort alla brytpunkter på raden}}"
@@ -10886,11 +11225,14 @@
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "Ta bort från ignoreringslistan"
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapDetected": {
-    "message": "Källkarta har upptäckts."
+  "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
+    "message": "Det gick inte att läsa in källkartan."
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
-    "message": "Källmappen hittades men ignorerades för filen på ignoreringslistan."
+  "panels/sources/DebuggerPlugin.ts | sourceMapLoaded": {
+    "message": "Källkartan har lästs in."
+  },
+  "panels/sources/DebuggerPlugin.ts | sourceMapSkipped": {
+    "message": "Källkartan hoppades över för den här filen."
   },
   "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
     "message": "Felsökningsfunktionen hoppar över stegvis genomgång av skriptet och stoppar inte vid undantag."
@@ -10933,9 +11275,6 @@
   },
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "Format {PH1}"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
-    "message": "Vill du radera alla åsidosättningar i den här mappen?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "Vill du radera den här filen?"
@@ -11054,26 +11393,26 @@
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "Rensa konfiguration"
   },
-  "panels/sources/SourcesNavigator.ts | contentScriptsServedByExtensions": {
-    "message": "Här ser du innehållsskript som visas efter tillägg"
-  },
-  "panels/sources/SourcesNavigator.ts | createAndSaveCodeSnippetsFor": {
-    "message": "Skapa och spara kodavsnitt för senare användning"
-  },
   "panels/sources/SourcesNavigator.ts | createNewSnippet": {
     "message": "Skapa nytt kodavsnitt"
+  },
+  "panels/sources/SourcesNavigator.ts | explainContentScripts": {
+    "message": "Visa innehållsskript som visas av tillägg"
+  },
+  "panels/sources/SourcesNavigator.ts | explainLocalOverrides": {
+    "message": "Åsidosätt nätverksbegäranden och webbinnehåll lokalt för att efterlikna fjärrresurser"
+  },
+  "panels/sources/SourcesNavigator.ts | explainSnippets": {
+    "message": "Spara JavaScript-kod som du kör ofta så att den kan köras igen när som helst"
+  },
+  "panels/sources/SourcesNavigator.ts | explainWorkspace": {
+    "message": "Konfigurera arbetsytan så att redigeringar synkroniseras direkt med källorna du utvecklar"
   },
   "panels/sources/SourcesNavigator.ts | learnMore": {
     "message": "Läs mer"
   },
-  "panels/sources/SourcesNavigator.ts | learnMoreAboutWorkspaces": {
-    "message": "Läs mer om arbetsytor"
-  },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "Nytt kodavsnitt"
-  },
-  "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
-    "message": "Åsidosätt sidtillgångar med filer från en lokal mapp"
   },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "Ta bort"
@@ -11089,9 +11428,6 @@
   },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "Välj mapp för åsidosättningar"
-  },
-  "panels/sources/SourcesNavigator.ts | syncChangesInDevtoolsWithThe": {
-    "message": "Synkronisera ändringar i Verktyg för programmerare med det lokala filsystemet"
   },
   "panels/sources/SourcesPanel.ts | continueToHere": {
     "message": "Fortsätt hit"
@@ -11167,9 +11503,6 @@
   },
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "Avsluta aktuellt JavaScript-anrop"
-  },
-  "panels/sources/SourcesView.ts | dropInAFolderToAddToWorkspace": {
-    "message": "Släpp i en mapp för att lägga till i arbetsytan"
   },
   "panels/sources/SourcesView.ts | openFile": {
     "message": "Öppna fil"
@@ -11411,9 +11744,6 @@
   "panels/sources/sources-meta.ts | file": {
     "message": "Fil"
   },
-  "panels/sources/sources-meta.ts | filesystem": {
-    "message": "Filsystem"
-  },
   "panels/sources/sources-meta.ts | goTo": {
     "message": "Besök"
   },
@@ -11488,9 +11818,6 @@
   },
   "panels/sources/sources-meta.ts | showBreakpoints": {
     "message": "Visa brytpunkter"
-  },
-  "panels/sources/sources-meta.ts | showFilesystem": {
-    "message": "Visa Filsystem"
   },
   "panels/sources/sources-meta.ts | showQuickSource": {
     "message": "Visa snabbkälla"
@@ -11570,6 +11897,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Bevakning"
   },
+  "panels/timeline/AnimationsTrackAppender.ts | animations": {
+    "message": "Animationer"
+  },
   "panels/timeline/AppenderUtils.ts | sSelfS": {
     "message": "{PH1} (tid i nod: {PH2})"
   },
@@ -11615,6 +11945,15 @@
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
     "message": "Layoutförskjutningar"
   },
+  "panels/timeline/NetworkTrackAppender.ts | network": {
+    "message": "Nätverk"
+  },
+  "panels/timeline/ThreadAppender.ts | anonymous": {
+    "message": "(anonym)"
+  },
+  "panels/timeline/ThreadAppender.ts | thread": {
+    "message": "Huvudtråd efter ny motor"
+  },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "CPU-profil för ett mål är inte tillgängligt."
   },
@@ -11627,17 +11966,11 @@
   "panels/timeline/TimelineDetailsView.ts | callTree": {
     "message": "Anropsträd"
   },
-  "panels/timeline/TimelineDetailsView.ts | estimated": {
-    "message": "uppskattad"
-  },
   "panels/timeline/TimelineDetailsView.ts | eventLog": {
     "message": "Händelselogg"
   },
   "panels/timeline/TimelineDetailsView.ts | layers": {
     "message": "Lager"
-  },
-  "panels/timeline/TimelineDetailsView.ts | learnMore": {
-    "message": "Läs mer"
   },
   "panels/timeline/TimelineDetailsView.ts | paintProfiler": {
     "message": "Profilerare för skärmuppritning"
@@ -11647,9 +11980,6 @@
   },
   "panels/timeline/TimelineDetailsView.ts | summary": {
     "message": "Översikt"
-  },
-  "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
-    "message": "Total blockeringstid: {PH1} ms{PH2}"
   },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
@@ -11662,9 +11992,6 @@
   },
   "panels/timeline/TimelineEventOverview.ts | sSDash": {
     "message": "{PH1}–{PH2}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | animation": {
-    "message": "Animation"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "Släppt bildruta"
@@ -11680,9 +12007,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "Inaktiv bildruta"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
-    "message": "Lång bildruta"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | main": {
     "message": "Primär"
@@ -12050,6 +12374,9 @@
   "panels/timeline/TimelineUIUtils.ts | commit": {
     "message": "Bekräfta"
   },
+  "panels/timeline/TimelineUIUtils.ts | compilationCacheKind": {
+    "message": "Typ av kompileringscache"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "Storlek på kompileringscache"
   },
@@ -12257,6 +12584,9 @@
   "panels/timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "Bildadress"
   },
+  "panels/timeline/TimelineUIUtils.ts | initialPriority": {
+    "message": "Första prioritet"
+  },
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "Initierare"
   },
@@ -12274,9 +12604,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "Anropades av tidsgräns"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jank": {
-    "message": "jank"
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS-bildruta"
@@ -12529,9 +12856,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
     "message": "{PH1} indikerar långsam svarstid för sidan."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
-    "message": "{PH1}. Långa bildrenderingstider tyder på {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} av {PH2}"
@@ -12953,6 +13277,9 @@
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "Sorteringen av {PH1} avbröts"
   },
+  "ui/components/dialogs/IconDialog.ts | close": {
+    "message": "Stäng"
+  },
   "ui/components/dialogs/ShortcutDialog.ts | close": {
     "message": "Stäng"
   },
@@ -13208,8 +13535,8 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "Visa inte igen"
   },
-  "ui/legacy/Infobar.ts | learnMore": {
-    "message": "Läs mer"
+  "ui/legacy/Infobar.ts | showMore": {
+    "message": "Visa mer"
   },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "Stäng utdragbar panel"
@@ -13618,9 +13945,6 @@
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showDBefore": {
     "message": "Visa {PH1} före"
-  },
-  "ui/legacy/components/data_grid/ViewportDataGrid.ts | collapsed": {
-    "message": "komprimerad"
   },
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | blur": {
     "message": "Oskärpa"

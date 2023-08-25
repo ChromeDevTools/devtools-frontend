@@ -419,9 +419,6 @@
   "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
     "message": "Seller Scoring Phase Start"
   },
-  "core/sdk/NetworkManager.ts | crossoriginReadBlockingCorb": {
-    "message": "क्रस-ओरिजिन रिड ब्लकिङ (CORB) ले {PH1} MIME प्रकारको {PH2} क्रस-ओरिजिन रिस्पन्स ब्लक गर्‍यो। थप विवरणका लागि https://www.chromestatus.com/feature/5629709824032768 हेर्नुहोस्।"
-  },
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "तीव्र गतिको 3G"
   },
@@ -857,6 +854,12 @@
   "entrypoints/inspector_main/InspectorMain.ts | tab": {
     "message": "ट्याब"
   },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetNotSelected": {
+    "message": "पेज: चयन गरिएको छैन"
+  },
+  "entrypoints/inspector_main/OutermostTargetSelector.ts | targetS": {
+    "message": "पेज: {PH1}"
+  },
   "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
     "message": "वेबसाइटको कार्यसम्पादनसम्बन्धी जानकारी"
   },
@@ -901,6 +904,9 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedmotion": {
     "message": "CSS prefers-reduced-motion मिडिया सुविधा बाध्य पार्छ"
+  },
+  "entrypoints/inspector_main/RenderingOptions.ts | forcesCssPrefersreducedtransparencyMedia": {
+    "message": "CSS prefers-reduced-transparency मिडिया सुविधाका लागि बाध्य पार्छ"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | forcesMediaTypeForTestingPrint": {
     "message": "मिडिया टाइपलाई प्रिन्ट तथा स्क्रिनको शैली परीक्षण गर्न बाध्य पार्छ"
@@ -1026,7 +1032,7 @@
     "message": "दायाँतिर डक गर्नुहोस्"
   },
   "entrypoints/main/MainImpl.ts | focusDebuggee": {
-    "message": "डिबगीमा फोकस गर्नुहोस्"
+    "message": "फोकस पेज"
   },
   "entrypoints/main/MainImpl.ts | help": {
     "message": "मद्दत"
@@ -1101,7 +1107,7 @@
     "message": "अघिल्लो नतिजा भेट्टाउनुहोस्"
   },
   "entrypoints/main/main-meta.ts | focusDebuggee": {
-    "message": "डिबगीमा फोकस गर्नुहोस्"
+    "message": "फोकस पेज"
   },
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "तेर्सो"
@@ -1278,7 +1284,7 @@
     "message": "DOMSubtreeModified, DOMNodeInserted, DOMNodeRemoved, DOMNodeRemovedFromDocument, DOMNodeInsertedIntoDocument र DOMCharacterDataModified लगायतका DOM म्युटेसन इभेन्टहरू चल्तीबाट हटाइँदै छन् (https://w3c.github.io/uievents/#legacy-event-types) र तिनलाई चाँडै नै सदाका लागि हटाइने छन्। कृपया यसको साटो MutationObserver प्रयोग गर्नुहोस्।"
   },
   "generated/Deprecation.ts | DataUrlInSvgUse": {
-    "message": "डेटासम्बन्धी सहायता: SVG <use> एलिमेन्टमा भएका URL चल्तीबाट हटाइँदै छन् र तिनलाई चाँडै नै सदाका लागि हटाइने छन्।"
+    "message": "डेटासम्बन्धी सहायता: SVGUseElement मा भएका URL चल्तीबाट हटाइँदै छन् र तिनलाई चाँडै नै सदाका लागि हटाइने छन्।"
   },
   "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
     "message": "document.domain सेट गरेर उही ओरिजिनसम्बन्धी नीतिमा लगाइएको प्रतिबन्ध हटाउने सुविधा चल्तीबाट हटाइएको छ र यो सुविधा स्वतः अफ गरिने छ। तपाईं यो सुविधा प्रयोग गर्न जारी राख्न चाहनुहुन्छ भने कृपया डकुमेन्ट र फ्रेमहरूको HTTP प्रतिक्रियासँगै Origin-Agent-Cluster: ?0 हेडर पठाएर ओरिजिन-किड एजेन्ट क्लस्टरहरूबाट अप्ट-आउट गर्नुहोस्। यस सम्बन्धमा थप जानकारी प्राप्त गर्न https://developer.chrome.com/blog/immutable-document-domain/ मा जानुहोस्।"
@@ -1512,7 +1518,7 @@
     "message": "फाइल राइट गरिँदै छ…"
   },
   "models/issues_manager/BounceTrackingIssue.ts | bounceTrackingMitigations": {
-    "message": "बाउन्स ट्र्याकिङ मिटिगेसन"
+    "message": "बाउन्स ट्र्याकिङ मिटिगेसनहरू"
   },
   "models/issues_manager/ClientHintIssue.ts | clientHintsInfrastructure": {
     "message": "Client Hints Infrastructure"
@@ -1547,6 +1553,9 @@
   "models/issues_manager/CookieIssue.ts | samesiteCookiesExplained": {
     "message": "SameSite कुकीहरूबारे जानकारी"
   },
+  "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "तेस्रो पक्षीय कुकीहरूको प्रयोजन रोक्नका लागि तयारी गर्नुहोस्"
+  },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "क्रस ओरिजिन रिसोर्स सेयरिङ (CORS)"
   },
@@ -1576,6 +1585,9 @@
   },
   "models/issues_manager/GenericIssue.ts | autocompleteAttributePageTitle": {
     "message": "HTML एट्रिब्युट: autocomplete"
+  },
+  "models/issues_manager/GenericIssue.ts | corbExplainerPageTitle": {
+    "message": "CORB एक्स्प्लेनर"
   },
   "models/issues_manager/GenericIssue.ts | crossOriginPortalPostMessage": {
     "message": "पोर्टलहरू - उही मूल भएका सञ्चार च्यानलहरू"
@@ -1688,14 +1700,17 @@
   "models/persistence/PersistenceActions.ts | openInContainingFolder": {
     "message": "यसको फोल्डरमा खोल्नुहोस्"
   },
+  "models/persistence/PersistenceActions.ts | overrideContent": {
+    "message": "सामग्री ओभरराइड गर्नुहोस्"
+  },
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "यस रूपमा सेभ गर्नुहोस्…"
   },
-  "models/persistence/PersistenceActions.ts | saveForOverrides": {
-    "message": "ओभरराइड गर्नका लागि सेभ गर्नुहोस्"
-  },
   "models/persistence/PersistenceActions.ts | saveImage": {
     "message": "फोटो सेभ गर्नुहोस्"
+  },
+  "models/persistence/PersistenceActions.ts | showOverrides": {
+    "message": "सबै ओभरराइडहरू देखाइऊन्"
   },
   "models/persistence/PersistenceUtils.ts | linkedToS": {
     "message": "{PH1} सँग लिंक गरिएको"
@@ -2306,6 +2321,9 @@
   "panels/application/AppManifestView.ts | couldNotDownloadARequiredIcon": {
     "message": "म्यानिफेेस्टबाट डाउनलोड गर्नै पर्ने एउटा आइकन डाउनलोड गर्न सकिएन"
   },
+  "panels/application/AppManifestView.ts | customizePwaTitleBar": {
+    "message": "आफ्नो PWA को टाइटल बारको विन्डो कन्ट्रोल ओभरले कस्टमाइज गर्नुहोस्।"
+  },
   "panels/application/AppManifestView.ts | darkBackgroundColor": {
     "message": "अध्याँरो ब्याकग्राउन्ड कलर"
   },
@@ -2483,6 +2501,18 @@
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "थिम कलर"
   },
+  "panels/application/AppManifestView.ts | wcoFound": {
+    "message": "Chrome ले {PH3} मा {PH2} फिल्डको {PH1} मान भेट्टाएको छ।"
+  },
+  "panels/application/AppManifestView.ts | wcoNeedHelpReadMore": {
+    "message": "मद्दत चाहिन्छ? {PH1} पढ्नुहोस्।"
+  },
+  "panels/application/AppManifestView.ts | wcoNotFound": {
+    "message": "विन्डो कन्ट्रोल ओभरले API प्रयोग गर्न र आफ्नो एपको टाइटल बार कस्टमाइज गर्न म्यानिफेस्टमा {PH1} तोक्नुहोस्।"
+  },
+  "panels/application/AppManifestView.ts | windowControlsOverlay": {
+    "message": "विन्डो कन्ट्रोल ओभरले"
+  },
   "panels/application/ApplicationPanelSidebar.ts | appManifest": {
     "message": "एप म्यानिफेस्ट"
   },
@@ -2493,7 +2523,7 @@
     "message": "एप प्यानल साइडबार"
   },
   "panels/application/ApplicationPanelSidebar.ts | backgroundServices": {
-    "message": "ब्याकग्राउन्ड सेवाहरू"
+    "message": "ब्याकग्राउन्डमा चल्ने सेवाहरू"
   },
   "panels/application/ApplicationPanelSidebar.ts | beforeInvokeAlert": {
     "message": "{PH1}: म्यानिफेस्टमा स्क्रोल गरेर यो खण्डमा जान कार्यान्वयन गर्नुहोस्।"
@@ -2577,10 +2607,10 @@
     "message": "ब्याक/फर्वार्ड क्यास"
   },
   "panels/application/BackgroundServiceView.ts | backgroundFetch": {
-    "message": "ब्याकग्राउन्ड फेच"
+    "message": "ब्याकग्राउन्डमा फेच गर्ने सुविधा"
   },
   "panels/application/BackgroundServiceView.ts | backgroundServices": {
-    "message": "ब्याकग्राउन्ड सेवाहरू"
+    "message": "ब्याकग्राउन्डमा चल्ने सेवाहरू"
   },
   "panels/application/BackgroundServiceView.ts | backgroundSync": {
     "message": "ब्याकग्राउन्डमा सिंक गर्ने सुविधा"
@@ -2619,7 +2649,7 @@
     "message": "भुक्तानी ह्यान्ड्लर"
   },
   "panels/application/BackgroundServiceView.ts | periodicBackgroundSync": {
-    "message": "समय समयमा हुने ब्याकग्राउन्ड सिंक"
+    "message": "समय समयमा ब्याकग्राउन्डमा हुने सिंक"
   },
   "panels/application/BackgroundServiceView.ts | pushMessaging": {
     "message": "पुस म्यासेजिङ"
@@ -2655,7 +2685,7 @@
     "message": "टाइमस्ट्याम्प"
   },
   "panels/application/BounceTrackingMitigationsTreeElement.ts | bounceTrackingMitigations": {
-    "message": "बाउन्स ट्र्याकिङ मिटिगेसन"
+    "message": "बाउन्स ट्र्याकिङ मिटिगेसनहरू"
   },
   "panels/application/CookieItemsView.ts | clearAllCookies": {
     "message": "सबै कुकीहरू मेटाइऊन्"
@@ -2863,6 +2893,12 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "अँ"
+  },
+  "panels/application/PreloadingTreeElement.ts | preloads": {
+    "message": "प्रिलोडहरू"
+  },
+  "panels/application/PreloadingTreeElement.ts | speculationRules": {
+    "message": "अनुमानसम्बन्धी नियमहरू"
   },
   "panels/application/PreloadingTreeElement.ts | thisPage": {
     "message": "यो पेज"
@@ -3077,6 +3113,9 @@
   "panels/application/SharedStorageListTreeElement.ts | sharedStorage": {
     "message": "साझा भण्डारण"
   },
+  "panels/application/StorageBucketsTreeElement.ts | storageBuckets": {
+    "message": "भण्डारण बकेटहरू"
+  },
   "panels/application/StorageItemsView.ts | clearAll": {
     "message": "सबै हटाउनुहोस्"
   },
@@ -3147,7 +3186,7 @@
     "message": "{PH1} (लोड गर्न सकिएन)"
   },
   "panels/application/StorageView.ts | serviceWorkers": {
-    "message": "सर्भिस वर्कर"
+    "message": "सर्भिस वर्करहरू"
   },
   "panels/application/StorageView.ts | simulateCustomStorage": {
     "message": "कस्टम स्टोरेज कोटा सिमुलेट गर्नुहोस्"
@@ -3202,6 +3241,12 @@
   },
   "panels/application/application-meta.ts | stopRecordingEvents": {
     "message": "क्रियाकलापहरू रेकर्ड गर्न छाड्नुहोस्"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | CookieFlushed": {
+    "message": "अपरिभाषित"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | HTTPAuthRequired": {
+    "message": "अपरिभाषित"
   },
   "panels/application/components/BackForwardCacheStrings.ts | HTTPMethodNotGET": {
     "message": "GET अनुरोधमार्फत लोड गरिएका पेजहरू मात्र ब्याक/फर्वार्ड क्यासमा राख्न मिल्छ।"
@@ -3542,14 +3587,23 @@
   "panels/application/components/BackForwardCacheStrings.ts | webRTC": {
     "message": "WebRTC भएका पेजहरू ब्याक/फर्वार्ड क्यासमा राख्न मिल्दैन।"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webRTCSticky": {
+    "message": "WebRTC प्रयोग गरिएकाले ब्याक/फर्वार्ड क्यास अफ गरिएको छ।"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webShare": {
     "message": "WebShare प्रयोग गर्ने पेजहरूका हकमा हाल ब्याक/फर्वार्ड क्यास प्रयोग गर्न मिल्दैन।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webSocket": {
     "message": "WebSocket भएका पेजहरू ब्याक/फर्वार्ड क्यासमा राख्न मिल्दैन।"
   },
+  "panels/application/components/BackForwardCacheStrings.ts | webSocketSticky": {
+    "message": "WebSocket प्रयोग गरिएकाले ब्याक/फर्वार्ड क्यास अफ गरिएको छ।"
+  },
   "panels/application/components/BackForwardCacheStrings.ts | webTransport": {
     "message": "WebTransport भएका पेजहरू ब्याक/फर्वार्ड क्यासमा राख्न मिल्दैन।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | webTransportSticky": {
+    "message": "WebTransport प्रयोग गरिएकाले ब्याक/फर्वार्ड क्यास अफ गरिएको छ।"
   },
   "panels/application/components/BackForwardCacheStrings.ts | webXR": {
     "message": "WebXR प्रयोग गर्ने पेजहरूका हकमा हाल ब्याक/फर्वार्ड क्यास प्रयोग गर्न मिल्दैन।"
@@ -3624,10 +3678,16 @@
     "message": "URL:"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | bounceTrackingMitigationsTitle": {
-    "message": "बाउन्स ट्र्याकिङ मिटिगेसन"
+    "message": "बाउन्स ट्र्याकिङ मिटिगेसनहरू"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | checkingPotentialTrackers": {
     "message": "बाउन्स ट्र्याकिङका सम्भावित साइटहरू छन् कि छैनन् भन्ने कुरा जाँच गरिँदै छ।"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureDisabled": {
+    "message": "बाउन्स ट्र्याकिङ मिटिगेसन अफ गरिएको छ। यो अन गर्न {PH1} को फ्ल्याग सेट गरी \"मेटाउने सुविधासहित अन गरिएको छ\" बनाउनुहोस्।"
+  },
+  "panels/application/components/BounceTrackingMitigationsView.ts | featureFlag": {
+    "message": "बाउन्स ट्र्याकिङ मिटिगेसन फिचर फ्ल्याग"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | forceRun": {
     "message": "जबरजस्ती रन गर्नुहोस्"
@@ -3636,7 +3696,7 @@
     "message": "थप जान्नुहोस्: बाउन्स ट्र्याकिङमा लागू हुने प्रतिबन्धहरू"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | noPotentialBounceTrackersIdentified": {
-    "message": "सम्भावित बाउन्स ट्र्याकिङ साइटहरूका हकमा स्थितिका बारेमा स्पष्ट पारिएको थिएन। यीमध्ये कुनै पनि साइटको पहिचान गरिएन: बाउन्स ट्र्याकिङ मिटिगेसन अन गरिएको छैन वा तेस्रो पक्षीय कुकीहरू ब्लक गरिएका छैनन्।"
+    "message": "सम्भावित बाउन्स ट्र्याकिङ साइटहरूका हकमा स्थितिका बारेमा स्पष्ट पारिएको थिएन। यीमध्ये कुनै पनि साइटको पहिचान गरिएन वा तेस्रो पक्षीय कुकीहरू ब्लक गरिएका छैनन्।"
   },
   "panels/application/components/BounceTrackingMitigationsView.ts | runningMitigations": {
     "message": "रन भइरहेको छ"
@@ -4106,6 +4166,15 @@
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "बकेटको नाम"
   },
+  "panels/application/components/StorageMetadataView.ts | confirmBucketDeletion": {
+    "message": "\"{PH1}\" बकेट मेटाउने हो?"
+  },
+  "panels/application/components/StorageMetadataView.ts | defaultBucket": {
+    "message": "डिफल्ट बकेट"
+  },
+  "panels/application/components/StorageMetadataView.ts | deleteBucket": {
+    "message": "बकेट मेटाउनुहोस्"
+  },
   "panels/application/components/StorageMetadataView.ts | durability": {
     "message": "टिकाउपन"
   },
@@ -4175,11 +4244,11 @@
   "panels/application/components/TrustTokensView.ts | trustTokens": {
     "message": "प्राइभेट स्टेट टोकनहरू"
   },
-  "panels/application/preloading/PreloadingView.ts | extensionSettings": {
-    "message": "एक्स्टेन्सनसम्बन्धी सेटिङ"
+  "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
+    "message": "सबै प्रिलोडहरू"
   },
-  "panels/application/preloading/PreloadingView.ts | preloadingPageSettings": {
-    "message": "प्रिलोड गरिएका पेजहरूका सेटिङ"
+  "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
+    "message": "तोकिएको नियमअनुसार फिल्टर गर्नुहोस्"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "सफल भएन"
@@ -4208,17 +4277,41 @@
   "panels/application/preloading/PreloadingView.ts | validityValid": {
     "message": "वैध"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByBatterysaver": {
-    "message": "अपरेटिङ सिस्टमको ब्याट्री सेभर मोडका कारणले गर्दा प्रिलोड गर्ने प्रक्रिया अफ गरिएको छ।"
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | action": {
+    "message": "कारबाही"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingDisabledByDatasaver": {
-    "message": "अपरेटिङ सिस्टमको डेटा सेभर मोडका कारणले गर्दा प्रिलोड गर्ने प्रक्रिया अफ गरिएको छ।"
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | status": {
+    "message": "स्थिति"
   },
-  "panels/application/preloading/PreloadingView.ts | warningDetailPreloadingStateDisabled": {
-    "message": "प्रयोगकर्ताले तय गरेका सेटिङ वा एक्स्टेन्सनका कारण प्रिलोड गर्ने प्रक्रिया अफ गरिएको छ। थप जान्न {PH1} मा जानुहोस् वा एक्स्टेन्सन अफ गर्न {PH2} मा जानुहोस्।"
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusFailure": {
+    "message": "सफल भएन"
   },
-  "panels/application/preloading/PreloadingView.ts | warningTitlePreloadingStateDisabled": {
-    "message": "प्रिलोड गर्ने प्रक्रिया अफ गरिएको छ"
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusNotTriggered": {
+    "message": "ट्रिगर गरिएको छैन"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusPending": {
+    "message": "सुरु भएको छैन"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusReady": {
+    "message": "तयार छ"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusRunning": {
+    "message": "रन भइरहेको छ"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | statusSuccess": {
+    "message": "सफल भयो"
+  },
+  "panels/application/preloading/components/MismatchedPreloadingGrid.ts | url": {
+    "message": "URL"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToInspect": {
+    "message": "प्रिरेन्डर गरिएको पेज जाँच्न क्लिक गर्नुहोस्"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonClickToRevealRuleSet": {
+    "message": "तोकिएको नियम देखाउन क्लिक गर्नुहोस्"
+  },
+  "panels/application/preloading/components/PreloadingDetailsReportView.ts | buttonInspect": {
+    "message": "निरीक्षण गर्नुहोस्"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
     "message": "प्रिलोड गर्न सकिएन।"
@@ -4245,10 +4338,10 @@
     "message": "विस्तृत जानकारी"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsFailureReason": {
-    "message": "प्रिरेन्डर गर्न नसकिनुको कारण"
+    "message": "प्रिलोड गर्न नसकिनुको कारण"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsRuleSet": {
-    "message": "नियम तोकियो"
+    "message": "नियम तोकिएको छ"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsStatus": {
     "message": "स्थिति"
@@ -4256,8 +4349,59 @@
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | selectAnElementForMoreDetails": {
     "message": "कुनै एलिमेन्टको थप विवरण हेर्न उक्त एलिमेन्ट चयन गर्नुहोस्"
   },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
+    "message": "अपरेटिङ सिस्टमको ब्याट्री सेभर मोडका कारणले गर्दा प्रिलोड गर्ने प्रक्रिया अफ गरिएको छ।"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
+    "message": "अपरेटिङ सिस्टमको डेटा सेभर मोडका कारणले गर्दा प्रिलोड गर्ने प्रक्रिया अफ गरिएको छ।"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "DevTools खुला भएकाले प्रिफेच गर्ने प्रक्रिया बाध्यकारी रूपमा अन गरिएको छ। यो ब्राउजर सत्र पर्फर्मेन्सका बिचमा तुलना गर्न प्रयोग गरिने होल्डब्याक समूहको भाग भएकाले DevTools बन्द गरिएका बेला प्रिफेच अफ गरिने छ।"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "DevTools खुला भएकाले प्रिरेन्डरिङ बाध्यकारी रूपमा अन गरिएको छ। यो ब्राउजर सत्र पर्फर्मेन्सका बिचमा तुलना गर्न प्रयोग गरिने होल्डब्याक समूहको भाग भएकाले DevTools बन्द गरिएका बेला र्प्रिरेन्डरिङ अफ गरिने छ।"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
+    "message": "प्रयोगकर्ताले तय गरेका सेटिङ वा एक्स्टेन्सनका कारण प्रिलोड गर्ने प्रक्रिया अफ गरिएको छ। आफ्नो प्राथमिकता बदल्न {PH1} मा जानुहोस्। प्रिलोड गर्ने कार्य ब्लक गर्ने सबै एक्स्टेन्सनहरू अफ गर्न {PH2} मा जानुहोस्।"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
+    "message": "एक्स्टेन्सनसम्बन्धी सेटिङ"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | footerLearnMore": {
+    "message": "थप जान्नुहोस्"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByBatterySaver": {
+    "message": "ब्याट्री सेभर"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByDataSaver": {
+    "message": "डेटा सेभर"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrefetchSpeculationRules": {
+    "message": "प्रिफेच गर्ने प्रक्रिया अफ गरिएको थियो तर अहिले बाध्यकारी रूपमा अन गरिएको छ"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByHoldbackPrerenderSpeculationRules": {
+    "message": "प्रिरेन्डरिङ अफ गरिएको थियो तर अहिले बाध्यकारी रूपमा अन गरिएको छ"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByPreference": {
+    "message": "प्रयोगकर्ताले तय गरेका सेटिङ वा एक्स्टेन्सन"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
+    "message": "प्रिलोड गर्ने प्रक्रिया अफ गरिएको छ"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
+    "message": "प्रिलोड गर्ने प्रक्रिया बाध्यकारी रूपमा अन गरिएको छ"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
+    "message": "प्रिलोड गरिएका पेजहरूका सेटिङ"
+  },
+  "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
+    "message": "पेज प्रिलोड गर्न नदिनुका कारणहरू"
+  },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "कारबाही"
+  },
+  "panels/application/preloading/components/PreloadingGrid.ts | ruleSet": {
+    "message": "नियम तोकिएको छ"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | status": {
     "message": "स्थिति"
@@ -4334,50 +4478,209 @@
   "panels/application/preloading/components/PreloadingString.ts | PrefetchProxyNotAvailable": {
     "message": "प्रिफेच गर्ने प्रोक्सीमा कनेक्ट गर्ने प्रयास गर्दा नेटवर्कसम्बन्धी त्रुटि भएको थियो।"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInElementsPanel": {
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
+    "message": "सुरुको पेजको मुख्य फ्रेममा नेभिगेट गर्ने क्रममा प्रिरेन्डर गरिएको पेज एक्टिभेट भयो।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
+    "message": "सुरुको पेजको स्यान्डबक्सिङ फ्ल्याग वा अनुमतिसम्बन्धी नीति प्रिरेन्डरिङ पेजसँग काम नगर्ने हुनाले प्रिरेन्डर गर्ने प्रक्रिया प्रयोग गरिएको थिएन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
+    "message": "एक्टिभेट गरिएको समयमा मूल प्रिरेन्डरिङ नेभिगेसनसम्बन्धी अनुरोधका बेलामा गणना गरिएका भन्दा फरक नेभिगेसन प्यारामिटरहरू (जस्तै, HTTP हेडरहरू) गणना गरिएकाले प्रिरेन्डर गर्ने प्रक्रिया प्रयोग गरिएको थिएन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
+    "message": "प्रिरेन्डर गरिएको पेजले हाल काम नगर्ने अडियो आउटपुट प्रयोग गर्न अनुरोध गरेको छ।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBatterySaverEnabled": {
+    "message": "प्रयोगकर्ताले ब्राउजरमा कम ब्याट्री प्रयोग गर्न अनुरोध गरेकाले पेज प्रिरेन्डर गर्न सकिएन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
+    "message": "केही स्रोतहरू लोड गर्न रोक लगाइएको थियो।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
+    "message": "प्रिरेन्डरिङ नेभिगेसन प्रक्रियाका लागि HTTP क्लाइन्ट सर्टिफिकेट चाहिन्छ।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInInitialNavigation": {
+    "message": "प्रिरेन्डरिङ नेभिगेसन फरक साइटको URL मा नेभिगेट गर्न खोजेको हुनाले प्रिरेन्डरिङ नेभिगेसन प्रक्रिया पूरा हुन सकेन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteNavigationInMainFrameNavigation": {
+    "message": "प्रिरेन्डर गरिएको पेजले रिडिरेक्ट गरेर फरक साइटको URL मा पठायो।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInInitialNavigation": {
+    "message": "प्रिरेन्डर गरिएको URL रिडिरेक्ट गरेर फरक साइटको URL मा पठाइएको हुनाले पेज प्रिरेन्डर गर्न सकिएन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusCrossSiteRedirectInMainFrameNavigation": {
+    "message": "प्रिरेन्डर गरिएको पेज रिडिरेक्ट गरेर फरक साइटको URL मा पठाइयो।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDataSaverEnabled": {
+    "message": "प्रयोगकर्ताले ब्राउजरमा कम डेटा प्रयोग गर्न अनुरोध गरेकाले पेज प्रिरेन्डर गर्न सकिएन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
+    "message": "प्रिरेन्डर गरिएको पेजले डाउनलोड गर्ने प्रयास गरेको छ तर हाल यो सुविधा उपलब्ध छैन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusFailToGetMemoryUsage": {
+    "message": "ब्राउजरले मेमोरीको हालको प्रयोग निर्धारण गर्ने क्रममा कुनै आन्तरिक त्रुटि भएकाले पेज प्रिरेन्डर गर्न सकिएन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusHasEffectiveUrl": {
+    "message": "अन्तिम पेजको URL यसको सामान्य URL भन्दा फरक भएको हुनाले सुरुको पेजमा प्रिरेन्डर गर्ने प्रक्रिया पूरा हुन सकेन। (उदाहरणका लागि, नयाँ ट्याबको पेज वा होस्ट गरिएका एपहरू।)"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeNavigation": {
+    "message": "URL को स्किम http: वा https: नभएको हुनाले यसले प्रिरेन्डर गर्ने आवश्यक मापदण्डहरू पूरा गर्दैन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusInvalidSchemeRedirect": {
+    "message": "प्रिरेन्डरिङ नेभिगेसन रिडिरेक्ट गरेर http: वा https: स्किम नभएको URL मा पठाइएको हुनाले प्रिरेन्डरिङ नेभिगेसन प्रक्रिया पूरा हुन सकेन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLoginAuthRequested": {
+    "message": "प्रिरेन्डरिङ नेभिगेसन प्रक्रियाका लागि HTTP को प्रमाणीकरण गर्नु पर्ने हुन्छ तर अहिले HTTP को प्रमाणीकरण गर्न मिल्दैन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusLowEndDevice": {
+    "message": "यो डिभाइसमा प्रिरेन्डर गर्न सिस्टमको कुल मेमोरी पर्याप्त नभएकाले पेज प्रिरेन्डर गर्न सकिएन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMainFrameNavigation": {
+    "message": "प्रिरेन्डर गरिएको पेज हाल काम नगर्ने अर्को URL मा नेभिगेट भयो।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+    "message": "सुरुको पेजमा अत्यन्तै धेरै प्रिरेन्डरहरू चलिरहेको हुनाले पेज प्रिरेन्डर गर्न सकिएन। प्रिरेन्डरिङ जारी राख्न अनुमानसम्बन्धी अन्य नियमहरू हटाउनुहोस्।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
+    "message": "बाउजरले प्रिरेन्डर गर्न प्रयोग हुने मेमोरीभन्दा बढी मेमोरी प्रयोग गरेको हुनाले पेज प्रिरेन्डर गर्न सकिएन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureAfterTriggered": {
+    "message": "ब्राउजरको मेमोरी पूर्ण रूपमा भरिएको हुनाले प्रिरेन्डर गरिएको पेज अनलोड गरिएको छ।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryPressureOnTrigger": {
+    "message": "ब्राउजरको मेमोरी अत्यन्तै कम भएकाले पेज प्रिरेन्डर गर्न सकिएन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMixedContent": {
+    "message": "प्रिरेन्डर गरिएको पेजमा मिश्रित सामग्री समावेश थियो।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMojoBinderPolicy": {
+    "message": "प्रिरेन्डर गरिएको पेजले अहिले काम नगर्ने निषेध गरिएको JavaScript API प्रयोग गरेको छ। (आन्तरिक Mojo इन्टरफेस: {PH1})"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationBadHttpStatus": {
+    "message": "नन-2xx HTTP रेस्पोन्स स्ट्याटस कोडका कारणले प्रिरेन्डरिङ नेभिगेसन पूरा हुन सकेन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestBlockedByCsp": {
+    "message": "सामग्रीको सुरक्षासम्बन्धी नीतिका कारण प्रिरेन्डरिङ नेभिगेसन ब्लक गरिएको थियो।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusNavigationRequestNetworkError": {
+    "message": "प्रिरेन्डरिङ नेभिगेसन प्रक्रियामा नेटवर्कसम्बन्धी कुनै त्रुटि भयो।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPreloadingDisabled": {
+    "message": "प्रयोगकर्ताले आफ्नो ब्राउजरका सेटिङमा प्रिलोड गर्ने प्रक्रिया अफ गरेको हुनाले पेज प्रिरेन्डर गर्न सकिएन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
+    "message": "प्रिरेन्डर गर्ने प्रक्रिया बन्द गर्न विकासकर्ताका टुलहरू प्रयोग गरिएकाले प्रिरेन्डर गर्न सकिएन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
+    "message": "सुरुको पेज क्र्यास भयो।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
+    "message": "सुरुको पेज बन्द गरिएको थियो।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessCrashed": {
+    "message": "प्रिरेन्डर गरिएको पेज क्र्यास भयो।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessKilled": {
+    "message": "प्रिरेन्डर गरिएको पेज बन्द गरिएको थियो।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusResourceLoadBlockedByClient": {
+    "message": "केही स्रोतहरू लोड गर्न रोक लगाइएको थियो।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
+    "message": "प्रिरेन्डर गरिएको पेज क्रस-ओरिजिनको एउटै साइटको URL मा नेभिगेट भयो तर डेस्टिनेसन रेस्पोन्सले Supports-Loading-Mode को सही हेडर समावेश गर्दैन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
+    "message": "प्रिरेन्डर गरिएको पेज क्रस-ओरिजिनको एउटै साइटको URL मा पठाइयो तर डेस्टिनेसन रेस्पोन्सले Supports-Loading-Mode को सही हेडर समावेश गर्दैन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInInitialNavigation": {
+    "message": "प्रिरेन्डर गरिएको URL रिडिरेक्ट गरेर क्रस ओरिजिनको एउटै साइटको एउटै URL मा पठाइएको हुनाले पेज प्रिरेन्डर गर्न सकिएन तर डेस्टिनेसन रेस्पोन्सले Supports-Loading-Mode को सही हेडर समावेश गर्दैन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginRedirectNotOptInInMainFrameNavigation": {
+    "message": "प्रिरेन्डर गरिएको पेज रिडिरेक्ट गरेर क्रस-ओरिजिनको एउटै साइटको URL मा पठाइयो तर डेस्टिनेसन रेस्पोन्सले Supports-Loading-Mode को सही हेडर समावेश गर्दैन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSpeculationRuleRemoved": {
+    "message": "अज्ञात"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSslCertificateError": {
+    "message": "SSL प्रमाणपत्र अवैध भएको हुनाले प्रिरेन्डरिङ नेभिगेसन प्रक्रिया पूरा हुन सकेन।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTimeoutBackgrounded": {
+    "message": "सुरुको पेज धेरै समयसम्म ब्याकग्राउन्डमा रहेको हुनाले प्रिरेन्डर गरिएको पेज खारेज गरिएको छ।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusTriggerBackgrounded": {
+    "message": "सुरुको पेज ब्याकग्राउन्डमा रहेको हुनाले प्रिरेन्डर गरिएको पेज खारेज गरिएको छ।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusUaChangeRequiresReload": {
+    "message": "प्रिरेन्डरिङ नेभिगेसनमा प्रयोगकर्ताको एजेन्ट परिवर्तन गरियो।"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusFailure": {
+    "message": "सफल भएन"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusNotTriggered": {
+    "message": "ट्रिगर गरिएको छैन"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusPending": {
+    "message": "सुरु भएको छैन"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusReady": {
+    "message": "तयार छ"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusRunning": {
+    "message": "रन भइरहेको छ"
+  },
+  "panels/application/preloading/components/PreloadingString.ts | statusSuccess": {
+    "message": "सफल भयो"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInElementsPanel": {
     "message": "\"एलिमेन्टहरू\" प्यानलमा देखाउन क्लिक गर्नुहोस्"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | buttonClickToRevealInNetworkPanel": {
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInNetworkPanel": {
     "message": "नेटवर्क प्यानलमा देखाउन क्लिक गर्नुहोस्"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsDetailedInformation": {
-    "message": "विस्तृत जानकारी"
+  "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
+    "message": "तोकिएको यो नियमसँग सम्बन्धित प्रिलोडहरू देखाउनुहोस्"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsError": {
-    "message": "त्रुटि"
+  "panels/application/preloading/components/RuleSetGrid.ts | errors": {
+    "message": "{errorCount,plural, =1{# त्रुटि}other{# वटा त्रुटि}}"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsLocation": {
-    "message": "लोकेसन"
+  "panels/application/preloading/components/RuleSetGrid.ts | ruleSet": {
+    "message": "नियम तोकिएको छ"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsSource": {
-    "message": "स्रोत"
+  "panels/application/preloading/components/RuleSetGrid.ts | status": {
+    "message": "स्थिति"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | detailsValidity": {
-    "message": "वैधता"
+  "panels/application/preloading/components/UsedPreloadingView.ts | currentURL": {
+    "message": "हालको URL"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityInvalid": {
-    "message": "अवैध छ; स्रोत JSON अब्जेक्ट होइन"
+  "panels/application/preloading/components/UsedPreloadingView.ts | detailsFailureReason": {
+    "message": "प्रिलोड गर्न नसकिनुको कारण"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validitySomeRulesInvalid": {
-    "message": "केही नियमहरू अवैध छन् र तिनलाई बेवास्ता गरिएको छ"
+  "panels/application/preloading/components/UsedPreloadingView.ts | downgradedPrefetchUsed": {
+    "message": "सुरुको पेजले यो पेजको URL प्रिरेन्डर गर्ने प्रयास गरेको छ। प्रिरेन्डर गर्न सकिएन तर प्रतिक्रियाका रूपमा देखाइएको मुख्य भाग अझै पनि प्रिफेचका रूपमा प्रयोग गरिएको थियो।"
   },
-  "panels/application/preloading/components/RuleSetDetailsReportView.ts | validityValid": {
-    "message": "वैध"
+  "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
+    "message": "थप जान्नुहोस्"
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | location": {
-    "message": "लोकेसन"
+  "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
+    "message": "सुरुको पेजले यो पेजको URL प्रिलोड गर्ने प्रयास गरेन।"
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | validity": {
-    "message": "वैधता"
+  "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
+    "message": "सुरुको पेजले यो पेजको URL प्रिफेच गर्ने प्रयास गरेको छ तर प्रिफेच गर्न भने सकेन। त्यसैले यसको साटो पूर्ण नेभिगेसन गरिएको छ।"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchUsed": {
-    "message": "यो पेजमा प्रिफेच गरिएका {PH1} स्रोतसाधन प्रयोग गरिएका छन्"
+    "message": "यो पेज प्रिफेच गरिएको छ।"
   },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingUsedForThisPage": {
-    "message": "यो पेजमा प्रिलोड गर्ने प्रक्रिया प्रयोग गरिएको छ"
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
+    "message": "सुरुको पेजले URL हरू प्रिलोड गर्दै छ"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
+    "message": "प्रिलोडिङ स्थिति"
+  },
+  "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
+    "message": "सुरुको पेजले यो पेजको URL प्रिरेन्डर गर्ने प्रयास गरेको छ तर प्रिरेन्डर गर्न भने सकेन। त्यसैले यसको साटो पूरा नेभिगेसन गरिएको छ।"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
-    "message": "यो पेज प्रिरेन्डर गरियो"
+    "message": "यो पेज प्रिरेन्डर गरिएको छ।"
   },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ब्रेकपोइन्ट हिट"
@@ -4580,8 +4883,14 @@
   "panels/console/ConsolePinPane.ts | removeExpressionS": {
     "message": "एक्सप्रेसन हटाउनुहोस्: {PH1}"
   },
+  "panels/console/ConsolePrompt.ts | allowPasting": {
+    "message": "पेस्ट गर्ने अनुमति दिनुहोस्"
+  },
   "panels/console/ConsolePrompt.ts | consolePrompt": {
     "message": "कन्सोलसम्बन्धी प्रम्प्ट"
+  },
+  "panels/console/ConsolePrompt.ts | selfXssWarning": {
+    "message": "चेतावनी: आफूले नबुझेको कोड वा आफूले नजाँचेको कोड DevTools कन्सोलमा पेस्ट नगर्नुहोस्। यसो गर्दा आक्रमणकर्ताले तपाईंको पहिचान चोर्न सक्छ वा तपाईंको कम्प्युटर नियन्त्रण गर्न सक्छ। पेस्ट गर्ने अनुमति दिन कृपया तल ''{PH1}'' टाइप गर्नुहोस्।"
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{कुनै त्रुटि छैन}=1{# त्रुटि}other{# वटा त्रुटि}}"
@@ -4612,9 +4921,6 @@
   },
   "panels/console/ConsoleView.ts | consoleCleared": {
     "message": "कन्सोलमा भएका सबै डेटा हटाइयो"
-  },
-  "panels/console/ConsoleView.ts | consolePasteBlocked": {
-    "message": "यो पेजमा कोड पेस्ट गर्न मिल्दैन। तपाईंले विकासकर्ताका टुलहरूमा कोड पेस्ट गर्नुभयो भने ह्याकरहरूले तपाईंको खाता ह्याक गर्न सक्छन्।"
   },
   "panels/console/ConsoleView.ts | consoleSettings": {
     "message": "कन्सोलसम्बन्धी सेटिङ"
@@ -6698,9 +7004,6 @@
   "panels/lighthouse/LighthouseController.ts | javaScriptDisabled": {
     "message": "JavaScript अफ गरिएको छ। तपाईंले JavaScript अन गरेपछि मात्र तपाईं यो पेजको जाँच गर्न सक्नुहुन्छ। JavaScript अन गर्न कमान्ड मेनु खोल्नुहोस् अनि \"JavaScript अन गर्नुहोस्\" कमान्ड प्रयोग गर्नुहोस्।"
   },
-  "panels/lighthouse/LighthouseController.ts | legacyNavigation": {
-    "message": "लिगेसी नेभिगेसन"
-  },
   "panels/lighthouse/LighthouseController.ts | lighthouseMode": {
     "message": "Lighthouse मोड"
   },
@@ -6763,9 +7066,6 @@
   },
   "panels/lighthouse/LighthouseController.ts | timespanTooltip": {
     "message": "टाइमस्प्यान मोडले खास गरी प्रयोगकर्ताको अन्तर्क्रिया समावेश भएको कुनै क्रमरहित समयावधिको विश्लेषण गर्छ।"
-  },
-  "panels/lighthouse/LighthouseController.ts | useLegacyNavigation": {
-    "message": "नेभिगेसन मोड अन हुँदा क्लासिक Lighthouse प्रयोग गरी यो पेजको विश्लेषण गर्नुहोस्।"
   },
   "panels/lighthouse/LighthouseController.ts | webSql": {
     "message": "वेब SQL"
@@ -7133,8 +7433,8 @@
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
     "message": "अनुरोधहरू ब्लक गरिन सक्छ"
   },
-  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeRewrittenByLocal": {
-    "message": "स्थानीय ओभरराइडमार्फत अनुरोधहरू पुनः लेख्न सकिन्छ"
+  "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
+    "message": "अनुरोध डिभाइसभित्रै ओभरराइड गरिन सक्छ"
   },
   "panels/mobile_throttling/NetworkThrottlingSelector.ts | custom": {
     "message": "रोजाइअनुसारको"
@@ -7171,6 +7471,9 @@
   },
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
     "message": "हार्डवेयर कनकरेन्सी ओभरराइड गर्ने सुविधा अन गरिएको छ"
+  },
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingTooltip": {
+    "message": "navigator.hardwareConcurrency ले पेजमा रिपोर्ट गरेको मान ओभरराइड गर्नुहोस्"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "थ्रोटलिङ छैन"
@@ -7430,9 +7733,6 @@
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "समाप्त भयो"
   },
-  "panels/network/NetworkDataGridNode.ts | hasOverriddenHeaders": {
-    "message": "यो अनुरोधमा ओभरराइड गरिएका हेडरहरू छन्"
-  },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "स्तर १"
   },
@@ -7477,6 +7777,15 @@
   },
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "रिडिरेक्ट गर्नुहोस्"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentHeadersOverridden": {
+    "message": "मागिएको सामग्री  र हेडर दुवै ओभरराइड गरिएका छन्"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestContentOverridden": {
+    "message": "मागिएको सामग्री ओभरराइड गरिएको छ"
+  },
+  "panels/network/NetworkDataGridNode.ts | requestHeadersOverridden": {
+    "message": "अनुरोधका हेडरहरू ओभरराइड गरिएका छन्"
   },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + प्रिफ्लाइट"
@@ -7601,6 +7910,9 @@
   "panels/network/NetworkLogView.ts | blockedRequests": {
     "message": "ब्लक गरिएका अनुरोधहरू"
   },
+  "panels/network/NetworkLogView.ts | chromeExtensions": {
+    "message": "एक्स्टेन्सन URL हरू लुकाइऊन्"
+  },
   "panels/network/NetworkLogView.ts | clearBrowserCache": {
     "message": "ब्राउजरमा रहेको क्यास हटाउनुहोस्"
   },
@@ -7671,7 +7983,10 @@
     "message": "सम्पन्न गर्नुहोस्: {PH1}"
   },
   "panels/network/NetworkLogView.ts | hasBlockedCookies": {
-    "message": "ब्लक गरिएका कुकीहरू छन्"
+    "message": "ब्लक गरिएका रेस्पोन्स कुकीहरू"
+  },
+  "panels/network/NetworkLogView.ts | hideChromeExtension": {
+    "message": "'chrome-extension://' URL हरू माग्ने अनुरोधहरू लुकाइऊन्"
   },
   "panels/network/NetworkLogView.ts | hideDataUrls": {
     "message": "डेटा URL लुकाउनुहोस्"
@@ -7695,10 +8010,10 @@
     "message": "नेटवर्कसम्बन्धी डेटा उपलब्ध छ"
   },
   "panels/network/NetworkLogView.ts | onlyShowBlockedRequests": {
-    "message": "ब्लक गरिएका अनुरोधहरू मात्र देखाइयोस्"
+    "message": "ब्लक गरिएका अनुरोधहरू मात्र देखाइऊन्"
   },
-  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlocked": {
-    "message": "ब्लक गरिएका रेस्पोन्स कुकी भएका अनुरोध मात्र देखाइयोस्"
+  "panels/network/NetworkLogView.ts | onlyShowRequestsWithBlockedCookies": {
+    "message": "ब्लक गरिएका रेस्पोन्स कुकी भएका अनुरोधहरू मात्र देखाइऊन्"
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "पेजको ओरिजिनभन्दा फरक ओरिजिन भएका अनुरोधहरू मात्र देखाउँछ"
@@ -7863,7 +8178,7 @@
     "message": "आफू अनुकूल कुनै पनि हेडर छैन"
   },
   "panels/network/NetworkPanel.ts | captureScreenshots": {
-    "message": "स्क्रिनसट खिच्नुहोस्"
+    "message": "स्क्रिनसटहरू"
   },
   "panels/network/NetworkPanel.ts | captureScreenshotsWhenLoadingA": {
     "message": "पेज लोड गर्दा स्क्रिनसट खिच्नुहोस्"
@@ -7920,7 +8235,7 @@
     "message": "अनुरोध भएका रोहरूमा थप जानकारी देखाइयोस्"
   },
   "panels/network/NetworkPanel.ts | showOverview": {
-    "message": "संक्षिप्त जानकारी देखाइयोस्"
+    "message": "संक्षिप्त जानकारी"
   },
   "panels/network/NetworkPanel.ts | showOverviewOfNetworkRequests": {
     "message": "नेटवर्कसम्बन्धी अनुरोधको संक्षिप्त जानकारी देखाइयोस्"
@@ -7929,7 +8244,7 @@
     "message": "थ्रोटलिङ"
   },
   "panels/network/NetworkPanel.ts | useLargeRequestRows": {
-    "message": "अनुरोधसम्बन्धी ठुला रोहरू प्रयोग गर्नुहोस्"
+    "message": "ठुला अनुरोधका रोहरू"
   },
   "panels/network/NetworkSearchScope.ts | url": {
     "message": "URL"
@@ -8018,9 +8333,6 @@
   "panels/network/RequestHeadersView.ts | general": {
     "message": "सामान्य"
   },
-  "panels/network/RequestHeadersView.ts | headerOverrides": {
-    "message": "हेडरका ओभरराइडहरू"
-  },
   "panels/network/RequestHeadersView.ts | learnMore": {
     "message": "थप जान्नुहोस्"
   },
@@ -8064,7 +8376,7 @@
     "message": "वस्तुस्थिति कोड"
   },
   "panels/network/RequestHeadersView.ts | thisDocumentWasBlockedFrom": {
-    "message": "यो डकुमेन्टमा फरक ओरिजिनको ओपनर नीति तय गरिएकाले यो डकुमेन्टलाई iframe मा sandbox विशेषतासँग लोड गर्न ब्लक गरिएको थियो।"
+    "message": "यो डकुमेन्टमा क्रस ओरिजिन ओपनर नीति तोकिएको हुनाले यो डकुमेन्टलाई स्यान्डबक्स गरिएको iframe मार्फत खोलिएको पपअपमा लोड गर्न ब्लक गरिएको थियो।"
   },
   "panels/network/RequestHeadersView.ts | toEmbedThisFrameInYourDocument": {
     "message": "आफ्नो डकुमेन्टमा यो फ्रेम इम्बेड गर्न तपाईंले निम्न रिस्पन्स हेडर तोकेर रिस्पन्समा क्रस ओरिजिन इम्बेडरसम्बन्धी नीति सक्षम पार्नु पर्ने हुन्छ:"
@@ -8468,9 +8780,6 @@
   "panels/network/components/RequestHeadersView.ts | general": {
     "message": "सामान्य"
   },
-  "panels/network/components/RequestHeadersView.ts | headerOverrides": {
-    "message": "हेडरका ओभरराइडहरू"
-  },
   "panels/network/components/RequestHeadersView.ts | raw": {
     "message": "अप्रशोधित"
   },
@@ -8565,7 +8874,7 @@
     "message": "यो रिसोर्स भएको आर्बिट्रेरी वेबसाइटमा सुरक्षासम्बन्धी कुनै जोखिम छैन भने मात्र यो विकल्प चयन गर्नुहोस्।"
   },
   "panels/network/components/ResponseHeaderSection.ts | thisDocumentWasBlockedFrom": {
-    "message": "यो डकुमेन्टमा फरक ओरिजिनको ओपनर नीति तय गरिएकाले यो डकुमेन्टलाई iframe मा sandbox विशेषतासँग लोड गर्न ब्लक गरिएको थियो।"
+    "message": "यो डकुमेन्टमा क्रस ओरिजिन ओपनर नीति तोकिएको हुनाले यो डकुमेन्टलाई स्यान्डबक्स गरिएको iframe मार्फत खोलिएको पपअपमा लोड गर्न ब्लक गरिएको थियो।"
   },
   "panels/network/components/ResponseHeaderSection.ts | toEmbedThisFrameInYourDocument": {
     "message": "आफ्नो डकुमेन्टमा यो फ्रेम इम्बेड गर्न तपाईंले निम्न रिस्पन्स हेडर तोकेर रिस्पन्समा क्रस ओरिजिन इम्बेडरसम्बन्धी नीति सक्षम पार्नु पर्ने हुन्छ:"
@@ -9344,6 +9653,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | documentation": {
     "message": "डकुमेन्ट"
   },
+  "panels/protocol_monitor/ProtocolMonitor.ts | editAndResend": {
+    "message": "सम्पादन गर्नुहोस् र पुनः पठाउनुहोस्"
+  },
   "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
     "message": "अनुरोध पठाएदेखि प्राप्त हुँदासम्म लागेको समय:"
   },
@@ -9397,6 +9709,18 @@
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | type": {
     "message": "प्रकार"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | addParameter": {
+    "message": "प्यारामिटर हाल्नुहोस्"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | deleteParameter": {
+    "message": "प्यारामिटर मेटाउनुहोस्"
+  },
+  "panels/protocol_monitor/components/JSONEditor.ts | resetDefaultValue": {
+    "message": "रिसेट गरी डिफल्ट मान तय गर्नुहोस्"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | copyCommand": {
+    "message": "कमान्ड कपी गर्नुहोस्"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "प्रोटोकल मनिटर"
@@ -10868,6 +11192,9 @@
   "panels/sources/DebuggerPlugin.ts | debugInfoNotFound": {
     "message": "{PH1} का हकमा डिबगसम्बन्धी कुनै पनि जानकारी लोड गर्न सकिएन।"
   },
+  "panels/sources/DebuggerPlugin.ts | debuggingPowerReduced": {
+    "message": "DevTools ले आधिकारिक स्रोतहरू देखाउँदैन तर तपाईं डिप्लोई गरिएको कोड डिबग गर्न सक्नुहुन्छ।"
+  },
   "panels/sources/DebuggerPlugin.ts | disableBreakpoint": {
     "message": "{n,plural, =1{ब्रेकपोइन्ट असक्षम पार्नुहोस्}other{लाइनमा भएका सबै ब्रेकपोइन्टहरू असक्षम पारिऊन्}}"
   },
@@ -10877,8 +11204,20 @@
   "panels/sources/DebuggerPlugin.ts | enableBreakpoint": {
     "message": "{n,plural, =1{ब्रेकपोइन्ट सक्षम पार्नुहोस्}other{लाइनमा सबै ब्रेकपोइन्ट सक्षम पार्नुहोस्}}"
   },
+  "panels/sources/DebuggerPlugin.ts | errorLoading": {
+    "message": "URL {PH1} लोड गर्ने क्रममा त्रुटि भएको छ: {PH2}"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreContentScripts": {
+    "message": "एक्स्टेन्सन स्क्रिप्टहरू बेवास्ता गर्नुहोस्"
+  },
+  "panels/sources/DebuggerPlugin.ts | ignoreScript": {
+    "message": "यो फाइल बेवास्ता गर्नुहोस्"
+  },
   "panels/sources/DebuggerPlugin.ts | neverPauseHere": {
     "message": "यहाँ कहिल्यै पनि नरोकियोस्"
+  },
+  "panels/sources/DebuggerPlugin.ts | reloadForSourceMap": {
+    "message": "फेरि अन गर्न यो फाइल बेवास्ता गर्नु पर्ने फाइलहरूको सूचीमा छैन भन्ने कुरा सुनिश्चित गर्नुहोस् अनि रिलोड गर्नुहोस्।"
   },
   "panels/sources/DebuggerPlugin.ts | removeBreakpoint": {
     "message": "{n,plural, =1{ब्रेकपोइन्ट हटाउनुहोस्}other{लाइनमा भएका सबै ब्रेकपोइन्टहरू हटाउनुहोस्}}"
@@ -10886,11 +11225,14 @@
   "panels/sources/DebuggerPlugin.ts | removeFromIgnoreList": {
     "message": "बेवास्ता गरिने वस्तुहरूको सूचीबाट हटाउनुहोस्"
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapDetected": {
-    "message": "सोर्स म्याप पत्ता लाग्यो।"
+  "panels/sources/DebuggerPlugin.ts | sourceMapFailed": {
+    "message": "सोर्स म्याप लोड गर्न सकिएन।"
   },
-  "panels/sources/DebuggerPlugin.ts | sourceMapFoundButIgnoredForFile": {
-    "message": "सोर्स म्याप भेटियो, तर वेवास्ता गरिनु पर्ने कुराहरूको सूचीमा समावेश गरिएका फाइलका हकमा वेवास्ता गरियो।"
+  "panels/sources/DebuggerPlugin.ts | sourceMapLoaded": {
+    "message": "स्रोतको नक्सा लोड गरिएको छ।"
+  },
+  "panels/sources/DebuggerPlugin.ts | sourceMapSkipped": {
+    "message": "यो फाइलमा स्रोतको नक्सा स्किप गरिएको छ।"
   },
   "panels/sources/DebuggerPlugin.ts | theDebuggerWillSkipStepping": {
     "message": "डिबगरले यो स्क्रिप्ट स्किप गर्ने छ र अपवादहरू आउँदा रोकिने छैन।"
@@ -10933,9 +11275,6 @@
   },
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "{PH1} फर्म्याट गर्नुहोस्"
-  },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAll": {
-    "message": "तपाईंले यो फोल्डरमा भएका सबै ओभरराइडहरू मेटाउन चाहनुभएकै हो?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "तपाईंले यो फाइल मेटाउन खोज्नुभएकै हो?"
@@ -11054,26 +11393,26 @@
   "panels/sources/SourcesNavigator.ts | clearConfiguration": {
     "message": "कन्फिगुरेसन खाली गर्नुहोस्"
   },
-  "panels/sources/SourcesNavigator.ts | contentScriptsServedByExtensions": {
-    "message": "एक्स्टेन्सनमार्फत उपलब्ध गराइने सामग्रीका स्क्रिप्ट यहाँ देखिन्छन्"
-  },
-  "panels/sources/SourcesNavigator.ts | createAndSaveCodeSnippetsFor": {
-    "message": "पछि फेरि प्रयोग गर्नका लागि कोड स्निप्पेट बनाउनुहोस् र सेभ गर्नुहोस्"
-  },
   "panels/sources/SourcesNavigator.ts | createNewSnippet": {
     "message": "नयाँ स्निप्पेट सिर्जना गर्नुहोस्"
+  },
+  "panels/sources/SourcesNavigator.ts | explainContentScripts": {
+    "message": "एक्स्टेन्सनमार्फत उपलब्ध गराइएका कन्टेन्ट स्क्रिप्टहरू हेर्नुहोस्"
+  },
+  "panels/sources/SourcesNavigator.ts | explainLocalOverrides": {
+    "message": "रिमोट स्रोतहरू मक गर्न नेटवर्कसम्बन्धी अनुरोधहरू र वेबमा रहेको सामग्री डिभाइसभित्रै ओभरराइड गर्नुहोस्"
+  },
+  "panels/sources/SourcesNavigator.ts | explainSnippets": {
+    "message": "तपाईंले प्रायः जसो प्रयोग गर्ने JavaScript कोड पछि फेरि जुनसुकै बेला प्रयोग गर्न सक्नुहोस् भन्नाका लागि उक्त कोड सेभ गर्नुहोस्"
+  },
+  "panels/sources/SourcesNavigator.ts | explainWorkspace": {
+    "message": "तपाईंले सम्पादन गरेका कुराहरू तपाईंले विकास गरेका स्रोतहरूसँग सीधै सिंक गर्न कार्यस्थान सेटअप गर्नुहोस्"
   },
   "panels/sources/SourcesNavigator.ts | learnMore": {
     "message": "थप जान्नुहोस्"
   },
-  "panels/sources/SourcesNavigator.ts | learnMoreAboutWorkspaces": {
-    "message": "कार्यस्थानका बारेमा थप जान्नुहोस्"
-  },
   "panels/sources/SourcesNavigator.ts | newSnippet": {
     "message": "नयाँ स्निप्पेट"
-  },
-  "panels/sources/SourcesNavigator.ts | overridePageAssetsWithFilesFromA": {
-    "message": "पेजका एसेट कुनै स्थानीय फोल्डरमा रहेका फाइल प्रयोग गरी ओभरराइड गर्नुहोस्"
   },
   "panels/sources/SourcesNavigator.ts | remove": {
     "message": "हटाउनुहोस्"
@@ -11089,9 +11428,6 @@
   },
   "panels/sources/SourcesNavigator.ts | selectFolderForOverrides": {
     "message": "आफूले ओभरराइड गर्न चाहेको फोल्डर चयन गर्नुहोस्"
-  },
-  "panels/sources/SourcesNavigator.ts | syncChangesInDevtoolsWithThe": {
-    "message": "DevTools मा स्थानीय फाइल प्रणालीसहित परिवर्तनहरू सिंक गर्नुहोस्"
   },
   "panels/sources/SourcesPanel.ts | continueToHere": {
     "message": "यहाँ जानका लागि जारी राख्नुहोस्"
@@ -11167,9 +11503,6 @@
   },
   "panels/sources/SourcesPanel.ts | terminateCurrentJavascriptCall": {
     "message": "हालको JavaScript कल बन्द गर्नुहोस्"
-  },
-  "panels/sources/SourcesView.ts | dropInAFolderToAddToWorkspace": {
-    "message": "कार्यस्थानमा हाल्न फाइल ड्रयाग गरेर फोल्डरमा ड्रप गर्नुहोस्"
   },
   "panels/sources/SourcesView.ts | openFile": {
     "message": "फाइल खोल्नुहोस्"
@@ -11411,9 +11744,6 @@
   "panels/sources/sources-meta.ts | file": {
     "message": "फाइल"
   },
-  "panels/sources/sources-meta.ts | filesystem": {
-    "message": "फाइल प्रणाली"
-  },
   "panels/sources/sources-meta.ts | goTo": {
     "message": "यहाँ जानुहोस्:"
   },
@@ -11488,9 +11818,6 @@
   },
   "panels/sources/sources-meta.ts | showBreakpoints": {
     "message": "ब्रेकपोइन्टहरू देखाइऊन्"
-  },
-  "panels/sources/sources-meta.ts | showFilesystem": {
-    "message": "फाइल प्रणाली देखाइयोस्"
   },
   "panels/sources/sources-meta.ts | showQuickSource": {
     "message": "क्विक सोर्स देखाइयोस्"
@@ -11570,6 +11897,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "हेर्नुहोस्"
   },
+  "panels/timeline/AnimationsTrackAppender.ts | animations": {
+    "message": "एनिमेसनहरू"
+  },
   "panels/timeline/AppenderUtils.ts | sSelfS": {
     "message": "{PH1} (सेल्फ {PH2})"
   },
@@ -11615,6 +11945,15 @@
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
     "message": "लेआउट सिफ्टहरू"
   },
+  "panels/timeline/NetworkTrackAppender.ts | network": {
+    "message": "नेटवर्क"
+  },
+  "panels/timeline/ThreadAppender.ts | anonymous": {
+    "message": "(बेनामी)"
+  },
+  "panels/timeline/ThreadAppender.ts | thread": {
+    "message": "नयाँ इन्जिनमार्फत उपलब्ध गराइने मुख्य थ्रेड"
+  },
   "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
     "message": "टार्गेटका हकमा CPU प्रोफाइल उपलब्ध छैन।"
   },
@@ -11627,17 +11966,11 @@
   "panels/timeline/TimelineDetailsView.ts | callTree": {
     "message": "कल ट्री"
   },
-  "panels/timeline/TimelineDetailsView.ts | estimated": {
-    "message": "अनुमानित"
-  },
   "panels/timeline/TimelineDetailsView.ts | eventLog": {
     "message": "इभेन्ट लग"
   },
   "panels/timeline/TimelineDetailsView.ts | layers": {
     "message": "लेयरहरू"
-  },
-  "panels/timeline/TimelineDetailsView.ts | learnMore": {
-    "message": "थप जान्नुहोस्"
   },
   "panels/timeline/TimelineDetailsView.ts | paintProfiler": {
     "message": "पेन्ट प्रोफाइलर"
@@ -11647,9 +11980,6 @@
   },
   "panels/timeline/TimelineDetailsView.ts | summary": {
     "message": "सारांश"
-  },
-  "panels/timeline/TimelineDetailsView.ts | totalBlockingTimeSmss": {
-    "message": "ब्लक गरिएको कुल समय: {PH1}मि.से.{PH2}"
   },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
@@ -11662,9 +11992,6 @@
   },
   "panels/timeline/TimelineEventOverview.ts | sSDash": {
     "message": "{PH1} – {PH2}"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | animation": {
-    "message": "एनिमेसन"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "ड्रप गरिएको फ्रेम"
@@ -11680,9 +12007,6 @@
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "प्रयोगमा नरहेको फ्रेम"
-  },
-  "panels/timeline/TimelineFlameChartDataProvider.ts | longFrame": {
-    "message": "लामो फ्रेम"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | main": {
     "message": "मुख्य"
@@ -12050,6 +12374,9 @@
   "panels/timeline/TimelineUIUtils.ts | commit": {
     "message": "कमिट गर्नुहोस्"
   },
+  "panels/timeline/TimelineUIUtils.ts | compilationCacheKind": {
+    "message": "क्यासको कुल प्रकार"
+  },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheSize": {
     "message": "क्यासको कुल आकार"
   },
@@ -12257,6 +12584,9 @@
   "panels/timeline/TimelineUIUtils.ts | imageUrl": {
     "message": "इमेज URL"
   },
+  "panels/timeline/TimelineUIUtils.ts | initialPriority": {
+    "message": "सुरुको प्राथमिकता"
+  },
   "panels/timeline/TimelineUIUtils.ts | initiator": {
     "message": "इनिसिएटर"
   },
@@ -12274,9 +12604,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | invokedByTimeout": {
     "message": "टाइमआउटबाट सुरु गरिएको"
-  },
-  "panels/timeline/TimelineUIUtils.ts | jank": {
-    "message": "जाङ्क"
   },
   "panels/timeline/TimelineUIUtils.ts | jsFrame": {
     "message": "JS फ्रेम"
@@ -12529,9 +12856,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
     "message": "{PH1} ले पेज त्यति रेस्पोन्सिभ छैन भन्ने कुरा जनाउँदै छ।"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sLongFrameTimesAreAnIndicationOf": {
-    "message": "{PH1}। फ्रेम रेन्डर गर्न धेरै समय लाग्नु भनेको {PH2} को सङ्केत हो"
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2} मध्ये {PH1}"
@@ -12953,6 +13277,9 @@
   "ui/components/data_grid/DataGridController.ts | sortingCanceled": {
     "message": "{PH1} क्रमबद्ध गर्ने कार्य रद्द गरियो"
   },
+  "ui/components/dialogs/IconDialog.ts | close": {
+    "message": "बन्द गर्नुहोस्"
+  },
   "ui/components/dialogs/ShortcutDialog.ts | close": {
     "message": "बन्द गर्नुहोस्"
   },
@@ -13107,7 +13434,7 @@
     "message": "{PH1}, {PH3} वटामध्ये {PH2} सुझाव"
   },
   "ui/legacy/ActionRegistration.ts | background_services": {
-    "message": "ब्याकग्राउन्ड सेवाहरू"
+    "message": "ब्याकग्राउन्डमा चल्ने सेवाहरू"
   },
   "ui/legacy/ActionRegistration.ts | console": {
     "message": "कन्सोल"
@@ -13208,8 +13535,8 @@
   "ui/legacy/Infobar.ts | dontShowAgain": {
     "message": "फेरि नदेखाइयोस्"
   },
-  "ui/legacy/Infobar.ts | learnMore": {
-    "message": "थप जान्नुहोस्"
+  "ui/legacy/Infobar.ts | showMore": {
+    "message": "थप देखाइयोस्"
   },
   "ui/legacy/InspectorView.ts | closeDrawer": {
     "message": "ड्रअर बन्द गर्नुहोस्"
@@ -13377,7 +13704,7 @@
     "message": "थिचियो"
   },
   "ui/legacy/UIUtils.ts | anonymous": {
-    "message": "(अज्ञात)"
+    "message": "(बेनामी)"
   },
   "ui/legacy/UIUtils.ts | anotherProfilerIsAlreadyActive": {
     "message": "अर्को प्रोफाइलर पहिलेदेखि नै सक्रिय छ"
@@ -13618,9 +13945,6 @@
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showDBefore": {
     "message": "यसपछिका {PH1} वटा वस्तु देखाइयोस्"
-  },
-  "ui/legacy/components/data_grid/ViewportDataGrid.ts | collapsed": {
-    "message": "कोल्याप्स गरिएको"
   },
   "ui/legacy/components/inline_editor/CSSShadowEditor.ts | blur": {
     "message": "ब्लर"

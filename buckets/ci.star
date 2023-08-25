@@ -69,8 +69,15 @@ DevTools Linux</a> but has devtools_skip_typecheck=True.""",
         builder_descriptor(
             name = "Stand-alone Linux",
             recipe_name = "devtools/devtools-frontend",
-            consoles = ["ci", "beta", "stable", "extended"],
+            consoles = ["ci"],
             properties = {"parallel": True},
+        ),
+        builder_descriptor(
+            name = "Stand-alone Linux",
+            recipe_name = "devtools/devtools-frontend",
+            consoles = ["beta", "stable", "extended"],
+            execution_timeout = time.hour * 3 / 2,
+            properties = {"parallel": False},
         ),
         builder_descriptor(
             name = "Stand-alone Sequential Linux",

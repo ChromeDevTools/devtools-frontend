@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Search from '../search/search.js';
 
@@ -11,7 +12,7 @@ let searchSourcesViewInstance: SearchSourcesView;
 
 export class SearchSourcesView extends Search.SearchView.SearchView {
   private constructor() {
-    super('sources');
+    super('sources', new Common.Throttler.Throttler(/* timeoutMs */ 200));
   }
 
   static instance(): SearchSourcesView {

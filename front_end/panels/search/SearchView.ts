@@ -109,7 +109,13 @@ export class SearchView extends UI.Widget.VBox {
     isRegex: boolean,
   }>;
   private searchScope: SearchScope|null;
-  constructor(settingKey: string) {
+
+  // We throttle adding search results, otherwise we trigger DOM layout for each
+  // result added.
+  #throttler: Common.Throttler.Throttler;
+  #pendingSearchResults: SearchResult[] = [];
+
+  constructor(settingKey: string, throttler: Common.Throttler.Throttler) {
     super(true);
     this.setMinimumSize(0, 40);
 
@@ -126,6 +132,7 @@ export class SearchView extends UI.Widget.VBox {
     this.searchResultsPane = null;
     this.progressIndicator = null;
     this.visiblePane = null;
+    this.#throttler = throttler;
 
     this.contentElement.classList.add('search-view');
     this.contentElement.addEventListener('keydown', event => {
@@ -276,15 +283,22 @@ export class SearchView extends UI.Widget.VBox {
       this.onIndexingFinished();
       return;
     }
-    this.addSearchResult(searchResult);
-    if (!searchResult.matchesCount()) {
-      return;
-    }
     if (!this.searchResultsPane) {
       this.searchResultsPane = new SearchResultsPane((this.searchConfig as Workspace.SearchConfig.SearchConfig));
       this.showPane(this.searchResultsPane);
     }
-    this.searchResultsPane.addSearchResult(searchResult);
+    this.#pendingSearchResults.push(searchResult);
+    void this.#throttler.schedule(async () => this.#addPendingSearchResults());
+  }
+
+  #addPendingSearchResults(): void {
+    for (const searchResult of this.#pendingSearchResults) {
+      this.addSearchResult(searchResult);
+      if (searchResult.matchesCount()) {
+        this.searchResultsPane?.addSearchResult(searchResult);
+      }
+    }
+    this.#pendingSearchResults = [];
   }
 
   private onSearchFinished(searchId: number, finished: boolean): void {

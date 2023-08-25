@@ -4,7 +4,7 @@
 
 const {assert} = chai;
 
-import type * as Common from '../../../../../front_end/core/common/common.js';
+import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Search from '../../../../../front_end/panels/search/search.js';
 import type * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
@@ -47,6 +47,12 @@ class FakeSearchScope implements Search.SearchScope.SearchScope {
 }
 
 class TestSearchView extends Search.SearchView.SearchView {
+  /**
+   * The throttler with which the base 'SearchView' throttles UI updates.
+   * Exposed here so tests can wait for the updates to finish.
+   */
+  readonly throttler: Common.Throttler.Throttler;
+
   readonly #scopeCreator: () => Search.SearchScope.SearchScope;
   /**
    * `SearchView` resets and lazily re-creates the search results pane for each search.
@@ -59,7 +65,9 @@ class TestSearchView extends Search.SearchView.SearchView {
   constructor(
       scopeCreator: () => Search.SearchScope.SearchScope,
       searchResultsPane?: Search.SearchResultsPane.SearchResultsPane) {
-    super('fake');
+    const throttler = new Common.Throttler.Throttler(/* timeoutMs */ 0);
+    super('fake', throttler);
+    this.throttler = throttler;
     this.#scopeCreator = scopeCreator;
     this.#searchResultsPane = searchResultsPane ?? null;
     this.#overrideResultsPane = Boolean(searchResultsPane);
@@ -130,9 +138,11 @@ describeWithEnvironment('SearchView', () => {
     const {searchResultCallback} = await fakeScope.performSearchCalledPromise;
 
     searchResultCallback({matchesCount: () => 10} as Search.SearchScope.SearchResult);
+    await searchView.throttler.process?.();
     assert.strictEqual(searchView.currentSearchResultMessage, 'Found 10 matching lines in 1 file.');
 
     searchResultCallback({matchesCount: () => 42} as Search.SearchScope.SearchResult);
+    await searchView.throttler.process?.();
     assert.strictEqual(searchView.currentSearchResultMessage, 'Found 52 matching lines in 2 files.');
   });
 
@@ -150,6 +160,7 @@ describeWithEnvironment('SearchView', () => {
 
     searchResultCallback(searchResult1);
     searchResultCallback(searchResult2);
+    await searchView.throttler.process?.();
 
     assert.isTrue(fakeResultsPane.addSearchResult.calledTwice);
     assert.strictEqual(fakeResultsPane.addSearchResult.args[0][0], searchResult1);

@@ -45,6 +45,12 @@
   let HostModule;
   /** @type {import('./core/sdk/sdk.js')} */
   let SDK;
+  /** @type {import('./panels/sources/sources.js')} */
+  let Sources;
+  /** @type {import('./panels/timeline/timeline.js')} */
+  let Timeline;
+  /** @type {import('./ui/legacy/legacy.js')} */
+  let UI;
 
   const TestSuite = class {
     /**
@@ -155,6 +161,9 @@
       Common = await self.runtime.loadLegacyModule('core/common/common.js');
       HostModule = await self.runtime.loadLegacyModule('core/host/host.js');
       SDK = await self.runtime.loadLegacyModule('core/sdk/sdk.js');
+      Sources = await self.runtime.loadLegacyModule('panels/sources/sources.js');
+      Timeline = await self.runtime.loadLegacyModule('panels/timeline/timeline.js');
+      UI = await self.runtime.loadLegacyModule('ui/legacy/legacy.js');
 
       // We have to map 'Host.InspectorFrontendHost' as the C++ uses it directly.
       self.Host = {};
@@ -162,7 +171,6 @@
       self.Host.InspectorFrontendHostAPI = HostModule.InspectorFrontendHostAPI;
 
       await Promise.all([
-        self.runtime.loadLegacyModule('ui/legacy/legacy-legacy.js'),
         self.runtime.loadLegacyModule('models/workspace/workspace-legacy.js'),
         self.runtime.loadLegacyModule('models/trace/trace-legacy.js'),
       ]);
@@ -271,7 +279,7 @@
    * @param {string} panelName Name of the panel to show.
    */
   TestSuite.prototype.showPanel = function(panelName) {
-    return self.UI.inspectorView.showPanel(panelName);
+    return UI.InspectorView.InspectorView.instance().showPanel(panelName);
   };
 
   // UI Tests
@@ -772,11 +780,11 @@
   TestSuite.prototype.testForwardedKeysChanged = function() {
     this.takeControl();
 
-    this.addSniffer(self.UI.shortcutRegistry, 'registerBindings', () => {
+    this.addSniffer(UI.ShortcutRegistry.ShortcutRegistry.instance(), 'registerBindings', () => {
       SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.inputAgent().invoke_dispatchKeyEvent(
           {type: 'rawKeyDown', key: 'F1', windowsVirtualKeyCode: 112, nativeVirtualKeyCode: 112});
     });
-    this.addSniffer(self.UI.shortcutRegistry, 'handleKey', key => {
+    this.addSniffer(UI.ShortcutRegistry.ShortcutRegistry.instance(), 'handleKey', key => {
       this.assertEquals(112, key);
       this.releaseControl();
     });
@@ -975,7 +983,7 @@
 
     function onTimelineDone() {
       captureFilmStripSetting.set(false);
-      const filmStripModel = UI.panels.timeline._performanceModel.filmStripModel();
+      const filmStripModel = Timeline.TimelinePanel.TimelinePanel.instance().performanceModel?.filmStripModel();
       const frames = filmStripModel.frames();
       test.assertTrue(frames.length > 4 && typeof frames.length === 'number');
       loadFrameImages(frames);
@@ -1222,14 +1230,14 @@
   TestSuite.prototype.startTimeline = function(callback) {
     const test = this;
     this.showPanel('timeline').then(function() {
-      const timeline = UI.panels.timeline;
+      const timeline = Timeline.TimelinePanel.TimelinePanel.instance();
       test._overrideMethod(timeline, 'recordingStarted', callback);
       timeline._toggleRecording();
     });
   };
 
   TestSuite.prototype.stopTimeline = function(callback) {
-    const timeline = UI.panels.timeline;
+    const timeline = Timeline.TimelinePanel.TimelinePanel.instance();
     this._overrideMethod(timeline, 'loadingComplete', callback);
     timeline._toggleRecording();
   };
@@ -1275,7 +1283,7 @@
 
   TestSuite.prototype.checkInputEventsPresent = function() {
     const expectedEvents = new Set(arguments);
-    const model = UI.panels.timeline._performanceModel.timelineModel();
+    const model = Timeline.TimelinePanel.TimelinePanel.instance().performanceModel?.timelineModel();
     const asyncEvents = model.virtualThreads().find(thread => thread.isMainFrame).asyncEventsByGroup;
     const input = asyncEvents.get(TimelineModel.TimelineModel.AsyncEventGroup.input) || [];
     const prefix = 'InputLatency::';
@@ -1606,7 +1614,8 @@
  */
   TestSuite.prototype.evaluateInConsole_ = function(code, callback) {
     function innerEvaluate() {
-      self.UI.context.removeFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, showConsoleAndEvaluate, this);
+      UI.Context.Context.instance().removeFlavorChangeListener(
+          SDK.RuntimeModel.ExecutionContext, showConsoleAndEvaluate, this);
       const consoleView = Console.ConsoleView.instance();
       consoleView.prompt.appendCommand(code);
 
@@ -1619,8 +1628,9 @@
       Common.Console.Console.instance().showPromise().then(innerEvaluate.bind(this));
     }
 
-    if (!self.UI.context.flavor(SDK.RuntimeModel.ExecutionContext)) {
-      self.UI.context.addFlavorChangeListener(SDK.RuntimeModel.ExecutionContext, showConsoleAndEvaluate, this);
+    if (!UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext)) {
+      UI.Context.Context.instance().addFlavorChangeListener(
+          SDK.RuntimeModel.ExecutionContext, showConsoleAndEvaluate, this);
       return;
     }
     showConsoleAndEvaluate.call(this);
@@ -1667,7 +1677,8 @@
       if (test._scriptsAreParsed(expectedScripts)) {
         callback();
       } else {
-        test.addSniffer(UI.panels.sources.sourcesView(), 'addUISourceCode', waitForAllScripts);
+        test.addSniffer(
+            Sources.SourcesPanel.SourcesPanel.instance().sourcesView(), 'addUISourceCode', waitForAllScripts);
       }
     }
 

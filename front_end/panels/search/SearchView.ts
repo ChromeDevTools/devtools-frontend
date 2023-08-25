@@ -97,9 +97,9 @@ export class SearchView extends UI.Widget.VBox {
   private visiblePane: UI.Widget.Widget|null;
   private readonly searchPanelElement: HTMLElement;
   private readonly searchResultsElement: HTMLElement;
-  private search: UI.HistoryInput.HistoryInput;
-  private matchCaseButton: UI.Toolbar.ToolbarToggle;
-  private readonly regexButton: UI.Toolbar.ToolbarToggle;
+  protected readonly search: UI.HistoryInput.HistoryInput;
+  protected readonly matchCaseButton: UI.Toolbar.ToolbarToggle;
+  protected readonly regexButton: UI.Toolbar.ToolbarToggle;
   private searchMessageElement: HTMLElement;
   private readonly searchProgressPlaceholderElement: HTMLElement;
   private searchResultsMessageElement: HTMLElement;

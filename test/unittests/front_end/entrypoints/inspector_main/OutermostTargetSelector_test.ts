@@ -7,7 +7,6 @@ const {assert} = chai;
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import * as InspectorMain from '../../../../../front_end/entrypoints/inspector_main/inspector_main.js';
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {
   createTarget,
 } from '../../helpers/EnvironmentHelpers.js';
@@ -23,10 +22,10 @@ describeWithMockConnection('OutermostTargetSelector', () => {
   let selector: InspectorMain.OutermostTargetSelector.OutermostTargetSelector;
 
   beforeEach(() => {
-    tabTarget = createTarget({type: SDK.Target.Type.Tab});
-    primaryTarget = createTarget({parentTarget: tabTarget});
-    prerenderTarget =
-        createTarget({parentTarget: tabTarget, subtype: 'prerender', url: 'http://example.com/prerender1'});
+    tabTarget = createTarget({type: SDK.Target.Type.Tab, url: 'http://example.com/', name: 'tab'});
+    primaryTarget = createTarget({parentTarget: tabTarget, url: 'http://example.com/', name: 'primary'});
+    prerenderTarget = createTarget(
+        {parentTarget: tabTarget, subtype: 'prerender', url: 'http://example.com/prerender1', name: 'prerender1'});
     selector = InspectorMain.OutermostTargetSelector.OutermostTargetSelector.instance({forceNew: true});
   });
 
@@ -52,25 +51,15 @@ describeWithMockConnection('OutermostTargetSelector', () => {
 
   it('updates selected target when UI context flavor changes', () => {
     UI.Context.Context.instance().setFlavor(SDK.Target.Target, primaryTarget);
-    assert.strictEqual(selector.item().element.title, 'Page: Main');
+    assert.strictEqual(selector.item().element.title, 'Page: primary');
     UI.Context.Context.instance().setFlavor(SDK.Target.Target, prerenderTarget);
     assert.strictEqual(selector.item().element.title, 'Page: prerender1');
   });
 
-  it('updates when target info changes', () => {
+  it('updates when name changes', () => {
     UI.Context.Context.instance().setFlavor(SDK.Target.Target, prerenderTarget);
     assert.strictEqual(selector.item().element.title, 'Page: prerender1');
-    const newTargetInfo = {
-      targetId: prerenderTarget.id() as Protocol.Target.TargetID,
-      type: 'frame',
-      url: 'https://example.com/prerender3',
-      title: '',
-      attached: true,
-      canAccessOpener: true,
-    };
-    prerenderTarget.updateTargetInfo(newTargetInfo);
-    tabTarget.model(SDK.ChildTargetManager.ChildTargetManager)
-        ?.dispatchEventToListeners(SDK.ChildTargetManager.Events.TargetInfoChanged, newTargetInfo);
+    prerenderTarget.setName('prerender3');
 
     assert.strictEqual(selector.item().element.title, 'Page: prerender3');
   });
@@ -87,7 +76,7 @@ describeWithMockConnection('OutermostTargetSelector', () => {
     selector.itemSelected(primaryTarget);
     assert.strictEqual(UI.Context.Context.instance().flavor(SDK.Target.Target), primaryTarget);
     UI.Context.Context.instance().setFlavor(SDK.Target.Target, subtarget);
-    assert.strictEqual(selector.item().element.title, 'Page: Main');
+    assert.strictEqual(selector.item().element.title, 'Page: primary');
     assert.strictEqual(UI.Context.Context.instance().flavor(SDK.Target.Target), subtarget);
   });
 });

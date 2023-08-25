@@ -51,6 +51,8 @@
   let Timeline;
   /** @type {import('./ui/legacy/legacy.js')} */
   let UI;
+  /** @type {import('./models/workspace/workspace.js')} */
+  let Workspace;
 
   const TestSuite = class {
     /**
@@ -158,12 +160,24 @@
     try {
       // 'Tests.js' is executed on 'about:blank' so we can't use `import` directly without
       // specifying the full devtools://devtools/bundled URL.
-      Common = await self.runtime.loadLegacyModule('core/common/common.js');
-      HostModule = await self.runtime.loadLegacyModule('core/host/host.js');
-      SDK = await self.runtime.loadLegacyModule('core/sdk/sdk.js');
-      Sources = await self.runtime.loadLegacyModule('panels/sources/sources.js');
-      Timeline = await self.runtime.loadLegacyModule('panels/timeline/timeline.js');
-      UI = await self.runtime.loadLegacyModule('ui/legacy/legacy.js');
+      ([
+        Common,
+        HostModule,
+        SDK,
+        Sources,
+        Timeline,
+        UI,
+        Workspace,
+      ] =
+           await Promise.all([
+             self.runtime.loadLegacyModule('core/common/common.js'),
+             self.runtime.loadLegacyModule('core/host/host.js'),
+             self.runtime.loadLegacyModule('core/sdk/sdk.js'),
+             self.runtime.loadLegacyModule('panels/sources/sources.js'),
+             self.runtime.loadLegacyModule('panels/timeline/timeline.js'),
+             self.runtime.loadLegacyModule('ui/legacy/legacy.js'),
+             self.runtime.loadLegacyModule('models/workspace/workspace.js'),
+           ]));
 
       // We have to map 'Host.InspectorFrontendHost' as the C++ uses it directly.
       self.Host = {};
@@ -171,7 +185,6 @@
       self.Host.InspectorFrontendHostAPI = HostModule.InspectorFrontendHostAPI;
 
       await Promise.all([
-        self.runtime.loadLegacyModule('models/workspace/workspace-legacy.js'),
         self.runtime.loadLegacyModule('models/trace/trace-legacy.js'),
       ]);
       this.reportOk_();
@@ -1602,7 +1615,7 @@
       return !uiSourceCode.project().isServiceProject();
     }
 
-    const uiSourceCodes = self.Workspace.workspace.uiSourceCodes();
+    const uiSourceCodes = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodes();
     return uiSourceCodes.filter(filterOutService);
   };
 

@@ -180,6 +180,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
   private readonly textFilterUI: UI.Toolbar.ToolbarInput;
   private messages: LogMessage[] = [];
   private isRecording: boolean = false;
+  readonly selector: UI.Toolbar.ToolbarComboBox;
   #commandAutocompleteSuggestionProvider = new CommandAutocompleteSuggestionProvider();
   #selectedTargetId?: string;
   #commandInput: UI.Toolbar.ToolbarInput;
@@ -213,7 +214,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
       void this.saveAsFile();
     });
     topToolbar.appendToolbarItem(saveButton);
-
+    this.selector = this.#createTargetSelector();
     this.infoWidget = new InfoWidget();
     const dataGridInitialData: DataGrid.DataGridController.DataGridControllerData = {
       paddingRowsCount: 100,
@@ -379,7 +380,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
         i18nString(UIStrings.CDPCommandEditorShown), i18nString(UIStrings.CDPCommandEditorHidden)));
     this.#commandInput = this.#createCommandInput();
     bottomToolbar.appendToolbarItem(this.#commandInput);
-    bottomToolbar.appendToolbarItem(this.#createTargetSelector());
+    bottomToolbar.appendToolbarItem(this.selector);
     const shadowRoot = bottomToolbar.element?.shadowRoot;
     const inputBar = shadowRoot?.querySelector('.toolbar-input');
     const tabSelector = shadowRoot?.querySelector('.toolbar-select-container');
@@ -390,6 +391,14 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
         return;
       }
       const commandJson = editorWidget.jsonEditor.getCommandJson();
+      const targetId = editorWidget.jsonEditor.targetId;
+      if (targetId) {
+        const selectedIndex = this.selector.options().findIndex(option => option.value === targetId);
+        if (selectedIndex !== -1) {
+          this.selector.setSelectedIndex(selectedIndex);
+          this.#selectedTargetId = targetId;
+        }
+      }
       if (commandJson) {
         this.#commandInput.setValue(commandJson);
       }
@@ -398,6 +407,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
     splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, (event => {
                                    if (event.data === 'OnlyMain') {
                                      populateToolbarInput();
+
                                      inputBar?.setAttribute('style', 'display:flex; flex-grow: 1');
                                      tabSelector?.setAttribute('style', 'display:flex');
                                    } else {
@@ -658,6 +668,7 @@ export class ProtocolMonitorImpl extends UI.Widget.VBox {
     this.#protocolMonitorDataGrid.addEventListener(Events.CommandChange, event => {
       this.#editorWidget.jsonEditor.displayCommand(event.data.command, event.data.parameters, event.data.targetId);
     });
+
     this.#editorWidget.element.style.overflow = 'hidden';
     this.#split.setMainWidget(this.#protocolMonitorDataGrid);
     this.#split.setSidebarWidget(this.#editorWidget);

@@ -184,9 +184,6 @@
       self.Host.InspectorFrontendHost = HostModule.InspectorFrontendHost.InspectorFrontendHostInstance;
       self.Host.InspectorFrontendHostAPI = HostModule.InspectorFrontendHostAPI;
 
-      await Promise.all([
-        self.runtime.loadLegacyModule('models/trace/trace-legacy.js'),
-      ]);
       this.reportOk_();
     } catch (e) {
       this.reportFailure_(e);
@@ -1320,11 +1317,13 @@
 
   TestSuite.prototype.testInspectedElementIs = async function(nodeName) {
     this.takeControl();
-    await self.runtime.loadLegacyModule('panels/elements/elements-legacy.js');
-    if (!Elements.ElementsPanel.firstInspectElementNodeNameForTest) {
-      await new Promise(f => this.addSniffer(Elements.ElementsPanel, 'firstInspectElementCompletedForTest', f));
+    /** @type {import('./panels/elements/elements.js')} */
+    const Elements = await self.runtime.loadLegacyModule('panels/elements/elements.js');
+    if (!Elements.ElementsPanel.ElementsPanel.firstInspectElementNodeNameForTest) {
+      await new Promise(
+          f => this.addSniffer(Elements.ElementsPanel.ElementsPanel, 'firstInspectElementCompletedForTest', f));
     }
-    this.assertEquals(nodeName, Elements.ElementsPanel.firstInspectElementNodeNameForTest);
+    this.assertEquals(nodeName, Elements.ElementsPanel.ElementsPanel.firstInspectElementNodeNameForTest);
     this.releaseControl();
   };
 

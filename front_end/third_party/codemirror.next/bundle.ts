@@ -4,9 +4,8 @@
 // Note that this file is also used as a TypeScript source to bundle
 // the .d.ts files.
 
-import {parser as cssParser} from "@lezer/css";
-import {LRLanguage, continuedIndent, indentNodeProp, foldNodeProp, foldInside, LanguageSupport, StreamLanguage} from "@codemirror/language";
-import {cssCompletionSource} from "@codemirror/lang-css";
+import {LRLanguage, LanguageSupport, StreamLanguage} from "@codemirror/language";
+import {cssCompletionSource, cssLanguage as cssLanguageCM} from "@codemirror/lang-css";
 
 export {
   acceptCompletion, autocompletion, closeBrackets, closeBracketsKeymap,
@@ -66,17 +65,8 @@ export function cpp() {
 // because we want to match VS code behavior regarding treating dashes as word chars.
 // See https://crbug.com/1471354 for background.
 const cssLanguage = LRLanguage.define({
-  name: 'css',
-  parser: cssParser.configure({
-    props: [
-      indentNodeProp.add({
-        Declaration: continuedIndent(),
-      }),
-      foldNodeProp.add({
-        'Block KeyframeList': foldInside,
-      }),
-    ]
-  }),
+  name: cssLanguageCM.name,
+  parser: cssLanguageCM.parser,
   languageData: {
     commentTokens: {block: {open: '/*', close: '*/'}},
     indentOnInput: /^\s*\}$/,

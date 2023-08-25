@@ -14,7 +14,7 @@ const events =
 
 const profilesInProcess = new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ThreadID, ProfileData>>();
 
-// The profile head, containing the event's metadata like its start
+// The profile head, containing its metadata like its start
 // time, comes in a "Profile" event. The sample data comes in
 // "ProfileChunk" events. We match these ProfileChunks with their head
 // using process and profile ids. However, in order to integrate sample

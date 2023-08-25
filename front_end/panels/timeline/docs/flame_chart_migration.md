@@ -1,6 +1,4 @@
-# Performance (Timeline) Panel front end
-
-This folder holds the files that implement the UI logic to render the Performance Panel front end
+# Flame chart migration to the new engine
 
 ## Flame charts
 

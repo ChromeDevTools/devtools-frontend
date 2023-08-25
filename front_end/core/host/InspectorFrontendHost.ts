@@ -37,11 +37,12 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {
-  EventDescriptors,
-  Events,
   type CanShowSurveyResult,
   type ContextMenuDescriptor,
+  type DoAidaConversationResult,
   type EnumeratedHistogram,
+  EventDescriptors,
+  Events,
   type EventTypes,
   type ExtensionDescriptor,
   type InspectorFrontendHostAPI,
@@ -450,7 +451,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     return null;
   }
 
-  doAidaConversation?: () => void = undefined;
+  doAidaConversation?: (request: string, cb: (result: DoAidaConversationResult) => void) => void;
 }
 
 // @ts-ignore Global injected by devtools-compatibility.js

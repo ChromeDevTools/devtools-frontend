@@ -26,7 +26,8 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       case 'explain.code': {
         const frame = UI.Context.Context.instance().flavor(Sources.UISourceCodeFrame.UISourceCodeFrame);
         if (frame) {
-          new ExplainPopover(frame);
+          const popover = new ExplainPopover(frame);
+          void popover.show();
           return true;
         }
       }

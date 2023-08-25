@@ -71,6 +71,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/PreloadingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+// Used for selector, indicating no filter is specified.
+const AllRuleSetRootId: symbol = Symbol('AllRuleSetRootId');
+
 class PreloadingUIUtils {
   static status(status: SDK.PreloadingModel.PreloadingStatus): string {
     // See content/public/browser/preloading.h PreloadingAttemptOutcome.
@@ -489,15 +492,15 @@ export class PreloadingResultView extends UI.Widget.VBox {
   }
 }
 
-class PreloadingRuleSetSelector implements UI.Toolbar.Provider,
-                                           UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|null> {
+class PreloadingRuleSetSelector implements
+    UI.Toolbar.Provider, UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|typeof AllRuleSetRootId> {
   private model: SDK.PreloadingModel.PreloadingModel;
   private readonly onSelectionChanged: () => void = () => {};
 
   private readonly toolbarItem: UI.Toolbar.ToolbarItem;
 
-  private readonly listModel: UI.ListModel.ListModel<Protocol.Preload.RuleSetId|null>;
-  private readonly dropDown: UI.SoftDropDown.SoftDropDown<Protocol.Preload.RuleSetId|null>;
+  private readonly listModel: UI.ListModel.ListModel<Protocol.Preload.RuleSetId|typeof AllRuleSetRootId>;
+  private readonly dropDown: UI.SoftDropDown.SoftDropDown<Protocol.Preload.RuleSetId|typeof AllRuleSetRootId>;
 
   constructor(onSelectionChanged: () => void) {
     const model = SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK.PreloadingModel.PreloadingModel);
@@ -534,15 +537,32 @@ class PreloadingRuleSetSelector implements UI.Toolbar.Provider,
 
   private onModelUpdated(): void {
     const ids = this.model.getAllRuleSets().map(({id}) => id);
-    const items = [null, ...ids];
+    const items = [AllRuleSetRootId, ...ids];
     const selected = this.dropDown.getSelectedItem();
-    const newSelected = items.indexOf(selected) === -1 ? null : selected;
     this.listModel.replaceAll(items);
-    this.dropDown.selectItem(newSelected);
+    if (selected === null) {
+      this.dropDown.selectItem(AllRuleSetRootId);
+    } else {
+      this.dropDown.selectItem(selected);
+    }
+  }
+
+  // AllRuleSetRootId is used within the selector to indicate the root item. When interacting with PreloadingModel,
+  // it should be translated to null.
+  private translateItemIdToRuleSetId(id: Protocol.Preload.RuleSetId|typeof AllRuleSetRootId): Protocol.Preload.RuleSetId
+      |null {
+    if (id === AllRuleSetRootId) {
+      return null;
+    }
+    return id as Protocol.Preload.RuleSetId;
   }
 
   getSelected(): Protocol.Preload.RuleSetId|null {
-    return this.dropDown.getSelectedItem();
+    const selectItem = this.dropDown.getSelectedItem();
+    if (selectItem === null) {
+      return null;
+    }
+    return this.translateItemIdToRuleSetId(selectItem);
   }
 
   select(id: Protocol.Preload.RuleSetId|null): void {
@@ -554,28 +574,28 @@ class PreloadingRuleSetSelector implements UI.Toolbar.Provider,
     return this.toolbarItem;
   }
 
-  // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|null>
-  titleFor(id: Protocol.Preload.RuleSetId|null): string {
-    if (id === null) {
+  // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|typeof AllRuleSetRootId>
+  titleFor(id: Protocol.Preload.RuleSetId|typeof AllRuleSetRootId): string {
+    const convertedId = this.translateItemIdToRuleSetId(id);
+    if (convertedId === null) {
       return i18nString(UIStrings.filterAllPreloads);
     }
-
-    const ruleSet = this.model.getRuleSetById(id);
+    const ruleSet = this.model.getRuleSetById(convertedId);
     if (ruleSet === null) {
       return i18n.i18n.lockedString('Internal error');
     }
-
     return PreloadingUIUtils.ruleSetLocationShort(ruleSet, pageURL());
   }
 
-  subtitleFor(id: Protocol.Preload.RuleSetId|null): string {
-    const countsByStatus =
-        this.model.getPreloadCountsByRuleSetId().get(id) || new Map<SDK.PreloadingModel.PreloadingStatus, number>();
+  subtitleFor(id: Protocol.Preload.RuleSetId|typeof AllRuleSetRootId): string {
+    const convertedId = this.translateItemIdToRuleSetId(id);
+    const countsByStatus = this.model.getPreloadCountsByRuleSetId().get(convertedId) ||
+        new Map<SDK.PreloadingModel.PreloadingStatus, number>();
     return PreloadingUIUtils.preloadsStatusSummary(countsByStatus);
   }
 
-  // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|null>
-  createElementForItem(id: Protocol.Preload.RuleSetId|null): Element {
+  // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|typeof AllRuleSetRootId>
+  createElementForItem(id: Protocol.Preload.RuleSetId|typeof AllRuleSetRootId): Element {
     const element = document.createElement('div');
     const shadowRoot =
         UI.Utils.createShadowRootWithCoreStyles(element, {cssFile: undefined, delegatesFocus: undefined});
@@ -586,19 +606,20 @@ class PreloadingRuleSetSelector implements UI.Toolbar.Provider,
     return element;
   }
 
-  // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|null>
-  isItemSelectable(_id: Protocol.Preload.RuleSetId|null): boolean {
+  // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|typeof AllRuleSetRootId>
+  isItemSelectable(_id: Protocol.Preload.RuleSetId|typeof AllRuleSetRootId): boolean {
     return true;
   }
 
-  // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|null>
-  itemSelected(_id: Protocol.Preload.RuleSetId|null): void {
+  // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|typeof AllRuleSetRootId>
+  itemSelected(_id: Protocol.Preload.RuleSetId|typeof AllRuleSetRootId): void {
     this.onSelectionChanged();
   }
 
-  // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|null>
+  // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|typeof AllRuleSetRootId>
   highlightedItemChanged(
-      _from: Protocol.Preload.RuleSetId|null, _to: Protocol.Preload.RuleSetId|null, _fromElement: Element|null,
+      _from: Protocol.Preload.RuleSetId|typeof AllRuleSetRootId,
+      _to: Protocol.Preload.RuleSetId|typeof AllRuleSetRootId, _fromElement: Element|null,
       _toElement: Element|null): void {
   }
 }

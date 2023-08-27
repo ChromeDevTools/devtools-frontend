@@ -246,7 +246,7 @@
 }
 
 .data-grid:focus tr.selected .devtools-link {
-  color: var(--color-selected-option);
+  color: var(--sys-color-on-tonal-container);
 }
 
 .data-grid:focus tr.parent.selected td.disclosure::before {

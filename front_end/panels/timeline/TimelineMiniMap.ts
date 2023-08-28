@@ -3,10 +3,13 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Helpers from '../../models/trace/helpers/helpers.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+import * as TimingTypes from '../../models/trace/types/types.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import * as TimelineComponents from './components/components.js';
 import {type PerformanceModel} from './PerformanceModel.js';
 import {
   type TimelineEventOverview,
@@ -37,16 +40,51 @@ export class TimelineMiniMap extends
     Common.ObjectWrapper.eventMixin<PerfUI.TimelineOverviewPane.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
   #overviewComponent = new PerfUI.TimelineOverviewPane.TimelineOverviewPane('timeline');
   #controls: TimelineEventOverview[] = [];
+  #breadcrumbs: TimelineComponents.Breadcrumbs.Breadcrumbs|null = null;
+  #breadcrumbsUI: TimelineComponents.BreadcrumbsUI.BreadcrumbsUI;
+  #minTime: TimingTypes.Timing.MilliSeconds = TimingTypes.Timing.MilliSeconds(0);
 
   constructor() {
     super();
     this.element.classList.add('timeline-minimap');
+    this.#breadcrumbsUI = new TimelineComponents.BreadcrumbsUI.BreadcrumbsUI();
 
     this.#overviewComponent.show(this.element);
     // Push the event up into the parent component so the panel knows when the window is changed.
     this.#overviewComponent.addEventListener(PerfUI.TimelineOverviewPane.Events.WindowChanged, event => {
       this.dispatchEventToListeners(PerfUI.TimelineOverviewPane.Events.WindowChanged, event.data);
     });
+  }
+
+  activateBreadcrumbs(): void {
+    this.element.prepend(this.#breadcrumbsUI);
+    this.#overviewComponent.addEventListener(PerfUI.TimelineOverviewPane.Events.WindowChanged, event => {
+      this.addBreadcrumb(event.data.startTime, event.data.endTime);
+    });
+  }
+
+  addBreadcrumb(start: number, end: number): void {
+    const startWithoutMin = start - this.#minTime;
+    const endWithoutMin = end - this.#minTime;
+
+    const traceWindow: TraceEngine.Types.Timing.TraceWindow = {
+      min: TraceEngine.Types.Timing.MicroSeconds(startWithoutMin),
+      max: TraceEngine.Types.Timing.MicroSeconds(endWithoutMin),
+      range: TraceEngine.Types.Timing.MicroSeconds(endWithoutMin - startWithoutMin),
+    };
+    if (this.#breadcrumbs === null) {
+      this.#breadcrumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(traceWindow);
+
+    } else {
+      this.#breadcrumbs.add(traceWindow);
+      this.setBounds(TraceEngine.Types.Timing.MilliSeconds(start), TraceEngine.Types.Timing.MilliSeconds(end));
+
+      this.#overviewComponent.scheduleUpdate();
+    }
+
+    this.#breadcrumbsUI.data = {
+      breadcrumb: this.#breadcrumbs.initialBreadcrumb,
+    };
   }
 
   override wasShown(): void {
@@ -95,6 +133,10 @@ export class TimelineMiniMap extends
 
   setData(data: OverviewData): void {
     this.#controls = [];
+    if (data.traceParsedData?.Meta.traceBounds.min !== undefined) {
+      this.#minTime = Helpers.Timing.microSecondsToMilliseconds(data.traceParsedData?.Meta.traceBounds.min);
+    }
+
     if (data.traceParsedData) {
       this.#setMarkers(data.traceParsedData);
       this.#setNavigationStartEvents(data.traceParsedData);

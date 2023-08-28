@@ -40,9 +40,15 @@ export class BreadcrumbsUI extends HTMLElement {
     // clang-format off
     return html`
           <div class="breadcrumb">
-              <span class="range">${breadcrumb.window.range} ms</span>
+              <span class="range">${(breadcrumb.window.range).toFixed(2)} ms</span>
               ${breadcrumb.child !== null ?
-                html`<${IconButton.Icon.Icon.litTagName}.data=${{iconName: 'chevron-right', color: 'var(--icon-default)', width: '20px', height: '20px'} as IconButton.Icon.IconWithName}>`
+                html`
+                <${IconButton.Icon.Icon.litTagName} .data=${{
+                  iconName: 'chevron-right',
+                  color: 'var(--icon-default)',
+                  width: '20px',
+                   height: '20px',
+                } as IconButton.Icon.IconData}>`
                 : ''}  
           </div>
       `;

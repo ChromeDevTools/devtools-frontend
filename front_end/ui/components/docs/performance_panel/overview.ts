@@ -24,6 +24,7 @@ async function renderMiniMap(containerSelector: string, options: {showMemory: bo
     throw new Error('could not find container');
   }
   const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
+  minimap.activateBreadcrumbs();
   minimap.markAsRoot();
   minimap.show(container);
 
@@ -33,7 +34,6 @@ async function renderMiniMap(containerSelector: string, options: {showMemory: bo
       TraceEngine.Types.Timing.MilliSeconds(models.timelineModel.minimumRecordTime()),
       TraceEngine.Types.Timing.MilliSeconds(models.timelineModel.maximumRecordTime()),
   );
-  minimap.setWindowTimes(models.performanceModel.window().left, models.performanceModel.window().right);
   minimap.setData({
     traceParsedData: models.traceParsedData,
     performanceModel: models.performanceModel,
@@ -42,6 +42,7 @@ async function renderMiniMap(containerSelector: string, options: {showMemory: bo
       showScreenshots: true,
     },
   });
+  minimap.setWindowTimes(models.performanceModel.window().left, models.performanceModel.window().right);
 }
 
 await renderMiniMap('.container', {showMemory: false});

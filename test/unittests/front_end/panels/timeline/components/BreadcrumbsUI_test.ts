@@ -41,7 +41,7 @@ describe('BreadcrumbsUI', async () => {
     const breadcrumbsRanges = queryBreadcrumbs(component);
 
     assert.deepStrictEqual(breadcrumbsRanges.length, 1);
-    assert.deepStrictEqual(breadcrumbsRanges, ['9 ms']);
+    assert.deepStrictEqual(breadcrumbsRanges, ['9.00 ms']);
   });
 
   it('renders all the breadcrumbs provided', async () => {
@@ -78,6 +78,6 @@ describe('BreadcrumbsUI', async () => {
     const breadcrumbsRanges = queryBreadcrumbs(component);
 
     assert.deepStrictEqual(breadcrumbsRanges.length, 2);
-    assert.deepStrictEqual(breadcrumbsRanges, ['9 ms', '7 ms']);
+    assert.deepStrictEqual(breadcrumbsRanges, ['9.00 ms', '7.00 ms']);
   });
 });

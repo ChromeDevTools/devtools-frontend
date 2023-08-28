@@ -51,9 +51,7 @@
 }
 
 .timeline-status-dialog .stop-button button {
-  min-width: 66px;
-  min-height: 36px;
-  border-radius: 80px;
+  border-radius: 12px;
 }
 
 .timeline-status-dialog.small-dialog {

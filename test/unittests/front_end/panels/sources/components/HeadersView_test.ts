@@ -496,6 +496,9 @@ describe('HeadersView', async () => {
         Host.InspectorFrontendHostAPI.EnumeratedHistogram.ActionTaken,
         Host.UserMetrics.Action.HeaderOverrideHeadersFileEdited));
 
+    let hiddenDeleteElements = await editor.shadowRoot.querySelectorAll('.row.padded > .remove-header[hidden]');
+    assert.isTrue(hiddenDeleteElements.length === 0, 'remove-header button is visible');
+
     await pressButton(editor.shadowRoot, 1, '.remove-header');
 
     rows = getRowContent(editor.shadowRoot);
@@ -505,6 +508,9 @@ describe('HeadersView', async () => {
       'Apply to:*.jpg',
       'jpg-header:only for jpg files',
     ]);
+
+    hiddenDeleteElements = await editor.shadowRoot.querySelectorAll('.row.padded > .remove-header[hidden]');
+    assert.isTrue(hiddenDeleteElements.length === 1, 'remove-header button is hidden');
   });
 
   it('allows removing "ApplyTo"-blocks', async () => {

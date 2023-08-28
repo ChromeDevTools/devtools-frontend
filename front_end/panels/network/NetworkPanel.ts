@@ -1095,6 +1095,6 @@ export class SearchNetworkView extends Search.SearchView.SearchView {
   }
 
   override createScope(): Search.SearchScope.SearchScope {
-    return new NetworkSearchScope();
+    return new NetworkSearchScope(Logs.NetworkLog.NetworkLog.instance());
   }
 }

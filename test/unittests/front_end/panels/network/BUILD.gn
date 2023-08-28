@@ -13,6 +13,7 @@ ts_library("network") {
     "NetworkLogView_test.ts",
     "NetworkOverview_test.ts",
     "NetworkPanel_test.ts",
+    "NetworkSearchScope_test.ts",
     "RequestCookiesView_test.ts",
     "RequestHeadersView_test.ts",
     "RequestPreviewView_test.ts",

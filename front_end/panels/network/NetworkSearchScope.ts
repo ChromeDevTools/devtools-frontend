@@ -6,7 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
-import * as Logs from '../../models/logs/logs.js';
+import type * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
@@ -21,6 +21,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkSearchScope.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkSearchScope implements Search.SearchScope.SearchScope {
+  #networkLog: Logs.NetworkLog.NetworkLog;
+
+  constructor(networkLog: Logs.NetworkLog.NetworkLog) {
+    this.#networkLog = networkLog;
+  }
+
   performIndexing(progress: Common.Progress.Progress): void {
     queueMicrotask(() => {
       progress.done();
@@ -32,8 +38,8 @@ export class NetworkSearchScope implements Search.SearchScope.SearchScope {
       searchResultCallback: (arg0: Search.SearchScope.SearchResult) => void,
       searchFinishedCallback: (arg0: boolean) => void): Promise<void> {
     const promises = [];
-    const requests = Logs.NetworkLog.NetworkLog.instance().requests().filter(
-        request => searchConfig.filePathMatchesFileQuery(request.url()));
+    const requests =
+        this.#networkLog.requests().filter(request => searchConfig.filePathMatchesFileQuery(request.url()));
     progress.setTotalWork(requests.length);
     for (const request of requests) {
       const promise = this.searchRequest(searchConfig, request, progress);
@@ -163,9 +169,7 @@ export class NetworkSearchResult implements Search.SearchScope.SearchResult {
       return `${header.name}:`;
     }
 
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // @ts-expect-error
-    return (location.searchMatch as TextUtils.ContentProvider.SearchMatch).lineNumber + 1;
+    return ((location.searchMatch as TextUtils.ContentProvider.SearchMatch).lineNumber + 1).toString();
   }
 
   matchColumn(index: number): number|undefined {

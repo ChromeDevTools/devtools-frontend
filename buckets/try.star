@@ -130,11 +130,21 @@ builder_coverage(
     builder_factory = try_builder,
     builder_name_pattern = "devtools_frontend_%s_rel",
     recipe_name = "devtools/devtools-frontend",
-    execution_timeout = default_timeout + 15 * time.minute,
+    properties = {"parallel": True},
 )
 
 builder_coverage(
-    covered_oss = ["linux", "mac"],
+    covered_oss = ["linux"],
+    builder_factory = try_builder,
+    builder_name_pattern = "devtools_frontend_sequential_%s_rel",
+    recipe_name = "devtools/devtools-frontend",
+    execution_timeout = default_timeout + 15 * time.minute,
+    priority = 50,
+    properties = {"parallel": False},
+)
+
+builder_coverage(
+    covered_oss = ["mac"],
     builder_factory = try_builder,
     builder_name_pattern = "devtools_frontend_parallel_%s_rel",
     recipe_name = "devtools/devtools-frontend",
@@ -156,11 +166,11 @@ builder_coverage(
 builder_coverage(
     covered_oss = ["win64"],
     builder_factory = try_builder,
-    builder_name_pattern = "devtools_frontend_parallel_%s_rel",
+    builder_name_pattern = "devtools_frontend_sequential_%s_rel",
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout + 15 * time.minute,
     priority = 50,
-    properties = {"parallel": True},
+    properties = {"parallel": False},
 )
 
 builder_coverage(
@@ -213,7 +223,8 @@ cq_main = struct(
         "devtools_frontend_linux_dbg",
         "devtools_frontend_linux_dbg_fastbuild",
         "devtools_frontend_linux_rel",
-        "devtools_frontend_parallel_linux_rel",
+        "devtools_frontend_sequential_linux_rel",
+        "devtools_frontend_sequential_win64_rel",
         "devtools_frontend_mac_rel",
         "devtools_frontend_win64_rel",
         "dtf_presubmit_linux",
@@ -223,9 +234,9 @@ cq_main = struct(
         # Quarantine a builder here
         # This will make them experiment 100%
         "devtools_frontend_mac_rel",
-        "devtools_frontend_parallel_linux_rel",
+        "devtools_frontend_sequential_linux_rel",
         "devtools_frontend_parallel_mac_rel",
-        "devtools_frontend_parallel_win64_rel",
+        "devtools_frontend_sequential_win64_rel",
     ],
     includable_only_builders = [
         "devtools_screenshot_linux_rel",

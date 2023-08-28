@@ -457,7 +457,8 @@ type Screenshot = {
   platform?: string,
 };
 
-export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager.Observer {
+export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
+    implements SDK.TargetManager.Observer {
   private readonly emptyView: UI.EmptyWidget.EmptyWidget;
   private readonly reportView: UI.ReportView.ReportView;
   private readonly errorsSection: UI.ReportView.Section;
@@ -633,12 +634,12 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     if (!data && !errors.length) {
       this.emptyView.showWidget();
       this.reportView.hideWidget();
-      this.contentElement.dispatchEvent(new CustomEvent('manifestDetection', {detail: false}));
+      this.dispatchEventToListeners(Events.ManifestDetected, false);
       return;
     }
     this.emptyView.hideWidget();
     this.reportView.showWidget();
-    this.contentElement.dispatchEvent(new CustomEvent('manifestDetection', {detail: true}));
+    this.dispatchEventToListeners(Events.ManifestDetected, true);
 
     const link = Components.Linkifier.Linkifier.linkifyURL(url);
     this.manifestLink = link;
@@ -981,6 +982,8 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
         i18nString(UIStrings.customizePwaTitleBar));
     this.windowsControlsOverlaySection.appendRow().appendChild(
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.wcoNeedHelpReadMore, {PH1: wcoDocumentationLink}));
+
+    this.dispatchEventToListeners(Events.ManifestRendered);
   }
 
   getInstallabilityErrorMessages(installabilityErrors: Protocol.Page.InstallabilityError[]): string[] {
@@ -1244,3 +1247,15 @@ export class AppManifestView extends UI.Widget.VBox implements SDK.TargetManager
     this.registerCSSFiles([appManifestViewStyles]);
   }
 }
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum Events {
+  ManifestDetected = 'ManifestDetected',
+  ManifestRendered = 'ManifestRendered',
+}
+
+export type EventTypes = {
+  [Events.ManifestDetected]: boolean,
+  [Events.ManifestRendered]: void,
+};

@@ -44,56 +44,50 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {ApplicationPanelTreeElement, ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
-import {AppManifestView} from './AppManifestView.js';
+import {AppManifestView, Events as AppManifestViewEvents} from './AppManifestView.js';
 import {BackForwardCacheTreeElement} from './BackForwardCacheTreeElement.js';
 import {BackgroundServiceModel} from './BackgroundServiceModel.js';
 import {BackgroundServiceView} from './BackgroundServiceView.js';
 import {BounceTrackingMitigationsTreeElement} from './BounceTrackingMitigationsTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
-import {
-  type PreloadingResultView,
-  type PreloadingRuleSetView,
-  type PreloadingAttemptView,
-} from './preloading/PreloadingView.js';
-import {PreloadingTreeElement} from './PreloadingTreeElement.js';
-import type * as PreloadingHelper from './preloading/helper/helper.js';
-
-import resourcesSidebarStyles from './resourcesSidebar.css.js';
-import {ServiceWorkerCacheTreeElement} from './ServiceWorkerCacheTreeElement.js';
-
-import {DatabaseModel, Events as DatabaseModelEvents, type Database as DatabaseModelDatabase} from './DatabaseModel.js';
+import {type Database as DatabaseModelDatabase, DatabaseModel, Events as DatabaseModelEvents} from './DatabaseModel.js';
 import {DatabaseQueryView, Events as DatabaseQueryViewEvents} from './DatabaseQueryView.js';
 import {DatabaseTableView} from './DatabaseTableView.js';
-
-import {DOMStorageModel, Events as DOMStorageModelEvents, type DOMStorage} from './DOMStorageModel.js';
-
+import {type DOMStorage, DOMStorageModel, Events as DOMStorageModelEvents} from './DOMStorageModel.js';
 import {
-  Events as IndexedDBModelEvents,
-  IndexedDBModel,
   type Database as IndexedDBModelDatabase,
   type DatabaseId,
+  Events as IndexedDBModelEvents,
   type Index,
+  IndexedDBModel,
   type ObjectStore,
 } from './IndexedDBModel.js';
 import {IDBDatabaseView, IDBDataView} from './IndexedDBViews.js';
-import {InterestGroupStorageModel, Events as InterestGroupModelEvents} from './InterestGroupStorageModel.js';
+import {Events as InterestGroupModelEvents, InterestGroupStorageModel} from './InterestGroupStorageModel.js';
 import {InterestGroupTreeElement} from './InterestGroupTreeElement.js';
 import {OpenedWindowDetailsView, WorkerDetailsView} from './OpenedWindowDetailsView.js';
+import type * as PreloadingHelper from './preloading/helper/helper.js';
+import {
+  type PreloadingAttemptView,
+  type PreloadingResultView,
+  type PreloadingRuleSetView,
+} from './preloading/PreloadingView.js';
+import {PreloadingTreeElement} from './PreloadingTreeElement.js';
+import {ReportingApiTreeElement} from './ReportingApiTreeElement.js';
 import {type ResourcesPanel} from './ResourcesPanel.js';
+import resourcesSidebarStyles from './resourcesSidebar.css.js';
+import {ServiceWorkerCacheTreeElement} from './ServiceWorkerCacheTreeElement.js';
 import {ServiceWorkersView} from './ServiceWorkersView.js';
-import {StorageBucketsTreeParentElement} from './StorageBucketsTreeElement.js';
-
 import {SharedStorageListTreeElement} from './SharedStorageListTreeElement.js';
 import {
-  SharedStorageModel,
   Events as SharedStorageModelEvents,
   type SharedStorageForOrigin,
+  SharedStorageModel,
 } from './SharedStorageModel.js';
 import {SharedStorageTreeElement} from './SharedStorageTreeElement.js';
-
+import {StorageBucketsTreeParentElement} from './StorageBucketsTreeElement.js';
 import {StorageView} from './StorageView.js';
 import {TrustTokensTreeElement} from './TrustTokensTreeElement.js';
-import {ReportingApiTreeElement} from './ReportingApiTreeElement.js';
 
 const UIStrings = {
   /**
@@ -1163,10 +1157,10 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
     const reportView = new UI.ReportView.ReportView(i18nString(UIStrings.appManifest));
     this.view = new AppManifestView(emptyView, reportView, new Common.Throttler.Throttler(1000));
     UI.ARIAUtils.setLabel(this.listItemElement, i18nString(UIStrings.onInvokeManifestAlert));
-    const handleExpansion = (evt: Event): void => {
-      this.setExpandable((evt as CustomEvent).detail);
+    const handleExpansion = (hasManifest: boolean): void => {
+      this.setExpandable(hasManifest);
     };
-    this.view.contentElement.addEventListener('manifestDetection', handleExpansion);
+    this.view.addEventListener(AppManifestViewEvents.ManifestDetected, event => handleExpansion(event.data));
   }
 
   override get itemURL(): Platform.DevToolsPath.UrlString {

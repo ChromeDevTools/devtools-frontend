@@ -15,6 +15,7 @@ group("unittests") {
     "../../front_end/core/i18n/locales",
     "../../front_end/ui/legacy:copy_stylesheets_for_server",
     "../shared",
+    "fixtures/images",
     "fixtures/traces",
     "front_end",
     "inspector_overlay",

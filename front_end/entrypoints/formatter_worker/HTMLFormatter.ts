@@ -8,10 +8,12 @@ import {CSSFormatter} from './CSSFormatter.js';
 import {type FormattedContentBuilder} from './FormattedContentBuilder.js';
 import {AbortTokenization, createTokenizer} from './FormatterWorker.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';
+import {JSONFormatter} from './JSONFormatter.js';
 
 export class HTMLFormatter {
   readonly #builder: FormattedContentBuilder;
   readonly #jsFormatter: JavaScriptFormatter;
+  readonly #jsonFormatter: JSONFormatter;
   readonly #cssFormatter: CSSFormatter;
   #text?: string;
   #lineEndings?: number[];
@@ -20,6 +22,7 @@ export class HTMLFormatter {
   constructor(builder: FormattedContentBuilder) {
     this.#builder = builder;
     this.#jsFormatter = new JavaScriptFormatter(builder);
+    this.#jsonFormatter = new JSONFormatter(builder);
     this.#cssFormatter = new CSSFormatter(builder);
   }
 
@@ -130,8 +133,10 @@ export class HTMLFormatter {
     if (isBodyToken && element.name === 'script') {
       this.#builder.addNewLine();
       this.#builder.increaseNestingLevel();
-      if (this.#scriptTagIsJavaScript(element)) {
+      if (scriptTagIsJavaScript(element)) {
         this.#jsFormatter.format(this.#text || '', this.#lineEndings || [], token.startOffset, token.endOffset);
+      } else if (scriptTagIsJSON(element)) {
+        this.#jsonFormatter.format(this.#text || '', this.#lineEndings || [], token.startOffset, token.endOffset);
       } else {
         this.#builder.addToken(token.value, token.startOffset);
         this.#builder.addNewLine();
@@ -146,36 +151,33 @@ export class HTMLFormatter {
 
     this.#builder.addToken(token.value, token.startOffset);
   }
+}
 
-  #scriptTagIsJavaScript(element: FormatterElement): boolean {
-    if (!element.openTag) {
-      return true;
-    }
-
-    if (!element.openTag.attributes.has('type')) {
-      return true;
-    }
-
-    let type = element.openTag.attributes.get('type');
-    if (!type) {
-      return true;
-    }
-
-    type = type.toLowerCase();
-    const isWrappedInQuotes = /^(["\'])(.*)\1$/.exec(type.trim());
-    if (isWrappedInQuotes) {
-      type = isWrappedInQuotes[2];
-    }
-    return HTMLFormatter.SupportedJavaScriptMimeTypes.has(type.trim());
+function scriptTagIsJavaScript(element: FormatterElement): boolean {
+  if (!element.openTag) {
+    return true;
   }
 
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  static readonly SupportedJavaScriptMimeTypes = new Set([
+  if (!element.openTag.attributes.has('type')) {
+    return true;
+  }
+
+  let type = element.openTag.attributes.get('type');
+  if (!type) {
+    return true;
+  }
+
+  type = type.toLowerCase();
+  const isWrappedInQuotes = /^(["\'])(.*)\1$/.exec(type.trim());
+  if (isWrappedInQuotes) {
+    type = isWrappedInQuotes[2];
+  }
+  return [
     'application/ecmascript',
     'application/javascript',
     'application/x-ecmascript',
     'application/x-javascript',
+    'module',
     'text/ecmascript',
     'text/javascript',
     'text/javascript1.0',
@@ -188,7 +190,25 @@ export class HTMLFormatter {
     'text/livescript',
     'text/x-ecmascript',
     'text/x-javascript',
-  ]);
+  ].includes(type.trim());
+}
+
+function scriptTagIsJSON(element: FormatterElement): boolean {
+  if (!element.openTag) {
+    return false;
+  }
+
+  let type = element.openTag.attributes.get('type');
+  if (!type) {
+    return false;
+  }
+
+  type = type.toLowerCase();
+  const isWrappedInQuotes = /^(["\'])(.*)\1$/.exec(type.trim());
+  if (isWrappedInQuotes) {
+    type = isWrappedInQuotes[2];
+  }
+  return ['importmap', 'speculationrules'].includes(type.trim());
 }
 
 function hasTokenInSet(tokenTypes: Set<string>, type: string): boolean {

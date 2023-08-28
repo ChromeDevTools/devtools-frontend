@@ -137,7 +137,7 @@ describe('HTMLFormatter', () => {
 `);
   });
 
-  it('formats inline javascript correctly', () => {
+  it('formats inline JavaScript classic scripts correctly', () => {
     const formattedCode = formatHTML(
         '<html><script type="text/javascript">for(var i=0;i<10;++i)console.log(\'test \'+i);<\/script></html>');
     assert.strictEqual(formattedCode, `<html>
@@ -145,6 +145,64 @@ describe('HTMLFormatter', () => {
     for (var i = 0; i < 10; ++i)
       console.log('test ' + i);
   <\/script>
+</html>
+`);
+  });
+
+  it('formats inline JavaScript modules correctly', () => {
+    const formattedCode = formatHTML(
+        '<html><script type="module">import foo from"foo";foo();</script><script type=module>bar();foo();</script></html>');
+    assert.strictEqual(formattedCode, `<html>
+  <script type="module">
+    import foo from "foo";
+    foo();
+  </script>
+  <script type=module>
+    bar();
+    foo();
+  </script>
+</html>
+`);
+  });
+
+  it('formats inline <script>s with speculation rules correctly', () => {
+    const formattedCode = formatHTML(
+        '<html><script type="speculationrules">{"prefetch": [{"source": "list","urls": ["prefetch.html?2"]}],"prerender": [{"source": "list","urls": ["prerender.html?2"]}]}</script></html>');
+    assert.strictEqual(formattedCode, `<html>
+  <script type="speculationrules">
+    {
+      "prefetch": [
+        {
+          "source": "list",
+          "urls": [
+            "prefetch.html?2"
+          ]
+        }
+      ],
+      "prerender": [
+        {
+          "source": "list",
+          "urls": [
+            "prerender.html?2"
+          ]
+        }
+      ]
+    }</script>
+</html>
+`);
+  });
+
+  it('formats inline <script>s with import maps correctly', () => {
+    const formattedCode = formatHTML(
+        '<html><script type=importmap>{"imports": {"moment": "/node_modules/moment/src/moment.js","lodash": "/node_modules/lodash-es/lodash.js"}}</script></html>');
+    assert.strictEqual(formattedCode, `<html>
+  <script type=importmap>
+    {
+      "imports": {
+        "moment": "/node_modules/moment/src/moment.js",
+        "lodash": "/node_modules/lodash-es/lodash.js"
+      }
+    }</script>
 </html>
 `);
   });

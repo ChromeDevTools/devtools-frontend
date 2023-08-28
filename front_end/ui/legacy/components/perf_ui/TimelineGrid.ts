@@ -116,7 +116,7 @@ export class TimelineGrid {
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     const height = Math.floor(context.canvas.height / window.devicePixelRatio);
-    context.strokeStyle = getComputedStyle(document.body).getPropertyValue('--divider-line');
+    context.strokeStyle = getComputedStyle(document.body).getPropertyValue('--sys-color-divider');
     context.lineWidth = 1;
 
     context.translate(0.5, 0.5);

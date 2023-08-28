@@ -11,6 +11,8 @@ devtools_module("explain") {
   sources = [
     "ActionDelegate.ts",
     "ExplainPopover.ts",
+    "sources/CodeFrameSource.ts",
+    "sources/ConsoleMessageSource.ts",
   ]
 
   deps = [

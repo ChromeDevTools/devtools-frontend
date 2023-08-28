@@ -451,7 +451,11 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     return null;
   }
 
-  doAidaConversation?: (request: string, cb: (result: DoAidaConversationResult) => void) => void;
+  doAidaConversation(request: string, callback: (result: DoAidaConversationResult) => void): void {
+    callback({
+      response: '{}',
+    });
+  }
 }
 
 // @ts-ignore Global injected by devtools-compatibility.js

@@ -6,7 +6,9 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Console from '../console/console.js';
 import * as Sources from '../sources/sources.js';
 
-import {CodeFrameSource, ConsoleMessageSource, ExplainPopover} from './ExplainPopover.js';
+import {ExplainPopover} from './ExplainPopover.js';
+import {CodeFrameSource} from './sources/CodeFrameSource.js';
+import {ConsoleMessageSource} from './sources/ConsoleMessageSource.js';
 
 let actionDelegateInstance: ActionDelegate;
 

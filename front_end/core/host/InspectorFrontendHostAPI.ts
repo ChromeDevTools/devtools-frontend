@@ -305,7 +305,7 @@ export interface InspectorFrontendHostAPI {
 
   initialTargetId(): Promise<string|null>;
 
-  doAidaConversation?: (request: string, cb: (result: DoAidaConversationResult) => void) => void;
+  doAidaConversation: (request: string, cb: (result: DoAidaConversationResult) => void) => void;
 }
 
 export interface ContextMenuDescriptor {

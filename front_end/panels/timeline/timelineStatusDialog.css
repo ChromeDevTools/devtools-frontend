@@ -9,8 +9,9 @@
   flex-direction: column;
   padding: 16px 16px 12px;
   align-self: center;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow);
+  border-radius: 10px;
 }
 
 .status-dialog-line {
@@ -50,7 +51,9 @@
 }
 
 .timeline-status-dialog .stop-button button {
-  min-width: 80px;
+  min-width: 66px;
+  min-height: 36px;
+  border-radius: 80px;
 }
 
 .timeline-status-dialog.small-dialog {

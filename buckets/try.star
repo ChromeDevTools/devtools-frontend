@@ -122,7 +122,7 @@ builder_coverage(
     builder_name_pattern = "devtools_frontend_%s_rel",
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout,
-    properties = {"clobber": True},
+    properties = {"clobber": True, "parallel": True},
 )
 
 builder_coverage(
@@ -134,23 +134,13 @@ builder_coverage(
 )
 
 builder_coverage(
-    covered_oss = ["linux"],
+    covered_oss = ["linux", "mac"],
     builder_factory = try_builder,
     builder_name_pattern = "devtools_frontend_sequential_%s_rel",
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout + 15 * time.minute,
     priority = 50,
     properties = {"parallel": False},
-)
-
-builder_coverage(
-    covered_oss = ["mac"],
-    builder_factory = try_builder,
-    builder_name_pattern = "devtools_frontend_parallel_%s_rel",
-    recipe_name = "devtools/devtools-frontend",
-    execution_timeout = default_timeout,
-    priority = 50,
-    properties = {"parallel": True},
 )
 
 builder_coverage(
@@ -225,6 +215,7 @@ cq_main = struct(
         "devtools_frontend_linux_dbg_fastbuild",
         "devtools_frontend_linux_rel",
         "devtools_frontend_sequential_linux_rel",
+        "devtools_frontend_sequential_mac_rel",
         "devtools_frontend_sequential_win64_rel",
         "devtools_frontend_mac_rel",
         "devtools_frontend_win64_rel",
@@ -236,7 +227,7 @@ cq_main = struct(
         # This will make them experiment 100%
         "devtools_frontend_mac_rel",
         "devtools_frontend_sequential_linux_rel",
-        "devtools_frontend_parallel_mac_rel",
+        "devtools_frontend_sequential_mac_rel",
         "devtools_frontend_sequential_win64_rel",
     ],
     includable_only_builders = [

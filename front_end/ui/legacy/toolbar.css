@@ -446,7 +446,7 @@ select.toolbar-item:focus-visible > * {
   left: -2px;
 }
 
-.toolbar-shadow:not(.floating) .toolbar-item:last-child:not(:first-child) {
+.toolbar-shadow:not(.floating) .toolbar-item:last-child:not(:first-child, .toolbar-select-container) {
   flex-shrink: 1;
   justify-content: left;
 }

@@ -189,16 +189,17 @@ builder_coverage(
     recipe_name = "devtools/dtf-e2e-stress",
     execution_timeout = default_timeout,
     priority = 50,
+    properties = {"parallel": True},
 )
 
 builder_coverage(
     covered_oss = ["linux", "win64", "mac"],
     builder_factory = try_builder,
-    builder_name_pattern = "e2e_stressor_parallel_%s",
+    builder_name_pattern = "e2e_stressor_sequential_%s",
     recipe_name = "devtools/dtf-e2e-stress",
     execution_timeout = default_timeout,
     priority = 50,
-    properties = {"parallel": True},
+    properties = {"parallel": False},
 )
 
 builder_coverage(

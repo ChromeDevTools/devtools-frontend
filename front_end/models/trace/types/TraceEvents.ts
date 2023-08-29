@@ -496,7 +496,7 @@ export interface TraceEventTracingSessionIdForWorker extends TraceEventInstant {
   args: TraceEventArgs&{
     data?: TraceEventArgsData & {
       url: string,
-      workerId: string,
+      workerId: WorkerId,
       workerThreadId: ThreadID,
       frame: string,
     },
@@ -957,6 +957,15 @@ export type ThreadID = number&ThreadIdTag;
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function ThreadID(value: number): ThreadID {
   return value as ThreadID;
+}
+
+class WorkerIdTag {
+  readonly #workerIdTag: (symbol|undefined);
+}
+export type WorkerId = string&WorkerIdTag;
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export function WorkerId(value: string): WorkerId {
+  return value as WorkerId;
 }
 
 export function isTraceEventComplete(event: TraceEventData): event is TraceEventComplete {

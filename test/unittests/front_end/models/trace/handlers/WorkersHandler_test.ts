@@ -6,17 +6,21 @@ import * as TraceEngine from '../../../../../../front_end/models/trace/trace.js'
 import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 describe('WorkersHandler', () => {
-  beforeEach(() => {
+  beforeEach(async function() {
+    TraceEngine.Handlers.ModelHandlers.Workers.reset();
+    const events = await TraceLoader.rawEvents(this, 'two-workers.json.gz');
+    TraceEngine.Handlers.ModelHandlers.Workers.initialize();
+    for (const event of events) {
+      TraceEngine.Handlers.ModelHandlers.Workers.handleEvent(event);
+    }
+    await TraceEngine.Handlers.ModelHandlers.Workers.finalize();
+  });
+  afterEach(() => {
     TraceEngine.Handlers.ModelHandlers.Workers.reset();
   });
 
   it('collects the worker session ID metadata events', async function() {
-    const events = await TraceLoader.rawEvents(this, 'two-workers.json.gz');
-    for (const event of events) {
-      TraceEngine.Handlers.ModelHandlers.Workers.handleEvent(event);
-    }
     const data = TraceEngine.Handlers.ModelHandlers.Workers.data();
-
     assert.deepEqual(data.workerSessionIdEvents, [
       {
         name: 'TracingSessionIdForWorker',
@@ -31,7 +35,7 @@ describe('WorkersHandler', () => {
           data: {
             frame: '372333E30ECABDA706136ED37FD9FA2B',
             url: 'https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js',
-            workerId: '990A76F8BED5B771144F505FF9313D06',
+            workerId: TraceEngine.Types.TraceEvents.WorkerId('990A76F8BED5B771144F505FF9313D06'),
             workerThreadId: TraceEngine.Types.TraceEvents.ThreadID(37651),
           },
         },
@@ -49,11 +53,20 @@ describe('WorkersHandler', () => {
           data: {
             frame: '372333E30ECABDA706136ED37FD9FA2B',
             url: 'https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js',
-            workerId: 'E59E70C44C7664657CE822BB7DC54085',
+            workerId: TraceEngine.Types.TraceEvents.WorkerId('E59E70C44C7664657CE822BB7DC54085'),
             workerThreadId: TraceEngine.Types.TraceEvents.ThreadID(35351),
           },
         },
       },
     ]);
+  });
+
+  it('collects thread id for workers', async function() {
+    const data = TraceEngine.Handlers.ModelHandlers.Workers.data();
+    const [[thread1, worker1], [thread2, worker2]] = data.workerIdByThread.entries();
+    assert.strictEqual(thread1, 37651);
+    assert.strictEqual(worker1, '990A76F8BED5B771144F505FF9313D06');
+    assert.strictEqual(thread2, 35351);
+    assert.strictEqual(worker2, 'E59E70C44C7664657CE822BB7DC54085');
   });
 });

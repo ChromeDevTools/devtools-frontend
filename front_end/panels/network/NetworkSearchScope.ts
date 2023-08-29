@@ -63,13 +63,7 @@ export class NetworkSearchScope implements Search.SearchScope.SearchScope {
   private async searchRequest(
       searchConfig: Workspace.SearchConfig.SearchConfig, request: SDK.NetworkRequest.NetworkRequest,
       progress: Common.Progress.Progress): Promise<NetworkSearchResult|null> {
-    let bodyMatches: TextUtils.ContentProvider.SearchMatchExact[] = [];
-    if (request.contentType().isTextType()) {
-      const matches =
-          await request.searchInContent(searchConfig.query(), !searchConfig.ignoreCase(), searchConfig.isRegex());
-      bodyMatches = TextUtils.TextUtils.performExtendedSearchInSearchMatches(
-          matches, searchConfig.query(), !searchConfig.ignoreCase(), searchConfig.isRegex());
-    }
+    const bodyMatches = await NetworkSearchScope.#responseBodyMatches(searchConfig, request);
     if (progress.isCanceled()) {
       return null;
     }
@@ -111,6 +105,26 @@ export class NetworkSearchScope implements Search.SearchScope.SearchScope {
       }
       return true;
     }
+  }
+
+  static async #responseBodyMatches(
+      searchConfig: Workspace.SearchConfig.SearchConfig,
+      request: SDK.NetworkRequest.NetworkRequest): Promise<TextUtils.ContentProvider.SearchMatchExact[]> {
+    if (!request.contentType().isTextType()) {
+      return [];
+    }
+
+    let matches: TextUtils.ContentProvider.SearchMatchExact[] = [];
+    for (const query of searchConfig.queries()) {
+      const tmpMatches = await request.searchInContent(query, !searchConfig.ignoreCase(), searchConfig.isRegex());
+      if (tmpMatches.length === 0) {
+        // Mirror file search that all individual queries must produce matches.
+        return [];
+      }
+      matches = Platform.ArrayUtilities.mergeOrdered(
+          matches, tmpMatches, TextUtils.ContentProvider.SearchMatchExact.comparator);
+    }
+    return matches;
   }
 
   stopSearch(): void {

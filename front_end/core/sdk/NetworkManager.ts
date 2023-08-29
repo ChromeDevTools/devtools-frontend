@@ -32,34 +32,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import type * as TextUtils from '../../models/text_utils/text_utils.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
+import {type Serializer} from '../common/Settings.js';
 import * as Host from '../host/host.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import * as Protocol from '../../generated/protocol.js';
 
 import {Cookie} from './Cookie.js';
-
 import {
-  Events as NetworkRequestEvents,
-  NetworkRequest,
   type BlockedCookieWithReason,
   type ContentData,
+  Events as NetworkRequestEvents,
   type ExtraRequestInfo,
   type ExtraResponseInfo,
   type MIME_TYPE,
   type NameValue,
+  NetworkRequest,
   type WebBundleInfo,
   type WebBundleInnerRequestInfo,
 } from './NetworkRequest.js';
-
-import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
-
-import {TargetManager, type SDKModelObserver} from './TargetManager.js';
-import {type Serializer} from '../common/Settings.js';
+import {Capability, type Target} from './Target.js';
+import {type SDKModelObserver, TargetManager} from './TargetManager.js';
 
 const UIStrings = {
   /**
@@ -175,7 +172,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
   }
 
   static async searchInRequest(request: NetworkRequest, query: string, caseSensitive: boolean, isRegex: boolean):
-      Promise<TextUtils.ContentProvider.SearchMatch[]> {
+      Promise<TextUtils.ContentProvider.SearchMatchExact[]> {
     const manager = NetworkManager.forRequest(request);
     const requestId = request.backendRequestId();
     if (!manager || !requestId || request.isRedirect()) {
@@ -183,7 +180,8 @@ export class NetworkManager extends SDKModel<EventTypes> {
     }
     const response = await manager.#networkAgent.invoke_searchInResponseBody(
         {requestId, query: query, caseSensitive: caseSensitive, isRegex: isRegex});
-    return response.result || [];
+    return TextUtils.TextUtils.performExtendedSearchInSearchMatches(
+        response.result || [], query, caseSensitive, isRegex);
   }
 
   static async requestContentData(request: NetworkRequest): Promise<ContentData> {

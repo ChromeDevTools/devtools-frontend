@@ -1326,7 +1326,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   async searchInContent(query: string, caseSensitive: boolean, isRegex: boolean):
-      Promise<TextUtils.ContentProvider.SearchMatch[]> {
+      Promise<TextUtils.ContentProvider.SearchMatchExact[]> {
     if (!this.#contentDataProvider) {
       return NetworkManager.searchInRequest(this, query, caseSensitive, isRegex);
     }
@@ -1339,7 +1339,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     if (contentData.encoded) {
       content = window.atob(content);
     }
-    return TextUtils.TextUtils.performSearchInContent(content, query, caseSensitive, isRegex);
+    return TextUtils.TextUtils.performExtendedSearchInContent(content, query, caseSensitive, isRegex);
   }
 
   isHttpFamily(): boolean {

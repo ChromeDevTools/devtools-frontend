@@ -152,7 +152,31 @@ describeWithLocale('NetworkSearchScope', () => {
     assert.strictEqual(results[1].matchLineContent(0), 'This is the response body of request 1.');
   });
 
-  // TODO(crbug.com/1468875): Add tests for multi-query searches and 'file:' prefix searches in
-  //                          response bodies. These are currently broken as NetworkSearchScope wrongly uses
-  //                          'query()' instead of 'queries()' from the SearchConfig for the response body search.
+  it('handles "file:" prefix correctly for response body matches', async () => {
+    const searchConfig = new Workspace.SearchConfig.SearchConfig('f:bundle.min.js response body', false, false);
+    const results: Search.SearchScope.SearchResult[] = [];
+
+    await scope.performSearch(searchConfig, new Common.Progress.Progress(), result => results.push(result), () => {});
+
+    assert.lengthOf(results, 1);
+    assert.strictEqual(results[0].label(), 'bundle.min.js');
+    assert.strictEqual(results[0].matchesCount(), 1);
+    assert.strictEqual(results[0].matchLabel(0), '2');
+    assert.strictEqual(results[0].matchLineContent(0), 'And another line in the response body of request 2.');
+  });
+
+  it('finds matches in response bodies only if all parts of a query match', async () => {
+    const searchConfig = new Workspace.SearchConfig.SearchConfig('"response body""second line"', false, false);
+    const results: Search.SearchScope.SearchResult[] = [];
+
+    await scope.performSearch(searchConfig, new Common.Progress.Progress(), result => results.push(result), () => {});
+
+    assert.lengthOf(results, 1);
+    assert.strictEqual(results[0].label(), 'main.js');
+    assert.strictEqual(results[0].matchesCount(), 2);
+    assert.strictEqual(results[0].matchLabel(0), '1');
+    assert.strictEqual(results[0].matchLineContent(0), 'This is the response body of request 1.');
+    assert.strictEqual(results[0].matchLabel(1), '2');
+    assert.strictEqual(results[0].matchLineContent(1), 'And a second line.');
+  });
 });

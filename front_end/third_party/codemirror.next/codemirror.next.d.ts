@@ -6859,14 +6859,14 @@ declare function htmlCompletionSourceWith(config: {
     extraGlobalAttributes?: Record<string, null | readonly string[]>;
 }): (context: CompletionContext) => CompletionResult | null;
 
-declare type NestedLang = {
+type NestedLang = {
     tag: string;
     attrs?: (attrs: {
         [attr: string]: string;
     }) => boolean;
     parser: Parser;
 };
-declare type NestedAttr = {
+type NestedAttr = {
     name: string;
     tagName?: string;
     parser: Parser;

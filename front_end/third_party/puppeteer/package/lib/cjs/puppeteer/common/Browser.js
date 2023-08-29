@@ -18,6 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CDPBrowserContext = exports.CDPBrowser = void 0;
 const Browser_js_1 = require("../api/Browser.js");
 const BrowserContext_js_1 = require("../api/BrowserContext.js");
+const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
 const ChromeTargetManager_js_1 = require("./ChromeTargetManager.js");
 const Connection_js_1 = require("./Connection.js");
@@ -31,8 +32,8 @@ class CDPBrowser extends Browser_js_1.Browser {
     /**
      * @internal
      */
-    static async _create(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
-        const browser = new CDPBrowser(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets);
+    static async _create(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, useTabTarget = environment_js_1.USE_TAB_TARGET) {
+        const browser = new CDPBrowser(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, useTabTarget);
         await browser._attach();
         return browser;
     }
@@ -56,7 +57,7 @@ class CDPBrowser extends Browser_js_1.Browser {
     /**
      * @internal
      */
-    constructor(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
+    constructor(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, useTabTarget = environment_js_1.USE_TAB_TARGET) {
         super();
         product = product || 'chrome';
         this.#ignoreHTTPSErrors = ignoreHTTPSErrors;
@@ -75,7 +76,7 @@ class CDPBrowser extends Browser_js_1.Browser {
             this.#targetManager = new FirefoxTargetManager_js_1.FirefoxTargetManager(connection, this.#createTarget, this.#targetFilterCallback);
         }
         else {
-            this.#targetManager = new ChromeTargetManager_js_1.ChromeTargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets);
+            this.#targetManager = new ChromeTargetManager_js_1.ChromeTargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets, useTabTarget);
         }
         this.#defaultContext = new CDPBrowserContext(this.#connection, this);
         for (const contextId of contextIds) {
@@ -272,7 +273,9 @@ class CDPBrowser extends Browser_js_1.Browser {
             url: 'about:blank',
             browserContextId: contextId || undefined,
         });
-        const target = this.#targetManager.getAvailableTargets().get(targetId);
+        const target = (await this.waitForTarget(t => {
+            return t._targetId === targetId;
+        }));
         if (!target) {
             throw new Error(`Missing target for page (id = ${targetId})`);
         }

@@ -112,5 +112,8 @@ export class JSHandle extends BaseJSHandle {
     remoteValue() {
         return this.#remoteValue;
     }
+    remoteObject() {
+        throw new Error('Not available in WebDriver BiDi');
+    }
 }
 //# sourceMappingURL=JSHandle.js.map

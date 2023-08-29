@@ -46,6 +46,7 @@ import {Binding} from './Binding.js';
 import {
   CDPSession,
   CDPSessionEmittedEvents,
+  CDPSessionImpl,
   isTargetClosedError,
 } from './Connection.js';
 import {ConsoleMessage, ConsoleMessageType} from './ConsoleMessage.js';
@@ -127,6 +128,7 @@ export class CDPPage extends Page {
 
   #closed = false;
   #client: CDPSession;
+  #tabSession: CDPSession | undefined;
   #target: CDPTarget;
   #keyboard: CDPKeyboard;
   #mouse: CDPMouse;
@@ -289,6 +291,7 @@ export class CDPPage extends Page {
   ) {
     super();
     this.#client = client;
+    this.#tabSession = client.parentSession();
     this.#target = target;
     this.#keyboard = new CDPKeyboard(client);
     this.#mouse = new CDPMouse(client, this.#keyboard);
@@ -307,6 +310,25 @@ export class CDPPage extends Page {
     this.#viewport = null;
 
     this.#setupEventListeners();
+
+    this.#tabSession?.on(CDPSessionEmittedEvents.Swapped, async newSession => {
+      this.#client = newSession;
+      assert(
+        this.#client instanceof CDPSessionImpl,
+        'CDPSession is not instance of CDPSessionImpl'
+      );
+      this.#target = this.#client._target();
+      assert(this.#target, 'Missing target on swap');
+      this.#keyboard.updateClient(newSession);
+      this.#mouse.updateClient(newSession);
+      this.#touchscreen.updateClient(newSession);
+      this.#accessibility.updateClient(newSession);
+      this.#emulationManager.updateClient(newSession);
+      this.#tracing.updateClient(newSession);
+      this.#coverage.updateClient(newSession);
+      await this.#frameManager.swapFrameTree(newSession);
+      this.#setupEventListeners();
+    });
   }
 
   #setupEventListeners() {
@@ -995,53 +1017,6 @@ export class CDPPage extends Page {
       timeout,
       this.#sessionCloseDeferred
     );
-  }
-
-  override async waitForFrame(
-    urlOrPredicate: string | ((frame: Frame) => boolean | Promise<boolean>),
-    options: {timeout?: number} = {}
-  ): Promise<Frame> {
-    const {timeout = this.#timeoutSettings.timeout()} = options;
-
-    let predicate: (frame: Frame) => Promise<boolean>;
-    if (isString(urlOrPredicate)) {
-      predicate = (frame: Frame) => {
-        return Promise.resolve(urlOrPredicate === frame.url());
-      };
-    } else {
-      predicate = (frame: Frame) => {
-        const value = urlOrPredicate(frame);
-        if (typeof value === 'boolean') {
-          return Promise.resolve(value);
-        }
-        return value;
-      };
-    }
-
-    const eventRace: Promise<Frame> = Deferred.race([
-      waitForEvent(
-        this.#frameManager,
-        FrameManagerEmittedEvents.FrameAttached,
-        predicate,
-        timeout,
-        this.#sessionCloseDeferred.valueOrThrow()
-      ),
-      waitForEvent(
-        this.#frameManager,
-        FrameManagerEmittedEvents.FrameNavigated,
-        predicate,
-        timeout,
-        this.#sessionCloseDeferred.valueOrThrow()
-      ),
-      ...this.frames().map(async frame => {
-        if (await predicate(frame)) {
-          return frame;
-        }
-        return await eventRace;
-      }),
-    ]);
-
-    return eventRace;
   }
 
   override async goBack(

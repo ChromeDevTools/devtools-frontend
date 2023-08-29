@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { filterAsync, first, firstValueFrom, from, fromEvent, map, merge, raceWith, timer, } from '../../third_party/rxjs/rxjs.js';
+import { TargetCloseError, TimeoutError } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { NetworkManagerEmittedEvents, } from '../common/NetworkManager.js';
 import { paperFormats, } from '../common/PDFOptions.js';
@@ -615,8 +617,29 @@ export class Page extends EventEmitter {
             throw error;
         });
     }
-    async waitForFrame() {
-        throw new Error('Not implemented');
+    /**
+     * Waits for a frame matching the given conditions to appear.
+     *
+     * @example
+     *
+     * ```ts
+     * const frame = await page.waitForFrame(async frame => {
+     *   return frame.name() === 'Test';
+     * });
+     * ```
+     */
+    async waitForFrame(urlOrPredicate, options = {}) {
+        const { timeout: ms = this.getDefaultTimeout() } = options;
+        if (isString(urlOrPredicate)) {
+            urlOrPredicate = (frame) => {
+                return urlOrPredicate === frame.url();
+            };
+        }
+        return firstValueFrom(merge(fromEvent(this, "frameattached" /* PageEmittedEvents.FrameAttached */), fromEvent(this, "framenavigated" /* PageEmittedEvents.FrameNavigated */), from(this.frames())).pipe(filterAsync(urlOrPredicate), first(), raceWith(timer(ms === 0 ? Infinity : ms).pipe(map(() => {
+            throw new TimeoutError(`Timed out after waiting ${ms}ms`);
+        })), fromEvent(this, "close" /* PageEmittedEvents.Close */).pipe(map(() => {
+            throw new TargetCloseError('Page closed.');
+        })))));
     }
     async goBack() {
         throw new Error('Not implemented');

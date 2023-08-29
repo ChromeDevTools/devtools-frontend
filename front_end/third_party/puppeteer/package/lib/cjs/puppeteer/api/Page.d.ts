@@ -1339,9 +1339,8 @@ export declare class Page extends EventEmitter {
         inFlightRequestsCount: () => number;
     }, idleTime: number, timeout: number, closedDeferred: Deferred<TargetCloseError>): Promise<void>;
     /**
-     * @param urlOrPredicate - A URL or predicate to wait for.
-     * @param options - Optional waiting parameters
-     * @returns Promise which resolves to the matched frame.
+     * Waits for a frame matching the given conditions to appear.
+     *
      * @example
      *
      * ```ts
@@ -1349,17 +1348,8 @@ export declare class Page extends EventEmitter {
      *   return frame.name() === 'Test';
      * });
      * ```
-     *
-     * @remarks
-     * Optional Parameter have:
-     *
-     * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
-     *   pass `0` to disable the timeout. The default value can be changed by using
-     *   the {@link Page.setDefaultTimeout} method.
      */
-    waitForFrame(urlOrPredicate: string | ((frame: Frame) => boolean | Promise<boolean>), options?: {
-        timeout?: number;
-    }): Promise<Frame>;
+    waitForFrame(urlOrPredicate: string | ((frame: Frame) => Awaitable<boolean>), options?: WaitTimeoutOptions): Promise<Frame>;
     /**
      * This method navigate to the previous page in history.
      * @param options - Navigation parameters

@@ -405,9 +405,10 @@ export class Mouse extends BaseMouse {
         });
     }
     async move(x, y, options = {}) {
+        // https://w3c.github.io/webdriver-bidi/#command-input-performActions:~:text=input.PointerMoveAction%20%3D%20%7B%0A%20%20type%3A%20%22pointerMove%22%2C%0A%20%20x%3A%20js%2Dint%2C
         this.#lastMovePoint = {
-            x,
-            y,
+            x: Math.round(x),
+            y: Math.round(y),
         };
         await this.#context.connection.send('input.performActions', {
             context: this.#context.id,
@@ -418,8 +419,7 @@ export class Mouse extends BaseMouse {
                     actions: [
                         {
                             type: ActionType.PointerMove,
-                            x,
-                            y,
+                            ...this.#lastMovePoint,
                             duration: (options.steps ?? 0) * 50,
                             origin: options.origin,
                         },
@@ -466,8 +466,8 @@ export class Mouse extends BaseMouse {
         const actions = [
             {
                 type: ActionType.PointerMove,
-                x,
-                y,
+                x: Math.round(x),
+                y: Math.round(y),
                 origin: options.origin,
             },
         ];
@@ -553,8 +553,8 @@ export class Touchscreen extends BaseTouchscreen {
                     actions: [
                         {
                             type: ActionType.PointerMove,
-                            x,
-                            y,
+                            x: Math.round(x),
+                            y: Math.round(y),
                             origin: options.origin,
                         },
                         {
@@ -579,8 +579,8 @@ export class Touchscreen extends BaseTouchscreen {
                     actions: [
                         {
                             type: ActionType.PointerMove,
-                            x,
-                            y,
+                            x: Math.round(x),
+                            y: Math.round(y),
                             origin: options.origin,
                         },
                     ],

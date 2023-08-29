@@ -56,6 +56,12 @@ export declare class FrameManager extends EventEmitter {
     get networkManager(): NetworkManager;
     get client(): CDPSession;
     constructor(client: CDPSession, page: Page, ignoreHTTPSErrors: boolean, timeoutSettings: TimeoutSettings);
+    /**
+     * When the main frame is replaced by another main frame,
+     * we maintain the main frame object identity while updating
+     * its frame tree and ID.
+     */
+    swapFrameTree(client: CDPSession): Promise<void>;
     private setupEventListeners;
     initialize(client?: CDPSession): Promise<void>;
     executionContextById(contextId: number, session?: CDPSession): ExecutionContext;

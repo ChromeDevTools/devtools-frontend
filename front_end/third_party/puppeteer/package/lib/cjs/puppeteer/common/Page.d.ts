@@ -111,9 +111,6 @@ export declare class CDPPage extends Page {
         idleTime?: number;
         timeout?: number;
     }): Promise<void>;
-    waitForFrame(urlOrPredicate: string | ((frame: Frame) => boolean | Promise<boolean>), options?: {
-        timeout?: number;
-    }): Promise<Frame>;
     goBack(options?: WaitForOptions): Promise<HTTPResponse | null>;
     goForward(options?: WaitForOptions): Promise<HTTPResponse | null>;
     bringToFront(): Promise<void>;

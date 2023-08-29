@@ -36,6 +36,12 @@ class CDPKeyboard extends Input_js_1.Keyboard {
         super();
         this.#client = client;
     }
+    /**
+     * @internal
+     */
+    updateClient(client) {
+        this.#client = client;
+    }
     async down(key, options = {
         text: undefined,
         commands: [],
@@ -214,6 +220,12 @@ class CDPMouse extends Input_js_1.Mouse {
         super();
         this.#client = client;
         this.#keyboard = keyboard;
+    }
+    /**
+     * @internal
+     */
+    updateClient(client) {
+        this.#client = client;
     }
     #_state = {
         position: { x: 0, y: 0 },
@@ -446,6 +458,12 @@ class CDPTouchscreen extends Input_js_1.Touchscreen {
         super();
         this.#client = client;
         this.#keyboard = keyboard;
+    }
+    /**
+     * @internal
+     */
+    updateClient(client) {
+        this.#client = client;
     }
     async tap(x, y) {
         await this.touchStart(x, y);

@@ -64,6 +64,7 @@ class LifecycleWatcher {
             (0, util_js_1.addEventListener)(frame, Frame_js_1.FrameEmittedEvents.FrameNavigatedWithinDocument, this.#navigatedWithinDocument.bind(this)),
             (0, util_js_1.addEventListener)(frame, Frame_js_1.FrameEmittedEvents.FrameNavigated, this.#navigated.bind(this)),
             (0, util_js_1.addEventListener)(frame, Frame_js_1.FrameEmittedEvents.FrameSwapped, this.#frameSwapped.bind(this)),
+            (0, util_js_1.addEventListener)(frame, Frame_js_1.FrameEmittedEvents.FrameSwappedByActivation, this.#frameSwapped.bind(this)),
             (0, util_js_1.addEventListener)(frame, Frame_js_1.FrameEmittedEvents.FrameDetached, this.#onFrameDetached.bind(this)),
             (0, util_js_1.addEventListener)(networkManager, NetworkManager_js_1.NetworkManagerEmittedEvents.Request, this.#onRequest.bind(this)),
             (0, util_js_1.addEventListener)(networkManager, NetworkManager_js_1.NetworkManagerEmittedEvents.Response, this.#onResponse.bind(this)),

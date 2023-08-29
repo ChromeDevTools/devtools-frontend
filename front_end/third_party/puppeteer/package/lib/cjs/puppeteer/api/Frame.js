@@ -18,6 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Frame = void 0;
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const GetQueryHandler_js_1 = require("../common/GetQueryHandler.js");
+const HandleIterator_js_1 = require("../common/HandleIterator.js");
 const LazyArg_js_1 = require("../common/LazyArg.js");
 const util_js_1 = require("../common/util.js");
 const locators_js_1 = require("./locators/locators.js");
@@ -143,6 +144,26 @@ class Frame extends EventEmitter_js_1.EventEmitter {
      */
     isolatedRealm() {
         throw new Error('Not implemented');
+    }
+    /**
+     * @internal
+     */
+    async frameElement() {
+        const parentFrame = this.parentFrame();
+        if (!parentFrame) {
+            return null;
+        }
+        const list = await parentFrame.isolatedRealm().evaluateHandle(() => {
+            return document.querySelectorAll('iframe');
+        });
+        for await (const iframe of (0, HandleIterator_js_1.transposeIterableHandle)(list)) {
+            const frame = await iframe.contentFrame();
+            if (frame._id === this._id) {
+                return iframe;
+            }
+            void iframe.dispose().catch(util_js_1.debugError);
+        }
+        return null;
     }
     async evaluateHandle() {
         throw new Error('Not implemented');

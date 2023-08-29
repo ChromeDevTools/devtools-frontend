@@ -33,6 +33,7 @@ export const FrameEmittedEvents = {
     LifecycleEvent: Symbol('Frame.LifecycleEvent'),
     FrameNavigatedWithinDocument: Symbol('Frame.FrameNavigatedWithinDocument'),
     FrameDetached: Symbol('Frame.FrameDetached'),
+    FrameSwappedByActivation: Symbol('Frame.FrameSwappedByActivation'),
 };
 /**
  * @internal
@@ -56,13 +57,31 @@ export class Frame extends BaseFrame {
         this.#detached = false;
         this._loaderId = '';
         this.updateClient(client);
+        this.on(FrameEmittedEvents.FrameSwappedByActivation, () => {
+            // Emulate loading process for swapped frames.
+            this._onLoadingStarted();
+            this._onLoadingStopped();
+        });
     }
-    updateClient(client) {
+    /**
+     * Updates the frame ID with the new ID. This happens when the main frame is
+     * replaced by a different frame.
+     */
+    updateId(id) {
+        this._id = id;
+    }
+    updateClient(client, keepWorlds = false) {
         this.#client = client;
-        this.worlds = {
-            [MAIN_WORLD]: new IsolatedWorld(this),
-            [PUPPETEER_WORLD]: new IsolatedWorld(this),
-        };
+        if (!keepWorlds) {
+            this.worlds = {
+                [MAIN_WORLD]: new IsolatedWorld(this),
+                [PUPPETEER_WORLD]: new IsolatedWorld(this),
+            };
+        }
+        else {
+            this.worlds[MAIN_WORLD].frameUpdated();
+            this.worlds[PUPPETEER_WORLD].frameUpdated();
+        }
     }
     page() {
         return this._frameManager.page();

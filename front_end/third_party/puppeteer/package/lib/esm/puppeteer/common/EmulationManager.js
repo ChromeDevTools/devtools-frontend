@@ -11,6 +11,9 @@ export class EmulationManager {
     constructor(client) {
         this.#client = client;
     }
+    updateClient(client) {
+        this.#client = client;
+    }
     get javascriptEnabled() {
         return this.#javascriptEnabled;
     }

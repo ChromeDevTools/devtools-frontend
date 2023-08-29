@@ -18,6 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OtherTarget = exports.WorkerTarget = exports.PageTarget = exports.CDPTarget = exports.InitializationStatus = void 0;
 const Target_js_1 = require("../api/Target.js");
 const Deferred_js_1 = require("../util/Deferred.js");
+const Connection_js_1 = require("./Connection.js");
 const Page_js_1 = require("./Page.js");
 const util_js_1 = require("./util.js");
 const WebWorker_js_1 = require("./WebWorker.js");
@@ -63,6 +64,15 @@ class CDPTarget extends Target_js_1.Target {
         this.#browserContext = browserContext;
         this._targetId = targetInfo.targetId;
         this.#sessionFactory = sessionFactory;
+        if (this.#session && this.#session instanceof Connection_js_1.CDPSessionImpl) {
+            this.#session._setTarget(this);
+        }
+    }
+    /**
+     * @internal
+     */
+    _subtype() {
+        return this.#targetInfo.subtype;
     }
     /**
      * @internal
@@ -83,7 +93,10 @@ class CDPTarget extends Target_js_1.Target {
         if (!this.#sessionFactory) {
             throw new Error('sessionFactory is not initialized');
         }
-        return this.#sessionFactory(false);
+        return this.#sessionFactory(false).then(session => {
+            session._setTarget(this);
+            return session;
+        });
     }
     url() {
         return this.#targetInfo.url;
@@ -103,6 +116,8 @@ class CDPTarget extends Target_js_1.Target {
                 return Target_js_1.TargetType.BROWSER;
             case 'webview':
                 return Target_js_1.TargetType.WEBVIEW;
+            case 'tab':
+                return Target_js_1.TargetType.TAB;
             default:
                 return Target_js_1.TargetType.OTHER;
         }

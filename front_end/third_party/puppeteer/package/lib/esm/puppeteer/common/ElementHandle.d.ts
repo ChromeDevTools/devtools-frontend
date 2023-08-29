@@ -15,8 +15,7 @@
  */
 /// <reference types="node" />
 import { Protocol } from 'devtools-protocol';
-import { AutofillData, BoundingBox, BoxModel, ClickOptions, ElementHandle, Offset, Point } from '../api/ElementHandle.js';
-import { KeyPressOptions, KeyboardTypeOptions } from '../api/Input.js';
+import { AutofillData, ElementHandle, Point } from '../api/ElementHandle.js';
 import { ScreenshotOptions } from '../api/Page.js';
 import { CDPSession } from './Connection.js';
 import { ExecutionContext } from './ExecutionContext.js';
@@ -24,7 +23,6 @@ import { Frame } from './Frame.js';
 import { WaitForSelectorOptions } from './IsolatedWorld.js';
 import { CDPJSHandle } from './JSHandle.js';
 import { NodeFor } from './types.js';
-import { KeyInput } from './USKeyboardLayout.js';
 /**
  * The CDPElementHandle extends ElementHandle now to keep compatibility
  * with `instanceof` because of that we need to have methods for
@@ -49,21 +47,8 @@ export declare class CDPElementHandle<ElementType extends Node = Element> extend
     $<Selector extends string>(selector: Selector): Promise<CDPElementHandle<NodeFor<Selector>> | null>;
     $$<Selector extends string>(selector: Selector): Promise<Array<CDPElementHandle<NodeFor<Selector>>>>;
     waitForSelector<Selector extends string>(selector: Selector, options?: WaitForSelectorOptions): Promise<CDPElementHandle<NodeFor<Selector>> | null>;
-    contentFrame(): Promise<Frame | null>;
+    contentFrame(this: ElementHandle<HTMLIFrameElement>): Promise<Frame>;
     scrollIntoView(this: CDPElementHandle<Element>): Promise<void>;
-    clickablePoint(offset?: Offset): Promise<Point>;
-    /**
-     * This method scrolls element into view if needed, and then
-     * uses {@link Page.mouse} to hover over the center of the element.
-     * If the element is detached from DOM, the method throws an error.
-     */
-    hover(this: CDPElementHandle<Element>): Promise<void>;
-    /**
-     * This method scrolls element into view if needed, and then
-     * uses {@link Page.mouse} to click in the center of the element.
-     * If the element is detached from DOM, the method throws an error.
-     */
-    click(this: CDPElementHandle<Element>, options?: Readonly<ClickOptions>): Promise<void>;
     /**
      * This method creates and captures a dragevent from the element.
      */
@@ -75,15 +60,8 @@ export declare class CDPElementHandle<ElementType extends Node = Element> extend
         delay: number;
     }): Promise<void>;
     uploadFile(this: CDPElementHandle<HTMLInputElement>, ...filePaths: string[]): Promise<void>;
-    tap(this: CDPElementHandle<Element>): Promise<void>;
-    touchStart(this: CDPElementHandle<Element>): Promise<void>;
-    touchMove(this: CDPElementHandle<Element>): Promise<void>;
-    touchEnd(this: CDPElementHandle<Element>): Promise<void>;
-    type(text: string, options?: Readonly<KeyboardTypeOptions>): Promise<void>;
-    press(key: KeyInput, options?: Readonly<KeyPressOptions>): Promise<void>;
-    boundingBox(): Promise<BoundingBox | null>;
-    boxModel(): Promise<BoxModel | null>;
     screenshot(this: CDPElementHandle<Element>, options?: ScreenshotOptions): Promise<string | Buffer>;
     autofill(data: AutofillData): Promise<void>;
+    assertElementHasWorld(): asserts this;
 }
 //# sourceMappingURL=ElementHandle.d.ts.map

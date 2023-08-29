@@ -23,6 +23,7 @@ const promises_1 = require("fs/promises");
 const path_1 = __importDefault(require("path"));
 const browsers_1 = require("@puppeteer/browsers");
 const util_js_1 = require("../common/util.js");
+const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
 const ProductLauncher_js_1 = require("./ProductLauncher.js");
 const fs_js_1 = require("./util/fs.js");
@@ -133,6 +134,7 @@ class ChromeLauncher extends ProductLauncher_js_1.ProductLauncher {
             '--disable-extensions',
             // AcceptCHFrame disabled because of crbug.com/1348106.
             '--disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints',
+            ...(environment_js_1.USE_TAB_TARGET ? [] : ['--disable-features=Prerender2']),
             '--disable-hang-monitor',
             '--disable-ipc-flooding-protection',
             '--disable-popup-blocking',

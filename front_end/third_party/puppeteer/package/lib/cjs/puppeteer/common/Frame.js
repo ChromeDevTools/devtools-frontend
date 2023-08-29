@@ -36,6 +36,7 @@ exports.FrameEmittedEvents = {
     LifecycleEvent: Symbol('Frame.LifecycleEvent'),
     FrameNavigatedWithinDocument: Symbol('Frame.FrameNavigatedWithinDocument'),
     FrameDetached: Symbol('Frame.FrameDetached'),
+    FrameSwappedByActivation: Symbol('Frame.FrameSwappedByActivation'),
 };
 /**
  * @internal
@@ -59,13 +60,31 @@ class Frame extends Frame_js_1.Frame {
         this.#detached = false;
         this._loaderId = '';
         this.updateClient(client);
+        this.on(exports.FrameEmittedEvents.FrameSwappedByActivation, () => {
+            // Emulate loading process for swapped frames.
+            this._onLoadingStarted();
+            this._onLoadingStopped();
+        });
     }
-    updateClient(client) {
+    /**
+     * Updates the frame ID with the new ID. This happens when the main frame is
+     * replaced by a different frame.
+     */
+    updateId(id) {
+        this._id = id;
+    }
+    updateClient(client, keepWorlds = false) {
         this.#client = client;
-        this.worlds = {
-            [IsolatedWorlds_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
-            [IsolatedWorlds_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
-        };
+        if (!keepWorlds) {
+            this.worlds = {
+                [IsolatedWorlds_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
+                [IsolatedWorlds_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
+            };
+        }
+        else {
+            this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].frameUpdated();
+            this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].frameUpdated();
+        }
     }
     page() {
         return this._frameManager.page();

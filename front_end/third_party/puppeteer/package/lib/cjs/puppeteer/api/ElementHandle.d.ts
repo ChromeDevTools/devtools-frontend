@@ -16,22 +16,24 @@
 /// <reference types="node" />
 import { Protocol } from 'devtools-protocol';
 import { Frame } from '../api/Frame.js';
-import { CDPSession } from '../common/Connection.js';
-import { ExecutionContext } from '../common/ExecutionContext.js';
 import { WaitForSelectorOptions } from '../common/IsolatedWorld.js';
 import { ElementFor, EvaluateFuncWith, HandleFor, HandleOr, NodeFor } from '../common/types.js';
 import { KeyInput } from '../common/USKeyboardLayout.js';
-import { KeyPressOptions, MouseClickOptions, KeyboardTypeOptions } from './Input.js';
+import { KeyboardTypeOptions, KeyPressOptions, MouseClickOptions } from './Input.js';
 import { JSHandle } from './JSHandle.js';
 import { ScreenshotOptions } from './Page.js';
 /**
  * @public
  */
+export type Quad = [Point, Point, Point, Point];
+/**
+ * @public
+ */
 export interface BoxModel {
-    content: Point[];
-    padding: Point[];
-    border: Point[];
-    margin: Point[];
+    content: Quad;
+    padding: Quad;
+    border: Quad;
+    margin: Quad;
     width: number;
     height: number;
 }
@@ -110,7 +112,7 @@ export interface Point {
  *
  * @public
  */
-export declare class ElementHandle<ElementType extends Node = Element> extends JSHandle<ElementType> {
+export declare abstract class ElementHandle<ElementType extends Node = Element> extends JSHandle<ElementType> {
     #private;
     /**
      * @internal
@@ -159,17 +161,16 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
     /**
      * @internal
      */
+    remoteObject(): Protocol.Runtime.RemoteObject;
+    /**
+     * @internal
+     */
     dispose(): Promise<void>;
     asElement(): ElementHandle<ElementType>;
     /**
-     * @internal
+     * Frame corresponding to the current handle.
      */
-    executionContext(): ExecutionContext;
-    /**
-     * @internal
-     */
-    get client(): CDPSession;
-    get frame(): Frame;
+    abstract get frame(): Frame;
     /**
      * Queries the current element for an element matching the given selector.
      *
@@ -385,9 +386,8 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      *   '.class-name-of-anchor'
      * );
      * // DO NOT DISPOSE `element`, this will be always be the same handle.
-     * const anchor: ElementHandle<HTMLAnchorElement> = await element.toElement(
-     *   'a'
-     * );
+     * const anchor: ElementHandle<HTMLAnchorElement> =
+     *   await element.toElement('a');
      * ```
      *
      * @param tagName - The tag name of the desired element type.
@@ -396,10 +396,11 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      */
     toElement<K extends keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap>(tagName: K): Promise<HandleFor<ElementFor<K>>>;
     /**
-     * Resolves to the content frame for element handles referencing
-     * iframe nodes, or null otherwise
+     * Resolves the frame associated with the element, if any. Always exists for
+     * HTMLIFrameElements.
      */
-    contentFrame(): Promise<Frame | null>;
+    abstract contentFrame(this: ElementHandle<HTMLIFrameElement>): Promise<Frame>;
+    abstract contentFrame(): Promise<Frame | null>;
     /**
      * Returns the middle point within an element unless a specific offset is provided.
      */
@@ -415,7 +416,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * uses {@link Page | Page.mouse} to click in the center of the element.
      * If the element is detached from DOM, the method throws an error.
      */
-    click(this: ElementHandle<Element>, options?: ClickOptions): Promise<void>;
+    click(this: ElementHandle<Element>, options?: Readonly<ClickOptions>): Promise<void>;
     /**
      * This method creates and captures a dragevent from the element.
      */
@@ -568,7 +569,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
     /**
      * @internal
      */
-    assertElementHasWorld(): asserts this;
+    abstract assertElementHasWorld(): asserts this;
     /**
      * If the element is a form input, you can use {@link ElementHandle.autofill}
      * to test if the form is compatible with the browser's autofill
@@ -594,7 +595,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * });
      * ```
      */
-    autofill(data: AutofillData): Promise<void>;
+    abstract autofill(data: AutofillData): Promise<void>;
 }
 /**
  * @public

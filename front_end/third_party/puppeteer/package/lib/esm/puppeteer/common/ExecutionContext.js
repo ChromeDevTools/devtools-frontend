@@ -70,7 +70,9 @@ export class ExecutionContext {
                 this.#installGlobalBinding(new Binding('__ariaQuerySelector', ARIAQueryHandler.queryOne)),
                 this.#installGlobalBinding(new Binding('__ariaQuerySelectorAll', (async (element, selector) => {
                     const results = ARIAQueryHandler.queryAll(element, selector);
-                    return element.executionContext().evaluateHandle((...elements) => {
+                    return element
+                        .executionContext()
+                        .evaluateHandle((...elements) => {
                         return elements;
                     }, ...(await AsyncIterableUtil.collect(results)));
                 }))),

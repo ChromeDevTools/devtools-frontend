@@ -31,7 +31,7 @@ export declare class CDPBrowser extends BrowserBase {
     /**
      * @internal
      */
-    static _create(product: 'firefox' | 'chrome' | undefined, connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean): Promise<CDPBrowser>;
+    static _create(product: 'firefox' | 'chrome' | undefined, connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, useTabTarget?: boolean): Promise<CDPBrowser>;
     /**
      * @internal
      */
@@ -39,7 +39,7 @@ export declare class CDPBrowser extends BrowserBase {
     /**
      * @internal
      */
-    constructor(product: 'chrome' | 'firefox' | undefined, connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean);
+    constructor(product: 'chrome' | 'firefox' | undefined, connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, useTabTarget?: boolean);
     /**
      * @internal
      */

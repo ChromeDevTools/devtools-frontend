@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export { catchError, defaultIfEmpty, filter, first, ignoreElements, map, mergeMap, raceWith, retry, tap, throwIfEmpty, firstValueFrom, defer, EMPTY, from, fromEvent, merge, race, timer, OperatorFunction, identity, noop, pipe, Observable, } from 'rxjs';
+export declare function filterAsync<T>(predicate: (value: T) => boolean | PromiseLike<boolean>): import("rxjs").OperatorFunction<T, T>;

@@ -30,6 +30,7 @@ import type { Readable } from 'stream';
 export declare class Accessibility {
     #private;
     /* Excluded from this release type: __constructor */
+    /* Excluded from this release type: updateClient */
     /**
      * Captures the current state of the accessibility tree.
      * The returned object represents the root accessible node of the page.
@@ -152,10 +153,10 @@ export declare interface BoundingBox extends Point {
  * @public
  */
 export declare interface BoxModel {
-    content: Point[];
-    padding: Point[];
-    border: Point[];
-    margin: Point[];
+    content: Quad;
+    padding: Quad;
+    border: Quad;
+    margin: Quad;
     width: number;
     height: number;
 }
@@ -1043,6 +1044,7 @@ export declare interface ContinueRequestOverrides {
 export declare class Coverage {
     #private;
     constructor(client: CDPSession);
+    /* Excluded from this release type: updateClient */
     /**
      * @param options - Set of configurable options for coverage defaults to
      * `resetOnNavigation : true, reportAnonymousScripts : false,`
@@ -1127,6 +1129,7 @@ export declare interface Credentials {
 export declare class CSSCoverage {
     #private;
     constructor(client: CDPSession);
+    /* Excluded from this release type: updateClient */
     start(options?: {
         resetOnNavigation?: boolean;
     }): Promise<void>;
@@ -1420,7 +1423,7 @@ export declare type ElementFor<TagName extends keyof HTMLElementTagNameMap | key
  *
  * @public
  */
-export declare class ElementHandle<ElementType extends Node = Element> extends JSHandle<ElementType> {
+export declare abstract class ElementHandle<ElementType extends Node = Element> extends JSHandle<ElementType> {
     #private;
     /* Excluded from this release type: handle */
     /* Excluded from this release type: __constructor */
@@ -1433,11 +1436,13 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
     /* Excluded from this release type: evaluateHandle */
     /* Excluded from this release type: jsonValue */
     /* Excluded from this release type: toString */
+    /* Excluded from this release type: remoteObject */
     /* Excluded from this release type: dispose */
     asElement(): ElementHandle<ElementType>;
-    /* Excluded from this release type: executionContext */
-    /* Excluded from this release type: client */
-    get frame(): Frame;
+    /**
+     * Frame corresponding to the current handle.
+     */
+    abstract get frame(): Frame;
     /**
      * Queries the current element for an element matching the given selector.
      *
@@ -1653,9 +1658,8 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      *   '.class-name-of-anchor'
      * );
      * // DO NOT DISPOSE `element`, this will be always be the same handle.
-     * const anchor: ElementHandle<HTMLAnchorElement> = await element.toElement(
-     *   'a'
-     * );
+     * const anchor: ElementHandle<HTMLAnchorElement> =
+     *   await element.toElement('a');
      * ```
      *
      * @param tagName - The tag name of the desired element type.
@@ -1664,10 +1668,11 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      */
     toElement<K extends keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap>(tagName: K): Promise<HandleFor<ElementFor<K>>>;
     /**
-     * Resolves to the content frame for element handles referencing
-     * iframe nodes, or null otherwise
+     * Resolves the frame associated with the element, if any. Always exists for
+     * HTMLIFrameElements.
      */
-    contentFrame(): Promise<Frame | null>;
+    abstract contentFrame(this: ElementHandle<HTMLIFrameElement>): Promise<Frame>;
+    abstract contentFrame(): Promise<Frame | null>;
     /**
      * Returns the middle point within an element unless a specific offset is provided.
      */
@@ -1683,7 +1688,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * uses {@link Page | Page.mouse} to click in the center of the element.
      * If the element is detached from DOM, the method throws an error.
      */
-    click(this: ElementHandle<Element>, options?: ClickOptions): Promise<void>;
+    click(this: ElementHandle<Element>, options?: Readonly<ClickOptions>): Promise<void>;
     /**
      * This method creates and captures a dragevent from the element.
      */
@@ -1853,7 +1858,7 @@ export declare class ElementHandle<ElementType extends Node = Element> extends J
      * });
      * ```
      */
-    autofill(data: AutofillData): Promise<void>;
+    abstract autofill(data: AutofillData): Promise<void>;
 }
 
 /* Excluded from this release type: EmulationManager */
@@ -2231,6 +2236,7 @@ export declare class Frame extends EventEmitter {
     /* Excluded from this release type: executionContext */
     /* Excluded from this release type: mainRealm */
     /* Excluded from this release type: isolatedRealm */
+    /* Excluded from this release type: frameElement */
     /**
      * Behaves identically to {@link Page.evaluateHandle} except it's run within
      * the context of this frame.
@@ -3180,6 +3186,7 @@ export declare interface InternalNetworkConditions extends NetworkConditions {
 export declare class JSCoverage {
     #private;
     constructor(client: CDPSession);
+    /* Excluded from this release type: updateClient */
     start(options?: {
         resetOnNavigation?: boolean;
         reportAnonymousScripts?: boolean;
@@ -3246,30 +3253,27 @@ export declare interface JSCoverageOptions {
  *
  * @public
  */
-export declare class JSHandle<T = unknown> {
+export declare abstract class JSHandle<T = unknown> {
     /**
      * Used for nominally typing {@link JSHandle}.
      */
     _?: T;
     /* Excluded from this release type: __constructor */
     /* Excluded from this release type: disposed */
-    /* Excluded from this release type: executionContext */
-    /* Excluded from this release type: client */
     /**
      * Evaluates the given function with the current handle as its first argument.
      */
-    evaluate<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    abstract evaluate<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * Evaluates the given function with the current handle as its first argument.
      *
      */
-    evaluateHandle<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+    abstract evaluateHandle<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     /**
      * Fetches a single property from the referenced object.
      */
-    getProperty<K extends keyof T>(propertyName: HandleOr<K>): Promise<HandleFor<T[K]>>;
-    getProperty(propertyName: string): Promise<JSHandle<unknown>>;
-    getProperty<K extends keyof T>(propertyName: HandleOr<K>): Promise<HandleFor<T[K]>>;
+    abstract getProperty<K extends keyof T>(propertyName: HandleOr<K>): Promise<HandleFor<T[K]>>;
+    abstract getProperty(propertyName: string): Promise<JSHandle<unknown>>;
     /**
      * Gets a map of handles representing the properties of the current handle.
      *
@@ -3288,7 +3292,7 @@ export declare class JSHandle<T = unknown> {
      * children; // holds elementHandles to all children of document.body
      * ```
      */
-    getProperties(): Promise<Map<string, JSHandle>>;
+    abstract getProperties(): Promise<Map<string, JSHandle<unknown>>>;
     /**
      * A vanilla object representing the serializable portions of the
      * referenced object.
@@ -3297,30 +3301,30 @@ export declare class JSHandle<T = unknown> {
      * @remarks
      * If the object has a `toJSON` function, it **will not** be called.
      */
-    jsonValue(): Promise<T>;
+    abstract jsonValue(): Promise<T>;
     /**
      * Either `null` or the handle itself if the handle is an
      * instance of {@link ElementHandle}.
      */
-    asElement(): ElementHandle<Node> | null;
+    abstract asElement(): ElementHandle<Node> | null;
     /**
      * Releases the object referenced by the handle for garbage collection.
      */
-    dispose(): Promise<void>;
+    abstract dispose(): Promise<void>;
     /**
      * Returns a string representation of the JSHandle.
      *
      * @remarks
      * Useful during debugging.
      */
-    toString(): string;
+    abstract toString(): string;
     /* Excluded from this release type: id */
     /**
      * Provides access to the
      * {@link https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObject | Protocol.Runtime.RemoteObject}
      * backing this handle.
      */
-    remoteObject(): Protocol.Runtime.RemoteObject;
+    abstract remoteObject(): Protocol.Runtime.RemoteObject;
 }
 
 /**
@@ -5075,9 +5079,8 @@ export declare class Page extends EventEmitter {
     }): Promise<void>;
     /* Excluded from this release type: _waitForNetworkIdle */
     /**
-     * @param urlOrPredicate - A URL or predicate to wait for.
-     * @param options - Optional waiting parameters
-     * @returns Promise which resolves to the matched frame.
+     * Waits for a frame matching the given conditions to appear.
+     *
      * @example
      *
      * ```ts
@@ -5085,17 +5088,8 @@ export declare class Page extends EventEmitter {
      *   return frame.name() === 'Test';
      * });
      * ```
-     *
-     * @remarks
-     * Optional Parameter have:
-     *
-     * - `timeout`: Maximum wait time in milliseconds, defaults to `30` seconds,
-     *   pass `0` to disable the timeout. The default value can be changed by using
-     *   the {@link Page.setDefaultTimeout} method.
      */
-    waitForFrame(urlOrPredicate: string | ((frame: Frame) => boolean | Promise<boolean>), options?: {
-        timeout?: number;
-    }): Promise<Frame>;
+    waitForFrame(urlOrPredicate: string | ((frame: Frame) => Awaitable<boolean>), options?: WaitTimeoutOptions): Promise<Frame>;
     /**
      * This method navigate to the previous page in history.
      * @param options - Navigation parameters
@@ -6657,6 +6651,11 @@ export declare type PuppeteerNodeLaunchOptions = BrowserLaunchArgumentOptions & 
 
 /* Excluded from this release type: PuppeteerUtilWrapper */
 
+/**
+ * @public
+ */
+export declare type Quad = [Point, Point, Point, Point];
+
 /* Excluded from this release type: QueryHandler */
 
 /* Excluded from this release type: QuerySelector */
@@ -6995,7 +6994,8 @@ export declare enum TargetType {
     SHARED_WORKER = "shared_worker",
     BROWSER = "browser",
     WEBVIEW = "webview",
-    OTHER = "other"
+    OTHER = "other",
+    /* Excluded from this release type: TAB */
 }
 
 /* Excluded from this release type: TaskManager */
@@ -7068,6 +7068,7 @@ export declare class Touchscreen {
 export declare class Tracing {
     #private;
     /* Excluded from this release type: __constructor */
+    /* Excluded from this release type: updateClient */
     /**
      * Starts a trace for the current page.
      * @remarks

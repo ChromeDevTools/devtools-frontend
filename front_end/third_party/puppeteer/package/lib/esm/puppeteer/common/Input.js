@@ -33,6 +33,12 @@ export class CDPKeyboard extends Keyboard {
         super();
         this.#client = client;
     }
+    /**
+     * @internal
+     */
+    updateClient(client) {
+        this.#client = client;
+    }
     async down(key, options = {
         text: undefined,
         commands: [],
@@ -210,6 +216,12 @@ export class CDPMouse extends Mouse {
         super();
         this.#client = client;
         this.#keyboard = keyboard;
+    }
+    /**
+     * @internal
+     */
+    updateClient(client) {
+        this.#client = client;
     }
     #_state = {
         position: { x: 0, y: 0 },
@@ -441,6 +453,12 @@ export class CDPTouchscreen extends Touchscreen {
         super();
         this.#client = client;
         this.#keyboard = keyboard;
+    }
+    /**
+     * @internal
+     */
+    updateClient(client) {
+        this.#client = client;
     }
     async tap(x, y) {
         await this.touchStart(x, y);

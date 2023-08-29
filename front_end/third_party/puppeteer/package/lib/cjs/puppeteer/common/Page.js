@@ -64,6 +64,7 @@ class CDPPage extends Page_js_1.Page {
     }
     #closed = false;
     #client;
+    #tabSession;
     #target;
     #keyboard;
     #mouse;
@@ -215,6 +216,7 @@ class CDPPage extends Page_js_1.Page {
     constructor(client, target, ignoreHTTPSErrors, screenshotTaskQueue) {
         super();
         this.#client = client;
+        this.#tabSession = client.parentSession();
         this.#target = target;
         this.#keyboard = new Input_js_1.CDPKeyboard(client);
         this.#mouse = new Input_js_1.CDPMouse(client, this.#keyboard);
@@ -227,6 +229,21 @@ class CDPPage extends Page_js_1.Page {
         this.#screenshotTaskQueue = screenshotTaskQueue;
         this.#viewport = null;
         this.#setupEventListeners();
+        this.#tabSession?.on(Connection_js_1.CDPSessionEmittedEvents.Swapped, async (newSession) => {
+            this.#client = newSession;
+            (0, assert_js_1.assert)(this.#client instanceof Connection_js_1.CDPSessionImpl, 'CDPSession is not instance of CDPSessionImpl');
+            this.#target = this.#client._target();
+            (0, assert_js_1.assert)(this.#target, 'Missing target on swap');
+            this.#keyboard.updateClient(newSession);
+            this.#mouse.updateClient(newSession);
+            this.#touchscreen.updateClient(newSession);
+            this.#accessibility.updateClient(newSession);
+            this.#emulationManager.updateClient(newSession);
+            this.#tracing.updateClient(newSession);
+            this.#coverage.updateClient(newSession);
+            await this.#frameManager.swapFrameTree(newSession);
+            this.#setupEventListeners();
+        });
     }
     #setupEventListeners() {
         this.#target
@@ -687,35 +704,6 @@ class CDPPage extends Page_js_1.Page {
     async waitForNetworkIdle(options = {}) {
         const { idleTime = 500, timeout = this.#timeoutSettings.timeout() } = options;
         await this._waitForNetworkIdle(this.#frameManager.networkManager, idleTime, timeout, this.#sessionCloseDeferred);
-    }
-    async waitForFrame(urlOrPredicate, options = {}) {
-        const { timeout = this.#timeoutSettings.timeout() } = options;
-        let predicate;
-        if ((0, util_js_1.isString)(urlOrPredicate)) {
-            predicate = (frame) => {
-                return Promise.resolve(urlOrPredicate === frame.url());
-            };
-        }
-        else {
-            predicate = (frame) => {
-                const value = urlOrPredicate(frame);
-                if (typeof value === 'boolean') {
-                    return Promise.resolve(value);
-                }
-                return value;
-            };
-        }
-        const eventRace = Deferred_js_1.Deferred.race([
-            (0, util_js_1.waitForEvent)(this.#frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameAttached, predicate, timeout, this.#sessionCloseDeferred.valueOrThrow()),
-            (0, util_js_1.waitForEvent)(this.#frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameNavigated, predicate, timeout, this.#sessionCloseDeferred.valueOrThrow()),
-            ...this.frames().map(async (frame) => {
-                if (await predicate(frame)) {
-                    return frame;
-                }
-                return await eventRace;
-            }),
-        ]);
-        return eventRace;
     }
     async goBack(options = {}) {
         return this.#go(-1, options);

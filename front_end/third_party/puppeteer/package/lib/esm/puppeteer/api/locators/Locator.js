@@ -237,9 +237,9 @@ export class Locator extends EventEmitter {
         ], signal), tap(() => {
             return this.emit(LocatorEmittedEvents.Action);
         }), mergeMap(handle => {
-            return from(handle.click(options)).pipe(catchError((_, caught) => {
+            return from(handle.click(options)).pipe(catchError(err => {
                 void handle.dispose().catch(debugError);
-                return caught;
+                throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal));
     }
@@ -332,9 +332,9 @@ export class Locator extends EventEmitter {
                         throw new Error(`Element cannot be filled out.`);
                 }
             }))
-                .pipe(catchError((_, caught) => {
+                .pipe(catchError(err => {
                 void handle.dispose().catch(debugError);
-                return caught;
+                throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal));
     }
@@ -346,9 +346,9 @@ export class Locator extends EventEmitter {
         ], signal), tap(() => {
             return this.emit(LocatorEmittedEvents.Action);
         }), mergeMap(handle => {
-            return from(handle.hover()).pipe(catchError((_, caught) => {
+            return from(handle.hover()).pipe(catchError(err => {
                 void handle.dispose().catch(debugError);
-                return caught;
+                throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal));
     }
@@ -367,9 +367,9 @@ export class Locator extends EventEmitter {
                 if (scrollLeft !== undefined) {
                     el.scrollLeft = scrollLeft;
                 }
-            }, options?.scrollTop, options?.scrollLeft)).pipe(catchError((_, caught) => {
+            }, options?.scrollTop, options?.scrollLeft)).pipe(catchError(err => {
                 void handle.dispose().catch(debugError);
-                return caught;
+                throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal));
     }

@@ -22,7 +22,7 @@ import { EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from '../types.js'
 import { BrowsingContext } from './BrowsingContext.js';
 import { HTTPResponse } from './HTTPResponse.js';
 import { Page } from './Page.js';
-import { SandboxChart, Sandbox } from './Sandbox.js';
+import { Sandbox, SandboxChart } from './Sandbox.js';
 /**
  * Puppeteer's Frame class could be viewed as a BiDi BrowsingContext implementation
  * @internal

@@ -79,6 +79,7 @@ export declare class IsolatedWorld implements Realm {
     get taskManager(): TaskManager;
     get _bindings(): Map<string, Binding>;
     constructor(frame: Frame);
+    frameUpdated(): void;
     frame(): Frame;
     clearContext(): void;
     setContext(context: ExecutionContext): void;

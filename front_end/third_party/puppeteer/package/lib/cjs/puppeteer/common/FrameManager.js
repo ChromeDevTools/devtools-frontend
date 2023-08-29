@@ -17,6 +17,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FrameManager = exports.FrameManagerEmittedEvents = exports.UTILITY_WORLD_NAME = void 0;
 const assert_js_1 = require("../util/assert.js");
+const Deferred_js_1 = require("../util/Deferred.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Connection_js_1 = require("./Connection.js");
 const DeviceRequestPrompt_js_1 = require("./DeviceRequestPrompt.js");
@@ -45,6 +46,7 @@ exports.FrameManagerEmittedEvents = {
     LifecycleEvent: Symbol('FrameManager.LifecycleEvent'),
     FrameNavigatedWithinDocument: Symbol('FrameManager.FrameNavigatedWithinDocument'),
 };
+const TIME_FOR_WAITING_FOR_SWAP = 100; // ms.
 /**
  * A frame manager manages the frames for a given {@link Page | page}.
  *
@@ -85,11 +87,64 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         this.#timeoutSettings = timeoutSettings;
         this.setupEventListeners(this.#client);
         client.once(Connection_js_1.CDPSessionEmittedEvents.Disconnected, () => {
-            const mainFrame = this._frameTree.getMainFrame();
-            if (mainFrame) {
-                this.#removeFramesRecursively(mainFrame);
-            }
+            this.#onClientDisconnect().catch(util_js_1.debugError);
         });
+    }
+    /**
+     * Called when the frame's client is disconnected. We don't know if the
+     * disconnect means that the frame is removed or if it will be replaced by a
+     * new frame. Therefore, we wait for a swap event.
+     */
+    async #onClientDisconnect() {
+        const mainFrame = this._frameTree.getMainFrame();
+        if (!mainFrame) {
+            return;
+        }
+        for (const child of mainFrame.childFrames()) {
+            this.#removeFramesRecursively(child);
+        }
+        const swapped = Deferred_js_1.Deferred.create({
+            timeout: TIME_FOR_WAITING_FOR_SWAP,
+            message: 'Frame was not swapped',
+        });
+        mainFrame.once(Frame_js_1.FrameEmittedEvents.FrameSwappedByActivation, () => {
+            swapped.resolve();
+        });
+        try {
+            await swapped.valueOrThrow();
+        }
+        catch (err) {
+            this.#removeFramesRecursively(mainFrame);
+        }
+    }
+    /**
+     * When the main frame is replaced by another main frame,
+     * we maintain the main frame object identity while updating
+     * its frame tree and ID.
+     */
+    async swapFrameTree(client) {
+        this.#onExecutionContextsCleared(this.#client);
+        this.#client = client;
+        (0, assert_js_1.assert)(this.#client instanceof Connection_js_1.CDPSessionImpl, 'CDPSession is not an instance of CDPSessionImpl.');
+        const frame = this._frameTree.getMainFrame();
+        if (frame) {
+            this.#frameNavigatedReceived.add(this.#client._target()._targetId);
+            this._frameTree.removeFrame(frame);
+            frame.updateId(this.#client._target()._targetId);
+            frame.mainRealm().clearContext();
+            frame.isolatedRealm().clearContext();
+            this._frameTree.addFrame(frame);
+            frame.updateClient(client, true);
+        }
+        this.setupEventListeners(client);
+        client.once(Connection_js_1.CDPSessionEmittedEvents.Disconnected, () => {
+            this.#onClientDisconnect().catch(util_js_1.debugError);
+        });
+        await this.initialize(client);
+        await this.#networkManager.updateClient(client);
+        if (frame) {
+            frame.emit(Frame_js_1.FrameEmittedEvents.FrameSwappedByActivation);
+        }
     }
     setupEventListeners(session) {
         session.on('Page.frameAttached', event => {

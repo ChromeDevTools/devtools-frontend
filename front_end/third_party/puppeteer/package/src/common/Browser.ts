@@ -32,6 +32,7 @@ import {
 import {BrowserContext} from '../api/BrowserContext.js';
 import {Page} from '../api/Page.js';
 import {Target} from '../api/Target.js';
+import {USE_TAB_TARGET} from '../environment.js';
 import {assert} from '../util/assert.js';
 
 import {ChromeTargetManager} from './ChromeTargetManager.js';
@@ -65,7 +66,8 @@ export class CDPBrowser extends BrowserBase {
     closeCallback?: BrowserCloseCallback,
     targetFilterCallback?: TargetFilterCallback,
     isPageTargetCallback?: IsPageTargetCallback,
-    waitForInitiallyDiscoveredTargets = true
+    waitForInitiallyDiscoveredTargets = true,
+    useTabTarget = USE_TAB_TARGET
   ): Promise<CDPBrowser> {
     const browser = new CDPBrowser(
       product,
@@ -77,7 +79,8 @@ export class CDPBrowser extends BrowserBase {
       closeCallback,
       targetFilterCallback,
       isPageTargetCallback,
-      waitForInitiallyDiscoveredTargets
+      waitForInitiallyDiscoveredTargets,
+      useTabTarget
     );
     await browser._attach();
     return browser;
@@ -114,7 +117,8 @@ export class CDPBrowser extends BrowserBase {
     closeCallback?: BrowserCloseCallback,
     targetFilterCallback?: TargetFilterCallback,
     isPageTargetCallback?: IsPageTargetCallback,
-    waitForInitiallyDiscoveredTargets = true
+    waitForInitiallyDiscoveredTargets = true,
+    useTabTarget = USE_TAB_TARGET
   ) {
     super();
     product = product || 'chrome';
@@ -141,7 +145,8 @@ export class CDPBrowser extends BrowserBase {
         connection,
         this.#createTarget,
         this.#targetFilterCallback,
-        waitForInitiallyDiscoveredTargets
+        waitForInitiallyDiscoveredTargets,
+        useTabTarget
       );
     }
     this.#defaultContext = new CDPBrowserContext(this.#connection, this);
@@ -442,7 +447,9 @@ export class CDPBrowser extends BrowserBase {
       url: 'about:blank',
       browserContextId: contextId || undefined,
     });
-    const target = this.#targetManager.getAvailableTargets().get(targetId);
+    const target = (await this.waitForTarget(t => {
+      return (t as CDPTarget)._targetId === targetId;
+    })) as CDPTarget;
     if (!target) {
       throw new Error(`Missing target for page (id = ${targetId})`);
     }

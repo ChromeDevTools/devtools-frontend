@@ -23,6 +23,7 @@ import { Viewport } from './PuppeteerViewport.js';
 export declare class EmulationManager {
     #private;
     constructor(client: CDPSession);
+    updateClient(client: CDPSession): void;
     get javascriptEnabled(): boolean;
     emulateViewport(viewport: Viewport): Promise<boolean>;
     emulateIdleState(overrides?: {

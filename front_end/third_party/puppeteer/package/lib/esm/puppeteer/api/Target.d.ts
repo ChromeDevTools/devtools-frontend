@@ -28,7 +28,11 @@ export declare enum TargetType {
     SHARED_WORKER = "shared_worker",
     BROWSER = "browser",
     WEBVIEW = "webview",
-    OTHER = "other"
+    OTHER = "other",
+    /**
+     * @internal
+     */
+    TAB = "tab"
 }
 /**
  * Target represents a

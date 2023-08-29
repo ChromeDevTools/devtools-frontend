@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DEFERRED_PROMISE_DEBUG_TIMEOUT = exports.isNode = void 0;
+exports.USE_TAB_TARGET = exports.DEFERRED_PROMISE_DEBUG_TIMEOUT = exports.isNode = void 0;
 /**
  * @internal
  */
@@ -27,4 +27,12 @@ exports.DEFERRED_PROMISE_DEBUG_TIMEOUT = typeof process !== 'undefined' &&
     typeof process.env['PUPPETEER_DEFERRED_PROMISE_DEBUG_TIMEOUT'] !== 'undefined'
     ? Number(process.env['PUPPETEER_DEFERRED_PROMISE_DEBUG_TIMEOUT'])
     : -1;
+/**
+ * Only used for internal testing.
+ *
+ * @internal
+ */
+exports.USE_TAB_TARGET = typeof process !== 'undefined'
+    ? process.env['PUPPETEER_INTERNAL_TAB_TARGET'] === 'true'
+    : false;
 //# sourceMappingURL=environment.js.map

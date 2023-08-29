@@ -300,6 +300,10 @@ export declare class Frame extends EventEmitter {
      */
     isolatedRealm(): Realm;
     /**
+     * @internal
+     */
+    frameElement(): Promise<HandleFor<HTMLIFrameElement> | null>;
+    /**
      * Behaves identically to {@link Page.evaluateHandle} except it's run within
      * the context of this frame.
      *

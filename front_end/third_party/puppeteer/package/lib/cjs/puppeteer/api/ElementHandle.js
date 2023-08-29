@@ -115,26 +115,17 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
     /**
      * @internal
      */
+    remoteObject() {
+        return this.handle.remoteObject();
+    }
+    /**
+     * @internal
+     */
     async dispose() {
         return await this.handle.dispose();
     }
     asElement() {
         return this;
-    }
-    /**
-     * @internal
-     */
-    executionContext() {
-        throw new Error('Not implemented');
-    }
-    /**
-     * @internal
-     */
-    get client() {
-        throw new Error('Not implemented');
-    }
-    get frame() {
-        throw new Error('Not implemented');
     }
     /**
      * Queries the current element for an element matching the given selector.
@@ -406,9 +397,8 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
      *   '.class-name-of-anchor'
      * );
      * // DO NOT DISPOSE `element`, this will be always be the same handle.
-     * const anchor: ElementHandle<HTMLAnchorElement> = await element.toElement(
-     *   'a'
-     * );
+     * const anchor: ElementHandle<HTMLAnchorElement> =
+     *   await element.toElement('a');
      * ```
      *
      * @param tagName - The tag name of the desired element type.
@@ -425,14 +415,23 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
         return this;
     }
     /**
-     * Resolves to the content frame for element handles referencing
-     * iframe nodes, or null otherwise
+     * Returns the middle point within an element unless a specific offset is provided.
      */
-    async contentFrame() {
-        throw new Error('Not implemented');
-    }
-    async clickablePoint() {
-        throw new Error('Not implemented');
+    async clickablePoint(offset) {
+        const box = await this.#clickableBox();
+        if (!box) {
+            throw new Error('Node is either not clickable or not an Element');
+        }
+        if (offset !== undefined) {
+            return {
+                x: box.x + offset.x,
+                y: box.y + offset.y,
+            };
+        }
+        return {
+            x: box.x + box.width / 2,
+            y: box.y + box.height / 2,
+        };
     }
     /**
      * This method scrolls element into view if needed, and then
@@ -440,10 +439,19 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
      * If the element is detached from DOM, the method throws an error.
      */
     async hover() {
-        throw new Error('Not implemented');
+        await this.scrollIntoViewIfNeeded();
+        const { x, y } = await this.clickablePoint();
+        await this.frame.page().mouse.move(x, y);
     }
-    async click() {
-        throw new Error('Not implemented');
+    /**
+     * This method scrolls element into view if needed, and then
+     * uses {@link Page | Page.mouse} to click in the center of the element.
+     * If the element is detached from DOM, the method throws an error.
+     */
+    async click(options = {}) {
+        await this.scrollIntoViewIfNeeded();
+        const { x, y } = await this.clickablePoint(options.offset);
+        await this.frame.page().mouse.click(x, y, options);
     }
     async drag() {
         throw new Error('Not implemented');
@@ -524,16 +532,24 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
      * If the element is detached from DOM, the method throws an error.
      */
     async tap() {
-        throw new Error('Not implemented');
+        await this.scrollIntoViewIfNeeded();
+        const { x, y } = await this.clickablePoint();
+        await this.frame.page().touchscreen.touchStart(x, y);
+        await this.frame.page().touchscreen.touchEnd();
     }
     async touchStart() {
-        throw new Error('Not implemented');
+        await this.scrollIntoViewIfNeeded();
+        const { x, y } = await this.clickablePoint();
+        await this.frame.page().touchscreen.touchStart(x, y);
     }
     async touchMove() {
-        throw new Error('Not implemented');
+        await this.scrollIntoViewIfNeeded();
+        const { x, y } = await this.clickablePoint();
+        await this.frame.page().touchscreen.touchMove(x, y);
     }
     async touchEnd() {
-        throw new Error('Not implemented');
+        await this.scrollIntoViewIfNeeded();
+        await this.frame.page().touchscreen.touchEnd();
     }
     /**
      * Calls {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus | focus} on the element.
@@ -546,18 +562,160 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
             return element.focus();
         });
     }
-    async type() {
-        throw new Error('Not implemented');
+    /**
+     * Focuses the element, and then sends a `keydown`, `keypress`/`input`, and
+     * `keyup` event for each character in the text.
+     *
+     * To press a special key, like `Control` or `ArrowDown`,
+     * use {@link ElementHandle.press}.
+     *
+     * @example
+     *
+     * ```ts
+     * await elementHandle.type('Hello'); // Types instantly
+     * await elementHandle.type('World', {delay: 100}); // Types slower, like a user
+     * ```
+     *
+     * @example
+     * An example of typing into a text field and then submitting the form:
+     *
+     * ```ts
+     * const elementHandle = await page.$('input');
+     * await elementHandle.type('some text');
+     * await elementHandle.press('Enter');
+     * ```
+     *
+     * @param options - Delay in milliseconds. Defaults to 0.
+     */
+    async type(text, options) {
+        await this.focus();
+        await this.frame.page().keyboard.type(text, options);
     }
-    async press() {
-        throw new Error('Not implemented');
+    /**
+     * Focuses the element, and then uses {@link Keyboard.down} and {@link Keyboard.up}.
+     *
+     * @remarks
+     * If `key` is a single character and no modifier keys besides `Shift`
+     * are being held down, a `keypress`/`input` event will also be generated.
+     * The `text` option can be specified to force an input event to be generated.
+     *
+     * **NOTE** Modifier keys DO affect `elementHandle.press`. Holding down `Shift`
+     * will type the text in upper case.
+     *
+     * @param key - Name of key to press, such as `ArrowLeft`.
+     * See {@link KeyInput} for a list of all key names.
+     */
+    async press(key, options) {
+        await this.focus();
+        await this.frame.page().keyboard.press(key, options);
+    }
+    async #clickableBox() {
+        const adoptedThis = await this.frame.isolatedRealm().adoptHandle(this);
+        const boxes = await adoptedThis.evaluate(element => {
+            if (!(element instanceof Element)) {
+                return null;
+            }
+            return [...element.getClientRects()].map(rect => {
+                return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
+            });
+        });
+        void adoptedThis.dispose().catch(util_js_1.debugError);
+        if (!boxes?.length) {
+            return null;
+        }
+        await this.#intersectBoundingBoxesWithFrame(boxes);
+        let frame = this.frame;
+        let element;
+        while ((element = await frame?.frameElement())) {
+            try {
+                element = await element.frame.isolatedRealm().transferHandle(element);
+                const parentBox = await element.evaluate(element => {
+                    // Element is not visible.
+                    if (element.getClientRects().length === 0) {
+                        return null;
+                    }
+                    const rect = element.getBoundingClientRect();
+                    const style = window.getComputedStyle(element);
+                    return {
+                        left: rect.left +
+                            parseInt(style.paddingLeft, 10) +
+                            parseInt(style.borderLeftWidth, 10),
+                        top: rect.top +
+                            parseInt(style.paddingTop, 10) +
+                            parseInt(style.borderTopWidth, 10),
+                    };
+                });
+                if (!parentBox) {
+                    return null;
+                }
+                for (const box of boxes) {
+                    box.x += parentBox.left;
+                    box.y += parentBox.top;
+                }
+                await element.#intersectBoundingBoxesWithFrame(boxes);
+                frame = frame?.parentFrame();
+            }
+            finally {
+                void element.dispose().catch(util_js_1.debugError);
+            }
+        }
+        const box = boxes.find(box => {
+            return box.width >= 1 && box.height >= 1;
+        });
+        if (!box) {
+            return null;
+        }
+        return {
+            x: box.x,
+            y: box.y,
+            height: box.height,
+            width: box.width,
+        };
+    }
+    async #intersectBoundingBoxesWithFrame(boxes) {
+        const { documentWidth, documentHeight } = await this.frame
+            .isolatedRealm()
+            .evaluate(() => {
+            return {
+                documentWidth: document.documentElement.clientWidth,
+                documentHeight: document.documentElement.clientHeight,
+            };
+        });
+        for (const box of boxes) {
+            intersectBoundingBox(box, documentWidth, documentHeight);
+        }
     }
     /**
      * This method returns the bounding box of the element (relative to the main frame),
      * or `null` if the element is not visible.
      */
     async boundingBox() {
-        throw new Error('Not implemented');
+        const adoptedThis = await this.frame.isolatedRealm().adoptHandle(this);
+        const box = await adoptedThis.evaluate(element => {
+            if (!(element instanceof Element)) {
+                return null;
+            }
+            // Element is not visible.
+            if (element.getClientRects().length === 0) {
+                return null;
+            }
+            const rect = element.getBoundingClientRect();
+            return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
+        });
+        void adoptedThis.dispose().catch(util_js_1.debugError);
+        if (!box) {
+            return null;
+        }
+        const offset = await this.#getTopLeftCornerOfFrame();
+        if (!offset) {
+            return null;
+        }
+        return {
+            x: box.x + offset.x,
+            y: box.y + offset.y,
+            height: box.height,
+            width: box.width,
+        };
     }
     /**
      * This method returns boxes of the element, or `null` if the element is not visible.
@@ -568,7 +726,131 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
      * Each Point is an object `{x, y}`. Box points are sorted clock-wise.
      */
     async boxModel() {
-        throw new Error('Not implemented');
+        const adoptedThis = await this.frame.isolatedRealm().adoptHandle(this);
+        const model = await adoptedThis.evaluate(element => {
+            if (!(element instanceof Element)) {
+                return null;
+            }
+            // Element is not visible.
+            if (element.getClientRects().length === 0) {
+                return null;
+            }
+            const rect = element.getBoundingClientRect();
+            const style = window.getComputedStyle(element);
+            const offsets = {
+                padding: {
+                    left: parseInt(style.paddingLeft, 10),
+                    top: parseInt(style.paddingTop, 10),
+                    right: parseInt(style.paddingRight, 10),
+                    bottom: parseInt(style.paddingBottom, 10),
+                },
+                margin: {
+                    left: -parseInt(style.marginLeft, 10),
+                    top: -parseInt(style.marginTop, 10),
+                    right: -parseInt(style.marginRight, 10),
+                    bottom: -parseInt(style.marginBottom, 10),
+                },
+                border: {
+                    left: parseInt(style.borderLeft, 10),
+                    top: parseInt(style.borderTop, 10),
+                    right: parseInt(style.borderRight, 10),
+                    bottom: parseInt(style.borderBottom, 10),
+                },
+            };
+            const border = [
+                { x: rect.left, y: rect.top },
+                { x: rect.left + rect.width, y: rect.top },
+                { x: rect.left + rect.width, y: rect.top + rect.bottom },
+                { x: rect.left, y: rect.top + rect.bottom },
+            ];
+            const padding = transformQuadWithOffsets(border, offsets.border);
+            const content = transformQuadWithOffsets(padding, offsets.padding);
+            const margin = transformQuadWithOffsets(border, offsets.margin);
+            return {
+                content,
+                padding,
+                border,
+                margin,
+                width: rect.width,
+                height: rect.height,
+            };
+            function transformQuadWithOffsets(quad, offsets) {
+                return [
+                    {
+                        x: quad[0].x + offsets.left,
+                        y: quad[0].y + offsets.top,
+                    },
+                    {
+                        x: quad[1].x - offsets.right,
+                        y: quad[1].y + offsets.top,
+                    },
+                    {
+                        x: quad[2].x - offsets.right,
+                        y: quad[2].y - offsets.bottom,
+                    },
+                    {
+                        x: quad[3].x + offsets.left,
+                        y: quad[3].y - offsets.bottom,
+                    },
+                ];
+            }
+        });
+        void adoptedThis.dispose().catch(util_js_1.debugError);
+        if (!model) {
+            return null;
+        }
+        const offset = await this.#getTopLeftCornerOfFrame();
+        if (!offset) {
+            return null;
+        }
+        for (const attribute of [
+            'content',
+            'padding',
+            'border',
+            'margin',
+        ]) {
+            for (const point of model[attribute]) {
+                point.x += offset.x;
+                point.y += offset.y;
+            }
+        }
+        return model;
+    }
+    async #getTopLeftCornerOfFrame() {
+        const point = { x: 0, y: 0 };
+        let frame = this.frame;
+        let element;
+        while ((element = await frame?.frameElement())) {
+            try {
+                element = await element.frame.isolatedRealm().transferHandle(element);
+                const parentBox = await element.evaluate(element => {
+                    // Element is not visible.
+                    if (element.getClientRects().length === 0) {
+                        return null;
+                    }
+                    const rect = element.getBoundingClientRect();
+                    const style = window.getComputedStyle(element);
+                    return {
+                        left: rect.left +
+                            parseInt(style.paddingLeft, 10) +
+                            parseInt(style.borderLeftWidth, 10),
+                        top: rect.top +
+                            parseInt(style.paddingTop, 10) +
+                            parseInt(style.borderTopWidth, 10),
+                    };
+                });
+                if (!parentBox) {
+                    return null;
+                }
+                point.x += parentBox.left;
+                point.y += parentBox.top;
+                frame = frame?.parentFrame();
+            }
+            finally {
+                void element.dispose().catch(util_js_1.debugError);
+            }
+        }
+        return point;
     }
     async screenshot() {
         throw new Error('Not implemented');
@@ -671,15 +953,14 @@ class ElementHandle extends JSHandle_js_1.JSHandle {
             return element.ownerSVGElement;
         });
     }
-    /**
-     * @internal
-     */
-    assertElementHasWorld() {
-        (0, assert_js_1.assert)(this.executionContext()._world);
-    }
-    autofill() {
-        throw new Error('Not implemented');
-    }
 }
 exports.ElementHandle = ElementHandle;
+function intersectBoundingBox(box, width, height) {
+    box.width = Math.max(box.x >= 0
+        ? Math.min(width - box.x, box.width)
+        : Math.min(width, box.width + box.x), 0);
+    box.height = Math.max(box.y >= 0
+        ? Math.min(height - box.y, box.height)
+        : Math.min(height, box.height + box.y), 0);
+}
 //# sourceMappingURL=ElementHandle.js.map

@@ -31,6 +31,10 @@ export declare class Tracing {
      */
     constructor(client: CDPSession);
     /**
+     * @internal
+     */
+    updateClient(client: CDPSession): void;
+    /**
      * Starts a trace for the current page.
      * @remarks
      * Only one trace can be active at a time per browser.

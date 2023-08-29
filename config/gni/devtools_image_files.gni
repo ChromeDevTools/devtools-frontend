@@ -214,6 +214,8 @@ devtools_svg_sources = [
   "symbol.svg",
   "sync.svg",
   "table.svg",
+  "thumb-down.svg",
+  "thumb-up.svg",
   "top-panel-close.svg",
   "top-panel-open.svg",
   "triangle-bottom-right.svg",

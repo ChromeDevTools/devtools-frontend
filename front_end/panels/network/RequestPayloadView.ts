@@ -171,7 +171,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
     });
   }
 
-  private formatParameter(value: string, className: string, decodeParameters: boolean): Element {
+  static formatParameter(value: string, className: string, decodeParameters: boolean): Element {
     let errorDecoding = false;
 
     if (decodeParameters) {
@@ -333,14 +333,16 @@ export class RequestPayloadView extends UI.Widget.VBox {
     for (const param of params || []) {
       const paramNameValue = document.createDocumentFragment();
       if (param.name !== '') {
-        const name = this.formatParameter(param.name + ': ', 'payload-name', this.decodeRequestParameters);
-        const value = this.formatParameter(param.value, 'payload-value source-code', this.decodeRequestParameters);
+        const name =
+            RequestPayloadView.formatParameter(param.name + ': ', 'payload-name', this.decodeRequestParameters);
+        const value =
+            RequestPayloadView.formatParameter(param.value, 'payload-value source-code', this.decodeRequestParameters);
         paramNameValue.appendChild(name);
         paramNameValue.createChild('span', 'payload-separator');
         paramNameValue.appendChild(value);
       } else {
-        paramNameValue.appendChild(
-            this.formatParameter(i18nString(UIStrings.empty), 'empty-request-payload', this.decodeRequestParameters));
+        paramNameValue.appendChild(RequestPayloadView.formatParameter(
+            i18nString(UIStrings.empty), 'empty-request-payload', this.decodeRequestParameters));
       }
 
       const paramTreeElement = new UI.TreeOutline.TreeElement(paramNameValue);

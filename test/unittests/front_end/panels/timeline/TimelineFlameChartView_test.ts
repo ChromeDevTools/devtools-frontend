@@ -38,7 +38,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
         new UI.SearchableView.SearchConfig(/* query */ searchQuery, /* caseSensitive */ false, /* isRegex */ false);
     flameChartView.performSearch(searchConfig, true);
 
-    assert.strictEqual(flameChartView.getSearchResults()?.length, 31);
+    assert.strictEqual(flameChartView.getSearchResults()?.length, 35);
     assertSelectionName('PrePaint');
 
     flameChartView.jumpToNextSearchResult();

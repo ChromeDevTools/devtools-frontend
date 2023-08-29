@@ -14,7 +14,7 @@ import {EventStyles} from './EventUICategory.js';
 import {GPUTrackAppender} from './GPUTrackAppender.js';
 import {InteractionsTrackAppender} from './InteractionsTrackAppender.js';
 import {LayoutShiftsTrackAppender} from './LayoutShiftsTrackAppender.js';
-import {ThreadAppender} from './ThreadAppender.js';
+import {ThreadAppender, ThreadType} from './ThreadAppender.js';
 import {
   EntryType,
   InstantEventVisibleDurationMs,
@@ -157,23 +157,7 @@ export class CompatibilityTracksAppender {
     this.#layoutShiftsTrackAppender = new LayoutShiftsTrackAppender(this, this.#flameChartData, this.#traceParsedData);
     this.#allTrackAppenders.push(this.#layoutShiftsTrackAppender);
 
-    if (this.#traceParsedData.Renderer) {
-      for (const [pid, process] of this.#traceParsedData.Renderer.processes) {
-        for (const [tid, thread] of process.threads) {
-          if (thread.name !== 'CrRendererMain') {
-            // At the moment we only support the main thread, since the
-            // title for other tracks is procesed differently. Tackling
-            // other threads will be implemented in the future as part
-            // of crbug.com/1428024
-            continue;
-          }
-          const threadAppender = new ThreadAppender(this, this.#traceParsedData, pid, tid);
-          this.#threadAppenders.push(threadAppender);
-          this.#allTrackAppenders.push(threadAppender);
-        }
-      }
-    }
-
+    this.#addThreadAppenders();
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
       for (const group of this.#flameChartData.groups) {
         // We only need to update the color here, because FlameChart will call `scheduleUpdate()` when theme is changed.
@@ -183,6 +167,33 @@ export class CompatibilityTracksAppender {
     });
   }
 
+  #addThreadAppenders(): void {
+    const weight = (appender: ThreadAppender): number => {
+      switch (appender.threadType) {
+        case ThreadType.MAIN_THREAD:
+          return appender.isOnMainFrame ? 0 : 1;
+        case ThreadType.WORKER:
+          return 2;
+        case ThreadType.RASTERIZER:
+          return 3;
+        case ThreadType.OTHER:
+          return 4;
+        default:
+          return 5;
+      }
+    };
+    if (this.#traceParsedData.Renderer) {
+      for (const [pid, process] of this.#traceParsedData.Renderer.processes) {
+        for (const [tid, thread] of process.threads) {
+          const threadType = thread.name === 'CrRendererMain' ? ThreadType.MAIN_THREAD : ThreadType.OTHER;
+          this.#threadAppenders.push(
+              new ThreadAppender(this, this.#traceParsedData, pid, tid, thread.name, threadType));
+        }
+      }
+    }
+    this.#threadAppenders.sort((a, b) => weight(a) - weight(b));
+    this.#allTrackAppenders.push(...this.#threadAppenders);
+  }
   /**
    * Given a trace event returns instantiates a legacy SDK.Event. This should
    * be used for compatibility purposes only.
@@ -434,7 +445,6 @@ export class CompatibilityTracksAppender {
 
     this.#legacyEntryTypeByLevel.length = trackStartLevel + lastUsedTimeByLevel.length;
     this.#legacyEntryTypeByLevel.fill(EntryType.TrackAppender, trackStartLevel);
-
     return trackStartLevel + lastUsedTimeByLevel.length;
   }
 

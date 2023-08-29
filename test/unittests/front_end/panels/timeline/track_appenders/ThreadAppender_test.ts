@@ -35,7 +35,10 @@ describeWithEnvironment('ThreadAppender', function() {
     const {traceParsedData, timelineModel} = await TraceLoader.allModels(context, trace);
     const threadAppenders =
         initTrackAppender(flameChartData, traceParsedData, entryData, entryTypeByLevel, timelineModel);
-    threadAppenders[0].appendTrackAtLevel(0);
+    let level = 0;
+    for (const appender of threadAppenders) {
+      level = appender.appendTrackAtLevel(level);
+    }
 
     return {
       entryTypeByLevel,
@@ -48,21 +51,37 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('creates a thread appender for each thread in a trace', async function() {
     const {threadAppenders} = await renderTrackAppender(this, 'simple-js-program.json.gz');
-    assert.strictEqual(threadAppenders.length, 1);
+    assert.strictEqual(threadAppenders.length, 5);
+  });
+
+  it('renders tracks for threads in correct order', async function() {
+    const {flameChartData} = await renderTrackAppender(this, 'multiple-navigations-with-iframes.json.gz');
+    assert.strictEqual(flameChartData.groups[0].name, '[RPP] Main — http://localhost:5000/');
+    assert.strictEqual(flameChartData.groups[1].name, '[RPP] Frame — https://www.example.com/');
   });
 
   it('marks all levels used by the track with the TrackAppender type', async function() {
     const {entryTypeByLevel} = await renderTrackAppender(this, 'simple-js-program.json.gz');
-    assert.strictEqual(entryTypeByLevel.length, 8);
+    // This includes all tracks rendered by the ThreadAppender.
+    assert.strictEqual(entryTypeByLevel.length, 12);
     assert.isTrue(
         entryTypeByLevel.every(type => type === Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender));
   });
 
-  it('creates a flamechart group', async function() {
+  it('creates a flamechart group for each thread', async function() {
     const {flameChartData} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
-    assert.strictEqual(flameChartData.groups.length, 1);
-    assert.strictEqual(
-        flameChartData.groups[0].name, 'Main Thread by new engine https://output.jsbin.com/zajamil/quiet');
+    assert.strictEqual(flameChartData.groups.length, 6);
+    assert.strictEqual(flameChartData.groups[0].name, '[RPP] Main — https://output.jsbin.com/zajamil/quiet');
+  });
+
+  it('assigns correct names to multiple types of threads', async function() {
+    const {flameChartData} = await renderTrackAppender(this, 'simple-js-program.json.gz');
+    assert.strictEqual(flameChartData.groups.length, 5);
+    assert.strictEqual(flameChartData.groups[0].name, '[RPP] Main — https://www.google.com');
+    assert.strictEqual(flameChartData.groups[1].name, '[RPP] Compositor');
+    assert.strictEqual(flameChartData.groups[2].name, '[RPP] Chrome_ChildIOThread');
+    assert.strictEqual(flameChartData.groups[3].name, '[RPP] ThreadPoolForegroundWorker');
+    assert.strictEqual(flameChartData.groups[4].name, '[RPP] ThreadPoolServiceThread');
   });
 
   it('returns the correct title for a renderer event', async function() {

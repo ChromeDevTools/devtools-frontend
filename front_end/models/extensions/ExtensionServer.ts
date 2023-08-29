@@ -1318,7 +1318,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       return true;
     }
     if (parsedURL.protocol === 'chrome:' || parsedURL.protocol === 'devtools:' ||
-        parsedURL.protocol === 'chrome-untrusted:') {
+        parsedURL.protocol === 'chrome-untrusted:' || parsedURL.protocol === 'chrome-error:') {
       return false;
     }
     if (parsedURL.protocol.startsWith('http') && parsedURL.hostname === 'chrome.google.com' &&

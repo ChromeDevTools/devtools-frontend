@@ -259,7 +259,7 @@ function waitForFunction<T>(fn: () => T): Promise<T> {
 describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => {
   expectConsoleLogs({error: ['Extension server error: Operation failed: Permission denied']});
 
-  for (const protocol of ['devtools', 'chrome', 'chrome-untrusted']) {
+  for (const protocol of ['devtools', 'chrome', 'chrome-untrusted', 'chrome-error']) {
     it(`blocks API calls on blocked protocols: ${protocol}`, async () => {
       assert.isUndefined(context.chrome.devtools);
       const target = createTarget({type: SDK.Target.Type.Frame});

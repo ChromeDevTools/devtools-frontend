@@ -88,7 +88,7 @@ export class CSSMetadata {
         }
       }
     }
-    this.#values.sort(CSSMetadata.sortPrefixesToEnd);
+    this.#values.sort(CSSMetadata.sortPrefixesAndCSSWideKeywordsToEnd);
     this.#valuesSet = new Set(this.#values);
 
     // Reads in auto-generated property names and #values from blink/public/renderer/core/css/css_properties.json5
@@ -123,7 +123,7 @@ export class CSSMetadata {
     for (const name of this.#valuesSet) {
       const values = this.specificPropertyValues(name)
                          .filter(value => CSS.supports(name, value))
-                         .sort(CSSMetadata.sortPrefixesToEnd);
+                         .sort(CSSMetadata.sortPrefixesAndCSSWideKeywordsToEnd);
       const presets = values.map(value => `${name}: ${value}`);
       if (!this.isSVGProperty(name)) {
         this.#nameValuePresetsInternal.push(...presets);
@@ -132,7 +132,17 @@ export class CSSMetadata {
     }
   }
 
-  private static sortPrefixesToEnd(a: string, b: string): 1|- 1|0 {
+  private static sortPrefixesAndCSSWideKeywordsToEnd(a: string, b: string): 1|- 1|0 {
+    const aIsCSSWideKeyword = CSSWideKeywords.includes(a);
+    const bIsCSSWideKeyword = CSSWideKeywords.includes(b);
+
+    if (aIsCSSWideKeyword && !bIsCSSWideKeyword) {
+      return 1;
+    }
+    if (!aIsCSSWideKeyword && bIsCSSWideKeyword) {
+      return -1;
+    }
+
     const aIsPrefixed = a.startsWith('-webkit-');
     const bIsPrefixed = b.startsWith('-webkit-');
     if (aIsPrefixed && !bIsPrefixed) {
@@ -279,16 +289,17 @@ export class CSSMetadata {
   }
 
   getPropertyValues(propertyName: string): string[] {
-    const acceptedKeywords = ['inherit', 'initial', 'revert', 'unset'];
     propertyName = propertyName.toLowerCase();
-    acceptedKeywords.push(...this.specificPropertyValues(propertyName));
+    // Add CSS-wide keywords to all properties.
+    const acceptedKeywords = [...this.specificPropertyValues(propertyName), ...CSSWideKeywords];
+
     if (this.isColorAwareProperty(propertyName)) {
       acceptedKeywords.push('currentColor');
       for (const color of Common.Color.Nicknames.keys()) {
         acceptedKeywords.push(color);
       }
     }
-    return acceptedKeywords.sort(CSSMetadata.sortPrefixesToEnd);
+    return acceptedKeywords.sort(CSSMetadata.sortPrefixesAndCSSWideKeywordsToEnd);
   }
 
   propertyUsageWeight(property: string): number {
@@ -323,6 +334,11 @@ export class CSSMetadata {
         pseudoType === Protocol.DOM.PseudoType.SpellingError);
   }
 }
+
+// CSS-wide keywords.
+// Spec: https://drafts.csswg.org/css-cascade/#defaulting-keywords
+// https://drafts.csswg.org/css-cascade-5/#revert-layer
+export const CSSWideKeywords = ['inherit', 'initial', 'revert', 'revert-layer', 'unset'];
 
 export const VariableNameRegex = /(\s*--.*?)/gs;
 export const VariableRegex = /(var\(\s*--.*?\))/gs;
@@ -784,8 +800,6 @@ const extraPropertyValues = {
       'sepia',
     ],
   },
-  'mix-blend-mode': {values: ['unset']},
-  'background-blend-mode': {values: ['unset']},
   'grid-template-columns': {values: ['min-content', 'max-content']},
   'grid-template-rows': {values: ['min-content', 'max-content']},
   'grid-auto-flow': {values: ['dense']},

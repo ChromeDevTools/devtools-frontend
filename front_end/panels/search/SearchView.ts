@@ -506,4 +506,8 @@ export class SearchView extends UI.Widget.VBox {
     }
     void this.startSearch(searchConfig);
   }
+
+  get throttlerForTest(): Common.Throttler.Throttler {
+    return this.#throttler;
+  }
 }

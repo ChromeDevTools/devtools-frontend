@@ -403,6 +403,10 @@ describeWithEnvironment('ResourceType class', () => {
     assert.strictEqual(
         ResourceType.simplifyContentType('application/hal+json'), 'application/json',
         'the simplified content type was not returned correctly');
+
+    assert.strictEqual(
+        ResourceType.simplifyContentType('application/json+protobuf'), 'application/json',
+        'the simplified content type was not returned correctly');
   });
 
   it('simplifyContentType() does not affect other content types than json subtypes', () => {

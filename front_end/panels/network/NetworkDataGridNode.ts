@@ -1119,7 +1119,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   private getIcon(request: SDK.NetworkRequest.NetworkRequest): HTMLElement {
-    const type = request.resourceType();
+    let type = request.resourceType();
     let iconElement: HTMLElement;
 
     if (this.isFailed()) {
@@ -1161,7 +1161,25 @@ export class NetworkRequestNode extends NetworkNode {
       return iconElement;
     }
 
-    if (request.resourceType() === Common.ResourceType.resourceTypes.Image) {
+    // Pick icon based on MIME type in the following cases:
+    // - If the MIME type is 'image': some images have request type of 'fetch' or etc.
+    // - If the request type is 'fetch': everything fetched by service worker has request type 'fetch'.
+    // - If the request type is 'other' and MIME type is 'script', e.g. for wasm files
+    const typeFromMime = Common.ResourceType.ResourceType.fromMimeType(request.mimeType);
+
+    if (typeFromMime !== type && typeFromMime !== Common.ResourceType.resourceTypes.Other) {
+      if (type === Common.ResourceType.resourceTypes.Fetch) {
+        type = typeFromMime;
+      } else if (typeFromMime === Common.ResourceType.resourceTypes.Image) {
+        type = typeFromMime;
+      } else if (
+          type === Common.ResourceType.resourceTypes.Other &&
+          typeFromMime === Common.ResourceType.resourceTypes.Script) {
+        type = typeFromMime;
+      }
+    }
+
+    if (type === Common.ResourceType.resourceTypes.Image) {
       const previewImage = document.createElement('img');
       previewImage.classList.add('image-network-icon-preview');
       previewImage.alt = request.resourceType().title();
@@ -1174,9 +1192,22 @@ export class NetworkRequestNode extends NetworkNode {
       return iconElement;
     }
 
+    // Exclude Manifest here because it has mimeType:application/json but it has its own icon
+    if (type !== Common.ResourceType.resourceTypes.Manifest &&
+        Common.ResourceType.ResourceType.simplifyContentType(request.mimeType) === 'application/json') {
+      const iconData = {
+        iconName: 'file-json',
+        color: 'var(--icon-file-script)',
+      };
+      iconElement = this.createIconElement(iconData, request.resourceType().title());
+      iconElement.classList.add('icon');
+
+      return iconElement;
+    }
+
     // Others
     const iconData = PanelUtils.iconDataForResourceType(type);
-    iconElement = this.createIconElement(iconData, type.title());
+    iconElement = this.createIconElement(iconData, request.resourceType().title());
     iconElement.classList.add('icon');
     return iconElement;
   }

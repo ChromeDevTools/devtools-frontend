@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import type * as Diff from '../../third_party/diff/diff.js';
 import * as DiffView from '../../ui/components/diff_view/diff_view.js';
@@ -25,9 +25,27 @@ export class PanelUtils {
     if (resourceType.isStyleSheet()) {
       return {iconName: 'file-stylesheet', color: 'var(--icon-file-styles)'};
     }
+    if (resourceType.name() === Common.ResourceType.resourceTypes.Manifest.name()) {
+      return {iconName: 'file-manifest', color: 'var(--icon-default)'};
+    }
+    if (resourceType.name() === Common.ResourceType.resourceTypes.Wasm.name()) {
+      return {iconName: 'file-wasm', color: 'var(--icon-default)'};
+    }
+    if (resourceType.name() === Common.ResourceType.resourceTypes.WebSocket.name()) {
+      return {iconName: 'file-websocket', color: 'var(--icon-default)'};
+    }
+    if (resourceType.name() === Common.ResourceType.resourceTypes.Media.name()) {
+      return {iconName: 'file-media', color: 'var(--icon-file-media)'};
+    }
     if (resourceType.isWebbundle()) {
       return {iconName: 'bundle', color: 'var(--icon-default)'};
     }
+
+    if (resourceType.name() === Common.ResourceType.resourceTypes.Fetch.name() ||
+        resourceType.name() === Common.ResourceType.resourceTypes.XHR.name()) {
+      return {iconName: 'file-fetch-xhr', color: 'var(--icon-default)'};
+    }
+
     return {iconName: 'file-generic', color: 'var(--icon-default)'};
   }
 

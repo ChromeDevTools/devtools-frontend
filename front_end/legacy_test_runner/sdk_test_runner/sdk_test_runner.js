@@ -5,6 +5,7 @@
 import '../../core/sdk/sdk-legacy.js';
 
 import * as Platform from '../../core/platform/platform.js';
+import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
@@ -52,13 +53,13 @@ SDKTestRunner.PageMock = class {
     this.enabledDomains.clear();
     self.SDK.targetManager.clearAllTargetsForTest();
 
-    const oldFactory = ProtocolClient.Connection.getFactory();
-    ProtocolClient.Connection.setFactory(() => {
+    const oldFactory = ProtocolClient.InspectorBackend.Connection.getFactory();
+    ProtocolClient.InspectorBackend.Connection.setFactory(() => {
       this.connection = new MockPageConnection(this);
       return this.connection;
     });
     const target = self.SDK.targetManager.createTarget(nextId('mock-target-'), targetName, this.type, null);
-    ProtocolClient.Connection.setFactory(oldFactory);
+    ProtocolClient.InspectorBackend.Connection.setFactory(oldFactory);
 
     this.target = target;
     self.SDK.targetManager.setScopeTarget(target);
@@ -237,7 +238,8 @@ SDKTestRunner.PageMock = class {
     }
 
     this.sendResponse(
-        id, undefined, {message: 'Can\'t handle command ' + methodName, code: ProtocolClient.DevToolsStubErrorCode});
+        id, undefined,
+        {message: 'Can\'t handle command ' + methodName, code: ProtocolClient.InspectorBackend.DevToolsStubErrorCode});
   }
 
   sendResponse(id, result, error) {

@@ -33,25 +33,6 @@ export const enum ReplayResult {
 
 export const defaultTimeout = 5000;  // ms
 
-export function shouldAttachToTarget(
-    mainTargetId: string,
-    targetInfo: Protocol.Target.TargetInfo,
-    ): boolean {
-  // Ignore chrome extensions as we don't support them. This includes DevTools extensions.
-  if (targetInfo.url.startsWith('chrome-extension://')) {
-    return false;
-  }
-  // Allow DevTools-on-DevTools replay.
-  if (targetInfo.url.startsWith('devtools://') && targetInfo.targetId === mainTargetId) {
-    return true;
-  }
-  if (targetInfo.type !== 'page' && targetInfo.type !== 'iframe') {
-    return false;
-  }
-  // TODO only connect to iframes that are related to the main target. This requires refactoring in Puppeteer: https://github.com/puppeteer/puppeteer/issues/3667.
-  return (targetInfo.targetId === mainTargetId || targetInfo.openerId === mainTargetId || targetInfo.type === 'iframe');
-}
-
 function isPageTarget(target: Protocol.Target.TargetInfo): boolean {
   // Treat DevTools targets as page targets too.
   return (
@@ -107,17 +88,22 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     page: puppeteer.Page,
     browser: puppeteer.Browser,
   }> {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (!mainTarget) {
-      throw new Error('Could not find main target');
+    const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
+    if (!rootTarget) {
+      throw new Error('Could not find the root target');
     }
-    const childTargetManager = mainTarget.model(
+
+    const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (!primaryPageTarget) {
+      throw new Error('Could not find the primary page target');
+    }
+    const childTargetManager = primaryPageTarget.model(
         SDK.ChildTargetManager.ChildTargetManager,
     );
     if (!childTargetManager) {
       throw new Error('Could not get childTargetManager');
     }
-    const resourceTreeModel = mainTarget.model(
+    const resourceTreeModel = primaryPageTarget.model(
         SDK.ResourceTreeModel.ResourceTreeModel,
     );
     if (!resourceTreeModel) {
@@ -128,18 +114,26 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       throw new Error('Could not find main frame');
     }
 
+    const rootChildTargetManager = rootTarget.model(SDK.ChildTargetManager.ChildTargetManager);
+
+    if (!rootChildTargetManager) {
+      throw new Error('Could not find the child target manager class for the root target');
+    }
+
     // Pass an empty message handler because it will be overwritten by puppeteer anyways.
-    const result = await childTargetManager.createParallelConnection(() => {});
+    const result = await rootChildTargetManager.createParallelConnection(() => {});
     const connection = result.connection as SDK.Connections.ParallelConnectionInterface;
 
     const mainTargetId = await childTargetManager.getParentTargetId();
+    const rootTargetId = await rootChildTargetManager.getParentTargetId();
+    const rootTargetInfo = await rootChildTargetManager.getTargetInfo();
+
     const {page, browser, puppeteerConnection} =
-        await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnection(
+        await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnectionViaTab(
             {
               connection,
-              mainFrameId: mainFrame.id,
-              targetInfos: childTargetManager.targetInfos(),
-              targetFilterCallback: shouldAttachToTarget.bind(null, mainTargetId),
+              rootTargetId: rootTargetId as string,
+              targetInfos: [rootTargetInfo, ...childTargetManager.targetInfos()],
               isPageTargetCallback: isPageTarget,
             },
         );
@@ -228,12 +222,6 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   async play(): Promise<void> {
-    const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-    if (mainTarget) {
-      await mainTarget.pageAgent().invoke_setPrerenderingAllowed({
-        isAllowed: false,
-      });
-    }
     const {page, browser} = await RecordingPlayer.connectPuppeteer();
     this.aborted = false;
 
@@ -312,12 +300,6 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       error = err;
       console.error('Replay error', err.message);
     } finally {
-      const mainTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
-      if (mainTarget) {
-        await mainTarget.pageAgent().invoke_setPrerenderingAllowed({
-          isAllowed: true,
-        });
-      }
       await RecordingPlayer.disconnectPuppeteer(browser);
     }
     if (this.aborted) {

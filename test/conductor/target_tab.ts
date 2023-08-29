@@ -33,6 +33,7 @@ export class TargetTab {
     const client = await this.page.target().createCDPSession();
     await client.send('ServiceWorker.enable');
     await client.send('ServiceWorker.stopAllWorkers');
+    await client.detach();
   }
 
   targetId(): string {

@@ -14,6 +14,8 @@ copy_to_gen("recorder") {
     "multiple-navigations.html",
     "oopif.html",
     "popup.html",
+    "prerender.html",
+    "prerendered.html",
     "programmatic-navigation-on-keydown.html",
     "recorder.html",
     "recorder2.html",

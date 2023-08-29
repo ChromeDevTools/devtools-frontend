@@ -662,4 +662,33 @@ describe('Recorder', function() {
         `${getResourcesPath()}/recorder/recorder2.html`,
     );
   });
+
+  it('should be able to  navigate to a prerendered page', async () => {
+    await setupRecorderWithScriptAndReplay({
+      title: 'Test Recording',
+      steps: [
+        {
+          type: 'navigate' as StepType.Navigate,
+          url: `${getResourcesPath()}/recorder/prerender.html`,
+        },
+        {
+          type: 'click' as StepType.Click,
+          selectors: ['a'],
+          offsetX: 1,
+          offsetY: 1,
+          assertedEvents: [
+            {
+              type: 'navigation' as AssertedEventType.Navigation,
+              url: `${getResourcesPath()}/recorder/prerendered.html`,
+            },
+          ],
+        },
+        {
+          type: 'waitForExpression' as StepType.WaitForExpression,
+          // TODO: change `false` to `true` once prerendering is enabled.
+          expression: 'document.querySelector("div").innerText === "false"',
+        },
+      ],
+    });
+  });
 });

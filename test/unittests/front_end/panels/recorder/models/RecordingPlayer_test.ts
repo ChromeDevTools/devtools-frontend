@@ -9,54 +9,16 @@ import * as Models from '../../../../../../front_end/panels/recorder/models/mode
 // eslint-disable-next-line rulesdir/es_modules_import
 import * as RecorderHelpers from '../helpers/RecorderHelpers.js';
 
-// eslint-disable-next-line rulesdir/es_modules_import
-import type * as Protocol from '../../../../../../front_end/generated/protocol.js';
-
 describe('RecordingPlayer', () => {
   let recordingPlayer: Models.RecordingPlayer.RecordingPlayer;
-  let setPrerenderingAllowedStub: ReturnType<typeof sinon.stub>;
 
   beforeEach(() => {
-    const stubs = RecorderHelpers.installMocksForTargetManager();
-    setPrerenderingAllowedStub = stubs.setPrerenderingAllowedStub;
+    RecorderHelpers.installMocksForTargetManager();
     RecorderHelpers.installMocksForRecordingPlayer();
   });
 
   afterEach(() => {
     recordingPlayer.disposeForTesting();
-  });
-
-  it('should call setPrerenderingAllowed before and after replay', async () => {
-    recordingPlayer = new Models.RecordingPlayer.RecordingPlayer(
-        {
-          title: 'test',
-          steps: [
-            RecorderHelpers.createCustomStep(),
-          ],
-        },
-        {
-          speed: Models.RecordingPlayer.PlayRecordingSpeed.Normal,
-          breakpointIndexes: new Set(),
-        },
-    );
-
-    // Auto-continue steps.
-    const stepEventHandlerStub = sinon.stub().callsFake(async ({data: {resolve}}) => {
-      resolve();
-    });
-    recordingPlayer.addEventListener(
-        Models.RecordingPlayer.Events.Step,
-        stepEventHandlerStub,
-    );
-
-    await recordingPlayer.play();
-
-    assert.deepStrictEqual(setPrerenderingAllowedStub.getCalls().map(call => call.args[0]), [
-      {
-        isAllowed: false,
-      },
-      {isAllowed: true},
-    ] as unknown[]);
   });
 
   it('should emit `Step` event before executing in every step', async () => {
@@ -287,92 +249,6 @@ describe('RecordingPlayer', () => {
       await doneEventPromise;
 
       assert.strictEqual(stepEventHandlerStub.getCalls().length, 5);
-    });
-  });
-
-  describe('shouldAttachToTarget', () => {
-    const {shouldAttachToTarget} = Models.RecordingPlayer;
-
-    function makeTargetInfo(
-        targetId: string,
-        type: string,
-        url: string,
-        ): Protocol.Target.TargetInfo {
-      return {
-        attached: false,
-        targetId: targetId as Protocol.Target.TargetID,
-        url,
-        canAccessOpener: false,
-        title: '',
-        type,
-      };
-    }
-
-    it('should attach to the main target of type "page"', () => {
-      assert.isTrue(
-          shouldAttachToTarget(
-              'main1',
-              makeTargetInfo('main1', 'page', 'https://example.com'),
-              ),
-      );
-    });
-
-    it('should not attach to non-main target of type "page"', () => {
-      assert.isFalse(
-          shouldAttachToTarget(
-              'main1',
-              makeTargetInfo('non-main', 'page', 'https://example.com'),
-              ),
-      );
-    });
-
-    it('should not attach to extension targets', () => {
-      assert.isFalse(
-          shouldAttachToTarget(
-              'main1',
-              makeTargetInfo('main1', 'page', 'chrome-extension://smth'),
-              ),
-      );
-    });
-
-    it('should attach to the main target if it is DevTools', () => {
-      assert.isTrue(
-          shouldAttachToTarget(
-              'main1',
-              makeTargetInfo('main1', 'page', 'devtools://smth'),
-              ),
-      );
-    });
-
-    it('should not attach to non-main DevTools target', () => {
-      assert.isFalse(
-          shouldAttachToTarget(
-              'main1',
-              makeTargetInfo('non-main', 'page', 'devtools://smth'),
-              ),
-      );
-    });
-
-    it('should attach to the main target of type "iframe"', () => {
-      assert.isTrue(
-          shouldAttachToTarget(
-              'main1',
-              makeTargetInfo('iframe1', 'iframe', 'https://example.com'),
-              ),
-      );
-    });
-
-    it('should not attach to other targts', () => {
-      assert.isFalse(
-          shouldAttachToTarget(
-              'main1',
-              makeTargetInfo(
-                  'service_worker1',
-                  'service_worker',
-                  'https://example.com',
-                  ),
-              ),
-      );
     });
   });
 });

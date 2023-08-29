@@ -1,0 +1,17 @@
+<!--
+  Copyright 2023 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<h1>Is this page prerendered?</h1>
+<script>
+  function pagePrerendered() {
+    return (
+      document.prerendering ||
+      self.performance?.getEntriesByType?.('navigation')[0]?.activationStart > 0
+    );
+  }
+  const div = document.createElement('div');
+  div.innerText = String(pagePrerendered());
+  document.body.append(div)
+</script>

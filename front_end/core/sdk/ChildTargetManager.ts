@@ -119,6 +119,10 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
     return this.#parentTargetId;
   }
 
+  async getTargetInfo(): Promise<Protocol.Target.TargetInfo> {
+    return (await this.#parentTarget.targetAgent().invoke_getTargetInfo({})).targetInfo;
+  }
+
   async attachedToTarget({sessionId, targetInfo, waitingForDebugger}: Protocol.Target.AttachedToTargetEvent):
       Promise<void> {
     if (this.#parentTargetId === targetInfo.targetId) {

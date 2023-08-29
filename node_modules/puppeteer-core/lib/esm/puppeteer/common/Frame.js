@@ -22,6 +22,20 @@ import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
 import { LifecycleWatcher } from './LifecycleWatcher.js';
 import { withSourcePuppeteerURLIfNone } from './util.js';
 /**
+ * We use symbols to prevent external parties listening to these events.
+ * They are internal to Puppeteer.
+ *
+ * @internal
+ */
+export const FrameEmittedEvents = {
+    FrameNavigated: Symbol('Frame.FrameNavigated'),
+    FrameSwapped: Symbol('Frame.FrameSwapped'),
+    LifecycleEvent: Symbol('Frame.LifecycleEvent'),
+    FrameNavigatedWithinDocument: Symbol('Frame.FrameNavigatedWithinDocument'),
+    FrameDetached: Symbol('Frame.FrameDetached'),
+    FrameSwappedByActivation: Symbol('Frame.FrameSwappedByActivation'),
+};
+/**
  * @internal
  */
 export class Frame extends BaseFrame {
@@ -43,13 +57,31 @@ export class Frame extends BaseFrame {
         this.#detached = false;
         this._loaderId = '';
         this.updateClient(client);
+        this.on(FrameEmittedEvents.FrameSwappedByActivation, () => {
+            // Emulate loading process for swapped frames.
+            this._onLoadingStarted();
+            this._onLoadingStopped();
+        });
     }
-    updateClient(client) {
+    /**
+     * Updates the frame ID with the new ID. This happens when the main frame is
+     * replaced by a different frame.
+     */
+    updateId(id) {
+        this._id = id;
+    }
+    updateClient(client, keepWorlds = false) {
         this.#client = client;
-        this.worlds = {
-            [MAIN_WORLD]: new IsolatedWorld(this),
-            [PUPPETEER_WORLD]: new IsolatedWorld(this),
-        };
+        if (!keepWorlds) {
+            this.worlds = {
+                [MAIN_WORLD]: new IsolatedWorld(this),
+                [PUPPETEER_WORLD]: new IsolatedWorld(this),
+            };
+        }
+        else {
+            this.worlds[MAIN_WORLD].frameUpdated();
+            this.worlds[PUPPETEER_WORLD].frameUpdated();
+        }
     }
     page() {
         return this._frameManager.page();
@@ -60,7 +92,7 @@ export class Frame extends BaseFrame {
     async goto(url, options = {}) {
         const { referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'], referrerPolicy = this._frameManager.networkManager.extraHTTPHeaders()['referer-policy'], waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
         let ensureNewDocumentNavigation = false;
-        const watcher = new LifecycleWatcher(this._frameManager, this, waitUntil, timeout);
+        const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
         let error = await Deferred.race([
             navigate(this.#client, url, referer, referrerPolicy, this._id),
             watcher.terminationPromise(),
@@ -108,7 +140,7 @@ export class Frame extends BaseFrame {
     }
     async waitForNavigation(options = {}) {
         const { waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
-        const watcher = new LifecycleWatcher(this._frameManager, this, waitUntil, timeout);
+        const watcher = new LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
         const error = await Deferred.race([
             watcher.terminationPromise(),
             watcher.sameDocumentNavigationPromise(),

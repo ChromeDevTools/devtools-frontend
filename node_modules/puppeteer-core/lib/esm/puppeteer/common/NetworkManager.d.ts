@@ -57,6 +57,7 @@ export declare const NetworkManagerEmittedEvents: {
 export declare class NetworkManager extends EventEmitter {
     #private;
     constructor(client: CDPSession, ignoreHTTPSErrors: boolean, frameManager: Pick<FrameManager, 'frame'>);
+    updateClient(client: CDPSession): Promise<void>;
     /**
      * Initialize calls should avoid async dependencies between CDP calls as those
      * might not resolve until after the target is resumed causing a deadlock.

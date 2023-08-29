@@ -1,7 +1,8 @@
+import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { stringifyFunction } from '../../util/Function.js';
 import { EventEmitter } from '../EventEmitter.js';
 import { scriptInjector } from '../ScriptInjector.js';
-import { PuppeteerURL, getSourcePuppeteerURLIfAvailable, isString, } from '../util.js';
+import { PuppeteerURL, debugError, getSourcePuppeteerURLIfAvailable, isString, } from '../util.js';
 import { ElementHandle } from './ElementHandle.js';
 import { JSHandle } from './JSHandle.js';
 import { BidiSerializer } from './Serializer.js';
@@ -29,6 +30,19 @@ export class Realm extends EventEmitter {
     }
     setFrame(frame) {
         this.#frame = frame;
+        // TODO(jrandolf): We should try to find a less brute-force way of doing
+        // this.
+        this.connection.on(Bidi.ChromiumBidi.Script.EventNames.RealmDestroyed, async () => {
+            const promise = this.internalPuppeteerUtil;
+            this.internalPuppeteerUtil = undefined;
+            try {
+                const util = await promise;
+                await util?.dispose();
+            }
+            catch (error) {
+                debugError(error);
+            }
+        });
     }
     internalPuppeteerUtil;
     get puppeteerUtil() {
@@ -67,6 +81,7 @@ export class Realm extends EventEmitter {
                 target: this.target,
                 resultOwnership,
                 awaitPromise: true,
+                userActivation: true,
             });
         }
         else {
@@ -82,6 +97,7 @@ export class Realm extends EventEmitter {
                 target: this.target,
                 resultOwnership,
                 awaitPromise: true,
+                userActivation: true,
             });
         }
         const { result } = await responsePromise;

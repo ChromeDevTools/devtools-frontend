@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 import Protocol from 'devtools-protocol';
-import { CDPSession } from '../common/Connection.js';
-import { ExecutionContext } from '../common/ExecutionContext.js';
 import { EvaluateFuncWith, HandleFor, HandleOr } from '../common/types.js';
 import { ElementHandle } from './ElementHandle.js';
 /**
@@ -39,7 +37,7 @@ import { ElementHandle } from './ElementHandle.js';
  *
  * @public
  */
-export declare class JSHandle<T = unknown> {
+export declare abstract class JSHandle<T = unknown> {
     /**
      * Used for nominally typing {@link JSHandle}.
      */
@@ -53,28 +51,19 @@ export declare class JSHandle<T = unknown> {
      */
     get disposed(): boolean;
     /**
-     * @internal
-     */
-    executionContext(): ExecutionContext;
-    /**
-     * @internal
-     */
-    get client(): CDPSession;
-    /**
      * Evaluates the given function with the current handle as its first argument.
      */
-    evaluate<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    abstract evaluate<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * Evaluates the given function with the current handle as its first argument.
      *
      */
-    evaluateHandle<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+    abstract evaluateHandle<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     /**
      * Fetches a single property from the referenced object.
      */
-    getProperty<K extends keyof T>(propertyName: HandleOr<K>): Promise<HandleFor<T[K]>>;
-    getProperty(propertyName: string): Promise<JSHandle<unknown>>;
-    getProperty<K extends keyof T>(propertyName: HandleOr<K>): Promise<HandleFor<T[K]>>;
+    abstract getProperty<K extends keyof T>(propertyName: HandleOr<K>): Promise<HandleFor<T[K]>>;
+    abstract getProperty(propertyName: string): Promise<JSHandle<unknown>>;
     /**
      * Gets a map of handles representing the properties of the current handle.
      *
@@ -93,7 +82,7 @@ export declare class JSHandle<T = unknown> {
      * children; // holds elementHandles to all children of document.body
      * ```
      */
-    getProperties(): Promise<Map<string, JSHandle>>;
+    abstract getProperties(): Promise<Map<string, JSHandle<unknown>>>;
     /**
      * A vanilla object representing the serializable portions of the
      * referenced object.
@@ -102,32 +91,32 @@ export declare class JSHandle<T = unknown> {
      * @remarks
      * If the object has a `toJSON` function, it **will not** be called.
      */
-    jsonValue(): Promise<T>;
+    abstract jsonValue(): Promise<T>;
     /**
      * Either `null` or the handle itself if the handle is an
      * instance of {@link ElementHandle}.
      */
-    asElement(): ElementHandle<Node> | null;
+    abstract asElement(): ElementHandle<Node> | null;
     /**
      * Releases the object referenced by the handle for garbage collection.
      */
-    dispose(): Promise<void>;
+    abstract dispose(): Promise<void>;
     /**
      * Returns a string representation of the JSHandle.
      *
      * @remarks
      * Useful during debugging.
      */
-    toString(): string;
+    abstract toString(): string;
     /**
      * @internal
      */
-    get id(): string | undefined;
+    abstract get id(): string | undefined;
     /**
      * Provides access to the
      * {@link https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#type-RemoteObject | Protocol.Runtime.RemoteObject}
      * backing this handle.
      */
-    remoteObject(): Protocol.Runtime.RemoteObject;
+    abstract remoteObject(): Protocol.Runtime.RemoteObject;
 }
 //# sourceMappingURL=JSHandle.d.ts.map

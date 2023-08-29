@@ -131,6 +131,10 @@ export declare class Accessibility {
      */
     constructor(client: CDPSession);
     /**
+     * @internal
+     */
+    updateClient(client: CDPSession): void;
+    /**
      * Captures the current state of the accessibility tree.
      * The returned object represents the root accessible node of the page.
      *

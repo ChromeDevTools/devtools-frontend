@@ -38,6 +38,21 @@ import {EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor} from './types.js';
 import {withSourcePuppeteerURLIfNone} from './util.js';
 
 /**
+ * We use symbols to prevent external parties listening to these events.
+ * They are internal to Puppeteer.
+ *
+ * @internal
+ */
+export const FrameEmittedEvents = {
+  FrameNavigated: Symbol('Frame.FrameNavigated'),
+  FrameSwapped: Symbol('Frame.FrameSwapped'),
+  LifecycleEvent: Symbol('Frame.LifecycleEvent'),
+  FrameNavigatedWithinDocument: Symbol('Frame.FrameNavigatedWithinDocument'),
+  FrameDetached: Symbol('Frame.FrameDetached'),
+  FrameSwappedByActivation: Symbol('Frame.FrameSwappedByActivation'),
+};
+
+/**
  * @internal
  */
 export class Frame extends BaseFrame {
@@ -68,14 +83,33 @@ export class Frame extends BaseFrame {
     this._loaderId = '';
 
     this.updateClient(client);
+
+    this.on(FrameEmittedEvents.FrameSwappedByActivation, () => {
+      // Emulate loading process for swapped frames.
+      this._onLoadingStarted();
+      this._onLoadingStopped();
+    });
   }
 
-  updateClient(client: CDPSession): void {
+  /**
+   * Updates the frame ID with the new ID. This happens when the main frame is
+   * replaced by a different frame.
+   */
+  updateId(id: string): void {
+    this._id = id;
+  }
+
+  updateClient(client: CDPSession, keepWorlds = false): void {
     this.#client = client;
-    this.worlds = {
-      [MAIN_WORLD]: new IsolatedWorld(this),
-      [PUPPETEER_WORLD]: new IsolatedWorld(this),
-    };
+    if (!keepWorlds) {
+      this.worlds = {
+        [MAIN_WORLD]: new IsolatedWorld(this),
+        [PUPPETEER_WORLD]: new IsolatedWorld(this),
+      };
+    } else {
+      this.worlds[MAIN_WORLD].frameUpdated();
+      this.worlds[PUPPETEER_WORLD].frameUpdated();
+    }
   }
 
   override page(): Page {
@@ -106,7 +140,7 @@ export class Frame extends BaseFrame {
 
     let ensureNewDocumentNavigation = false;
     const watcher = new LifecycleWatcher(
-      this._frameManager,
+      this._frameManager.networkManager,
       this,
       waitUntil,
       timeout
@@ -180,7 +214,7 @@ export class Frame extends BaseFrame {
       timeout = this._frameManager.timeoutSettings.navigationTimeout(),
     } = options;
     const watcher = new LifecycleWatcher(
-      this._frameManager,
+      this._frameManager.networkManager,
       this,
       waitUntil,
       timeout

@@ -28,6 +28,10 @@ var TargetType;
     TargetType["BROWSER"] = "browser";
     TargetType["WEBVIEW"] = "webview";
     TargetType["OTHER"] = "other";
+    /**
+     * @internal
+     */
+    TargetType["TAB"] = "tab";
 })(TargetType || (exports.TargetType = TargetType = {}));
 /**
  * Target represents a

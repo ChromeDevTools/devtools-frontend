@@ -37,10 +37,12 @@ module.exports = class FastFIFO {
   }
 
   peek () {
-    return this.tail.peek()
+    const val = this.tail.peek()
+    if (val === undefined && this.tail.next) return this.tail.next.peek()
+    return val
   }
 
   isEmpty () {
-    return this.head.isEmpty()
+    return this.length === 0
   }
 }

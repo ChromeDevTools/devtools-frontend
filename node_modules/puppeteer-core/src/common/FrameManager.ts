@@ -18,14 +18,19 @@ import {Protocol} from 'devtools-protocol';
 
 import {Page} from '../api/Page.js';
 import {assert} from '../util/assert.js';
+import {Deferred} from '../util/Deferred.js';
 import {isErrorLike} from '../util/ErrorLike.js';
 
-import {CDPSession, isTargetClosedError} from './Connection.js';
+import {
+  CDPSession,
+  CDPSessionEmittedEvents,
+  CDPSessionImpl,
+  isTargetClosedError,
+} from './Connection.js';
 import {DeviceRequestPromptManager} from './DeviceRequestPrompt.js';
 import {EventEmitter} from './EventEmitter.js';
 import {ExecutionContext} from './ExecutionContext.js';
-import {Frame} from './Frame.js';
-import {Frame as CDPFrame} from './Frame.js';
+import {Frame, FrameEmittedEvents} from './Frame.js';
 import {FrameTree} from './FrameTree.js';
 import {IsolatedWorld} from './IsolatedWorld.js';
 import {MAIN_WORLD, PUPPETEER_WORLD} from './IsolatedWorlds.js';
@@ -54,9 +59,9 @@ export const FrameManagerEmittedEvents = {
   FrameNavigatedWithinDocument: Symbol(
     'FrameManager.FrameNavigatedWithinDocument'
   ),
-  ExecutionContextCreated: Symbol('FrameManager.ExecutionContextCreated'),
-  ExecutionContextDestroyed: Symbol('FrameManager.ExecutionContextDestroyed'),
 };
+
+const TIME_FOR_WAITING_FOR_SWAP = 100; // ms.
 
 /**
  * A frame manager manages the frames for a given {@link Page | page}.
@@ -111,6 +116,70 @@ export class FrameManager extends EventEmitter {
     this.#networkManager = new NetworkManager(client, ignoreHTTPSErrors, this);
     this.#timeoutSettings = timeoutSettings;
     this.setupEventListeners(this.#client);
+    client.once(CDPSessionEmittedEvents.Disconnected, () => {
+      this.#onClientDisconnect().catch(debugError);
+    });
+  }
+
+  /**
+   * Called when the frame's client is disconnected. We don't know if the
+   * disconnect means that the frame is removed or if it will be replaced by a
+   * new frame. Therefore, we wait for a swap event.
+   */
+  async #onClientDisconnect() {
+    const mainFrame = this._frameTree.getMainFrame();
+    if (!mainFrame) {
+      return;
+    }
+    for (const child of mainFrame.childFrames()) {
+      this.#removeFramesRecursively(child);
+    }
+    const swapped = Deferred.create<void>({
+      timeout: TIME_FOR_WAITING_FOR_SWAP,
+      message: 'Frame was not swapped',
+    });
+    mainFrame.once(FrameEmittedEvents.FrameSwappedByActivation, () => {
+      swapped.resolve();
+    });
+    try {
+      await swapped.valueOrThrow();
+    } catch (err) {
+      this.#removeFramesRecursively(mainFrame);
+    }
+  }
+
+  /**
+   * When the main frame is replaced by another main frame,
+   * we maintain the main frame object identity while updating
+   * its frame tree and ID.
+   */
+  async swapFrameTree(client: CDPSession): Promise<void> {
+    this.#onExecutionContextsCleared(this.#client);
+
+    this.#client = client;
+    assert(
+      this.#client instanceof CDPSessionImpl,
+      'CDPSession is not an instance of CDPSessionImpl.'
+    );
+    const frame = this._frameTree.getMainFrame();
+    if (frame) {
+      this.#frameNavigatedReceived.add(this.#client._target()._targetId);
+      this._frameTree.removeFrame(frame);
+      frame.updateId(this.#client._target()._targetId);
+      frame.mainRealm().clearContext();
+      frame.isolatedRealm().clearContext();
+      this._frameTree.addFrame(frame);
+      frame.updateClient(client, true);
+    }
+    this.setupEventListeners(client);
+    client.once(CDPSessionEmittedEvents.Disconnected, () => {
+      this.#onClientDisconnect().catch(debugError);
+    });
+    await this.initialize(client);
+    await this.#networkManager.updateClient(client);
+    if (frame) {
+      frame.emit(FrameEmittedEvents.FrameSwappedByActivation);
+    }
   }
 
   private setupEventListeners(session: CDPSession) {
@@ -248,6 +317,7 @@ export class FrameManager extends EventEmitter {
     }
     frame._onLifecycleEvent(event.loaderId, event.name);
     this.emit(FrameManagerEmittedEvents.LifecycleEvent, frame);
+    frame.emit(FrameEmittedEvents.LifecycleEvent);
   }
 
   #onFrameStartedLoading(frameId: string): void {
@@ -265,6 +335,7 @@ export class FrameManager extends EventEmitter {
     }
     frame._onLoadingStopped();
     this.emit(FrameManagerEmittedEvents.LifecycleEvent, frame);
+    frame.emit(FrameEmittedEvents.LifecycleEvent);
   }
 
   #handleFrameTree(
@@ -309,7 +380,7 @@ export class FrameManager extends EventEmitter {
       return;
     }
 
-    frame = new CDPFrame(this, frameId, parentFrameId, session);
+    frame = new Frame(this, frameId, parentFrameId, session);
     this._frameTree.addFrame(frame);
     this.emit(FrameManagerEmittedEvents.FrameAttached, frame);
   }
@@ -335,7 +406,7 @@ export class FrameManager extends EventEmitter {
         frame._id = frameId;
       } else {
         // Initial main frame navigation.
-        frame = new CDPFrame(this, frameId, undefined, this.#client);
+        frame = new Frame(this, frameId, undefined, this.#client);
       }
       this._frameTree.addFrame(frame);
     }
@@ -343,6 +414,7 @@ export class FrameManager extends EventEmitter {
     frame = await this._frameTree.waitForFrame(frameId);
     frame._navigated(framePayload);
     this.emit(FrameManagerEmittedEvents.FrameNavigated, frame);
+    frame.emit(FrameEmittedEvents.FrameNavigated);
   }
 
   async #createIsolatedWorld(session: CDPSession, name: string): Promise<void> {
@@ -385,7 +457,9 @@ export class FrameManager extends EventEmitter {
     }
     frame._navigatedWithinDocument(url);
     this.emit(FrameManagerEmittedEvents.FrameNavigatedWithinDocument, frame);
+    frame.emit(FrameEmittedEvents.FrameNavigatedWithinDocument);
     this.emit(FrameManagerEmittedEvents.FrameNavigated, frame);
+    frame.emit(FrameEmittedEvents.FrameNavigated);
   }
 
   #onFrameDetached(
@@ -402,6 +476,7 @@ export class FrameManager extends EventEmitter {
       }
     } else if (reason === 'swap') {
       this.emit(FrameManagerEmittedEvents.FrameSwapped, frame);
+      frame?.emit(FrameEmittedEvents.FrameSwapped);
     }
   }
 
@@ -478,5 +553,6 @@ export class FrameManager extends EventEmitter {
     frame._detach();
     this._frameTree.removeFrame(frame);
     this.emit(FrameManagerEmittedEvents.FrameDetached, frame);
+    frame.emit(FrameEmittedEvents.FrameDetached, frame);
   }
 }

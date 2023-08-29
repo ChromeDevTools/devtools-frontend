@@ -15,8 +15,7 @@
  */
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
-import { CDPSessionEmittedEvents } from './Connection.js';
-import { FrameManagerEmittedEvents } from './FrameManager.js';
+import { FrameEmittedEvents } from './Frame.js';
 import { NetworkManagerEmittedEvents } from './NetworkManager.js';
 import { addEventListener, removeEventListeners, } from './util.js';
 const puppeteerToProtocolLifecycle = new Map([
@@ -30,7 +29,6 @@ const puppeteerToProtocolLifecycle = new Map([
  */
 export class LifecycleWatcher {
     #expectedLifecycle;
-    #frameManager;
     #frame;
     #timeout;
     #navigationRequest = null;
@@ -43,7 +41,7 @@ export class LifecycleWatcher {
     #hasSameDocumentNavigation;
     #swapped;
     #navigationResponseReceived;
-    constructor(frameManager, frame, waitUntil, timeout) {
+    constructor(networkManager, frame, waitUntil, timeout) {
         if (Array.isArray(waitUntil)) {
             waitUntil = waitUntil.slice();
         }
@@ -56,19 +54,18 @@ export class LifecycleWatcher {
             assert(protocolEvent, 'Unknown value for options.waitUntil: ' + value);
             return protocolEvent;
         });
-        this.#frameManager = frameManager;
         this.#frame = frame;
         this.#timeout = timeout;
         this.#eventListeners = [
-            addEventListener(frameManager.client, CDPSessionEmittedEvents.Disconnected, this.#terminate.bind(this, new Error('Navigation failed because browser has disconnected!'))),
-            addEventListener(this.#frameManager, FrameManagerEmittedEvents.LifecycleEvent, this.#checkLifecycleComplete.bind(this)),
-            addEventListener(this.#frameManager, FrameManagerEmittedEvents.FrameNavigatedWithinDocument, this.#navigatedWithinDocument.bind(this)),
-            addEventListener(this.#frameManager, FrameManagerEmittedEvents.FrameNavigated, this.#navigated.bind(this)),
-            addEventListener(this.#frameManager, FrameManagerEmittedEvents.FrameSwapped, this.#frameSwapped.bind(this)),
-            addEventListener(this.#frameManager, FrameManagerEmittedEvents.FrameDetached, this.#onFrameDetached.bind(this)),
-            addEventListener(this.#frameManager.networkManager, NetworkManagerEmittedEvents.Request, this.#onRequest.bind(this)),
-            addEventListener(this.#frameManager.networkManager, NetworkManagerEmittedEvents.Response, this.#onResponse.bind(this)),
-            addEventListener(this.#frameManager.networkManager, NetworkManagerEmittedEvents.RequestFailed, this.#onRequestFailed.bind(this)),
+            addEventListener(frame, FrameEmittedEvents.LifecycleEvent, this.#checkLifecycleComplete.bind(this)),
+            addEventListener(frame, FrameEmittedEvents.FrameNavigatedWithinDocument, this.#navigatedWithinDocument.bind(this)),
+            addEventListener(frame, FrameEmittedEvents.FrameNavigated, this.#navigated.bind(this)),
+            addEventListener(frame, FrameEmittedEvents.FrameSwapped, this.#frameSwapped.bind(this)),
+            addEventListener(frame, FrameEmittedEvents.FrameSwappedByActivation, this.#frameSwapped.bind(this)),
+            addEventListener(frame, FrameEmittedEvents.FrameDetached, this.#onFrameDetached.bind(this)),
+            addEventListener(networkManager, NetworkManagerEmittedEvents.Request, this.#onRequest.bind(this)),
+            addEventListener(networkManager, NetworkManagerEmittedEvents.Response, this.#onResponse.bind(this)),
+            addEventListener(networkManager, NetworkManagerEmittedEvents.RequestFailed, this.#onRequestFailed.bind(this)),
         ];
         this.#terminationDeferred = Deferred.create({
             timeout: this.#timeout,
@@ -114,9 +111,6 @@ export class LifecycleWatcher {
         await this.#navigationResponseReceived?.valueOrThrow();
         return this.#navigationRequest ? this.#navigationRequest.response() : null;
     }
-    #terminate(error) {
-        this.#terminationDeferred.resolve(error);
-    }
     sameDocumentNavigationPromise() {
         return this.#sameDocumentNavigationDeferred.valueOrThrow();
     }
@@ -129,23 +123,14 @@ export class LifecycleWatcher {
     terminationPromise() {
         return this.#terminationDeferred.valueOrThrow();
     }
-    #navigatedWithinDocument(frame) {
-        if (frame !== this.#frame) {
-            return;
-        }
+    #navigatedWithinDocument() {
         this.#hasSameDocumentNavigation = true;
         this.#checkLifecycleComplete();
     }
-    #navigated(frame) {
-        if (frame !== this.#frame) {
-            return;
-        }
+    #navigated() {
         this.#checkLifecycleComplete();
     }
-    #frameSwapped(frame) {
-        if (frame !== this.#frame) {
-            return;
-        }
+    #frameSwapped() {
         this.#swapped = true;
         this.#checkLifecycleComplete();
     }

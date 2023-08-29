@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Frame = void 0;
+exports.Frame = exports.FrameEmittedEvents = void 0;
 const Frame_js_1 = require("../api/Frame.js");
 const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
@@ -24,6 +24,20 @@ const IsolatedWorld_js_1 = require("./IsolatedWorld.js");
 const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
 const LifecycleWatcher_js_1 = require("./LifecycleWatcher.js");
 const util_js_1 = require("./util.js");
+/**
+ * We use symbols to prevent external parties listening to these events.
+ * They are internal to Puppeteer.
+ *
+ * @internal
+ */
+exports.FrameEmittedEvents = {
+    FrameNavigated: Symbol('Frame.FrameNavigated'),
+    FrameSwapped: Symbol('Frame.FrameSwapped'),
+    LifecycleEvent: Symbol('Frame.LifecycleEvent'),
+    FrameNavigatedWithinDocument: Symbol('Frame.FrameNavigatedWithinDocument'),
+    FrameDetached: Symbol('Frame.FrameDetached'),
+    FrameSwappedByActivation: Symbol('Frame.FrameSwappedByActivation'),
+};
 /**
  * @internal
  */
@@ -46,13 +60,31 @@ class Frame extends Frame_js_1.Frame {
         this.#detached = false;
         this._loaderId = '';
         this.updateClient(client);
+        this.on(exports.FrameEmittedEvents.FrameSwappedByActivation, () => {
+            // Emulate loading process for swapped frames.
+            this._onLoadingStarted();
+            this._onLoadingStopped();
+        });
     }
-    updateClient(client) {
+    /**
+     * Updates the frame ID with the new ID. This happens when the main frame is
+     * replaced by a different frame.
+     */
+    updateId(id) {
+        this._id = id;
+    }
+    updateClient(client, keepWorlds = false) {
         this.#client = client;
-        this.worlds = {
-            [IsolatedWorlds_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
-            [IsolatedWorlds_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
-        };
+        if (!keepWorlds) {
+            this.worlds = {
+                [IsolatedWorlds_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
+                [IsolatedWorlds_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this),
+            };
+        }
+        else {
+            this.worlds[IsolatedWorlds_js_1.MAIN_WORLD].frameUpdated();
+            this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD].frameUpdated();
+        }
     }
     page() {
         return this._frameManager.page();
@@ -63,7 +95,7 @@ class Frame extends Frame_js_1.Frame {
     async goto(url, options = {}) {
         const { referer = this._frameManager.networkManager.extraHTTPHeaders()['referer'], referrerPolicy = this._frameManager.networkManager.extraHTTPHeaders()['referer-policy'], waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
         let ensureNewDocumentNavigation = false;
-        const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager, this, waitUntil, timeout);
+        const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
         let error = await Deferred_js_1.Deferred.race([
             navigate(this.#client, url, referer, referrerPolicy, this._id),
             watcher.terminationPromise(),
@@ -111,7 +143,7 @@ class Frame extends Frame_js_1.Frame {
     }
     async waitForNavigation(options = {}) {
         const { waitUntil = ['load'], timeout = this._frameManager.timeoutSettings.navigationTimeout(), } = options;
-        const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager, this, waitUntil, timeout);
+        const watcher = new LifecycleWatcher_js_1.LifecycleWatcher(this._frameManager.networkManager, this, waitUntil, timeout);
         const error = await Deferred_js_1.Deferred.race([
             watcher.terminationPromise(),
             watcher.sameDocumentNavigationPromise(),

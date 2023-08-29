@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { EventEmitter } from '../common/EventEmitter.js';
 import { getQueryHandlerAndSelector } from '../common/GetQueryHandler.js';
+import { transposeIterableHandle } from '../common/HandleIterator.js';
 import { LazyArg } from '../common/LazyArg.js';
-import { importFSPromises } from '../common/util.js';
+import { debugError, importFSPromises } from '../common/util.js';
 import { FunctionLocator, NodeLocator } from './locators/locators.js';
 /**
  * Represents a DOM frame.
@@ -70,7 +72,7 @@ import { FunctionLocator, NodeLocator } from './locators/locators.js';
  *
  * @public
  */
-export class Frame {
+export class Frame extends EventEmitter {
     /**
      * @internal
      */
@@ -94,7 +96,9 @@ export class Frame {
     /**
      * @internal
      */
-    constructor() { }
+    constructor() {
+        super();
+    }
     /**
      * The page associated with the frame.
      */
@@ -137,6 +141,26 @@ export class Frame {
      */
     isolatedRealm() {
         throw new Error('Not implemented');
+    }
+    /**
+     * @internal
+     */
+    async frameElement() {
+        const parentFrame = this.parentFrame();
+        if (!parentFrame) {
+            return null;
+        }
+        const list = await parentFrame.isolatedRealm().evaluateHandle(() => {
+            return document.querySelectorAll('iframe');
+        });
+        for await (const iframe of transposeIterableHandle(list)) {
+            const frame = await iframe.contentFrame();
+            if (frame._id === this._id) {
+                return iframe;
+            }
+            void iframe.dispose().catch(debugError);
+        }
+        return null;
     }
     async evaluateHandle() {
         throw new Error('Not implemented');

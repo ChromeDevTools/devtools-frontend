@@ -29,7 +29,7 @@ export class MappedLocator extends DelegatedLocator {
     }
     _wait(options) {
         return this.delegate._wait(options).pipe(mergeMap(handle => {
-            return from(handle.evaluateHandle(this.#mapper));
+            return from(Promise.resolve(this.#mapper(handle, options?.signal)));
         }));
     }
 }

@@ -29,6 +29,7 @@ import {ExecutionContext} from './ExecutionContext.js';
 import {Frame} from './Frame.js';
 import {FrameManager} from './FrameManager.js';
 import {MAIN_WORLD, PUPPETEER_WORLD} from './IsolatedWorlds.js';
+import {CDPJSHandle} from './JSHandle.js';
 import {LifecycleWatcher, PuppeteerLifeCycleEvent} from './LifecycleWatcher.js';
 import {TimeoutSettings} from './TimeoutSettings.js';
 import {
@@ -123,9 +124,11 @@ export class IsolatedWorld implements Realm {
   }
 
   constructor(frame: Frame) {
-    // Keep own reference to client because it might differ from the FrameManager's
-    // client for OOP iframes.
     this.#frame = frame;
+    this.frameUpdated();
+  }
+
+  frameUpdated(): void {
     this.#client.on('Runtime.bindingCalled', this.#onBindingCalled);
   }
 
@@ -293,7 +296,7 @@ export class IsolatedWorld implements Realm {
     await setPageContent(this, html);
 
     const watcher = new LifecycleWatcher(
-      this.#frameManager,
+      this.#frameManager.networkManager,
       this.#frame,
       waitUntil,
       timeout
@@ -499,10 +502,16 @@ export class IsolatedWorld implements Realm {
 
   async adoptHandle<T extends JSHandle<Node>>(handle: T): Promise<T> {
     const context = await this.executionContext();
-    assert(
-      handle.executionContext() !== context,
-      'Cannot adopt handle that already belongs to this execution context'
-    );
+    if (
+      (handle as unknown as CDPJSHandle<Node>).executionContext() === context
+    ) {
+      // If the context has already adopted this handle, clone it so downstream
+      // disposal doesn't become an issue.
+      return (await handle.evaluateHandle(value => {
+        return value;
+        // SAFETY: We know the
+      })) as unknown as T;
+    }
     const nodeInfo = await this.#client.send('DOM.describeNode', {
       objectId: handle.id,
     });
@@ -511,7 +520,9 @@ export class IsolatedWorld implements Realm {
 
   async transferHandle<T extends JSHandle<Node>>(handle: T): Promise<T> {
     const context = await this.executionContext();
-    if (handle.executionContext() === context) {
+    if (
+      (handle as unknown as CDPJSHandle<Node>).executionContext() === context
+    ) {
       return handle;
     }
     const info = await this.#client.send('DOM.describeNode', {

@@ -25,6 +25,7 @@ import { Deferred } from '../util/Deferred.js';
 import type { CDPSession } from './Connection.js';
 import type { CommonEventEmitter } from './EventEmitter.js';
 import type { ExecutionContext } from './ExecutionContext.js';
+import { Awaitable } from './types.js';
 /**
  * @internal
  */
@@ -109,7 +110,7 @@ export declare const isDate: (obj: unknown) => obj is Date;
 /**
  * @internal
  */
-export declare function waitForEvent<T>(emitter: CommonEventEmitter, eventName: string | symbol, predicate: (event: T) => Promise<boolean> | boolean, timeout: number, abortPromise: Promise<Error> | Deferred<Error>): Promise<T>;
+export declare function waitForEvent<T>(emitter: CommonEventEmitter, eventName: string | symbol, predicate: (event: T) => Awaitable<boolean>, timeout: number, abortPromise: Promise<Error> | Deferred<Error>): Promise<T>;
 /**
  * @internal
  */

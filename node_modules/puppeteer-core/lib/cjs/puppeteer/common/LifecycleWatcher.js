@@ -18,8 +18,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LifecycleWatcher = void 0;
 const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
-const Connection_js_1 = require("./Connection.js");
-const FrameManager_js_1 = require("./FrameManager.js");
+const Frame_js_1 = require("./Frame.js");
 const NetworkManager_js_1 = require("./NetworkManager.js");
 const util_js_1 = require("./util.js");
 const puppeteerToProtocolLifecycle = new Map([
@@ -33,7 +32,6 @@ const puppeteerToProtocolLifecycle = new Map([
  */
 class LifecycleWatcher {
     #expectedLifecycle;
-    #frameManager;
     #frame;
     #timeout;
     #navigationRequest = null;
@@ -46,7 +44,7 @@ class LifecycleWatcher {
     #hasSameDocumentNavigation;
     #swapped;
     #navigationResponseReceived;
-    constructor(frameManager, frame, waitUntil, timeout) {
+    constructor(networkManager, frame, waitUntil, timeout) {
         if (Array.isArray(waitUntil)) {
             waitUntil = waitUntil.slice();
         }
@@ -59,19 +57,18 @@ class LifecycleWatcher {
             (0, assert_js_1.assert)(protocolEvent, 'Unknown value for options.waitUntil: ' + value);
             return protocolEvent;
         });
-        this.#frameManager = frameManager;
         this.#frame = frame;
         this.#timeout = timeout;
         this.#eventListeners = [
-            (0, util_js_1.addEventListener)(frameManager.client, Connection_js_1.CDPSessionEmittedEvents.Disconnected, this.#terminate.bind(this, new Error('Navigation failed because browser has disconnected!'))),
-            (0, util_js_1.addEventListener)(this.#frameManager, FrameManager_js_1.FrameManagerEmittedEvents.LifecycleEvent, this.#checkLifecycleComplete.bind(this)),
-            (0, util_js_1.addEventListener)(this.#frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameNavigatedWithinDocument, this.#navigatedWithinDocument.bind(this)),
-            (0, util_js_1.addEventListener)(this.#frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameNavigated, this.#navigated.bind(this)),
-            (0, util_js_1.addEventListener)(this.#frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameSwapped, this.#frameSwapped.bind(this)),
-            (0, util_js_1.addEventListener)(this.#frameManager, FrameManager_js_1.FrameManagerEmittedEvents.FrameDetached, this.#onFrameDetached.bind(this)),
-            (0, util_js_1.addEventListener)(this.#frameManager.networkManager, NetworkManager_js_1.NetworkManagerEmittedEvents.Request, this.#onRequest.bind(this)),
-            (0, util_js_1.addEventListener)(this.#frameManager.networkManager, NetworkManager_js_1.NetworkManagerEmittedEvents.Response, this.#onResponse.bind(this)),
-            (0, util_js_1.addEventListener)(this.#frameManager.networkManager, NetworkManager_js_1.NetworkManagerEmittedEvents.RequestFailed, this.#onRequestFailed.bind(this)),
+            (0, util_js_1.addEventListener)(frame, Frame_js_1.FrameEmittedEvents.LifecycleEvent, this.#checkLifecycleComplete.bind(this)),
+            (0, util_js_1.addEventListener)(frame, Frame_js_1.FrameEmittedEvents.FrameNavigatedWithinDocument, this.#navigatedWithinDocument.bind(this)),
+            (0, util_js_1.addEventListener)(frame, Frame_js_1.FrameEmittedEvents.FrameNavigated, this.#navigated.bind(this)),
+            (0, util_js_1.addEventListener)(frame, Frame_js_1.FrameEmittedEvents.FrameSwapped, this.#frameSwapped.bind(this)),
+            (0, util_js_1.addEventListener)(frame, Frame_js_1.FrameEmittedEvents.FrameSwappedByActivation, this.#frameSwapped.bind(this)),
+            (0, util_js_1.addEventListener)(frame, Frame_js_1.FrameEmittedEvents.FrameDetached, this.#onFrameDetached.bind(this)),
+            (0, util_js_1.addEventListener)(networkManager, NetworkManager_js_1.NetworkManagerEmittedEvents.Request, this.#onRequest.bind(this)),
+            (0, util_js_1.addEventListener)(networkManager, NetworkManager_js_1.NetworkManagerEmittedEvents.Response, this.#onResponse.bind(this)),
+            (0, util_js_1.addEventListener)(networkManager, NetworkManager_js_1.NetworkManagerEmittedEvents.RequestFailed, this.#onRequestFailed.bind(this)),
         ];
         this.#terminationDeferred = Deferred_js_1.Deferred.create({
             timeout: this.#timeout,
@@ -117,9 +114,6 @@ class LifecycleWatcher {
         await this.#navigationResponseReceived?.valueOrThrow();
         return this.#navigationRequest ? this.#navigationRequest.response() : null;
     }
-    #terminate(error) {
-        this.#terminationDeferred.resolve(error);
-    }
     sameDocumentNavigationPromise() {
         return this.#sameDocumentNavigationDeferred.valueOrThrow();
     }
@@ -132,23 +126,14 @@ class LifecycleWatcher {
     terminationPromise() {
         return this.#terminationDeferred.valueOrThrow();
     }
-    #navigatedWithinDocument(frame) {
-        if (frame !== this.#frame) {
-            return;
-        }
+    #navigatedWithinDocument() {
         this.#hasSameDocumentNavigation = true;
         this.#checkLifecycleComplete();
     }
-    #navigated(frame) {
-        if (frame !== this.#frame) {
-            return;
-        }
+    #navigated() {
         this.#checkLifecycleComplete();
     }
-    #frameSwapped(frame) {
-        if (frame !== this.#frame) {
-            return;
-        }
+    #frameSwapped() {
         this.#swapped = true;
         this.#checkLifecycleComplete();
     }

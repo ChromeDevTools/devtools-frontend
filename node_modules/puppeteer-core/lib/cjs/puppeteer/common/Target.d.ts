@@ -57,6 +57,10 @@ export declare class CDPTarget extends Target {
     /**
      * @internal
      */
+    _subtype(): string | undefined;
+    /**
+     * @internal
+     */
     _session(): CDPSession | undefined;
     /**
      * @internal

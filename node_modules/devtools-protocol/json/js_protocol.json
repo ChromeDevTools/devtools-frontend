@@ -3000,7 +3000,7 @@
                         },
                         {
                             "name": "serializationOptions",
-                            "description": "Specifies the result serialization. If provided, overrides\n`returnByValue` and `generateWebDriverValue`.",
+                            "description": "Specifies the result serialization. If provided, overrides\n`generatePreview`, `returnByValue` and `generateWebDriverValue`.",
                             "experimental": true,
                             "optional": true,
                             "$ref": "SerializationOptions"
@@ -3182,7 +3182,7 @@
                         },
                         {
                             "name": "serializationOptions",
-                            "description": "Specifies the result serialization. If provided, overrides\n`returnByValue` and `generateWebDriverValue`.",
+                            "description": "Specifies the result serialization. If provided, overrides\n`generatePreview`, `returnByValue` and `generateWebDriverValue`.",
                             "experimental": true,
                             "optional": true,
                             "$ref": "SerializationOptions"

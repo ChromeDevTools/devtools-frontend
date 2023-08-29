@@ -126,6 +126,10 @@ export declare class Coverage {
     #private;
     constructor(client: CDPSession);
     /**
+     * @internal
+     */
+    updateClient(client: CDPSession): void;
+    /**
      * @param options - Set of configurable options for coverage defaults to
      * `resetOnNavigation : true, reportAnonymousScripts : false,`
      * `includeRawScriptCoverage : false, useBlockCoverage : true`
@@ -170,6 +174,10 @@ export declare class Coverage {
 export declare class JSCoverage {
     #private;
     constructor(client: CDPSession);
+    /**
+     * @internal
+     */
+    updateClient(client: CDPSession): void;
     start(options?: {
         resetOnNavigation?: boolean;
         reportAnonymousScripts?: boolean;
@@ -184,6 +192,10 @@ export declare class JSCoverage {
 export declare class CSSCoverage {
     #private;
     constructor(client: CDPSession);
+    /**
+     * @internal
+     */
+    updateClient(client: CDPSession): void;
     start(options?: {
         resetOnNavigation?: boolean;
     }): Promise<void>;

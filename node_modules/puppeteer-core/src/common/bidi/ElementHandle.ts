@@ -19,15 +19,11 @@ import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import {
   AutofillData,
   ElementHandle as BaseElementHandle,
-  BoundingBox,
-  ClickOptions,
 } from '../../api/ElementHandle.js';
-import {KeyPressOptions, KeyboardTypeOptions} from '../../api/Input.js';
-import {assert} from '../../util/assert.js';
-import {KeyInput} from '../USKeyboardLayout.js';
+import {debugError} from '../util.js';
 
 import {Frame} from './Frame.js';
-import {JSHandle} from './JSHandle.js';
+import {JSHandle as BidiJSHandle, JSHandle} from './JSHandle.js';
 import {Realm} from './Realm.js';
 
 /**
@@ -67,7 +63,7 @@ export class ElementHandle<
   /**
    * @internal
    */
-  override assertElementHasWorld(): asserts this {
+  assertElementHasWorld(): asserts this {
     // TODO: Should assert element has a Sandbox
     return;
   }
@@ -86,117 +82,23 @@ export class ElementHandle<
     });
   }
 
-  override async boundingBox(): Promise<BoundingBox | null> {
-    if (this.frame.parentFrame()) {
-      throw new Error(
-        'Elements within nested iframes are currently not supported.'
-      );
-    }
-    const box = await this.frame.isolatedRealm().evaluate(element => {
-      const rect = (element as unknown as Element).getBoundingClientRect();
-      if (!rect.left && !rect.top && !rect.width && !rect.height) {
-        // TODO(jrandolf): Detect if the element is truly not visible.
-        return null;
+  override async contentFrame(
+    this: ElementHandle<HTMLIFrameElement>
+  ): Promise<Frame>;
+  override async contentFrame(): Promise<Frame | null> {
+    const adoptedThis = await this.frame.isolatedRealm().adoptHandle(this);
+    const handle = (await adoptedThis.evaluateHandle(element => {
+      if (element instanceof HTMLIFrameElement) {
+        return element.contentWindow;
       }
-      return {
-        x: rect.left,
-        y: rect.top,
-        width: rect.width,
-        height: rect.height,
-      };
-    }, this);
-    return box;
-  }
-
-  // ///////////////////
-  // // Input methods //
-  // ///////////////////
-  override async click(
-    this: ElementHandle<Element>,
-    options?: Readonly<ClickOptions>
-  ): Promise<void> {
-    await this.scrollIntoViewIfNeeded();
-    const {x = 0, y = 0} = options?.offset ?? {};
-    const remoteValue = this.remoteValue();
-    assert('sharedId' in remoteValue);
-    return this.#frame.page().mouse.click(
-      x,
-      y,
-      Object.assign({}, options, {
-        origin: {
-          type: 'element' as const,
-          element: remoteValue as Bidi.Script.SharedReference,
-        },
-      })
-    );
-  }
-
-  override async hover(this: ElementHandle<Element>): Promise<void> {
-    await this.scrollIntoViewIfNeeded();
-    const remoteValue = this.remoteValue();
-    assert('sharedId' in remoteValue);
-    return this.#frame.page().mouse.move(0, 0, {
-      origin: {
-        type: 'element' as const,
-        element: remoteValue as Bidi.Script.SharedReference,
-      },
-    });
-  }
-
-  override async tap(this: ElementHandle<Element>): Promise<void> {
-    await this.scrollIntoViewIfNeeded();
-    const remoteValue = this.remoteValue();
-    assert('sharedId' in remoteValue);
-    return this.#frame.page().touchscreen.tap(0, 0, {
-      origin: {
-        type: 'element' as const,
-        element: remoteValue as Bidi.Script.SharedReference,
-      },
-    });
-  }
-
-  override async touchStart(this: ElementHandle<Element>): Promise<void> {
-    await this.scrollIntoViewIfNeeded();
-    const remoteValue = this.remoteValue();
-    assert('sharedId' in remoteValue);
-    return this.#frame.page().touchscreen.touchStart(0, 0, {
-      origin: {
-        type: 'element' as const,
-        element: remoteValue as Bidi.Script.SharedReference,
-      },
-    });
-  }
-
-  override async touchMove(this: ElementHandle<Element>): Promise<void> {
-    await this.scrollIntoViewIfNeeded();
-    const remoteValue = this.remoteValue();
-    assert('sharedId' in remoteValue);
-    return this.#frame.page().touchscreen.touchMove(0, 0, {
-      origin: {
-        type: 'element' as const,
-        element: remoteValue as Bidi.Script.SharedReference,
-      },
-    });
-  }
-
-  override async touchEnd(this: ElementHandle<Element>): Promise<void> {
-    await this.scrollIntoViewIfNeeded();
-    await this.#frame.page().touchscreen.touchEnd();
-  }
-
-  override async type(
-    text: string,
-    options?: Readonly<KeyboardTypeOptions>
-  ): Promise<void> {
-    await this.focus();
-    await this.#frame.page().keyboard.type(text, options);
-  }
-
-  override async press(
-    key: KeyInput,
-    options?: Readonly<KeyPressOptions>
-  ): Promise<void> {
-    await this.focus();
-    await this.#frame.page().keyboard.press(key, options);
+      return;
+    })) as BidiJSHandle;
+    void handle.dispose().catch(debugError);
+    void adoptedThis.dispose().catch(debugError);
+    const value = handle.remoteValue();
+    if (value.type === 'window') {
+      return this.frame.page().frame(value.value.context);
+    }
+    return null;
   }
 }

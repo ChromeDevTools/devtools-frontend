@@ -31,6 +31,10 @@ export declare class CDPKeyboard extends Keyboard {
      * @internal
      */
     constructor(client: CDPSession);
+    /**
+     * @internal
+     */
+    updateClient(client: CDPSession): void;
     down(key: KeyInput, options?: Readonly<KeyDownOptions>): Promise<void>;
     up(key: KeyInput): Promise<void>;
     sendCharacter(char: string): Promise<void>;
@@ -47,6 +51,10 @@ export declare class CDPMouse extends Mouse {
      * @internal
      */
     constructor(client: CDPSession, keyboard: CDPKeyboard);
+    /**
+     * @internal
+     */
+    updateClient(client: CDPSession): void;
     reset(): Promise<void>;
     move(x: number, y: number, options?: Readonly<MouseMoveOptions>): Promise<void>;
     down(options?: Readonly<MouseOptions>): Promise<void>;
@@ -70,6 +78,10 @@ export declare class CDPTouchscreen extends Touchscreen {
      * @internal
      */
     constructor(client: CDPSession, keyboard: CDPKeyboard);
+    /**
+     * @internal
+     */
+    updateClient(client: CDPSession): void;
     tap(x: number, y: number): Promise<void>;
     touchStart(x: number, y: number): Promise<void>;
     touchMove(x: number, y: number): Promise<void>;

@@ -73,7 +73,9 @@ class ExecutionContext {
                 this.#installGlobalBinding(new Binding_js_1.Binding('__ariaQuerySelector', AriaQueryHandler_js_1.ARIAQueryHandler.queryOne)),
                 this.#installGlobalBinding(new Binding_js_1.Binding('__ariaQuerySelectorAll', (async (element, selector) => {
                     const results = AriaQueryHandler_js_1.ARIAQueryHandler.queryAll(element, selector);
-                    return element.executionContext().evaluateHandle((...elements) => {
+                    return element
+                        .executionContext()
+                        .evaluateHandle((...elements) => {
                         return elements;
                     }, ...(await AsyncIterableUtil_js_1.AsyncIterableUtil.collect(results)));
                 }))),

@@ -20,7 +20,7 @@ import { CDPTarget } from './Target.js';
 /**
  * @internal
  */
-export type TargetFactory = (targetInfo: Protocol.Target.TargetInfo, session?: CDPSession) => CDPTarget;
+export type TargetFactory = (targetInfo: Protocol.Target.TargetInfo, session?: CDPSession, parentSession?: CDPSession) => CDPTarget;
 /**
  * @internal
  */

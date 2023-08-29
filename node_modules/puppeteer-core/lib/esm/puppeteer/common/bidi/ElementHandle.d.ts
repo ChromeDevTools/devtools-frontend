@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import { AutofillData, ElementHandle as BaseElementHandle, BoundingBox, ClickOptions } from '../../api/ElementHandle.js';
-import { KeyPressOptions, KeyboardTypeOptions } from '../../api/Input.js';
-import { KeyInput } from '../USKeyboardLayout.js';
+import { AutofillData, ElementHandle as BaseElementHandle } from '../../api/ElementHandle.js';
 import { Frame } from './Frame.js';
 import { JSHandle } from './JSHandle.js';
 import { Realm } from './Realm.js';
@@ -36,14 +34,6 @@ export declare class ElementHandle<ElementType extends Node = Element> extends B
      */
     assertElementHasWorld(): asserts this;
     autofill(data: AutofillData): Promise<void>;
-    boundingBox(): Promise<BoundingBox | null>;
-    click(this: ElementHandle<Element>, options?: Readonly<ClickOptions>): Promise<void>;
-    hover(this: ElementHandle<Element>): Promise<void>;
-    tap(this: ElementHandle<Element>): Promise<void>;
-    touchStart(this: ElementHandle<Element>): Promise<void>;
-    touchMove(this: ElementHandle<Element>): Promise<void>;
-    touchEnd(this: ElementHandle<Element>): Promise<void>;
-    type(text: string, options?: Readonly<KeyboardTypeOptions>): Promise<void>;
-    press(key: KeyInput, options?: Readonly<KeyPressOptions>): Promise<void>;
+    contentFrame(this: ElementHandle<HTMLIFrameElement>): Promise<Frame>;
 }
 //# sourceMappingURL=ElementHandle.d.ts.map

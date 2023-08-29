@@ -15,6 +15,7 @@
  */
 import { Target, TargetType } from '../api/Target.js';
 import { Deferred } from '../util/Deferred.js';
+import { CDPSessionImpl } from './Connection.js';
 import { CDPPage } from './Page.js';
 import { debugError } from './util.js';
 import { WebWorker } from './WebWorker.js';
@@ -60,6 +61,15 @@ export class CDPTarget extends Target {
         this.#browserContext = browserContext;
         this._targetId = targetInfo.targetId;
         this.#sessionFactory = sessionFactory;
+        if (this.#session && this.#session instanceof CDPSessionImpl) {
+            this.#session._setTarget(this);
+        }
+    }
+    /**
+     * @internal
+     */
+    _subtype() {
+        return this.#targetInfo.subtype;
     }
     /**
      * @internal
@@ -80,7 +90,10 @@ export class CDPTarget extends Target {
         if (!this.#sessionFactory) {
             throw new Error('sessionFactory is not initialized');
         }
-        return this.#sessionFactory(false);
+        return this.#sessionFactory(false).then(session => {
+            session._setTarget(this);
+            return session;
+        });
     }
     url() {
         return this.#targetInfo.url;
@@ -100,6 +113,8 @@ export class CDPTarget extends Target {
                 return TargetType.BROWSER;
             case 'webview':
                 return TargetType.WEBVIEW;
+            case 'tab':
+                return TargetType.TAB;
             default:
                 return TargetType.OTHER;
         }

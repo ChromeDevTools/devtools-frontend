@@ -57,19 +57,38 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         latency: 0,
     };
     #deferredInit;
+    #handlers = new Map([
+        ['Fetch.requestPaused', this.#onRequestPaused.bind(this)],
+        ['Fetch.authRequired', this.#onAuthRequired.bind(this)],
+        ['Network.requestWillBeSent', this.#onRequestWillBeSent.bind(this)],
+        [
+            'Network.requestServedFromCache',
+            this.#onRequestServedFromCache.bind(this),
+        ],
+        ['Network.responseReceived', this.#onResponseReceived.bind(this)],
+        ['Network.loadingFinished', this.#onLoadingFinished.bind(this)],
+        ['Network.loadingFailed', this.#onLoadingFailed.bind(this)],
+        [
+            'Network.responseReceivedExtraInfo',
+            this.#onResponseReceivedExtraInfo.bind(this),
+        ],
+    ]);
     constructor(client, ignoreHTTPSErrors, frameManager) {
         super();
         this.#client = client;
         this.#ignoreHTTPSErrors = ignoreHTTPSErrors;
         this.#frameManager = frameManager;
-        this.#client.on('Fetch.requestPaused', this.#onRequestPaused.bind(this));
-        this.#client.on('Fetch.authRequired', this.#onAuthRequired.bind(this));
-        this.#client.on('Network.requestWillBeSent', this.#onRequestWillBeSent.bind(this));
-        this.#client.on('Network.requestServedFromCache', this.#onRequestServedFromCache.bind(this));
-        this.#client.on('Network.responseReceived', this.#onResponseReceived.bind(this));
-        this.#client.on('Network.loadingFinished', this.#onLoadingFinished.bind(this));
-        this.#client.on('Network.loadingFailed', this.#onLoadingFailed.bind(this));
-        this.#client.on('Network.responseReceivedExtraInfo', this.#onResponseReceivedExtraInfo.bind(this));
+        for (const [event, handler] of this.#handlers) {
+            this.#client.on(event, handler);
+        }
+    }
+    async updateClient(client) {
+        this.#client = client;
+        for (const [event, handler] of this.#handlers) {
+            this.#client.on(event, handler);
+        }
+        this.#deferredInit = undefined;
+        await this.initialize();
     }
     /**
      * Initialize calls should avoid async dependencies between CDP calls as those

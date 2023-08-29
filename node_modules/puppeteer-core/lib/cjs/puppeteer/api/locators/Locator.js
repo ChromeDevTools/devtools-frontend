@@ -240,9 +240,9 @@ class Locator extends EventEmitter_js_1.EventEmitter {
         ], signal), (0, rxjs_js_1.tap)(() => {
             return this.emit(LocatorEmittedEvents.Action);
         }), (0, rxjs_js_1.mergeMap)(handle => {
-            return (0, rxjs_js_1.from)(handle.click(options)).pipe((0, rxjs_js_1.catchError)((_, caught) => {
+            return (0, rxjs_js_1.from)(handle.click(options)).pipe((0, rxjs_js_1.catchError)(err => {
                 void handle.dispose().catch(util_js_1.debugError);
-                return caught;
+                throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal));
     }
@@ -258,6 +258,9 @@ class Locator extends EventEmitter_js_1.EventEmitter {
             return (0, rxjs_js_1.from)(handle.evaluate(el => {
                 if (el instanceof HTMLSelectElement) {
                     return 'select';
+                }
+                if (el instanceof HTMLTextAreaElement) {
+                    return 'typeable-input';
                 }
                 if (el instanceof HTMLInputElement) {
                     if (new Set([
@@ -332,9 +335,9 @@ class Locator extends EventEmitter_js_1.EventEmitter {
                         throw new Error(`Element cannot be filled out.`);
                 }
             }))
-                .pipe((0, rxjs_js_1.catchError)((_, caught) => {
+                .pipe((0, rxjs_js_1.catchError)(err => {
                 void handle.dispose().catch(util_js_1.debugError);
-                return caught;
+                throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal));
     }
@@ -346,9 +349,9 @@ class Locator extends EventEmitter_js_1.EventEmitter {
         ], signal), (0, rxjs_js_1.tap)(() => {
             return this.emit(LocatorEmittedEvents.Action);
         }), (0, rxjs_js_1.mergeMap)(handle => {
-            return (0, rxjs_js_1.from)(handle.hover()).pipe((0, rxjs_js_1.catchError)((_, caught) => {
+            return (0, rxjs_js_1.from)(handle.hover()).pipe((0, rxjs_js_1.catchError)(err => {
                 void handle.dispose().catch(util_js_1.debugError);
-                return caught;
+                throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal));
     }
@@ -367,9 +370,9 @@ class Locator extends EventEmitter_js_1.EventEmitter {
                 if (scrollLeft !== undefined) {
                     el.scrollLeft = scrollLeft;
                 }
-            }, options?.scrollTop, options?.scrollLeft)).pipe((0, rxjs_js_1.catchError)((_, caught) => {
+            }, options?.scrollTop, options?.scrollLeft)).pipe((0, rxjs_js_1.catchError)(err => {
                 void handle.dispose().catch(util_js_1.debugError);
-                return caught;
+                throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal));
     }
@@ -409,7 +412,10 @@ class Locator extends EventEmitter_js_1.EventEmitter {
      * @public
      */
     map(mapper) {
-        return new locators_js_1.MappedLocator(this._clone(), mapper);
+        return new locators_js_1.MappedLocator(this._clone(), handle => {
+            // SAFETY: TypeScript cannot deduce the type.
+            return handle.evaluateHandle(mapper);
+        });
     }
     /**
      * Creates an expectation that is evaluated against located values.
@@ -419,7 +425,28 @@ class Locator extends EventEmitter_js_1.EventEmitter {
      * @public
      */
     filter(predicate) {
+        return new locators_js_1.FilteredLocator(this._clone(), async (handle, signal) => {
+            await handle.frame.waitForFunction(predicate, { signal, timeout: this._timeout }, handle);
+            return true;
+        });
+    }
+    /**
+     * Creates an expectation that is evaluated against located handles.
+     *
+     * If the expectations do not match, then the locator will retry.
+     *
+     * @internal
+     */
+    filterHandle(predicate) {
         return new locators_js_1.FilteredLocator(this._clone(), predicate);
+    }
+    /**
+     * Maps the locator using the provided mapper.
+     *
+     * @internal
+     */
+    mapHandle(mapper) {
+        return new locators_js_1.MappedLocator(this._clone(), mapper);
     }
     click(options) {
         return (0, rxjs_js_1.firstValueFrom)(this.#click(options));

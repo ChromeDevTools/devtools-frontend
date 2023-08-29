@@ -63,6 +63,13 @@ class Coverage {
         this.#cssCoverage = new CSSCoverage(client);
     }
     /**
+     * @internal
+     */
+    updateClient(client) {
+        this.#jsCoverage.updateClient(client);
+        this.#cssCoverage.updateClient(client);
+    }
+    /**
      * @param options - Set of configurable options for coverage defaults to
      * `resetOnNavigation : true, reportAnonymousScripts : false,`
      * `includeRawScriptCoverage : false, useBlockCoverage : true`
@@ -123,6 +130,12 @@ class JSCoverage {
     #reportAnonymousScripts = false;
     #includeRawScriptCoverage = false;
     constructor(client) {
+        this.#client = client;
+    }
+    /**
+     * @internal
+     */
+    updateClient(client) {
         this.#client = client;
     }
     async start(options = {}) {
@@ -224,6 +237,12 @@ class CSSCoverage {
     #eventListeners = [];
     #resetOnNavigation = false;
     constructor(client) {
+        this.#client = client;
+    }
+    /**
+     * @internal
+     */
+    updateClient(client) {
         this.#client = client;
     }
     async start(options = {}) {

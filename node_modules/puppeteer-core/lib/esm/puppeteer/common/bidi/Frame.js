@@ -46,6 +46,9 @@ export class Frame extends BaseFrame {
         puppeteerRealm.setFrame(this);
         context.setFrame(this);
     }
+    _client() {
+        return this.context().cdpSession;
+    }
     mainRealm() {
         return this.sandboxes[MAIN_SANDBOX];
     }

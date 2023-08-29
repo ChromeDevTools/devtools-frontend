@@ -44,6 +44,12 @@ export class Accessibility {
         this.#client = client;
     }
     /**
+     * @internal
+     */
+    updateClient(client) {
+        this.#client = client;
+    }
+    /**
      * Captures the current state of the accessibility tree.
      * The returned object represents the root accessible node of the page.
      *

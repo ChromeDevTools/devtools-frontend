@@ -26,6 +26,20 @@ import { IsolatedWorld } from './IsolatedWorld.js';
 import { PuppeteerLifeCycleEvent } from './LifecycleWatcher.js';
 import { EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from './types.js';
 /**
+ * We use symbols to prevent external parties listening to these events.
+ * They are internal to Puppeteer.
+ *
+ * @internal
+ */
+export declare const FrameEmittedEvents: {
+    FrameNavigated: symbol;
+    FrameSwapped: symbol;
+    LifecycleEvent: symbol;
+    FrameNavigatedWithinDocument: symbol;
+    FrameDetached: symbol;
+    FrameSwappedByActivation: symbol;
+};
+/**
  * @internal
  */
 export declare class Frame extends BaseFrame {
@@ -37,7 +51,12 @@ export declare class Frame extends BaseFrame {
     _lifecycleEvents: Set<string>;
     _parentId?: string;
     constructor(frameManager: FrameManager, frameId: string, parentFrameId: string | undefined, client: CDPSession);
-    updateClient(client: CDPSession): void;
+    /**
+     * Updates the frame ID with the new ID. This happens when the main frame is
+     * replaced by a different frame.
+     */
+    updateId(id: string): void;
+    updateClient(client: CDPSession, keepWorlds?: boolean): void;
     page(): Page;
     isOOPFrame(): boolean;
     goto(url: string, options?: {

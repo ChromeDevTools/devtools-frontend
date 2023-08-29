@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import Protocol from 'devtools-protocol';
 import { ElementHandle } from '../../api/ElementHandle.js';
 import { JSHandle as BaseJSHandle } from '../../api/JSHandle.js';
 import { EvaluateFuncWith, HandleFor, HandleOr } from '../../common/types.js';
@@ -35,5 +36,6 @@ export declare class JSHandle<T = unknown> extends BaseJSHandle<T> {
     toString(): string;
     get id(): string | undefined;
     remoteValue(): Bidi.Script.RemoteValue;
+    remoteObject(): Protocol.Runtime.RemoteObject;
 }
 //# sourceMappingURL=JSHandle.d.ts.map

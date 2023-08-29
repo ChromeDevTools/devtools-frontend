@@ -19,8 +19,10 @@ import {HTTPResponse} from '../api/HTTPResponse.js';
 import {Page, WaitTimeoutOptions} from '../api/Page.js';
 import {CDPSession} from '../common/Connection.js';
 import {DeviceRequestPrompt} from '../common/DeviceRequestPrompt.js';
+import {EventEmitter} from '../common/EventEmitter.js';
 import {ExecutionContext} from '../common/ExecutionContext.js';
 import {getQueryHandlerAndSelector} from '../common/GetQueryHandler.js';
+import {transposeIterableHandle} from '../common/HandleIterator.js';
 import {
   IsolatedWorldChart,
   WaitForSelectorOptions,
@@ -35,7 +37,7 @@ import {
   InnerLazyParams,
   NodeFor,
 } from '../common/types.js';
-import {importFSPromises} from '../common/util.js';
+import {debugError, importFSPromises} from '../common/util.js';
 import {TaskManager} from '../common/WaitTask.js';
 
 import {KeyboardTypeOptions} from './Input.js';
@@ -223,7 +225,7 @@ export interface FrameAddStyleTagOptions {
  *
  * @public
  */
-export class Frame {
+export class Frame extends EventEmitter {
   /**
    * @internal
    */
@@ -251,7 +253,9 @@ export class Frame {
   /**
    * @internal
    */
-  constructor() {}
+  constructor() {
+    super();
+  }
 
   /**
    * The page associated with the frame.
@@ -375,6 +379,27 @@ export class Frame {
    */
   isolatedRealm(): Realm {
     throw new Error('Not implemented');
+  }
+
+  /**
+   * @internal
+   */
+  async frameElement(): Promise<HandleFor<HTMLIFrameElement> | null> {
+    const parentFrame = this.parentFrame();
+    if (!parentFrame) {
+      return null;
+    }
+    const list = await parentFrame.isolatedRealm().evaluateHandle(() => {
+      return document.querySelectorAll('iframe');
+    });
+    for await (const iframe of transposeIterableHandle(list)) {
+      const frame = await iframe.contentFrame();
+      if (frame._id === this._id) {
+        return iframe;
+      }
+      void iframe.dispose().catch(debugError);
+    }
+    return null;
   }
 
   /**

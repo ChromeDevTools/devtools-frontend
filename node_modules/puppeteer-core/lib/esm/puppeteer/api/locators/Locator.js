@@ -237,9 +237,9 @@ export class Locator extends EventEmitter {
         ], signal), tap(() => {
             return this.emit(LocatorEmittedEvents.Action);
         }), mergeMap(handle => {
-            return from(handle.click(options)).pipe(catchError((_, caught) => {
+            return from(handle.click(options)).pipe(catchError(err => {
                 void handle.dispose().catch(debugError);
-                return caught;
+                throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal));
     }
@@ -255,6 +255,9 @@ export class Locator extends EventEmitter {
             return from(handle.evaluate(el => {
                 if (el instanceof HTMLSelectElement) {
                     return 'select';
+                }
+                if (el instanceof HTMLTextAreaElement) {
+                    return 'typeable-input';
                 }
                 if (el instanceof HTMLInputElement) {
                     if (new Set([
@@ -329,9 +332,9 @@ export class Locator extends EventEmitter {
                         throw new Error(`Element cannot be filled out.`);
                 }
             }))
-                .pipe(catchError((_, caught) => {
+                .pipe(catchError(err => {
                 void handle.dispose().catch(debugError);
-                return caught;
+                throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal));
     }
@@ -343,9 +346,9 @@ export class Locator extends EventEmitter {
         ], signal), tap(() => {
             return this.emit(LocatorEmittedEvents.Action);
         }), mergeMap(handle => {
-            return from(handle.hover()).pipe(catchError((_, caught) => {
+            return from(handle.hover()).pipe(catchError(err => {
                 void handle.dispose().catch(debugError);
-                return caught;
+                throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal));
     }
@@ -364,9 +367,9 @@ export class Locator extends EventEmitter {
                 if (scrollLeft !== undefined) {
                     el.scrollLeft = scrollLeft;
                 }
-            }, options?.scrollTop, options?.scrollLeft)).pipe(catchError((_, caught) => {
+            }, options?.scrollTop, options?.scrollLeft)).pipe(catchError(err => {
                 void handle.dispose().catch(debugError);
-                return caught;
+                throw err;
             }));
         }), this.operators.retryAndRaceWithSignalAndTimer(signal));
     }
@@ -406,7 +409,10 @@ export class Locator extends EventEmitter {
      * @public
      */
     map(mapper) {
-        return new MappedLocator(this._clone(), mapper);
+        return new MappedLocator(this._clone(), handle => {
+            // SAFETY: TypeScript cannot deduce the type.
+            return handle.evaluateHandle(mapper);
+        });
     }
     /**
      * Creates an expectation that is evaluated against located values.
@@ -416,7 +422,28 @@ export class Locator extends EventEmitter {
      * @public
      */
     filter(predicate) {
+        return new FilteredLocator(this._clone(), async (handle, signal) => {
+            await handle.frame.waitForFunction(predicate, { signal, timeout: this._timeout }, handle);
+            return true;
+        });
+    }
+    /**
+     * Creates an expectation that is evaluated against located handles.
+     *
+     * If the expectations do not match, then the locator will retry.
+     *
+     * @internal
+     */
+    filterHandle(predicate) {
         return new FilteredLocator(this._clone(), predicate);
+    }
+    /**
+     * Maps the locator using the provided mapper.
+     *
+     * @internal
+     */
+    mapHandle(mapper) {
+        return new MappedLocator(this._clone(), mapper);
     }
     click(options) {
         return firstValueFrom(this.#click(options));

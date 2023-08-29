@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { ElementHandle as BaseElementHandle, } from '../../api/ElementHandle.js';
-import { assert } from '../../util/assert.js';
+import { debugError } from '../util.js';
 import { JSHandle } from './JSHandle.js';
 /**
  * @internal
@@ -57,95 +57,21 @@ export class ElementHandle extends BaseElementHandle {
             card: data.creditCard,
         });
     }
-    async boundingBox() {
-        if (this.frame.parentFrame()) {
-            throw new Error('Elements within nested iframes are currently not supported.');
-        }
-        const box = await this.frame.isolatedRealm().evaluate(element => {
-            const rect = element.getBoundingClientRect();
-            if (!rect.left && !rect.top && !rect.width && !rect.height) {
-                // TODO(jrandolf): Detect if the element is truly not visible.
-                return null;
+    async contentFrame() {
+        const adoptedThis = await this.frame.isolatedRealm().adoptHandle(this);
+        const handle = (await adoptedThis.evaluateHandle(element => {
+            if (element instanceof HTMLIFrameElement) {
+                return element.contentWindow;
             }
-            return {
-                x: rect.left,
-                y: rect.top,
-                width: rect.width,
-                height: rect.height,
-            };
-        }, this);
-        return box;
-    }
-    // ///////////////////
-    // // Input methods //
-    // ///////////////////
-    async click(options) {
-        await this.scrollIntoViewIfNeeded();
-        const { x = 0, y = 0 } = options?.offset ?? {};
-        const remoteValue = this.remoteValue();
-        assert('sharedId' in remoteValue);
-        return this.#frame.page().mouse.click(x, y, Object.assign({}, options, {
-            origin: {
-                type: 'element',
-                element: remoteValue,
-            },
+            return;
         }));
-    }
-    async hover() {
-        await this.scrollIntoViewIfNeeded();
-        const remoteValue = this.remoteValue();
-        assert('sharedId' in remoteValue);
-        return this.#frame.page().mouse.move(0, 0, {
-            origin: {
-                type: 'element',
-                element: remoteValue,
-            },
-        });
-    }
-    async tap() {
-        await this.scrollIntoViewIfNeeded();
-        const remoteValue = this.remoteValue();
-        assert('sharedId' in remoteValue);
-        return this.#frame.page().touchscreen.tap(0, 0, {
-            origin: {
-                type: 'element',
-                element: remoteValue,
-            },
-        });
-    }
-    async touchStart() {
-        await this.scrollIntoViewIfNeeded();
-        const remoteValue = this.remoteValue();
-        assert('sharedId' in remoteValue);
-        return this.#frame.page().touchscreen.touchStart(0, 0, {
-            origin: {
-                type: 'element',
-                element: remoteValue,
-            },
-        });
-    }
-    async touchMove() {
-        await this.scrollIntoViewIfNeeded();
-        const remoteValue = this.remoteValue();
-        assert('sharedId' in remoteValue);
-        return this.#frame.page().touchscreen.touchMove(0, 0, {
-            origin: {
-                type: 'element',
-                element: remoteValue,
-            },
-        });
-    }
-    async touchEnd() {
-        await this.scrollIntoViewIfNeeded();
-        await this.#frame.page().touchscreen.touchEnd();
-    }
-    async type(text, options) {
-        await this.focus();
-        await this.#frame.page().keyboard.type(text, options);
-    }
-    async press(key, options) {
-        await this.focus();
-        await this.#frame.page().keyboard.press(key, options);
+        void handle.dispose().catch(debugError);
+        void adoptedThis.dispose().catch(debugError);
+        const value = handle.remoteValue();
+        if (value.type === 'window') {
+            return this.frame.page().frame(value.value.context);
+        }
+        return null;
     }
 }
 //# sourceMappingURL=ElementHandle.js.map

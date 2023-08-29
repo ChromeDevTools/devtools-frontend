@@ -97,7 +97,7 @@ Welcome. See [ESLint contribution guidelines](https://eslint.org/docs/developer-
 
 - `npm test` runs tests and measures code coverage.
 - `npm run lint` checks source codes with ESLint.
-- `npm run coverage` opens the code coverage report of the previous test with your default browser.
+- `npm run test:open-coverage` opens the code coverage report of the previous test with your default browser.
 
 
 [npm]: https://www.npmjs.com/

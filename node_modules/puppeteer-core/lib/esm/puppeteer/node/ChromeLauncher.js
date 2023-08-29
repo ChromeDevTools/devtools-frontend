@@ -17,6 +17,7 @@ import { mkdtemp } from 'fs/promises';
 import path from 'path';
 import { computeSystemExecutablePath, Browser as SupportedBrowsers, ChromeReleaseChannel as BrowsersChromeReleaseChannel, } from '@puppeteer/browsers';
 import { debugError } from '../common/util.js';
+import { USE_TAB_TARGET } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { ProductLauncher } from './ProductLauncher.js';
 import { rm } from './util/fs.js';
@@ -127,6 +128,7 @@ export class ChromeLauncher extends ProductLauncher {
             '--disable-extensions',
             // AcceptCHFrame disabled because of crbug.com/1348106.
             '--disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints',
+            ...(USE_TAB_TARGET ? [] : ['--disable-features=Prerender2']),
             '--disable-hang-monitor',
             '--disable-ipc-flooding-protection',
             '--disable-popup-blocking',

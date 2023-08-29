@@ -17,7 +17,7 @@ import { Observable, OperatorFunction } from '../../../third_party/rxjs/rxjs.js'
 import { EventEmitter } from '../../common/EventEmitter.js';
 import { HandleFor } from '../../common/types.js';
 import { ClickOptions } from '../ElementHandle.js';
-import { Action, AwaitedLocator, Mapper, Predicate } from './locators.js';
+import { Action, AwaitedLocator, HandleMapper, Mapper, Predicate } from './locators.js';
 /**
  * For observables coming from promises, a delay is needed, otherwise RxJS will
  * never yield in a permanent failure for a promise.
@@ -190,6 +190,20 @@ export declare abstract class Locator<T> extends EventEmitter {
      * @public
      */
     filter<S extends T>(predicate: Predicate<T, S>): Locator<S>;
+    /**
+     * Creates an expectation that is evaluated against located handles.
+     *
+     * If the expectations do not match, then the locator will retry.
+     *
+     * @internal
+     */
+    filterHandle<S extends T>(predicate: Predicate<HandleFor<T>, HandleFor<S>>): Locator<S>;
+    /**
+     * Maps the locator using the provided mapper.
+     *
+     * @internal
+     */
+    mapHandle<To>(mapper: HandleMapper<T, To>): Locator<To>;
     click<ElementType extends Element>(this: Locator<ElementType>, options?: Readonly<LocatorClickOptions>): Promise<void>;
     /**
      * Fills out the input identified by the locator using the provided value. The

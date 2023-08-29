@@ -32,7 +32,9 @@ class FilteredLocator extends DelegatedLocator_js_1.DelegatedLocator {
     }
     _wait(options) {
         return this.delegate._wait(options).pipe((0, rxjs_js_1.mergeMap)(handle => {
-            return (0, rxjs_js_1.from)(handle.frame.waitForFunction(this.#predicate, { signal: options?.signal, timeout: this._timeout }, handle)).pipe((0, rxjs_js_1.map)(() => {
+            return (0, rxjs_js_1.from)(Promise.resolve(this.#predicate(handle, options?.signal))).pipe((0, rxjs_js_1.filter)(value => {
+                return value;
+            }), (0, rxjs_js_1.map)(() => {
                 // SAFETY: It passed the predicate, so this is correct.
                 return handle;
             }));

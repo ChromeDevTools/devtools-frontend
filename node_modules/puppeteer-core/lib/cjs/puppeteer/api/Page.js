@@ -16,6 +16,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.unitToPixels = exports.supportedMetrics = exports.Page = void 0;
+const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
+const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const NetworkManager_js_1 = require("../common/NetworkManager.js");
 const PDFOptions_js_1 = require("../common/PDFOptions.js");
@@ -618,8 +620,29 @@ class Page extends EventEmitter_js_1.EventEmitter {
             throw error;
         });
     }
-    async waitForFrame() {
-        throw new Error('Not implemented');
+    /**
+     * Waits for a frame matching the given conditions to appear.
+     *
+     * @example
+     *
+     * ```ts
+     * const frame = await page.waitForFrame(async frame => {
+     *   return frame.name() === 'Test';
+     * });
+     * ```
+     */
+    async waitForFrame(urlOrPredicate, options = {}) {
+        const { timeout: ms = this.getDefaultTimeout() } = options;
+        if ((0, util_js_1.isString)(urlOrPredicate)) {
+            urlOrPredicate = (frame) => {
+                return urlOrPredicate === frame.url();
+            };
+        }
+        return (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.merge)((0, rxjs_js_1.fromEvent)(this, "frameattached" /* PageEmittedEvents.FrameAttached */), (0, rxjs_js_1.fromEvent)(this, "framenavigated" /* PageEmittedEvents.FrameNavigated */), (0, rxjs_js_1.from)(this.frames())).pipe((0, rxjs_js_1.filterAsync)(urlOrPredicate), (0, rxjs_js_1.first)(), (0, rxjs_js_1.raceWith)((0, rxjs_js_1.timer)(ms === 0 ? Infinity : ms).pipe((0, rxjs_js_1.map)(() => {
+            throw new Errors_js_1.TimeoutError(`Timed out after waiting ${ms}ms`);
+        })), (0, rxjs_js_1.fromEvent)(this, "close" /* PageEmittedEvents.Close */).pipe((0, rxjs_js_1.map)(() => {
+            throw new Errors_js_1.TargetCloseError('Page closed.');
+        })))));
     }
     async goBack() {
         throw new Error('Not implemented');

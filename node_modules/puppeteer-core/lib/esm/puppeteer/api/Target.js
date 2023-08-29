@@ -25,6 +25,10 @@ export var TargetType;
     TargetType["BROWSER"] = "browser";
     TargetType["WEBVIEW"] = "webview";
     TargetType["OTHER"] = "other";
+    /**
+     * @internal
+     */
+    TargetType["TAB"] = "tab";
 })(TargetType || (TargetType = {}));
 /**
  * Target represents a

@@ -50,11 +50,11 @@
 #timeline-overview-panel {
   flex: none;
   position: relative;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 #timeline-overview-grid {
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 #timeline-overview-grid .timeline-grid-header {
@@ -113,7 +113,7 @@
 
 #memory-graphs-container .timeline-memory-header {
   flex: 0 0 26px;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface2);
   border-bottom: 1px solid var(--sys-color-divider);
   justify-content: space-between;
 }
@@ -143,27 +143,12 @@
   line-height: 18px;
 }
 
-#timeline-overview-coverage {
-  flex-basis: 20px;
-}
-
-.timeline-overview-coverage-label {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  font-size: 9px;
-  color: var(--color-text-secondary);
-  white-space: nowrap;
-  padding: 0 4px;
-  background-color: var(--color-background-opacity-80);
-}
-
 .timeline-details {
   vertical-align: top;
 }
 
 .timeline-details-view {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-on-surface);
   overflow: hidden;
 }
 
@@ -178,10 +163,10 @@
 .timeline-details-view-block {
   flex: none;
   display: flex;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   flex-direction: column;
   padding-bottom: 5px;
-  border-bottom: var(--legacy-divider-border);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .timeline-details-view-row {
@@ -444,7 +429,7 @@
 
 .timeline-landing-page {
   position: absolute;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   justify-content: center;
   align-items: center;
   overflow: auto;

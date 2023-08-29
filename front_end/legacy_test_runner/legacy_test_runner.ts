@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import '../models/text_utils/text_utils-legacy.js';
-import '../core/protocol_client/protocol_client-legacy.js';
 import '../ui/legacy/legacy-legacy.js';
 import '../models/workspace/workspace-legacy.js';
 import '../models/bindings/bindings-legacy.js';

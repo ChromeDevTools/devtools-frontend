@@ -29,14 +29,3 @@ devtools_entrypoint("bundle") {
 
   visibility = [ "*" ]
 }
-
-devtools_entrypoint("legacy") {
-  entrypoint = "protocol_client-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../legacy_test_runner/*",
-  ]
-}

@@ -1247,11 +1247,19 @@ export function isProfileCall(event: TraceEventData): event is TraceEventSynthet
   return 'callFrame' in event;
 }
 
+/**
+ * This is an exhaustive list of events we track in the Performance
+ * panel. Note not all of them are necessarliry shown in the flame
+ * chart, some of them we only use for parsing.
+ * TODO(crbug.com/1428024): Complete this enum.
+ */
 export const enum KnownEventName {
-  /* Task/Other */
+  /* Task */
   Program = 'Program',
   RunTask = 'RunTask',
   AsyncTask = 'AsyncTask',
+  RunMicrotasks = 'RunMicrotasks',
+
   /* Load */
   XHRLoad = 'XHRLoad',
   XHRReadyStateChange = 'XHRReadyStateChange',
@@ -1269,7 +1277,6 @@ export const enum KnownEventName {
   WasmModuleCacheHit = 'v8.wasm.moduleCacheHit',
   WasmModuleCacheInvalid = 'v8.wasm.moduleCacheInvalid',
   /* Js */
-  RunMicrotasks = 'RunMicrotasks',
   ProfileCall = 'ProfileCall',
   EvaluateScript = 'EvaluateScript',
   FunctionCall = 'FunctionCall',
@@ -1307,7 +1314,9 @@ export const enum KnownEventName {
   IncrementalGCMarking = 'V8.GCIncrementalMarking',
   MajorGC = 'MajorGC',
   MinorGC = 'MinorGC',
-  /* Layout (a.k.a "Rendering") */
+  GCCollectGarbage = 'BlinkGC.AtomicPhase',
+
+  /* Layout */
   ScheduleStyleRecalculation = 'ScheduleStyleRecalculation',
   RecalculateStyles = 'RecalculateStyles',
   Layout = 'Layout',
@@ -1317,6 +1326,13 @@ export const enum KnownEventName {
   ComputeIntersections = 'ComputeIntersections',
   HitTest = 'HitTest',
   PrePaint = 'PrePaint',
+  Layerize = 'Layerize',
+  LayoutShift = 'LayoutShift',
+  UpdateLayerTree = 'UpdateLayerTree',
+  ScheduleStyleInvalidationTracking = 'ScheduleStyleInvalidationTracking',
+  StyleRecalcInvalidationTracking = 'StyleRecalcInvalidationTracking',
+  StyleInvalidatorInvalidationTracking = 'StyleInvalidatorInvalidationTracking',
+
   /* Paint */
   ScrollLayer = 'ScrollLayer',
   UpdateLayer = 'UpdateLayer',
@@ -1333,5 +1349,78 @@ export const enum KnownEventName {
   DrawLazyPixelRef = 'Draw LazyPixelRef',
   DecodeLazyPixelRef = 'Decode LazyPixelRef',
   GPUTask = 'GPUTask',
+  Rasterize = 'Rasterize',
   EventTiming = 'EventTiming',
+
+  /* Compile */
+  OptimizeCode = 'V8.OptimizeCode',
+  CacheScript = 'v8.produceCache',
+  CacheModule = 'v8.produceModuleCache',
+  // V8Sample events are coming from tracing and contain raw stacks with function addresses.
+  // After being processed with help of JitCodeAdded and JitCodeMoved events they
+  // get translated into function infos and stored as stacks in JSSample events.
+  V8Sample = 'V8Sample',
+  JitCodeAdded = 'JitCodeAdded',
+  JitCodeMoved = 'JitCodeMoved',
+  StreamingCompileScript = 'v8.parseOnBackground',
+  StreamingCompileScriptWaiting = 'v8.parseOnBackgroundWaiting',
+  StreamingCompileScriptParsing = 'v8.parseOnBackgroundParsing',
+  BackgroundDeserialize = 'v8.deserializeOnBackground',
+  FinalizeDeserialization = 'V8.FinalizeDeserialization',
+
+  /* Markers */
+  CommitLoad = 'CommitLoad',
+  MarkLoad = 'MarkLoad',
+  MarkDOMContent = 'MarkDOMContent',
+  MarkFirstPaint = 'firstPaint',
+  MarkFCP = 'firstContentfulPaint',
+  MarkLCPCandidate = 'largestContentfulPaint::Candidate',
+  MarkLCPInvalidate = 'largestContentfulPaint::Invalidate',
+  NavigationStart = 'navigationStart',
+  TimeStamp = 'TimeStamp',
+  ConsoleTime = 'ConsoleTime',
+  UserTiming = 'UserTiming',
+  InteractiveTime = 'InteractiveTime',
+
+  /* Frames */
+  BeginFrame = 'BeginFrame',
+  NeedsBeginFrameChanged = 'NeedsBeginFrameChanged',
+  BeginMainThreadFrame = 'BeginMainThreadFrame',
+  ActivateLayerTree = 'ActivateLayerTree',
+  DrawFrame = 'DrawFrame',
+  DroppedFrame = 'DroppedFrame',
+  FrameStartedLoading = 'FrameStartedLoading',
+
+  /* Network request events */
+  ResourceWillSendRequest = 'ResourceWillSendRequest',
+  ResourceSendRequest = 'ResourceSendRequest',
+  ResourceReceiveResponse = 'ResourceReceiveResponse',
+  ResourceReceivedData = 'ResourceReceivedData',
+  ResourceFinish = 'ResourceFinish',
+  ResourceMarkAsCached = 'ResourceMarkAsCached',
+
+  /* Web sockets */
+  WebSocketSendHandshakeRequest = 'WebSocketSendHandshakeRequest',
+  WebSocketReceiveHandshakeResponse = 'WebSocketReceiveHandshakeResponse',
+
+  /* CPU Profiling */
+  Profile = 'Profile',
+  StartProfiling = 'CpuProfiler::StartProfiling',
+  ProfileChunk = 'ProfileChunk',
+  UpdateCounters = 'UpdateCounters',
+
+  /* Other */
+  Animation = 'Animation',
+  ParseAuthorStyleSheet = 'ParseAuthorStyleSheet',
+  EmbedderCallback = 'EmbedderCallback',
+  SetLayerTreeId = 'SetLayerTreeId',
+  TracingStartedInPage = 'TracingStartedInPage',
+  TracingSessionIdForWorker = 'TracingSessionIdForWorker',
+  LazyPixelRef = 'LazyPixelRef',
+  LayerTreeHostImplSnapshot = 'cc::LayerTreeHostImpl',
+  PictureSnapshot = 'cc::Picture',
+  DisplayItemListSnapshot = 'cc::DisplayItemList',
+  InputLatencyMouseMove = 'InputLatency::MouseMove',
+  InputLatencyMouseWheel = 'InputLatency::MouseWheel',
+  ImplSideFling = 'InputHandlerProxy::HandleGestureFling::started',
 }

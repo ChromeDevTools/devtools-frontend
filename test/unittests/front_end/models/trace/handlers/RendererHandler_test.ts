@@ -211,13 +211,16 @@ describeWithEnvironment('RendererHandler', function() {
   -MajorGC [2.148ms]
 ...........................................................
 -RunTask [15.436ms]
-.
+  -FrameStartedLoading [0ms]
   -EventDispatch (pagehide) [0.018ms]
   -EventDispatch (visibilitychange) [0.01ms]
   -EventDispatch (webkitvisibilitychange) [0.006ms]
 .
   -EventDispatch (unload) [0.006ms]
-......
+.
+  -ResourceSendRequest [0ms]
+  -ResourceReceiveResponse [0ms]
+...
   -ProfileCall (anonymous) [0.205ms]
     -ProfileCall (anonymous) [0.205ms]
 .......................
@@ -229,10 +232,13 @@ describeWithEnvironment('RendererHandler', function() {
     -EventDispatch (readystatechange) [0.008ms]
 .
     -EventDispatch (DOMContentLoaded) [0.004ms]
-...
+.
+    -MarkDOMContent [0ms]
+.
     -EventDispatch (readystatechange) [0.01ms]
     -EventDispatch (beforeunload) [0.013ms]
-..
+    -FrameStartedLoading [0ms]
+.
   -ParseHTML [0.01ms]
 ..
   -EventDispatch (readystatechange) [0.008ms]
@@ -241,16 +247,22 @@ describeWithEnvironment('RendererHandler', function() {
 .
   -UpdateLayoutTree [0.373ms]
     -InvalidateLayout [0ms]
-.
+  -MarkDOMContent [0ms]
 -RunTask [2.675ms]
-.
+  -BeginMainThreadFrame [0ms]
   -Layout [0.854ms]
     -InvalidateLayout [0ms]
     -Layout [0.302ms]
       -UpdateLayoutTree [0.149ms]
-..
+.
+  -UpdateLayerTree [0.338ms]
   -Paint [0.203ms]
-...........................................
+..
+  -firstPaint [0ms]
+  -firstContentfulPaint [0ms]
+.....
+  -largestContentfulPaint::Candidate [0ms]
+.................................
 -RunTask [1.605ms]
   -EventDispatch (pagehide) [0.014ms]
   -EventDispatch (visibilitychange) [0.038ms]
@@ -260,9 +272,10 @@ describeWithEnvironment('RendererHandler', function() {
   -ScheduleStyleRecalculation [0ms]
 ..............
 -RunTask [1.231ms]
-.
+  -BeginMainThreadFrame [0ms]
   -UpdateLayoutTree [0.093ms]
-..
+.
+  -UpdateLayerTree [0.186ms]
   -Paint [0.063ms]
   -Paint [0.084ms]
   -UpdateLayer [0.022ms]
@@ -274,44 +287,59 @@ describeWithEnvironment('RendererHandler', function() {
   -EventDispatch (readystatechange) [0.009ms]
 .
   -EventDispatch (load) [0.014ms]
-..
+.
+  -MarkLoad [0ms]
   -EventDispatch (pageshow) [0.007ms]
 .......................................................................................
 -RunTask [1.42ms]
-..
+.
+  -UpdateLayerTree [0.023ms]
   -HitTest [0.057ms]
   -EventDispatch (mousemove) [0.018ms]
-..
+.
+  -UpdateLayerTree [0.028ms]
   -HitTest [0.022ms]
-..
+.
+  -UpdateLayerTree [0.01ms]
   -HitTest [0.002ms]
   -ScheduleStyleRecalculation [0ms]
   -EventDispatch (mousedown) [0.018ms]
   -UpdateLayoutTree [0.146ms]
-..
+.
+  -UpdateLayerTree [0.031ms]
   -HitTest [0.016ms]
   -ScheduleStyleRecalculation [0ms]
   -UpdateLayoutTree [0.031ms]
   -EventDispatch (focus) [0.014ms]
   -EventDispatch (focusin) [0.005ms]
   -EventDispatch (DOMFocusIn) [0.005ms]
-.......
+.
+  -UpdateLayerTree [0.029ms]
+.....
 -RunTask [1.034ms]
-..
+.
+  -UpdateLayerTree [0.021ms]
   -HitTest [0.038ms]
   -ScheduleStyleRecalculation [0ms]
   -EventDispatch (mouseup) [0.016ms]
   -EventDispatch (click) [0.44ms]
     -EventDispatch (beforeunload) [0.009ms]
-..
+    -FrameStartedLoading [0ms]
+.
   -UpdateLayoutTree [0.137ms]
-......................
+.
+  -UpdateLayerTree [0.03ms]
+....................
 -RunTask [8.203ms]
   -EventDispatch (pagehide) [0.016ms]
   -EventDispatch (visibilitychange) [0.006ms]
   -EventDispatch (webkitvisibilitychange) [0.004ms]
   -EventDispatch (unload) [0.008ms]
-...............................
+..
+  -ResourceSendRequest [0ms]
+  -ResourceSendRequest [0ms]
+  -ResourceReceiveResponse [0ms]
+..........................
 -RunTask [2.996ms]
   -ParseHTML [2.368ms]
 ....
@@ -320,10 +348,13 @@ describeWithEnvironment('RendererHandler', function() {
     -EventDispatch (readystatechange) [0.01ms]
 .
     -EventDispatch (DOMContentLoaded) [0.005ms]
-...
+.
+    -MarkDOMContent [0ms]
+.
     -EventDispatch (readystatechange) [0.008ms]
     -EventDispatch (beforeunload) [0.009ms]
-..
+    -FrameStartedLoading [0ms]
+.
   -ParseHTML [0.009ms]
 ..
   -EventDispatch (readystatechange) [0.007ms]
@@ -332,14 +363,21 @@ describeWithEnvironment('RendererHandler', function() {
 .
   -UpdateLayoutTree [0.301ms]
     -InvalidateLayout [0ms]
-..
--RunTask [1.897ms]
+  -MarkDOMContent [0ms]
 .
+-RunTask [1.897ms]
+  -BeginMainThreadFrame [0ms]
   -Layout [0.44ms]
     -InvalidateLayout [0ms]
-..
+.
+  -UpdateLayerTree [0.247ms]
   -Paint [0.289ms]
-...........................................
+..
+  -firstPaint [0ms]
+  -firstContentfulPaint [0ms]
+..
+  -largestContentfulPaint::Candidate [0ms]
+....................................
 -RunTask [1.304ms]
   -EventDispatch (pagehide) [0.016ms]
   -EventDispatch (visibilitychange) [0.009ms]

@@ -9,11 +9,13 @@ import {HandlerState} from './types.js';
 export interface WorkersData {
   workerSessionIdEvents: readonly Types.TraceEvents.TraceEventTracingSessionIdForWorker[];
   workerIdByThread: Map<Types.TraceEvents.ThreadID, Types.TraceEvents.WorkerId>;
+  workerURLById: Map<Types.TraceEvents.WorkerId, string>;
 }
 let handlerState = HandlerState.UNINITIALIZED;
 
 const sessionIdEvents: Types.TraceEvents.TraceEventTracingSessionIdForWorker[] = [];
 const workerIdByThread: Map<Types.TraceEvents.ThreadID, Types.TraceEvents.WorkerId> = new Map();
+const workerURLById: Map<Types.TraceEvents.WorkerId, string> = new Map();
 
 export function initialize(): void {
   if (handlerState !== HandlerState.UNINITIALIZED) {
@@ -46,7 +48,8 @@ export async function finalize(): Promise<void> {
     if (!sessionIdEvent.args.data) {
       continue;
     }
-    workerIdByThread.set(sessionIdEvent.args.data.workerThreadId, sessionIdEvent.args.data?.workerId);
+    workerIdByThread.set(sessionIdEvent.args.data.workerThreadId, sessionIdEvent.args.data.workerId);
+    workerURLById.set(sessionIdEvent.args.data.workerId, sessionIdEvent.args.data.url);
   }
   handlerState = HandlerState.FINALIZED;
 }
@@ -59,5 +62,6 @@ export function data(): WorkersData {
   return {
     workerSessionIdEvents: [...sessionIdEvents],
     workerIdByThread: new Map(workerIdByThread),
+    workerURLById: new Map(workerURLById),
   };
 }

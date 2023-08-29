@@ -84,6 +84,21 @@ describeWithEnvironment('ThreadAppender', function() {
     assert.strictEqual(flameChartData.groups[4].name, '[RPP] ThreadPoolServiceThread');
   });
 
+  it('assigns correct names to worker threads', async function() {
+    const {flameChartData} = await renderTrackAppender(this, 'two-workers.json.gz');
+    assert.strictEqual(flameChartData.groups.length, 7);
+    assert.strictEqual(
+        flameChartData.groups[0].name,
+        '[RPP] Main — https://chromedevtools.github.io/performance-stories/two-workers/index.html');
+    assert.strictEqual(
+        flameChartData.groups[1].name,
+        '[RPP] Worker — https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js');
+    assert.strictEqual(
+        flameChartData.groups[2].name,
+        '[RPP] Worker — https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js');
+    assert.strictEqual(flameChartData.groups[3].name, '[RPP] Compositor');
+  });
+
   it('returns the correct title for a renderer event', async function() {
     const {threadAppenders, traceParsedData} = await renderTrackAppender(this, 'simple-js-program.json.gz');
     const events = traceParsedData.Renderer?.allRendererEvents;

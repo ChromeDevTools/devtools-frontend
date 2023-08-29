@@ -185,7 +185,12 @@ export class CompatibilityTracksAppender {
     if (this.#traceParsedData.Renderer) {
       for (const [pid, process] of this.#traceParsedData.Renderer.processes) {
         for (const [tid, thread] of process.threads) {
-          const threadType = thread.name === 'CrRendererMain' ? ThreadType.MAIN_THREAD : ThreadType.OTHER;
+          let threadType = ThreadType.OTHER;
+          if (thread.name === 'CrRendererMain') {
+            threadType = ThreadType.MAIN_THREAD;
+          } else if (thread.name === 'DedicatedWorker thread') {
+            threadType = ThreadType.WORKER;
+          }
           this.#threadAppenders.push(
               new ThreadAppender(this, this.#traceParsedData, pid, tid, thread.name, threadType));
         }

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 
 import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
@@ -25,6 +26,21 @@ const UIStrings = {
    * @example {https://example.com} PH1
    */
   frameS: 'Frame — {PH1}',
+  /**
+   *@description A web worker in the page. See https://developer.mozilla.org/en-US/docs/Web/API/Worker
+   *@example {https://google.com} PH1
+   */
+  workerS: '`Worker` — {PH1}',
+  /**
+   *@description A web worker in the page. See https://developer.mozilla.org/en-US/docs/Web/API/Worker
+   *@example {FormatterWorker} PH1
+   *@example {https://google.com} PH2
+   */
+  workerSS: '`Worker`: {PH1} — {PH2}',
+  /**
+   *@description Label for a web worker exclusively allocated for a purpose.
+   */
+  dedicatedWorker: 'Dedicated `Worker`',
   /**
    *@description Text for the name of anonymous functions
    */
@@ -60,6 +76,7 @@ export class ThreadAppender implements TrackAppender {
 
   #entries: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
   #processId: TraceEngine.Types.TraceEvents.ProcessID;
+  #threadId: TraceEngine.Types.TraceEvents.ThreadID;
   #threadDefaultName: string;
   readonly threadType: ThreadType = ThreadType.MAIN_THREAD;
   readonly isOnMainFrame: boolean;
@@ -81,6 +98,7 @@ export class ThreadAppender implements TrackAppender {
     this.#colorGenerator.setColorForID('', '#f2ecdc');
     this.#traceParsedData = traceParsedData;
     this.#processId = processId;
+    this.#threadId = threadId;
     const entries = this.#traceParsedData.Renderer?.processes.get(processId)?.threads?.get(threadId)?.entries;
     if (!entries) {
       throw new Error(`Could not find data for thread with id ${threadId} in process with id ${processId}`);
@@ -120,23 +138,45 @@ export class ThreadAppender implements TrackAppender {
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const trackIsCollapsible = this.#entries.length > 0;
     const style = buildGroupStyle({shareHeaderLine: false, collapsible: trackIsCollapsible});
+    const group = buildTrackHeader(currentLevel, this.#buildNameFromTrack(), style, /* selectable= */ true, expanded);
+    this.#compatibilityBuilder.registerTrackForGroup(group, this);
+  }
 
-    const url = this.#traceParsedData.Renderer?.processes.get(this.#processId)?.url || '';
+  #buildNameFromTrack(): string {
     // This UI string doesn't yet use the i18n API because it is not
     // shown in production, only in the component server, reason being
     // it is not ready to be shipped.
     // TODO(crbug.com/1428024) Once the UI has been, use the i18n API.
     const newEnginePrefix = '[RPP] ';
     let name = newEnginePrefix;
-    let trackNameName: string|null = null;
+    const url = this.#traceParsedData.Renderer?.processes.get(this.#processId)?.url || '';
+
+    let threadTypeLabel: string|null = null;
 
     if (this.threadType === ThreadType.MAIN_THREAD) {
-      trackNameName =
+      threadTypeLabel =
           this.isOnMainFrame ? i18nString(UIStrings.mainS, {PH1: url}) : i18nString(UIStrings.frameS, {PH1: url});
+    } else if (this.threadType === ThreadType.WORKER) {
+      threadTypeLabel = this.#buildNameForWorker();
     }
-    name += trackNameName || this.#threadDefaultName;
-    const group = buildTrackHeader(currentLevel, name, style, /* selectable= */ true, expanded);
-    this.#compatibilityBuilder.registerTrackForGroup(group, this);
+    name += threadTypeLabel || this.#threadDefaultName;
+    return name;
+  }
+
+  #buildNameForWorker(): string {
+    const url = this.#traceParsedData.Renderer?.processes.get(this.#processId)?.url || '';
+    const workerId = this.#traceParsedData.Workers.workerIdByThread.get(this.#threadId);
+    const workerURL = workerId ? this.#traceParsedData.Workers.workerURLById.get(workerId) : url;
+    // Try to create a name using the worker url if present. If not, use a generic label.
+    let workerName =
+        workerURL ? i18nString(UIStrings.workerS, {PH1: workerURL}) : i18nString(UIStrings.dedicatedWorker);
+    const workerTarget = workerId !== undefined && SDK.TargetManager.TargetManager.instance().targetById(workerId);
+    if (workerTarget) {
+      // Get the worker name from the target, which corresponds to the name
+      // assigned to the worker when it was constructed.
+      workerName = i18nString(UIStrings.workerSS, {PH1: workerTarget.name(), PH2: url});
+    }
+    return workerName;
   }
 
   /**

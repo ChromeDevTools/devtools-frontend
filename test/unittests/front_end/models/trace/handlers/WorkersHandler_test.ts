@@ -69,4 +69,13 @@ describe('WorkersHandler', () => {
     assert.strictEqual(thread2, 35351);
     assert.strictEqual(worker2, 'E59E70C44C7664657CE822BB7DC54085');
   });
+
+  it('collects the url of workers', async function() {
+    const data = TraceEngine.Handlers.ModelHandlers.Workers.data();
+    const [[thread1, worker1], [thread2, worker2]] = data.workerURLById.entries();
+    assert.strictEqual(thread1, '990A76F8BED5B771144F505FF9313D06');
+    assert.strictEqual(worker1, 'https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js');
+    assert.strictEqual(thread2, 'E59E70C44C7664657CE822BB7DC54085');
+    assert.strictEqual(worker2, 'https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js');
+  });
 });

@@ -43,6 +43,8 @@
   let Common;
   /** @type {import('./core/host/host.js')} */
   let HostModule;
+  /** @type {import('./core/root/root.js')} */
+  let Root;
   /** @type {import('./core/sdk/sdk.js')} */
   let SDK;
   /** @type {import('./panels/sources/sources.js')} */
@@ -163,6 +165,7 @@
       ([
         Common,
         HostModule,
+        Root,
         SDK,
         Sources,
         Timeline,
@@ -172,6 +175,7 @@
            await Promise.all([
              self.runtime.loadLegacyModule('core/common/common.js'),
              self.runtime.loadLegacyModule('core/host/host.js'),
+             self.runtime.loadLegacyModule('core/root/root.js'),
              self.runtime.loadLegacyModule('core/sdk/sdk.js'),
              self.runtime.loadLegacyModule('panels/sources/sources.js'),
              self.runtime.loadLegacyModule('panels/timeline/timeline.js'),

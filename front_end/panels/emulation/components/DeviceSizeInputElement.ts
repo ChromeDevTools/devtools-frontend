@@ -71,6 +71,8 @@ export class SizeInputElement extends HTMLElement {
            */
           width: calc(4ch + 2ch + 2px);
           max-height: 18px;
+          border: var(--sys-color-neutral-outline);
+          border-radius: 4px;
           margin: 0 2px;
           text-align: center;
           font-size: inherit;

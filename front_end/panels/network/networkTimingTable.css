@@ -65,9 +65,9 @@ table.network-timing-table > tr:not(.network-timing-table-header):not(.network-t
 }
 
 .network-timing-table hr.break {
-  border: 0;
+  background-color: var(--sys-color-divider);
+  border: none;
   height: 1px;
-  background-image: linear-gradient(to right, var(--color-background-elevation-0), var(--color-text-secondary), var(--color-background-elevation-0));
 }
 
 .network-timing-row {

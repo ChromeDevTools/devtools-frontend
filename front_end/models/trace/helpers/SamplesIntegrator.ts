@@ -11,7 +11,7 @@ import {millisecondsToMicroseconds} from './Timing.js';
 import {mergeEventsInOrder} from './Trace.js';
 
 /**
- * This is a helpers that integrates CPU profiling data coming in the
+ * This is a helper that integrates CPU profiling data coming in the
  * shape of samples, with trace events. Samples indicate what the JS
  * stack trace looked at a given point in time, but they don't have
  * duration. The SamplesIntegrator task is to make an approximation

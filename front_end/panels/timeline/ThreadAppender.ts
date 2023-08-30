@@ -1,17 +1,18 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 
+import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
-  type TrackAppender,
   type HighlightedEntryInfo,
+  type TrackAppender,
   type TrackAppenderName,
 } from './CompatibilityTracksAppender.js';
-import * as i18n from '../../core/i18n/i18n.js';
-import type * as Common from '../../core/common/common.js';
-import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
+import {DEFAULT_CATEGORY_STYLES_PALETTE, EventStyles} from './EventUICategory.js';
 
 const UIStrings = {
   /**
@@ -44,10 +45,19 @@ export class ThreadAppender implements TrackAppender {
   #processId: TraceEngine.Types.TraceEvents.ProcessID;
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender,
-      traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData, colorGenerator: Common.Color.Generator,
+      traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData,
       processId: TraceEngine.Types.TraceEvents.ProcessID, threadId: TraceEngine.Types.TraceEvents.ThreadID) {
     this.#compatibilityBuilder = compatibilityBuilder;
-    this.#colorGenerator = colorGenerator;
+    // TODO(crbug.com/1456706):
+    // The values for this color generator have been taken from the old
+    // engine to keep the colors the same after the migration. This
+    // generator is used here to create colors for js frames (profile
+    // calls) in the flamechart by hashing the script's url. We might
+    // need to reconsider this generator when migrating to GM3 colors.
+    this.#colorGenerator =
+        new Common.Color.Generator({min: 30, max: 330, count: undefined}, {min: 50, max: 80, count: 3}, 85);
+    // Add a default color for call frames with no url.
+    this.#colorGenerator.setColorForID('', '#f2ecdc');
     this.#traceParsedData = traceParsedData;
     this.#processId = processId;
     const entries = this.#traceParsedData.Renderer?.processes.get(processId)?.threads?.get(threadId)?.entries;
@@ -117,8 +127,19 @@ export class ThreadAppender implements TrackAppender {
    * Gets the color an event added by this appender should be rendered with.
    */
   colorForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
+    if (TraceEngine.Types.TraceEvents.isProfileCall(event)) {
+      if (event.callFrame.scriptId === '0') {
+        // If we can not match this frame to a script, return the
+        // generic "scripting" color.
+        return DEFAULT_CATEGORY_STYLES_PALETTE.Scripting.color;
+      }
+      // Otherwise, return a color created based on its URL.
+      return this.#colorGenerator.colorForID(event.callFrame.url);
+    }
     const idForColorGeneration = this.titleForEvent(event);
-    return this.#colorGenerator.colorForID(idForColorGeneration);
+    const defaultColor =
+        EventStyles.get(event.name as TraceEngine.Types.TraceEvents.KnownEventName)?.categoryStyle.color;
+    return defaultColor || this.#colorGenerator.colorForID(idForColorGeneration);
   }
 
   /**
@@ -128,7 +149,8 @@ export class ThreadAppender implements TrackAppender {
     if (TraceEngine.Types.TraceEvents.isProfileCall(event)) {
       return event.callFrame.functionName || i18nString(UIStrings.anonymous);
     }
-    return event.name;
+    const defaultName = EventStyles.get(event.name as TraceEngine.Types.TraceEvents.KnownEventName)?.label();
+    return defaultName || event.name;
   }
 
   /**

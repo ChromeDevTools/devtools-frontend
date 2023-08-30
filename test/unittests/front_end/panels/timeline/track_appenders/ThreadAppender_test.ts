@@ -53,7 +53,7 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('marks all levels used by the track with the TrackAppender type', async function() {
     const {entryTypeByLevel} = await renderTrackAppender(this, 'simple-js-program.json.gz');
-    assert.strictEqual(entryTypeByLevel.length, 5);
+    assert.strictEqual(entryTypeByLevel.length, 8);
     assert.isTrue(
         entryTypeByLevel.every(type => type === Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender));
   });
@@ -72,7 +72,7 @@ describeWithEnvironment('ThreadAppender', function() {
       throw new Error('Could not find renderer events');
     }
     const title = threadAppenders[0].titleForEvent(events[0]);
-    assert.strictEqual(title, 'RunTask');
+    assert.strictEqual(title, 'Task');
   });
 
   it('returns the correct title for a profile call', async function() {
@@ -102,7 +102,7 @@ describeWithEnvironment('ThreadAppender', function() {
     }
     const info = threadAppenders[0].highlightedEntryInfo(events[0]);
     assert.deepEqual(info, {
-      title: 'RunTask',
+      title: 'Task',
       formattedTime: '0.27\u00A0ms',
     });
   });

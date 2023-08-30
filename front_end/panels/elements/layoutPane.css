@@ -162,5 +162,5 @@ that uses the dimensions to draw an outline around the element. */
 }
 
 .node-text-container:hover {
-  background-color: var(--item-hover-color);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }

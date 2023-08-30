@@ -358,7 +358,7 @@ input::placeholder {
   padding-right: 20px;
   padding-left: 6px;
   background-image: var(--image-file-arrow-drop-down-light);
-  background-color: var(--color-background-elevation-0);
+  background-color: var(--sys-color-surface);
   background-position: right center;
   background-repeat: no-repeat;
   min-height: 24px;
@@ -993,7 +993,7 @@ span[is="dt-icon-label"] {
 }
 
 ::selection {
-  background-color: var(--text-selection);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .reload-warning {

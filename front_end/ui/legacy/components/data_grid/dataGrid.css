@@ -151,7 +151,7 @@
 }
 
 .data-grid th .sort-order-icon-container {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-surface1);
   min-width: 0;
   position: absolute;
   top: 1px;
@@ -217,9 +217,17 @@
   transform: rotate(90deg);
 }
 
+.data-grid tbody tr.revealed:hover {
+  background-color: var(--sys-color-state-hover-on-subtle);
+}
+
 .data-grid tbody tr.revealed.selected {
   background-color: var(--sys-color-neutral-container);
   color: inherit;
+}
+
+.data-grid tbody tr.revealed:focus-within {
+  background-color: var(--sys-color-tonal-container);
 }
 
 .data-grid tbody tr.revealed.selected.dirty {
@@ -246,7 +254,7 @@
 }
 
 .data-grid:focus tr.selected .devtools-link {
-  color: var(--color-selected-option);
+  color: var(--sys-color-on-tonal-container);
 }
 
 .data-grid:focus tr.parent.selected td.disclosure::before {

@@ -52,10 +52,9 @@
   --text-primary: var(--sys-color-on-surface);
   --text-secondary: var(--sys-color-token-subtle);
   --text-link: var(--sys-color-primary);
-  --text-selection: var(--sys-color-state-ripple-primary);
   --color-grid-stripe: var(--sys-color-surface1);
   --color-grid-default: var(--sys-color-surface);
   --color-grid-focus-selected: var(--sys-color-tonal-container);
-  --color-grid-selected: var(--sys-color-neutral-container);
+  --color-grid-selected: var(--sys-color-surface-variant);
   --color-grid-hovered: var(--sys-color-state-hover-on-subtle);
 }

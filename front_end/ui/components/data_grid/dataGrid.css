@@ -43,8 +43,20 @@ tbody tr {
   background-color: var(--override-data-grid-row-background-color, --sys-color-surface);
 }
 
+tbody tr:nth-child(odd) {
+  background-color: var(--sys-color-surface1);
+}
+
+tbody tr:hover:not(.selected) {
+  background-color: var(--sys-color-state-hover-on-subtle);
+}
+
 tbody tr.selected {
-  background-color: var(--sys-color-state-ripple-primary);
+  background-color: var(--sys-color-neutral-container);
+}
+
+tbody tr.selected:focus-within {
+  background-color: var(--sys-color-tonal-container);
 }
 
 .wrapping-container.striped tr:nth-child(odd):not(.selected):not(.padding-row) {

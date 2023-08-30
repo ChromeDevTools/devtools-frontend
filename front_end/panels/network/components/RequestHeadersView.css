@@ -82,6 +82,14 @@ div.raw-headers-row {
   word-break: break-all;
 }
 
+.header-name,
+.header-value {
+  &::selection {
+    color: var(--sys-color-on-tonal-container);
+    background-color: var(--sys-color-tonal-container);
+  }
+}
+
 .green-circle::before,
 .red-circle::before,
 .yellow-circle::before {

@@ -9,7 +9,7 @@
   min-width: 160px !important; /* stylelint-disable-line declaration-no-important */
   /* NOTE: Keep padding in sync with padding adjustment in SoftContextMenu.js */
   padding: 4px 0;
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-neutral-outline);
   border-radius: 7px;
   background-color: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow);

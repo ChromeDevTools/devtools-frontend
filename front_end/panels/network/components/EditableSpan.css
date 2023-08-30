@@ -27,3 +27,8 @@
   box-shadow: 0 0 0 1px var(--color-details-hairline);
   border-radius: 2px;
 }
+
+.editable::selection {
+  color: var(--sys-color-on-tonal-container);
+  background-color: var(--sys-color-tonal-container);
+}

@@ -34,6 +34,14 @@
   overflow-wrap: break-word;
 }
 
+.header-name,
+.header-value {
+  &::selection {
+    color: var(--sys-color-on-tonal-container);
+    background-color: var(--sys-color-tonal-container);
+  }
+}
+
 .header-name.pseudo-header {
   text-transform: none;
 }

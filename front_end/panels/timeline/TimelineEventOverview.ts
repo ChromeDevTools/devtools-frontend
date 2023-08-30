@@ -503,7 +503,7 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
     this.heapSizeLabel.textContent = '';
   }
 
-  override update(): void {
+  override update(start?: TraceEngine.Types.Timing.MilliSeconds, end?: TraceEngine.Types.Timing.MilliSeconds): void {
     super.update();
     const ratio = window.devicePixelRatio;
 
@@ -521,7 +521,13 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
     let maxUsedHeapSize = 0;
     let minUsedHeapSize = 100000000000;
 
-    const boundsMs = TraceEngine.Helpers.Timing.traceBoundsMilliseconds(this.#traceParsedData.Meta.traceBounds);
+    const boundsMs = (start && end) ?
+        {
+          min: start,
+          max: end,
+          range: end - start,
+        } :
+        TraceEngine.Helpers.Timing.traceBoundsMilliseconds(this.#traceParsedData.Meta.traceBounds);
     const minTime = boundsMs.min;
     const maxTime = boundsMs.max;
 

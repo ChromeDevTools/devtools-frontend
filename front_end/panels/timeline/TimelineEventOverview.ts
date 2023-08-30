@@ -310,12 +310,16 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
     return allWarningEvents;
   }
 
-  override update(): void {
+  override update(start?: TraceEngine.Types.Timing.MilliSeconds, end?: TraceEngine.Types.Timing.MilliSeconds): void {
     super.update();
 
     const height = this.height();
-    const {traceBounds} = this.#traceParsedData.Meta;
-    const timeSpan = traceBounds.range;
+    const visibleTimeWindow = !(start && end) ? this.#traceParsedData.Meta.traceBounds : {
+      min: TraceEngine.Helpers.Timing.millisecondsToMicroseconds(start),
+      max: TraceEngine.Helpers.Timing.millisecondsToMicroseconds(end),
+      range: TraceEngine.Helpers.Timing.millisecondsToMicroseconds(TraceEngine.Types.Timing.MilliSeconds(end - start)),
+    };
+    const timeSpan = visibleTimeWindow.range;
     const scale = this.width() / timeSpan;
     const ctx = this.context();
     const fillPath = new Path2D();
@@ -334,7 +338,7 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
 
     function paintWarningDecoration(event: TraceEngine.Types.TraceEvents.TraceEventData): void {
       const {startTime, duration} = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(event);
-      const x = Math.round(scale * (startTime - traceBounds.min));
+      const x = Math.round(scale * (startTime - visibleTimeWindow.min));
       const width = Math.round(scale * duration);
       fillPath.rect(x, 0, width, height);
       markersPath.moveTo(x + width, 0);

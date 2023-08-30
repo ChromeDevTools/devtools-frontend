@@ -12,7 +12,7 @@ import {AsyncScope} from './async-scope.js';
 import {getEnvVar} from './config.js';
 import {platform, type Platform, stepDescription} from './helper.js';
 
-export {beforeEach} from 'mocha';
+export {after, beforeEach} from 'mocha';
 
 let didInitializeHtmlOutputFile = false;
 

@@ -192,7 +192,7 @@ export class Resource implements TextUtils.ContentProvider.ContentProvider {
     }
     const result = await this.#resourceTreeModel.target().pageAgent().invoke_searchInResource(
         {frameId: this.frameId, url: this.url, query, caseSensitive, isRegex});
-    return result.result || [];
+    return TextUtils.TextUtils.performSearchInSearchMatches(result.result || [], query, caseSensitive, isRegex);
   }
 
   async populateImageSource(image: HTMLImageElement): Promise<void> {

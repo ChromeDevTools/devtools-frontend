@@ -109,20 +109,20 @@ export class NetworkSearchScope implements Search.SearchScope.SearchScope {
 
   static async #responseBodyMatches(
       searchConfig: Workspace.SearchConfig.SearchConfig,
-      request: SDK.NetworkRequest.NetworkRequest): Promise<TextUtils.ContentProvider.SearchMatchExact[]> {
+      request: SDK.NetworkRequest.NetworkRequest): Promise<TextUtils.ContentProvider.SearchMatch[]> {
     if (!request.contentType().isTextType()) {
       return [];
     }
 
-    let matches: TextUtils.ContentProvider.SearchMatchExact[] = [];
+    let matches: TextUtils.ContentProvider.SearchMatch[] = [];
     for (const query of searchConfig.queries()) {
       const tmpMatches = await request.searchInContent(query, !searchConfig.ignoreCase(), searchConfig.isRegex());
       if (tmpMatches.length === 0) {
         // Mirror file search that all individual queries must produce matches.
         return [];
       }
-      matches = Platform.ArrayUtilities.mergeOrdered(
-          matches, tmpMatches, TextUtils.ContentProvider.SearchMatchExact.comparator);
+      matches =
+          Platform.ArrayUtilities.mergeOrdered(matches, tmpMatches, TextUtils.ContentProvider.SearchMatch.comparator);
     }
     return matches;
   }

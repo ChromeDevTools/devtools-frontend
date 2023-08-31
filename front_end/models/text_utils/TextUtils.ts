@@ -30,7 +30,7 @@
 
 import * as Platform from '../../core/platform/platform.js';
 
-import {SearchMatch, SearchMatchExact} from './ContentProvider.js';
+import {SearchMatch} from './ContentProvider.js';
 import {Text} from './Text.js';
 
 export const Utils = {
@@ -284,6 +284,10 @@ export const isMinified = function(text: string): boolean {
   return (text.length - lineCount) / lineCount >= 80;
 };
 
+/**
+ * @returns One {@link SearchMatch} per match. Multiple matches on the same line each
+ * result in their own `SearchMatchExact` instance.
+ */
 export const performSearchInContent = function(
     content: string, query: string, caseSensitive: boolean, isRegex: boolean): SearchMatch[] {
   const regex = Platform.StringUtilities.createSearchRegex(query, caseSensitive, isRegex);
@@ -292,51 +296,30 @@ export const performSearchInContent = function(
   const result = [];
   for (let i = 0; i < text.lineCount(); ++i) {
     const lineContent = text.lineAt(i);
-    regex.lastIndex = 0;
-    const match = regex.exec(lineContent);
-    if (match) {
-      result.push(new SearchMatch(i, lineContent));
-    }
-  }
-  return result;
-};
-
-/**
- * Similar to {@link performSearchInContent} but returns one entry per match,
- * not per line.
- */
-export const performExtendedSearchInContent = function(
-    content: string, query: string, caseSensitive: boolean, isRegex: boolean): SearchMatchExact[] {
-  const regex = Platform.StringUtilities.createSearchRegex(query, caseSensitive, isRegex);
-
-  const text = new Text(content);
-  const result = [];
-  for (let i = 0; i < text.lineCount(); ++i) {
-    const lineContent = text.lineAt(i);
     const matches = lineContent.matchAll(regex);
     for (const match of matches) {
-      result.push(new SearchMatchExact(i, lineContent, match.index as number, match[0].length));
+      result.push(new SearchMatch(i, lineContent, match.index as number, match[0].length));
     }
   }
   return result;
 };
 
 /**
- * Similar to {@link performExtendedSearchInContent} but doesn't search in a whole text but rather
+ * Similar to {@link performSearchInContent} but doesn't search in a whole text but rather
  * finds the exact matches on a prelminiary search result (i.e. lines with known matches).
- * @param matches is deliberatedly not typed as {@link SearchMatch} so we can also pass the
+ * @param matches is deliberatedly typed as an object literal so we can pass the
  *                CDP search result type.
  */
-export const performExtendedSearchInSearchMatches = function(
+export const performSearchInSearchMatches = function(
     matches: {lineNumber: number, lineContent: string}[], query: string, caseSensitive: boolean,
-    isRegex: boolean): SearchMatchExact[] {
+    isRegex: boolean): SearchMatch[] {
   const regex = Platform.StringUtilities.createSearchRegex(query, caseSensitive, isRegex);
   const result = [];
 
   for (const {lineNumber, lineContent} of matches) {
     const matches = lineContent.matchAll(regex);
     for (const match of matches) {
-      result.push(new SearchMatchExact(lineNumber, lineContent, match.index as number, match[0].length));
+      result.push(new SearchMatch(lineNumber, lineContent, match.index as number, match[0].length));
     }
   }
   return result;

@@ -172,7 +172,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
   }
 
   static async searchInRequest(request: NetworkRequest, query: string, caseSensitive: boolean, isRegex: boolean):
-      Promise<TextUtils.ContentProvider.SearchMatchExact[]> {
+      Promise<TextUtils.ContentProvider.SearchMatch[]> {
     const manager = NetworkManager.forRequest(request);
     const requestId = request.backendRequestId();
     if (!manager || !requestId || request.isRedirect()) {
@@ -180,8 +180,7 @@ export class NetworkManager extends SDKModel<EventTypes> {
     }
     const response = await manager.#networkAgent.invoke_searchInResponseBody(
         {requestId, query: query, caseSensitive: caseSensitive, isRegex: isRegex});
-    return TextUtils.TextUtils.performExtendedSearchInSearchMatches(
-        response.result || [], query, caseSensitive, isRegex);
+    return TextUtils.TextUtils.performSearchInSearchMatches(response.result || [], query, caseSensitive, isRegex);
   }
 
   static async requestContentData(request: NetworkRequest): Promise<ContentData> {

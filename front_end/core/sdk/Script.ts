@@ -321,8 +321,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
 
     const matches = await this.debuggerModel.target().debuggerAgent().invoke_searchInContent(
         {scriptId: this.scriptId, query, caseSensitive, isRegex});
-    return (matches.result || [])
-        .map(match => new TextUtils.ContentProvider.SearchMatch(match.lineNumber, match.lineContent));
+    return TextUtils.TextUtils.performSearchInSearchMatches(matches.result || [], query, caseSensitive, isRegex);
   }
 
   private appendSourceURLCommentIfNeeded(source: string): string {

@@ -62,7 +62,7 @@ describe('ContentProviderBasedProject', () => {
       assert.hasAllKeys(result, [uiSourceCodes[1]]);
     });
 
-    it('does not include inexact search matches in the result', async () => {
+    it('does include search matches in the result', async () => {
       const {project, uiSourceCodes} = createContentProviderUISourceCodes({
         items: [
           {
@@ -83,8 +83,12 @@ describe('ContentProviderBasedProject', () => {
           await project.findFilesMatchingSearchRequest(searchConfig, uiSourceCodes, new Common.Progress.Progress());
 
       assert.hasAllKeys(result, uiSourceCodes);
-      assert.isNull(result.get(uiSourceCodes[0]));
-      assert.isNull(result.get(uiSourceCodes[1]));
+      assert.deepEqual(
+          result.get(uiSourceCodes[0]),
+          [{lineNumber: 0, lineContent: 'Single line with "foo"', columnNumber: 7, matchLength: 4}]);
+      assert.deepEqual(
+          result.get(uiSourceCodes[1]),
+          [{lineNumber: 0, lineContent: 'Single line with "bar"', columnNumber: 7, matchLength: 4}]);
     });
 
     it('updates the progress per file', async () => {

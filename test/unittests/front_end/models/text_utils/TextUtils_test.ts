@@ -528,12 +528,12 @@ for(let e=0;e<l.lineCount();++e){const t=l.lineAt(e);s.lastIndex=0;const i=s.exe
     it('returns an entry for each match on the same line', () => {
       const lines = ['The first line with a second "the".', 'The second line.'];
 
-      const result = TextUtils.TextUtils.performExtendedSearchInContent(lines.join('\n'), 'the', false, false);
+      const result = TextUtils.TextUtils.performSearchInContent(lines.join('\n'), 'the', false, false);
 
       assert.deepEqual(result, [
-        new TextUtils.ContentProvider.SearchMatchExact(0, lines[0], 0, 3),
-        new TextUtils.ContentProvider.SearchMatchExact(0, lines[0], 30, 3),
-        new TextUtils.ContentProvider.SearchMatchExact(1, lines[1], 0, 3),
+        new TextUtils.ContentProvider.SearchMatch(0, lines[0], 0, 3),
+        new TextUtils.ContentProvider.SearchMatch(0, lines[0], 30, 3),
+        new TextUtils.ContentProvider.SearchMatch(1, lines[1], 0, 3),
       ]);
     });
   });
@@ -546,12 +546,12 @@ for(let e=0;e<l.lineCount();++e){const t=l.lineAt(e);s.lastIndex=0;const i=s.exe
         {lineContent: lines[1], lineNumber: 42},
       ];
 
-      const result = TextUtils.TextUtils.performExtendedSearchInSearchMatches(searchMatches, 'the', false, false);
+      const result = TextUtils.TextUtils.performSearchInSearchMatches(searchMatches, 'the', false, false);
 
       assert.deepEqual(result, [
-        new TextUtils.ContentProvider.SearchMatchExact(5, lines[0], 0, 3),
-        new TextUtils.ContentProvider.SearchMatchExact(5, lines[0], 30, 3),
-        new TextUtils.ContentProvider.SearchMatchExact(42, lines[1], 0, 3),
+        new TextUtils.ContentProvider.SearchMatch(5, lines[0], 0, 3),
+        new TextUtils.ContentProvider.SearchMatch(5, lines[0], 30, 3),
+        new TextUtils.ContentProvider.SearchMatch(42, lines[1], 0, 3),
       ]);
     });
   });

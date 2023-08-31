@@ -18,15 +18,3 @@ devtools_entrypoint("bundle") {
 
   visibility = [ "*" ]
 }
-
-devtools_entrypoint("legacy") {
-  entrypoint = "root-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../entrypoints/shell/*",
-    "../../legacy_test_runner/*",
-  ]
-}

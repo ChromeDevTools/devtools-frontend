@@ -236,10 +236,10 @@ describe('The Sources Tab', async function() {
     });
 
     await step('Check that expression evaluation understands unminified name', async () => {
-      await frontend.evaluate(() => {
-        // @ts-ignore
-        globalThis.Root.Runtime.experiments.setEnabled('evaluateExpressionsWithSourceMaps', true);
-      });
+      await frontend.evaluate(`(async () => {
+        const Root = await import('./core/root/root.js');
+        Root.Runtime.experiments.setEnabled('evaluateExpressionsWithSourceMaps', true);
+      })()`);
 
       await click(CONSOLE_TAB_SELECTOR);
       await focusConsolePrompt();

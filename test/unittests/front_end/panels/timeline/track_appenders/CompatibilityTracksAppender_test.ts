@@ -28,8 +28,12 @@ describeWithEnvironment('TimingTrackAppender', function() {
         flameChartData, traceParsedData, entryData, entryTypeByLevel, data.timelineModel);
     const timingsTrack = tracksAppender.timingsTrackAppender();
     const gpuTrack = tracksAppender.gpuTrackAppender();
-    const nextLevel = timingsTrack.appendTrackAtLevel(0);
-    gpuTrack.appendTrackAtLevel(nextLevel);
+    const threadAppenders = tracksAppender.threadAppenders();
+    let currentLevel = timingsTrack.appendTrackAtLevel(0);
+    currentLevel = gpuTrack.appendTrackAtLevel(currentLevel);
+    for (const threadAppender of threadAppenders) {
+      currentLevel = threadAppender.appendTrackAtLevel(currentLevel);
+    }
   }
 
   beforeEach(async () => {
@@ -39,7 +43,8 @@ describeWithEnvironment('TimingTrackAppender', function() {
   describe('CompatibilityTracksAppender', () => {
     describe('eventsInTrack', () => {
       it('returns all the events appended by a track with multiple levels', () => {
-        const timingsTrackEvents = tracksAppender.eventsInTrack('Timings');
+        const timingsTrack = tracksAppender.timingsTrackAppender();
+        const timingsTrackEvents = tracksAppender.eventsInTrack(timingsTrack);
         const allTimingEvents = [
           ...traceParsedData.UserTimings.consoleTimings,
           ...traceParsedData.UserTimings.timestampEvents,
@@ -50,26 +55,50 @@ describeWithEnvironment('TimingTrackAppender', function() {
         assert.deepEqual(timingsTrackEvents, allTimingEvents);
       });
       it('returns all the events appended by a track with one level', () => {
+        const gpuTrack = tracksAppender.gpuTrackAppender();
         const gpuTrackEvents =
-            tracksAppender.eventsInTrack('GPU') as readonly TraceModel.Types.TraceEvents.TraceEventData[];
+            tracksAppender.eventsInTrack(gpuTrack) as readonly TraceModel.Types.TraceEvents.TraceEventData[];
         assert.deepEqual(gpuTrackEvents, traceParsedData.GPU.mainGPUThreadTasks);
       });
     });
     describe('eventsForTreeView', () => {
       it('returns only sync events if using async events means a tree cannot be built', () => {
-        const timingsEvents = tracksAppender.eventsInTrack('Timings');
+        const timingsTrack = tracksAppender.timingsTrackAppender();
+        const timingsEvents = tracksAppender.eventsInTrack(timingsTrack);
         assert.isFalse(tracksAppender.canBuildTreesFromEvents(timingsEvents));
-        const treeEvents = tracksAppender.eventsForTreeView('Timings');
+        const treeEvents = tracksAppender.eventsForTreeView(timingsTrack);
         const allEventsAreSync = treeEvents.every(event => !TraceModel.Types.TraceEvents.isAsyncPhase(event.ph));
         assert.isTrue(allEventsAreSync);
       });
       it('returns both sync and async events if a tree can be built with them', async () => {
         // This file contains events in the timings track that can be assembled as a tree
         await initTrackAppender(this, 'sync-like-timings.json.gz');
-        const timingsEvents = tracksAppender.eventsInTrack('Timings');
+        const timingsTrack = tracksAppender.timingsTrackAppender();
+        const timingsEvents = tracksAppender.eventsInTrack(timingsTrack);
         assert.isTrue(tracksAppender.canBuildTreesFromEvents(timingsEvents));
-        const treeEvents = tracksAppender.eventsForTreeView('Timings');
+        const treeEvents = tracksAppender.eventsForTreeView(timingsTrack);
         assert.deepEqual(treeEvents, timingsEvents);
+      });
+
+      it('returns events for tree view for nested tracks', async () => {
+        // This file contains two rasterizer threads which should be
+        // nested inside the same header.
+        await initTrackAppender(this, 'lcp-images.json.gz');
+        const rasterTracks = tracksAppender.threadAppenders().filter(
+            threadAppender => threadAppender.threadType === Timeline.ThreadAppender.ThreadType.RASTERIZER);
+        assert.strictEqual(rasterTracks.length, 2);
+
+        const raster1Events = tracksAppender.eventsInTrack(rasterTracks[0]);
+        assert.strictEqual(raster1Events.length, 6);
+        assert.isTrue(tracksAppender.canBuildTreesFromEvents(raster1Events));
+        const raster1TreeEvents = tracksAppender.eventsForTreeView(rasterTracks[0]);
+        assert.deepEqual(raster1TreeEvents, raster1Events);
+
+        const raster2Events = tracksAppender.eventsInTrack(rasterTracks[1]);
+        assert.strictEqual(raster2Events.length, 1);
+        assert.isTrue(tracksAppender.canBuildTreesFromEvents(raster2Events));
+        const raster2TreeEvents = tracksAppender.eventsForTreeView(rasterTracks[1]);
+        assert.deepEqual(raster2TreeEvents, raster2Events);
       });
     });
     describe('groupEventsForTreeView', () => {

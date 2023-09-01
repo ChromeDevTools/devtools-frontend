@@ -3,8 +3,10 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 import {
@@ -51,6 +53,15 @@ const UIStrings = {
    *@example {1} PH1
    */
   threadS: 'Thread {PH1}',
+  /**
+   *@description Rasterization in computer graphics.
+   */
+  raster: 'Raster',
+  /**
+   *@description Name for a thread that rasterizes graphics in a website.
+   *@example {2} PH1
+   */
+  rasterizerThreadS: 'Rasterizer Thread {PH1}',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/ThreadAppender.ts', UIStrings);
@@ -78,13 +89,23 @@ export class ThreadAppender implements TrackAppender {
   #processId: TraceEngine.Types.TraceEvents.ProcessID;
   #threadId: TraceEngine.Types.TraceEvents.ThreadID;
   #threadDefaultName: string;
+  #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
+  // Raster threads are rendered together under a singler header, so
+  // the header is added for the first raster thread and skipped
+  // thereafter.
+  #rasterIndex: number;
   readonly threadType: ThreadType = ThreadType.MAIN_THREAD;
   readonly isOnMainFrame: boolean;
+
+  // TODO(crbug.com/1428024) Clean up API so that we don't have to pass
+  // a raster index to the appender (for instance, by querying the flame
+  // chart data in the appender or by passing data about the flamechart
+  // groups).
   constructor(
-      compatibilityBuilder: CompatibilityTracksAppender,
+      compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
       traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData,
       processId: TraceEngine.Types.TraceEvents.ProcessID, threadId: TraceEngine.Types.TraceEvents.ThreadID,
-      threadName: string|null, type: ThreadType) {
+      threadName: string|null, type: ThreadType, rasterCount: number) {
     this.#compatibilityBuilder = compatibilityBuilder;
     // TODO(crbug.com/1456706):
     // The values for this color generator have been taken from the old
@@ -99,6 +120,8 @@ export class ThreadAppender implements TrackAppender {
     this.#traceParsedData = traceParsedData;
     this.#processId = processId;
     this.#threadId = threadId;
+    this.#rasterIndex = rasterCount;
+    this.#flameChartData = flameChartData;
     const entries = this.#traceParsedData.Renderer?.processes.get(processId)?.threads?.get(threadId)?.entries;
     if (!entries) {
       throw new Error(`Could not find data for thread with id ${threadId} in process with id ${processId}`);
@@ -122,7 +145,11 @@ export class ThreadAppender implements TrackAppender {
     if (this.#entries.length === 0) {
       return trackStartLevel;
     }
-    this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
+    if (this.threadType === ThreadType.RASTERIZER) {
+      this.#appendRasterHeaderAndTitle(trackStartLevel, expanded);
+    } else {
+      this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
+    }
     return this.#appendThreadEntriesAtLevel(trackStartLevel);
   }
 
@@ -138,26 +165,58 @@ export class ThreadAppender implements TrackAppender {
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
     const trackIsCollapsible = this.#entries.length > 0;
     const style = buildGroupStyle({shareHeaderLine: false, collapsible: trackIsCollapsible});
-    const group = buildTrackHeader(currentLevel, this.#buildNameFromTrack(), style, /* selectable= */ true, expanded);
+    const group = buildTrackHeader(currentLevel, this.#buildNameForTrack(), style, /* selectable= */ true, expanded);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
+  /**
+   * Raster threads are rendered under a single header in the
+   * flamechart. However, each thread has a unique title which needs to
+   * be added to the flamechart data.
+   */
+  #appendRasterHeaderAndTitle(trackStartLevel: number, expanded?: boolean): void {
+    if (this.#rasterIndex === 1) {
+      const trackIsCollapsible = this.#entries.length > 0;
+      const headerStyle = buildGroupStyle({shareHeaderLine: false, collapsible: trackIsCollapsible});
+      const headerGroup =
+          buildTrackHeader(trackStartLevel, this.#buildNameForTrack(), headerStyle, /* selectable= */ false, expanded);
+      this.#flameChartData.groups.push(headerGroup);
+    }
+    // Nesting is set to 1 because the track is appended inside the
+    // header for all raster threads.
+    const titleStyle = buildGroupStyle({padding: 2, nestingLevel: 1, collapsible: false});
+    // TODO(crbug.com/1428024) Once the thread appenders are ready to
+    // be shipped, use the i18n API.
+    const rasterizerTitle = `[RPP] ${i18nString(UIStrings.rasterizerThreadS, {PH1: this.#rasterIndex})}`;
+    const titleGroup = buildTrackHeader(trackStartLevel, rasterizerTitle, titleStyle, /* selectable= */ true, expanded);
+    this.#compatibilityBuilder.registerTrackForGroup(titleGroup, this);
+  }
 
-  #buildNameFromTrack(): string {
+  #buildNameForTrack(): string {
     // This UI string doesn't yet use the i18n API because it is not
     // shown in production, only in the component server, reason being
     // it is not ready to be shipped.
-    // TODO(crbug.com/1428024) Once the UI has been, use the i18n API.
+    // TODO(crbug.com/1428024) Once the thread appenders are ready to
+    // be shipped, use the i18n API.
     const newEnginePrefix = '[RPP] ';
     let name = newEnginePrefix;
     const url = this.#traceParsedData.Renderer?.processes.get(this.#processId)?.url || '';
 
     let threadTypeLabel: string|null = null;
-
-    if (this.threadType === ThreadType.MAIN_THREAD) {
-      threadTypeLabel =
-          this.isOnMainFrame ? i18nString(UIStrings.mainS, {PH1: url}) : i18nString(UIStrings.frameS, {PH1: url});
-    } else if (this.threadType === ThreadType.WORKER) {
-      threadTypeLabel = this.#buildNameForWorker();
+    switch (this.threadType) {
+      case ThreadType.MAIN_THREAD:
+        threadTypeLabel =
+            this.isOnMainFrame ? i18nString(UIStrings.mainS, {PH1: url}) : i18nString(UIStrings.frameS, {PH1: url});
+        break;
+      case ThreadType.WORKER:
+        threadTypeLabel = this.#buildNameForWorker();
+        break;
+      case ThreadType.RASTERIZER:
+        threadTypeLabel = i18nString(UIStrings.raster);
+        break;
+      case ThreadType.OTHER:
+        break;
+      default:
+        return Platform.assertNever(this.threadType, `Unknown thread type: ${this.threadType}`);
     }
     name += threadTypeLabel || this.#threadDefaultName;
     return name;

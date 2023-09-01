@@ -22,7 +22,7 @@ function initTrackAppender(
 }
 
 describeWithEnvironment('ThreadAppender', function() {
-  async function renderTrackAppender(context: Mocha.Context|Mocha.Suite, trace: string): Promise<{
+  async function renderThreadAppenders(context: Mocha.Context|Mocha.Suite, trace: string): Promise<{
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
     threadAppenders: Timeline.ThreadAppender.ThreadAppender[],
@@ -50,33 +50,58 @@ describeWithEnvironment('ThreadAppender', function() {
   }
 
   it('creates a thread appender for each thread in a trace', async function() {
-    const {threadAppenders} = await renderTrackAppender(this, 'simple-js-program.json.gz');
+    const {threadAppenders} = await renderThreadAppenders(this, 'simple-js-program.json.gz');
     assert.strictEqual(threadAppenders.length, 5);
   });
 
   it('renders tracks for threads in correct order', async function() {
-    const {flameChartData} = await renderTrackAppender(this, 'multiple-navigations-with-iframes.json.gz');
+    const {flameChartData} = await renderThreadAppenders(this, 'multiple-navigations-with-iframes.json.gz');
     assert.strictEqual(flameChartData.groups[0].name, '[RPP] Main — http://localhost:5000/');
     assert.strictEqual(flameChartData.groups[1].name, '[RPP] Frame — https://www.example.com/');
   });
 
   it('marks all levels used by the track with the TrackAppender type', async function() {
-    const {entryTypeByLevel} = await renderTrackAppender(this, 'simple-js-program.json.gz');
+    const {entryTypeByLevel} = await renderThreadAppenders(this, 'simple-js-program.json.gz');
     // This includes all tracks rendered by the ThreadAppender.
     assert.strictEqual(entryTypeByLevel.length, 12);
     assert.isTrue(
         entryTypeByLevel.every(type => type === Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender));
   });
 
-  it('creates a flamechart group for each thread', async function() {
-    const {flameChartData} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
-    assert.strictEqual(flameChartData.groups.length, 6);
+  it('creates a flamechart groups for track headers and titles', async function() {
+    const {flameChartData} = await renderThreadAppenders(this, 'cls-single-frame.json.gz');
+    assert.strictEqual(flameChartData.groups.length, 7);
     assert.strictEqual(flameChartData.groups[0].name, '[RPP] Main — https://output.jsbin.com/zajamil/quiet');
+    assert.strictEqual(flameChartData.groups[1].name, '[RPP] Raster');
+    assert.strictEqual(flameChartData.groups[2].name, '[RPP] Rasterizer Thread 1');
+    assert.strictEqual(flameChartData.groups[3].name, '[RPP] Rasterizer Thread 2');
+    assert.strictEqual(flameChartData.groups[4].name, '[RPP] Chrome_ChildIOThread');
+    assert.strictEqual(flameChartData.groups[5].name, '[RPP] Compositor');
+    assert.strictEqual(flameChartData.groups[6].name, '[RPP] ThreadPoolServiceThread');
+  });
+
+  it('builds flamechart groups for nested tracks correctly', async function() {
+    const {flameChartData} = await renderThreadAppenders(this, 'cls-single-frame.json.gz');
+    // This group corresponds to the header that wraps the raster tracks
+    // together. It isn't selectable and isn't nested
+    assert.strictEqual(flameChartData.groups[1].name, '[RPP] Raster');
+    assert.strictEqual(flameChartData.groups[1].selectable, false);
+    assert.strictEqual(flameChartData.groups[1].style.nestingLevel, 0);
+
+    // These groups correspond to the raster tracks titles, or the
+    // individual raster tracks themselves. They are selectable and
+    // nested
+    assert.strictEqual(flameChartData.groups[2].name, '[RPP] Rasterizer Thread 1');
+    assert.strictEqual(flameChartData.groups[2].selectable, true);
+    assert.strictEqual(flameChartData.groups[2].style.nestingLevel, 1);
+
+    assert.strictEqual(flameChartData.groups[3].name, '[RPP] Rasterizer Thread 2');
+    assert.strictEqual(flameChartData.groups[3].selectable, true);
+    assert.strictEqual(flameChartData.groups[3].style.nestingLevel, 1);
   });
 
   it('assigns correct names to multiple types of threads', async function() {
-    const {flameChartData} = await renderTrackAppender(this, 'simple-js-program.json.gz');
-    assert.strictEqual(flameChartData.groups.length, 5);
+    const {flameChartData} = await renderThreadAppenders(this, 'simple-js-program.json.gz');
     assert.strictEqual(flameChartData.groups[0].name, '[RPP] Main — https://www.google.com');
     assert.strictEqual(flameChartData.groups[1].name, '[RPP] Compositor');
     assert.strictEqual(flameChartData.groups[2].name, '[RPP] Chrome_ChildIOThread');
@@ -85,7 +110,7 @@ describeWithEnvironment('ThreadAppender', function() {
   });
 
   it('assigns correct names to worker threads', async function() {
-    const {flameChartData} = await renderTrackAppender(this, 'two-workers.json.gz');
+    const {flameChartData} = await renderThreadAppenders(this, 'two-workers.json.gz');
     assert.strictEqual(flameChartData.groups.length, 7);
     assert.strictEqual(
         flameChartData.groups[0].name,
@@ -100,7 +125,7 @@ describeWithEnvironment('ThreadAppender', function() {
   });
 
   it('returns the correct title for a renderer event', async function() {
-    const {threadAppenders, traceParsedData} = await renderTrackAppender(this, 'simple-js-program.json.gz');
+    const {threadAppenders, traceParsedData} = await renderThreadAppenders(this, 'simple-js-program.json.gz');
     const events = traceParsedData.Renderer?.allRendererEvents;
     if (!events) {
       throw new Error('Could not find renderer events');
@@ -110,7 +135,7 @@ describeWithEnvironment('ThreadAppender', function() {
   });
 
   it('returns the correct title for a profile call', async function() {
-    const {threadAppenders, traceParsedData} = await renderTrackAppender(this, 'simple-js-program.json.gz');
+    const {threadAppenders, traceParsedData} = await renderThreadAppenders(this, 'simple-js-program.json.gz');
     const rendererHandler = traceParsedData.Renderer;
     if (!rendererHandler) {
       throw new Error('RendererHandler is undefined');
@@ -129,7 +154,7 @@ describeWithEnvironment('ThreadAppender', function() {
   });
 
   it('shows the correct title for a trace event when hovered', async function() {
-    const {threadAppenders, traceParsedData} = await renderTrackAppender(this, 'simple-js-program.json.gz');
+    const {threadAppenders, traceParsedData} = await renderThreadAppenders(this, 'simple-js-program.json.gz');
     const events = traceParsedData.Renderer?.allRendererEvents;
     if (!events) {
       throw new Error('Could not find renderer events');
@@ -142,7 +167,7 @@ describeWithEnvironment('ThreadAppender', function() {
   });
 
   it('shows the correct title for a profile call when hovered', async function() {
-    const {threadAppenders, traceParsedData} = await renderTrackAppender(this, 'simple-js-program.json.gz');
+    const {threadAppenders, traceParsedData} = await renderThreadAppenders(this, 'simple-js-program.json.gz');
     const rendererHandler = traceParsedData.Renderer;
     if (!rendererHandler) {
       throw new Error('RendererHandler is undefined');

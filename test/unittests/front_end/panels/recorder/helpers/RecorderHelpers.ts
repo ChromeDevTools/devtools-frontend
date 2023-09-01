@@ -29,6 +29,9 @@ export const installMocksForRecordingPlayer = (): void => {
       url() {
         return '';
       },
+      bringToFront() {
+        return Promise.resolve();
+      },
     },
     browser: {
       pages: () => [mock.page],

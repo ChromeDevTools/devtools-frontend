@@ -4,8 +4,10 @@
 
 /* eslint-disable rulesdir/es_modules_import */
 
-import {type ElementHandle} from 'puppeteer-core';
+import {type ElementHandle, type Page} from 'puppeteer-core';
 
+import {type UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
+import type * as Recorder from '../../../front_end/panels/recorder/recorder.js';
 import {openPanelViaMoreTools} from '../../../test/e2e/helpers/settings-helpers.js';
 import {
   $,
@@ -14,15 +16,12 @@ import {
   getBrowserAndPages,
   getTestServerPort,
   goToResource,
+  platform,
   timeout,
   waitFor,
   waitForAria,
-  platform,
 } from '../../../test/shared/helper.js';
-
 import {assertMatchesJSONSnapshot} from '../../../test/shared/snapshots.js';
-import {type UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
-import type * as Recorder from '../../../front_end/panels/recorder/recorder.js';
 
 const RECORDER_CONTROLLER_TAG_NAME = 'devtools-recorder-controller';
 const TEST_RECORDING_NAME = 'New Recording';
@@ -135,6 +134,8 @@ export async function startRecording(
       untrustedEvents: false,
     },
 ) {
+  const {frontend} = getBrowserAndPages();
+  await frontend.bringToFront();
   if (options.networkCondition) {
     await changeNetworkConditions(options.networkCondition);
   }
@@ -148,6 +149,7 @@ export async function startRecording(
 export async function stopRecording(): Promise<unknown> {
   const {frontend} = getBrowserAndPages();
   await frontend.bringToFront();
+  await raf(frontend);
   const onRecordingStopped = onRecordingStateChanged();
   await click('aria/End recording');
   return await onRecordingStopped;
@@ -258,6 +260,8 @@ export async function setupRecorderWithScriptAndReplay(
 }
 
 export async function getCurrentRecording(): Promise<unknown> {
+  const {frontend} = getBrowserAndPages();
+  await frontend.bringToFront();
   const controller = await $(RECORDER_CONTROLLER_TAG_NAME);
   const recording = (await controller?.evaluate(
                         el => JSON.stringify((el as unknown as {getUserFlow(): unknown}).getUserFlow()),
@@ -307,4 +311,10 @@ export async function toggleCodeView() {
   await frontend.keyboard.down('b');
   await frontend.keyboard.up(ControlOrMeta);
   await frontend.keyboard.up('b');
+}
+
+export async function raf(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    return new Promise(resolve => window.requestAnimationFrame(resolve));
+  });
 }

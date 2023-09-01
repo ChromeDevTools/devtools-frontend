@@ -282,7 +282,6 @@ describe('Recorder', function() {
     });
 
     it('should be able to replay viewport change', async () => {
-      const {target} = getBrowserAndPages();
       await setupRecorderWithScriptAndReplay({
         title: 'Test Recording',
         steps: [
@@ -299,17 +298,12 @@ describe('Recorder', function() {
             deviceScaleFactor: 1,
             hasTouch: false,
           },
+          {
+            type: 'waitForExpression' as StepType.WaitForExpression,
+            expression: 'window.visualViewport?.width === 800 && window.visualViewport?.height === 600',
+          },
         ],
       });
-
-      assert.strictEqual(
-          await target.evaluate(() => window.visualViewport?.width),
-          800,
-      );
-      assert.strictEqual(
-          await target.evaluate(() => window.visualViewport?.height),
-          600,
-      );
     });
 
     it('should be able to replay scroll events', async () => {
@@ -358,19 +352,9 @@ describe('Recorder', function() {
     });
 
     it('should be able to scroll into view when needed', async () => {
-      const {target} = getBrowserAndPages();
       await setupRecorderWithScriptAndReplay({
         title: 'Test Recording',
         steps: [
-          {
-            type: 'setViewport' as StepType.SetViewport,
-            width: 800,
-            height: 600,
-            isLandscape: false,
-            isMobile: false,
-            deviceScaleFactor: 1,
-            hasTouch: false,
-          },
           {
             type: 'navigate' as StepType.Navigate,
             url: `${getResourcesPath()}/recorder/scroll-into-view.html`,
@@ -383,6 +367,7 @@ describe('Recorder', function() {
           },
         ],
       });
+      const {target} = getBrowserAndPages();
       assert.strictEqual(
           await target.evaluate(
               () => document.querySelector('button')?.innerText,

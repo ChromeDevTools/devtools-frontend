@@ -6,6 +6,9 @@
 
 import {assert} from 'chai';
 
+import {type StepChanged} from '../../../front_end/panels/recorder/components/StepView.js';
+import {type UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
+import {type RecorderActions} from '../../../front_end/panels/recorder/recorder-actions.js';
 import {
   assertNotNullOrUndefined,
   getBrowserAndPages,
@@ -17,6 +20,7 @@ import {
   describe,
   it,
 } from '../../../test/shared/mocha-extensions.js';
+import {assertMatchesJSONSnapshot} from '../../../test/shared/snapshots.js';
 
 import {
   assertRecordingMatchesSnapshot,
@@ -26,16 +30,12 @@ import {
   getRecordingController,
   onRecorderAttachedToTarget,
   openRecorderPanel,
+  raf,
   startOrStopRecordingShortcut,
   startRecording,
   startRecordingViaShortcut,
   stopRecording,
 } from './helpers.js';
-
-import {type RecorderActions} from '../../../front_end/panels/recorder/recorder-actions.js';
-import {type UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
-import {assertMatchesJSONSnapshot} from '../../../test/shared/snapshots.js';
-import {type StepChanged} from '../../../front_end/panels/recorder/components/StepView.js';
 
 describe('Recorder', function() {
   if (this.timeout() !== 0) {
@@ -254,6 +254,7 @@ describe('Recorder', function() {
       const recording = await getCurrentRecording();
       return (recording as {steps: unknown[]}).steps.length >= 3;
     });
+    await target.bringToFront();
     await target.click('aria/Back to Page 1');
     await target.waitForFunction(() => {
       return window.location.href.endsWith('recorder.html');
@@ -427,8 +428,10 @@ describe('Recorder', function() {
   });
 
   it('should capture and store screenshots for every section', async () => {
-    const {frontend} = getBrowserAndPages();
+    const {frontend, target} = getBrowserAndPages();
     await startRecording('recorder/recorder.html');
+    await target.bringToFront();
+    await raf(target);
     await stopRecording();
     const screenshot = await frontend.waitForSelector(
         'pierce/.section .screenshot',

@@ -73,6 +73,7 @@ describe('Recorder', function() {
         await target.bringToFront();
         await frontend.bringToFront();
         await frontend.waitForSelector('pierce/.settings');
+        await target.bringToFront();
         await target.click('#test');
         await frontend.bringToFront();
 
@@ -89,6 +90,7 @@ describe('Recorder', function() {
         await target.bringToFront();
         await frontend.bringToFront();
         await frontend.waitForSelector('pierce/.settings');
+        await target.bringToFront();
         const element = await target.waitForSelector(
             'a[href="recorder2.html"]',
         );
@@ -134,6 +136,7 @@ describe('Recorder', function() {
         await target.bringToFront();
         await frontend.bringToFront();
         await frontend.waitForSelector('pierce/.settings');
+        await target.bringToFront();
         await target.click('#test');
         await frontend.bringToFront();
         await stopRecording();
@@ -168,6 +171,7 @@ describe('Recorder', function() {
           await picker.click();
 
           // Click element and wait for selector picking to stop.
+          await target.bringToFront();
           const element = await target.waitForSelector(query);
           assertNotNullOrUndefined(element);
           await element.click();
@@ -196,7 +200,6 @@ describe('Recorder', function() {
 
           await expandStep(frontend, 2);
           await pickSelectorsForQuery('#test-button', frontend, target);
-
           const recording = await getCurrentRecording();
           assertRecordingMatchesSnapshot(recording);
         });
@@ -256,10 +259,12 @@ describe('Recorder', function() {
     describe('Settings', () => {
       it('should change network settings', async () => {
         const {target, frontend} = getBrowserAndPages();
-        await target.bringToFront();
         await frontend.bringToFront();
         await frontend.waitForSelector('pierce/.settings');
+
+        await target.bringToFront();
         await target.click('#test');
+
         await frontend.bringToFront();
         await stopRecording();
 

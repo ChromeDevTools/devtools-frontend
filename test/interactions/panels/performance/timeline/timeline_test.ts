@@ -17,7 +17,8 @@ describe('Performance panel', () => {
     await assertElementScreenshotUnchanged(panel, 'performance/timeline.png', 3);
   });
 
-  itScreenshot('renders correctly the Bottom Up datagrid', async () => {
+  // Flaky test
+  itScreenshot.skip('[crbug.com/1478133] renders correctly the Bottom Up datagrid', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
     await waitFor('.timeline-flamechart');
     await waitFor('div.tabbed-pane');
@@ -26,7 +27,8 @@ describe('Performance panel', () => {
     await assertElementScreenshotUnchanged(datagrid, 'performance/bottomUp.png', 3);
   });
 
-  itScreenshot('renders correctly the Call Tree datagrid', async () => {
+  // Flaky test
+  itScreenshot.skip('[crbug.com/1478133] renders correctly the Call Tree datagrid', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
     await waitFor('.timeline-flamechart');
     await waitFor('div.tabbed-pane');
@@ -35,7 +37,8 @@ describe('Performance panel', () => {
     await assertElementScreenshotUnchanged(datagrid, 'performance/callTree.png', 3);
   });
 
-  itScreenshot('renders correctly the Event Log datagrid', async () => {
+  // Flaky test
+  itScreenshot.skip('[crbug.com/1478133] renders correctly the Event Log datagrid', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
     await waitFor('.timeline-flamechart');
     await waitFor('div.tabbed-pane');
@@ -55,7 +58,8 @@ describe('Performance panel', () => {
     await assertElementScreenshotUnchanged(datagrid, 'performance/eventLog.png', 4);
   });
 
-  itScreenshot('renders correctly the datagrid in the split widget of Bottom Up', async () => {
+  // Flaky test
+  itScreenshot.skip('[crbug.com/1478133] renders correctly the datagrid in the split widget of Bottom Up', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
     await waitFor('.timeline-flamechart');
     await waitFor('div.tabbed-pane');
@@ -75,7 +79,8 @@ describe('Performance panel', () => {
     await assertElementScreenshotUnchanged(datagrid, 'performance/splitWidgetBottomUp.png', 3);
   });
 
-  itScreenshot('renders correctly the datagrid in the split widget of Call Tree', async () => {
+  // Flaky test
+  itScreenshot.skip('[crbug.com/1478133] renders correctly the datagrid in the split widget of Call Tree', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
     await waitFor('.timeline-flamechart');
     await waitFor('div.tabbed-pane');

@@ -12,6 +12,7 @@ devtools_module("trace") {
     "ModelImpl.ts",
     "Processor.ts",
     "TracingManager.ts",
+    "TreeManipulator.ts",
   ]
 
   deps = [

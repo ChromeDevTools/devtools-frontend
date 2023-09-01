@@ -7,6 +7,7 @@ import("../../../../scripts/build/ninja/copy.gni")
 copy_to_gen("traces") {
   sources = [
     "animation.json.gz",
+    "basic-stack.json.gz",
     "basic.json.gz",
     "changing-priority.json.gz",
     "cls-cluster-max-duration.json.gz",

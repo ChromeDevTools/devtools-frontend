@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-
 import type * as puppeteer from 'puppeteer-core';
 
 import {
@@ -22,8 +21,8 @@ import {
   waitForFunction,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
-import {navigateToCssOverviewTab, startCaptureCSSOverview} from '../helpers/css-overview-helpers.js';
 import {CONSOLE_MESSAGES_SELECTOR, navigateToConsoleTab} from '../helpers/console-helpers.js';
+import {navigateToCssOverviewTab, startCaptureCSSOverview} from '../helpers/css-overview-helpers.js';
 import {
   editCSSProperty,
   focusElementsTree,
@@ -31,11 +30,11 @@ import {
   waitForContentOfSelectedElementsNode,
   waitForElementsStyleSection,
 } from '../helpers/elements-helpers.js';
+import {navigateToNetworkTab, openNetworkTab} from '../helpers/network-helpers.js';
 import {openCommandMenu} from '../helpers/quick_open-helpers.js';
 import {closeSecurityTab, navigateToSecurityTab} from '../helpers/security-helpers.js';
 import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
 import {waitForSourcesPanel} from '../helpers/sources-helpers.js';
-import {navigateToNetworkTab, openNetworkTab} from '../helpers/network-helpers.js';
 
 interface UserMetrics {
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -579,7 +578,8 @@ describe('User Metrics for Issue Panel', () => {
     ]);
   });
 
-  it('dispatches events when Quirks Mode issues are created', async () => {
+  // Consistently failing on both Linux and Windows after a recent roll of Chrome for Testing.
+  it.skip('[crbug.com/1478136] dispatches events when Quirks Mode issues are created', async () => {
     await goToResource('elements/quirks-mode-iframes.html');
     await waitFor('.issue');
 

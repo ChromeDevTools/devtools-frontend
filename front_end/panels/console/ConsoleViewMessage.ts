@@ -993,7 +993,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   }
 
   setConsoleGroup(group: ConsoleGroupViewMessage): void {
-    console.assert(this.consoleGroupInternal === null);
+    // TODO(crbug.com/1477675): Figure out why `this.consoleGroupInternal` is
+    //     not null here and add an assertion.
     this.consoleGroupInternal = group;
   }
 

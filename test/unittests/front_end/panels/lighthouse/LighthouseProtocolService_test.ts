@@ -35,6 +35,7 @@ describeWithMockConnection('LighthouseProtocolService', () => {
       SDK.ChildTargetManager.ChildTargetManager.install();
       const childTargetManager = target.model(SDK.ChildTargetManager.ChildTargetManager);
       assertNotNullOrUndefined(childTargetManager);
+      sinon.stub(childTargetManager, 'getParentTargetId').resolves(target.targetInfo()?.targetId);
       createParallelConnection = sinon.stub(childTargetManager, 'createParallelConnection').resolves({
         connection: {disconnect: () => {}} as ProtocolClient.InspectorBackend.Connection,
         sessionId: 'foo',

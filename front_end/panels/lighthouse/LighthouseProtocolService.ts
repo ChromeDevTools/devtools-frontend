@@ -114,7 +114,7 @@ export class ProtocolService {
     this.parallelConnection = connection;
     this.targetInfos = childTargetManager.targetInfos();
     this.mainFrameId = mainFrame.id;
-    this.mainTargetId = mainTarget.id();
+    this.mainTargetId = await childTargetManager.getParentTargetId();
     this.mainSessionId = sessionId;
   }
 

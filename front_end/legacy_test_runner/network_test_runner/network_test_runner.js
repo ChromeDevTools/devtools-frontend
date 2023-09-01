@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../panels/network/network-legacy.js';
+
 import * as HAR from '../../models/har/har.js';
 import * as Logs from '../../models/logs/logs.js';
 import {ConsoleTestRunner} from '../console_test_runner/console_test_runner.js';

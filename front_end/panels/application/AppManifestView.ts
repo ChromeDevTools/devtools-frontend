@@ -414,6 +414,11 @@ const UIStrings = {
    */
   tooManyScreenshotsForMobile: 'No more than 5 screenshots will be displayed on mobile. The rest will be ignored.',
   /**
+   *@description Warning text about not all screenshots matching the appropriate form factor have the same aspect ratio
+   */
+  screenshotsMustHaveSameAspectRatio:
+      'All screenshots with the same "form_factor" must have the same aspect ratio as the first screenshot with that "form_factor". Some screenshots will be ignored.',
+  /**
    *@description Message for Window Controls Overlay value succsessfully found with links to documnetation
    *@example {window-controls-overlay} PH1
    *@example {https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override} PH2
@@ -876,6 +881,8 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     }
 
     let screenshotIndex = 1;
+    const formFactorScreenshotDimensions = new Map<string, {width: number, height: number}>();
+    let haveScreenshotsDifferentAspectRatio = false;
     for (const screenshot of screenshots) {
       const screenshotSection =
           this.reportView.appendSection(i18nString(UIStrings.screenshotS, {PH1: screenshotIndex}));
@@ -891,10 +898,26 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
         screenshotSection.appendFlexedField(i18nString(UIStrings.platform), screenshot.platform);
       }
 
-      const {imageResourceErrors: screenshotErrors} =
+      const {imageResourceErrors: screenshotErrors, naturalWidth: width, naturalHeight: height} =
           await this.appendImageResourceToSection(url, screenshot, screenshotSection, /** isScreenshot= */ true);
       imageErrors.push(...screenshotErrors);
+
+      if (screenshot.form_factor && width && height) {
+        formFactorScreenshotDimensions.has(screenshot.form_factor) ||
+            formFactorScreenshotDimensions.set(screenshot.form_factor, {width, height});
+        const formFactorFirstScreenshotDimensions = formFactorScreenshotDimensions.get(screenshot.form_factor);
+        if (formFactorFirstScreenshotDimensions) {
+          haveScreenshotsDifferentAspectRatio = haveScreenshotsDifferentAspectRatio ||
+              (width * formFactorFirstScreenshotDimensions.height !==
+               height * formFactorFirstScreenshotDimensions.width);
+        }
+      }
+
       screenshotIndex++;
+    }
+
+    if (haveScreenshotsDifferentAspectRatio) {
+      warnings.push(i18nString(UIStrings.screenshotsMustHaveSameAspectRatio));
     }
 
     const screenshotsForDesktop = screenshots.filter(screenshot => screenshot.form_factor === 'wide');
@@ -1176,8 +1199,12 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       baseUrl: Platform.DevToolsPath.UrlString, imageResource: any, section: UI.ReportView.Section,
-      isScreenshot: boolean):
-      Promise<{imageResourceErrors: Platform.UIString.LocalizedString[], squareSizedIconAvailable?: boolean}> {
+      isScreenshot: boolean): Promise<{
+    imageResourceErrors: Platform.UIString.LocalizedString[],
+    squareSizedIconAvailable?: boolean,
+    naturalWidth?: number,
+    naturalHeight?: number,
+  }> {
     const imageResourceErrors: Platform.UIString.LocalizedString[] = [];
     const resourceName = isScreenshot ? i18nString(UIStrings.screenshot) : i18nString(UIStrings.icon);
     if (!imageResource.src) {
@@ -1196,6 +1223,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       return {imageResourceErrors};
     }
     const {wrapper, image} = result;
+    const {naturalWidth, naturalHeight} = image;
     const sizes = this.parseSizes(imageResource['sizes'], resourceName, imageUrl, imageResourceErrors);
     const title = sizes.map(x => x.formatted).join(' ') + '\n' + (imageResource['type'] || '');
     const field = section.appendFlexedField(title);
@@ -1239,7 +1267,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     }
 
     field.appendChild(wrapper);
-    return {imageResourceErrors, squareSizedIconAvailable};
+    return {imageResourceErrors, squareSizedIconAvailable, naturalWidth, naturalHeight};
   }
   override wasShown(): void {
     super.wasShown();

@@ -217,7 +217,7 @@ describeWithMockConnection('AppManifestView', () => {
       assert.deepStrictEqual(actual, expected);
     });
 
-    it('displays warnings for too many desktop screenshots', async () => {
+    it('displays warnings for too many desktop screenshots and wrong aspect ratio', async () => {
       const actual = await renderWithWarnings(`{
         "screenshots": [
           {
@@ -227,9 +227,9 @@ describeWithMockConnection('AppManifestView', () => {
             "form_factor": "wide"
           },
           {
-            "src": "/fixtures/images/320x320.png",
+            "src": "/fixtures/images/640x320.png",
             "type": "image/png",
-            "sizes": "320x320",
+            "sizes": "640x320",
             "form_factor": "wide"
           },
           {
@@ -277,6 +277,7 @@ describeWithMockConnection('AppManifestView', () => {
         ]
       }`);
       const expected = [
+        'All screenshots with the same "form_factor" must have the same aspect ratio as the first screenshot with that "form_factor". Some screenshots will be ignored.',
         'Richer PWA Install UI won’t be available on mobile. Please add at least one screenshot for which "form_factor" is not set or set to a value other than "wide".',
         'No more than 8 screenshots will be displayed on desktop. The rest will be ignored.',
         'Most operating systems require square icons. Please include at least one square icon in the array.',

@@ -58,6 +58,7 @@
   margin-inline: 10px;
 
   & span {
+    display: inline-block;
     padding-inline: 10px;
   }
 

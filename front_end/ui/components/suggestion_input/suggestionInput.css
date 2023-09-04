@@ -11,6 +11,10 @@
   padding: 0;
 }
 
+:host {
+  position: relative;
+}
+
 devtools-editable-content {
   background: transparent;
   border: none;

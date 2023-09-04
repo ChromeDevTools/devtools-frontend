@@ -201,8 +201,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         this.screenshotsHeader,
       ];
       for (const header of headers) {
-        header.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
-        header.backgroundColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background');
+        header.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface');
+        header.backgroundColor =
+            ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
       }
     });
 
@@ -214,8 +215,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       padding: 4,
       height: 17,
       collapsible: true,
-      color: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary'),
-      backgroundColor: ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background'),
+      color: ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface'),
+      backgroundColor: ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container'),
       nestingLevel: 0,
       shareHeaderLine: true,
     };

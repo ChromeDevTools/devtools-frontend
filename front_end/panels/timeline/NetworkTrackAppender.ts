@@ -42,8 +42,9 @@ export class NetworkTrackAppender implements TrackAppender {
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
       if (this.#group) {
         // We only need to update the color here, because FlameChart will call `scheduleUpdate()` when theme is changed.
-        this.#group.style.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
-        this.#group.style.backgroundColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background');
+        this.#group.style.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface');
+        this.#group.style.backgroundColor =
+            ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
       }
     });
   }

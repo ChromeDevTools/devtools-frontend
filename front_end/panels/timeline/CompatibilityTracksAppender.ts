@@ -161,8 +161,9 @@ export class CompatibilityTracksAppender {
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
       for (const group of this.#flameChartData.groups) {
         // We only need to update the color here, because FlameChart will call `scheduleUpdate()` when theme is changed.
-        group.style.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
-        group.style.backgroundColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background');
+        group.style.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface');
+        group.style.backgroundColor =
+            ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
       }
     });
   }

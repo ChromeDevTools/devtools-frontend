@@ -4,11 +4,15 @@
 
 import * as Root from '../../../core/root/root.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as Common from '../../../core/common/common.js';
 import type * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 import * as Types from '../types/types.js';
+
 import {millisecondsToMicroseconds} from './Timing.js';
 import {mergeEventsInOrder} from './Trace.js';
+
+interface Settings {
+  showNativeFunctionsInJSProfile: boolean;
+}
 
 /**
  * This is a helper that integrates CPU profiling data coming in the
@@ -89,12 +93,18 @@ export class SamplesIntegrator {
    * tracks which node is used for the stack of a GC call.
    */
   #nodeForGC = new Map<Types.TraceEvents.TraceEventSyntheticProfileCall, CPUProfile.ProfileTreeModel.ProfileNode>();
+
+  #showNativeFunctionsInJSProfile: boolean;
+
   constructor(
       profileModel: CPUProfile.CPUProfileDataModel.CPUProfileDataModel, pid: Types.TraceEvents.ProcessID,
-      tid: Types.TraceEvents.ThreadID) {
+      tid: Types.TraceEvents.ThreadID, settings: Settings = {
+        showNativeFunctionsInJSProfile: Types.Configuration.DEFAULT.settings.showNativeFunctionsInJSProfile,
+      }) {
     this.#profileModel = profileModel;
     this.#threadId = tid;
     this.#processId = pid;
+    this.#showNativeFunctionsInJSProfile = settings.showNativeFunctionsInJSProfile;
   }
 
   buildProfileCalls(traceEvents: Types.TraceEvents.TraceEventData[]):
@@ -278,7 +288,9 @@ export class SamplesIntegrator {
   #extractStackTrace(event: Types.TraceEvents.TraceEventData): void {
     const stackTrace =
         Types.TraceEvents.isProfileCall(event) ? this.#getStackTraceFromProfileCall(event) : this.#currentJSStack;
-    SamplesIntegrator.filterStackFrames(stackTrace);
+    SamplesIntegrator.filterStackFrames(stackTrace, {
+      showNativeFunctionsInJSProfile: this.#showNativeFunctionsInJSProfile,
+    });
 
     const endTime = event.ts + (event.dur || 0);
     const minFrames = Math.min(stackTrace.length, this.#currentJSStack.length);
@@ -424,7 +436,9 @@ export class SamplesIntegrator {
     return frame.url === 'native V8Runtime';
   }
 
-  static filterStackFrames(stack: Types.TraceEvents.TraceEventSyntheticProfileCall[]): void {
+  static filterStackFrames(stack: Types.TraceEvents.TraceEventSyntheticProfileCall[], settings: {
+    showNativeFunctionsInJSProfile: boolean,
+  }): void {
     let showAllEvents = false;
     try {
       // Querying for unregistered experiments will error on debug
@@ -432,8 +446,7 @@ export class SamplesIntegrator {
       showAllEvents = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
     } catch (_err) {
     }
-    const showNativeFunctions = Common.Settings.Settings.hasInstance() &&
-        Common.Settings.Settings.instance().moduleSetting('showNativeFunctionsInJSProfile').get();
+
     if (showAllEvents) {
       return;
     }
@@ -443,7 +456,7 @@ export class SamplesIntegrator {
       const frame = stack[i].callFrame;
       const url = frame.url;
       const isNativeFrame = url && url.startsWith('native ');
-      if (!showNativeFunctions && isNativeFrame) {
+      if (!settings.showNativeFunctionsInJSProfile && isNativeFrame) {
         continue;
       }
       const nativeRuntimeFrame = SamplesIntegrator.isNativeRuntimeFrame(frame);

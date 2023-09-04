@@ -38,6 +38,7 @@ const makeRendererEntrytNodeId = (): RendererEntryNodeId => (++nodeIdCount) as R
 const completeEventStack: (Types.TraceEvents.TraceEventSyntheticCompleteEvent)[] = [];
 
 let handlerState = HandlerState.UNINITIALIZED;
+let config: Types.Configuration.Configuration = Types.Configuration.DEFAULT;
 
 const makeRendererProcess = (): RendererProcess => ({
   url: null,
@@ -73,6 +74,10 @@ const getOrCreateRendererProcess =
 const getOrCreateRendererThread = (process: RendererProcess, tid: Types.TraceEvents.ThreadID): RendererThread => {
   return Platform.MapUtilities.getWithDefault(process.threads, tid, makeRendererThread);
 };
+
+export function handleUserConfig(userConfig: Types.Configuration.Configuration): void {
+  config = userConfig;
+}
 
 export function reset(): void {
   processes.clear();
@@ -325,7 +330,9 @@ export function buildHierarchy(
       Helpers.Trace.sortTraceEventsInPlace(thread.entries);
       // Step 2. Inject profile calls from samples
       const cpuProfile = samplesHandlerData().profilesInProcess.get(pid)?.get(tid)?.parsedProfile;
-      const samplesIntegrator = cpuProfile && new Helpers.SamplesIntegrator.SamplesIntegrator(cpuProfile, pid, tid);
+      const samplesIntegrator = cpuProfile && new Helpers.SamplesIntegrator.SamplesIntegrator(cpuProfile, pid, tid, {
+        showNativeFunctionsInJSProfile: config.settings.showNativeFunctionsInJSProfile,
+      });
       const profileCalls = samplesIntegrator?.buildProfileCalls(thread.entries);
       if (profileCalls) {
         thread.entries = Helpers.Trace.mergeEventsInOrder(thread.entries, profileCalls);

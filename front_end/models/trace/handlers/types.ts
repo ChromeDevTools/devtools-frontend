@@ -2,6 +2,7 @@
 // Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import type * as Types from './../types/types.js';
 import type * as ModelHandlers from './ModelHandlers.js';
 
 export interface TraceEventHandler {
@@ -11,6 +12,7 @@ export interface TraceEventHandler {
   finalize?(): Promise<void>;
   data(): unknown;
   deps?(): TraceEventHandlerName[];
+  handleUserConfig?(config: Types.Configuration.Configuration): void;
 }
 export type TraceEventHandlerName = keyof typeof ModelHandlers;
 

@@ -6,9 +6,8 @@ import * as Platform from '../../core/platform/platform.js';
 
 import * as Handlers from './handlers/handlers.js';
 import * as Helpers from './helpers/helpers.js';
-
-import type * as Types from './types/types.js';
-import {TraceProcessor, TraceParseProgressEvent} from './Processor.js';
+import {TraceParseProgressEvent, TraceProcessor} from './Processor.js';
+import * as Types from './types/types.js';
 
 // Note: this model is implemented in a way that can support multiple trace
 // processors. Currently there is only one implemented, but you will see
@@ -40,21 +39,36 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
   readonly #recordingsAvailable: string[] = [];
   #lastRecordingIndex = 0;
   #processor: TraceProcessor<Handlers.Types.HandlersWithMeta<EnabledModelHandlers>>;
+  #config: Types.Configuration.Configuration = Types.Configuration.DEFAULT;
 
   static createWithAllHandlers(): Model<typeof Handlers.ModelHandlers> {
     return new Model(Handlers.ModelHandlers);
   }
 
-  static createWithRequiredHandlersForMigration(): Model<{
+  static createWithRequiredHandlersForMigration(config?: Types.Configuration.Configuration): Model<{
     [K in keyof typeof Handlers.Migration.ENABLED_TRACE_HANDLERS]: typeof Handlers.Migration.ENABLED_TRACE_HANDLERS[K];
   }> {
-    return new Model(Handlers.Migration.ENABLED_TRACE_HANDLERS);
+    return new Model(Handlers.Migration.ENABLED_TRACE_HANDLERS, config);
   }
 
-  constructor(handlers: EnabledModelHandlers) {
+  constructor(handlers: EnabledModelHandlers, config?: Types.Configuration.Configuration) {
     super();
-    this.#processor = new TraceProcessor(handlers);
+    if (config) {
+      this.#config = config;
+    }
+    this.#processor = new TraceProcessor(handlers, {/* Settings for how event processing is chunked */}, this.#config);
   }
+
+  /**
+   * Updates the configuration. Useful if a user changes a setting - this lets
+   * us update the model without having to destroy it and recreate it with the
+   * new settings.
+   */
+  updateConfiguration(config: Types.Configuration.Configuration): void {
+    this.#config = config;
+    this.#processor.updateConfiguration(config);
+  }
+
   /**
    * Parses an array of trace events into a structured object containing all the
    * information parsed by the trace handlers.

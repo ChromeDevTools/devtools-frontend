@@ -368,6 +368,11 @@
   --sys-color-token-inserted: var(--ref-palette-tertiary60);
   --sys-color-token-pseudo-element: var(--ref-palette-primary40);
   --sys-color-token-subtle: var(--ref-palette-neutral60);
+
+  /* Colors for data grid in Performance Panel */
+
+  --app-color-selected: var(--ref-palette-primary80);
+  --app-border-selected: var(--ref-palette-primary70);
 }
 
 .-theme-with-dark-background {
@@ -691,4 +696,9 @@
   --sys-color-token-inserted: var(--ref-palette-tertiary60);
   --sys-color-token-pseudo-element: var(--ref-palette-pink70);
   --sys-color-token-subtle: var(--ref-palette-neutral60);
+
+  /* Colors for data grid in Performance Panel */
+
+  --app-color-selected: var(--ref-palette-secondary40);
+  --app-border-selected: var(--ref-palette-secondary50);
 }

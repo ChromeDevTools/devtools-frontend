@@ -186,7 +186,7 @@
 }
 
 .timeline-details-view-row-title:not(:empty) {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   overflow: hidden;
   padding-right: 10px;
   display: inline-block;
@@ -204,7 +204,7 @@
 }
 
 .timeline-details-warning .timeline-details-view-row-title {
-  color: var(--color-red);
+  color: var(--sys-color-error);
 }
 
 .timeline-details-view-row-value {
@@ -269,7 +269,7 @@
 }
 
 .timeline-layers-view-properties td {
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-divider);
   line-height: 22px;
 }
 
@@ -278,7 +278,7 @@
   max-width: 500px;
   max-height: 300px;
   cursor: pointer;
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-divider);
 }
 
 .timeline-tree-view {
@@ -323,6 +323,8 @@
 
 .timeline-tree-view .data-grid div.background-percent-bar {
   float: right;
+  position: relative;
+  z-index: 999;
 }
 
 .timeline-tree-view .data-grid span.percent-column {
@@ -364,7 +366,7 @@
   margin: 0 4px;
   line-height: 12px;
   font-size: 10px;
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
 }
 
 .timeline-tree-view .data-grid tr.selected .name-container .activity-warning::after {
@@ -396,8 +398,8 @@
 }
 
 .timeline-tree-view .data-grid .selected .background-bar {
-  background-color: var(--color-background-opacity-50);
-  border-bottom: 1px solid var(--color-background-opacity-80);
+  background-color: var(--app-color-selected);
+  border-bottom: 1px solid var(--app-border-selected);
 }
 
 .-theme-with-dark-background .timeline-tree-view .data-grid .background-bar,
@@ -420,11 +422,11 @@
 
 .timeline-stack-view-header {
   height: 27px;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-cdt-base-container);
   padding: 6px 10px;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-on-surface);
   white-space: nowrap;
-  border-bottom: var(--legacy-divider-border);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .timeline-landing-page {
@@ -434,7 +436,7 @@
   align-items: center;
   overflow: auto;
   font-size: 13px;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 @media (forced-colors: active) {

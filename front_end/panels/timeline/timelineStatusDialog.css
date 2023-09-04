@@ -26,7 +26,7 @@
   display: inline-block;
   width: 80px;
   text-align: right;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   margin-right: 10px;
 }
 
@@ -34,11 +34,11 @@
   display: inline-block;
   width: 200px;
   height: 8px;
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-surface5);
 }
 
 .timeline-status-dialog .progress .indicator {
-  background-color: var(--color-primary-variant);
+  background-color: var(--sys-color-primary);
   height: 100%;
   width: 0;
   margin: 0;

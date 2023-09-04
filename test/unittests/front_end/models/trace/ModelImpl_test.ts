@@ -28,7 +28,7 @@ describeWithEnvironment('TraceModel', async function() {
 
   it('supports parsing a generic trace that has no browser specific details', async function() {
     const model = TraceModel.TraceModel.Model.createWithAllHandlers();
-    const file1 = await TraceLoader.rawEvents(this, 'generic-about-tracing-trace.json.gz');
+    const file1 = await TraceLoader.rawEvents(this, 'generic-about-tracing.json.gz');
     await model.parse(file1);
     assert.strictEqual(model.size(), 1);
   });

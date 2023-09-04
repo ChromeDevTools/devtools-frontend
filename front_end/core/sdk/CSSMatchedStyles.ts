@@ -765,6 +765,15 @@ class NodeCascade {
           continue;
         }
 
+        // If the custom property was registered with `inherits: false;`, inherited properties are invalid.
+        if (this.#isInherited) {
+          const registration = this.#matchedStyles.getRegisteredProperty(property.name);
+          if (registration && !registration.inherits()) {
+            this.propertiesState.set(property, PropertyState.Overloaded);
+            continue;
+          }
+        }
+
         const canonicalName = metadata.canonicalPropertyName(property.name);
         this.updatePropertyState(property, canonicalName);
         for (const longhand of property.getLonghandProperties()) {

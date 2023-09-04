@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
+import {createTarget} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
 const {assert} = chai;
 
@@ -81,6 +84,76 @@ describe('CSSMatchedStyles', () => {
       assert.deepEqual(
           parseCSSVariableNameAndFallback('var(---three_hyphens)'), {variableName: '---three_hyphens', fallback: ''});
     });
+  });
+});
 
+describeWithMockConnection('NodeCascade', () => {
+  it('correctly marks custom properties as Overloaded if they are registered as inherits: false', () => {
+    const target = createTarget();
+    const cssModel = new SDK.CSSModel.CSSModel(target);
+    const parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    parentNode.id = 0 as Protocol.DOM.NodeId;
+    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    node.parentNode = parentNode;
+    node.id = 1 as Protocol.DOM.NodeId;
+    const inheritablePropertyPayload: Protocol.CSS.CSSProperty = {name: '--inheritable', value: 'green'};
+    const nonInheritablePropertyPayload: Protocol.CSS.CSSProperty = {name: '--non-inheritable', value: 'green'};
+    const matchedCSSRules: Protocol.CSS.RuleMatch[] = [{
+      matchingSelectors: [0],
+      rule: {
+        selectorList: {selectors: [{text: 'div'}], text: 'div'},
+        origin: Protocol.CSS.StyleSheetOrigin.Regular,
+        style: {
+          cssProperties: [inheritablePropertyPayload, nonInheritablePropertyPayload],
+          shorthandEntries: [],
+        },
+      },
+    }];
+    const cssPropertyRegistrations = [
+      {
+        propertyName: inheritablePropertyPayload.name,
+        initialValue: {text: 'blue'},
+        inherits: true,
+        syntax: '<color>',
+      },
+      {
+        propertyName: nonInheritablePropertyPayload.name,
+        initialValue: {text: 'red'},
+        inherits: false,
+        syntax: '<color>',
+      },
+    ];
+    const matchedStyles = new SDK.CSSMatchedStyles.CSSMatchedStyles({
+      cssModel,
+      node,
+      inlinePayload: null,
+      attributesPayload: null,
+      matchedPayload: [{
+        matchingSelectors: [0],
+        rule: {
+          selectorList: {selectors: [{text: 'div'}], text: 'div'},
+          origin: Protocol.CSS.StyleSheetOrigin.Regular,
+          style: {
+            cssProperties: [],
+            shorthandEntries: [],
+          },
+        },
+      }],
+      pseudoPayload: [],
+      inheritedPayload: [{matchedCSSRules}],
+      inheritedPseudoPayload: [],
+      animationsPayload: [],
+      parentLayoutNodeId: undefined,
+      positionFallbackRules: [],
+      propertyRules: [],
+      cssPropertyRegistrations,
+    });
+
+    const style = matchedStyles.nodeStyles()[1];
+    const [inheritableProperty, nonInheritableProperty] = style.allProperties();
+
+    assert.strictEqual(
+        matchedStyles.propertyState(nonInheritableProperty), SDK.CSSMatchedStyles.PropertyState.Overloaded);
+    assert.strictEqual(matchedStyles.propertyState(inheritableProperty), SDK.CSSMatchedStyles.PropertyState.Active);
   });
 });

@@ -88,11 +88,18 @@ describeWithEnvironment('JSONEditor', () => {
             replyArgs: ['Test4'],
           },
           'Test.test5': {
-            parameters: [{
-              name: 'test',
-              type: 'string',
-              optional: true,
-            }],
+            parameters: [
+              {
+                name: 'test',
+                type: 'string',
+                optional: true,
+              },
+              {
+                name: 'test2',
+                type: 'string',
+                optional: true,
+              },
+            ],
             description: 'Description5.',
             replyArgs: ['Test5'],
           },
@@ -402,6 +409,29 @@ describeWithEnvironment('JSONEditor', () => {
          const value = parameterRecorderInput.renderRoot.textContent?.replaceAll(/\s/g, '');
          const expectedValue = 'test1';
          assert.deepStrictEqual(value, expectedValue);
+       });
+
+    it('should should every parameter of a command as undefined even if some parameters have not been entered inside the input bar',
+       async () => {
+         const cdpCommand = {
+           'command': 'Test.test5',
+           'parameters': {
+             'test': 'test',
+           },
+         };
+         const {command, parameters} = ProtocolMonitor.ProtocolMonitor.parseCommandInput(JSON.stringify(cdpCommand));
+
+         const jsonEditor = renderJSONEditor();
+
+         await populateMetadata(jsonEditor);
+
+         jsonEditor.displayCommand(command, parameters);
+
+         await jsonEditor.updateComplete;
+         const shadowRoot = jsonEditor.renderRoot;
+         const displayedParameters = shadowRoot.querySelectorAll('.parameter');
+         // Two parameters (test and test2) should be displayed because in the metadata, Test.test5 accepts two parameters
+         assert.deepStrictEqual(displayedParameters.length, 2);
        });
     it('does not output parameters if the input is invalid json', async () => {
       const cdpCommand = '"command": "Test.test", "parameters":';

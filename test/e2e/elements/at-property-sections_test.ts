@@ -47,7 +47,7 @@ describe('The styles pane', () => {
     const popover = await waitFor('.variable-value-popup-wrapper');
     const popoverContents = (await popover.evaluate(e => e.textContent))?.trim()?.replaceAll(/\s\s+/g, ', ');
 
-    assert.deepEqual(popoverContents, 'Invalid property value, expected type "<color>", Go to definition');
+    assert.deepEqual(popoverContents, 'Invalid property value, expected type "<color>", View registered property');
   });
 
   it('correctly determines the computed value for non-overriden properties', async () => {
@@ -130,8 +130,16 @@ describe('The styles pane', () => {
         await hover(`aria/CSS property name: ${label}`);
       }
 
-      const popover = await waitFor('.variable-value-popup-wrapper');
-      const popoverContents = (await popover.evaluate(e => e.textContent))?.trim()?.replaceAll(/\s\s+/g, ', ');
+      const firstSection = await waitFor('.variable-value-popup-wrapper');
+      const textContent = await firstSection.evaluate((e: Element|null) => {
+        const results = [];
+        while (e) {
+          results.push(e.textContent);
+          e = e.nextElementSibling;
+        }
+        return results;
+      });
+      const popoverContents = textContent.join(' ').trim().replaceAll(/\s\s+/g, ', ');
 
       await hover(ELEMENTS_PANEL_SELECTOR);
       await waitForNone('.variable-value-popup-wrapper');
@@ -142,21 +150,21 @@ describe('The styles pane', () => {
 
     assert.strictEqual(
         await hoverVariable('var(--my-cssom-color)'),
-        'orange, Registered property, syntax: "<color>", inherits: false, initial-value: orange, Go to definition');
+        'orange, syntax: "<color>", inherits: false, initial-value: orange, View registered property');
 
     assert.strictEqual(
         await hoverVariable('--my-color'),
-        'red, Registered property, syntax: "<color>", inherits: false, initial-value: red, Go to definition');
+        'red, syntax: "<color>", inherits: false, initial-value: red, View registered property');
     assert.strictEqual(
         await hoverVariable('var(--my-color)'),
-        'red, Registered property, syntax: "<color>", inherits: false, initial-value: red, Go to definition');
+        'red, syntax: "<color>", inherits: false, initial-value: red, View registered property');
 
     assert.strictEqual(
         await hoverVariable('--my-color2'),
-        'gray, Registered property, syntax: "<color>", inherits: false, initial-value: #c0ffee, Go to definition');
+        'gray, syntax: "<color>", inherits: false, initial-value: #c0ffee, View registered property');
     assert.strictEqual(
         await hoverVariable('var(--my-color2)'),
-        'gray, Registered property, syntax: "<color>", inherits: false, initial-value: #c0ffee, Go to definition');
+        'gray, syntax: "<color>", inherits: false, initial-value: #c0ffee, View registered property');
 
     assert.strictEqual(await hoverVariable('--my-other-color'), 'green');
     assert.strictEqual(await hoverVariable('var(--my-other-color)'), 'green');

@@ -11,9 +11,9 @@ import cssVariableValueViewStyles from './cssVariableValueView.css.js';
 
 const UIStrings = {
   /**
-   *@description Title text for the section describing the registration for a custom property
+   *@description Text for a link from custom property to its defining registration
    */
-  registeredPropertyTitle: 'Registered property',
+  registeredPropertyLinkTitle: 'View registered property',
   /**
    *@description Error message for a property value that failed to parse because it had an incorrect type. The message
    * is shown in a popover when hovering the property value. The `type` placeholder will be rendered as an HTML element
@@ -21,10 +21,6 @@ const UIStrings = {
    *@example {<color>} type
    */
   invalidPropertyValue: 'Invalid property value, expected type {type}',
-  /**
-   *@description Text for a link from custom property to its defining registration
-   */
-  goToDefinition: 'Go to definition',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/components/CSSVariableValueView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -40,7 +36,7 @@ export interface RegisteredPropertyDetails {
 function getLinkSection(details: RegisteredPropertyDetails): LitHtml.TemplateResult {
   return html`<div class="registered-property-links">
             <span role="button" @click=${details?.goToDefinition} class="clickable underlined unbreakable-text"}>
-              ${i18nString(UIStrings.goToDefinition)}
+              ${i18nString(UIStrings.registeredPropertyLinkTitle)}
             </span>
           </div>`;
 }
@@ -85,8 +81,9 @@ export class CSSVariableValueView extends HTMLElement {
 
   #render(): void {
     const initialValue = this.details?.registration.initialValue();
-    const registrationView = this.details ? html`<div class="registered-property-popup-wrapper">
-         <span class="title">${i18nString(UIStrings.registeredPropertyTitle)}</span>
+    const registrationView = this.details ? html`
+        <hr class=divider />
+        <div class=registered-property-popup-wrapper>
           <div class="monospace">
             <div><span class="css-property">syntax:</span> ${this.details.registration.syntax()}</div>
             <div><span class="css-property">inherits:</span> ${this.details.registration.inherits()}</div>
@@ -96,9 +93,15 @@ export class CSSVariableValueView extends HTMLElement {
         </div>` :
                                             '';
 
-    render(html`<div class="variable-value-popup-wrapper">${this.value}${registrationView}</div>`, this.#shadow, {
-      host: this,
-    });
+    render(
+        html`<div class="variable-value-popup-wrapper">
+               ${this.value}
+             </div>
+             ${registrationView}
+             `,
+        this.#shadow, {
+          host: this,
+        });
   }
 }
 

@@ -406,6 +406,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
           return {
             box: element.boxInWindow(),
             show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
+              popover.contentElement.classList.add('borderless-popover');
               popover.contentElement.appendChild(contents);
               return true;
             },

@@ -20,7 +20,7 @@ describeWithEnvironment('CSSVariableValueView', async () => {
     const popupContentRendered = shadowRoot.querySelector('.variable-value-popup-wrapper') !== null;
     assert.isTrue(popupContentRendered);
 
-    const popupContent = shadowRoot.querySelector('.variable-value-popup-wrapper')?.textContent;
+    const popupContent = shadowRoot.querySelector('.variable-value-popup-wrapper')?.textContent?.trim();
     assert.strictEqual(popupContent, 'pink');
   });
 });

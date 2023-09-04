@@ -4,12 +4,7 @@
  * found in the LICENSE file.
  */
 
-.variable-value-popup-wrapper {
-  padding: 4px 8px;
-}
-
 .registered-property-popup-wrapper {
-  margin-top: 8px;
   max-width: 232px;
   font-size: 12px;
   line-height: 1.4;
@@ -21,7 +16,12 @@
 }
 
 :host {
-  padding: 6px;
+  padding: 11px 7px;
+}
+
+.divider {
+  margin: 8px -7px;
+  border: 1px solid var(--sys-color-divider);
 }
 
 .registered-property-links {

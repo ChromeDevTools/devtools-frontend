@@ -160,10 +160,134 @@ describeWithEnvironment('ThreadAppender', function() {
       throw new Error('Could not find renderer events');
     }
     const info = threadAppenders[0].highlightedEntryInfo(events[0]);
-    assert.deepEqual(info, {
-      title: 'Task',
-      formattedTime: '0.27\u00A0ms',
+    assert.strictEqual(info.title, 'Task');
+    assert.strictEqual(info.formattedTime, '0.27\u00A0ms');
+  });
+
+  it('shows the correct warning for a long task when hovered', async function() {
+    const {threadAppenders, traceParsedData} = await renderThreadAppenders(this, 'simple-js-program.json.gz');
+    const events = traceParsedData.Renderer?.allRendererEvents;
+    if (!events) {
+      throw new Error('Could not find renderer events');
+    }
+    const longTask = events.find(e => (e.dur || 0) > 1_000_000);
+    if (!longTask) {
+      throw new Error('Could not find long task');
+    }
+    const info = threadAppenders[0].highlightedEntryInfo(longTask);
+    assert.strictEqual(info.warningElements?.length, 1);
+    const warning = info.warningElements?.[0];
+    if (!(warning instanceof HTMLSpanElement)) {
+      throw new Error('Found unexpected warning');
+    }
+    assert.strictEqual(warning?.innerText, 'Long task took 1.30\u00A0s.');
+  });
+
+  it('shows the correct warning for a force recalc styles when hovered', async function() {
+    const {threadAppenders, traceParsedData} = await renderThreadAppenders(this, 'large-recalc-style.json.gz');
+    const events = traceParsedData.Renderer?.allRendererEvents;
+    if (!events) {
+      throw new Error('Could not find renderer events');
+    }
+    const recalcStyles = events.find(event => {
+      return (event.name === TraceModel.Types.TraceEvents.KnownEventName.RecalculateStyles ||
+              event.name === TraceModel.Types.TraceEvents.KnownEventName.UpdateLayoutTree) &&
+          (event.dur && event.dur >= TraceModel.Handlers.ModelHandlers.Warnings.FORCED_LAYOUT_AND_STYLES_THRESHOLD);
     });
+    if (!recalcStyles) {
+      throw new Error('Could not find styles recalc');
+    }
+    const info = threadAppenders[0].highlightedEntryInfo(recalcStyles);
+    assert.strictEqual(info.warningElements?.length, 1);
+    const warning = info.warningElements?.[0];
+    if (!(warning instanceof HTMLSpanElement)) {
+      throw new Error('Found unexpected warning');
+    }
+    assert.strictEqual(warning?.innerText, 'Forced reflow is a likely performance bottleneck.');
+  });
+
+  it('shows the correct warning for a force layout when hovered', async function() {
+    const {threadAppenders, traceParsedData} = await renderThreadAppenders(this, 'large-recalc-style.json.gz');
+    const events = traceParsedData.Renderer?.allRendererEvents;
+    if (!events) {
+      throw new Error('Could not find renderer events');
+    }
+    const layout = events.find(event => {
+      return event.name === TraceModel.Types.TraceEvents.KnownEventName.Layout && event.dur &&
+          event.dur >= TraceModel.Handlers.ModelHandlers.Warnings.FORCED_LAYOUT_AND_STYLES_THRESHOLD;
+    });
+    if (!layout) {
+      throw new Error('Could not find layout');
+    }
+    const info = threadAppenders[0].highlightedEntryInfo(layout);
+    assert.strictEqual(info.warningElements?.length, 1);
+    const warning = info.warningElements?.[0];
+    if (!(warning instanceof HTMLSpanElement)) {
+      throw new Error('Found unexpected warning');
+    }
+    assert.strictEqual(warning?.innerText, 'Forced reflow is a likely performance bottleneck.');
+  });
+
+  it('shows the correct warning for slow idle callbacks', async function() {
+    const {threadAppenders, traceParsedData} = await renderThreadAppenders(this, 'idle-callback.json.gz');
+    const events = traceParsedData.Renderer?.allRendererEvents;
+    if (!events) {
+      throw new Error('Could not find renderer events');
+    }
+    const idleCallback = events.find(event => {
+      const {duration} = TraceModel.Helpers.Timing.eventTimingsMilliSeconds(event);
+      if (!TraceModel.Types.TraceEvents.isTraceEventFireIdleCallback(event)) {
+        return false;
+      }
+      if (duration <= event.args.data.allottedMilliseconds) {
+        false;
+      }
+      return true;
+    });
+    if (!idleCallback) {
+      throw new Error('Could not find idle callback');
+    }
+    const info = threadAppenders[0].highlightedEntryInfo(idleCallback);
+    assert.strictEqual(info.warningElements?.length, 1);
+    const warning = info.warningElements?.[0];
+    if (!(warning instanceof HTMLSpanElement)) {
+      throw new Error('Found unexpected warning');
+    }
+    assert.strictEqual(warning?.innerText, 'Idle callback execution extended beyond deadline by 79.56\u00A0ms');
+  });
+
+  it('shows self time only for events with self time above the threshold when hovered', async function() {
+    const {threadAppenders, traceParsedData} = await renderThreadAppenders(this, 'simple-js-program.json.gz');
+    const events = traceParsedData.Renderer?.allRendererEvents;
+    if (!events) {
+      throw new Error('Could not find renderer events');
+    }
+    const infoForShortEvent = threadAppenders[0].highlightedEntryInfo(events[0]);
+    assert.strictEqual(infoForShortEvent.formattedTime, '0.27\u00A0ms');
+
+    const longTask = events.find(e => (e.dur || 0) > 1_000_000);
+    if (!longTask) {
+      throw new Error('Could not find long task');
+    }
+    const infoForLongEvent = threadAppenders[0].highlightedEntryInfo(longTask);
+    assert.strictEqual(infoForLongEvent.formattedTime, '1.30\u00A0s (self 47\u00A0μs)');
+  });
+
+  it('shows the correct title for a ParseHTML event', async function() {
+    const {threadAppenders, traceParsedData} = await renderThreadAppenders(this, 'simple-js-program.json.gz');
+    const events = traceParsedData.Renderer?.allRendererEvents;
+    if (!events) {
+      throw new Error('Could not find renderer events');
+    }
+    const infoForShortEvent = threadAppenders[0].highlightedEntryInfo(events[0]);
+    assert.strictEqual(infoForShortEvent.formattedTime, '0.27\u00A0ms');
+
+    const longTask = events.find(e => (e.dur || 0) > 1_000_000);
+    if (!longTask) {
+      throw new Error('Could not find long task');
+    }
+    const infoForLongEvent = threadAppenders[0].highlightedEntryInfo(longTask);
+    assert.strictEqual(infoForLongEvent.formattedTime, '1.30\u00A0s (self 47\u00A0μs)');
   });
 
   it('shows the correct title for a profile call when hovered', async function() {
@@ -181,10 +305,8 @@ describeWithEnvironment('ThreadAppender', function() {
     }
 
     const info = threadAppenders[0].highlightedEntryInfo(profileCalls[0]);
-    assert.deepEqual(info, {
-      title: '(anonymous)',
-      formattedTime: '15\u00A0μs',
-    });
+    assert.strictEqual(info.title, '(anonymous)');
+    assert.strictEqual(info.formattedTime, '15\u00A0μs');
   });
   it('candy-stripes long tasks', async function() {
     const {traceParsedData, flameChartData, entryData} = await renderThreadAppenders(this, 'simple-js-program.json.gz');

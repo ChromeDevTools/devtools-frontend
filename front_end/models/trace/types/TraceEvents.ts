@@ -179,6 +179,20 @@ export interface TraceEventDispatch extends TraceEventComplete {
   };
 }
 
+export interface TraceEventParseHTML extends TraceEventComplete {
+  name: 'ParseHTML';
+  args: TraceEventArgs&{
+    beginData: {
+      frame: string,
+      startLine: number,
+      url: string,
+    },
+    endData?: {
+      endLine: number,
+    },
+  };
+}
+
 export interface TraceEventBegin extends TraceEventData {
   ph: Phase.BEGIN;
 }
@@ -1225,6 +1239,10 @@ export function isTraceEventConsoleTime(traceEventData: TraceEventData): traceEv
 
 export function isTraceEventTimeStamp(traceEventData: TraceEventData): traceEventData is TraceEventTimeStamp {
   return traceEventData.ph === Phase.INSTANT && traceEventData.name === 'TimeStamp';
+}
+
+export function isTraceEventParseHTML(traceEventData: TraceEventData): traceEventData is TraceEventParseHTML {
+  return traceEventData.name === 'ParseHTML';
 }
 
 export interface TraceEventAsync extends TraceEventData {

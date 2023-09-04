@@ -864,7 +864,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   prepareHighlightedEntryInfo(entryIndex: number): Element|null {
     let time = '';
     let title;
-    let warning;
+    let warningElements: Element[] = [];
     let nameSpanTimelineInfoTime = 'timeline-info-time';
 
     const entryType = this.entryType(entryIndex);
@@ -878,6 +878,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const highlightedEntryInfo = this.compatibilityTracksAppender.highlightedEntryInfo(event, eventLevel);
       title = highlightedEntryInfo.title;
       time = highlightedEntryInfo.formattedTime;
+      warningElements = highlightedEntryInfo.warningElements || warningElements;
     } else if (entryType === EntryType.Event) {
       const event = (this.entryData[entryIndex] as TraceEngine.Legacy.Event);
       const totalTime = event.duration;
@@ -892,7 +893,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             i18n.TimeUtilities.millisToString(totalTime, true);
       }
       title = this.entryTitle(entryIndex);
-      warning = TimelineUIUtils.buildEventWarningElement(event);
+      const warningElement = TimelineUIUtils.legacyBuildEventWarningElement(event);
+      if (warningElement) {
+        warningElements.push(warningElement);
+      }
 
       if (this.legacyTimelineModel && this.legacyTimelineModel.isParseHTMLEvent(event)) {
         const startLine = event.args['beginData']['startLine'];
@@ -930,9 +934,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const contents = root.createChild('div', 'timeline-flamechart-popover');
     contents.createChild('span', nameSpanTimelineInfoTime).textContent = time;
     contents.createChild('span', 'timeline-info-title').textContent = title;
-    if (warning) {
-      warning.classList.add('timeline-info-warning');
-      contents.appendChild(warning);
+    if (warningElements) {
+      for (const warningElement of warningElements) {
+        warningElement.classList.add('timeline-info-warning');
+        contents.appendChild(warningElement);
+      }
     }
     return element;
   }
@@ -1129,7 +1135,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const event = (this.entryData[entryIndex] as TraceEngine.Legacy.Event);
       return Boolean(TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).warning);
     }
-    return false;
+    const event = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData);
+    return Boolean(this.traceEngineData?.Warnings.perEvent.get(event));
   }
 
   private appendHeader(title: string, style: PerfUI.FlameChart.GroupStyle, selectable: boolean, expanded?: boolean):

@@ -3207,7 +3207,8 @@ export class TimelineUIUtils {
     return colorGenerator.colorForID(id);
   }
 
-  static buildEventWarningElement(event: TraceEngine.Legacy.CompatibleTraceEvent, warningType?: string): Element|null {
+  static legacyBuildEventWarningElement(event: TraceEngine.Legacy.CompatibleTraceEvent, warningType?: string): Element
+      |null {
     const timelineData = event instanceof TraceEngine.Legacy.Event ?
         TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event) :
         null;
@@ -3657,7 +3658,7 @@ export class TimelineDetailsContentHelper {
   }
 
   appendWarningRow(event: TraceEngine.Legacy.CompatibleTraceEvent, warningType?: string): void {
-    const warningElement = TimelineUIUtils.buildEventWarningElement(event, warningType);
+    const warningElement = TimelineUIUtils.legacyBuildEventWarningElement(event, warningType);
     if (warningElement) {
       this.appendElementRow(i18nString(UIStrings.warning), warningElement, true);
     }

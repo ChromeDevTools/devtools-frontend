@@ -25,7 +25,7 @@ import {TimingsTrackAppender} from './TimingsTrackAppender.js';
 export type HighlightedEntryInfo = {
   title: string,
   formattedTime: string,
-  warning?: string,
+  warningElements?: HTMLSpanElement[],
 };
 
 /**

@@ -30,8 +30,12 @@ export async function navigateToLighthouseTab(path?: string): Promise<ElementHan
 
   await lighthouseTabButton.click();
   await waitFor('.view-container > .lighthouse');
+
+  const {target, frontend} = getBrowserAndPages();
   if (path) {
+    await target.bringToFront();
     await goToResource(path);
+    await frontend.bringToFront();
   }
 
   return waitFor('.lighthouse-start-view');

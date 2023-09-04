@@ -53,17 +53,23 @@ describe('Timespan', async function() {
     await setThrottlingMethod('simulate');
 
     let numNavigations = 0;
-    const {target} = await getBrowserAndPages();
+    const {target, frontend} = getBrowserAndPages();
     target.on('framenavigated', () => ++numNavigations);
 
     await clickStartButton();
     await waitForTimespanStarted();
 
+    await target.bringToFront();
+
     await target.click('button');
     await target.click('button');
     await target.click('button');
 
+    await frontend.bringToFront();
+
     await endTimespan();
+
+    await target.bringToFront();
 
     const {lhr, artifacts, reportEl} = await waitForResult();
 

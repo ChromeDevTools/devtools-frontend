@@ -13,7 +13,7 @@ import {
   waitFor,
   waitForElementWithTextContent,
 } from '../../shared/helper.js';
-import {describe, it} from '../../shared/mocha-extensions.js';
+import {describe} from '../../shared/mocha-extensions.js';
 import {
   clickStartButton,
   getAuditsBreakdown,
@@ -82,10 +82,17 @@ describe('Navigation', async function() {
     ]);
 
     let numNavigations = 0;
-    const {target} = await getBrowserAndPages();
-    target.on('framenavigated', () => ++numNavigations);
+    const {target, frontend} = getBrowserAndPages();
+    target.on('framenavigated', () => {
+      ++numNavigations;
+      if (numNavigations === 6) {
+        void frontend.bringToFront();
+      }
+    });
 
     await clickStartButton();
+
+    await target.bringToFront();
 
     const {lhr, artifacts, reportEl} = await waitForResult();
 
@@ -187,6 +194,9 @@ describe('Navigation', async function() {
 
     await clickStartButton();
 
+    const {target} = getBrowserAndPages();
+    await target.bringToFront();
+
     const {lhr, reportEl} = await waitForResult();
 
     assert.strictEqual(lhr.configSettings.throttlingMethod, 'devtools');
@@ -225,6 +235,9 @@ describe('Navigation', async function() {
     await selectDevice('desktop');
 
     await clickStartButton();
+
+    const {target} = getBrowserAndPages();
+    await target.bringToFront();
 
     const {reportEl, lhr, artifacts} = await waitForResult();
 

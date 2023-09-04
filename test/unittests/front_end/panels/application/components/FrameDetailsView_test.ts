@@ -75,8 +75,6 @@ const makeFrame = (): SDK.ResourceTreeModel.ResourceTreeFrame => {
       },
     ]),
     getPermissionsPolicyState: () => null,
-    prerenderFinalStatus: Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
-    prerenderDisallowedApiMethod: 'device.mojom.GamepadMonitor',
     parentFrame: () => null,
   } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
   return newFrame;
@@ -148,8 +146,6 @@ describeWithRealConnection('FrameDetailsView', () => {
       'Cross-Origin Opener Policy (COOP)',
       'SharedArrayBuffers',
       'Measure Memory',
-      'Prerendering Status',
-      'Disallowed API method',
     ]);
 
     const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
@@ -166,8 +162,6 @@ describeWithRealConnection('FrameDetailsView', () => {
       'SameOrigin',
       'available, transferable',
       'available\xA0Learn more',
-      'A disallowed API was used by the prerendered page',
-      'device.mojom.GamepadMonitor',
     ]);
 
     const stackTrace = getElementWithinComponent(
@@ -191,62 +185,5 @@ describeWithRealConnection('FrameDetailsView', () => {
     const adScriptLink = component.shadowRoot.querySelector('devtools-report-value.ad-script-link');
     assertNotNullOrUndefined(adScriptLink);
     assert.strictEqual(adScriptLink.textContent, '');
-  });
-
-  it('renders report keys and values with on-going prerendering', async () => {
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const target = targetManager.rootTarget();
-    assertNotNullOrUndefined(target);
-
-    const frame = makeFrame();
-
-    const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(frame);
-    const networkManager = target.model(SDK.NetworkManager.NetworkManager);
-    assertNotNullOrUndefined(networkManager);
-    sinon.stub(networkManager, 'getSecurityIsolationStatus').resolves({
-      coep: {
-        value: Protocol.Network.CrossOriginEmbedderPolicyValue.None,
-        reportOnlyValue: Protocol.Network.CrossOriginEmbedderPolicyValue.None,
-      },
-      coop: {
-        value: Protocol.Network.CrossOriginOpenerPolicyValue.SameOrigin,
-        reportOnlyValue: Protocol.Network.CrossOriginOpenerPolicyValue.SameOrigin,
-      },
-    });
-    renderElementIntoDOM(component);
-    component.targetChanged({data: {subtype: 'prerender', url: 'https://example.test/'} as Protocol.Target.TargetInfo});
-
-    assertShadowRoot(component.shadowRoot);
-    await coordinator.done({waitForWork: true});
-
-    const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
-    assert.deepEqual(keys, [
-      'URL',
-      'Origin',
-      'Owner Element',
-      'Frame Creation Stack Trace',
-      'Secure Context',
-      'Cross-Origin Isolated',
-      'Cross-Origin Embedder Policy (COEP)',
-      'Cross-Origin Opener Policy (COOP)',
-      'SharedArrayBuffers',
-      'Measure Memory',
-      'Prerendering Status',
-    ]);
-
-    const values = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-value');
-    assert.deepEqual(values, [
-      'https://www.example.com/path/page.html',
-      'https://www.example.com',
-      '<iframe>',
-      '',
-      'Yes\xA0Localhost is always a secure context',
-      'Yes',
-      'None',
-      'SameOrigin',
-      'available, transferable',
-      'available\xA0Learn more',
-      'Prerendering ongoing https://example.test/',
-    ]);
   });
 });

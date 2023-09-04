@@ -1051,7 +1051,6 @@ grd_files_debug_sources = [
   "front_end/panels/application/components/InterestGroupAccessGrid.js",
   "front_end/panels/application/components/OriginTrialTreeView.js",
   "front_end/panels/application/components/PermissionsPolicySection.js",
-  "front_end/panels/application/components/Prerender2.js",
   "front_end/panels/application/components/ProtocolHandlersView.js",
   "front_end/panels/application/components/ReportsGrid.js",
   "front_end/panels/application/components/SharedStorageAccessGrid.js",

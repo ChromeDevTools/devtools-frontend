@@ -84,13 +84,15 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
 
     assert.deepEqual(stripingTitles, [
       'Pointer',  // The interaction event in the Interactions track for the pointer event.
-      'Task',     // The Long task that was caused by the pointer and contributed to the long time.
+      'Task',     // The Long task that was caused by the pointer and contributed to the long time (old engine).
+      'Task',     // The same long task as above, but rendered by the new engine.
     ]);
     assert.deepEqual(triangleTitles, [
-      'Task',          // The Long task that was caused by the pointer and contributed to the long time.
+      'Task',          // The Long task that was caused by the pointer and contributed to the long time (old engine).
+      'Task',          // The same long task as above, but rendered by the new engine.
       'Event: click',  // The click EventDispatch that's also marked with a triangle
     ]);
-    assert.lengthOf(Object.keys(entryDecorations), 3);
+    assert.lengthOf(Object.keys(entryDecorations), 4);
   });
 
   it('populates the frames track with frames and screenshots', async function() {

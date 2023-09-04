@@ -186,4 +186,30 @@ describeWithEnvironment('ThreadAppender', function() {
       formattedTime: '15\u00A0μs',
     });
   });
+  it('candy-stripes long tasks', async function() {
+    const {traceParsedData, flameChartData, entryData} = await renderThreadAppenders(this, 'simple-js-program.json.gz');
+    const events = traceParsedData.Renderer?.allRendererEvents;
+    if (!events) {
+      throw new Error('Could not find renderer events');
+    }
+    const longTask = events.find(e => (e.dur || 0) > 1_000_000);
+    if (!longTask) {
+      throw new Error('Could not find long task');
+    }
+    const entryIndex = entryData.indexOf(longTask);
+    const decorationsForEntry = flameChartData.entryDecorations[entryIndex];
+    assert.deepEqual(decorationsForEntry, [{type: 'WARNING_TRIANGLE'}, {type: 'CANDY', 'startAtTime': 50_000}]);
+  });
+
+  it('does not candy-stripe tasks below the long task threshold', async function() {
+    const {traceParsedData, flameChartData, entryData} = await renderThreadAppenders(this, 'simple-js-program.json.gz');
+    const events = traceParsedData.Renderer?.allRendererEvents;
+    if (!events) {
+      throw new Error('Could not find renderer events');
+    }
+    const entryIndex = entryData.indexOf(events[0]);
+    const decorationsForEntry = flameChartData.entryDecorations[entryIndex];
+    assert.isUndefined(decorationsForEntry);
+  });
+
 });

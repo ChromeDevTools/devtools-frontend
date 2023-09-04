@@ -108,3 +108,11 @@ export function getEventLevel(
   lastUsedTimeByLevel[level] = endTime;
   return level;
 }
+
+export function addDecorationToEvent(
+    timelineData: PerfUI.FlameChart.FlameChartTimelineData, eventIndex: number,
+    decoration: PerfUI.FlameChart.FlameChartDecoration): void {
+  const decorationsForEvent = timelineData.entryDecorations[eventIndex] || [];
+  decorationsForEvent.push(decoration);
+  timelineData.entryDecorations[eventIndex] = decorationsForEvent;
+}

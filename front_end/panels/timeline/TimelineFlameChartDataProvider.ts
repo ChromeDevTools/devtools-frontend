@@ -118,8 +118,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const LONG_MAIN_THREAD_TASK_THRESHOLD = TraceEngine.Types.Timing.MilliSeconds(50);
-
 // at the moment there are two types defined for trace events: traceeventdata and
 // SDK.TracingModel.Event. This is only for compatibility between the legacy system
 // and the new system proposed in go/rpp-flamechart-arch. In the future, once all
@@ -724,10 +722,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       // the candy striping to them. Doing it here avoids having to do another
       // pass through the events at a later point.
       if (trackIsMainThreadMainFrame && event.name === TimelineModel.TimelineModel.RecordType.Task &&
-          eventDuration > LONG_MAIN_THREAD_TASK_THRESHOLD) {
+          TraceEngine.Helpers.Timing.millisecondsToMicroseconds(eventDuration) >
+              TraceEngine.Handlers.ModelHandlers.Warnings.LONG_MAIN_THREAD_TASK_THRESHOLD) {
         this.#addDecorationToEvent(index, {
           type: 'CANDY',
-          startAtTime: TraceEngine.Helpers.Timing.millisecondsToMicroseconds(LONG_MAIN_THREAD_TASK_THRESHOLD),
+          startAtTime: TraceEngine.Handlers.ModelHandlers.Warnings.LONG_MAIN_THREAD_TASK_THRESHOLD,
         });
       }
 

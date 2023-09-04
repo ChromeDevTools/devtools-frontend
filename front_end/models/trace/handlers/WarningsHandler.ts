@@ -19,7 +19,10 @@ export type Warning = 'LONG_TASK'|'IDLE_CALLBACK_OVER_TIME'|'FORCED_LAYOUT'|'FOR
 const warningsPerEvent: WarningsData['perEvent'] = new Map();
 const eventsPerWarning: WarningsData['perWarning'] = new Map();
 
-const FORCED_LAYOUT_AND_STYLES_THRESHOLD = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(10));
+export const FORCED_LAYOUT_AND_STYLES_THRESHOLD =
+    Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(10));
+
+export const LONG_MAIN_THREAD_TASK_THRESHOLD = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(50));
 
 export function reset(): void {
   warningsPerEvent.clear();
@@ -38,9 +41,8 @@ function storeWarning(event: Types.TraceEvents.TraceEventData, warning: Warning)
 
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   if (event.name === Types.TraceEvents.KnownEventName.RunTask) {
-    const longTaskThreshold = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(50));
     const {duration} = Helpers.Timing.eventTimingsMicroSeconds(event);
-    if (duration > longTaskThreshold) {
+    if (duration > LONG_MAIN_THREAD_TASK_THRESHOLD) {
       storeWarning(event, 'LONG_TASK');
     }
     return;

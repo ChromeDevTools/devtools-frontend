@@ -8,7 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
-import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
+import {addDecorationToEvent, buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
   type HighlightedEntryInfo,
@@ -66,6 +66,7 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/ThreadAppender.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 export const enum ThreadType {
   MAIN_THREAD = 'MAIN_THREAD',
   WORKER = 'WORKER',
@@ -247,7 +248,29 @@ export class ThreadAppender implements TrackAppender {
    * entries (the first available level to append more data).
    */
   #appendThreadEntriesAtLevel(trackStartLevel: number): number {
-    return this.#compatibilityBuilder.appendEventsAtLevel(this.#entries, trackStartLevel, this);
+    const newLevel = this.#compatibilityBuilder.appendEventsAtLevel(this.#entries, trackStartLevel, this);
+    this.#addDecorations();
+    return newLevel;
+  }
+  #addDecorations(): void {
+    for (const entry of this.#entries) {
+      const index = this.#compatibilityBuilder.indexForEvent(entry);
+      if (!index) {
+        continue;
+      }
+      const warnings = this.#traceParsedData.Warnings.perEvent.get(entry);
+      if (!warnings) {
+        continue;
+      }
+      addDecorationToEvent(this.#flameChartData, index, {type: 'WARNING_TRIANGLE'});
+      if (!warnings.includes('LONG_TASK')) {
+        continue;
+      }
+      addDecorationToEvent(this.#flameChartData, index, {
+        type: 'CANDY',
+        startAtTime: TraceEngine.Handlers.ModelHandlers.Warnings.LONG_MAIN_THREAD_TASK_THRESHOLD,
+      });
+    }
   }
 
   /*

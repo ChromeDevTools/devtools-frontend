@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 export * as Animations from './AnimationHandler.js';
+export * as AuctionWorklets from './AuctionWorkletsHandler.js';
 export * as GPU from './GPUHandler.js';
 export * as LargestImagePaint from './LargestImagePaintHandler.js';
 export * as LargestTextPaint from './LargestTextPaintHandler.js';

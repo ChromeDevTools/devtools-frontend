@@ -4,6 +4,7 @@
 
 /* eslint-disable no-unused-private-class-members */
 import type * as Protocol from '../../../generated/protocol.js';
+
 import {type MicroSeconds, type MilliSeconds, type Seconds} from './Timing.js';
 
 // Trace Events.
@@ -317,6 +318,92 @@ export interface TraceEventSyntheticNetworkRequest extends TraceEventComplete {
   tts: MicroSeconds;
   pid: ProcessID;
   tid: ThreadID;
+}
+
+export const enum AuctionWorkletType {
+  BIDDER = 'bidder',
+  SELLER = 'seller',
+  // Not expected to be used, but here as a fallback in case new types get
+  // added and we have yet to update the trace engine.
+  UNKNOWN = 'unknown',
+}
+
+export interface SyntheticAuctionWorkletEvent extends TraceEventInstant {
+  name: 'SyntheticAuctionWorkletEvent';
+  // The PID that the AuctionWorklet is running in.
+  pid: ProcessID;
+  // URL
+  host: string;
+  // An ID used to pair up runningInProcessEvents with doneWithProcessEvents
+  target: string;
+  type: AuctionWorkletType;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      // There are two threads for a worklet that we care about, so we gather
+      // the thread_name events so we can know the PID and TID for them (and
+      // hence display the right events in the track for each thread)
+      utilityThread: TraceEventThreadName,
+      v8HelperThread: TraceEventThreadName,
+    } &
+        (
+              // This type looks odd, but this is because these events could either have:
+              // 1. Just the DoneWithProcess event
+              // 2. Just the RunningInProcess event
+              // 3. Both events
+              // But crucially it cannot have both events missing, hence listing all the
+              // allowed cases.
+              // Clang is disabled as the combination of nested types and optional
+              // properties cause it to weirdly indent some of the properties and make it
+              // very unreadable.
+              // clang-format off
+              {
+                runningInProcessEvent: TraceEventAuctionWorkletRunningInProcess,
+                doneWithProcessEvent: TraceEventAuctionWorkletDoneWithProcess,
+              } |
+              {
+                runningInProcessEvent?: TraceEventAuctionWorkletRunningInProcess,
+                doneWithProcessEvent: TraceEventAuctionWorkletDoneWithProcess,
+              } |
+              {
+                doneWithProcessEvent?: TraceEventAuctionWorkletDoneWithProcess,
+                runningInProcessEvent: TraceEventAuctionWorkletRunningInProcess,
+
+              }),
+    // clang-format on
+  };
+}
+export interface TraceEventAuctionWorkletRunningInProcess extends TraceEventData {
+  name: 'AuctionWorkletRunningInProcess';
+  ph: Phase.INSTANT;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      host: string,
+      pid: ProcessID,
+      target: string,
+      type: AuctionWorkletType,
+    },
+  };
+}
+export interface TraceEventAuctionWorkletDoneWithProcess extends TraceEventData {
+  name: 'AuctionWorkletDoneWithProcess';
+  ph: Phase.INSTANT;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      host: string,
+      pid: ProcessID,
+      target: string,
+      type: AuctionWorkletType,
+    },
+  };
+}
+
+export function isTraceEventAuctionWorkletRunningInProcess(event: TraceEventData):
+    event is TraceEventAuctionWorkletRunningInProcess {
+  return event.name === 'AuctionWorkletRunningInProcess';
+}
+export function isTraceEventAuctionWorkletDoneWithProcess(event: TraceEventData):
+    event is TraceEventAuctionWorkletDoneWithProcess {
+  return event.name === 'AuctionWorkletDoneWithProcess';
 }
 
 // Snapshot events.

@@ -132,7 +132,6 @@ describe('Navigation', async function() {
       'document-title',
       'html-has-lang',
       'meta-description',
-      'bf-cache',
     ]);
 
     const viewTraceButton = await $textContent('View Trace', reportEl);
@@ -218,7 +217,6 @@ describe('Navigation', async function() {
       'document-title',
       'html-has-lang',
       'meta-description',
-      'bf-cache',
     ]);
 
     const viewTraceButton = await $textContent('View Trace', reportEl);

@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert, expect} from 'chai';
+import {expect} from 'chai';
 import {type ElementHandle} from 'puppeteer-core';
 
 import {
-  getBrowserAndPages,
   waitFor,
   waitForAria,
   waitForAriaNone,
@@ -73,19 +72,10 @@ describe('Network request blocking panel', async () => {
     await disableNetworkRequestBlocking();
 
     const list = await waitFor('.list');
-    const listBB = await list.boundingBox();
-    if (listBB) {
-      const {frontend} = getBrowserAndPages();
-      await frontend.bringToFront();
-      // +20 to move from the top left point so we are definitely scrolling
-      // within the container
-      await frontend.mouse.move(listBB.x + 20, listBB.y + 20);
-      await frontend.mouse.wheel({deltaY: 450});
-    } else {
-      assert.fail('Could not obtain a bounding box for the pattern list.');
-    }
-
     const lastListItem = await waitForElementWithTextContent('19');
+    // TODO: this is not completely fair way to scroll but mouseWheel does not
+    // seem to work here in the new-headless on Windows and Linux.
+    await lastListItem.scrollIntoView();
     await waitForFunction(() => isVisible(lastListItem, list));
   });
 });

@@ -8,7 +8,6 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
-import * as UI from '../../ui/legacy/legacy.js';
 
 import {addDecorationToEvent, buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 import {
@@ -17,6 +16,7 @@ import {
   type TrackAppender,
   type TrackAppenderName,
 } from './CompatibilityTracksAppender.js';
+import * as TimelineComponents from './components/components.js';
 import {DEFAULT_CATEGORY_STYLES_PALETTE, EventStyles} from './EventUICategory.js';
 
 const UIStrings = {
@@ -64,33 +64,6 @@ const UIStrings = {
    *@example {2} PH1
    */
   rasterizerThreadS: 'Rasterizer Thread {PH1}',
-  /**
-   *@description Text in the Performance panel for a forced style and layout calculation of elements
-   * in a page. See https://developer.mozilla.org/en-US/docs/Glossary/Reflow
-   */
-  forcedReflow: 'Forced reflow',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   *@example {Forced reflow} PH1
-   */
-  sIsALikelyPerformanceBottleneck: '{PH1} is a likely performance bottleneck.',
-  /**
-   *@description Text in the Performance panel for a function called during a time the browser was
-   * idle (inactive), which to longer to execute than a predefined deadline.
-   *@example {10ms} PH1
-   */
-  idleCallbackExecutionExtended: 'Idle callback execution extended beyond deadline by {PH1}',
-  /**
-   *@description Text in the Performance panel which describes how long a task took.
-   *@example {task} PH1
-   *@example {10ms} PH2
-   */
-  sTookS: '{PH1} took {PH2}.',
-  /**
-   *@description Text in the Performance panel for a task that took long. See
-   * https://developer.mozilla.org/en-US/docs/Glossary/Long_task
-   */
-  longTask: 'Long task',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/ThreadAppender.ts', UIStrings);
@@ -302,48 +275,6 @@ export class ThreadAppender implements TrackAppender {
     }
   }
 
-  #buildWarningElement(
-      event: TraceEngine.Types.TraceEvents.TraceEventData,
-      warning: TraceEngine.Handlers.ModelHandlers.Warnings.Warning): HTMLSpanElement|null {
-    const duration =
-        TraceEngine.Helpers.Timing.microSecondsToMilliseconds(TraceEngine.Types.Timing.MicroSeconds(event.dur || 0));
-    const span = document.createElement('span');
-    switch (warning) {
-      case 'FORCED_STYLE':
-      case 'FORCED_LAYOUT': {
-        const forcedReflowLink = UI.XLink.XLink.create(
-            'https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts',
-            i18nString(UIStrings.forcedReflow));
-        span.appendChild(i18n.i18n.getFormatLocalizedString(
-            str_, UIStrings.sIsALikelyPerformanceBottleneck, {PH1: forcedReflowLink}));
-        break;
-      }
-
-      case 'IDLE_CALLBACK_OVER_TIME': {
-        if (!TraceEngine.Types.TraceEvents.isTraceEventFireIdleCallback(event)) {
-          break;
-        }
-        const exceededMs =
-            i18n.TimeUtilities.millisToString((duration || 0) - event.args.data['allottedMilliseconds'], true);
-        span.textContent = i18nString(UIStrings.idleCallbackExecutionExtended, {PH1: exceededMs});
-        break;
-      }
-
-      case 'LONG_TASK': {
-        const longTaskLink =
-            UI.XLink.XLink.create('https://web.dev/optimize-long-tasks/', i18nString(UIStrings.longTask));
-        span.appendChild(i18n.i18n.getFormatLocalizedString(
-            str_, UIStrings.sTookS,
-            {PH1: longTaskLink, PH2: i18n.TimeUtilities.millisToString((duration || 0), true)}));
-        break;
-      }
-      default: {
-        return null;
-      }
-    }
-    return span;
-  }
-
   /*
     ------------------------------------------------------------------------------------
      The following methods  are invoked by the flame chart renderer to query features about
@@ -387,8 +318,6 @@ export class ThreadAppender implements TrackAppender {
    */
   highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.SyntheticEventWithSelfTime): HighlightedEntryInfo {
     let title = this.titleForEvent(event);
-    const warnings = this.#traceParsedData.Warnings.perEvent.get(event);
-
     if (TraceEngine.Types.TraceEvents.isTraceEventParseHTML(event)) {
       const startLine = event.args['beginData']['startLine'];
       const endLine = event.args['endData'] && event.args['endData']['endLine'];
@@ -397,16 +326,8 @@ export class ThreadAppender implements TrackAppender {
       const range = (endLine !== -1 || endLine === startLine) ? `${startLine}...${endLine}` : startLine;
       title += ` - ${url} [${range}]`;
     }
-    const warningElements: HTMLSpanElement[] = [];
-    if (warnings) {
-      for (const warning of warnings) {
-        const warningElement = this.#buildWarningElement(event, warning);
-        if (!warningElement) {
-          continue;
-        }
-        warningElements.push(warningElement);
-      }
-    }
+    const warningElements: HTMLSpanElement[] =
+        TimelineComponents.DetailsView.buildWarningElementsForEvent(event, this.#traceParsedData);
     return {title, formattedTime: getFormattedTime(event.dur, event.selfTime), warningElements};
   }
 }

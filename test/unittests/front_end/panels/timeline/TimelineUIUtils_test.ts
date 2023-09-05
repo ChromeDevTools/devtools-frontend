@@ -324,6 +324,38 @@ describeWithMockConnection('TimelineUIUtils', function() {
           ],
       );
     });
+
+    it('renders the warning for a trace event in its details', async function() {
+      const data = await TraceLoader.allModels(this, 'simple-js-program.json.gz');
+
+      const events = data.traceParsedData.Renderer?.allRendererEvents;
+      if (!events) {
+        throw new Error('Could not find renderer events');
+      }
+
+      const longTask = events.find(e => (e.dur || 0) > 1_000_000);
+      if (!longTask) {
+        throw new Error('Could not find Long Task event.');
+      }
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          longTask,
+          data.timelineModel,
+          new Components.Linkifier.Linkifier(),
+          false,
+          data.traceParsedData,
+      );
+      const rowData = getRowDataForDetailsElement(details);
+      assert.deepEqual(
+          rowData,
+          [
+            {
+              title: 'Warning',
+              value: 'Long task took 1.30\u00A0s.',
+            },
+          ],
+      );
+    });
   });
 
   it('can generate details for a frame', async function() {

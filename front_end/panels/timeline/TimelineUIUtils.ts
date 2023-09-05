@@ -37,22 +37,22 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
-import * as Components from '../../ui/legacy/components/utils/utils.js';
-import * as UI from '../../ui/legacy/legacy.js';
-
-import type * as Protocol from '../../generated/protocol.js';
-import invalidationsTreeStyles from './invalidationsTree.css.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.css.js';
+import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {CLSRect} from './CLSLinkifier.js';
+import * as TimelineComponents from './components/components.js';
+import {titleForInteractionEvent} from './InteractionsTrackAppender.js';
+import invalidationsTreeStyles from './invalidationsTree.css.js';
 import {TimelinePanel} from './TimelinePanel.js';
 import {TimelineSelection} from './TimelineSelection.js';
-import {titleForInteractionEvent} from './InteractionsTrackAppender.js';
 
 const UIStrings = {
   /**
@@ -1174,7 +1174,7 @@ type LinkifyLocationOptions = {
   url: string,
   lineNumber: number,
   columnNumber?: number,
-  isFreshRecording?: boolean, target: SDK.Target.Target|null, linkifier: Components.Linkifier.Linkifier,
+  isFreshRecording?: boolean, target: SDK.Target.Target|null, linkifier: LegacyComponents.Linkifier.Linkifier,
 };
 
 export class TimelineUIUtils {
@@ -1656,7 +1656,7 @@ export class TimelineUIUtils {
 
   static async buildDetailsNodeForTraceEvent(
       event: TraceEngine.Legacy.CompatibleTraceEvent, target: SDK.Target.Target|null,
-      linkifier: Components.Linkifier.Linkifier, isFreshRecording = false): Promise<Node|null> {
+      linkifier: LegacyComponents.Linkifier.Linkifier, isFreshRecording = false): Promise<Node|null> {
     const recordType = TimelineModel.TimelineModel.RecordType;
     let details: HTMLElement|HTMLSpanElement|(Element | null)|Text|null = null;
     let detailsText;
@@ -1701,7 +1701,7 @@ export class TimelineUIUtils {
             showColumnNumber: false,
             inlineFrameIndex: 0,
           };
-          details = Components.Linkifier.Linkifier.linkifyURL(url, options);
+          details = LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options);
         }
         break;
       }
@@ -1802,12 +1802,12 @@ export class TimelineUIUtils {
       return linkifier.linkifyScriptLocation(
           target, scriptId, url as Platform.DevToolsPath.UrlString, lineNumber, options);
     }
-    return Components.Linkifier.Linkifier.linkifyURL(url as Platform.DevToolsPath.UrlString, options);
+    return LegacyComponents.Linkifier.Linkifier.linkifyURL(url as Platform.DevToolsPath.UrlString, options);
   }
 
   static linkifyTopCallFrame(
       event: TraceEngine.Legacy.CompatibleTraceEvent, target: SDK.Target.Target|null,
-      linkifier: Components.Linkifier.Linkifier, isFreshRecording = false): Element|null {
+      linkifier: LegacyComponents.Linkifier.Linkifier, isFreshRecording = false): Element|null {
     const frame = TimelineModel.TimelineProfileTree.eventStackFrame(event);
     if (!frame) {
       return null;
@@ -1823,7 +1823,7 @@ export class TimelineUIUtils {
     if (isFreshRecording) {
       return linkifier.maybeLinkifyConsoleCallFrame(target, frame, {showColumnNumber: true, inlineFrameIndex: 0});
     }
-    return Components.Linkifier.Linkifier.linkifyURL(frame.url as Platform.DevToolsPath.UrlString, options);
+    return LegacyComponents.Linkifier.Linkifier.linkifyURL(frame.url as Platform.DevToolsPath.UrlString, options);
   }
 
   static buildDetailsNodeForPerformanceEvent(event: TraceEngine.Legacy.Event|
@@ -1877,7 +1877,7 @@ export class TimelineUIUtils {
   static async buildTraceEventDetails(
       event: TraceEngine.Legacy.CompatibleTraceEvent,
       model: TimelineModel.TimelineModel.TimelineModelImpl,
-      linkifier: Components.Linkifier.Linkifier,
+      linkifier: LegacyComponents.Linkifier.Linkifier,
       detailed: boolean,
       // TODO(crbug.com/1430809): the order of these arguments is slightly
       // awkward because to change them is to cause a lot of layout tests to be
@@ -1895,8 +1895,8 @@ export class TimelineUIUtils {
         let previewElement: (Element|null)|null = null;
         const url = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).url;
         if (url) {
-          previewElement = await Components.ImagePreview.ImagePreview.build(target, url, false, {
-            imageAltText: Components.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
+          previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(target, url, false, {
+            imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
             precomputedFeatures: undefined,
           });
         } else if (
@@ -1949,8 +1949,14 @@ export class TimelineUIUtils {
     const initiator = timelineData.initiator();
     let url: Platform.DevToolsPath.UrlString|null = null;
 
-    if (timelineData.warning) {
+    if (event instanceof TraceEngine.Legacy.Event && timelineData.warning) {
       contentHelper.appendWarningRow(event);
+    }
+    if (TraceEngine.Legacy.eventIsFromNewEngine(event) && traceParseData) {
+      const warnings = TimelineComponents.DetailsView.buildWarningElementsForEvent(event, traceParseData);
+      for (const warning of warnings) {
+        contentHelper.appendElementRow(i18nString(UIStrings.warning), warning, true);
+      }
     }
     if (event.name === recordTypes.JSFrame && eventData['deoptReason']) {
       contentHelper.appendWarningRow(event, TimelineModel.TimelineModel.TimelineModelImpl.WarningType.V8Deopt);
@@ -2031,7 +2037,7 @@ export class TimelineUIUtils {
             inlineFrameIndex: 0,
           };
           contentHelper.appendElementRow(
-              i18nString(UIStrings.resource), Components.Linkifier.Linkifier.linkifyURL(url, options));
+              i18nString(UIStrings.resource), LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options));
         }
         if (eventData['requestMethod']) {
           contentHelper.appendTextRow(i18nString(UIStrings.requestMethod), eventData['requestMethod']);
@@ -2162,7 +2168,7 @@ export class TimelineUIUtils {
             inlineFrameIndex: 0,
           };
           contentHelper.appendElementRow(
-              i18nString(UIStrings.imageUrl), Components.Linkifier.Linkifier.linkifyURL(url, options));
+              i18nString(UIStrings.imageUrl), LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options));
         }
         break;
       }
@@ -2176,7 +2182,7 @@ export class TimelineUIUtils {
             inlineFrameIndex: 0,
           };
           contentHelper.appendElementRow(
-              i18nString(UIStrings.stylesheetUrl), Components.Linkifier.Linkifier.linkifyURL(url, options));
+              i18nString(UIStrings.stylesheetUrl), LegacyComponents.Linkifier.Linkifier.linkifyURL(url, options));
         }
         break;
       }
@@ -2534,7 +2540,7 @@ export class TimelineUIUtils {
   static async buildSyntheticNetworkRequestDetails(
       event: TraceEngine.Types.TraceEvents.TraceEventSyntheticNetworkRequest,
       model: TimelineModel.TimelineModel.TimelineModelImpl,
-      linkifier: Components.Linkifier.Linkifier): Promise<DocumentFragment> {
+      linkifier: LegacyComponents.Linkifier.Linkifier): Promise<DocumentFragment> {
     const maybeTarget = model.targetByEvent(event);
     const contentHelper = new TimelineDetailsContentHelper(maybeTarget, linkifier);
 
@@ -2549,7 +2555,8 @@ export class TimelineUIUtils {
     };
     contentHelper.appendElementRow(
         i18n.i18n.lockedString('URL'),
-        Components.Linkifier.Linkifier.linkifyURL(event.args.data.url as Platform.DevToolsPath.UrlString, options));
+        LegacyComponents.Linkifier.Linkifier.linkifyURL(
+            event.args.data.url as Platform.DevToolsPath.UrlString, options));
 
     // The time from queueing the request until resource processing is finished.
     const fullDuration = event.dur;
@@ -2638,9 +2645,9 @@ export class TimelineUIUtils {
 
     if (!requestPreviewElements.get(event) && event.args.data.url && maybeTarget) {
       const previewElement =
-          (await Components.ImagePreview.ImagePreview.build(
+          (await LegacyComponents.ImagePreview.ImagePreview.build(
                maybeTarget, event.args.data.url as Platform.DevToolsPath.UrlString, false, {
-                 imageAltText: Components.ImagePreview.ImagePreview.defaultAltTextForImageURL(
+                 imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(
                      event.args.data.url as Platform.DevToolsPath.UrlString),
                  precomputedFeatures: undefined,
                }) as HTMLImageElement);
@@ -2886,7 +2893,7 @@ export class TimelineUIUtils {
     container.classList.add('image-preview-container', 'vbox', 'link');
     const img = (container.createChild('img') as HTMLImageElement);
     img.src = imageURL;
-    img.alt = Components.ImagePreview.ImagePreview.defaultAltTextForImageURL(imageURL);
+    img.alt = LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(imageURL);
     const paintProfilerButton = container.createChild('a');
     paintProfilerButton.textContent = i18nString(UIStrings.paintProfiler);
     UI.ARIAUtils.markAsLink(container);
@@ -3064,7 +3071,7 @@ export class TimelineUIUtils {
     if (frame.layerTree) {
       contentHelper.appendElementRow(
           i18nString(UIStrings.layerTree),
-          Components.Linkifier.Linkifier.linkifyRevealable(frame.layerTree, i18nString(UIStrings.show)));
+          LegacyComponents.Linkifier.Linkifier.linkifyRevealable(frame.layerTree, i18nString(UIStrings.show)));
     }
 
     function frameClicked(
@@ -3209,9 +3216,7 @@ export class TimelineUIUtils {
 
   static legacyBuildEventWarningElement(event: TraceEngine.Legacy.CompatibleTraceEvent, warningType?: string): Element
       |null {
-    const timelineData = event instanceof TraceEngine.Legacy.Event ?
-        TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event) :
-        null;
+    const timelineData = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event);
     const {duration} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
     const warning = warningType || timelineData?.warning;
     if (!warning) {
@@ -3533,12 +3538,12 @@ export class TimelineCategory {
 
 export class TimelineDetailsContentHelper {
   fragment: DocumentFragment;
-  private linkifierInternal: Components.Linkifier.Linkifier|null;
+  private linkifierInternal: LegacyComponents.Linkifier.Linkifier|null;
   private target: SDK.Target.Target|null;
   element: HTMLDivElement;
   private tableElement: HTMLElement;
 
-  constructor(target: SDK.Target.Target|null, linkifier: Components.Linkifier.Linkifier|null) {
+  constructor(target: SDK.Target.Target|null, linkifier: LegacyComponents.Linkifier.Linkifier|null) {
     this.fragment = document.createDocumentFragment();
 
     this.linkifierInternal = linkifier;
@@ -3571,7 +3576,7 @@ export class TimelineDetailsContentHelper {
     this.fragment.appendChild(this.element);
   }
 
-  linkifier(): Components.Linkifier.Linkifier|null {
+  linkifier(): LegacyComponents.Linkifier.Linkifier|null {
     return this.linkifierInternal;
   }
 
@@ -3652,7 +3657,7 @@ export class TimelineDetailsContentHelper {
     parentElement.classList.add('timeline-details-stack-values');
     const stackTraceElement =
         parentElement.createChild('div', 'timeline-details-view-row-value timeline-details-view-row-stack-trace');
-    const callFrameContents = Components.JSPresentationUtils.buildStackTracePreviewContents(
+    const callFrameContents = LegacyComponents.JSPresentationUtils.buildStackTracePreviewContents(
         this.target, this.linkifierInternal, {stackTrace, tabStops: true});
     stackTraceElement.appendChild(callFrameContents.element);
   }

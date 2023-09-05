@@ -1068,7 +1068,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     TimelineGrid.drawCanvasGrid(context, dividersData);
     if (this.rulerEnabled) {
-      TimelineGrid.drawCanvasHeaders(context, dividersData, drawAdjustedTime, 3, HeaderHeight);
+      TimelineGrid.drawCanvasHeaders(context, dividersData, drawAdjustedTime, 3, RulerHeight);
     }
 
     this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
@@ -1766,7 +1766,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const ratio = window.devicePixelRatio;
     context.scale(ratio, ratio);
     context.translate(0, 3);
-    const height = HeaderHeight - 1;
+    const height = RulerHeight - 1;
     for (let i = left; i < markers.length; i++) {
       const timestamp = markers[i].startTime();
       if (timestamp > rightBoundary) {
@@ -1857,58 +1857,82 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private updateLevelPositions(): void {
     const levelCount = this.dataProvider.maxStackDepth();
     const groups = this.rawTimelineData ? (this.rawTimelineData.groups || []) : [];
+    // Add an extra number in visibleLevelOffsets to store the end of last level
     this.visibleLevelOffsets = new Uint32Array(levelCount + 1);
     this.visibleLevelHeights = new Uint32Array(levelCount);
     this.visibleLevels = new Uint16Array(levelCount);
+    // Add an extra number in groupOffsets to store the end of last group
     this.groupOffsets = new Uint32Array(groups.length + 1);
 
+    // For some flame chart (like the one in JS Profiler), we don't use group
+    // for them, so in this case, use -1 to avoid any group header related
+    // calculation.
     let groupIndex = -1;
-    let currentOffset = this.rulerEnabled ? HeaderHeight + 2 : 2;
+    let currentOffset = this.rulerEnabled ? RulerHeight + 2 : 2;
     let visible = true;
+    // For the group we added from data provider, the nesting level should start
+    // from 0.
+    // Adding this fake groupStack to be the parent of all the groups.
     const groupStack: {
       nestingLevel: number,
       visible: boolean,
     }[] = [{nestingLevel: -1, visible: true}];
-    const lastGroupLevel =
-        Math.max(levelCount, groups.length ? (groups[groups.length - 1] as Group).startLevel + 1 : 0);
+
+    // For some flame chart (like the one in JS Profiler), we don't use group
+    // for them, so in this case, use the total level as the start level of last
+    // group.
+    const lastGroupLevel = Math.max(levelCount, groups.length ? groups[groups.length - 1].startLevel + 1 : 0);
     let level;
     for (level = 0; level < lastGroupLevel; ++level) {
       let parentGroupIsVisible = true;
-      let style;
+      let currentGroupStyle;
+      // This while block will handle the offset of a group based on the nesting
+      // level and visibility of the group.
+      // This needs to be while because the nested group might have same start
+      // level with its parent.
       while (groupIndex < groups.length - 1 && level === groups[groupIndex + 1].startLevel) {
         ++groupIndex;
-        style = groups[groupIndex].style;
-        let nextLevel = true;
-        let last: {
+        currentGroupStyle = groups[groupIndex].style;
+        let nextNestingLevel = true;
+        let parentGroup: {
           nestingLevel: number,
           visible: boolean,
         } = groupStack[groupStack.length - 1];
-        while (last && last.nestingLevel >= style.nestingLevel) {
+        while (parentGroup && parentGroup.nestingLevel >= currentGroupStyle.nestingLevel) {
           groupStack.pop();
-          nextLevel = false;
-          last = groupStack[groupStack.length - 1];
+          nextNestingLevel = false;
+          parentGroup = groupStack[groupStack.length - 1];
         }
         const thisGroupIsVisible =
             groupIndex >= 0 && this.isGroupCollapsible(groupIndex) ? groups[groupIndex].expanded : true;
 
-        last = groupStack[groupStack.length - 1];
-        parentGroupIsVisible = last ? last.visible : false;
+        parentGroupIsVisible = parentGroup.visible ?? false;
+        // |groups[groupIndex].expanded| could be undefined, so we need to convert
+        // thisGroupIsVisible to boolean here.
         visible = Boolean(thisGroupIsVisible) && parentGroupIsVisible;
-        groupStack.push({nestingLevel: style.nestingLevel, visible: visible});
+        groupStack.push({nestingLevel: currentGroupStyle.nestingLevel, visible});
         if (parentGroupIsVisible) {
-          currentOffset += nextLevel ? 0 : style.padding;
+          currentOffset += nextNestingLevel ? 0 : currentGroupStyle.padding;
         }
         this.groupOffsets[groupIndex] = currentOffset;
-        if (parentGroupIsVisible && !style.shareHeaderLine) {
-          currentOffset += style.height;
+        // If |shareHeaderLine| is false, we add the height of one more level to
+        // the current offset, which will be used for the start level of current
+        // group.
+        if (parentGroupIsVisible && !currentGroupStyle.shareHeaderLine) {
+          currentOffset += currentGroupStyle.height;
         }
       }
+
+      // This shouldn't happen, if this is true, it means the lastGroupLevel is
+      // bigger than |dataProvider.maxStackDepth()|, which means
+      // |dataProvider.maxStackDepth()| is returning a wrong number.
       if (level >= levelCount) {
         continue;
       }
+      // Handle offset and visibility of each level.
       const isFirstOnLevel = groupIndex >= 0 && level === groups[groupIndex].startLevel;
       const thisLevelIsVisible =
-          parentGroupIsVisible && (visible || isFirstOnLevel && groups[groupIndex].style.useFirstLineForOverview);
+          parentGroupIsVisible && (visible || (isFirstOnLevel && groups[groupIndex].style.useFirstLineForOverview));
       let height;
       if (groupIndex >= 0) {
         const group = groups[groupIndex];
@@ -1922,10 +1946,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.visibleLevels[level] = thisLevelIsVisible ? 1 : 0;
       this.visibleLevelOffsets[level] = currentOffset;
       this.visibleLevelHeights[level] = height;
-      if (thisLevelIsVisible || (parentGroupIsVisible && style && style.shareHeaderLine && isFirstOnLevel)) {
+      if (thisLevelIsVisible ||
+          (parentGroupIsVisible && currentGroupStyle && currentGroupStyle.shareHeaderLine && isFirstOnLevel)) {
         currentOffset += this.visibleLevelHeights[level];
       }
     }
+    // Set the final offset to the last element of |groupOffsets| and
+    // |visibleLevelOffsets|. This number represent the end of last group and
+    // level.
     if (groupIndex >= 0) {
       this.groupOffsets[groupIndex + 1] = currentOffset;
     }
@@ -2106,7 +2134,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 }
 
-export const HeaderHeight = 15;
+export const RulerHeight = 15;
 export const MinimalTimeWindowMs = 0.5;
 
 /**
@@ -2186,9 +2214,9 @@ export class FlameChartTimelineData {
 
   static createEmpty(): FlameChartTimelineData {
     return new FlameChartTimelineData(
-        [],  // entry levels: what level on the timeline is an event on?,
+        [],  // entry levels: what level on the timeline is an event on,
         [],  // entry total times: the total duration of an event,
-        [],  // entry start times: the start time of a given event
+        [],  // entry start times: the start time of a given event,
         [],  // groups: a list of flame chart groups, which roughly correlate to each individual track
     );
   }
@@ -2290,7 +2318,10 @@ export interface GroupStyle {
   height: number;
   padding: number;
   collapsible: boolean;
+  // The color of the group title text.
   color: string;
+  // The background color of the group title when the track is collapsed,
+  // and this is usually around same length as the title text.
   backgroundColor: string;
   nestingLevel: number;
   itemsHeight?: number;

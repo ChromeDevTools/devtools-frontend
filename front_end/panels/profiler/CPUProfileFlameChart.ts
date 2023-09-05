@@ -378,7 +378,7 @@ export class OverviewPane extends Common.ObjectWrapper.eventMixin<OverviewPaneEv
       return;
     }
     this.resetCanvas(
-        this.overviewContainer.clientWidth, this.overviewContainer.clientHeight - PerfUI.FlameChart.HeaderHeight);
+        this.overviewContainer.clientWidth, this.overviewContainer.clientHeight - PerfUI.FlameChart.RulerHeight);
     this.overviewCalculator.updateBoundaries(this);
     this.overviewGrid.updateDividers(this.overviewCalculator);
     this.drawOverviewCanvas();

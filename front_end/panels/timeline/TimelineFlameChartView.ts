@@ -342,7 +342,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.networkPane.element.classList.toggle(
         'timeline-network-resizer-disabled', !this.networkDataProvider.isExpanded());
     this.networkSplitWidget.setSidebarSize(
-        this.networkDataProvider.preferredHeight() + this.splitResizer.clientHeight + PerfUI.FlameChart.HeaderHeight +
+        this.networkDataProvider.preferredHeight() + this.splitResizer.clientHeight + PerfUI.FlameChart.RulerHeight +
         2);
   }
 

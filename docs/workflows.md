@@ -147,8 +147,7 @@ $ google-chrome http://localhost:8000/inspector.html?ws=localhost:9222/devtools/
 The integrated workflow offers the best of both worlds, and allows for working on both Chromium and DevTools frontend
 side-by-side. This is strongly recommended for folks working primarily on DevTools.
 
-This workflow will ensure that your local setup is equivalent to how Chromium infrastructure tests your change. It comes
-in two flavors.
+This workflow will ensure that your local setup is equivalent to how Chromium infrastructure tests your change.
 
 A full [Chromium checkout](#Chromium-checkout) is a pre-requisite for the following steps.
 
@@ -178,27 +177,12 @@ In the `custom_deps` section, insert this line:
 
 Following this step, there are two approaches to manage your standalone checkout
 
-#### Flavor 1: separate gclient projects
+#### Single gclient project
 
-The first approach is to have separate gclient projects, one for each repository. First, get a fresh checkout of
-[DevTools frontend](#Standalone-checkout), and delete the devtools-frontend directory in that checkout.
+**Note: it's not possible anymore to manage the two projects in separate gclient projects.**
 
-To then create the symlink:
-
-```bash
-ln -s third_party/devtools-frontend/src path/to/standalone/devtools-frontend
-```
-
-Running `gclient sync` in `chromium/src/` will update dependencies for the Chromium checkout.
-Running `gclient sync` in `path/to/standalone/devtools-frontend` will update dependencies for the standalone checkout.
-
-#### Flavor 2: a single gclient project
-
-The second approach is to have a single gclient project that automatically gclient sync's all dependencies for both
-repositories.
-
-After removing your DevTools dependency, modify the .gclient file for `chromium/src`
-to add the DevTools project and a hook to automatically symlink (comments are optional):
+For the integrated checkout, create a single gclient project that automatically gclient sync's all dependencies for both
+repositories. After checking out chromium, modify the .gclient file for `chromium/src` to add the DevTools project:
 
 ```python
 solutions = [
@@ -213,19 +197,19 @@ solutions = [
   {
     # devtools-frontend project
     "name": "devtools-frontend",
+    "managed": False,
     "url": "https://chromium.googlesource.com/devtools/devtools-frontend.git",
   }
 ]
 ```
 
-Now create the symlink. In the same directory as the .gclient file, run:
+Do not run `gclient sync` now, first create the symlink. In the same directory as the .gclient file, run:
 
 ```bash
 ln -s src/third_party/devtools-frontend/src devtools-frontend
 ```
 
-Do not run `gclient sync` before creating the symlink. If you did, remove the devtools-frontend directory as you would
-for Flavor 1.
+If you did run `gclient sync` first, remove the devtools-frontend directory and start over.
 
 Run `gclient sync` after creating the link to fetch the dependencies for the standalone checkout.
 

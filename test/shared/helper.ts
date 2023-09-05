@@ -841,3 +841,9 @@ export const replacePuppeteerUrl = (value: string): string => {
     return `(index):${match}`;
   });
 };
+
+export async function raf(page: puppeteer.Page): Promise<void> {
+  await page.evaluate(() => {
+    return new Promise(resolve => window.requestAnimationFrame(resolve));
+  });
+}

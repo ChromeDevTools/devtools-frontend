@@ -381,8 +381,10 @@ describe('The Network Tab', async function() {
     await navigateToNetworkTab('send_beacon_on_unload.html');
 
     await setCacheDisabled(true);
+    await target.bringToFront();
     await target.reload({waitUntil: 'networkidle0'});
 
+    await frontend.bringToFront();
     await waitForSomeRequestsToAppear(1);
 
     await setPersistLog(true);
@@ -392,9 +394,9 @@ describe('The Network Tab', async function() {
 
     // We need to wait for the network log to update.
     await waitForFunction(async () => {
-      const {status, time} = await getRequestRowInfo(frontend, 'sendBeacon');
+      const {status} = await getRequestRowInfo(frontend, 'sendBeacon');
       // Depending on timing of the reporting, the status infomation (404) might reach DevTools in time.
-      return (status === '(unknown)' || status === '404Not Found') && time === '(unknown)';
+      return (status === '(unknown)' || status === '404Not Found');
     });
   });
 

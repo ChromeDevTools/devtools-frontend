@@ -8,6 +8,7 @@ import {
   enableExperiment,
   getBrowserAndPages,
   goToResource,
+  raf,
   waitForElementWithTextContent,
   waitForNoElementsWithTextContent,
 } from '../../shared/helper.js';
@@ -39,40 +40,68 @@ describe('Accessibility Tree in the Elements Tab', async function() {
   });
 
   it('listens for text changes to DOM and redraws the tree', async () => {
+    const {target, frontend} = getBrowserAndPages();
     await enableExperiment('fullAccessibilityTree');
+    await target.bringToFront();
     await goToResource('elements/accessibility-simple-page.html');
+    await frontend.bringToFront();
     await toggleAccessibilityTree();
-    const {target} = getBrowserAndPages();
     await waitForElementWithTextContent('link\xa0"cats" focusable:\xa0true');
+    await target.bringToFront();
     const link = await target.waitForSelector('aria/cats [role="link"]');
     assertNotNullOrUndefined(link);
     await link.evaluate(node => {
       (node as HTMLElement).innerText = 'dogs';
     });
+    // For some reason a11y tree takes a while to propagate.
+    for (let i = 0; i < 30; i++) {
+      await raf(target);
+    }
+    await frontend.bringToFront();
     await waitForElementWithTextContent('link\xa0"dogs" focusable:\xa0true');
   });
 
   it('listens for changes to properties and redraws tree', async () => {
+    const {target, frontend} = getBrowserAndPages();
     await enableExperiment('fullAccessibilityTree');
+    await target.bringToFront();
     await goToResource('elements/accessibility-simple-page.html');
+    await frontend.bringToFront();
     await toggleAccessibilityTree();
-    const {target} = getBrowserAndPages();
+    await target.bringToFront();
     const link = await target.waitForSelector('aria/cats [role="link"]');
     assertNotNullOrUndefined(link);
+    await frontend.bringToFront();
     await waitForElementWithTextContent('link\xa0"cats" focusable:\xa0true');
+    await target.bringToFront();
     await link.evaluate(node => node.setAttribute('aria-label', 'birds'));
+    // For some reason a11y tree takes a while to propagate.
+    for (let i = 0; i < 30; i++) {
+      await raf(target);
+    }
+    await frontend.bringToFront();
     await waitForElementWithTextContent('link\xa0"birds" focusable:\xa0true');
   });
 
   it('listen for removed nodes and redraw tree', async () => {
+    const {target, frontend} = getBrowserAndPages();
     await enableExperiment('fullAccessibilityTree');
+    await target.bringToFront();
     await goToResource('elements/accessibility-simple-page.html');
+    await frontend.bringToFront();
     await toggleAccessibilityTree();
-    const {target} = getBrowserAndPages();
+    await target.bringToFront();
     const link = await target.waitForSelector('aria/cats [role="link"]');
     assertNotNullOrUndefined(link);
+    await frontend.bringToFront();
     await waitForElementWithTextContent('link\xa0"cats" focusable:\xa0true');
+    await target.bringToFront();
     await link.evaluate(node => node.remove());
+    // For some reason a11y tree takes a while to propagate.
+    for (let i = 0; i < 30; i++) {
+      await raf(target);
+    }
+    await frontend.bringToFront();
     await waitForNoElementsWithTextContent('link\xa0"cats" focusable:\xa0true');
   });
 });

@@ -26,7 +26,9 @@ export async function takeScreenshots(testName: string) {
     const opts = {
       encoding: 'base64' as 'base64',
     };
+    await target.bringToFront();
     const targetScreenshot = await target.screenshot(opts);
+    await frontend.bringToFront();
     const frontendScreenshot = await frontend.screenshot(opts);
     const prefix = 'data:image/png;base64,';
     const screenshotFile = getEnvVar('HTML_OUTPUT_FILE');

@@ -6,6 +6,7 @@ import {
   $,
   click,
   clickElement,
+  getBrowserAndPages,
   hover,
   scrollElementIntoView,
   waitFor,
@@ -14,6 +15,10 @@ import {
 } from '../../shared/helper.js';
 
 export const openPanelViaMoreTools = async (panelTitle: string) => {
+  const {frontend} = getBrowserAndPages();
+
+  await frontend.bringToFront();
+
   // Head to the triple dot menu.
   await click('aria/Customize and control DevTools');
 

@@ -3,10 +3,8 @@
 // found in the LICENSE file.
 
 import {assert, expect} from 'chai';
-
 import {type ElementHandle} from 'puppeteer-core';
 
-import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 import {
   getBrowserAndPages,
   waitFor,
@@ -15,6 +13,8 @@ import {
   waitForElementWithTextContent,
   waitForFunction,
 } from '../../shared/helper.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
+import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 async function navigateToNetworkRequestBlockingTab() {
   await openPanelViaMoreTools('Network request blocking');
@@ -76,6 +76,7 @@ describe('Network request blocking panel', async () => {
     const listBB = await list.boundingBox();
     if (listBB) {
       const {frontend} = getBrowserAndPages();
+      await frontend.bringToFront();
       // +20 to move from the top left point so we are definitely scrolling
       // within the container
       await frontend.mouse.move(listBB.x + 20, listBB.y + 20);

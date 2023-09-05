@@ -197,7 +197,7 @@ describe('The Application Tab', async () => {
     });
 
     it('shows details for opened windows in the frame tree', async () => {
-      const {target} = getBrowserAndPages();
+      const {target, frontend} = getBrowserAndPages();
       await navigateToApplicationTab(target, 'frame-tree');
       await click('#tab-resources');
       await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);
@@ -205,6 +205,10 @@ describe('The Application Tab', async () => {
       await target.evaluate(() => {
         window.iFrameWindow = window.open('iframe.html');
       });
+
+      // window.open above would put DevTools in the background stopping updates
+      // to the application panel.
+      await frontend.bringToFront();
 
       await doubleClickSourceTreeItem(OPENED_WINDOWS_SELECTOR);
       await waitFor(`${OPENED_WINDOWS_SELECTOR} + ol li:first-child`);

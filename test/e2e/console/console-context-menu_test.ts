@@ -11,6 +11,7 @@ import {clickOnContextMenu, CONSOLE_TAB_SELECTOR, focusConsolePrompt} from '../h
 describe('The Console Tab', async function() {
   beforeEach(async () => {
     const {frontend} = getBrowserAndPages();
+    await frontend.bringToFront();
     await frontend.evaluate(`
       navigator.clipboard.writeText = (data) => {
         globalThis._clipboardData = data;

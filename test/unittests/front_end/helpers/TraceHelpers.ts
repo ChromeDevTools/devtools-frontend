@@ -1,11 +1,11 @@
 // Copyright 2022 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import type * as Protocol from '../../../../front_end/generated/protocol.js';
 import type * as TimelineModel from '../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
 import * as PerfUI from '../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
-import type * as Protocol from '../../../../front_end/generated/protocol.js';
 
 import {initializeGlobalVars} from './EnvironmentHelpers.js';
 import {TraceLoader} from './TraceLoader.js';
@@ -72,10 +72,12 @@ export async function getMainFlameChartWithTracks(
  * @param trackType the legacy "type" of the track to be rendered. For
  * example: "GPU"
  * @param expanded if the track is expanded
+ * @param trackNameFilter used to further filter down the tracks rendered by seeing if their name contains this string.
  * @returns a flame chart element and its corresponding data provider.
  */
-export async function getMainFlameChartWithLegacyTrack(
-    traceFileName: string, trackType: TimelineModel.TimelineModel.TrackType, expanded: boolean): Promise<{
+export async function getMainFlameChartWithLegacyTrackTypes(
+    traceFileName: string, trackType: TimelineModel.TimelineModel.TrackType, expanded: boolean,
+    trackNameFilter?: string): Promise<{
   flameChart: PerfUI.FlameChart.FlameChart,
   dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider,
 }> {
@@ -93,7 +95,15 @@ export async function getMainFlameChartWithLegacyTrack(
   // have N tracks for a given trace, depending on how many
   // CompositorTileWorker threads there were. So in this case, we want to
   // render all of them, not just the first one we find.
-  const tracks = timelineModel.tracks().filter(track => track.type === trackType);
+  const tracks = timelineModel.tracks().filter(track => {
+    const isRightType = track.type === trackType;
+    if (!trackNameFilter) {
+      return isRightType;
+    }
+
+    return isRightType && track.name.includes(trackNameFilter);
+  });
+
   if (tracks.length === 0) {
     throw new Error(`Legacy track with of type ${trackType} not found in timeline model.`);
   }

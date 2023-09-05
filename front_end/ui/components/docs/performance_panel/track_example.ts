@@ -5,9 +5,9 @@
 import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/TraceHelpers.js';
 import * as TimelineModel from '../../../../models/timeline_model/timeline_model.js';
 import * as Timeline from '../../../../panels/timeline/timeline.js';
+import type * as PerfUI from '../../../legacy/components/perf_ui/perf_ui.js';
 import * as ComponentSetup from '../../helpers/helpers.js';
 
-import type * as PerfUI from '../../../legacy/components/perf_ui/perf_ui.js';
 await ComponentSetup.ComponentServerSetup.setup();
 
 const params = new URLSearchParams(window.location.search);
@@ -15,6 +15,8 @@ const track = params.get('track');
 const fileName = params.get('fileName');
 const expanded = params.get('expanded');
 const darkMode = params.get('darkMode');
+
+const additionalTrackFilter = params.get('trackFilter') || undefined;
 
 const customStartWindowTime = params.get('windowStart');
 const customEndWindowTime = params.get('windowEnd');
@@ -55,8 +57,8 @@ async function renderContent(expanded: boolean) {
       const trackAppenderName = track as Timeline.CompatibilityTracksAppender.TrackAppenderName;
       flameChartData = await FrontendHelpers.getMainFlameChartWithTracks(file, new Set([trackAppenderName]), expanded);
     } else if (track in TimelineModel.TimelineModel.TrackType) {
-      flameChartData = await FrontendHelpers.getMainFlameChartWithLegacyTrack(
-          file, track as TimelineModel.TimelineModel.TrackType, expanded);
+      flameChartData = await FrontendHelpers.getMainFlameChartWithLegacyTrackTypes(
+          file, track as TimelineModel.TimelineModel.TrackType, expanded, additionalTrackFilter);
     } else if (track === 'Network') {
       flameChartData = await FrontendHelpers.getNetworkFlameChartWithLegacyTrack(file, expanded);
     } else {

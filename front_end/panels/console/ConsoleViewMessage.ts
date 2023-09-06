@@ -424,8 +424,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       if (request.statusCode !== 0) {
         UI.UIUtils.createTextChildren(messageElement, ' ', String(request.statusCode));
       }
-      if (request.statusText) {
-        UI.UIUtils.createTextChildren(messageElement, ' (', request.statusText, ')');
+      const statusText = request.getInferredStatusText();
+      if (statusText) {
+        UI.UIUtils.createTextChildren(messageElement, ' (', statusText, ')');
       }
     } else {
       const messageText = this.message.messageText;

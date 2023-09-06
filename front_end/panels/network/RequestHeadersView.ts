@@ -506,7 +506,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
       const statusCodeImage =
           (statusCodeFragment.createChild('span', 'resource-status-image', 'dt-icon-label') as
            UI.UIUtils.DevToolsIconLabel);
-      UI.Tooltip.Tooltip.install(statusCodeImage, this.request.statusCode + ' ' + this.request.statusText);
+      UI.Tooltip.Tooltip.install(statusCodeImage, this.request.statusCode + ' ' + this.request.getInferredStatusText());
 
       if (this.request.statusCode < 300 || this.request.statusCode === 304) {
         statusCodeImage
@@ -522,7 +522,7 @@ export class RequestHeadersView extends UI.Widget.VBox {
       requestMethodElement.title = this.formatHeader(i18nString(UIStrings.requestMethod), this.request.requestMethod);
 
       const statusTextElement = statusCodeFragment.createChild('div', 'header-value source-code');
-      let statusText = this.request.statusCode + ' ' + this.request.statusText;
+      let statusText = this.request.statusCode + ' ' + this.request.getInferredStatusText();
       if (this.request.cachedInMemory()) {
         statusText += ' ' + i18nString(UIStrings.fromMemoryCache);
         statusTextElement.classList.add('status-from-cache');

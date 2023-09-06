@@ -224,7 +224,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #blockedReasonInternal: Protocol.Network.BlockedReason|undefined;
   #corsErrorStatusInternal: Protocol.Network.CorsErrorStatus|undefined;
   statusCode: number;
-  #statusText: string;
+  statusText: string;
   requestMethod: string;
   requestTime: number;
   protocol: string;
@@ -336,7 +336,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     this.#corsErrorStatusInternal = undefined;
 
     this.statusCode = 0;
-    this.#statusText = '';
+    this.statusText = '';
     this.requestMethod = '';
     this.requestTime = 0;
     this.protocol = '';
@@ -855,15 +855,8 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
     return this.#parsedURLInternal.scheme;
   }
 
-  get statusText(): string {
-    if (!this.#statusText) {
-      this.#statusText = HttpReasonPhraseStrings.getStatusText(this.statusCode);
-    }
-    return this.#statusText;
-  }
-
-  set statusText(statusText: string) {
-    this.#statusText = statusText;
+  getInferredStatusText(): string {
+    return this.statusText || HttpReasonPhraseStrings.getStatusText(this.statusCode);
   }
 
   redirectSource(): NetworkRequest|null {
@@ -1547,7 +1540,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
         this.setRequestHeadersText(requestHeadersText);
       }
 
-      this.#statusText = NetworkRequest.parseStatusTextFromResponseHeadersText(extraResponseInfo.responseHeadersText);
+      this.statusText = NetworkRequest.parseStatusTextFromResponseHeadersText(extraResponseInfo.responseHeadersText);
     }
     this.#remoteAddressSpaceInternal = extraResponseInfo.resourceIPAddressSpace;
 

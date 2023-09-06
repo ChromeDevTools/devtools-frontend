@@ -1233,9 +1233,10 @@ export class NetworkRequestNode extends NetworkNode {
         this.setTextAndTitle(cell, failText);
       }
     } else if (this.requestInternal.statusCode && this.requestInternal.statusCode >= 400) {
+      const statusText = this.requestInternal.getInferredStatusText();
       UI.UIUtils.createTextChild(cell, String(this.requestInternal.statusCode));
-      this.appendSubtitle(cell, this.requestInternal.statusText);
-      UI.Tooltip.Tooltip.install(cell, this.requestInternal.statusCode + ' ' + this.requestInternal.statusText);
+      this.appendSubtitle(cell, statusText);
+      UI.Tooltip.Tooltip.install(cell, this.requestInternal.statusCode + ' ' + statusText);
     } else if (!this.requestInternal.statusCode && this.requestInternal.parsedURL.isDataURL()) {
       this.setTextAndTitle(cell, i18nString(UIStrings.data));
     } else if (!this.requestInternal.statusCode && this.requestInternal.canceled) {
@@ -1306,8 +1307,9 @@ export class NetworkRequestNode extends NetworkNode {
           i18nString(UIStrings.crossoriginResourceSharingErrorS, {PH1: corsErrorStatus.corsError}));
     } else if (this.requestInternal.statusCode) {
       UI.UIUtils.createTextChild(cell, String(this.requestInternal.statusCode));
-      this.appendSubtitle(cell, this.requestInternal.statusText);
-      UI.Tooltip.Tooltip.install(cell, this.requestInternal.statusCode + ' ' + this.requestInternal.statusText);
+      const statusText = this.requestInternal.getInferredStatusText();
+      this.appendSubtitle(cell, statusText);
+      UI.Tooltip.Tooltip.install(cell, this.requestInternal.statusCode + ' ' + statusText);
     } else if (this.requestInternal.finished) {
       this.setTextAndTitle(cell, i18nString(UIStrings.finished));
     } else if (this.requestInternal.preserved) {

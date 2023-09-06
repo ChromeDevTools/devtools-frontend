@@ -404,7 +404,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       statusClasses.push('status-with-comment');
     }
 
-    const statusText = [this.#request.statusCode, this.#request.statusText, comment].join(' ');
+    const statusText = [this.#request.statusCode, this.#request.getInferredStatusText(), comment].join(' ');
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off

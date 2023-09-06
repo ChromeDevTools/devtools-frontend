@@ -34,7 +34,7 @@ describe('NetworkRequest', () => {
     expectCookie(request.responseCookies[1], {name: 'baz', value: 'qux', size: 7});
   });
 
-  it('status text is given the corresponding value of a status code', () => {
+  it('infers status text from status code if none given', () => {
     const fakeRequest = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
         'fakeRequestId',
         'url1' as Platform.DevToolsPath.UrlString,
@@ -43,10 +43,11 @@ describe('NetworkRequest', () => {
     );
     fakeRequest.statusCode = 200;
 
-    assert.strictEqual(fakeRequest.statusText, 'OK');
+    assert.strictEqual(fakeRequest.statusText, '');
+    assert.strictEqual(fakeRequest.getInferredStatusText(), 'OK');
   });
 
-  it('invalid status code, with no corresponding status text', () => {
+  it('does not infer status text from unknown status code', () => {
     const fakeRequest = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
         'fakeRequestId',
         'url1' as Platform.DevToolsPath.UrlString,
@@ -56,6 +57,21 @@ describe('NetworkRequest', () => {
     fakeRequest.statusCode = 999;
 
     assert.strictEqual(fakeRequest.statusText, '');
+    assert.strictEqual(fakeRequest.getInferredStatusText(), '');
+  });
+
+  it('infers status text only when no status text given', () => {
+    const fakeRequest = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+        'fakeRequestId',
+        'url1' as Platform.DevToolsPath.UrlString,
+        'documentURL' as Platform.DevToolsPath.UrlString,
+        null,
+    );
+    fakeRequest.statusCode = 200;
+    fakeRequest.statusText = 'Prefer me';
+
+    assert.strictEqual(fakeRequest.statusText, 'Prefer me');
+    assert.strictEqual(fakeRequest.getInferredStatusText(), 'Prefer me');
   });
 
   it('includes partition key in response cookies', () => {

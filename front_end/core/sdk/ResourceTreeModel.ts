@@ -67,7 +67,6 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   isInterstitialShowing: boolean;
   mainFrame: ResourceTreeFrame|null;
   #pendingBackForwardCacheNotUsedEvents: Set<Protocol.Page.BackForwardCacheNotUsedEvent>;
-  #pendingPrerenderAttemptCompletedEvents: Set<Protocol.Preload.PrerenderAttemptCompletedEvent>;
 
   constructor(target: Target) {
     super(target);
@@ -83,9 +82,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     this.#securityOriginManager = (target.model(SecurityOriginManager) as SecurityOriginManager);
     this.#storageKeyManager = (target.model(StorageKeyManager) as StorageKeyManager);
     this.#pendingBackForwardCacheNotUsedEvents = new Set<Protocol.Page.BackForwardCacheNotUsedEvent>();
-    this.#pendingPrerenderAttemptCompletedEvents = new Set<Protocol.Preload.PrerenderAttemptCompletedEvent>();
     target.registerPageDispatcher(new PageDispatcher(this));
-    target.registerPreloadDispatcher(new PreloadDispatcher(this));
 
     this.framesInternal = new Map();
     this.#cachedResourcesProcessed = false;
@@ -604,20 +601,6 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     }
   }
 
-  onPrerenderAttemptCompleted(event: Protocol.Preload.PrerenderAttemptCompletedEvent): void {
-    if (this.mainFrame && this.mainFrame.id === event.initiatingFrameId) {
-      this.mainFrame.setPrerenderFinalStatus(event.finalStatus);
-      this.dispatchEventToListeners(Events.PrerenderingStatusUpdated, this.mainFrame);
-      if (event.disallowedApiMethod) {
-        this.mainFrame.setPrerenderDisallowedApiMethod(event.disallowedApiMethod);
-      }
-    } else {
-      this.#pendingPrerenderAttemptCompletedEvents.add(event);
-    }
-
-    this.dispatchEventToListeners(Events.PrerenderAttemptCompleted, event);
-  }
-
   processPendingEvents(frame: ResourceTreeFrame): void {
     if (!frame.isMainFrame()) {
       return;
@@ -626,18 +609,6 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
       if (frame.id === event.frameId && frame.loaderId === event.loaderId) {
         frame.setBackForwardCacheDetails(event);
         this.#pendingBackForwardCacheNotUsedEvents.delete(event);
-        break;
-      }
-    }
-    for (const event of this.#pendingPrerenderAttemptCompletedEvents) {
-      if (frame.id === event.initiatingFrameId) {
-        frame.setPrerenderFinalStatus(event.finalStatus);
-
-        if (event.disallowedApiMethod) {
-          frame.setPrerenderDisallowedApiMethod(event.disallowedApiMethod);
-        }
-
-        this.#pendingPrerenderAttemptCompletedEvents.delete(event);
         break;
       }
     }
@@ -667,8 +638,6 @@ export enum Events {
   InterstitialShown = 'InterstitialShown',
   InterstitialHidden = 'InterstitialHidden',
   BackForwardCacheDetailsUpdated = 'BackForwardCacheDetailsUpdated',
-  PrerenderingStatusUpdated = 'PrerenderingStatusUpdated',
-  PrerenderAttemptCompleted = 'PrerenderAttemptCompleted',
   JavaScriptDialogOpening = 'JavaScriptDialogOpening',
 }
 
@@ -690,8 +659,6 @@ export type EventTypes = {
   [Events.InterstitialShown]: void,
   [Events.InterstitialHidden]: void,
   [Events.BackForwardCacheDetailsUpdated]: ResourceTreeFrame,
-  [Events.PrerenderingStatusUpdated]: ResourceTreeFrame,
-  [Events.PrerenderAttemptCompleted]: Protocol.Preload.PrerenderAttemptCompletedEvent,
   [Events.JavaScriptDialogOpening]: Protocol.Page.JavascriptDialogOpeningEvent,
 };
 
@@ -724,8 +691,6 @@ export class ResourceTreeFrame {
     explanations: [],
     explanationsTree: undefined,
   };
-  prerenderFinalStatus: Protocol.Preload.PrerenderFinalStatus|null;
-  prerenderDisallowedApiMethod: string|null;
 
   constructor(
       model: ResourceTreeModel, parentFrame: ResourceTreeFrame|null, frameId: Protocol.Page.FrameId,
@@ -754,8 +719,6 @@ export class ResourceTreeFrame {
     this.#childFramesInternal = new Set();
 
     this.resourcesMap = new Map();
-    this.prerenderFinalStatus = null;
-    this.prerenderDisallowedApiMethod = null;
 
     if (this.#sameTargetParentFrameInternal) {
       this.#sameTargetParentFrameInternal.#childFramesInternal.add(this);
@@ -1112,14 +1075,6 @@ export class ResourceTreeFrame {
   getResourcesMap(): Map<string, Resource> {
     return this.resourcesMap;
   }
-
-  setPrerenderFinalStatus(status: Protocol.Preload.PrerenderFinalStatus): void {
-    this.prerenderFinalStatus = status;
-  }
-
-  setPrerenderDisallowedApiMethod(disallowedApiMethod: string): void {
-    this.prerenderDisallowedApiMethod = disallowedApiMethod;
-  }
 }
 
 export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
@@ -1221,35 +1176,6 @@ export class PageDispatcher implements ProtocolProxyApi.PageDispatcher {
   }
 
   downloadProgress(): void {
-  }
-}
-
-class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
-  #resourceTreeModel: ResourceTreeModel;
-  constructor(resourceTreeModel: ResourceTreeModel) {
-    this.#resourceTreeModel = resourceTreeModel;
-  }
-
-  ruleSetUpdated(_event: Protocol.Preload.RuleSetUpdatedEvent): void {
-  }
-
-  ruleSetRemoved(_event: Protocol.Preload.RuleSetRemovedEvent): void {
-  }
-
-  prerenderAttemptCompleted(params: Protocol.Preload.PrerenderAttemptCompletedEvent): void {
-    this.#resourceTreeModel.onPrerenderAttemptCompleted(params);
-  }
-
-  prefetchStatusUpdated(_event: Protocol.Preload.PrefetchStatusUpdatedEvent): void {
-  }
-
-  prerenderStatusUpdated(_event: Protocol.Preload.PrerenderStatusUpdatedEvent): void {
-  }
-
-  preloadEnabledStateUpdated(_event: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void {
-  }
-
-  preloadingAttemptSourcesUpdated(): void {
   }
 }
 

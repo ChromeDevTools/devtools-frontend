@@ -30,7 +30,7 @@ function navigateFrameWithMockConnection(
 }
 
 describeWithMockConnection('ResourceTreeModel', () => {
-  let beforeGetResourceTree = Promise.resolve();
+  const beforeGetResourceTree = Promise.resolve();
 
   beforeEach(async () => {
     setMockConnectionResponseHandler('Page.getResourceTree', async () => {
@@ -94,104 +94,6 @@ describeWithMockConnection('ResourceTreeModel', () => {
     const clearRequests = sinon.stub(networkManager, 'clearRequests');
     dispatchEvent(target, 'Page.frameNavigated', frameNavigatedEvent('parentId'));
     assert.isTrue(clearRequests.notCalled, 'Called unexpctedly');
-  });
-
-  it('records prerenderingStatus', () => {
-    const target = createTarget();
-    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    dispatchEvent(target, 'Page.frameNavigated', frameNavigatedEvent());
-    dispatchEvent(
-        target,
-        'Preload.prerenderAttemptCompleted',
-        {
-          'initiatingFrameId': 'main',
-          'prerenderingUrl': 'http://example.com/page.html',
-          'finalStatus': Protocol.Preload.PrerenderFinalStatus.TriggerDestroyed,
-        },
-    );
-    dispatchEvent(
-        target,
-        'Preload.prerenderAttemptCompleted',
-        {
-          'initiatingFrameId': 'next',
-          'prerenderingUrl': 'http://example.com/page.html',
-          'finalStatus': Protocol.Preload.PrerenderFinalStatus.ClientCertRequested,
-        },
-    );
-    assertNotNullOrUndefined(resourceTreeModel);
-    assertNotNullOrUndefined(resourceTreeModel.mainFrame);
-    assert.strictEqual(
-        resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Preload.PrerenderFinalStatus.TriggerDestroyed);
-    dispatchEvent(target, 'Page.frameNavigated', frameNavigatedEvent(undefined, 'next'));
-    assertNotNullOrUndefined(resourceTreeModel);
-    assertNotNullOrUndefined(resourceTreeModel.mainFrame);
-    assert.strictEqual(
-        resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Preload.PrerenderFinalStatus.ClientCertRequested);
-  });
-  describe('prerender event before getResourceTree', () => {
-    let resolveGetResourceTree: () => void;
-    before(() => {
-      beforeGetResourceTree = new Promise(resolve => {
-        resolveGetResourceTree = resolve;
-      });
-    });
-
-    it('process prending event', async () => {
-      const target = createTarget();
-      const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-      dispatchEvent(
-          target,
-          'Preload.prerenderAttemptCompleted',
-          {
-            'initiatingFrameId': 'main',
-            'prerenderingUrl': 'http://example.com/page.html',
-            'finalStatus': Protocol.Preload.PrerenderFinalStatus.TriggerDestroyed,
-          },
-      );
-      assertNotNullOrUndefined(resourceTreeModel);
-      assert.isNull(resourceTreeModel.mainFrame);
-      resolveGetResourceTree();
-      await new Promise(resolve => {
-        resourceTreeModel?.addEventListener(SDK.ResourceTreeModel.Events.FrameAdded, resolve);
-      });
-      assertNotNullOrUndefined(resourceTreeModel.mainFrame);
-      assert.strictEqual(
-          resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Preload.PrerenderFinalStatus.TriggerDestroyed);
-    });
-  });
-
-  it('records prerendering disallowedApiMethod', () => {
-    const target = createTarget();
-    const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    dispatchEvent(target, 'Page.frameNavigated', {
-      frame: {
-        id: 'main',
-        loaderId: 'foo',
-        url: 'http://example.com',
-        domainAndRegistry: 'example.com',
-        securityOrigin: 'http://example.com',
-        mimeType: 'text/html',
-        secureContextType: Protocol.Page.SecureContextType.Secure,
-        crossOriginIsolatedContextType: Protocol.Page.CrossOriginIsolatedContextType.Isolated,
-        gatedAPIFeatures: [],
-      },
-    });
-    dispatchEvent(
-        target,
-        'Preload.prerenderAttemptCompleted',
-        {
-          'initiatingFrameId': 'main',
-          'prerenderingUrl': 'http://example.com/page.html',
-          'finalStatus': Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
-          'disallowedApiMethod': 'device.mojom.GamepadMonitor',
-        },
-    );
-
-    assertNotNullOrUndefined(resourceTreeModel);
-    assertNotNullOrUndefined(resourceTreeModel.mainFrame);
-    assert.strictEqual(
-        resourceTreeModel.mainFrame.prerenderFinalStatus, Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy);
-    assert.strictEqual(resourceTreeModel.mainFrame.prerenderDisallowedApiMethod, 'device.mojom.GamepadMonitor');
   });
 
   it('added frame has storageKey when navigated', async () => {

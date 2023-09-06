@@ -226,14 +226,14 @@ cq_main = struct(
         # Quarantine a builder here
         # This will make them experiment 100%
         "devtools_frontend_mac_rel",
-        "devtools_frontend_sequential_linux_rel",
-        "devtools_frontend_sequential_mac_rel",
-        "devtools_frontend_sequential_win64_rel",
     ],
     includable_only_builders = [
         "devtools_screenshot_linux_rel",
         "devtools_screenshot_mac_rel",
         "devtools_screenshot_win64_rel",
+        "devtools_frontend_sequential_linux_rel",
+        "devtools_frontend_sequential_mac_rel",
+        "devtools_frontend_sequential_win64_rel",
         "devtools_frontend_shuffled_parallel_linux_rel",
         "devtools_frontend_shuffled_parallel_mac_rel",
         "devtools_frontend_shuffled_parallel_win64_rel",

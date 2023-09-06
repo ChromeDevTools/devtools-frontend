@@ -113,8 +113,12 @@ describeWithEnvironment('TraceProcessor', async function() {
           Samples: TraceModel.Handlers.ModelHandlers.Samples,
         },
         {
-          // This trace is 8252 events long, lets emit 8 updates
-          eventsPerChunk: 1_000,
+          ...TraceModel.Types.Configuration.DEFAULT,
+          processing: {
+            ...TraceModel.Types.Configuration.DEFAULT.processing,
+            // This trace is 8252 events long, lets emit 8 updates
+            eventsPerChunk: 1_000,
+          },
         });
 
     let updateEventCount = 0;

@@ -6,10 +6,20 @@ export type Configuration = Readonly<{
   settings: {
     showNativeFunctionsInJSProfile: boolean,
   },
+  processing: {
+    pauseDuration: number,
+    eventsPerChunk: number,
+  },
 }>;
 
 export const DEFAULT: Configuration = {
   settings: {
     showNativeFunctionsInJSProfile: false,
+  },
+  processing: {
+    // How many events should be processed before yielding to the main thread for a pause.
+    eventsPerChunk: 15_000,
+    // How long the processor should pause between event chunks.
+    pauseDuration: 1,
   },
 };

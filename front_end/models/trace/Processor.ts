@@ -34,18 +34,14 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
   // the model handlers the user passes in and the Meta handler.
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly #traceHandlers: Handlers.Types.HandlersWithMeta<EnabledModelHandlers>;
-  #pauseDuration: number;
-  #eventsPerChunk: number;
   #status = Status.IDLE;
   #modelConfiguration = Types.Configuration.DEFAULT;
 
   static createWithAllHandlers(): TraceProcessor<typeof Handlers.ModelHandlers> {
-    return new TraceProcessor(Handlers.ModelHandlers, {}, Types.Configuration.DEFAULT);
+    return new TraceProcessor(Handlers.ModelHandlers, Types.Configuration.DEFAULT);
   }
 
-  constructor(
-      traceHandlers: EnabledModelHandlers, {pauseDuration = 1, eventsPerChunk = 15_000} = {},
-      modelConfiguration?: Types.Configuration.Configuration) {
+  constructor(traceHandlers: EnabledModelHandlers, modelConfiguration?: Types.Configuration.Configuration) {
     super();
 
     this.#verifyHandlers(traceHandlers);
@@ -53,8 +49,6 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
       Meta: Handlers.ModelHandlers.Meta,
       ...traceHandlers,
     };
-    this.#pauseDuration = pauseDuration;
-    this.#eventsPerChunk = eventsPerChunk;
     if (modelConfiguration) {
       this.#modelConfiguration = modelConfiguration;
     }
@@ -145,7 +139,8 @@ export class TraceProcessor<EnabledModelHandlers extends {[key: string]: Handler
     // main thread to avoid blocking execution. It uses `dispatchEvent` to
     // provide status update events, and other various bits of config like the
     // pause duration and frequency.
-    const traceEventIterator = new TraceEventIterator(traceEvents, this.#pauseDuration, this.#eventsPerChunk);
+    const {pauseDuration, eventsPerChunk} = this.#modelConfiguration.processing;
+    const traceEventIterator = new TraceEventIterator(traceEvents, pauseDuration, eventsPerChunk);
 
     // Convert to array so that we are able to iterate all handlers multiple times.
     const sortedHandlers = [...sortHandlers(this.#traceHandlers).values()];

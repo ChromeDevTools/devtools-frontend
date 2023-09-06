@@ -56,7 +56,7 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     if (config) {
       this.#config = config;
     }
-    this.#processor = new TraceProcessor(handlers, {/* Settings for how event processing is chunked */}, this.#config);
+    this.#processor = new TraceProcessor(handlers, this.#config);
   }
 
   /**

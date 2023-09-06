@@ -130,6 +130,23 @@ describeWithLocale('ColorSwatch', () => {
     assert.strictEqual(swatchClickEventsReceived.length, 3, 'No more click events received after removing listener');
   });
 
+  it('does not dispatch an event on click when it is readonly', () => {
+    const swatch = createSwatch('red');
+    swatch.setReadonly(true);
+    const target = getClickTarget(swatch);
+
+    const swatchClickEventsReceived: Event[] = [];
+    const onClick = (e: Event) => {
+      swatchClickEventsReceived.push(e);
+    };
+    swatch.addEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, onClick);
+
+    dispatchClickEvent(target);
+    dispatchClickEvent(target);
+    dispatchClickEvent(target);
+    assert.strictEqual(swatchClickEventsReceived.length, 0, 'No click events received for readonly color swatch');
+  });
+
   it('does not dispatch a swatch-click event on shift-click', () => {
     const swatch = createSwatch('red');
     const target = getClickTarget(swatch);
@@ -251,5 +268,15 @@ describeWithLocale('ColorSwatch', () => {
       'color(xyz-d50 0.44 0.22 0.01 / 0.5)',
       'color(xyz-d65 0.41 0.21 0.02 / 0.5)',
     ]);
+  });
+
+  it('does not produce a color conversion menu when it is readonly', () => {
+    const showContextMenuStub = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show');
+
+    const swatch = createSwatch('#ff0000');
+    swatch.setReadonly(true);
+    const target = getClickTarget(swatch);
+    dispatchClickEvent(target, {shiftKey: true});
+    assert.isTrue(showContextMenuStub.notCalled);
   });
 });

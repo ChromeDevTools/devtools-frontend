@@ -46,6 +46,7 @@ export class ColorSwatch extends HTMLElement {
   private text: string|null = null;
   private color: Common.Color.Color|null = null;
   private format: Common.Color.Format|null = null;
+  private readonly: boolean = false;
 
   constructor() {
     super();
@@ -56,6 +57,10 @@ export class ColorSwatch extends HTMLElement {
 
   static isColorSwatch(element: Element): element is ColorSwatch {
     return element.localName === 'devtools-color-swatch';
+  }
+
+  setReadonly(readonly: boolean): void {
+    this.readonly = readonly;
   }
 
   getColor(): Common.Color.Color|null {
@@ -134,6 +139,10 @@ export class ColorSwatch extends HTMLElement {
   }
 
   private onClick(e: KeyboardEvent): void {
+    if (this.readonly) {
+      return;
+    }
+
     if (e.shiftKey) {
       e.stopPropagation();
       this.showFormatPicker(e);

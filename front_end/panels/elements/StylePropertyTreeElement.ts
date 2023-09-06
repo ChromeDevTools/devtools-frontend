@@ -176,7 +176,9 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private editable(): boolean {
-    return Boolean(this.style.styleSheetId && this.style.range);
+    const isLonghandInsideShorthand = this.parent instanceof StylePropertyTreeElement && this.parent.isShorthand;
+    const hasSourceData = Boolean(this.style.styleSheetId && this.style.range);
+    return !isLonghandInsideShorthand && hasSourceData;
   }
 
   inherited(): boolean {
@@ -245,10 +247,10 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private renderColorSwatch(text: string, valueChild?: Node|null): Node {
     const useUserSettingFormat = this.editable();
     const shiftClickMessage = i18nString(UIStrings.shiftClickToChangeColorFormat);
-    const tooltip =
-        this.editable() ? i18nString(UIStrings.openColorPickerS, {PH1: shiftClickMessage}) : shiftClickMessage;
+    const tooltip = this.editable() ? i18nString(UIStrings.openColorPickerS, {PH1: shiftClickMessage}) : '';
 
     const swatch = new InlineEditor.ColorSwatch.ColorSwatch();
+    swatch.setReadonly(!this.editable());
     swatch.renderColor(text, useUserSettingFormat, tooltip);
 
     if (!valueChild) {

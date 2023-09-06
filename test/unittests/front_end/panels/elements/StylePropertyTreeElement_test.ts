@@ -5,6 +5,8 @@
 import * as Common from '../../../../../front_end/core/common/common.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import * as ElementsComponents from '../../../../../front_end/panels/elements/components/components.js';
 import * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
 import * as InlineEditor from '../../../../../front_end/ui/legacy/components/inline_editor/inline_editor.js';
@@ -47,9 +49,49 @@ describeWithRealConnection('StylePropertyTreeElement', async () => {
         fromFallback: false,
       };
     });
+    mockCssStyleDeclaration.leadingProperties.returns([]);
+    mockCssStyleDeclaration.styleSheetId = 'stylesheet-id' as Protocol.CSS.StyleSheetId;
+    mockCssStyleDeclaration.range = new TextUtils.TextRange.TextRange(0, 0, 10, 10);
   });
 
   describe('updateTitle', () => {
+    it('timing swatch, shadow swatch and length swatch are not shown for longhands expanded inside shorthands',
+       async () => {
+         const cssAnimationShorthand = new SDK.CSSProperty.CSSProperty(
+             mockCssStyleDeclaration, 0, '', '', true, false, true, false, '', undefined, [
+               {name: 'animation-timing-function', value: 'linear'},
+               {name: 'text-shadow', value: '2px 2px #ff0000'},
+               {name: 'box-shadow', value: '2px 2px #ff0000'},
+               {name: 'margin-top', value: '10px'},
+             ]);
+         const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+           stylesPane: stylesSidebarPane,
+           matchedStyles: mockMatchedStyles,
+           property: cssAnimationShorthand,
+           isShorthand: true,
+           inherited: false,
+           overloaded: false,
+           newProperty: true,
+         });
+
+         await stylePropertyTreeElement.onpopulate();
+
+         stylePropertyTreeElement.updateTitle();
+         stylePropertyTreeElement.expand();
+
+         const assertNullSwatchOnChildAt = (n: number, swatchSelector: string) => {
+           const childValueElement =
+               (stylePropertyTreeElement.childAt(n) as ElementsModule.StylePropertyTreeElement.StylePropertyTreeElement)
+                   .valueElement;
+           assertNotNullOrUndefined(childValueElement);
+           assert.notExists(childValueElement.querySelector(swatchSelector));
+         };
+         assertNullSwatchOnChildAt(0, '[is="bezier-swatch"]');
+         assertNullSwatchOnChildAt(1, '[is="css-shadow-swatch"]');
+         assertNullSwatchOnChildAt(2, '[is="css-shadow-swatch"]');
+         assertNullSwatchOnChildAt(3, 'devtools-css-length');
+       });
+
     describe('color-mix swatch', () => {
       it('should show color mix swatch when color-mix is used with a color', () => {
         const cssPropertyWithColorMix = new SDK.CSSProperty.CSSProperty(

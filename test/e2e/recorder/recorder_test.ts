@@ -13,6 +13,7 @@ import {
   assertNotNullOrUndefined,
   getBrowserAndPages,
   renderCoordinatorQueueEmpty,
+  waitFor,
   waitForAria,
   waitForFunction,
 } from '../../../test/shared/helper.js';
@@ -428,15 +429,12 @@ describe('Recorder', function() {
   });
 
   it('should capture and store screenshots for every section', async () => {
-    const {frontend, target} = getBrowserAndPages();
+    const {target} = getBrowserAndPages();
     await startRecording('recorder/recorder.html');
     await target.bringToFront();
     await raf(target);
     await stopRecording();
-    const screenshot = await frontend.waitForSelector(
-        'pierce/.section .screenshot',
-    );
-    assert.isTrue(Boolean(screenshot));
+    await waitFor('.section .screenshot');
   });
 
   // Flaky test

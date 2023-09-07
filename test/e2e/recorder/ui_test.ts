@@ -185,7 +185,8 @@ describe('Recorder', function() {
           await waitFor('.expanded');
         }
 
-        it('should select through the selector picker', async () => {
+        // Flaky test
+        it.skip('[crbug.com/1443421]: should select through the selector picker', async () => {
           const {target, frontend} = getBrowserAndPages();
           await frontend.bringToFront();
           await frontend.waitForSelector('pierce/.settings');
@@ -234,7 +235,8 @@ describe('Recorder', function() {
           assertRecordingMatchesSnapshot(recording);
         });
 
-        it('should select through the selector picker during recording', async () => {
+        // Flaky test
+        it.skip('[crbug.com/1443421]: should select through the selector picker during recording', async () => {
           const {target, frontend} = getBrowserAndPages();
           await frontend.bringToFront();
           await frontend.waitForSelector('pierce/.settings');

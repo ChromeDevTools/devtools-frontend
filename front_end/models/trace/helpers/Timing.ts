@@ -54,7 +54,13 @@ const defaultFormatOptions = {
 // them repeatedly during rendering.
 const serialize = (value: {}): string => JSON.stringify(value);
 const formatterFactory = (key: string|undefined): Intl.NumberFormat => {
-  return new Intl.NumberFormat(navigator.language, key ? JSON.parse(key) : {});
+  // If we pass undefined as the locale, that achieves two things:
+  // 1. Avoids us referencing window.navigatior to fetch the locale, which is
+  //    useful given long term we would like this engine to run in NodeJS
+  //    environments.
+  // 2. Will cause the formatter to fallback to the locale of the system, which
+  //    is likely going to be the most accurate one to use anyway.
+  return new Intl.NumberFormat(undefined, key ? JSON.parse(key) : {});
 };
 const formatters = new Map<string, Intl.NumberFormat>();
 

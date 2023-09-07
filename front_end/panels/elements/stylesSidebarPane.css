@@ -25,18 +25,18 @@
   }
 
   &.read-only {
-    background-color: var(--color-background-opacity-50);
+    background-color: var(--sys-color-cdt-base-container);
     font-style: italic;
   }
 
   &:focus-visible,
   &.read-only:focus-visible {
-    background-color: var(--color-background-elevation-2);
+    background-color: var(--sys-color-state-focus-highlight);
   }
 
   .simple-selector.filter-match {
-    background-color: var(--color-match-highlight);
-    color: var(--color-text-primary);
+    background-color: var(--sys-color-tonal-container);
+    color: var(--sys-color-on-surface);
   }
 
   .devtools-link {
@@ -48,19 +48,19 @@
   }
 
   .styles-section-subtitle .devtools-link {
-    color: var(--text-primary);
-    text-decoration-color: hsl(0deg 0% 60%);
+    color: var(--sys-color-on-surface);
+    text-decoration-color: var(--sys-color-neutral-bright);
     outline-offset: 0;
   }
 
   .selector,
   .try-rule-selector-element {
-    color: var(--text-disabled);
+    color: var(--sys-color-state-disabled);
   }
 
   .simple-selector.selector-matches,
   &.keyframe-key {
-    color: var(--text-primary);
+    color: var(--sys-color-on-surface);
   }
 
   .style-properties {
@@ -98,12 +98,12 @@
   white-space: normal;
 
   .ancestor-rule-list {
-    color: var(--text-disabled);
+    color: var(--sys-color-state-disabled);
   }
 }
 
 .styles-section-subtitle {
-  color: var(--text-secondary);
+  color: var(--sys-color-token-subtle);
   float: right;
   padding-left: 15px;
   max-width: 100%;
@@ -116,7 +116,7 @@
 
 .sidebar-pane-open-brace,
 .sidebar-pane-closing-brace {
-  color: var(--text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 @keyframes styles-element-state-pane-slidein {
@@ -156,13 +156,11 @@
 }
 
 .styles-sidebar-pane-toolbar-container {
-  --override-toolbar-background-color: var(--sys-color-cdt-base-container);
-
   flex-shrink: 0;
   overflow: hidden;
   position: sticky;
   top: 0;
-  background-color: var(--override-toolbar-background-color);
+  background-color: var(--sys-color-cdt-base-container);
   z-index: 2;
 }
 
@@ -197,7 +195,7 @@
     }
 
     &::placeholder {
-      color: var(--color-text-secondary);
+      color: var(--sys-color-token-subtle);
     }
   }
 }
@@ -206,7 +204,7 @@
   background-color: var(--sys-color-surface2);
   padding: 0 5px;
   border-bottom: 1px solid var(--sys-color-divider);
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

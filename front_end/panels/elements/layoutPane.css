@@ -19,14 +19,13 @@
 }
 
 .header::marker {
-  color: rgb(110 110 110); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--sys-color-on-surface-subtle);
   font-size: 11px;
   line-height: 1;
 }
 
 .header:focus {
-  background-color: var(--legacy-focus-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .content-section {
@@ -96,7 +95,7 @@
 
 .elements {
   margin-top: 12px;
-  color: var(--color-token-tag);
+  color: var(--sys-color-token-tag);
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
   gap: 8px;

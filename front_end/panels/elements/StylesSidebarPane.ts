@@ -2104,7 +2104,7 @@ export class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
         iconName: iconInfo.iconName,
         width,
         height,
-        color: 'black',
+        color: 'var(--icon-default)',
       };
       icon.style.transform = `rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX * 1.1}, ${iconInfo.scaleY * 1.1})`;
       icon.style.maxHeight = height;

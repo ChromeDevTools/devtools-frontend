@@ -282,7 +282,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
         title=${tooltipString}>
         <${IconButton.Icon.Icon.litTagName} .data=${{
           iconName: 'triangle-' + direction,
-          color: 'var(--color-text-primary)',
+          color: 'var(--sys-color-on-surface)',
           width: '12px',
           height: '10px',
         } as IconButton.Icon.IconData}>

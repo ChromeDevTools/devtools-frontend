@@ -72,7 +72,7 @@ const nodeToLayoutElement = (node: SDK.DOMModel.DOMNode): LayoutElement => {
   const nodeId = node.id;
   return {
     id: nodeId,
-    color: '#000',
+    color: 'var(--sys-color-inverse-surface)',
     name: node.localName(),
     domId: node.getAttribute('id'),
     domClasses: className ? className.split(/\s+/).filter(s => Boolean(s)) : undefined,
@@ -102,7 +102,8 @@ const gridNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): LayoutElement[] => 
     const nodeId = node.id;
     return {
       ...layoutElement,
-      color: node.domModel().overlayModel().colorOfGridInPersistentOverlay(nodeId) || '#000',
+      color:
+          node.domModel().overlayModel().colorOfGridInPersistentOverlay(nodeId) || 'var(--sys-color-inverse-surface)',
       enabled: node.domModel().overlayModel().isHighlightedGridInPersistentOverlay(nodeId),
       toggle: (value: boolean): void => {
         if (value) {
@@ -125,7 +126,8 @@ const flexContainerNodesToElements = (nodes: SDK.DOMModel.DOMNode[]): LayoutElem
     const nodeId = node.id;
     return {
       ...layoutElement,
-      color: node.domModel().overlayModel().colorOfFlexInPersistentOverlay(nodeId) || '#000',
+      color:
+          node.domModel().overlayModel().colorOfFlexInPersistentOverlay(nodeId) || 'var(--sys-color-inverse-surface)',
       enabled: node.domModel().overlayModel().isHighlightedFlexContainerInPersistentOverlay(nodeId),
       toggle: (value: boolean): void => {
         if (value) {

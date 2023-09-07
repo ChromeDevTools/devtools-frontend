@@ -486,7 +486,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
             'contextmenu', this.handleContextMenuEvent.bind(this, matchedStyles, data.property));
         return LitHtml.html`${traceElement}`;
       }
-      return LitHtml.html`<span style="cursor: text; color: var(--color-text-secondary);">${data.name}</span>`;
+      return LitHtml.html`<span style="cursor: text; color: var(--sys-color-token-subtle);">${data.name}</span>`;
     };
   }
 

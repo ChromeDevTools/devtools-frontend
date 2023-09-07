@@ -10,23 +10,23 @@
 }
 
 .container:hover {
-  background-color: var(--item-hover-color);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 span {
-  color: var(--color-syntax-8);
+  color: var(--sys-color-token-meta);
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
 }
 
 .role-value {
-  color: var(--color-syntax-2);
+  color: var(--sys-color-token-tag);
 }
 
 .attribute-name {
-  color: var(--color-syntax-4);
+  color: var(--sys-color-token-attribute);
 }
 
 .attribute-value {
-  color: var(--color-syntax-3);
+  color: var(--sys-color-token-attribute-value);
 }

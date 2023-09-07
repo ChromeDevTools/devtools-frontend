@@ -32,7 +32,7 @@
   }
 
   & > input::placeholder {
-    color: var(--color-text-secondary);
+    color: var(--sys-color-token-subtle);
   }
 
   @media (forced-colors: active) {

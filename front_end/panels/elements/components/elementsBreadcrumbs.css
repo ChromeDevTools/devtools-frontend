@@ -52,10 +52,10 @@
   flex-grow: 0;
   flex-shrink: 0;
   text-align: center;
-  background-color: var(--color-background-elevation-1);
-  color: var(--color-text-secondary);
+  background-color: var(--sys-color-cdt-base-container);
+  color: var(--sys-color-token-subtle);
   margin: 1px;
-  outline: var(--color-background-elevation-1) solid 1px;
+  outline: 1px solid var(--sys-color-neutral-outline);
 }
 
 .overflow.hidden {
@@ -67,12 +67,12 @@
 }
 
 .overflow:focus {
-  outline-color: var(--color-primary-old);
+  outline-color: var(--sys-color-primary);
 }
 
 .overflow:not(:disabled):hover {
-  background-color: var(--color-background-elevation-2);
-  color: var(--color-text-primary);
+  background-color: var(--sys-color-state-hover-on-subtle);
+  color: var(--sys-color-on-surface);
 }
 
 .crumb-link {
@@ -81,13 +81,13 @@
 }
 
 .crumb:hover {
-  background: var(--color-background-elevation-2);
+  background: var(--sys-color-state-hover-on-subtle);
 }
 
 .crumb.selected {
-  background: var(--color-background-elevation-1);
+  background: var(--sys-color-tonal-container);
 }
 
 .crumb:focus {
-  outline: var(--color-primary-old) auto 1px;
+  outline: var(--sys-color-primary) auto 1px;
 }

@@ -330,9 +330,8 @@ export function buildHierarchy(
       Helpers.Trace.sortTraceEventsInPlace(thread.entries);
       // Step 2. Inject profile calls from samples
       const cpuProfile = samplesHandlerData().profilesInProcess.get(pid)?.get(tid)?.parsedProfile;
-      const samplesIntegrator = cpuProfile && new Helpers.SamplesIntegrator.SamplesIntegrator(cpuProfile, pid, tid, {
-        showNativeFunctionsInJSProfile: config.settings.showNativeFunctionsInJSProfile,
-      });
+      const samplesIntegrator =
+          cpuProfile && new Helpers.SamplesIntegrator.SamplesIntegrator(cpuProfile, pid, tid, config);
       const profileCalls = samplesIntegrator?.buildProfileCalls(thread.entries);
       if (profileCalls) {
         thread.entries = Helpers.Trace.mergeEventsInOrder(thread.entries, profileCalls);

@@ -134,13 +134,13 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
       return LitHtml.html`
         <div
           style=${LitHtml.Directives.styleMap({
-            color: 'var(--color-error)',
+            color: 'var(--sys-color-error)',
           })}
         >
           <${IconButton.Icon.Icon.litTagName}
             .data=${{
               iconName: 'cross-circle-filled',
-              color: 'var(--color-error)',
+              color: 'var(--sys-color-error)',
               width: '16px',
               height: '16px',
             } as IconButton.Icon.IconData}

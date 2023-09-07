@@ -272,7 +272,7 @@ function statusRenderer(preloadsStatusSummary: string, ruleSet: Protocol.Preload
         @click=${revealAttemptViewWithFilter}
         title=${i18nString(UIStrings.buttonRevealPreloadsAssociatedWithRuleSet)}
         style=${LitHtml.Directives.styleMap({
-          color: 'var(--color-link)',
+          color: 'var(--sys-color-primary)',
           'text-decoration': 'underline',
           border: 'none',
           background: 'none',
@@ -291,7 +291,7 @@ function statusRenderer(preloadsStatusSummary: string, ruleSet: Protocol.Preload
     return LitHtml.html`
       <span
         style=${LitHtml.Directives.styleMap({
-      color: 'var(--color-error)',
+      color: 'var(--sys-color-error)',
     })}
       >
         ${nErrors}

@@ -24,7 +24,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   border-bottom: 1px solid var(--sys-color-divider);
-  color: var(--color-text-primary);
+  color: var(--sys-color-token-subtle);
   grid-column-start: span 2;
   font-weight: bold;
 }
@@ -47,7 +47,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--color-text-primary);
+  color: var(--sys-color-token-subtle);
   grid-column-start: span 2;
   font-weight: bold;
 }

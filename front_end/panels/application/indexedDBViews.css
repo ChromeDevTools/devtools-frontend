@@ -70,7 +70,7 @@
 }
 
 .indexed-db-key-path {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
   white-space: pre-wrap;
   unicode-bidi: -webkit-isolate;
 }

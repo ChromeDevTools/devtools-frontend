@@ -43,7 +43,7 @@ const styles = `
   }
 
   #resizer {
-    background-color: var(--color-background-elevation-1);
+    background-color: var(--sys-color-surface1);
     position: absolute;
     user-select: none;
 

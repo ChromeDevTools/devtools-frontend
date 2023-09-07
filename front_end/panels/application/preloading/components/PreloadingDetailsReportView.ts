@@ -350,7 +350,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
             @click=${revealRuleSetView}
             title=${i18nString(UIStrings.buttonClickToRevealRuleSet)}
             style=${LitHtml.Directives.styleMap({
-              color: 'var(--color-link)',
+              color: 'var(--sys-color-primary)',
               'text-decoration': 'underline',
             })}
           >

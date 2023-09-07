@@ -317,7 +317,7 @@ describeWithEnvironment('PreloadingGrid', async () => {
     const cell = getCellByIndexes(grid.shadowRoot, {row: 1, column: 3});
     const div = cell.querySelector('div');
     assertNotNullOrUndefined(div);
-    assert.strictEqual(div.getAttribute('style'), 'color: var(--color-error);');
+    assert.strictEqual(div.getAttribute('style'), 'color: var(--sys-color-error);');
     const icon = div.children[0];
     assertNotNullOrUndefined(icon);
     assertShadowRoot(icon.shadowRoot);

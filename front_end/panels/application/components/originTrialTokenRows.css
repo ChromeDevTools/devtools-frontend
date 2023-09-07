@@ -10,19 +10,19 @@
 }
 
 .key {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   padding: 0 6px;
   text-align: right;
   white-space: pre;
 }
 
 .value {
-  color: var(--color-text-primary);
+  color: var(--sys-color-token-subtle);
   margin-inline-start: 0;
   padding: 0 6px;
 }
 
 .error-text {
-  color: var(--color-red);
+  color: var(--sys-color-error-bright);
   font-weight: bold;
 }

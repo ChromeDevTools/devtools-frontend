@@ -21,7 +21,7 @@
   align-items: center;
   overflow: auto;
   font-size: 13px;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .background-service-preview > div {
@@ -36,7 +36,7 @@
 }
 
 .background-service-shortcut {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .background-service-metadata {
@@ -50,7 +50,7 @@
 }
 
 .background-service-metadata-name {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   display: inline-block;
   margin-right: 0.25em;
   font-weight: bold;
@@ -65,7 +65,7 @@
 }
 
 .background-service-empty-value {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
   font-style: italic;
 }
 

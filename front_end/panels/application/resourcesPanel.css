@@ -56,7 +56,7 @@
 }
 
 .storage-view .storage-table-error {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
   font-size: 24px;
   font-weight: bold;
   padding: 10px;
@@ -116,11 +116,11 @@
 }
 
 .database-user-query:focus-visible {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-state-focus-highlight);
 }
 
 .database-query-text {
-  color: var(--color-primary-variant);
+  color: var(--sys-color-primary-bright);
   user-select: text;
 }
 
@@ -133,7 +133,7 @@
 }
 
 .database-query-result.error {
-  color: var(--color-syntax-1);
+  color: var(--sys-color-token-property-special);
   user-select: text;
 }
 

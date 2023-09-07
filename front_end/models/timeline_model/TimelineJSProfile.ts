@@ -6,8 +6,8 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Protocol from '../../generated/protocol.js';
-import * as TraceEngine from '../trace/trace.js';
 import type * as CPUProfile from '../cpu_profile/cpu_profile.js';
+import * as TraceEngine from '../trace/trace.js';
 
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
 
@@ -104,7 +104,6 @@ export class TimelineJSProfileProcessor {
   static generateJSFrameEvents(events: TraceEngine.Legacy.Event[], config: {
     showAllEvents: boolean,
     showRuntimeCallStats: boolean,
-    showNativeFunctions: boolean,
   }): TraceEngine.Legacy.Event[] {
     function equalFrames(frame1: Protocol.Runtime.CallFrame, frame2: Protocol.Runtime.CallFrame): boolean {
       return frame1.scriptId === frame2.scriptId && frame1.functionName === frame2.functionName &&
@@ -138,7 +137,7 @@ export class TimelineJSProfileProcessor {
      * "fake" JSInvocations are created when we have active JSSamples but seemingly no explicit invocation.
      */
     let fakeJSInvocation = false;
-    const {showAllEvents, showRuntimeCallStats, showNativeFunctions} = config;
+    const {showAllEvents, showRuntimeCallStats} = config;
 
     /**
      * JSSamples are instant events, so any start events are not the samples.
@@ -261,11 +260,6 @@ export class TimelineJSProfileProcessor {
       let j = 0;
       for (let i = 0; i < stack.length; ++i) {
         const frame = stack[i];
-        const url = frame.url;
-        const isNativeFrame = url && url.startsWith('native ');
-        if (!showNativeFunctions && isNativeFrame) {
-          continue;
-        }
         const isNativeRuntimeFrame = TimelineJSProfileProcessor.isNativeRuntimeFrame(frame);
         if (isNativeRuntimeFrame && !showNativeName(frame.functionName)) {
           continue;

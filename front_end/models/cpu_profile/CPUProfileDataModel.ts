@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 
@@ -150,14 +149,6 @@ export class CPUProfileDataModel extends ProfileTreeModel {
    * type.
    */
   private translateProfileTree(nodes: Protocol.Profiler.ProfileNode[]): CPUProfileNode {
-    function isNativeNode(node: Protocol.Profiler.ProfileNode): boolean {
-      if (node.callFrame) {
-        return Boolean(node.callFrame.url) && node.callFrame.url.startsWith('native ');
-      }
-      // @ts-ignore Legacy types
-      return Boolean(node['url']) && node['url'].startsWith('native ');
-    }
-
     function buildChildrenFromParents(nodes: Protocol.Profiler.ProfileNode[]): void {
       if (nodes[0].children) {
         return;
@@ -214,9 +205,6 @@ export class CPUProfileDataModel extends ProfileTreeModel {
     buildChildrenFromParents(nodes);
     this.totalHitCount = nodes.reduce((acc, node) => acc + (node.hitCount || 0), 0);
     const sampleTime = (this.profileEndTime - this.profileStartTime) / this.totalHitCount;
-    const keepNatives = Boolean(
-        Common.Settings.Settings.hasInstance() &&
-        Common.Settings.Settings.instance().moduleSetting('showNativeFunctionsInJSProfile').get());
     const root = nodes[0];
     // If a node is filtered out, its samples are replaced with its parent,
     // so we keep track of the which id to use in the samples data.
@@ -240,12 +228,8 @@ export class CPUProfileDataModel extends ProfileTreeModel {
         sourceNode.children = [];
       }
       const targetNode = new CPUProfileNode(sourceNode, sampleTime);
-      if (keepNatives || !isNativeNode(sourceNode)) {
-        parentNode.children.push(targetNode);
-        parentNode = targetNode;
-      } else {
-        parentNode.self += targetNode.self;
-      }
+      parentNode.children.push(targetNode);
+      parentNode = targetNode;
 
       idToUseForRemovedNode.set(sourceNode.id, parentNode.id);
       parentNodeStack.push.apply(parentNodeStack, sourceNode.children.map(() => parentNode as CPUProfileNode));

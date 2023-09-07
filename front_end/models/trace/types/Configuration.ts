@@ -4,7 +4,7 @@
 
 export type Configuration = Readonly<{
   settings: {
-    showNativeFunctionsInJSProfile: boolean,
+      // Currently empty but defining here as we will migrate more settings into this.
   },
   experiments: {
     /**
@@ -29,9 +29,7 @@ export type Configuration = Readonly<{
 }>;
 
 export const DEFAULT: Configuration = {
-  settings: {
-    showNativeFunctionsInJSProfile: false,
-  },
+  settings: {},
   experiments: {
     timelineV8RuntimeCallStats: false,
     timelineShowAllEvents: false,

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -37,10 +36,6 @@ const UIStrings = {
    *@description Text in the Shortcuts page to explain a keyboard shortcut (start/stop recording performance)
    */
   startStopRecording: 'Start/stop recording',
-  /**
-   *@description Title of a setting under the Performance category in Settings
-   */
-  showNativeFunctions: 'Show native functions in JS Profile',
   /**
    *@description Command for shwoing the profiler tab
    */
@@ -155,15 +150,6 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Meta+E',
     },
   ],
-});
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.PERFORMANCE,
-  storageType: Common.Settings.SettingStorageType.Synced,
-  title: i18nLazyString(UIStrings.showNativeFunctions),
-  settingName: 'showNativeFunctionsInJSProfile',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
 });
 
 UI.ContextMenu.registerProvider({

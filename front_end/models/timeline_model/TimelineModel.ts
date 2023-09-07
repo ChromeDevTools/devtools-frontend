@@ -771,7 +771,6 @@ export class TimelineModelImpl {
       const jsFrameEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events, {
         showAllEvents: Root.Runtime.experiments.isEnabled('timelineShowAllEvents'),
         showRuntimeCallStats: Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats'),
-        showNativeFunctions: Common.Settings.Settings.instance().moduleSetting('showNativeFunctionsInJSProfile').get(),
       });
       if (jsFrameEvents && jsFrameEvents.length) {
         events = Platform.ArrayUtilities.mergeOrdered(

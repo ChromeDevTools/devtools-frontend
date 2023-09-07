@@ -5,7 +5,6 @@
 const {assert} = chai;
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as CPUProfile from '../../../../../front_end/models/cpu_profile/cpu_profile.js';
-import * as Common from '../../../../../front_end/core/common/common.js';
 
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
@@ -366,76 +365,5 @@ name: foo ts: 1.5 dur: 3.13 selfTime: 0.25
   name: bar ts: 1.5 dur: 1.25 selfTime: 1.25
   name: bar ts: 3 dur: 1.63 selfTime: 1
     name: (garbage collector) ts: 4 dur: 0.63 selfTime: 0.63`);
-  });
-  it('filters native functions when appropriate', () => {
-    const settingOriginalValue = Common.Settings.moduleSetting('showNativeFunctionsInJSProfile').get();
-    Common.Settings.moduleSetting('showNativeFunctionsInJSProfile').set(false);
-    const scriptId = 'Peperoni' as Protocol.Runtime.ScriptId;
-    const url = '';
-    const nativeUrl = 'native url';
-    const lineNumber = -1;
-    const columnNumber = -1;
-
-    // Profile contains this tree:
-    //
-    //       root
-    //      /    \
-    //     A      B
-    //   /   \     \
-    //  C     D     E
-    //               \
-    //                F
-
-    // The calls in the profile look roughly like:
-    //
-    // |----------A---------||----------B---------|
-    // |----C---|     |--D--||--E--|        |--E--|
-    //                       |--F--|
-    //
-    //
-    // Which after filtering native calls should look like
-
-    // |----------A---------||----------B---------|
-    //                |--D--||--F--|
-
-    const profile: Protocol.Profiler.Profile = {
-      startTime: 0,
-      endTime: 100_000,
-      nodes: [
-        {
-          id: 1,
-          hitCount: 0,
-          callFrame: {functionName: '(root)', scriptId, url, lineNumber, columnNumber},
-          children: [2, 3],
-        },
-        {
-          id: 2,
-          hitCount: 1000,
-          callFrame: {functionName: 'A', scriptId, url, lineNumber, columnNumber},
-          children: [4, 5],
-        },
-        {id: 3, hitCount: 1000, callFrame: {functionName: 'B', scriptId, url, lineNumber, columnNumber}, children: [6]},
-        {id: 4, hitCount: 1000, callFrame: {functionName: 'C', scriptId, url: nativeUrl, lineNumber, columnNumber}},
-        {id: 5, hitCount: 1000, callFrame: {functionName: 'D', scriptId, url, lineNumber, columnNumber}},
-        {
-          id: 6,
-          hitCount: 1000,
-          callFrame: {functionName: 'E', scriptId, url: nativeUrl, lineNumber, columnNumber},
-          children: [7],
-        },
-        {id: 7, hitCount: 1000, callFrame: {functionName: 'F', scriptId, url, lineNumber, columnNumber}},
-      ],
-      timeDeltas: [500, 250, 1000, 250, 1000, 250, 250, 250, 250],
-      samples: [4, 4, 2, 5, 5, 7, 7, 3, 6],
-    };
-    const cpuProfileDataModel = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(profile);
-    const treeAsString = getFrameTreeAsString(cpuProfileDataModel);
-    assert.strictEqual(treeAsString, `
-name: A ts: 0.5 dur: 2.75 selfTime: 1.5
-  name: D ts: 2 dur: 1.25 selfTime: 1.25
-name: B ts: 3.25 dur: 1.19 selfTime: 0.69
-  name: F ts: 3.25 dur: 0.5 selfTime: 0.5`);
-
-    Common.Settings.moduleSetting('showNativeFunctionsInJSProfile').set(settingOriginalValue);
   });
 });

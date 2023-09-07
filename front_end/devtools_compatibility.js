@@ -1201,7 +1201,6 @@ function installObjectObserve() {
     'showHeaSnapshotObjectsHiddenProperties',
     'showInheritedComputedStyleProperties',
     'showMediaQueryInspector',
-    'showNativeFunctionsInJSProfile',
     'showUAShadowDOM',
     'showWhitespacesInEditor',
     'sidebarPosition',

@@ -257,9 +257,6 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(
         Common.Settings.SettingCategory.CONSOLE, 'consoleTraceExpand', false, Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.PERFORMANCE, 'showNativeFunctionsInJSProfile', false,
-        Common.Settings.SettingType.BOOLEAN),
-    createSettingValue(
         Common.Settings.SettingCategory.PERFORMANCE, 'flamechartMouseWheelAction', false,
         Common.Settings.SettingType.ENUM),
   ];

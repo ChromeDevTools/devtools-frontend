@@ -431,11 +431,6 @@ export class SamplesIntegrator {
     let j = 0;
     for (let i = 0; i < stack.length; ++i) {
       const frame = stack[i].callFrame;
-      const url = frame.url;
-      const isNativeFrame = url && url.startsWith('native ');
-      if (!engineConfig.settings.showNativeFunctionsInJSProfile && isNativeFrame) {
-        continue;
-      }
       const nativeRuntimeFrame = SamplesIntegrator.isNativeRuntimeFrame(frame);
       if (nativeRuntimeFrame &&
           !SamplesIntegrator.showNativeName(frame.functionName, engineConfig.experiments.timelineV8RuntimeCallStats)) {

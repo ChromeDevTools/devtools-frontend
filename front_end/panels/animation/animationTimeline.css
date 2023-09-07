@@ -65,7 +65,7 @@ line.animation-delay-line.animation-fill {
 }
 
 circle.animation-keyframe-point {
-  fill: var(--color-background);
+  fill: var(--sys-color-cdt-base-container);
 }
 
 circle.animation-endpoint,
@@ -90,7 +90,7 @@ circle.animation-keyframe-point:active {
 .animation-name {
   position: absolute;
   top: 8px;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   text-align: center;
   margin-left: -8px;
   white-space: nowrap;
@@ -168,7 +168,7 @@ circle.animation-keyframe-point:active {
 }
 
 .animation-time-overlay {
-  background-color: var(--color-text-primary);
+  background-color: var(--sys-color-on-surface);
   opacity: 5%;
   position: absolute;
   height: 100%;
@@ -187,14 +187,14 @@ circle.animation-keyframe-point:active {
   height: 100%;
   width: 100%;
   top: 28px;
-  border-left: 1px solid var(--color-red);
+  border-left: 1px solid var(--sys-color-error);
   z-index: 2;
   cursor: col-resize;
 }
 
 .animation-scrubber-line {
   width: 11px;
-  background: linear-gradient(to right, transparent 5px, var(--color-red) 5px, var(--color-red) 6px, transparent 6px);
+  background: linear-gradient(to right, transparent 5px, var(--sys-color-error) 5px, var(--sys-color-error) 6px, transparent 6px);
   position: absolute;
   top: -28px;
   height: 28px;
@@ -207,7 +207,7 @@ circle.animation-keyframe-point:active {
   width: 7px;
   height: 7px;
   transform: rotate(45deg);
-  background: var(--color-red);
+  background: var(--sys-color-error);
   position: absolute;
   left: 2px;
   top: 1px;
@@ -231,7 +231,7 @@ svg.animation-timeline-grid {
 }
 
 rect.animation-timeline-grid-line {
-  fill: var(--color-background-elevation-2);
+  fill: var(--sys-color-divider);
 }
 
 .animation-timeline-row > svg.animation-ui {
@@ -274,7 +274,7 @@ svg.animation-ui path:focus-visible {
 
 text.animation-timeline-grid-label {
   font-size: 10px;
-  fill: var(--color-text-secondary);
+  fill: var(--sys-color-token-subtle);
   text-anchor: middle;
 }
 
@@ -308,17 +308,17 @@ text.animation-timeline-grid-label {
 }
 
 .animation-node-row.animation-node-selected {
-  background-color: var(--color-background-hover-overlay);
+  background-color: var(--sys-color-state-ripple-primary);
 }
 
 .animation-node-selected > .animation-node-description {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .animation-buffer-preview {
   height: 40px;
   margin: 4px 2px;
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-neutral-container);
   border: 1px solid transparent;
   border-radius: 2px;
   flex: 1 1;
@@ -335,9 +335,9 @@ text.animation-timeline-grid-label {
   position: absolute;
   top: 0;
   left: 0;
-  background: var(--color-background-elevation-2);
+  background: var(--sys-color-tonal-container);
   opacity: 0%;
-  border-right: 1px solid var(--color-details-hairline);
+  border-right: 1px solid var(--sys-color-divider);
 }
 
 .animation-buffer-preview:focus-visible {
@@ -346,18 +346,16 @@ text.animation-timeline-grid-label {
 
 .animation-buffer-preview:not(.selected):focus-visible,
 .animation-buffer-preview:not(.selected):hover {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-surface-variant);
 }
 
 .animation-buffer-preview.selected {
-  background-color: var(--legacy-selection-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .animation-paused {
   align-items: center;
   justify-content: center;
-  background-color: hsl(0deg 0% 70% / 50%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
   display: none;
 }
 
@@ -369,7 +367,7 @@ text.animation-timeline-grid-label {
   height: 20px;
   border-radius: 2px;
   margin: 2px;
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-divider);
 }
 
 .animation-buffer-preview.paused .animation-paused {
@@ -381,7 +379,7 @@ text.animation-timeline-grid-label {
 }
 
 .animation-buffer-preview.selected > svg > line {
-  stroke: var(--color-background) !important; /* stylelint-disable-line declaration-no-important */
+  stroke: var(--sys-color-on-tonal-container) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 @keyframes newGroupAnim {
@@ -401,8 +399,8 @@ text.animation-timeline-grid-label {
 }
 
 .animation-playback-rate-button {
-  border: 1px solid var(--color-button-secondary-border);
-  color: var(--color-text-primary);
+  border: 1px solid var(--sys-color-tonal-outline);
+  color: var(--sys-color-on-surface);
   display: inline-block;
   margin-right: -1px;
   padding: 1px 4px;
@@ -420,44 +418,44 @@ text.animation-timeline-grid-label {
 }
 
 .animation-playback-rate-button.selected {
-  color: var(--color-button-primary-text);
-  background-color: var(--color-primary-old);
-  border-color: var(--color-primary-old);
+  color: var(--sys-color-on-tonal-container);
+  background-color: var(--sys-color-tonal-container);
+  border-color: var(--sys-color-tonal-container);
   z-index: 1;
 }
 
 .animation-playback-rate-button.selected:focus-visible {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .animation-playback-rate-button:focus-visible {
-  background-color: var(--legacy-focus-bg-color);
+  outline: 2px solid var(--sys-color-primary);
+  outline-offset: 2px;
 }
 
 .animation-playback-rate-button:not(.selected):hover {
-  background: var(--color-background-elevation-2);
+  background: var(--sys-color-state-hover-on-subtle);
 }
 
 .animation-remove-button {
   position: absolute;
   top: -3px;
   right: -3px;
-  background: var(--color-text-secondary);
+  background: var(--sys-color-token-subtle);
   border-radius: 12px;
   height: 16px;
   width: 16px;
   align-items: center;
   font-size: 10px;
   justify-content: center;
-  box-shadow: 0 1px 4px 0 var(--color-background-highlight);
   z-index: 100;
   display: none;
   font-weight: 700;
-  color: var(--color-background);
+  color: var(--sys-color-cdt-base-container);
 }
 
 .animation-remove-button:hover {
-  background: var(--color-text-primary);
+  background: var(--sys-color-on-surface);
 }
 
 .animation-buffer-preview:hover .animation-remove-button {

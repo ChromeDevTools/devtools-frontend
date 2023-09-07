@@ -54,7 +54,7 @@ span.ax-value-undefined {
 }
 
 .tree-outline li.property {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .tree-outline li.invalid {

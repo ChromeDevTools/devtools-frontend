@@ -664,7 +664,7 @@ const emulatedDevices = [
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
-        'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1',
     'type': 'phone',
   },
   {
@@ -684,7 +684,7 @@ const emulatedDevices = [
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
-        'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1',
     'type': 'phone',
   },
   {
@@ -704,7 +704,27 @@ const emulatedDevices = [
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
-        'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1',
+    'type': 'phone',
+  },
+  {
+    'order': 15,
+    'show-by-default': true,
+    'title': 'iPhone 14 Pro Max',
+    'screen': {
+      'horizontal': {
+        'width': 932,
+        'height': 430,
+      },
+      'device-pixel-ratio': 3,
+      'vertical': {
+        'width': 430,
+        'height': 932,
+      },
+    },
+    'capabilities': ['touch', 'mobile'],
+    'user-agent':
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1',
     'type': 'phone',
   },
   {
@@ -732,23 +752,23 @@ const emulatedDevices = [
   {
     'order': 18,
     'show-by-default': true,
-    'title': 'Pixel 5',
+    'title': 'Pixel 7',
     'screen': {
       'horizontal': {
-        'width': 851,
-        'height': 393,
+        'width': 915,
+        'height': 412,
       },
-      'device-pixel-ratio': 2.75,
+      'device-pixel-ratio': 2.625,
       'vertical': {
-        'width': 393,
-        'height': 851,
+        'width': 412,
+        'height': 915,
       },
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
-        'Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36',
+        'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36',
     'user-agent-metadata':
-        {'platform': 'Android', 'platformVersion': '11', 'architecture': '', 'model': 'Pixel 5', 'mobile': true},
+        {'platform': 'Android', 'platformVersion': '13', 'architecture': '', 'model': 'Pixel 5', 'mobile': true},
     'type': 'phone',
   },
   {
@@ -768,7 +788,7 @@ const emulatedDevices = [
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
-        'Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+        'Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '8.0.0', 'architecture': '', 'model': 'SM-G955U', 'mobile': true},
     'type': 'phone',
@@ -790,33 +810,13 @@ const emulatedDevices = [
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
-        'Mozilla/5.0 (Linux; Android 10; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.162 Mobile Safari/537.36',
+        'Mozilla/5.0 (Linux; Android 13; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36',
     'user-agent-metadata':
-        {'platform': 'Android', 'platformVersion': '10', 'architecture': '', 'model': 'SM-G981B', 'mobile': true},
+        {'platform': 'Android', 'platformVersion': '13', 'architecture': '', 'model': 'SM-G981B', 'mobile': true},
     'type': 'phone',
   },
   {
     'order': 26,
-    'show-by-default': true,
-    'title': 'iPad Air',
-    'screen': {
-      'horizontal': {
-        'width': 1180,
-        'height': 820,
-      },
-      'device-pixel-ratio': 2,
-      'vertical': {
-        'width': 820,
-        'height': 1180,
-      },
-    },
-    'capabilities': ['touch', 'mobile'],
-    'user-agent':
-        'Mozilla/5.0 (iPad; CPU OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/87.0.4280.77 Mobile/15E148 Safari/604.1',
-    'type': 'tablet',
-  },
-  {
-    'order': 28,
     'show-by-default': true,
     'title': 'iPad Mini',
     'screen': {
@@ -832,7 +832,47 @@ const emulatedDevices = [
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
-        'Mozilla/5.0 (iPad; CPU OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/87.0.4280.77 Mobile/15E148 Safari/604.1',
+        'Mozilla/5.0 (iPad; CPU OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1',
+    'type': 'tablet',
+  },
+  {
+    'order': 28,
+    'show-by-default': true,
+    'title': 'iPad Air',
+    'screen': {
+      'horizontal': {
+        'width': 1180,
+        'height': 820,
+      },
+      'device-pixel-ratio': 2,
+      'vertical': {
+        'width': 820,
+        'height': 1180,
+      },
+    },
+    'capabilities': ['touch'],
+    'user-agent':
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15',
+    'type': 'tablet',
+  },
+  {
+    'order': 29,
+    'show-by-default': true,
+    'title': 'iPad Pro',
+    'screen': {
+      'horizontal': {
+        'width': 1366,
+        'height': 1024,
+      },
+      'device-pixel-ratio': 2,
+      'vertical': {
+        'width': 1024,
+        'height': 1366,
+      },
+    },
+    'capabilities': ['touch'],
+    'user-agent':
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15',
     'type': 'tablet',
   },
   {
@@ -852,7 +892,7 @@ const emulatedDevices = [
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
     'type': 'tablet',
   },
   {
@@ -938,7 +978,7 @@ const emulatedDevices = [
     },
     'capabilities': ['touch', 'mobile'],
     'user-agent':
-        'Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36',
+        'Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36',
     'user-agent-metadata':
         {'platform': 'Android', 'platformVersion': '8.0.0', 'architecture': '', 'model': 'SM-G955U', 'mobile': true},
     'type': 'phone',
@@ -997,6 +1037,7 @@ const emulatedDevices = [
   },
 
   {
+    'order': 129,
     'show-by-default': false,
     'title': 'iPhone 4',
     'screen': {

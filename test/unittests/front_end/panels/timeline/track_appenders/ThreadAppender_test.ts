@@ -334,4 +334,20 @@ describeWithEnvironment('ThreadAppender', function() {
     assert.isUndefined(decorationsForEntry);
   });
 
+  it('does not append a track if there are no visible events on it', async function() {
+    const {flameChartData} = await renderThreadAppenders(this, 'one-second-interaction.json.gz');
+    assert.strictEqual(flameChartData.groups.length, 5);
+    assert.strictEqual(
+        flameChartData.groups[0].name,
+        '[RPP] Main — https://chromedevtools.github.io/performance-stories/long-interaction/index.html?x=40');
+    assert.strictEqual(flameChartData.groups[1].name, '[RPP] Compositor');
+    assert.strictEqual(flameChartData.groups[2].name, '[RPP] Chrome_ChildIOThread');
+    // There are multiple ThreadPoolForegroundWorker threads present in
+    // the trace, but only one of these has trace events we deem as
+    // "visible". Therefore, only one ThreadPoolForegroundWorker track
+    // should be drawn.
+    assert.strictEqual(flameChartData.groups[3].name, '[RPP] ThreadPoolForegroundWorker');
+    assert.strictEqual(flameChartData.groups[4].name, '[RPP] ThreadPoolServiceThread');
+  });
+
 });

@@ -9,7 +9,13 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
-import {addDecorationToEvent, buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
+import {
+  addDecorationToEvent,
+  buildGroupStyle,
+  buildTrackHeader,
+  getEventLevel,
+  getFormattedTime,
+} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
   type HighlightedEntryInfo,
@@ -97,6 +103,7 @@ export class ThreadAppender implements TrackAppender {
   // the header is added for the first raster thread and skipped
   // thereafter.
   #rasterIndex: number;
+  #headerAppended: boolean = false;
   readonly threadType: ThreadType = ThreadType.MAIN_THREAD;
   readonly isOnMainFrame: boolean;
 
@@ -148,12 +155,25 @@ export class ThreadAppender implements TrackAppender {
     if (this.#entries.length === 0) {
       return trackStartLevel;
     }
+    return this.#appendThreadEntriesAtLevel(trackStartLevel, expanded);
+  }
+
+  /**
+   * Track header is appended only if there are events visible on it.
+   * Otherwise we don't append any track. So, instead of preemptively
+   * appending a track before appending its events, we only do so once
+   * we have detected that the track contains an event that is visible.
+   */
+  #ensureTrackHeaderAppended(trackStartLevel: number, expanded?: boolean): void {
+    if (this.#headerAppended) {
+      return;
+    }
+    this.#headerAppended = true;
     if (this.threadType === ThreadType.RASTERIZER) {
       this.#appendRasterHeaderAndTitle(trackStartLevel, expanded);
     } else {
       this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
     }
-    return this.#appendThreadEntriesAtLevel(trackStartLevel);
   }
 
   /**
@@ -249,30 +269,42 @@ export class ThreadAppender implements TrackAppender {
    * @returns the next level after the last occupied by the appended
    * entries (the first available level to append more data).
    */
-  #appendThreadEntriesAtLevel(trackStartLevel: number): number {
-    const newLevel = this.#compatibilityBuilder.appendEventsAtLevel(this.#entries, trackStartLevel, this);
-    this.#addDecorations();
-    return newLevel;
-  }
-  #addDecorations(): void {
-    for (const entry of this.#entries) {
-      const index = this.#compatibilityBuilder.indexForEvent(entry);
-      if (!index) {
+  #appendThreadEntriesAtLevel(trackStartLevel: number, expanded?: boolean): number {
+    const lastUsedTimeByLevel: number[] = [];
+    for (let i = 0; i < this.#entries.length; ++i) {
+      const entry = this.#entries[i];
+      // Events' visibility is determined from their predefined styles,
+      // which is something that's not available in the engine data.
+      // Thus it needs to be checked in the appenders, but preemptively
+      // checking if there are visible events and returning early if not
+      // is potentially expensive since, in theory, we would be adding
+      // another traversal to the entries array (which could grow
+      // large). To avoid the extra cost we  add the check in the
+      // traversal we already need to append events.
+      if (!this.#compatibilityBuilder.entryIsVisibleInTimeline(entry)) {
         continue;
       }
-      const warnings = this.#traceParsedData.Warnings.perEvent.get(entry);
-      if (!warnings) {
-        continue;
-      }
-      addDecorationToEvent(this.#flameChartData, index, {type: 'WARNING_TRIANGLE'});
-      if (!warnings.includes('LONG_TASK')) {
-        continue;
-      }
-      addDecorationToEvent(this.#flameChartData, index, {
-        type: 'CANDY',
-        startAtTime: TraceEngine.Handlers.ModelHandlers.Warnings.LONG_MAIN_THREAD_TASK_THRESHOLD,
-      });
+      this.#ensureTrackHeaderAppended(trackStartLevel, expanded);
+      const level = getEventLevel(entry, lastUsedTimeByLevel);
+      const index = this.#compatibilityBuilder.appendEventAtLevel(entry, trackStartLevel + level, this);
+      this.#addDecorationsToEntry(entry, index);
     }
+    return trackStartLevel + lastUsedTimeByLevel.length;
+  }
+
+  #addDecorationsToEntry(entry: TraceEngine.Types.TraceEvents.TraceEventData, index: number): void {
+    const warnings = this.#traceParsedData.Warnings.perEvent.get(entry);
+    if (!warnings) {
+      return;
+    }
+    addDecorationToEvent(this.#flameChartData, index, {type: 'WARNING_TRIANGLE'});
+    if (!warnings.includes('LONG_TASK')) {
+      return;
+    }
+    addDecorationToEvent(this.#flameChartData, index, {
+      type: 'CANDY',
+      startAtTime: TraceEngine.Handlers.ModelHandlers.Warnings.LONG_MAIN_THREAD_TASK_THRESHOLD,
+    });
   }
 
   /*

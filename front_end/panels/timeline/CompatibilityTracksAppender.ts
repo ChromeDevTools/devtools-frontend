@@ -438,14 +438,7 @@ export class CompatibilityTracksAppender {
     const lastUsedTimeByLevel: number[] = [];
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
-      // Default styles are globally defined for each event name. Some
-      // events are hidden by default.
-      const eventStyle = EventStyles.get(event.name as TraceEngine.Types.TraceEvents.KnownEventName);
-      const eventIsTiming = TraceEngine.Types.TraceEvents.isTraceEventConsoleTime(event) ||
-          TraceEngine.Types.TraceEvents.isTraceEventPerformanceMeasure(event) ||
-          TraceEngine.Types.TraceEvents.isTraceEventPerformanceMark(event);
-      const eventIsVisible = (eventStyle && !eventStyle.hidden) || eventIsTiming;
-      if (!eventIsVisible) {
+      if (!this.entryIsVisibleInTimeline(event)) {
         continue;
       }
 
@@ -456,6 +449,16 @@ export class CompatibilityTracksAppender {
     this.#legacyEntryTypeByLevel.length = trackStartLevel + lastUsedTimeByLevel.length;
     this.#legacyEntryTypeByLevel.fill(EntryType.TrackAppender, trackStartLevel);
     return trackStartLevel + lastUsedTimeByLevel.length;
+  }
+
+  entryIsVisibleInTimeline(entry: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+    // Default styles are globally defined for each event name. Some
+    // events are hidden by default.
+    const eventStyle = EventStyles.get(entry.name as TraceEngine.Types.TraceEvents.KnownEventName);
+    const eventIsTiming = TraceEngine.Types.TraceEvents.isTraceEventConsoleTime(entry) ||
+        TraceEngine.Types.TraceEvents.isTraceEventPerformanceMeasure(entry) ||
+        TraceEngine.Types.TraceEvents.isTraceEventPerformanceMark(entry);
+    return (eventStyle && !eventStyle.hidden) || eventIsTiming;
   }
 
   /**

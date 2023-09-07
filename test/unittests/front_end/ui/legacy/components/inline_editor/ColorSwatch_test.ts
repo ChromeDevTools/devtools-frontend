@@ -148,6 +148,7 @@ describeWithLocale('ColorSwatch', () => {
   });
 
   it('does not dispatch a swatch-click event on shift-click', () => {
+    const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
     const swatch = createSwatch('red');
     const target = getClickTarget(swatch);
 
@@ -164,6 +165,7 @@ describeWithLocale('ColorSwatch', () => {
     assert.strictEqual(swatchClickEventsReceived.length, 0, 'No swatch-click events are received on shift-click');
 
     swatch.removeEventListener(InlineEditor.ColorSwatch.ClickEvent.eventName, onClick);
+    assert.isTrue(contextMenuShow.calledThrice);
   });
 
   it('does not dispatch a formatchanged event on click', () => {

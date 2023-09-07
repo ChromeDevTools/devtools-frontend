@@ -503,19 +503,24 @@ export type CategoryPalette = {
 };
 
 export const DEFAULT_CATEGORY_STYLES_PALETTE: CategoryPalette = {
-  Loading: new EventCategoryStyle(i18nLazyString(UIStrings.loading), true, 'hsl(214, 67%, 74%)', 'hsl(214, 67%, 66%)'),
-  Experience:
-      new EventCategoryStyle(i18nLazyString(UIStrings.experience), false, 'hsl(5, 80%, 74%)', 'hsl(5, 80%, 66%)'),
-  Scripting:
-      new EventCategoryStyle(i18nLazyString(UIStrings.scripting), true, 'hsl(43, 83%, 72%)', 'hsl(43, 83%, 64%) '),
-  Rendering:
-      new EventCategoryStyle(i18nLazyString(UIStrings.rendering), true, 'hsl(256, 67%, 76%)', 'hsl(256, 67%, 70%)'),
-  Painting:
-      new EventCategoryStyle(i18nLazyString(UIStrings.painting), true, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
-  GPU: new EventCategoryStyle(i18nLazyString(UIStrings.gpu), false, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
-  Async: new EventCategoryStyle(i18nLazyString(UIStrings.async), false, 'hsl(0, 100%, 50%)', 'hsl(0, 100%, 40%)'),
-  Other: new EventCategoryStyle(i18nLazyString(UIStrings.system), false, 'hsl(0, 0%, 87%)', 'hsl(0, 0%, 79%)'),
-  Idle: new EventCategoryStyle(i18nLazyString(UIStrings.idle), false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)'),
+  Loading: new EventCategoryStyle(
+      i18nLazyString(UIStrings.loading), true, 'var(--app-color-loading-children)', 'var(--app-color-loading)'),
+  Experience: new EventCategoryStyle(
+      i18nLazyString(UIStrings.experience), false, 'var(--app-color-rendering-children)', 'var(--app-color-rendering)'),
+  Scripting: new EventCategoryStyle(
+      i18nLazyString(UIStrings.scripting), true, 'var(--app-color-scripting-children)', 'var(--app-color-scripting)'),
+  Rendering: new EventCategoryStyle(
+      i18nLazyString(UIStrings.rendering), true, 'var(--app-color-rendering-children)', 'var(--app-color-rendering)'),
+  Painting: new EventCategoryStyle(
+      i18nLazyString(UIStrings.painting), true, 'var(--app-color-painting-children)', 'var(--app-color-painting)'),
+  GPU: new EventCategoryStyle(
+      i18nLazyString(UIStrings.gpu), false, 'var(--app-color-painting-children)', 'var(--app-color-painting)'),
+  Async: new EventCategoryStyle(
+      i18nLazyString(UIStrings.async), false, 'var(--app-color-async-children)', 'var(--app-color-async)'),
+  Other: new EventCategoryStyle(
+      i18nLazyString(UIStrings.system), false, 'var(--app-color-system-children)', 'var(--app-color-system)'),
+  Idle: new EventCategoryStyle(
+      i18nLazyString(UIStrings.idle), false, 'var(--app-color-idle-children)', 'var(--app-color-idle)'),
 };
 
 /**

@@ -144,15 +144,21 @@ export class UIDevtoolsUtils {
     }
     _categories = {
       layout: new TimelineCategory(
-          'layout', i18nString(UIStrings.layout), true, 'hsl(214, 67%, 74%)', 'hsl(214, 67%, 66%)'),
+          'layout', i18nString(UIStrings.layout), true, 'var(--app-color-loading-children)',
+          'var(--app-color-loading)'),
       rasterizing: new TimelineCategory(
-          'rasterizing', i18nString(UIStrings.rasterizing), true, 'hsl(43, 83%, 72%)', 'hsl(43, 83%, 64%) '),
+          'rasterizing', i18nString(UIStrings.rasterizing), true, 'var(--app-color-children)',
+          'var(--app-color-scripting)'),
       drawing: new TimelineCategory(
-          'drawing', i18nString(UIStrings.drawing), true, 'hsl(256, 67%, 76%)', 'hsl(256, 67%, 70%)'),
+          'drawing', i18nString(UIStrings.drawing), true, 'var(--app-color-rendering-children)',
+          'var(--app-color-rendering)'),
       painting: new TimelineCategory(
-          'painting', i18nString(UIStrings.painting), true, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
-      other: new TimelineCategory('other', i18nString(UIStrings.system), false, 'hsl(0, 0%, 87%)', 'hsl(0, 0%, 79%)'),
-      idle: new TimelineCategory('idle', i18nString(UIStrings.idle), false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)'),
+          'painting', i18nString(UIStrings.painting), true, 'var(--app-color-painting-children)',
+          'var(--app-color-painting)'),
+      other: new TimelineCategory(
+          'other', i18nString(UIStrings.system), false, 'var(--app-color-system-children)', 'var(--app-color-system)'),
+      idle: new TimelineCategory(
+          'idle', i18nString(UIStrings.idle), false, 'var(--app-color-idle-children)', 'var(--app-color-idle)'),
     };
     return _categories;
   }

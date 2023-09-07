@@ -34,6 +34,7 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {type PerformanceModel} from './PerformanceModel.js';
 import {type TimelineCategory, TimelineUIUtils} from './TimelineUIUtils.js';
@@ -260,7 +261,11 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
       quantizer.appendInterval(timeOffset + timeSpan + quantTime, idleIndex);  // Kick drawing the last bucket.
       for (let i = categoryOrder.length - 1; i > 0; --i) {
         paths[i].lineTo(width, height);
-        ctx.fillStyle = categories[categoryOrder[i]].color;
+        // The categories[categoryOrder[i]].color is of this format var(--app-color-scripting) for instance
+        // However the getComputedValue method only accepts --app-color-scripting.
+        // To extract it, we split by "(", get the second value and pop the last ")" from it.
+        const computedColorValue = categories[categoryOrder[i]].color.split('(')[1].slice(0, -1);
+        ctx.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue(computedColorValue);
         ctx.fill(paths[i]);
       }
     }

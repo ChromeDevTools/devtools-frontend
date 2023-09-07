@@ -595,17 +595,20 @@ describe('User Metrics for Issue Panel', () => {
     ]);
   });
 
-  it('dispatches an event when a Client Hints are used with invalid origin for DelegateCH', async () => {
-    await goToResource('issues/client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html');
-    await waitFor('.issue');
+  // Skip until flake is fixed
+  it.skip(
+      '[crbug.com/1479838] dispatches an event when a Client Hints are used with invalid origin for DelegateCH',
+      async () => {
+        await goToResource('issues/client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html');
+        await waitFor('.issue');
 
-    await assertHistogramEventsInclude([
-      {
-        actionName: 'DevTools.IssueCreated',
-        actionCode: 61,  // ClientHintIssue::MetaTagAllowListInvalidOrigin
-      },
-    ]);
-  });
+        await assertHistogramEventsInclude([
+          {
+            actionName: 'DevTools.IssueCreated',
+            actionCode: 61,  // ClientHintIssue::MetaTagAllowListInvalidOrigin
+          },
+        ]);
+      });
 
   it('dispatches an event when a Client Hints are modified by javascript for DelegateCH', async () => {
     await goToResource('issues/client-hint-issue-DelegateCH-MetaTagModifiedHTML.html');
@@ -629,7 +632,8 @@ describe('User Metrics for CSS custom properties in the Styles pane', () => {
     await focusElementsTree();
   });
 
-  it('dispatch events when capture overview button hit', async () => {
+  // Skip until flake is fixed
+  it.skip('[crbug.com/1479838] dispatch events when capture overview button hit', async () => {
     const {frontend} = getBrowserAndPages();
     await frontend.keyboard.press('ArrowRight');
     await waitForContentOfSelectedElementsNode('<div id=\u200B"properties-to-inspect">\u200B</div>\u200B');

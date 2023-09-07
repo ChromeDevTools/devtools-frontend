@@ -17,6 +17,7 @@ export class ExplainPopover {
   #contentElement = document.createElement('div');
   #markdownElement: Element;
   #answer = '';
+  #prompt = '';
 
   #detectOutsideInteraction = (event: Event): void => {
     const el = event?.composedPath()[0] as Node;
@@ -73,7 +74,7 @@ export class ExplainPopover {
         const rating = isMinus ? 'Bad' : 'Good';
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
             `${surveyLink}?usp=pp_url&entry.1692896504=${encodeURIComponent(rating)}&entry.1188367343=${
-                encodeURIComponent(this.#source.getPrompt())}&entry.405375461=${encodeURIComponent(this.#answer)}` as
+                encodeURIComponent(this.#prompt)}&entry.405375461=${encodeURIComponent(this.#answer)}` as
             Platform.DevToolsPath.UrlString);
       }
     });
@@ -107,7 +108,8 @@ export class ExplainPopover {
     this.#popover.show(document);
     this.#popover.positionContent();
     try {
-      const result = await runPrompt(this.#source.getPrompt());
+      this.#prompt = await this.#source.getPrompt();
+      const result = await runPrompt(this.#prompt);
       this.#renderMarkdown(result);
       this.#answer = result;
       const ratingContainer = this.#contentElement.querySelector('.rating') as HTMLDivElement;
@@ -129,15 +131,27 @@ async function runPrompt(input: string): Promise<string> {
     if (!Host.InspectorFrontendHost.InspectorFrontendHostInstance.doAidaConversation) {
       return reject(new Error('doAidaConversation is not available'));
     }
+    console.time('request');
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.doAidaConversation(
         JSON.stringify({
           input,
           client: 'GENERAL',
         }),
         result => {
+          console.timeEnd('request');
           try {
             const results = JSON.parse(result.response);
-            const text = results.map((result: {textChunk: {text: string}}) => result.textChunk.text).join(' ');
+            const text = results
+                             .map((result: {textChunk: {text: string}}|{codeChunk: {code: string}}) => {
+                               if ('textChunk' in result) {
+                                 return result.textChunk.text;
+                               }
+                               if ('codeChunk' in result) {
+                                 return result.codeChunk.code;
+                               }
+                               throw new Error('Unknown chunk result');
+                             })
+                             .join(' ');
             resolve(text);
           } catch (err) {
             reject(err);
@@ -148,5 +162,5 @@ async function runPrompt(input: string): Promise<string> {
 
 interface Source {
   getAnchor(): AnchorBox;
-  getPrompt(): string;
+  getPrompt(): Promise<string>;
 }

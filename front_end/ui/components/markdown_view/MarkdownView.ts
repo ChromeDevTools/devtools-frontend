@@ -119,6 +119,8 @@ function templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|nu
       return renderText(token);
     case 'codespan':
       return html`<code>${unescape(token.text)}</code>`;
+    case 'code':
+      return html`<code>${unescape(token.text)}</code>`;
     case 'space':
       return html``;
     case 'link':

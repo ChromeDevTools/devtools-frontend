@@ -27,24 +27,36 @@ export class CodeFrameSource {
         leftCorner.left, leftCorner.top, rightCorner.right - leftCorner.left, rightCorner.bottom - leftCorner.top);
   }
 
-  getPrompt(): string {
-    return `You are an expert software engineer who mentors junior software engineers.
+  async getPrompt(): Promise<string> {
+    return `You are an expert software engineer who debugs web applications.
 Given some code, give an explanation of what the code does.
-Start with the explanation immediately without repeating the given code.
+Start with the explanation immediately and do not repeat the given code.
 Respond only with the explanation, no code.
 
 ### Code:
-import pdb
-pdb.set_trace()
+function removeArrayItem(input, valueToRemove) {
+  const index = input.indexOf(valueToRemove);
+  if (index > -1) {
+    input.splice(index, 1);
+  }
+  return input;
+}
 ### Explanation:
-This code imports the python debugging module and then calls the debugging module to start a debugging session at that line in the program.
+This function removes the provided value from an array. Removes the first found value from the array and modifies the array in-place.
 
 ---
 
 ### Code:
-str.toLowerCase()
+window.location.href = 'target.html';
 ### Explanation:
-This code converts a string to lower case, assuming that \`str\` is the string that you want to convert to lower case.
+The code navigates the page to a new URL.
+
+---
+
+### Code:
+"target".includes("r")
+### Explanation:
+The code checks if the string \`"target"\` has the \`r\` character in it.
 
 ---
 

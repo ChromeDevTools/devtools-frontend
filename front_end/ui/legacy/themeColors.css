@@ -339,7 +339,7 @@
 
   /* Tinted surfaces */
 
-  --sys-color-surface-yellow: rgb(254 243 220 / 100%);
+  --sys-color-surface-yellow: rgb(254 246 213 / 100%);
   --sys-color-surface-error: rgb(252 235 235 / 100%);
 
   /* Corresponding on colors */
@@ -669,7 +669,7 @@
 
   /* Tinted surfaces */
 
-  --sys-color-surface-yellow: rgb(65 58 42 / 100%);
+  --sys-color-surface-yellow: rgb(65 60 38 / 100%);
   --sys-color-surface-error: rgb(78 53 52 / 100%);
 
   /* Corresponding on colors */

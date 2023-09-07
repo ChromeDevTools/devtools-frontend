@@ -18,13 +18,13 @@
     "message": "Атрибуты `[aria-*]` соответствуют своим ролям"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "Благодаря параметрам ARIA (`role`) технологии специальных возможностей определяют роль каждого элемента на веб-странице. Если значения `role` написаны с ошибкой, содержат несуществующие роли ARIA (`role`) или абстрактные роли, то назначение элемента не будет сообщено пользователям технологий специальных возможностей. Подробнее [о ролях ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)…"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "Значения, указанные для атрибута `role=\"\"`, не входят в список допустимых ролей ARIA"
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "Значения, указанные для атрибута `role=\"\"`, входят в список допустимых ролей ARIA"
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Если у элемента нет названия, доступного программам чтения с экрана, пользователи услышат его общее название и не поймут, для чего он нужен. Подробнее о том, [как сделать элементы команд более доступными](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)…"
@@ -336,13 +336,13 @@
     "message": "У элементов изображений есть атрибут `[alt]`"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "В информационных элементах должен содержаться короткий и ясный альтернативный текст. Если он будет повторять текст рядом со ссылкой или изображением, то одна и та же фраза может прозвучать дважды, что собьет с толку пользователей программы чтения с экрана. Подробнее [об атрибуте `alt`](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)…"
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "У изображений есть атрибуты `[alt]`, представляющие собой избыточный текст"
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "У изображений нет атрибутов `[alt]`, представляющих собой избыточный текст"
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Добавьте к кнопкам ввода легко различимый текст, чтобы пользователи программы чтения с экрана могли понимать их назначение. Подробнее [о кнопках ввода](https://dequeuniversity.com/rules/axe/4.7/input-button-name)…"
@@ -363,13 +363,13 @@
     "message": "Элементы `<input type=\"image\">` содержат атрибут `[alt]`"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "Видимые текстовые метки, которые не совпадают с доступными названиями, могут запутать пользователей программ чтения с экрана. Подробнее [о доступных названиях](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)…"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "У элементов с видимыми текстовыми метками нет подходящих доступных названий"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "У элементов с видимыми текстовыми метками есть подходящие доступные названия"
   },
   "core/audits/accessibility/label.js | description": {
     "message": "Ярлыки нужны для того, чтобы программы чтения с экрана и другие технологии специальных возможностей могли правильно озвучивать элементы управления формой. Подробнее [о ярлыках для элементов формы](https://dequeuniversity.com/rules/axe/4.7/label)…"
@@ -462,13 +462,13 @@
     "message": "У элементов select есть связанные элементы label"
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "Добавьте ссылку для пропуска контента, чтобы пользователи могли сразу перейти к основному контенту. [Подробнее…](https://dequeuniversity.com/rules/axe/4.7/skip-link)"
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "Ссылки для пропуска контента нефокусируемые"
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "Ссылки для пропуска контента фокусируемые"
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Значение больше 0 подразумевает явное указание порядка навигации. Это может создавать трудности для пользователей с ограниченными возможностями. Подробнее [об атрибуте `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)…"
@@ -480,13 +480,13 @@
     "message": "Нет элементов со значением атрибута `[tabindex]` выше 0"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "Атрибут summary должен описывать структуру таблицы, а в элементе `<caption>` требуется указать экранный заголовок. Точная разметка таблиц упрощает работу пользователей программ чтения с экрана. Подробнее [об атрибуте summary и элементе caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)…"
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "В таблицах для атрибута summary и элемента`<caption>.` указаны одинаковые значения"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "В таблицах указаны разные значения для атрибута summary и элемента `<caption>`"
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Чтобы пользователям было проще перемещаться по таблицам с помощью программ чтения с экрана, не используйте в таблицах ячейки с атрибутом `[colspan]` для обозначения подписей. Подробнее [о подписях](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)…"
@@ -498,7 +498,7 @@
     "message": "Для обозначения подписей в таблицах используется элемент `<caption>` вместо ячеек с атрибутом `[colspan]`"
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "Области прикосновения должны быть достаточно большими, как и расстояние между ними. Так пользователям, у которых могут возникнуть трудности с нажатием на небольшие элементы управления, будет проще выбрать нужный. Подробнее [об областях прикосновения](https://dequeuniversity.com/rules/axe/4.7/target-size)…"
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "Области прикосновения и расстояние между ними недостаточно большие"
@@ -1083,10 +1083,7 @@
     "message": "Атрибут prefer_related_applications поддерживается только в бета-версии Chrome и стабильной версии на устройствах Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Android не поддерживает схему URL манифеста ({scheme})."
+    "message": "Lighthouse не удалось проверить, можно ли установить страницу. Повторите попытку в более новой версии Chrome."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Недействительный URL стартовой страницы манифеста."
@@ -1707,7 +1704,7 @@
     "message": "Рекомендации"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "Узнайте, какие трудности могут возникнуть у людей с ограниченными возможностями при использовании вашего веб-приложения, и [сделайте его доступнее](https://developer.chrome.com/docs/lighthouse/accessibility/). Автоматические проверки не гарантируют доступность приложения, поэтому мы рекомендуем выполнять [тестирование вручную](https://web.dev/how-to-review/). Оно поможет выявить оставшиеся проблемы."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Ручная проверка позволяет охватить области, которые невозможно протестировать автоматически. Подробнее [о проверке специальных возможностей](https://web.dev/how-to-review/)…"
@@ -2853,7 +2850,7 @@
     "message": "Чтобы применять отложенную загрузку изображений, установите [модуль Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search). Разрешив загружать скрытые изображения позже, вы ускорите отрисовку сайта."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "Рекомендуем встраивать критически важный код CSS и JavaScript с помощью модуля, а менее важный код – с использованием атрибута."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "На время ответа влияют как используемые на сайте темы и модули, так и настройки сервера. Советуем найти более оптимизированную тему, тщательно подобрать модуль для оптимизации и/или обновить версию сервера. Серверы вашего хостинга должны поддерживать кеширование операционного кода PHP, кеширование в памяти для ускорения ответа баз данных (например, Redis или Memcached), а также оптимизированную логику приложения, чтобы быстрее подготавливать страницы к загрузке."
@@ -2862,10 +2859,10 @@
     "message": "Чтобы уменьшить размер изображений на странице, используйте [адаптивные стили изображений](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8). Если вы используете Views для показа нескольких материалов на одной странице, рекомендуем применить разбивку на страницы, чтобы ограничить количество показываемых элементов."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Убедитесь, что включен параметр \"Объединить файлы CSS\" на странице \"Администрирование > Конфигурация > Разработка\".  Чтобы улучшить поддержку агрегирования ресурсов, используйте для сайта версию Drupal не ниже 10.1."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Убедитесь, что включен параметр \"Объединить файлы JavaScript\" на странице \"Администрирование > Конфигурация > Разработка\".  Чтобы улучшить поддержку агрегирования ресурсов, используйте для сайта версию Drupal не ниже 10.1."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Рекомендуем удалять ненужные правила CSS и подключать к страницам и их компонентам только те библиотеки Drupal, которые требуются для их загрузки. Подробные сведения можно прочитать в [документации Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Чтобы найти подключенные библиотеки, которые загружают неиспользуемый код JavaScript, запустите [анализ покрытия кода](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) в Инструментах разработчика Chrome. Если на вашем сайте Drupal выключена агрегация CSS, определить проблемный модуль или тему можно по URL-адресу таблицы стилей. Обращайте внимание на модули и темы с большим количеством таблиц стилей, где при анализе покрытия кода преобладает красный цвет. Таблица стилей должна попадать в очередь, только если она используется на странице."
@@ -3066,46 +3063,46 @@
     "message": "Включите сжатие на сервере Next.js. [Подробнее…](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "Свяжитесь с менеджером аккаунта, чтобы включить функцию [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Настроив ее, вы сможете приоритизировать и оптимизировать отрисовку страницы."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "Установите желаемое значение для правила показа шрифта CSS с помощью функции [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) в настройках NitroPack."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "Воспользуйтесь функцией [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513), чтобы автоматически преобразовывать изображения в формат WebP."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "Включите функцию [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images), чтобы отложить загрузку скрытых изображений."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "Включите функцию [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) в настройках NitroPack, чтобы сократить время первоначальной загрузки."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "Включите функцию [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361), чтобы уменьшить время отклика сервера и оптимизировать производительность."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "Включите функцию [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) в настройках кеширования. Это позволит уменьшить размер файлов CSS, HTML и JavaScript, чтобы сократить время первоначальной загрузки."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "Включите функцию [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) в настройках кеширования. Это позволит уменьшить размер файлов CSS, HTML и JavaScript, чтобы сократить время первоначальной загрузки."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "Включите функцию [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS), чтобы удалить правила CSS, неприменимые к этой странице."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "Настройте функцию [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) в NitroPack, чтобы откладывать загрузку скриптов до тех пор, пока они не потребуются."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "Выберите функцию [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) в меню `Caching` и настройте срок действия кеша страниц, чтобы уменьшить время загрузки и повысить удобство использования."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "Включите функцию [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack), чтобы автоматически сжимать и оптимизировать изображения, а также преобразовывать их в формат WebP."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "Включите функцию [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site), чтобы заранее оптимизировать изображения и привести их в соответствие с размерами контейнеров, в которых они показываются, для всех устройств."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "Воспользуйтесь функцией [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) в настройках NitroPack, чтобы уменьшить размер файлов, отправляемых в браузер."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Используйте компонент `nuxt/image`, чтобы установить значение `format=\"webp\"`. [Подробнее…](https://image.nuxtjs.org/components/nuxt-img#format)"
@@ -3309,7 +3306,7 @@
     "message": "Сохранить как JSON-файл"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "Просмотр исходной трассировки"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Открыть в Viewer"

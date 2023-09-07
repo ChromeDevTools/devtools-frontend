@@ -18,13 +18,13 @@
     "message": "`[aria-*]` 属性与其角色匹配"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "ARIA `role` 让辅助技术能够了解网页上每个元素的角色。如果 `role` 值拼写有误、不是现有的 ARIA `role` 值或是抽象角色，系统便不会将相应元素的用途传达给使用辅助技术的用户。[详细了解 ARIA 角色](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)。"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "向 `role=\"\"` 分配的值不是有效的 ARIA 角色。"
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "向 `role=\"\"` 分配的值是有效的 ARIA 角色。"
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "如果某个元素没有无障碍名称，屏幕阅读器会将它读为通用名称，这会导致依赖屏幕阅读器的用户无法使用它。[了解如何让命令元素更便于使用](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)。"
@@ -336,13 +336,13 @@
     "message": "图片元素具备 `[alt]` 属性"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "说明性元素应力求使用简短的描述性替代文本。如果替代文本与链接或图片旁边的文本完全相同，可能会让屏幕阅读器用户感到困惑，因为他们会听到两次同样的内容。[详细了解 `alt` 属性](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)。"
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "图片元素具有属于多余文本的 `[alt]` 属性。"
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "图片元素没有属于多余文本的 `[alt]` 属性。"
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "向输入按钮添加可识别的无障碍文本可帮助屏幕阅读器用户了解输入按钮的用途。[详细了解输入按钮](https://dequeuniversity.com/rules/axe/4.7/input-button-name)。"
@@ -363,13 +363,13 @@
     "message": "`<input type=\"image\">` 元素有对应的 `[alt]` 文字"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "如果可见文本标签与无障碍名称不匹配，可能会让屏幕阅读器用户感到困惑。[详细了解无障碍名称](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)。"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "带有可见文本标签的元素没有匹配的无障碍名称。"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "带有可见文本标签的元素具有匹配的无障碍名称。"
   },
   "core/audits/accessibility/label.js | description": {
     "message": "标签可确保辅助技术（如屏幕阅读器）正确读出表单控件。[详细了解表单元素标签](https://dequeuniversity.com/rules/axe/4.7/label)。"
@@ -462,13 +462,13 @@
     "message": "select 元素具有关联的标签元素。"
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "添加跳转链接可帮助用户跳至主要内容以节省时间。[详细了解跳转链接](https://dequeuniversity.com/rules/axe/4.7/skip-link)。"
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "跳转链接无法聚焦。"
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "跳转链接可聚焦。"
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "值大于 0 意味着明确的导航顺序。尽管这在技术上可行，但往往会让依赖辅助技术的用户感到沮丧。[详细了解 `tabindex` 属性](https://dequeuniversity.com/rules/axe/4.7/tabindex)。"
@@ -480,13 +480,13 @@
     "message": "所有元素的 `[tabindex]` 值都不大于 0"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "summary 属性应描述表格结构，而 `<caption>` 应含有屏幕上显示的标题。准确的表格标记对屏幕阅读器用户有帮助。[详细了解 summary 和 caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)。"
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "表格的 summary 属性和 `<caption>.` 具有相同的内容"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "相关表格的 summary 属性和 `<caption>` 具有不同的内容。"
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "屏幕阅读器提供了更便于用户浏览表格内容的功能。请务必确保表格实际使用了 <caption> 元素（而非带有 `[colspan]` 属性的单元格），这可以提升屏幕阅读器用户的体验。[详细了解表格标题](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)。"
@@ -498,7 +498,7 @@
     "message": "表格使用了 `<caption>`（而非带有 `[colspan]` 属性的单元格）来表示表格标题。"
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "如果触摸目标的尺寸和间距足够大，就能帮助难以精准触按小控件的用户激活相应目标。[详细了解触摸目标](https://dequeuniversity.com/rules/axe/4.7/target-size)。"
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "触摸目标的尺寸或间距不足。"
@@ -1083,10 +1083,7 @@
     "message": "prefer_related_applications 仅适用于 Android 设备上的 Chrome Beta 版和稳定版。"
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "清单网址的架构 ({scheme}) 在 Android 设备上不受支持。"
+    "message": "Lighthouse 无法确定该页面是否可安装。请在较新版本的 Chrome 中重试。"
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "清单起始网址无效"
@@ -1707,7 +1704,7 @@
     "message": "最佳做法"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "这些检查会突出显示可[改进您 Web 应用的无障碍功能](https://developer.chrome.com/docs/lighthouse/accessibility/)的提示。自动检测功能只能检测到一部分问题，无法保证您 Web 应用的无障碍程度，因此您不妨再[手动测试](https://web.dev/how-to-review/)一下。"
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "这些条目旨在检查自动化测试工具未涵盖的方面。如需了解详情，请参阅有关如何[执行无障碍功能审查](https://web.dev/how-to-review/)的指南。"
@@ -2853,7 +2850,7 @@
     "message": "安装可延迟加载图片的 [Drupal 模块](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search)。此类模块能够推迟加载所有的屏幕外图片，进而提高性能。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "不妨考虑使用模块来内嵌关键的 CSS 和 JavaScript，并为非关键的 CSS 或 JavaScript 使用 defer 属性。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "主题背景、模块和服务器规格都会影响服务器响应用时。建议您查找更优化的主题背景、仔细选择优化模块并/或升级您的服务器。您的托管服务器应该使用 PHP 运算码缓存、内存缓存（例如 Redis 或 Memcached）来缩短数据库查询时间，并优化应用逻辑以加快网页准备速度。"
@@ -2862,10 +2859,10 @@
     "message": "建议您使用[自适应图片样式](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)减小在您网页上加载的图片的大小。如果您使用 Views 在网页上显示多个内容项，请考虑实现分页，以限制给定网页上显示的内容项的数量。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "确保您已在“管理 » 配置 » 开发”页面中启用了“聚合 CSS 文件”。为获得更好的资源聚合支持，请确保您的 Drupal 网站至少在 Drupal 10.1 以上版本运行。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "确保您已在“管理 » 配置 » 开发”页面中启用了“聚合 JavaScript 文件”。为获得更好的资源聚合支持，请确保您的 Drupal 网站至少在 Drupal 10.1 以上版本运行。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "建议您移除未使用的 CSS 规则，仅将所需的 Drupal 库附加到相关网页或网页中的组件。如需了解详情，请访问 [Drupal 文档链接](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library)。若想找出会添加无关 CSS 的附加库，请尝试在 Chrome 开发者工具中运行[代码覆盖率](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)测试。在 Drupal 网站中停用 CSS 聚合后，您可根据样式表网址找出导致问题的主题背景/模块。请留意列表中哪些主题背景/模块有大量样式表的代码覆盖率偏红。主题背景/模块应该只将网页中确实用到的样式表加入队列。"
@@ -3066,46 +3063,46 @@
     "message": "请在您的 Next.js 服务器上启用压缩功能。[了解详情](https://nextjs.org/docs/api-reference/next.config.js/compression)。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "如需启用 [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337)，请与您的客户经理联系。配置该功能后，系统会将页面渲染性能设为优先事项，并优化此性能。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "使用 NitroPack 中的 [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) 选项为 CSS font-display 规则设置所需的值。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "使用 [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) 可自动将图片转换为 WebP 格式。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "启用 [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images) 可推迟加载屏幕外图片。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "在 NitroPack 中启用 [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) 可缩短初始加载时间。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "启用 [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361) 可缩短服务器响应用时，并提升用户感知到的性能。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "在缓存设置中启用 [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) 可缩减 CSS、HTML 和 JavaScript 文件的大小，从而缩短加载时间。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "在缓存设置中启用 [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) 可缩减 JS、HTML 和 CSS 文件的大小，从而缩短加载时间。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "启用 [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) 可移除对该页面不适用的 CSS 规则。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "在 NitroPack 中配置 [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) 可延迟脚本的加载时间，到有需要时再加载。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "前往 `Caching` 菜单中的 [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) 功能，调整页面缓存失效时间，即可缩短加载时间并改善用户体验。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "启用 [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) 设置后，系统会自动压缩、优化图片并将其转换为 WebP 格式。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "启用 [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) 可提前优化图片，使其与在所有设备上显示时所用容器的尺寸相匹配。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "在 NitroPack 中使用 [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) 可缩减向浏览器发送的文件的大小。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "请使用 `nuxt/image` 组件并采用如下设置：`format=\"webp\"`。[了解详情](https://image.nuxtjs.org/components/nuxt-img#format)。"
@@ -3309,7 +3306,7 @@
     "message": "另存为 JSON"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "查看原始跟踪记录"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "在查看器中打开"

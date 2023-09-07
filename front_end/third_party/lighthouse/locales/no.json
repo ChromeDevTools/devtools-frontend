@@ -18,13 +18,13 @@
     "message": "`[aria-*]`-attributtene samsvarer med rollene sine"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "ARIA-`role`-elementer gjør at assisterende teknologi vet rollen til hvert element på nettsiden. Hvis `role`-verdier er feilstavet, ikke er eksisterende ARIA-`role`-verdier eller er abstrakte roller, blir ikke formålet med elementet formidlet til brukere av assisterende teknologi. [Finn ut mer om ARIA-roller](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "Verdier som er tilordnet `role=\"\"`, er ikke gyldige ARIA-roller."
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "Verdier som er tilordnet `role=\"\"`, er gyldige ARIA-roller."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Når elementer ikke har tilgjengelige navn, beskriver skjermlesere dem med generiske navn. Dermed er de ubrukelige for brukere som er avhengige av skjermlesere. [Finn ut hvordan du gjør kommandoelementer mer tilgjengelige](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
@@ -336,13 +336,13 @@
     "message": "Bildeelementene har `[alt]`-attributter"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "Informative elementer bør ha korte og beskrivende alternative tekster. Alternativ tekst som er nøyaktig lik teksten ved siden av linken eller bildet, kan potensielt være forvirrende for brukere av skjermlesere, siden teksten da blir lest opp to ganger. [Finn ut mer om `alt`-attributtet](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "Bildeelementer har `[alt]`-attributter med overflødig tekst."
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "Bildeelementer har ikke `[alt]`-attributter med overflødig tekst."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Når du legger til leselig og tilgjengelig tekst på inndataknapper, blir det enklere for brukere av skjermlesere å forstå formålet med inndataknappen. [Finn ut mer om inndataknapper](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -363,13 +363,13 @@
     "message": "`<input type=\"image\">`-elementer har `[alt]`-tekst"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "Synlige tekstetiketter som ikke samsvarer med det tilgjengelige navnet, kan gi brukere av skjermlesere en forvirrende opplevelse. [Finn ut mer om tilgjengelige navn](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "Elementer med synlige tekstetiketter har ikke tilhørende tilgjengelige navn."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "Elementer med synlige tekstetiketter har tilhørende tilgjengelige navn."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "Etiketter sørger for at skjemakontroller leses opp på riktig måte av assisterende teknologi, som skjermlesere. [Finn ut mer om etiketter for skjemaelementer](https://dequeuniversity.com/rules/axe/4.7/label)."
@@ -462,13 +462,13 @@
     "message": "«select»-elementer har tilknyttede «label»-elementer."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "Hvis du legger til en link for å hoppe over innhold, kan brukerne spare tid ved å gå direkte til hovedinnholdet. [Finn ut mer om linker for å hoppe over innhold](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "Linker for å hoppe over innhold er ikke fokuserbare."
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "Linker for å hoppe over innhold er fokuserbare."
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Større verdier enn 0 antyder en eksplisitt navigeringsrekkefølge. Selv om dette teknisk sett er gyldig, kan det ofte være frustrerende for brukere som er avhengige av assisterende teknologi. [Finn ut mer om `tabindex`-attributtet](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
@@ -480,13 +480,13 @@
     "message": "Ingen elementer har en `[tabindex]`-verdi som er større enn 0"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "Sammendragsattributtet skal beskrive tabellstrukturen, mens `<caption>` skal inneholde den synlige tittelen. Riktig oppmerking av tabeller er nyttig for brukere av skjermlesere. [Finn ut mer om «summary» og «caption»](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "Tabellene har det samme innholdet i «summary»-attributtet og `<caption>.`"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "Tabellene har ulikt innhold i «summary»-attributtet og `<caption>`"
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Skjermlesere har funksjonalitet som gjør det enklere å navigere i tabeller. Når du sørger for at tabeller bruker det faktiske «caption»-elementet i stedet for celler med `[colspan]`-attributtet, kan du gjøre opplevelsen bedre for brukere av skjermlesere. [Finn ut mer om «caption»-elementer](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
@@ -498,7 +498,7 @@
     "message": "Tabeller bruker `<caption>` i stedet for celler med `[colspan]`-attributtet for å indikere etiketter."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "Berøringselementer med tilstrekkelig størrelse og avstand er lettere å aktivere for brukere som har problemer med å trykke presist på små kontroller. [Finn ut mer om berøringselementer](https://dequeuniversity.com/rules/axe/4.7/target-size)."
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "Berøringselementer har ikke tilstrekkelig størrelse eller avstand."
@@ -1083,10 +1083,7 @@
     "message": "prefer_related_applications støttes kun i Chrome Beta- og Stable-kanalene på Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Protokollen for manifestets nettadresse ({scheme}) støttes ikke i Android."
+    "message": "Lighthouse kunne ikke fastslå om siden kan installeres. Prøv med en nyere versjon av Chrome."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Start-nettadressen til manifestet er ikke gyldig"
@@ -1707,7 +1704,7 @@
     "message": "Anbefalte fremgangsmåter"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "Disse kontrollene fremhever muligheter til [å gjøre nettappen din mer tilgjengelig](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatisk registrering kan bare oppdage et utvalg av mulige problemer og garanterer ikke at nettappen din er tilgjengelig. Vi anbefaler derfor også [manuell testing](https://web.dev/how-to-review/)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Disse punktene tar for seg områder som ikke kan dekkes av automatiske testverktøy. Finn ut mer i veiledningen vår om [å utføre tilgjengelighetsgjennomganger](https://web.dev/how-to-review/)."
@@ -2853,7 +2850,7 @@
     "message": "Installer [en Drupal-modul](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) som kan utsette innlastingen av bilder. Slike moduler gir mulighet til å utsette innlasting av bilder som ikke er på skjermen, slik at ytelsen økes."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "Vurder å bruke en modul for å bygge inn kritisk CSS- og JavaScript-kode samt å bruke «defer»-attributtet for ikke-kritisk CSS- og JavaScript-kode."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Både temaer, moduler og tjenerspesifikasjoner virker inn på tjenerens responstid. Vurder å finne et mer optimalisert tema, velge en optimaliseringsmodul nøye og/eller oppgradere tjeneren. Vertstjenerne dine bør benytte seg av bufring av PHP-operasjonskoder, minnebufring som Redis eller Memcached for å redusere tiden databasespørringer tar, samt optimalisert applikasjonslogikk for å klargjøre sider raskere."
@@ -2862,10 +2859,10 @@
     "message": "Vurder å bruke [responsive bildestiler](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) for å redusere størrelsen på bilder som lastes inn på siden. Hvis du bruker Views til å vise flere innholdselementer på siden, bør du vurdere å implementere sideinndeling for å begrense antallet innholdselementer som vises på en gitt side."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Forsikre deg om at du har slått på «Aggreger CSS-filer» på siden «Administrasjon > Konfigurasjon > Utvikling».  Sørg for at Drupal-nettstedet kjører minst Drupal 10.1 for å få bedre støtte for aggregering av elementer."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Forsikre deg om at du har slått på «Aggreger JavaScript-filer» på siden «Administrasjon > Konfigurasjon > Utvikling».  Sørg for at Drupal-nettstedet kjører minst Drupal 10.1 for å få bedre støtte for aggregering av elementer."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Vurder å fjerne ubrukte CSS-regler og kun legge ved de nødvendige Drupal-bibliotekene på den relevante siden eller komponenten på siden. Se [linken til Drupal-dokumentasjonen](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) for mer informasjon. For å identifisere vedlagte bibliotek som legger til overflødig CSS, prøv å kjøre [kodedekning](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) i Chrome DevTools. Du kan finne temaet eller modulen som er ansvarlig, i nettadressen til stilarket når CSS-aggregering er avslått på Drupal-nettstedet ditt. Se opp for temaer og moduler som har mange stilark på listen, og som viser mye rødt i kodedekningen. Temaer og moduler bør bare legge stilark i kø hvis disse faktisk brukes på siden."
@@ -3066,46 +3063,46 @@
     "message": "Slå på komprimering på Next.js-tjeneren din. [Finn ut mer](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "Kontakt kontoadministratoren din for å slå på [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Hvis denne funksjonen konfigureres, blir sidegjengivelsen prioritert og optimalisert."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "Bruk alternativet [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) i NitroPack for å angi en ønsket verdi for CSS-regelen font-display."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "Bruk [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) for å konvertere bildene dine til WebP automatisk."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "Utsett innlastingen av bilder utenfor skjermen ved å slå på [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "Få den første innlastingen til å gå raskere ved å slå på [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) i NitroPack."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "Få bedre tjenerresponstid og optimaliser den opplevde ytelsen ved å slå på [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "Slå på [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) i innstillingene for bufring for å redusere størrelsen på CSS-, HTML- og JavaScript-filene dine, slik at innlastingen går raskere."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "Slå på [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) i innstillingene for bufring for å redusere størrelsen på JS-, HTML- og CSS-filene dine, slik at innlastingen går raskere."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "Slå på [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) for å fjerne CSS-regler som ikke er relevante for denne siden."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "Konfigurer [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) i NitroPack for å utsette innlastingen av skript til de trengs."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "Gå til [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time)-funksjonen på `Caching`-menyen, og juster utløpstidspunktet for sidebufferen for å forbedre innlastingstiden og brukeropplevelsen."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "Du kan automatisk komprimere, optimalisere og konvertere bildene dine til WebP ved å slå på [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack)-innstillingen."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "Slå på [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) for å optimalisere bildene dine preemptivt og få dem til å samsvare med størrelsene på beholderne de vises i på alle enheter."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "Bruk [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) i NitroPack for å redusere størrelsen på filene som sendes til nettleseren."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Bruk `nuxt/image`-komponenten og angi `format=\"webp\"`. [Finn ut mer](https://image.nuxtjs.org/components/nuxt-img#format)."
@@ -3309,7 +3306,7 @@
     "message": "Lagre som JSON"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "Vis sporing uten struping"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Åpne i Viewer"

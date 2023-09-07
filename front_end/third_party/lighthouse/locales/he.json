@@ -18,13 +18,13 @@
     "message": "מאפייני ה-`[aria-*]`‎ תואמים לתפקידים שלהם"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "באמצעות מאפייני `role` של ARIA מציינים לאמצעי הטכנולוגיה המסייעת את התפקיד של כל רכיב בדף האינטרנט. אם יש שגיאות איות בערכים של `role`, אם הם לא ערכי `role` קיימים של ARIA או שהתפקידים מופשטים, המשתמשים באמצעי הטכנולוגיה המסייעת לא יוכלו להבין את מטרת הרכיב. [מידע נוסף על תפקידים ב-ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "הערכים שהוקצו לרכיב `role=\"\"` הם לא תפקידים חוקיים של ARIA."
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "הערכים שהוקצו לרכיב `role=\"\"` הם תפקידים חוקיים של ARIA."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "כשאין לרכיב תווית נגישות, קוראי מסך מציינים שם גנרי, ובמצב כזה הרכיב לא שימושי לאנשים שמסתמכים על קוראי מסך. [איך לשפר את הנגישות של רכיבי פקודות](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)?"
@@ -336,13 +336,13 @@
     "message": "לרכיבי תמונה יש מאפייני `[alt]`"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "רכיבים אינפורמטיביים צריכים לכלול טקסט חלופי קצר ותיאורי. טקסט חלופי שזהה לטקסט שקרוב לקישור או לתמונה עלול לבלבל את המשתמשים בקורא מסך, כי הטקסט יוקרא פעמיים. [מידע נוסף על המאפיין `alt`](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)"
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "לרכיבי התמונה יש מאפייני `[alt]` שהם טקסט מיותר."
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "לרכיבי התמונה אין מאפייני `[alt]` שהם טקסט מיותר."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "הוספה של טקסט נגיש וברור ללחצני קלט עשויה לעזור למשתמשים בקורא מסך להבין את המטרה של לחצן הקלט. [מידע נוסף על לחצני קלט](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
@@ -363,13 +363,13 @@
     "message": "לרכיבים מסוג `<input type=\"image\">` יש טקסט `[alt]`"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "תוויות טקסט גלויות שלא תואמות לתווית הנגישות עלולות לגרום לחוויה מבלבלת בקרב משתמשים בקורא מסך. [מידע נוסף על תוויות נגישות](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "לרכיבים עם תוויות טקסט גלויות אין תוויות נגישות תואמות."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "לרכיבים עם תוויות טקסט גלויות יש תוויות נגישות תואמות."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "בעזרת תוויות אפשר לוודא ששמות של פקדי טפסים מוקראים באופן תקין על-ידי טכנולוגיות מסייעות, כמו קוראי מסך. [מידע נוסף על תוויות של רכיבי טפסים](https://dequeuniversity.com/rules/axe/4.7/label)"
@@ -462,13 +462,13 @@
     "message": "לרכיבים נבחרים יש רכיבי תווית משויכים."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "הוספה של קישור לדילוג למקום מסוים בדף יכולה לעזור למשתמשים לדלג לתוכן הראשי ולחסוך זמן. [מידע נוסף על קישורים לדילוג למקום מסוים בדף](https://dequeuniversity.com/rules/axe/4.7/skip-link)"
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "לא ניתן להתמקד בקישורים לדילוג למקום מסוים בדף."
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "ניתן להתמקד בקישורים לדילוג למקום מסוים בדף."
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "ערך גדול מ-0 מציין סדר ניווט מפורש. למרות שאפשרות זו תקינה מבחינה טכנית, במקרים רבים היא מובילה לחוויה מתסכלת בקרב משתמשים שמסתמכים על טכנולוגיות מסייעות. [מידע נוסף על המאפיין `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
@@ -480,13 +480,13 @@
     "message": "לאף רכיב אין ערך `[tabindex]` גדול מ-0"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "מאפיין הסיכום צריך לתאר את מבנה הטבלה ובמאפיין `<caption>` צריכה להיות הכותרת שמופיעה במסך. תגי עיצוב מדויקים בטבלה עוזרים למשתמשים בקוראי מסך. [מידע נוסף על סיכום וכיתוב](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)"
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "הטבלאות מכילות תוכן זהה במאפיין הסיכום וברכיב `<caption>.`"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "הטבלאות מכילות תוכן שונה במאפיין הסיכום וברכיב `<caption>`"
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "קוראי מסך כוללים תכונות שעוזרות לנווט בטבלאות. כדאי לוודא שבטבלאות יש שימוש ברכיב הכיתוב בפועל במקום בתאים עם המאפיין `[colspan]`, כדי לשפר את החוויה של המשתמשים בקורא מסך. [מידע נוסף על רכיבי כיתוב](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
@@ -498,7 +498,7 @@
     "message": "יש שימוש במאפיין `<caption>` במקום בתאים עם המאפיין `[colspan]` כדי לציין כיתוב בטבלאות."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "משתמשים שמתקשים בהפעלת פקדים קטנים יכולים להפעיל את המשטח בעזרת משטחי מגע גדולים ועם מספיק מרווח. [מידע נוסף על משטחי מגע](https://dequeuniversity.com/rules/axe/4.7/target-size)"
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "משטחי המגע לא גדולים ומרווחים מספיק."
@@ -1083,10 +1083,7 @@
     "message": "התכונה prefer_related_applications נתמכת רק בגרסת הבטא של Chrome ובערוצים יציבים ב-Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "הסכימה של כתובת ה-URL של המניפסט ({scheme}) אינה נתמכת ב-Android."
+    "message": "במסגרת Lighthouse אי אפשר היה לקבוע אם ניתן להתקין את הדף. צריך לנסות שוב בגרסה חדשה יותר של Chrome."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "כתובת ה-URL להתחלה של המניפסט לא חוקית"
@@ -1707,7 +1704,7 @@
     "message": "שיטות מומלצות"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "הבדיקות האלה מדגישות הזדמנויות [לשפר את הנגישות של אפליקציית האינטרנט](https://developer.chrome.com/docs/lighthouse/accessibility/). כשמשתמשים בזיהוי אוטומטי, מאתרים רק קבוצת משנה של בעיות, ורמת הנגישות של אפליקציית האינטרנט לא מובטחת. לכן, מומלץ לבצע גם [בדיקה ידנית](https://web.dev/how-to-review/)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "הפריטים האלה בודקים תחומים שלא ניתן לבדוק באמצעות כלי בדיקה אוטומטיים. מידע נוסף זמין במדריך שלנו שבו מוסבר [איך לערוך בדיקת נגישות](https://web.dev/how-to-review/)."
@@ -2853,7 +2850,7 @@
     "message": "כדאי להתקין [מודול של Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) שיכול לטעון תמונות בהדרגה. כדי לשפר ביצועים, מודולים מסוג זה מאפשרים לדחות את טעינת התמונות שאינן מופיעות מייד במסך."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "כדאי להשתמש במודול כדי להטביע נכסים קריטיים של CSS ושל JavaScript, ולהשתמש במאפיין העיכוב בנכסים לא קריטיים של CSS ושל JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "עיצובים, מודולים ומפרטי שרתים משפיעים על זמן התגובה של השרת. אפשר להשתמש בעיצוב שעבר אופטימיזציה, לבחור בקפידה מודול לאופטימיזציה ו/או לשדרג את השרת. שרתי האירוח שלך צריכים להשתמש בהעברה למטמון של PHP opcode ושל הזיכרון כדי לצמצם את זמני השאילתות של מסדי נתונים כגון Redis או Memcache, וגם להשתמש בלוגיקה באיכות אופטימלית של האפליקציה כדי להכין דפים במהירות רבה יותר."
@@ -2862,10 +2859,10 @@
     "message": "כדאי לשקול שימוש ב[סגנונות התמונות הרספונסיביות](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) כדי לצמצם את הגודל של התמונות שטענת לדף. אם נעשה שימוש בתצוגות להצגת פריטי תוכן מרובים בדף, כדאי לשקול יישום עימוד כדי להגביל את מספר פריטי התוכן המופיעים בכל דף נתון."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "צריך לוודא שהאפשרות Aggregate CSS files (קובצי ה-CSS המצטברים) מופעלת בדף Administration (ניהול) » Configuration (הגדרות אישיות) » Development (פיתוח).  לתמיכה משופרת בצבירת נכסים, צריך לוודא שבאתר של Drupal מותקנת גרסה 10.1 Drupal לפחות, או גרסה עדכנית יותר."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "צריך לוודא שהאפשרות Aggregate JavaScript files (קובצי ה-JavaScript המצטברים) מופעלת בדף Administration (ניהול) » Configuration (הגדרות אישיות) » Development (פיתוח).  לתמיכה משופרת בצבירת נכסים, צריך לוודא שבאתר של Drupal מותקנת גרסה 10.1 Drupal לפחות, או גרסה עדכנית יותר."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "כדאי לשקול הסרה של כללי CSS שאינם בשימוש, ולצרף לדף הרלוונטי או לרכיב בדף רק את ספריות ה-Drupal הנדרשות. לפרטים נוספים, ניתן לעיין ב[קישור לתיעוד של Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). כדי לזהות ספריות מצורפות שמוסיפות תוכן CSS מיותר, כדאי להפעיל [כיסוי קוד](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) ב-Chrome DevTools. לאחר השבתה של צבירת CSS באתר ה-Drupal שלך, ניתן יהיה לזהות את העיצוב/המודול שאחראים להוספת גיליון הסגנונות. העיצובים/המודולים הבעייתיים הם אלה שברשימת גיליונות הסגנונות שלהם יש כמות גדולה של כיסוי קוד באדום. עיצוב/מודול צריך להכניס גיליון סגנונות לתור רק אם נעשה בו שימוש בפועל בדף."
@@ -3066,46 +3063,46 @@
     "message": "עליך להפעיל דחיסת נתונים בשרת Next.js. [למידע נוסף](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "צריך לפנות למנהל החשבון כדי להפעיל את [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). כשמגדירים את התכונה הזו, ניתנת עדיפות לביצועים של עיבוד דפים ומתבצעת אופטימיזציה שלהם."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "שימוש באפשרות [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) ב-NitroPack כדי להגדיר ערך רצוי לכלל ההצגה של גופנים ב-CSS."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "שימוש בתכונה [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) כדי להמיר את התמונות ל-WebP באופן אוטומטי."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "הפעלת [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images) לעיכוב הטעינה של תמונות שלא מופיעות במסך."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "הפעלת [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) ב-NitroPack — לקיצור זמני הטעינה הראשונית."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "הפעלת [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361) לשיפור זמן התגובה של השרת ולאופטימיזציה של תפיסת הביצועים."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "הפעלת [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) בהגדרות השמירה במטמון כדי להקטין את הגודל של קובצי ה-CSS, ה-HTML וה-JavaScript — לקיצור זמני הטעינה."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "הפעלת [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) בהגדרות השמירה במטמון כדי להקטין את הגודל של קובצי ה-JS, ה-HTML וה-CSS — לקיצור זמני הטעינה."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "הפעלת [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) כדי להסיר את כללי ה-CSS שלא רלוונטיים לדף הזה."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "הגדרת [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) ב-NitroPack כדי לעכב את הטעינה של סקריפטים עד שהם נחוצים."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "כדי לשפר את זמני הטעינה ואת חוויית המשתמש, אפשר לעבור לתכונה [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) בתפריט `Caching` ולשנות את פרק הזמן לתפוגת השמירה במטמון של דפים."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "הפעלת ההגדרה [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) כדי לדחוס את התמונות, לבצע אופטימיזציה שלהן ולהמיר אותן ל-WebP באופן אוטומטי."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "הפעלת [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) כדי לבצע אופטימיזציה מראש לתמונות כך שיתאימו למידות של המאגרים שבהם הן מוצגות בכל המכשירים."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "שימוש בתכונה [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ב-NitroPack כדי להקטין את גודל הקבצים שנשלחים לדפדפן."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "עליך להשתמש ברכיב `nuxt/image` ולהגדיר את `format=\"webp\"`. [מידע נוסף](https://image.nuxtjs.org/components/nuxt-img#format)."
@@ -3309,7 +3306,7 @@
     "message": "שמירה כ-JSON"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "הצגת נתוני המעקב המקוריים"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "פתיחה ב-Viewer"

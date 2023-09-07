@@ -18,13 +18,13 @@
     "message": "`[aria-*]`-kenmerken komen overeen met hun rollen"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "Met ARIA `role`len krijgen ondersteunende technologieën inzicht in de rol van elk element op de webpagina. Als de `role`-waarden verkeerd zijn gespeld, geen bestaande ARIA-`role`-waarden of abstracte rollen zijn, wordt het doel van het element niet gecommuniceerd aan gebruikers van de ondersteunende technologieën. [Meer informatie over ARIA-rollen](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "De waarden die aan `role=\"\"` zijn toegewezen, zijn geen geldige ARIA-rollen."
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "De waarden die aan `role=\"\"` zijn toegewezen, zijn geldige ARIA-rollen."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Als een element geen toegankelijke naam heeft, kondigen schermlezers dit aan met een generieke naam, waardoor het veld onbruikbaar wordt voor gebruikers die afhankelijk zijn van schermlezers. [Meer informatie over hoe je opdrachtelementen toegankelijker maakt](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)"
@@ -336,13 +336,13 @@
     "message": "Afbeeldingselementen bevatten `[alt]`-kenmerken"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "Voor informatieve elementen moet een korte, beschrijvende alternatieve tekst worden gebruikt. Alternatieve tekst die exact hetzelfde is als de tekst naast de link of afbeelding, kan verwarrend zijn voor gebruikers van een schermlezer, omdat de tekst 2 keer wordt gelezen. [Meer informatie over het kenmerk `alt`](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)"
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "Afbeeldingselementen hebben `[alt]`-kenmerken die overbodige tekst bevatten."
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "Afbeeldingselementen hebben geen `[alt]`-kenmerken die overbodige tekst bevatten."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Als je onderscheidende en toegankelijke tekst aan invoerknoppen toevoegt, kunnen gebruikers van een schermlezer beter begrijpen wat het doel van de invoerknop is. [Meer informatie over invoerknoppen](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
@@ -363,13 +363,13 @@
     "message": "`<input type=\"image\">`-elementen bevatten `[alt]`-tekst"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "Zichtbare tekstlabels die niet overeenkomen met de toegankelijke naam, kunnen verwarrend zijn voor gebruikers van een schermlezer. [Meer informatie over toegankelijke namen](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "Elementen met zichtbare tekstlabels hebben geen overeenkomende toegankelijke namen."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "Elementen met zichtbare tekstlabels hebben overeenkomende toegankelijke namen."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "Labels zorgen ervoor dat formulieropties juist worden aangekondigd door hulptechnologieën, zoals schermlezers. [Meer informatie over formulierelementlabels](https://dequeuniversity.com/rules/axe/4.7/label)"
@@ -462,13 +462,13 @@
     "message": "Select-elementen hebben gekoppelde label-elementen."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "Als je een link voor overslaan toevoegt, kunnen gebruikers direct naar de hoofdcontent gaan en zo tijd besparen. [Meer informatie over links voor overslaan](https://dequeuniversity.com/rules/axe/4.7/skip-link)"
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "Links voor overslaan zijn niet focusbaar."
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "Links voor overslaan zijn focusbaar."
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Een waarde groter dan 0 impliceert een expliciete navigatievolgorde. Hoewel dit technisch geldig is, is dit vaak vervelend voor gebruikers die afhankelijk zijn van hulptechnologieën. [Meer informatie over het kenmerk `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
@@ -480,13 +480,13 @@
     "message": "Geen element dat een `[tabindex]`-waarde heeft die groter is dan 0"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "Het summary-kenmerk moet de tabelstructuur beschrijven, terwijl `<caption>` de titel op het scherm moet hebben. Een nauwkeurige tabelopmaak helpt gebruikers van schermlezers. [Meer informatie over summary en caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)"
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "Tabellen bevatten dezelfde content in het summary-kenmerk en `<caption>.`"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "Tabellen hebben verschillende content in het summary-kenmerk en `<caption>`."
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Schermlezers hebben functies die navigeren in tabellen makkelijker maken. Als je zorgt dat tabellen het daadwerkelijke bijschriftelement gebruiken in plaats van cellen met het kenmerk `[colspan]`, kun je de functionaliteit verbeteren voor gebruikers van een schermlezer. [Meer informatie over bijschriften](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
@@ -498,7 +498,7 @@
     "message": "Tabellen gebruiken `<caption>` in plaats van cellen met het kenmerk `[colspan]` om een bijschrift aan te geven."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "Tikdoelen met voldoende grootte en lege ruimte helpen gebruikers die problemen hebben bij het gebruik van kleine bedieningselementen om de doelen te activeren. [Meer informatie over tikdoelen](https://dequeuniversity.com/rules/axe/4.7/target-size)"
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "Tikdoelen zijn niet groot genoeg of hebben niet voldoende lege ruimte."
@@ -1083,10 +1083,7 @@
     "message": "prefer_related_applications wordt alleen ondersteund op bèta- en stabiele kanalen van Chrome op Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Het URL-schema van het manifest ({scheme}) wordt niet ondersteund op Android."
+    "message": "Lighthouse kan niet bepalen of de pagina installeerbaar is. Probeer het met een nieuwere versie van Chrome."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "De start-URL voor het manifest is ongeldig"
@@ -1707,7 +1704,7 @@
     "message": "Praktische tips"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "Deze controles wijzen op mogelijkheden om [de toegankelijkheid van je web-app te verbeteren](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatische detectie kan alleen een subset van problemen vaststellen en biedt geen garantie voor de toegankelijkheid van je web-app. Daarom wordt ook [handmatig testen](https://web.dev/how-to-review/) aanbevolen."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Deze items gaan over gebieden die niet kunnen worden getest met een automatische testtool. Bekijk meer informatie in onze gids over [het uitvoeren van een toegankelijkheidscontrole](https://web.dev/how-to-review/)."
@@ -2853,7 +2850,7 @@
     "message": "Installeer [een Drupal-module](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) voor lazy loading van afbeeldingen. Met dergelijke modules kunnen afbeeldingen die niet in beeld zijn, worden uitgesteld om de prestaties te verbeteren."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "Overweeg een module te gebruiken om kritieke css en JavaScript inline te plaatsen en gebruik het defer-kenmerk voor niet-kritieke css of JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Thema's, modules en serverspecificaties zijn allemaal van invloed op de reactietijd van de server. Overweeg een thema te gebruiken dat beter is geoptimaliseerd, kies met zorg een optimalisatiemodule en/of upgrade je server. Je hostingservers moeten gebruikmaken van PHP-opcode-caching, geheugencaching (zoals Redis of Memcached) om de databasequerytijden te beperken en geoptimaliseerde app-logica om pagina's sneller voor te bereiden."
@@ -2862,10 +2859,10 @@
     "message": "Overweeg [responsieve afbeeldingsstijlen](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) te gebruiken om de grootte van geladen afbeeldingen op je pagina te verkleinen. Als je Views gebruikt om meerdere contentitems op een pagina te tonen, kun je overwegen paginering te gebruiken om het aantal zichtbare contentitems op een pagina te beperken."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Zorg dat je 'Aggregate CSS files' (Css-bestanden aggregeren) hebt ingeschakeld op de pagina Administration » Configuration » Development (Beheer > Configuratie > Ontwikkeling).  Zorg dat je Drupal-site minstens Drupal 10.1 gebruikt voor betere ondersteuning voor itemaggregatie."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Zorg dat je 'Aggregate JavaScript files' (JavaScript-bestanden aggregeren) hebt aangezet op de pagina Administration » Configuration » Development (Beheer > Configuratie > Ontwikkeling).  Zorg dat je Drupal-site minstens Drupal 10.1 gebruikt voor betere ondersteuning voor itemaggregatie."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Overweeg ongebruikte css-regels te verwijderen en alleen de benodigde Drupal-bibliotheken bij te voegen bij de relevante pagina of component op een pagina. Klik op de [link naar de Drupal-documentatie](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) voor meer informatie. Voer [codedekking](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) uit in Chrome DevTools als je bijgevoegde bibliotheken wilt identificeren die extra css toevoegen. Je kunt identificeren welk thema/welke module verantwoordelijk is voor de URL van de stylesheet als css-verzameling is uitgezet op je Drupal-site. Ga in de lijst op zoek naar thema's/modules met veel stylesheets en veel rood in de codedekking. Een thema/module zou een stylesheet alleen in de wachtrij moeten plaatsen als de stylesheet daadwerkelijk wordt gebruikt op de pagina."
@@ -3066,46 +3063,46 @@
     "message": "Zet de compressie op je Next.js-server aan. [Meer informatie](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "Neem contact op met je accountmanager om [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337) aan te zetten. Als je dit instelt, wordt prioriteit gegeven aan de weergave van je pagina en worden de weergaveprestaties geoptimaliseerd."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "Gebruik de optie [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) in NitroPack om een gewenste waarde in te stellen voor de css-regel voor lettertypeweergave."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "Gebruik [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) om je afbeeldingen automatisch te converteren naar WebP."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "Stel het laden van afbeeldingen buiten het scherm uit door [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images) aan te zetten."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "Zet [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack aan voor snellere initiële laadtijden."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "Verbeter de reactietijd van de server en optimaliseer de waargenomen prestaties door [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361) te activeren."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "Zet [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) aan in je cache-instellingen om de grootte van je css-, HTML- en JavaScript-bestanden te verkleinen voor snellere laadtijden."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "Zet [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) aan in je opslaginstellingen om de grootte van je JS-, HTML- en css-bestanden te verkleinen voor snellere laadtijden."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "Zet [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) aan om css-regels te verwijderen die niet van toepassing zijn op deze pagina."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "Stel [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack in om het laden van scripts te vertragen totdat ze nodig zijn."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "Ga naar de functie [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) in het menu `Caching` en pas de vervaltijd van de paginacache aan om de laadtijden en gebruikerservaring te verbeteren."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "Je kunt je afbeeldingen automatisch comprimeren, optimaliseren en converteren naar WebP door de instelling [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) aan te zetten."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "Zet [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) aan om je afbeeldingen preventief te optimaliseren en ze te laten overeenkomen met de afmetingen van de containers waarin ze worden getoond op alle apparaten."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "Gebruik [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack om de grootte te verkleinen van de bestanden die naar de browser worden gestuurd."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Gebruik de component `nuxt/image` en stel `format=\"webp\"` in. [Meer informatie](https://image.nuxtjs.org/components/nuxt-img#format)"
@@ -3309,7 +3306,7 @@
     "message": "Opslaan als json"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "Trace zonder throttling bekijken"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Openen in viewer"

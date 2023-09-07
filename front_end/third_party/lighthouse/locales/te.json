@@ -18,13 +18,13 @@
     "message": "'`[aria-*]`' లక్షణాలు వాటి పాత్రలతో సరిపోలాలి"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "ARIA `role`లు వెబ్ పేజీలోని ప్రతి ఎలిమెంట్ రోల్‌ను తెలుసుకోవడానికి సహాయక టెక్నాలజీలను ఎనేబుల్ చేస్తాయి. `role` విలువల స్పెల్లింగ్ తప్పుగా ఉంటే, ఇప్పటికే ఉన్న ARIA `role` విలువలు లేదా ఆబ్‌స్ట్రాక్ట్ రోల్స్ విలువల స్పెల్లింగ్ తప్పుగా లేకపోయినా కూడా, సహాయక టెక్నాలజీలను ఉపయోగించే యూజర్‌లకు ఎలిమెంట్ ఉద్దేశ్యాన్ని గురించిన సమాచారం అందదు. [ARIA రోల్స్ గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "`role=\"\"`కు కేటాయించిన విలువలు చెల్లుబాటు అయ్యే ARIA రోల్స్ కావు."
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "`role=\"\"`కు కేటాయించిన విలువలు చెల్లుబాటు అయ్యే ARIA రోల్స్ అవుతాయి."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "ఏదైనా ఎలిమెంట్‌కు యాక్సెస్ చేయదగిన పేరు లేనప్పుడు, స్క్రీన్ రీడర్‌లు దాన్ని సాధారణ పేరుతో బయటకు చదువుతాయి, స్క్రీన్ రీడర్‌లపై ఆధారపడే యూజర్‌లకు దీని వల్ల ఉపయోగం ఉండకుండా పోతుంది. [కమాండ్ ఎలిమెంట్‌లను మరింత యాక్సెస్ చేయదగినవిగా ఎలా చేయాలో తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
@@ -336,13 +336,13 @@
     "message": "చిత్ర మూలకాలు '`[alt]`' లక్షణాలను కలిగి ఉన్నాయి"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "సమాచారాన్ని అందించే ఎలిమెంట్‌లు చిన్నదిగా, వివరంగా ఉండే ప్రత్యామ్నాయ టెక్స్ట్‌ను లక్ష్యంగా చేసుకోవాలి. లింక్‌కు లేదా ఇమేజ్‌కు పక్కనే ఉన్న టెక్స్ట్‌లాగే ఉండే ప్రత్యామ్నాయ టెక్స్ట్ వలన స్క్రీన్ రీడర్ యూజర్‌లకు గందరగోళంగా ఉంటుంది, ఎందుకంటే టెక్స్ట్ రెండుసార్లు చదవబడుతుంది. [`alt` లక్షణం గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "ఇమేజ్ ఎలిమెంట్‌లలో అనవసరమైన టెక్స్ట్ అయిన `[alt]` లక్షణాలు ఉన్నాయి."
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "ఇమేజ్ ఎలిమెంట్‌లలో అనవసరమైన టెక్స్ట్ అయిన `[alt]` లక్షణాలు లేవు."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "స్పష్టమైన, యాక్సెస్ చేయదగిన టెక్స్ట్‌ను ఇన్‌పుట్ బటన్‌లకు జోడించడం ద్వారా స్క్రీన్ రీడర్ యూజర్‌లు ఇన్‌పుట్ బటన్ ప్రయోజనాన్ని తెలుసుకోవడంలో సహాయపడవచ్చు. [ఇన్‌పుట్ బటన్‌ల గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -363,13 +363,13 @@
     "message": "`<input type=\"image\">` ఎలిమెంట్‌లు `[alt]` టెక్స్ట్‌ను కలిగి ఉన్నాయి"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "యాక్సెస్ చేయగల పేరుతో మ్యాచ్ అవ్వని టెక్స్ట్ లేబుల్స్, స్క్రీన్ రీడర్ యూజర్‌లను గందరగోళ ఎక్స్‌పీరియన్స్‌కు గురిచేస్తాయి. [యాక్సెస్ చేయగల పేర్ల గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "కనిపించే టెక్స్ట్ లేబుల్స్‌తో ఉన్న ఎలిమెంట్‌లకు మ్యాచ్ అయ్యే యాక్సెస్ చేయగల పేర్లు లేవు."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "కనిపించే టెక్స్ట్ లేబుల్స్‌తో ఉన్న ఎలిమెంట్‌లకు మ్యాచ్ అయ్యే యాక్సెస్ చేయగల పేర్లు ఉన్నాయి."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "స్క్రీన్ రీడర్‌ల లాంటి సహాయక టెక్నాలజీలు, ఫారమ్ కంట్రోల్స్‌ను సక్రమంగా చదివి వినిపించేలా లేబుల్స్ చూసుకుంటాయి. [ఫారమ్ ఎలిమెంట్ లేబుల్స్ గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/label)."
@@ -462,13 +462,13 @@
     "message": "ఎంపిక చేసిన ఎలిమెంట్‌లు అనుబంధిత లేబుల్ ఎలిమెంట్‌లను కలిగి ఉంటాయి."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "స్కిప్ లింక్‌ను చేర్చడం వల్ల, యూజర్‌లు ప్రధాన కంటెంట్‌కు స్కిప్ చేసి సమయాన్ని ఆదా చేసుకోవడంలో సహాయం లభిస్తుంది. [స్కిప్ లింక్‌ల గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "స్కిప్ లింక్‌లపై ఫోకస్ చేయడం సాధ్యం కాదు."
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "స్కిప్ లింక్‌లపై ఫోకస్ చేయడం సాధ్యమే."
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "0 కంటే పెద్ద విలువ, స్పష్టమైన నావిగేషన్ క్రమాన్ని సూచిస్తుంది. టెక్నికల్‌గా చెల్లుబాటే అయినప్పటికీ, సహాయక టెక్నాలజీలపై ఆధారపడే యూజర్‌లకు ఇది తరచుగా విసుగు తెప్పిస్తూ ఉంటుంది. [`tabindex` లక్షణం గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
@@ -480,13 +480,13 @@
     "message": "ఏ మూలకానికీ సున్నా కంటే పెద్ద ``[tabindex]`` విలువ లేదు"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "సారాంశ లక్షణం టేబుల్ స్ట్రక్చర్‌ను వివరించాలి, `<caption>`కు స్క్రీన్‌పై టైటిల్ ఉండాలి. ఖచ్చితమైన టేబుల్ మార్క్-అప్ స్క్రీన్ రీడర్‌ల యూజర్‌లకు సహాయపడుతుంది. [సారాంశం, క్యాప్షన్‌ల గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "సారాంశ లక్షణంలోను, `<caption>.`లోను, టేబుల్స్‌లో ఒకే విధమైన కంటెంట్ ఉంది"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "సారాంశ లక్షణంలోను, `<caption>`లోను, టేబుల్స్‌లో భిన్నమైన కంటెంట్ ఉంది."
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "టేబుల్స్‌ను నావిగేట్ చేయడం సులభతరం చేసే ఫీచర్‌లను స్క్రీన్ రీడర్‌లు కలిగి ఉన్నాయి. `[colspan]` లక్షణంతో ఉన్న సెల్స్‌కు బదులుగా టేబుల్స్ అసలు క్యాప్షన్ ఎలిమెంట్‌ను ఉపయోగించేలా చూసుకుంటే, అది స్క్రీన్ రీడర్ యూజర్‌ల అనుభవాన్ని మెరుగుపరచవచ్చు. [క్యాప్షన్‌ల గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
@@ -498,7 +498,7 @@
     "message": "క్యాప్షన్‌ను సూచించడానికి `[colspan]` లక్షణంతో ఉన్న సెల్స్‌కు బదలుగా టేబుల్స్ `<caption>`‌ను ఉపయోగిస్తాయి."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "తగినంత సైజు, స్పేసింగ్ ఉన్న టచ్ టార్గెట్‌లు, చిన్న కంట్రోల్స్‌ను లక్ష్యంగా చేసుకోవడంలో ఇబ్బందిని ఎదుర్కొనే అవకాశం ఉన్న యూజర్‌లకు లక్ష్యాలను యాక్టివేట్ చేయడంలో సహాయపడతాయి. [టచ్ టార్గెట్‌ల గురించి మరింత తెలుసుకోండి](https://dequeuniversity.com/rules/axe/4.7/target-size)."
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "టచ్ టార్గెట్‌లకు తగినంత సైజు, లేదా స్పేసింగ్ లేవు."
@@ -1083,10 +1083,7 @@
     "message": "కేవలం Chrome బీటా మరియు Androidలోని స్థిర ఛానెళ్లలో మాత్రమే prefer_related_applicationsకి సపోర్ట్ ఉంది."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "మ్యానిఫెస్ట్ URL స్కీమ్ ({scheme})కు Androidలో సపోర్ట్ లేదు."
+    "message": "పేజీని ఇన్‌స్టాల్ చేయడం సాధ్యమా, కాదా అన్న విషయాన్ని Lighthouse గుర్తించలేకపోయింది. దయచేసి మరింత కొత్త Chrome వెర్షన్‌తో ట్రై చేయండి."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "మ్యానిఫెస్ట్ ప్రారంభ URL చెల్లదు"
@@ -1707,7 +1704,7 @@
     "message": "ఉత్తమ అభ్యాసాలు"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "ఈ చెక్‌ల ద్వారా [మీ వెబ్ యాప్ యాక్సెసిబిలిటీని మెరుగుపరిచే](https://developer.chrome.com/docs/lighthouse/accessibility/) అవకాశం లభిస్తుంది. ఆటోమేటిక్ గుర్తింపు అనేది కొన్ని సమస్యలను మాత్రమే గుర్తించగలదు, మీ వెబ్ యాప్ యాక్సెసిబిలిటీకి అది హామీ ఇవ్వదు, కాబట్టి [మాన్యువల్ టెస్టింగ్](https://web.dev/how-to-review/) కూడా చేయమని మా సలహా."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "ఆటోమేటెడ్ పరీక్ష సాధనం కవర్ చేయని ప్రాంతాలను ఈ అంశాలు పేర్కొంటాయి. [యాక్సెసిబిలిటీ రివ్యూను నిర్వహించడం](https://web.dev/how-to-review/) గురించి మా గైడ్‌లో మరింత తెలుసుకోండి."
@@ -2853,7 +2850,7 @@
     "message": "లేజీ ఇమేజ్‌లను లోడ్ చేయగల [ఒక Drupal మాడ్యూల్](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search)ను ఇన్‌స్టాల్ చేయండి. అలాంటి మాడ్యూల్‌లు, పనితీరును మెరుగుపరచడానికి ఎలాంటి ఆఫ్‌స్క్రీన్ ఇమేజ్‌లను అయినా మినహాయించగల సామర్థ్యాన్ని అందిస్తాయి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "కీలకమైన CSS, JavaScriptను ఇన్‌లైన్‌లో ఉంచడానికి, మాడ్యూల్‌ను ఉపయోగించడాన్ని పరిగణించండి; కీలకం కాని CSS లేదా JavaScript కోసం వాయిదా వేసే లక్షణాన్ని ఉపయోగించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "థీమ్‌లు, మాడ్యూల్‌లు, సర్వర్ నిర్దేశాలన్నీ కూడా సర్వర్ ప్రతిస్పందన సమయాన్ని ప్రభావితం చేస్తాయి. చాలా జాగ్రత్తగా ఆప్టిమైజేషన్ మాడ్యూల్‌ను ఎంచుకోవడం, మరియు/లేదా మీ సర్వర్‌ను అప్‌గ్రేడ్ చేయడం ద్వారా, మరింత ఆప్టిమైజ్ చేయబడిన థీమ్‌ను కనుగొనడానికి ప్రయత్నించండి. మీ హోస్టింగ్ సర్వర్‌లు Redis లేదా Memcached లాంటి డేటాబేస్ క్వెరీ సమయాలను తగ్గించడానికి PHP opcode కాషింగ్, మెమరీ-కాషింగ్‌లను ఉపయోగించాలి, అలాగే పేజీలను వేగవంతంగా సిద్ధం చేయడానికి ఆప్టిమైజ్ చేయబడిన అప్లికేషన్ లాజిక్‌ను ఉపయోగించాలి."
@@ -2862,10 +2859,10 @@
     "message": "మీ పేజీలో లోడ్ చేయబడిన ఇమేజ్‌ల సైజ్‌ను తగ్గించడానికి [ప్రతిస్పందనాత్మక ఇమేజ్ స్టయిల్‌ల](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)ను ఉపయోగించవచ్చు, దాన్ని పరిశీలించండి. మీరు పేజీలో అనేక కంటెంట్ ఐటెమ్‌లను చూపించడానికి వీక్షణలను ఉపయోగిస్తున్నట్లయితే, ఇవ్వబడిన పేజీలో చూపబడే కంటెంట్ ఐటెమ్‌ల సంఖ్యను పరిమితం చేయడానికి పేజీల రూపకల్పనను అమలు చేయవచ్చు, దాన్ని పరిశీలించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "మీరు \"అగ్రిగేట్ CSS ఫైల్స్\"ను \"అడ్మినిస్ట్రేషన్ » కాన్ఫిగరేషన్ » డెవలప్‌మెంట్\" పేజీలో ఎనేబుల్ చేశారని నిర్ధారించుకోండి.  మెరుగైన అస్సెట్ అగ్రిగేషన్ సపోర్ట్ కోసం మీ Drupal సైట్ కనీసం Drupal 10.1ను రన్ చేస్తోందని నిర్ధారించుకోండి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "మీరు \"అగ్రిగేట్ JavaScript ఫైల్స్\"ను \"అడ్మినిస్ట్రేషన్ » కాన్ఫిగరేషన్ » డెవలప్‌మెంట్\" పేజీలో ఎనేబుల్ చేశారని నిర్ధారించుకోండి.  మెరుగైన అస్సెట్ అగ్రిగేషన్ సపోర్ట్ కోసం మీ Drupal సైట్ కనీసం Drupal 10.1ను రన్ చేస్తోందని నిర్ధారించుకోండి."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "ఉపయోగించని CSS నియమాలను తీసివేయవచ్చు, దాన్ని పరిశీలించండి, సంబంధిత పేజీకి లేదా పేజీలోని భాగానికి అవసరమైన Drupal లైబ్రరీలను మాత్రమే అటాచ్ చేయండి. వివరాల కోసం [Drupal డాక్యుమెంటేషన్ లింక్‌](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library)ను చూడండి. అసంబద్ధమైన CSSను జోడిస్తున్న 'అటాచ్ చేయబడిన' లైబ్రరీలను గుర్తించడానికి, Chrome DevToolsలో [కోడ్ కవరేజీ](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)ని రన్ చేయడానికి ట్రై చేయండి. మీ Drupal సైట్‌లో CSS సముదాయం డిజేబుల్ చేయబడినప్పుడు అందుకు కారణమైన థీమ్/మాడ్యూల్‌ను, స్టయిల్‌షీట్‌కు చెందిన URL నుండి మీరు గుర్తించవచ్చు. కోడ్ కవరేజీలో ఎక్కువ ఎరుపు రంగు కలిగి ఉన్న లిస్ట్‌లో అనేక స్టయిల్‌షీట్‌లను కలిగి ఉన్న థీమ్/మాడ్యూల్‌ల కోసం చూడండి. నిజంగా థీమ్/మాడ్యూల్‌ను ఆ పేజీలో ఉపయోగించినప్పుడు మాత్రమే స్టయిల్‌షీట్‌కు జత చేయాలి."
@@ -3066,46 +3063,46 @@
     "message": "మీ Next.js సర్వర్‌లో కుదింపును ఎనేబుల్ చేయండి. [మరింత తెలుసుకోండి](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "[`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337)ను ఎనేబుల్ చేయడానికి మీ ఖాతా మేనేజర్‌ను సంప్రదించండి. దీన్ని కాన్ఫిగర్ చేయడం మీ పేజీ రెండరింగ్ పనితీరుకు ప్రాధాన్యతనిస్తుంది, దానిని ఆప్టిమైజ్ చేస్తుంది."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "CSS ఫాంట్-డిస్‌ప్లే నియమం కోసం కావలసిన విలువను సెట్ చేయడానికి NitroPackలో [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) ఆప్షన్‌ను ఉపయోగించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "మీ ఇమేజ్‌లను ఆటోమేటిక్‌గా WebPకి మార్చడానికి [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513)ను ఉపయోగించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "[`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)ను ఎనేబుల్ చేయడం ద్వారా ఆఫ్‌స్క్రీన్ ఇమేజ్‌లను వాయిదా వేయండి."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "వేగవంతమైన ప్రారంభ లోడ్ సమయాల కోసం NitroPackలో [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack)ను ఎనేబుల్ చేయండి."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "[`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)ను యాక్టివేట్ చేయడం ద్వారా సర్వర్ ప్రతిస్పందన సమయాన్ని మెరుగుపరచండి, ఆశించిన పనితీరును ఆప్టిమైజ్ చేయండి."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "మీ కాష్ మెమరీ సెట్టింగ్‌లలో [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources)ను ఎనేబుల్ చేయండి, తద్వారా మీ CSS, HTML, JavaScript ఫైల్స్ సైజును తగ్గించడానికి, వాటిని మరింత వేగంగా లోడ్ చేయడానికి వీలవుతుంది."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "మీ కాష్ మెమరీ సెట్టింగ్‌లలో [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources)ను ఎనేబుల్ చేయండి, తద్వారా మీ JS, HTML, CSS ఫైల్స్ సైజును తగ్గించడానికి, వాటిని మరింత వేగంగా లోడ్ చేయడానికి వీలవుతుంది."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "ఈ పేజీకి వర్తించని CSS నియమాలను తీసివేయడానికి [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS)ను ఎనేబుల్ చేయండి."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "స్క్రిప్ట్‌లు అవసమయ్యేంత వరకు వాటి లోడింగ్‌ను ఆలస్యం చేయడానికి NitroPackలో [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts)ను కాన్ఫిగర్ చేయండి."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "[`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) ఫీచర్‌కు వెళ్లండి, ఇది `Caching` మెనూలో ఉంటుంది. అందులో, లోడ్ అవ్వడానికి పట్టే సమయాన్ని, యూజర్ ఎక్స్‌పీరియన్స్‌ను మెరుగుపరచడానికి మీ పేజీ కాష్ గడువు ముగింపు సమయాన్ని సర్దుబాటు చేయండి."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "[`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) సెట్టింగ్‌ను ఎనేబుల్ చేయడం ద్వారా మీ ఇమేజ్‌లను ఆటోమేటిక్‌గా కుదించండి, ఆప్టిమైజ్ చేయండి, WebPలోకి మార్చండి."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "మీ ఇమేజ్‌లను ముందస్తుగా ఆప్టిమైజ్ చేయడానికి, వాటిని అన్ని పరికరాల్లో డిస్‌ప్లే చేసే కంటెయినర్‌ల డైమెన్షన్‌లకు సరిపోయేలా చేయడానికి [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site)ను ఎనేబుల్ చేయండి."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "బ్రౌజర్‌కి పంపే ఫైల్స్ సైజును తగ్గించడానికి NitroPackలో [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression)ను ఉపయోగించండి."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "`nuxt/image` కాంపోనెంట్‌ను ఉపయోగించి, `format=\"webp\"`ను సెట్ చేయండి. [మరింత తెలుసుకోండి](https://image.nuxtjs.org/components/nuxt-img#format)."
@@ -3309,7 +3306,7 @@
     "message": "JSON లాగా సేవ్ చేయండి"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "కుదించని ట్రేస్‌ను చూడండి"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "వ్యూయర్‌లో తెరువు"

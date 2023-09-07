@@ -18,13 +18,13 @@
     "message": "Attributen av typen `[aria-*]` stämmer med elementets roll"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "Med hjälp av ARIA-`role` kan hjälpmedelstekniken veta rollen för varje element på webbsidan. Om `role`-värdena är felstavade, inte befintliga ARIA-`role`-värden eller abstrakta roller kommer syftet med elementet inte att kommuniceras med användarna av hjälpmedelsteknik. [Läs mer om ARIA-roller](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "Värden som tilldelats till `role=\"\"` är inte giltiga ARIA-roller."
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "Värden som tilldelats till `role=\"\"` är giltiga ARIA-roller."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Utan en maskinläsbar etikett läses element upp med en generell etikett av skärmläsarna. Det gör dem oanvändbara för personer som behöver använda en skärmläsare. [Läs mer om hur du gör kommandoelement mer tillgängliga](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
@@ -336,13 +336,13 @@
     "message": "Alla bildelement har `[alt]`-attribut"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "Element med informativ funktion bör ha en kort, beskrivande alternativ text. Alternativ text som är exakt samma som texten intill länken eller bilden kan förvirra användare av skärmläsare eftersom texten läses upp två gånger. [Läs mer om `alt`-attributet](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "Bildelement har `[alt]`-attribut som är överflödig text."
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "Bildelement har inte `[alt]`-attribut som är överflödig text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Att lägga till urskiljbar och tillgänglig text på inmatningsknappar kan hjälpa användare med skärmläsare att förstå syftet med inmatningsknappen. [Läs mer om inmatningsknappar](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -363,13 +363,13 @@
     "message": "Alla `<input type=\"image\">`-element har `[alt]`-text"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "Synliga textetiketter som inte matchar den maskinläsbara etiketten kan förvirra de som använder skärmläsare. [Läs mer om maskinläsbara etiketter](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "Element med synliga textetiketter har inte matchande maskinläsbara etiketter."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "Element med synliga textetiketter har matchande maskinläsbara etiketter."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "Etiketterna gör att de olika delarna av ett formulär kan presenteras korrekt för användare med skärmläsare eller annan hjälpmedelsteknik. [Läs mer om etiketter för olika formulärdelar](https://dequeuniversity.com/rules/axe/4.7/label)."
@@ -462,13 +462,13 @@
     "message": "Vissa element har kopplade etikettelement."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "Om du lägger till en länk för att hoppa över kan användarna hoppa över huvudinnehållet och spara tid. [Läs mer om länkar för att hoppa över](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "Länkar för att hoppa över är inte fokuserbara."
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "Länkar för att hoppa över är fokuserbara."
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Med värden större än noll anges en explicit ordningsföljd för navigeringen. Även om detta inte är fel rent tekniskt leder det ofta till en frustrerande upplevelse för den som är beroende av tekniska hjälpmedel. [Läs mer om attributet `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
@@ -480,13 +480,13 @@
     "message": "Det finns inga element med ett `[tabindex]`-värde som är större än 0"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "Attributet summary bör beskriva tabellstrukturen medan `<caption>` ska ha titeln på skärmen. Korrekta tabelluppmärkningar gör det enklare för användare av skärmläsare. [Läs mer om sammanfattning och textning](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "Tabeller har samma innehåll i attributet summary och `<caption>.`"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "Tabeller har olika innehåll i attributet summary och `<caption>`"
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Skärmläsare har funktioner som gör det enklare att navigera i tabeller. Om du ser till att tabeller använder själva textningselementet i stället för celler med `[colspan]`-attributet kan det förbättra upplevelsen för användare med skärmläsare. [Läs mer om textning](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
@@ -498,7 +498,7 @@
     "message": "Tabeller använder `<caption>` i stället för celler med `[colspan]`-attributet för att ange textning."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "Tryckområden som är tillräckligt stora och har tillräckliga avstånd hjälper användare som har svårt att använda små kontroller för att aktivera målen. [Läs mer om tryckområden](https://dequeuniversity.com/rules/axe/4.7/target-size)."
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "Tryckområdena är för små och har inte tillräckliga avstånd."
@@ -1083,10 +1083,7 @@
     "message": "prefer_related_applications stöds bara i Chrome Beta och Chrome Stable på Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Manifestets webbadresschema ({scheme}) stöds inte på Android."
+    "message": "Lighthouse kunde inte avgöra om sidan kan installeras. Testa med en senare version av Chrome."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Startwebbadressen i manifestet är ogiltig"
@@ -1707,7 +1704,7 @@
     "message": "Bästa metoder"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "Dessa kontroller visar möjligheter att [förbättra tillgängligheten för webbappen](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatisk identifiering kan bara identifiera en del av problemen och garanterar inte att webbappen är tillgänglig, så [manuell testning](https://web.dev/how-to-review/) rekommenderas också."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Dessa punkter beskriver områden som inte kan testas automatiskt. Läs mer i vår guide om att [granska tillgängligheten](https://web.dev/how-to-review/)."
@@ -2853,7 +2850,7 @@
     "message": "Installera [en Drupal-modul](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) som kan utnyttja uppskjuten inläsning av bilder. Med sådana moduler går det att skjuta upp inläsningen av bilder som inte visas på skärmen i syfte att förbättra prestandan."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "Du kan använda en modul för att lägga till kritiska CSS- och JavaScript-tillgångar och använda attributet defer för icke-kritiska CSS- eller JavaScript-tillgångar."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Serverns svarstider påverkas av teman, moduler och serverns prestanda. Du kan använda ett mer optimerat tema, välja en optimeringsmodul och/eller uppgradera servern. Värdservrarna ska använda cachelagring av OP-kod för PHP och minnescachelagring för att minska sökfrågetiderna för databasen, t.ex. Redis eller Memcached, samt en optimerad applogik för att förbereda sidor snabbare."
@@ -2862,10 +2859,10 @@
     "message": "Du kan använda [responsiva bildformat](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) för att minska storleken på bilderna som läses in på sidan. Om du använder Views för att visa flera innehållsobjekt på en sida kan du implementera sidnumrering om du vill begränsa antalet innehållsobjekt som visas på en viss sida."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Kontrollera att du har aktiverat Aggregate CSS files under Administration » Configuration » Development.  Se till att Drupal-webbplatsen kör minst Drupal 10.1 för förbättrat stöd för tillgångssammanställning."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Kontrollera att du har aktiverat Aggregate JavaScript files under Administration » Configuration » Development.  Se till att Drupal-webbplatsen kör minst Drupal 10.1 för förbättrat stöd för tillgångssammanställning."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Vi rekommenderar att du tar bort CSS-regler som inte används och endast bifogar nödvändiga Drupal-bibliotek till den relevanta sidan eller komponenten på en sida. Du hittar mer information i [dokumentationen om Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Testa fliken för [kodtäckning](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) i Chromes utvecklarverktyg om du vill se vilka bibliotek som lägger till överflödig CSS. Du ser på formatmallens webbadress vilket tema eller vilken modul som koden kommer från när CSS-sammanställning är inaktiverat för Drupal-webbplatsen. Titta efter teman eller moduler med många CSS-formatmallar på listan där en stor del av stapeln är röd. Ett tema eller en modul ska bara ställa en formatmall i kö för inläsning om det faktiskt används på sidan."
@@ -3066,46 +3063,46 @@
     "message": "Aktivera komprimering på Next.js-servern. [Läs mer](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "Kontakta den kontoansvariga om du vill aktivera [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Om du konfigurerar den prioriteras och optimeras renderingen av sidan."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "Använd alternativet [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) i NitroPack för att ställa in ett önskat värde för visningsregeln för CSS-teckensnitt."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "Konvertera dina bilder automatiskt till WebP med [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "Skjut upp inläsningen av bilder som inte visas på skärmen genom att aktivera [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "Aktivera [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) i NitroPack för snabbare initiala hämtningstider."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "Förbättra serverns svarstid och optimera den märkbara prestandan genom att aktivera [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "Aktivera [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) i cachelagringsinställningarna för att minska storleken på CSS-, HTML- och JavaScript-filer för snabbare hämtningstider."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "Aktivera [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) i cachelagringsinställningarna för att minska storleken på JS-, HTML- och CSS-filer för snabbare hämtningstider."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "Aktivera [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) om du vill ta bort CSS-regler som inte är tillämpliga på den här sidan."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "Konfigurera [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) i NitroPack för att fördröja inläsningen av skript tills de behövs."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "Navigera till funktionen [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) i menyn `Caching` och justera utgångstiden för cacheminnet för att förbättra hämtningstiderna och användarupplevelsen."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "Komprimera, optimera och konvertera dina bilder automatiskt till WebP genom att aktivera inställningen [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "Aktivera [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) för att optimera bilder i förebyggande syfte och få dem att matcha måtten på behållarna där de visas på alla enheter."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "Använd [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) i NitroPack för att minska storleken på filerna som skickas till webbläsaren."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Använd komponenten `nuxt/image` och ange `format=\"webp\"`. [Läs mer](https://image.nuxtjs.org/components/nuxt-img#format)."
@@ -3309,7 +3306,7 @@
     "message": "Spara som JSON"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "Visa spårning utan begränsning"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Öppna i visningsprogram"

@@ -18,13 +18,13 @@
     "message": "`[aria-*]`-määritteet vastaavat roolejaan"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "ARIA-roolit (`role`) auttavat avustavia teknologioita tuntemaan jokaisen verkkosivun elementin roolin. Jos roolin (`role`) arvot on kirjoitettu väärin, ARIA-roolin (`role`) arvoja ei ole olemassa tai roolit ovat abstrakteja, elementin tarkoitusta ei kerrota avustavan teknologian käyttäjille. [Lue lisää ARIA-rooleista](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "Elementille (`role=\"\"`) määritetyt arvot eivät ole kelvollisia ARIA-rooleja."
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "Elementille (`role=\"\"`) määritetyt arvot ovat kelvollisia ARIA-rooleja."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Jos elementin nimi ei ole esteetön, näytönlukuohjelmat sanovat sen kohdalla geneerisen nimen, jolloin näytönlukuohjelmien käyttäjät eivät voi käyttää sitä. [Katso, miten voit helpottaa komentoelementtien käyttöä](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
@@ -336,13 +336,13 @@
     "message": "Kuvaelementeillä on `[alt]`-määritteet"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "Informatiivisilla elementeillä pitäisi olla lyhyt ja kuvaileva vaihtoehtoinen teksti. Vaihtoehtoinen teksti, joka on täsmälleen sama kuin linkin tai kuvan vieressä oleva teksti, voi olla hämmentävä näytönlukuohjelmien käyttäjille, koska teksti luetaan kahdesti. [Lue lisää `alt`‐määritteestä](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "Kuvaelementeissä on `[alt]`-määritteitä, jotka ovat tarpeetonta tekstiä."
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "Kuvaelementeissä ei ole `[alt]`-määritteitä, jotka ovat tarpeetonta tekstiä."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Erottuvan ja näkyvän tekstin lisääminen syöttöpainikkeisiin voi auttaa näytönlukuohjelman käyttäjiä ymmärtämään syöttöpainikkeen tarkoituksen. [Lue lisää syöttöpainikkeista](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -363,13 +363,13 @@
     "message": "`<input type=\"image\">`-elementeissä on `[alt]`-teksti"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "Näkyvät tekstitunnisteet, jotka eivät vastaa saavutettavaa nimeä, voivat olla hämmentäviä näytönlukuohjelmien käyttäjille. [Lue lisää saavutettavista nimistä](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "Näkyvää tekstiä sisältävien elementtien tunnisteilla ei ole vastaavia saavutettavia nimiä."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "Näkyvää tekstiä sisältävien elementtien tunnisteilla on vastaavia saavutettavia nimiä."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "Tunnisteilla varmistetaan, että avustustekniikat (kuten näytönlukuohjelmat) ilmoittavat lomakkeiden ohjaimista oikein. [Lue lisää lomake-elementtien tunnisteista](https://dequeuniversity.com/rules/axe/4.7/label)."
@@ -462,13 +462,13 @@
     "message": "Tietyt elementit sisältävät tunniste-elementtejä."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "Ohituslinkin lisääminen voi auttaa käyttäjiä siirtymään pääsisältöön nopeammin. [Lue lisää ohituslinkeistä](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "Ohituslinkkejä ei voi kohdistaa."
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "Ohitettavat linkit ovat kohdistettavissa."
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Navigointijärjestys on eksplisiittinen, jos arvo on suurempi kuin 0. Vaikka ratkaisu on teknisesti käypä, se tekee usein kokemuksesta turhauttavaa avustustekniikkaa tarvitseville käyttäjille. [Lue lisää `tabindex`‐määritteestä](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
@@ -480,13 +480,13 @@
     "message": "Yhdenkään elementin `[tabindex]`-arvo ei ole suurempi kuin 0"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "Yhteenvetomääritteen tulee kuvata taulukon rakennetta, kun taas `<caption>`-osiossa pitäisi olla näytöllä näkyvä otsikko. Tarkka taulukon merkintä auttaa näytönlukuohjelmien käyttäjiä. [Lue lisää yhteenvedosta ja kuvatekstistä](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "Taulukoiden sisältö on sama yhteenvetomääritteessä ja täällä: `<caption>.`"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "Taulukoiden sisältö on eri yhteenvetomääritteessä ja täällä: `<caption>`"
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Näytönlukuohjelmissa on ominaisuuksia, jotka tekevät taulukoissa siirtymisestä helpompaa. Voit parantaa näytönlukuohjelman käyttökokemusta varmistamalla, että taulukot käyttävät varsinaista tekstityselementtiä `[colspan]`-määritteen sisältävien solujen sijaan. [Katso lisätietoa tekstityksistä](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
@@ -498,7 +498,7 @@
     "message": "Taulukoissa käytetään `<caption>`-määritettä sellaisten solujen sijaan, joissa on `[colspan]`-attribuutti tekstityksen merkkinä."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "Kun kosketusalueilla on riittävän suuret välit ja koko, käyttäjien, joilla on vaikeuksia kohdistaa pieniin säätimiin, on helpompi aktivoida kohteita. [Lue lisää kosketusalueista](https://dequeuniversity.com/rules/axe/4.7/target-size)."
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "Kosketusalueiden koko tai välit eivät ole riittäviä."
@@ -1083,10 +1083,7 @@
     "message": "prefer_related_applications on tuettu vain Chromen betaversioissa ja vakaissa versioissa Androidilla."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Manifestin URL-kaava ({scheme}) ei ole Androidin tukema."
+    "message": "Lighthouse ei pystynyt havaitsemaan, onko sivu asennettava. Yritä uudelleen Chromen uudemmalla versiolla."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Manifestin aloitus-URL ei kelpaa"
@@ -1707,7 +1704,7 @@
     "message": "Parhaat käytännöt"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "Nämä tarkistukset tuovat esiin kohtia, joissa voit [parantaa verkkosovelluksen saavutettavuutta](https://developer.chrome.com/docs/lighthouse/accessibility/). Automaattinen tunnistus voi havaita vain osan ongelmista, eikä se takaa verkkosovelluksen saavutettavuutta, joten suosittelemme myös [manuaalista testausta](https://web.dev/how-to-review/)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Nämä kohteet koskevat alueita, joita automaattinen testaustyökalu ei voi testata. Lue lisää [saavutettavuustarkistuksen tekemisen](https://web.dev/how-to-review/) oppaastamme."
@@ -2853,7 +2850,7 @@
     "message": "Asenna [Drupal-moduuli](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search), joka voi ladata kuvia tarveohjatusti. Tällaiset moduulit voivat parantaa toimintaa lykkäämällä näytön ulkopuolella olevien kuvien lataamista."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "Sinun kannattaa ehkä käyttää moduulia, joka voi tuoda kriittistä CSS:ää tai JavaScriptiä sivun sisälle. Käytä myös lykkäämismääritettä ei-kriittiselle CSS:lle tai JavaScriptille."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Teemat, moduulit ja palvelinasetukset vaikuttavat kaikki palvelimen vastausaikaan. Sinun kannattaa ehkä etsiä optimoidumpi teema, valita optimointimoduuli tai päivittää palvelimesi. Hosting-palvelimiesi olisi hyvä käyttää PHP-toimintokoodin ja muun sisällön tallentamista välimuistiin, mikä auttaa lyhentämään tietokantojen kyselyaikoja (esim. Redis tai Memcached). Lisäksi niiden tulee käyttää optimoitua sovelluslogiikkaa sivujen nopeampaan valmisteluun."
@@ -2862,10 +2859,10 @@
     "message": "Sinun kannattaa ehkä käyttää [Responsive Image Styles](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) (Responsiiviset kuvatyylit) ‑toimintoa sivullasi ladattavien kuvien pienentämiseen. Jos näytät sivulla useita kohteita Viewsin avulla, sinun kannattaa ehkä rajoittaa yhdellä sivulla näkyvien kohteiden määrää ottamalla sivunumerointi käyttöön."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Varmista, että Aggregate CSS files (Kokoa CSS-tiedostot) ‑toiminto on otettu käyttöön kohdassa Administration > Configuration > Development (Järjestelmänvalvonta > Määritys > Kehitys).  Varmista, että Drupal-sivuston käyttöjärjestelmä on vähintään Drupal 10.1, niin saat paremman elementtien koonnin tuen."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Varmista, että Aggregate JavaScript files (Kokoa JavaScript-tiedostot) ‑toiminto on otettu käyttöön kohdassa Administration > Configuration > Development (Järjestelmänvalvonta > Määritys > Kehitys).  Varmista, että Drupal-sivuston käyttöjärjestelmä on vähintään Drupal 10.1, niin saat paremman elementtien koonnin tuen."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Sinun kannattaa ehkä poistaa käyttämättömät CSS-säännöt ja liittää relevanttiin sivuun tai sivun osaan vain tarvittavat Drupal-kirjastot. Saat lisätietoja [Drupal-dokumentaatiosta](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Voit etsiä tarpeetonta CSS:ää lisääviä liitettyjä kirjastoja tutkimalla [koodin testikattavuutta](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) Chromen DevToolsissa. Löydät syynä olevan teeman tai moduulin tarkistamalla tyyliarkin URL-osoitteen, kun CSS-koonti on poistettuna käytöstä Drupal-sivustollasi. Etsi teemoja ja moduuleja, joilla on monia tyyliarkkeja luettelossa ja paljon punaista koodin testikattavuudessa. Teeman tai moduulin pitäisi lisätä tyyliarkki jonoon vain, jos sitä todella käytetään sivulla."
@@ -3066,46 +3063,46 @@
     "message": "Salli pakkaus Next.js-palvelimellasi. [Lue lisää](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "Ota yhteyttä tilin hallinnoijaan, jotta [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337) voidaan ottaa käyttöön. Määrittämällä sen voit priorisoida ja optimoida sivun renderöinnin."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "Valitse NitroPackin [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) ‑vaihtoehdolla haluamasi arvo CSS:n fonttinäyttösäännölle."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "Käytä [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) ‑ominaisuutta, jotta kuvat muunnetaan automaattisesti WebP-muotoon."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "Lykkää poissa näkyvistä olevia kuvia ottamalla käyttöön [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "Ota [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) käyttöön NitroPackissa ensimmäisen latautumisajan nopeuttamiseksi."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "Paranna palvelimen vastausaikaa ja optimoi suorituskyvyn vaikutelmaa aktivoimalla [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "Ota [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) käyttöön välimuistin asetuksista pienentääksesi CSS:n ja HTML:n kokoa ja nopeuttaaksesi JavaScriptin tiedostojen ensimmäistä latautumisaikaa."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "Ota [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) käyttöön välimuistin asetuksista pienentääksesi JS:n ja HTML:n kokoa ja nopeuttaaksesi CCS-tiedostojen ensimmäistä latautumisaikaa."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "Ota [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) käyttöön poistaaksesi CSS-säännöt, jotka eivät sovellu tälle sivulle."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "Määritä [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) ‑ominaisuus NitroPackissa skriptien latautumisen lykkäämiseksi, kunnes niitä tarvitaan."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "Valitse [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) ‑ominaisuus `Caching`-valikosta ja säädä sivun välimuistin vanhenemisaikaa parantaaksesi latausaikoja ja käyttökokemusta."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "Pakkaa, optimoi ja muunna kuvat automaattisesti WebP-muotoon ottamalla käyttöön [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) ‑ominaisuus."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "Ota [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) käyttöön, jotta voit optimoida kuvat ennakoivasti niin, että ne vastaavat mittoja niissä säiliöissä, joissa ne näkyvät kaikilla laitteilla."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "Voit pienentää selaimeen lähetettyjen tiedostojen kokoa [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ‑ominaisuudella NitroPackissa."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Käytä `nuxt/image`-komponenttia ja määritä `format=\"webp\"`. [Lue lisää](https://image.nuxtjs.org/components/nuxt-img#format)."
@@ -3309,7 +3306,7 @@
     "message": "Tallenna JSON-tiedostona"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "Näytä rajaton jälki"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Avaa katseluohjelmassa"

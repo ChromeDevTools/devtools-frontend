@@ -18,13 +18,13 @@
     "message": "A(z) `[aria-*]` attribútumok megfelelnek szerepüknek"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "Az ARIA `role` elemek lehetővé teszik a segítő technológiák számára, hogy megismerjék a weboldalon található egyes elemek szerepét. Ha a(z) `role` értékeket hibásan írja be, nem létező ARIA `role` értékeket vagy absztrakt szerepköröket használ, akkor a rendszer nem közli az elem célját a segítő technológiák felhasználóival. [További információ az ARIA-szerepkörökről](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "A(z) `role=\"\"` elemhez rendelt értékek nem érvényes ARIA-szerepek."
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "A(z) `role=\"\"` elemhez hozzárendelt értékek érvényes ARIA-szerepek."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Ha valamelyik elem nem rendelkezik kisegítő névvel, a képernyőolvasók általános néven olvassák fel, ami használhatatlan a képernyőolvasóra hagyatkozó felhasználók számára. [További információ a parancselemek hozzáférhetőbbé tételéről](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
@@ -336,13 +336,13 @@
     "message": "A képelemekhez tartozik `[alt]` attribútum"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "Rövid, beszédes alternatív szöveget használjon a tájékoztató elemekhez. A link vagy kép melletti szöveggel pontosan megegyező alternatív szöveg potenciálisan zavaró lehet a képernyőolvasó-használók számára, mivel kétszer lesz felolvasva a szöveg. [További információ a(z) `alt` attribútumról](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "A képelemekhez tartozik olyan `[alt]` attribútum, ami redundáns szöveg."
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "A képelemekhez nem tartozik olyan `[alt]` attribútum, ami redundáns szöveg."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Ha felismerhető és jól olvasható szöveggel látja el a beviteli gombokat, azzal segíthet a képernyőolvasót használó felhasználóknak a beviteli gombok funkciójának megértésében. [További információ a beviteli gombokról](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -363,13 +363,13 @@
     "message": "A(z) `<input type=\"image\">` elemek rendelkeznek `[alt]` szöveggel"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "Azok a látható szöveges címkék, amelyek nem egyeznek meg a kisegítő névvel, zavarók lehetnek a képernyőolvasót használók számára. [További információ a kisegítő nevekről](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "A látható szöveges címkékkel rendelkező elemekhez nem áll rendelkezésre kisegítő név."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "A látható szöveges címkékkel rendelkező elemeknek egyező kisegítő nevük van."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "A címkék biztosítják, hogy a segítő technológiák (pl. a képernyőolvasók) megfelelően jelezzék az űrlapvezérlőket. [További információ az űrlapelemcímkékről](https://dequeuniversity.com/rules/axe/4.7/label)."
@@ -462,13 +462,13 @@
     "message": "A kiválasztott elemekhez címkeelemek is tartoznak."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "Kihagyási link hozzáadásával segíthet a felhasználóknak a fő tartalomra ugrani és így időt megtakarítani. [További információ a kihagyási linkekről](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "A kihagyási linkek nem fókuszálhatók."
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "A kihagyási linkek fókuszálhatók."
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "A 0-nál nagyobb érték explicit navigációs sorrendet jelent. Ez ugyan technikailag érvényes, azonban gyakran problémát jelent a segítő technológiákra hagyatkozó felhasználók számára. [További információ a `tabindex` attribútumról](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
@@ -480,13 +480,13 @@
     "message": "Egyetlen elem `[tabindex]` attribútumának sem 0-nál nagyobb az értéke"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "Az összegző attribútumnak a táblázat szerkezetét kell leírnia, a(z) `<caption>` attribútumnak pedig a képernyőn megjelenő címet. A pontos táblázatjelölés segít a képernyőolvasót használóknak. [További információ az összegzésről és a feliratokról](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "A táblázatok tartalma ugyanaz az összegző attribútumban és a(z) `<caption>.` attribútumban."
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "A táblázatok tartalma eltér az összegző attribútumban és a(z) `<caption>` attribútumban."
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "A képernyőolvasók olyan funkciókkal is rendelkeznek, amelyek megkönnyítik a táblázatokban való navigációt. Ha biztosítja, hogy a táblázatok a tényleges feliratelemet használják a(z) `[colspan]` attribútummal rendelkező cellák helyett, akkor javíthatja a képernyőolvasóra hagyatkozók felhasználói élményét. [További információk a feliratokról](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
@@ -498,7 +498,7 @@
     "message": "A táblázatok a(z) `<caption>` paramétert használják feliratok jelölésére a(z) `[colspan]` attribútummal rendelkező cellák helyett."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "A megfelelő méretű és térközű érinthető területek segíthetnek azoknak a felhasználóknak, akiknek nehézséget okozhat a kis vezérlők eltalálása a területek aktiválásához. [További információ az érinthető területekről](https://dequeuniversity.com/rules/axe/4.7/target-size)."
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "Az érinthető felületek mérete vagy térköze nem megfelelő."
@@ -1083,10 +1083,7 @@
     "message": "A prefer_related_applications csak a Chrome bétaverziójában és a Stabil csatornákon támogatott Androidon."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "A manifest URL-sémája ({scheme}) nem támogatott Androidon."
+    "message": "A Lighthouse nem tudta meghatározni, hogy az oldal telepíthető-e. Próbálja újra a Chrome újabb verziójával."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "A manifest kezdési URL-je érvénytelen"
@@ -1707,7 +1704,7 @@
     "message": "Bevált módszerek"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "Ezek az ellenőrzések kiemelik azokat a lehetőségeket, amelyekkel [javíthatók az internetes alkalmazásának a kisegítő lehetőségei](https://developer.chrome.com/docs/lighthouse/accessibility/). Az automatikus észlelés csak a problémák egy részhalmazát képes észlelni, és nem garantálja az internetes alkalmazás kisegítő lehetőségeinek működését, ezért a [manuális tesztelés](https://web.dev/how-to-review/) is javasolt."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Az alábbiak automatikus tesztelőeszközzel nem ellenőrizhető területekre vonatkoznak. További információt a [kisegítő lehetőségek felülvizsgálatáról](https://web.dev/how-to-review/) szóló útmutatónkban talál."
@@ -2853,7 +2850,7 @@
     "message": "Telepítsen olyan [Drupal-modult](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search), amellyel késleltetve töltheti be a képeket. Egy ilyen modul javíthatja a teljesítményt a képernyőn kívül eső képek késleltetett betöltésével."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "Érdemes lehet modult használnia a kritikus CSS- és JavaScript-elemek beágyazásához, a késleltetési attribútumot pedig a nem kritikus CSS vagy JavaScript-elemekhez használnia."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "A témák, a modulok és a szerver specifikációi mind befolyásolják a szerver válaszidejét. Érdemes lehet jobban optimalizált témát keresnie, megfelelő optimalizáló modult választania és/vagy nagyobb teljesítményű szerverre váltania. Alkalmazásszolgáltató szerverei a PHP-műveletkódok és a memória gyorsítótárazásával (pl. Redis vagy Memcached) csökkenthetik az adatbázisok lekérdezési idejét, illetve az alkalmazások optimalizált logikai hálózatával gyorsabban előkészíthetik az oldalakat."
@@ -2862,10 +2859,10 @@
     "message": "Érdemes lehet [reszponzív képstílusokat](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) használni, melyek csökkentik az oldalon betöltött képek méretét. Ha a Views funkciót használja ahhoz, hogy egy oldalon több tartalmi elemet jelenítsen meg, fontolja meg az oldalak számozását, amivel korlátozhatja az egy adott oldalon megjelenő tartalmi elemek számát."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Győződjön meg arról, hogy bekapcsolta az „Aggregate CSS files” [CSS-fájlok összesítése] lehetőséget az „Administration [Adminisztráció] » Configuration [Beállítás] » Development [Fejlesztés]” oldalon.  Győződjön meg arról, hogy Drupal-webhelyén legalább a Drupal 10.1 fut a jobb eszközösszevonási támogatás érdekében."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Győződjön meg arról, hogy bekapcsolta az „Aggregate JavaScript files” [JavaScript-fájlok összesítése] lehetőséget az „Administration [Adminisztráció] » Configuration [Beállítás] » Development [Fejlesztés]” oldalon.  Győződjön meg arról, hogy Drupal-webhelyén legalább a Drupal 10.1 fut a jobb eszközösszevonási támogatás érdekében."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Érdemes lehet eltávolítani a nem használt CSS-szabályokat, és csak a szükséges Drupal-könyvtárakat csatolni a releváns oldalhoz vagy összetevőhöz. További részleteket a [Drupal dokumentációjában](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) találhat. A felesleges CSS-t elhelyező csatolt könyvtárak azonosításában a Chrome DevTools [kódlefedettség](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) eszköze is segíthet. A felelős téma vagy modul a stíluslap URL-je alapján azonosítható, ha a CSS-összesítés ki van kapcsolva az Ön Drupal webhelyén. Keressen olyan témákat vagy modulokat, amelyeknek több stíluslapjában is sok piros szín szerepel a kódlefedettségi listán. Ideális esetben a témák vagy modulok csak az oldalon ténylegesen használt stíluslapokat állítják sorba."
@@ -3066,46 +3063,46 @@
     "message": "Engedélyezze a tömörítést a Next.js szerveren. [További információ](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "A(z) [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337) engedélyezéséhez forduljon a fiókkezelőjéhez. Ennek konfigurálásával előnyben részesítheti és optimalizálhatja az oldalmegjelenítési teljesítményt."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "A NitroPack [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) opciójával állíthatja be a CSS betűtípus-megjelenítési szabályhoz tartozó kívánt értéket."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "A(z) [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) használatával automatikusan átalakíthatja a képeket WebP-formátumba."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "A(z) [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images) engedélyezésével késleltetheti a képernyőn kívül eső képeket."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "A gyorsabb kezdeti betöltési idők érdekében engedélyezze a(z) [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) attribútumot a NitroPackben."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "A(z) [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361) aktiválásával javíthat a szerver válaszidején, és optimalizálhatja az észlelt teljesítményt."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "Ha engedélyezi a(z) [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) funkciót a gyorsítótárazási beállításokban, azzal csökkentheti a CSS-, HTML- és JavaScript-fájlok méretét a betöltési idő lerövidítése érdekében."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "A gyorsabb betöltési idő érdekében engedélyezze a(z) [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) beállítást a gyorsítótár beállításaiban a JS-, HTML- és CSS-fájlok méretének csökkentése érdekében."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "Engedélyezze a(z) [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) beállítást erre az oldalra nem alkalmazható CSS-szabályok eltávolításához."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "A NitroPackben a(z) [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) konfigurálásával késleltetheti a szkriptek betöltését addig, amíg szükség nem lesz rájuk."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "Lépjen a(z) [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) funkcióra a(z) `Caching` menüben, és állítsa be az oldal gyorsítótárának lejárati idejét a betöltési idők és a felhasználói élmény javítása érdekében."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "A(z) [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) beállítás engedélyezésével automatikusan tömörítheti, optimalizálhatja és WebP-formátumra konvertálhatja a képeket."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "A(z) [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) segítségével preemptív módon optimalizálhatja a képeket, és minden eszközön megfelelő méretűvé teheti őket az őket megjelenítő tárolók méreteihez."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "A NitroPackben a(z) [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) segítségével csökkentheti a böngészőnek küldött fájlok méretét."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Használja a(z) `nuxt/image` összetevőt, és állítsa be a következőt: `format=\"webp\"`. [További információ](https://image.nuxtjs.org/components/nuxt-img#format)."
@@ -3309,7 +3306,7 @@
     "message": "Mentés JSON-ként"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "Korlátozás nélküli nyomkövetés megtekintése"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Megnyitás a megtekintőben"

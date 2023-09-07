@@ -18,13 +18,13 @@
     "message": "`[aria-*]` பண்புக்கூறுகள் அவற்றின் பங்களிப்புகளுடன் பொருந்துகின்றன"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "இணையப் பக்கத்தில் உள்ள ஒவ்வொரு உறுப்பின் பங்களிப்பையும் தெரிந்துகொள்ள உதவிகரமான தொழில்நுட்பங்களுக்கு ARIA `role`கள் உதவுகின்றன. `role` மதிப்புகளில் எழுத்துப் பிழை இருந்தாலோ, அவை ஏற்கெனவே இல்லாத `role` மதிப்புகளாக இருந்தாலோ, பங்களிப்புகள் தெளிவாக இல்லை என்றாலோ உதவிகரமான தொழில்நுட்பங்களைப் பயன்படுத்தும் பயனர்களை உறுப்பின் நோக்கம் சென்றடையாது. [ARIA பங்களிப்புகள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "`role=\"\"`க்கு ஒதுக்கப்பட்டுள்ள மதிப்புகள் சரியான ARIA பங்களிப்புகள் இல்லை."
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "`role=\"\"`க்கு ஒதுக்கப்பட்டுள்ள மதிப்புகள் சரியான ARIA பங்களிப்புகளாக உள்ளன."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "ஓர் உறுப்புக்குத் தெளிவான பெயர் இல்லை எனில் ஸ்கிரீன் ரீடர்கள் பொதுவான பெயரைப் பயன்படுத்தி அதை அறிவிக்கும். ஸ்கிரீன் ரீடர்களைப் பயன்படுத்துபவர்களுக்கு இது உதவியாக இருக்காது. [கட்டளை உறுப்புகளை அதிகம் அணுகத்தக்கதாக மாற்றுவது எப்படி என அறிக](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
@@ -336,13 +336,13 @@
     "message": "பட உறுப்புகள் `[alt]` பண்புக்கூறுகளைக் கொண்டுள்ளன"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "தகவல் உறுப்புகளில் சுருக்கமான மாற்று வார்த்தைகள் விவரிக்கும் வகையில் இருக்க வேண்டும். இணைப்பு அல்லது படத்திற்கு அருகில் இருக்கும் வார்த்தைகளையும் மாற்று வார்த்தைகளையும் ஸ்கிரீன் ரீடர் தனித்தனியாக வாசிக்கும். ஆகவே இரண்டும் ஒரே மாதிரி இருந்தால் பயனர்களுக்குக் குழப்பம் ஏற்படலாம். [`alt` பண்புக்கூறு குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "ஒரே மாதிரியான வார்த்தைகள் இருக்கும் `[alt]` பண்புக்கூறுகள் பட உறுப்புகளில் உள்ளன."
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "ஒரே மாதிரியான வார்த்தைகள் இருக்கும் `[alt]` பண்புக்கூறுகள் பட உறுப்புகளில் இல்லை."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "தெளிவான மற்றும் அணுகக்கூடிய வார்த்தைகளை உள்ளீட்டு பட்டன்களில் சேர்ப்பது ஸ்கிரீன் ரீடரைப் பயன்படுத்துபவர்களுக்கு அந்த பட்டனின் நோக்கத்தைப் புரிந்துகொள்ள உதவலாம். [உள்ளீட்டு பட்டன்கள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -363,13 +363,13 @@
     "message": "`<input type=\"image\">` உறுப்புகளில் `[alt]` வார்த்தைகள் உள்ளன"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "அணுகக்கூடிய பெயர்களுடன் பொருந்தாத தெரியக்கூடிய வார்த்தைப் பெயர்கள் ஸ்கிரீன் ரீடர் பயனர்களுக்குக் குழப்பத்தை ஏற்படுத்தலாம். [அணுகக்கூடிய பெயர்கள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "தெரியக்கூடிய வார்த்தைப் பெயர்களுடன் இருக்கும் உறுப்புகளுக்குப் பொருந்தக்கூடிய அணுகல் பெயர்கள் இல்லை."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "தெரியக்கூடிய வார்த்தைப் பெயர்களுடன் இருக்கும் உறுப்புகளுக்குப் பொருந்தக்கூடிய அணுகல் பெயர்கள் உள்ளன."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "ஸ்கிரீன் ரீடர்கள் போன்ற உதவிகரமான தொழில்நுட்பங்களால் சரியாக அறிவிக்கப்படும் வகையில் படிவக் கட்டுப்பாடுகள் இருப்பதை லேபிள்கள் உறுதிசெய்கின்றன. [படிவ உறுப்பு லேபிள்கள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/label)."
@@ -462,13 +462,13 @@
     "message": "குறிப்பிட்ட உறுப்புகளில் தொடர்புடைய லேபிள் உறுப்புகள் உள்ளன."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "தவிர்ப்பதற்கான இணைப்பைச் சேர்ப்பதன் மூலம் பயனர்களுக்கு முதன்மை உள்ளடக்கத்திற்குச் சென்று நேரத்தை மிச்சப்படுத்த உதவலாம். [தவிர்ப்பதற்கான இணைப்புகள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "தவிர்ப்பதற்கான இணைப்புகள் ஃபோகஸ் செய்யத்தக்கவையாக இல்லை."
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "தவிர்ப்பதற்கான இணைப்புகள் ஃபோகஸ் செய்யத்தக்கவையாக உள்ளன."
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "0க்கு அதிகமான மதிப்பு வெளிப்படையான ஒரு வழிசெலுத்தல் வரிசை முறையைக் குறிப்பிடுகிறது. தொழில்நுட்பரீதியாகச் செல்லுபடியாகும் என்றாலும், உதவிகரமான தொழில்நுட்பங்களைச் சார்ந்திருக்கும் பயனர்களுக்கு இது பெரும்பாலும் குழப்பமான அனுபவத்தையே உருவாக்கும். [`tabindex` பண்புக்கூறு குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
@@ -480,13 +480,13 @@
     "message": "எந்த உறுப்புக்கும் `[tabindex]` மதிப்பு 0க்கு அதிகமாக இல்லை"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "அட்டவணையின் கட்டமைப்பைச் சுருக்கவிவரப் பண்புக்கூறு கட்டாயம் விளக்க வேண்டும். `<caption>`க்கு ஆன்ஸ்கிரீன் தலைப்பு இருக்க வேண்டும். அட்டவணையைத் துல்லியமாக மார்க்-அப் செய்வது ஸ்கிரீன் ரீடர் பயனர்களுக்கு உதவும். [சுருக்கவிவரம் மற்றும் தலைப்பு குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "அட்டவணைகளின் சுருக்கவிவரப் பண்புக்கூறு மற்றும் `<caption>.` இல் ஒரே மாதிரியான உள்ளடக்கம் உள்ளது"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "அட்டவணைகளின் சுருக்கவிவரப் பண்புக்கூறு மற்றும் `<caption>` இல் வெவ்வேறு உள்ளடக்கம் உள்ளது."
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "அட்டவணைகளில் எளிதாகச் செல்வதற்கு ஸ்கிரீன் ரீடர்களில் அம்சங்கள் உள்ளன. கலங்களுடன் இருக்கும் `[colspan]` பண்புக்கூறுக்குப் பதிலாக அசல் தலைப்பை அட்டவணைகள் பயன்படுத்துவதை உறுதிசெய்வது ஸ்கிரீன் ரீடரைப் பயன்படுத்துபவர்களின் அனுபவத்தை மேம்படுத்தலாம். [தலைப்புகள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
@@ -498,7 +498,7 @@
     "message": "தலைப்பைக் குறிப்பிட கலங்களுடன் இருக்கும் `[colspan]` பண்புக்கூறுக்குப் பதிலாக `<caption>` ஐ அட்டவணைகள் பயன்படுத்தும்."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "தெளிவான அளவில் சீரான இடைவெளிகளுடன் உள்ள டச் டார்கெட்டுகள், சிறிய கண்ட்ரோல்களைப் பயன்படுத்தச் சிரமப்படும் பயனர்களுக்கு அந்த டார்கெட்டுகளைச் செயல்படுத்த உதவுகின்றன. [டச் டார்கெட்டுகள் குறித்து மேலும் அறிக](https://dequeuniversity.com/rules/axe/4.7/target-size)."
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "டச் டார்கெட்டுகள் தெளிவான அளவில் சீரான இடைவெளிகளுடன் இல்லை."
@@ -1083,10 +1083,7 @@
     "message": "Chrome பீட்டாவிலும் Androidல் நிலையான சேனல்களிலும் மட்டுமே prefer_related_applications ஆதரிக்கப்படும்."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Androidல் மெனிஃபெஸ்ட் URL ஸ்கீம் ({scheme}) ஆதரிக்கப்படவில்லை."
+    "message": "இந்தப் பக்கம் நிறுவக்கூடியதா என்பதை Lighthouse கருவியால் தீர்மானிக்க முடியவில்லை. Chrome உலாவியின் புதிய பதிப்பில் முயலவும்."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "மெனிஃபெஸ்ட் ஸ்டார்ட் URL தவறானது"
@@ -1707,7 +1704,7 @@
     "message": "சிறந்த நடைமுறைகள்"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "[உங்கள் இணைய ஆப்ஸின் அணுகல்தன்மையை மேம்படுத்துவதற்கான](https://developer.chrome.com/docs/lighthouse/accessibility/) வாய்ப்புகளை இந்தச் சரிபார்ப்புகள் தனிப்படுத்திக் காட்டுகின்றன. தானியங்குக் கண்டறிதல் மூலம் சிக்கல்களில் சிலவற்றை மட்டுமே கண்டறிய முடியும் என்பதுடன் உங்கள் இணைய ஆப்ஸின் அணுகல்தன்மையை உறுதிசெய்ய முடியாது என்பதாலும் [நேரடியாகப் பரிசோதனை](https://web.dev/how-to-review/) செய்யுமாறு ஊக்குவிக்கிறோம்."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "தானியங்கி சோதனைக் கருவியால் சோதிக்க முடியாத பகுதிகளை இவை சோதிக்கும். எங்கள் வழிகாட்டியில் [அணுகல்தன்மை மதிப்பாய்வை நடத்துவதைப்](https://web.dev/how-to-review/) பற்றி மேலும் தெரிந்துகொள்ளலாம்."
@@ -2853,7 +2850,7 @@
     "message": "படங்களைத் தேவையுள்ளபோது ஏற்றும் [Drupal மாடியூலை](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) நிறுவவும். செயல்திறனை மேம்படுத்துவதற்காக இந்த மாடியூல்கள் திரைக்கு வெளியில் உள்ள படங்களை மெதுவாக ஏற்றும் வசதியை வழங்குகின்றன."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "முக்கியமான CSS மற்றும் JavaScriptடை உள்ளடக்க மாடியூலையும், முக்கியமில்லாத CSS அல்லது JavaScriptடிற்குத் தாமதப் பண்புக்கூறையும் பயன்படுத்தவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "தீம்கள், மாடியூல்கள், சேவையக விவரக்குறிப்புகள் ஆகிய அனைத்தும் சேவையகத்தின் வேகத்தை நிர்ணயிக்கின்றன. மேலும் மேம்படுத்தப்பட்ட தீமினைக் கண்டறிந்து, மேம்படுத்தல் மாடியூலைக் கவனமாகத் தேர்ந்தெடுக்கவும் மற்றும்/அல்லது சேவையகத்தை மேம்படுத்தவும். PHP ஆப்கோட் தற்காலிகச் சேமிப்பு, Redis/Memcached போன்ற தரவுத்தள வினவல் நேரங்களைக் குறைப்பதற்கான தற்காலிக நினைவகச் சேமிப்பு, பக்கங்கள் விரைவாக ஏற்றப்படுவதற்கான மேம்பட்ட பயன்பாட்டு லாஜிக் ஆகியவற்றை உங்கள் ஹோஸ்டிங் சேவையகங்கள் பயன்படுத்த அனுமதிக்க வேண்டும்."
@@ -2862,10 +2859,10 @@
     "message": "உங்கள் பக்கத்தில் ஏற்றப்படும் படங்களின் அளவைக் குறைக்க [திரைக்கு ஏற்ப அளவு மாறும் பட ஸ்டைல்களைப்](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) பயன்படுத்தவும். பக்கத்தில் பல உள்ளடக்கத்தைக் காட்டுவதற்கு ’காட்சிகளைப்’ பயன்படுத்தினால் அந்தப் பக்கத்தில் காட்டப்படும் உள்ளடக்கத்தின் எண்ணிக்கையை வரம்பிட அதைப் பக்கங்களாகப் பிரிக்கவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "\"நிர்வாகம் » உள்ளமைவு » மேம்பாடு\" என்ற பக்கத்தில் “CSS ஃபைல்களை ஒருங்கிணை” என்பதை இயக்கியுள்ளதை உறுதிசெய்துகொள்ளவும்.  மேம்பட்ட அசெட் ஒருங்கிணைப்பு உதவிக்கு உங்கள் Drupal தளம் குறைந்தது 10.1 பதிப்பில் இயங்குவதை உறுதிசெய்துகொள்ளவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "\"நிர்வாகம் » உள்ளமைவு » மேம்பாடு\" என்ற பக்கத்தில் “JavaScript ஃபைல்களை ஒருங்கிணை” என்பதை இயக்கியுள்ளதை உறுதிசெய்துகொள்ளவும்.  மேம்பட்ட அசெட் ஒருங்கிணைப்பு உதவிக்கு உங்கள் Drupal தளம் குறைந்தது 10.1 பதிப்பில் இயங்குவதை உறுதிசெய்துகொள்ளவும்."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "பயன்படுத்தப்படாத CSS விதிகளை அகற்றிவிட்டு தொடர்புடைய பக்கம்/பக்கத்தில் உள்ள காம்பனென்ட்டில் தேவையான Drupal லைப்ரரிகளை மட்டும் இணைக்கவும். விவரங்களுக்கு [Drupal ஆவணமாக்கல் இணைப்பைப்](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) பார்க்கவும். பொருத்தமற்ற CSSஸைச் சேர்க்கும் இணைக்கப்பட்ட லைப்ரரிகளை அடையாளம் காண, Chrome DevToolsஸில் [குறியீட்டுக் கவரேஜை](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) இயக்கிப் பார்க்கவும். Drupal தளத்தில் CSS ஒருங்கிணைப்பு முடக்கப்பட்டிருக்கும்போது ஸ்டைல்ஷீட்டின் URLலில் இதற்குக் காரணமான தீம்/மாடியூலைக் கண்டறியலாம். அதிகளவு சிவப்பில் உள்ள குறியீட்டுக் கவரேஜைக் கொண்ட பட்டியலில் பல ஸ்டைல்ஷீட்களைக் கொண்ட தீம்கள்/மாடியூல்களைக் கண்டறியவும். பக்கத்தில் பயன்படுத்தும் பட்சத்தில் ஒரு தீம்/மாடியூல் ஒரு ஸ்டைல்ஷீட்டை மட்டுமே வரிசையில் சேர்க்க வேண்டும்."
@@ -3066,46 +3063,46 @@
     "message": "உங்கள் Next.js சேவையகத்தில் சுருக்குதலை இயக்கவும். [மேலும் அறிக](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "[`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337) ஐ இயக்க உங்கள் கணக்கு நிர்வாகியைத் தொடர்புகொள்ளுங்கள். இதை உள்ளமைப்பது உங்கள் பக்கத்தின் ரென்டரிங்கிற்கு முன்னுரிமையளித்து, அதன் செயல்திறனை மேம்படுத்தும்."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "CSS எழுத்து வடிவக் காட்சி விதிக்கான விருப்ப மதிப்பை அமைக்க, NitroPackகில் [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) விருப்பத்தைப் பயன்படுத்துங்கள்."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "உங்கள் படங்களை WebPக்குத் தானாக மாற்ற, [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) ஐப் பயன்படுத்துங்கள்."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "[`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images) ஐ இயக்குவதன் மூலம் திரைக்கு வெளியே காட்டப்படும் படங்களைத் தாமதப்படுத்துங்கள்."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "விரைவான துவக்கநிலை ஏற்ற நேரங்களை அடைய, NitroPackகில் [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) ஐ இயக்குங்கள்."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "[`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361) ஐ இயக்குவதன் மூலம் சேவையகப் பதிலளிப்பு நேரத்தை அதிகப்படுத்தி, செயல்திறனை மேம்படுத்துங்கள்."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "CSS, HTML மற்றும் JavaScript ஃபைல்களின் அளவைக் குறைத்து விரைவான ஏற்ற நேரங்களை அடைய, உங்களின் தற்காலிகச் சேமிப்பு அமைப்புகளில் [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) ஐ இயக்குங்கள்."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "JS, HTML மற்றும் CSS ஃபைல்களின் அளவைக் குறைத்து விரைவான ஏற்ற நேரங்களை அடைய, உங்களின் தற்காலிகச் சேமிப்பு அமைப்புகளில் [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) ஐ இயக்குங்கள்."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "இந்தப் பக்கத்திற்குப் பொருந்தாத CSS விதிகளை அகற்ற, [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) ஐ இயக்குங்கள்."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "தேவைப்பட்டால் மட்டும் ஸ்கிரிப்ட்டுகள் ஏற்றப்பட, NitroPackகில் [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) ஐ அமைத்திடுங்கள்."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "பக்கம் ஏற்றப்படும் நேரத்தையும் பயனர் அனுபவத்தையும் மேம்படுத்த, `Caching` மெனுவில் உள்ள [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) அம்சத்திற்குச் சென்று பக்கத்தின் தற்காலிகச் சேமிப்பு காலாவதியாகும் நேரத்தைச் சரிசெய்யுங்கள்."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "[`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) அமைப்பை இயக்குவதன் மூலம் உங்கள் படங்களைத் தானாகவே சுருக்கி, மேம்படுத்தி WebP பட வடிவமைப்புக்கு மாற்றுங்கள்."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "உங்கள் படங்களை முன்கூட்டியே மேம்படுத்தவும், அவை காட்டப்படும் அனைத்து சாதனங்களிலும் உள்ள கண்டெய்னர்களின் பரிமாணங்களுக்குப் பொருந்தும் வகையில் அமைக்கவும் [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) ஐ இயக்குங்கள்."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "உலாவிக்கு அனுப்பப்படும் ஃபைல்களின் அளவைக் குறைக்க, NitroPackகில் [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ஐ பயன்படுத்துங்கள்."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "`nuxt/image` காம்பனென்ட்டைப் பயன்படுத்தி, `format=\"webp\"` வடிவமைப்பை அமைக்கவும். [மேலும் அறிக](https://image.nuxtjs.org/components/nuxt-img#format)."
@@ -3309,7 +3306,7 @@
     "message": "JSONனாக சேமி"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "த்ராட்லிங் செய்யப்படாத டிரேஸைக் காட்டு"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "வியூவரில் திற"

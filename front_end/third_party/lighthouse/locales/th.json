@@ -18,13 +18,13 @@
     "message": "แอตทริบิวต์ `[aria-*]` ตรงกับบทบาทของตน"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "`role` ARIA ช่วยให้เทคโนโลยีความช่วยเหลือพิเศษทราบถึงบทบาทของแต่ละองค์ประกอบในหน้าเว็บ หากค่า`role`สะกดผิด ไม่ใช่ค่า`role` ARIA ที่มีอยู่ หรือเป็นบทบาทนามธรรม ระบบก็จะไม่สื่อสารจุดประสงค์ขององค์ประกอบดังกล่าวไปยังผู้ใช้เทคโนโลยีความช่วยเหลือพิเศษ [ดูข้อมูลเพิ่มเติมเกี่ยวกับบทบาท ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "ค่าที่กำหนดให้กับ `role=\"\"` ไม่ใช่บทบาท ARIA ที่ถูกต้อง"
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "ค่าที่กําหนดให้กับ `role=\"\"` เป็นบทบาท ARIA ที่ถูกต้อง"
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "เมื่อองค์ประกอบไม่มีชื่อที่เข้าถึงได้ โปรแกรมอ่านหน้าจอจะอ่านองค์ประกอบนั้นโดยใช้ชื่อทั่วไป ซึ่งทำให้ผู้ที่ต้องใช้โปรแกรมอ่านหน้าจอใช้องค์ประกอบดังกล่าวไม่ได้ [ดูวิธีทําให้องค์ประกอบคําสั่งเข้าถึงได้ง่ายขึ้น](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)"
@@ -336,13 +336,13 @@
     "message": "องค์ประกอบรูปภาพมีแอตทริบิวต์ `[alt]`"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "องค์ประกอบเพื่อการให้ข้อมูลควรมีข้อความสำรองที่สั้นกระชับและสื่อความหมาย ข้อความสำรองที่เหมือนกันทุกประการกับข้อความที่อยู่ติดกับลิงก์หรือรูปภาพอาจทำให้ผู้ใช้โปรแกรมอ่านหน้าจอสับสนได้เนื่องจากระบบจะอ่านข้อความ 2 ครั้ง [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `alt`](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)"
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "องค์ประกอบรูปภาพมีแอตทริบิวต์ `[alt]` ที่เป็นข้อความซ้ำซ้อน"
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "องค์ประกอบรูปภาพไม่มีแอตทริบิวต์ `[alt]` ที่เป็นข้อความซ้ำซ้อน"
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "การเพิ่มข้อความช่วยการเข้าถึงซึ่งมองเห็นได้ลงในปุ่มอินพุตอาจช่วยให้ผู้ใช้โปรแกรมอ่านหน้าจอเข้าใจวัตถุประสงค์ของปุ่มอินพุต [ดูข้อมูลเพิ่มเติมเกี่ยวกับปุ่มอินพุต](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
@@ -363,13 +363,13 @@
     "message": "องค์ประกอบ `<input type=\"image\">` มีข้อความ `[alt]`"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "ป้ายกำกับข้อความที่มองเห็นได้ซึ่งไม่ตรงกับชื่อที่เข้าถึงได้อาจทำให้ผู้ใช้โปรแกรมอ่านหน้าจอสับสน [ดูข้อมูลเพิ่มเติมเกี่ยวกับชื่อที่เข้าถึงได้](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "องค์ประกอบที่มีป้ายกำกับข้อความที่มองเห็นได้ไม่มีชื่อที่เข้าถึงได้ที่ตรงกัน"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "องค์ประกอบที่มีป้ายกำกับข้อความที่มองเห็นได้มีชื่อที่เข้าถึงได้ที่ตรงกัน"
   },
   "core/audits/accessibility/label.js | description": {
     "message": "ป้ายกำกับช่วยดูแลให้เทคโนโลยีความช่วยเหลือพิเศษอย่างเช่น โปรแกรมอ่านหน้าจอ อ่านส่วนควบคุมฟอร์มได้อย่างถูกต้อง [ดูข้อมูลเพิ่มเติมเกี่ยวกับป้ายกํากับองค์ประกอบแบบฟอร์ม](https://dequeuniversity.com/rules/axe/4.7/label)"
@@ -462,13 +462,13 @@
     "message": "องค์ประกอบ Select มีองค์ประกอบป้ายกำกับที่เกี่ยวข้อง"
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "การใส่ลิงก์ข้ามจะช่วยให้ผู้ใช้ข้ามไปยังเนื้อหาหลักเพื่อประหยัดเวลาได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับลิงก์ข้าม](https://dequeuniversity.com/rules/axe/4.7/skip-link)"
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "ไม่สามารถโฟกัสที่ลิงก์ข้ามได้"
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "โฟกัสลิงก์ข้ามได้"
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "ค่าที่มากกว่า 0 หมายความว่ามีการจัดเรียงการนำทางที่ชัดเจน แม้ว่าการทำงานนี้จะไม่มีปัญหาในทางเทคนิค แต่มักก่อให้เกิดประสบการณ์การใช้งานที่น่าหงุดหงิดสำหรับผู้ใช้เทคโนโลยีความช่วยเหลือพิเศษ [ดูข้อมูลเพิ่มเติมเกี่ยวกับแอตทริบิวต์ `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
@@ -480,13 +480,13 @@
     "message": "ไม่มีองค์ประกอบที่มีค่า `[tabindex]` มากกว่า 0"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "แอตทริบิวต์สรุปควรอธิบายโครงสร้างตาราง ส่วน`<caption>`ควรมีชื่อบนหน้าจอ มาร์กอัปตารางที่ถูกต้องจะช่วยอำนวยความสะดวกให้แก่ผู้ใช้โปรแกรมอ่านหน้าจอ [ดูข้อมูลเพิ่มเติมเกี่ยวกับสรุปและคำบรรยาย](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)"
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "ตารางมีเนื้อหาที่เหมือนกันในแอตทริบิวต์สรุปและ`<caption>.`"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "ตารางมีเนื้อหาที่แตกต่างกันในแอตทริบิวต์สรุปและ`<caption>`"
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "โปรแกรมอ่านหน้าจอมีฟีเจอร์ที่ช่วยให้ไปยังส่วนต่างๆ ของตารางได้ง่ายขึ้น การตรวจสอบว่าตารางใช้องค์ประกอบคำบรรยายจริงแทนเซลล์ที่มีแอตทริบิวต์ `[colspan]` อาจช่วยปรับปรุงประสบการณ์การใช้งานของผู้ใช้โปรแกรมอ่านหน้าจอได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับคำบรรยาย](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
@@ -498,7 +498,7 @@
     "message": "ตารางใช้ `<caption>` แทนเซลล์ที่มีแอตทริบิวต์ `[colspan]` ในการระบุคำบรรยาย"
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "เป้าหมายการสัมผัสที่มีขนาดและระยะห่างเพียงพอจะช่วยให้ผู้ใช้ที่อาจพบปัญหาในการกำหนดเป้าหมายการควบคุมขนาดเล็กเปิดใช้งานเป้าหมายได้ [ดูข้อมูลเพิ่มเติมเกี่ยวกับเป้าหมายการสัมผัส](https://dequeuniversity.com/rules/axe/4.7/target-size)"
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "เป้าหมายการสัมผัสไม่มีขนาดหรือระยะห่างที่เพียงพอ"
@@ -1083,10 +1083,7 @@
     "message": "prefer_related_applications ใช้ได้เฉพาะใน Chrome เบต้า และเวอร์ชันเสถียรใน Android เท่านั้น"
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "รูปแบบ URL ของไฟล์ Manifest ({scheme}) ใช้ไม่ได้ใน Android"
+    "message": "Lighthouse ไม่สามารถระบุว่าติดตั้งหน้าเว็บได้หรือไม่ โปรดลองใช้ Chrome เวอร์ชันใหม่กว่านี้"
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "URL เริ่มต้นของไฟล์ Manifest ไม่ถูกต้อง"
@@ -1707,7 +1704,7 @@
     "message": "แนวทางปฏิบัติที่ดีที่สุด"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "การตรวจสอบเหล่านี้ไฮไลต์โอกาสในการ[ปรับปรุงการช่วยเหลือพิเศษของเว็บแอป](https://developer.chrome.com/docs/lighthouse/accessibility/) การตรวจหาอัตโนมัติจะตรวจพบเพียงปัญหาชุดย่อยและไม่รับประกันการช่วยเหลือพิเศษของเว็บแอป เราจึงขอแนะนำให้[ตรวจสอบเอง](https://web.dev/how-to-review/)ด้วยเช่นกัน"
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "รายการเหล่านี้จัดการพื้นที่ที่เครื่องมือทดสอบอัตโนมัติไม่ครอบคลุม ดูข้อมูลเพิ่มเติมในคำแนะนำเกี่ยวกับ[การดำเนินการตรวจสอบการช่วยเหลือพิเศษ](https://web.dev/how-to-review/)"
@@ -2853,7 +2850,7 @@
     "message": "ติดตั้ง[โมดูล Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) ที่โหลดรูปภาพแบบ Lazy Loading ได้ โมดูลนี้จะช่วยเลื่อนเวลาโหลดรูปภาพนอกจอภาพเพื่อปรับปรุงประสิทธิภาพ"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "ลองใช้โมดูลเพื่อแทรก CSS และ JavaScript ที่สำคัญในหน้า และใช้แอตทริบิวต์ที่เลื่อนเวลาออกไปสำหรับ CSS หรือ JavaScript ที่ไม่สำคัญ"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "ข้อกำหนดของธีม โมดูล และเซิร์ฟเวอร์ล้วนส่งผลต่อเวลาในการตอบสนองของเซิร์ฟเวอร์ ลองหาธีมที่เพิ่มประสิทธิภาพมากขึ้น พยายามเลือกโมดูลการเพิ่มประสิทธิภาพด้วยความระมัดระวัง และ/หรืออัปเกรดเซิร์ฟเวอร์ เซิร์ฟเวอร์โฮสติ้งควรใช้ประโยชน์จากการแคช PHP Opcode, การแคชหน่วยความจำเพื่อลดเวลาในการค้นหาฐานข้อมูล เช่น Redis หรือ Memcached รวมถึงตรรกะของแอปพลิเคชันที่เพิ่มประสิทธิภาพเพื่อให้เตรียมความพร้อมของหน้าได้เร็วขึ้น"
@@ -2862,10 +2859,10 @@
     "message": "ลองใช้[สไตล์รูปภาพที่ปรับเปลี่ยนตามพื้นที่โฆษณา](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)เพื่อลดขนาดของรูปภาพที่โหลดในหน้า หากคุณใช้มุมมองเพื่อดูรายการเนื้อหาหลายรายการในหน้า ให้ลองใช้การใส่เลขหน้าเพื่อจำกัดจำนวนของรายการเนื้อหาที่แสดงในหน้าหนึ่งๆ"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "ตรวจสอบว่าคุณได้เปิดใช้ \"รวมไฟล์ CSS\" ในหน้า \"การดูแลระบบ » การกำหนดค่า » การพัฒนา\"  ตรวจสอบว่าเว็บไซต์ Drupal ของคุณใช้ Drupal 10.1 เป็นอย่างน้อยเพื่อรองรับการรวมเนื้อหาได้ดียิ่งขึ้น"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "ตรวจสอบว่าคุณได้เปิดใช้ \"รวมไฟล์ JavaScript\" ในหน้า \"การดูแลระบบ » การกำหนดค่า » การพัฒนา\"  ตรวจสอบว่าเว็บไซต์ Drupal ของคุณใช้ Drupal 10.1 เป็นอย่างน้อยเพื่อรองรับการรวมเนื้อหาได้ดียิ่งขึ้น"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "ลองนำกฎ CSS ที่ไม่ได้ใช้ออกและแนบเฉพาะไลบรารี Drupal ที่จำเป็นลงในหน้าที่เกี่ยวข้องหรือคอมโพเนนต์ในหน้า ดูรายละเอียดได้ที่[ลิงก์เอกสารประกอบของ Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) หากต้องการระบุไลบรารีที่แนบซึ่งเพิ่ม CSS โดยไม่จำเป็น ลองเรียกใช้ [Code Coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) ใน DevTools ของ Chrome คุณระบุธีม/โมดูลที่รับผิดชอบได้จาก URL ของสไตล์ชีตเมื่อปิดใช้การรวม CSS ในเว็บไซต์ Drupal ของคุณ หาธีม/โมดูลที่มีสไตล์ชีตจำนวนมากอยู่ในรายการซึ่งมีสีแดงอยู่จำนวนมากใน Code Coverage ธีม/โมดูลควรเป็นเพียงตัวกำหนดลำดับของสไตล์ชีตเท่านั้นหากใช้ธีม/โมดูลในหน้าจริงๆ"
@@ -3066,46 +3063,46 @@
     "message": "เปิดใช้การบีบอัดในเซิร์ฟเวอร์ Next.js ของคุณ [ดูข้อมูลเพิ่มเติม](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "โปรดติดต่อผู้จัดการฝ่ายดูแลลูกค้าเพื่อเปิดใช้[`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337) การกำหนดค่าจะให้ความสำคัญและเพิ่มประสิทธิภาพการแสดงผลหน้าเว็บ"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "ใช้ตัวเลือก[`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041)ใน NitroPack เพื่อตั้งค่าที่ต้องการสำหรับกฎการแสดงแบบอักษรของ CSS"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "ใช้[`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513)เพื่อแปลงรูปภาพเป็น WebP โดยอัตโนมัติ"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "เลื่อนเวลาโหลดรูปภาพนอกจอภาพโดยการเปิดใช้[`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "เปิดใช้[`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack)ใน NitroPack สำหรับการโหลดเริ่มต้นที่รวดเร็วขึ้น"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "ปรับปรุงเวลาในการตอบกลับของเซิร์ฟเวอร์และเพิ่มประสิทธิภาพที่รับรู้ได้โดยการเปิดใช้งาน[`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "เปิดใช้[`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources)ในการตั้งค่าการแคชเพื่อลดขนาดไฟล์ CSS, HTML และ JavaScript สำหรับการโหลดที่รวดเร็วขึ้น"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "เปิดใช้[`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources)ในการตั้งค่าการแคชเพื่อลดขนาดไฟล์ JS, HTML และ CSS สำหรับการโหลดที่รวดเร็วขึ้น"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "เปิดใช้[`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS)เพื่อนำกฎ CSS ที่ไม่เกี่ยวข้องกับหน้านี้ออก"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "กำหนดค่า[`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts)ใน NitroPack เพื่อหน่วงเวลาการโหลดสคริปต์จนกว่าจะจำเป็น"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "ไปที่ฟีเจอร์[`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time)ในเมนู`Caching`และปรับเวลาหมดอายุของแคชหน้าเว็บเพื่อปรับปรุงเวลาที่ใช้ในการโหลดและประสบการณ์ของผู้ใช้"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "บีบอัด เพิ่มประสิทธิภาพ และแปลงรูปภาพเป็น WebP โดยอัตโนมัติด้วยการเปิดใช้การตั้งค่า[`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack)"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "เปิดใช้[`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site)เพื่อเพิ่มประสิทธิภาพให้กับรูปภาพล่วงหน้าและทำให้มีขนาดตรงกับคอนเทนเนอร์ที่แสดงอยู่ในอุปกรณ์ทั้งหมด"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "ใช้[`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ใน NitroPack เพื่อลดขนาดของไฟล์ที่ส่งไปยังเบราว์เซอร์"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "ใช้คอมโพเนนต์ `nuxt/image` และกำหนด `format=\"webp\"` [ดูข้อมูลเพิ่มเติม](https://image.nuxtjs.org/components/nuxt-img#format)"
@@ -3309,7 +3306,7 @@
     "message": "บันทึกเป็น JSON"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "ดูการติดตามที่ไม่มีการควบคุม"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "เปิดในโปรแกรมดู"

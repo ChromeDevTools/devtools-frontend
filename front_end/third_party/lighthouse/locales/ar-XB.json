@@ -18,13 +18,13 @@
     "message": "`[aria-*]` ‏‮attributes‬‏ ‏‮match‬‏ ‏‮their‬‏ ‏‮roles‬‏"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "‏‮ARIA‬‏ `role`‏‮s‬‏ ‏‮enable‬‏ ‏‮assistive‬‏ ‏‮technologies‬‏ ‏‮to‬‏ ‏‮know‬‏ ‏‮the‬‏ ‏‮role‬‏ ‏‮of‬‏ ‏‮each‬‏ ‏‮element‬‏ ‏‮on‬‏ ‏‮the‬‏ ‏‮web‬‏ ‏‮page‬‏. ‏‮If‬‏ ‏‮the‬‏ `role` ‏‮values‬‏ ‏‮are‬‏ ‏‮misspelled‬‏, ‏‮not‬‏ ‏‮existing‬‏ ‏‮ARIA‬‏ `role` ‏‮values‬‏, ‏‮or‬‏ ‏‮abstract‬‏ ‏‮roles‬‏, ‏‮then‬‏ ‏‮the‬‏ ‏‮purpose‬‏ ‏‮of‬‏ ‏‮the‬‏ ‏‮element‬‏ ‏‮will‬‏ ‏‮not‬‏ ‏‮be‬‏ ‏‮communicated‬‏ ‏‮to‬‏ ‏‮users‬‏ ‏‮of‬‏ ‏‮assistive‬‏ ‏‮technologies‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮ARIA‬‏ ‏‮roles‬‏](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "‏‮Values‬‏ ‏‮assigned‬‏ ‏‮to‬‏ `role=\"\"` ‏‮are‬‏ ‏‮not‬‏ ‏‮valid‬‏ ‏‮ARIA‬‏ ‏‮roles‬‏."
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "‏‮Values‬‏ ‏‮assigned‬‏ ‏‮to‬‏ `role=\"\"` ‏‮are‬‏ ‏‮valid‬‏ ‏‮ARIA‬‏ ‏‮roles‬‏."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "‏‮When‬‏ ‏‮an‬‏ ‏‮element‬‏ ‏‮doesn‬‏'‏‮t‬‏ ‏‮have‬‏ ‏‮an‬‏ ‏‮accessible‬‏ ‏‮name‬‏, ‏‮screen‬‏ ‏‮readers‬‏ ‏‮announce‬‏ ‏‮it‬‏ ‏‮with‬‏ ‏‮a‬‏ ‏‮generic‬‏ ‏‮name‬‏, ‏‮making‬‏ ‏‮it‬‏ ‏‮unusable‬‏ ‏‮for‬‏ ‏‮users‬‏ ‏‮who‬‏ ‏‮rely‬‏ ‏‮on‬‏ ‏‮screen‬‏ ‏‮readers‬‏. [‏‮Learn‬‏ ‏‮how‬‏ ‏‮to‬‏ ‏‮make‬‏ ‏‮command‬‏ ‏‮elements‬‏ ‏‮more‬‏ ‏‮accessible‬‏](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
@@ -336,13 +336,13 @@
     "message": "‏‮Image‬‏ ‏‮elements‬‏ ‏‮have‬‏ `[alt]` ‏‮attributes‬‏"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "‏‮Informative‬‏ ‏‮elements‬‏ ‏‮should‬‏ ‏‮aim‬‏ ‏‮for‬‏ ‏‮short‬‏, ‏‮descriptive‬‏ ‏‮alternative‬‏ ‏‮text‬‏. ‏‮Alternative‬‏ ‏‮text‬‏ ‏‮that‬‏ ‏‮is‬‏ ‏‮exactly‬‏ ‏‮the‬‏ ‏‮same‬‏ ‏‮as‬‏ ‏‮the‬‏ ‏‮text‬‏ ‏‮adjacent‬‏ ‏‮to‬‏ ‏‮the‬‏ ‏‮link‬‏ ‏‮or‬‏ ‏‮image‬‏ ‏‮is‬‏ ‏‮potentially‬‏ ‏‮confusing‬‏ ‏‮for‬‏ ‏‮screen‬‏ ‏‮reader‬‏ ‏‮users‬‏, ‏‮because‬‏ ‏‮the‬‏ ‏‮text‬‏ ‏‮will‬‏ ‏‮be‬‏ ‏‮read‬‏ ‏‮twice‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮the‬‏ `alt` ‏‮attribute‬‏](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "‏‮Image‬‏ ‏‮elements‬‏ ‏‮have‬‏ `[alt]` ‏‮attributes‬‏ ‏‮that‬‏ ‏‮are‬‏ ‏‮redundant‬‏ ‏‮text‬‏."
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "‏‮Image‬‏ ‏‮elements‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮have‬‏ `[alt]` ‏‮attributes‬‏ ‏‮that‬‏ ‏‮are‬‏ ‏‮redundant‬‏ ‏‮text‬‏."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "‏‮Adding‬‏ ‏‮discernable‬‏ ‏‮and‬‏ ‏‮accessible‬‏ ‏‮text‬‏ ‏‮to‬‏ ‏‮input‬‏ ‏‮buttons‬‏ ‏‮may‬‏ ‏‮help‬‏ ‏‮screen‬‏ ‏‮reader‬‏ ‏‮users‬‏ ‏‮understand‬‏ ‏‮the‬‏ ‏‮purpose‬‏ ‏‮of‬‏ ‏‮the‬‏ ‏‮input‬‏ ‏‮button‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮input‬‏ ‏‮buttons‬‏](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -363,13 +363,13 @@
     "message": "`<input type=\"image\">` ‏‮elements‬‏ ‏‮have‬‏ `[alt]` ‏‮text‬‏"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "‏‮Visible‬‏ ‏‮text‬‏ ‏‮labels‬‏ ‏‮that‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮match‬‏ ‏‮the‬‏ ‏‮accessible‬‏ ‏‮name‬‏ ‏‮can‬‏ ‏‮result‬‏ ‏‮in‬‏ ‏‮a‬‏ ‏‮confusing‬‏ ‏‮experience‬‏ ‏‮for‬‏ ‏‮screen‬‏ ‏‮reader‬‏ ‏‮users‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮accessible‬‏ ‏‮names‬‏](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "‏‮Elements‬‏ ‏‮with‬‏ ‏‮visible‬‏ ‏‮text‬‏ ‏‮labels‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮have‬‏ ‏‮matching‬‏ ‏‮accessible‬‏ ‏‮names‬‏."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "‏‮Elements‬‏ ‏‮with‬‏ ‏‮visible‬‏ ‏‮text‬‏ ‏‮labels‬‏ ‏‮have‬‏ ‏‮matching‬‏ ‏‮accessible‬‏ ‏‮names‬‏."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "‏‮Labels‬‏ ‏‮ensure‬‏ ‏‮that‬‏ ‏‮form‬‏ ‏‮controls‬‏ ‏‮are‬‏ ‏‮announced‬‏ ‏‮properly‬‏ ‏‮by‬‏ ‏‮assistive‬‏ ‏‮technologies‬‏, ‏‮like‬‏ ‏‮screen‬‏ ‏‮readers‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮form‬‏ ‏‮element‬‏ ‏‮labels‬‏](https://dequeuniversity.com/rules/axe/4.7/label)."
@@ -462,13 +462,13 @@
     "message": "‏‮Select‬‏ ‏‮elements‬‏ ‏‮have‬‏ ‏‮associated‬‏ ‏‮label‬‏ ‏‮elements‬‏."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "‏‮Including‬‏ ‏‮a‬‏ ‏‮skip‬‏ ‏‮link‬‏ ‏‮can‬‏ ‏‮help‬‏ ‏‮users‬‏ ‏‮skip‬‏ ‏‮to‬‏ ‏‮the‬‏ ‏‮main‬‏ ‏‮content‬‏ ‏‮to‬‏ ‏‮save‬‏ ‏‮time‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮skip‬‏ ‏‮links‬‏](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "‏‮Skip‬‏ ‏‮links‬‏ ‏‮are‬‏ ‏‮not‬‏ ‏‮focusable‬‏."
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "‏‮Skip‬‏ ‏‮links‬‏ ‏‮are‬‏ ‏‮focusable‬‏."
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "‏‮A‬‏ ‏‮value‬‏ ‏‮greater‬‏ ‏‮than‬‏ 0 ‏‮implies‬‏ ‏‮an‬‏ ‏‮explicit‬‏ ‏‮navigation‬‏ ‏‮ordering‬‏. ‏‮Although‬‏ ‏‮technically‬‏ ‏‮valid‬‏, ‏‮this‬‏ ‏‮often‬‏ ‏‮creates‬‏ ‏‮frustrating‬‏ ‏‮experiences‬‏ ‏‮for‬‏ ‏‮users‬‏ ‏‮who‬‏ ‏‮rely‬‏ ‏‮on‬‏ ‏‮assistive‬‏ ‏‮technologies‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮the‬‏ `tabindex` ‏‮attribute‬‏](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
@@ -480,13 +480,13 @@
     "message": "‏‮No‬‏ ‏‮element‬‏ ‏‮has‬‏ ‏‮a‬‏ `[tabindex]` ‏‮value‬‏ ‏‮greater‬‏ ‏‮than‬‏ 0"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "‏‮The‬‏ ‏‮summary‬‏ ‏‮attribute‬‏ ‏‮should‬‏ ‏‮describe‬‏ ‏‮the‬‏ ‏‮table‬‏ ‏‮structure‬‏, ‏‮while‬‏ `<caption>` ‏‮should‬‏ ‏‮have‬‏ ‏‮the‬‏ ‏‮onscreen‬‏ ‏‮title‬‏. ‏‮Accurate‬‏ ‏‮table‬‏ ‏‮mark‬‏-‏‮up‬‏ ‏‮helps‬‏ ‏‮users‬‏ ‏‮of‬‏ ‏‮screen‬‏ ‏‮readers‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮summary‬‏ ‏‮and‬‏ ‏‮caption‬‏](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "‏‮Tables‬‏ ‏‮have‬‏ ‏‮the‬‏ ‏‮same‬‏ ‏‮content‬‏ ‏‮in‬‏ ‏‮the‬‏ ‏‮summary‬‏ ‏‮attribute‬‏ ‏‮and‬‏ `<caption>.`"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "‏‮Tables‬‏ ‏‮have‬‏ ‏‮different‬‏ ‏‮content‬‏ ‏‮in‬‏ ‏‮the‬‏ ‏‮summary‬‏ ‏‮attribute‬‏ ‏‮and‬‏ `<caption>`."
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "‏‮Screen‬‏ ‏‮readers‬‏ ‏‮have‬‏ ‏‮features‬‏ ‏‮to‬‏ ‏‮make‬‏ ‏‮navigating‬‏ ‏‮tables‬‏ ‏‮easier‬‏. ‏‮Ensuring‬‏ ‏‮that‬‏ ‏‮tables‬‏ ‏‮use‬‏ ‏‮the‬‏ ‏‮actual‬‏ ‏‮caption‬‏ ‏‮element‬‏ ‏‮instead‬‏ ‏‮of‬‏ ‏‮cells‬‏ ‏‮with‬‏ ‏‮the‬‏ `[colspan]` ‏‮attribute‬‏ ‏‮may‬‏ ‏‮improve‬‏ ‏‮the‬‏ ‏‮experience‬‏ ‏‮for‬‏ ‏‮screen‬‏ ‏‮reader‬‏ ‏‮users‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮captions‬‏](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
@@ -498,7 +498,7 @@
     "message": "‏‮Tables‬‏ ‏‮use‬‏ `<caption>` ‏‮instead‬‏ ‏‮of‬‏ ‏‮cells‬‏ ‏‮with‬‏ ‏‮the‬‏ `[colspan]` ‏‮attribute‬‏ ‏‮to‬‏ ‏‮indicate‬‏ ‏‮a‬‏ ‏‮caption‬‏."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "‏‮Touch‬‏ ‏‮targets‬‏ ‏‮with‬‏ ‏‮sufficient‬‏ ‏‮size‬‏ ‏‮and‬‏ ‏‮spacing‬‏ ‏‮help‬‏ ‏‮users‬‏ ‏‮who‬‏ ‏‮may‬‏ ‏‮have‬‏ ‏‮difficulty‬‏ ‏‮targeting‬‏ ‏‮small‬‏ ‏‮controls‬‏ ‏‮to‬‏ ‏‮activate‬‏ ‏‮the‬‏ ‏‮targets‬‏. [‏‮Learn‬‏ ‏‮more‬‏ ‏‮about‬‏ ‏‮touch‬‏ ‏‮targets‬‏](https://dequeuniversity.com/rules/axe/4.7/target-size)."
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "‏‮Touch‬‏ ‏‮targets‬‏ ‏‮do‬‏ ‏‮not‬‏ ‏‮have‬‏ ‏‮sufficient‬‏ ‏‮size‬‏ ‏‮or‬‏ ‏‮spacing‬‏."
@@ -1083,10 +1083,7 @@
     "message": "‏‮prefer‬‏_‏‮related‬‏_‏‮applications‬‏ ‏‮is‬‏ ‏‮only‬‏ ‏‮supported‬‏ ‏‮on‬‏ ‏‮Chrome‬‏ ‏‮Beta‬‏ ‏‮and‬‏ ‏‮Stable‬‏ ‏‮channels‬‏ ‏‮on‬‏ ‏‮Android‬‏."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "‏‮The‬‏ ‏‮manifest‬‏ ‏‮URL‬‏ ‏‮scheme‬‏ ({scheme}) ‏‮is‬‏ ‏‮not‬‏ ‏‮supported‬‏ ‏‮on‬‏ ‏‮Android‬‏."
+    "message": "‏‮Lighthouse‬‏ ‏‮could‬‏ ‏‮not‬‏ ‏‮determine‬‏ ‏‮if‬‏ ‏‮the‬‏ ‏‮page‬‏ ‏‮is‬‏ ‏‮installable‬‏. ‏‮Please‬‏ ‏‮try‬‏ ‏‮with‬‏ ‏‮a‬‏ ‏‮newer‬‏ ‏‮version‬‏ ‏‮of‬‏ ‏‮Chrome‬‏."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "‏‮Manifest‬‏ ‏‮start‬‏ ‏‮URL‬‏ ‏‮is‬‏ ‏‮not‬‏ ‏‮valid‬‏"
@@ -1707,7 +1704,7 @@
     "message": "‏‮Best‬‏ ‏‮practices‬‏"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "‏‮These‬‏ ‏‮checks‬‏ ‏‮highlight‬‏ ‏‮opportunities‬‏ ‏‮to‬‏ [‏‮improve‬‏ ‏‮the‬‏ ‏‮accessibility‬‏ ‏‮of‬‏ ‏‮your‬‏ ‏‮web‬‏ ‏‮app‬‏](https://developer.chrome.com/docs/lighthouse/accessibility/). ‏‮Automatic‬‏ ‏‮detection‬‏ ‏‮can‬‏ ‏‮only‬‏ ‏‮detect‬‏ ‏‮a‬‏ ‏‮subset‬‏ ‏‮of‬‏ ‏‮issues‬‏ ‏‮and‬‏ ‏‮does‬‏ ‏‮not‬‏ ‏‮guarantee‬‏ ‏‮the‬‏ ‏‮accessibility‬‏ ‏‮of‬‏ ‏‮your‬‏ ‏‮web‬‏ ‏‮app‬‏, ‏‮so‬‏ [‏‮manual‬‏ ‏‮testing‬‏](https://web.dev/how-to-review/) ‏‮is‬‏ ‏‮also‬‏ ‏‮encouraged‬‏."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "‏‮These‬‏ ‏‮items‬‏ ‏‮address‬‏ ‏‮areas‬‏ ‏‮which‬‏ ‏‮an‬‏ ‏‮automated‬‏ ‏‮testing‬‏ ‏‮tool‬‏ ‏‮cannot‬‏ ‏‮cover‬‏. ‏‮Learn‬‏ ‏‮more‬‏ ‏‮in‬‏ ‏‮our‬‏ ‏‮guide‬‏ ‏‮on‬‏ [‏‮conducting‬‏ ‏‮an‬‏ ‏‮accessibility‬‏ ‏‮review‬‏](https://web.dev/how-to-review/)."
@@ -2853,7 +2850,7 @@
     "message": "‏‮Install‬‏ [‏‮a‬‏ ‏‮Drupal‬‏ ‏‮module‬‏](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) ‏‮that‬‏ ‏‮can‬‏ ‏‮lazy‬‏ ‏‮load‬‏ ‏‮images‬‏. ‏‮Such‬‏ ‏‮modules‬‏ ‏‮provide‬‏ ‏‮the‬‏ ‏‮ability‬‏ ‏‮to‬‏ ‏‮defer‬‏ ‏‮any‬‏ ‏‮offscreen‬‏ ‏‮images‬‏ ‏‮to‬‏ ‏‮improve‬‏ ‏‮performance‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "‏‮Consider‬‏ ‏‮using‬‏ ‏‮a‬‏ ‏‮module‬‏ ‏‮to‬‏ ‏‮inline‬‏ ‏‮critical‬‏ ‏‮CSS‬‏ ‏‮and‬‏ ‏‮JavaScript‬‏, ‏‮and‬‏ ‏‮use‬‏ ‏‮the‬‏ ‏‮defer‬‏ ‏‮attribute‬‏ ‏‮for‬‏ ‏‮non‬‏-‏‮critical‬‏ ‏‮CSS‬‏ ‏‮or‬‏ ‏‮JavaScript‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "‏‮Themes‬‏, ‏‮modules‬‏, ‏‮and‬‏ ‏‮server‬‏ ‏‮specifications‬‏ ‏‮all‬‏ ‏‮contribute‬‏ ‏‮to‬‏ ‏‮server‬‏ ‏‮response‬‏ ‏‮time‬‏. ‏‮Consider‬‏ ‏‮finding‬‏ ‏‮a‬‏ ‏‮more‬‏ ‏‮optimized‬‏ ‏‮theme‬‏, ‏‮carefully‬‏ ‏‮selecting‬‏ ‏‮an‬‏ ‏‮optimization‬‏ ‏‮module‬‏, ‏‮and‬‏/‏‮or‬‏ ‏‮upgrading‬‏ ‏‮your‬‏ ‏‮server‬‏. ‏‮Your‬‏ ‏‮hosting‬‏ ‏‮servers‬‏ ‏‮should‬‏ ‏‮make‬‏ ‏‮use‬‏ ‏‮of‬‏ ‏‮PHP‬‏ ‏‮opcode‬‏ ‏‮caching‬‏, ‏‮memory‬‏-‏‮caching‬‏ ‏‮to‬‏ ‏‮reduce‬‏ ‏‮database‬‏ ‏‮query‬‏ ‏‮times‬‏ ‏‮such‬‏ ‏‮as‬‏ ‏‮Redis‬‏ ‏‮or‬‏ ‏‮Memcached‬‏, ‏‮as‬‏ ‏‮well‬‏ ‏‮as‬‏ ‏‮optimized‬‏ ‏‮application‬‏ ‏‮logic‬‏ ‏‮to‬‏ ‏‮prepare‬‏ ‏‮pages‬‏ ‏‮faster‬‏."
@@ -2862,10 +2859,10 @@
     "message": "‏‮Consider‬‏ ‏‮using‬‏ [‏‮Responsive‬‏ ‏‮Image‬‏ ‏‮Styles‬‏](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) ‏‮to‬‏ ‏‮reduce‬‏ ‏‮the‬‏ ‏‮size‬‏ ‏‮of‬‏ ‏‮images‬‏ ‏‮loaded‬‏ ‏‮on‬‏ ‏‮your‬‏ ‏‮page‬‏. ‏‮If‬‏ ‏‮you‬‏ ‏‮are‬‏ ‏‮using‬‏ ‏‮Views‬‏ ‏‮to‬‏ ‏‮show‬‏ ‏‮multiple‬‏ ‏‮content‬‏ ‏‮items‬‏ ‏‮on‬‏ ‏‮a‬‏ ‏‮page‬‏, ‏‮consider‬‏ ‏‮implementing‬‏ ‏‮pagination‬‏ ‏‮to‬‏ ‏‮limit‬‏ ‏‮the‬‏ ‏‮number‬‏ ‏‮of‬‏ ‏‮content‬‏ ‏‮items‬‏ ‏‮shown‬‏ ‏‮on‬‏ ‏‮a‬‏ ‏‮given‬‏ ‏‮page‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "‏‮Ensure‬‏ ‏‮you‬‏ ‏‮have‬‏ ‏‮enabled‬‏ \"‏‮Aggregate‬‏ ‏‮CSS‬‏ ‏‮files‬‏\" ‏‮in‬‏ ‏‮the‬‏ \"‏‮Administration‬‏ » ‏‮Configuration‬‏ » ‏‮Development‬‏\" ‏‮page‬‏.  ‏‮Ensure‬‏ ‏‮your‬‏ ‏‮Drupal‬‏ ‏‮site‬‏ ‏‮is‬‏ ‏‮running‬‏ ‏‮at‬‏ ‏‮least‬‏ ‏‮Drupal‬‏ 10.1 ‏‮for‬‏ ‏‮improved‬‏ ‏‮asset‬‏ ‏‮aggregation‬‏ ‏‮support‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "‏‮Ensure‬‏ ‏‮you‬‏ ‏‮have‬‏ ‏‮enabled‬‏ \"‏‮Aggregate‬‏ ‏‮JavaScript‬‏ ‏‮files‬‏\" ‏‮in‬‏ ‏‮the‬‏ \"‏‮Administration‬‏ » ‏‮Configuration‬‏ » ‏‮Development‬‏\" ‏‮page‬‏.  ‏‮Ensure‬‏ ‏‮your‬‏ ‏‮Drupal‬‏ ‏‮site‬‏ ‏‮is‬‏ ‏‮running‬‏ ‏‮at‬‏ ‏‮least‬‏ ‏‮Drupal‬‏ 10.1 ‏‮for‬‏ ‏‮improved‬‏ ‏‮asset‬‏ ‏‮aggregation‬‏ ‏‮support‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "‏‮Consider‬‏ ‏‮removing‬‏ ‏‮unused‬‏ ‏‮CSS‬‏ ‏‮rules‬‏ ‏‮and‬‏ ‏‮only‬‏ ‏‮attach‬‏ ‏‮the‬‏ ‏‮needed‬‏ ‏‮Drupal‬‏ ‏‮libraries‬‏ ‏‮to‬‏ ‏‮the‬‏ ‏‮relevant‬‏ ‏‮page‬‏ ‏‮or‬‏ ‏‮component‬‏ ‏‮in‬‏ ‏‮a‬‏ ‏‮page‬‏. ‏‮See‬‏ ‏‮the‬‏ [‏‮Drupal‬‏ ‏‮documentation‬‏ ‏‮link‬‏](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) ‏‮for‬‏ ‏‮details‬‏. ‏‮To‬‏ ‏‮identify‬‏ ‏‮attached‬‏ ‏‮libraries‬‏ ‏‮that‬‏ ‏‮are‬‏ ‏‮adding‬‏ ‏‮extraneous‬‏ ‏‮CSS‬‏, ‏‮try‬‏ ‏‮running‬‏ [‏‮code‬‏ ‏‮coverage‬‏](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) ‏‮in‬‏ ‏‮Chrome‬‏ ‏‮DevTools‬‏. ‏‮You‬‏ ‏‮can‬‏ ‏‮identify‬‏ ‏‮the‬‏ ‏‮theme‬‏/‏‮module‬‏ ‏‮responsible‬‏ ‏‮from‬‏ ‏‮the‬‏ ‏‮URL‬‏ ‏‮of‬‏ ‏‮the‬‏ ‏‮stylesheet‬‏ ‏‮when‬‏ ‏‮CSS‬‏ ‏‮aggregation‬‏ ‏‮is‬‏ ‏‮disabled‬‏ ‏‮in‬‏ ‏‮your‬‏ ‏‮Drupal‬‏ ‏‮site‬‏. ‏‮Look‬‏ ‏‮out‬‏ ‏‮for‬‏ ‏‮themes‬‏/‏‮modules‬‏ ‏‮that‬‏ ‏‮have‬‏ ‏‮many‬‏ ‏‮stylesheets‬‏ ‏‮in‬‏ ‏‮the‬‏ ‏‮list‬‏ ‏‮which‬‏ ‏‮have‬‏ ‏‮a‬‏ ‏‮lot‬‏ ‏‮of‬‏ ‏‮red‬‏ ‏‮in‬‏ ‏‮code‬‏ ‏‮coverage‬‏. ‏‮A‬‏ ‏‮theme‬‏/‏‮module‬‏ ‏‮should‬‏ ‏‮only‬‏ ‏‮enqueue‬‏ ‏‮a‬‏ ‏‮stylesheet‬‏ ‏‮if‬‏ ‏‮it‬‏ ‏‮is‬‏ ‏‮actually‬‏ ‏‮used‬‏ ‏‮on‬‏ ‏‮the‬‏ ‏‮page‬‏."
@@ -3066,46 +3063,46 @@
     "message": "‏‮Enable‬‏ ‏‮compression‬‏ ‏‮on‬‏ ‏‮your‬‏ ‏‮Next‬‏.‏‮js‬‏ ‏‮server‬‏. [‏‮Learn‬‏ ‏‮more‬‏](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "‏‮Contact‬‏ ‏‮your‬‏ ‏‮account‬‏ ‏‮manager‬‏ ‏‮to‬‏ ‏‮enable‬‏ [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). ‏‮Configuring‬‏ ‏‮it‬‏ ‏‮will‬‏ ‏‮prioritize‬‏ ‏‮and‬‏ ‏‮optimize‬‏ ‏‮your‬‏ ‏‮page‬‏ ‏‮rendering‬‏ ‏‮performance‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "‏‮Use‬‏ ‏‮the‬‏ [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) ‏‮option‬‏ ‏‮in‬‏ ‏‮NitroPack‬‏ ‏‮to‬‏ ‏‮set‬‏ ‏‮a‬‏ ‏‮desired‬‏ ‏‮value‬‏ ‏‮for‬‏ ‏‮the‬‏ ‏‮CSS‬‏ ‏‮font‬‏-‏‮display‬‏ ‏‮rule‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "‏‮Use‬‏ [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) ‏‮to‬‏ ‏‮automatically‬‏ ‏‮convert‬‏ ‏‮your‬‏ ‏‮images‬‏ ‏‮to‬‏ ‏‮WebP‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "‏‮Defer‬‏ ‏‮offscreen‬‏ ‏‮images‬‏ ‏‮by‬‏ ‏‮enabling‬‏ [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "‏‮Enable‬‏ [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) ‏‮in‬‏ ‏‮NitroPack‬‏ ‏‮for‬‏ ‏‮faster‬‏ ‏‮initial‬‏ ‏‮load‬‏ ‏‮times‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "‏‮Improve‬‏ ‏‮server‬‏ ‏‮response‬‏ ‏‮time‬‏ ‏‮and‬‏ ‏‮optimize‬‏ ‏‮perceived‬‏ ‏‮performance‬‏ ‏‮by‬‏ ‏‮activating‬‏ [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "‏‮Enable‬‏ [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) ‏‮in‬‏ ‏‮your‬‏ ‏‮Caching‬‏ ‏‮settings‬‏ ‏‮to‬‏ ‏‮reduce‬‏ ‏‮the‬‏ ‏‮size‬‏ ‏‮of‬‏ ‏‮your‬‏ ‏‮CSS‬‏, ‏‮HTML‬‏, ‏‮and‬‏ ‏‮JavaScript‬‏ ‏‮files‬‏ ‏‮for‬‏ ‏‮faster‬‏ ‏‮load‬‏ ‏‮times‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "‏‮Enable‬‏ [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) ‏‮in‬‏ ‏‮your‬‏ ‏‮Caching‬‏ ‏‮settings‬‏ ‏‮to‬‏ ‏‮reduce‬‏ ‏‮the‬‏ ‏‮size‬‏ ‏‮of‬‏ ‏‮your‬‏ ‏‮JS‬‏, ‏‮HTML‬‏, ‏‮and‬‏ ‏‮CSS‬‏ ‏‮files‬‏ ‏‮for‬‏ ‏‮faster‬‏ ‏‮load‬‏ ‏‮times‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "‏‮Enable‬‏ [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) ‏‮to‬‏ ‏‮remove‬‏ ‏‮CSS‬‏ ‏‮rules‬‏ ‏‮that‬‏ ‏‮are‬‏ ‏‮not‬‏ ‏‮applicable‬‏ ‏‮to‬‏ ‏‮this‬‏ ‏‮page‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "‏‮Configure‬‏ [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) ‏‮in‬‏ ‏‮NitroPack‬‏ ‏‮to‬‏ ‏‮delay‬‏ ‏‮loading‬‏ ‏‮of‬‏ ‏‮scripts‬‏ ‏‮until‬‏ ‏‮they‬‏ ‏‮are‬‏ ‏‮needed‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "‏‮Go‬‏ ‏‮to‬‏ ‏‮the‬‏ [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) ‏‮feature‬‏ ‏‮in‬‏ ‏‮the‬‏ `Caching` ‏‮menu‬‏ ‏‮and‬‏ ‏‮adjust‬‏ ‏‮your‬‏ ‏‮page‬‏ ‏‮cache‬‏ ‏‮expiration‬‏ ‏‮time‬‏ ‏‮to‬‏ ‏‮improve‬‏ ‏‮loading‬‏ ‏‮times‬‏ ‏‮and‬‏ ‏‮user‬‏ ‏‮experience‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "‏‮Automatically‬‏ ‏‮compress‬‏, ‏‮optimize‬‏, ‏‮and‬‏ ‏‮convert‬‏ ‏‮your‬‏ ‏‮images‬‏ ‏‮into‬‏ ‏‮WebP‬‏ ‏‮by‬‏ ‏‮enabling‬‏ ‏‮the‬‏ [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) ‏‮setting‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "‏‮Enable‬‏ [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) ‏‮to‬‏ ‏‮preemptively‬‏ ‏‮optimize‬‏ ‏‮your‬‏ ‏‮images‬‏ ‏‮and‬‏ ‏‮make‬‏ ‏‮them‬‏ ‏‮match‬‏ ‏‮the‬‏ ‏‮dimensions‬‏ ‏‮of‬‏ ‏‮the‬‏ ‏‮containers‬‏ ‏‮they‬‏’‏‮re‬‏ ‏‮displayed‬‏ ‏‮in‬‏ ‏‮across‬‏ ‏‮all‬‏ ‏‮devices‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "‏‮Use‬‏ [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) ‏‮in‬‏ ‏‮NitroPack‬‏ ‏‮to‬‏ ‏‮reduce‬‏ ‏‮the‬‏ ‏‮size‬‏ ‏‮of‬‏ ‏‮the‬‏ ‏‮files‬‏ ‏‮that‬‏ ‏‮are‬‏ ‏‮sent‬‏ ‏‮to‬‏ ‏‮the‬‏ ‏‮browser‬‏."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "‏‮Use‬‏ ‏‮the‬‏ `nuxt/image` ‏‮component‬‏ ‏‮and‬‏ ‏‮set‬‏ `format=\"webp\"`. [‏‮Learn‬‏ ‏‮more‬‏](https://image.nuxtjs.org/components/nuxt-img#format)."
@@ -3309,7 +3306,7 @@
     "message": "‏‮Save‬‏ ‏‮as‬‏ ‏‮JSON‬‏"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "‏‮View‬‏ ‏‮Unthrottled‬‏ ‏‮Trace‬‏"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "‏‮Open‬‏ ‏‮in‬‏ ‏‮Viewer‬‏"

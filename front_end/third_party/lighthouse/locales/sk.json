@@ -18,13 +18,13 @@
     "message": "Atribúty `[aria-*]` zodpovedajú svojim rolám"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "Roly ARIA `role` umožňujú asistenčným technológiám poznať rolu jednotlivých prvkov na webovej stránke. Ak sú hodnoty rol `role` napísané nesprávne, hodnoty rol ARIA `role` neexistujú alebo sú roly abstraktné, účel prvku nebude používateľom asistenčných technológií komunikovaný. [Ďalšie informácie o rolách ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "Hodnoty priradené prvku `role=\"\"` nie sú platné roly ARIA."
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "Hodnoty priradené prvku `role=\"\"` sú platné roly ARIA."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Keď prvok nemá dostupný názov, čítačky obrazovky ho oznamujú pod generickým názvom, takže je pre používateľov nepoužiteľný. [Ako zlepšiť dostupnosť prvkov príkazov](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)"
@@ -336,13 +336,13 @@
     "message": "Prvky obrázka majú atribúty `[alt]`"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "Informatívne prvky by mali mať krátky opisný alternatívny text. Alternatívny text, ktorý je presne rovnaký ako text vedľa odkazu alebo obrázka, je pre používateľov čítačiek obrazovky mätúci, pretože sa prečíta dvakrát. [Ďalšie informácie o atribúte `alt`](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)"
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "Prvky obrázkov majú atribúty (`[alt]`), ktoré sú nadbytočný text."
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "Prvky obrázkov nemajú atribúty `[alt]`, ktoré sú nadbytočný text."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Pridaním rozlíšiteľného a prístupného textu k tlačidlám vstupu môžete pomôcť používateľom čítačiek obrazovky porozumieť účelu tlačidla vstupu. [Ďalšie informácie o tlačidlách vstupu](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
@@ -363,13 +363,13 @@
     "message": "Prvky `<input type=\"image\">` majú text `[alt]`"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "Viditeľné textové štítky, ktoré sa nezhodujú s dostupným názvom, môžu u používateľov čítačiek obrazovky spôsobiť zmätok. [Ďalšie informácie o dostupných názvoch](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "Prvky s viditeľnými textovými štítkami nemajú zodpovedajúce dostupné názvy."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "Prvky s viditeľnými textovými štítkami majú zodpovedajúce dostupné názvy."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "Štítky zaisťujú, aby asistenčné technológie (napríklad čítačky obrazovky) správne oznamovali ovládacie prvky formulárov. [Ďalšie informácie o štítkoch prvkov formulárov](https://dequeuniversity.com/rules/axe/4.7/label)"
@@ -462,13 +462,13 @@
     "message": "Vybrané prvky majú spojené prvky štítkov."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "Zahrnutie odkazu na preskočenie môže pomôcť používateľom preskočiť na hlavný obsah a ušetriť tak čas. [Ďalšie informácie o odkazoch na preskočenie](https://dequeuniversity.com/rules/axe/4.7/skip-link)"
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "Odkazy na preskočenie nie sú označiteľné."
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "Odkazy na preskočenie sú označiteľné."
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Hodnota väčšia ako 0 označuje explicitné usporiadanie navigácie. Ide o technicky platné riešenie, ale často vedie k nepríjemným skúsenostiam používateľov, ktorí potrebujú asistenčné technológie. [Ďalšie informácie o atribúte `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
@@ -480,13 +480,13 @@
     "message": "Žiadny prvok nemá hodnotu `[tabindex]` vyššiu ako 0"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "Atribút súhrnu by mal opisovať štruktúru tabuľky, zatiaľ čo atribút `<caption>` by mal mať názov na obrazovke. Presné značenie tabuľky pomáha používateľom čítačiek obrazovky. [Ďalšie informácie o súhrne a titulkoch](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)"
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "Tabuľky majú rovnaký obsah v atribúte súhrnu a `<caption>.`"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "Tabuľky majú odlišný obsah v atribúte súhrnu a atribúte`<caption>`."
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Čítačky obrazovky majú funkcie, ktoré zjednodušujú prehliadanie tabuliek. Ak zaistíte, že tabuľky budú používať príslušný prvok titulku namiesto buniek s atribútom `[colspan]`, môžete zlepšiť prostredie pre používateľov čítačiek obrazovky. [Ďalšie informácie o titulkoch](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
@@ -498,7 +498,7 @@
     "message": "Tabuľky uvádzajú titulok pomocou `<caption>` namiesto buniek s atribútom `[colspan]`."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "Dostatočne veľké a priestorné miesta dotyku pomáhajú aktivovať ciele používateľom, ktorí môžu mať problémy zacieliť na malé ovládacie prvky. [Ďalšie informácie o miestach dotyku](https://dequeuniversity.com/rules/axe/4.7/target-size)"
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "Miesta dotyku nie sú dostatočne veľké ani priestorné."
@@ -1083,10 +1083,7 @@
     "message": "Parameter prefer_related_applications je podporovaný iba v beta verzii a stabilných verziách Chromu v Androide."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Schéma webovej adresy manifestu ({scheme}) nie je v Androide podporovaná."
+    "message": "Nástroj Lighthouse nedokázal určiť, či je stránka inštalovateľná. Skúste to s novou verziou Chromu."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Začiatočná webová adresa manifestu nie je platná"
@@ -1707,7 +1704,7 @@
     "message": "Osvedčené postupy"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "Tieto kontroly zvýrazňujú príležitosti na [zlepšenie dostupnosti vašej webovej aplikácie](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatické rozpoznávanie môže rozpoznať iba podskupinu problémov a nezaručuje dostupnosť vašej webovej aplikácie, preto odporúčame použiť aj [manuálne testovanie](https://web.dev/how-to-review/)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Tieto položky sa zaoberajú oblasťami, ktoré automatické testovanie nemôže obsiahnuť. Ďalšie informácie získate v [sprievodcovi vykonávaním kontroly dostupnosti](https://web.dev/how-to-review/)."
@@ -2853,7 +2850,7 @@
     "message": "Nainštalujte [modul Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search), ktorý môže načítavať obrázky až v poslednej chvíli. Tieto moduly umožňujú odložiť obrázky mimo obrazovky na zlepšenie výkonnosti."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "Zvážte použitie modulu na vloženie kľúčovej šablóny CSS a JavaScriptu do textu a na nedôležité súbory CSS alebo JavaScript použite atribút defer."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Čas odpovede servera ovplyvňujú motívy, moduly a špecifikácie servera. Odporúčame nájsť optimalizovanejší motív, opatrne vybrať modul na optimalizáciu alebo inovovať server. Vaše hostiteľské servery by mali využívať ukladanie kódov operácií PHP do vyrovnávacej pamäte, ukladanie do vyrovnávacej pamäte na zníženie časov dopytov databázy (napríklad Redis alebo Memcached), ako aj optimalizovanú aplikačnú logiku na skrátenie prípravy stránok."
@@ -2862,10 +2859,10 @@
     "message": "Zvážte použitie [štýlov responzívnych obrázkov](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8), aby ste znížili veľkosť obrázkov načítavaných na stránke. Ak zobrazujete viacero položiek obsahu na stránke pomocou Zobrazení, zvážte implementáciu stránkovania, aby ste obmedzili počet položiek obsahu zobrazovaných na danej stránke."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Skontrolujte, či ste povolili „Agregovať súbory CSS“ na stránke Správa » Konfigurácia » Vývoj.  Ak chcete zlepšiť podporu agregácie podkladov, uistite sa, že váš web Drupal používa minimálne Drupal 10.1."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Skontrolujte, či ste povolili „Agregovať súbory JavaScriptu“ na stránke Správa » Konfigurácia » Vývoj.  Ak chcete zlepšiť podporu agregácie podkladov, uistite sa, že váš web Drupal používa minimálne Drupal 10.1."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Zvážte odstránenie nepoužívaných pravidiel šablóny CSS a na relevantnú stránku alebo do komponentu na stránke priložte iba potrebné knižnice Drupal. Podrobnosti si zobrazíte pomocou [odkazu na dokumentáciu Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Priložené knižnice pridávajúce externý JavaScript skúste identifikovať spustením funkcie [zahrnutia v kóde](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) v nástroji Chrome DevTools. Príslušný motív alebo modul identifikujete pomocou webovej adresy šablóny so štýlmi, keď je na webe Drupal deaktivovaná agregácia šablón CSS. Nájdite motívy alebo moduly, ktoré majú v zozname mnoho šablón so štýlmi s veľkým počtom červených hodnôt vo funkcii zahrnutia v kóde. Motív alebo modul by mal šablónu so štýlmi zaradiť do poradia iba vtedy, keď sa používa na príslušnej stránke."
@@ -3066,46 +3063,46 @@
     "message": "Povoľte kompresiu na serveri Next.js. [Ďalšie informácie](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "Kontaktujte správcu účtu, aby povolil funkciu [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Jej konfiguráciou sa uprednostní a optimalizuje výkon vykresľovania stránky."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "Pomocou možnosti [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) v sekcii NitroPack nastavte požadovanú hodnotu pre pravidlo zobrazenia písma CSS."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "Pomocou funkcie [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) môžete automaticky konvertovať obrázky do formátu WebP."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "Odložte obrázky mimo obrazovky povolením možnosti [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "Povoľte v službe NitroPack funkciu [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack), aby bolo úvodné načítanie rýchlejšie."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "Aktivujte [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361), čím skrátite čas odpovede servera a optimalizujete vnímanú výkonnosť."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "Ak chcete skrátiť čas načítania, v nastaveniach vyrovnávacej pamäte povoľte funkciu [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources), aby ste znížili veľkosť súborov CSS, HTML a JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "Ak chcete skrátiť čas načítania, v nastaveniach vyrovnávacej pamäte povoľte funkciu [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources), aby ste znížili veľkosť súborov JS, HTML a CSS."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "Ak chcete odstrániť pravidlá CSS, ktoré sa nevzťahujú na túto stránku, povoľte funkciu [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "Nakonfigurujte [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) v sekcii NitroPack, aby ste mohli oneskoriť načítavanie skriptov, pokým nie sú potrebné."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "Prejdite na funkciu [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) v ponuke `Caching` a upravte čas vypršania vyrovnávacej pamäte stránky, aby ste zlepšili čas načítania a dojem používateľov."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "Obrázky môžete automaticky komprimovať, optimalizovať a konvertovať na formát WebP zapnutím nastavenia [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "Ak chcete preventívne optimalizovať svoje obrázky a prispôsobiť ich veľkosti kontajnerov, v ktorých sa zobrazujú vo všetkých zariadeniach, povoľte nastavenie [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "Pomocou funkcie [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) v sekcii NitroPack zmenšite veľkosť súborov odosielaných do prehliadača."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Použite komponent `nuxt/image` a nastavte `format=\"webp\"`. [Ďalšie informácie](https://image.nuxtjs.org/components/nuxt-img#format)"
@@ -3309,7 +3306,7 @@
     "message": "Uložiť ako JSON"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "Zobraziť neobmedzenú stopu"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Otvoriť v zobrazovači"

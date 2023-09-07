@@ -18,13 +18,13 @@
     "message": "Atributai „`[aria-*]`“ atitinka savo vaidmenis"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "ARIA „`role`“ leidžia pagalbinėms technologijoms sužinoti kiekvieno tinklalapio elemento vaidmenį. Jei „`role`“ vertės su klaidomis, nėra esamų ARIA „`role`“ verčių arba abstrakčių vaidmenų, elemento tikslas nebus pateiktas pagalbinių technologijų naudotojams. [Sužinokite daugiau apie ARIA vaidmenis](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "„`role=\"\"`“ priskirtos vertės nėra tinkami ARIA vaidmenys."
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "„`role=\"\"`“ priskirtos vertės yra tinkami ARIA vaidmenys."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Kai nenurodytas pasiekiamasis elemento pavadinimas, ekrano skaitytuvai apie jį praneša naudodami bendrąjį pavadinimą, todėl jo negali naudoti ekrano skaitytuvo naudotojai. [Sužinokite, kaip komandų elementus padaryti lengviau pasiekiamus](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
@@ -336,13 +336,13 @@
     "message": "Vaizdo elementuose yra atributų „`[alt]`“"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "Informaciniuose elementuose turėtų būti pateiktas trumpas, aprašomasis alternatyvus tekstas. Alternatyvus tekstas, kuris tiksliai atitinka tekstą, esantį šalia nuorodos ar vaizdo, ekrano skaitytuvo naudotojams gali būti klaidinantis, nes tekstas bus skaitomas du kartus. [Sužinokite daugiau apie atributą „`alt`“](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "Vaizdo elementuose yra atributų „`[alt]`“, kurie yra nereikalingas tekstas."
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "Vaizdo elementuose nėra atributų „`[alt]`“, kurie yra nereikalingas tekstas."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Jei prie įvesties mygtukų pridėsite pastebimą ir pasiekiamą tekstą, ekrano skaitytuvo naudotojams bus lengviau suprasti įvesties mygtuko paskirtį. [Sužinokite daugiau apie įvesties mygtukus](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -363,13 +363,13 @@
     "message": "Elementuose „`<input type=\"image\">`“ yra „`[alt]`“ teksto"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "Matomos teksto etiketės, neatitinkančios pasiekiamojo pavadinimo, gali lemti klaidinančią ekrano skaitytuvo naudotojų patirtį. [Sužinokite daugiau apie pasiekiamuosius pavadinimus](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "Elementuose, kuriuose yra matomų teksto etikečių, nėra atitinkančių pasiekiamų pavadinimų."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "Elementuose, kuriuose yra matomų teksto etikečių, yra atitinkančių pasiekiamų pavadinimų."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "Etiketės užtikrina, kad pagalbinės technologijos, pvz., ekrano skaitytuvai, tinkamai praneštų apie formų valdiklius. [Sužinokite daugiau apie formų elementų etiketes](https://dequeuniversity.com/rules/axe/4.7/label)."
@@ -462,13 +462,13 @@
     "message": "Pasirinktuose elementuose yra susijusių etikečių elementų."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "Įtraukę praleidimo nuorodą naudotojai gali pereiti prie pagrindinio turinio ir sutaupyti laiko. [Sužinokite daugiau apie praleidimo nuorodas](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "Praleidimo nuorodų negalima suaktyvinti."
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "Praleidimo nuorodos yra suaktyvinamos."
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Didesnė nei 0 vertė aiškiai nurodo naršymo tvarką. Iš tiesų tai yra tinkamas sprendimas, tačiau dažnai erzina pagalbinių technologijų naudotojus. [Sužinokite daugiau apie atributą „`tabindex`“](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
@@ -480,13 +480,13 @@
     "message": "Nėra elemento su didesne nei 0 „`[tabindex]`“ verte"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "Suvestinės atribute turėtų būti aprašyta lentelės struktūra, o „`<caption>`“ turėtų būti nurodytas ekrane pateiktas pavadinimas. Tikslus lentelės žymėjimas naudingas ekrano skaitytuvų naudotojams. [Sužinokite daugiau apie suvestinę ir antraštę](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "Lentelėse yra tas pats turinys suvestinės atribute ir „`<caption>.`“"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "Lentelėse yra kitoks turinys suvestinės atribute ir „`<caption>`“"
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Ekrano skaitytuvuose naudojamos funkcijos, padedančios lengviau naršyti lenteles. Užtikrinus, kad lentelėse naudojamas faktinis subtitrų elementas, o ne langeliai su atributu „`[colspan]`“, gali būti pagerinta ekrano skaitytuvų naudotojų patirtis. [Sužinokite daugiau apie subtitrus.](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
@@ -498,7 +498,7 @@
     "message": "Lentelėse naudojamas skirtukas „`<caption>`“ vietoje langelių su atributu „`[colspan]`“ antraštei nurodyti."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "Jutiklinės sritys, kurių dydis ir tarpai yra pakankami, padeda naudotojams, kuriems sudėtinga taikyti pagal nedidelius valdiklius, suaktyvinti taikymo vietas. [Sužinokite daugiau apie jutiklines sritis](https://dequeuniversity.com/rules/axe/4.7/target-size)."
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "Jutiklinės sritys arba jų tarpai nepakankamo dydžio."
@@ -1083,10 +1083,7 @@
     "message": "„prefer_related_applications“ palaikoma tik beta versijos „Chrome“ ir pastoviuose kanaluose sistemoje „Android“."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Aprašo URL schema ({scheme}) nepalaikoma sistemoje „Android“."
+    "message": "„Lighthouse“ nepavyko nustatyti, ar puslapį galima įdiegti. Bandykite naudodami naujesnės versijos „Chrome“."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Aprašo pradžios URL netinkamas"
@@ -1707,7 +1704,7 @@
     "message": "Geriausia praktika"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "Atlikę šias patikras sužinosite, kaip galite [geriau pritaikyti žiniatinklio programą](https://developer.chrome.com/docs/lighthouse/accessibility/). Naudojant automatinį aptikimą galima aptikti tik dalį problemų ir negarantuojamas žiniatinklio programos pritaikomumas, todėl taip pat rekomenduojama atlikti [neautomatinį bandymą](https://web.dev/how-to-review/)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Šie elementai apima sritis, kurių automatinio bandymo įrankis negali aprėpti. Mūsų vadove sužinokite daugiau apie tai, kaip [atlikti pritaikomumo peržiūrą](https://web.dev/how-to-review/)."
@@ -2853,7 +2850,7 @@
     "message": "Įdiekite [„Drupal“ modulį](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search), kuris galėtų įkelti vaizdus naudojant atidėtąjį įkėlimą. Naudojant tokius modulius galima atidėti bet kokius ne ekraninius vaizdus, kad būtų padidintas našumas."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "Apsvarstykite galimybę naudoti modulį, kad galėtumėte įterpti kritines CSS kalbos ir „JavaScript“ funkcijas, ir naudoti atidėjimo atributą nekritinėms CSS kalbos ar „JavaScript“ funkcijoms."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Temos, moduliai ir serverio specifikacijos – visa tai turi įtakos serverio atsako laikui. Galbūt vertėtų surasti geriau optimizuotą temą, atidžiai pasirinkti optimizavimo modulį ir (arba) naujovinti serverį. Prieglobos serveriai turėtų naudoti PHP operacijos kodų talpyklą, atminties talpyklą, kad sumažintų duomenų bazės užklausų skaičių, pvz., „Redis“ ar „Memcached“, bei optimizuotą programos logiką, kad puslapiai būtų sparčiau parengti."
@@ -2862,10 +2859,10 @@
     "message": "Apsvarstykite galimybę naudoti [interaktyvių vaizdų stilius](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8), kad sumažintumėte puslapyje įkeliamus vaizdus. Jei naudojate rodinius keliems turinio elementams rodyti puslapyje, apsvarstykite galimybę įdiegti puslapių numeravimą, kad apribotumėte nurodytame puslapyje rodomų turinio elementų skaičių."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Būtinai įgalinkite funkciją „Apibendrinti CSS kalbos failus“ puslapyje „Administravimas“ » „Konfigūravimas“ » „Diegimas“.  Įsitikinkite, kad „Drupal“ svetainė veikia naudojant bent „Drupal“ 10.1 versiją, kad būtų teikiamas patobulintas išteklių apibendrinimo palaikymas."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Būtinai įgalinkite funkciją „Apibendrinti „JavaScript“ failus“ puslapyje „Administravimas“ » „Konfigūravimas“ » „Diegimas“.  Įsitikinkite, kad „Drupal“ svetainė veikia naudojant bent „Drupal“ 10.1 versiją, kad būtų teikiamas patobulintas išteklių apibendrinimo palaikymas."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Apsvarstykite galimybę pašalinti nenaudojamas CSS kalbos taisykles ir pridėti tik reikalingas „Drupal“ bibliotekas prie atitinkamo puslapio ar komponento puslapyje. Jei reikia išsamios informacijos, žr. [„Drupal“ dokumentų nuorodą](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Kad nustatytumėte pridėtas bibliotekas, pridedančias nesusijusios CSS kalbos, pabandykite vykdyti [kodo aprėpties procesą](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) naudodami „Chrome DevTools“. Susijusią temą ir (arba) modulį galite nustatyti pagal stiliaus aprašo URL, kai CSS kalbos apibendrinimas išjungtas „Drupal“ svetainėje. Ieškokite temų ir (arba) modulių, kurių sąraše pateikta daug stiliaus aprašų, kurių kodo aprėptyje yra daug raudonos spalvos. Tema ir (arba) modulis įtraukti stiliaus aprašą į eilę turėtų tik tokiu atveju, jei jis tikrai naudojamas puslapyje."
@@ -3066,46 +3063,46 @@
     "message": "Įgalinkite glaudinimą Next.js serveryje. [Sužinokite daugiau](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "Susisiekite su paskyros valdytoju, kad įgalintumėte [„`HTML Lazy Load`“](https://support.nitropack.io/hc/en-us/articles/17144942904337). Sukonfigūravus jį bus suteikta pirmenybė ir optimizuojamas puslapio pateikimo našumas."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "Naudokite „NitroPack“ [„`Override Font Rendering Behavior`“](https://support.nitropack.io/hc/en-us/articles/16547358865041) parinktį ir nustatykite norimą CSS kalbos šrifto rodymo taisyklės vertę."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "Naudokite [„`Image Optimization`“](https://support.nitropack.io/hc/en-us/articles/16547237162513), kad automatiškai konvertuotumėte vaizdus į „WebP“."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "Atidėkite ne ekrano vaizdus įgalindami [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "Įgalinkite [„`Remove render-blocking resources`“](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) „NitroPack“, kad pradinis įkėlimas būtų trumpesnis."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "Padidinkite serverio atsako laiką ir optimizuokite suvokiamą našumą suaktyvindami [„`Instant Load`“](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "Įgalinkite [„`Minify resources`“](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) saugojimo talpykloje nustatymuose, kad sumažintumėte CSS kalbos, HTML ir „JavaScript“ failų dydį, kad būtų greičiau įkeliama."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "Įgalinkite [„`Minify resources`“](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) saugojimo talpykloje nustatymuose, kad sumažintumėte JS, HTML ir CSS kalbos failų dydį, kad būtų greičiau įkeliama."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "Įgalinkite [„`Reduce Unused CSS`“](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS), kad pašalintumėte CSS kalbos taisykles, kurios netaikomos šiam puslapiui."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "Konfigūruokite [„`Delayed Scripts`“](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) „NitroPack“, kad atidėtumėte scenarijų įkėlimą, kol jų prireiks."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "Pasirinkite [„`Improve Server Response Time`“](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) funkciją „`Caching`“ meniu ir koreguokite puslapio talpyklos galiojimo laiką, kad pagerintumėte įkėlimo laiką ir naudotojų patirtį."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "Automatiškai suglaudinkite, optimizuokite ir konvertuokite vaizdus į „WebP“ įgalinę nustatymą [„`Image Optimization`“](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "Įgalinkite [„`Adaptive Image Sizing`“](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site), kad iš anksto galėtumėte optimizuoti vaizdus ir pritaikyti juos pagal sudėtinių failų, kuriuose jie pateikiami, matmenis visuose įrenginiuose."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "Naudokite [„`Gzip compression`“](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) „NitroPack“, kad sumažintumėte į naršyklę siunčiamų failų dydį."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Naudokite komponentą „`nuxt/image`“ ir nustatykite „`format=\"webp\"`“. [Sužinokite daugiau](https://image.nuxtjs.org/components/nuxt-img#format)."
@@ -3309,7 +3306,7 @@
     "message": "Išsaugoti kaip JSON"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "Žr. neribotą pėdsaką"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Atidaryti naudojant žiūriklį"

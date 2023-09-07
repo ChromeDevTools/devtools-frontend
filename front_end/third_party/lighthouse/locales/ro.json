@@ -18,13 +18,13 @@
     "message": "Atributele `[aria-*]` se potrivesc cu rolurile"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "Cu ajutorul rolurilor ARIA `role`, tehnologiile de asistare pot să afle rolul fiecărui element din pagina web. Dacă valorile pentru `role` sunt scrise greșit și rezultă valori inexistente pentru rolurile ARIA `role` sau roluri abstracte, scopul elementului nu va fi comunicat utilizatorilor tehnologiilor de asistare. [Află mai multe despre rolurile ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "Valorile atribuite pentru `role=\"\"` nu sunt roluri ARIA valide."
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "Valorile atribuite pentru `role=\"\"` sunt roluri ARIA valide."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Când un element nu are un nume accesibil, cititoarele de ecran îl anunță cu o denumire generică, făcându-l inutil pentru utilizatorii care se bazează pe cititoarele de ecran. [Află cum să faci elementele de comandă mai accesibile](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
@@ -336,13 +336,13 @@
     "message": "Elementele imagine au atribute `[alt]`"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "Elementele informative ar trebui să conțină texte alternative descriptive scurte. Textul alternativ care este identic cu textul de lângă link sau imagine poate crea confuzie în rândul utilizatorilor cititoarelor de ecran, deoarece textul va fi citit de două ori. [Află mai multe despre atributul `alt`](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "Elementele imagine au atribute `[alt]` care reprezintă text redundant."
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "Elementele imagine nu au atribute `[alt]` care reprezintă text redundant."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Adăugarea de text vizibil și accesibil la butoanele de introducere poate ajuta utilizatorii cititoarelor de ecran să înțeleagă scopul butonului de introducere. [Află mai multe despre butoanele de introducere](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -363,13 +363,13 @@
     "message": "Elementele `<input type=\"image\">` au text `[alt]`"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "Etichetele text vizibile care nu corespund numelui accesibil pot cauza confuzie în rândul utilizatorilor cititoarelor de ecran. [Află mai multe despre numele accesibile](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "Elementele cu etichete text vizibile nu au nume accesibile corespunzătoare."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "Elementele cu etichete text vizibile au nume accesibile corespunzătoare."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "Etichetele asigură că opțiunile formularelor sunt anunțate corect de tehnologiile de asistare, precum cititoarele de ecran. [Află mai multe despre etichetele elementelor de formular](https://dequeuniversity.com/rules/axe/4.7/label)."
@@ -462,13 +462,13 @@
     "message": "Anumite elemente au elemente de etichetă asociate."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "Includerea unui link de omitere îi poate ajuta pe utilizatori să treacă la conținutul principal, pentru a economisi timp. [Află mai multe despre linkurile de omitere](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "Linkurile de omitere nu sunt focalizabile."
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "Linkurile de omitere sunt focalizabile."
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "O valoare mai mare decât 0 implică o ordine explicită de navigare. Deși valid din punct de vedere tehnic, acest lucru creează adesea frustrări utilizatorilor care se bazează pe tehnologii de asistare. [Află mai multe despre atributul `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
@@ -480,13 +480,13 @@
     "message": "Niciun element nu are o valoare `[tabindex]` mai mare decât 0"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "Atributul rezumat trebuie să descrie structura tabelului, iar `<caption>` trebuie să aibă titlul pe ecran. Marcarea corectă a tabelelor îi ajută pe utilizatorii cititoarelor de ecran. [Află mai multe despre rezumat și legendă](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "Tabelele au același conținut în atributul rezumat și în `<caption>.`"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "Tabelul are conținut diferit în atributul rezumat și în `<caption>`."
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Cititoarele de ecran au funcții care facilitează navigarea în tabele. Dacă te asiguri că tabelele folosesc elementul de subtitrare în locul celulelor cu atributul `[colspan]`, experiența utilizatorilor de cititoare de ecran poate fi îmbunătățită. [Află mai multe despre subtitrări](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
@@ -498,7 +498,7 @@
     "message": "Tabelele folosesc `<caption>` în locul celulelor cu atributul `[colspan]` pentru a indica o legendă."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "Țintele de atins cu o dimensiune și o spațiere suficiente ajută utilizatorii care au dificultăți legate de atingerea comenzilor mici să activeze țintele. [Află mai multe despre țintele de atins](https://dequeuniversity.com/rules/axe/4.7/target-size)."
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "Țintele de atins nu au o dimensiune sau o spațiere suficientă."
@@ -1083,10 +1083,7 @@
     "message": "Proprietatea prefer_related_applications este acceptată numai în Chrome Beta și pe canale stabile de pe Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Schema adresei URL a manifestului ({scheme}) nu este acceptată pe Android."
+    "message": "Lighthouse nu a putut stabili dacă pagina poate fi instalată. Încearcă folosind o versiune mai nouă de Chrome."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Adresa URL inițială a manifestului nu este validă"
@@ -1707,7 +1704,7 @@
     "message": "Cele mai bune practici"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "Aceste verificări evidențiază oportunitățile de a [îmbunătăți accesibilitatea aplicației web](https://developer.chrome.com/docs/lighthouse/accessibility/). Detectarea automată poate detecta doar un subset de probleme și nu garantează accesibilitatea aplicației web. Prin urmare, se recomandă și [testarea manuală](https://web.dev/how-to-review/)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Aceste elemente se adresează zonelor pe care un instrument de testare automată nu le poate acoperi. Află mai multe din ghidul nostru despre [realizarea unei evaluări a accesibilității](https://web.dev/how-to-review/)."
@@ -2853,7 +2850,7 @@
     "message": "Instalează [un modul Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) care poate încărca lent imagini. Aceste module oferă opțiunea de a amâna imaginile din afara ecranului pentru a îmbunătăți performanța."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "Îți recomandăm să folosești un modul pentru a activa inline elementele CSS și JavaScript critice și să folosești atributul defer pentru elementele CSS sau JavaScript neesențiale."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Temele, modulele și specificațiile serverului contribuie toate la timpul de răspuns al serverului. Îți recomandăm să găsești o temă mai optimizată, selectând cu atenție un modul de optimizare și/sau făcând upgrade la server. Serverele de găzduire ar trebui să folosească stocarea în memoria cache opcode a codului PHP pentru a reduce duratele de interogare a bazei de date, de exemplu, Redis sau Memcached, precum și logica optimizată a aplicației pentru a pregăti paginile mai rapid."
@@ -2862,10 +2859,10 @@
     "message": "Îți recomandăm să folosești [Stilurile de imagini adaptabile](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) pentru a reduce dimensiunea imaginilor încărcate în pagină. Dacă folosești Views pentru a afișa mai multe elemente de conținut într-o pagină, îți recomandăm să implementezi paginarea pentru a limita numărul elementelor de conținut afișate într-o anumită pagină."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Activează opțiunea „Aggregate CSS files” (Agregă fișierele CSS) în pagina „Administration » Configuration » Development” (Administrare » Configurare » Dezvoltare).  Pentru compatibilitate îmbunătățită cu agregarea elementelor, site-ul Drupal trebuie să ruleze cel puțin Drupal 10.1."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Activează opțiunea „Aggregate JavaScript files” (Agregă fișierele JavaScript) în pagina „Administration » Configuration » Development” (Administrare » Configurare » Dezvoltare).  Pentru compatibilitate îmbunătățită cu agregarea elementelor, site-ul Drupal trebuie să ruleze cel puțin Drupal 10.1."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Îți recomandăm să elimini regulile CSS nefolosite și să atașezi numai bibliotecile Drupal necesare la pagina sau componenta relevantă dintr-o pagină. Accesează [linkul spre documentația Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) pentru detalii. Ca să identifici bibliotecile atașate care adaugă conținut CSS neesențial, rulează [acoperirea codului](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) în Chrome DevTools. Poți identifica tema/modulul responsabil din adresa URL a foii de stil dacă dezactivezi agregarea CSS pe site-ul Drupal. Caută teme/module care au multe foi de stil în listă cu mult roșu în bara acoperirii codului. O temă/un modul ar trebui să pună în coadă o foaie de stil numai dacă este într-adevăr folosită în pagină."
@@ -3066,46 +3063,46 @@
     "message": "Activează comprimarea pe serverul Next.js. [Află mai multe](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "Contactează managerul contului pentru a activa funcția [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Dacă o configurezi, se va acorda prioritate performanței redării paginilor, care va fi optimizată."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "Folosește opțiunea [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) din NitroPack ca să setezi valoarea dorită pentru regula de afișare a fonturilor în CSS."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "Folosește [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) pentru a face automat conversia imaginilor în WebP."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "Amână imaginile din afara ecranului activând [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "Activează [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) în NitroPack pentru durate de încărcare inițiale mai scurte."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "Îmbunătățește timpul de răspuns a serverului și optimizează performanța percepută activând [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "Activează [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) în setările de stocare în memoria cache pentru a reduce dimensiunea fișierelor CSS, HTML și JavaScript, pentru durate de încărcare mai scurte."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "Activează [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) în setările de stocare în memoria cache pentru a reduce dimensiunea fișierelor JS, HTML și CSS, pentru durate de încărcare mai scurte."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "Activează [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) pentru a elimina regulile CSS care nu se aplică acestei pagini."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "Configurează [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) în NitroPack pentru a amâna încărcarea scripturilor până când acestea sunt necesare."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "Accesează funcția [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) din meniul `Caching` și ajustează timpul până la expirarea memoriei cache a paginii pentru a îmbunătăți duratele de încărcare și experiența utilizatorului."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "Comprimă, optimizează și fă automat conversia imaginilor în WebP activând setarea [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "Activează [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) pentru a optimiza anticipativ imaginile și pentru a le face să corespundă dimensiunilor containerelor în care sunt afișate pe toate dispozitivele."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "Folosește [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) în NitroPack pentru a reduce dimensiunea fișierelor trimise la browser."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Folosește componenta `nuxt/image` și setează `format=\"webp\"`. [Află mai multe](https://image.nuxtjs.org/components/nuxt-img#format)."
@@ -3309,7 +3306,7 @@
     "message": "Salvează ca JSON"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "Vezi urma inițială"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Deschide în vizualizator"

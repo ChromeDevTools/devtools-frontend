@@ -18,13 +18,13 @@
     "message": "Tumutugma ang mga attribute na `[aria-*]` sa mga tungkulin ng mga ito"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "Nagbibigay-daan ang mga `role` ng ARIA para malaman ng mga pantulong na teknolohiya ang tungkulin ng bawat element sa web page. Kung ang mga value ng `role` ay mali ang pagbaybay, hindi value ng umiiral na `role` ng ARIA, o abstract na tungkulin, hindi maipagbibigay-alam ang layunin ng element sa mga user ng mga pantulong na teknolohiya. [Matuto pa tungkol sa mga tungkulin ng ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "Hindi mga valid na tungkulin ng ARIA ang mga value na itinalaga sa `role=\"\"`."
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "Mga valid na tungkulin ng ARIA ang mga value na itinalaga sa `role=\"\"`."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Kapag walang accessible na pangalan ang isang element, iaanunsyo ito ng mga screen reader gamit ang generic na pangalan, kaya hindi ito magagamit ng mga user na umaasa sa mga screen reader. [Alamin kung paano gawing mas accessible ang mga element ng command](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
@@ -336,13 +336,13 @@
     "message": "May mga attribute na `[alt]` ang mga element na larawan"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "Layunin dapat ng mga nagbibigay-impormasyong element na magkaroon ng maikli at naglalarawang alternatibong text. Potensyal na ikakalito ng mga user ng screen reader ang alternatibong text na parehong-pareho sa text na katabi ng link o larawan, dahil dalawang beses na mababasa ang text. [Matuto pa tungkol sa attribute na `alt`](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "May mga attribute na `[alt]` na umuulit na text ang mga element na larawan."
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "Walang attribute na `[alt]` na umuulit na text ang mga element na larawan."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Kapag nagdagdag ng natutukoy at accessible na text sa mga button ng input, posible nitong matulungan ang mga user ng screen reader na maunawaan ang layunin ng button ng input. [Matuto pa tungkol sa mga button ng input](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -363,13 +363,13 @@
     "message": "May text na `[alt]` ang mga element na `<input type=\"image\">`"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "Puwedeng magresulta ang mga nakikitang label na text na hindi tumutugma sa accessible na pangalan sa isang nakakalitong experience para sa mga user ng screen reader. [Matuto pa tungkol sa mga accessible na pangalan](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "Ang mga element na may mga nakikitang label na text ay walang katugmang accessible na pangalan."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "Ang mga element na may mga nakikitang label na text ay may mga katugmang accessible na pangalan."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "Tinitiyak ng mga label na maayos na inaanunsyo ang mga kontrol ng form ng mga pantulong na teknolohiya, tulad ng mga screen reader. [Matuto pa tungkol sa mga label ng element ng form](https://dequeuniversity.com/rules/axe/4.7/label)."
@@ -462,13 +462,13 @@
     "message": "Ang mga element ng select ay may mga nauugnay na element ng label."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "Makakatulong ang paglalagay ng link sa paglaktaw para makalaktaw ang mga user sa pangunahing content para makatipid ng oras. [Matuto pa tungkol sa mga link sa paglaktaw](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "Hindi nafo-focus ang mga link sa paglaktaw."
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "Nafo-focus ang mga link sa paglaktaw."
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Nagpapahiwatig ng explicit na pagsasaayos ng navigation ang value na mas mataas sa 0. Bagama't kung tutuusin ay valid ito, madalas itong nagdudulot ng mga nakakainis na experience para sa mga user na umaasa sa mga pantulong na teknolohiya. [Matuto pa tungkol sa attribute na `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
@@ -480,13 +480,13 @@
     "message": "Walang element na may value na `[tabindex]` na mas mataas sa 0"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "Dapat na ilarawan ng attribute na buod ang istruktura ng talahanayan, habang nasa `<caption>` dapat ang pamagat sa screen. Nakakatulong ang tumpak na mark-up ng talahanayan sa mga user ng mga screen reader. [Matuto pa tungkol sa buod at caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "Pareho ang content ng mga talahanayan sa attribute na buod at sa `<caption>.`"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "Magkaiba ang content ng mga talahanayan sa attribute na buod at sa `<caption>`"
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "May mga feature ang mga screen reader na mas nagpapadali ng pag-navigate sa mga talahanayan. Kapag tiniyak na ginagamit ng mga talahanayan ang mga aktwal na element ng caption sa halip na ang mga cell na may attribute na `[colspan]`, posibleng mapaganda ang experience para sa mga user ng screen reader. [Matuto pa tungkol sa mga caption](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
@@ -498,7 +498,7 @@
     "message": "Gumagamit ang mga talahanayan ng `<caption>` sa halip na mga cell na may attribute na `[colspan]` para magsaad ng caption."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "Nakakatulong ang mga pipinduting may sapat na laki at puwang sa mga user na posibleng nahihirapang mag-target ng maliliit na kontrol na i-activate ang mga target. [Matuto pa tungkol sa mga pipindutin](https://dequeuniversity.com/rules/axe/4.7/target-size)."
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "Walang sapat na laki o puwang ang mga pipindutin."
@@ -1083,10 +1083,7 @@
     "message": "Sinusuportahan lang ang prefer_related_applications sa Chrome Beta at mga Stable na channel sa Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Hindi sinusuportahan sa Android ang scheme ng URL ng manifest ({scheme})."
+    "message": "Hindi matukoy ng Lighthouse kung nai-install ang page. Pakisubukan sa mas bagong bersyon ng Chrome."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Hindi valid ang start URL ng manifest"
@@ -1707,7 +1704,7 @@
     "message": "Pinakamahuhusay na kagawian"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "Hina-highlight ng mga pagsusuring ito ang mga pagkakataong [pahusayin ang accessibility ng iyong web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Isang subset lang ng mga isyu ang made-detect ng awtomatikong pag-detect at hindi nito magagarantiya ang accessibility ng web app mo, kaya hinihikayat din ang [manual na pagsusuri](https://web.dev/how-to-review/)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Tinutugunan ng mga item na ito ang mga bahaging hindi masasakop ng naka-automate na tool sa pagsusuri. Matuto pa sa aming gabay sa [pagsasagawa ng pagsusuri sa pagiging accessible](https://web.dev/how-to-review/)."
@@ -2853,7 +2850,7 @@
     "message": "Mag-install [ng module ng Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) na puwedeng mag-lazy load ng mga larawan. Nagbibigay ang mga module na iyon ng kakayahang ipagpaliban ang anumang offscreen na larawan para mapahusay ang performance."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "Pag-isipang gumamit ng module para i-inline ang critical na CSS at JavaScript, at gamitin ang attribute na ipagpaliban para sa non-critical na CSS o JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Nakakaapekto ang mga tema, module, at detalye ng server sa oras ng pagtugon ng server. Pag-isipang maghanap ng mas naka-optimize na tema, maingat na pumili ng module sa pag-optimize, at/o i-upgrade ang iyong server. Dapat gamitin ng iyong mga nagho-host na server ang pag-cache ng PHP opcode at pag-cache ng memory para mabawasan ang mga oras ng query sa database gaya ng Redis o Memcached, pati na ang naka-optimize na logic ng application para mas mabilis na maihanda ang mga page."
@@ -2862,10 +2859,10 @@
     "message": "Pag-isipang gumamit ng [Mga Istilo ng Responsive na Larawan](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) para mabawasan ang laki ng mga larawang nilo-load sa iyong page. Kung gumagamit ka ng Views para magpakita ng maraming item ng content sa isang page, pag-isipang magpatupad ng pagination para limitahan ang bilang ng mga item ng content na ipinapakita sa isang page."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Tiyaking na-enable mo ang \"I-aggregate ang mga CSS file\" sa page na \"Pangangasiwa » Configuration » Pag-develop.\"  Tiyaking gumagamit ang iyong Drupal site ng kahit man lang Drupal 10.1 para sa pinahusay na suporta sa pag-aggregate ng asset."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Tiyaking na-enable mo ang \"I-aggregate ang mga JavaScript file\" sa page na \"Pangangasiwa » Configuration » Pag-develop.\"  Tiyaking gumagamit ang iyong Drupal site ng kahit man lang Drupal 10.1 para sa pinahusay na suporta sa pag-aggregate ng asset."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Pag-isipang alisin ang mga hindi ginagamit na panuntunan sa CSS at i-attach lang ang mga kinakailangang library ng Drupal sa kaugnay na page o component sa isang page. Tingnan ang [link ng dokumentasyon ng Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library) para sa mga detalye. Para tukuyin ang mga naka-attach na library na nagdaragdag ng hindi nauugnay na CSS, subukang patakbuhin ang [sakop ng code](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) sa Chrome DevTools. Puwede mong tukuyin ang tema/module na responsable mula sa URL ng stylesheet kapag naka-disable ang pagsasama-sama sa CSS sa iyong site ng Drupal. Abangan ang mga tema/module na maraming stylesheet sa listahang mayroong maraming pula sa sakop ng code. Dapat lang i-enqueue ng tema/module ang isang stylesheet kung talagang ginagamit ito sa page."
@@ -3066,46 +3063,46 @@
     "message": "I-enable ang pag-compress sa iyong Next.js server. [Matuto pa](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "Makipag-ugnayan sa iyong account manager para i-enable ang [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Mabibigyang-priyoridad at mao-optimize ng pag-configure nito ang performance sa pag-render ng iyong page."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "Gamitin ang opsyong [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) sa NitroPack para magtakda ng gustong value para sa panuntunan ng font-display ng CSS."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "Gamitin ang [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) para awtomatikong i-convert ang iyong mga larawan sa WebP."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "Ipagpaliban ang mga offscreen na larawan sa pamamagitan ng pag-enable sa [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "I-enable ang [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) sa NitroPack para sa mas mabibilis na paunang oras ng pag-load."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "Pahusayin ang bilis ng pagtugon ng server at i-optimize ang nakikitang performance sa pamamagitan ng pag-activate sa [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "I-enable ang [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) sa mga setting ng Caching mo para mabawasan ang laki ng iyong mga CSS, HTML, at JavaScript file para sa mas mabibilis na oras ng pag-load."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "I-enable ang [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) sa mga setting ng Caching mo para mabawasan ang laki ng iyong mga JS, HTML, at CSS file para sa mas mabibilis na oras ng pag-load."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "I-enable ang [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) para alisin ang mga panuntunan sa CSS na hindi naaangkop sa page na ito."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "I-configure ang [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) sa NitroPack para maantala ang pag-load ng mga script hangga't hindi pa kailangan ang mga ito."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "Pumunta sa feature na [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) sa menu ng `Caching` at i-adjust ang tagal bago mag-expire ng cache ng page mo para pahusayin ang mga oras ng pag-load at experience ng user."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "Awtomatikong i-compress, i-optimize, at i-convert ang iyong mga larawan sa WebP sa pamamagitan ng pag-enable sa setting ng [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "I-enable ang [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) para preemptive na i-optimize ang iyong mga larawan at maitugma ang mga ito sa mga dimensyon ng mga container kung saan ipinapakita ang mga ito sa lahat ng device."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "Gamitin ang [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) sa NitroPack para mabawasan ang laki ng mga file na ipinapadala sa browser."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Gamitin ang bahaging `nuxt/image` at itakda ang `format=\"webp\"`. [Matuto pa](https://image.nuxtjs.org/components/nuxt-img#format)."
@@ -3309,7 +3306,7 @@
     "message": "I-save bilang JSON"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "Tingnan ang Unthrottled na Trace"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Buksan sa Viewer"

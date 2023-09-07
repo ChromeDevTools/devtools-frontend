@@ -18,13 +18,13 @@
     "message": "`[aria-*]` 属性は役割と一致しています"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "ARIA `role` を指定すると、支援技術でウェブページ上の各要素の役割を把握するのに役立ちます。`role` の値にスペルミスがある場合、既存の ARIA `role` の値でない場合、または抽象ロールの場合、支援技術のユーザーに要素の目的が伝わりません。[ARIA ロールの詳細](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "`role=\"\"` に割り当てられた値は有効な ARIA ロールではありません。"
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "`role=\"\"` に割り当てられた値は有効な ARIA ロールです。"
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "要素にユーザー補助機能用の名前が設定されていない場合、スクリーン リーダーでは一般名で読み上げられるため、スクリーン リーダーのみを使用するユーザーには用途がわかりません。[コマンド要素にアクセスしやすくする方法の詳細](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)"
@@ -336,13 +336,13 @@
     "message": "画像要素に `[alt]` 属性が指定されています"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "説明的要素は、簡潔でわかりやすい代替テキストにする必要があります。リンクや画像の近くのテキストとまったく同じ代替テキストを指定すると、スクリーン リーダーで同じ内容が 2 回読み上げられるため、混乱を招く可能性があります。[`alt` 属性の詳細](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)"
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "画像要素に、重複する内容の`[alt]` 属性が含まれています。"
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "画像要素に、重複する内容の`[alt]` 属性は含まれていません。"
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "識別可能およびアクセス可能なテキストを入力ボタンに追加すると、スクリーン リーダーのユーザーが入力ボタンの目的を把握するのに役立ちます。[入力ボタンの詳細](https://dequeuniversity.com/rules/axe/4.7/input-button-name)"
@@ -363,13 +363,13 @@
     "message": "`<input type=\"image\">` 要素に `[alt]` テキストが指定されています"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "表示されるテキストラベルがユーザー補助機能用の名前と一致しない場合、スクリーン リーダーのユーザーが混乱する可能性があります。[ユーザー補助機能用の名前の詳細](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "表示されるテキストラベルの要素に、一致するユーザー補助機能用の名前がありません。"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "表示されるテキストラベルの要素に、一致するユーザー補助機能用の名前があります。"
   },
   "core/audits/accessibility/label.js | description": {
     "message": "ラベルを使用すると、フォームの各コントロールが支援技術（スクリーン リーダーなど）によって正しく読み上げられるようになります。[フォーム要素のラベルの詳細](https://dequeuniversity.com/rules/axe/4.7/label)"
@@ -462,13 +462,13 @@
     "message": "一部の要素にラベル要素が関連付けられています。"
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "スキップリンクを含めると、メインのコンテンツにスキップできるようになり、ユーザーの手間が省けます。[スキップリンクの詳細](https://dequeuniversity.com/rules/axe/4.7/skip-link)"
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "スキップリンクはフォーカス不可能です。"
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "スキップリンクはフォーカス可能です。"
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "値が 0 より大きい場合は、明示的なナビゲーション順序を示します。技術的には有効ですが、多くの場合、支援技術を使用しているユーザーにとって利便性が低下します。[`tabindex` 属性の詳細](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
@@ -480,13 +480,13 @@
     "message": "`[tabindex]` に 0 より大きい値を指定している要素はありません"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "summary 属性では表構造を説明し、`<caption>` には画面に表示されるタイトルを指定します。表のマークアップを正確に行うと、スクリーン リーダーを使用するユーザーに役立ちます。[summary と caption の詳細](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)"
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "表の summary 属性と `<caption>.` の内容が同じです"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "表の summary 属性と `<caption>` の内容は異なっています。"
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "スクリーン リーダーには、表内の移動を補助する機能があります。表で `[colspan]` 属性を含むセルの代わりに、実際の字幕要素を使用すると、スクリーン リーダー ユーザーの利便性が向上する可能性があります。[字幕の詳細](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)"
@@ -498,7 +498,7 @@
     "message": "表で字幕を示すために `[colspan]` 属性を含むセルの代わりに `<caption>` が使用されています。"
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "タップ ターゲットのサイズと間隔を十分な大きさにすると、小さいコントロールでもターゲットを選択しやすくなります。[タップ ターゲットの詳細](https://dequeuniversity.com/rules/axe/4.7/target-size)"
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "タップ ターゲットのサイズや間隔は十分な大きさではありません。"
@@ -1083,10 +1083,7 @@
     "message": "Android の Chrome の Beta チャンネルと Stable チャンネルでサポートされるのは、prefer_related_applications のみです。"
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "マニフェスト URL スキーム（{scheme}）は Android ではサポートされていません。"
+    "message": "Lighthouse では、ページがインストール可能かどうかを判断できませんでした。新しいバージョンの Chrome でお試しください。"
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "マニフェストの開始 URL が無効です"
@@ -1707,7 +1704,7 @@
     "message": "おすすめの方法"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "これらのチェックにより、[ウェブアプリのユーザー補助機能の改善点](https://developer.chrome.com/docs/lighthouse/accessibility/)が明確になります。ただし、自動的に検出できる問題は一部に過ぎず、ウェブアプリのユーザー補助機能に問題がないことが保証されたわけではないため、[手動テスト](https://web.dev/how-to-review/)も実施することをおすすめします。"
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "ここに、自動テストツールではカバーできない範囲に対処する項目が表示されます。詳しくは、[ユーザー補助機能の審査を実施する](https://web.dev/how-to-review/)方法についてのガイドをご覧ください。"
@@ -2853,7 +2850,7 @@
     "message": "[Drupal のモジュール](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search)をインストールすると、画像を遅延読み込みできます。このようなモジュールにより、画面外の画像の読み込みを遅らせてパフォーマンスを改善できます。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "モジュールを使用して重要な CSS と JavaScript をインライン化し、重要でない CSS または JavaScript に defer 属性を使用することを検討してください。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "テーマ、モジュール、サーバー仕様はすべてサーバーの応答時間に影響します。より最適化されたテーマを探す、最適化モジュールを慎重に選ぶ、サーバーをアップグレードすることをおすすめします。ホスティング サーバーでは、PHP OPcode キャッシング、データベースのクエリ時間を減らす Redis や Memcached などのメモリ キャッシング、ページの準備を速くするために最適化されたアプリケーション ロジックを利用する必要があります。"
@@ -2862,10 +2859,10 @@
     "message": "ページに読み込まれる画像のサイズを小さくするには、[Responsive Image Styles](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) の使用をご検討ください。Views を使用して複数のコンテンツ アイテムを 1 つのページに表示している場合、ページに表示されるコンテンツ アイテムの数を制限するため、ページ分けの実装をご検討ください。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "[Administration] > [Configuration] > [Development] ページで、[Aggregate CSS files] を有効にしていることを確認してください。アセット集約のサポートを改善できるよう、Drupal サイトで Drupal 10.1 以降が実行されていることを確認してください。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "[Administration] > [Configuration] > [Development] ページで [Aggregate JavaScript files] を有効にしていることを確認してください。アセット集約のサポートを改善できるよう、Drupal サイトで Drupal 10.1 以降が実行されていることを確認してください。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "使用されていない CSS ルールの削除を検討し、必要な Drupal ライブラリのみを関連性の高いページまたはページのコンポーネントに接続してください。詳しくは、[Drupal のドキュメントのリンク](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library)をご覧ください。不要な CSS を読み込んでいる接続済みライブラリを特定するには、Chrome DevTools で[コードの Coverage](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) を確認します。Drupal のサイトで CSS の集約が無効になっている場合、スタイルシートの URL から、該当のテーマやモジュールを特定できます。多くのスタイルシートを使用しているテーマやモジュール（コードの Coverage で赤色の部分が多いもの）をリストで探します。テーマやモジュールによってキューに追加されるスタイルシートは、実際にページで使用されるもののみにする必要があります。"
@@ -3066,46 +3063,46 @@
     "message": "Next.js サーバーで圧縮を有効にしてください。[詳細](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "アカウント マネージャーに連絡して、[`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337) を有効にしてください。有効にすると、ページ レンダリングのパフォーマンスが優先され、最適化されます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "NitroPack の [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) オプションを使用すると、CSS のフォント表示ルールに必要な値を設定できます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "[`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) を使用すると、画像を WebP に自動変換できます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "[`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images) を有効にすると、画面外の画像の読み込みを遅らせることができます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "NitroPack で [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) を有効にすると、初期の読み込み時間を短縮できます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "[`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)　を有効にすると、サーバーの応答時間を改善し、目に見えるパフォーマンスを最適化できます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "キャッシュ設定で [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) を有効にすると、CSS、HTML、JavaScript ファイルのサイズを抑えて、読み込み時間を短縮できます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "キャッシュ設定で [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) を有効にすると、JavaScript、HTML、CSS ファイルのサイズを抑えて、読み込み時間を短縮できます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "[`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) を有効にすると、このページに適用されない CSS ルールを削除できます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "NitroPack で [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) を設定すると、スクリプトの読み込みを必要なときまで遅らせることができます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "`Caching` メニューの [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) 機能に移動してページ キャッシュの有効期限を調整すると、読み込み時間とユーザー エクスペリエンスを改善できます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "[`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) 設定を有効にすると、画像が自動的に圧縮、最適化され、WebP に変換されます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "[`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) を有効にすると、画像を事前に最適化して、各種デバイスに表示されるコンテナのサイズに合わせることができます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "NitroPack の [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) を使用すると、ブラウザに送信されるファイルのサイズを抑えることができます。"
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "`nuxt/image` コンポーネントを使用して、`format=\"webp\"` を設定します。[詳細](https://image.nuxtjs.org/components/nuxt-img#format)"
@@ -3309,7 +3306,7 @@
     "message": "JSON 形式で保存"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "スロットリングされていないトレースを表示"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "ビューアで開く"

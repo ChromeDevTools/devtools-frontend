@@ -18,13 +18,13 @@
     "message": "Τα χαρακτηριστικά `[aria-*]` αντιστοιχούν στους ρόλους τους"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "Οι `role` ARIA επιτρέπουν στις τεχνολογίες υποβοήθησης να γνωρίζουν τον ρόλο του κάθε στοιχείου στην ιστοσελίδα. Εάν οι τιμές του `role` δεν έχουν γραφτεί σωστά, δεν υπάρχουν οι υπάρχουσες τιμές `role`ARIA ή οι αφηρημένοι ρόλοι, τότε ο σκοπός του στοιχείου δεν θα κοινοποιείται στους χρήστες τεχνολογιών υποβοήθησης. [Μάθετε περισσότερα σχετικά με τους ρόλους ARIA](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "Οι τιμές που έχουν εκχωρηθεί στο στοιχείο `role=\"\"` είναι έγκυροι ρόλοι ARIA."
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "Οι τιμές που έχουν εκχωρηθεί στο στοιχείο `role=\"\"` είναι έγκυροι ρόλοι ARIA."
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "Όταν ένα στοιχείο δεν έχει προσβάσιμο όνομα, οι αναγνώστες οθόνης το περιγράφουν με ένα γενικό όνομα, με αποτέλεσμα να μην μπορεί να χρησιμοποιηθεί από χρήστες που βασίζονται σε αναγνώστες οθόνης. [Μάθετε πώς μπορείτε να κάνετε πιο προσιτά τα στοιχεία εντολών](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)."
@@ -336,13 +336,13 @@
     "message": "Τα στοιχεία εικόνας έχουν χαρακτηριστικά `[alt]`"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "Τα πληροφοριακά στοιχεία θα πρέπει να στοχεύουν σε σύντομο και περιγραφικό εναλλακτικό κείμενο. Εναλλακτικό κείμενο που είναι ακριβώς το ίδιο με το κείμενο που βρίσκεται δίπλα στον σύνδεσμο ή την εικόνα ενδέχεται να προκαλέσει σύγχυση στους χρήστες του αναγνώστη οθόνης, επειδή το κείμενο θα διαβαστεί δύο φορές. [Μάθετε περισσότερα σχετικά με το χαρακτηριστικό `alt`](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "Τα στοιχεία εικόνας έχουν χαρακτηριστικά `[alt]` που είναι περιττό κείμενο."
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "Τα στοιχεία εικόνας δεν έχουν χαρακτηριστικά `[alt]` που είναι περιττό κείμενο."
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "Η προσθήκη ευανάγνωστου και προσβάσιμου κειμένου στα κουμπιά εισόδου μπορεί να βοηθήσει τους χρήστες του αναγνώστη οθόνης να κατανοήσουν τον σκοπό των κουμπιών. [Μάθετε περισσότερα σχετικά με τα κουμπιά εισόδου](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -363,13 +363,13 @@
     "message": "Τα στοιχεία `<input type=\"image\">` έχουν κείμενο `[alt]`"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "Οι ορατές ετικέτες κειμένου που δεν αντιστοιχούν στο προσβάσιμο όνομα μπορεί να προκαλέσουν σύγχυση στους χρήστες του αναγνώστη οθόνης. [Μάθετε περισσότερα σχετικά με τα προσβάσιμα ονόματα](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "Τα στοιχεία με ορατές ετικέτες κειμένου δεν έχουν αντίστοιχα προσβάσιμα ονόματα."
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "Τα στοιχεία με ορατές ετικέτες κειμένου έχουν προσβάσιμα ονόματα που ταιριάζουν."
   },
   "core/audits/accessibility/label.js | description": {
     "message": "Οι ετικέτες διασφαλίζουν ότι οι τεχνολογίες υποβοήθησης, όπως οι αναγνώστες οθόνης, εκφωνούν σωστά τα στοιχεία ελέγχου φόρμας. [Μάθετε περισσότερα σχετικά με τις ετικέτες στοιχείων φόρμας](https://dequeuniversity.com/rules/axe/4.7/label)."
@@ -462,13 +462,13 @@
     "message": "Ορισμένα επιλεγμένα στοιχεία έχουν συσχετισμένα στοιχεία ετικέτας."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "Η συμπερίληψη ενός συνδέσμου παράβλεψης μπορεί να βοηθήσει τους χρήστες να μεταβούν στο κύριο περιεχόμενο για να εξοικονομήσουν χρόνο. [Μάθετε περισσότερα σχετικά με τους συνδέσμους παράβλεψης](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "Οι σύνδεσμοι παράβλεψης δεν είναι εστιασμένοι."
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "Οι σύνδεσμοι παράβλεψης είναι εστιασμένοι."
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "Μια τιμή μεγαλύτερη από 0 υποδηλώνει μια ρητή σειρά πλοήγησης. Εάν και ορθό από τεχνικής άποψης, αυτό συχνά επηρεάζει αρνητικά την εμπειρία των χρηστών που βασίζονται στις τεχνολογίες υποβοήθησης. [Μάθετε περισσότερα σχετικά με το χαρακτηριστικό `tabindex`](https://dequeuniversity.com/rules/axe/4.7/tabindex)."
@@ -480,13 +480,13 @@
     "message": "Κανένα στοιχείο δεν έχει τιμή `[tabindex]` μεγαλύτερη από 0"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "Το χαρακτηριστικό summary θα πρέπει να περιγράφει τη δομή του πίνακα, ενώ το στοιχείο `<caption>` πρέπει να έχει τον τίτλο στην οθόνη. Η ακριβής σήμανση πίνακα βοηθά τους χρήστες των αναγνωστών οθόνης. [Μάθετε περισσότερα σχετικά με το χαρακτηριστικό summary και το στοιχείο caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "Οι πίνακες έχουν το ίδιο περιεχόμενο στο χαρακτηριστικό summary και το στοιχείο `<caption>.`"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "Οι πίνακες έχουν διαφορετικό περιεχόμενο στο χαρακτηριστικό summary και το στοιχείο `<caption>`."
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "Οι αναγνώστες οθόνης έχουν λειτουργίες που διευκολύνουν την πλοήγηση στους πίνακες. Διασφαλίζοντας ότι οι πίνακες χρησιμοποιούν το πραγματικό στοιχείο υποτίτλων αντί για κελιά με το χαρακτηριστικό `[colspan]`, ενδέχεται να βελτιωθεί η εμπειρία για τους χρήστες των αναγνωστών οθόνης. [Μάθετε περισσότερα σχετικά με τους υπότιτλους](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
@@ -498,7 +498,7 @@
     "message": "Οι πίνακες χρησιμοποιούν το στοιχείο `<caption>` αντί για κελιά με το χαρακτηριστικό `[colspan]`, για να υποδεικνύουν έναν υπότιτλο."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "Οι στόχοι αφής με επαρκές μέγεθος και απόσταση βοηθούν τους χρήστες που μπορεί να δυσκολεύονται να στοχεύσουν μικρά στοιχεία ελέγχου να ενεργοποιήσουν τους στόχους. [Μάθετε περισσότερα σχετικά με τους στόχους αφής](https://dequeuniversity.com/rules/axe/4.7/target-size)."
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "Οι στόχοι αφής δεν έχουν επαρκές μέγεθος ή απόσταση."
@@ -1083,10 +1083,7 @@
     "message": "Η παράμετρος prefer_related_applications υποστηρίζεται μόνο σε κανάλια Chrome Beta και κανάλια σταθερής έκδοσης σε Android."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Το URL μανιφέστου ({scheme}) δεν υποστηρίζεται στο Android."
+    "message": "Το Lighthouse δεν μπόρεσε να προσδιορίσει αν η σελίδα έχει δυνατότητα εγκατάστασης. Δοκιμάστε με μια νεότερη έκδοση του Chrome."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "Το URL έναρξης μανιφέστου δεν είναι έγκυρο"
@@ -1707,7 +1704,7 @@
     "message": "Βέλτιστες πρακτικές"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "Αυτοί οι έλεγχοι επισημαίνουν ευκαιρίες για τη [βελτίωση της προσβασιμότητας της εφαρμογής ιστού σας](https://developer.chrome.com/docs/lighthouse/accessibility/). Ο αυτόματος εντοπισμός μπορεί να εντοπίσει μόνο ένα υποσύνολο προβλημάτων και δεν εγγυάται την προσβασιμότητα της εφαρμογής ιστού, επομένως συνίσταται επίσης η [μη αυτόματη δοκιμή](https://web.dev/how-to-review/)."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "Αυτά τα στοιχεία σχετίζονται με τομείς τους οποίους δεν μπορεί να καλύψει ένα εργαλείο αυτοματοποιημένων δοκιμών. Μάθετε περισσότερα στον οδηγό μας σχετικά με τη [διεξαγωγή ενός ελέγχου προσβασιμότητας](https://web.dev/how-to-review/)."
@@ -2853,7 +2850,7 @@
     "message": "Εγκαταστήστε [μια λειτουργική μονάδα Drupal](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search) η οποία μπορεί να εκτελέσει αργή φόρτωση εικόνων. Αυτού του είδους οι λειτουργικές μονάδες παρέχουν τη δυνατότητα αναβολής φόρτωσης των εικόνων εκτός οθόνης, για τη βελτίωση της απόδοσης."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "Εξετάστε το ενδεχόμενο να χρησιμοποιήσετε μια λειτουργική μονάδα για ενσωμάτωση σημαντικών στοιχείων CSS και JavaScript, και χρησιμοποιήστε το χαρακτηριστικό αναβολής για μη σημαντικά στοιχεία CSS ή JavaScript."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "Τα θέματα, οι ενότητες και οι προδιαγραφές διακομιστή συμβάλλουν στον χρόνο απόκρισης του διακομιστή. Αν θέλετε, μπορείτε να ψάξετε για ένα περισσότερο βελτιστοποιημένο θέμα, να επιλέξετε προσεκτικά μια ενότητα βελτιστοποίησης ή/και να αναβαθμίσετε τον διακομιστή σας. Οι διακομιστές φιλοξενίας σας θα πρέπει να χρησιμοποιούν την προσωρινή αποθήκευση κώδικα λειτουργίας (opcode) PHP, την προσωρινή αποθήκευση μνήμης για τη μείωση των χρόνων ερωτημάτων βάσης δεδομένων, όπως στα Redis και Memcached, καθώς και βελτιστοποιημένη λογική εφαρμογής για την πιο γρήγορη προετοιμασία σελίδων."
@@ -2862,10 +2859,10 @@
     "message": "Εξετάστε το ενδεχόμενο χρήσης [Στιλ αποκριτικών εικόνων](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8) για να μειώσετε το μέγεθος των εικόνων που φορτώνονται στη σελίδα σας. Εάν χρησιμοποιείτε τις Προβολές για την εμφάνιση πολλαπλών στοιχείων περιεχομένου σε μια σελίδα, εξετάστε το ενδεχόμενο ενσωμάτωσης σελιδοποίησης προκειμένου να περιορίσετε τον αριθμό των στοιχειών περιεχομένου σε μια συγκεκριμένη σελίδα."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Βεβαιωθείτε ότι έχετε ενεργοποιήσει τη Συγκέντρωση αρχείων CSS στη σελίδα Διαχείριση » Διαμόρφωση » Ανάπτυξη.  Βεβαιωθείτε ότι ο ιστότοπός σας στο Drupal εκτελείται τουλάχιστον σε έκδοση Drupal 10.1 για βελτιωμένη υποστήριξη συγκέντρωσης στοιχείων."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "Βεβαιωθείτε ότι έχετε ενεργοποιήσει τη Συγκέντρωση αρχείων JavaScript στη σελίδα Διαχείριση » Διαμόρφωση » Ανάπτυξη.  Βεβαιωθείτε ότι ο ιστότοπός σας στο Drupal εκτελείται τουλάχιστον σε έκδοση Drupal 10.1 για βελτιωμένη υποστήριξη συγκέντρωσης στοιχείων."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "Εξετάστε το ενδεχόμενο να καταργήσετε τους κανόνες CSS που δεν χρησιμοποιούνται και να προσαρτήσετε μόνο τις αναγκαίες βιβλιοθήκες Drupal στη σχετική σελίδα ή στο σχετικό στοιχείο σε μια σελίδα. Για λεπτομέρειες, ανατρέξτε στον [σύνδεσμο τεκμηρίωσης Drupal](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library). Για να προσδιορίσετε τις προσαρτημένες βιβλιοθήκες που προσθέτουν περιττό κώδικα CSS, δοκιμάστε να εκτελέσετε [κάλυψη κώδικα](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage) στο Chrome DevTools. Μπορείτε να προσδιορίσετε το θέμα/την ενότητα που ευθύνεται μέσω του URL του φύλλου στιλ όταν η συγκέντρωση CSS είναι απενεργοποιημένη στον ιστότοπό σας στο Drupal. Αναζητήστε θέματα/ενότητες που διαθέτουν πολλά φύλλα στιλ στη λίστα, στα οποία ένα μεγάλο μέρος της κάλυψης κώδικα έχει κόκκινο χρώμα. Ένα θέμα/μια ενότητα θα πρέπει να τοποθετεί στην ουρά ένα φύλλο στιλ, μόνο αν χρησιμοποιείται στη σελίδα."
@@ -3066,46 +3063,46 @@
     "message": "Ενεργοποιήστε τη συμπίεση στον διακομιστή Next.js. [Μάθετε περισσότερα](https://nextjs.org/docs/api-reference/next.config.js/compression)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "Επικοινωνήστε με τον υπεύθυνο λογαριασμού για την ενεργοποίηση του [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Με τη διαμόρφωση της λειτουργίας, η απόδοση της σελίδας σας θα έχει προτεραιότητα και θα βελτιωθεί."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "Χρησιμοποιήστε την επιλογή [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) στο NitroPack για να ορίσετε μια επιθυμητή τιμή για τον κανόνα προβολής γραμματοσειράς CSS."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "Χρησιμοποιήστε τη λειτουργία [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) για αυτόματη μετατροπή των εικόνων σας σε WebP."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "Αναβάλετε εικόνες εκτός οθόνης ενεργοποιώντας τη λειτουργία [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "Ενεργοποιήστε τη λειτουργία [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) στο NitroPack για ταχύτερους χρόνους αρχικής φόρτωσης."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "Βελτιώστε τον χρόνο απόκρισης διακομιστή και βελτιστοποιήστε την αντιληπτή απόδοση, ενεργοποιώντας τη λειτουργία [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "Ενεργοποιήστε τη λειτουργία [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) στις ρυθμίσεις της κρυφής μνήμης για να μειώσετε το μέγεθος των αρχείων CSS, HTML και JavaScript για ταχύτερους χρόνους φόρτωσης."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "Ενεργοποιήστε τη λειτουργία [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) στις ρυθμίσεις της κρυφής μνήμης για να μειώσετε το μέγεθος των αρχείων JS, HTML και CSS για ταχύτερους χρόνους φόρτωσης."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "Ενεργοποιήστε τη λειτουργία [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) για να καταργήσετε κανόνες CSS που δεν ισχύουν για αυτήν τη σελίδα."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "Διαμορφώστε τη λειτουργία [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) στο NitroPack για να καθυστερήσετε τη φόρτωση σεναρίων έως ότου γίνουν απαραίτητα."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "Μεταβείτε στη λειτουργία [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) στο μενού `Caching` και προσαρμόστε τον χρόνο λήξης της κρυφής μνήμης των σελίδων σας, προκειμένου να βελτιώσετε τους χρόνους φόρτωσης και την εμπειρία χρήστη."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "Συμπιέστε αυτόματα, βελτιστοποιήστε και μετατρέψτε τις εικόνες σας σε WebP, ενεργοποιώντας τη ρύθμιση [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack)."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "Ενεργοποιήστε τη λειτουργία [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) για να βελτιστοποιήσετε προληπτικά τις εικόνες σας και να τις προσαρμόσετε με τις διαστάσεις των κοντέινερ που εμφανίζονται σε όλες τις συσκευές."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "Χρησιμοποιήστε τη λειτουργία [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) στο NitroPack για να μειώσετε το μέγεθος των αρχείων που αποστέλλονται στο πρόγραμμα περιήγησης."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "Χρησιμοποιήστε το στοιχείο `nuxt/image` και ορίστε το `format=\"webp\"`. [Μάθετε περισσότερα](https://image.nuxtjs.org/components/nuxt-img#format)."
@@ -3309,7 +3306,7 @@
     "message": "Αποθήκευση ως JSON"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "Προβολή ίχνους χωρίς περιορισμό"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "Άνοιγμα στο πρόγραμμα προβολής"

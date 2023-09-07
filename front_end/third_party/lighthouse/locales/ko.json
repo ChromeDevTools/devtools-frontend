@@ -18,13 +18,13 @@
     "message": "`[aria-*]` 속성이 역할과 일치함"
   },
   "core/audits/accessibility/aria-allowed-role.js | description": {
-    "message": "ARIA `role`s enable assistive technologies to know the role of each element on the web page. If the `role` values are misspelled, not existing ARIA `role` values, or abstract roles, then the purpose of the element will not be communicated to users of assistive technologies. [Learn more about ARIA roles](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)."
+    "message": "ARIA `role`을 통해 보조 기술은 웹페이지에서 각 요소의 역할을 파악할 수 있습니다. `role` 값의 철자가 틀렸거나 이 값이 기존 ARIA `role` 값 또는 추상 역할이 아닌 경우 요소의 목적이 보조 기술 사용자에게 전달되지 않습니다. [ARIA 역할에 대해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/aria-allowed-roles)"
   },
   "core/audits/accessibility/aria-allowed-role.js | failureTitle": {
-    "message": "Values assigned to `role=\"\"` are not valid ARIA roles."
+    "message": "`role=\"\"`에 할당된 값은 유효한 ARIA 역할이 아닙니다"
   },
   "core/audits/accessibility/aria-allowed-role.js | title": {
-    "message": "Values assigned to `role=\"\"` are valid ARIA roles."
+    "message": "`role=\"\"`에 할당된 값은 유효한 ARIA 역할입니다"
   },
   "core/audits/accessibility/aria-command-name.js | description": {
     "message": "요소에 액세스 가능한 이름이 없는 경우 스크린 리더가 일반적인 이름으로 읽기 때문에 스크린 리더에 의존하는 사용자는 해당 요소를 사용할 수 없게 됩니다. [명령어 요소의 접근성을 높이는 방법 알아보기](https://dequeuniversity.com/rules/axe/4.7/aria-command-name)"
@@ -336,13 +336,13 @@
     "message": "이미지 요소에 `[alt]` 속성이 있음"
   },
   "core/audits/accessibility/image-redundant-alt.js | description": {
-    "message": "Informative elements should aim for short, descriptive alternative text. Alternative text that is exactly the same as the text adjacent to the link or image is potentially confusing for screen reader users, because the text will be read twice. [Learn more about the `alt` attribute](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)."
+    "message": "정보 요소는 짧아야 하며 설명을 제공하는 대체 텍스트를 목표로 해야 합니다. 링크 또는 이미지에 인접한 텍스트와 정확하게 일치하는 대체 텍스트는 스크린 리더 사용자에게 혼란을 줄 수 있습니다. 텍스트가 두 번 읽히기 때문입니다. [`alt` 속성에 대해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/image-redundant-alt)"
   },
   "core/audits/accessibility/image-redundant-alt.js | failureTitle": {
-    "message": "Image elements have `[alt]` attributes that are redundant text."
+    "message": "이미지 요소에 중복된 텍스트인 `[alt]` 속성이 있습니다"
   },
   "core/audits/accessibility/image-redundant-alt.js | title": {
-    "message": "Image elements do not have `[alt]` attributes that are redundant text."
+    "message": "이미지 요소에 중복된 텍스트인 `[alt]` 속성이 없습니다"
   },
   "core/audits/accessibility/input-button-name.js | description": {
     "message": "입력 버튼에 식별 가능하고 액세스 가능한 텍스트를 추가하면 스크린 리더 사용자가 입력 버튼의 목적을 이해하는 데 도움이 될 수 있습니다. [입력 버튼에 관해 자세히 알아보세요](https://dequeuniversity.com/rules/axe/4.7/input-button-name)."
@@ -363,13 +363,13 @@
     "message": "`<input type=\"image\">` 요소에 `[alt]` 텍스트가 있음"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | description": {
-    "message": "Visible text labels that do not match the accessible name can result in a confusing experience for screen reader users. [Learn more about accessible names](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)."
+    "message": "표시되는 텍스트 라벨이 액세스 가능한 이름과 일치하지 않으면 스크린 리더 사용자에게 혼란을 초래할 수 있습니다. [액세스 가능한 이름에 대해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/label-content-name-mismatch)"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | failureTitle": {
-    "message": "Elements with visible text labels do not have matching accessible names."
+    "message": "표시되는 텍스트 라벨이 포함된 요소에 일치하는 액세스 가능한 이름이 없습니다"
   },
   "core/audits/accessibility/label-content-name-mismatch.js | title": {
-    "message": "Elements with visible text labels have matching accessible names."
+    "message": "표시되는 텍스트 라벨이 포함된 요소에 일치하는 액세스 가능한 이름이 있습니다"
   },
   "core/audits/accessibility/label.js | description": {
     "message": "라벨을 사용하면 스크린 리더와 같은 보조 기술에서 양식 컨트롤을 올바르게 읽을 수 있습니다. [양식 요소 라벨에 관해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/label)"
@@ -462,13 +462,13 @@
     "message": "선택 요소에 연결된 라벨 요소가 있습니다."
   },
   "core/audits/accessibility/skip-link.js | description": {
-    "message": "Including a skip link can help users skip to the main content to save time. [Learn more about skip links](https://dequeuniversity.com/rules/axe/4.7/skip-link)."
+    "message": "건너뛰기 링크를 포함하면 사용자가 주요 콘텐츠로 건너뛰어 시간을 절약할 수 있습니다. [링크 건너뛰기 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/skip-link)"
   },
   "core/audits/accessibility/skip-link.js | failureTitle": {
-    "message": "Skip links are not focusable."
+    "message": "건너뛰기 링크는 포커스가 불가능합니다"
   },
   "core/audits/accessibility/skip-link.js | title": {
-    "message": "Skip links are focusable."
+    "message": "건너뛰기 링크는 포커스 가능합니다"
   },
   "core/audits/accessibility/tabindex.js | description": {
     "message": "0보다 큰 값은 명시적인 탐색 순서를 나타냅니다. 기술적으로는 유효하나 보조 기술에 의존하는 사용자에게 불편한 환경이 생기는 경우가 많습니다. [`tabindex` 속성에 관해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/tabindex)"
@@ -480,13 +480,13 @@
     "message": "`[tabindex]` 값이 0보다 큰 요소가 없음"
   },
   "core/audits/accessibility/table-duplicate-name.js | description": {
-    "message": "The summary attribute should describe the table structure, while `<caption>` should have the onscreen title. Accurate table mark-up helps users of screen readers. [Learn more about summary and caption](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)."
+    "message": "summary 속성은 표 구조를 설명해야 하며 `<caption>`에는 화면 제목이 있어야 합니다. 표 마크업이 정확하면 스크린 리더 사용자에게 도움이 됩니다. [summary 속성 및 caption 요소에 대해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/table-duplicate-name)"
   },
   "core/audits/accessibility/table-duplicate-name.js | failureTitle": {
-    "message": "Tables have the same content in the summary attribute and `<caption>.`"
+    "message": "표의 summary 속성 및 `<caption>.`에 동일한 콘텐츠가 있습니다"
   },
   "core/audits/accessibility/table-duplicate-name.js | title": {
-    "message": "Tables have different content in the summary attribute and `<caption>`."
+    "message": "표의 summary 속성 및 `<caption>`에 다른 콘텐츠가 있습니다"
   },
   "core/audits/accessibility/table-fake-caption.js | description": {
     "message": "스크린 리더에는 표를 좀 더 쉽게 탐색하는 기능이 있습니다. 표에서 `[colspan]` 속성이 있는 셀 대신 실제 자막 요소를 사용하면 스크린 리더 사용자 환경을 개선할 수 있습니다. [자막에 관해 자세히 알아보세요](https://dequeuniversity.com/rules/axe/4.7/table-fake-caption)."
@@ -498,7 +498,7 @@
     "message": "표에서 자막을 나타내기 위해 `[colspan]` 속성이 있는 셀 대신 `<caption>`을(를) 사용합니다."
   },
   "core/audits/accessibility/target-size.js | description": {
-    "message": "Touch targets with sufficient size and spacing help users who may have difficulty targeting small controls to activate the targets. [Learn more about touch targets](https://dequeuniversity.com/rules/axe/4.7/target-size)."
+    "message": "터치 영역의 크기와 간격이 충분한 경우 타겟을 활성화하는 컨트롤의 크기가 작아 조작에 어려움을 겪는 사용자에게 도움이 됩니다. [터치 영역에 대해 자세히 알아보기](https://dequeuniversity.com/rules/axe/4.7/target-size)"
   },
   "core/audits/accessibility/target-size.js | failureTitle": {
     "message": "터치 영역의 크기 또는 간격이 충분하지 않습니다."
@@ -1083,10 +1083,7 @@
     "message": "prefer_related_applications는 Android의 Chrome 베타 및 공개 버전 채널에서만 지원됩니다."
   },
   "core/audits/installable-manifest.js | protocol-timeout": {
-    "message": "Lighthouse could not determine if the page is installable. Please try with a newer version of Chrome."
-  },
-  "core/audits/installable-manifest.js | scheme-not-supported-for-webapk": {
-    "message": "Android에서 지원되지 않는 매니페스트 URL 스키마({scheme})입니다."
+    "message": "Lighthouse에서 페이지 설치 가능 여부를 판단할 수 없습니다. 최신 버전의 Chrome을 사용해 시도해 보세요."
   },
   "core/audits/installable-manifest.js | start-url-not-valid": {
     "message": "잘못된 매니페스트 시작 URL입니다."
@@ -1707,7 +1704,7 @@
     "message": "권장사항"
   },
   "core/config/default-config.js | a11yCategoryDescription": {
-    "message": "These checks highlight opportunities to [improve the accessibility of your web app](https://developer.chrome.com/docs/lighthouse/accessibility/). Automatic detection can only detect a subset of issues and does not guarantee the accessibility of your web app, so [manual testing](https://web.dev/how-to-review/) is also encouraged."
+    "message": "이 검사에서는 [웹 앱의 접근성을 개선](https://developer.chrome.com/docs/lighthouse/accessibility/)하도록 추천된 사항을 강조합니다. 자동 감지는 일부 문제만 감지할 수 있고 웹 앱의 접근성을 보장하지 않으므로 [직접 테스트](https://web.dev/how-to-review/)해 보는 것이 좋습니다."
   },
   "core/config/default-config.js | a11yCategoryManualDescription": {
     "message": "자동화된 테스트 도구가 처리할 수 없는 영역을 다루는 항목입니다. [접근성 검토 실시](https://web.dev/how-to-review/)에 관한 가이드에서 자세히 알아보세요."
@@ -2853,7 +2850,7 @@
     "message": "이미지를 지연 로드할 수 있는 [Drupal 모듈](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A67&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=%22lazy+load%22&solrsort=iss_project_release_usage+desc&op=Search)을 설치하세요. 이러한 모듈은 오프스크린 이미지를 지연하여 성능을 개선해 줍니다."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using a module to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "모듈을 사용하여 중요한 CSS 및 JavaScript를 인라인으로 처리하는 방안을 고려하고, 중요하지 않은 CSS 또는 JavaScript에는 defer 속성을 사용합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
     "message": "테마, 모듈, 서버 사양은 모두 서버 응답 시간에 영향을 미칩니다. 더욱 최적화된 테마를 찾고, 최적화 모듈을 신중하게 선택하고, 서버를 업그레이드해 보세요. 호스팅 서버에서는 PHP opcode 캐싱 및 데이터베이스 쿼리 시간을 단축하기 위한 Redis나 Memcached 등의 메모리 캐싱을 사용하고, 페이지를 더 빠르게 준비하기 위해 최적화된 애플리케이션 로직을 사용해야 합니다."
@@ -2862,10 +2859,10 @@
     "message": "페이지에서 로드되는 이미지의 크기를 줄이려면 [반응형 이미지 스타일](https://www.drupal.org/docs/8/mobile-guide/responsive-images-in-drupal-8)을 사용해 보세요. 페이지에 여러 콘텐츠 항목을 표시하는 데 Views를 사용하고 있다면 페이지로 나누기를 구현하여 주어진 페이지에 표시되는 콘텐츠 항목의 수를 제한하는 것이 좋습니다."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "'Administration(관리) » Configuration(구성) » Development(개발)' 페이지에서 'Aggregate CSS files(CSS 파일 집계)'를 사용 설정했는지 확인합니다.  애셋 집계 지원을 개선하려면 Drupal 사이트가 Drupal 10.1 이상을 실행해야 합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page.  Ensure your Drupal site is running at least Drupal 10.1 for improved asset aggregation support."
+    "message": "'Administration(관리) » Configuration(구성) » Development(개발)' 페이지에서 'Aggregate JavaScript files(JavaScript 파일 집계)'를 사용 설정했는지 확인합니다.  애셋 집계 지원을 개선하려면 Drupal 사이트가 Drupal 10.1 이상을 실행해야 합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
     "message": "미사용 CSS 규칙을 삭제하는 방안을 고려하고, 관련 페이지 또는 페이지의 구성요소에 필요한 Drupal 라이브러리만 연결합니다. 자세한 정보는 [Drupal 문서 링크](https://www.drupal.org/docs/8/creating-custom-modules/adding-stylesheets-css-and-javascript-js-to-a-drupal-8-module#library)를 참고하세요. 연결된 라이브러리 중 불필요한 CSS를 추가하는 라이브러리를 확인하려면 Chrome DevTools의 [코드 범위](https://developers.google.com/web/updates/2017/04/devtools-release-notes#coverage)를 실행해 보세요. Drupal 사이트에서 CSS 집계가 사용 중지되어 있으면 스타일시트의 URL에서 원인이 되는 테마 또는 모듈을 확인할 수 있습니다. 목록에서 코드 범위에 빨간색이 많이 보이는 스타일시트가 여러 개 있는 테마 또는 모듈을 찾아보세요. 테마 또는 모듈은 페이지에서 실제 사용되는 스타일시트만 대기열에 포함해야 합니다."
@@ -3066,46 +3063,46 @@
     "message": "Next.js 서버에서 압축 기능을 사용하세요. [자세히 알아보기](https://nextjs.org/docs/api-reference/next.config.js/compression)"
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | dom-size": {
-    "message": "Contact your account manager to enable [`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337). Configuring it will prioritize and optimize your page rendering performance."
+    "message": "[`HTML Lazy Load`](https://support.nitropack.io/hc/en-us/articles/17144942904337)를 사용 설정하려면 계정 관리자에게 문의하세요. 이를 구성하면 페이지 렌더링 성능에 우선순위가 지정되고 최적화됩니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | font-display": {
-    "message": "Use the [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) option in NitroPack to set a desired value for the CSS font-display rule."
+    "message": "NitroPack의 [`Override Font Rendering Behavior`](https://support.nitropack.io/hc/en-us/articles/16547358865041) 옵션을 사용하여 CSS 글꼴 표시 규칙에 대해 원하는 값을 설정합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | modern-image-formats": {
-    "message": "Use [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513) to automatically convert your images to WebP."
+    "message": "이미지를 WebP로 자동 변환하려면 [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/16547237162513)을 사용합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | offscreen-images": {
-    "message": "Defer offscreen images by enabling [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)."
+    "message": "화면 밖 이미지를 연기하려면 [`Automatic Image Lazy Loading`](https://support.nitropack.io/hc/en-us/articles/12457493524369-NitroPack-Lazy-Loading-Feature-for-Images)을 사용 설정합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | render-blocking-resources": {
-    "message": "Enable [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack) in NitroPack for faster initial load times."
+    "message": "초기 로드 시간을 단축하려면 NitroPack에서 [`Remove render-blocking resources`](https://support.nitropack.io/hc/en-us/articles/13820893500049-How-to-Deal-with-Render-Blocking-Resources-in-NitroPack)를 사용 설정합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | server-response-time": {
-    "message": "Improve server response time and optimize perceived performance by activating [`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)."
+    "message": "[`Instant Load`](https://support.nitropack.io/hc/en-us/articles/16547340617361)를 활성화하여 서버 응답 시간을 개선하고 인지 성능을 최적화합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-css": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your CSS, HTML, and JavaScript files for faster load times."
+    "message": "로드 시간을 단축하려면 캐싱 설정에서 [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources)를 사용 설정하여 CSS, HTML, JavaScript 파일의 크기를 줄입니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unminified-javascript": {
-    "message": "Enable [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources) in your Caching settings to reduce the size of your JS, HTML, and CSS files for faster load times."
+    "message": "로드 시간을 단축하려면 캐싱 설정에서 [`Minify resources`](https://support.nitropack.io/hc/en-us/articles/360061059394-Minify-Resources)를 사용 설정하여 JS, HTML, CSS 파일의 크기를 줄입니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-css-rules": {
-    "message": "Enable [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS) to remove CSS rules that are not applicable to this page."
+    "message": "이 페이지에 적용할 수 없는 CSS 규칙을 삭제하려면 [`Reduce Unused CSS`](https://support.nitropack.io/hc/en-us/articles/360020418457-Reduce-Unused-CSS)를 사용 설정합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | unused-javascript": {
-    "message": "Configure [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts) in NitroPack to delay loading of scripts until they are needed."
+    "message": "필요할 때까지 스크립트 로드를 지연하려면 NitroPack에서 [`Delayed Scripts`](https://support.nitropack.io/hc/en-us/articles/1500002600942-Delayed-Scripts)를 구성합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-long-cache-ttl": {
-    "message": "Go to the [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) feature in the `Caching` menu and adjust your page cache expiration time to improve loading times and user experience."
+    "message": "로드 시간과 사용자 환경을 개선하려면 `Caching` 메뉴의 [`Improve Server Response Time`](https://support.nitropack.io/hc/en-us/articles/1500002321821-Improve-Server-Response-Time) 기능으로 이동하여 페이지 캐시 만료 시간을 조정합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-optimized-images": {
-    "message": "Automatically compress, optimize, and convert your images into WebP by enabling the [`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) setting."
+    "message": "[`Image Optimization`](https://support.nitropack.io/hc/en-us/articles/14177271695121-How-to-serve-images-in-next-gen-formats-using-NitroPack) 설정을 사용 설정하면 이미지가 자동으로 압축 및 최적화되고 WebP로 변환됩니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-responsive-images": {
-    "message": "Enable [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site) to preemptively optimize your images and make them match the dimensions of the containers they’re displayed in across all devices."
+    "message": "이미지를 사전에 최적화하고 모든 기기에서 이미지가 표시되는 컨테이너의 크기와 일치시키려면 [`Adaptive Image Sizing`](https://support.nitropack.io/hc/en-us/articles/10123833029905-How-to-Enable-Adaptive-Image-Sizing-For-Your-Site)을 사용 설정합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nitropack.js | uses-text-compression": {
-    "message": "Use [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression) in NitroPack to reduce the size of the files that are sent to the browser."
+    "message": "브라우저로 전송되는 파일의 크기를 줄이려면 NitroPack에서 [`Gzip compression`](https://support.nitropack.io/hc/en-us/articles/13229297479313-Enabling-GZIP-compression)을 사용합니다."
   },
   "node_modules/lighthouse-stack-packs/packs/nuxt.js | modern-image-formats": {
     "message": "`nuxt/image` 구성요소를 사용해 `format=\"webp\"` 형식을 설정하세요. [자세히 알아보기](https://image.nuxtjs.org/components/nuxt-img#format)"
@@ -3309,7 +3306,7 @@
     "message": "JSON으로 저장"
   },
   "report/renderer/report-utils.js | dropdownViewUnthrottledTrace": {
-    "message": "View Unthrottled Trace"
+    "message": "제한되지 않은 트레이스 보기"
   },
   "report/renderer/report-utils.js | dropdownViewer": {
     "message": "뷰어에서 열기"

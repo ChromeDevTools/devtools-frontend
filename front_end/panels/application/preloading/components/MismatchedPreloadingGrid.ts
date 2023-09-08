@@ -2,17 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as UI from '../../../../ui/legacy/legacy.js';
-import type * as Platform from '../../../../core/platform/platform.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
-import * as SDK from '../../../../core/sdk/sdk.js';
+import type * as Platform from '../../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
-import * as Protocol from '../../../../generated/protocol.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../../generated/protocol.js';
+import * as Diff from '../../../../third_party/diff/diff.js';
+import * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
-import * as Diff from '../../../../third_party/diff/diff.js';
+
+import * as PreloadingString from './PreloadingString.js';
 
 const UIStrings = {
   /**
@@ -57,16 +59,6 @@ const str_ =
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 class PreloadingUIUtils {
-  static action(action: Protocol.Preload.SpeculationAction): string {
-    // Use "prefetch"/"prerender" as is in SpeculationRules.
-    switch (action) {
-      case Protocol.Preload.SpeculationAction.Prefetch:
-        return i18n.i18n.lockedString('prefetch');
-      case Protocol.Preload.SpeculationAction.Prerender:
-        return i18n.i18n.lockedString('prerender');
-    }
-  }
-
   static status(status: SDK.PreloadingModel.PreloadingStatus): string {
     // See content/public/browser/preloading.h PreloadingAttemptOutcome.
     switch (status) {
@@ -216,7 +208,7 @@ export class MismatchedPreloadingGrid extends LegacyWrapper.LegacyWrapper.Wrappa
                    value: row.url,
                    renderer: () => urlRenderer(row.url, pageURL),
                  },
-                 {columnId: 'action', value: PreloadingUIUtils.action(row.action)},
+                 {columnId: 'action', value: PreloadingString.capitalizedAction(row.action)},
                  {columnId: 'status', value: PreloadingUIUtils.status(row.status)},
                ],
              }));

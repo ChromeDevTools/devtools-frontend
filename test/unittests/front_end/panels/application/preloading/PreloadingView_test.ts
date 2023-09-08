@@ -531,7 +531,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
         [
           [
             '/prerendered.html',
-            'prerender',
+            'Prerender',
             '',
             'Running',
           ],
@@ -593,7 +593,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
         [
           [
             '/prerendered.html',
-            'prerender',
+            'Prerender',
             '',
             'Running',
           ],
@@ -670,13 +670,13 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
         [
           [
             '/subresource2.js',
-            'prefetch',
+            'Prefetch',
             'example.com/',
             'Running',
           ],
           [
             '/prerendered3.html',
-            'prerender',
+            'Prerender',
             'example.com/',
             'Running',
           ],
@@ -696,7 +696,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
         [
           [
             '/subresource2.js',
-            'prefetch',
+            'Prefetch',
             'example.com/',
             'Running',
           ],
@@ -716,13 +716,13 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
         [
           [
             '/subresource2.js',
-            'prefetch',
+            'Prefetch',
             'example.com/',
             'Running',
           ],
           [
             '/prerendered3.html',
-            'prerender',
+            'Prerender',
             'example.com/',
             'Running',
           ],
@@ -760,7 +760,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
         [
           [
             '/prerendered.html',
-            'prerender',
+            'Prerender',
             '',
             'Running',
           ],
@@ -783,7 +783,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
-      ['Action', 'prerenderInspect'],
+      ['Action', 'PrerenderInspect'],
       ['Status', 'Preloading is running.'],
     ]);
 
@@ -831,7 +831,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
         [
           [
             '/prerendered.html',
-            'prerender',
+            'Prerender',
             '',
             'Ready',
           ],
@@ -854,7 +854,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
-      ['Action', 'prerenderInspect'],
+      ['Action', 'PrerenderInspect'],
       ['Status', 'Preloading finished and the result is ready for the next navigation.'],
     ]);
 
@@ -910,7 +910,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
         [
           [
             '/prerendered.html',
-            'prerender',
+            'Prerender',
             '',
             'Failure - The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
           ],
@@ -933,7 +933,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
-      ['Action', 'prerenderInspect'],
+      ['Action', 'PrerenderInspect'],
       ['Status', 'Preloading failed.'],
       [
         'Failure reason',

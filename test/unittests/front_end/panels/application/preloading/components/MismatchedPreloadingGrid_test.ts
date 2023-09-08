@@ -100,7 +100,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', async () => {
         component,
         ['URL', 'Action', 'Status'],
         [
-          ['https://example.com/prefetched.html', 'prefetch', 'Failure'],
+          ['https://example.com/prefetched.html', 'Prefetch', 'Failure'],
         ],
     );
   });
@@ -122,7 +122,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', async () => {
         component,
         ['URL', 'Action', 'Status'],
         [
-          ['https://example.com/prefetched.html?q=21', 'prefetch', 'Ready'],
+          ['https://example.com/prefetched.html?q=21', 'Prefetch', 'Ready'],
         ],
     );
 
@@ -150,7 +150,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', async () => {
         component,
         ['URL', 'Action', 'Status'],
         [
-          ['https://example.com/prefetched.html?q=1', 'prefetch', 'Ready'],
+          ['https://example.com/prefetched.html?q=1', 'Prefetch', 'Ready'],
         ],
     );
 
@@ -177,7 +177,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', async () => {
         component,
         ['URL', 'Action', 'Status'],
         [
-          ['https://example.com/prefetched.html?q=1', 'prefetch', 'Ready'],
+          ['https://example.com/prefetched.html?q=1', 'Prefetch', 'Ready'],
         ],
     );
 
@@ -204,7 +204,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', async () => {
         component,
         ['URL', 'Action', 'Status'],
         [
-          ['https://example.com/prerfendertched.html?xq=1', 'prerender', 'Ready'],
+          ['https://example.com/prerfendertched.html?xq=1', 'Prerender', 'Ready'],
         ],
     );
 

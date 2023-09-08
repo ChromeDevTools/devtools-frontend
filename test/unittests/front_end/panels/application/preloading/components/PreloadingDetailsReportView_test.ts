@@ -95,7 +95,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
-      ['Action', 'prerender'],
+      ['Action', 'Prerender'],
       ['Status', 'Preloading is running.'],
       ['Rule set', 'example.com/'],
     ]);
@@ -146,7 +146,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
     const values = getCleanTextContentFromElements(report, 'devtools-report-value');
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
-      ['Action', 'prerender'],
+      ['Action', 'Prerender'],
       ['Status', 'Preloading failed.'],
       [
         'Failure reason',
@@ -209,7 +209,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
         values[0];
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
-      ['Action', 'prefetch'],
+      ['Action', 'Prefetch'],
       ['Status', 'Preloading failed.'],
       ['Failure reason', 'The prefetch failed because of a non-2xx HTTP response status code.'],
       ['Rule set', 'example.com/'],
@@ -270,7 +270,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
         values[0];
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
-      ['Action', 'prefetch'],
+      ['Action', 'Prefetch'],
       ['Status', 'Preloading finished and the result is ready for the next navigation.'],
       ['Rule set', 'example.com/speculation-rules.json'],
     ]);

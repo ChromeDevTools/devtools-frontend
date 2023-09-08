@@ -168,7 +168,7 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
               value: this.#urlShort(row, securityOrigin),
               title: row.attempt.key.url,
             },
-            {columnId: 'action', value: PreloadingString.action(row.attempt)},
+            {columnId: 'action', value: PreloadingString.capitalizedAction(row.attempt.action)},
             {
               columnId: 'ruleSet',
               value: row.ruleSets.length === 0 ? '' : PreloadingString.ruleSetLocationShort(row.ruleSets[0], pageURL),

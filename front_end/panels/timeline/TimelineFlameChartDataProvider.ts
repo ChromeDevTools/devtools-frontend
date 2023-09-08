@@ -948,28 +948,14 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     function patchColorAndCache<KEY>(cache: Map<KEY, string>, key: KEY, lookupColor: (arg0: KEY) => string): string {
       let color = cache.get(key);
       if (color) {
-        return parseColor(color);
+        return color;
       }
-      const parsedColor = lookupColor(key);
+      const parsedColor = Common.Color.parse(lookupColor(key));
       if (!parsedColor) {
         throw new Error('Could not parse color from entry');
       }
-      color = parsedColor;
+      color = parsedColor.setAlpha(0.7).asString(Common.Color.Format.RGBA) || '';
       cache.set(key, color);
-      return parseColor(color);
-    }
-
-    function parseColor(color: string): string {
-      // The color is either a css variable var(--app-color-scripting) or a hls color
-      // So if the first character of the color is v, it is a CSS variable.
-      const isColorCSSVariable = color[0] === 'v';
-      if (isColorCSSVariable) {
-        // The color is of this format var(--app-color-scripting) for instance
-        // However the getComputedValue method only accepts --app-color-scripting.
-        // To extract it, we split by "(", get the second value and pop the last ")" from it.
-        color = color.split('(')[1].slice(0, -1);
-        return ThemeSupport.ThemeSupport.instance().getComputedValue(color);
-      }
       return color;
     }
 
@@ -982,13 +968,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (entryType === entryTypes.Event) {
       const event = (this.entryData[entryIndex] as TraceEngine.Legacy.Event);
       if (this.legacyTimelineModel.isGenericTrace()) {
-        return parseColor(this.genericTraceEventColor(event));
+        return this.genericTraceEventColor(event);
       }
       if (this.legacyPerformanceModel.timelineModel().isMarkerEvent(event)) {
-        return parseColor(TimelineUIUtils.markerStyleForEvent(event).color);
+        return TimelineUIUtils.markerStyleForEvent(event).color;
       }
       if (!TraceEngine.Types.TraceEvents.isAsyncPhase(event.phase) && this.colorForEvent) {
-        return parseColor(this.colorForEvent(event));
+        return this.colorForEvent(event);
       }
       const category = TimelineUIUtils.eventStyle(event).category;
       return patchColorAndCache(this.asyncColorByCategory, category, () => category.color);
@@ -1000,7 +986,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData);
       const eventLevel = timelineData.entryLevels[entryIndex];
       const event = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData);
-      return parseColor(this.compatibilityTracksAppender?.colorForEvent(event, eventLevel) || '');
+      return this.compatibilityTracksAppender?.colorForEvent(event, eventLevel) || '';
     }
     return '';
   }

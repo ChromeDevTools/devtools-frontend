@@ -77,9 +77,8 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
     const proxy = new HeapSnapshotLoaderProxy(this, objectId, profileUid, snapshotReceivedCallback);
     this.postMessage({
       callId: this.nextCallId++,
-      disposition: 'create',
+      disposition: 'createLoader',
       objectId: objectId,
-      methodName: 'HeapSnapshotWorker.HeapSnapshotLoader',
     });
     return proxy;
   }

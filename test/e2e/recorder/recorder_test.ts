@@ -428,14 +428,16 @@ describe('Recorder', function() {
     assertRecordingMatchesSnapshot(recording);
   });
 
-  it('should capture and store screenshots for every section', async () => {
-    const {target} = getBrowserAndPages();
-    await startRecording('recorder/recorder.html');
-    await target.bringToFront();
-    await raf(target);
-    await stopRecording();
-    await waitFor('.section .screenshot');
-  });
+  // Flaky on Mac
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/1480253] should capture and store screenshots for every section', async () => {
+        const {target} = getBrowserAndPages();
+        await startRecording('recorder/recorder.html');
+        await target.bringToFront();
+        await raf(target);
+        await stopRecording();
+        await waitFor('.section .screenshot');
+      });
 
   // Flaky test
   it.skip('[crbug.com/1443423]: should record interactions with popups', async () => {

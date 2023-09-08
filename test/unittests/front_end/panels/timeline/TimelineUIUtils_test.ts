@@ -265,6 +265,17 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
   }
 
+  describe('eventColor', function() {
+    it('is idle for idle-like events', async function() {
+      const event = new TraceEngine.Legacy.ConstructedEvent(
+          'v8,devtools.timeline,disabled-by-default-v8.compile',
+          TimelineModel.TimelineModel.RecordType.StreamingCompileScriptWaiting,
+          TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
+
+      assert.strictEqual('hsl(0, 0%, 98%)', await Timeline.TimelineUIUtils.TimelineUIUtils.eventColor(event));
+    });
+  });
+
   describe('traceEventDetails', function() {
     it('shows the interaction ID for EventTiming events that have an interaction ID', async function() {
       const data = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');

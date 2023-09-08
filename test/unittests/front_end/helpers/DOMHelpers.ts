@@ -155,6 +155,11 @@ export function dispatchClickEvent<T extends Element>(element: T, options: Mouse
   element.dispatchEvent(clickEvent);
 }
 
+export function dispatchMouseUpEvent<T extends Element>(element: T, options: MouseEventInit = {}) {
+  const clickEvent = new MouseEvent('mouseup', options);
+  element.dispatchEvent(clickEvent);
+}
+
 export function dispatchFocusEvent<T extends Element>(element: T, options: FocusEventInit = {}) {
   const focusEvent = new FocusEvent('focus', options);
   element.dispatchEvent(focusEvent);

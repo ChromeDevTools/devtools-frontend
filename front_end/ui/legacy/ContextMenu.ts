@@ -122,6 +122,7 @@ export class Item {
           checked: Boolean(this.checked),
           enabled: !this.disabled,
           subItems: undefined,
+          tooltip: this.#tooltip,
         };
         if (this.customElement) {
           result.element = this.customElement;
@@ -352,6 +353,7 @@ export class SubMenu extends Item {
 
 export interface ContextMenuOptions {
   useSoftMenu?: boolean;
+  keepOpen?: boolean;
   onSoftMenuClosed?: () => void;
   x?: number;
   y?: number;
@@ -364,6 +366,7 @@ export class ContextMenu extends SubMenu {
   private pendingTargets: Object[];
   private readonly event: MouseEvent;
   private readonly useSoftMenu: boolean;
+  private readonly keepOpen: boolean;
   private x: number;
   private y: number;
   private onSoftMenuClosed?: () => void;
@@ -383,6 +386,7 @@ export class ContextMenu extends SubMenu {
     this.pendingTargets = [];
     this.event = mouseEvent;
     this.useSoftMenu = Boolean(options.useSoftMenu);
+    this.keepOpen = Boolean(options.keepOpen);
     this.x = options.x === undefined ? mouseEvent.x : options.x;
     this.y = options.y === undefined ? mouseEvent.y : options.y;
     this.onSoftMenuClosed = options.onSoftMenuClosed;
@@ -419,6 +423,14 @@ export class ContextMenu extends SubMenu {
 
   isHostedMenuOpen(): boolean {
     return this.hostedMenuOpened;
+  }
+
+  getItems(): SoftContextMenuDescriptor[] {
+    return this.softMenu?.getItems() || [];
+  }
+
+  setChecked(item: SoftContextMenuDescriptor, checked: boolean): void {
+    this.softMenu?.setChecked(item, checked);
   }
 
   async show(): Promise<void> {
@@ -463,7 +475,8 @@ export class ContextMenu extends SubMenu {
     if (this.useSoftMenu || ContextMenu.useSoftMenu ||
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
       this.softMenu = new SoftContextMenu(
-          (menuObject as SoftContextMenuDescriptor[]), this.itemSelected.bind(this), undefined, this.onSoftMenuClosed);
+          (menuObject as SoftContextMenuDescriptor[]), this.itemSelected.bind(this), this.keepOpen, undefined,
+          this.onSoftMenuClosed);
       // let soft context menu focus on the first item when the event is triggered by a non-mouse event
       // add another check of button value to differentiate mouse event with 'shift + f10' keyboard event
       const isMouseEvent =

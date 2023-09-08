@@ -83,9 +83,6 @@ describe('DevTools', function() {
 
       await clickStartButton();
 
-      const {target} = getBrowserAndPages();
-      await target.bringToFront();
-
       const {lhr} = await waitForResult();
 
       const requests = lhr.audits['network-requests'].details.items;
@@ -125,9 +122,6 @@ describe('DevTools', function() {
       await navigateToLighthouseTab('lighthouse/hello.html');
       await selectCategories(['performance']);
       await clickStartButton();
-
-      const {target} = getBrowserAndPages();
-      await target.bringToFront();
 
       const {artifacts} = await waitForResult();
       assert.deepStrictEqual(artifacts.ViewportDimensions, {

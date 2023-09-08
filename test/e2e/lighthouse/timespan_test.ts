@@ -69,8 +69,6 @@ describe('Timespan', async function() {
 
     await endTimespan();
 
-    await target.bringToFront();
-
     const {lhr, artifacts, reportEl} = await waitForResult();
 
     assert.strictEqual(numNavigations, 0);

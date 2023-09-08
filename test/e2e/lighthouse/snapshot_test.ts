@@ -59,8 +59,6 @@ describe('Snapshot', async function() {
     await selectMode('snapshot');
     await clickStartButton();
 
-    await target.bringToFront();
-
     const {lhr, artifacts, reportEl} = await waitForResult();
 
     assert.strictEqual(numNavigations, 0);

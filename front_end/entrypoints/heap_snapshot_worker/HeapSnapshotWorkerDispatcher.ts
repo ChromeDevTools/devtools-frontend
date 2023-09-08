@@ -28,9 +28,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import type * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
+import * as HeapSnapshotModel from '../../models/heap_snapshot_model/heap_snapshot_model.js';
 
-import {HeapSnapshotLoader} from './HeapSnapshotLoader.js';
+// We mirror what heap_snapshot_worker.ts does, but we can't use it here as we'd have a
+// cyclic GN dependency otherwise.
+
+import * as AllocationProfile from './AllocationProfile.js';
+import * as HeapSnapshot from './HeapSnapshot.js';
+import * as HeapSnapshotLoader from './HeapSnapshotLoader.js';
 
 interface DispatcherResponse {
   callId?: number;
@@ -63,7 +68,7 @@ export class HeapSnapshotWorkerDispatcher {
     try {
       switch (data.disposition) {
         case 'createLoader':
-          this.#objects[data.objectId] = new HeapSnapshotLoader(this);
+          this.#objects[data.objectId] = new HeapSnapshotLoader.HeapSnapshotLoader(this);
           break;
         case 'dispose': {
           delete this.#objects[data.objectId];
@@ -91,6 +96,15 @@ export class HeapSnapshotWorkerDispatcher {
         }
         case 'evaluateForTest': {
           try {
+            // Make 'HeapSnapshotWorker' and 'HeapSnapshotModel' available to web tests. 'eval' can't use 'import'.
+            // @ts-ignore
+            globalThis.HeapSnapshotWorker = {
+              AllocationProfile,
+              HeapSnapshot,
+              HeapSnapshotLoader,
+            };
+            // @ts-ignore
+            globalThis.HeapSnapshotModel = HeapSnapshotModel;
             response.result = self.eval(data.source);
           } catch (error) {
             response.result = error.toString();

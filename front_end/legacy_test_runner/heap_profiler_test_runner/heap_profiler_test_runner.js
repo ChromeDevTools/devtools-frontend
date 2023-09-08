@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../entrypoints/heap_snapshot_worker/heap_snapshot_worker-legacy.js';
 import '../../panels/profiler/profiler-legacy.js';
 import '../../ui/legacy/components/data_grid/data_grid-legacy.js';
 
+import * as HeapSnapshotWorker from '../../entrypoints/heap_snapshot_worker/heap_snapshot_worker.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
@@ -35,9 +35,9 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
       containmentEdges: new Uint32Array([2, 6, 3, 1, 7, 6, 0, 1, 6, 1, 8, 9, 1, 9, 9, 1, 10, 12, 1, 11, 15]),
       strings: ['', 'A', 'B', 'C', 'D', 'E', 'a', 'b', 'ac', 'bc', 'bd', 'ce'],
       firstEdgeIndexes: new Uint32Array([0, 6, 12, 18, 21, 21, 21]),
-      createNode: HeapSnapshotWorker.JSHeapSnapshot.prototype.createNode,
-      createEdge: HeapSnapshotWorker.JSHeapSnapshot.prototype.createEdge,
-      createRetainingEdge: HeapSnapshotWorker.JSHeapSnapshot.prototype.createRetainingEdge
+      createNode: HeapSnapshotWorker.HeapSnapshot.JSHeapSnapshot.prototype.createNode,
+      createEdge: HeapSnapshotWorker.HeapSnapshot.JSHeapSnapshot.prototype.createEdge,
+      createRetainingEdge: HeapSnapshotWorker.HeapSnapshot.JSHeapSnapshot.prototype.createRetainingEdge
     };
   };
 
@@ -274,7 +274,8 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
 
     createJSHeapSnapshot: function() {
       const parsedSnapshot = HeapProfilerTestRunner.postprocessHeapSnapshotMock(this.generateSnapshot());
-      return new HeapSnapshotWorker.JSHeapSnapshot(parsedSnapshot, new HeapSnapshotWorker.HeapSnapshotProgress());
+      return new HeapSnapshotWorker.HeapSnapshot.JSHeapSnapshot(
+          parsedSnapshot, new HeapSnapshotWorker.HeapSnapshot.HeapSnapshotProgress());
     },
 
     registerNode: function(node) {

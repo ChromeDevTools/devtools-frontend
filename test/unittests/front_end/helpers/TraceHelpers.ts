@@ -206,12 +206,12 @@ export function getTree(thread: TraceEngine.Handlers.ModelHandlers.Renderer.Rend
 export function getRootAt(thread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread, index: number):
     TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode {
   const tree = getTree(thread);
-  const nodeId = [...tree.roots][index];
-  if (nodeId === undefined) {
+  const node = [...tree.roots][index];
+  if (node === undefined) {
     assert(false, `Couldn't get the id of the root at index ${index} in thread ${thread.name}`);
     return null as never;
   }
-  return getNodeFor(thread, nodeId);
+  return node;
 }
 
 /**
@@ -232,15 +232,11 @@ export function getNodeFor(
 }
 
 /**
- * Gets all the `events` for the `nodes` with `ids`.
+ * Gets all the `events` for the `nodes`.
  */
-export function getEventsIn(
-    ids: IterableIterator<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNodeId>,
-    nodes:
-        Map<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNodeId,
-            TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode>):
+export function getEventsIn(nodes: IterableIterator<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode>):
     TraceEngine.Types.TraceEvents.TraceEventData[] {
-  return [...ids].map(id => nodes.get(id)).flatMap(node => node ? node.entry : []);
+  return [...nodes].flatMap(node => node ? node.entry : []);
 }
 /**
  * Pretty-prints a tree.
@@ -254,15 +250,7 @@ export function prettyPrint(
     out: string = ''): string {
   let skipped = false;
   return printNodes(tree.roots);
-  function printNodes(nodeIds: Set<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNodeId>): string {
-    const nodes = [];
-    for (const nodeId of nodeIds) {
-      const child = tree.nodes.get(nodeId);
-      if (!child) {
-        continue;
-      }
-      nodes.push(child);
-    }
+  function printNodes(nodes: Set<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode>): string {
     for (const node of nodes) {
       const event = node.entry;
       if (!predicate(node, event)) {
@@ -280,15 +268,7 @@ export function prettyPrint(
       const duration = `[${(event.dur || 0) / 1000}ms]`;
       const info = [jsFunctionName, eventType, duration].filter(Boolean);
       out += `${newline}${spacing}${prefix}${event.name} ${info.join(' ')}`;
-      const children = [];
-      for (const childId of node.childrenIds) {
-        const child = tree.nodes.get(childId);
-        if (!child) {
-          continue;
-        }
-        children.push(child);
-      }
-      out = printNodes(node.childrenIds);
+      out = printNodes(node.children);
     }
     return out;
   }

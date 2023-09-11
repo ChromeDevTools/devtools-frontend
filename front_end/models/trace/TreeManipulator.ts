@@ -147,7 +147,7 @@ export class TreeManipulator {
             // Invalid node was given, just ignore and move on.
             continue;
           }
-          const allAncestors = this.#findAllAncestorsOfNode(this.#thread.tree, entryNode);
+          const allAncestors = this.#findAllAncestorsOfNode(entryNode);
           allAncestors.forEach(ancestor => entriesToHide.add(ancestor));
           break;
         }
@@ -170,22 +170,17 @@ export class TreeManipulator {
   }
 
   #findAllAncestorsOfNode(
-      tree: Handlers.ModelHandlers.Renderer.RendererTree,
       root: Handlers.ModelHandlers.Renderer.RendererEntryNode): Types.TraceEvents.RendererEntry[] {
     const ancestors: Types.TraceEvents.RendererEntry[] = [];
 
     // Walk through all the ancestors, starting at the root node.
-    const childIds: Handlers.ModelHandlers.Renderer.RendererEntryNodeId[] = Array.from(root.childrenIds);
-    while (childIds.length > 0) {
-      const id = childIds.shift();
-      if (!id) {
-        break;
-      }
-      const childNode = tree.nodes.get(id);
+    const children: Handlers.ModelHandlers.Renderer.RendererEntryNode[] = Array.from(root.children);
+    while (children.length > 0) {
+      const childNode = children.shift();
       if (childNode) {
         ancestors.push(childNode.entry);
-        const newChildIds = Array.from(childNode.childrenIds);
-        childIds.push(...newChildIds);
+        const newChildIds = Array.from(childNode.children);
+        children.push(...newChildIds);
       }
     }
 

@@ -221,11 +221,6 @@ const UIStrings = {
   prerenderFinalStatusMemoryLimitExceeded:
       'The prerender was not performed because the browser exceeded the prerendering memory limit.',
   /**
-   *  Description text for PrerenderFinalStatus::kFailToGetMemoryUsage.
-   */
-  prerenderFinalStatusFailToGetMemoryUsage:
-      'The prerender was not performed because the browser encountered an internal error attempting to determine current memory usage.',
-  /**
    *  Description text for PrerenderFinalStatus::kDataSaverEnabled.
    */
   prerenderFinalStatusDataSaverEnabled:
@@ -556,8 +551,6 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
       return i18nString(UIStrings.prerenderFinalStatusTriggerBackgrounded);
     case Protocol.Preload.PrerenderFinalStatus.MemoryLimitExceeded:
       return i18nString(UIStrings.prerenderFinalStatusMemoryLimitExceeded);
-    case Protocol.Preload.PrerenderFinalStatus.FailToGetMemoryUsage:
-      return i18nString(UIStrings.prerenderFinalStatusFailToGetMemoryUsage);
     case Protocol.Preload.PrerenderFinalStatus.DataSaverEnabled:
       return i18nString(UIStrings.prerenderFinalStatusDataSaverEnabled);
     case Protocol.Preload.PrerenderFinalStatus.HasEffectiveUrl:

@@ -35,6 +35,10 @@ export namespace ProtocolMapping {
     'Animation.animationStarted': [Protocol.Animation.AnimationStartedEvent];
     'Audits.issueAdded': [Protocol.Audits.IssueAddedEvent];
     /**
+     * Emitted when an address form is filled.
+     */
+    'Autofill.addressFormFilled': [Protocol.Autofill.AddressFormFilledEvent];
+    /**
      * Called when the recording state for the service has been updated.
      */
     'BackgroundService.recordingStateChanged': [Protocol.BackgroundService.RecordingStateChangedEvent];
@@ -931,6 +935,20 @@ export namespace ProtocolMapping {
      */
     'Autofill.setAddresses': {
       paramsType: [Protocol.Autofill.SetAddressesRequest];
+      returnType: void;
+    };
+    /**
+     * Disables autofill domain notifications.
+     */
+    'Autofill.disable': {
+      paramsType: [];
+      returnType: void;
+    };
+    /**
+     * Enables autofill domain notifications.
+     */
+    'Autofill.enable': {
+      paramsType: [];
       returnType: void;
     };
     /**
@@ -4207,6 +4225,14 @@ export namespace ProtocolMapping {
     };
     'FedCm.selectAccount': {
       paramsType: [Protocol.FedCm.SelectAccountRequest];
+      returnType: void;
+    };
+    /**
+     * Only valid if the dialog type is ConfirmIdpSignin. Acts as if the user had
+     * clicked the continue button.
+     */
+    'FedCm.confirmIdpSignin': {
+      paramsType: [Protocol.FedCm.ConfirmIdpSigninRequest];
       returnType: void;
     };
     'FedCm.dismissDialog': {

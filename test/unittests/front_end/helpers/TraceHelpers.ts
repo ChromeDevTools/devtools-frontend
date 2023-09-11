@@ -454,12 +454,50 @@ export function makeFakeEventPayload(payload: FakeEventPayload): TraceEngine.Tra
  * function will create a fake SDK Event with a stubbed thread that tries to
  * mimic the real thing. It is not designed to be used to emulate entire traces,
  * but more to create single events that can be used in unit tests.
- **/
+ */
 export function makeFakeSDKEventFromPayload(payloadOptions: FakeEventPayload): TraceEngine.Legacy.PayloadEvent {
   const payload = makeFakeEventPayload(payloadOptions);
   const thread = StubbedThread.make(payload.tid);
   const event = TraceEngine.Legacy.PayloadEvent.fromPayload(payload, thread);
   return event;
+}
+
+/**
+ * Mocks an object compatible with the return type of the
+ * RendererHandler using only an array of ordered entries.
+ */
+export function makeMockRendererHandlerData(entries: TraceEngine.Types.TraceEvents.RendererEntry[]):
+    TraceEngine.Handlers.ModelHandlers.Renderer.RendererHandlerData {
+  const tree = TraceEngine.Handlers.ModelHandlers.Renderer.treify(entries, {filter: {has: () => true}});
+  const entryToNode = new Map();
+  for (const node of tree.nodes.values()) {
+    entryToNode.set(node.entry, node);
+  }
+  const mockThread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread = {
+    tree,
+    name: 'thread',
+    entries,
+  };
+
+  const mockProcess: TraceEngine.Handlers.ModelHandlers.Renderer.RendererProcess = {
+    url: 'url',
+    isOnMainFrame: true,
+    threads: new Map([[1 as TraceEngine.Types.TraceEvents.ThreadID, mockThread]]),
+  };
+
+  const renderereEvents: TraceEngine.Types.TraceEvents.TraceEventRendererEvent[] = [];
+  for (const entry of entries) {
+    if (TraceEngine.Types.TraceEvents.isTraceEventRendererEvent(entry)) {
+      renderereEvents.push(entry);
+    }
+  }
+
+  return {
+    processes: new Map([[1 as TraceEngine.Types.TraceEvents.ProcessID, mockProcess]]),
+    compositorTileWorkers: new Map(),
+    entryToNode,
+    allRendererEvents: renderereEvents,
+  };
 }
 
 export class FakeFlameChartProvider implements PerfUI.FlameChart.FlameChartDataProvider {

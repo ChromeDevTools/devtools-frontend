@@ -406,7 +406,6 @@ export class CompatibilityTracksAppender {
       number {
     // TODO(crbug.com/1442454) Figure out how to avoid the circular calls.
     this.#trackForLevel.set(level, appender);
-
     const index = this.#entryData.length;
     this.#entryData.push(event);
     this.#indexForEvent.set(event, index);

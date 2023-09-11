@@ -348,8 +348,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   textColor(index: number): string {
     const event = this.entryData[index];
-    return event && this.#eventToDisallowRoot.get((event as TraceEngine.Legacy.Event)) ? '#888' :
-                                                                                         FlameChartStyle.textColor;
+    if (!TimelineFlameChartDataProvider.isEntryRegularEvent(event)) {
+      return FlameChartStyle.textColor;
+    }
+    return this.isIgnoreListedEvent(event) ? '#888' : FlameChartStyle.textColor;
   }
 
   entryFont(_index: number): string|null {
@@ -583,8 +585,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * Narrows an entry of type TimelineFlameChartEntry to the 2 types of
    * simple trace events (legacy and new engine definitions).
    */
-  isEntryRegularEvent(entry: TimelineFlameChartEntry): entry is(TraceEngine.Types.TraceEvents.TraceEventData|
-                                                                TraceEngine.Legacy.Event) {
+  static isEntryRegularEvent(entry: TimelineFlameChartEntry):
+      entry is(TraceEngine.Types.TraceEvents.TraceEventData|TraceEngine.Legacy.Event) {
     return 'name' in entry;
   }
 
@@ -593,7 +595,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.timelineData();
     for (let i = 0; i < this.entryData.length; ++i) {
       const entry = this.entryData[i];
-      if (!this.isEntryRegularEvent(entry)) {
+      if (!TimelineFlameChartDataProvider.isEntryRegularEvent(entry)) {
         continue;
       }
       let event: TraceEngine.Legacy.Event|null;
@@ -628,7 +630,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     result.sort((a, b) => {
       let firstEvent: TimelineFlameChartEntry|null = this.entryData[a];
       let secondEvent: TimelineFlameChartEntry|null = this.entryData[b];
-      if (!this.isEntryRegularEvent(firstEvent) || !this.isEntryRegularEvent(secondEvent)) {
+      if (!TimelineFlameChartDataProvider.isEntryRegularEvent(firstEvent) ||
+          !TimelineFlameChartDataProvider.isEntryRegularEvent(secondEvent)) {
         return 0;
       }
       firstEvent = firstEvent instanceof TraceEngine.Legacy.Event ?
@@ -748,7 +751,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return group;
   }
 
-  isIgnoreListedEvent(event: TraceEngine.Legacy.Event): boolean {
+  isIgnoreListedEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
+    if (TraceEngine.Legacy.eventIsFromNewEngine(event) && TraceEngine.Types.TraceEvents.isProfileCall(event)) {
+      return this.isIgnoreListedURL(event.callFrame.url as Platform.DevToolsPath.UrlString);
+    }
     if (!TimelineModel.TimelineModel.TimelineModelImpl.isJsFrameEvent(event)) {
       return false;
     }
@@ -1192,7 +1198,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const entryType = this.entryType(entryIndex);
     let timelineSelection: TimelineSelection|null = null;
     const entry = this.entryData[entryIndex];
-    if (entry && this.isEntryRegularEvent(entry)) {
+    if (entry && TimelineFlameChartDataProvider.isEntryRegularEvent(entry)) {
       timelineSelection = TimelineSelection.fromTraceEvent(entry);
     } else if (entryType === EntryType.Frame) {
       timelineSelection =

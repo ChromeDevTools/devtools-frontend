@@ -80,8 +80,9 @@ export function sortTraceEventsInPlace(events: {ts: Types.Timing.MicroSeconds, d
  * Returns an array of ordered events that results after merging the two
  * ordered input arrays.
  */
-export function mergeEventsInOrder<T extends Types.TraceEvents.TraceEventData>(
-    eventsArray1: T[], eventsArray2: T[]): T[] {
+export function
+mergeEventsInOrder<T1 extends Types.TraceEvents.TraceEventData, T2 extends Types.TraceEvents.TraceEventData>(
+    eventsArray1: T1[], eventsArray2: T2[]): (T1|T2)[] {
   const result = [];
   let i = 0;
   let j = 0;

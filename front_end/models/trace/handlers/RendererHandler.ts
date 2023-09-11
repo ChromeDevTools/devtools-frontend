@@ -31,7 +31,7 @@ const compositorTileWorkers = Array<{
   pid: Types.TraceEvents.ProcessID,
   tid: Types.TraceEvents.ThreadID,
 }>();
-const entryToNode = new Map<RendererEntry, RendererEntryNode>();
+const entryToNode = new Map<Types.TraceEvents.RendererEntry, RendererEntryNode>();
 const allRendererEvents: Types.TraceEvents.TraceEventRendererEvent[] = [];
 let nodeIdCount = 0;
 const makeRendererEntrytNodeId = (): RendererEntryNodeId => (++nodeIdCount) as RendererEntryNodeId;
@@ -57,13 +57,14 @@ const makeEmptyRendererTree = (): RendererTree => ({
   maxDepth: 0,
 });
 
-const makeEmptyRendererEventNode = (entry: RendererEntry, id: RendererEntryNodeId): RendererEntryNode => ({
-  entry,
-  id,
-  parentId: null,
-  childrenIds: new Set(),
-  depth: 0,
-});
+const makeEmptyRendererEventNode =
+    (entry: Types.TraceEvents.RendererEntry, id: RendererEntryNodeId): RendererEntryNode => ({
+      entry,
+      id,
+      parentId: null,
+      childrenIds: new Set(),
+      depth: 0,
+    });
 
 const getOrCreateRendererProcess =
     (processes: Map<Types.TraceEvents.ProcessID, RendererProcess>, pid: Types.TraceEvents.ProcessID):
@@ -359,7 +360,7 @@ export function buildHierarchy(
  * Complexity: O(n), where n = number of events
  */
 export function treify(
-    entries: RendererEntry[],
+    entries: Types.TraceEvents.RendererEntry[],
     options?: {filter: {has: (name: Types.TraceEvents.KnownEventName) => boolean}}): RendererTree {
   const stack = [];
   // Reset the node id counter for every new renderer.
@@ -498,7 +499,7 @@ export interface RendererHandlerData {
    * by the process ID.
    */
   compositorTileWorkers: Map<Types.TraceEvents.ProcessID, Types.TraceEvents.ThreadID[]>;
-  entryToNode: Map<RendererEntry, RendererEntryNode>;
+  entryToNode: Map<Types.TraceEvents.RendererEntry, RendererEntryNode>;
   /**
    * All trace events and synthetic profile calls made from
    * samples.
@@ -520,11 +521,9 @@ export interface RendererThread {
    * Contains trace events and synthetic profile calls made from
    * samples.
    */
-  entries: RendererEntry[];
+  entries: Types.TraceEvents.RendererEntry[];
   tree?: RendererTree;
 }
-
-export type RendererEntry = Types.TraceEvents.SyntheticRendererEvent|Types.TraceEvents.TraceEventSyntheticProfileCall;
 
 export interface RendererTree {
   nodes: Map<RendererEntryNodeId, RendererEntryNode>;
@@ -533,7 +532,7 @@ export interface RendererTree {
 }
 
 export interface RendererEntryNode {
-  entry: RendererEntry;
+  entry: Types.TraceEvents.RendererEntry;
   depth: number;
   id: RendererEntryNodeId;
   parentId?: RendererEntryNodeId|null;

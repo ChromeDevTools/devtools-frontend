@@ -249,7 +249,7 @@ export function prettyPrint(
     tree: TraceEngine.Handlers.ModelHandlers.Renderer.RendererTree,
     predicate: (
         node: TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode,
-        event: TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntry) => boolean = () => true,
+        event: TraceEngine.Types.TraceEvents.RendererEntry) => boolean = () => true,
     indentation: number = 2, delimiter: string = ' ', prefix: string = '-', newline: string = '\n',
     out: string = ''): string {
   let skipped = false;

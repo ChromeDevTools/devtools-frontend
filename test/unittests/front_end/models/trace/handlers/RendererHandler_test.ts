@@ -195,14 +195,13 @@ describeWithEnvironment('RendererHandler', function() {
     }
 
     const isRoot = (node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntryNode) => node.depth === 0;
-    const isInstant = (event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry) =>
+    const isInstant = (event: TraceModel.Types.TraceEvents.RendererEntry) =>
         TraceModel.Types.TraceEvents.isTraceEventInstant(event);
-    const isLong = (event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry) =>
+    const isLong = (event: TraceModel.Types.TraceEvents.RendererEntry) =>
         TraceModel.Types.TraceEvents.isTraceEventComplete(event) && event.dur > 1000;
     const isIncluded =
         (node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntryNode,
-         event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry) =>
-            (!isRoot(node) || isInstant(event) || isLong(event)) &&
+         event: TraceModel.Types.TraceEvents.RendererEntry) => (!isRoot(node) || isInstant(event) || isLong(event)) &&
         Timeline.EventUICategory.EventStyles.has(event.name as TraceModel.Types.TraceEvents.KnownEventName);
     assert.strictEqual(prettyPrint(tree, isIncluded), `
 ............
@@ -405,7 +404,7 @@ describeWithEnvironment('RendererHandler', function() {
     }
     const isIncluded =
         (_node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntryNode,
-         event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry) =>
+         event: TraceModel.Types.TraceEvents.RendererEntry) =>
             Timeline.EventUICategory.EventStyles.has(event.name as TraceModel.Types.TraceEvents.KnownEventName);
     assert.strictEqual(prettyPrint(tree, isIncluded), `
 -RunTask [0.13ms]
@@ -820,7 +819,7 @@ describeWithEnvironment('RendererHandler', function() {
       makeCompleteEvent('D', 3, 3),   // 3..6 (starts when B finishes)
       makeCompleteEvent('C', 2, 1),   // 2..3 (finishes when B finishes)
       makeCompleteEvent('E', 10, 3),  // 10..13 (starts when A finishes)
-    ] as TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry[];
+    ] as TraceModel.Types.TraceEvents.RendererEntry[];
 
     TraceModel.Helpers.Trace.sortTraceEventsInPlace(data);
     const tree = TraceModel.Handlers.ModelHandlers.Renderer.treify(data, {filter: {has: () => true}});
@@ -1183,8 +1182,7 @@ describeWithEnvironment('RendererHandler', function() {
       const v8Run = makeCompleteEvent('v8.run', 10, 490);
       const parseFunction = makeCompleteEvent('V8.ParseFunction', 12, 1);
 
-      const traceEvents: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry[] =
-          [evaluateScript, v8Run, parseFunction];
+      const traceEvents: TraceModel.Types.TraceEvents.RendererEntry[] = [evaluateScript, v8Run, parseFunction];
 
       const profileCalls = [makeProfileCall('a', 100, 200), makeProfileCall('b', 300, 200)];
       const allEntries = TraceModel.Helpers.Trace.mergeEventsInOrder(traceEvents, profileCalls);
@@ -1220,7 +1218,7 @@ describeWithEnvironment('RendererHandler', function() {
       }
       const onlyLongTasksPredicate =
           (_node: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntryNode,
-           event: TraceModel.Handlers.ModelHandlers.Renderer.RendererEntry) => Boolean(event.dur && event.dur > 1000) &&
+           event: TraceModel.Types.TraceEvents.RendererEntry) => Boolean(event.dur && event.dur > 1000) &&
           Timeline.EventUICategory.EventStyles.has(event.name as TraceModel.Types.TraceEvents.KnownEventName);
       assert.strictEqual(prettyPrint(thread.tree, onlyLongTasksPredicate), `
 .............

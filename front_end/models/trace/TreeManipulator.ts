@@ -6,12 +6,11 @@ import * as Platform from '../../core/platform/platform.js';
 import type * as Handlers from './handlers/handlers.js';
 import type * as Types from './types/types.js';
 
-type EntryToNodeMap =
-    Map<Handlers.ModelHandlers.Renderer.RendererEntry, Handlers.ModelHandlers.Renderer.RendererEntryNode>;
+type EntryToNodeMap = Map<Types.TraceEvents.RendererEntry, Handlers.ModelHandlers.Renderer.RendererEntryNode>;
 
 export interface UserTreeAction {
   type: 'MERGE_FUNCTION'|'COLLAPSE_FUNCTION';
-  entry: Handlers.ModelHandlers.Renderer.RendererEntry;
+  entry: Types.TraceEvents.RendererEntry;
 }
 
 /**
@@ -34,7 +33,7 @@ export class TreeManipulator {
   // Track the last calculated set of visible entries. This means we can avoid
   // re-generating this if the set of actions that have been applied has not
   // changed.
-  #lastVisibleEntries: readonly Handlers.ModelHandlers.Renderer.RendererEntry[]|null = null;
+  #lastVisibleEntries: readonly Types.TraceEvents.RendererEntry[]|null = null;
   #activeActions: UserTreeAction[] = [];
 
   constructor(
@@ -128,7 +127,7 @@ export class TreeManipulator {
     // array, but doing this would be a mutation of the arry for every hidden
     // event. Instead, we add entries to this set, and at the very end loop
     // through the entries array once to filter out any that should be hidden.
-    const entriesToHide = new Set<Handlers.ModelHandlers.Renderer.RendererEntry>();
+    const entriesToHide = new Set<Types.TraceEvents.RendererEntry>();
 
     const entries = [...this.#thread.entries];
     for (const action of this.#activeActions) {
@@ -172,8 +171,8 @@ export class TreeManipulator {
 
   #findAllAncestorsOfNode(
       tree: Handlers.ModelHandlers.Renderer.RendererTree,
-      root: Handlers.ModelHandlers.Renderer.RendererEntryNode): Handlers.ModelHandlers.Renderer.RendererEntry[] {
-    const ancestors: Handlers.ModelHandlers.Renderer.RendererEntry[] = [];
+      root: Handlers.ModelHandlers.Renderer.RendererEntryNode): Types.TraceEvents.RendererEntry[] {
+    const ancestors: Types.TraceEvents.RendererEntry[] = [];
 
     // Walk through all the ancestors, starting at the root node.
     const childIds: Handlers.ModelHandlers.Renderer.RendererEntryNodeId[] = Array.from(root.childrenIds);

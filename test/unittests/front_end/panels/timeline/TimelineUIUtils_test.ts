@@ -336,6 +336,48 @@ describeWithMockConnection('TimelineUIUtils', function() {
       );
     });
 
+    it('renders the details for a profile call properly', async function() {
+      Common.Linkifier.registerLinkifier({
+        contextTypes() {
+          return [Timeline.CLSLinkifier.CLSRect];
+        },
+        async loadLinkifier() {
+          return Timeline.CLSLinkifier.Linkifier.instance();
+        },
+      });
+
+      const data = await TraceLoader.allModels(this, 'simple-js-program.json.gz');
+      const rendererHandler = data.traceParsedData.Renderer;
+      if (!rendererHandler) {
+        throw new Error('RendererHandler is undefined');
+      }
+      const [process] = rendererHandler.processes.values();
+      const [thread] = process.threads.values();
+      const profileCalls = thread.entries.filter(entry => TraceEngine.Types.TraceEvents.isProfileCall(entry));
+
+      if (!profileCalls) {
+        throw new Error('Could not find renderer events');
+      }
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          profileCalls[0],
+          data.timelineModel,
+          new Components.Linkifier.Linkifier(),
+          false,
+          data.traceParsedData,
+      );
+      const rowData = getRowDataForDetailsElement(details);
+      assert.deepEqual(
+          rowData,
+          [
+            {
+              title: 'Function',
+              value: '(anonymous) @ www.google.com:21:17',
+            },
+          ],
+      );
+    });
+
     it('renders the warning for a trace event in its details', async function() {
       const data = await TraceLoader.allModels(this, 'simple-js-program.json.gz');
 

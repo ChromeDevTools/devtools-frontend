@@ -1019,9 +1019,15 @@ export interface TraceEventSyntheticProfileCall extends SyntheticEventWithSelfTi
  */
 export type SyntheticRendererEvent = TraceEventRendererEvent&SyntheticEventWithSelfTime;
 
+export type RendererEntry = SyntheticRendererEvent|TraceEventSyntheticProfileCall;
+
 export function isSyntheticInteractionEvent(event: TraceEventData): event is SyntheticInteractionEvent {
   return Boolean(
       'interactionId' in event && event.args?.data && 'beginEvent' in event.args.data && 'endEvent' in event.args.data);
+}
+
+export function isRendererEvent(event: TraceEventData): event is RendererEntry {
+  return isTraceEventRendererEvent(event) || isProfileCall(event);
 }
 
 class ProfileIdTag {

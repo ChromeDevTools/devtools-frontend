@@ -74,6 +74,7 @@ export function buildProfileCalls(): void {
           children,
           ph: Types.TraceEvents.Phase.COMPLETE,
           cat: '',
+          args: {},
           name: 'ProfileCall',
           tid,
           nodeId: node.id,

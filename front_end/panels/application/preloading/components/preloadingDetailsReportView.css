@@ -18,3 +18,9 @@ button.link {
 button.link devtools-icon {
   vertical-align: sub;
 }
+
+.link {
+  color: var(--color-link);
+  text-decoration: underline;
+  cursor: pointer;
+}

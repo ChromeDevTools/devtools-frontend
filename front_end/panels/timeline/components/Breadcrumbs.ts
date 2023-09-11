@@ -57,10 +57,10 @@ export class Breadcrumbs {
   }
 
   // Make breadcrumb active by removing all of its children and making it the last breadcrumb
-  makeBreadcrumbActive(newLastBreadcrumb: TraceEngine.Types.Timing.TraceWindow): void {
+  makeBreadcrumbActive(newLastBreadcrumb: Breadcrumb): void {
     let breadcrumbsIter: Breadcrumb = this.initialBreadcrumb;
 
-    while (breadcrumbsIter.window !== newLastBreadcrumb && breadcrumbsIter.child !== null) {
+    while (breadcrumbsIter !== newLastBreadcrumb && breadcrumbsIter.child !== null) {
       breadcrumbsIter = breadcrumbsIter.child;
     }
 

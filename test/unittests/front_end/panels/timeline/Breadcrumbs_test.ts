@@ -92,7 +92,7 @@ describe('Timeline breadcrumbs', () => {
     assert.deepEqual(
         TimelineComponents.Breadcrumbs.flattenBreadcrumbs(initialBreadcrumb),
         [initialBreadcrumb, breadcrumb1, breadcrumb2]);
-    crumbs.makeBreadcrumbActive(traceWindow1);
+    crumbs.makeBreadcrumbActive(breadcrumb1);
 
     breadcrumb1.child = null;
 

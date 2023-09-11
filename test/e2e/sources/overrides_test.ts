@@ -447,7 +447,8 @@ describe('Overrides panel > Delete context menus', () => {
     await waitFor(ENABLE_OVERRIDES_SELECTOR);
   });
 
-  it('delete only overridden files from sub folder', async () => {
+  // Flaky test
+  it.skipOnPlatforms(['mac'], '[crbug.com/1480951] delete only overridden files from sub folder', async () => {
     await step('files exist in Sources panel', async () => {
       await selectRequestByName('coffees.json', {button: 'right'});
       await click('aria/Show all overrides');

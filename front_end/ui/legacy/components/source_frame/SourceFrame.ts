@@ -1094,6 +1094,8 @@ export class SelfXssWarningDialog {
       input.addEventListener('input', () => {
         allowButton.disabled = !Boolean(input.value);
       }, false);
+      input.addEventListener('paste', e => e.preventDefault());
+      input.addEventListener('drop', e => e.preventDefault());
 
       dialog.setOutsideClickCallback(event => {
         event.consume();

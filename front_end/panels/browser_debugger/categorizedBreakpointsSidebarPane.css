@@ -28,22 +28,14 @@
 }
 
 .breakpoint-hit {
-  --override-breakpoint-hit-background-color: rgb(255 255 194);
-  --override-breakpoint-hit-border-color: rgb(107 97 48);
-
-  background-color: var(--override-breakpoint-hit-background-color);
-}
-
-:host-context(.-theme-with-dark-background) .breakpoint-hit {
-  --override-breakpoint-hit-background-color: hsl(46deg 98% 22%);
-  --override-breakpoint-hit-dark-mode-color: #ccc;
-
-  color: var(--override-breakpoint-hit-dark-mode-color);
+  background-color: var(--sys-color-yellow-container);
+  color: var(--sys-color-on-yellow-container);
 }
 
 .breakpoint-hit .breakpoint-hit-marker {
-  background-color: var(--override-breakpoint-hit-background-color);
-  border-right: 3px solid var(--override-breakpoint-hit-border-color);
+  background-color: var(--sys-color-yellow-container);
+  border-right: 3px solid var(--sys-color-yellow-outline);
+  color: var(--sys-color-on-yellow-container);
   height: 100%;
   left: 0;
   margin-left: -30px;

@@ -31,7 +31,7 @@
 
 .breakpoint-hit {
   background-color: var(--sys-color-neutral-container);
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 @media (forced-colors: active) {

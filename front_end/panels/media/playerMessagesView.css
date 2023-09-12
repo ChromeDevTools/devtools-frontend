@@ -4,8 +4,8 @@
  * found in the LICENSE file.
  */
 .media-messages-header {
-  background-color: var(--color-background-elevation-1);
-  border-bottom: 1px solid var(--color-details-hairline);
+  background-color: var(--sys-color-cdt-base-container);
+  border-bottom: 1px solid var(--sys-color-divider);
   min-height: 26px;
 }
 
@@ -30,33 +30,32 @@
 }
 
 .media-messages-message-container {
+  margin: 4px;
   font-size: 14px;
   line-height: 18px;
   padding: 4px;
   user-select: text;
-  border-bottom: 1px solid var(--color-details-hairline);
+}
+
+.media-messages-message-container + .media-messages-message-container {
+  border-top: 1px solid var(--sys-color-divider);
+
+  &.media-message-warning,
+  &.media-message-error {
+    border: none;
+  }
 }
 
 .media-message-warning {
-  --override-media-message-warning-background: hsl(45deg 100% 97%);
-
-  background-color: var(--override-media-message-warning-background);
-}
-
-.-theme-with-dark-background .media-message-warning,
-:host-context(.-theme-with-dark-background) .media-message-warning {
-  --override-media-message-warning-background: rgb(79 58 0);
+  border-radius: 5px;
+  background-color: var(--sys-color-surface-yellow);
+  color: var(--sys-color-on-surface-yellow);
 }
 
 .media-message-error {
-  --override-media-message-error-background: rgb(255 240 240);
-
-  background-color: var(--override-media-message-error-background);
-}
-
-.-theme-with-dark-background .media-message-error,
-:host-context(.-theme-with-dark-background) .media-message-error {
-  --override-media-message-error-background: rgb(79 0 0);
+  border-radius: 5px;
+  background-color: var(--sys-color-surface-error);
+  color: var(--sys-color-on-surface-error);
 }
 
 .media-messages-message-filtered {
@@ -69,13 +68,14 @@
 
 .status-error-box {
   font-family: monospace;
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-error-outline);
+  border-radius: 5px;
   padding: 4px;
 }
 
 .status-error-field-label {
   padding-right: 10px;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .status-error-field-labeled {

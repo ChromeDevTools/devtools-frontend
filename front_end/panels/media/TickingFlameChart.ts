@@ -12,7 +12,7 @@ import {Bounds, formatMillisecondsToSeconds} from './TickingFlameChartHelpers.js
 
 const defaultFont = '11px ' + Host.Platform.fontFamily();
 function getGroupDefaultTextColor(): string {
-  return ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
+  return ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface');
 }
 
 const DefaultStyle: () => PerfUI.FlameChart.GroupStyle = () => ({

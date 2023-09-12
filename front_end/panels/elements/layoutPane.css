@@ -130,8 +130,7 @@
 }
 
 .color-picker-label {
-  border: 1px solid rgb(128 128 128 / 60%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--sys-color-neutral-outline);
   cursor: default;
   display: inline-block;
   flex: none;
@@ -150,7 +149,7 @@ that uses the dimensions to draw an outline around the element. */
 
 .color-picker-label:hover,
 .color-picker-label:focus {
-  border: 1px solid var(--legacy-accent-color-hover);
+  border: 1px solid var(--sys-color-outline);
   transform: scale(1.2);
 }
 

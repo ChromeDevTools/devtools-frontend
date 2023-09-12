@@ -29,7 +29,7 @@
 }
 
 .clickable {
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   cursor: pointer;
 }
 
@@ -46,5 +46,5 @@
 }
 
 .title {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
 }

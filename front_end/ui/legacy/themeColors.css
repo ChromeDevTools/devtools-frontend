@@ -267,7 +267,7 @@
 
   /* Outlines */
 
-  --sys-color-color-outline: var(--ref-palette-neutral-variant50);
+  --sys-color-outline: var(--ref-palette-neutral-variant50);
   --sys-color-tonal-outline: var(--ref-palette-primary80);
   --sys-color-neutral-outline: var(--ref-palette-neutral80);
   --sys-color-yellow-outline: var(--ref-palette-yellow70);

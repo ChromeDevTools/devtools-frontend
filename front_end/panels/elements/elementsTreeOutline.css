@@ -117,7 +117,7 @@
 .elements-disclosure li.elements-drag-over .selection {
   display: block;
   margin-top: -2px;
-  border-top: 2px solid var(--legacy-selection-bg-color);
+  border-top: 2px solid var(--sys-color-primary);
 }
 
 .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) .selection {
@@ -137,9 +137,9 @@
 }
 
 .elements-disclosure .elements-tree-outline.hide-selection-when-blurred .selected:focus-visible .highlight > * {
-  background: var(--legacy-focus-bg-color);
+  background: var(--sys-color-state-focus-highlight);
   border-radius: 2px;
-  box-shadow: 0 0 0 2px var(--legacy-focus-bg-color);
+  outline: 2px solid var(--sys-color-state-focus-ring);
 }
 
 .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {

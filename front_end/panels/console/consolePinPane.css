@@ -15,20 +15,11 @@
   overflow-y: auto;
   background: var(--sys-color-cdt-base-container);
 
-  --override-error-background-color: rgb(255 240 240);
-  --override-error-border-color: rgb(225 214 214);
-  --override-error-text-color: rgb(255 0 0);
+  --override-error-text-color: var(--sys-color-on-error-container);
 }
 
 .console-pins:not(:empty) {
   border-bottom: 1px solid var(--sys-color-divider);
-}
-
-.-theme-with-dark-background .console-pins,
-:host-context(.-theme-with-dark-background) .console-pins {
-  --override-error-background-color: rgb(41 0 0);
-  --override-error-border-color: rgb(92 0 0);
-  --override-error-text-color: rgb(255 128 128);
 }
 
 .console-pin {
@@ -43,13 +34,13 @@
 }
 
 .console-pin.error-level:not(:focus-within) {
-  background-color: var(--override-error-background-color);
+  background-color: var(--sys-color-surface-error);
   color: var(--override-error-text-color);
 }
 
 .console-pin:not(:last-child).error-level:not(:focus-within) {
-  border-top: 1px solid var(--override-error-border-color);
-  border-bottom: 1px solid var(--override-error-border-color);
+  border-top: 1px solid var(--sys-color-error-outline);
+  border-bottom: 1px solid var(--sys-color-error-outline);
   margin-top: -1px;
 }
 
@@ -74,7 +65,7 @@
 .console-pin-name:focus-within {
   background: var(--sys-color-cdt-base-container);
   border-radius: 4px;
-  box-shadow: var(--legacy-focus-ring-active-shadow) inset;
+  border: 1px solid var(--sys-color-state-focus-ring);
 }
 
 .console-pin:focus-within .console-pin-preview,

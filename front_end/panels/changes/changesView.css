@@ -19,15 +19,8 @@
 }
 
 :focus.selected {
-  --override-selected-color: #fff;
-
-  background-color: var(--legacy-selection-bg-color);
-  color: var(--override-selected-color);
-}
-
-.-theme-with-dark-background :focus.selected,
-:host-context(.-theme-with-dark-background) :focus.selected {
-  --override-selected-color: rgb(0 0 0);
+  background-color: var(--sys-color-tonal-container);
+  color: var(--sys-color-on-tonal-container);
 }
 
 .changes-toolbar {

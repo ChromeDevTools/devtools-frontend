@@ -31,24 +31,8 @@
   background-color: var(--sys-color-cdt-base-container);
   overflow: hidden;
 
-  --override-error-text-color: var(--color-error-text);
-  --override-console-error-background-color: var(--color-error-background);
-  --override-error-border-color: var(--color-error-border);
-  --override-message-border-color: rgb(240 240 240);
-  --override-warning-border-color: hsl(50deg 100% 88%);
-  --override-focused-message-border-color: hsl(214deg 67% 88%);
-  --override-focused-message-background-color: hsl(214deg 48% 95%);
-  --override-console-warning-text-color: hsl(39deg 100% 18%);
-  --message-corner-rounder-background: (--sys-color-cdt-base-container);
-}
-
-.-theme-with-dark-background .console-view {
-  --override-message-border-color: rgb(58 58 58);
-  --override-warning-border-color: rgb(102 85 0);
-  --override-focused-message-border-color: hsl(214deg 47% 48%);
-  --override-focused-message-background-color: hsl(214deg 19% 20%);
-  --override-console-warning-text-color: hsl(39deg 89% 55%);
-  --override-console-link-color: var(--color-background-inverted);
+  --override-error-text-color: var(--sys-color-on-error-container);
+  --message-corner-rounder-background: var(--sys-color-cdt-base-container);
 }
 
 .console-toolbar-container {
@@ -116,7 +100,7 @@
 }
 
 .console-timestamp {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   user-select: none;
   flex: none;
   margin-right: 5px;
@@ -162,7 +146,7 @@
 }
 
 .console-info {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   font-style: italic;
   padding-bottom: 2px;
 }
@@ -226,7 +210,7 @@
   --console-color-white: #fff;
 
   &:focus {
-    background-color: var(--override-focused-message-background-color);
+    background-color: var(--sys-color-tonal-container);
   }
 }
 
@@ -294,14 +278,6 @@
   top: 3px;
 }
 
-.console-message-wrapper.console-error-level:focus {
-  --override-error-text-color: rgb(200 0 0);
-}
-
-.-theme-with-dark-background .console-message-wrapper.console-error-level:focus {
-  --override-error-text-color: hsl(0deg 100% 75%);
-}
-
 .console-message-wrapper .nesting-level-marker {
   width: 14px;
   flex: 0 0 auto;
@@ -337,7 +313,7 @@
 }
 
 .console-warning-level .console-message-text {
-  color: var(--override-console-warning-text-color);
+  color: var(--sys-color-on-surface-yellow);
 }
 
 .console-view-object-properties-section {
@@ -351,7 +327,7 @@
 }
 
 .info-note {
-  background-color: var(--color-primary-variant);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .info-note::before {
@@ -368,13 +344,7 @@
 }
 
 .console-system-type.console-info-level {
-  color: #00f; /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
-}
-
-.-theme-with-dark-background .console-verbose-level:not(.console-warning-level) .console-message-text,
-.-theme-with-dark-background .console-system-type.console-info-level {
-  color: hsl(220deg 100% 65%) !important; /* stylelint-disable-line declaration-no-important */
+  color: var(--sys-color-primary);
 }
 
 #console-messages .link {
@@ -384,18 +354,13 @@
 
 #console-messages .link,
 #console-messages .devtools-link {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-primary);
   word-break: break-all;
 }
 
 #console-messages .resource-links {
   margin-top: -1px;
   margin-bottom: -2px;
-}
-
-#console-messages .link:hover,
-#console-messages .devtools-link:hover {
-  color: var(--color-text-primary);
 }
 
 .console-object-preview {
@@ -449,16 +414,12 @@
   display: inline-block;
   width: 11px;
   height: 11px;
-  color: var(--color-background);
+  color: var(--sys-color-on-tonal-container);
   text-align: center;
   border-radius: 3px;
   line-height: 13px;
   margin: 0 6px;
   font-size: 9px;
-}
-
-.-theme-with-dark-background .object-state-note {
-  background-color: hsl(230deg 100% 80%);
 }
 
 .console-object {
@@ -496,10 +457,6 @@
 .message-count {
   width: 0;
   height: 0;
-}
-
-.-theme-with-dark-background #console-messages .console-message-text .devtools-link {
-  color: var(--override-console-link-color);
 }
 
 @media (forced-colors: active) {

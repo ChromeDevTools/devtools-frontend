@@ -69,6 +69,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private lazyLayersView?: TimelineLayersView|null;
   private preferredTabId?: string;
   private selection?: TimelineSelection|null;
+  private updateContentsScheduled: boolean;
   #traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null = null;
   #filmStrip: TraceEngine.Extras.FilmStrip.Data|null = null;
 
@@ -89,6 +90,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.setPreferredTab(Tab.Details);
 
     this.rangeDetailViews = new Map();
+    this.updateContentsScheduled = false;
 
     const bottomUpView = new BottomUpTimelineTreeView();
     this.appendTab(Tab.BottomUp, i18nString(UIStrings.bottomup), bottomUpView);
@@ -180,9 +182,17 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       this.setContent(UI.Fragment.html`<div/>`);
       return;
     }
-    const window = this.model.window();
-    this.updateSelectedRangeStats(window.left, window.right);
-    this.updateContents();
+
+    // Debounce this update as it's not critical.
+    if (!this.updateContentsScheduled) {
+      this.updateContentsScheduled = true;
+      setTimeout(() => {
+        this.updateContentsScheduled = false;
+        const window = this.model.window();
+        this.updateSelectedRangeStats(window.left, window.right);
+        this.updateContents();
+      }, 100);
+    }
   }
 
   #getFilmStripFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): TraceEngine.Extras.FilmStrip.Frame|null {

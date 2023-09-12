@@ -10,27 +10,30 @@
   background: var(--sys-color-cdt-base-container);
 }
 
+.overview-sidebar-panel-container {
+  min-width: fit-content;
+}
+
 .overview-sidebar-panel-item {
   height: 30px;
   padding-left: 30px;
   display: flex;
   align-items: center;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   white-space: nowrap;
-}
 
-.overview-sidebar-panel-container {
-  min-width: fit-content;
-}
+  &:hover {
+    background: var(--sys-color-state-hover-on-subtle);
+  }
 
-.overview-sidebar-panel-item:hover,
-.overview-sidebar-panel-item:focus {
-  background: var(--color-background-highlight);
-}
+  &:focus {
+    background: var(--sys-color-state-focus-highlight);
+  }
 
-.overview-sidebar-panel-item.selected {
-  background: var(--color-primary-old);
-  color: var(--color-background);
+  &.selected {
+    background: var(--sys-color-tonal-container);
+    color: var(--sys-color-on-tonal-container);
+  }
 }
 
 .overview-toolbar {

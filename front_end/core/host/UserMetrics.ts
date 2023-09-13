@@ -371,6 +371,11 @@ export class UserMetrics {
         EnumeratedHistogram.LighthouseModeRun, type, LighthouseModeRun.MaxValue);
   }
 
+  lighthouseCategoryUsed(type: LighthouseCategoryUsed): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.LighthouseCategoryUsed, type, LighthouseCategoryUsed.MaxValue);
+  }
+
   colorConvertedFrom(type: ColorConvertedFrom): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.ColorConvertedFrom, type, ColorConvertedFrom.MaxValue);
@@ -1414,6 +1419,18 @@ export enum LighthouseModeRun {
   Snapshot = 2,
   LegacyNavigation = 3,
   MaxValue = 4,
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum LighthouseCategoryUsed {
+  Performance = 0,
+  Accessibility = 1,
+  BestPractices = 2,
+  SEO = 3,
+  PWA = 4,
+  PubAds = 5,
+  MaxValue = 6,
 }
 
 /* eslint-enable @typescript-eslint/naming-convention */

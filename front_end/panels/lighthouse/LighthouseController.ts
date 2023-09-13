@@ -11,7 +11,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Emulation from '../emulation/emulation.js';
 
-import {type ProtocolService, type LighthouseRun} from './LighthouseProtocolService.js';
+import {type LighthouseRun, type ProtocolService} from './LighthouseProtocolService.js';
 import {type RunnerResult} from './LighthouseReporterTypes.js';
 
 const UIStrings = {
@@ -445,8 +445,15 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
     });
   }
 
-  private recordMetrics(flags: {mode: string}): void {
+  private recordMetrics(flags: {mode: string}, categoryIds: string[]): void {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.LighthouseStarted);
+
+    for (const preset of Presets) {
+      if (!categoryIds.includes(preset.configID)) {
+        continue;
+      }
+      Host.userMetrics.lighthouseCategoryUsed(preset.userMetric);
+    }
 
     switch (flags.mode) {
       case 'navigation':
@@ -467,7 +474,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
       const categoryIDs = this.getCategoryIDs();
       const flags = this.getFlags();
 
-      this.recordMetrics(flags);
+      this.recordMetrics(flags, categoryIDs);
 
       this.currentLighthouseRun = {inspectedURL, categoryIDs, flags};
 
@@ -627,6 +634,7 @@ export const Presets: Preset[] = [
     description: i18nLazyString(UIStrings.howLongDoesThisAppTakeToShow),
     plugin: false,
     supportedModes: ['navigation', 'timespan', 'snapshot'],
+    userMetric: Host.UserMetrics.LighthouseCategoryUsed.Performance,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(
@@ -636,6 +644,7 @@ export const Presets: Preset[] = [
     description: i18nLazyString(UIStrings.isThisPageUsableByPeopleWith),
     plugin: false,
     supportedModes: ['navigation', 'snapshot'],
+    userMetric: Host.UserMetrics.LighthouseCategoryUsed.Accessibility,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(
@@ -645,6 +654,7 @@ export const Presets: Preset[] = [
     description: i18nLazyString(UIStrings.doesThisPageFollowBestPractices),
     plugin: false,
     supportedModes: ['navigation', 'timespan', 'snapshot'],
+    userMetric: Host.UserMetrics.LighthouseCategoryUsed.BestPractices,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(
@@ -654,6 +664,7 @@ export const Presets: Preset[] = [
     description: i18nLazyString(UIStrings.isThisPageOptimizedForSearch),
     plugin: false,
     supportedModes: ['navigation', 'snapshot'],
+    userMetric: Host.UserMetrics.LighthouseCategoryUsed.SEO,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(
@@ -663,6 +674,7 @@ export const Presets: Preset[] = [
     description: i18nLazyString(UIStrings.doesThisPageMeetTheStandardOfA),
     plugin: false,
     supportedModes: ['navigation'],
+    userMetric: Host.UserMetrics.LighthouseCategoryUsed.PWA,
   },
   {
     setting: Common.Settings.Settings.instance().createSetting(
@@ -672,6 +684,7 @@ export const Presets: Preset[] = [
     title: i18nLazyString(UIStrings.publisherAds),
     description: i18nLazyString(UIStrings.isThisPageOptimizedForAdSpeedAnd),
     supportedModes: ['navigation'],
+    userMetric: Host.UserMetrics.LighthouseCategoryUsed.PubAds,
   },
 ];
 
@@ -791,6 +804,7 @@ export interface Preset {
   description: () => Common.UIString.LocalizedString;
   plugin: boolean;
   supportedModes: string[];
+  userMetric: Host.UserMetrics.LighthouseCategoryUsed;
 }
 export interface RuntimeSetting {
   setting: Common.Settings.Setting<string|boolean>;

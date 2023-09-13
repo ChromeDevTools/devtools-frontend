@@ -404,6 +404,7 @@ export enum EnumeratedHistogram {
   ManifestSectionSelected = 'DevTools.ManifestSectionSelected',
   CSSHintShown = 'DevTools.CSSHintShown',
   LighthouseModeRun = 'DevTools.LighthouseModeRun',
+  LighthouseCategoryUsed = 'DevTools.LighthouseCategoryUsed',
   ColorConvertedFrom = 'DevTools.ColorConvertedFrom',
   ColorPickerOpenedFrom = 'DevTools.ColorPickerOpenedFrom',
   CSSPropertyDocumentation = 'DevTools.CSSPropertyDocumentation',

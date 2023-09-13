@@ -201,8 +201,7 @@ export class ThreadAppender implements TrackAppender {
   #appendTrackHeaderAtLevel(currentLevel: number): void {
     const trackIsCollapsible = this.#entries.length > 0;
     const style = buildGroupStyle({shareHeaderLine: false, collapsible: trackIsCollapsible});
-    const group =
-        buildTrackHeader(currentLevel, this.#buildNameForTrack(), style, /* selectable= */ true, this.#expanded);
+    const group = buildTrackHeader(currentLevel, this.trackName(), style, /* selectable= */ true, this.#expanded);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
   /**
@@ -214,8 +213,8 @@ export class ThreadAppender implements TrackAppender {
     if (this.#rasterIndex === 1) {
       const trackIsCollapsible = this.#entries.length > 0;
       const headerStyle = buildGroupStyle({shareHeaderLine: false, collapsible: trackIsCollapsible});
-      const headerGroup = buildTrackHeader(
-          trackStartLevel, this.#buildNameForTrack(), headerStyle, /* selectable= */ false, this.#expanded);
+      const headerGroup =
+          buildTrackHeader(trackStartLevel, this.trackName(), headerStyle, /* selectable= */ false, this.#expanded);
       this.#flameChartData.groups.push(headerGroup);
     }
     // Nesting is set to 1 because the track is appended inside the
@@ -229,7 +228,7 @@ export class ThreadAppender implements TrackAppender {
     this.#compatibilityBuilder.registerTrackForGroup(titleGroup, this);
   }
 
-  #buildNameForTrack(): string {
+  trackName(): string {
     // This UI string doesn't yet use the i18n API because it is not
     // shown in production, only in the component server, reason being
     // it is not ready to be shipped.

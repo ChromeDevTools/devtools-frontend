@@ -40,16 +40,12 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {CompatibilityTracksAppender, type TrackAppenderName} from './CompatibilityTracksAppender.js';
-
-import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
-
 import {type PerformanceModel} from './PerformanceModel.js';
-
+import {ThreadAppender} from './ThreadAppender.js';
+import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
-
 import {TimelineSelection} from './TimelineSelection.js';
-
-import {TimelineUIUtils, type TimelineCategory} from './TimelineUIUtils.js';
+import {type TimelineCategory, TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**
@@ -288,13 +284,18 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   /**
    * Builds the flame chart data using the track appenders
    */
-  buildFromTrackAppenders(expandedTracks?: Set<TrackAppenderName>): void {
+  buildFromTrackAppenders(options?: {filterThreadsByName?: string, expandedTracks?: Set<TrackAppenderName>}): void {
     if (!this.compatibilityTracksAppender) {
       return;
     }
     const appenders = this.compatibilityTracksAppender.allVisibleTrackAppenders();
     for (const appender of appenders) {
-      const expanded = expandedTracks?.has(appender.appenderName);
+      const skipThreadAppenderByName =
+          appender instanceof ThreadAppender && !appender.trackName().includes(options?.filterThreadsByName || '');
+      if (skipThreadAppenderByName) {
+        continue;
+      }
+      const expanded = Boolean(options?.expandedTracks?.has(appender.appenderName));
       this.currentLevel = appender.appendTrackAtLevel(this.currentLevel, expanded);
     }
   }

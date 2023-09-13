@@ -32,11 +32,13 @@ export class MockFlameChartDelegate implements PerfUI.FlameChart.FlameChartDeleg
  * flame chart.
  * @param trackAppenderNames A Set with the names of the tracks to be
  * rendered. For example, Set("Timings").
+ * @param expanded whether the track should be expanded
+ * @param trackName optional param to filter tracks by their name.
  * @returns a flame chart element and its corresponding data provider.
  */
 export async function getMainFlameChartWithTracks(
     traceFileName: string, trackAppenderNames: Set<Timeline.CompatibilityTracksAppender.TrackAppenderName>,
-    expanded: boolean): Promise<{
+    expanded: boolean, trackName?: string): Promise<{
   flameChart: PerfUI.FlameChart.FlameChart,
   dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider,
 }> {
@@ -51,7 +53,8 @@ export async function getMainFlameChartWithTracks(
   dataProvider.setModel(performanceModel, traceParsedData);
   const tracksAppender = dataProvider.compatibilityTracksAppenderInstance();
   tracksAppender.setVisibleTracks(trackAppenderNames);
-  dataProvider.buildFromTrackAppenders(/* expandedTracks?= */ expanded ? trackAppenderNames : undefined);
+  dataProvider.buildFromTrackAppenders(
+      {filterThreadsByName: trackName, expandedTracks: expanded ? trackAppenderNames : undefined});
   const delegate = new MockFlameChartDelegate();
   const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
   const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParsedData.Meta.traceBounds.min);

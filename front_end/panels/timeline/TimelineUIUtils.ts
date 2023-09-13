@@ -1489,6 +1489,7 @@ export class TimelineUIUtils {
       case 'image/x-icon':
       case 'font/opentype':
       case 'font/woff2':
+      case 'font/ttf':
       case 'application/font-woff':
         return categories.Media;
       default:

@@ -241,6 +241,17 @@ export class CSSPropertyRule extends CSSRule {
   inherits(): boolean {
     return this.style.getPropertyValue('inherits') === 'true';
   }
+  setPropertyName(newPropertyName: string): Promise<boolean> {
+    const styleSheetId = this.styleSheetId;
+    if (!styleSheetId) {
+      throw new Error('No rule stylesheet id');
+    }
+    const range = this.#name.range;
+    if (!range) {
+      throw new Error('Property name is not editable');
+    }
+    return this.cssModelInternal.setPropertyRulePropertyName(styleSheetId, range, newPropertyName);
+  }
 }
 
 export class CSSKeyframesRule {

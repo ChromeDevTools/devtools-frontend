@@ -223,6 +223,27 @@ export class CSSModel extends SDKModel<EventTypes> {
     }
   }
 
+  async setPropertyRulePropertyName(
+      styleSheetId: Protocol.CSS.StyleSheetId, range: TextUtils.TextRange.TextRange, text: string): Promise<boolean> {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
+
+    try {
+      await this.ensureOriginalStyleSheetText(styleSheetId);
+      const {propertyName} =
+          await this.agent.invoke_setPropertyRulePropertyName({styleSheetId, range, propertyName: text});
+
+      if (!propertyName) {
+        return false;
+      }
+      this.#domModel.markUndoableState();
+      const edit = new Edit(styleSheetId, range, text, propertyName);
+      this.fireStyleSheetChanged(styleSheetId, edit);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   async setKeyframeKey(styleSheetId: Protocol.CSS.StyleSheetId, range: TextUtils.TextRange.TextRange, text: string):
       Promise<boolean> {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);

@@ -109,14 +109,13 @@ export class PuppeteerConnectionHelper {
   static async connectPuppeteerToConnectionViaTab(options: {
     connection: SDK.Connections.ParallelConnectionInterface,
     rootTargetId: string,
-    targetInfos: Protocol.Target.TargetInfo[],
     isPageTargetCallback: (targetInfo: Protocol.Target.TargetInfo) => boolean,
   }): Promise<{
     page: puppeteer.Page | null,
     browser: puppeteer.Browser,
     puppeteerConnection: puppeteer.Connection,
   }> {
-    const {connection, rootTargetId: tabTargetId, isPageTargetCallback} = options;
+    const {connection, rootTargetId, isPageTargetCallback} = options;
     // Pass an empty message handler because it will be overwritten by puppeteer anyways.
     const transport = new Transport(connection);
 
@@ -139,7 +138,7 @@ export class PuppeteerConnectionHelper {
     );
 
     const [, browser] = await Promise.all([
-      puppeteerConnection._createSession({targetId: tabTargetId}, /* emulateAutoAttach= */ true),
+      puppeteerConnection._createSession({targetId: rootTargetId}, /* emulateAutoAttach= */ true),
       browserPromise,
     ]);
 

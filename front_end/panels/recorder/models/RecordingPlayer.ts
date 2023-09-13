@@ -126,14 +126,12 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     const mainTargetId = await childTargetManager.getParentTargetId();
     const rootTargetId = await rootChildTargetManager.getParentTargetId();
-    const rootTargetInfo = await rootChildTargetManager.getTargetInfo();
 
     const {page, browser, puppeteerConnection} =
         await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnectionViaTab(
             {
               connection,
               rootTargetId: rootTargetId as string,
-              targetInfos: [rootTargetInfo, ...childTargetManager.targetInfos()],
               isPageTargetCallback: isPageTarget,
             },
         );

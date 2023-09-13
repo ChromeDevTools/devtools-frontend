@@ -4463,6 +4463,31 @@
                     ]
                 },
                 {
+                    "name": "setPropertyRulePropertyName",
+                    "description": "Modifies the property rule property name.",
+                    "parameters": [
+                        {
+                            "name": "styleSheetId",
+                            "$ref": "StyleSheetId"
+                        },
+                        {
+                            "name": "range",
+                            "$ref": "SourceRange"
+                        },
+                        {
+                            "name": "propertyName",
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "propertyName",
+                            "description": "The resulting key text after modification.",
+                            "$ref": "Value"
+                        }
+                    ]
+                },
+                {
                     "name": "setKeyframeKey",
                     "description": "Modifies the keyframe rule key text.",
                     "parameters": [
@@ -23911,7 +23936,6 @@
                         "NavigationBadHttpStatus",
                         "ClientCertRequested",
                         "NavigationRequestNetworkError",
-                        "MaxNumOfRunningPrerendersExceeded",
                         "CancelAllHostsForTesting",
                         "DidFailLoad",
                         "Stop",
@@ -23955,7 +23979,10 @@
                         "PrerenderingDisabledByDevTools",
                         "ResourceLoadBlockedByClient",
                         "SpeculationRuleRemoved",
-                        "ActivatedWithAuxiliaryBrowsingContexts"
+                        "ActivatedWithAuxiliaryBrowsingContexts",
+                        "MaxNumOfRunningEagerPrerendersExceeded",
+                        "MaxNumOfRunningNonEagerPrerendersExceeded",
+                        "MaxNumOfRunningEmbedderPrerendersExceeded"
                     ]
                 },
                 {

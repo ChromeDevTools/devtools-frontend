@@ -180,11 +180,6 @@ const UIStrings = {
    */
   prerenderFinalStatusNavigationRequestNetworkError: 'The prerendering navigation encountered a network error.',
   /**
-   *  Description text for PrerenderFinalStatus::kMaxNumOfRunningPrerendersExceeded.
-   */
-  prerenderFinalStatusMaxNumOfRunningPrerendersExceeded:
-      'The prerender was not performed because the initiating page already has too many prerenders ongoing. Remove other speculation rules to enable further prerendering.',
-  /**
    *  Description text for PrerenderFinalStatus::kSslCertificateError.
    */
   prerenderFinalStatusSslCertificateError: 'The prerendering navigation failed because of an invalid SSL certificate.',
@@ -336,6 +331,21 @@ const UIStrings = {
    */
   prerenderFinalStatusActivatedWithAuxiliaryBrowsingContexts:
       'The prerender was not used because during activation time, there were other windows with an active opener reference to the initiating page, which is currently not supported.',
+  /**
+   * Description text for PrerenderFinalStatus::kMaxNumOfRunningEagerPrerendersExceeded.
+   */
+  prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded:
+      'The prerender was not performed because the initiating page already has too many eager prerenders ongoing. Remove other speculation rules to enable further prerendering.',
+  /**
+   * Description text for PrerenderFinalStatus::kMaxNumOfRunningEmbedderPrerendersExceeded.
+   */
+  prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded:
+      'The prerender was not performed because the initiating page already has too many embedder prerenders ongoing. Remove other speculation rules to enable further prerendering.',
+  /**
+   * Description text for PrerenderFinalStatus::kMaxNumOfRunningNonEagerPrerendersExceeded.
+   */
+  prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded:
+      'The prerender was not performed because the initiating page already has too many non-eager prerenders ongoing. Remove other speculation rules to enable further prerendering.',
   /**
    *@description Text in grid and details: Preloading attempt is not yet triggered.
    */
@@ -524,8 +534,6 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
       return i18nString(UIStrings.prerenderFinalStatusClientCertRequested);
     case Protocol.Preload.PrerenderFinalStatus.NavigationRequestNetworkError:
       return i18nString(UIStrings.prerenderFinalStatusNavigationRequestNetworkError);
-    case Protocol.Preload.PrerenderFinalStatus.MaxNumOfRunningPrerendersExceeded:
-      return i18nString(UIStrings.prerenderFinalStatusMaxNumOfRunningPrerendersExceeded);
     case Protocol.Preload.PrerenderFinalStatus.CancelAllHostsForTesting:
       // Used only in tests.
       throw new Error('unreachable');
@@ -630,6 +638,12 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
       return i18nString(UIStrings.prerenderFinalStatusSpeculationRuleRemoved);
     case Protocol.Preload.PrerenderFinalStatus.ActivatedWithAuxiliaryBrowsingContexts:
       return i18nString(UIStrings.prerenderFinalStatusActivatedWithAuxiliaryBrowsingContexts);
+    case Protocol.Preload.PrerenderFinalStatus.MaxNumOfRunningEagerPrerendersExceeded:
+      return i18nString(UIStrings.prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded);
+    case Protocol.Preload.PrerenderFinalStatus.MaxNumOfRunningEmbedderPrerendersExceeded:
+      return i18nString(UIStrings.prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded);
+    case Protocol.Preload.PrerenderFinalStatus.MaxNumOfRunningNonEagerPrerendersExceeded:
+      return i18nString(UIStrings.prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded);
     default:
       // Note that we use switch and exhaustiveness check to prevent to
       // forget updating these strings, but allow to handle unknown

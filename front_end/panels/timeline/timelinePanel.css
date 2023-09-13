@@ -324,7 +324,7 @@
 .timeline-tree-view .data-grid div.background-percent-bar {
   float: right;
   position: relative;
-  z-index: 999;
+  z-index: 1;
 }
 
 .timeline-tree-view .data-grid span.percent-column {
@@ -418,6 +418,8 @@
 
 .timeline-tree-view .data-grid thead {
   height: 21px;
+  /* so the header is always above any body rows that the user has scrolled past */
+  z-index: 2;
 }
 
 .timeline-stack-view-header {

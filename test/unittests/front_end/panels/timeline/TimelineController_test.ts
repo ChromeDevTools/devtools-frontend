@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import type * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
+import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 
@@ -42,8 +42,12 @@ describeWithRealConnection('TimelineController', () => {
     if (!primaryPage) {
       throw new Error('Could not find primary page');
     }
+    const root = SDK.TargetManager.TargetManager.instance().rootTarget();
+    if (!root) {
+      throw new Error('Could not find root target');
+    }
 
-    const controller = new Timeline.TimelineController.TimelineController(primaryPage, client);
+    const controller = new Timeline.TimelineController.TimelineController(root, primaryPage, client);
 
     class TestTracingComponent extends HTMLElement {
       connectedCallback() {

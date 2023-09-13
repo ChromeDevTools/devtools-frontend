@@ -891,14 +891,23 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   async #startTraceRecording(): Promise<void> {
     try {
+      // We record against the root target, but also need to use the
+      // primaryPageTarget to inspect the current URL. For more info, see the
+      // JSDoc comment on the TimelineController constructor.
+      const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
       const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+
       if (!primaryPageTarget) {
         throw new Error('Could not load primary page target.');
       }
+      if (!rootTarget) {
+        throw new Error('Could not load root target.');
+      }
+
       if (UIDevtoolsUtils.isUiDevTools()) {
-        this.controller = new UIDevtoolsController(primaryPageTarget, this);
+        this.controller = new UIDevtoolsController(rootTarget, primaryPageTarget, this);
       } else {
-        this.controller = new TimelineController(primaryPageTarget, this);
+        this.controller = new TimelineController(rootTarget, primaryPageTarget, this);
       }
       this.setUIControlsEnabled(false);
       this.hideLandingPage();

@@ -2,20 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
+import * as Common from '../../../../../front_end/core/common/common.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
-import * as Components from '../../../../../front_end/ui/legacy/components/utils/utils.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
+import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
+import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
+import * as Components from '../../../../../front_end/ui/legacy/components/utils/utils.js';
+import {doubleRaf, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
-import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
-import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
-import * as Common from '../../../../../front_end/core/common/common.js';
-import {doubleRaf, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 const {assert} = chai;
@@ -265,14 +265,65 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
   }
 
-  describe('eventColor', function() {
-    it('is idle for idle-like events', async function() {
+  describe('colors', function() {
+    before(() => {
+      // Rather than use the real colours here and burden the test with having to
+      // inject loads of CSS, we fake out the colours. this is fine for our tests as
+      // the exact value of the colours is not important; we just make sure that it
+      // parses them out correctly. Each variable is given a different rgb() value to
+      // ensure we know the code is working and using the right one.
+      const styleElement = document.createElement('style');
+      styleElement.id = 'fake-perf-panel-colors';
+      styleElement.textContent = `
+:root {
+  --app-color-loading: rgb(0 0 0);
+  --app-color-loading-children: rgb(1 1 1);
+  --app-color-scripting: rgb(2 2 2);
+  --app-color-scripting-children: rgb(3 3 3);
+  --app-color-rendering: rgb(4 4 4);
+  --app-color-rendering-children: rgb(5 5 5);
+  --app-color-painting: rgb(6 6 6);
+  --app-color-painting-children: rgb(7 7 7);
+  --app-color-task: rgb(8 8 8);
+  --app-color-task-children: rgb(9 9 9);
+  --app-color-system: rgb(10 10 10);
+  --app-color-system-children: rgb(11 11 11);
+  --app-color-idle: rgb(12 12 12);
+  --app-color-idle-children: rgb(13 13 13);
+  --app-color-async: rgb(14 14 14);
+  --app-color-async-children: rgb(15 15 15);
+  --app-color-other: rgb(16 16 16);
+}
+`;
+      document.documentElement.appendChild(styleElement);
+    });
+
+    after(() => {
+      const styleElementToRemove = document.documentElement.querySelector('#fake-perf-panel-colors');
+      if (styleElementToRemove) {
+        document.documentElement.removeChild(styleElementToRemove);
+      }
+    });
+
+    it('should return the correct rgb value for a corresponding CSS variable', function() {
+      const rawColor = Timeline.TimelineUIUtils.TimelineUIUtils.categories().scripting.color;
+      const parsedColor = Timeline.TimelineUIUtils.TimelineUIUtils.categories().scripting.getComputedValue(rawColor);
+      assert.strictEqual('rgb(2 2 2)', parsedColor);
+    });
+
+    it('should return the color as a CSS variable', function() {
+      const rawColor = Timeline.TimelineUIUtils.TimelineUIUtils.categories().scripting.color;
+      const cssVariable = Timeline.TimelineUIUtils.TimelineUIUtils.categories().scripting.getCSSValue(rawColor);
+      assert.strictEqual('var(--app-color-scripting)', cssVariable);
+    });
+
+    it('treats the v8.parseOnBackgroundWaiting as scripting even though it would usually be idle', function() {
       const event = new TraceEngine.Legacy.ConstructedEvent(
           'v8,devtools.timeline,disabled-by-default-v8.compile',
           TimelineModel.TimelineModel.RecordType.StreamingCompileScriptWaiting,
           TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
 
-      assert.strictEqual('hsl(0, 0%, 98%)', await Timeline.TimelineUIUtils.TimelineUIUtils.eventColor(event));
+      assert.strictEqual('rgb(2 2 2)', Timeline.TimelineUIUtils.TimelineUIUtils.eventColor(event));
     });
   });
 

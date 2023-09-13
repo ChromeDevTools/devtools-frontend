@@ -957,13 +957,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       if (color) {
         return color;
       }
-      const parsedColor = Common.Color.parse(lookupColor(key));
+      const parsedColor = lookupColor(key);
       if (!parsedColor) {
         throw new Error('Could not parse color from entry');
       }
-      color = parsedColor.setAlpha(0.7).asString(Common.Color.Format.RGBA) || '';
+      color = parsedColor;
       cache.set(key, color);
-      return color;
+      return (color);
     }
 
     if (!this.legacyPerformanceModel || !this.legacyTimelineModel) {
@@ -984,7 +984,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         return this.colorForEvent(event);
       }
       const category = TimelineUIUtils.eventStyle(event).category;
-      return patchColorAndCache(this.asyncColorByCategory, category, () => category.color);
+      return patchColorAndCache(this.asyncColorByCategory, category, () => category.getComputedValue(category.color));
     }
     if (entryType === entryTypes.Frame) {
       return 'white';

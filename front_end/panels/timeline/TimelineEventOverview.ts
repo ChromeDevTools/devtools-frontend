@@ -260,7 +260,8 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
       quantizer.appendInterval(timeOffset + timeSpan + quantTime, idleIndex);  // Kick drawing the last bucket.
       for (let i = categoryOrder.length - 1; i > 0; --i) {
         paths[i].lineTo(width, height);
-        ctx.fillStyle = categories[categoryOrder[i]].color;
+        const computedColorValue = categories[categoryOrder[i]].getComputedValue(categories[categoryOrder[i]].color);
+        ctx.fillStyle = computedColorValue;
         ctx.fill(paths[i]);
       }
     }

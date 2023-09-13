@@ -7,14 +7,14 @@
  * loads and injects all *.js files it finds.
  */
 import type * as Common from '../../../../front_end/core/common/common.js';
+import * as TraceEngine from '../../../../front_end/models/trace/trace.js';
 import * as ThemeSupport from '../../../../front_end/ui/legacy/theme_support/theme_support.js';
 import {resetTestDOM} from '../helpers/DOMHelpers.js';
 import {markStaticTestsLoaded} from '../helpers/RealConnection.js';
-import * as TraceEngine from '../../../../front_end/models/trace/trace.js';
 import {
+  checkForPendingActivity,
   startTrackingAsyncActivity,
   stopTrackingAsyncActivity,
-  checkForPendingActivity,
 } from '../helpers/TrackAsyncOperations.js';
 
 before(async function() {

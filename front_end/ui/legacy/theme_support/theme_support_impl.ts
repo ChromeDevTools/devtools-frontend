@@ -34,7 +34,6 @@
  */
 
 import * as Common from '../../../core/common/common.js';
-
 import inspectorSyntaxHighlightStyles from '../inspectorSyntaxHighlight.css.legacy.js';
 
 let themeSupportInstance: ThemeSupport;

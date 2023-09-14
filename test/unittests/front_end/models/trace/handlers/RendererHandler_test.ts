@@ -1235,24 +1235,24 @@ describeWithEnvironment('RendererHandler', function() {
   -TimerFire [1058.77ms]
     -FunctionCall [1058.693ms]
 .
-      -ProfileCall (anonymous) [1058.548ms]
-        -ProfileCall (foo) [1058.548ms]
-          -ProfileCall (foo) [1058.548ms]
-            -ProfileCall (foo) [1058.548ms]
-              -ProfileCall (foo) [1058.548ms]
+      -ProfileCall (anonymous) [1058.589ms]
+        -ProfileCall (foo) [1058.589ms]
+          -ProfileCall (foo) [1058.589ms]
+            -ProfileCall (foo) [1058.589ms]
+              -ProfileCall (foo) [1058.589ms]
 ..
-                -ProfileCall (count) [1058.422ms]
+                -ProfileCall (count) [1058.453ms]
 ........
 -RunTask [1057.455ms]
   -TimerFire [1057.391ms]
     -FunctionCall [1057.27ms]
 .
-      -ProfileCall (anonymous) [1056.51ms]
-        -ProfileCall (foo) [1056.51ms]
-          -ProfileCall (foo) [1056.51ms]
-            -ProfileCall (foo) [1056.51ms]
-              -ProfileCall (foo) [1056.51ms]
-                -ProfileCall (count) [1056.51ms]
+      -ProfileCall (anonymous) [1056.579ms]
+        -ProfileCall (foo) [1056.579ms]
+          -ProfileCall (foo) [1056.579ms]
+            -ProfileCall (foo) [1056.579ms]
+              -ProfileCall (foo) [1056.579ms]
+                -ProfileCall (count) [1056.538ms]
 ........`);
     });
   });

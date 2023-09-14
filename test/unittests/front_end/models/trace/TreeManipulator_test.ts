@@ -74,7 +74,7 @@ describe('TreeManipulator', function() {
       // Processing this trace ends up with two distinct stacks for basicTwo()
       // So we find the first one so we can focus this test on just one stack.
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
-          entry.dur === 408;
+          entry.dur === 827;
     });
     const stack = new TraceEngine.TreeManipulator.TreeManipulator(mainThread, data.Renderer.entryToNode);
     stack.applyAction({type: 'MERGE_FUNCTION', entry: entryTwo});
@@ -92,7 +92,7 @@ describe('TreeManipulator', function() {
       // Processing this trace ends up with two distinct stacks for basicTwo()
       // So we find the first one so we can focus this test on just one stack.
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
-          entry.dur === 408;
+          entry.dur === 827;
     });
     const stack = new TraceEngine.TreeManipulator.TreeManipulator(mainThread, data.Renderer.entryToNode);
     stack.applyAction({type: 'MERGE_FUNCTION', entry: entryTwo});
@@ -128,7 +128,7 @@ describe('TreeManipulator', function() {
       // Processing this trace ends up with two distinct stacks for basicTwo()
       // So we find the first one so we can focus this test on just one stack.
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
-          entry.dur === 408;
+          entry.dur === 827;
     });
 
     // Gather the fib() calls under the first basicTwo stack, by finding all

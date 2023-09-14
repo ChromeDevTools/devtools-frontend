@@ -100,6 +100,12 @@ export class SamplesIntegrator {
     const stack = [];
     for (let i = 0; i < mergedEvents.length; i++) {
       const event = mergedEvents[i];
+      // Because instant trace events have no duration, they don't provide
+      // useful information for possible changes in the duration of calls
+      // in the JS stack.
+      if (event.ph === Types.TraceEvents.Phase.INSTANT) {
+        continue;
+      }
       if (stack.length === 0) {
         if (Types.TraceEvents.isProfileCall(event)) {
           this.#onProfileCall(event);
@@ -143,12 +149,6 @@ export class SamplesIntegrator {
   }
 
   #onTraceEventStart(event: Types.TraceEvents.TraceEventData): void {
-    // Because instant trace events have no duration, they don't provide
-    // useful information for possible changes in the duration of calls
-    // in the JS stack.
-    if (event.ph === Types.TraceEvents.Phase.INSTANT) {
-      return;
-    }
     // Top level events cannot be nested into JS frames so we reset
     // the stack when we find one.
     if (event.name === Types.TraceEvents.KnownEventName.RunMicrotasks ||

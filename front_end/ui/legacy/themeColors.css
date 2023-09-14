@@ -622,8 +622,8 @@
   /* Outlines */
 
   --sys-color-outline: var(--ref-palette-neutral-variant60);
-  --sys-color-tonal-outline: var(--ref-palette-secondary40);
-  --sys-color-neutral-outline: var(--ref-palette-neutral40);
+  --sys-color-tonal-outline: var(--ref-palette-secondary50);
+  --sys-color-neutral-outline: var(--ref-palette-neutral50);
   --sys-color-yellow-outline: var(--ref-palette-yellow40);
   --sys-color-error-outline: var(--ref-palette-error80);
   --sys-color-divider: var(--ref-palette-neutral30);

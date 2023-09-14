@@ -377,8 +377,8 @@
 
   /* Colors for data grid in Performance Panel */
 
-  --app-color-selected: var(--ref-palette-primary80);
-  --app-border-selected: var(--ref-palette-primary70);
+  --app-color-selected-progress-bar: var(--ref-palette-primary80);
+  --app-border-selected-progress-bar: var(--ref-palette-primary70);
 
   /* Colors for timeline in Performance Panel */
 
@@ -731,8 +731,8 @@
 
   /* Colors for data grid in Performance Panel */
 
-  --app-color-selected: var(--ref-palette-secondary40);
-  --app-border-selected: var(--ref-palette-secondary50);
+  --app-color-selected-progress-bar: var(--ref-palette-secondary40);
+  --app-border-selected-progress-bar: var(--ref-palette-secondary50);
 
   /* Colors for timeline in Performance Panel */
 

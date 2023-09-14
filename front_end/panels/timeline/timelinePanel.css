@@ -337,6 +337,10 @@
   color: inherit;
 }
 
+.timeline-tree-view .data-grid tr.selected {
+  background-color: var(--sys-color-tonal-container);
+}
+
 .timeline-tree-view .data-grid .name-container {
   display: flex;
   align-items: center;
@@ -388,24 +392,15 @@
 }
 
 .timeline-tree-view .data-grid .background-bar {
-  --override-background-bar-background-color: hsl(43deg 84% 64% / 20%);
-  --override-background-bar-border-color: hsl(43deg 84% 64%);
-
   float: right;
   height: 18px;
-  background-color: var(--override-background-bar-background-color);
-  border-bottom: 1px solid var(--override-background-bar-border-color);
+  background-color: var(--sys-color-yellow-container);
+  border-bottom: 1px solid var(--sys-color-yellow-outline);
 }
 
 .timeline-tree-view .data-grid .selected .background-bar {
-  background-color: var(--app-color-selected);
-  border-bottom: 1px solid var(--app-border-selected);
-}
-
-.-theme-with-dark-background .timeline-tree-view .data-grid .background-bar,
-:host-context(.-theme-with-dark-background) .timeline-tree-view .data-grid .background-bar {
-  --override-background-bar-background-color: rgb(169 126 15 / 20%);
-  --override-background-bar-border-color: rgb(169 126 15);
+  background-color: var(--app-color-selected-progress-bar);
+  border-bottom: 1px solid var(--app-border-selected-progress-bar);
 }
 
 .timeline-tree-view .timeline-details-view-body .full-widget-dimmed-banner {

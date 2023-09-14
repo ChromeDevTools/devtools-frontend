@@ -72,7 +72,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
         throw new Error('Trace events were unexpectedly not found.');
       }
       const constructedCalls = samplesIntegrator.buildProfileCalls(traceEvents);
-      assert.strictEqual(constructedCalls.length, 6178);
+      assert.strictEqual(constructedCalls.length, 6069);
     });
 
     it('creates JS profile calls with a top-level V8 invocation', () => {
@@ -237,60 +237,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
       assert.strictEqual(framesForFunctionA[1].ts, expectedBTimestamp);
       assert.strictEqual(framesForFunctionA[1].dur, runMicroTasks.ts + (runMicroTasks.dur || 0) - expectedBTimestamp);
     });
-    it('places a garbage collector frame on top of the call formed by neighboring equivalent samples', () => {
-      // Profile contains the following samples:
-      // |a||a||a|gc|a||a||a||a|
-      //    |b||b|  |b||b||c||c|
-      const cdpProfile: Protocol.Profiler.Profile = {
-        startTime: 0,
-        endTime: 3000,
-        nodes: [
-          {
-            id: 0,
-            hitCount: 0,
-            callFrame: {functionName: '(root)', scriptId, url, lineNumber, columnNumber},
-            children: [1, 4],
-          },
-          {id: 1, callFrame: {functionName: 'a', scriptId, url, lineNumber, columnNumber}, children: [2, 3]},
-          {id: 2, callFrame: {functionName: 'b', scriptId, url, lineNumber, columnNumber}},
-          {id: 3, callFrame: {functionName: 'c', scriptId, url, lineNumber, columnNumber}},
-          {id: 4, callFrame: {functionName: '(garbage collector)', scriptId, url, lineNumber, columnNumber}},
-        ],
-        samples: [1, 2, 2, 4, 2, 2, 3, 3],
-
-        timeDeltas: new Array(8).fill(100),
-      };
-
-      const parsedProfile = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(cdpProfile);
-      // After integrating with trace events, the flame chart
-      // should look like:
-      // |--------Trace Event-------|
-      //      |-----------a---------|
-      //         |----b---||----c---|
-      //              |gc|
-      const integrator = new TraceModel.Helpers.SamplesIntegrator.SamplesIntegrator(parsedProfile, pid, tid);
-      const callEvent = makeCompleteEvent(TraceModel.Types.TraceEvents.KnownEventName.FunctionCall, 0, 1000);
-      const traceEvents = [callEvent];
-      const constructedCalls = integrator.buildProfileCalls(traceEvents);
-      assert.strictEqual(constructedCalls.length, 4);
-
-      assert.strictEqual(constructedCalls[0].callFrame.functionName, 'a');
-      assert.strictEqual(constructedCalls[0].ts, 100);
-      assert.strictEqual(constructedCalls[0].dur, 900);
-
-      assert.strictEqual(constructedCalls[1].callFrame.functionName, 'b');
-      assert.strictEqual(constructedCalls[1].ts, 200);
-      assert.strictEqual(constructedCalls[1].dur, 500);
-
-      assert.strictEqual(constructedCalls[2].callFrame.functionName, '(garbage collector)');
-      assert.strictEqual(constructedCalls[2].ts, 400);
-      assert.strictEqual(constructedCalls[2].dur, 100);
-
-      assert.strictEqual(constructedCalls[3].callFrame.functionName, 'c');
-      assert.strictEqual(constructedCalls[3].ts, 700);
-      assert.strictEqual(constructedCalls[3].dur, 300);
-    });
-    it('skips samples from (program), (idle) and (root) nodes', async function() {
+    it('skips samples from (program), (idle), (root) and (garbage collector) nodes', async function() {
       const data = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
       const samplesData = data.Samples;
       assert.strictEqual(samplesData.profilesInProcess.size, 1);
@@ -305,13 +252,15 @@ describeWithEnvironment('SamplesIntegrator', function() {
       const rootNode = parsedProfile.root;
       const programNode = parsedProfile.programNode;
       const idleNode = parsedProfile.idleNode;
-      if (programNode === undefined || idleNode === undefined) {
-        throw new Error('Could not find program or idle node');
+      const gcNode = parsedProfile.gcNode;
+      if (programNode === undefined || idleNode === undefined || gcNode === undefined) {
+        throw new Error('Could not find program, idle or gc node');
       }
       const constructedCalls = samplesIntegrator.buildProfileCalls(traceEvents);
 
       const filteredNodes = constructedCalls.filter(
-          c => c.nodeId === rootNode.id || c.nodeId === idleNode.id || c.nodeId === programNode.id);
+          c => c.nodeId === rootNode.id || c.nodeId === idleNode.id || c.nodeId === programNode.id ||
+              c.nodeId === gcNode.id);
       assert.strictEqual(filteredNodes.length, 0);
     });
   });

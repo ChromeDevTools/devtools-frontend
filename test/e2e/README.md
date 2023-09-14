@@ -84,7 +84,19 @@ To debug in VSCode, open the "Run and Debug" sidebar, select "Run end-to-end tes
 
 ## Debugging flaky tests
 
-Sometimes tests may fail in a seemingly random way. This tends to happen in our CI due to difference in hardware. To debug this, you can use stressor bots which are specially-made for this purpose. These bots are similar to normal bots except their environment variables are configurable.
+To see if certain tests are flaky you can use the E2E stressor bots. Open a CL with your test changes and run the following command specifying your test file:
+
+```sh
+git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p e2e_env='{"TEST_PATTERNS":"network/network-datagrid_test.ts","ITERATIONS":20}'
+```
+
+or multiple test files:
+
+```sh
+git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p e2e_env='{"TEST_PATTERNS":"network/network-datagrid_test.ts,network/network_test.ts","ITERATIONS":20}'
+```
+
+This will run the specified tests on dedicated bots with the specified number of iterations. Note that in order for iterations to work the test should be using `it` from `mocha_extensions.ts`.
 
 The following command runs the stressor bot on all files of the latest commit with reasonable settings:
 

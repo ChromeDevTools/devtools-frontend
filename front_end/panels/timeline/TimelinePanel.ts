@@ -322,9 +322,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #traceEngineModel: TraceEngine.TraceModel.Model<typeof TraceEngine.Handlers.Migration.ENABLED_TRACE_HANDLERS>;
   // Tracks the index of the trace that the user is currently viewing.
   #traceEngineActiveTraceIndex = -1;
+  #threadTracksSource: ThreadTracksSource;
 
   constructor(threadTracksSource: ThreadTracksSource) {
     super('timeline');
+    this.#threadTracksSource = threadTracksSource;
     switch (threadTracksSource) {
       case ThreadTracksSource.BOTH_ENGINES:
       case ThreadTracksSource.NEW_ENGINE:
@@ -1314,7 +1316,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     try {
       // Run the new engine in parallel with the parsing done in the performanceModel
       await Promise.all([
-        this.performanceModel.setTracingModel(tracingModel, recordingIsFresh),
+        this.performanceModel.setTracingModel(tracingModel, recordingIsFresh, {
+          // If we are using the new engine for everything, we do not need to
+          // resolve sourcemaps within the old engine.
+          resolveSourceMaps: this.#threadTracksSource !== ThreadTracksSource.NEW_ENGINE,
+        }),
         this.#executeNewTraceEngine(
             tracingModel, recordingIsFresh, isCpuProfile, this.performanceModel.recordStartTime()),
       ]);

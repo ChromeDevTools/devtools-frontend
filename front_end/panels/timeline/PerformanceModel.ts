@@ -66,10 +66,14 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     return this.filtersInternal.every(f => f.accept(event));
   }
 
-  async setTracingModel(model: TraceEngine.Legacy.TracingModel, isFreshRecording = false): Promise<void> {
+  async setTracingModel(model: TraceEngine.Legacy.TracingModel, isFreshRecording = false, options = {
+    resolveSourceMaps: true,
+  }): Promise<void> {
     this.tracingModelInternal = model;
     this.timelineModelInternal.setEvents(model, isFreshRecording);
-    await this.addSourceMapListeners();
+    if (options.resolveSourceMaps) {
+      await this.addSourceMapListeners();
+    }
 
     const mainTracks = this.timelineModelInternal.tracks().filter(
         track => track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame &&
@@ -127,6 +131,10 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
   async #resolveNamesFromCPUProfile(): Promise<void> {
     for (const profile of this.timelineModel().cpuProfiles()) {
       const target = profile.target;
+      if (!target) {
+        continue;
+      }
+
       for (const node of profile.cpuProfileData.nodes() || []) {
         const resolvedFunctionName =
             await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(node.callFrame, target);

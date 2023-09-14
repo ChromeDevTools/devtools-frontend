@@ -1581,6 +1581,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/NetworkTrackAppender.js",
   "front_end/panels/timeline/PerformanceModel.js",
   "front_end/panels/timeline/SaveFileFormatter.js",
+  "front_end/panels/timeline/SourceMapsResolver.js",
   "front_end/panels/timeline/ThreadAppender.js",
   "front_end/panels/timeline/TimelineController.js",
   "front_end/panels/timeline/TimelineDetailsView.js",

@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../core/platform/platform.js';
-import * as Types from '../types/types.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import {HandlerState} from './types.js';
 import * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 import * as Helpers from '../helpers/helpers.js';
+import * as Types from '../types/types.js';
+
+import {HandlerState} from './types.js';
 
 const events =
     new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ThreadID, Types.TraceEvents.TraceEventComplete[]>>();
@@ -134,8 +135,9 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     const samples = nodesAndSamples?.samples || [];
     const nodes: CPUProfile.CPUProfileDataModel.ExtendedProfileNode[] = [];
     for (const n of nodesAndSamples?.nodes || []) {
-      const lineNumber = n.callFrame.lineNumber || -1;
-      const columnNumber = n.callFrame.columnNumber || -1;
+      const lineNumber = typeof n.callFrame.lineNumber === 'undefined' ? -1 : n.callFrame.lineNumber;
+      const columnNumber = typeof n.callFrame.columnNumber === 'undefined' ? -1 : n.callFrame.columnNumber;
+
       const scriptId = String(n.callFrame.scriptId) as Protocol.Runtime.ScriptId;
       const url = n.callFrame.url || '';
       const node = {

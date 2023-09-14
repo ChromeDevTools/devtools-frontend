@@ -217,6 +217,12 @@ describeWithEnvironment('SamplesHandler', function() {
       const cpuProfileData = profileById.values().next().value as TraceModel.Handlers.ModelHandlers.Samples.ProfileData;
       const parsedProfile = cpuProfileData.parsedProfile;
       assert.strictEqual(parsedProfile.nodes()?.length, 153);
+
+      // Ensure that we correctly maintain a lineNumber/columnNumber of 0 and don't fall back to -1 because 0 is falsey.
+      const nodesWithZeroLineNumber = parsedProfile.nodes()?.filter(node => node.lineNumber === 0) || [];
+      assert.lengthOf(nodesWithZeroLineNumber, 15);
+      const nodesWithZeroColumnNumber = parsedProfile.nodes()?.filter(node => node.columnNumber === 0) || [];
+      assert.lengthOf(nodesWithZeroColumnNumber, 12);
       assert.strictEqual(parsedProfile.gcNode?.id, 36);
       assert.strictEqual(parsedProfile.programNode?.id, 2);
       assert.strictEqual(parsedProfile.profileStartTime, 287510835.138);

@@ -1501,15 +1501,15 @@ export class TimelineUIUtils {
     const categories = NetworkCategory;
     switch (category) {
       case categories.HTML:
-        return 'hsl(214, 67%, 66%)';
+        return '--app-color-loading';
       case categories.Script:
-        return 'hsl(43, 83%, 64%)';
+        return '--app-color-scripting';
       case categories.Style:
-        return 'hsl(256, 67%, 70%)';
+        return '--app-color-rendering';
       case categories.Media:
-        return 'hsl(109, 33%, 55%)';
+        return '--app-color-painting';
       default:
-        return 'hsl(0, 0%, 70%)';
+        return '--app-color-system';
     }
   }
 

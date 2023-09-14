@@ -7,11 +7,11 @@ import {assert} from 'chai';
 import {
   $,
   click,
-  clickElement,
   getBrowserAndPages,
   getTestServerPort,
   goToResource,
   waitFor,
+  waitForFunction,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToApplicationTab} from '../helpers/application-helpers.js';
@@ -21,11 +21,13 @@ const REPORTING_API_SELECTOR = '[aria-label="Reporting API"]';
 
 describe('The Reporting API Page', async () => {
   // Flaky on mac
-  it.skipOnPlatforms(['mac'], '[crbug.com/1482688] shows reports', async () => {
+  it('shows reports', async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, 'reporting-api');
-    await click(REPORTING_API_SELECTOR);
-    const dataGrid = await getDataGrid();
+    const dataGrid = await waitForFunction(async () => {
+      await click(REPORTING_API_SELECTOR);
+      return await $('devtools-data-grid');
+    });
     const innerText = await getInnerTextOfDataGridCells(dataGrid, 1, false);
     const reportBody = '{"columnNumber":20,"id":"NavigatorVibrate","lineNumber":9,"message":' +
         '"Blocked call to navigator.vibrate because user hasn\'t tapped on the frame or any ' +
@@ -40,7 +42,7 @@ describe('The Reporting API Page', async () => {
     assert.strictEqual(innerText[0][5], reportBody);
 
     const rows = await getDataGridRows(1, dataGrid, false);
-    await clickElement(rows[rows.length - 1][0]);
+    await rows[rows.length - 1][0].click();
 
     const jsonView = await waitFor('.json-view');
     const jsonViewText = await jsonView.evaluate(el => (el as HTMLElement).innerText);

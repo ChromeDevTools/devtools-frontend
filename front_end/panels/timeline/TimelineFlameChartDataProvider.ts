@@ -44,6 +44,7 @@ import {type PerformanceModel} from './PerformanceModel.js';
 import {ThreadAppender} from './ThreadAppender.js';
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
+import {ThreadTracksSource} from './TimelinePanel.js';
 import {TimelineSelection} from './TimelineSelection.js';
 import {type TimelineCategory, TimelineUIUtils} from './TimelineUIUtils.js';
 
@@ -164,8 +165,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   #eventToDisallowRoot = new WeakMap<TraceEngine.Legacy.Event, boolean>();
   #indexForEvent = new WeakMap<TraceEngine.Legacy.Event, number>();
   #font: string;
+  #threadTracksSource: ThreadTracksSource;
 
-  constructor() {
+  constructor(threadTracksSource: ThreadTracksSource = ThreadTracksSource.BOTH_ENGINES) {
     super();
     this.reset();
     this.#font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
@@ -180,6 +182,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.traceEngineData = null;
     this.minimumBoundaryInternal = 0;
     this.timeSpan = 0;
+    this.#threadTracksSource = threadTracksSource;
 
     this.headerLevel1 = this.buildGroupStyle({shareHeaderLine: false});
     this.headerLevel2 = this.buildGroupStyle({padding: 2, nestingLevel: 1, collapsible: false});
@@ -487,7 +490,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         this.compatibilityTracksAppender ? this.compatibilityTracksAppender.allVisibleTrackAppenders() : [];
     // Due to tracks having a predefined order, we cannot render legacy
     // and new tracks separately.
-    const tracksAndAppenders = [...this.legacyTimelineModel.tracks(), ...trackAppenders].slice();
+    const legacyTracks =
+        this.#threadTracksSource === ThreadTracksSource.NEW_ENGINE ? [] : this.legacyTimelineModel.tracks();
+    const newTracks = this.#threadTracksSource === ThreadTracksSource.OLD_ENGINE ? [] : trackAppenders;
+    const tracksAndAppenders = [...legacyTracks, ...newTracks].slice();
     tracksAndAppenders.sort((a, b) => weight(a) - weight(b));
 
     // TODO(crbug.com/1386091) Remove interim state to use only new track

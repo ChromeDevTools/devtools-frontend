@@ -244,6 +244,18 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let timelinePanelInstance: TimelinePanel;
 let isNode: boolean;
 
+// TODO(crbug.com/1386091): Remove this enum when we can remove the
+// old engine.
+// eslint-disable-next-line rulesdir/const_enum
+export enum ThreadTracksSource {
+  NEW_ENGINE = 'NEW_ENGINE',
+  OLD_ENGINE = 'OLD_ENGINE',
+  BOTH_ENGINES = 'BOTH_ENGINES',
+}
+
+// TODO(crbug.com/1428024): Use the new engine.
+const DEFAULT_THREAD_TRACKS_SOURCE = ThreadTracksSource.BOTH_ENGINES;
+
 // TypeScript will presumably get these types at some stage, and when it
 // does these temporary types should be removed.
 // TODO: Remove types when available in TypeScript.
@@ -311,10 +323,16 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   // Tracks the index of the trace that the user is currently viewing.
   #traceEngineActiveTraceIndex = -1;
 
-  constructor(fullTraceEngine: boolean = false) {
+  constructor(threadTracksSource: ThreadTracksSource) {
     super('timeline');
-    this.#traceEngineModel = fullTraceEngine ? TraceEngine.TraceModel.Model.createWithAllHandlers() :
-                                               TraceEngine.TraceModel.Model.createWithRequiredHandlersForMigration();
+    switch (threadTracksSource) {
+      case ThreadTracksSource.BOTH_ENGINES:
+      case ThreadTracksSource.NEW_ENGINE:
+        this.#traceEngineModel = TraceEngine.TraceModel.Model.createWithAllHandlers();
+        break;
+      default:
+        this.#traceEngineModel = TraceEngine.TraceModel.Model.createWithRequiredHandlersForMigration();
+    }
     this.element.addEventListener('contextmenu', this.contextMenu.bind(this), false);
     this.dropTarget = new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.File, UI.DropTarget.Type.URI],
@@ -375,7 +393,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this);
 
-    this.flameChart = new TimelineFlameChartView(this);
+    this.flameChart = new TimelineFlameChartView(this, threadTracksSource);
     this.searchableViewInternal = new UI.SearchableView.SearchableView(this.flameChart, null);
     this.searchableViewInternal.setMinimumSize(0, 100);
     this.searchableViewInternal.element.classList.add('searchable-view');
@@ -425,13 +443,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   static instance(opts: {
     forceNew: boolean|null,
     isNode: boolean,
-    fullTraceEngine?: boolean,
-  }|undefined = {forceNew: null, isNode: false, fullTraceEngine: false}): TimelinePanel {
+    threadTracksSource?: ThreadTracksSource,
+  }|undefined = {forceNew: null, isNode: false}): TimelinePanel {
     const {forceNew, isNode: isNodeMode} = opts;
     isNode = isNodeMode;
 
     if (!timelinePanelInstance || forceNew) {
-      timelinePanelInstance = new TimelinePanel(opts.fullTraceEngine);
+      timelinePanelInstance = new TimelinePanel(opts.threadTracksSource || DEFAULT_THREAD_TRACKS_SOURCE);
     }
 
     return timelinePanelInstance;

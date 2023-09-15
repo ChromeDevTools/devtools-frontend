@@ -433,7 +433,7 @@
   align-items: center;
   overflow: auto;
   font-size: 13px;
-  color: var(--sys-color-token-subtle);
+  color: var(--sys-color-on-surface-subtle);
 }
 
 @media (forced-colors: active) {

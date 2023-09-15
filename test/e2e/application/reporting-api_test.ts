@@ -21,7 +21,7 @@ const REPORTING_API_SELECTOR = '[aria-label="Reporting API"]';
 
 describe('The Reporting API Page', async () => {
   // Flaky on mac
-  it('shows reports', async () => {
+  it.skipOnPlatforms(['mac'], '[crbug.com/1482688] shows reports', async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, 'reporting-api');
     const dataGrid = await waitForFunction(async () => {

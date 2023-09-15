@@ -11,7 +11,6 @@ import {
   getTestServerPort,
   goToResource,
   waitFor,
-  waitForFunction,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {navigateToApplicationTab} from '../helpers/application-helpers.js';
@@ -20,14 +19,16 @@ import {getDataGrid, getDataGridRows, getInnerTextOfDataGridCells} from '../help
 const REPORTING_API_SELECTOR = '[aria-label="Reporting API"]';
 
 describe('The Reporting API Page', async () => {
-  // Flaky on mac
-  it.skipOnPlatforms(['mac'], '[crbug.com/1482688] shows reports', async () => {
+  beforeEach(async () => {
+    const {target} = getBrowserAndPages();
+    await navigateToApplicationTab(target, 'empty');
+  });
+
+  it('shows reports', async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, 'reporting-api');
-    const dataGrid = await waitForFunction(async () => {
-      await click(REPORTING_API_SELECTOR);
-      return await $('devtools-data-grid');
-    });
+    await click(REPORTING_API_SELECTOR);
+    const dataGrid = await getDataGrid();
     const innerText = await getInnerTextOfDataGridCells(dataGrid, 1, false);
     const reportBody = '{"columnNumber":20,"id":"NavigatorVibrate","lineNumber":9,"message":' +
         '"Blocked call to navigator.vibrate because user hasn\'t tapped on the frame or any ' +

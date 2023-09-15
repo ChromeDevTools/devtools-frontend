@@ -184,6 +184,30 @@ describeWithEnvironment('ThreadAppender', function() {
     assert.strictEqual(n, 'n');
   });
 
+  it('will use the function name from the CPUProfile if it has been set', async function() {
+    const {threadAppenders, traceParsedData} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
+    const {Renderer, Samples} = traceParsedData;
+    const [process] = Renderer.processes.values();
+    const [thread] = process.threads.values();
+    const profileCalls = thread.entries.filter(TraceModel.Types.TraceEvents.isProfileCall);
+
+    if (!profileCalls || profileCalls.length === 0) {
+      throw new Error('Could not find renderer events');
+    }
+    const entry = profileCalls[0];
+    const cpuProfileNode =
+        Samples.profilesInProcess.get(entry.pid)?.get(entry.tid)?.parsedProfile.nodeById(entry.nodeId);
+    if (!cpuProfileNode) {
+      throw new Error('Could not find CPU Profile Node');
+    }
+    const anonymousCall = threadAppenders[0].titleForEvent(entry);
+    assert.strictEqual(anonymousCall, '(anonymous)');
+    cpuProfileNode.setFunctionName('new-resolved-function-name');
+    assert.strictEqual(threadAppenders[0].titleForEvent(entry), 'new-resolved-function-name');
+    // Reset the value for future tests.
+    cpuProfileNode.setFunctionName('');
+  });
+
   it('shows the correct title for a trace event when hovered', async function() {
     const {threadAppenders, traceParsedData} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
     const events = traceParsedData.Renderer?.allRendererEvents;

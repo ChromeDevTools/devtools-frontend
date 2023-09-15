@@ -410,9 +410,23 @@ export class ThreadAppender implements TrackAppender {
     if (this.isIgnoreListedEntry(entry)) {
       return i18nString(UIStrings.onIgnoreList);
     }
+
     if (TraceEngine.Types.TraceEvents.isProfileCall(entry)) {
+      // If we have a profile call, we need to check the CPU Profile to see if
+      // we have set a function name for this entry. This can happen when
+      // source maps are resolved. But we might not have resolved it, so we
+      // only use this name if it exists and is not undefined/an empty string.
+      if (this.#traceParsedData.Samples) {
+        const profile = this.#traceParsedData.Samples.profilesInProcess.get(entry.pid)?.get(entry.tid);
+        const node = profile?.parsedProfile.nodeById(entry.nodeId);
+        if (node?.functionName) {
+          return node.functionName;
+        }
+      }
+
       return entry.callFrame.functionName || i18nString(UIStrings.anonymous);
     }
+
     const defaultName = EventStyles.get(entry.name as TraceEngine.Types.TraceEvents.KnownEventName)?.label();
     return defaultName || entry.name;
   }

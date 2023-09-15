@@ -62,7 +62,9 @@ describe('The Layers Panel', async () => {
     await raf(target);
     await frontend.bringToFront();
     await waitFor(`[aria-label="layers"]:not([test-current-url="${targetUrl}"])`);
-    assert.strictEqual(await getCurrentUrl(), 'chrome-error://chromewebdata/');
+    await waitForFunction(async () => {
+      return (await getCurrentUrl()) === 'chrome-error://chromewebdata/';
+    });
     await session.detach();
   });
 });

@@ -87,11 +87,33 @@ describeWithEnvironment('GPUTrackAppender', function() {
   });
 
   describe('colorForEvent and titleForEvent', () => {
+    before(() => {
+      // Rather than use the real colours here and burden the test with having to
+      // inject loads of CSS, we fake out the colours. this is fine for our tests as
+      // the exact value of the colours is not important; we just make sure that it
+      // parses them out correctly. Each variable is given a different rgb() value to
+      // ensure we know the code is working and using the right one.
+      const styleElement = document.createElement('style');
+      styleElement.id = 'fake-perf-panel-colors';
+      styleElement.textContent = `
+        :root {
+          --app-color-painting: rgb(6 6 6);
+        }
+      `;
+      document.documentElement.appendChild(styleElement);
+    });
+
+    after(() => {
+      const styleElementToRemove = document.documentElement.querySelector('#fake-perf-panel-colors');
+      if (styleElementToRemove) {
+        document.documentElement.removeChild(styleElementToRemove);
+      }
+    });
     it('returns the correct color and title for GPU tasks', () => {
       const gpuEvents = traceParsedData.GPU.mainGPUThreadTasks;
       for (const event of gpuEvents) {
         assert.strictEqual(gpuTrackAppender.titleForEvent(event), 'GPU');
-        assert.strictEqual(gpuTrackAppender.colorForEvent(event), 'hsl(109, 33%, 55%)');
+        assert.strictEqual(gpuTrackAppender.colorForEvent(event), 'rgb(6 6 6)');
       }
     });
   });

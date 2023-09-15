@@ -52,6 +52,10 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
       const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
       const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'timings-track.json.gz');
       dataProvider.setModel(performanceModel, traceParsedData);
+      const tracksAppender = dataProvider.compatibilityTracksAppenderInstance();
+      // Set the interactions track to be the only appender used so that
+      // the main thread track defaults to the old engine.
+      tracksAppender.setVisibleTracks(new Set(['Interactions']));
       const mainTrack = dataProvider.timelineData().groups.find(g => g.name.startsWith('Main —'));
       if (!mainTrack) {
         assert.fail('Could not find Main track flame chart group');

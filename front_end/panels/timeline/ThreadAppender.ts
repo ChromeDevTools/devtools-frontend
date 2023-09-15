@@ -220,9 +220,7 @@ export class ThreadAppender implements TrackAppender {
     // Nesting is set to 1 because the track is appended inside the
     // header for all raster threads.
     const titleStyle = buildGroupStyle({padding: 2, nestingLevel: 1, collapsible: false});
-    // TODO(crbug.com/1428024) Once the thread appenders are ready to
-    // be shipped, use the i18n API.
-    const rasterizerTitle = `[RPP] ${i18nString(UIStrings.rasterizerThreadS, {PH1: this.#rasterIndex})}`;
+    const rasterizerTitle = i18nString(UIStrings.rasterizerThreadS, {PH1: this.#rasterIndex});
     const titleGroup =
         buildTrackHeader(trackStartLevel, rasterizerTitle, titleStyle, /* selectable= */ true, this.#expanded);
     this.#compatibilityBuilder.registerTrackForGroup(titleGroup, this);
@@ -232,12 +230,7 @@ export class ThreadAppender implements TrackAppender {
     // This UI string doesn't yet use the i18n API because it is not
     // shown in production, only in the component server, reason being
     // it is not ready to be shipped.
-    // TODO(crbug.com/1428024) Once the thread appenders are ready to
-    // be shipped, use the i18n API.
-    const newEnginePrefix = '[RPP] ';
-    let name = newEnginePrefix;
     const url = this.#traceParsedData.Renderer?.processes.get(this.#processId)?.url || '';
-
     let threadTypeLabel: string|null = null;
     switch (this.threadType) {
       case ThreadType.MAIN_THREAD:
@@ -255,8 +248,7 @@ export class ThreadAppender implements TrackAppender {
       default:
         return Platform.assertNever(this.threadType, `Unknown thread type: ${this.threadType}`);
     }
-    name += threadTypeLabel || this.#threadDefaultName;
-    return name;
+    return threadTypeLabel || this.#threadDefaultName;
   }
 
   #buildNameForWorker(): string {

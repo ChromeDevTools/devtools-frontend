@@ -87,8 +87,8 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('renders tracks for threads in correct order', async function() {
     const {flameChartData} = await renderThreadAppendersFromTrace(this, 'multiple-navigations-with-iframes.json.gz');
-    assert.strictEqual(flameChartData.groups[0].name, '[RPP] Main — http://localhost:5000/');
-    assert.strictEqual(flameChartData.groups[1].name, '[RPP] Frame — https://www.example.com/');
+    assert.strictEqual(flameChartData.groups[0].name, 'Main — http://localhost:5000/');
+    assert.strictEqual(flameChartData.groups[1].name, 'Frame — https://www.example.com/');
   });
 
   it('marks all levels used by the track with the TrackAppender type', async function() {
@@ -102,42 +102,42 @@ describeWithEnvironment('ThreadAppender', function() {
   it('creates a flamechart groups for track headers and titles', async function() {
     const {flameChartData} = await renderThreadAppendersFromTrace(this, 'cls-single-frame.json.gz');
     assert.strictEqual(flameChartData.groups.length, 7);
-    assert.strictEqual(flameChartData.groups[0].name, '[RPP] Main — https://output.jsbin.com/zajamil/quiet');
-    assert.strictEqual(flameChartData.groups[1].name, '[RPP] Raster');
-    assert.strictEqual(flameChartData.groups[2].name, '[RPP] Rasterizer Thread 1');
-    assert.strictEqual(flameChartData.groups[3].name, '[RPP] Rasterizer Thread 2');
-    assert.strictEqual(flameChartData.groups[4].name, '[RPP] Chrome_ChildIOThread');
-    assert.strictEqual(flameChartData.groups[5].name, '[RPP] Compositor');
-    assert.strictEqual(flameChartData.groups[6].name, '[RPP] ThreadPoolServiceThread');
+    assert.strictEqual(flameChartData.groups[0].name, 'Main — https://output.jsbin.com/zajamil/quiet');
+    assert.strictEqual(flameChartData.groups[1].name, 'Raster');
+    assert.strictEqual(flameChartData.groups[2].name, 'Rasterizer Thread 1');
+    assert.strictEqual(flameChartData.groups[3].name, 'Rasterizer Thread 2');
+    assert.strictEqual(flameChartData.groups[4].name, 'Chrome_ChildIOThread');
+    assert.strictEqual(flameChartData.groups[5].name, 'Compositor');
+    assert.strictEqual(flameChartData.groups[6].name, 'ThreadPoolServiceThread');
   });
 
   it('builds flamechart groups for nested tracks correctly', async function() {
     const {flameChartData} = await renderThreadAppendersFromTrace(this, 'cls-single-frame.json.gz');
     // This group corresponds to the header that wraps the raster tracks
     // together. It isn't selectable and isn't nested
-    assert.strictEqual(flameChartData.groups[1].name, '[RPP] Raster');
+    assert.strictEqual(flameChartData.groups[1].name, 'Raster');
     assert.strictEqual(flameChartData.groups[1].selectable, false);
     assert.strictEqual(flameChartData.groups[1].style.nestingLevel, 0);
 
     // These groups correspond to the raster tracks titles, or the
     // individual raster tracks themselves. They are selectable and
     // nested
-    assert.strictEqual(flameChartData.groups[2].name, '[RPP] Rasterizer Thread 1');
+    assert.strictEqual(flameChartData.groups[2].name, 'Rasterizer Thread 1');
     assert.strictEqual(flameChartData.groups[2].selectable, true);
     assert.strictEqual(flameChartData.groups[2].style.nestingLevel, 1);
 
-    assert.strictEqual(flameChartData.groups[3].name, '[RPP] Rasterizer Thread 2');
+    assert.strictEqual(flameChartData.groups[3].name, 'Rasterizer Thread 2');
     assert.strictEqual(flameChartData.groups[3].selectable, true);
     assert.strictEqual(flameChartData.groups[3].style.nestingLevel, 1);
   });
 
   it('assigns correct names to multiple types of threads', async function() {
     const {flameChartData} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    assert.strictEqual(flameChartData.groups[0].name, '[RPP] Main — https://www.google.com');
-    assert.strictEqual(flameChartData.groups[1].name, '[RPP] Compositor');
-    assert.strictEqual(flameChartData.groups[2].name, '[RPP] Chrome_ChildIOThread');
-    assert.strictEqual(flameChartData.groups[3].name, '[RPP] ThreadPoolForegroundWorker');
-    assert.strictEqual(flameChartData.groups[4].name, '[RPP] ThreadPoolServiceThread');
+    assert.strictEqual(flameChartData.groups[0].name, 'Main — https://www.google.com');
+    assert.strictEqual(flameChartData.groups[1].name, 'Compositor');
+    assert.strictEqual(flameChartData.groups[2].name, 'Chrome_ChildIOThread');
+    assert.strictEqual(flameChartData.groups[3].name, 'ThreadPoolForegroundWorker');
+    assert.strictEqual(flameChartData.groups[4].name, 'ThreadPoolServiceThread');
   });
 
   it('assigns correct names to worker threads', async function() {
@@ -145,14 +145,14 @@ describeWithEnvironment('ThreadAppender', function() {
     assert.strictEqual(flameChartData.groups.length, 7);
     assert.strictEqual(
         flameChartData.groups[0].name,
-        '[RPP] Main — https://chromedevtools.github.io/performance-stories/two-workers/index.html');
+        'Main — https://chromedevtools.github.io/performance-stories/two-workers/index.html');
     assert.strictEqual(
         flameChartData.groups[1].name,
-        '[RPP] Worker — https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js');
+        'Worker — https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js');
     assert.strictEqual(
         flameChartData.groups[2].name,
-        '[RPP] Worker — https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js');
-    assert.strictEqual(flameChartData.groups[3].name, '[RPP] Compositor');
+        'Worker — https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js');
+    assert.strictEqual(flameChartData.groups[3].name, 'Compositor');
   });
 
   it('returns the correct title for a renderer event', async function() {
@@ -396,15 +396,15 @@ describeWithEnvironment('ThreadAppender', function() {
     assert.strictEqual(flameChartData.groups.length, 5);
     assert.strictEqual(
         flameChartData.groups[0].name,
-        '[RPP] Main — https://chromedevtools.github.io/performance-stories/long-interaction/index.html?x=40');
-    assert.strictEqual(flameChartData.groups[1].name, '[RPP] Compositor');
-    assert.strictEqual(flameChartData.groups[2].name, '[RPP] Chrome_ChildIOThread');
+        'Main — https://chromedevtools.github.io/performance-stories/long-interaction/index.html?x=40');
+    assert.strictEqual(flameChartData.groups[1].name, 'Compositor');
+    assert.strictEqual(flameChartData.groups[2].name, 'Chrome_ChildIOThread');
     // There are multiple ThreadPoolForegroundWorker threads present in
     // the trace, but only one of these has trace events we deem as
     // "visible". Therefore, only one ThreadPoolForegroundWorker track
     // should be drawn.
-    assert.strictEqual(flameChartData.groups[3].name, '[RPP] ThreadPoolForegroundWorker');
-    assert.strictEqual(flameChartData.groups[4].name, '[RPP] ThreadPoolServiceThread');
+    assert.strictEqual(flameChartData.groups[3].name, 'ThreadPoolForegroundWorker');
+    assert.strictEqual(flameChartData.groups[4].name, 'ThreadPoolServiceThread');
   });
   describe('ignore listing', () => {
     let ignoreListManager: Bindings.IgnoreListManager.IgnoreListManager;

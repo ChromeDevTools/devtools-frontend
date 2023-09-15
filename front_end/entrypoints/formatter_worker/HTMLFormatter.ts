@@ -208,7 +208,15 @@ function scriptTagIsJSON(element: FormatterElement): boolean {
   if (isWrappedInQuotes) {
     type = isWrappedInQuotes[2];
   }
-  return ['importmap', 'speculationrules'].includes(type.trim());
+  const isSubtype = /^application\/\w+\+json$/.exec(type.trim());
+  if (isSubtype) {
+    type = 'application/json';
+  }
+  return [
+    'application/json',
+    'importmap',
+    'speculationrules',
+  ].includes(type.trim());
 }
 
 function hasTokenInSet(tokenTypes: Set<string>, type: string): boolean {

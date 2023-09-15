@@ -277,6 +277,38 @@ describe('HTMLFormatter', () => {
     assert.strictEqual(formatHTML(code), code);
   });
 
+  it('formats inline JSON script tag correctly', () => {
+    const formattedCode = formatHTML(
+        '<div><script type=\'application\/json\'>{"foo":"bar","data":{"hello":"world","meaning":42}}<\/script></div>');
+    assert.strictEqual(formattedCode, `<div>
+  <script type=\'application/json\'>
+    {
+      "foo": "bar",
+      "data": {
+        "hello": "world",
+        "meaning": 42
+      }
+    }<\/script>
+</div>
+`);
+  });
+
+  it('formats inline JSON-LD script tag correctly', () => {
+    const formattedCode = formatHTML(
+        '<div><script type=\'application\/ld+json\'>{  "@context": "https://json-ld.org/contexts/person.jsonld","@id": "http://dbpedia.org/resource/John_Lennon","name": "John Lennon","born": "1940-10-09","spouse": "http://dbpedia.org/resource/Cynthia_Lennon"}<\/script></div>');
+    assert.strictEqual(formattedCode, `<div>
+  <script type=\'application/ld+json\'>
+    {
+      "@context": "https://json-ld.org/contexts/person.jsonld",
+      "@id": "http://dbpedia.org/resource/John_Lennon",
+      "name": "John Lennon",
+      "born": "1940-10-09",
+      "spouse": "http://dbpedia.org/resource/Cynthia_Lennon"
+    }<\/script>
+</div>
+`);
+  });
+
   it('formats ampersands in text correctly', () => {
     assert.strictEqual(formatHTML('This&'), `This&
 `);

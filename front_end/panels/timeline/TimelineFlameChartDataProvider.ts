@@ -445,6 +445,14 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
     }
   }
+  private legacyTrackIsForAuctionWorklet(legacyTrack: TimelineModel.TimelineModel.Track): boolean {
+    const threadName = legacyTrack.thread?.name();
+    if (!threadName) {
+      return false;
+    }
+    return threadName === TimelineModel.TimelineModel.TimelineModelImpl.AuctionWorkletThreadName ||
+        threadName.endsWith(TimelineModel.TimelineModel.TimelineModelImpl.UtilityMainThreadNameSuffix);
+  }
 
   private processInspectorTrace(): void {
     this.appendFrames();
@@ -488,10 +496,14 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     const trackAppenders =
         this.compatibilityTracksAppender ? this.compatibilityTracksAppender.allVisibleTrackAppenders() : [];
+
+    // TODO(crbug.com/1478710) Use auction workers data from the new engine
+    // in thread appenders so that we can remove this.
+    const fledgeTracks = this.legacyTimelineModel.tracks().filter(this.legacyTrackIsForAuctionWorklet);
     // Due to tracks having a predefined order, we cannot render legacy
     // and new tracks separately.
     const legacyTracks =
-        this.#threadTracksSource === ThreadTracksSource.NEW_ENGINE ? [] : this.legacyTimelineModel.tracks();
+        this.#threadTracksSource === ThreadTracksSource.NEW_ENGINE ? fledgeTracks : this.legacyTimelineModel.tracks();
     const newTracks = this.#threadTracksSource === ThreadTracksSource.OLD_ENGINE ? [] : trackAppenders;
     const tracksAndAppenders = [...legacyTracks, ...newTracks].slice();
     tracksAndAppenders.sort((a, b) => weight(a) - weight(b));

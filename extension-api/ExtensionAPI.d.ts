@@ -23,7 +23,7 @@ export namespace Chrome {
 
       eval(
           expression: string,
-          options?: {contextSecurityOrigin?: string, frameURL?: string, useContentScriptContext?: boolean},
+          options?: {scriptExecutionContext?: string, frameURL?: string, useContentScriptContext?: boolean},
           callback?: (result: unknown, exceptioninfo: {
             code: string,
             description: string,

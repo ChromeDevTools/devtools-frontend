@@ -1133,6 +1133,11 @@ const extraPropertyValues = {
   '-webkit-transform-origin-x': {values: ['left', 'right', 'center']},
   '-webkit-transform-origin-y': {values: ['top', 'bottom', 'center']},
   'width': {values: ['-webkit-fill-available']},
+  'contain-intrinsic-width': {values: ['auto none', 'auto 100px']},
+  'contain-intrinsic-height': {values: ['auto none', 'auto 100px']},
+  'contain-intrinsic-size': {values: ['auto none', 'auto 100px']},
+  'contain-intrinsic-inline-size': {values: ['auto none', 'auto 100px']},
+  'contain-intrinsic-block-size': {values: ['auto none', 'auto 100px']},
 };
 
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity

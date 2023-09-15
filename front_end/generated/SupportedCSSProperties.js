@@ -44,12 +44,12 @@ export const generatedProperties = [
   "name": "-alternative-animation-with-timeline"
  },
  {
-  "inherited": true,
   "longhands": [
-   "white-space-collapse",
-   "text-wrap"
+   "view-timeline-name",
+   "view-timeline-axis",
+   "view-timeline-inset"
   ],
-  "name": "-alternative-white-space"
+  "name": "-alternative-view-timeline-with-inset"
  },
  {
   "inherited": true,
@@ -1180,6 +1180,13 @@ export const generatedProperties = [
  },
  {
   "keywords": [
+   "border-box",
+   "padding-box",
+   "content-box",
+   "margin-box",
+   "fill-box",
+   "stroke-box",
+   "view-box",
    "none"
   ],
   "name": "clip-path"
@@ -1325,7 +1332,6 @@ export const generatedProperties = [
  },
  {
   "keywords": [
-   "auto",
    "none"
   ],
   "name": "contain-intrinsic-height"
@@ -1342,7 +1348,6 @@ export const generatedProperties = [
  },
  {
   "keywords": [
-   "auto",
    "none"
   ],
   "name": "contain-intrinsic-width"
@@ -1365,7 +1370,8 @@ export const generatedProperties = [
    "normal",
    "inline-size",
    "size",
-   "sticky"
+   "sticky",
+   "snap"
   ],
   "name": "container-type"
  },
@@ -1510,6 +1516,15 @@ export const generatedProperties = [
    "text-before-edge"
   ],
   "name": "dominant-baseline"
+ },
+ {
+  "inherited": true,
+  "keywords": [
+   "standard",
+   "high",
+   "constrained-high"
+  ],
+  "name": "dynamic-range-limit"
  },
  {
   "inherited": true,
@@ -1873,6 +1888,13 @@ export const generatedProperties = [
    "preserve-parent-color"
   ],
   "name": "forced-color-adjust"
+ },
+ {
+  "keywords": [
+   "auto",
+   "normal"
+  ],
+  "name": "form-sizing"
  },
  {
   "longhands": [
@@ -2388,6 +2410,9 @@ export const generatedProperties = [
    "plus-lighter"
   ],
   "name": "mix-blend-mode"
+ },
+ {
+  "name": "navigation-trigger"
  },
  {
   "name": "negative"
@@ -3334,7 +3359,7 @@ export const generatedProperties = [
   "name": "text-decoration-style"
  },
  {
-  "inherited": true,
+  "inherited": false,
   "keywords": [
    "auto",
    "from-font"
@@ -3649,13 +3674,9 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
-  "keywords": [
-   "normal",
-   "pre",
-   "pre-wrap",
-   "pre-line",
-   "nowrap",
-   "break-spaces"
+  "longhands": [
+   "white-space-collapse",
+   "text-wrap"
   ],
   "name": "white-space"
  },
@@ -4231,6 +4252,13 @@ export const generatedPropertyValues = {
  },
  "clip-path": {
   "values": [
+   "border-box",
+   "padding-box",
+   "content-box",
+   "margin-box",
+   "fill-box",
+   "stroke-box",
+   "view-box",
    "none"
   ]
  },
@@ -4334,13 +4362,11 @@ export const generatedPropertyValues = {
  },
  "contain-intrinsic-height": {
   "values": [
-   "auto",
    "none"
   ]
  },
  "contain-intrinsic-width": {
   "values": [
-   "auto",
    "none"
   ]
  },
@@ -4354,7 +4380,8 @@ export const generatedPropertyValues = {
    "normal",
    "inline-size",
    "size",
-   "sticky"
+   "sticky",
+   "snap"
   ]
  },
  "content-visibility": {
@@ -4473,6 +4500,13 @@ export const generatedPropertyValues = {
    "reset-size",
    "text-after-edge",
    "text-before-edge"
+  ]
+ },
+ "dynamic-range-limit": {
+  "values": [
+   "standard",
+   "high",
+   "constrained-high"
   ]
  },
  "empty-cells": {
@@ -4700,6 +4734,12 @@ export const generatedPropertyValues = {
    "auto",
    "none",
    "preserve-parent-color"
+  ]
+ },
+ "form-sizing": {
+  "values": [
+   "auto",
+   "normal"
   ]
  },
  "grid-auto-columns": {
@@ -5663,16 +5703,6 @@ export const generatedPropertyValues = {
    "visible",
    "hidden",
    "collapse"
-  ]
- },
- "white-space": {
-  "values": [
-   "normal",
-   "pre",
-   "pre-wrap",
-   "pre-line",
-   "nowrap",
-   "break-spaces"
   ]
  },
  "white-space-collapse": {

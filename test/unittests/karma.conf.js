@@ -143,7 +143,10 @@ const ResultsDBReporter = function(baseReporterDecorator, formatError, config) {
     const testId = ResultsDb.sanitizedTestId([...suite, description].join('/'));
     const expected = success || skipped;
     const status = skipped ? 'SKIP' : success ? 'PASS' : 'FAIL';
-    const duration = endTime - startTime;
+    let duration = '1ms';
+    if (startTime < endTime) {
+      duration = (endTime - startTime).toString() + 'ms';
+    }
 
     const consoleLog = capturedLog.map(({type, log}) => `${type.toUpperCase()}: ${log}`);
     capturedLog.length = 0;
@@ -161,8 +164,10 @@ const ResultsDBReporter = function(baseReporterDecorator, formatError, config) {
       this.write(`==== ${status}: ${testId}\n\n`);
     }
 
-    const testResult = {status, expected, summaryHtml, testId, duration};
-    ResultsDb.recordTestResult(testResult);
+    const testResult = {testId, duration, status, expected, summaryHtml};
+    if (status !== 'SKIP') {
+      ResultsDb.recordTestResult(testResult);
+    }
   };
   this.specSuccess = specComplete;
   this.specSkipped = specComplete;

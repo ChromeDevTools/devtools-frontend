@@ -494,17 +494,29 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (!this.legacyTimelineModel) {
       return;
     }
-    const trackAppenders =
+    const allTrackAppenders =
         this.compatibilityTracksAppender ? this.compatibilityTracksAppender.allVisibleTrackAppenders() : [];
 
     // TODO(crbug.com/1478710) Use auction workers data from the new engine
-    // in thread appenders so that we can remove this.
+    // in thread appenders. We have not migrated auction worklet tracks to the
+    // new engine, so we need to always make sure they are included, regardless
+    // of the threadTracksSource setting.
     const fledgeTracks = this.legacyTimelineModel.tracks().filter(this.legacyTrackIsForAuctionWorklet);
-    // Due to tracks having a predefined order, we cannot render legacy
-    // and new tracks separately.
     const legacyTracks =
         this.#threadTracksSource === ThreadTracksSource.NEW_ENGINE ? fledgeTracks : this.legacyTimelineModel.tracks();
-    const newTracks = this.#threadTracksSource === ThreadTracksSource.OLD_ENGINE ? [] : trackAppenders;
+
+    const newTracks = allTrackAppenders.filter(trackAppender => {
+      if (trackAppender instanceof ThreadAppender) {
+        // We only include the ThreadAppender tracks if the source has been set to either NEW_ENGINE or BOTH_ENGINES.
+        // If the source is set to OLD_ENGINE, we explictly do not want these tracks to be rendered.
+        return this.#threadTracksSource !== ThreadTracksSource.OLD_ENGINE;
+      }
+      // All other TrackAppenders are fully released and migrated, so we always include them.
+      return true;
+    });
+
+    // Due to tracks having a predefined order, we cannot render legacy
+    // and new tracks separately.
     const tracksAndAppenders = [...legacyTracks, ...newTracks].slice();
     tracksAndAppenders.sort((a, b) => weight(a) - weight(b));
 

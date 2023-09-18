@@ -14,6 +14,7 @@ import {
   assertShadowRoot,
   getCleanTextContentFromElements,
   getElementWithinComponent,
+  renderElementIntoDOM,
 } from '../../../helpers/DOMHelpers.js';
 import {createTarget} from '../../../helpers/EnvironmentHelpers.js';
 import {
@@ -264,6 +265,10 @@ function createRuleSetView(target: SDK.Target.Target): Resources.PreloadingView.
   assertNotNullOrUndefined(model);
   const view = new Resources.PreloadingView.PreloadingRuleSetView(model);
   const container = new UI.Widget.VBox();
+  const div = document.createElement('div');
+  renderElementIntoDOM(div);
+  container.markAsRoot();
+  container.show(div);
   view.show(container.element);
   // Ensure PreloadingModelProxy.initialize to be called.
   view.wasShown();
@@ -276,6 +281,10 @@ function createAttemptView(target: SDK.Target.Target): Resources.PreloadingView.
   assertNotNullOrUndefined(model);
   const view = new Resources.PreloadingView.PreloadingAttemptView(model);
   const container = new UI.Widget.VBox();
+  const div = document.createElement('div');
+  renderElementIntoDOM(div);
+  container.markAsRoot();
+  container.show(div);
   view.show(container.element);
   // Ensure PreloadingModelProxy.initialize to be called.
   view.wasShown();
@@ -288,6 +297,10 @@ function createResultView(target: SDK.Target.Target): Resources.PreloadingView.P
   assertNotNullOrUndefined(model);
   const view = new Resources.PreloadingView.PreloadingResultView(model);
   const container = new UI.Widget.VBox();
+  const div = document.createElement('div');
+  renderElementIntoDOM(div);
+  container.markAsRoot();
+  container.show(div);
   view.show(container.element);
   // Ensure PreloadingModelProxy.initialize to be called.
   view.wasShown();

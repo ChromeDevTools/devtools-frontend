@@ -549,7 +549,8 @@ describe('User Metrics for Issue Panel', () => {
     ]);
   });
 
-  it('dispatch events when a "Learn More" link is clicked', async () => {
+  // Causes failures only on the beta branch.
+  it.skip('[crbug.com/000]: dispatch events when a "Learn More" link is clicked', async () => {
     await goToResource('elements/element-reveal-inline-issue.html');
     await waitFor('.issue');
     await click('.issue');

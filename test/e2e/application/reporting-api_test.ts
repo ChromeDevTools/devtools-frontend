@@ -24,7 +24,8 @@ describe('The Reporting API Page', async () => {
     await navigateToApplicationTab(target, 'empty');
   });
 
-  it('shows reports', async () => {
+  // Flaky on mac
+  it.skipOnPlatforms(['mac'], '[crbug.com/1482688] shows reports', async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, 'reporting-api');
     await click(REPORTING_API_SELECTOR);

@@ -10,7 +10,7 @@ import * as SourceMapScopes from '../../../models/source_map_scopes/source_map_s
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as UI from '../../legacy/legacy.js';
 
-import {closeTooltip, cursorTooltip, type ArgumentHintsTooltip} from './cursor_tooltip.js';
+import {type ArgumentHintsTooltip, closeTooltip, cursorTooltip} from './cursor_tooltip.js';
 
 export function completion(): CodeMirror.Extension {
   return CodeMirror.javascript.javascriptLanguage.data.of({
@@ -388,7 +388,7 @@ async function completePropertiesInner(
     const isFunction = object.type === 'function';
     for (const prop of properties.properties || []) {
       if (!prop.symbol && !(isFunction && (prop.name === 'arguments' || prop.name === 'caller')) &&
-          (!prop.private || expression === 'this') && (quoted || SPAN_IDENT.test(prop.name))) {
+          (quoted || SPAN_IDENT.test(prop.name))) {
         const label =
             quoted ? quoted + prop.name.replaceAll('\\', '\\\\').replaceAll(quoted, '\\' + quoted) + quoted : prop.name;
         const apply = (quoted && !hasBracket) ? `${label}]` : undefined;

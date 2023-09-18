@@ -224,7 +224,7 @@ export class JSONEditor extends LitElement {
           for (const subParameter of parameter.value) {
             nestedArrayParameters.push(formatParameterValue(subParameter));
           }
-          return nestedArrayParameters.length === 0 ? undefined : nestedArrayParameters;
+          return nestedArrayParameters.length === 0 ? [] : nestedArrayParameters;
         }
         default: {
           return parameter.value;
@@ -662,7 +662,7 @@ export class JSONEditor extends LitElement {
       optional: type.optional,
       isCorrectType: true,
       typeRef: type.typeRef,
-      value: defaultValueByType.get(type.type),
+      value: type.optional ? undefined : defaultValueByType.get(type.type),
       description: type.description,
     } as Parameter;
   }
@@ -698,7 +698,7 @@ export class JSONEditor extends LitElement {
           name: String(parameter.value.length),
           optional: true,
           typeRef: typeRef,
-          value: nestedValue.length !== 0 ? nestedValue : '',
+          value: nestedValue.length !== 0 ? nestedValue : defaultValueByType.get(parameter.type),
           description: '',
           isCorrectType: true,
         } as Parameter);

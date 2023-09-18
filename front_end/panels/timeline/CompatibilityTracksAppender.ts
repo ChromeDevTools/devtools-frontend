@@ -372,6 +372,20 @@ export class CompatibilityTracksAppender {
   }
 
   /**
+   * Looks up a FlameChart group for a given appender.
+   */
+  groupForAppender(targetAppender: TrackAppender): PerfUI.FlameChart.Group|null {
+    let foundGroup: PerfUI.FlameChart.Group|null = null;
+    for (const [group, appender] of this.#trackForGroup) {
+      if (appender === targetAppender) {
+        foundGroup = group;
+        break;
+      }
+    }
+    return foundGroup;
+  }
+
+  /**
    * Given a FlameChart group, gets the events to be shown in the tree
    * views if that group was registered by the appender system.
    */

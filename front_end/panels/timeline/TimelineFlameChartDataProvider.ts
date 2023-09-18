@@ -41,7 +41,7 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {CompatibilityTracksAppender, type TrackAppenderName} from './CompatibilityTracksAppender.js';
 import {type PerformanceModel} from './PerformanceModel.js';
-import {ThreadAppender} from './ThreadAppender.js';
+import {ThreadAppender, ThreadType} from './ThreadAppender.js';
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
 import {ThreadTracksSource} from './TimelinePanel.js';
@@ -521,6 +521,19 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         continue;
       }
       this.currentLevel = trackOrAppender.appendTrackAtLevel(this.currentLevel);
+
+      // If there is not a selected group, we want to default to selecting the
+      // main thread track. Therefore in this check we look to see if the
+      // current appender is a ThreadAppender and represnets the Main Thread.
+      // If it is, we mark the group as selected.
+      if (this.timelineDataInternal && !this.timelineDataInternal.selectedGroup) {
+        if (trackOrAppender instanceof ThreadAppender && trackOrAppender.threadType === ThreadType.MAIN_THREAD) {
+          const group = this.compatibilityTracksAppender?.groupForAppender(trackOrAppender);
+          if (group) {
+            this.timelineDataInternal.selectedGroup = group;
+          }
+        }
+      }
     }
     if (this.timelineDataInternal && this.timelineDataInternal.selectedGroup) {
       this.timelineDataInternal.selectedGroup.expanded = true;

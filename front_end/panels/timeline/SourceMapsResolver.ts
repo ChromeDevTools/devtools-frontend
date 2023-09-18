@@ -22,6 +22,13 @@ export class SourceMapsResolver extends EventTarget {
 
   #isResolvingNames = false;
 
+  // We need to gather up a list of all the DebuggerModels that we should
+  // listen to for source map attached events. For most pages this will be
+  // the debugger model for the primary page target, but if a trace has
+  // workers, we would also need to gather up the DebuggerModel instances for
+  // those workers too.
+  #debuggerModelsToListen = new Set<SDK.DebuggerModel.DebuggerModel>();
+
   constructor(traceData: TraceEngine.Handlers.Migration.PartialTraceData) {
     super();
     this.#traceData = traceData;
@@ -34,13 +41,6 @@ export class SourceMapsResolver extends EventTarget {
     if (!this.#traceData.Samples) {
       return;
     }
-
-    // We need to gather up a list of all the DebuggerModels that we should
-    // listen to for source map attached events. For most pages this will be
-    // the debugger model for the primary page target, but if a trace has
-    // workers, we would also need to gather up the DebuggerModel instances for
-    // those workers too.
-    const debuggerModelsToListen = new Set<SDK.DebuggerModel.DebuggerModel>();
 
     for (const threadToProfileMap of this.#traceData.Samples.profilesInProcess.values()) {
       for (const [tid, profile] of threadToProfileMap) {
@@ -60,12 +60,12 @@ export class SourceMapsResolver extends EventTarget {
           if (!shouldListenToSourceMap) {
             continue;
           }
-          debuggerModelsToListen.add(debuggerModel);
+          this.#debuggerModelsToListen.add(debuggerModel);
         }
       }
     }
 
-    for (const debuggerModel of debuggerModelsToListen) {
+    for (const debuggerModel of this.#debuggerModelsToListen) {
       debuggerModel.sourceMapManager().addEventListener(
           SDK.SourceMapManager.Events.SourceMapAttached, this.#onAttachedSourceMap, this);
     }
@@ -74,6 +74,19 @@ export class SourceMapsResolver extends EventTarget {
     // immediately try to resolve function names. This ensures we use any
     // sourcemaps that were attached before we bound our event listener.
     await this.#resolveNamesForNodes();
+  }
+
+  /**
+   * Removes the event listeners and stops tracking newly added sourcemaps.
+   * Should be called before destroying an instance of this class to avoid leaks
+   * with listeners.
+   */
+  uninstall(): void {
+    for (const debuggerModel of this.#debuggerModelsToListen) {
+      debuggerModel.sourceMapManager().removeEventListener(
+          SDK.SourceMapManager.Events.SourceMapAttached, this.#onAttachedSourceMap, this);
+    }
+    this.#debuggerModelsToListen.clear();
   }
 
   async #resolveNamesForNodes(): Promise<void> {

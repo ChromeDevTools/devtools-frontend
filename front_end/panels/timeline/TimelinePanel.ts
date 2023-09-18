@@ -50,6 +50,7 @@ import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
 import {Events, PerformanceModel, type WindowChangedEvent} from './PerformanceModel.js';
 import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
+import {NodeNamesUpdated, SourceMapsResolver} from './SourceMapsResolver.js';
 import {type Client, TimelineController} from './TimelineController.js';
 import {TimelineFlameChartView} from './TimelineFlameChartView.js';
 import {TimelineHistoryManager} from './TimelineHistoryManager.js';
@@ -323,6 +324,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   // Tracks the index of the trace that the user is currently viewing.
   #traceEngineActiveTraceIndex = -1;
   #threadTracksSource: ThreadTracksSource;
+  #sourceMapsResolver: SourceMapsResolver|null = null;
+
+  #onSourceMapsNodeNamesResolvedBound = this.#onSourceMapsNodeNamesResolved.bind(this);
 
   constructor(threadTracksSource: ThreadTracksSource) {
     super('timeline');
@@ -1092,6 +1096,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (this.performanceModel) {
       this.performanceModel.removeEventListener(Events.NamesResolved, this.updateModelAndFlameChart, this);
     }
+    if (this.#sourceMapsResolver) {
+      this.#sourceMapsResolver.removeEventListener(
+          NodeNamesUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
+      this.#sourceMapsResolver.uninstall();
+      this.#sourceMapsResolver = null;
+    }
     this.setModel(null);
   }
 
@@ -1281,11 +1291,15 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
   }
 
+  #onSourceMapsNodeNamesResolved(): void {
+    this.updateModelAndFlameChart();
+  }
+
   updateModelAndFlameChart(): void {
     if (!this.performanceModel) {
       return;
     }
-    this.setModel(this.performanceModel);
+    this.setModel(this.performanceModel, null, this.#traceEngineActiveTraceIndex);
     this.flameChart.updateColorMapper();
   }
 
@@ -1336,14 +1350,26 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
       this.statusPane = null;
 
-      if (!this.performanceModel.hasEventListeners(Events.NamesResolved)) {
-        this.performanceModel.addEventListener(Events.NamesResolved, this.updateModelAndFlameChart, this);
-      }
-
       const traceData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
       if (!traceData) {
         throw new Error(`Could not get trace data at index ${this.#traceEngineActiveTraceIndex}`);
       }
+
+      // If we are running the old engine for sync tracks, ensure we listen to
+      // and update the flamechart on any sourcemap resolution.
+      if (this.#threadTracksSource !== ThreadTracksSource.NEW_ENGINE &&
+          !this.performanceModel.hasEventListeners(Events.NamesResolved)) {
+        this.performanceModel.addEventListener(Events.NamesResolved, this.updateModelAndFlameChart, this);
+      }
+
+      // Otherwise if we are running the new engine, instantiate it with the
+      // trace data and update the flamechart on any sourcemap resolution
+      if (this.#threadTracksSource !== ThreadTracksSource.OLD_ENGINE) {
+        this.#sourceMapsResolver = new SourceMapsResolver(traceData);
+        this.#sourceMapsResolver.addEventListener(NodeNamesUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
+        await this.#sourceMapsResolver.install();
+      }
+
       // We store the Performance Model and the index of the active trace.
       // However we also pass in the full trace data because we use it to build
       // the preview overview thumbnail of the trace that gets shown in the UI.

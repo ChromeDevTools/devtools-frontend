@@ -427,6 +427,19 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return this.subscribers.has(type);
   }
 
+  private isNotificationAllowedForExtension(port: MessagePort, type: string, ..._args: unknown[]): boolean {
+    if (type === PrivateAPI.Events.NetworkRequestFinished) {
+      const entry = _args[1] as HAR.Log.EntryDTO;
+      const origin = extensionOrigins.get(port);
+      const extension = origin && this.registeredExtensions.get(origin);
+      if (extension?.isAllowedOnTarget(entry.request.url)) {
+        return true;
+      }
+      return false;
+    }
+    return true;
+  }
+
   private postNotification(type: string, ..._vararg: unknown[]): void {
     if (!this.extensionsEnabled) {
       return;
@@ -437,7 +450,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
     const message = {command: 'notify-' + type, arguments: Array.prototype.slice.call(arguments, 1)};
     for (const subscriber of subscribers) {
-      if (this.extensionEnabled(subscriber)) {
+      if (this.extensionEnabled(subscriber) && this.isNotificationAllowedForExtension(subscriber, type, ..._vararg)) {
         subscriber.postMessage(message);
       }
     }

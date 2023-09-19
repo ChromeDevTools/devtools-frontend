@@ -535,23 +535,26 @@ describeWithEnvironment('JSONEditor', () => {
       assert.deepStrictEqual(selector.selectedIndex(), 1);
     });
 
-    it('should not display the command into the input bar if the command is empty string', async () => {
-      const split = new UI.SplitWidget.SplitWidget(true, false, 'protocol-monitor-split-container', 400);
-      const editorWidget = new ProtocolMonitor.ProtocolMonitor.EditorWidget();
-      const jsonEditor = editorWidget.jsonEditor;
-      jsonEditor.command = '';
-      const dataGrid = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorDataGrid(split);
-      split.setMainWidget(dataGrid);
-      split.setSidebarWidget(editorWidget);
-      split.toggleSidebar();
+    // Flaky test.
+    it.skip(
+        '[crbug.com/1484534]: should not display the command into the input bar if the command is empty string',
+        async () => {
+          const split = new UI.SplitWidget.SplitWidget(true, false, 'protocol-monitor-split-container', 400);
+          const editorWidget = new ProtocolMonitor.ProtocolMonitor.EditorWidget();
+          const jsonEditor = editorWidget.jsonEditor;
+          jsonEditor.command = '';
+          const dataGrid = new ProtocolMonitor.ProtocolMonitor.ProtocolMonitorDataGrid(split);
+          split.setMainWidget(dataGrid);
+          split.setSidebarWidget(editorWidget);
+          split.toggleSidebar();
 
-      await coordinator.done();
+          await coordinator.done();
 
-      // The first input bar corresponds to the filter bar, so we query the second one which corresponds to the CDP one.
-      const toolbarInput = dataGrid.element.shadowRoot?.querySelectorAll('.toolbar')[1].shadowRoot?.querySelector(
-          '.toolbar-input-prompt');
-      assert.deepStrictEqual(toolbarInput?.innerHTML, '');
-    });
+          // The first input bar corresponds to the filter bar, so we query the second one which corresponds to the CDP one.
+          const toolbarInput = dataGrid.element.shadowRoot?.querySelectorAll('.toolbar')[1].shadowRoot?.querySelector(
+              '.toolbar-input-prompt');
+          assert.deepStrictEqual(toolbarInput?.innerHTML, '');
+        });
   });
   describe('Descriptions', () => {
     it('should show the popup with the correct description for the description of parameters', async () => {

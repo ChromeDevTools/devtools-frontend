@@ -146,6 +146,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private entryColorsCache?: string[]|null;
   private visibleLevelHeights?: Uint32Array;
   private totalTime?: number;
+  private showVerticalScrollOnExpanded?: boolean;
   #font: string;
 
   constructor(
@@ -244,6 +245,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   alwaysShowVerticalScroll(): void {
     this.chartViewport.alwaysShowVerticalScroll();
+  }
+
+  showVerticalScrollOnExpand(): void {
+    this.chartViewport.showVerticalScrollOnExpand();
+    this.showVerticalScrollOnExpanded = true;
   }
 
   disableRangeSelection(): void {
@@ -557,6 +563,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private toggleGroupExpand(groupIndex: number): void {
+    if (this.showVerticalScrollOnExpanded) {
+      const expanded = this.rawTimelineData?.groups[groupIndex].expanded;
+      if (expanded !== undefined) {
+        this.chartViewport.toggleScrollbar(expanded);
+      }
+    }
+
     if (groupIndex < 0 || !this.isGroupCollapsible(groupIndex)) {
       return;
     }

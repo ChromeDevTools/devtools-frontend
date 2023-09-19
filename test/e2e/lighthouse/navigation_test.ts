@@ -196,6 +196,7 @@ describe('Navigation', async function() {
     const flakyAudits = [
       'server-response-time',
       'render-blocking-resources',
+      'max-potential-fid',
     ];
 
     const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr, flakyAudits);

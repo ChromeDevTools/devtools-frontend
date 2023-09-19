@@ -76,11 +76,33 @@ describeWithEnvironment('AnimationsTrackAppender', function() {
   });
 
   describe('colorForEvent and titleForEvent', function() {
+    before(() => {
+      // Rather than use the real colours here and burden the test with having to
+      // inject loads of CSS, we fake out the colours. this is fine for our tests as
+      // the exact value of the colours is not important; we just make sure that it
+      // parses them out correctly. Each variable is given a different rgb() value to
+      // ensure we know the code is working and using the right one.
+      const styleElement = document.createElement('style');
+      styleElement.id = 'fake-perf-panel-colors';
+      styleElement.textContent = `
+        :root {
+          --app-color-rendering: rgb(4 4 4);
+        }
+      `;
+      document.documentElement.appendChild(styleElement);
+    });
+
+    after(() => {
+      const styleElementToRemove = document.documentElement.querySelector('#fake-perf-panel-colors');
+      if (styleElementToRemove) {
+        document.documentElement.removeChild(styleElementToRemove);
+      }
+    });
     it('returns the correct color and title for GPU tasks', function() {
       const animationsRequests = traceParsedData.Animations.animations;
       for (const event of animationsRequests) {
         assert.strictEqual(animationsTrackAppender.titleForEvent(event), event.name);
-        assert.strictEqual(animationsTrackAppender.colorForEvent(), '#b9aced');
+        assert.strictEqual(animationsTrackAppender.colorForEvent(), 'rgb(4 4 4)');
       }
     });
   });

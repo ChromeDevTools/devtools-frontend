@@ -24,6 +24,7 @@ export class ConsoleMessageSource {
 
     const relatedCode: string[] = [];
     let relatedCodeSize = 0;
+    const MAX_CODE_SIZE = 1000;
 
     if (callframe && debuggerModel) {
       const rawLocation = new SDK.DebuggerModel.Location(
@@ -36,14 +37,24 @@ export class ConsoleMessageSource {
       if (text) {
         const lines = text.split('\n');
         let currentLineNumber = mappedLocation?.lineNumber as number;
-        while (lines[currentLineNumber] !== undefined && (relatedCodeSize + lines[currentLineNumber].length < 500)) {
-          relatedCode.push(lines[currentLineNumber]);
-          relatedCodeSize += lines[currentLineNumber].length;
-          currentLineNumber--;
+        const columnNumber = mappedLocation?.columnNumber as number;
+        if (lines[currentLineNumber].length >= MAX_CODE_SIZE / 2) {
+          const start = Math.max(columnNumber - MAX_CODE_SIZE / 2, 0);
+          const end = Math.min(columnNumber + MAX_CODE_SIZE / 2, lines[currentLineNumber].length);
+          relatedCode.push(lines[currentLineNumber].substring(start, end));
+          relatedCodeSize += end - start;
+        } else {
+          while (lines[currentLineNumber] !== undefined &&
+                 (relatedCodeSize + lines[currentLineNumber].length < MAX_CODE_SIZE / 2)) {
+            relatedCode.push(lines[currentLineNumber]);
+            relatedCodeSize += lines[currentLineNumber].length;
+            currentLineNumber--;
+          }
         }
         relatedCode.reverse();
         currentLineNumber = (mappedLocation?.lineNumber as number) + 1;
-        while (lines[currentLineNumber] !== undefined && (relatedCodeSize + lines[currentLineNumber].length < 1000)) {
+        while (lines[currentLineNumber] !== undefined &&
+               (relatedCodeSize + lines[currentLineNumber].length < MAX_CODE_SIZE)) {
           relatedCode.push(lines[currentLineNumber]);
           relatedCodeSize += lines[currentLineNumber].length;
           currentLineNumber++;

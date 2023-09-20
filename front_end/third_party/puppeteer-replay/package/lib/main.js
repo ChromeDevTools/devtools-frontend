@@ -20,7 +20,7 @@ var SelectorType;
     SelectorType["Text"] = "text";
     SelectorType["XPath"] = "xpath";
     SelectorType["Pierce"] = "pierce";
-})(SelectorType = SelectorType || (SelectorType = {}));
+})(SelectorType || (SelectorType = {}));
 var StepType;
 (function (StepType) {
     StepType["Change"] = "change";
@@ -37,17 +37,17 @@ var StepType;
     StepType["SetViewport"] = "setViewport";
     StepType["WaitForElement"] = "waitForElement";
     StepType["WaitForExpression"] = "waitForExpression";
-})(StepType = StepType || (StepType = {}));
+})(StepType || (StepType = {}));
 var AssertedEventType;
 (function (AssertedEventType) {
     AssertedEventType["Navigation"] = "navigation";
-})(AssertedEventType = AssertedEventType || (AssertedEventType = {}));
+})(AssertedEventType || (AssertedEventType = {}));
 
 var Schema = /*#__PURE__*/Object.freeze({
     __proto__: null,
+    get AssertedEventType () { return AssertedEventType; },
     get SelectorType () { return SelectorType; },
-    get StepType () { return StepType; },
-    get AssertedEventType () { return AssertedEventType; }
+    get StepType () { return StepType; }
 });
 
 /**

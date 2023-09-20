@@ -22,7 +22,7 @@ exports.SelectorType = void 0;
     SelectorType["Text"] = "text";
     SelectorType["XPath"] = "xpath";
     SelectorType["Pierce"] = "pierce";
-})(exports.SelectorType = exports.SelectorType || (exports.SelectorType = {}));
+})(exports.SelectorType || (exports.SelectorType = {}));
 exports.StepType = void 0;
 (function (StepType) {
     StepType["Change"] = "change";
@@ -39,17 +39,17 @@ exports.StepType = void 0;
     StepType["SetViewport"] = "setViewport";
     StepType["WaitForElement"] = "waitForElement";
     StepType["WaitForExpression"] = "waitForExpression";
-})(exports.StepType = exports.StepType || (exports.StepType = {}));
+})(exports.StepType || (exports.StepType = {}));
 exports.AssertedEventType = void 0;
 (function (AssertedEventType) {
     AssertedEventType["Navigation"] = "navigation";
-})(exports.AssertedEventType = exports.AssertedEventType || (exports.AssertedEventType = {}));
+})(exports.AssertedEventType || (exports.AssertedEventType = {}));
 
 var Schema = /*#__PURE__*/Object.freeze({
     __proto__: null,
+    get AssertedEventType () { return exports.AssertedEventType; },
     get SelectorType () { return exports.SelectorType; },
-    get StepType () { return exports.StepType; },
-    get AssertedEventType () { return exports.AssertedEventType; }
+    get StepType () { return exports.StepType; }
 });
 
 /**

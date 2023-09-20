@@ -42,67 +42,69 @@ describe('Timespan', async function() {
     expectError(/Protocol Error: the message with wrong session id/);
   });
 
-  it('successfully returns a Lighthouse report for user interactions', async () => {
-    await navigateToLighthouseTab('lighthouse/hello.html');
-    await registerServiceWorker();
+  // Flaky test.
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/1484944]: successfully returns a Lighthouse report for user interactions', async () => {
+        await navigateToLighthouseTab('lighthouse/hello.html');
+        await registerServiceWorker();
 
-    // https://bugs.chromium.org/p/chromium/issues/detail?id=1364257
-    await selectDevice('desktop');
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=1364257
+        await selectDevice('desktop');
 
-    await selectMode('timespan');
-    await setThrottlingMethod('simulate');
+        await selectMode('timespan');
+        await setThrottlingMethod('simulate');
 
-    let numNavigations = 0;
-    const {target, frontend} = getBrowserAndPages();
-    target.on('framenavigated', () => ++numNavigations);
+        let numNavigations = 0;
+        const {target, frontend} = getBrowserAndPages();
+        target.on('framenavigated', () => ++numNavigations);
 
-    await clickStartButton();
-    await waitForTimespanStarted();
+        await clickStartButton();
+        await waitForTimespanStarted();
 
-    await target.bringToFront();
+        await target.bringToFront();
 
-    await target.click('button');
-    await target.click('button');
-    await target.click('button');
+        await target.click('button');
+        await target.click('button');
+        await target.click('button');
 
-    await frontend.bringToFront();
+        await frontend.bringToFront();
 
-    await endTimespan();
+        await endTimespan();
 
-    const {lhr, artifacts, reportEl} = await waitForResult();
+        const {lhr, artifacts, reportEl} = await waitForResult();
 
-    assert.strictEqual(numNavigations, 0);
+        assert.strictEqual(numNavigations, 0);
 
-    assert.strictEqual(lhr.gatherMode, 'timespan');
+        assert.strictEqual(lhr.gatherMode, 'timespan');
 
-    // Even though the dropdown is set to "simulate", throttling method should be overriden to "devtools".
-    assert.strictEqual(lhr.configSettings.throttlingMethod, 'devtools');
+        // Even though the dropdown is set to "simulate", throttling method should be overriden to "devtools".
+        assert.strictEqual(lhr.configSettings.throttlingMethod, 'devtools');
 
-    const {innerWidth, innerHeight, devicePixelRatio} = artifacts.ViewportDimensions;
-    // TODO: Figure out why outerHeight can be different depending on OS
-    assert.strictEqual(innerHeight, 720);
-    assert.strictEqual(innerWidth, 1280);
-    assert.strictEqual(devicePixelRatio, 1);
+        const {innerWidth, innerHeight, devicePixelRatio} = artifacts.ViewportDimensions;
+        // TODO: Figure out why outerHeight can be different depending on OS
+        assert.strictEqual(innerHeight, 720);
+        assert.strictEqual(innerWidth, 1280);
+        assert.strictEqual(devicePixelRatio, 1);
 
-    const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr);
-    assert.strictEqual(auditResults.length, 45);
-    assert.deepStrictEqual(erroredAudits, []);
-    assert.deepStrictEqual(failedAudits.map(audit => audit.id), []);
+        const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr);
+        assert.strictEqual(auditResults.length, 45);
+        assert.deepStrictEqual(erroredAudits, []);
+        assert.deepStrictEqual(failedAudits.map(audit => audit.id), []);
 
-    // Ensure the timespan captured the user interaction.
-    const interactionAudit = lhr.audits['interaction-to-next-paint'];
-    assert.ok(interactionAudit.score);
-    assert.ok(interactionAudit.numericValue);
-    assert.strictEqual(interactionAudit.scoreDisplayMode, 'numeric');
+        // Ensure the timespan captured the user interaction.
+        const interactionAudit = lhr.audits['interaction-to-next-paint'];
+        assert.ok(interactionAudit.score);
+        assert.ok(interactionAudit.numericValue);
+        assert.strictEqual(interactionAudit.scoreDisplayMode, 'numeric');
 
-    // Trace was collected in timespan mode.
-    // Timespan mode can only do DevTools throttling so the text will be "View Trace".
-    const viewTraceButton = await $textContent('View Trace', reportEl);
-    if (!viewTraceButton) {
-      throw new Error('Could not find view trace button');
-    }
+        // Trace was collected in timespan mode.
+        // Timespan mode can only do DevTools throttling so the text will be "View Trace".
+        const viewTraceButton = await $textContent('View Trace', reportEl);
+        if (!viewTraceButton) {
+          throw new Error('Could not find view trace button');
+        }
 
-    // Ensure service worker is not cleared in timespan mode.
-    assert.strictEqual(await getServiceWorkerCount(), 1);
-  });
+        // Ensure service worker is not cleared in timespan mode.
+        assert.strictEqual(await getServiceWorkerCount(), 1);
+      });
 });

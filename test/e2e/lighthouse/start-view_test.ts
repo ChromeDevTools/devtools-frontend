@@ -47,7 +47,8 @@ describe('The Lighthouse start view', async () => {
     assert.strictEqual(helpText, '');
   });
 
-  it('disables the start button for internal pages', async () => {
+  // Flaky test.
+  it.skipOnPlatforms(['mac'], '[crbug.com/1484942]: disables the start button for internal pages', async () => {
     await navigateToLighthouseTab();
     await goTo('about:blank');
 

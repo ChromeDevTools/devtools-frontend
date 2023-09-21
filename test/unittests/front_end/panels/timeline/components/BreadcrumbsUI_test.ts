@@ -12,9 +12,9 @@ describe('BreadcrumbsUI', async () => {
 
   function queryBreadcrumbs(component: HTMLElement): (string)[] {
     assertShadowRoot(component.shadowRoot);
-    const breadcrumbs = component.shadowRoot.querySelectorAll<HTMLElement>('.breadcrumb');
-    return Array.from(breadcrumbs).map(row => {
-      return row.querySelector('.range')?.textContent || '';
+    const breadcrumbsRanges = component.shadowRoot.querySelectorAll<HTMLElement>('.range');
+    return Array.from(breadcrumbsRanges).map(row => {
+      return row.textContent?.trim() || '';
     });
   }
 
@@ -41,7 +41,7 @@ describe('BreadcrumbsUI', async () => {
     const breadcrumbsRanges = queryBreadcrumbs(component);
 
     assert.deepStrictEqual(breadcrumbsRanges.length, 1);
-    assert.deepStrictEqual(breadcrumbsRanges, ['9.00 ms']);
+    assert.deepStrictEqual(breadcrumbsRanges, ['Full range (9.00ms)']);
   });
 
   it('renders all the breadcrumbs provided', async () => {
@@ -78,6 +78,6 @@ describe('BreadcrumbsUI', async () => {
     const breadcrumbsRanges = queryBreadcrumbs(component);
 
     assert.deepStrictEqual(breadcrumbsRanges.length, 2);
-    assert.deepStrictEqual(breadcrumbsRanges, ['9.00 ms', '7.00 ms']);
+    assert.deepStrictEqual(breadcrumbsRanges, ['Full range (9.00ms)', '7.00ms']);
   });
 });

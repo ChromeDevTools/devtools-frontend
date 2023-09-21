@@ -753,4 +753,9 @@
   --app-color-async: var(--ref-palette-error60);
   --app-color-async-children: var(--ref-palette-error50);
   --app-color-other: var(--ref-palette-neutral60);
+
+  /**
+   * Color for the active breadcrumb in the Performance Panel timeline.
+   */
+  --app-color-active-breadcrumb: rgb(11 87 208);
 }

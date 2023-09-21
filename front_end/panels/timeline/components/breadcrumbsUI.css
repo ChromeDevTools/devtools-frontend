@@ -4,12 +4,27 @@
  * found in the LICENSE file.
  */
 
-.breadcrumb {
-  display: flex;
-  align-items: center;
-}
-
 .breadcrumbs {
   display: flex;
-  flex-direction: row;
+  align-items: center;
+  height: 29px;
+  padding: 6px 2px;
+}
+
+.breadcrumb {
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.breadcrumb:hover {
+  background-color: var(--sys-color-state-hover-on-subtle);
+}
+
+.range {
+  font-size: 12px;
+}
+
+.last-breadcrumb {
+  font-weight: bold;
+  color: var(--color-selection-highlight-border);
 }

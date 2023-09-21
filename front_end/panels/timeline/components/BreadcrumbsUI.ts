@@ -48,28 +48,32 @@ export class BreadcrumbsUI extends HTMLElement {
     this.dispatchEvent(new BreadcrumbRemovedEvent(breadcrumb));
   }
 
-  #renderElement(breadcrumb: Breadcrumb): LitHtml.TemplateResult {
+  #renderElement(breadcrumb: Breadcrumb, index: number): LitHtml.TemplateResult {
     // clang-format off
     return html`
           <div class="breadcrumb" @click=${(): void => this.#removeBreadcrumb(breadcrumb)}>
-              <span class="range">${(breadcrumb.window.range).toFixed(2)} ms</span>
-              ${breadcrumb.child !== null ?
-                html`
-                <${IconButton.Icon.Icon.litTagName} .data=${{
-                  iconName: 'chevron-right',
-                  color: 'var(--icon-default)',
-                  width: '20px',
-                   height: '20px',
-                } as IconButton.Icon.IconData}>`
-                : ''}
+           <span class="${(index !== 0 && breadcrumb.child === null) ? 'last-breadcrumb' : ''} range">
+            ${(index === 0) ?
+              `Full range (${(breadcrumb.window.range).toFixed(2)}ms)` :
+              `${(breadcrumb.window.range).toFixed(2)}ms`}
+            </span>
           </div>
+          ${breadcrumb.child !== null ?
+            html`
+            <${IconButton.Icon.Icon.litTagName} .data=${{
+              iconName: 'chevron-right',
+              color: 'var(--icon-default)',
+              width: '16px',
+              height: '16px',
+            } as IconButton.Icon.IconData}>`
+            : ''}
       `;
   }
 
   #render(): void {
     const output = html`
       <div class="breadcrumbs">
-        ${flattenBreadcrumbs(this.#breadcrumb).map(breadcrumb => this.#renderElement(breadcrumb))}
+      ${flattenBreadcrumbs(this.#breadcrumb).map((breadcrumb, index) => this.#renderElement(breadcrumb, index))}
       </div>`;
     render(output, this.#shadow, {host: this});
   }

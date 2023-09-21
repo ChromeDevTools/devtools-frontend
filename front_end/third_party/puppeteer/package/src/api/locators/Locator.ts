@@ -16,8 +16,8 @@
 
 import {
   EMPTY,
-  Observable,
-  OperatorFunction,
+  type Observable,
+  type OperatorFunction,
   catchError,
   defaultIfEmpty,
   defer,
@@ -36,22 +36,24 @@ import {
   raceWith,
   retry,
   tap,
-  timer,
 } from '../../../third_party/rxjs/rxjs.js';
-import {TimeoutError} from '../../common/Errors.js';
-import {EventEmitter} from '../../common/EventEmitter.js';
-import {HandleFor} from '../../common/types.js';
-import {debugError} from '../../common/util.js';
-import {BoundingBox, ClickOptions, ElementHandle} from '../ElementHandle.js';
+import {EventEmitter, type EventType} from '../../common/EventEmitter.js';
+import {type HandleFor} from '../../common/types.js';
+import {debugError, timeout} from '../../common/util.js';
+import {
+  type BoundingBox,
+  type ClickOptions,
+  type ElementHandle,
+} from '../ElementHandle.js';
 
 import {
-  Action,
-  AwaitedLocator,
+  type Action,
+  type AwaitedLocator,
   FilteredLocator,
-  HandleMapper,
+  type HandleMapper,
   MappedLocator,
-  Mapper,
-  Predicate,
+  type Mapper,
+  type Predicate,
   RaceLocator,
 } from './locators.js';
 
@@ -132,19 +134,33 @@ export interface LocatorScrollOptions extends ActionOptions {
  *
  * @public
  */
-export enum LocatorEmittedEvents {
+export enum LocatorEvent {
   /**
    * Emitted every time before the locator performs an action on the located element(s).
    */
   Action = 'action',
 }
 
+export {
+  /**
+   * @deprecated Use {@link LocatorEvent}.
+   */
+  LocatorEvent as LocatorEmittedEvents,
+};
+
 /**
  * @public
  */
-export interface LocatorEventObject {
-  [LocatorEmittedEvents.Action]: never;
+export interface LocatorEvents extends Record<EventType, unknown> {
+  [LocatorEvent.Action]: undefined;
 }
+
+export {
+  /**
+   * @deprecated Use {@link LocatorEvents}.
+   */
+  LocatorEvents as LocatorEventObject,
+};
 
 /**
  * Locators describe a strategy of locating objects and performing an action on
@@ -154,7 +170,7 @@ export interface LocatorEventObject {
  *
  * @public
  */
-export abstract class Locator<T> extends EventEmitter {
+export abstract class Locator<T> extends EventEmitter<LocatorEvents> {
   /**
    * Creates a race between multiple locators but ensures that only a single one
    * acts.
@@ -213,17 +229,7 @@ export abstract class Locator<T> extends EventEmitter {
           )
         );
       }
-      if (this._timeout > 0) {
-        candidates.push(
-          timer(this._timeout).pipe(
-            map(() => {
-              throw new TimeoutError(
-                `Timed out after waiting ${this._timeout}ms`
-              );
-            })
-          )
-        );
-      }
+      candidates.push(timeout(this._timeout));
       return pipe(
         retry({delay: RETRY_DELAY}),
         raceWith<T, never[]>(...candidates)
@@ -234,27 +240,6 @@ export abstract class Locator<T> extends EventEmitter {
   // Determines when the locator will timeout for actions.
   get timeout(): number {
     return this._timeout;
-  }
-
-  override on<K extends keyof LocatorEventObject>(
-    eventName: K,
-    handler: (event: LocatorEventObject[K]) => void
-  ): this {
-    return super.on(eventName, handler);
-  }
-
-  override once<K extends keyof LocatorEventObject>(
-    eventName: K,
-    handler: (event: LocatorEventObject[K]) => void
-  ): this {
-    return super.once(eventName, handler);
-  }
-
-  override off<K extends keyof LocatorEventObject>(
-    eventName: K,
-    handler: (event: LocatorEventObject[K]) => void
-  ): this {
-    return super.off(eventName, handler);
   }
 
   setTimeout(timeout: number): Locator<T> {
@@ -438,7 +423,7 @@ export abstract class Locator<T> extends EventEmitter {
         signal
       ),
       tap(() => {
-        return this.emit(LocatorEmittedEvents.Action);
+        return this.emit(LocatorEvent.Action, undefined);
       }),
       mergeMap(handle => {
         return from(handle.click(options)).pipe(
@@ -468,7 +453,7 @@ export abstract class Locator<T> extends EventEmitter {
         signal
       ),
       tap(() => {
-        return this.emit(LocatorEmittedEvents.Action);
+        return this.emit(LocatorEvent.Action, undefined);
       }),
       mergeMap(handle => {
         return from(
@@ -599,7 +584,7 @@ export abstract class Locator<T> extends EventEmitter {
         signal
       ),
       tap(() => {
-        return this.emit(LocatorEmittedEvents.Action);
+        return this.emit(LocatorEvent.Action, undefined);
       }),
       mergeMap(handle => {
         return from(handle.hover()).pipe(
@@ -627,7 +612,7 @@ export abstract class Locator<T> extends EventEmitter {
         signal
       ),
       tap(() => {
-        return this.emit(LocatorEmittedEvents.Action);
+        return this.emit(LocatorEvent.Action, undefined);
       }),
       mergeMap(handle => {
         return from(
@@ -692,12 +677,8 @@ export abstract class Locator<T> extends EventEmitter {
    * @public
    */
   async wait(options?: Readonly<ActionOptions>): Promise<T> {
-    const handle = await this.waitHandle(options);
-    try {
-      return await handle.jsonValue();
-    } finally {
-      void handle.dispose().catch(debugError);
-    }
+    using handle = await this.waitHandle(options);
+    return await handle.jsonValue();
   }
 
   /**

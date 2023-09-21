@@ -17,6 +17,21 @@ import type { ElementHandle } from '../api/ElementHandle.js';
 import type { JSHandle } from '../api/JSHandle.js';
 import type { LazyArg } from './LazyArg.js';
 /**
+ * @public
+ */
+export interface Moveable {
+    /**
+     * Moves the resource when 'using'.
+     */
+    move(): this;
+}
+/**
+ * @internal
+ */
+export interface Disposed {
+    get disposed(): boolean;
+}
+/**
  * @internal
  */
 export interface BindingPayload {

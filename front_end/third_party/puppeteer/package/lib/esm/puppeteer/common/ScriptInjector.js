@@ -1,5 +1,8 @@
 import { source as injectedSource } from '../generated/injected.js';
-class ScriptInjector {
+/**
+ * @internal
+ */
+export class ScriptInjector {
     #updated = false;
     #amendments = new Set();
     // Appends a statement of the form `(PuppeteerUtil) => {...}`.

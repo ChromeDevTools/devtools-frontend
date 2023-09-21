@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Protocol } from 'devtools-protocol';
-import { KeyInput } from '../common/USKeyboardLayout.js';
-import { Point } from './ElementHandle.js';
+import { type Protocol } from 'devtools-protocol';
+import { type KeyInput } from '../common/USKeyboardLayout.js';
+import { type Point } from './ElementHandle.js';
 /**
  * @public
  */
@@ -449,6 +449,13 @@ export declare class Touchscreen {
      * Dispatches a `touchMove` event.
      * @param x - Horizontal position of the move.
      * @param y - Vertical position of the move.
+     *
+     * @remarks
+     *
+     * Not every `touchMove` call results in a `touchmove` event being emitted,
+     * depending on the browser's optimizations. For example, Chrome
+     * {@link https://developer.chrome.com/blog/a-more-compatible-smoother-touch/#chromes-new-model-the-throttled-async-touchmove-model | throttles}
+     * touch move events.
      */
     touchMove(x: number, y: number): Promise<void>;
     /**

@@ -30,7 +30,7 @@ class LazyArg {
         this.#get = get;
     }
     async get(context) {
-        return this.#get(context);
+        return await this.#get(context);
     }
 }
 exports.LazyArg = LazyArg;

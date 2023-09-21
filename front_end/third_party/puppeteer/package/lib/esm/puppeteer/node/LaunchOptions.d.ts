@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { BrowserConnectOptions } from '../common/BrowserConnector.js';
-import { Product } from '../common/Product.js';
+import { type BrowserConnectOptions } from '../cdp/BrowserConnector.js';
+import { type Product } from '../common/Product.js';
 /**
  * Launcher options that only apply to Chrome.
  *

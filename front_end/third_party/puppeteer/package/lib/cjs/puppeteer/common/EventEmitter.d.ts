@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { type EventType } from '../../third_party/mitt/index.js';
+import { disposeSymbol } from '../util/disposable.js';
+export { 
 /**
  * @public
  */
-export type EventType = string | symbol;
+EventType, } from '../../third_party/mitt/index.js';
 /**
  * @public
  */
@@ -24,16 +27,22 @@ export type Handler<T = unknown> = (event: T) => void;
 /**
  * @public
  */
-export interface CommonEventEmitter {
-    on(event: EventType, handler: Handler): this;
-    off(event: EventType, handler: Handler): this;
-    addListener(event: EventType, handler: Handler): this;
-    removeListener(event: EventType, handler: Handler): this;
-    emit(event: EventType, eventData?: unknown): boolean;
-    once(event: EventType, handler: Handler): this;
-    listenerCount(event: string): number;
-    removeAllListeners(event?: EventType): this;
+export interface CommonEventEmitter<Events extends Record<EventType, unknown>> {
+    on<Key extends keyof Events>(type: Key, handler: Handler<Events[Key]>): this;
+    off<Key extends keyof Events>(type: Key, handler?: Handler<Events[Key]>): this;
+    emit<Key extends keyof Events>(type: Key, event: Events[Key]): boolean;
+    addListener<Key extends keyof Events>(type: Key, handler: Handler<Events[Key]>): this;
+    removeListener<Key extends keyof Events>(type: Key, handler: Handler<Events[Key]>): this;
+    once<Key extends keyof Events>(type: Key, handler: Handler<Events[Key]>): this;
+    listenerCount(event: keyof Events): number;
+    removeAllListeners(event?: keyof Events): this;
 }
+/**
+ * @public
+ */
+export type EventsWithWildcard<Events extends Record<EventType, unknown>> = Events & {
+    '*': Events[keyof Events];
+};
 /**
  * The EventEmitter class that many Puppeteer classes extend.
  *
@@ -46,66 +55,75 @@ export interface CommonEventEmitter {
  *
  * @public
  */
-export declare class EventEmitter implements CommonEventEmitter {
-    private emitter;
-    private eventsMap;
+export declare class EventEmitter<Events extends Record<EventType, unknown>> implements CommonEventEmitter<EventsWithWildcard<Events>> {
+    #private;
     /**
      * @internal
      */
     constructor();
     /**
      * Bind an event listener to fire when an event occurs.
-     * @param event - the event type you'd like to listen to. Can be a string or symbol.
+     * @param type - the event type you'd like to listen to. Can be a string or symbol.
      * @param handler - the function to be called when the event occurs.
      * @returns `this` to enable you to chain method calls.
      */
-    on(event: EventType, handler: Handler<any>): this;
+    on<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler: Handler<EventsWithWildcard<Events>[Key]>): this;
     /**
      * Remove an event listener from firing.
-     * @param event - the event type you'd like to stop listening to.
+     * @param type - the event type you'd like to stop listening to.
      * @param handler - the function that should be removed.
      * @returns `this` to enable you to chain method calls.
      */
-    off(event: EventType, handler: Handler<any>): this;
+    off<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler?: Handler<EventsWithWildcard<Events>[Key]>): this;
     /**
      * Remove an event listener.
+     *
      * @deprecated please use {@link EventEmitter.off} instead.
      */
-    removeListener(event: EventType, handler: Handler<any>): this;
+    removeListener<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler: Handler<EventsWithWildcard<Events>[Key]>): this;
     /**
      * Add an event listener.
+     *
      * @deprecated please use {@link EventEmitter.on} instead.
      */
-    addListener(event: EventType, handler: Handler<any>): this;
+    addListener<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler: Handler<EventsWithWildcard<Events>[Key]>): this;
     /**
      * Emit an event and call any associated listeners.
      *
-     * @param event - the event you'd like to emit
+     * @param type - the event you'd like to emit
      * @param eventData - any data you'd like to emit with the event
      * @returns `true` if there are any listeners, `false` if there are not.
      */
-    emit(event: EventType, eventData?: unknown): boolean;
+    emit<Key extends keyof EventsWithWildcard<Events>>(type: Key, event: EventsWithWildcard<Events>[Key]): boolean;
     /**
      * Like `on` but the listener will only be fired once and then it will be removed.
-     * @param event - the event you'd like to listen to
+     * @param type - the event you'd like to listen to
      * @param handler - the handler function to run when the event occurs
      * @returns `this` to enable you to chain method calls.
      */
-    once(event: EventType, handler: Handler<any>): this;
+    once<Key extends keyof EventsWithWildcard<Events>>(type: Key, handler: Handler<EventsWithWildcard<Events>[Key]>): this;
     /**
      * Gets the number of listeners for a given event.
      *
-     * @param event - the event to get the listener count for
+     * @param type - the event to get the listener count for
      * @returns the number of listeners bound to the given event
      */
-    listenerCount(event: EventType): number;
+    listenerCount(type: keyof EventsWithWildcard<Events>): number;
     /**
      * Removes all listeners. If given an event argument, it will remove only
      * listeners for that event.
-     * @param event - the event to remove listeners for.
+     *
+     * @param type - the event to remove listeners for.
      * @returns `this` to enable you to chain method calls.
      */
-    removeAllListeners(event?: EventType): this;
-    private eventListenersCount;
+    removeAllListeners(type?: keyof EventsWithWildcard<Events>): this;
+}
+/**
+ * @internal
+ */
+export declare class EventSubscription<Target extends CommonEventEmitter<Record<Type, Event>>, Type extends EventType = EventType, Event = unknown> {
+    #private;
+    constructor(target: Target, type: Type, handler: Handler<Event>);
+    [disposeSymbol](): void;
 }
 //# sourceMappingURL=EventEmitter.d.ts.map

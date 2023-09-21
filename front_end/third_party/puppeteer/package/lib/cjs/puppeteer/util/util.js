@@ -34,4 +34,5 @@ __exportStar(require("./DebuggableDeferred.js"), exports);
 __exportStar(require("./Deferred.js"), exports);
 __exportStar(require("./ErrorLike.js"), exports);
 __exportStar(require("./AsyncIterableUtil.js"), exports);
+__exportStar(require("./disposable.js"), exports);
 //# sourceMappingURL=util.js.map

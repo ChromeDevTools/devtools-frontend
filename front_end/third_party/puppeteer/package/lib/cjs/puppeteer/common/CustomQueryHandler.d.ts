@@ -41,9 +41,6 @@ export interface CustomQueryHandler {
  */
 export declare class CustomQueryHandlerRegistry {
     #private;
-    /**
-     * @internal
-     */
     get(name: string): typeof QueryHandler | undefined;
     /**
      * Registers a {@link CustomQueryHandler | custom query handler}.
@@ -63,8 +60,6 @@ export declare class CustomQueryHandlerRegistry {
      * @param name - Name to register under.
      * @param queryHandler - {@link CustomQueryHandler | Custom query handler} to
      * register.
-     *
-     * @internal
      */
     register(name: string, handler: CustomQueryHandler): void;
     /**
@@ -72,20 +67,14 @@ export declare class CustomQueryHandlerRegistry {
      * given name.
      *
      * @throws `Error` if there is no handler under the given name.
-     *
-     * @internal
      */
     unregister(name: string): void;
     /**
      * Gets the names of all {@link CustomQueryHandler | custom query handlers}.
-     *
-     * @internal
      */
     names(): string[];
     /**
      * Unregisters all custom query handlers.
-     *
-     * @internal
      */
     clear(): void;
 }

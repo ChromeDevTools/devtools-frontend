@@ -17,7 +17,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PuppeteerNode = void 0;
 const browsers_1 = require("@puppeteer/browsers");
-const Puppeteer_js_1 = require("../common/Puppeteer.js");
+const Puppeteer_js_1 = require("../cdp/Puppeteer.js");
 const revisions_js_1 = require("../revisions.js");
 const ChromeLauncher_js_1 = require("./ChromeLauncher.js");
 const FirefoxLauncher_js_1 = require("./FirefoxLauncher.js");
@@ -277,7 +277,7 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
                 continue;
             }
             await (0, browsers_1.uninstall)({
-                browser: browsers_1.Browser.CHROME,
+                browser: installedBrowser.browser,
                 platform,
                 cacheDir,
                 buildId: installedBrowser.buildId,

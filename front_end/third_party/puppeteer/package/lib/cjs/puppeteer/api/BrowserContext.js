@@ -17,26 +17,24 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BrowserContext = void 0;
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
+const util_js_1 = require("../common/util.js");
+const disposable_js_1 = require("../util/disposable.js");
 /**
- * BrowserContexts provide a way to operate multiple independent browser
- * sessions. When a browser is launched, it has a single BrowserContext used by
- * default. The method {@link Browser.newPage | Browser.newPage} creates a page
- * in the default browser context.
+ * {@link BrowserContext} represents individual sessions within a
+ * {@link Browser | browser}.
  *
- * @remarks
+ * When a {@link Browser | browser} is launched, it has a single
+ * {@link BrowserContext | browser context} by default. Others can be created
+ * using {@link Browser.createIncognitoBrowserContext}.
  *
- * The Browser class extends from Puppeteer's {@link EventEmitter} class and
- * will emit various events which are documented in the
- * {@link BrowserContextEmittedEvents} enum.
+ * {@link BrowserContext} {@link EventEmitter | emits} various events which are
+ * documented in the {@link BrowserContextEvent} enum.
  *
- * If a page opens another page, e.g. with a `window.open` call, the popup will
- * belong to the parent page's browser context.
+ * If a {@link Page | page} opens another {@link Page | page}, e.g. using
+ * `window.open`, the popup will belong to the parent {@link Page.browserContext
+ * | page's browser context}.
  *
- * Puppeteer allows creation of "incognito" browser contexts with
- * {@link Browser.createIncognitoBrowserContext | Browser.createIncognitoBrowserContext}
- * method. "Incognito" browser contexts don't write any browsing data to disk.
- *
- * @example
+ * @example Creating an incognito {@link BrowserContext | browser context}:
  *
  * ```ts
  * // Create a new incognito browser context
@@ -59,41 +57,21 @@ class BrowserContext extends EventEmitter_js_1.EventEmitter {
         super();
     }
     /**
-     * An array of all active targets inside the browser context.
+     * Gets all active {@link Target | targets} inside this
+     * {@link BrowserContext | browser context}.
      */
     targets() {
-        throw new Error('Not implemented');
-    }
-    waitForTarget() {
-        throw new Error('Not implemented');
-    }
-    /**
-     * An array of all pages inside the browser context.
-     *
-     * @returns Promise which resolves to an array of all open pages.
-     * Non visible pages, such as `"background_page"`, will not be listed here.
-     * You can find them using {@link Target.page | the target page}.
-     */
-    pages() {
-        throw new Error('Not implemented');
-    }
-    /**
-     * Returns whether BrowserContext is incognito.
-     * The default browser context is the only non-incognito browser context.
-     *
-     * @remarks
-     * The default browser context cannot be closed.
-     */
-    isIncognito() {
         throw new Error('Not implemented');
     }
     overridePermissions() {
         throw new Error('Not implemented');
     }
     /**
-     * Clears all permission overrides for the browser context.
+     * Clears all permission overrides for this
+     * {@link BrowserContext | browser context}.
      *
-     * @example
+     * @example Clearing overridden permissions in the
+     * {@link Browser.defaultBrowserContext | default browser context}:
      *
      * ```ts
      * const context = browser.defaultBrowserContext();
@@ -106,29 +84,24 @@ class BrowserContext extends EventEmitter_js_1.EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * Creates a new page in the browser context.
+     * Whether this {@link BrowserContext | browser context} is closed.
      */
-    newPage() {
-        throw new Error('Not implemented');
+    get closed() {
+        return !this.browser().browserContexts().includes(this);
     }
     /**
-     * The browser this browser context belongs to.
+     * Identifier for this {@link BrowserContext | browser context}.
      */
-    browser() {
-        throw new Error('Not implemented');
-    }
-    /**
-     * Closes the browser context. All the targets that belong to the browser context
-     * will be closed.
-     *
-     * @remarks
-     * Only incognito browser contexts can be closed.
-     */
-    close() {
-        throw new Error('Not implemented');
-    }
     get id() {
         return undefined;
+    }
+    /** @internal */
+    [disposable_js_1.disposeSymbol]() {
+        return void this.close().catch(util_js_1.debugError);
+    }
+    /** @internal */
+    [disposable_js_1.asyncDisposeSymbol]() {
+        return this.close();
     }
 }
 exports.BrowserContext = BrowserContext;

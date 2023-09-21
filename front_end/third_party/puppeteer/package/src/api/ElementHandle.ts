@@ -14,35 +14,31 @@
  * limitations under the License.
  */
 
-import {Protocol} from 'devtools-protocol';
+import {type Protocol} from 'devtools-protocol';
 
-import {Frame} from '../api/Frame.js';
+import {type Frame} from '../api/Frame.js';
 import {getQueryHandlerAndSelector} from '../common/GetQueryHandler.js';
-import {WaitForSelectorOptions} from '../common/IsolatedWorld.js';
 import {LazyArg} from '../common/LazyArg.js';
 import {
-  ElementFor,
-  EvaluateFuncWith,
-  HandleFor,
-  HandleOr,
-  NodeFor,
+  type ElementFor,
+  type EvaluateFuncWith,
+  type HandleFor,
+  type HandleOr,
+  type NodeFor,
 } from '../common/types.js';
-import {KeyInput} from '../common/USKeyboardLayout.js';
-import {
-  debugError,
-  isString,
-  withSourcePuppeteerURLIfNone,
-} from '../common/util.js';
+import {type KeyInput} from '../common/USKeyboardLayout.js';
+import {isString, withSourcePuppeteerURLIfNone} from '../common/util.js';
 import {assert} from '../util/assert.js';
 import {AsyncIterableUtil} from '../util/AsyncIterableUtil.js';
+import {throwIfDisposed} from '../util/decorators.js';
 
 import {
-  KeyboardTypeOptions,
-  KeyPressOptions,
-  MouseClickOptions,
+  type KeyboardTypeOptions,
+  type KeyPressOptions,
+  type MouseClickOptions,
 } from './Input.js';
 import {JSHandle} from './JSHandle.js';
-import {ScreenshotOptions} from './Page.js';
+import {type ScreenshotOptions, type WaitForSelectorOptions} from './Page.js';
 
 /**
  * @public
@@ -140,14 +136,65 @@ export interface Point {
  *
  * @public
  */
-
 export abstract class ElementHandle<
   ElementType extends Node = Element,
 > extends JSHandle<ElementType> {
   /**
+   * A given method will have it's `this` replaced with an isolated version of
+   * `this` when decorated with this decorator.
+   *
+   * All changes of isolated `this` are reflected on the actual `this`.
+   *
    * @internal
    */
-  protected handle;
+  static bindIsolatedHandle<This extends ElementHandle<Node>>(
+    target: (this: This, ...args: any[]) => Promise<any>,
+    _: unknown
+  ): typeof target {
+    return async function (...args) {
+      // If the handle is already isolated, then we don't need to adopt it
+      // again.
+      if (this.realm === this.frame.isolatedRealm()) {
+        return await target.call(this, ...args);
+      }
+      using adoptedThis = await this.frame.isolatedRealm().adoptHandle(this);
+      const result = await target.call(adoptedThis, ...args);
+      // If the function returns `adoptedThis`, then we return `this`.
+      if (result === adoptedThis) {
+        return this;
+      }
+      // If the function returns a handle, transfer it into the current realm.
+      if (result instanceof JSHandle) {
+        return await this.realm.transferHandle(result);
+      }
+      // If the function returns an array of handlers, transfer them into the
+      // current realm.
+      if (Array.isArray(result)) {
+        await Promise.all(
+          result.map(async (item, index, result) => {
+            if (item instanceof JSHandle) {
+              result[index] = await this.realm.transferHandle(item);
+            }
+          })
+        );
+      }
+      if (result instanceof Map) {
+        await Promise.all(
+          [...result.entries()].map(async ([key, value]) => {
+            if (value instanceof JSHandle) {
+              result.set(key, await this.realm.transferHandle(value));
+            }
+          })
+        );
+      }
+      return result;
+    };
+  }
+
+  /**
+   * @internal
+   */
+  protected readonly handle;
 
   /**
    * @internal
@@ -174,24 +221,21 @@ export abstract class ElementHandle<
   /**
    * @internal
    */
-  override async getProperty<K extends keyof ElementType>(
-    propertyName: HandleOr<K>
-  ): Promise<HandleFor<ElementType[K]>>;
-  /**
-   * @internal
-   */
-  override async getProperty(propertyName: string): Promise<JSHandle<unknown>>;
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   override async getProperty<K extends keyof ElementType>(
     propertyName: HandleOr<K>
   ): Promise<HandleFor<ElementType[K]>> {
-    return this.handle.getProperty(propertyName);
+    return await this.handle.getProperty(propertyName);
   }
 
   /**
    * @internal
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   override async getProperties(): Promise<Map<string, JSHandle>> {
-    return this.handle.getProperties();
+    return await this.handle.getProperties();
   }
 
   /**
@@ -207,13 +251,17 @@ export abstract class ElementHandle<
     pageFunction: Func | string,
     ...args: Params
   ): Promise<Awaited<ReturnType<Func>>> {
-    return this.handle.evaluate(pageFunction, ...args);
+    pageFunction = withSourcePuppeteerURLIfNone(
+      this.evaluate.name,
+      pageFunction
+    );
+    return await this.handle.evaluate(pageFunction, ...args);
   }
 
   /**
    * @internal
    */
-  override evaluateHandle<
+  override async evaluateHandle<
     Params extends unknown[],
     Func extends EvaluateFuncWith<ElementType, Params> = EvaluateFuncWith<
       ElementType,
@@ -223,14 +271,20 @@ export abstract class ElementHandle<
     pageFunction: Func | string,
     ...args: Params
   ): Promise<HandleFor<Awaited<ReturnType<Func>>>> {
-    return this.handle.evaluateHandle(pageFunction, ...args);
+    pageFunction = withSourcePuppeteerURLIfNone(
+      this.evaluateHandle.name,
+      pageFunction
+    );
+    return await this.handle.evaluateHandle(pageFunction, ...args);
   }
 
   /**
    * @internal
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   override async jsonValue(): Promise<ElementType> {
-    return this.handle.jsonValue();
+    return await this.handle.jsonValue();
   }
 
   /**
@@ -250,10 +304,13 @@ export abstract class ElementHandle<
   /**
    * @internal
    */
-  override async dispose(): Promise<void> {
-    return await this.handle.dispose();
+  override dispose(): Promise<void> {
+    return this.handle.dispose();
   }
 
+  /**
+   * @internal
+   */
   override asElement(): ElementHandle<ElementType> {
     return this;
   }
@@ -270,6 +327,8 @@ export abstract class ElementHandle<
    * @returns A {@link ElementHandle | element handle} to the first element
    * matching the given selector. Otherwise, `null`.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async $<Selector extends string>(
     selector: Selector
   ): Promise<ElementHandle<NodeFor<Selector>> | null> {
@@ -288,14 +347,16 @@ export abstract class ElementHandle<
    * @returns An array of {@link ElementHandle | element handles} that point to
    * elements matching the given selector.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async $$<Selector extends string>(
     selector: Selector
   ): Promise<Array<ElementHandle<NodeFor<Selector>>>> {
     const {updatedSelector, QueryHandler} =
       getQueryHandlerAndSelector(selector);
-    return AsyncIterableUtil.collect(
+    return await (AsyncIterableUtil.collect(
       QueryHandler.queryAll(this, updatedSelector)
-    ) as Promise<Array<ElementHandle<NodeFor<Selector>>>>;
+    ) as Promise<Array<ElementHandle<NodeFor<Selector>>>>);
   }
 
   /**
@@ -337,15 +398,13 @@ export abstract class ElementHandle<
     ...args: Params
   ): Promise<Awaited<ReturnType<Func>>> {
     pageFunction = withSourcePuppeteerURLIfNone(this.$eval.name, pageFunction);
-    const elementHandle = await this.$(selector);
+    using elementHandle = await this.$(selector);
     if (!elementHandle) {
       throw new Error(
         `Error: failed to find element matching selector "${selector}"`
       );
     }
-    const result = await elementHandle.evaluate(pageFunction, ...args);
-    await elementHandle.dispose();
-    return result;
+    return await elementHandle.evaluate(pageFunction, ...args);
   }
 
   /**
@@ -395,7 +454,7 @@ export abstract class ElementHandle<
   ): Promise<Awaited<ReturnType<Func>>> {
     pageFunction = withSourcePuppeteerURLIfNone(this.$$eval.name, pageFunction);
     const results = await this.$$(selector);
-    const elements = await this.evaluateHandle(
+    using elements = await this.evaluateHandle(
       (_, ...elements) => {
         return elements;
       },
@@ -407,7 +466,6 @@ export abstract class ElementHandle<
         return results.dispose();
       }),
     ]);
-    await elements.dispose();
     return result;
   }
 
@@ -423,11 +481,13 @@ export abstract class ElementHandle<
    * If there are no such elements, the method will resolve to an empty array.
    * @param expression - Expression to {@link https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate | evaluate}
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async $x(expression: string): Promise<Array<ElementHandle<Node>>> {
     if (expression.startsWith('//')) {
       expression = `.${expression}`;
     }
-    return this.$$(`xpath/${expression}`);
+    return await this.$$(`xpath/${expression}`);
   }
 
   /**
@@ -467,6 +527,8 @@ export abstract class ElementHandle<
    * @returns An element matching the given selector.
    * @throws Throws if an element matching the given selector doesn't appear.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async waitForSelector<Selector extends string>(
     selector: Selector,
     options: WaitForSelectorOptions = {}
@@ -481,37 +543,35 @@ export abstract class ElementHandle<
   }
 
   async #checkVisibility(visibility: boolean): Promise<boolean> {
-    const element = await this.frame.isolatedRealm().adoptHandle(this);
-    try {
-      return await this.frame.isolatedRealm().evaluate(
-        async (PuppeteerUtil, element, visibility) => {
-          return Boolean(PuppeteerUtil.checkVisibility(element, visibility));
-        },
-        LazyArg.create(context => {
-          return context.puppeteerUtil;
-        }),
-        element,
-        visibility
-      );
-    } finally {
-      await element.dispose();
-    }
+    return await this.evaluate(
+      async (element, PuppeteerUtil, visibility) => {
+        return Boolean(PuppeteerUtil.checkVisibility(element, visibility));
+      },
+      LazyArg.create(context => {
+        return context.puppeteerUtil;
+      }),
+      visibility
+    );
   }
 
   /**
    * Checks if an element is visible using the same mechanism as
    * {@link ElementHandle.waitForSelector}.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async isVisible(): Promise<boolean> {
-    return this.#checkVisibility(true);
+    return await this.#checkVisibility(true);
   }
 
   /**
    * Checks if an element is hidden using the same mechanism as
    * {@link ElementHandle.waitForSelector}.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async isHidden(): Promise<boolean> {
-    return this.#checkVisibility(false);
+    return await this.#checkVisibility(false);
   }
 
   /**
@@ -576,6 +636,8 @@ export abstract class ElementHandle<
    *   default value can be changed by using the {@link Page.setDefaultTimeout}
    *   method.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async waitForXPath(
     xpath: string,
     options: {
@@ -587,7 +649,7 @@ export abstract class ElementHandle<
     if (xpath.startsWith('//')) {
       xpath = `.${xpath}`;
     }
-    return this.waitForSelector(`xpath/${xpath}`, options);
+    return await this.waitForSelector(`xpath/${xpath}`, options);
   }
 
   /**
@@ -608,6 +670,8 @@ export abstract class ElementHandle<
    * @throws An error if the handle does not match. **The handle will not be
    * automatically disposed.**
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async toElement<
     K extends keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap,
   >(tagName: K): Promise<HandleFor<ElementFor<K>>> {
@@ -630,6 +694,8 @@ export abstract class ElementHandle<
   /**
    * Returns the middle point within an element unless a specific offset is provided.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async clickablePoint(offset?: Offset): Promise<Point> {
     const box = await this.#clickableBox();
     if (!box) {
@@ -652,6 +718,8 @@ export abstract class ElementHandle<
    * uses {@link Page} to hover over the center of the element.
    * If the element is detached from DOM, the method throws an error.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async hover(this: ElementHandle<Element>): Promise<void> {
     await this.scrollIntoViewIfNeeded();
     const {x, y} = await this.clickablePoint();
@@ -663,6 +731,8 @@ export abstract class ElementHandle<
    * uses {@link Page | Page.mouse} to click in the center of the element.
    * If the element is detached from DOM, the method throws an error.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async click(
     this: ElementHandle<Element>,
     options: Readonly<ClickOptions> = {}
@@ -673,59 +743,134 @@ export abstract class ElementHandle<
   }
 
   /**
-   * This method creates and captures a dragevent from the element.
+   * Drags an element over the given element or point.
+   *
+   * @returns DEPRECATED. When drag interception is enabled, the drag payload is
+   * returned.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async drag(
     this: ElementHandle<Element>,
-    target: Point
-  ): Promise<Protocol.Input.DragData>;
-  async drag(this: ElementHandle<Element>): Promise<Protocol.Input.DragData> {
-    throw new Error('Not implemented');
+    target: Point | ElementHandle<Element>
+  ): Promise<Protocol.Input.DragData | void> {
+    await this.scrollIntoViewIfNeeded();
+    const page = this.frame.page();
+    if (page.isDragInterceptionEnabled()) {
+      const source = await this.clickablePoint();
+      if (target instanceof ElementHandle) {
+        target = await target.clickablePoint();
+      }
+      return await page.mouse.drag(source, target);
+    }
+    try {
+      if (!page._isDragging) {
+        page._isDragging = true;
+        await this.hover();
+        await page.mouse.down();
+      }
+      if (target instanceof ElementHandle) {
+        await target.hover();
+      } else {
+        await page.mouse.move(target.x, target.y);
+      }
+    } catch (error) {
+      page._isDragging = false;
+      throw error;
+    }
   }
 
   /**
-   * This method creates a `dragenter` event on the element.
+   * @deprecated Do not use. `dragenter` will automatically be performed during dragging.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async dragEnter(
     this: ElementHandle<Element>,
-    data?: Protocol.Input.DragData
-  ): Promise<void>;
-  async dragEnter(this: ElementHandle<Element>): Promise<void> {
-    throw new Error('Not implemented');
+    data: Protocol.Input.DragData = {items: [], dragOperationsMask: 1}
+  ): Promise<void> {
+    const page = this.frame.page();
+    await this.scrollIntoViewIfNeeded();
+    const target = await this.clickablePoint();
+    await page.mouse.dragEnter(target, data);
   }
 
   /**
-   * This method creates a `dragover` event on the element.
+   * @deprecated Do not use. `dragover` will automatically be performed during dragging.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async dragOver(
     this: ElementHandle<Element>,
-    data?: Protocol.Input.DragData
-  ): Promise<void>;
-  async dragOver(this: ElementHandle<Element>): Promise<void> {
-    throw new Error('Not implemented');
+    data: Protocol.Input.DragData = {items: [], dragOperationsMask: 1}
+  ): Promise<void> {
+    const page = this.frame.page();
+    await this.scrollIntoViewIfNeeded();
+    const target = await this.clickablePoint();
+    await page.mouse.dragOver(target, data);
   }
 
   /**
-   * This method triggers a drop on the element.
+   * Drops the given element onto the current one.
+   */
+  async drop(
+    this: ElementHandle<Element>,
+    element: ElementHandle<Element>
+  ): Promise<void>;
+
+  /**
+   * @deprecated No longer supported.
    */
   async drop(
     this: ElementHandle<Element>,
     data?: Protocol.Input.DragData
   ): Promise<void>;
-  async drop(this: ElementHandle<Element>): Promise<void> {
-    throw new Error('Not implemented');
+
+  /**
+   * @internal
+   */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
+  async drop(
+    this: ElementHandle<Element>,
+    dataOrElement: ElementHandle<Element> | Protocol.Input.DragData = {
+      items: [],
+      dragOperationsMask: 1,
+    }
+  ): Promise<void> {
+    const page = this.frame.page();
+    if ('items' in dataOrElement) {
+      await this.scrollIntoViewIfNeeded();
+      const destination = await this.clickablePoint();
+      await page.mouse.drop(destination, dataOrElement);
+    } else {
+      // Note if the rest errors, we still want dragging off because the errors
+      // is most likely something implying the mouse is no longer dragging.
+      await dataOrElement.drag(this);
+      page._isDragging = false;
+      await page.mouse.up();
+    }
   }
 
   /**
-   * This method triggers a dragenter, dragover, and drop on the element.
+   * @deprecated Use `ElementHandle.drop` instead.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async dragAndDrop(
     this: ElementHandle<Element>,
     target: ElementHandle<Node>,
     options?: {delay: number}
-  ): Promise<void>;
-  async dragAndDrop(this: ElementHandle<Element>): Promise<void> {
-    throw new Error('Not implemented');
+  ): Promise<void> {
+    const page = this.frame.page();
+    assert(
+      page.isDragInterceptionEnabled(),
+      'Drag Interception is not enabled!'
+    );
+    await this.scrollIntoViewIfNeeded();
+    const startPoint = await this.clickablePoint();
+    const targetPoint = await target.clickablePoint();
+    await page.mouse.dragAndDrop(startPoint, targetPoint, options);
   }
 
   /**
@@ -744,6 +889,8 @@ export abstract class ElementHandle<
    * `multiple` attribute, all values are considered, otherwise only the first
    * one is taken into account.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async select(...values: string[]): Promise<string[]> {
     for (const value of values) {
       assert(
@@ -756,7 +903,7 @@ export abstract class ElementHandle<
       );
     }
 
-    return this.evaluate((element, vals): string[] => {
+    return await this.evaluate((element, vals): string[] => {
       const values = new Set(vals);
       if (!(element instanceof HTMLSelectElement)) {
         throw new Error('Element is not a <select> element.');
@@ -812,6 +959,8 @@ export abstract class ElementHandle<
    * {@link Touchscreen.tap} to tap in the center of the element.
    * If the element is detached from DOM, the method throws an error.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async tap(this: ElementHandle<Element>): Promise<void> {
     await this.scrollIntoViewIfNeeded();
     const {x, y} = await this.clickablePoint();
@@ -819,18 +968,24 @@ export abstract class ElementHandle<
     await this.frame.page().touchscreen.touchEnd();
   }
 
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async touchStart(this: ElementHandle<Element>): Promise<void> {
     await this.scrollIntoViewIfNeeded();
     const {x, y} = await this.clickablePoint();
     await this.frame.page().touchscreen.touchStart(x, y);
   }
 
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async touchMove(this: ElementHandle<Element>): Promise<void> {
     await this.scrollIntoViewIfNeeded();
     const {x, y} = await this.clickablePoint();
     await this.frame.page().touchscreen.touchMove(x, y);
   }
 
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async touchEnd(this: ElementHandle<Element>): Promise<void> {
     await this.scrollIntoViewIfNeeded();
     await this.frame.page().touchscreen.touchEnd();
@@ -839,6 +994,8 @@ export abstract class ElementHandle<
   /**
    * Calls {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus | focus} on the element.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async focus(): Promise<void> {
     await this.evaluate(element => {
       if (!(element instanceof HTMLElement)) {
@@ -873,6 +1030,8 @@ export abstract class ElementHandle<
    *
    * @param options - Delay in milliseconds. Defaults to 0.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async type(
     text: string,
     options?: Readonly<KeyboardTypeOptions>
@@ -895,6 +1054,8 @@ export abstract class ElementHandle<
    * @param key - Name of key to press, such as `ArrowLeft`.
    * See {@link KeyInput} for a list of all key names.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async press(
     key: KeyInput,
     options?: Readonly<KeyPressOptions>
@@ -904,8 +1065,7 @@ export abstract class ElementHandle<
   }
 
   async #clickableBox(): Promise<BoundingBox | null> {
-    const adoptedThis = await this.frame.isolatedRealm().adoptHandle(this);
-    const boxes = await adoptedThis.evaluate(element => {
+    const boxes = await this.evaluate(element => {
       if (!(element instanceof Element)) {
         return null;
       }
@@ -913,46 +1073,44 @@ export abstract class ElementHandle<
         return {x: rect.x, y: rect.y, width: rect.width, height: rect.height};
       });
     });
-    void adoptedThis.dispose().catch(debugError);
     if (!boxes?.length) {
       return null;
     }
     await this.#intersectBoundingBoxesWithFrame(boxes);
-    let frame: Frame | null | undefined = this.frame;
-    let element: HandleFor<HTMLIFrameElement> | null | undefined;
-    while ((element = await frame?.frameElement())) {
-      try {
-        element = await element.frame.isolatedRealm().transferHandle(element);
-        const parentBox = await element.evaluate(element => {
-          // Element is not visible.
-          if (element.getClientRects().length === 0) {
-            return null;
-          }
-          const rect = element.getBoundingClientRect();
-          const style = window.getComputedStyle(element);
-          return {
-            left:
-              rect.left +
-              parseInt(style.paddingLeft, 10) +
-              parseInt(style.borderLeftWidth, 10),
-            top:
-              rect.top +
-              parseInt(style.paddingTop, 10) +
-              parseInt(style.borderTopWidth, 10),
-          };
-        });
-        if (!parentBox) {
+    let frame = this.frame;
+    let parentFrame: Frame | null | undefined;
+    while ((parentFrame = frame?.parentFrame())) {
+      using handle = await frame.frameElement();
+      if (!handle) {
+        throw new Error('Unsupported frame type');
+      }
+      const parentBox = await handle.evaluate(element => {
+        // Element is not visible.
+        if (element.getClientRects().length === 0) {
           return null;
         }
-        for (const box of boxes) {
-          box.x += parentBox.left;
-          box.y += parentBox.top;
-        }
-        await element.#intersectBoundingBoxesWithFrame(boxes);
-        frame = frame?.parentFrame();
-      } finally {
-        void element.dispose().catch(debugError);
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        return {
+          left:
+            rect.left +
+            parseInt(style.paddingLeft, 10) +
+            parseInt(style.borderLeftWidth, 10),
+          top:
+            rect.top +
+            parseInt(style.paddingTop, 10) +
+            parseInt(style.borderTopWidth, 10),
+        };
+      });
+      if (!parentBox) {
+        return null;
       }
+      for (const box of boxes) {
+        box.x += parentBox.left;
+        box.y += parentBox.top;
+      }
+      await handle.#intersectBoundingBoxesWithFrame(boxes);
+      frame = parentFrame;
     }
     const box = boxes.find(box => {
       return box.width >= 1 && box.height >= 1;
@@ -986,9 +1144,10 @@ export abstract class ElementHandle<
    * This method returns the bounding box of the element (relative to the main frame),
    * or `null` if the element is not visible.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async boundingBox(): Promise<BoundingBox | null> {
-    const adoptedThis = await this.frame.isolatedRealm().adoptHandle(this);
-    const box = await adoptedThis.evaluate(element => {
+    const box = await this.evaluate(element => {
       if (!(element instanceof Element)) {
         return null;
       }
@@ -999,7 +1158,6 @@ export abstract class ElementHandle<
       const rect = element.getBoundingClientRect();
       return {x: rect.x, y: rect.y, width: rect.width, height: rect.height};
     });
-    void adoptedThis.dispose().catch(debugError);
     if (!box) {
       return null;
     }
@@ -1023,9 +1181,10 @@ export abstract class ElementHandle<
    * Boxes are represented as an array of points;
    * Each Point is an object `{x, y}`. Box points are sorted clock-wise.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async boxModel(): Promise<BoxModel | null> {
-    const adoptedThis = await this.frame.isolatedRealm().adoptHandle(this);
-    const model = await adoptedThis.evaluate(element => {
+    const model = await this.evaluate(element => {
       if (!(element instanceof Element)) {
         return null;
       }
@@ -1097,7 +1256,6 @@ export abstract class ElementHandle<
         ];
       }
     });
-    void adoptedThis.dispose().catch(debugError);
     if (!model) {
       return null;
     }
@@ -1121,38 +1279,37 @@ export abstract class ElementHandle<
 
   async #getTopLeftCornerOfFrame() {
     const point = {x: 0, y: 0};
-    let frame: Frame | null | undefined = this.frame;
-    let element: HandleFor<HTMLIFrameElement> | null | undefined;
-    while ((element = await frame?.frameElement())) {
-      try {
-        element = await element.frame.isolatedRealm().transferHandle(element);
-        const parentBox = await element.evaluate(element => {
-          // Element is not visible.
-          if (element.getClientRects().length === 0) {
-            return null;
-          }
-          const rect = element.getBoundingClientRect();
-          const style = window.getComputedStyle(element);
-          return {
-            left:
-              rect.left +
-              parseInt(style.paddingLeft, 10) +
-              parseInt(style.borderLeftWidth, 10),
-            top:
-              rect.top +
-              parseInt(style.paddingTop, 10) +
-              parseInt(style.borderTopWidth, 10),
-          };
-        });
-        if (!parentBox) {
+    let frame = this.frame;
+    let parentFrame: Frame | null | undefined;
+    while ((parentFrame = frame?.parentFrame())) {
+      using handle = await frame.frameElement();
+      if (!handle) {
+        throw new Error('Unsupported frame type');
+      }
+      const parentBox = await handle.evaluate(element => {
+        // Element is not visible.
+        if (element.getClientRects().length === 0) {
           return null;
         }
-        point.x += parentBox.left;
-        point.y += parentBox.top;
-        frame = frame?.parentFrame();
-      } finally {
-        void element.dispose().catch(debugError);
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        return {
+          left:
+            rect.left +
+            parseInt(style.paddingLeft, 10) +
+            parseInt(style.borderLeftWidth, 10),
+          top:
+            rect.top +
+            parseInt(style.paddingTop, 10) +
+            parseInt(style.borderTopWidth, 10),
+        };
+      });
+      if (!parentBox) {
+        return null;
       }
+      point.x += parentBox.left;
+      point.y += parentBox.top;
+      frame = parentFrame;
     }
     return point;
   }
@@ -1174,17 +1331,15 @@ export abstract class ElementHandle<
    * @internal
    */
   protected async assertConnectedElement(): Promise<void> {
-    const error = await this.evaluate(
-      async (element): Promise<string | undefined> => {
-        if (!element.isConnected) {
-          return 'Node is detached from document';
-        }
-        if (element.nodeType !== Node.ELEMENT_NODE) {
-          return 'Node is not of type HTMLElement';
-        }
-        return;
+    const error = await this.evaluate(async element => {
+      if (!element.isConnected) {
+        return 'Node is detached from document';
       }
-    );
+      if (element.nodeType !== Node.ELEMENT_NODE) {
+        return 'Node is not of type HTMLElement';
+      }
+      return;
+    });
 
     if (error) {
       throw new Error(error);
@@ -1215,22 +1370,20 @@ export abstract class ElementHandle<
    * @param options - Threshold for the intersection between 0 (no intersection) and 1
    * (full intersection). Defaults to 1.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async isIntersectingViewport(
     this: ElementHandle<Element>,
-    options?: {
+    options: {
       threshold?: number;
-    }
+    } = {}
   ): Promise<boolean> {
     await this.assertConnectedElement();
-
-    const {threshold = 0} = options ?? {};
-    const svgHandle = await this.#asSVGElementHandle(this);
-    const intersectionTarget: ElementHandle<Element> = svgHandle
-      ? await this.#getOwnerSVGElement(svgHandle)
-      : this;
-
-    try {
-      return await intersectionTarget.evaluate(async (element, threshold) => {
+    // eslint-disable-next-line rulesdir/use-using -- Returns `this`.
+    const handle = await this.#asSVGElementHandle();
+    using target = handle && (await handle.#getOwnerSVGElement());
+    return await ((target ?? this) as ElementHandle<Element>).evaluate(
+      async (element, threshold) => {
         const visibleRatio = await new Promise<number>(resolve => {
           const observer = new IntersectionObserver(entries => {
             resolve(entries[0]!.intersectionRatio);
@@ -1239,18 +1392,17 @@ export abstract class ElementHandle<
           observer.observe(element);
         });
         return threshold === 1 ? visibleRatio === 1 : visibleRatio > threshold;
-      }, threshold);
-    } finally {
-      if (intersectionTarget !== this) {
-        await intersectionTarget.dispose();
-      }
-    }
+      },
+      options.threshold ?? 0
+    );
   }
 
   /**
    * Scrolls the element into view using either the automation protocol client
    * or by calling element.scrollIntoView.
    */
+  @throwIfDisposed()
+  @ElementHandle.bindIsolatedHandle
   async scrollIntoView(this: ElementHandle<Element>): Promise<void> {
     await this.assertConnectedElement();
     await this.evaluate(async (element): Promise<void> => {
@@ -1267,35 +1419,30 @@ export abstract class ElementHandle<
    * etc.).
    */
   async #asSVGElementHandle(
-    handle: ElementHandle<Element>
+    this: ElementHandle<Element>
   ): Promise<ElementHandle<SVGElement> | null> {
     if (
-      await handle.evaluate(element => {
+      await this.evaluate(element => {
         return element instanceof SVGElement;
       })
     ) {
-      return handle as ElementHandle<SVGElement>;
+      return this as ElementHandle<SVGElement>;
     } else {
       return null;
     }
   }
 
   async #getOwnerSVGElement(
-    handle: ElementHandle<SVGElement>
+    this: ElementHandle<SVGElement>
   ): Promise<ElementHandle<SVGSVGElement>> {
     // SVGSVGElement.ownerSVGElement === null.
-    return await handle.evaluateHandle(element => {
+    return await this.evaluateHandle(element => {
       if (element instanceof SVGSVGElement) {
         return element;
       }
       return element.ownerSVGElement!;
     });
   }
-
-  /**
-   * @internal
-   */
-  abstract assertElementHasWorld(): asserts this;
 
   /**
    * If the element is a form input, you can use {@link ElementHandle.autofill}

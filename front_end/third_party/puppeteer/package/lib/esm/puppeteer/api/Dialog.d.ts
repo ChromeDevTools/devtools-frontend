@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Protocol } from 'devtools-protocol';
+import { type Protocol } from 'devtools-protocol';
 /**
  * Dialog instances are dispatched by the {@link Page} via the `dialog` event.
  *
@@ -38,7 +38,7 @@ import { Protocol } from 'devtools-protocol';
  *
  * @public
  */
-export declare class Dialog {
+export declare abstract class Dialog {
     #private;
     /**
      * @internal
@@ -60,7 +60,7 @@ export declare class Dialog {
     /**
      * @internal
      */
-    sendCommand(_options: {
+    protected abstract sendCommand(options: {
         accept: boolean;
         text?: string;
     }): Promise<void>;

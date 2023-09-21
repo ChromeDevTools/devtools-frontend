@@ -114,6 +114,17 @@ export class ChromeLauncher extends ProductLauncher {
     }
     defaultArgs(options = {}) {
         // See https://github.com/GoogleChrome/chrome-launcher/blob/main/docs/chrome-flags-for-tools.md
+        const disabledFeatures = [
+            'Translate',
+            // AcceptCHFrame disabled because of crbug.com/1348106.
+            'AcceptCHFrame',
+            'MediaRouter',
+            'OptimizationHints',
+        ];
+        if (!USE_TAB_TARGET) {
+            disabledFeatures.push('Prerender2');
+            disabledFeatures.push('BackForwardCache');
+        }
         const chromeArguments = [
             '--allow-pre-commit-input',
             '--disable-background-networking',
@@ -126,14 +137,13 @@ export class ChromeLauncher extends ProductLauncher {
             '--disable-default-apps',
             '--disable-dev-shm-usage',
             '--disable-extensions',
-            // AcceptCHFrame disabled because of crbug.com/1348106.
-            '--disable-features=Translate,BackForwardCache,AcceptCHFrame,MediaRouter,OptimizationHints',
-            ...(USE_TAB_TARGET ? [] : ['--disable-features=Prerender2']),
+            `--disable-features=${disabledFeatures.join(',')}`,
             '--disable-hang-monitor',
             '--disable-ipc-flooding-protection',
             '--disable-popup-blocking',
             '--disable-prompt-on-repost',
             '--disable-renderer-backgrounding',
+            '--disable-search-engine-choice-screen',
             '--disable-sync',
             '--enable-automation',
             // TODO(sadym): remove '--enable-blink-features=IdleDetection' once

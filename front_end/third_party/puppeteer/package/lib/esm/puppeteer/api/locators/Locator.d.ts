@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Observable, OperatorFunction } from '../../../third_party/rxjs/rxjs.js';
-import { EventEmitter } from '../../common/EventEmitter.js';
-import { HandleFor } from '../../common/types.js';
-import { ClickOptions } from '../ElementHandle.js';
-import { Action, AwaitedLocator, HandleMapper, Mapper, Predicate } from './locators.js';
+import { type Observable, type OperatorFunction } from '../../../third_party/rxjs/rxjs.js';
+import { EventEmitter, type EventType } from '../../common/EventEmitter.js';
+import { type HandleFor } from '../../common/types.js';
+import { type ClickOptions } from '../ElementHandle.js';
+import { type Action, type AwaitedLocator, type HandleMapper, type Mapper, type Predicate } from './locators.js';
 /**
  * For observables coming from promises, a delay is needed, otherwise RxJS will
  * never yield in a permanent failure for a promise.
@@ -89,18 +89,28 @@ export interface LocatorScrollOptions extends ActionOptions {
  *
  * @public
  */
-export declare enum LocatorEmittedEvents {
+export declare enum LocatorEvent {
     /**
      * Emitted every time before the locator performs an action on the located element(s).
      */
     Action = "action"
 }
+export { 
+/**
+ * @deprecated Use {@link LocatorEvent}.
+ */
+LocatorEvent as LocatorEmittedEvents, };
 /**
  * @public
  */
-export interface LocatorEventObject {
-    [LocatorEmittedEvents.Action]: never;
+export interface LocatorEvents extends Record<EventType, unknown> {
+    [LocatorEvent.Action]: undefined;
 }
+export { 
+/**
+ * @deprecated Use {@link LocatorEvents}.
+ */
+LocatorEvents as LocatorEventObject, };
 /**
  * Locators describe a strategy of locating objects and performing an action on
  * them. If the action fails because the object is not ready for the action, the
@@ -109,7 +119,7 @@ export interface LocatorEventObject {
  *
  * @public
  */
-export declare abstract class Locator<T> extends EventEmitter {
+export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
     #private;
     /**
      * Creates a race between multiple locators but ensures that only a single one
@@ -138,9 +148,6 @@ export declare abstract class Locator<T> extends EventEmitter {
         retryAndRaceWithSignalAndTimer: <T_1>(signal?: AbortSignal) => OperatorFunction<T_1, T_1>;
     };
     get timeout(): number;
-    on<K extends keyof LocatorEventObject>(eventName: K, handler: (event: LocatorEventObject[K]) => void): this;
-    once<K extends keyof LocatorEventObject>(eventName: K, handler: (event: LocatorEventObject[K]) => void): this;
-    off<K extends keyof LocatorEventObject>(eventName: K, handler: (event: LocatorEventObject[K]) => void): this;
     setTimeout(timeout: number): Locator<T>;
     setVisibility<NodeType extends Node>(this: Locator<NodeType>, visibility: VisibilityOption): Locator<NodeType>;
     setWaitForEnabled<NodeType extends Node>(this: Locator<NodeType>, value: boolean): Locator<NodeType>;

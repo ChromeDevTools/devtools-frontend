@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Browser } from '../api/Browser.js';
-import { BrowserLaunchArgumentOptions, ChromeReleaseChannel, PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
-import { ProductLauncher, ResolvedLaunchArgs } from './ProductLauncher.js';
-import { PuppeteerNode } from './PuppeteerNode.js';
+import { type Browser } from '../api/Browser.js';
+import { type BrowserLaunchArgumentOptions, type ChromeReleaseChannel, type PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
+import { ProductLauncher, type ResolvedLaunchArgs } from './ProductLauncher.js';
+import { type PuppeteerNode } from './PuppeteerNode.js';
 /**
  * @internal
  */

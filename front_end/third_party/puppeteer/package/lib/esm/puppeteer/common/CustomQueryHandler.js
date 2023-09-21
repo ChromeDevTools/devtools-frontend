@@ -15,7 +15,7 @@
  */
 import { assert } from '../util/assert.js';
 import { interpolateFunction, stringifyFunction } from '../util/Function.js';
-import { QueryHandler } from './QueryHandler.js';
+import { QueryHandler, } from './QueryHandler.js';
 import { scriptInjector } from './ScriptInjector.js';
 /**
  * The registry of {@link CustomQueryHandler | custom query handlers}.
@@ -31,9 +31,6 @@ import { scriptInjector } from './ScriptInjector.js';
  */
 export class CustomQueryHandlerRegistry {
     #handlers = new Map();
-    /**
-     * @internal
-     */
     get(name) {
         const handler = this.#handlers.get(name);
         return handler ? handler[1] : undefined;
@@ -56,8 +53,6 @@ export class CustomQueryHandlerRegistry {
      * @param name - Name to register under.
      * @param queryHandler - {@link CustomQueryHandler | Custom query handler} to
      * register.
-     *
-     * @internal
      */
     register(name, handler) {
         assert(!this.#handlers.has(name), `Cannot register over existing handler: ${name}`);
@@ -97,8 +92,6 @@ export class CustomQueryHandlerRegistry {
      * given name.
      *
      * @throws `Error` if there is no handler under the given name.
-     *
-     * @internal
      */
     unregister(name) {
         const handler = this.#handlers.get(name);
@@ -110,16 +103,12 @@ export class CustomQueryHandlerRegistry {
     }
     /**
      * Gets the names of all {@link CustomQueryHandler | custom query handlers}.
-     *
-     * @internal
      */
     names() {
         return [...this.#handlers.keys()];
     }
     /**
      * Unregisters all custom query handlers.
-     *
-     * @internal
      */
     clear() {
         for (const [registerScript] of this.#handlers) {

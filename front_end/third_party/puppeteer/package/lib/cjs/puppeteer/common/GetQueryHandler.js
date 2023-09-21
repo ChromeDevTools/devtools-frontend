@@ -15,30 +15,20 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getQueryHandlerAndSelector = exports.getQueryHandlerByName = exports.BUILTIN_QUERY_HANDLERS = void 0;
-const AriaQueryHandler_js_1 = require("./AriaQueryHandler.js");
+exports.getQueryHandlerAndSelector = void 0;
+const AriaQueryHandler_js_1 = require("../cdp/AriaQueryHandler.js");
 const CustomQueryHandler_js_1 = require("./CustomQueryHandler.js");
 const PierceQueryHandler_js_1 = require("./PierceQueryHandler.js");
 const PQueryHandler_js_1 = require("./PQueryHandler.js");
 const TextQueryHandler_js_1 = require("./TextQueryHandler.js");
 const XPathQueryHandler_js_1 = require("./XPathQueryHandler.js");
-exports.BUILTIN_QUERY_HANDLERS = Object.freeze({
+const BUILTIN_QUERY_HANDLERS = {
     aria: AriaQueryHandler_js_1.ARIAQueryHandler,
     pierce: PierceQueryHandler_js_1.PierceQueryHandler,
     xpath: XPathQueryHandler_js_1.XPathQueryHandler,
     text: TextQueryHandler_js_1.TextQueryHandler,
-});
+};
 const QUERY_SEPARATORS = ['=', '/'];
-/**
- * @internal
- */
-function getQueryHandlerByName(name) {
-    if (name in exports.BUILTIN_QUERY_HANDLERS) {
-        return exports.BUILTIN_QUERY_HANDLERS[name];
-    }
-    return CustomQueryHandler_js_1.customQueryHandlers.get(name);
-}
-exports.getQueryHandlerByName = getQueryHandlerByName;
 /**
  * @internal
  */
@@ -47,7 +37,7 @@ function getQueryHandlerAndSelector(selector) {
         CustomQueryHandler_js_1.customQueryHandlers.names().map(name => {
             return [name, CustomQueryHandler_js_1.customQueryHandlers.get(name)];
         }),
-        Object.entries(exports.BUILTIN_QUERY_HANDLERS),
+        Object.entries(BUILTIN_QUERY_HANDLERS),
     ]) {
         for (const [name, QueryHandler] of handlerMap) {
             for (const separator of QUERY_SEPARATORS) {

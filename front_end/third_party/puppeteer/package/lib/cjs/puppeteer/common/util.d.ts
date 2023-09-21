@@ -18,14 +18,12 @@
 /// <reference types="node" />
 import type { Readable } from 'stream';
 import type { Protocol } from 'devtools-protocol';
-import type { ElementHandle } from '../api/ElementHandle.js';
-import type { JSHandle } from '../api/JSHandle.js';
-import { Page } from '../api/Page.js';
+import { type Observable } from '../../third_party/rxjs/rxjs.js';
+import type { CDPSession } from '../api/CDPSession.js';
+import { type Page } from '../api/Page.js';
 import { Deferred } from '../util/Deferred.js';
-import type { CDPSession } from './Connection.js';
-import type { CommonEventEmitter } from './EventEmitter.js';
-import type { ExecutionContext } from './ExecutionContext.js';
-import { Awaitable } from './types.js';
+import { disposeSymbol } from '../util/disposable.js';
+import { type Awaitable } from './types.js';
 /**
  * @internal
  */
@@ -37,7 +35,7 @@ export declare function createEvaluationError(details: Protocol.Runtime.Exceptio
 /**
  * @internal
  */
-export declare function createClientError(details: Protocol.Runtime.ExceptionDetails): unknown;
+export declare function createClientError(details: Protocol.Runtime.ExceptionDetails): Error;
 /**
  * @internal
  */
@@ -66,30 +64,6 @@ export declare function valueFromRemoteObject(remoteObject: Protocol.Runtime.Rem
 /**
  * @internal
  */
-export declare function releaseObject(client: CDPSession, remoteObject: Protocol.Runtime.RemoteObject): Promise<void>;
-/**
- * @internal
- */
-export interface PuppeteerEventListener {
-    emitter: CommonEventEmitter;
-    eventName: string | symbol;
-    handler: (...args: any[]) => void;
-}
-/**
- * @internal
- */
-export declare function addEventListener(emitter: CommonEventEmitter, eventName: string | symbol, handler: (...args: any[]) => void): PuppeteerEventListener;
-/**
- * @internal
- */
-export declare function removeEventListeners(listeners: Array<{
-    emitter: CommonEventEmitter;
-    eventName: string | symbol;
-    handler: (...args: any[]) => void;
-}>): void;
-/**
- * @internal
- */
 export declare const isString: (obj: unknown) => obj is string;
 /**
  * @internal
@@ -110,11 +84,7 @@ export declare const isDate: (obj: unknown) => obj is Date;
 /**
  * @internal
  */
-export declare function waitForEvent<T>(emitter: CommonEventEmitter, eventName: string | symbol, predicate: (event: T) => Awaitable<boolean>, timeout: number, abortPromise: Promise<Error> | Deferred<Error>): Promise<T>;
-/**
- * @internal
- */
-export declare function createJSHandle(context: ExecutionContext, remoteObject: Protocol.Runtime.RemoteObject): JSHandle | ElementHandle<Node>;
+export declare function waitForEvent<T>(emitter: any, eventName: string | symbol, predicate: (event: T) => Awaitable<boolean>, timeout: number, abortPromise: Promise<Error> | Deferred<Error>): Promise<T>;
 /**
  * @internal
  */
@@ -155,4 +125,34 @@ export declare function getPageContent(): string;
  * @internal
  */
 export declare function validateDialogType(type: string): 'alert' | 'confirm' | 'prompt' | 'beforeunload';
+/**
+ * @internal
+ */
+export declare class Mutex {
+    #private;
+    static Guard: {
+        new (mutex: Mutex): {
+            "__#45486@#mutex": Mutex;
+            [Symbol.dispose](): void;
+        };
+    };
+    acquire(): Promise<InstanceType<typeof Mutex.Guard>>;
+    release(): void;
+}
+/**
+ * @internal
+ */
+export declare function timeout(ms: number): Observable<never>;
+/**
+ * @internal
+ */
+export declare const UTILITY_WORLD_NAME = "__puppeteer_utility_world__";
+/**
+ * @internal
+ */
+export declare const SOURCE_URL_REGEX: RegExp;
+/**
+ * @internal
+ */
+export declare function getSourceUrlComment(url: string): string;
 //# sourceMappingURL=util.d.ts.map

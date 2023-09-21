@@ -15,9 +15,9 @@
  */
 import type { Browser } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
-import { Page } from '../api/Page.js';
-import { CDPSession } from '../common/Connection.js';
-import { WebWorker } from '../common/WebWorker.js';
+import { type Page } from '../api/Page.js';
+import { type WebWorker } from '../cdp/WebWorker.js';
+import { type CDPSession } from './CDPSession.js';
 /**
  * @public
  */

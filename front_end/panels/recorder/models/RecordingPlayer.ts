@@ -175,7 +175,7 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         await client.send('Emulation.clearDeviceMetricsOverride');
         await client.send('Emulation.setAutomationOverride', {enabled: false});
         for (const frame of page.frames()) {
-          const client = frame._client();
+          const client = frame.client;
           await client.send('Network.disable');
           await client.send('Page.disable');
           await client.send('Log.disable');

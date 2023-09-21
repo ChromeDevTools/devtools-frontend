@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Observable } from '../../../third_party/rxjs/rxjs.js';
-import { HandleFor } from '../../puppeteer-core.js';
-import { ActionOptions, Locator } from './locators.js';
+import { type Observable } from '../../../third_party/rxjs/rxjs.js';
+import { type HandleFor } from '../../common/types.js';
+import { type ActionOptions, Locator } from './locators.js';
 /**
  * @public
  */

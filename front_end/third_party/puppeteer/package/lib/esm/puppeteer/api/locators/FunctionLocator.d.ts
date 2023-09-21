@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Observable } from '../../../third_party/rxjs/rxjs.js';
-import { Awaitable, HandleFor } from '../../common/types.js';
-import { Frame } from '../Frame.js';
-import { Page } from '../Page.js';
-import { ActionOptions, Locator } from './locators.js';
+import { type Observable } from '../../../third_party/rxjs/rxjs.js';
+import { type Awaitable, type HandleFor } from '../../common/types.js';
+import { type Frame } from '../Frame.js';
+import { type Page } from '../Page.js';
+import { type ActionOptions, Locator } from './locators.js';
 /**
  * @internal
  */

@@ -1,32 +1,32 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PipeTransport = void 0;
+const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
+const disposable_js_1 = require("../util/disposable.js");
 /**
  * @internal
  */
 class PipeTransport {
     #pipeWrite;
-    #eventListeners;
+    #subscriptions = new disposable_js_1.DisposableStack();
     #isClosed = false;
     #pendingMessage = '';
     onclose;
     onmessage;
     constructor(pipeWrite, pipeRead) {
         this.#pipeWrite = pipeWrite;
-        this.#eventListeners = [
-            (0, util_js_1.addEventListener)(pipeRead, 'data', buffer => {
-                return this.#dispatch(buffer);
-            }),
-            (0, util_js_1.addEventListener)(pipeRead, 'close', () => {
-                if (this.onclose) {
-                    this.onclose.call(null);
-                }
-            }),
-            (0, util_js_1.addEventListener)(pipeRead, 'error', util_js_1.debugError),
-            (0, util_js_1.addEventListener)(pipeWrite, 'error', util_js_1.debugError),
-        ];
+        this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(pipeRead, 'data', (buffer) => {
+            return this.#dispatch(buffer);
+        }));
+        this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(pipeRead, 'close', () => {
+            if (this.onclose) {
+                this.onclose.call(null);
+            }
+        }));
+        this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(pipeRead, 'error', util_js_1.debugError));
+        this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(pipeWrite, 'error', util_js_1.debugError));
     }
     send(message) {
         (0, assert_js_1.assert)(!this.#isClosed, '`PipeTransport` is closed.');
@@ -57,7 +57,7 @@ class PipeTransport {
     }
     close() {
         this.#isClosed = true;
-        (0, util_js_1.removeEventListeners)(this.#eventListeners);
+        this.#subscriptions.dispose();
     }
 }
 exports.PipeTransport = PipeTransport;

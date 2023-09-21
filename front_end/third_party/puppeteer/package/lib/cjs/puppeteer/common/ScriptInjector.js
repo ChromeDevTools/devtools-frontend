@@ -1,7 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.scriptInjector = void 0;
+exports.scriptInjector = exports.ScriptInjector = void 0;
 const injected_js_1 = require("../generated/injected.js");
+/**
+ * @internal
+ */
 class ScriptInjector {
     #updated = false;
     #amendments = new Set();
@@ -39,6 +42,7 @@ class ScriptInjector {
     })()`;
     }
 }
+exports.ScriptInjector = ScriptInjector;
 /**
  * @internal
  */

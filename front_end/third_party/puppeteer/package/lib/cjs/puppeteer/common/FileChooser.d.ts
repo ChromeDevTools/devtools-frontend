@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Protocol } from 'devtools-protocol';
-import { ElementHandle } from '../api/ElementHandle.js';
+import { type Protocol } from 'devtools-protocol';
+import { type ElementHandle } from '../api/ElementHandle.js';
 /**
  * File choosers let you react to the page requesting for a file.
  *

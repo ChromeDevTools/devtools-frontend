@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Protocol from 'devtools-protocol';
-import { EvaluateFuncWith, HandleFor, HandleOr } from '../common/types.js';
-import { ElementHandle } from './ElementHandle.js';
+import type Protocol from 'devtools-protocol';
+import { type EvaluateFuncWith, type HandleFor, type HandleOr } from '../common/types.js';
+import { disposeSymbol, asyncDisposeSymbol } from '../util/disposable.js';
+import { type ElementHandle } from './ElementHandle.js';
+import { type Realm } from './Realm.js';
 /**
  * Represents a reference to a JavaScript object. Instances can be created using
  * {@link Page.evaluateHandle}.
@@ -38,6 +40,7 @@ import { ElementHandle } from './ElementHandle.js';
  * @public
  */
 export declare abstract class JSHandle<T = unknown> {
+    move: () => this;
     /**
      * Used for nominally typing {@link JSHandle}.
      */
@@ -49,21 +52,25 @@ export declare abstract class JSHandle<T = unknown> {
     /**
      * @internal
      */
+    abstract get realm(): Realm;
+    /**
+     * @internal
+     */
     get disposed(): boolean;
     /**
      * Evaluates the given function with the current handle as its first argument.
      */
-    abstract evaluate<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
+    evaluate<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
      * Evaluates the given function with the current handle as its first argument.
      *
      */
-    abstract evaluateHandle<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
+    evaluateHandle<Params extends unknown[], Func extends EvaluateFuncWith<T, Params> = EvaluateFuncWith<T, Params>>(pageFunction: Func | string, ...args: Params): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
     /**
      * Fetches a single property from the referenced object.
      */
-    abstract getProperty<K extends keyof T>(propertyName: HandleOr<K>): Promise<HandleFor<T[K]>>;
-    abstract getProperty(propertyName: string): Promise<JSHandle<unknown>>;
+    getProperty<K extends keyof T>(propertyName: HandleOr<K>): Promise<HandleFor<T[K]>>;
+    getProperty(propertyName: string): Promise<JSHandle<unknown>>;
     /**
      * Gets a map of handles representing the properties of the current handle.
      *
@@ -82,7 +89,7 @@ export declare abstract class JSHandle<T = unknown> {
      * children; // holds elementHandles to all children of document.body
      * ```
      */
-    abstract getProperties(): Promise<Map<string, JSHandle<unknown>>>;
+    getProperties(): Promise<Map<string, JSHandle>>;
     /**
      * A vanilla object representing the serializable portions of the
      * referenced object.
@@ -118,5 +125,9 @@ export declare abstract class JSHandle<T = unknown> {
      * backing this handle.
      */
     abstract remoteObject(): Protocol.Runtime.RemoteObject;
+    /** @internal */
+    [disposeSymbol](): void;
+    /** @internal */
+    [asyncDisposeSymbol](): Promise<void>;
 }
 //# sourceMappingURL=JSHandle.d.ts.map

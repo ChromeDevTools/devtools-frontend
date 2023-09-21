@@ -34,9 +34,6 @@ const ScriptInjector_js_1 = require("./ScriptInjector.js");
  */
 class CustomQueryHandlerRegistry {
     #handlers = new Map();
-    /**
-     * @internal
-     */
     get(name) {
         const handler = this.#handlers.get(name);
         return handler ? handler[1] : undefined;
@@ -59,8 +56,6 @@ class CustomQueryHandlerRegistry {
      * @param name - Name to register under.
      * @param queryHandler - {@link CustomQueryHandler | Custom query handler} to
      * register.
-     *
-     * @internal
      */
     register(name, handler) {
         (0, assert_js_1.assert)(!this.#handlers.has(name), `Cannot register over existing handler: ${name}`);
@@ -100,8 +95,6 @@ class CustomQueryHandlerRegistry {
      * given name.
      *
      * @throws `Error` if there is no handler under the given name.
-     *
-     * @internal
      */
     unregister(name) {
         const handler = this.#handlers.get(name);
@@ -113,16 +106,12 @@ class CustomQueryHandlerRegistry {
     }
     /**
      * Gets the names of all {@link CustomQueryHandler | custom query handlers}.
-     *
-     * @internal
      */
     names() {
         return [...this.#handlers.keys()];
     }
     /**
      * Unregisters all custom query handlers.
-     *
-     * @internal
      */
     clear() {
         for (const [registerScript] of this.#handlers) {

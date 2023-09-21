@@ -15,6 +15,8 @@
  */
 export { Protocol } from 'devtools-protocol';
 export * from './api/api.js';
+export * from './bidi/bidi.js';
+export * from './cdp/cdp.js';
 export * from './common/common.js';
 export * from './node/node.js';
 export * from './revisions.js';
@@ -32,7 +34,7 @@ export declare const
 /**
  * @public
  */
-connect: (options: import("./common/Puppeteer.js").ConnectOptions) => Promise<import("./api/Browser.js").Browser>, 
+connect: (options: import("./cdp/Puppeteer.js").ConnectOptions) => Promise<import("./api/Browser.js").Browser>, 
 /**
  * @public
  */

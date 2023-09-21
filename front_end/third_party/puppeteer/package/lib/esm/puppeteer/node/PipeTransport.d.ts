@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ConnectionTransport } from '../common/ConnectionTransport.js';
+import { type ConnectionTransport } from '../common/ConnectionTransport.js';
 /**
  * @internal
  */

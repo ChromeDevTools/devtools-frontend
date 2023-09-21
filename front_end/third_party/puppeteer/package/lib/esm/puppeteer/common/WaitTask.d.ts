@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ElementHandle } from '../api/ElementHandle.js';
-import { Realm } from '../api/Frame.js';
-import { HandleFor } from './types.js';
+import { type ElementHandle } from '../api/ElementHandle.js';
+import { type Realm } from '../api/Realm.js';
+import { type HandleFor } from './types.js';
 /**
  * @internal
  */

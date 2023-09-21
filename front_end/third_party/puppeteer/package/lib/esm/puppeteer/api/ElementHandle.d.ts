@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 /// <reference types="node" />
-import { Protocol } from 'devtools-protocol';
-import { Frame } from '../api/Frame.js';
-import { WaitForSelectorOptions } from '../common/IsolatedWorld.js';
-import { ElementFor, EvaluateFuncWith, HandleFor, HandleOr, NodeFor } from '../common/types.js';
-import { KeyInput } from '../common/USKeyboardLayout.js';
-import { KeyboardTypeOptions, KeyPressOptions, MouseClickOptions } from './Input.js';
+import { type Protocol } from 'devtools-protocol';
+import { type Frame } from '../api/Frame.js';
+import { type ElementFor, type EvaluateFuncWith, type HandleFor, type HandleOr, type NodeFor } from '../common/types.js';
+import { type KeyInput } from '../common/USKeyboardLayout.js';
+import { type KeyboardTypeOptions, type KeyPressOptions, type MouseClickOptions } from './Input.js';
 import { JSHandle } from './JSHandle.js';
-import { ScreenshotOptions } from './Page.js';
+import { type ScreenshotOptions, type WaitForSelectorOptions } from './Page.js';
 /**
  * @public
  */
@@ -115,9 +114,18 @@ export interface Point {
 export declare abstract class ElementHandle<ElementType extends Node = Element> extends JSHandle<ElementType> {
     #private;
     /**
+     * A given method will have it's `this` replaced with an isolated version of
+     * `this` when decorated with this decorator.
+     *
+     * All changes of isolated `this` are reflected on the actual `this`.
+     *
      * @internal
      */
-    protected handle: JSHandle<ElementType>;
+    static bindIsolatedHandle<This extends ElementHandle<Node>>(target: (this: This, ...args: any[]) => Promise<any>, _: unknown): typeof target;
+    /**
+     * @internal
+     */
+    protected readonly handle: JSHandle<ElementType>;
     /**
      * @internal
      */
@@ -134,10 +142,6 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * @internal
      */
     getProperty<K extends keyof ElementType>(propertyName: HandleOr<K>): Promise<HandleFor<ElementType[K]>>;
-    /**
-     * @internal
-     */
-    getProperty(propertyName: string): Promise<JSHandle<unknown>>;
     /**
      * @internal
      */
@@ -166,6 +170,9 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * @internal
      */
     dispose(): Promise<void>;
+    /**
+     * @internal
+     */
     asElement(): ElementHandle<ElementType>;
     /**
      * Frame corresponding to the current handle.
@@ -418,23 +425,30 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      */
     click(this: ElementHandle<Element>, options?: Readonly<ClickOptions>): Promise<void>;
     /**
-     * This method creates and captures a dragevent from the element.
+     * Drags an element over the given element or point.
+     *
+     * @returns DEPRECATED. When drag interception is enabled, the drag payload is
+     * returned.
      */
-    drag(this: ElementHandle<Element>, target: Point): Promise<Protocol.Input.DragData>;
+    drag(this: ElementHandle<Element>, target: Point | ElementHandle<Element>): Promise<Protocol.Input.DragData | void>;
     /**
-     * This method creates a `dragenter` event on the element.
+     * @deprecated Do not use. `dragenter` will automatically be performed during dragging.
      */
     dragEnter(this: ElementHandle<Element>, data?: Protocol.Input.DragData): Promise<void>;
     /**
-     * This method creates a `dragover` event on the element.
+     * @deprecated Do not use. `dragover` will automatically be performed during dragging.
      */
     dragOver(this: ElementHandle<Element>, data?: Protocol.Input.DragData): Promise<void>;
     /**
-     * This method triggers a drop on the element.
+     * Drops the given element onto the current one.
+     */
+    drop(this: ElementHandle<Element>, element: ElementHandle<Element>): Promise<void>;
+    /**
+     * @deprecated No longer supported.
      */
     drop(this: ElementHandle<Element>, data?: Protocol.Input.DragData): Promise<void>;
     /**
-     * This method triggers a dragenter, dragover, and drop on the element.
+     * @deprecated Use `ElementHandle.drop` instead.
      */
     dragAndDrop(this: ElementHandle<Element>, target: ElementHandle<Node>, options?: {
         delay: number;
@@ -566,10 +580,6 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * or by calling element.scrollIntoView.
      */
     scrollIntoView(this: ElementHandle<Element>): Promise<void>;
-    /**
-     * @internal
-     */
-    abstract assertElementHasWorld(): asserts this;
     /**
      * If the element is a form input, you can use {@link ElementHandle.autofill}
      * to test if the form is compatible with the browser's autofill

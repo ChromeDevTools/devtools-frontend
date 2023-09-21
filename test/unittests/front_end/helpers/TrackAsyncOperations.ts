@@ -29,7 +29,7 @@ export function startTrackingAsyncActivity() {
 export async function checkForPendingActivity() {
   let stillPending: AsyncActivity[] = [];
   const wait = 5;
-  let retries = 10;
+  let retries = 20;
   // We will perform multiple iteration of waiting and forced completions to see
   // if all promises are eventually resolved.
   while (retries > 0) {

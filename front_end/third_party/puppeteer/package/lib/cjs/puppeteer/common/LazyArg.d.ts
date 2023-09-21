@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { JSHandle } from '../api/JSHandle.js';
-import PuppeteerUtil from '../injected/injected.js';
+import { type JSHandle } from '../api/JSHandle.js';
+import type PuppeteerUtil from '../injected/injected.js';
 /**
  * @internal
  */

@@ -981,6 +981,38 @@ const InspectorFrontendHostImpl = class {
     DevToolsAPI.setAddExtensionCallback(callback);
   }
 
+  /**
+   * @override
+   * @param {InspectorFrontendHostAPI.ImpressionEvent} impressionEvent
+   */
+  recordImpression(impressionEvent) {
+    DevToolsHost.sendMessageToEmbedder('recordImpression', [impressionEvent], null);
+  }
+
+  /**
+   * @override
+   * @param {InspectorFrontendHostAPI.ClickEvent} clickEvent
+   */
+  recordClick(clickEvent) {
+    DevToolsHost.sendMessageToEmbedder('recordClick', [clickEvent], null);
+  }
+
+  /**
+   * @override
+   * @param {InspectorFrontendHostAPI.ChangeEvent} changeEvent
+   */
+  recordChange(changeEvent) {
+    DevToolsHost.sendMessageToEmbedder('recordChange', [changeEvent], null);
+  }
+
+  /**
+   * @override
+   * @param {InspectorFrontendHostAPI.KeyDownEvent} keyDownEvent
+   */
+  recordKeyDown(keyDownEvent) {
+    DevToolsHost.sendMessageToEmbedder('recordKeyDown', [keyDownEvent], null);
+  }
+
   // Backward-compatible methods below this line --------------------------------------------
 
   /**

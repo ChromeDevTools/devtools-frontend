@@ -38,6 +38,8 @@ import * as Root from '../root/root.js';
 
 import {
   type CanShowSurveyResult,
+  type ChangeEvent,
+  type ClickEvent,
   type ContextMenuDescriptor,
   type DoAidaConversationResult,
   type EnumeratedHistogram,
@@ -45,7 +47,9 @@ import {
   Events,
   type EventTypes,
   type ExtensionDescriptor,
+  type ImpressionEvent,
   type InspectorFrontendHostAPI,
+  type KeyDownEvent,
   type LoadNetworkResourceResult,
   type ShowSurveyResult,
   type SyncInformation,
@@ -455,6 +459,15 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
     callback({
       response: '{}',
     });
+  }
+
+  recordImpression(event: ImpressionEvent): void {
+  }
+  recordClick(event: ClickEvent): void {
+  }
+  recordChange(event: ChangeEvent): void {
+  }
+  recordKeyDown(event: KeyDownEvent): void {
   }
 }
 

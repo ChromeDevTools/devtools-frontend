@@ -11,6 +11,7 @@ devtools_image_files = [
   "chromeMiddle.avif",
   "chromeRight.avif",
   "cssoverview_icons_2x.avif",
+  "favicon.ico",
   "navigationControls_2x.png",
   "navigationControls.png",
   "nodeIcon.avif",

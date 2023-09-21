@@ -1162,6 +1162,32 @@ export namespace Audits {
     failedRequestInfo?: FailedRequestInfo;
   }
 
+  export const enum PropertyRuleIssueReason {
+    InvalidSyntax = 'InvalidSyntax',
+    InvalidInitialValue = 'InvalidInitialValue',
+    InvalidInherits = 'InvalidInherits',
+    InvalidName = 'InvalidName',
+  }
+
+  /**
+   * This issue warns about errors in property rules that lead to property
+   * registrations being ignored.
+   */
+  export interface PropertyRuleIssueDetails {
+    /**
+     * Source code position of the property rule.
+     */
+    sourceCodeLocation: SourceCodeLocation;
+    /**
+     * Reason why the property rule was discarded.
+     */
+    propertyRuleIssueReason: PropertyRuleIssueReason;
+    /**
+     * The value of the property rule property that failed to parse
+     */
+    propertyValue?: string;
+  }
+
   /**
    * A unique identifier for the type of issue. Each type may use one of the
    * optional fields in InspectorIssueDetails to convey more specific
@@ -1186,6 +1212,7 @@ export namespace Audits {
     BounceTrackingIssue = 'BounceTrackingIssue',
     StylesheetLoadingIssue = 'StylesheetLoadingIssue',
     FederatedAuthUserInfoRequestIssue = 'FederatedAuthUserInfoRequestIssue',
+    PropertyRuleIssue = 'PropertyRuleIssue',
   }
 
   /**
@@ -1211,6 +1238,7 @@ export namespace Audits {
     federatedAuthRequestIssueDetails?: FederatedAuthRequestIssueDetails;
     bounceTrackingIssueDetails?: BounceTrackingIssueDetails;
     stylesheetLoadingIssueDetails?: StylesheetLoadingIssueDetails;
+    propertyRuleIssueDetails?: PropertyRuleIssueDetails;
     federatedAuthUserInfoRequestIssueDetails?: FederatedAuthUserInfoRequestIssueDetails;
   }
 

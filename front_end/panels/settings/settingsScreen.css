@@ -85,6 +85,10 @@ label {
   padding-bottom: 8px;
 }
 
+.experiments-filter label {
+  padding-bottom: 0;
+}
+
 .settings-tab p {
   margin: 12px 0;
 }

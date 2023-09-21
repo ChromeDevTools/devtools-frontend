@@ -229,6 +229,7 @@ devtools_svg_sources = [
   "warning_icon.svg",
   "watch.svg",
   "width.svg",
+  "zoom-in.svg",
 ]
 
 devtools_src_svg_files = []

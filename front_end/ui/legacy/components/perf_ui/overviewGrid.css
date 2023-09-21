@@ -71,7 +71,7 @@
   border-left-style: solid;
 }
 
-.create-breadcrumb-button {
+.create-breadcrumb-button-container {
   display: flex;
   position: absolute;
   top: 20px;
@@ -79,6 +79,17 @@
   z-index: 600;
   left: 0;
   right: 0;
+}
+
+.create-breadcrumb-button {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  background: var(--color-background);
+  box-shadow: var(--drop-shadow-depth-3);
+  border-radius: 50px;
+  padding: 5px 10px;
+  gap: 2px;
 }
 
 @media (forced-colors: active) {

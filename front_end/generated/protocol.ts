@@ -8316,6 +8316,7 @@ export namespace Network {
     SameSiteUnspecifiedTreatedAsLax = 'SameSiteUnspecifiedTreatedAsLax',
     SameSiteNoneInsecure = 'SameSiteNoneInsecure',
     UserPreferences = 'UserPreferences',
+    ThirdPartyPhaseout = 'ThirdPartyPhaseout',
     ThirdPartyBlockedInFirstPartySet = 'ThirdPartyBlockedInFirstPartySet',
     SyntaxError = 'SyntaxError',
     SchemeNotSupported = 'SchemeNotSupported',
@@ -8344,6 +8345,7 @@ export namespace Network {
     SameSiteUnspecifiedTreatedAsLax = 'SameSiteUnspecifiedTreatedAsLax',
     SameSiteNoneInsecure = 'SameSiteNoneInsecure',
     UserPreferences = 'UserPreferences',
+    ThirdPartyPhaseout = 'ThirdPartyPhaseout',
     ThirdPartyBlockedInFirstPartySet = 'ThirdPartyBlockedInFirstPartySet',
     UnknownError = 'UnknownError',
     SchemefulSameSiteStrict = 'SchemefulSameSiteStrict',
@@ -17671,6 +17673,7 @@ export namespace Runtime {
     Arraybuffer = 'arraybuffer',
     Node = 'node',
     Window = 'window',
+    Generator = 'generator',
   }
 
   /**

@@ -12397,6 +12397,7 @@
                         "SameSiteUnspecifiedTreatedAsLax",
                         "SameSiteNoneInsecure",
                         "UserPreferences",
+                        "ThirdPartyPhaseout",
                         "ThirdPartyBlockedInFirstPartySet",
                         "SyntaxError",
                         "SchemeNotSupported",
@@ -12427,6 +12428,7 @@
                         "SameSiteUnspecifiedTreatedAsLax",
                         "SameSiteNoneInsecure",
                         "UserPreferences",
+                        "ThirdPartyPhaseout",
                         "ThirdPartyBlockedInFirstPartySet",
                         "UnknownError",
                         "SchemefulSameSiteStrict",
@@ -26575,7 +26577,8 @@
                                 "typedarray",
                                 "arraybuffer",
                                 "node",
-                                "window"
+                                "window",
+                                "generator"
                             ]
                         },
                         {

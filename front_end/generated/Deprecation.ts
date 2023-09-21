@@ -49,7 +49,11 @@ export const UIStrings = {
   /**
    * @description Warning displayed to developers to let them know the CSS appearance property values they used are deprecated and will be removed.
    */
-  CSSValueAppearanceNonStandard: "CSS appearance values  `inner-spin-button`, `media-slider`, `media-sliderthumb`, `media-volume-slider`, `media-volume-sliderthumb`, `push-button`, `searchfield-cancel-button`, `slider-horizontal`, `sliderthumb-horizontal`, `sliderthumb-vertical`, `square-button` are not standardized and will no longer be supported.",
+  CSSValueAppearanceNonStandard: "CSS appearance values  `inner-spin-button`, `media-slider`, `media-sliderthumb`, `media-volume-slider`, `media-volume-sliderthumb`, `push-button`, `searchfield-cancel-button`, `slider-horizontal`, `sliderthumb-horizontal`, `sliderthumb-vertical`, `square-button` are not standardized and will be removed.",
+  /**
+   * @description Warning displayed to developers to let them know the CSS appearance property value they used is not standard and will be removed.
+   */
+  CSSValueAppearanceSliderVertical: "CSS appearance value `slider-vertical` is not standardized and will be removed.",
   /**
    * @description Warning displayed to developers when a data: URL is assigned to SVGUseElement to let them know that the support is deprecated.
    */
@@ -262,6 +266,9 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   },
   "CSSValueAppearanceNonStandard": {
     "chromeStatusFeature": 5066630972833792
+  },
+  "CSSValueAppearanceSliderVertical": {
+    "chromeStatusFeature": 6001359429566464
   },
   "CanRequestURLHTTPContainingNewline": {
     "chromeStatusFeature": 5735596811091968

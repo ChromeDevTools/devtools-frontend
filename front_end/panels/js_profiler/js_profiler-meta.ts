@@ -88,25 +88,11 @@ UI.ViewManager.registerViewExtension({
   title: i18nLazyString(UIStrings.profiler),
   commandPrompt: i18nLazyString(UIStrings.showProfiler),
   order: 65,
-  persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
+  persistence: UI.ViewManager.ViewPersistence.PERMANENT,
   experiment: Root.Runtime.ExperimentName.JS_PROFILER_TEMP_ENABLE,
   async loadView() {
     const Profiler = await loadProfilerModule();
     return Profiler.ProfilesPanel.JSProfilerPanel.instance();
-  },
-});
-
-UI.ViewManager.registerViewExtension({
-  location: UI.ViewManager.ViewLocationValues.PANEL,
-  id: 'timeline',
-  title: i18nLazyString(UIStrings.performance),
-  commandPrompt: i18nLazyString(UIStrings.showPerformance),
-  order: 66,
-  hasToolbar: false,
-  isPreviewFeature: true,
-  async loadView() {
-    const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.TimelinePanel.instance({forceNew: null, isNode: true});
   },
 });
 

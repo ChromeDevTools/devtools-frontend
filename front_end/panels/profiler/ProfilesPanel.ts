@@ -704,6 +704,9 @@ export class JSProfilerPanel extends ProfilesPanel implements UI.ActionRegistrat
     const registry = instance;
     super('js_profiler', [registry.cpuProfileType], 'profiler.js-toggle-recording');
     this.splitWidget().mainWidget()?.setMinimumSize(350, 0);
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.REACT_NATIVE_SPECIFIC_UI)) {
+      return;
+    }
     if (Root.Runtime.experiments.isEnabled('jsProfilerTemporarilyEnable')) {
       this.#showDeprecationInfobar();
     } else {

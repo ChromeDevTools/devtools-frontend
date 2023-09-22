@@ -180,9 +180,9 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     return this.frameModelInternal;
   }
 
-  setWindow(window: Window, animate?: boolean): void {
+  setWindow(window: Window, animate?: boolean, breadcrumb?: TraceEngine.Types.Timing.TraceWindow): void {
     this.windowInternal = window;
-    this.dispatchEventToListeners(Events.WindowChanged, {window, animate});
+    this.dispatchEventToListeners(Events.WindowChanged, {window, animate, breadcrumbWindow: breadcrumb});
   }
 
   window(): Window {
@@ -270,6 +270,7 @@ export enum Events {
 export interface WindowChangedEvent {
   window: Window;
   animate: boolean|undefined;
+  breadcrumbWindow?: TraceEngine.Types.Timing.TraceWindow;
 }
 
 export type EventTypes = {

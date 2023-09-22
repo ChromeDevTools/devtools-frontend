@@ -199,8 +199,9 @@ export class Section {
   }
 
   appendCheckboxItem(
-      label: string, handler: () => void, checked?: boolean, disabled?: boolean, additionalElement?: Element): Item {
-    const item = new Item(this.contextMenu, 'checkbox', label, disabled, checked);
+      label: string, handler: () => void, checked?: boolean, disabled?: boolean, additionalElement?: Element,
+      tooltip?: Platform.UIString.LocalizedString): Item {
+    const item = new Item(this.contextMenu, 'checkbox', label, disabled, checked, tooltip);
     this.items.push(item);
     if (this.contextMenu) {
       this.contextMenu.setHandler(item.id(), handler);
@@ -375,6 +376,7 @@ export class ContextMenu extends SubMenu {
   private softMenu?: SoftContextMenu;
   private contextMenuLabel?: string;
   private hostedMenuOpened: boolean;
+  private eventTarget: EventTarget|null;
 
   constructor(event: Event, options: ContextMenuOptions = {}) {
     super(null);
@@ -385,6 +387,7 @@ export class ContextMenu extends SubMenu {
     this.pendingPromises = [];
     this.pendingTargets = [];
     this.event = mouseEvent;
+    this.eventTarget = this.event.target;
     this.useSoftMenu = Boolean(options.useSoftMenu);
     this.keepOpen = Boolean(options.keepOpen);
     this.x = options.x === undefined ? mouseEvent.x : options.x;
@@ -467,11 +470,11 @@ export class ContextMenu extends SubMenu {
 
   private innerShow(): void {
     const menuObject = this.buildMenuDescriptors();
-    const eventTarget = this.event.target;
-    if (!eventTarget) {
+
+    if (!this.eventTarget) {
       return;
     }
-    const ownerDocument = (eventTarget as HTMLElement).ownerDocument;
+    const ownerDocument = (this.eventTarget as HTMLElement).ownerDocument;
     if (this.useSoftMenu || ContextMenu.useSoftMenu ||
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
       this.softMenu = new SoftContextMenu(

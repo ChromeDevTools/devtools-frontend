@@ -113,6 +113,33 @@
   margin: auto 0;
 }
 
+.toolbar-has-dropdown-shrinkable {
+  flex-shrink: 1;
+}
+
+.toolbar-text {
+  margin: 0 4px 0 0;
+  text-overflow: ellipsis;
+  flex: auto;
+  overflow: hidden;
+  text-align: right;
+}
+
+.dropdown-filterbar {
+  justify-content: space-between;
+  padding: 0 3px 0 5px;
+  border: 1px solid transparent;
+  margin: 0 7px;
+  border-radius: 7px;
+  display: flex;
+  background-color: transparent;
+  color: var(--sys-color-on-surface-subtle);
+}
+
+.dropdown-filterbar:hover {
+  color: var(--sys-color-on-surface);
+}
+
 .filter-input-field {
   padding-left: 3px;
   width: 163px;

@@ -4,7 +4,12 @@
 
 import {assert} from 'chai';
 
-import {$textContent, goTo, reloadDevTools, typeText, waitFor, waitForFunction} from '../../shared/helper.js';
+import {
+  $textContent,
+  goTo,
+  waitFor,
+  waitForFunction,
+} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   clearTimeWindow,
@@ -22,15 +27,6 @@ import {
 
 const SIMPLE_PAGE_REQUEST_NUMBER = 10;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
-
-async function getCategoryXHRFilter() {
-  const filters = await waitFor('.filter-bitset-filter');
-  const categoryXHRFilter = await $textContent('Fetch/XHR', filters);
-  if (!categoryXHRFilter) {
-    assert.fail('Could not find category XHR filter to click.');
-  }
-  return categoryXHRFilter;
-}
 
 async function getThirdPartyFilter() {
   const filters = await waitFor('.filter-bar');
@@ -107,24 +103,6 @@ describe('The Network Tab', async function() {
     secondPageRequestNames.sort();
 
     assert.deepStrictEqual(secondPageRequestNames, firstPageRequestNames, 'The requests were persisted');
-  });
-
-  it('persists filters across a reload', async () => {
-    await navigateToNetworkTab(SIMPLE_PAGE_URL);
-    let filterInput = await waitFor('.filter-input-field.text-prompt');
-    filterInput.focus();
-    await typeText('foo');
-    let categoryXHRFilter = await getCategoryXHRFilter();
-    await categoryXHRFilter.click();
-
-    await reloadDevTools({selectedPanel: {name: 'network'}});
-    filterInput = await waitFor('.filter-input-field.text-prompt');
-    const filterText = await filterInput.evaluate(x => (x as HTMLElement).innerText);
-    assert.strictEqual(filterText, 'foo');
-
-    categoryXHRFilter = await getCategoryXHRFilter();
-    const xhrHasSelectedClass = await categoryXHRFilter.evaluate(x => x.classList.contains('selected'));
-    assert.isTrue(xhrHasSelectedClass);
   });
 
   it('can show only third-party requests', async () => {

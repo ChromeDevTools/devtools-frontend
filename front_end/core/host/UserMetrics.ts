@@ -929,9 +929,10 @@ export enum DevtoolsExperiments {
   'useSourceMapScopes' = 76,
   'storageBucketsTree' = 77,
   'deleteOverridesTemporarilyEnable' = 78,
+  'networkPanelFilterBarRedesign' = 79,
 
   // Increment this when new experiments are added.
-  'MaxValue' = 79,
+  'MaxValue' = 80,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

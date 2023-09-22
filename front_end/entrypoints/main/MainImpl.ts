@@ -419,6 +419,11 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.STORAGE_BUCKETS_TREE, 'Enable Storage Buckets Tree in Application panel', true);
 
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN,
+        'Redesign of the filter bar in the Network Panel',
+    );
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'sourceOrderViewer',
       'cssTypeComponentLength',

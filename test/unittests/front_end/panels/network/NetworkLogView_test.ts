@@ -3,19 +3,18 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../front_end/core/common/common.js';
-import * as Protocol from '../../../../../front_end/generated/protocol.js';
-import * as Network from '../../../../../front_end/panels/network/network.js';
-
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
-import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
-import * as Logs from '../../../../../front_end/models/logs/logs.js';
-import * as HAR from '../../../../../front_end/models/har/har.js';
-import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import {assertElement} from '../../helpers/DOMHelpers.js';
-
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as HAR from '../../../../../front_end/models/har/har.js';
+import * as Logs from '../../../../../front_end/models/logs/logs.js';
+import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
+import * as Network from '../../../../../front_end/panels/network/network.js';
+import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
+import {assertElement, dispatchClickEvent, dispatchMouseUpEvent, raf} from '../../helpers/DOMHelpers.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../helpers/MockConnection.js';
 
@@ -294,6 +293,77 @@ describeWithMockConnection('NetworkLogView', () => {
           ['url2' as Platform.DevToolsPath.UrlString]);
       networkLogView.detach();
     });
+
+    function getOptionFromDropdown(option: string, dropdownArray: Element[]) {
+      return dropdownArray.find(el => {
+        return el.textContent?.includes(option);
+      }) ||
+          null;
+    }
+
+    it('can automatically check the `All` option in the `Request Type` when the only type checked becomes unchecked',
+       async () => {
+         Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
+
+         const filterItems =
+             Object.values(Common.ResourceType.resourceCategories).map(category => ({
+                                                                         name: category.title(),
+                                                                         label: (): string => category.shortTitle(),
+                                                                         title: category.title(),
+                                                                       }));
+
+         const setting = Common.Settings.Settings.instance().createSetting('networkResourceTypeFilters', {});
+         const emptyFunction = () => {};
+
+         const updatedSetting = ({} as {[key: string]: boolean});
+         updatedSetting['all'] = true;
+         setting.set(updatedSetting);
+
+         const dropdown = new Network.NetworkLogView.DropDownTypesUI(filterItems, emptyFunction, setting);
+         const button = dropdown.element().querySelector('.toolbar-button');
+
+         assertElement(button, HTMLElement);
+         dispatchClickEvent(button, {bubbles: true, composed: true});
+         await raf();
+
+         const dropDownVbox =
+             document.querySelector('.vbox')?.shadowRoot?.querySelectorAll('.soft-context-menu-item') || [];
+         const dropdownOptions = Array.from(dropDownVbox);
+
+         const optionImg = getOptionFromDropdown('Images', dropdownOptions);
+         const optionImgCheckmark = optionImg?.querySelector('.checkmark') || null;
+         const optionAll = getOptionFromDropdown('All', dropdownOptions);
+         const optionAllCheckmark = optionAll?.querySelector('.checkmark') || null;
+
+         assertElement(optionImg, HTMLElement);
+         assertElement(optionImgCheckmark, HTMLElement);
+         assertElement(optionAll, HTMLElement);
+         assertElement(optionAllCheckmark, HTMLElement);
+
+         assert.isTrue(optionAll.ariaLabel === 'All, checked');
+         assert.isTrue(optionImg.ariaLabel === 'Images, unchecked');
+         assert.isTrue(window.getComputedStyle(optionAllCheckmark).getPropertyValue('opacity') === '1');
+         assert.isTrue(window.getComputedStyle(optionImgCheckmark).getPropertyValue('opacity') === '0');
+
+         dispatchMouseUpEvent(optionImg, {bubbles: true, composed: true});
+         await raf();
+
+         assert.isTrue(optionAll.ariaLabel === 'All, unchecked');
+         assert.isTrue(optionImg.ariaLabel === 'Images, checked');
+         assert.isTrue(window.getComputedStyle(optionAllCheckmark).getPropertyValue('opacity') === '0');
+         assert.isTrue(window.getComputedStyle(optionImgCheckmark).getPropertyValue('opacity') === '1');
+
+         dispatchMouseUpEvent(optionImg, {bubbles: true, composed: true});
+         await raf();
+
+         assert.isTrue(optionAll.ariaLabel === 'All, checked');
+         assert.isTrue(optionImg.ariaLabel === 'Images, unchecked');
+         assert.isTrue(window.getComputedStyle(optionAllCheckmark).getPropertyValue('opacity') === '1');
+         assert.isTrue(window.getComputedStyle(optionImgCheckmark).getPropertyValue('opacity') === '0');
+
+         dropdown.discard();
+         await raf();
+       });
 
     it('can filter requests with blocked response cookies', async () => {
       const request1 = createNetworkRequest('url1', {target});

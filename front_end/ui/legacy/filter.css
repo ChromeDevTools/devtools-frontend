@@ -117,6 +117,14 @@
   flex-shrink: 1;
 }
 
+.toolbar-button {
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 28px;
+  background: transparent;
+  border-radius: 0;
+}
+
 .toolbar-text {
   margin: 0 4px 0 0;
   text-overflow: ellipsis;

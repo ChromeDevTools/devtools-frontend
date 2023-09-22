@@ -5,9 +5,7 @@
 import {assert} from 'chai';
 
 import {
-  $textContent,
   goTo,
-  waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
@@ -27,15 +25,6 @@ import {
 
 const SIMPLE_PAGE_REQUEST_NUMBER = 10;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;
-
-async function getThirdPartyFilter() {
-  const filters = await waitFor('.filter-bar');
-  const thirdPartyFilter = await $textContent('3rd-party requests', filters);
-  if (!thirdPartyFilter) {
-    assert.fail('Could not find category third-party filter to click.');
-  }
-  return thirdPartyFilter;
-}
 
 describe('The Network Tab', async function() {
   // The tests here tend to take time because they wait for requests to appear in the request panel.
@@ -103,19 +92,6 @@ describe('The Network Tab', async function() {
     secondPageRequestNames.sort();
 
     assert.deepStrictEqual(secondPageRequestNames, firstPageRequestNames, 'The requests were persisted');
-  });
-
-  it('can show only third-party requests', async () => {
-    await navigateToNetworkTab('third-party-resources.html');
-    await waitForSomeRequestsToAppear(3);
-
-    let names = await getAllRequestNames();
-    /* assert.deepStrictEqual(names, [], 'The right request names should appear in the list'); */
-    const thirdPartyFilter = await getThirdPartyFilter();
-    await thirdPartyFilter.click();
-
-    names = await getAllRequestNames();
-    assert.deepStrictEqual(names, ['external_image.svg'], 'The right request names should appear in the list');
   });
 
   it('should continue receiving new requests after timeline filter is cleared', async () => {

@@ -68,10 +68,10 @@ export class RNWelcomeImpl extends UI.Widget.VBox {
           ${i18nString(UIStrings.welcomeMessage)}
         </div>
         <div class="rn-welcome-links">
-          <x-link class="devtools-link" href="https://reactnative.dev/docs/next/debugging">
+          <x-link class="devtools-link" href="https://reactnative.dev/docs/debugging">
             ${i18nString(UIStrings.docsLabel)}
           </x-link>
-          <x-link class="devtools-link" href="https://reactnative.dev/blog/tags/debugging">
+          <x-link class="devtools-link" href="https://reactnative.dev/blog">
             ${i18nString(UIStrings.whatsNewLabel)}
           </x-link>
         </div>

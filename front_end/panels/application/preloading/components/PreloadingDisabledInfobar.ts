@@ -32,7 +32,7 @@ const UIStrings = {
   /**
    *@description Header in dialog
    */
-  headerDisabledByPreference: 'User settings or extension',
+  headerDisabledByPreference: 'User settings or extensions',
   /**
    *@description Description in dialog
    *@example {Preload pages settings (linked to chrome://settings/preloading)} PH1

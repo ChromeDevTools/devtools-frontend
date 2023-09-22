@@ -1051,7 +1051,7 @@ describeWithMockConnection('PreloadingWarningsView', async () => {
         },
         'Preloading is disabled', [
           [
-            'User settings or extension',
+            'User settings or extensions',
             'Preloading is disabled because of user settings or an extension. Go to Preload pages settings to update your preference. Go to Extensions settings to disable any extension that blocks preloading.',
           ],
         ]);
@@ -1130,7 +1130,7 @@ describeWithMockConnection('PreloadingWarningsView', async () => {
         },
         'Preloading is disabled', [
           [
-            'User settings or extension',
+            'User settings or extensions',
             'Preloading is disabled because of user settings or an extension. Go to Preload pages settings to update your preference. Go to Extensions settings to disable any extension that blocks preloading.',
           ],
           ['Data Saver', 'Preloading is disabled because of the operating system\'s Data Saver mode.'],

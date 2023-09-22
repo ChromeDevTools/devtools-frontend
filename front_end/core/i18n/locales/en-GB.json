@@ -4383,7 +4383,7 @@
     "message": "Prerendering was disabled, but is force-enabled now"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByPreference": {
-    "message": "User settings or extension"
+    "message": "User settings or extensions"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
     "message": "Preloading is disabled"

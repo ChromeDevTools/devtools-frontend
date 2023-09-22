@@ -12,6 +12,8 @@ import * as LitHtml from '../../ui/lit-html/lit-html.js';
 const UIStrings = {
   /** @description The name of the debugging product */
   debuggerBrandName: 'React Native JS Inspector',
+  /** @description The name of the debugging product */
+  techPreviewLabel: 'Technology Preview',
   /** @description Welcome text */
   welcomeMessage: 'Welcome to debugging in React Native',
   /** @description "Debugging docs" link */
@@ -57,6 +59,9 @@ export class RNWelcomeImpl extends UI.Widget.VBox {
           <img class="rn-welcome-icon" src=${welcomeIconUrl} role="presentation" />
           <div class="rn-welcome-title">
             ${i18nString(UIStrings.debuggerBrandName)}
+          </div>
+          <div class="rn-welcome-title-accessory">
+            ${i18nString(UIStrings.techPreviewLabel)}
           </div>
         </div>
         <div class="rn-welcome-tagline">

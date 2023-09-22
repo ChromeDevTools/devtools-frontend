@@ -34,6 +34,15 @@
   color: var(--color-text-primary);
 }
 
+.rn-welcome-title-accessory {
+  margin-left: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: var(--color-purple-bright);
+  font-size: 12px;
+  color: var(--color-on-primary);
+}
+
 .rn-welcome-tagline {
   margin-bottom: 24px;
   font-size: 1rem;

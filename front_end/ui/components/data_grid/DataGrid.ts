@@ -88,7 +88,7 @@ const enum UserScrollState {
 
 const KEYS_TREATED_AS_CLICKS = new Set([' ', 'Enter']);
 
-const ROW_HEIGHT_PIXELS = 18;
+const ROW_HEIGHT_PIXELS = 20;
 
 export class DataGrid extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-data-grid`;

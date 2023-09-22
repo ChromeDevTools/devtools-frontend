@@ -4,6 +4,7 @@
 
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as DataGrid from '../../../../../front_end/ui/components/data_grid/data_grid.js';
+import * as IconButton from '../../../../../front_end/ui/components/icon_button/icon_button.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
 import {
@@ -220,7 +221,7 @@ describe('DataGrid', () => {
       assert.deepEqual(stripLitHtmlCommentNodes(cell.innerHTML), 'Hello World');
     });
 
-    it('can use the code block render to render text in a <code> tag', async () => {
+    it('can use the code block renderer to render text in a <code> tag', async () => {
       const columns: DataGrid.DataGridUtils.Column[] =
           [{id: 'key', title: 'Key', widthWeighting: 1, visible: true, hideable: false}];
       const rows: DataGrid.DataGridUtils.Row[] = [{
@@ -238,6 +239,31 @@ describe('DataGrid', () => {
       await coordinator.done();
       const cell = getCellByIndexes(component.shadowRoot, {column: 0, row: 1});
       assert.deepEqual(stripLitHtmlCommentNodes(cell.innerHTML), '<code>Hello World</code>');
+    });
+
+    it('can use the icon renderer for rendering icons', async () => {
+      const icon = new IconButton.Icon.Icon();
+      icon.data = {iconName: 'arrow-down', color: 'var(--icon-request)', width: '16px', height: '16px'};
+
+      const columns: DataGrid.DataGridUtils.Column[] =
+          [{id: 'type', title: 'Type', widthWeighting: 1, visible: true, hideable: false}];
+      const rows: DataGrid.DataGridUtils.Row[] = [{
+        cells: [
+          {
+            columnId: 'type',
+            value: icon,
+            title: 'received',
+            renderer: DataGrid.DataGridRenderers.iconRenderer,
+          },
+        ],
+      }];
+      const component = renderDataGrid({columns, rows});
+      assertShadowRoot(component.shadowRoot);
+      await coordinator.done();
+      const cell = getCellByIndexes(component.shadowRoot, {column: 0, row: 1});
+      assert.deepEqual(
+          stripLitHtmlCommentNodes(cell.innerHTML),
+          '<div style="display: flex; justify-content: center;"><devtools-icon></devtools-icon></div>');
     });
 
     it('accepts any custom renderer', async () => {

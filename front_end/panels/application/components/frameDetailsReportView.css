@@ -81,3 +81,11 @@ button.text-link {
 .without-min-width {
   min-width: auto;
 }
+
+@media (forced-colors: active) {
+  .link,
+  .devtools-link {
+    color: linktext;
+    text-decoration-color: linktext;
+  }
+}

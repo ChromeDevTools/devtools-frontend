@@ -15,3 +15,11 @@ devtools-data-grid-controller {
   cursor: pointer;
   outline-offset: 2px;
 }
+
+@media (forced-colors: active) {
+  .link,
+  .devtools-link {
+    color: linktext;
+    text-decoration-color: linktext;
+  }
+}

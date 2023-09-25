@@ -71,3 +71,11 @@
 .tree-outline li .selection {
   margin-left: -5px;
 }
+
+@media (forced-colors: active) {
+  .link,
+  .devtools-link {
+    color: linktext;
+    text-decoration-color: linktext;
+  }
+}

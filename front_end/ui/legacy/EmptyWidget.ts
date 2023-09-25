@@ -28,10 +28,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 
 import emptyWidgetStyles from './emptyWidget.css.legacy.js';
+import {Infobar, Type} from './Infobar.js';
 import {VBox} from './Widget.js';
 import {XLink} from './XLink.js';
 
@@ -62,6 +64,25 @@ export class EmptyWidget extends VBox {
 
   appendLink(link: Platform.DevToolsPath.UrlString): HTMLElement {
     return this.contentElement.appendChild(XLink.create(link, i18nString(UIStrings.learnMore))) as HTMLElement;
+  }
+
+  appendWarning(message: string, learnMoreLink: Platform.DevToolsPath.UrlString): Infobar {
+    function openLink(): void {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(learnMoreLink);
+    }
+
+    const actions = learnMoreLink ? [{
+      text: 'Learn More',
+      highlight: true,
+      delegate: openLink,
+      dismiss: false,
+    }] :
+                                    undefined;
+
+    const warningBar = new Infobar(Type.Warning, message, actions);
+    warningBar.element.classList.add('warning');
+    this.element.prepend(warningBar.element);
+    return warningBar;
   }
 
   set text(text: string) {

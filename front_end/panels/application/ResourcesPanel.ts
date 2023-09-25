@@ -3,12 +3,10 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
-
-import resourcesPanelStyles from './resourcesPanel.css.js';
 
 import {ApplicationPanelSidebar, StorageCategoryView} from './ApplicationPanelSidebar.js';
 import {CookieItemsView} from './CookieItemsView.js';
@@ -16,8 +14,17 @@ import {DatabaseQueryView} from './DatabaseQueryView.js';
 import {DatabaseTableView} from './DatabaseTableView.js';
 import {DOMStorageItemsView} from './DOMStorageItemsView.js';
 import {type DOMStorage} from './DOMStorageModel.js';
-import {StorageItemsView} from './StorageItemsView.js';
 import * as PreloadingHelper from './preloading/helper/helper.js';
+import resourcesPanelStyles from './resourcesPanel.css.js';
+import {StorageItemsView} from './StorageItemsView.js';
+
+const UIStrings = {
+  /**
+   *@description Web SQL deprecation warning message
+   */
+  webSqlDeprecation:
+      'Web SQL access in all contexts is no longer available in Chromium 119. A deprecation trial to keep using Web SQL is available until Chromium 123.',
+};
 
 let resourcesPanelInstance: ResourcesPanel;
 
@@ -147,6 +154,12 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     }
     this.categoryView.setText(categoryName);
     this.categoryView.setLink(categoryLink);
+    const categoryWarning = categoryName === 'Web SQL' ? UIStrings.webSqlDeprecation : null;
+    const learnMoreLink = categoryName === 'Web SQL' ?
+        'https://developer.chrome.com/docs/web-platform/origin-trials/#deprecation-trials' as
+            Platform.DevToolsPath.UrlString :
+        Platform.DevToolsPath.EmptyUrlString;
+    this.categoryView.setWarning(categoryWarning, learnMoreLink);
     this.showView(this.categoryView);
   }
 

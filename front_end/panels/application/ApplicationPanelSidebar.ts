@@ -1819,6 +1819,7 @@ export class CookieTreeElement extends ApplicationPanelTreeElement {
 export class StorageCategoryView extends UI.Widget.VBox {
   private emptyWidget: UI.EmptyWidget.EmptyWidget;
   private linkElement: HTMLElement|null;
+  private warningBar?: UI.Infobar.Infobar;
 
   constructor() {
     super();
@@ -1843,6 +1844,18 @@ export class StorageCategoryView extends UI.Widget.VBox {
     if (link && this.linkElement) {
       this.linkElement.setAttribute('href', link);
       this.linkElement.classList.remove('hidden');
+    }
+  }
+
+  setWarning(message: string|null, learnMoreLink: Platform.DevToolsPath.UrlString): void {
+    if (message && !this.warningBar) {
+      this.warningBar = this.emptyWidget.appendWarning(message, learnMoreLink);
+    }
+    if (!message && this.warningBar) {
+      this.warningBar.element.classList.add('hidden');
+    }
+    if (message && this.warningBar) {
+      this.warningBar.element.classList.remove('hidden');
     }
   }
 }

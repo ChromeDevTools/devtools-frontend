@@ -10,7 +10,7 @@
   flex: auto;
   flex-direction: column;
   position: relative;
-  padding: 1px 6px;
+  padding: 6px;
 }
 
 .infobar:focus {

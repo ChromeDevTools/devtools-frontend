@@ -40,7 +40,6 @@ group("legacy_entrypoints") {
     "models/breakpoints:legacy",
     "models/extensions:legacy",
     "models/formatter:legacy",
-    "models/heap_snapshot_model:legacy",
     "models/persistence:legacy",
     "models/text_utils:legacy",
     "models/timeline_model:legacy",

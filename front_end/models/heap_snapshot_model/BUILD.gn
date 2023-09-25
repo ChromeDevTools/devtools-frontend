@@ -26,14 +26,3 @@ devtools_entrypoint("bundle") {
 
   visibility += devtools_models_visibility
 }
-
-devtools_entrypoint("legacy") {
-  entrypoint = "heap_snapshot_model-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../entrypoints/heap_snapshot_worker/*",
-  ]
-}

@@ -22,8 +22,7 @@ const UIStrings = {
   /**
    *@description Web SQL deprecation warning message
    */
-  webSqlDeprecation:
-      'Web SQL access in all contexts is no longer available in Chromium 119. A deprecation trial to keep using Web SQL is available until Chromium 123.',
+  webSqlDeprecation: 'Web SQL is deprecated. You can join the deprecation trial to keep using it until Chrome 123.',
 };
 
 let resourcesPanelInstance: ResourcesPanel;
@@ -156,8 +155,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.categoryView.setLink(categoryLink);
     const categoryWarning = categoryName === 'Web SQL' ? UIStrings.webSqlDeprecation : null;
     const learnMoreLink = categoryName === 'Web SQL' ?
-        'https://developer.chrome.com/docs/web-platform/origin-trials/#deprecation-trials' as
-            Platform.DevToolsPath.UrlString :
+        'https://developer.chrome.com/blog/deprecating-web-sql/' as Platform.DevToolsPath.UrlString :
         Platform.DevToolsPath.EmptyUrlString;
     this.categoryView.setWarning(categoryWarning, learnMoreLink);
     this.showView(this.categoryView);

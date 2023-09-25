@@ -98,7 +98,7 @@
 
 .filter-checkbox-filter {
   padding-left: 4px;
-  padding-right: 2px;
+  padding-right: 7px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -115,6 +115,13 @@
 
 .toolbar-has-dropdown-shrinkable {
   flex-shrink: 1;
+}
+
+.filter-divider {
+  background-color: var(--sys-color-on-base-divider);
+  width: 1px;
+  margin: 5px 4px;
+  height: 16px;
 }
 
 .toolbar-button {
@@ -148,7 +155,6 @@
   justify-content: space-between;
   padding: 0 3px 0 5px;
   border: 1px solid transparent;
-  margin: 0 7px;
   border-radius: 7px;
   display: flex;
   background-color: transparent;

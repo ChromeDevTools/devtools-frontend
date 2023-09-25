@@ -521,6 +521,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
     UI.Tooltip.Tooltip.install(this.invertFilterUI.element(), i18nString(UIStrings.invertsFilter));
     filterBar.addFilter(this.invertFilterUI);
+    filterBar.addDivider();
 
     const filterItems =
         Object.values(Common.ResourceType.resourceCategories)
@@ -535,6 +536,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       this.resourceCategoryFilterUI.addEventListener(
           UI.FilterBar.FilterUIEvents.FilterChanged, this.filterChanged.bind(this), this);
       filterBar.addFilter(this.resourceCategoryFilterUI);
+      filterBar.addDivider();
+
       this.moreFiltersDropDownUI = new MoreFiltersDropDownUI(this.filterChanged.bind(this));
       filterBar.addFilter(this.moreFiltersDropDownUI);
     } else {
@@ -2528,6 +2531,8 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
   private readonly setting: Common.Settings.Setting<{[key: string]: boolean}>;
   private readonly items: UI.FilterBar.Item[];
   private contextMenu?: UI.ContextMenu.ContextMenu;
+  private selectedTypesCount: HTMLElement;
+  private typesCountAdorner: Adorners.Adorner.Adorner;
 
   constructor(
       items: UI.FilterBar.Item[], filterChangedCallback: () => void,
@@ -2537,7 +2542,16 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
     this.filterChanged = filterChangedCallback;
 
     this.filterElement = document.createElement('div');
-    this.dropDownButton = new UI.Toolbar.ToolbarButton(UIStrings.requestTypesTooltip);
+
+    this.typesCountAdorner = new Adorners.Adorner.Adorner();
+    this.selectedTypesCount = document.createElement('span');
+    this.typesCountAdorner.data = {
+      name: 'countWrapper',
+      content: this.selectedTypesCount,
+    };
+    this.typesCountAdorner.classList.add('active-filters-count');
+
+    this.dropDownButton = new UI.Toolbar.ToolbarButton(UIStrings.requestTypesTooltip, this.typesCountAdorner);
     this.dropDownButton.setText(UIStrings.requestTypes);
     this.filterElement.appendChild(this.dropDownButton.element);
     this.dropDownButton.turnIntoSelect();
@@ -2629,12 +2643,22 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
       this.displayedTypes.add(s);
     }
     this.update();
+    this.updateSelectedTypesCount();
   }
 
   private update(): void {
     if (this.displayedTypes.size === 0 || this.displayedTypes.has(DropDownTypesUI.ALL_TYPES)) {
       this.displayedTypes = new Set();
       this.displayedTypes.add(DropDownTypesUI.ALL_TYPES);
+    }
+  }
+
+  updateSelectedTypesCount(): void {
+    if (!this.displayedTypes.has(DropDownTypesUI.ALL_TYPES)) {
+      this.selectedTypesCount.textContent = this.displayedTypes.size.toString();
+      this.typesCountAdorner.classList.remove('hidden');
+    } else {
+      this.typesCountAdorner.classList.add('hidden');
     }
   }
 

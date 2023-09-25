@@ -101,6 +101,12 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTyp
     return this.filterButtonInternal;
   }
 
+  addDivider(): void {
+    const element = document.createElement('div');
+    element.classList.add('filter-divider');
+    this.element.appendChild(element);
+  }
+
   addFilter(filter: FilterUI): void {
     this.filters.push(filter);
     this.element.appendChild(filter.element());

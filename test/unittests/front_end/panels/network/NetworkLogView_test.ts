@@ -110,8 +110,8 @@ describeWithMockConnection('NetworkLogView', () => {
 
     function createNetworkLogView(filterBar?: UI.FilterBar.FilterBar): Network.NetworkLogView.NetworkLogView {
       if (!filterBar) {
-        filterBar = {addFilter: () => {}, filterButton: () => ({addEventListener: () => {}})} as unknown as
-            UI.FilterBar.FilterBar;
+        filterBar = {addFilter: () => {}, filterButton: () => ({addEventListener: () => {}}), addDivider: () => {}} as
+            unknown as UI.FilterBar.FilterBar;
       }
       return new Network.NetworkLogView.NetworkLogView(
           filterBar, document.createElement('div'),
@@ -357,13 +357,6 @@ describeWithMockConnection('NetworkLogView', () => {
       networkLogView.detach();
     });
 
-    function getOptionFromDropdown(option: string, dropdownArray: Element[]) {
-      return dropdownArray.find(el => {
-        return el.textContent?.includes(option);
-      }) ||
-          null;
-    }
-
     it('can automatically check the `All` option in the `Request Type` when the only type checked becomes unchecked',
        async () => {
          Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
@@ -375,27 +368,17 @@ describeWithMockConnection('NetworkLogView', () => {
                                                                          title: category.title(),
                                                                        }));
 
-         const setting = Common.Settings.Settings.instance().createSetting('networkResourceTypeFilters', {});
-         const emptyFunction = () => {};
-
-         const updatedSetting = ({} as {[key: string]: boolean});
-         updatedSetting['all'] = true;
-         setting.set(updatedSetting);
-
-         const dropdown = new Network.NetworkLogView.DropDownTypesUI(filterItems, emptyFunction, setting);
+         const setting = Common.Settings.Settings.instance().createSetting('networkResourceTypeFilters', {all: true});
+         const dropdown = new Network.NetworkLogView.DropDownTypesUI(filterItems, /* callback*/ () => {}, setting);
          const button = dropdown.element().querySelector('.toolbar-button');
 
          assertElement(button, HTMLElement);
          dispatchClickEvent(button, {bubbles: true, composed: true});
          await raf();
 
-         const dropDownVbox =
-             document.querySelector('.vbox')?.shadowRoot?.querySelectorAll('.soft-context-menu-item') || [];
-         const dropdownOptions = Array.from(dropDownVbox);
-
-         const optionImg = getOptionFromDropdown('Images', dropdownOptions);
+         const optionImg = getRequestTypeDropdownOption('Images');
          const optionImgCheckmark = optionImg?.querySelector('.checkmark') || null;
-         const optionAll = getOptionFromDropdown('All', dropdownOptions);
+         const optionAll = getRequestTypeDropdownOption('All');
          const optionAllCheckmark = optionAll?.querySelector('.checkmark') || null;
 
          assertElement(optionImg, HTMLElement);
@@ -427,6 +410,39 @@ describeWithMockConnection('NetworkLogView', () => {
          dropdown.discard();
          await raf();
        });
+
+    it('shows correct selected request types count', async () => {
+      Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
+
+      const filterItems =
+          Object.values(Common.ResourceType.resourceCategories).map(category => ({
+                                                                      name: category.title(),
+                                                                      label: (): string => category.shortTitle(),
+                                                                      title: category.title(),
+                                                                    }));
+
+      const setting = Common.Settings.Settings.instance().createSetting('networkResourceTypeFilters', {all: true});
+      const dropdown = new Network.NetworkLogView.DropDownTypesUI(filterItems, /* callback*/ () => {}, setting);
+      const button = dropdown.element().querySelector('.toolbar-button');
+      assertElement(button, HTMLElement);
+
+      let countAdorner = button.querySelector('.active-filters-count');
+      assert.isTrue(countAdorner?.classList.contains('hidden'));
+
+      dispatchClickEvent(button, {bubbles: true, composed: true});
+      await raf();
+      const optionImg = getRequestTypeDropdownOption('Images');
+      assertElement(optionImg, HTMLElement);
+      dispatchMouseUpEvent(optionImg, {bubbles: true, composed: true});
+      await raf();
+
+      countAdorner = button.querySelector('.active-filters-count');
+      assert.isFalse(countAdorner?.classList.contains('hidden'));
+      assert.strictEqual(countAdorner?.querySelector('[slot="content"]')?.textContent, '1');
+
+      dropdown.discard();
+      await raf();
+    });
 
     it('can filter requests with blocked response cookies from checkbox', async () => {
       const request1 = createNetworkRequest('url1', {target});
@@ -638,6 +654,12 @@ function getCheckbox(filterBar: UI.FilterBar.FilterBar, title: string) {
       filterBar.element.querySelector(`[title="${title}"] span`)?.shadowRoot?.querySelector('input') || null;
   assertElement(checkbox, HTMLInputElement);
   return checkbox;
+}
+
+function getRequestTypeDropdownOption(requestType: string): Element|null {
+  const dropDownVbox = document.querySelector('.vbox')?.shadowRoot?.querySelectorAll('.soft-context-menu-item') || [];
+  const dropdownOptions = Array.from(dropDownVbox);
+  return dropdownOptions.find(el => el.textContent?.includes(requestType)) || null;
 }
 
 async function openDropdown(filterBar: UI.FilterBar.FilterBar, networkLogView: Network.NetworkLogView.NetworkLogView):

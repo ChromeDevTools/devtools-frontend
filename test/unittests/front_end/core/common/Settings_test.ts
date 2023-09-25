@@ -444,4 +444,13 @@ describe('VersionController', () => {
       assert.propertyVal(breakpoints[0], 'condition', 'x === 42');
     });
   });
+
+  describe('updateVersionFrom35To36', () => {
+    it('update showThirdPartyIssues setting value to true', () => {
+      const versionController = new VersionController();
+      const showThirdPartyIssuesSetting = settings.createLocalSetting('showThirdPartyIssues', false);
+      versionController.updateVersionFrom35To36();
+      assert.isTrue(showThirdPartyIssuesSetting.get());
+    });
+  });
 });

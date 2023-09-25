@@ -29,6 +29,7 @@ import { type Viewport } from '../common/Viewport.js';
 import { type BidiBrowser } from './Browser.js';
 import { type BidiBrowserContext } from './BrowserContext.js';
 import { type BrowsingContext } from './BrowsingContext.js';
+import { type BidiConnection } from './Connection.js';
 import { BidiFrame } from './Frame.js';
 import { type BidiHTTPRequest } from './HTTPRequest.js';
 import { type BidiHTTPResponse } from './HTTPResponse.js';
@@ -41,6 +42,10 @@ export declare class BidiPage extends Page {
     #private;
     _client(): CDPSession;
     constructor(browsingContext: BrowsingContext, browserContext: BidiBrowserContext);
+    /**
+     * @internal
+     */
+    get connection(): BidiConnection;
     setUserAgent(userAgent: string, userAgentMetadata?: Protocol.Emulation.UserAgentMetadata | undefined): Promise<void>;
     setBypassCSP(enabled: boolean): Promise<void>;
     queryObjects<Prototype>(prototypeHandle: BidiJSHandle<Prototype>): Promise<BidiJSHandle<Prototype[]>>;
@@ -54,6 +59,10 @@ export declare class BidiPage extends Page {
     browser(): BidiBrowser;
     browserContext(): BidiBrowserContext;
     mainFrame(): BidiFrame;
+    /**
+     * @internal
+     */
+    focusedFrame(): Promise<BidiFrame>;
     frames(): BidiFrame[];
     frame(frameId?: string): BidiFrame | null;
     childFrames(frameId: string): BidiFrame[];
@@ -80,12 +89,11 @@ export declare class BidiPage extends Page {
     viewport(): Viewport | null;
     pdf(options?: PDFOptions): Promise<Buffer>;
     createPDFStream(options?: PDFOptions | undefined): Promise<Readable>;
-    screenshot(options: ScreenshotOptions & {
+    screenshot(options: Readonly<ScreenshotOptions> & {
         encoding: 'base64';
     }): Promise<string>;
-    screenshot(options?: ScreenshotOptions & {
-        encoding?: 'binary';
-    }): never;
+    screenshot(options?: Readonly<ScreenshotOptions>): Promise<Buffer>;
+    _screenshot(options: Readonly<ScreenshotOptions>): Promise<string>;
     waitForRequest(urlOrPredicate: string | ((req: BidiHTTPRequest) => boolean | Promise<boolean>), options?: {
         timeout?: number;
     }): Promise<BidiHTTPRequest>;

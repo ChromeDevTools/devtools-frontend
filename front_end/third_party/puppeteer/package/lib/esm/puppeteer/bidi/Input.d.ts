@@ -17,16 +17,18 @@ import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { Keyboard, Mouse, Touchscreen, type KeyDownOptions, type KeyPressOptions, type KeyboardTypeOptions, type MouseClickOptions, type MouseMoveOptions, type MouseOptions, type MouseWheelOptions } from '../api/Input.js';
 import { type KeyInput } from '../common/USKeyboardLayout.js';
 import { type BrowsingContext } from './BrowsingContext.js';
+import { type BidiPage } from './Page.js';
 /**
  * @internal
  */
 export declare class BidiKeyboard extends Keyboard {
     #private;
-    constructor(context: BrowsingContext);
+    constructor(page: BidiPage);
     down(key: KeyInput, _options?: Readonly<KeyDownOptions>): Promise<void>;
     up(key: KeyInput): Promise<void>;
     press(key: KeyInput, options?: Readonly<KeyPressOptions>): Promise<void>;
     type(text: string, options?: Readonly<KeyboardTypeOptions>): Promise<void>;
+    sendCharacter(char: string): Promise<void>;
 }
 /**
  * @internal

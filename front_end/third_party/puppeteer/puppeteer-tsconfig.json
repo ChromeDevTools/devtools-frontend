@@ -144,6 +144,7 @@
     "package/lib/esm/puppeteer/util/Deferred.js",
     "package/lib/esm/puppeteer/util/ErrorLike.js",
     "package/lib/esm/puppeteer/util/Function.js",
+    "package/lib/esm/puppeteer/util/Mutex.js",
     "package/lib/esm/puppeteer/util/assert.js",
     "package/lib/esm/puppeteer/util/decorators.js",
     "package/lib/esm/puppeteer/util/disposable.js",

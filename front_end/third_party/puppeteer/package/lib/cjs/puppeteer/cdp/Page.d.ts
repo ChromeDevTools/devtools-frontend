@@ -16,18 +16,17 @@
 /// <reference types="node" />
 /// <reference types="node" />
 import type { Readable } from 'stream';
-import { Protocol } from 'devtools-protocol';
+import { type Protocol } from 'devtools-protocol';
 import type { Browser } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
 import { type CDPSession } from '../api/CDPSession.js';
-import { type WaitForOptions, type Frame } from '../api/Frame.js';
+import { type Frame, type WaitForOptions } from '../api/Frame.js';
 import { type HTTPRequest } from '../api/HTTPRequest.js';
 import { type HTTPResponse } from '../api/HTTPResponse.js';
 import { type JSHandle } from '../api/JSHandle.js';
 import { Page, type GeolocationOptions, type MediaFeature, type Metrics, type NewDocumentScriptEvaluation, type ScreenshotOptions, type WaitTimeoutOptions } from '../api/Page.js';
 import { FileChooser } from '../common/FileChooser.js';
 import { type PDFOptions } from '../common/PDFOptions.js';
-import { type TaskQueue } from '../common/TaskQueue.js';
 import { type Viewport } from '../common/Viewport.js';
 import { Accessibility } from './Accessibility.js';
 import { Coverage } from './Coverage.js';
@@ -43,8 +42,8 @@ import { WebWorker } from './WebWorker.js';
  */
 export declare class CdpPage extends Page {
     #private;
-    static _create(client: CDPSession, target: CdpTarget, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null, screenshotTaskQueue: TaskQueue): Promise<CdpPage>;
-    constructor(client: CDPSession, target: CdpTarget, ignoreHTTPSErrors: boolean, screenshotTaskQueue: TaskQueue);
+    static _create(client: CDPSession, target: CdpTarget, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null): Promise<CdpPage>;
+    constructor(client: CDPSession, target: CdpTarget, ignoreHTTPSErrors: boolean);
     _client(): CDPSession;
     isServiceWorkerBypassed(): boolean;
     isDragInterceptionEnabled(): boolean;
@@ -113,12 +112,7 @@ export declare class CdpPage extends Page {
     evaluateOnNewDocument<Params extends unknown[], Func extends (...args: Params) => unknown = (...args: Params) => unknown>(pageFunction: Func | string, ...args: Params): Promise<NewDocumentScriptEvaluation>;
     removeScriptToEvaluateOnNewDocument(identifier: string): Promise<void>;
     setCacheEnabled(enabled?: boolean): Promise<void>;
-    screenshot(options: ScreenshotOptions & {
-        encoding: 'base64';
-    }): Promise<string>;
-    screenshot(options?: ScreenshotOptions & {
-        encoding?: 'binary';
-    }): Promise<Buffer>;
+    _screenshot(options: Readonly<ScreenshotOptions>): Promise<string>;
     createPDFStream(options?: PDFOptions): Promise<Readable>;
     pdf(options?: PDFOptions): Promise<Buffer>;
     close(options?: {

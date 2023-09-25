@@ -152,13 +152,11 @@ exports.CdpTarget = CdpTarget;
 class PageTarget extends CdpTarget {
     #defaultViewport;
     pagePromise;
-    #screenshotTaskQueue;
     #ignoreHTTPSErrors;
-    constructor(targetInfo, session, browserContext, targetManager, sessionFactory, ignoreHTTPSErrors, defaultViewport, screenshotTaskQueue) {
+    constructor(targetInfo, session, browserContext, targetManager, sessionFactory, ignoreHTTPSErrors, defaultViewport) {
         super(targetInfo, session, browserContext, targetManager, sessionFactory);
         this.#ignoreHTTPSErrors = ignoreHTTPSErrors;
         this.#defaultViewport = defaultViewport ?? undefined;
-        this.#screenshotTaskQueue = screenshotTaskQueue;
     }
     _initialize() {
         this._initializedDeferred
@@ -191,7 +189,7 @@ class PageTarget extends CdpTarget {
             this.pagePromise = (session
                 ? Promise.resolve(session)
                 : this._sessionFactory()(/* isAutoAttachEmulated=*/ false)).then(client => {
-                return Page_js_1.CdpPage._create(client, this, this.#ignoreHTTPSErrors, this.#defaultViewport ?? null, this.#screenshotTaskQueue);
+                return Page_js_1.CdpPage._create(client, this, this.#ignoreHTTPSErrors, this.#defaultViewport ?? null);
             });
         }
         return (await this.pagePromise) ?? null;

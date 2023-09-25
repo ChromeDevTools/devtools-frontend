@@ -37,6 +37,51 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+        var dispose;
+        if (async) {
+            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+            dispose = value[Symbol.asyncDispose];
+        }
+        if (dispose === void 0) {
+            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+            dispose = value[Symbol.dispose];
+        }
+        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        env.stack.push({ value: value, dispose: dispose, async: async });
+    }
+    else if (async) {
+        env.stack.push({ async: true });
+    }
+    return value;
+};
+var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
+    return function (env) {
+        function fail(e) {
+            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+            env.hasError = true;
+        }
+        function next() {
+            while (env.stack.length) {
+                var rec = env.stack.pop();
+                try {
+                    var result = rec.dispose && rec.dispose.call(rec.value);
+                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                }
+                catch (e) {
+                    fail(e);
+                }
+            }
+            if (env.hasError) throw env.error;
+        }
+        return next();
+    };
+})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+});
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiPage = void 0;
 const Page_js_1 = require("../api/Page.js");
@@ -55,6 +100,7 @@ const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const BrowsingContext_js_1 = require("./BrowsingContext.js");
 const Dialog_js_1 = require("./Dialog.js");
+const ElementHandle_js_1 = require("./ElementHandle.js");
 const EmulationManager_js_2 = require("./EmulationManager.js");
 const Frame_js_1 = require("./Frame.js");
 const Input_js_1 = require("./Input.js");
@@ -160,7 +206,13 @@ class BidiPage extends Page_js_1.Page {
         this.#emulationManager = new EmulationManager_js_2.EmulationManager(browsingContext);
         this.#mouse = new Input_js_1.BidiMouse(this.mainFrame().context());
         this.#touchscreen = new Input_js_1.BidiTouchscreen(this.mainFrame().context());
-        this.#keyboard = new Input_js_1.BidiKeyboard(this.mainFrame().context());
+        this.#keyboard = new Input_js_1.BidiKeyboard(this);
+    }
+    /**
+     * @internal
+     */
+    get connection() {
+        return this.#connection;
     }
     async setUserAgent(userAgent, userAgentMetadata) {
         // TODO: handle CDP-specific cases such as mprach.
@@ -215,6 +267,36 @@ class BidiPage extends Page_js_1.Page {
         const mainFrame = this.#frameTree.getMainFrame();
         (0, assert_js_1.assert)(mainFrame, 'Requesting main frame too early!');
         return mainFrame;
+    }
+    /**
+     * @internal
+     */
+    async focusedFrame() {
+        const env_1 = { stack: [], error: void 0, hasError: false };
+        try {
+            const frame = __addDisposableResource(env_1, await this.mainFrame()
+                .isolatedRealm()
+                .evaluateHandle(() => {
+                let frame;
+                let win = window;
+                while (win?.document.activeElement instanceof HTMLIFrameElement) {
+                    frame = win.document.activeElement;
+                    win = frame.contentWindow;
+                }
+                return frame;
+            }), false);
+            if (!(frame instanceof ElementHandle_js_1.BidiElementHandle)) {
+                return this.mainFrame();
+            }
+            return await frame.contentFrame();
+        }
+        catch (e_1) {
+            env_1.error = e_1;
+            env_1.hasError = true;
+        }
+        finally {
+            __disposeResources(env_1);
+        }
     }
     frames() {
         return Array.from(this.#frameTree.frames());
@@ -448,19 +530,43 @@ class BidiPage extends Page_js_1.Page {
         }
     }
     async screenshot(options = {}) {
-        const { path = undefined, encoding, ...args } = options;
-        if (Object.keys(args).length >= 1) {
-            throw new Error('BiDi only supports "encoding" and "path" options');
+        const { clip, type, captureBeyondViewport, allowViewportExpansion = true, } = options;
+        if (captureBeyondViewport) {
+            throw new Error(`BiDi does not support 'captureBeyondViewport'.`);
         }
-        const { result } = await this.#connection.send('browsingContext.captureScreenshot', {
-            context: this.mainFrame()._id,
+        const invalidOption = Object.keys(options).find(option => {
+            return [
+                'fromSurface',
+                'omitBackground',
+                'optimizeForSpeed',
+                'quality',
+            ].includes(option);
         });
-        if (encoding === 'base64') {
-            return result.data;
+        if (invalidOption !== undefined) {
+            throw new Error(`BiDi does not support ${invalidOption}.`);
         }
-        const buffer = Buffer.from(result.data, 'base64');
-        await this._maybeWriteBufferToFile(path, buffer);
-        return buffer;
+        if ((type ?? 'png') !== 'png') {
+            throw new Error(`BiDi only supports 'png' type.`);
+        }
+        if (clip?.scale !== undefined) {
+            throw new Error(`BiDi does not support 'scale' in 'clip'.`);
+        }
+        return await super.screenshot({
+            ...options,
+            captureBeyondViewport,
+            allowViewportExpansion: captureBeyondViewport ?? allowViewportExpansion,
+        });
+    }
+    async _screenshot(options) {
+        const { clip } = options;
+        const { result: { data }, } = await this.#connection.send('browsingContext.captureScreenshot', {
+            context: this.mainFrame()._id,
+            clip: clip && {
+                type: 'viewport',
+                ...clip,
+            },
+        });
+        return data;
     }
     async waitForRequest(urlOrPredicate, options = {}) {
         const { timeout = this.#timeoutSettings.timeout() } = options;

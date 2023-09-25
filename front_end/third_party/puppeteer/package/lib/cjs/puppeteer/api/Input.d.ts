@@ -80,7 +80,7 @@ export type KeyPressOptions = KeyDownOptions & KeyboardTypeOptions;
  *
  * @public
  */
-export declare class Keyboard {
+export declare abstract class Keyboard {
     /**
      * @internal
      */
@@ -112,7 +112,7 @@ export declare class Keyboard {
      * is the commands of keyboard shortcuts,
      * see {@link https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h | Chromium Source Code} for valid command names.
      */
-    down(key: KeyInput, options?: Readonly<KeyDownOptions>): Promise<void>;
+    abstract down(key: KeyInput, options?: Readonly<KeyDownOptions>): Promise<void>;
     /**
      * Dispatches a `keyup` event.
      *
@@ -120,7 +120,7 @@ export declare class Keyboard {
      * See {@link KeyInput | KeyInput}
      * for a list of all key names.
      */
-    up(key: KeyInput): Promise<void>;
+    abstract up(key: KeyInput): Promise<void>;
     /**
      * Dispatches a `keypress` and `input` event.
      * This does not send a `keydown` or `keyup` event.
@@ -137,7 +137,7 @@ export declare class Keyboard {
      *
      * @param char - Character to send into the page.
      */
-    sendCharacter(char: string): Promise<void>;
+    abstract sendCharacter(char: string): Promise<void>;
     /**
      * Sends a `keydown`, `keypress`/`input`,
      * and `keyup` event for each character in the text.
@@ -161,7 +161,7 @@ export declare class Keyboard {
      * if specified, is the time to wait between `keydown` and `keyup` in milliseconds.
      * Defaults to 0.
      */
-    type(text: string, options?: Readonly<KeyboardTypeOptions>): Promise<void>;
+    abstract type(text: string, options?: Readonly<KeyboardTypeOptions>): Promise<void>;
     /**
      * Shortcut for {@link Keyboard.down}
      * and {@link Keyboard.up}.
@@ -184,7 +184,7 @@ export declare class Keyboard {
      * is the commands of keyboard shortcuts,
      * see {@link https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h | Chromium Source Code} for valid command names.
      */
-    press(key: KeyInput, options?: Readonly<KeyPressOptions>): Promise<void>;
+    abstract press(key: KeyInput, options?: Readonly<KeyPressOptions>): Promise<void>;
 }
 /**
  * @public

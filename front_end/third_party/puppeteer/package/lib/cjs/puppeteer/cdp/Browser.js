@@ -19,7 +19,6 @@ exports.CdpBrowserContext = exports.CdpBrowser = void 0;
 const Browser_js_1 = require("../api/Browser.js");
 const BrowserContext_js_1 = require("../api/BrowserContext.js");
 const CDPSession_js_1 = require("../api/CDPSession.js");
-const TaskQueue_js_1 = require("../common/TaskQueue.js");
 const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
 const ChromeTargetManager_js_1 = require("./ChromeTargetManager.js");
@@ -43,7 +42,6 @@ class CdpBrowser extends Browser_js_1.Browser {
     #isPageTargetCallback;
     #defaultContext;
     #contexts = new Map();
-    #screenshotTaskQueue;
     #targetManager;
     get _targets() {
         return this.#targetManager.getAvailableTargets();
@@ -54,7 +52,6 @@ class CdpBrowser extends Browser_js_1.Browser {
         this.#ignoreHTTPSErrors = ignoreHTTPSErrors;
         this.#defaultViewport = defaultViewport;
         this.#process = process;
-        this.#screenshotTaskQueue = new TaskQueue_js_1.TaskQueue();
         this.#connection = connection;
         this.#closeCallback = closeCallback || function () { };
         this.#targetFilterCallback =
@@ -148,10 +145,10 @@ class CdpBrowser extends Browser_js_1.Browser {
         };
         const otherTarget = new Target_js_1.OtherTarget(targetInfo, session, context, this.#targetManager, createSession);
         if (targetInfo.url?.startsWith('devtools://')) {
-            return new Target_js_1.DevToolsTarget(targetInfo, session, context, this.#targetManager, createSession, this.#ignoreHTTPSErrors, this.#defaultViewport ?? null, this.#screenshotTaskQueue);
+            return new Target_js_1.DevToolsTarget(targetInfo, session, context, this.#targetManager, createSession, this.#ignoreHTTPSErrors, this.#defaultViewport ?? null);
         }
         if (this.#isPageTargetCallback(otherTarget)) {
-            return new Target_js_1.PageTarget(targetInfo, session, context, this.#targetManager, createSession, this.#ignoreHTTPSErrors, this.#defaultViewport ?? null, this.#screenshotTaskQueue);
+            return new Target_js_1.PageTarget(targetInfo, session, context, this.#targetManager, createSession, this.#ignoreHTTPSErrors, this.#defaultViewport ?? null);
         }
         if (targetInfo.type === 'service_worker' ||
             targetInfo.type === 'shared_worker') {

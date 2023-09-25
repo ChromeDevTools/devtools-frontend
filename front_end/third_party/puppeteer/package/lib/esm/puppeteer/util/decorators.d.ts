@@ -25,4 +25,5 @@ export declare function throwIfDisposed<This extends Disposed>(message?: (value:
  * @internal
  */
 export declare function invokeAtMostOnceForArguments(target: (this: unknown, ...args: any[]) => any, _: unknown): typeof target;
+export declare function guarded<T extends object>(getKey?: (this: T) => object): (target: (this: T, ...args: any[]) => Promise<any>, _: ClassMethodDecoratorContext<T>) => (this: T, ...args: any[]) => Promise<any>;
 //# sourceMappingURL=decorators.d.ts.map

@@ -16,7 +16,6 @@
 import { Browser as BrowserBase, WEB_PERMISSION_TO_PROTOCOL_PERMISSION, } from '../api/Browser.js';
 import { BrowserContext } from '../api/BrowserContext.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
-import { TaskQueue } from '../common/TaskQueue.js';
 import { USE_TAB_TARGET } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { ChromeTargetManager } from './ChromeTargetManager.js';
@@ -40,7 +39,6 @@ export class CdpBrowser extends BrowserBase {
     #isPageTargetCallback;
     #defaultContext;
     #contexts = new Map();
-    #screenshotTaskQueue;
     #targetManager;
     get _targets() {
         return this.#targetManager.getAvailableTargets();
@@ -51,7 +49,6 @@ export class CdpBrowser extends BrowserBase {
         this.#ignoreHTTPSErrors = ignoreHTTPSErrors;
         this.#defaultViewport = defaultViewport;
         this.#process = process;
-        this.#screenshotTaskQueue = new TaskQueue();
         this.#connection = connection;
         this.#closeCallback = closeCallback || function () { };
         this.#targetFilterCallback =
@@ -145,10 +142,10 @@ export class CdpBrowser extends BrowserBase {
         };
         const otherTarget = new OtherTarget(targetInfo, session, context, this.#targetManager, createSession);
         if (targetInfo.url?.startsWith('devtools://')) {
-            return new DevToolsTarget(targetInfo, session, context, this.#targetManager, createSession, this.#ignoreHTTPSErrors, this.#defaultViewport ?? null, this.#screenshotTaskQueue);
+            return new DevToolsTarget(targetInfo, session, context, this.#targetManager, createSession, this.#ignoreHTTPSErrors, this.#defaultViewport ?? null);
         }
         if (this.#isPageTargetCallback(otherTarget)) {
-            return new PageTarget(targetInfo, session, context, this.#targetManager, createSession, this.#ignoreHTTPSErrors, this.#defaultViewport ?? null, this.#screenshotTaskQueue);
+            return new PageTarget(targetInfo, session, context, this.#targetManager, createSession, this.#ignoreHTTPSErrors, this.#defaultViewport ?? null);
         }
         if (targetInfo.type === 'service_worker' ||
             targetInfo.type === 'shared_worker') {

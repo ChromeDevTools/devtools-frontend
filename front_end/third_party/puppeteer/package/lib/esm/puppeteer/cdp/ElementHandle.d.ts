@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/// <reference types="node" />
 import { type Protocol } from 'devtools-protocol';
 import { type CDPSession } from '../api/CDPSession.js';
-import { type AutofillData, ElementHandle } from '../api/ElementHandle.js';
-import { type ScreenshotOptions } from '../api/Page.js';
+import { ElementHandle, type AutofillData } from '../api/ElementHandle.js';
 import { type CdpFrame } from './Frame.js';
 import { type IsolatedWorld } from './IsolatedWorld.js';
 import { CdpJSHandle } from './JSHandle.js';
@@ -39,7 +37,6 @@ export declare class CdpElementHandle<ElementType extends Node = Element> extend
     contentFrame(this: ElementHandle<HTMLIFrameElement>): Promise<CdpFrame>;
     scrollIntoView(this: CdpElementHandle<Element>): Promise<void>;
     uploadFile(this: CdpElementHandle<HTMLInputElement>, ...filePaths: string[]): Promise<void>;
-    screenshot(this: CdpElementHandle<Element>, options?: ScreenshotOptions): Promise<string | Buffer>;
     autofill(data: AutofillData): Promise<void>;
 }
 //# sourceMappingURL=ElementHandle.d.ts.map

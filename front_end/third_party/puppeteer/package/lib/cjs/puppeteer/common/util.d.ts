@@ -22,7 +22,6 @@ import { type Observable } from '../../third_party/rxjs/rxjs.js';
 import type { CDPSession } from '../api/CDPSession.js';
 import { type Page } from '../api/Page.js';
 import { Deferred } from '../util/Deferred.js';
-import { disposeSymbol } from '../util/disposable.js';
 import { type Awaitable } from './types.js';
 /**
  * @internal
@@ -125,20 +124,6 @@ export declare function getPageContent(): string;
  * @internal
  */
 export declare function validateDialogType(type: string): 'alert' | 'confirm' | 'prompt' | 'beforeunload';
-/**
- * @internal
- */
-export declare class Mutex {
-    #private;
-    static Guard: {
-        new (mutex: Mutex): {
-            "__#45486@#mutex": Mutex;
-            [Symbol.dispose](): void;
-        };
-    };
-    acquire(): Promise<InstanceType<typeof Mutex.Guard>>;
-    release(): void;
-}
 /**
  * @internal
  */

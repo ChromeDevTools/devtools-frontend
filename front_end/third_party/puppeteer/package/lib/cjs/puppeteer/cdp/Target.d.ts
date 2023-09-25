@@ -19,7 +19,6 @@ import type { BrowserContext } from '../api/BrowserContext.js';
 import { type CDPSession } from '../api/CDPSession.js';
 import { type Page } from '../api/Page.js';
 import { Target, TargetType } from '../api/Target.js';
-import { type TaskQueue } from '../common/TaskQueue.js';
 import { type Viewport } from '../common/Viewport.js';
 import { Deferred } from '../util/Deferred.js';
 import { type TargetManager } from './TargetManager.js';
@@ -66,7 +65,7 @@ export declare class CdpTarget extends Target {
 export declare class PageTarget extends CdpTarget {
     #private;
     protected pagePromise?: Promise<Page>;
-    constructor(targetInfo: Protocol.Target.TargetInfo, session: CDPSession | undefined, browserContext: BrowserContext, targetManager: TargetManager, sessionFactory: (isAutoAttachEmulated: boolean) => Promise<CDPSession>, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null, screenshotTaskQueue: TaskQueue);
+    constructor(targetInfo: Protocol.Target.TargetInfo, session: CDPSession | undefined, browserContext: BrowserContext, targetManager: TargetManager, sessionFactory: (isAutoAttachEmulated: boolean) => Promise<CDPSession>, ignoreHTTPSErrors: boolean, defaultViewport: Viewport | null);
     _initialize(): void;
     page(): Promise<Page | null>;
     _checkIfInitialized(): void;

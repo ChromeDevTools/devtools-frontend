@@ -62,7 +62,6 @@ import { map, NEVER, timer, } from '../../third_party/rxjs/rxjs.js';
 import { isNode } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
-import { disposeSymbol } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { debug } from './Debug.js';
 import { TimeoutError } from './Errors.js';
@@ -536,41 +535,6 @@ export function validateDialogType(type) {
     }
     assert(dialogType, `Unknown javascript dialog type: ${type}`);
     return dialogType;
-}
-/**
- * @internal
- */
-export class Mutex {
-    static Guard = class Guard {
-        #mutex;
-        constructor(mutex) {
-            this.#mutex = mutex;
-        }
-        [disposeSymbol]() {
-            return this.#mutex.release();
-        }
-    };
-    #locked = false;
-    #acquirers = [];
-    // This is FIFO.
-    async acquire() {
-        if (!this.#locked) {
-            this.#locked = true;
-            return new Mutex.Guard(this);
-        }
-        const deferred = Deferred.create();
-        this.#acquirers.push(deferred.resolve.bind(deferred));
-        await deferred.valueOrThrow();
-        return new Mutex.Guard(this);
-    }
-    release() {
-        const resolve = this.#acquirers.shift();
-        if (!resolve) {
-            this.#locked = false;
-            return;
-        }
-        resolve();
-    }
 }
 /**
  * @internal

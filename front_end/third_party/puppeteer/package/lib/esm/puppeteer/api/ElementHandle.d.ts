@@ -79,6 +79,15 @@ export interface Point {
     y: number;
 }
 /**
+ * @public
+ */
+export interface ElementScreenshotOptions extends ScreenshotOptions {
+    /**
+     * @defaultValue true
+     */
+    scrollIntoView?: boolean;
+}
+/**
  * ElementHandle represents an in-page DOM element.
  *
  * @remarks
@@ -555,7 +564,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * {@link Page.(screenshot:3) } to take a screenshot of the element.
      * If the element is detached from DOM, the method throws an error.
      */
-    screenshot(this: ElementHandle<Element>, options?: ScreenshotOptions): Promise<string | Buffer>;
+    screenshot(this: ElementHandle<Element>, options?: Readonly<ElementScreenshotOptions>): Promise<string | Buffer>;
     /**
      * @internal
      */

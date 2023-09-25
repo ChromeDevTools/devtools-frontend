@@ -83,12 +83,11 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.Mutex = exports.validateDialogType = exports.getPageContent = exports.setPageContent = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.waitWithTimeout = exports.pageBindingInitString = exports.addPageBinding = exports.evaluationString = exports.waitForEvent = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.valueFromRemoteObject = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.createClientError = exports.createEvaluationError = exports.debugError = void 0;
+exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.validateDialogType = exports.getPageContent = exports.setPageContent = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.waitWithTimeout = exports.pageBindingInitString = exports.addPageBinding = exports.evaluationString = exports.waitForEvent = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.valueFromRemoteObject = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.createClientError = exports.createEvaluationError = exports.debugError = void 0;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
-const disposable_js_1 = require("../util/disposable.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Debug_js_1 = require("./Debug.js");
 const Errors_js_1 = require("./Errors.js");
@@ -585,42 +584,6 @@ function validateDialogType(type) {
     return dialogType;
 }
 exports.validateDialogType = validateDialogType;
-/**
- * @internal
- */
-class Mutex {
-    static Guard = class Guard {
-        #mutex;
-        constructor(mutex) {
-            this.#mutex = mutex;
-        }
-        [disposable_js_1.disposeSymbol]() {
-            return this.#mutex.release();
-        }
-    };
-    #locked = false;
-    #acquirers = [];
-    // This is FIFO.
-    async acquire() {
-        if (!this.#locked) {
-            this.#locked = true;
-            return new Mutex.Guard(this);
-        }
-        const deferred = Deferred_js_1.Deferred.create();
-        this.#acquirers.push(deferred.resolve.bind(deferred));
-        await deferred.valueOrThrow();
-        return new Mutex.Guard(this);
-    }
-    release() {
-        const resolve = this.#acquirers.shift();
-        if (!resolve) {
-            this.#locked = false;
-            return;
-        }
-        resolve();
-    }
-}
-exports.Mutex = Mutex;
 /**
  * @internal
  */

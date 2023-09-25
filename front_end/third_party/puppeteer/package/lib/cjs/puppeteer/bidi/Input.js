@@ -260,14 +260,14 @@ const getBidiKeyValue = (key) => {
  * @internal
  */
 class BidiKeyboard extends Input_js_1.Keyboard {
-    #context;
-    constructor(context) {
+    #page;
+    constructor(page) {
         super();
-        this.#context = context;
+        this.#page = page;
     }
     async down(key, _options) {
-        await this.#context.connection.send('input.performActions', {
-            context: this.#context.id,
+        await this.#page.connection.send('input.performActions', {
+            context: this.#page.mainFrame()._id,
             actions: [
                 {
                     type: SourceActionsType.Key,
@@ -283,8 +283,8 @@ class BidiKeyboard extends Input_js_1.Keyboard {
         });
     }
     async up(key) {
-        await this.#context.connection.send('input.performActions', {
-            context: this.#context.id,
+        await this.#page.connection.send('input.performActions', {
+            context: this.#page.mainFrame()._id,
             actions: [
                 {
                     type: SourceActionsType.Key,
@@ -317,8 +317,8 @@ class BidiKeyboard extends Input_js_1.Keyboard {
             type: ActionType.KeyUp,
             value: getBidiKeyValue(key),
         });
-        await this.#context.connection.send('input.performActions', {
-            context: this.#context.id,
+        await this.#page.connection.send('input.performActions', {
+            context: this.#page.mainFrame()._id,
             actions: [
                 {
                     type: SourceActionsType.Key,
@@ -359,8 +359,8 @@ class BidiKeyboard extends Input_js_1.Keyboard {
                 });
             }
         }
-        await this.#context.connection.send('input.performActions', {
-            context: this.#context.id,
+        await this.#page.connection.send('input.performActions', {
+            context: this.#page.mainFrame()._id,
             actions: [
                 {
                     type: SourceActionsType.Key,
@@ -369,6 +369,16 @@ class BidiKeyboard extends Input_js_1.Keyboard {
                 },
             ],
         });
+    }
+    async sendCharacter(char) {
+        // Measures the number of code points rather than UTF-16 code units.
+        if ([...char].length > 1) {
+            throw new Error('Cannot send more than 1 character.');
+        }
+        const frame = await this.#page.focusedFrame();
+        await frame.isolatedRealm().evaluate(async (char) => {
+            document.execCommand('insertText', false, char);
+        }, char);
     }
 }
 exports.BidiKeyboard = BidiKeyboard;

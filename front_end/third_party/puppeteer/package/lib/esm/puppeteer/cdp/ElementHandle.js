@@ -60,13 +60,12 @@ import { CdpJSHandle } from './JSHandle.js';
  * @internal
  */
 let CdpElementHandle = (() => {
-    var _a, _b, _c;
+    var _a, _b;
     let _classSuper = ElementHandle;
     let _instanceExtraInitializers = [];
     let _contentFrame_decorators;
     let _scrollIntoView_decorators;
     let _uploadFile_decorators;
-    let _screenshot_decorators;
     let _autofill_decorators;
     return class CdpElementHandle extends _classSuper {
         static {
@@ -74,12 +73,10 @@ let CdpElementHandle = (() => {
             _contentFrame_decorators = [throwIfDisposed()];
             _scrollIntoView_decorators = [throwIfDisposed(), (_a = ElementHandle).bindIsolatedHandle.bind(_a)];
             _uploadFile_decorators = [throwIfDisposed(), (_b = ElementHandle).bindIsolatedHandle.bind(_b)];
-            _screenshot_decorators = [throwIfDisposed(), (_c = ElementHandle).bindIsolatedHandle.bind(_c)];
             _autofill_decorators = [throwIfDisposed()];
             __esDecorate(this, null, _contentFrame_decorators, { kind: "method", name: "contentFrame", static: false, private: false, access: { has: obj => "contentFrame" in obj, get: obj => obj.contentFrame }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _scrollIntoView_decorators, { kind: "method", name: "scrollIntoView", static: false, private: false, access: { has: obj => "scrollIntoView" in obj, get: obj => obj.scrollIntoView }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _uploadFile_decorators, { kind: "method", name: "uploadFile", static: false, private: false, access: { has: obj => "uploadFile" in obj, get: obj => obj.uploadFile }, metadata: _metadata }, null, _instanceExtraInitializers);
-            __esDecorate(this, null, _screenshot_decorators, { kind: "method", name: "screenshot", static: false, private: false, access: { has: obj => "screenshot" in obj, get: obj => obj.screenshot }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _autofill_decorators, { kind: "method", name: "autofill", static: false, private: false, access: { has: obj => "autofill" in obj, get: obj => obj.autofill }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         }
@@ -98,9 +95,6 @@ let CdpElementHandle = (() => {
         }
         get #frameManager() {
             return this.frame._frameManager;
-        }
-        get #page() {
-            return this.frame.page();
         }
         get frame() {
             return this.realm.environment;
@@ -174,40 +168,6 @@ let CdpElementHandle = (() => {
                     backendNodeId,
                 });
             }
-        }
-        async screenshot(options = {}) {
-            let needsViewportReset = false;
-            let boundingBox = await this.boundingBox();
-            assert(boundingBox, 'Node is either not visible or not an HTMLElement');
-            const viewport = this.#page.viewport();
-            if (viewport &&
-                (boundingBox.width > viewport.width ||
-                    boundingBox.height > viewport.height)) {
-                const newViewport = {
-                    width: Math.max(viewport.width, Math.ceil(boundingBox.width)),
-                    height: Math.max(viewport.height, Math.ceil(boundingBox.height)),
-                };
-                await this.#page.setViewport(Object.assign({}, viewport, newViewport));
-                needsViewportReset = true;
-            }
-            await this.scrollIntoViewIfNeeded();
-            boundingBox = await this.boundingBox();
-            assert(boundingBox, 'Node is either not visible or not an HTMLElement');
-            assert(boundingBox.width !== 0, 'Node has 0 width.');
-            assert(boundingBox.height !== 0, 'Node has 0 height.');
-            const layoutMetrics = await this.client.send('Page.getLayoutMetrics');
-            // Fallback to `layoutViewport` in case of using Firefox.
-            const { pageX, pageY } = layoutMetrics.cssVisualViewport || layoutMetrics.layoutViewport;
-            const clip = Object.assign({}, boundingBox);
-            clip.x += pageX;
-            clip.y += pageY;
-            const imageData = await this.#page.screenshot(Object.assign({}, {
-                clip,
-            }, options));
-            if (needsViewportReset && viewport) {
-                await this.#page.setViewport(viewport);
-            }
-            return imageData;
         }
         async autofill(data) {
             const nodeInfo = await this.client.send('DOM.describeNode', {

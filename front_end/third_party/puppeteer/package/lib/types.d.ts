@@ -96,6 +96,8 @@ export declare type ActionResult = 'continue' | 'abort' | 'respond';
 
 /* Excluded from this release type: assert */
 
+/* Excluded from this release type: AsyncDisposableStack */
+
 /* Excluded from this release type: asyncDisposeSymbol */
 
 /* Excluded from this release type: AsyncIterableUtil */
@@ -140,13 +142,7 @@ declare type BeginSubclassSelectorTokens = ['.', '#', '[', ':'];
 
 /* Excluded from this release type: BidiBrowserOptions */
 
-/* Excluded from this release type: BiDiBrowserTarget */
-
-/* Excluded from this release type: BiDiBrowsingContextTarget */
-
 /* Excluded from this release type: BidiConnection */
-
-/* Excluded from this release type: BidiElementHandle */
 
 /* Excluded from this release type: BidiEvents */
 
@@ -171,8 +167,6 @@ declare type BeginSubclassSelectorTokens = ['.', '#', '[', ':'];
 /* Excluded from this release type: BidiNetworkManagerEvents */
 
 /* Excluded from this release type: BidiPage */
-
-/* Excluded from this release type: BiDiPageTarget */
 
 /* Excluded from this release type: BidiRealm */
 
@@ -727,10 +721,6 @@ export declare interface BrowserLaunchArgumentOptions {
 
 /* Excluded from this release type: BrowsingContext */
 
-/* Excluded from this release type: BrowsingContextEvent */
-
-/* Excluded from this release type: BrowsingContextEvents */
-
 /* Excluded from this release type: Callback */
 
 /* Excluded from this release type: CallbackRegistry */
@@ -835,10 +825,6 @@ export declare interface CDPSessionEvents extends CDPEvents, Record<EventType, u
     [CDPSessionEvent.SessionAttached]: CDPSession;
     [CDPSessionEvent.SessionDetached]: CDPSession;
 }
-
-/* Excluded from this release type: cdpSessions */
-
-/* Excluded from this release type: CdpSessionWrapper */
 
 /* Excluded from this release type: CdpTarget */
 
@@ -998,8 +984,6 @@ export declare const
  * @public
  */
 connect: (options: ConnectOptions) => Promise<Browser>;
-
-/* Excluded from this release type: connectBidiOverCdp */
 
 /**
  * @public
@@ -1246,8 +1230,6 @@ export declare interface CoverageEntry {
         end: number;
     }>;
 }
-
-/* Excluded from this release type: createBidiHandle */
 
 /* Excluded from this release type: createCdpHandle */
 
@@ -1972,7 +1954,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * {@link Page.(screenshot:3) } to take a screenshot of the element.
      * If the element is detached from DOM, the method throws an error.
      */
-    screenshot(this: ElementHandle<Element>, options?: ScreenshotOptions): Promise<string | Buffer>;
+    screenshot(this: ElementHandle<Element>, options?: Readonly<ElementScreenshotOptions>): Promise<string | Buffer>;
     /* Excluded from this release type: assertConnectedElement */
     /* Excluded from this release type: scrollIntoViewIfNeeded */
     /**
@@ -2017,6 +1999,16 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * ```
      */
     abstract autofill(data: AutofillData): Promise<void>;
+}
+
+/**
+ * @public
+ */
+export declare interface ElementScreenshotOptions extends ScreenshotOptions {
+    /**
+     * @defaultValue true
+     */
+    scrollIntoView?: boolean;
 }
 
 /* Excluded from this release type: EmulatedState */
@@ -2924,8 +2916,6 @@ export declare interface GeolocationOptions {
 
 /* Excluded from this release type: getSourceUrlComment */
 
-/* Excluded from this release type: getWaitUntilSingle */
-
 /**
  * @public
  */
@@ -3569,7 +3559,7 @@ export declare abstract class JSHandle<T = unknown> {
  *
  * @public
  */
-export declare class Keyboard {
+export declare abstract class Keyboard {
     /* Excluded from this release type: __constructor */
     /**
      * Dispatches a `keydown` event.
@@ -3598,7 +3588,7 @@ export declare class Keyboard {
      * is the commands of keyboard shortcuts,
      * see {@link https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h | Chromium Source Code} for valid command names.
      */
-    down(key: KeyInput, options?: Readonly<KeyDownOptions>): Promise<void>;
+    abstract down(key: KeyInput, options?: Readonly<KeyDownOptions>): Promise<void>;
     /**
      * Dispatches a `keyup` event.
      *
@@ -3606,7 +3596,7 @@ export declare class Keyboard {
      * See {@link KeyInput | KeyInput}
      * for a list of all key names.
      */
-    up(key: KeyInput): Promise<void>;
+    abstract up(key: KeyInput): Promise<void>;
     /**
      * Dispatches a `keypress` and `input` event.
      * This does not send a `keydown` or `keyup` event.
@@ -3623,7 +3613,7 @@ export declare class Keyboard {
      *
      * @param char - Character to send into the page.
      */
-    sendCharacter(char: string): Promise<void>;
+    abstract sendCharacter(char: string): Promise<void>;
     /**
      * Sends a `keydown`, `keypress`/`input`,
      * and `keyup` event for each character in the text.
@@ -3647,7 +3637,7 @@ export declare class Keyboard {
      * if specified, is the time to wait between `keydown` and `keyup` in milliseconds.
      * Defaults to 0.
      */
-    type(text: string, options?: Readonly<KeyboardTypeOptions>): Promise<void>;
+    abstract type(text: string, options?: Readonly<KeyboardTypeOptions>): Promise<void>;
     /**
      * Shortcut for {@link Keyboard.down}
      * and {@link Keyboard.up}.
@@ -3670,7 +3660,7 @@ export declare class Keyboard {
      * is the commands of keyboard shortcuts,
      * see {@link https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/editing/commands/editor_command_names.h | Chromium Source Code} for valid command names.
      */
-    press(key: KeyInput, options?: Readonly<KeyPressOptions>): Promise<void>;
+    abstract press(key: KeyInput, options?: Readonly<KeyPressOptions>): Promise<void>;
 }
 
 /**
@@ -3828,10 +3818,6 @@ export declare interface LaunchOptions {
 }
 
 /* Excluded from this release type: LazyArg */
-
-/* Excluded from this release type: lifeCycleToReadinessState */
-
-/* Excluded from this release type: lifeCycleToSubscribedEvent */
 
 /* Excluded from this release type: LifecycleWatcher */
 
@@ -4282,8 +4268,6 @@ export declare interface Moveable {
 }
 
 /* Excluded from this release type: MutationPoller */
-
-/* Excluded from this release type: Mutex */
 
 /**
  * @public
@@ -5674,61 +5658,16 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     abstract setCacheEnabled(enabled?: boolean): Promise<void>;
     /* Excluded from this release type: _maybeWriteBufferToFile */
     /**
-     * Captures screenshot of the current page.
+     * Captures a screenshot of this {@link Page | page}.
      *
-     * @remarks
-     * Options object which might have the following properties:
-     *
-     * - `path` : The file path to save the image to. The screenshot type
-     *   will be inferred from file extension. If `path` is a relative path, then
-     *   it is resolved relative to
-     *   {@link https://nodejs.org/api/process.html#process_process_cwd
-     *   | current working directory}.
-     *   If no path is provided, the image won't be saved to the disk.
-     *
-     * - `type` : Specify screenshot type, can be `jpeg`, `png` or `webp`.
-     *   Defaults to 'png'.
-     *
-     * - `quality` : The quality of the image, between 0-100. Not
-     *   applicable to `png` images.
-     *
-     * - `fullPage` : When true, takes a screenshot of the full
-     *   scrollable page. Defaults to `false`.
-     *
-     * - `clip` : An object which specifies clipping region of the page.
-     *   Should have the following fields:<br/>
-     * - `x` : x-coordinate of top-left corner of clip area.<br/>
-     * - `y` : y-coordinate of top-left corner of clip area.<br/>
-     * - `width` : width of clipping area.<br/>
-     * - `height` : height of clipping area.
-     *
-     * - `omitBackground` : Hides default white background and allows
-     *   capturing screenshots with transparency. Defaults to `false`.
-     *
-     * - `encoding` : The encoding of the image, can be either base64 or
-     *   binary. Defaults to `binary`.
-     *
-     * - `captureBeyondViewport` : When true, captures screenshot
-     *   {@link https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-captureScreenshot
-     *   | beyond the viewport}. When false, falls back to old behaviour,
-     *   and cuts the screenshot by the viewport size. Defaults to `true`.
-     *
-     * - `fromSurface` : When true, captures screenshot
-     *   {@link https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-captureScreenshot
-     *   | from the surface rather than the view}. When false, works only in
-     *   headful mode and ignores page viewport (but not browser window's
-     *   bounds). Defaults to `true`.
-     *
-     * @returns Promise which resolves to buffer or a base64 string (depending on
-     * the value of `encoding`) with captured screenshot.
+     * @param options - Configures screenshot behavior.
      */
-    abstract screenshot(options: ScreenshotOptions & {
+    screenshot(options: Readonly<ScreenshotOptions> & {
         encoding: 'base64';
     }): Promise<string>;
-    abstract screenshot(options?: ScreenshotOptions & {
-        encoding?: 'binary';
-    }): Promise<Buffer>;
-    abstract screenshot(options?: ScreenshotOptions): Promise<Buffer | string>;
+    screenshot(options?: Readonly<ScreenshotOptions>): Promise<Buffer>;
+    /* Excluded from this release type: _screenshot */
+    /* Excluded from this release type: _createTemporaryViewportContainingBox */
     /* Excluded from this release type: _getPDFOptions */
     /**
      * Generates a PDF of the page with the `print` CSS media type.
@@ -6939,9 +6878,31 @@ export declare interface ScreenshotOptions {
      */
     optimizeForSpeed?: boolean;
     /**
-     * @defaultValue `png`
+     * @defaultValue `'png'`
      */
     type?: 'png' | 'jpeg' | 'webp';
+    /**
+     * Quality of the image, between 0-100. Not applicable to `png` images.
+     */
+    quality?: number;
+    /**
+     * Capture the screenshot from the surface, rather than the view.
+     *
+     * @defaultValue `false`
+     */
+    fromSurface?: boolean;
+    /**
+     * When `true`, takes a screenshot of the full page.
+     *
+     * @defaultValue `false`
+     */
+    fullPage?: boolean;
+    /**
+     * Hides default white background and allows capturing screenshots with transparency.
+     *
+     * @defaultValue `false`
+     */
+    omitBackground?: boolean;
     /**
      * The file path to save the image to. The screenshot type will be inferred
      * from file extension. If path is a relative path, then it is resolved
@@ -6950,38 +6911,22 @@ export declare interface ScreenshotOptions {
      */
     path?: string;
     /**
-     * When `true`, takes a screenshot of the full page.
-     * @defaultValue `false`
-     */
-    fullPage?: boolean;
-    /**
-     * An object which specifies the clipping region of the page.
+     * Specifies the region of the page to clip.
      */
     clip?: ScreenshotClip;
     /**
-     * Quality of the image, between 0-100. Not applicable to `png` images.
-     */
-    quality?: number;
-    /**
-     * Hides default white background and allows capturing screenshots with transparency.
-     * @defaultValue `false`
-     */
-    omitBackground?: boolean;
-    /**
      * Encoding of the image.
-     * @defaultValue `binary`
+     *
+     * @defaultValue `'binary'`
      */
     encoding?: 'base64' | 'binary';
     /**
      * Capture the screenshot beyond the viewport.
+     *
      * @defaultValue `true`
      */
     captureBeyondViewport?: boolean;
-    /**
-     * Capture the screenshot from the surface, rather than the view.
-     * @defaultValue `true`
-     */
-    fromSurface?: boolean;
+    /* Excluded from this release type: allowViewportExpansion */
 }
 
 /* Excluded from this release type: ScriptInjector */

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 export * from './api/api.js';
-export * from './bidi/bidi.js';
 export * from './cdp/cdp.js';
 export * from './common/common.js';
 export * from './node/node.js';

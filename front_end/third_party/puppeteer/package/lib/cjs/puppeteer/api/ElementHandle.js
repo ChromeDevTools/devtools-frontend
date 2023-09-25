@@ -136,7 +136,7 @@ const JSHandle_js_1 = require("./JSHandle.js");
  * @public
  */
 let ElementHandle = (() => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5, _6, _7;
     let _classSuper = JSHandle_js_1.JSHandle;
     let _instanceExtraInitializers = [];
     let _getProperty_decorators;
@@ -168,6 +168,7 @@ let ElementHandle = (() => {
     let _press_decorators;
     let _boundingBox_decorators;
     let _boxModel_decorators;
+    let _screenshot_decorators;
     let _isIntersectingViewport_decorators;
     let _scrollIntoView_decorators;
     return class ElementHandle extends _classSuper {
@@ -202,8 +203,9 @@ let ElementHandle = (() => {
             _press_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_2 = ElementHandle).bindIsolatedHandle.bind(_2)];
             _boundingBox_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_3 = ElementHandle).bindIsolatedHandle.bind(_3)];
             _boxModel_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_4 = ElementHandle).bindIsolatedHandle.bind(_4)];
-            _isIntersectingViewport_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_5 = ElementHandle).bindIsolatedHandle.bind(_5)];
-            _scrollIntoView_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_6 = ElementHandle).bindIsolatedHandle.bind(_6)];
+            _screenshot_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_5 = ElementHandle).bindIsolatedHandle.bind(_5)];
+            _isIntersectingViewport_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_6 = ElementHandle).bindIsolatedHandle.bind(_6)];
+            _scrollIntoView_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_7 = ElementHandle).bindIsolatedHandle.bind(_7)];
             __esDecorate(this, null, _getProperty_decorators, { kind: "method", name: "getProperty", static: false, private: false, access: { has: obj => "getProperty" in obj, get: obj => obj.getProperty }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _getProperties_decorators, { kind: "method", name: "getProperties", static: false, private: false, access: { has: obj => "getProperties" in obj, get: obj => obj.getProperties }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _jsonValue_decorators, { kind: "method", name: "jsonValue", static: false, private: false, access: { has: obj => "jsonValue" in obj, get: obj => obj.jsonValue }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -233,6 +235,7 @@ let ElementHandle = (() => {
             __esDecorate(this, null, _press_decorators, { kind: "method", name: "press", static: false, private: false, access: { has: obj => "press" in obj, get: obj => obj.press }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _boundingBox_decorators, { kind: "method", name: "boundingBox", static: false, private: false, access: { has: obj => "boundingBox" in obj, get: obj => obj.boundingBox }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _boxModel_decorators, { kind: "method", name: "boxModel", static: false, private: false, access: { has: obj => "boxModel" in obj, get: obj => obj.boxModel }, metadata: _metadata }, null, _instanceExtraInitializers);
+            __esDecorate(this, null, _screenshot_decorators, { kind: "method", name: "screenshot", static: false, private: false, access: { has: obj => "screenshot" in obj, get: obj => obj.screenshot }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _isIntersectingViewport_decorators, { kind: "method", name: "isIntersectingViewport", static: false, private: false, access: { has: obj => "isIntersectingViewport" in obj, get: obj => obj.isIntersectingViewport }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _scrollIntoView_decorators, { kind: "method", name: "scrollIntoView", static: false, private: false, access: { has: obj => "scrollIntoView" in obj, get: obj => obj.scrollIntoView }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
@@ -1185,8 +1188,59 @@ let ElementHandle = (() => {
             }
             return point;
         }
-        async screenshot() {
-            throw new Error('Not implemented');
+        /**
+         * This method scrolls element into view if needed, and then uses
+         * {@link Page.(screenshot:3) } to take a screenshot of the element.
+         * If the element is detached from DOM, the method throws an error.
+         */
+        async screenshot(options = {}) {
+            const env_6 = { stack: [], error: void 0, hasError: false };
+            try {
+                const { scrollIntoView = true, captureBeyondViewport = true, allowViewportExpansion = captureBeyondViewport, } = options;
+                let clip = await this.#nonEmptyVisibleBoundingBox();
+                const page = this.frame.page();
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const _ = __addDisposableResource(env_6, allowViewportExpansion && clip
+                    ? await page._createTemporaryViewportContainingBox(clip)
+                    : null, true);
+                if (scrollIntoView) {
+                    await this.scrollIntoViewIfNeeded();
+                    // We measure again just in case.
+                    clip = await this.#nonEmptyVisibleBoundingBox();
+                }
+                const [pageLeft, pageTop] = await this.evaluate(() => {
+                    if (!window.visualViewport) {
+                        throw new Error('window.visualViewport is not supported.');
+                    }
+                    return [
+                        window.visualViewport.pageLeft,
+                        window.visualViewport.pageTop,
+                    ];
+                });
+                clip.x += pageLeft;
+                clip.y += pageTop;
+                return await page.screenshot({
+                    ...options,
+                    captureBeyondViewport: false,
+                    clip,
+                });
+            }
+            catch (e_6) {
+                env_6.error = e_6;
+                env_6.hasError = true;
+            }
+            finally {
+                const result_1 = __disposeResources(env_6);
+                if (result_1)
+                    await result_1;
+            }
+        }
+        async #nonEmptyVisibleBoundingBox() {
+            const box = await this.boundingBox();
+            (0, assert_js_1.assert)(box, 'Node is either not visible or not an HTMLElement');
+            (0, assert_js_1.assert)(box.width !== 0, 'Node has 0 width.');
+            (0, assert_js_1.assert)(box.height !== 0, 'Node has 0 height.');
+            return box;
         }
         /**
          * @internal
@@ -1225,12 +1279,12 @@ let ElementHandle = (() => {
          * (full intersection). Defaults to 1.
          */
         async isIntersectingViewport(options = {}) {
-            const env_6 = { stack: [], error: void 0, hasError: false };
+            const env_7 = { stack: [], error: void 0, hasError: false };
             try {
                 await this.assertConnectedElement();
                 // eslint-disable-next-line rulesdir/use-using -- Returns `this`.
                 const handle = await this.#asSVGElementHandle();
-                const target = __addDisposableResource(env_6, handle && (await handle.#getOwnerSVGElement()), false);
+                const target = __addDisposableResource(env_7, handle && (await handle.#getOwnerSVGElement()), false);
                 return await (target ?? this).evaluate(async (element, threshold) => {
                     const visibleRatio = await new Promise(resolve => {
                         const observer = new IntersectionObserver(entries => {
@@ -1242,12 +1296,12 @@ let ElementHandle = (() => {
                     return threshold === 1 ? visibleRatio === 1 : visibleRatio > threshold;
                 }, options.threshold ?? 0);
             }
-            catch (e_6) {
-                env_6.error = e_6;
-                env_6.hasError = true;
+            catch (e_7) {
+                env_7.error = e_7;
+                env_7.hasError = true;
             }
             finally {
-                __disposeResources(env_6);
+                __disposeResources(env_7);
             }
         }
         /**

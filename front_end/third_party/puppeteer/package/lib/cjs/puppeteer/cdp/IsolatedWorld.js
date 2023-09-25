@@ -65,6 +65,7 @@ const Realm_js_1 = require("../api/Realm.js");
 const util_js_1 = require("../common/util.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
+const Mutex_js_1 = require("../util/Mutex.js");
 const ExecutionContext_js_1 = require("./ExecutionContext.js");
 const Frame_js_1 = require("./Frame.js");
 /**
@@ -129,7 +130,7 @@ class IsolatedWorld extends Realm_js_1.Realm {
     }
     // If multiple waitFor are set up asynchronously, we need to wait for the
     // first one to set up the binding in the page before running the others.
-    #mutex = new util_js_1.Mutex();
+    #mutex = new Mutex_js_1.Mutex();
     async _addBindingToContext(context, name) {
         const env_1 = { stack: [], error: void 0, hasError: false };
         try {

@@ -71,6 +71,7 @@ import {
 } from './BrowsingContext.js';
 import {type BidiConnection} from './Connection.js';
 import {BidiDialog} from './Dialog.js';
+import {BidiElementHandle} from './ElementHandle.js';
 import {EmulationManager} from './EmulationManager.js';
 import {BidiFrame, lifeCycleToReadinessState} from './Frame.js';
 import {type BidiHTTPRequest} from './HTTPRequest.js';
@@ -201,7 +202,14 @@ export class BidiPage extends Page {
     this.#emulationManager = new EmulationManager(browsingContext);
     this.#mouse = new BidiMouse(this.mainFrame().context());
     this.#touchscreen = new BidiTouchscreen(this.mainFrame().context());
-    this.#keyboard = new BidiKeyboard(this.mainFrame().context());
+    this.#keyboard = new BidiKeyboard(this);
+  }
+
+  /**
+   * @internal
+   */
+  get connection(): BidiConnection {
+    return this.#connection;
   }
 
   override async setUserAgent(
@@ -280,6 +288,27 @@ export class BidiPage extends Page {
     const mainFrame = this.#frameTree.getMainFrame();
     assert(mainFrame, 'Requesting main frame too early!');
     return mainFrame;
+  }
+
+  /**
+   * @internal
+   */
+  async focusedFrame(): Promise<BidiFrame> {
+    using frame = await this.mainFrame()
+      .isolatedRealm()
+      .evaluateHandle(() => {
+        let frame: HTMLIFrameElement | undefined;
+        let win: Window | null = window;
+        while (win?.document.activeElement instanceof HTMLIFrameElement) {
+          frame = win.document.activeElement;
+          win = frame.contentWindow;
+        }
+        return frame;
+      });
+    if (!(frame instanceof BidiElementHandle)) {
+      return this.mainFrame();
+    }
+    return await frame.contentFrame();
   }
 
   override frames(): BidiFrame[] {
@@ -618,35 +647,62 @@ export class BidiPage extends Page {
     }
   }
 
-  override screenshot(
-    options: ScreenshotOptions & {encoding: 'base64'}
-  ): Promise<string>;
-  override screenshot(
-    options?: ScreenshotOptions & {encoding?: 'binary'}
-  ): never;
   override async screenshot(
-    options: ScreenshotOptions = {}
+    options: Readonly<ScreenshotOptions> & {encoding: 'base64'}
+  ): Promise<string>;
+  override async screenshot(
+    options?: Readonly<ScreenshotOptions>
+  ): Promise<Buffer>;
+  override async screenshot(
+    options: Readonly<ScreenshotOptions> = {}
   ): Promise<Buffer | string> {
-    const {path = undefined, encoding, ...args} = options;
-    if (Object.keys(args).length >= 1) {
-      throw new Error('BiDi only supports "encoding" and "path" options');
+    const {
+      clip,
+      type,
+      captureBeyondViewport,
+      allowViewportExpansion = true,
+    } = options;
+    if (captureBeyondViewport) {
+      throw new Error(`BiDi does not support 'captureBeyondViewport'.`);
     }
-
-    const {result} = await this.#connection.send(
-      'browsingContext.captureScreenshot',
-      {
-        context: this.mainFrame()._id,
-      }
-    );
-
-    if (encoding === 'base64') {
-      return result.data;
+    const invalidOption = Object.keys(options).find(option => {
+      return [
+        'fromSurface',
+        'omitBackground',
+        'optimizeForSpeed',
+        'quality',
+      ].includes(option);
+    });
+    if (invalidOption !== undefined) {
+      throw new Error(`BiDi does not support ${invalidOption}.`);
     }
+    if ((type ?? 'png') !== 'png') {
+      throw new Error(`BiDi only supports 'png' type.`);
+    }
+    if (clip?.scale !== undefined) {
+      throw new Error(`BiDi does not support 'scale' in 'clip'.`);
+    }
+    return await super.screenshot({
+      ...options,
+      captureBeyondViewport,
+      allowViewportExpansion: captureBeyondViewport ?? allowViewportExpansion,
+    });
+  }
 
-    const buffer = Buffer.from(result.data, 'base64');
-    await this._maybeWriteBufferToFile(path, buffer);
-
-    return buffer;
+  override async _screenshot(
+    options: Readonly<ScreenshotOptions>
+  ): Promise<string> {
+    const {clip} = options;
+    const {
+      result: {data},
+    } = await this.#connection.send('browsingContext.captureScreenshot', {
+      context: this.mainFrame()._id,
+      clip: clip && {
+        type: 'viewport',
+        ...clip,
+      },
+    });
+    return data;
   }
 
   override async waitForRequest(

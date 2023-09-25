@@ -14,6 +14,11 @@ export interface TestResult {
   summaryHtml?: string;
   duration?: string;
   tags?: {key: string, value: string}[];
+  artifacts?: {
+    [key: string]: {
+      filePath: string,
+    },
+  };
 }
 
 class SanitizedTestIdTag {

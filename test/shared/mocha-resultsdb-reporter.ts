@@ -4,6 +4,10 @@
 
 import * as Mocha from 'mocha';
 
+import {
+  ScreenshotError,
+} from '../shared/screenshots.js';
+
 import * as ResultsDb from './resultsdb.js';
 
 const {
@@ -37,6 +41,9 @@ function getErrorMessage(error: Error|unknown): string {
 }
 
 class ResultsDbReporter extends Mocha.reporters.Spec {
+  // The max length of the summary is 4000, but we need to leave some room for
+  // the rest of the HTML formatting (e.g. <pre> and </pre>).
+  static readonly SUMMARY_LENGTH_CUTOFF = 3985;
   private suitePrefix?: string;
 
   constructor(runner: Mocha.Runner, options?: Mocha.MochaOptions) {
@@ -58,11 +65,15 @@ class ResultsDbReporter extends Mocha.reporters.Spec {
     ResultsDb.recordTestResult(testResult);
   }
 
-  private onTestFail(test: Mocha.Test, error: Error|unknown) {
+  private onTestFail(test: Mocha.Test, error: Error|ScreenshotError|unknown) {
     const testResult = this.buildDefaultTestResultFrom(test);
     testResult.status = 'FAIL';
     testResult.expected = false;
-    testResult.summaryHtml = `<pre>${getErrorMessage(error)}</pre>`;
+    if (error instanceof ScreenshotError) {
+      [testResult.artifacts, testResult.summaryHtml] = error.toMiloArtifacts();
+    } else {
+      testResult.summaryHtml = `<pre>${getErrorMessage(error).slice(0, ResultsDbReporter.SUMMARY_LENGTH_CUTOFF)}</pre>`;
+    }
     ResultsDb.recordTestResult(testResult);
   }
 

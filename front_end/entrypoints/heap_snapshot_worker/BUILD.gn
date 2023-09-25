@@ -50,14 +50,3 @@ devtools_entrypoint("worker_entrypoint") {
 
   visibility += devtools_entrypoints_visibility
 }
-
-devtools_entrypoint("legacy") {
-  entrypoint = "heap_snapshot_worker-legacy.ts"
-
-  deps = [
-    ":worker_entrypoint",
-    "../../models/heap_snapshot_model:legacy",
-  ]
-
-  visibility = [ "../..:legacy_entrypoints" ]
-}

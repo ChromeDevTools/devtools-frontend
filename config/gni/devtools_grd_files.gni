@@ -297,7 +297,6 @@ grd_files_release_sources = [
   "front_end/entrypoints/formatter_worker/formatter_worker-entrypoint.js",
   "front_end/entrypoints/formatter_worker/formatter_worker.js",
   "front_end/entrypoints/heap_snapshot_worker/heap_snapshot_worker-entrypoint.js",
-  "front_end/entrypoints/heap_snapshot_worker/heap_snapshot_worker-legacy.js",
   "front_end/entrypoints/heap_snapshot_worker/heap_snapshot_worker.js",
   "front_end/entrypoints/inspector/inspector.js",
   "front_end/entrypoints/inspector_main/inspector_main-meta.js",

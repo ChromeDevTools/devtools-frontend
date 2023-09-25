@@ -333,6 +333,30 @@ describeWithMockConnection('NetworkLogView', () => {
       networkLogView.detach();
     });
 
+    it('displays correct count for more filters', async () => {
+      Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
+      let filterBar;
+      ({filterBar, networkLogView} = createEnvironment());
+      const dropdown = await openDropdown(filterBar, networkLogView);
+      if (!dropdown) {
+        return;
+      }
+
+      assert.strictEqual(getMoreFiltersActiveCount(filterBar), '0');
+      assert.isTrue(getCountAdorner(filterBar)?.classList.contains('hidden'));
+
+      const softMenu = getSoftMenu();
+      const hideExtensionURL = getDropdownItem(softMenu, 'Hide extension URLs');
+      dispatchMouseUpEvent(hideExtensionURL);
+      await raf();
+
+      assert.strictEqual(getMoreFiltersActiveCount(filterBar), '1');
+      assert.isFalse(getCountAdorner(filterBar)?.classList.contains('hidden'));
+
+      dropdown.discard();
+      networkLogView.detach();
+    });
+
     function getOptionFromDropdown(option: string, dropdownArray: Element[]) {
       return dropdownArray.find(el => {
         return el.textContent?.includes(option);
@@ -624,6 +648,18 @@ async function openDropdown(filterBar: UI.FilterBar.FilterBar, networkLogView: N
   await raf();
   const dropdown = networkLogView.getMoreFiltersDropdown();
   return dropdown;
+}
+
+function getCountAdorner(filterBar: UI.FilterBar.FilterBar): HTMLElement|null {
+  const button = filterBar.element.querySelector('[aria-label="Show only/hide requests dropdown"]')
+                     ?.querySelector('.toolbar-button');
+  return button?.querySelector('.active-filters-count') ?? null;
+}
+
+function getMoreFiltersActiveCount(filterBar: UI.FilterBar.FilterBar): string {
+  const countAdorner = getCountAdorner(filterBar);
+  const count = countAdorner?.querySelector('[slot="content"]')?.textContent ?? '';
+  return count;
 }
 
 function getSoftMenu(): HTMLElement {

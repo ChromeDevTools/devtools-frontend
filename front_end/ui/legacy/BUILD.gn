@@ -137,6 +137,7 @@ devtools_module("ui") {
     "../../core/sdk:bundle",
     "../../models/text_utils:bundle",
     "../../ui/legacy/theme_support:bundle",
+    "../components/adorners:bundle",
     "../components/helpers:bundle",
     "../components/icon_button:bundle",
     "../components/settings:bundle",

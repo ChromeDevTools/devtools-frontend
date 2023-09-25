@@ -18,7 +18,7 @@ slot {
   height: 14px;
   line-height: 13px;
   padding: 0 6px;
-  font-size: 8.5px;
+  font-size: var(--override-adorner-font-size, 8.5px);
   color: var(--override-adorner-text-color, var(--text-primary));
   background-color: var(--override-adorner-background-color, var(--sys-color-neutral-container));
   border: 1px solid var(--override-adorner-border-color, var(--sys-color-neutral-outline));

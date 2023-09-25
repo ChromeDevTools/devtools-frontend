@@ -46,6 +46,7 @@ import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Sources from '../../panels/sources/sources.js';
+import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -994,6 +995,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.parseFilterQuery(this.textFilterUI.value(), this.invertFilterUI.checked());
     this.filterRequests();
     this.textFilterSetting.set(this.textFilterUI.value());
+    this.moreFiltersDropDownUI?.updateActiveFiltersCount();
   }
 
   async resetFilter(): Promise<void> {
@@ -2666,6 +2668,8 @@ export class MoreFiltersDropDownUI extends
   private networkOnlyBlockedRequestsSetting: Common.Settings.Setting<boolean>;
   private networkOnlyThirdPartySetting: Common.Settings.Setting<boolean>;
   private contextMenu?: UI.ContextMenu.ContextMenu;
+  private activeFiltersCount: HTMLElement;
+  private activeFiltersCountAdorner: Adorners.Adorner.Adorner;
 
   constructor(filterChangedCallback: () => void) {
     super();
@@ -2683,8 +2687,18 @@ export class MoreFiltersDropDownUI extends
 
     this.filterElement = document.createElement('div');
     this.filterElement.setAttribute('aria-label', 'Show only/hide requests dropdown');
+
+    this.activeFiltersCountAdorner = new Adorners.Adorner.Adorner();
+    this.activeFiltersCount = document.createElement('span');
+    this.activeFiltersCountAdorner.data = {
+      name: 'countWrapper',
+      content: this.activeFiltersCount,
+    };
+    this.activeFiltersCountAdorner.classList.add('active-filters-count');
+    this.updateActiveFiltersCount();
+
     this.dropDownButton = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.showOnlyHideRequests), undefined, i18nString(UIStrings.moreFilters));
+        i18nString(UIStrings.showOnlyHideRequests), this.activeFiltersCountAdorner, i18nString(UIStrings.moreFilters));
     this.filterElement.appendChild(this.dropDownButton.element);
     this.dropDownButton.turnIntoSelect();
     this.dropDownButton.element.classList.add('dropdown-filterbar');
@@ -2718,14 +2732,12 @@ export class MoreFiltersDropDownUI extends
         () => this.networkHideChromeExtensionsSetting.set(!this.networkHideChromeExtensionsSetting.get()),
         this.networkHideChromeExtensionsSetting.get(), undefined, undefined, i18nString(UIStrings.hideChromeExtension));
     this.contextMenu.defaultSection().appendSeparator();
+
     this.contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.hasBlockedCookies),
-        () => {
-          this.networkShowBlockedCookiesOnlySetting.set(!this.networkShowBlockedCookiesOnlySetting.get());
-        },
+        () => this.networkShowBlockedCookiesOnlySetting.set(!this.networkShowBlockedCookiesOnlySetting.get()),
         this.networkShowBlockedCookiesOnlySetting.get(), undefined, undefined,
         i18nString(UIStrings.onlyShowRequestsWithBlockedCookies));
-
     this.contextMenu.defaultSection().appendCheckboxItem(
         i18nString(UIStrings.blockedRequests),
         () => this.networkOnlyBlockedRequestsSetting.set(!this.networkOnlyBlockedRequestsSetting.get()),
@@ -2738,6 +2750,20 @@ export class MoreFiltersDropDownUI extends
         i18nString(UIStrings.onlyShowThirdPartyRequests));
 
     void this.contextMenu.show();
+  }
+
+  updateActiveFiltersCount(): void {
+    const settings = [
+      this.networkHideDataURLSetting.get(),
+      this.networkHideChromeExtensionsSetting.get(),
+      this.networkShowBlockedCookiesOnlySetting.get(),
+      this.networkOnlyBlockedRequestsSetting.get(),
+      this.networkOnlyThirdPartySetting.get(),
+    ];
+    const count = settings.filter(Boolean).length;
+    this.activeFiltersCount.textContent = count.toString();
+    count ? this.activeFiltersCountAdorner.classList.remove('hidden') :
+            this.activeFiltersCountAdorner.classList.add('hidden');
   }
 
   discard(): void {

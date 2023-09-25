@@ -33,11 +33,10 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import * as Adorners from '../components/adorners/adorners.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 
-import * as Utils from './utils/utils.js';
-
-import {Events as ActionEvents, type Action} from './ActionRegistration.js';
+import {type Action, Events as ActionEvents} from './ActionRegistration.js';
 import {ActionRegistry} from './ActionRegistry.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
@@ -49,6 +48,7 @@ import {Events as TextPromptEvents, TextPrompt} from './TextPrompt.js';
 import toolbarStyles from './toolbar.css.legacy.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, LongClickController} from './UIUtils.js';
+import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -560,6 +560,7 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
   private text?: string;
   private glyph?: string;
   private icon?: HTMLElement;
+  private adorner?: HTMLElement;
   /**
    * TODO(crbug.com/1126026): remove glyph parameter in favor of icon.
    */
@@ -596,7 +597,14 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
   }
 
   setGlyphOrIcon(glyphOrIcon: string|HTMLElement): void {
-    if (glyphOrIcon instanceof HTMLElement) {
+    if (glyphOrIcon instanceof Adorners.Adorner.Adorner) {
+      if (this.adorner) {
+        this.adorner.replaceWith(glyphOrIcon);
+      } else {
+        this.element.prepend(glyphOrIcon);
+      }
+      this.adorner = glyphOrIcon;
+    } else if (glyphOrIcon instanceof HTMLElement) {
       glyphOrIcon.classList.add('toolbar-icon');
       if (this.icon) {
         this.icon.replaceWith(glyphOrIcon);

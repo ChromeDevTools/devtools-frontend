@@ -29,5 +29,5 @@ devtools_entrypoint("bundle") {
     ":css_files",
   ]
 
-  visibility = default_components_visibility
+  visibility = default_components_visibility + [ "../../legacy/*" ]
 }

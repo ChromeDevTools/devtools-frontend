@@ -125,6 +125,17 @@
   border-radius: 0;
 }
 
+.toolbar-button .active-filters-count {
+  margin-right: 5px;
+
+  --override-adorner-background-color: var(--sys-color-tonal-container);
+  --override-adorner-border-color: var(--sys-color-tonal-container);
+  --override-adorner-text-color: var(--sys-color-primary);
+  --override-adorner-font-size: 10px;
+
+  font-weight: 700;
+}
+
 .toolbar-text {
   margin: 0 4px 0 0;
   text-overflow: ellipsis;

@@ -1234,9 +1234,11 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         break;
       case Protocol.Log.LogEntryLevel.Warning:
         this.elementInternal.classList.add('console-warning-level');
+        this.elementInternal.role = 'log';
         break;
       case Protocol.Log.LogEntryLevel.Error:
         this.elementInternal.classList.add('console-error-level');
+        this.elementInternal.role = 'log';
         break;
     }
     this.updateMessageIcon();

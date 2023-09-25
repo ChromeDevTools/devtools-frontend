@@ -1069,10 +1069,12 @@ export class SelfXssWarningDialog {
     const result = await new Promise<boolean>(resolve => {
       const closeButton =
           content.createChild('div', 'dialog-close-button', 'dt-close-button') as UI.UIUtils.DevToolsCloseButton;
-      closeButton.addEventListener('click', () => {
+      closeButton.setTabbable(true);
+      self.onInvokeElement(closeButton, event => {
         dialog.hide();
+        event.consume(true);
         resolve(false);
-      }, false);
+      });
 
       content.createChild('div', 'title').textContent = i18nString(UIStrings.doYouTrustThisCode);
       content.createChild('div', 'message').textContent =
@@ -1102,7 +1104,6 @@ export class SelfXssWarningDialog {
         resolve(false);
       });
       dialog.show();
-      input.focus();
     });
     dialog.hide();
     return result;

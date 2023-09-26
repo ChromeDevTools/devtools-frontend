@@ -109,9 +109,21 @@ const UIStrings = {
    */
   requestTypesTooltip: 'Filter requests by type',
   /**
-   * @description: Label for the dropdown in the Network Panel
+   * @description Label for the dropdown in the Network Panel
    */
-  requestTypes: 'Request Types',
+  requestTypes: 'Request types',
+  /**
+   * @description Dynamic label for the `Request types` dropdown in the Network panel
+   * @example {Doc} PH1
+   * @example {CSS} PH2
+   */
+  twoTypesSelected: '{PH1}, {PH2}',
+  /**
+   * @description: Dynamic label for the `Request types` dropdown in the Network panel
+   * @example {Doc} PH1
+   * @example {CSS} PH2
+   */
+  overTwoTypesSelected: '{PH1}, {PH2}...',
   /**
    *@description Label for a checkbox in the Network panel. When checked, only requests with
    *             blocked response cookies are shown.
@@ -2643,7 +2655,6 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
       this.displayedTypes.add(s);
     }
     this.update();
-    this.updateSelectedTypesCount();
   }
 
   private update(): void {
@@ -2651,6 +2662,8 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
       this.displayedTypes = new Set();
       this.displayedTypes.add(DropDownTypesUI.ALL_TYPES);
     }
+    this.updateSelectedTypesCount();
+    this.updateLabel();
   }
 
   updateSelectedTypesCount(): void {
@@ -2660,6 +2673,28 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
     } else {
       this.typesCountAdorner.classList.add('hidden');
     }
+  }
+
+  updateLabel(): void {
+    if (this.displayedTypes.has(DropDownTypesUI.ALL_TYPES)) {
+      this.dropDownButton.setText(i18nString(UIStrings.requestTypes));
+      return;
+    }
+
+    let newLabel;
+    if (this.displayedTypes.size === 1) {
+      const type = this.displayedTypes.values().next().value;
+      newLabel = Common.ResourceType.ResourceCategory.categoryByTitle(type)?.shortTitle() || '';
+    } else {
+      // show up to two last selected types
+      const twoLastSelected = Array.from(this.displayedTypes).slice(-2).reverse();
+      const shortNames =
+          twoLastSelected.map(type => Common.ResourceType.ResourceCategory.categoryByTitle(type)?.shortTitle() || '');
+      const valuesToDisplay = {PH1: shortNames[0], PH2: shortNames[1]};
+      newLabel = this.displayedTypes.size === 2 ? i18nString(UIStrings.twoTypesSelected, valuesToDisplay) :
+                                                  i18nString(UIStrings.overTwoTypesSelected, valuesToDisplay);
+    }
+    this.dropDownButton.setText(newLabel);
   }
 
   isActive(): boolean {

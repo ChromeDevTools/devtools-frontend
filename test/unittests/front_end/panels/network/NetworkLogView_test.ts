@@ -313,7 +313,7 @@ describeWithMockConnection('NetworkLogView', () => {
           rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
           ['chrome-extension://url1' as Platform.DevToolsPath.UrlString, 'url2' as Platform.DevToolsPath.UrlString]);
 
-      const dropdown = await openDropdown(filterBar, networkLogView);
+      const dropdown = await openMoreTypesDropdown(filterBar, networkLogView);
       if (!dropdown) {
         return;
       }
@@ -337,7 +337,7 @@ describeWithMockConnection('NetworkLogView', () => {
       Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
       let filterBar;
       ({filterBar, networkLogView} = createEnvironment());
-      const dropdown = await openDropdown(filterBar, networkLogView);
+      const dropdown = await openMoreTypesDropdown(filterBar, networkLogView);
       if (!dropdown) {
         return;
       }
@@ -361,15 +361,7 @@ describeWithMockConnection('NetworkLogView', () => {
        async () => {
          Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
 
-         const filterItems =
-             Object.values(Common.ResourceType.resourceCategories).map(category => ({
-                                                                         name: category.title(),
-                                                                         label: (): string => category.shortTitle(),
-                                                                         title: category.title(),
-                                                                       }));
-
-         const setting = Common.Settings.Settings.instance().createSetting('networkResourceTypeFilters', {all: true});
-         const dropdown = new Network.NetworkLogView.DropDownTypesUI(filterItems, /* callback*/ () => {}, setting);
+         const dropdown = setupRequestTypesDropdown();
          const button = dropdown.element().querySelector('.toolbar-button');
 
          assertElement(button, HTMLElement);
@@ -414,15 +406,7 @@ describeWithMockConnection('NetworkLogView', () => {
     it('shows correct selected request types count', async () => {
       Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
 
-      const filterItems =
-          Object.values(Common.ResourceType.resourceCategories).map(category => ({
-                                                                      name: category.title(),
-                                                                      label: (): string => category.shortTitle(),
-                                                                      title: category.title(),
-                                                                    }));
-
-      const setting = Common.Settings.Settings.instance().createSetting('networkResourceTypeFilters', {all: true});
-      const dropdown = new Network.NetworkLogView.DropDownTypesUI(filterItems, /* callback*/ () => {}, setting);
+      const dropdown = setupRequestTypesDropdown();
       const button = dropdown.element().querySelector('.toolbar-button');
       assertElement(button, HTMLElement);
 
@@ -439,6 +423,42 @@ describeWithMockConnection('NetworkLogView', () => {
       countAdorner = button.querySelector('.active-filters-count');
       assert.isFalse(countAdorner?.classList.contains('hidden'));
       assert.strictEqual(countAdorner?.querySelector('[slot="content"]')?.textContent, '1');
+
+      dropdown.discard();
+      await raf();
+    });
+
+    it('adjusts request types label dynamically', async () => {
+      Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
+
+      const dropdown = setupRequestTypesDropdown();
+      const button = dropdown.element().querySelector('.toolbar-button');
+      assertElement(button, HTMLElement);
+
+      let toolbarText = button.querySelector('.toolbar-text')?.textContent;
+      assert.strictEqual(toolbarText, 'Request types');
+
+      dispatchClickEvent(button, {bubbles: true, composed: true});
+      await raf();
+      const optionImg = getRequestTypeDropdownOption('Images');
+      assertElement(optionImg, HTMLElement);
+      dispatchMouseUpEvent(optionImg, {bubbles: true, composed: true});
+      await raf();
+      const optionJS = getRequestTypeDropdownOption('Scripts');
+      assertElement(optionJS, HTMLElement);
+      dispatchMouseUpEvent(optionJS, {bubbles: true, composed: true});
+      await raf();
+
+      toolbarText = button.querySelector('.toolbar-text')?.textContent;
+      assert.strictEqual(toolbarText, 'JS, Img');
+
+      const optionCSS = getRequestTypeDropdownOption('Stylesheets');
+      assertElement(optionCSS, HTMLElement);
+      dispatchMouseUpEvent(optionCSS, {bubbles: true, composed: true});
+      await raf();
+
+      toolbarText = button.querySelector('.toolbar-text')?.textContent;
+      assert.strictEqual(toolbarText, 'CSS, JS...');
 
       dropdown.discard();
       await raf();
@@ -482,7 +502,7 @@ describeWithMockConnection('NetworkLogView', () => {
           rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
           ['url1' as Platform.DevToolsPath.UrlString, 'url2' as Platform.DevToolsPath.UrlString]);
 
-      const dropdown = await openDropdown(filterBar, networkLogView);
+      const dropdown = await openMoreTypesDropdown(filterBar, networkLogView);
       if (!dropdown) {
         return;
       }
@@ -662,13 +682,27 @@ function getRequestTypeDropdownOption(requestType: string): Element|null {
   return dropdownOptions.find(el => el.textContent?.includes(requestType)) || null;
 }
 
-async function openDropdown(filterBar: UI.FilterBar.FilterBar, networkLogView: Network.NetworkLogView.NetworkLogView):
+async function openMoreTypesDropdown(
+    filterBar: UI.FilterBar.FilterBar, networkLogView: Network.NetworkLogView.NetworkLogView):
     Promise<Network.NetworkLogView.MoreFiltersDropDownUI|undefined> {
   const button = filterBar.element.querySelector('[aria-label="Show only/hide requests dropdown"]')
                      ?.querySelector('.toolbar-button');
   button?.dispatchEvent(new Event('click'));
   await raf();
   const dropdown = networkLogView.getMoreFiltersDropdown();
+  return dropdown;
+}
+
+function setupRequestTypesDropdown() {
+  const filterItems =
+      Object.values(Common.ResourceType.resourceCategories).map(category => ({
+                                                                  name: category.title(),
+                                                                  label: (): string => category.shortTitle(),
+                                                                  title: category.title(),
+                                                                }));
+
+  const setting = Common.Settings.Settings.instance().createSetting('networkResourceTypeFilters', {all: true});
+  const dropdown = new Network.NetworkLogView.DropDownTypesUI(filterItems, /* callback*/ () => {}, setting);
   return dropdown;
 }
 

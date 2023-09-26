@@ -53,7 +53,6 @@ group("legacy_entrypoints") {
     "panels/changes:legacy",
     "panels/console:legacy",
     "panels/coverage:legacy",
-    "panels/elements:legacy",
     "panels/emulation:legacy",
     "panels/layer_viewer:legacy",
     "panels/lighthouse:legacy",

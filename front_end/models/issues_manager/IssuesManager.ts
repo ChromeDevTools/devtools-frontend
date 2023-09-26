@@ -10,19 +10,19 @@ import {AttributionReportingIssue} from './AttributionReportingIssue.js';
 import {BounceTrackingIssue} from './BounceTrackingIssue.js';
 import {ClientHintIssue} from './ClientHintIssue.js';
 import {ContentSecurityPolicyIssue} from './ContentSecurityPolicyIssue.js';
+import {CookieIssue} from './CookieIssue.js';
 import {CorsIssue} from './CorsIssue.js';
 import {CrossOriginEmbedderPolicyIssue, isCrossOriginEmbedderPolicyIssue} from './CrossOriginEmbedderPolicyIssue.js';
 import {DeprecationIssue} from './DeprecationIssue.js';
 import {FederatedAuthRequestIssue} from './FederatedAuthRequestIssue.js';
-import {FederatedAuthUserInfoRequestIssue} from './FederatedAuthUserInfoRequestIssue.js';
 import {GenericIssue} from './GenericIssue.js';
 import {HeavyAdIssue} from './HeavyAdIssue.js';
 import {type Issue, type IssueKind} from './Issue.js';
 import {Events} from './IssuesManagerEvents.js';
 import {LowTextContrastIssue} from './LowTextContrastIssue.js';
 import {MixedContentIssue} from './MixedContentIssue.js';
+import {PropertyRuleIssue} from './PropertyRuleIssue.js';
 import {QuirksModeIssue} from './QuirksModeIssue.js';
-import {CookieIssue} from './CookieIssue.js';
 import {SharedArrayBufferIssue} from './SharedArrayBufferIssue.js';
 import {SourceFrameIssuesManager} from './SourceFrameIssuesManager.js';
 import {StylesheetLoadingIssue} from './StylesheetLoadingIssue.js';
@@ -110,8 +110,8 @@ const issueCodeHandlers = new Map<
     StylesheetLoadingIssue.fromInspectorIssue,
   ],
   [
-    Protocol.Audits.InspectorIssueCode.FederatedAuthUserInfoRequestIssue,
-    FederatedAuthUserInfoRequestIssue.fromInspectorIssue,
+    Protocol.Audits.InspectorIssueCode.PropertyRuleIssue,
+    PropertyRuleIssue.fromInspectorIssue,
   ],
 ]);
 

@@ -45,7 +45,7 @@ devtools-header-section-row:first-of-type {
 
 .link,
 .devtools-link {
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
   outline-offset: 2px;
@@ -57,4 +57,12 @@ devtools-header-section-row:first-of-type {
 
 .inline-icon {
   vertical-align: middle;
+}
+
+@media (forced-colors: active) {
+  .link,
+  .devtools-link {
+    color: linktext;
+    text-decoration-color: linktext;
+  }
 }

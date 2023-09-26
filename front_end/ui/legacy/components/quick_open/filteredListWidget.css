@@ -24,7 +24,7 @@
 }
 
 .filtered-list-widget-hint {
-  color: var(--color-text-disabled);
+  color: var(--color-text-secondary);
   padding: 12px;
 }
 

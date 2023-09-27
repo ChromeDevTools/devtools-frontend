@@ -5,7 +5,7 @@
 import * as Common from '../../../../../front_end/core/common/common.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Network from '../../../../../front_end/panels/network/network.js';
 import {assertElement} from '../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
@@ -406,5 +406,30 @@ describeWithEnvironment('NetworkLogView', () => {
     networkRequestNode.renderCell(el, 'has-overrides');
     const marker = el.innerText;
     assert.strictEqual(marker, '');
+  });
+
+  it('only counts non-blocked response cookies', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.addExtraResponseInfo({
+      responseHeaders:
+          [{name: 'Set-Cookie', value: 'good=123; Path=/; Secure; SameSite=None\nbad=456; Path=/; SameSite=None'}],
+      blockedResponseCookies: [{
+        blockedReasons: [Protocol.Network.SetCookieBlockedReason.SameSiteNoneInsecure],
+        cookie: null,
+        cookieLine: 'bad=456; Path=/; SameSite=None',
+      }],
+      resourceIPAddressSpace: Protocol.Network.IPAddressSpace.Public,
+      statusCode: undefined,
+      cookiePartitionKey: undefined,
+      cookiePartitionKeyOpaque: undefined,
+    });
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+    const el = document.createElement('div');
+    networkRequestNode.renderCell(el, 'setcookies');
+    assert.strictEqual(el.innerText, '1');
   });
 });

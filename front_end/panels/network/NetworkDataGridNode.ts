@@ -950,7 +950,7 @@ export class NetworkRequestNode extends NetworkNode {
         break;
       }
       case 'setcookies': {
-        this.setTextAndTitle(cell, this.arrayLength(this.requestInternal.responseCookies));
+        this.setTextAndTitle(cell, this.arrayLength(this.requestInternal.nonBlockedResponseCookies()));
         break;
       }
       case 'priority': {

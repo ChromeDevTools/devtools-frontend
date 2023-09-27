@@ -198,18 +198,7 @@ export class RequestCookiesView extends UI.Widget.Widget {
     const malformedResponseCookies: SDK.NetworkRequest.BlockedSetCookieWithReason[] = [];
 
     if (this.request.responseCookies.length) {
-      const blockedCookieLines: (string|null)[] =
-          this.request.blockedResponseCookies().map(blockedCookie => blockedCookie.cookieLine);
-      responseCookies = this.request.responseCookies.filter(cookie => {
-        // remove the regular cookies that would overlap with blocked cookies
-        const index = blockedCookieLines.indexOf(cookie.getCookieLine());
-        if (index !== -1) {
-          blockedCookieLines[index] = null;
-          return false;
-        }
-        return true;
-      });
-
+      responseCookies = this.request.nonBlockedResponseCookies();
       for (const blockedCookie of this.request.blockedResponseCookies()) {
         const parsedCookies = SDK.CookieParser.CookieParser.parseSetCookie(blockedCookie.cookieLine);
         if ((parsedCookies && !parsedCookies.length) ||

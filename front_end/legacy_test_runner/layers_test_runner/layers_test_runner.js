@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import '../../panels/layer_viewer/layer_viewer-legacy.js';
+import '../../panels/elements/elements-legacy.js';
 import '../../ui/legacy/components/utils/utils-legacy.js';
 
 import * as Layers from '../../panels/layers/layers.js';

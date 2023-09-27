@@ -8,13 +8,13 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {CoverageDecorationManager} from './CoverageDecorationManager.js';
 import {CoverageListView} from './CoverageListView.js';
+import {type CoverageInfo, CoverageModel, CoverageType, Events, type URLCoverageInfo} from './CoverageModel.js';
 import coverageViewStyles from './coverageView.css.js';
-
-import {CoverageModel, Events, CoverageType, type CoverageInfo, type URLCoverageInfo} from './CoverageModel.js';
 
 const UIStrings = {
   /**
@@ -389,7 +389,10 @@ export class CoverageView extends UI.Widget.VBox {
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
         this.onPrimaryPageChanged, this);
-    this.decorationManager = new CoverageDecorationManager(this.model as CoverageModel);
+    this.decorationManager = new CoverageDecorationManager(
+        this.model, Workspace.Workspace.WorkspaceImpl.instance(),
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
+        Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance());
     this.toggleRecordAction.setToggled(true);
     this.clearButton.setEnabled(false);
     if (this.startWithReloadButton) {
@@ -473,7 +476,10 @@ export class CoverageView extends UI.Widget.VBox {
       }
 
       this.model.addEventListener(Events.CoverageUpdated, this.onCoverageDataReceived, this);
-      this.decorationManager = new CoverageDecorationManager(this.model as CoverageModel);
+      this.decorationManager = new CoverageDecorationManager(
+          this.model, Workspace.Workspace.WorkspaceImpl.instance(),
+          Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
+          Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance());
     }
 
     if (this.bfcacheReloadPromptPage.isShowing()) {

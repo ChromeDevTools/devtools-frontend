@@ -4,6 +4,8 @@
 
 const {assert} = chai;
 
+import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
+import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Coverage from '../../../../../front_end/panels/coverage/coverage.js';
 import {createTarget, registerNoopActions} from '../../helpers/EnvironmentHelpers.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
@@ -31,6 +33,17 @@ const isShowingBfcachePage = (view: Coverage.CoverageView.CoverageView) => {
 
 const setupTargetAndModels = () => {
   const target = createTarget();
+
+  const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+  const targetManager = SDK.TargetManager.TargetManager.instance();
+  const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+  const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+    forceNew: true,
+    resourceMapping,
+    targetManager,
+  });
+  Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
+  Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({forceNew: true, resourceMapping, targetManager});
 
   const coverageModel = target.model(Coverage.CoverageModel.CoverageModel);
   assertNotNullOrUndefined(coverageModel);

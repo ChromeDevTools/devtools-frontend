@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Bindings from '../../models/bindings/bindings.js';
 import type * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 
@@ -18,28 +18,37 @@ export class CoverageDecorationManager {
   private readonly uiSourceCodeByContentProvider:
       Platform.MapUtilities.Multimap<TextUtils.ContentProvider.ContentProvider, Workspace.UISourceCode.UISourceCode>;
 
-  constructor(coverageModel: CoverageModel) {
+  readonly #workspace: Workspace.Workspace.WorkspaceImpl;
+  readonly #debuggerBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
+  readonly #cssBinding: Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding;
+
+  constructor(
+      coverageModel: CoverageModel, workspace: Workspace.Workspace.WorkspaceImpl,
+      debuggerBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
+      cssBinding: Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding) {
     this.coverageModel = coverageModel;
+    this.#workspace = workspace;
+    this.#debuggerBinding = debuggerBinding;
+    this.#cssBinding = cssBinding;
+
     this.textByProvider = new Map();
     this.uiSourceCodeByContentProvider = new Platform.MapUtilities.Multimap();
 
-    for (const uiSourceCode of Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodes()) {
+    for (const uiSourceCode of this.#workspace.uiSourceCodes()) {
       uiSourceCode.setDecorationData(decoratorType, this);
     }
-    Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
-        Workspace.Workspace.Events.UISourceCodeAdded, this.onUISourceCodeAdded, this);
+    this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.onUISourceCodeAdded, this);
   }
 
   reset(): void {
-    for (const uiSourceCode of Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodes()) {
+    for (const uiSourceCode of this.#workspace.uiSourceCodes()) {
       uiSourceCode.setDecorationData(decoratorType, undefined);
     }
   }
 
   dispose(): void {
     this.reset();
-    Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
-        Workspace.Workspace.Events.UISourceCodeAdded, this.onUISourceCodeAdded, this);
+    this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.onUISourceCodeAdded, this);
   }
 
   update(updatedEntries: CoverageInfo[]): void {
@@ -130,9 +139,7 @@ export class CoverageDecorationManager {
     const result: RawLocation[] = [];
     const contentType = uiSourceCode.contentType();
     if (contentType.hasScripts()) {
-      let locations =
-          await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
-              uiSourceCode, line, column);
+      let locations = await this.#debuggerBinding.uiLocationToRawLocations(uiSourceCode, line, column);
       locations = locations.filter(location => Boolean(location.script()));
       for (const location of locations) {
         const script = location.script();
@@ -154,8 +161,8 @@ export class CoverageDecorationManager {
       }
     }
     if (contentType.isStyleSheet() || contentType.isDocument()) {
-      const rawStyleLocations = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().uiLocationToRawLocations(
-          new Workspace.UISourceCode.UILocation(uiSourceCode, line, column));
+      const rawStyleLocations =
+          this.#cssBinding.uiLocationToRawLocations(new Workspace.UISourceCode.UILocation(uiSourceCode, line, column));
       for (const location of rawStyleLocations) {
         const header = location.header();
         if (!header) {

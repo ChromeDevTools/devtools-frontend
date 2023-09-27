@@ -56,6 +56,8 @@ target with is_debug = true in the args.gn file.`;
 const TEXT_COVERAGE_ENABLED = coverageEnabled && !process.env['NO_TEXT_COVERAGE'];
 // true by default
 const HTML_COVERAGE_ENABLED = coverageEnabled && !process.env['NO_HTML_COVERAGE'];
+// false by default
+const SHUFFLE = process.env['SHUFFLE'];
 
 const GEN_DIRECTORY = path.join(__dirname, '..', '..');
 const ROOT_DIRECTORY = path.join(GEN_DIRECTORY, '..', '..', '..');
@@ -98,6 +100,13 @@ const TEST_FILES =
           });
         })
         .flat();
+
+if (SHUFFLE) {
+  for (let i = TEST_FILES.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [TEST_FILES[i], TEST_FILES[j]] = [TEST_FILES[j], TEST_FILES[i]];
+  }
+}
 
 const TEST_FILES_SOURCE_MAPS = TEST_FILES.map(fileName => `${fileName}.map`);
 

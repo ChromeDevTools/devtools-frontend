@@ -419,8 +419,8 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.requests = new Map();
     const url = event.data.inspectedURL();
     this.postNotification(PrivateAPI.Events.InspectedURLChanged, url);
-    this.#pendingExtensions.forEach(e => this.addExtension(e));
-    this.#pendingExtensions.splice(0);
+    const extensions = this.#pendingExtensions.splice(0);
+    extensions.forEach(e => this.addExtension(e));
   }
 
   hasSubscribers(type: string): boolean {
@@ -1071,6 +1071,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       this.disableExtensions();
     }
     if (!this.extensionsEnabled) {
+      this.#pendingExtensions.push(extensionInfo);
       return;
     }
     const hostsPolicy = HostsPolicy.create(extensionInfo.hostsPolicy);
@@ -1083,6 +1084,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       const name = extensionInfo.name || `Extension ${extensionOrigin}`;
       const extensionRegistration = new RegisteredExtension(name, hostsPolicy, Boolean(extensionInfo.allowFileAccess));
       if (!extensionRegistration.isAllowedOnTarget(inspectedURL)) {
+        this.#pendingExtensions.push(extensionInfo);
         return;
       }
       if (!this.registeredExtensions.get(extensionOrigin)) {

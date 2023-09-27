@@ -40,6 +40,17 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     createTarget().setInspectedURL('chrome://version' as Platform.DevToolsPath.UrlString);
     assert.isTrue(addExtensionStub.notCalled);
   });
+
+  it('defers loading extensions until after navigation from a privileged to a non-privileged host', async () => {
+    const addExtensionSpy = sinon.spy(Extensions.ExtensionServer.ExtensionServer.instance(), 'addExtension');
+    const target = createTarget({type: SDK.Target.Type.Frame});
+    target.setInspectedURL('chrome://abcdef' as Platform.DevToolsPath.UrlString);
+    assert.isTrue(addExtensionSpy.notCalled, 'addExtension not called');
+
+    target.setInspectedURL(allowedUrl);
+    assert.isTrue(addExtensionSpy.calledOnce, 'addExtension called once');
+    assert.isTrue(addExtensionSpy.returned(undefined), 'addExtension returned undefined');
+  });
 });
 
 describeWithDevtoolsExtension('Extensions', {}, context => {
@@ -274,7 +285,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
   it('blocks API calls on blocked hosts', async () => {
     assert.isUndefined(context.chrome.devtools);
     const target = createTarget({type: SDK.Target.Type.Frame});
-    const addExtensionStub = sinon.stub(Extensions.ExtensionServer.ExtensionServer.instance(), 'addExtension');
+    const addExtensionStub = sinon.spy(Extensions.ExtensionServer.ExtensionServer.instance(), 'addExtension');
 
     target.setInspectedURL(blockedUrl);
     assert.isTrue(addExtensionStub.alwaysReturned(undefined));
@@ -299,6 +310,18 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
       // eslint-disable-next-line rulesdir/compare_arrays_with_assert_deepequal
       assert.hasAnyKeys(result, ['entries']);
     }
+  });
+
+  it('defers loading extensions until after navigation from a blocked to an allowed host', async () => {
+    const addExtensionSpy = sinon.spy(Extensions.ExtensionServer.ExtensionServer.instance(), 'addExtension');
+    const target = createTarget({type: SDK.Target.Type.Frame});
+    target.setInspectedURL(blockedUrl);
+    assert.isTrue(addExtensionSpy.calledOnce, 'addExtension called once');
+    assert.deepStrictEqual(addExtensionSpy.returnValues, [undefined]);
+
+    target.setInspectedURL(allowedUrl);
+    assert.isTrue(addExtensionSpy.calledTwice, 'addExtension called twice');
+    assert.deepStrictEqual(addExtensionSpy.returnValues, [undefined, true]);
   });
 
   it('does not include blocked hosts in the HAR entries', async () => {

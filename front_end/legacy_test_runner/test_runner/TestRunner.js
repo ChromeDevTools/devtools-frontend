@@ -262,7 +262,6 @@ const mappingForLayoutTests = new Map([
   ['panels/browser_debugger', 'browser_debugger'],
   ['panels/changes', 'changes'],
   ['panels/console', 'console'],
-  ['panels/elements', 'elements'],
   ['panels/emulation', 'emulation'],
   ['panels/mobile_throttling', 'mobile_throttling'],
   ['panels/network', 'network'],
@@ -299,6 +298,7 @@ export async function loadLegacyModule(module) {
       containingFolder = remappedFolder;
     }
   }
+
   await import(`../../${containingFolder}/${containingFolder.split('/').reverse()[0]}-legacy.js`);
 }
 

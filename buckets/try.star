@@ -228,6 +228,7 @@ cq_main = struct(
         "devtools_frontend_mac_rel",
     ],
     includable_only_builders = [
+        "devtools_frontend_linux_blink_light_rel",
         "devtools_screenshot_linux_rel",
         "devtools_screenshot_mac_rel",
         "devtools_screenshot_win64_rel",

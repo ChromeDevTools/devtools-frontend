@@ -17,7 +17,7 @@
 /// <reference types="node" />
 import type { Readable } from 'stream';
 import { type Protocol } from 'devtools-protocol';
-import type { Browser } from '../api/Browser.js';
+import { type Browser } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
 import { type CDPSession } from '../api/CDPSession.js';
 import { type Frame, type WaitForOptions } from '../api/Frame.js';

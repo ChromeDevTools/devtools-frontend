@@ -165,7 +165,7 @@ export interface ScreenshotOptions {
     /**
      * Capture the screenshot from the surface, rather than the view.
      *
-     * @defaultValue `false`
+     * @defaultValue `true`
      */
     fromSurface?: boolean;
     /**
@@ -413,6 +413,10 @@ PageEvents as PageEventObject, };
 export interface NewDocumentScriptEvaluation {
     identifier: string;
 }
+/**
+ * @internal
+ */
+export declare function setDefaultScreenshotOptions(options: ScreenshotOptions): void;
 /**
  * Page provides methods to interact with a single tab or
  * {@link https://developer.chrome.com/extensions/background_pages | extension background page}

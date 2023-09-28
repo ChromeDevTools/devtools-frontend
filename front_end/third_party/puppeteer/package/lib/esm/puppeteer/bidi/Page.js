@@ -503,36 +503,29 @@ export class BidiPage extends Page {
             throw error;
         }
     }
-    async screenshot(options = {}) {
-        const { clip, type, captureBeyondViewport, allowViewportExpansion = true, } = options;
-        if (captureBeyondViewport) {
-            throw new Error(`BiDi does not support 'captureBeyondViewport'.`);
+    async _screenshot(options) {
+        const { clip, type, captureBeyondViewport, allowViewportExpansion } = options;
+        if (captureBeyondViewport && !allowViewportExpansion) {
+            throw new Error(`BiDi does not support 'captureBeyondViewport'. Use 'allowViewportExpansion'.`);
         }
-        const invalidOption = Object.keys(options).find(option => {
-            return [
-                'fromSurface',
-                'omitBackground',
-                'optimizeForSpeed',
-                'quality',
-            ].includes(option);
-        });
-        if (invalidOption !== undefined) {
-            throw new Error(`BiDi does not support ${invalidOption}.`);
+        if (options.omitBackground !== undefined && options.omitBackground) {
+            throw new Error(`BiDi does not support 'omitBackground'.`);
         }
-        if ((type ?? 'png') !== 'png') {
+        if (options.optimizeForSpeed !== undefined && options.optimizeForSpeed) {
+            throw new Error(`BiDi does not support 'optimizeForSpeed'.`);
+        }
+        if (options.fromSurface !== undefined && !options.fromSurface) {
+            throw new Error(`BiDi does not support 'fromSurface'.`);
+        }
+        if (options.quality !== undefined) {
+            throw new Error(`BiDi does not support 'quality'.`);
+        }
+        if (type === 'webp' || type === 'jpeg') {
             throw new Error(`BiDi only supports 'png' type.`);
         }
-        if (clip?.scale !== undefined) {
+        if (clip !== undefined && clip.scale !== undefined && clip.scale !== 1) {
             throw new Error(`BiDi does not support 'scale' in 'clip'.`);
         }
-        return await super.screenshot({
-            ...options,
-            captureBeyondViewport,
-            allowViewportExpansion: captureBeyondViewport ?? allowViewportExpansion,
-        });
-    }
-    async _screenshot(options) {
-        const { clip } = options;
         const { result: { data }, } = await this.#connection.send('browsingContext.captureScreenshot', {
             context: this.mainFrame()._id,
             clip: clip && {

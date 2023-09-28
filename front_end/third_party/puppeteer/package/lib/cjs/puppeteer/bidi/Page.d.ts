@@ -89,10 +89,6 @@ export declare class BidiPage extends Page {
     viewport(): Viewport | null;
     pdf(options?: PDFOptions): Promise<Buffer>;
     createPDFStream(options?: PDFOptions | undefined): Promise<Readable>;
-    screenshot(options: Readonly<ScreenshotOptions> & {
-        encoding: 'base64';
-    }): Promise<string>;
-    screenshot(options?: Readonly<ScreenshotOptions>): Promise<Buffer>;
     _screenshot(options: Readonly<ScreenshotOptions>): Promise<string>;
     waitForRequest(urlOrPredicate: string | ((req: BidiHTTPRequest) => boolean | Promise<boolean>), options?: {
         timeout?: number;

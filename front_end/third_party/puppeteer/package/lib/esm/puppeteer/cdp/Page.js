@@ -77,6 +77,7 @@ import { Coverage } from './Coverage.js';
 import { CdpDialog } from './Dialog.js';
 import { EmulationManager } from './EmulationManager.js';
 import { createCdpHandle, releaseObject } from './ExecutionContext.js';
+import { FirefoxTargetManager } from './FirefoxTargetManager.js';
 import { FrameManager, FrameManagerEvent } from './FrameManager.js';
 import { CdpKeyboard, CdpMouse, CdpTouchscreen } from './Input.js';
 import { MAIN_WORLD } from './IsolatedWorlds.js';
@@ -768,11 +769,15 @@ export class CdpPage extends Page {
         const env_2 = { stack: [], error: void 0, hasError: false };
         try {
             const { fromSurface, omitBackground, optimizeForSpeed, quality, clip: userClip, type, captureBeyondViewport, } = options;
+            const isFirefox = this.target()._targetManager() instanceof FirefoxTargetManager;
             const stack = __addDisposableResource(env_2, new AsyncDisposableStack(), true);
-            if (omitBackground && (type === 'png' || type === 'webp')) {
+            // Firefox omits background by default; it's not configurable.
+            if (!isFirefox && omitBackground && (type === 'png' || type === 'webp')) {
                 await this.#emulationManager.setTransparentBackgroundColor();
                 stack.defer(async () => {
-                    await this.#emulationManager.resetDefaultBackgroundColor();
+                    await this.#emulationManager
+                        .resetDefaultBackgroundColor()
+                        .catch(debugError);
                 });
             }
             let clip = userClip;
@@ -785,15 +790,16 @@ export class CdpPage extends Page {
                 });
                 clip = getIntersectionRect(clip, viewport);
             }
+            // We need to do these spreads because Firefox doesn't allow unknown options.
             const { data } = await this.#client.send('Page.captureScreenshot', {
                 format: type,
-                optimizeForSpeed,
-                quality,
+                ...(optimizeForSpeed ? { optimizeForSpeed } : {}),
+                ...(quality !== undefined ? { quality } : {}),
                 clip: clip && {
                     ...clip,
                     scale: clip.scale ?? 1,
                 },
-                fromSurface,
+                ...(!fromSurface ? { fromSurface } : {}),
                 captureBeyondViewport,
             });
             return data;

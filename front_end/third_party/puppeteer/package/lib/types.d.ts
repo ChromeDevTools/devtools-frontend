@@ -6888,7 +6888,7 @@ export declare interface ScreenshotOptions {
     /**
      * Capture the screenshot from the surface, rather than the view.
      *
-     * @defaultValue `false`
+     * @defaultValue `true`
      */
     fromSurface?: boolean;
     /**
@@ -7042,6 +7042,8 @@ export declare interface SerializedAXNode {
      */
     children?: SerializedAXNode[];
 }
+
+/* Excluded from this release type: setDefaultScreenshotOptions */
 
 /* Excluded from this release type: setLogCapture */
 

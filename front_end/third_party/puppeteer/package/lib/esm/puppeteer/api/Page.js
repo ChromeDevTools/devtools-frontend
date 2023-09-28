@@ -103,6 +103,19 @@ import { guarded } from '../util/decorators.js';
 import { AsyncDisposableStack, asyncDisposeSymbol, disposeSymbol, } from '../util/disposable.js';
 import { FunctionLocator, Locator, NodeLocator, } from './locators/locators.js';
 /**
+ * @internal
+ */
+export function setDefaultScreenshotOptions(options) {
+    options.optimizeForSpeed ??= false;
+    options.type ??= 'png';
+    options.fromSurface ??= true;
+    options.fullPage ??= false;
+    options.omitBackground ??= false;
+    options.encoding ??= 'binary';
+    options.captureBeyondViewport ??= true;
+    options.allowViewportExpansion ??= options.captureBeyondViewport;
+}
+/**
  * Page provides methods to interact with a single tab or
  * {@link https://developer.chrome.com/extensions/background_pages | extension background page}
  * in the browser.
@@ -915,8 +928,7 @@ let Page = (() => {
                     assert(options.clip.width !== 0, 'Expected options.clip.width not to be 0.');
                     assert(options.clip.height !== 0, 'Expected options.clip.height not to be 0.');
                 }
-                options.captureBeyondViewport ??= true;
-                options.allowViewportExpansion ??= options.captureBeyondViewport;
+                setDefaultScreenshotOptions(options);
                 options.clip = options.clip && roundClip(normalizeClip(options.clip));
                 const stack = __addDisposableResource(env_1, new AsyncDisposableStack(), true);
                 if (options.allowViewportExpansion || options.captureBeyondViewport) {

@@ -94,7 +94,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unitToPixels = exports.supportedMetrics = exports.Page = void 0;
+exports.unitToPixels = exports.supportedMetrics = exports.Page = exports.setDefaultScreenshotOptions = void 0;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const NetworkManager_js_1 = require("../cdp/NetworkManager.js");
 const Errors_js_1 = require("../common/Errors.js");
@@ -105,6 +105,20 @@ const assert_js_1 = require("../util/assert.js");
 const decorators_js_1 = require("../util/decorators.js");
 const disposable_js_1 = require("../util/disposable.js");
 const locators_js_1 = require("./locators/locators.js");
+/**
+ * @internal
+ */
+function setDefaultScreenshotOptions(options) {
+    options.optimizeForSpeed ??= false;
+    options.type ??= 'png';
+    options.fromSurface ??= true;
+    options.fullPage ??= false;
+    options.omitBackground ??= false;
+    options.encoding ??= 'binary';
+    options.captureBeyondViewport ??= true;
+    options.allowViewportExpansion ??= options.captureBeyondViewport;
+}
+exports.setDefaultScreenshotOptions = setDefaultScreenshotOptions;
 /**
  * Page provides methods to interact with a single tab or
  * {@link https://developer.chrome.com/extensions/background_pages | extension background page}
@@ -918,8 +932,7 @@ let Page = (() => {
                     (0, assert_js_1.assert)(options.clip.width !== 0, 'Expected options.clip.width not to be 0.');
                     (0, assert_js_1.assert)(options.clip.height !== 0, 'Expected options.clip.height not to be 0.');
                 }
-                options.captureBeyondViewport ??= true;
-                options.allowViewportExpansion ??= options.captureBeyondViewport;
+                setDefaultScreenshotOptions(options);
                 options.clip = options.clip && roundClip(normalizeClip(options.clip));
                 const stack = __addDisposableResource(env_1, new disposable_js_1.AsyncDisposableStack(), true);
                 if (options.allowViewportExpansion || options.captureBeyondViewport) {

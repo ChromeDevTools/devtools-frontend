@@ -7,7 +7,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
-import {RecordType, EventOnTimelineData, TimelineModelImpl} from './TimelineModel.js';
+import {EventOnTimelineData, RecordType, TimelineModelImpl} from './TimelineModel.js';
 import {type TimelineModelFilter} from './TimelineModelFilter.js';
 
 export class Node {

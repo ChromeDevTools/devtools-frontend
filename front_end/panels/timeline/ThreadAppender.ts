@@ -403,16 +403,19 @@ export class ThreadAppender implements TrackAppender {
       return i18nString(UIStrings.onIgnoreList);
     }
 
+    // If the event is a profile call, we need to look up its name based on its
+    // ProfileNode in the CPUProfile for the trace we are working with.
     if (TraceEngine.Types.TraceEvents.isProfileCall(entry)) {
-      // If we have a profile call, we need to check the CPU Profile to see if
-      // we have set a function name for this entry. This can happen when
-      // source maps are resolved. But we might not have resolved it, so we
-      // only use this name if it exists and is not undefined/an empty string.
+      // In the future traceParsedData.Samples will always be defined, but this
+      // is not the case until the sync tracks migration is fully shipped,
+      // hence this extra check.
       if (this.#traceParsedData.Samples) {
-        const profile = this.#traceParsedData.Samples.profilesInProcess.get(entry.pid)?.get(entry.tid);
-        const node = profile?.parsedProfile.nodeById(entry.nodeId);
-        if (node?.functionName) {
-          return node.functionName;
+        const potentialCallName =
+            TraceEngine.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(this.#traceParsedData.Samples, entry);
+        // We need this extra check because the call name could be the empty
+        // string. If it is, we want to fallback to the "(anonymous)" text.
+        if (potentialCallName) {
+          return potentialCallName;
         }
       }
 

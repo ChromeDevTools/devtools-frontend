@@ -556,3 +556,20 @@ export class FakeFlameChartProvider implements PerfUI.FlameChart.FlameChartDataP
     return PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   }
 }
+
+export function getMainThread(data: TraceEngine.Handlers.ModelHandlers.Renderer.RendererHandlerData):
+    TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread {
+  let mainThread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread|null = null;
+  for (const [, process] of data.processes) {
+    for (const [, thread] of process.threads) {
+      if (thread.name === 'CrRendererMain') {
+        mainThread = thread;
+        break;
+      }
+    }
+  }
+  if (!mainThread) {
+    throw new Error('Could not find main thread.');
+  }
+  return mainThread;
+}

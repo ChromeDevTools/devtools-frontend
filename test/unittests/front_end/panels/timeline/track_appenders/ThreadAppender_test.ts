@@ -202,10 +202,11 @@ describeWithEnvironment('ThreadAppender', function() {
     }
     const anonymousCall = threadAppenders[0].titleForEvent(entry);
     assert.strictEqual(anonymousCall, '(anonymous)');
+    const originalName = cpuProfileNode.functionName;
     cpuProfileNode.setFunctionName('new-resolved-function-name');
     assert.strictEqual(threadAppenders[0].titleForEvent(entry), 'new-resolved-function-name');
     // Reset the value for future tests.
-    cpuProfileNode.setFunctionName('');
+    cpuProfileNode.setFunctionName(originalName);
   });
 
   it('shows the correct title for a trace event when hovered', async function() {

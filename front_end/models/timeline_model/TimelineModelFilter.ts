@@ -7,7 +7,9 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import {RecordType, TimelineModelImpl} from './TimelineModel.js';
 
 export abstract class TimelineModelFilter {
-  abstract accept(_event: TraceEngine.Legacy.CompatibleTraceEvent): boolean;
+  abstract accept(
+      _event: TraceEngine.Legacy.CompatibleTraceEvent,
+      traceParsedData?: TraceEngine.Handlers.Migration.PartialTraceData): boolean;
 }
 
 export class TimelineVisibleEventsFilter extends TimelineModelFilter {

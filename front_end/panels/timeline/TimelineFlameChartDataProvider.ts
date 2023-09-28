@@ -642,32 +642,27 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       if (!TimelineFlameChartDataProvider.isEntryRegularEvent(entry)) {
         continue;
       }
-      let event: TraceEngine.Legacy.Event|null;
-      // The search features are implemented for SDK Event types only. Until we haven't fully
-      // transitioned to use the types of the new engine, we need to use legacy representation
-      // for events coming from the new engine.
-      if (entry instanceof TraceEngine.Legacy.Event) {
-        event = entry;
-      } else {
-        if (!this.compatibilityTracksAppender) {
-          // This should not happen.
-          console.error('compatibilityTracksAppender was unexpectedly not set.');
-          continue;
-        }
-        event = this.compatibilityTracksAppender.getLegacyEvent(entry);
-      }
-
-      if (!event) {
+      if (!entry) {
         continue;
       }
 
-      if (event.startTime > endTime) {
+      // Until all the tracks are powered by the new engine, we need to
+      // consider that these entries could be either new engine or legacy
+      // engine.
+      const entryStartTime = TraceEngine.Legacy.eventIsFromNewEngine(entry) ?
+          TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry).startTime :
+          entry.startTime;
+      const entryEndTime = TraceEngine.Legacy.eventIsFromNewEngine(entry) ?
+          TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry).endTime :
+          entry.endTime;
+
+      if (entryStartTime > endTime) {
         continue;
       }
-      if ((event.endTime || event.startTime) < startTime) {
+      if ((entryEndTime || entryStartTime) < startTime) {
         continue;
       }
-      if (filter.accept(event)) {
+      if (filter.accept(entry, this.traceEngineData || undefined)) {
         result.push(i);
       }
     }

@@ -1356,13 +1356,32 @@ export class TimelineUIUtils {
     return frame.functionName;
   }
 
-  static testContentMatching(traceEvent: TraceEngine.Legacy.CompatibleTraceEvent, regExp: RegExp): boolean {
+  static testContentMatching(
+      traceEvent: TraceEngine.Legacy.CompatibleTraceEvent, regExp: RegExp,
+      traceParsedData?: TraceEngine.Handlers.Migration.PartialTraceData): boolean {
     const title = TimelineUIUtils.eventStyle(traceEvent).title;
     const tokens = [title];
+
+    if (TraceEngine.Legacy.eventIsFromNewEngine(traceEvent) &&
+        TraceEngine.Types.TraceEvents.isProfileCall(traceEvent)) {
+      // In the future this case will not be possible - wherever we call this
+      // function we will be able to pass in the data from the new engine. But
+      // currently this is called in a variety of places including from the
+      // legacy model which does not have a reference to the new engine's data.
+      // So if we are missing the data, we just fallback to the name from the
+      // callFrame.
+      if (!traceParsedData || !traceParsedData.Samples) {
+        tokens.push(traceEvent.callFrame.functionName);
+      } else {
+        tokens.push(
+            TraceEngine.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(traceParsedData.Samples, traceEvent));
+      }
+    }
     const url = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(traceEvent).url;
     if (url) {
       tokens.push(url);
     }
+    // This works for both legacy and new engine events.
     appendObjectProperties(traceEvent.args, 2);
     return regExp.test(tokens.join('|'));
 

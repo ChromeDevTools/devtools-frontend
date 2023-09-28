@@ -49,7 +49,9 @@ export class TimelineRegExp extends TimelineModel.TimelineModelFilter.TimelineMo
     return this.regExpInternal;
   }
 
-  accept(event: TraceEngine.Legacy.Event): boolean {
-    return !this.regExpInternal || TimelineUIUtils.testContentMatching(event, this.regExpInternal);
+  accept(
+      event: TraceEngine.Legacy.CompatibleTraceEvent,
+      traceParsedData?: TraceEngine.Handlers.Migration.PartialTraceData): boolean {
+    return !this.regExpInternal || TimelineUIUtils.testContentMatching(event, this.regExpInternal, traceParsedData);
   }
 }

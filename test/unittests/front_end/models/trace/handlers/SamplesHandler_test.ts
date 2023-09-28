@@ -5,8 +5,10 @@
 const {assert} = chai;
 
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
+import type * as CPUProfile from '../../../../../../front_end/models/cpu_profile/cpu_profile.js';
 
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
+import {getMainThread} from '../../../helpers/TraceHelpers.js';
 import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 async function handleEventsFromTraceFile(context: Mocha.Context|Mocha.Suite|null, name: string):
@@ -229,6 +231,72 @@ describeWithEnvironment('SamplesHandler', function() {
       assert.strictEqual(parsedProfile.profileEndTime, 287515908.9025441);
       assert.strictEqual(parsedProfile.maxDepth, 14);
       assert.strictEqual(parsedProfile.samples?.length, 39471);
+    });
+  });
+
+  describe('getProfileCallFunctionName', () => {
+    // Find an event from the trace that represents some work. The use of
+    // this specific call frame event is not for any real reason.
+    function getProfileEventAndNode(traceData: TraceModel.Handlers.Types.TraceParseData): {
+      entry: TraceModel.Types.TraceEvents.TraceEventSyntheticProfileCall,
+      profileNode: CPUProfile.ProfileTreeModel.ProfileNode,
+    } {
+      const mainThread = getMainThread(traceData.Renderer);
+      let foundNode: CPUProfile.ProfileTreeModel.ProfileNode|null = null;
+      let foundEntry: TraceModel.Types.TraceEvents.TraceEventSyntheticProfileCall|null = null;
+
+      for (const entry of mainThread.entries) {
+        if (TraceModel.Types.TraceEvents.isProfileCall(entry) &&
+            entry.callFrame.functionName === 'performConcurrentWorkOnRoot') {
+          const profile = traceData.Samples.profilesInProcess.get(entry.pid)?.get(entry.tid);
+          const node = profile?.parsedProfile.nodeById(entry.nodeId);
+          if (node) {
+            foundNode = node;
+          }
+          foundEntry = entry;
+          break;
+        }
+      }
+      if (!foundNode) {
+        throw new Error('Could not find CPU Profile node.');
+      }
+      if (!foundEntry) {
+        throw new Error('Could not find expected entry.');
+      }
+
+      return {
+        entry: foundEntry,
+        profileNode: foundNode,
+      };
+    }
+
+    it('falls back to the call frame name if the ProfileNode name is empty', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
+      const {entry, profileNode} = getProfileEventAndNode(traceParsedData);
+      // Store and then reset this: we are doing this to test the fallback to
+      // the entry callFrame.functionName property. After the assertion we
+      // reset this to avoid impacting other tests.
+      const originalProfileNodeName = profileNode.functionName;
+      profileNode.setFunctionName('');
+      assert.strictEqual(
+          TraceModel.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(traceParsedData.Samples, entry),
+          'performConcurrentWorkOnRoot');
+      // St
+      profileNode.setFunctionName(originalProfileNodeName);
+    });
+
+    it('uses the profile name if it has been set', async function() {
+      const traceParsedData = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
+      const {entry, profileNode} = getProfileEventAndNode(traceParsedData);
+      // Store and then reset this: we are doing this to test the fallback to
+      // the entry callFrame.functionName property. After the assertion we
+      // reset this to avoid impacting other tests.
+      const originalProfileNodeName = profileNode.functionName;
+      profileNode.setFunctionName('testing-profile-name');
+      assert.strictEqual(
+          TraceModel.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(traceParsedData.Samples, entry),
+          'testing-profile-name');
+      profileNode.setFunctionName(originalProfileNodeName);
     });
   });
 });

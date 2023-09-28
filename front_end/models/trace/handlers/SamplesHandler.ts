@@ -220,3 +220,21 @@ type PreprocessedData = {
   rawProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile,
   threadId?: Types.TraceEvents.ThreadID, profileId: Types.TraceEvents.ProfileID,
 };
+
+/**
+ * Returns the name of a function for a given synthetic profile call.
+ * We first look to find the ProfileNode representing this call, and use its
+ * function name. This is preferred (and should always exist) because if we
+ * resolve sourcemaps, we will update this name. If that name is not present,
+ * we fall back to the function name that was in the callframe that we got
+ * when parsing the profile's trace data.
+ */
+export function getProfileCallFunctionName(
+    data: SamplesHandlerData, entry: Types.TraceEvents.TraceEventSyntheticProfileCall): string {
+  const profile = data.profilesInProcess.get(entry.pid)?.get(entry.tid);
+  const node = profile?.parsedProfile.nodeById(entry.nodeId);
+  if (node?.functionName) {
+    return node.functionName;
+  }
+  return entry.callFrame.functionName;
+}

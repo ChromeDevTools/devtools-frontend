@@ -16,6 +16,7 @@ import {doubleRaf, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
+import {getMainThread} from '../../helpers/TraceHelpers.js';
 import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 const {assert} = chai;
@@ -325,6 +326,47 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
       assert.strictEqual('rgb(2 2 2)', Timeline.TimelineUIUtils.TimelineUIUtils.eventColor(event));
     });
+  });
+
+  describe('testContentMatching', () => {
+    it('[for legacy sync tracks] matches call frame events based on a regular expression and the contents of the event',
+       async function() {
+         const data = await TraceLoader.allModels(this, 'react-hello-world.json.gz');
+         const mainThread =
+             data.timelineModel.tracks().find(t => t.type === TimelineModel.TimelineModel.TrackType.MainThread);
+         // Find an event from the trace that represents some work that React did. This
+         // event is not chosen for any particular reason other than it was the example
+         // used in the bug report: crbug.com/1484504
+         const performConcurrentWorkEvent =
+             mainThread?.events.find(e => e.args?.data?.functionName === 'performConcurrentWorkOnRoot');
+         if (!performConcurrentWorkEvent) {
+           throw new Error('Could not find expected event');
+         }
+         assert.isTrue(
+             Timeline.TimelineUIUtils.TimelineUIUtils.testContentMatching(performConcurrentWorkEvent, /perfo/));
+         assert.isFalse(Timeline.TimelineUIUtils.TimelineUIUtils.testContentMatching(
+             performConcurrentWorkEvent, /does not match/));
+       });
+
+    it('[for new sync tracks] matches call frame events based on a regular expression and the contents of the event',
+       async function() {
+         const data = await TraceLoader.allModels(this, 'react-hello-world.json.gz');
+         // Find an event from the trace that represents some work that React did. This
+         // event is not chosen for any particular reason other than it was the example
+         // used in the bug report: crbug.com/1484504
+         const mainThread = getMainThread(data.traceParsedData.Renderer);
+         const performConcurrentWorkEvent = mainThread.entries.find(entry => {
+           if (TraceEngine.Types.TraceEvents.isProfileCall(entry)) {
+             return entry.callFrame.functionName === 'performConcurrentWorkOnRoot';
+           }
+           return false;
+         });
+         if (!performConcurrentWorkEvent) {
+           throw new Error('Could not find expected event');
+         }
+         assert.isTrue(Timeline.TimelineUIUtils.TimelineUIUtils.testContentMatching(
+             performConcurrentWorkEvent, /perfo/, data.traceParsedData));
+       });
   });
 
   describe('traceEventDetails', function() {

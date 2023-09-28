@@ -44,7 +44,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private model: PerformanceModel|null;
   private searchResults!: number[]|undefined;
   private eventListeners: Common.EventTarget.EventDescriptor[];
-  private currBreadcrumbTimeWindow?: TraceEngine.Types.Timing.TraceWindow;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly showMemoryGraphSetting: Common.Settings.Setting<any>;
@@ -167,23 +166,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   private onWindowChanged(event: Common.EventTarget.EventTargetEvent<WindowChangedEvent>): void {
     const {window, animate} = event.data;
-
-    if (event.data.breadcrumbWindow) {
-      this.currBreadcrumbTimeWindow = event.data.breadcrumbWindow;
-      this.mainFlameChart.setTotalAndMinimumBreadcrumbValues(
-          event.data.breadcrumbWindow.min, event.data.breadcrumbWindow.range);
-      this.networkFlameChart.setTotalAndMinimumBreadcrumbValues(
-          event.data.breadcrumbWindow.min, event.data.breadcrumbWindow.range);
-      this.mainFlameChart.update();
-    }
-
-    if (this.currBreadcrumbTimeWindow &&
-        !(this.currBreadcrumbTimeWindow.min > window.left || this.currBreadcrumbTimeWindow.max < window.right)) {
-      this.mainFlameChart.setWindowTimes(window.left, window.right, animate);
-      this.networkFlameChart.setWindowTimes(window.left, window.right, animate);
-      this.networkDataProvider.setWindowTimes(window.left, window.right);
-    }
-
+    this.mainFlameChart.setWindowTimes(window.left, window.right, animate);
+    this.networkFlameChart.setWindowTimes(window.left, window.right, animate);
+    this.networkDataProvider.setWindowTimes(window.left, window.right);
     this.updateSearchResults(false, false);
   }
 

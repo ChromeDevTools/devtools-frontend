@@ -147,7 +147,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private visibleLevelHeights?: Uint32Array;
   private totalTime?: number;
   private showVerticalScrollOnExpanded?: boolean;
-  #breadcrumbExists?: boolean;
   #font: string;
 
   constructor(
@@ -2156,18 +2155,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.chartViewport.setBoundaries(this.minimumBoundaryInternal, this.totalTime);
   }
 
-  setTotalAndMinimumBreadcrumbValues(min: number, total: number): void {
-    this.#breadcrumbExists = true;
-    this.totalTime = total;
-    this.minimumBoundaryInternal = min;
-  }
-
-  updateBoundariesWithBreadcrumbValues(): void {
-    if (this.totalTime) {
-      this.chartViewport.setBoundaries(this.minimumBoundaryInternal, this.totalTime);
-    }
-  }
-
   private updateHeight(): void {
     const height = this.levelToOffset(this.dataProvider.maxStackDepth()) + 2;
     this.chartViewport.setContentHeight(height);
@@ -2183,11 +2170,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     this.resetCanvas();
     this.updateHeight();
-    if (this.#breadcrumbExists) {
-      this.updateBoundariesWithBreadcrumbValues();
-    } else {
-      this.updateBoundaries();
-    }
+    this.updateBoundaries();
     this.draw();
     if (!this.chartViewport.isDragging()) {
       this.updateHighlight();

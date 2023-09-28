@@ -26,24 +26,24 @@ export function flattenBreadcrumbs(initialBreadcrumb: Breadcrumb): Breadcrumb[] 
 
 export class Breadcrumbs {
   readonly initialBreadcrumb: Breadcrumb;
-  lastBreadcrumb: Breadcrumb;
+  #lastBreadcrumb: Breadcrumb;
 
   constructor(initialTraceWindow: TraceEngine.Types.Timing.TraceWindow) {
     this.initialBreadcrumb = {
       window: initialTraceWindow,
       child: null,
     };
-    this.lastBreadcrumb = this.initialBreadcrumb;
+    this.#lastBreadcrumb = this.initialBreadcrumb;
   }
 
   add(newBreadcrumbTraceWindow: TraceEngine.Types.Timing.TraceWindow): void {
-    if (this.isTraceWindowWithinTraceWindow(newBreadcrumbTraceWindow, this.lastBreadcrumb.window)) {
+    if (this.isTraceWindowWithinTraceWindow(newBreadcrumbTraceWindow, this.#lastBreadcrumb.window)) {
       const newBreadcrumb = {
         window: newBreadcrumbTraceWindow,
         child: null,
       };
-      this.lastBreadcrumb.child = newBreadcrumb;
-      this.lastBreadcrumb = newBreadcrumb;
+      this.#lastBreadcrumb.child = newBreadcrumb;
+      this.#lastBreadcrumb = newBreadcrumb;
     } else {
       throw new Error('Can not add a breadcrumb that is equal to or is outside of the parent breadcrumb TimeWindow');
     }
@@ -65,6 +65,6 @@ export class Breadcrumbs {
     }
 
     breadcrumbsIter.child = null;
-    this.lastBreadcrumb = breadcrumbsIter;
+    this.#lastBreadcrumb = breadcrumbsIter;
   }
 }

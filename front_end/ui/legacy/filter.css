@@ -216,6 +216,11 @@
   opacity: 99%;
 }
 
+button.toolbar-item:focus-visible {
+  background: var(--sys-color-state-hover-on-subtle);
+  border-radius: 2px;
+}
+
 @media (forced-colors: active) {
   .filter-bitset-filter span:hover,
   .filter-bitset-filter span.selected,

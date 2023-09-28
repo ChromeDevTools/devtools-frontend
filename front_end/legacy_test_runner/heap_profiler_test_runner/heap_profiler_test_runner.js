@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../panels/profiler/profiler-legacy.js';
 import '../../ui/legacy/components/data_grid/data_grid-legacy.js';
 
 import * as HeapSnapshotWorker from '../../entrypoints/heap_snapshot_worker/heap_snapshot_worker.js';
+import * as Profiler from '../../panels/profiler/profiler.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
@@ -351,18 +351,20 @@ HeapProfilerTestRunner.startProfilerTest = function(callback) {
   TestRunner.addResult('Profiler was enabled.');
   HeapProfilerTestRunner.panelReset = TestRunner.override(UI.panels.heap_profiler, 'reset', function() {}, true);
   TestRunner.addSniffer(UI.panels.heap_profiler, 'addProfileHeader', HeapProfilerTestRunner.profileHeaderAdded, true);
-  TestRunner.addSniffer(Profiler.ProfileView.prototype, 'refresh', HeapProfilerTestRunner.profileViewRefresh, true);
-  TestRunner.addSniffer(Profiler.HeapSnapshotView.prototype, 'show', HeapProfilerTestRunner.snapshotViewShown, true);
+  TestRunner.addSniffer(
+      Profiler.ProfileView.ProfileView.prototype, 'refresh', HeapProfilerTestRunner.profileViewRefresh, true);
+  TestRunner.addSniffer(
+      Profiler.HeapSnapshotView.HeapSnapshotView.prototype, 'show', HeapProfilerTestRunner.snapshotViewShown, true);
 
-  Profiler.HeapSnapshotContainmentDataGrid.prototype.defaultPopulateCount = function() {
+  Profiler.HeapSnapshotDataGrids.HeapSnapshotContainmentDataGrid.prototype.defaultPopulateCount = function() {
     return 10;
   };
 
-  Profiler.HeapSnapshotConstructorsDataGrid.prototype.defaultPopulateCount = function() {
+  Profiler.HeapSnapshotDataGrids.HeapSnapshotConstructorsDataGrid.prototype.defaultPopulateCount = function() {
     return 10;
   };
 
-  Profiler.HeapSnapshotDiffDataGrid.prototype.defaultPopulateCount = function() {
+  Profiler.HeapSnapshotDataGrids.HeapSnapshotDiffDataGrid.prototype.defaultPopulateCount = function() {
     return 5;
   };
 
@@ -482,7 +484,7 @@ HeapProfilerTestRunner.clickColumn = function(column, callback) {
 
   function sortingComplete() {
     HeapProfilerTestRunner.currentGrid().removeEventListener(
-        Profiler.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, this);
+        Profiler.HeapSnapshotDataGrids.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, this);
     TestRunner.assertEquals(column.id, this.currentGrid().sortColumnId(), 'unexpected sorting');
     column.sort = this.currentGrid().sortOrder();
 
@@ -494,7 +496,7 @@ HeapProfilerTestRunner.clickColumn = function(column, callback) {
   }
 
   HeapProfilerTestRunner.currentGrid().addEventListener(
-      Profiler.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, this);
+      Profiler.HeapSnapshotDataGrids.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, this);
   this.currentGrid().clickInHeaderCell(event);
 };
 
@@ -505,13 +507,15 @@ HeapProfilerTestRunner.clickRowAndGetRetainers = function(row, callback) {
 
   this.currentGrid().mouseDownInDataTable(event);
   const rootNode = HeapProfilerTestRunner.currentProfileView().retainmentDataGrid.rootNode();
-  rootNode.once(Profiler.HeapSnapshotGridNode.Events.PopulateComplete).then(() => callback(rootNode));
+  rootNode.once(Profiler.HeapSnapshotGridNodes.HeapSnapshotGridNode.Events.PopulateComplete)
+      .then(() => callback(rootNode));
 };
 
 HeapProfilerTestRunner.clickShowMoreButton = function(buttonName, row, callback) {
   callback = TestRunner.safeWrap(callback);
   const parent = row.parent;
-  parent.once(Profiler.HeapSnapshotGridNode.Events.PopulateComplete).then(() => setTimeout(() => callback(parent), 0));
+  parent.once(Profiler.HeapSnapshotGridNodes.HeapSnapshotGridNode.Events.PopulateComplete)
+      .then(() => setTimeout(() => callback(parent), 0));
   row[buttonName].click();
 };
 
@@ -556,7 +560,8 @@ HeapProfilerTestRunner.countDataRows = function(row, filter) {
 
 HeapProfilerTestRunner.expandRow = function(row, callback) {
   callback = TestRunner.safeWrap(callback);
-  row.once(Profiler.HeapSnapshotGridNode.Events.PopulateComplete).then(() => setTimeout(() => callback(row), 0));
+  row.once(Profiler.HeapSnapshotGridNodes.HeapSnapshotGridNode.Events.PopulateComplete)
+      .then(() => setTimeout(() => callback(row), 0));
 
   (function expand() {
     if (row.hasChildren()) {
@@ -644,12 +649,13 @@ HeapProfilerTestRunner.takeAndOpenSnapshot = async function(generator, callback)
 };
 
 /**
- * @return {!Promise<!Profiler.HeapProfileHeader>}
+ * @return {!Promise<!Profiler.HeapSnapshotView.HeapProfileHeader>}
  */
 HeapProfilerTestRunner.takeSnapshotPromise = function() {
   return new Promise(resolve => {
     const heapProfileType = Profiler.ProfileTypeRegistry.instance.heapSnapshotProfileType;
-    heapProfileType.addEventListener(Profiler.HeapSnapshotProfileType.SnapshotReceived, finishHeapSnapshot);
+    heapProfileType.addEventListener(
+        Profiler.HeapSnapshotView.HeapSnapshotProfileType.SnapshotReceived, finishHeapSnapshot);
     heapProfileType.takeHeapSnapshot();
 
     function finishHeapSnapshot() {
@@ -664,11 +670,12 @@ HeapProfilerTestRunner.takeSnapshotPromise = function() {
       UI.panels.heap_profiler.showProfile(profile);
 
       const dataGrid = HeapProfilerTestRunner.currentProfileView().dataGrid;
-      dataGrid.addEventListener(Profiler.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, null);
+      dataGrid.addEventListener(
+          Profiler.HeapSnapshotDataGrids.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, null);
 
       function sortingComplete() {
         dataGrid.removeEventListener(
-            Profiler.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, null);
+            Profiler.HeapSnapshotDataGrids.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, null);
         resolve(profile);
       }
     }
@@ -694,11 +701,13 @@ HeapProfilerTestRunner.snapshotViewShown = function() {
     const dataGrid = this.dataGrid;
 
     function sortingComplete() {
-      dataGrid.removeEventListener(Profiler.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, null);
+      dataGrid.removeEventListener(
+          Profiler.HeapSnapshotDataGrids.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, null);
       callback();
     }
 
-    dataGrid.addEventListener(Profiler.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, null);
+    dataGrid.addEventListener(
+        Profiler.HeapSnapshotDataGrids.HeapSnapshotSortableDataGridEvents.SortingComplete, sortingComplete, null);
   }
 };
 
@@ -738,9 +747,9 @@ HeapProfilerTestRunner.startSamplingHeapProfiler = async function() {
   if (!self.UI.context.flavor(SDK.HeapProfilerModel)) {
     await new Promise(resolve => self.UI.context.addFlavorChangeListener(SDK.HeapProfilerModel, resolve));
   }
-  Profiler.SamplingHeapProfileType.instance.startRecordingProfile();
+  Profiler.HeapProfileView.SamplingHeapProfileType.instance.startRecordingProfile();
 };
 
 HeapProfilerTestRunner.stopSamplingHeapProfiler = function() {
-  Profiler.SamplingHeapProfileType.instance.stopRecordingProfile();
+  Profiler.HeapProfileView.SamplingHeapProfileType.instance.stopRecordingProfile();
 };

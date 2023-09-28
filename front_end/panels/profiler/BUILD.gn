@@ -86,14 +86,6 @@ devtools_entrypoint("bundle") {
   visibility += devtools_panels_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "profiler-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [ "../..:legacy_entrypoints" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "profiler-meta.ts"
 

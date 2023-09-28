@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../panels/profiler/profiler-legacy.js';
-
+import * as Profiler from '../../panels/profiler/profiler.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
@@ -14,7 +13,8 @@ export const CPUProfilerTestRunner = {};
 CPUProfilerTestRunner.startProfilerTest = function(callback) {
   TestRunner.addResult('Profiler was enabled.');
   TestRunner.addSniffer(UI.panels.js_profiler, 'addProfileHeader', CPUProfilerTestRunner.profileHeaderAdded, true);
-  TestRunner.addSniffer(Profiler.ProfileView.prototype, 'refresh', CPUProfilerTestRunner.profileViewRefresh, true);
+  TestRunner.addSniffer(
+      Profiler.ProfileView.ProfileView.prototype, 'refresh', CPUProfilerTestRunner.profileViewRefresh, true);
   TestRunner.safeWrap(callback)();
 };
 

@@ -2,16 +2,29 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as CodeMirror from '../../../../../front_end/third_party/codemirror.next/codemirror.next.js';
-import * as Sources from '../../../../../front_end/panels/sources/sources.js';
-import {dispatchKeyDownEvent} from '../../helpers/DOMHelpers.js';
-import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Sources from '../../../../../front_end/panels/sources/sources.js';
+import type * as CodeMirror from '../../../../../front_end/third_party/codemirror.next/codemirror.next.js';
+import {assertShadowRoot, dispatchKeyDownEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 function setCodeMirrorContent(editor: CodeMirror.EditorView, content: string) {
   editor.dispatch({
     changes: {from: 0, to: editor.state.doc.length, insert: content},
   });
+}
+
+function setBreakpointType(
+    dialog: Sources.BreakpointEditDialog.BreakpointEditDialog, newType: SDK.DebuggerModel.BreakpointType) {
+  const toolbar = dialog.contentElement.querySelector('.toolbar');
+  assertNotNullOrUndefined(toolbar);
+  assertShadowRoot(toolbar.shadowRoot);
+  const selectElement = toolbar.shadowRoot.querySelector('select');
+  assertNotNullOrUndefined(selectElement);
+
+  selectElement.value = newType;
+  selectElement.dispatchEvent(new Event('change'));
 }
 
 // Note that we currently don't install a fake RuntimeModel + ExecutionContext for these tests.
@@ -105,5 +118,17 @@ describeWithEnvironment('BreakpointEditDialog', () => {
     const {editorForTest: {editor}} = dialog;
 
     assert.strictEqual(editor.state.doc.sliceString(0), 'x === 42');
+  });
+
+  it('focuses the editor input field after changing the breakpoint type', async () => {
+    const dialog = new Sources.BreakpointEditDialog.BreakpointEditDialog(0, '', false, () => {});
+    renderElementIntoDOM(dialog.contentElement);
+
+    setBreakpointType(dialog, SDK.DebuggerModel.BreakpointType.LOGPOINT);
+
+    const {editorForTest: {editor}} = dialog;
+    assert.isTrue(editor.hasFocus);
+
+    dialog.contentElement.remove();  // Cleanup.
   });
 });

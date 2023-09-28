@@ -208,6 +208,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
       this.finishEditing(true, '');
       return;
     }
+    this.focusEditor();
     this.editor.dispatch({effects: this.placeholderCompartment.reconfigure(this.getPlaceholder())});
     this.updateTooltip();
   }

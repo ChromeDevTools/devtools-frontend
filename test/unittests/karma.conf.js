@@ -166,7 +166,7 @@ const ResultsDBReporter = function(baseReporterDecorator, formatError, config) {
 
     const testResult = {testId, duration, status, expected, summaryHtml};
     if (status !== 'SKIP') {
-      ResultsDb.recordTestResult(testResult);
+      ResultsDb.sendTestResult(testResult);
     }
   };
   this.specSuccess = specComplete;
@@ -181,7 +181,6 @@ const ResultsDBReporter = function(baseReporterDecorator, formatError, config) {
         this.write('FAILED: %d failed, %d passed (%d skipped)\n', results.failed, results.success, results.skipped);
       }
     }
-    ResultsDb.sendCollectedTestResultsIfSinkIsAvailable();
   };
 };
 ResultsDBReporter.$inject = ['baseReporterDecorator', 'formatError', 'config'];

@@ -31,9 +31,10 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {InputModel} from './InputModel.js';
@@ -68,6 +69,14 @@ const UIStrings = {
    *@description Accessible text for the address bar in screencast view
    */
   addressBar: 'Address bar',
+  /**
+   *@description Accessible text for the touch emulation button.
+   */
+  touchInput: 'Use touch',
+  /**
+   *@description Accessible text for the mouse emulation button.
+   */
+  mouseInput: 'Use mouse',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/screencast/ScreencastView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -118,6 +127,8 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   private navigationBar?: HTMLElement;
   private navigationReload?: HTMLElement;
   private navigationProgressBar?: ProgressTracker;
+  private touchInputToggle?: HTMLButtonElement;
+  private mouseInputToggle?: HTMLButtonElement;
   private historyIndex?: number;
   private historyEntries?: Protocol.Page.NavigationEntry[];
   constructor(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel) {
@@ -156,7 +167,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.canvasElement.addEventListener('mousedown', this.handleMouseEvent.bind(this), false);
     this.canvasElement.addEventListener('mouseup', this.handleMouseEvent.bind(this), false);
     this.canvasElement.addEventListener('mousemove', this.handleMouseEvent.bind(this), false);
-    this.canvasElement.addEventListener('mousewheel', this.handleMouseEvent.bind(this), false);
+    this.canvasElement.addEventListener('wheel', this.handleWheelEvent.bind(this), false);
     this.canvasElement.addEventListener('click', this.handleMouseEvent.bind(this), false);
     this.canvasElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), false);
     this.canvasElement.addEventListener('keydown', this.handleKeyEvent.bind(this), false);
@@ -219,9 +230,6 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
         Protocol.Page.StartScreencastRequestFormat.Jpeg, 80, Math.floor(Math.min(maxImageDimension, dimensions.width)),
         Math.floor(Math.min(maxImageDimension, dimensions.height)), undefined, this.screencastFrame.bind(this),
         this.screencastVisibilityChanged.bind(this));
-    for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
-      void emulationModel.overrideEmulateTouch(true);
-    }
     if (this.overlayModel) {
       this.overlayModel.setHighlighter(this);
     }
@@ -299,19 +307,17 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     }
   }
 
-  private async handleMouseEvent(event: Event): Promise<void> {
+  private async handleMouseEvent(event: MouseEvent): Promise<void> {
     if (this.isGlassPaneActive()) {
       event.consume();
       return;
     }
-
     if (!this.pageScaleFactor || !this.domModel) {
       return;
     }
-
-    if (!this.inspectModeConfig || event.type === 'mousewheel') {
+    if (!this.inspectModeConfig) {
       if (this.inputModel) {
-        this.inputModel.emitTouchFromMouseEvent(event, this.screenOffsetTop, this.screenZoom);
+        this.inputModel.emitMouseEvent(event, this.screenOffsetTop, this.screenZoom);
       }
       event.preventDefault();
       if (event.type === 'mousedown') {
@@ -321,12 +327,10 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     }
 
     const position = this.convertIntoScreenSpace(event as MouseEvent);
-
     const node = await this.domModel.nodeForLocation(
         Math.floor(position.x / this.pageScaleFactor + this.scrollOffsetX),
         Math.floor(position.y / this.pageScaleFactor + this.scrollOffsetY),
         Common.Settings.Settings.instance().moduleSetting('showUAShadowDOM').get());
-
     if (!node) {
       return;
     }
@@ -339,7 +343,21 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     }
   }
 
-  private handleKeyEvent(event: Event): void {
+  private async handleWheelEvent(event: WheelEvent): Promise<void> {
+    if (this.isGlassPaneActive()) {
+      event.consume();
+      return;
+    }
+    if (!this.pageScaleFactor || !this.domModel) {
+      return;
+    }
+    if (this.inputModel) {
+      this.inputModel.emitWheelEvent(event, this.screenOffsetTop, this.screenZoom);
+    }
+    event.preventDefault();
+  }
+
+  private handleKeyEvent(event: KeyboardEvent): void {
     if (this.isGlassPaneActive()) {
       event.consume();
       return;
@@ -359,14 +377,15 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.canvasElement.focus();
   }
 
-  private handleContextMenuEvent(event: Event): void {
-    event.consume(true);
+  private handleBlurEvent(): void {
+    if (this.inputModel && this.mouseInputToggle?.disabled) {
+      const event = new MouseEvent('mouseup');
+      this.inputModel.emitMouseEvent(event, this.screenOffsetTop, this.screenZoom);
+    }
   }
 
-  private handleBlurEvent(_event: Event): void {
-    if (this.inputModel) {
-      this.inputModel.cancelTouch();
-    }
+  private handleContextMenuEvent(event: Event): void {
+    event.consume(true);
   }
 
   private convertIntoScreenSpace(event: MouseEvent): Point {
@@ -654,18 +673,49 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
 
   private createNavigationBar(): void {
     this.navigationBar = this.element.createChild('div', 'screencast-navigation') as HTMLElement;
-    this.navigationBack = this.navigationBar.createChild('button', 'back') as HTMLButtonElement;
+
+    this.navigationBack = this.navigationBar.createChild('button') as HTMLButtonElement;
+    {
+      const icon = this.navigationBack.appendChild(new IconButton.Icon.Icon());
+      icon.data = {color: 'var(--icon-default)', iconName: 'arrow-back'};
+    }
     this.navigationBack.disabled = true;
     UI.ARIAUtils.setLabel(this.navigationBack, i18nString(UIStrings.back));
-    this.navigationForward = this.navigationBar.createChild('button', 'forward') as HTMLButtonElement;
+
+    this.navigationForward = this.navigationBar.createChild('button') as HTMLButtonElement;
+    {
+      const icon = this.navigationForward.appendChild(new IconButton.Icon.Icon());
+      icon.data = {color: 'var(--icon-default)', iconName: 'arrow-forward'};
+    }
     this.navigationForward.disabled = true;
     UI.ARIAUtils.setLabel(this.navigationForward, i18nString(UIStrings.forward));
-    this.navigationReload = this.navigationBar.createChild('button', 'reload');
+
+    this.navigationReload = this.navigationBar.createChild('button');
+    {
+      const icon = this.navigationReload.appendChild(new IconButton.Icon.Icon());
+      icon.data = {color: 'var(--icon-default)', iconName: 'refresh'};
+    }
     UI.ARIAUtils.setLabel(this.navigationReload, i18nString(UIStrings.reload));
-    this.navigationUrl = UI.UIUtils.createInput() as HTMLInputElement;
-    UI.ARIAUtils.setLabel(this.navigationUrl, i18nString(UIStrings.addressBar));
-    this.navigationBar.appendChild(this.navigationUrl);
+
+    this.navigationUrl = this.navigationBar.appendChild(UI.UIUtils.createInput()) as HTMLInputElement;
     this.navigationUrl.type = 'text';
+    UI.ARIAUtils.setLabel(this.navigationUrl, i18nString(UIStrings.addressBar));
+
+    this.touchInputToggle = this.navigationBar.createChild('button') as HTMLButtonElement;
+    {
+      const icon = this.touchInputToggle.appendChild(new IconButton.Icon.Icon());
+      icon.data = {color: 'var(--icon-default)', iconName: 'hand-pointer'};
+    }
+    UI.ARIAUtils.setLabel(this.touchInputToggle, i18nString(UIStrings.touchInput));
+
+    this.mouseInputToggle = this.navigationBar.createChild('button') as HTMLButtonElement;
+    this.mouseInputToggle.disabled = true;
+    {
+      const icon = this.mouseInputToggle.appendChild(new IconButton.Icon.Icon());
+      icon.data = {color: 'var(--icon-default)', iconName: 'pointer'};
+    }
+    UI.ARIAUtils.setLabel(this.mouseInputToggle, i18nString(UIStrings.mouseInput));
+
     this.navigationProgressBar = new ProgressTracker(
         this.resourceTreeModel, this.networkManager, this.navigationBar.createChild('div', 'progress') as HTMLElement);
 
@@ -674,6 +724,8 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
       this.navigationForward.addEventListener('click', this.navigateToHistoryEntry.bind(this, 1), false);
       this.navigationReload.addEventListener('click', this.navigateReload.bind(this), false);
       this.navigationUrl.addEventListener('keyup', this.navigationUrlKeyUp.bind(this), true);
+      this.touchInputToggle.addEventListener('click', this.#toggleTouchEmulation.bind(this, true), false);
+      this.mouseInputToggle.addEventListener('click', this.#toggleTouchEmulation.bind(this, false), false);
       void this.requestNavigationHistory();
       this.resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.requestNavigationHistoryEvent, this);
@@ -716,6 +768,19 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
       void this.resourceTreeModel.navigate(url as Platform.DevToolsPath.UrlString);
     }
     this.canvasElement.focus();
+  }
+
+  #toggleTouchEmulation(value: boolean): void {
+    if (!this.canvasContainerElement || !this.isCasting || !this.mouseInputToggle || !this.touchInputToggle) {
+      return;
+    }
+    const models = SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel);
+    for (const model of models) {
+      void model.overrideEmulateTouch(value);
+    }
+    this.mouseInputToggle.disabled = !value;
+    this.touchInputToggle.disabled = value;
+    this.canvasContainerElement.classList.toggle('touchable', value);
   }
 
   private requestNavigationHistoryEvent(): void {

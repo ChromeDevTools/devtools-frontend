@@ -6,19 +6,30 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 
+const BUTTONS = [
+  Protocol.Input.MouseButton.Left,
+  Protocol.Input.MouseButton.Middle,
+  Protocol.Input.MouseButton.Right,
+  Protocol.Input.MouseButton.Back,
+  Protocol.Input.MouseButton.Forward,
+];
+const MOUSE_EVENT_TYPES: {[key: string]: Protocol.Input.DispatchMouseEventRequestType} = {
+  mousedown: Protocol.Input.DispatchMouseEventRequestType.MousePressed,
+  mouseup: Protocol.Input.DispatchMouseEventRequestType.MouseReleased,
+  mousemove: Protocol.Input.DispatchMouseEventRequestType.MouseMoved,
+};
+
 export class InputModel extends SDK.SDKModel.SDKModel<void> {
   private readonly inputAgent: ProtocolProxyApi.InputApi;
-  private activeTouchOffsetTop: number|null;
-  private activeTouchParams: Protocol.Input.EmulateTouchFromMouseEventRequest|null;
+  private activeMouseOffsetTop: number|null;
 
   constructor(target: SDK.Target.Target) {
     super(target);
     this.inputAgent = target.inputAgent();
-    this.activeTouchOffsetTop = null;
-    this.activeTouchParams = null;
+    this.activeMouseOffsetTop = null;
   }
 
-  emitKeyEvent(event: Event): void {
+  emitKeyEvent(event: KeyboardEvent): void {
     let type: Protocol.Input.DispatchKeyEventRequestType;
     switch (event.type) {
       case 'keydown':
@@ -33,87 +44,67 @@ export class InputModel extends SDK.SDKModel.SDKModel<void> {
       default:
         return;
     }
-    const keyboardEvent = event as KeyboardEvent;
-    const text = event.type === 'keypress' ? String.fromCharCode(keyboardEvent.charCode) : undefined;
+    const text = event.type === 'keypress' ? String.fromCharCode(event.charCode) : undefined;
     void this.inputAgent.invoke_dispatchKeyEvent({
       type: type,
-      modifiers: this.modifiersForEvent(keyboardEvent),
+      modifiers: this.modifiersForEvent(event),
       text: text,
       unmodifiedText: text ? text.toLowerCase() : undefined,
-      keyIdentifier: (keyboardEvent as {keyIdentifier?: string}).keyIdentifier,
-      code: keyboardEvent.code,
-      key: keyboardEvent.key,
-      windowsVirtualKeyCode: keyboardEvent.keyCode,
-      nativeVirtualKeyCode: keyboardEvent.keyCode,
-      autoRepeat: false,
-      isKeypad: false,
+      keyIdentifier: (event as {keyIdentifier?: string}).keyIdentifier,
+      code: event.code,
+      key: event.key,
+      windowsVirtualKeyCode: event.keyCode,
+      nativeVirtualKeyCode: event.keyCode,
+      autoRepeat: event.repeat,
+      isKeypad: event.location === 3,
       isSystemKey: false,
+      location: event.location !== 3 ? event.location : undefined,
     });
   }
 
-  emitTouchFromMouseEvent(event: Event, offsetTop: number, zoom: number): void {
-    const buttons = ['none', 'left', 'middle', 'right'] as Protocol.Input.MouseButton[];
-    const types: {[key: string]: Protocol.Input.EmulateTouchFromMouseEventRequestType} = {
-      mousedown: Protocol.Input.EmulateTouchFromMouseEventRequestType.MousePressed,
-      mouseup: Protocol.Input.EmulateTouchFromMouseEventRequestType.MouseReleased,
-      mousemove: Protocol.Input.EmulateTouchFromMouseEventRequestType.MouseMoved,
-      mousewheel: Protocol.Input.EmulateTouchFromMouseEventRequestType.MouseWheel,
-    };
-
-    const eventType = event.type as string;
-    if (!(eventType in types)) {
+  emitMouseEvent(event: MouseEvent, offsetTop: number, zoom: number): void {
+    if (!(event.type in MOUSE_EVENT_TYPES)) {
       return;
     }
-
-    const mouseEvent = event as MouseEvent;
-
-    if (!(mouseEvent.which in buttons)) {
-      return;
+    if (event.type === 'mousedown' || this.activeMouseOffsetTop === null) {
+      this.activeMouseOffsetTop = offsetTop;
     }
-    if (eventType !== 'mousewheel' && buttons[mouseEvent.which] === 'none') {
-      return;
-    }
-
-    if (eventType === 'mousedown' || this.activeTouchOffsetTop === null) {
-      this.activeTouchOffsetTop = offsetTop;
-    }
-
-    const x = Math.round(mouseEvent.offsetX / zoom);
-    let y = Math.round(mouseEvent.offsetY / zoom);
-    y = Math.round(y - this.activeTouchOffsetTop);
-    const params: Protocol.Input.EmulateTouchFromMouseEventRequest = {
-      type: types[eventType],
-      x: x,
-      y: y,
-      modifiers: 0,
-      button: buttons[mouseEvent.which],
-      clickCount: 0,
-    };
-    if (event.type === 'mousewheel') {
-      const wheelEvent = mouseEvent as WheelEvent;
-      params.deltaX = wheelEvent.deltaX / zoom;
-      params.deltaY = -wheelEvent.deltaY / zoom;
-    } else {
-      this.activeTouchParams = params;
-    }
+    void this.inputAgent.invoke_dispatchMouseEvent({
+      type: MOUSE_EVENT_TYPES[event.type],
+      x: Math.round(event.offsetX / zoom),
+      y: Math.round(event.offsetY / zoom - this.activeMouseOffsetTop),
+      modifiers: this.modifiersForEvent(event),
+      button: BUTTONS[event.button],
+      clickCount: event.detail,
+    });
     if (event.type === 'mouseup') {
-      this.activeTouchOffsetTop = null;
-    }
-    void this.inputAgent.invoke_emulateTouchFromMouseEvent(params);
-  }
-
-  cancelTouch(): void {
-    if (this.activeTouchParams !== null) {
-      const params = this.activeTouchParams;
-      this.activeTouchParams = null;
-      params.type = 'mouseReleased' as Protocol.Input.EmulateTouchFromMouseEventRequestType;
-      void this.inputAgent.invoke_emulateTouchFromMouseEvent(params);
+      this.activeMouseOffsetTop = null;
     }
   }
 
-  private modifiersForEvent(event: KeyboardEvent): number {
-    return (event.altKey ? 1 : 0) | (event.ctrlKey ? 2 : 0) | (event.metaKey ? 4 : 0) | (event.shiftKey ? 8 : 0);
+  emitWheelEvent(event: WheelEvent, offsetTop: number, zoom: number): void {
+    if (this.activeMouseOffsetTop === null) {
+      this.activeMouseOffsetTop = offsetTop;
+    }
+    void this.inputAgent.invoke_dispatchMouseEvent({
+      type: Protocol.Input.DispatchMouseEventRequestType.MouseWheel,
+      x: Math.round(event.offsetX / zoom),
+      y: Math.round(event.offsetY / zoom - this.activeMouseOffsetTop),
+      modifiers: this.modifiersForEvent(event),
+      button: BUTTONS[event.button],
+      clickCount: event.detail,
+      deltaX: event.deltaX / zoom,
+      deltaY: event.deltaY / zoom,
+    });
+  }
+
+  private modifiersForEvent(event: KeyboardEvent|MouseEvent): number {
+    return Number(event.getModifierState('Alt')) | (Number(event.getModifierState('Control')) << 1) |
+        (Number(event.getModifierState('Meta')) << 2) | (Number(event.getModifierState('Shift')) << 3);
   }
 }
 
-SDK.SDKModel.SDKModel.register(InputModel, {capabilities: SDK.Target.Capability.Input, autostart: false});
+SDK.SDKModel.SDKModel.register(InputModel, {
+  capabilities: SDK.Target.Capability.Input,
+  autostart: false,
+});

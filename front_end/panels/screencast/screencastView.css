@@ -35,7 +35,7 @@
 .screencast-navigation {
   flex-direction: row;
   display: flex;
-  flex: 24px 0 0;
+  align-items: center;
   position: relative;
   padding-left: 1px;
   border-bottom: 1px solid var(--color-details-hairline);
@@ -44,45 +44,20 @@
 }
 
 .screencast-navigation button {
-  border-radius: 2px;
-  background-color: transparent;
-  background-image:
-    image-set(
-      var(--image-file-navigationControls) 1x,
-      var(--image-file-navigationControls_2x) 2x
-    );
-  background-clip: content-box;
-  background-origin: content-box;
-  background-repeat: no-repeat;
-  border: 1px solid transparent;
-  height: 23px;
-  padding: 2px;
-  width: 23px;
+  border-width: 0;
+  padding: 5px;
+  width: 28px;
+  height: 26px;
+  background: none;
 }
 
-.screencast-navigation button:hover,
-.screencast-navigation button:focus {
-  border-color: var(--legacy-accent-color-hover);
-}
-
-.screencast-navigation button:active {
-  border-color: var(--color-background-elevation-2);
+.screencast-navigation button devtools-icon {
+  width: 100%;
+  height: 100%;
 }
 
 .screencast-navigation button[disabled] {
   opacity: 50%;
-}
-
-.screencast-navigation button.back {
-  background-position-x: -1px;
-}
-
-.screencast-navigation button.forward {
-  background-position-x: -18px;
-}
-
-.screencast-navigation button.reload {
-  background-position-x: -37px;
 }
 
 .screencast-navigation input {
@@ -114,7 +89,7 @@
   border-radius: 20px;
   flex: none;
   padding: 20px;
-  margin: 10px;
+  margin: auto;
   background-color: var(--color-background-elevation-2);
 }
 
@@ -123,6 +98,9 @@
   display: flex;
   border: 1px solid var(--color-details-hairline);
   position: relative;
+}
+
+.screencast-canvas-container.touchable {
   cursor: image-set(var(--image-file-touchCursor) 1x, var(--image-file-touchCursor_2x) 2x), default;
 }
 

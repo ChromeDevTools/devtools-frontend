@@ -44,7 +44,7 @@
   white-space: nowrap;
   align-items: center;
 
-  &:hover {
+  &.soft-context-menu-item-mouse-over {
     background-color: var(--sys-color-state-hover-on-subtle);
 
     [is="ui-icon"] {

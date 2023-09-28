@@ -159,7 +159,7 @@ async function timeoutHook(this: Mocha.Runnable, done: Mocha.Done|undefined, err
       err.cause = new Error(msg);
     }
   }
-  if (err && !getEnvVar('DEBUG_TEST')) {
+  if (err && !getEnvVar('DEBUG_TEST') && !(err instanceof ScreenshotError)) {
     const {target, frontend} = await takeScreenshots(this.fullTitle());
     err = ScreenshotError.fromBase64Images(err, target, frontend);
   }
@@ -253,12 +253,11 @@ function wrapMochaCall(
 
     if (callback.length === 0) {
       async function onError(this: unknown, err?: unknown) {
-        if (err && !getEnvVar('DEBUG_TEST')) {
+        if (err && !getEnvVar('DEBUG_TEST') && !(err instanceof ScreenshotError)) {
           const {target, frontend} = await takeScreenshots(name);
-          done.call(this, ScreenshotError.fromBase64Images(err, target, frontend));
-        } else {
-          done.call(this, err);
+          err = ScreenshotError.fromBase64Images(err, target, frontend);
         }
+        done.call(this, err);
       }
       (callback as Mocha.AsyncFunc).bind(this)().then(onError, onError);
     } else {

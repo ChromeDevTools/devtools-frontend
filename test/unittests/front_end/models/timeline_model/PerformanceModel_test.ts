@@ -54,6 +54,7 @@ describeWithEnvironment('PerformanceModel', () => {
 
     const perfModel = new Timeline.PerformanceModel.PerformanceModel();
     await perfModel.setTracingModel(tracingModel);
+    perfModel.zoomWindowToMainThreadActivity();
 
     assert.deepEqual(perfModel.window(), {
       // Left window = 100ms which is the first timestamp of the first event
@@ -114,6 +115,7 @@ describeWithEnvironment('PerformanceModel', () => {
 
     const perfModel = new Timeline.PerformanceModel.PerformanceModel();
     await perfModel.setTracingModel(tracingModel);
+    perfModel.zoomWindowToMainThreadActivity();
 
     assert.deepEqual(perfModel.window(), {
       // This trace has:
@@ -181,6 +183,7 @@ describeWithEnvironment('PerformanceModel', () => {
 
     const perfModel = new Timeline.PerformanceModel.PerformanceModel();
     await perfModel.setTracingModel(tracingModel);
+    perfModel.zoomWindowToMainThreadActivity();
 
     assert.deepEqual(perfModel.window(), {
       left: tracingModel.minimumRecordTime(),

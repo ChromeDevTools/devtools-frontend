@@ -1133,9 +1133,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.updateOverviewControls();
     this.#minimapComponent.reset();
-
-    if (model && this.performanceModel) {
-      this.performanceModel.addEventListener(Events.WindowChanged, this.onModelWindowChanged, this);
+    if (model) {
+      model.addEventListener(Events.WindowChanged, this.onModelWindowChanged, this);
       this.#minimapComponent.setBounds(
           TraceEngine.Types.Timing.MilliSeconds(model.timelineModel().minimumRecordTime()),
           TraceEngine.Types.Timing.MilliSeconds(model.timelineModel().maximumRecordTime()));
@@ -1144,6 +1143,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(profile.cpuProfileData, profile.target);
       }
       this.flameChart.setSelection(null);
+      model.zoomWindowToMainThreadActivity();
       this.#minimapComponent.setWindowTimes(model.window().left, model.window().right);
     }
 
@@ -1330,6 +1330,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     try {
       // Run the new engine in parallel with the parsing done in the performanceModel
       await Promise.all([
+        // Calling setTracingModel now and setModel so much later, leads to several problems due to addEventListener order being unexpected
+        // TODO(paulirish): Resolve this, or just wait for the death of tracingModel. :)
         this.performanceModel.setTracingModel(tracingModel, recordingIsFresh, {
           // If we are using the new engine for everything, we do not need to
           // resolve sourcemaps within the old engine.

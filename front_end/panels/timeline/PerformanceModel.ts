@@ -85,8 +85,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     });
     this.frameModelInternal.addTraceEvents(
         this.mainTargetInternal, this.timelineModelInternal.inspectedTargetEvents(), threadData);
-
-    this.autoWindowTimes();
   }
 
   async addSourceMapListeners(): Promise<void> {
@@ -181,8 +179,11 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
   }
 
   setWindow(window: Window, animate?: boolean): void {
+    const didWindowChange = this.windowInternal.left !== window.left || this.windowInternal.right !== window.right;
     this.windowInternal = window;
-    this.dispatchEventToListeners(Events.WindowChanged, {window, animate});
+    if (didWindowChange) {
+      this.dispatchEventToListeners(Events.WindowChanged, {window, animate});
+    }
   }
 
   window(): Window {
@@ -197,7 +198,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     return this.timelineModelInternal.maximumRecordTime();
   }
 
-  private autoWindowTimes(): void {
+  zoomWindowToMainThreadActivity(): void {
     const timelineModel = this.timelineModelInternal;
     let tasks: TraceEngine.Legacy.Event[] = [];
     for (const track of timelineModel.tracks()) {

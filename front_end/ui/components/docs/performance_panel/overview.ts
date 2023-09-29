@@ -42,6 +42,7 @@ async function renderMiniMap(containerSelector: string, options: {showMemory: bo
       showScreenshots: true,
     },
   });
+  models.performanceModel.zoomWindowToMainThreadActivity();
   minimap.setWindowTimes(models.performanceModel.window().left, models.performanceModel.window().right);
 }
 

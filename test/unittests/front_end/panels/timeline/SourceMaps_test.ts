@@ -2,20 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
-import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
-import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
-import {TestPlugin} from '../../helpers/LanguagePluginHelpers.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
-import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import * as Root from '../../../../../front_end/core/root/root.js';
+import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Console from '../../../../../front_end/panels/console/console.js';
-
-import {createTarget} from '../../helpers/EnvironmentHelpers.js';
+import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
+import {createTarget, registerNoopActions} from '../../helpers/EnvironmentHelpers.js';
+import {TestPlugin} from '../../helpers/LanguagePluginHelpers.js';
 import {
   describeWithMockConnection,
   dispatchEvent,
@@ -90,6 +89,7 @@ describeWithMockConnection('Name resolving in the Performance panel', () => {
   let tracingModel: TraceEngine.Legacy.TracingModel;
   let target: SDK.Target.Target;
   beforeEach(async function() {
+    registerNoopActions(['console.clear', 'console.create-pin']);
     target = createTarget();
     performanceModel = new Timeline.PerformanceModel.PerformanceModel();
     const traceEvents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(

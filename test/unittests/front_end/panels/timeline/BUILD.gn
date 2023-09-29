@@ -14,6 +14,7 @@ ts_library("timeline") {
     "SourceMaps_test.ts",
     "TimelineController_test.ts",
     "TimelineDetailsView_test.ts",
+    "TimelineFilters_test.ts",
     "TimelineFlameChartDataProvider_test.ts",
     "TimelineFlameChartNetworkDataProvider_test.ts",
     "TimelineFlameChartView_test.ts",

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
+import * as TraceEngine from '../../models/trace/trace.js';
 
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
@@ -18,7 +18,12 @@ export class IsLong extends TimelineModel.TimelineModelFilter.TimelineModelFilte
     this.minimumRecordDuration = value;
   }
 
-  accept(event: TraceEngine.Legacy.Event): boolean {
+  accept(event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
+    if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
+      const {duration} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
+      return duration >= this.minimumRecordDuration;
+    }
+
     const duration = event.endTime ? event.endTime - event.startTime : 0;
     return duration >= this.minimumRecordDuration;
   }
@@ -29,7 +34,7 @@ export class Category extends TimelineModel.TimelineModelFilter.TimelineModelFil
     super();
   }
 
-  accept(event: TraceEngine.Legacy.Event): boolean {
+  accept(event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
     return !TimelineUIUtils.eventStyle(event).category.hidden;
   }
 }

@@ -62,7 +62,7 @@ describe('Hide issues menu', async () => {
     });
 
     await navigateToIssuesTab();
-    const issueTitle = 'Deprecated Feature Used';
+    const issueTitle = 'Deprecated feature used';
     const issueHeader = await getIssueHeaderByTitle(issueTitle);
     assertNotNullOrUndefined(issueHeader);
     const hideIssuesMenu = await getHideIssuesMenu(issueHeader);

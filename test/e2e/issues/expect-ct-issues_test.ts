@@ -36,7 +36,7 @@ describe('Expect-CT Issue', async () => {
     });
 
     await expandIssue();
-    const issueElement = await getIssueByTitle('Deprecated Feature Used');
+    const issueElement = await getIssueByTitle('Deprecated feature used');
     assertNotNullOrUndefined(issueElement);
     const section = await getResourcesElement('1 source', issueElement, '.affected-resource-label');
     await ensureResourceSectionIsExpanded(section);

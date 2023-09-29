@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import '../test_runner/test_runner.js';
-import '../../panels/sources/sources-legacy.js';
 import '../../models/workspace/workspace-legacy.js';
 import '../../ui/legacy/components/source_frame/source_frame-legacy.js';
 import '../../models/text_utils/text_utils-legacy.js';

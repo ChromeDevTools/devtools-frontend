@@ -565,7 +565,6 @@ grd_files_release_sources = [
   "front_end/panels/snippets/snippets-legacy.js",
   "front_end/panels/snippets/snippets.js",
   "front_end/panels/sources/components/components.js",
-  "front_end/panels/sources/sources-legacy.js",
   "front_end/panels/sources/sources-meta.js",
   "front_end/panels/sources/sources.js",
   "front_end/panels/timeline/components/components.js",

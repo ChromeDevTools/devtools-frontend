@@ -117,17 +117,6 @@ devtools_entrypoint("bundle") {
   visibility += devtools_panels_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "sources-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../legacy_test_runner/*",
-  ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "sources-meta.ts"
 

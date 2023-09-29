@@ -62,7 +62,6 @@ group("legacy_entrypoints") {
     "panels/security:legacy",
     "panels/settings:legacy",
     "panels/snippets:legacy",
-    "panels/sources:legacy",
     "panels/timeline:legacy",
     "panels/web_audio:legacy",
     "third_party/diff:legacy",

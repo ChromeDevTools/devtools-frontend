@@ -4,7 +4,6 @@
 
 import '../test_runner/test_runner.js';
 import '../../panels/application/application-legacy.js';
-import '../../panels/sources/sources-legacy.js';
 import '../sources_test_runner/sources_test_runner.js';
 import './CacheStorageTestRunner.js';
 import './IndexedDBTestRunner.js';

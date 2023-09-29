@@ -6,6 +6,7 @@ import '../../core/sdk/sdk-legacy.js';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
@@ -49,7 +50,7 @@ SDKTestRunner.PageMock = class {
   }
 
   connectAsMainTarget(targetName) {
-    self.Bindings.debuggerWorkspaceBinding.resetForTest(TestRunner.mainTarget);
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().resetForTest(TestRunner.mainTarget);
     self.Bindings.resourceMapping.resetForTest(TestRunner.mainTarget);
     this.enabledDomains.clear();
     self.SDK.targetManager.clearAllTargetsForTest();

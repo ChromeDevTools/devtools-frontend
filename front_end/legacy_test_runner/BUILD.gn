@@ -23,7 +23,6 @@ ts_library("legacy_test_runner-source") {
   deps = [
     "../core/sdk:legacy",
     "../entrypoints/devtools_app:entrypoint",
-    "../models/bindings:legacy",
     "../models/breakpoints:legacy",
     "../models/extensions:legacy",
     "../models/formatter:legacy",

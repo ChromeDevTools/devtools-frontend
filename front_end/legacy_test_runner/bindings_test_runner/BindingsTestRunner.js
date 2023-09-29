@@ -7,6 +7,8 @@
  */
 self.BindingsTestRunner = self.BindingsTestRunner || {};
 
+import * as Bindings from '../../models/bindings/bindings.js';
+
 BindingsTestRunner.cleanupURL = function(url) {
   if (!url.startsWith('debugger://')) {
     return url;
@@ -174,8 +176,10 @@ BindingsTestRunner.waitForStyleSheetRemoved = function(urlSuffix) {
   }
 };
 
-TestRunner.addSniffer(Bindings.CompilerScriptMapping.prototype, 'sourceMapAttachedForTest', onSourceMap, true);
-TestRunner.addSniffer(Bindings.SASSSourceMapping.prototype, 'sourceMapAttachedForTest', onSourceMap, true);
+TestRunner.addSniffer(
+    Bindings.CompilerScriptMapping.CompilerScriptMapping.prototype, 'sourceMapAttachedForTest', onSourceMap, true);
+TestRunner.addSniffer(
+    Bindings.SASSSourceMapping.SASSSourceMapping.prototype, 'sourceMapAttachedForTest', onSourceMap, true);
 const sourceMapCallbacks = new Map();
 
 function onSourceMap(sourceMap) {
@@ -197,7 +201,7 @@ BindingsTestRunner.waitForSourceMap = function(sourceMapURLSuffix) {
   return promise;
 };
 
-const locationPool = new Bindings.LiveLocationPool();
+const locationPool = new Bindings.LiveLocation.LiveLocationPool();
 const nameSymbol = Symbol('LiveLocationNameForTest');
 const createdSymbol = Symbol('LiveLocationCreated');
 
@@ -205,14 +209,14 @@ BindingsTestRunner.createDebuggerLiveLocation = function(
     name, urlSuffix, lineNumber, columnNumber, dumpOnUpdate = true) {
   const script = TestRunner.debuggerModel.scripts().find(script => script.sourceURL.endsWith(urlSuffix));
   const rawLocation = TestRunner.debuggerModel.createRawLocation(script, lineNumber || 0, columnNumber || 0);
-  return self.Bindings.debuggerWorkspaceBinding.createLiveLocation(
+  return Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createLiveLocation(
       rawLocation, updateDelegate.bind(null, name, dumpOnUpdate), locationPool);
 };
 
 BindingsTestRunner.createCSSLiveLocation = function(name, urlSuffix, lineNumber, columnNumber, dumpOnUpdate = true) {
   const header = TestRunner.cssModel.styleSheetHeaders().find(header => header.resourceURL().endsWith(urlSuffix));
   const rawLocation = new SDK.CSSLocation(header, lineNumber || 0, columnNumber || 0);
-  return self.Bindings.cssWorkspaceBinding.createLiveLocation(
+  return Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().createLiveLocation(
       rawLocation, updateDelegate.bind(null, name, dumpOnUpdate), locationPool);
 };
 

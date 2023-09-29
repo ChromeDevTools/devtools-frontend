@@ -5,6 +5,7 @@
 import '../../panels/console/console-legacy.js';
 import '../../ui/legacy/components/object_ui/object_ui-legacy.js';
 
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as ConsoleCounters from '../../panels/console_counters/console_counters.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
@@ -684,7 +685,8 @@ ConsoleTestRunner.dumpStackTraces = function() {
   for (let i = 0; i < viewMessages.length; ++i) {
     const m = viewMessages[i].consoleMessage();
     TestRunner.addResult(
-        'Message[' + i + ']: ' + Bindings.displayNameForURL(m.url || '') + ':' + m.line + ' ' + m.messageText);
+        'Message[' + i + ']: ' + Bindings.ResourceUtils.displayNameForURL(m.url || '') + ':' + m.line + ' ' +
+        m.messageText);
     const trace = m.stackTrace ? m.stackTrace.callFrames : null;
     if (!trace) {
       TestRunner.addResult('FAIL: no stack trace attached to message #' + i);

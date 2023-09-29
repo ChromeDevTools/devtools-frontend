@@ -36,7 +36,6 @@ group("front_end") {
 group("legacy_entrypoints") {
   public_deps = [
     "core/sdk:legacy",
-    "models/bindings:legacy",
     "models/breakpoints:legacy",
     "models/extensions:legacy",
     "models/formatter:legacy",

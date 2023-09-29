@@ -5,7 +5,6 @@
 import '../models/text_utils/text_utils-legacy.js';
 import '../ui/legacy/legacy-legacy.js';
 import '../models/workspace/workspace-legacy.js';
-import '../models/bindings/bindings-legacy.js';
 import '../ui/legacy/components/utils/utils-legacy.js';
 import '../models/persistence/persistence-legacy.js';
 import '../models/extensions/extensions-legacy.js';

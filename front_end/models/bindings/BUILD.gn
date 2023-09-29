@@ -83,15 +83,3 @@ devtools_entrypoint("bundle") {
 
   visibility += devtools_models_visibility
 }
-
-devtools_entrypoint("legacy") {
-  entrypoint = "bindings-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../entrypoints/shell/*",
-    "../../legacy_test_runner/*",
-  ]
-}

@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Coverage from '../../../../../front_end/panels/coverage/coverage.js';
 import * as Sources from '../../../../../front_end/panels/sources/sources.js';
+import type * as SourceFrame from '../../../../../front_end/ui/legacy/components/source_frame/source_frame.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {createContentProviderUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
-
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 
 describeWithMockConnection('CoveragePlugin', () => {
   const tests = (targetFactory: () => SDK.Target.Target) => {
@@ -45,7 +45,8 @@ describeWithMockConnection('CoveragePlugin', () => {
     });
 
     it('shows stats', async () => {
-      const coveragePlugin = new Sources.CoveragePlugin.CoveragePlugin(uiSourceCode);
+      const coveragePlugin =
+          new Sources.CoveragePlugin.CoveragePlugin(uiSourceCode, <SourceFrame.SourceFrame.Transformer>{});
       const [toolbarItem] = coveragePlugin.rightToolbarItems();
       assert.strictEqual('Show Details', toolbarItem.element.title);
       assert.strictEqual(
@@ -53,7 +54,8 @@ describeWithMockConnection('CoveragePlugin', () => {
     });
 
     it('updates stats', async () => {
-      const coveragePlugin = new Sources.CoveragePlugin.CoveragePlugin(uiSourceCode);
+      const coveragePlugin =
+          new Sources.CoveragePlugin.CoveragePlugin(uiSourceCode, <SourceFrame.SourceFrame.Transformer>{});
       const [toolbarItem] = coveragePlugin.rightToolbarItems();
       assert.strictEqual(
           'Coverage: 32.1%', toolbarItem.element.querySelector('.toolbar-text:not(.hidden)')?.textContent);
@@ -64,7 +66,8 @@ describeWithMockConnection('CoveragePlugin', () => {
     });
 
     it('resets stats', async () => {
-      const coveragePlugin = new Sources.CoveragePlugin.CoveragePlugin(uiSourceCode);
+      const coveragePlugin =
+          new Sources.CoveragePlugin.CoveragePlugin(uiSourceCode, <SourceFrame.SourceFrame.Transformer>{});
       const [toolbarItem] = coveragePlugin.rightToolbarItems();
       assert.strictEqual(
           'Coverage: 32.1%', toolbarItem.element.querySelector('.toolbar-text:not(.hidden)')?.textContent);

@@ -7,6 +7,7 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
+import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Coverage from '../../../../../front_end/panels/coverage/coverage.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
@@ -15,6 +16,17 @@ import {MockProtocolBackend} from '../../helpers/MockScopeChain.js';
 import {createContentProviderUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 
 const {CoverageDecorationManager} = Coverage.CoverageDecorationManager;
+
+/** Test helper that returns the "identity" line ranges for any given string */
+function lineRangesForContent(content: string): TextUtils.TextRange.TextRange[] {
+  const ranges: TextUtils.TextRange.TextRange[] = [];
+  const text = new TextUtils.Text.Text(content);
+  for (let i = 0; i < text.lineCount(); ++i) {
+    const line = text.lineAt(i);
+    ranges.push(new TextUtils.TextRange.TextRange(i, 0, i, line.length));
+  }
+  return ranges;
+}
 
 describeWithMockConnection('CoverageDeocrationManager', () => {
   let target: SDK.Target.Target;
@@ -68,9 +80,10 @@ describeWithMockConnection('CoverageDeocrationManager', () => {
       await backend.addScript(target, {url: URL, content: 'function foo(a,b){return a+b;}'}, null);
       const uiSourceCode = workspace.uiSourceCodeForURL(URL);
       assertNotNullOrUndefined(uiSourceCode);
+      await uiSourceCode.requestContent();
       const manager = new CoverageDecorationManager(coverageModel, workspace, debuggerBinding, cssBinding);
 
-      const usage = await manager.usageByLine(uiSourceCode);
+      const usage = await manager.usageByLine(uiSourceCode, lineRangesForContent(uiSourceCode.content()));
 
       assert.deepEqual(usage, [undefined]);
     });
@@ -79,11 +92,47 @@ describeWithMockConnection('CoverageDeocrationManager', () => {
       await backend.addScript(target, {url: URL, content: 'function foo(a,b){return a+b;}'}, null);
       const uiSourceCode = workspace.uiSourceCodeForURL(URL);
       assertNotNullOrUndefined(uiSourceCode);
+      await uiSourceCode.requestContent();
       coverageModel.usageForRange.returns(true);
       const manager = new CoverageDecorationManager(coverageModel, workspace, debuggerBinding, cssBinding);
 
-      const usage = await manager.usageByLine(uiSourceCode);
+      const usage = await manager.usageByLine(uiSourceCode, lineRangesForContent(uiSourceCode.content()));
       assert.deepEqual(usage, [true]);
+    });
+  });
+
+  describe('usageByLine (formatted)', () => {
+    it('marks lines as covered if coverage info says so', async () => {
+      const scriptContent =
+          'function mulWithOffset(n,t,e){const f=n*t;const u=f;if(e!==undefined){const n=u+e;return n}return u}';
+      const script = await backend.addScript(target, {url: URL, content: scriptContent}, null);
+      const uiSourceCode = workspace.uiSourceCodeForURL(URL);
+      assertNotNullOrUndefined(uiSourceCode);
+      await uiSourceCode.requestContent();
+      coverageModel.usageForRange.callsFake((contentProvider, startOffset, endOffset) => {
+        assert.strictEqual(contentProvider, script);
+        // Everything is covered except the body of the `if`.
+        return endOffset <= 70 || startOffset > 90;
+      });
+      const manager = new CoverageDecorationManager(coverageModel, workspace, debuggerBinding, cssBinding);
+
+      // clang-format off
+      // Simulate editor pretty-printing `script`.
+      const lineRanges = [
+        new TextUtils.TextRange.TextRange(0, 0, 0, 30),    // function mulWithOffset(n,t,e){
+        new TextUtils.TextRange.TextRange(0, 30, 0, 42),   //   const f=n*t;
+        new TextUtils.TextRange.TextRange(0, 42, 0, 52),   //   const u=f;
+        new TextUtils.TextRange.TextRange(0, 52, 0, 70),   //   if(e!==undefined){
+        new TextUtils.TextRange.TextRange(0, 70, 0, 82),   //     const n=u+e;
+        new TextUtils.TextRange.TextRange(0, 82, 0, 90),   //     return n
+        new TextUtils.TextRange.TextRange(0, 90, 0, 91),   //   }
+        new TextUtils.TextRange.TextRange(0, 91, 0, 99),   //   return u
+        new TextUtils.TextRange.TextRange(0, 99, 0, 100),  // }
+      ];
+      // clang-format on
+      const usage = await manager.usageByLine(uiSourceCode, lineRanges);
+
+      assert.deepEqual(usage, [true, true, true, true, false, false, false, true, true]);
     });
   });
 
@@ -123,6 +172,7 @@ function mulWithOffset(param1, param2, offset) {
     it('marks lines as covered if coverage info says so', async () => {
       const uiSourceCode = workspace.uiSourceCodeForURL('file:///tmp/example.js' as Platform.DevToolsPath.UrlString);
       assertNotNullOrUndefined(uiSourceCode);
+      await uiSourceCode.requestContent();
       coverageModel.usageForRange.callsFake((contentProvider, startOffset, endOffset) => {
         assert.strictEqual(contentProvider, script);
         // Everything is covered except the body of the `if`.
@@ -130,7 +180,7 @@ function mulWithOffset(param1, param2, offset) {
       });
       const manager = new CoverageDecorationManager(coverageModel, workspace, debuggerBinding, cssBinding);
 
-      const usage = await manager.usageByLine(uiSourceCode);
+      const usage = await manager.usageByLine(uiSourceCode, lineRangesForContent(uiSourceCode.content()));
       assert.deepEqual(usage, [undefined, true, true, true, true, false, false, undefined, true, undefined, undefined]);
     });
   });

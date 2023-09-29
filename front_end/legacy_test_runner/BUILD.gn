@@ -24,7 +24,6 @@ ts_library("legacy_test_runner-source") {
     "../core/sdk:legacy",
     "../entrypoints/devtools_app:entrypoint",
     "../models/breakpoints:legacy",
-    "../models/formatter:legacy",
     "../models/persistence:legacy",
     "../models/trace:legacy",
     "../models/workspace:legacy",

@@ -37,7 +37,6 @@ group("legacy_entrypoints") {
   public_deps = [
     "core/sdk:legacy",
     "models/breakpoints:legacy",
-    "models/formatter:legacy",
     "models/persistence:legacy",
     "models/timeline_model:legacy",
     "models/trace:legacy",

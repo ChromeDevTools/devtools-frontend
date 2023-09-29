@@ -95,42 +95,6 @@ SourcesTestRunner.addScriptUISourceCode = function(url, content, isContentScript
   return TestRunner.waitForUISourceCode(url);
 };
 
-function testSourceMapping(text1, text2, mapping, testToken) {
-  const originalPosition = text1.indexOf(testToken);
-  TestRunner.assertTrue(originalPosition !== -1);
-
-  const text1LineEndings = TestRunner.findLineEndingIndexes(text1);
-  const text2LineEndings = TestRunner.findLineEndingIndexes(text2);
-
-  const originalLocation = Formatter.Formatter.positionToLocation(text1LineEndings, originalPosition);
-  const formattedLocation = mapping.originalToFormatted(originalLocation[0], originalLocation[1]);
-  const formattedPosition =
-      Formatter.Formatter.locationToPosition(text2LineEndings, formattedLocation[0], formattedLocation[1]);
-  const expectedFormattedPosition = text2.indexOf(testToken);
-
-  if (expectedFormattedPosition === formattedPosition) {
-    TestRunner.addResult(String.sprintf('Correct mapping for <%s>', testToken));
-  } else {
-    TestRunner.addResult(String.sprintf('ERROR: Wrong mapping for <%s>', testToken));
-  }
-}
-
-SourcesTestRunner.testPrettyPrint = function(mimeType, text, mappingQueries, next) {
-  new Formatter.ScriptFormatter(mimeType, text, didFormatContent);
-
-  function didFormatContent(formattedSource, mapping) {
-    TestRunner.addResult('====== 8< ------');
-    TestRunner.addResult(formattedSource);
-    TestRunner.addResult('------ >8 ======');
-
-    while (mappingQueries && mappingQueries.length) {
-      testSourceMapping(text, formattedSource, mapping, mappingQueries.shift());
-    }
-
-    next();
-  }
-};
-
 SourcesTestRunner.dumpSwatchPositions = function(sourceFrame, bookmarkType) {
   const textEditor = sourceFrame.textEditor;
   const markers = textEditor.bookmarks(textEditor.fullRange(), bookmarkType);

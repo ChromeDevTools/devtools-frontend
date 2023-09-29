@@ -51,14 +51,3 @@ devtools_entrypoint("bundle") {
 
   visibility += devtools_models_visibility
 }
-
-devtools_entrypoint("legacy") {
-  entrypoint = "formatter-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../legacy_test_runner/*",
-  ]
-}

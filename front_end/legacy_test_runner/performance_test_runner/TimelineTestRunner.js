@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Timeline from '../../panels/timeline/timeline.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
@@ -122,7 +124,7 @@ PerformanceTestRunner.createPerformanceModelWithEvents = async function(events) 
   const tracingModel = new Trace.TracingModel();
   tracingModel.addEvents(events);
   tracingModel.tracingComplete();
-  const performanceModel = new Timeline.PerformanceModel();
+  const performanceModel = new Timeline.PerformanceModel.PerformanceModel();
   await performanceModel.setTracingModel(tracingModel);
   UI.panels.timeline.performanceModel = performanceModel;
   UI.panels.timeline.applyFilters(performanceModel);
@@ -130,7 +132,8 @@ PerformanceTestRunner.createPerformanceModelWithEvents = async function(events) 
 };
 
 PerformanceTestRunner.createTimelineController = function() {
-  const controller = new Timeline.TimelineController(self.SDK.targetManager.primaryPageTarget(), UI.panels.timeline);
+  const controller = new Timeline.TimelineController.TimelineController(
+      self.SDK.targetManager.primaryPageTarget(), UI.panels.timeline);
   controller.tracingManager = TestRunner.tracingManager;
   return controller;
 };
@@ -210,9 +213,9 @@ PerformanceTestRunner.printTimelineRecordsWithDetails = async function(...names)
 };
 
 PerformanceTestRunner.walkTimelineEventTree = async function(callback) {
-  const view = new Timeline.EventsTimelineTreeView(UI.panels.timeline.filters, null);
+  const view = new Timeline.EventsTimelineTreeView.EventsTimelineTreeView(UI.panels.timeline.filters, null);
   view.setModel(PerformanceTestRunner.performanceModel(), PerformanceTestRunner.mainTrack());
-  const selection = Timeline.TimelineSelection.fromRange(
+  const selection = Timeline.TimelineSelection.TimelineSelection.fromRange(
       PerformanceTestRunner.timelineModel().minimumRecordTime(),
       PerformanceTestRunner.timelineModel().maximumRecordTime());
   view.updateContents(selection);
@@ -282,7 +285,7 @@ PerformanceTestRunner.printTraceEventProperties = function(traceEvent) {
 
 PerformanceTestRunner.printTraceEventPropertiesWithDetails = async function(event) {
   PerformanceTestRunner.printTraceEventProperties(event);
-  const details = await Timeline.TimelineUIUtils.buildDetailsTextForTraceEvent(
+  const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(
       event, self.SDK.targetManager.primaryPageTarget(), new Components.Linkifier());
   TestRunner.waitForPendingLiveLocationUpdates();
   TestRunner.addResult(`Text details for ${event.name}: ${details}`);

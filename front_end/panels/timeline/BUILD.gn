@@ -110,14 +110,6 @@ devtools_entrypoint("bundle") {
   visibility += devtools_panels_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "timeline-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [ "../..:legacy_entrypoints" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "timeline-meta.ts"
 

@@ -270,7 +270,6 @@ const mappingForLayoutTests = new Map([
   ['panels/sources', 'sources'],
   ['panels/snippets', 'snippets'],
   ['panels/settings', 'settings'],
-  ['panels/timeline', 'timeline'],
   ['panels/web_audio', 'web_audio'],
   ['models/persistence', 'persistence'],
   ['models/workspace_diff', 'workspace_diff'],

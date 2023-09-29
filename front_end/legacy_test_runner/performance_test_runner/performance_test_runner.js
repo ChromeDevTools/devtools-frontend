@@ -4,7 +4,6 @@
 
 import '../test_runner/test_runner.js';
 import '../../models/timeline_model/timeline_model-legacy.js';
-import '../../panels/timeline/timeline-legacy.js';
 
 import './TimelineTestRunner.js';
 import './TimelineDataTestRunner.js';

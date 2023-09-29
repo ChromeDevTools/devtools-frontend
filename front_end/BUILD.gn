@@ -40,7 +40,6 @@ group("legacy_entrypoints") {
     "models/extensions:legacy",
     "models/formatter:legacy",
     "models/persistence:legacy",
-    "models/text_utils:legacy",
     "models/timeline_model:legacy",
     "models/trace:legacy",
     "models/workspace:legacy",

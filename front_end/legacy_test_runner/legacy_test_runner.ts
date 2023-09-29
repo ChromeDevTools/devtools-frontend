@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../models/text_utils/text_utils-legacy.js';
 import '../ui/legacy/legacy-legacy.js';
 import '../models/workspace/workspace-legacy.js';
 import '../ui/legacy/components/utils/utils-legacy.js';

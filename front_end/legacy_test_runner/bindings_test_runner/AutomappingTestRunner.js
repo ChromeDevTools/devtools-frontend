@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
@@ -76,7 +77,8 @@ BindingsTestRunner.AutomappingTest.prototype = {
     for (const url in assets) {
       const asset = assets[url];
       const contentType = asset.contentType || Common.ResourceType.resourceTypes.Script;
-      const contentProvider = TextUtils.StaticContentProvider.fromString(url, contentType, asset.content);
+      const contentProvider =
+          TextUtils.StaticContentProvider.StaticContentProvider.fromString(url, contentType, asset.content);
       const metadata =
           (typeof asset.content === 'string' || asset.time ?
                new Workspace.UISourceCodeMetadata(asset.time, asset.content.length) :

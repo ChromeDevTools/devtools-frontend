@@ -6,6 +6,7 @@ import '../../core/sdk/sdk-legacy.js';
 
 import * as Platform from '../../core/platform/platform.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
@@ -103,7 +104,7 @@ SDKTestRunner.PageMock = class {
       this.fireEvent('Runtime.executionContextCreated', {context: context});
     }
 
-    const text = new TextUtils.Text(content);
+    const text = new TextUtils.Text.Text(content);
 
     const script = {
       scriptId: id,

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as TextUtils from '../../models/text_utils/text_utils.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
@@ -18,7 +20,7 @@ SourcesTestRunner.replaceInSource = function(sourceFrame, string, replacement) {
       continue;
     }
 
-    const range = new TextUtils.TextRange(i, column, i, column + string.length);
+    const range = new TextUtils.TextRange.TextRange(i, column, i, column + string.length);
     sourceFrame.textEditor.editRange(range, replacement);
     break;
   }

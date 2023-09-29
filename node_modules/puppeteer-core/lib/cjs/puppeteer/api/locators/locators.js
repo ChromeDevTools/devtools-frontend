@@ -29,11 +29,15 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Order of exports matters
+ * Don't sort
+ */
 __exportStar(require("./Locator.js"), exports);
-__exportStar(require("./NodeLocator.js"), exports);
-__exportStar(require("./FilteredLocator.js"), exports);
-__exportStar(require("./RaceLocator.js"), exports);
 __exportStar(require("./DelegatedLocator.js"), exports);
-__exportStar(require("./MappedLocator.js"), exports);
+__exportStar(require("./FilteredLocator.js"), exports);
 __exportStar(require("./FunctionLocator.js"), exports);
+__exportStar(require("./MappedLocator.js"), exports);
+__exportStar(require("./NodeLocator.js"), exports);
+__exportStar(require("./RaceLocator.js"), exports);
 //# sourceMappingURL=locators.js.map

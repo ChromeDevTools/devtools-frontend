@@ -13,10 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { EMPTY, catchError, defaultIfEmpty, defer, filter, first, firstValueFrom, from, fromEvent, identity, ignoreElements, map, merge, mergeMap, noop, pipe, raceWith, retry, tap, timer, } from '../../../third_party/rxjs/rxjs.js';
-import { TimeoutError } from '../../common/Errors.js';
+var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+        var dispose;
+        if (async) {
+            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+            dispose = value[Symbol.asyncDispose];
+        }
+        if (dispose === void 0) {
+            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+            dispose = value[Symbol.dispose];
+        }
+        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        env.stack.push({ value: value, dispose: dispose, async: async });
+    }
+    else if (async) {
+        env.stack.push({ async: true });
+    }
+    return value;
+};
+var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
+    return function (env) {
+        function fail(e) {
+            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+            env.hasError = true;
+        }
+        function next() {
+            while (env.stack.length) {
+                var rec = env.stack.pop();
+                try {
+                    var result = rec.dispose && rec.dispose.call(rec.value);
+                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                }
+                catch (e) {
+                    fail(e);
+                }
+            }
+            if (env.hasError) throw env.error;
+        }
+        return next();
+    };
+})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+});
+import { EMPTY, catchError, defaultIfEmpty, defer, filter, first, firstValueFrom, from, fromEvent, identity, ignoreElements, map, merge, mergeMap, noop, pipe, raceWith, retry, tap, } from '../../../third_party/rxjs/rxjs.js';
 import { EventEmitter } from '../../common/EventEmitter.js';
-import { debugError } from '../../common/util.js';
+import { debugError, timeout } from '../../common/util.js';
 import { FilteredLocator, MappedLocator, RaceLocator, } from './locators.js';
 /**
  * For observables coming from promises, a delay is needed, otherwise RxJS will
@@ -33,13 +77,18 @@ export const RETRY_DELAY = 100;
  *
  * @public
  */
-export var LocatorEmittedEvents;
-(function (LocatorEmittedEvents) {
+export var LocatorEvent;
+(function (LocatorEvent) {
     /**
      * Emitted every time before the locator performs an action on the located element(s).
      */
-    LocatorEmittedEvents["Action"] = "action";
-})(LocatorEmittedEvents || (LocatorEmittedEvents = {}));
+    LocatorEvent["Action"] = "action";
+})(LocatorEvent || (LocatorEvent = {}));
+export { 
+/**
+ * @deprecated Use {@link LocatorEvent}.
+ */
+LocatorEvent as LocatorEmittedEvents, };
 /**
  * Locators describe a strategy of locating objects and performing an action on
  * them. If the action fails because the object is not ready for the action, the
@@ -87,26 +136,13 @@ export class Locator extends EventEmitter {
                     throw signal.reason;
                 })));
             }
-            if (this._timeout > 0) {
-                candidates.push(timer(this._timeout).pipe(map(() => {
-                    throw new TimeoutError(`Timed out after waiting ${this._timeout}ms`);
-                })));
-            }
+            candidates.push(timeout(this._timeout));
             return pipe(retry({ delay: RETRY_DELAY }), raceWith(...candidates));
         },
     };
     // Determines when the locator will timeout for actions.
     get timeout() {
         return this._timeout;
-    }
-    on(eventName, handler) {
-        return super.on(eventName, handler);
-    }
-    once(eventName, handler) {
-        return super.once(eventName, handler);
-    }
-    off(eventName, handler) {
-        return super.off(eventName, handler);
     }
     setTimeout(timeout) {
         const locator = this._clone();
@@ -235,7 +271,7 @@ export class Locator extends EventEmitter {
             this.#waitForStableBoundingBoxIfNeeded,
             this.#waitForEnabledIfNeeded,
         ], signal), tap(() => {
-            return this.emit(LocatorEmittedEvents.Action);
+            return this.emit(LocatorEvent.Action, undefined);
         }), mergeMap(handle => {
             return from(handle.click(options)).pipe(catchError(err => {
                 void handle.dispose().catch(debugError);
@@ -250,7 +286,7 @@ export class Locator extends EventEmitter {
             this.#waitForStableBoundingBoxIfNeeded,
             this.#waitForEnabledIfNeeded,
         ], signal), tap(() => {
-            return this.emit(LocatorEmittedEvents.Action);
+            return this.emit(LocatorEvent.Action, undefined);
         }), mergeMap(handle => {
             return from(handle.evaluate(el => {
                 if (el instanceof HTMLSelectElement) {
@@ -344,7 +380,7 @@ export class Locator extends EventEmitter {
             this.#ensureElementIsInTheViewportIfNeeded,
             this.#waitForStableBoundingBoxIfNeeded,
         ], signal), tap(() => {
-            return this.emit(LocatorEmittedEvents.Action);
+            return this.emit(LocatorEvent.Action, undefined);
         }), mergeMap(handle => {
             return from(handle.hover()).pipe(catchError(err => {
                 void handle.dispose().catch(debugError);
@@ -358,7 +394,7 @@ export class Locator extends EventEmitter {
             this.#ensureElementIsInTheViewportIfNeeded,
             this.#waitForStableBoundingBoxIfNeeded,
         ], signal), tap(() => {
-            return this.emit(LocatorEmittedEvents.Action);
+            return this.emit(LocatorEvent.Action, undefined);
         }), mergeMap(handle => {
             return from(handle.evaluate((el, scrollTop, scrollLeft) => {
                 if (scrollTop !== undefined) {
@@ -395,12 +431,17 @@ export class Locator extends EventEmitter {
      * @public
      */
     async wait(options) {
-        const handle = await this.waitHandle(options);
+        const env_1 = { stack: [], error: void 0, hasError: false };
         try {
+            const handle = __addDisposableResource(env_1, await this.waitHandle(options), false);
             return await handle.jsonValue();
         }
+        catch (e_1) {
+            env_1.error = e_1;
+            env_1.hasError = true;
+        }
         finally {
-            void handle.dispose().catch(debugError);
+            __disposeResources(env_1);
         }
     }
     /**

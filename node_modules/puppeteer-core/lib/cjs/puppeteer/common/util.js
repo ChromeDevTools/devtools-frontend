@@ -37,15 +37,61 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+        var dispose;
+        if (async) {
+            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+            dispose = value[Symbol.asyncDispose];
+        }
+        if (dispose === void 0) {
+            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+            dispose = value[Symbol.dispose];
+        }
+        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        env.stack.push({ value: value, dispose: dispose, async: async });
+    }
+    else if (async) {
+        env.stack.push({ async: true });
+    }
+    return value;
+};
+var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
+    return function (env) {
+        function fail(e) {
+            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+            env.hasError = true;
+        }
+        function next() {
+            while (env.stack.length) {
+                var rec = env.stack.pop();
+                try {
+                    var result = rec.dispose && rec.dispose.call(rec.value);
+                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                }
+                catch (e) {
+                    fail(e);
+                }
+            }
+            if (env.hasError) throw env.error;
+        }
+        return next();
+    };
+})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+});
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateDialogType = exports.getPageContent = exports.setPageContent = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.waitWithTimeout = exports.pageBindingInitString = exports.addPageBinding = exports.evaluationString = exports.createJSHandle = exports.waitForEvent = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.removeEventListeners = exports.addEventListener = exports.releaseObject = exports.valueFromRemoteObject = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.createClientError = exports.createEvaluationError = exports.debugError = void 0;
+exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.validateDialogType = exports.getPageContent = exports.setPageContent = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.waitWithTimeout = exports.pageBindingInitString = exports.addPageBinding = exports.evaluationString = exports.waitForEvent = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.valueFromRemoteObject = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.createClientError = exports.createEvaluationError = exports.debugError = void 0;
+const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Debug_js_1 = require("./Debug.js");
-const ElementHandle_js_1 = require("./ElementHandle.js");
-const JSHandle_js_1 = require("./JSHandle.js");
+const Errors_js_1 = require("./Errors.js");
+const EventEmitter_js_1 = require("./EventEmitter.js");
 /**
  * @internal
  */
@@ -116,14 +162,15 @@ function createClientError(details) {
         name = detail.name;
         message = detail.message;
     }
-    const messageHeight = message.split('\n').length;
     const error = new Error(message);
     error.name = name;
-    const stackLines = [];
+    const messageHeight = error.message.split('\n').length;
     const messageLines = error.stack.split('\n').splice(0, messageHeight);
-    if (details.stackTrace && stackLines.length < Error.stackTraceLimit) {
-        for (const frame of details.stackTrace.callFrames.reverse()) {
-            stackLines.push(`    at ${frame.functionName || '<anonymous>'} (${frame.url}:${frame.lineNumber}:${frame.columnNumber})`);
+    const stackLines = [];
+    if (details.stackTrace) {
+        for (const frame of details.stackTrace.callFrames) {
+            // Note we need to add `1` because the values are 0-indexed.
+            stackLines.push(`    at ${frame.functionName || '<anonymous>'} (${frame.url}:${frame.lineNumber + 1}:${frame.columnNumber + 1})`);
             if (stackLines.length >= Error.stackTraceLimit) {
                 break;
             }
@@ -199,8 +246,9 @@ const withSourcePuppeteerURLIfNone = (functionName, object) => {
     }
     const original = Error.prepareStackTrace;
     Error.prepareStackTrace = (_, stack) => {
-        // First element is the function. Second element is the caller of this
-        // function. Third element is the caller of the caller of this function
+        // First element is the function.
+        // Second element is the caller of this function.
+        // Third element is the caller of the caller of this function
         // which is precisely what we want.
         return stack[2];
     };
@@ -250,40 +298,6 @@ exports.valueFromRemoteObject = valueFromRemoteObject;
 /**
  * @internal
  */
-async function releaseObject(client, remoteObject) {
-    if (!remoteObject.objectId) {
-        return;
-    }
-    await client
-        .send('Runtime.releaseObject', { objectId: remoteObject.objectId })
-        .catch(error => {
-        // Exceptions might happen in case of a page been navigated or closed.
-        // Swallow these since they are harmless and we don't leak anything in this case.
-        (0, exports.debugError)(error);
-    });
-}
-exports.releaseObject = releaseObject;
-/**
- * @internal
- */
-function addEventListener(emitter, eventName, handler) {
-    emitter.on(eventName, handler);
-    return { emitter, eventName, handler };
-}
-exports.addEventListener = addEventListener;
-/**
- * @internal
- */
-function removeEventListeners(listeners) {
-    for (const listener of listeners) {
-        listener.emitter.removeListener(listener.eventName, listener.handler);
-    }
-    listeners.length = 0;
-}
-exports.removeEventListeners = removeEventListeners;
-/**
- * @internal
- */
 const isString = (obj) => {
     return typeof obj === 'string' || obj instanceof String;
 };
@@ -319,41 +333,41 @@ exports.isDate = isDate;
 /**
  * @internal
  */
-async function waitForEvent(emitter, eventName, predicate, timeout, abortPromise) {
-    const deferred = Deferred_js_1.Deferred.create({
-        message: `Timeout exceeded while waiting for event ${String(eventName)}`,
-        timeout,
-    });
-    const listener = addEventListener(emitter, eventName, async (event) => {
-        if (await predicate(event)) {
-            deferred.resolve(event);
-        }
-    });
+async function waitForEvent(
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+emitter, eventName, predicate, timeout, abortPromise) {
+    const env_1 = { stack: [], error: void 0, hasError: false };
     try {
-        const response = await Deferred_js_1.Deferred.race([deferred, abortPromise]);
-        if ((0, ErrorLike_js_1.isErrorLike)(response)) {
-            throw response;
+        const deferred = Deferred_js_1.Deferred.create({
+            message: `Timeout exceeded while waiting for event ${String(eventName)}`,
+            timeout,
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const _ = __addDisposableResource(env_1, new EventEmitter_js_1.EventSubscription(emitter, eventName, async (event) => {
+            if (await predicate(event)) {
+                deferred.resolve(event);
+            }
+        }), false);
+        try {
+            const response = await Deferred_js_1.Deferred.race([deferred, abortPromise]);
+            if ((0, ErrorLike_js_1.isErrorLike)(response)) {
+                throw response;
+            }
+            return response;
         }
-        return response;
+        catch (error) {
+            throw error;
+        }
     }
-    catch (error) {
-        throw error;
+    catch (e_1) {
+        env_1.error = e_1;
+        env_1.hasError = true;
     }
     finally {
-        removeEventListeners([listener]);
+        __disposeResources(env_1);
     }
 }
 exports.waitForEvent = waitForEvent;
-/**
- * @internal
- */
-function createJSHandle(context, remoteObject) {
-    if (remoteObject.subtype === 'node' && context._world) {
-        return new ElementHandle_js_1.CDPElementHandle(context, remoteObject, context._world.frame());
-    }
-    return new JSHandle_js_1.CDPJSHandle(context, remoteObject);
-}
-exports.createJSHandle = createJSHandle;
 /**
  * @internal
  */
@@ -377,7 +391,7 @@ exports.evaluationString = evaluationString;
 function addPageBinding(type, name) {
     // This is the CDP binding.
     // @ts-expect-error: In a different context.
-    const callCDP = globalThis[name];
+    const callCdp = globalThis[name];
     // We replace the CDP binding with a Puppeteer binding.
     Object.assign(globalThis, {
         [name](...args) {
@@ -389,7 +403,7 @@ function addPageBinding(type, name) {
             const seq = (callPuppeteer.lastSeq ?? 0) + 1;
             callPuppeteer.lastSeq = seq;
             callPuppeteer.args.set(seq, args);
-            callCDP(JSON.stringify({
+            callCdp(JSON.stringify({
                 type,
                 name,
                 seq,
@@ -527,7 +541,7 @@ exports.getReadableFromProtocolStream = getReadableFromProtocolStream;
 async function setPageContent(page, content) {
     // We rely upon the fact that document.open() will reset frame lifecycle with "init"
     // lifecycle event. @see https://crrev.com/608658
-    return page.evaluate(html => {
+    return await page.evaluate(html => {
         document.open();
         document.write(html);
         document.close();
@@ -570,4 +584,30 @@ function validateDialogType(type) {
     return dialogType;
 }
 exports.validateDialogType = validateDialogType;
+/**
+ * @internal
+ */
+function timeout(ms) {
+    return ms === 0
+        ? rxjs_js_1.NEVER
+        : (0, rxjs_js_1.timer)(ms).pipe((0, rxjs_js_1.map)(() => {
+            throw new Errors_js_1.TimeoutError(`Timed out after waiting ${ms}ms`);
+        }));
+}
+exports.timeout = timeout;
+/**
+ * @internal
+ */
+exports.UTILITY_WORLD_NAME = '__puppeteer_utility_world__';
+/**
+ * @internal
+ */
+exports.SOURCE_URL_REGEX = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
+/**
+ * @internal
+ */
+function getSourceUrlComment(url) {
+    return `//# sourceURL=${url}`;
+}
+exports.getSourceUrlComment = getSourceUrlComment;
 //# sourceMappingURL=util.js.map

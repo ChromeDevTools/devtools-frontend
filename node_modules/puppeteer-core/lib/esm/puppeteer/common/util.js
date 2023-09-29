@@ -13,13 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+        var dispose;
+        if (async) {
+            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+            dispose = value[Symbol.asyncDispose];
+        }
+        if (dispose === void 0) {
+            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+            dispose = value[Symbol.dispose];
+        }
+        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        env.stack.push({ value: value, dispose: dispose, async: async });
+    }
+    else if (async) {
+        env.stack.push({ async: true });
+    }
+    return value;
+};
+var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
+    return function (env) {
+        function fail(e) {
+            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+            env.hasError = true;
+        }
+        function next() {
+            while (env.stack.length) {
+                var rec = env.stack.pop();
+                try {
+                    var result = rec.dispose && rec.dispose.call(rec.value);
+                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                }
+                catch (e) {
+                    fail(e);
+                }
+            }
+            if (env.hasError) throw env.error;
+        }
+        return next();
+    };
+})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+});
+import { map, NEVER, timer, } from '../../third_party/rxjs/rxjs.js';
 import { isNode } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { debug } from './Debug.js';
-import { CDPElementHandle } from './ElementHandle.js';
-import { CDPJSHandle } from './JSHandle.js';
+import { TimeoutError } from './Errors.js';
+import { EventSubscription } from './EventEmitter.js';
 /**
  * @internal
  */
@@ -89,14 +135,15 @@ export function createClientError(details) {
         name = detail.name;
         message = detail.message;
     }
-    const messageHeight = message.split('\n').length;
     const error = new Error(message);
     error.name = name;
-    const stackLines = [];
+    const messageHeight = error.message.split('\n').length;
     const messageLines = error.stack.split('\n').splice(0, messageHeight);
-    if (details.stackTrace && stackLines.length < Error.stackTraceLimit) {
-        for (const frame of details.stackTrace.callFrames.reverse()) {
-            stackLines.push(`    at ${frame.functionName || '<anonymous>'} (${frame.url}:${frame.lineNumber}:${frame.columnNumber})`);
+    const stackLines = [];
+    if (details.stackTrace) {
+        for (const frame of details.stackTrace.callFrames) {
+            // Note we need to add `1` because the values are 0-indexed.
+            stackLines.push(`    at ${frame.functionName || '<anonymous>'} (${frame.url}:${frame.lineNumber + 1}:${frame.columnNumber + 1})`);
             if (stackLines.length >= Error.stackTraceLimit) {
                 break;
             }
@@ -170,8 +217,9 @@ export const withSourcePuppeteerURLIfNone = (functionName, object) => {
     }
     const original = Error.prepareStackTrace;
     Error.prepareStackTrace = (_, stack) => {
-        // First element is the function. Second element is the caller of this
-        // function. Third element is the caller of the caller of this function
+        // First element is the function.
+        // Second element is the caller of this function.
+        // Third element is the caller of the caller of this function
         // which is precisely what we want.
         return stack[2];
     };
@@ -218,37 +266,6 @@ export function valueFromRemoteObject(remoteObject) {
 /**
  * @internal
  */
-export async function releaseObject(client, remoteObject) {
-    if (!remoteObject.objectId) {
-        return;
-    }
-    await client
-        .send('Runtime.releaseObject', { objectId: remoteObject.objectId })
-        .catch(error => {
-        // Exceptions might happen in case of a page been navigated or closed.
-        // Swallow these since they are harmless and we don't leak anything in this case.
-        debugError(error);
-    });
-}
-/**
- * @internal
- */
-export function addEventListener(emitter, eventName, handler) {
-    emitter.on(eventName, handler);
-    return { emitter, eventName, handler };
-}
-/**
- * @internal
- */
-export function removeEventListeners(listeners) {
-    for (const listener of listeners) {
-        listener.emitter.removeListener(listener.eventName, listener.handler);
-    }
-    listeners.length = 0;
-}
-/**
- * @internal
- */
 export const isString = (obj) => {
     return typeof obj === 'string' || obj instanceof String;
 };
@@ -279,38 +296,39 @@ export const isDate = (obj) => {
 /**
  * @internal
  */
-export async function waitForEvent(emitter, eventName, predicate, timeout, abortPromise) {
-    const deferred = Deferred.create({
-        message: `Timeout exceeded while waiting for event ${String(eventName)}`,
-        timeout,
-    });
-    const listener = addEventListener(emitter, eventName, async (event) => {
-        if (await predicate(event)) {
-            deferred.resolve(event);
-        }
-    });
+export async function waitForEvent(
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+emitter, eventName, predicate, timeout, abortPromise) {
+    const env_1 = { stack: [], error: void 0, hasError: false };
     try {
-        const response = await Deferred.race([deferred, abortPromise]);
-        if (isErrorLike(response)) {
-            throw response;
+        const deferred = Deferred.create({
+            message: `Timeout exceeded while waiting for event ${String(eventName)}`,
+            timeout,
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const _ = __addDisposableResource(env_1, new EventSubscription(emitter, eventName, async (event) => {
+            if (await predicate(event)) {
+                deferred.resolve(event);
+            }
+        }), false);
+        try {
+            const response = await Deferred.race([deferred, abortPromise]);
+            if (isErrorLike(response)) {
+                throw response;
+            }
+            return response;
         }
-        return response;
+        catch (error) {
+            throw error;
+        }
     }
-    catch (error) {
-        throw error;
+    catch (e_1) {
+        env_1.error = e_1;
+        env_1.hasError = true;
     }
     finally {
-        removeEventListeners([listener]);
+        __disposeResources(env_1);
     }
-}
-/**
- * @internal
- */
-export function createJSHandle(context, remoteObject) {
-    if (remoteObject.subtype === 'node' && context._world) {
-        return new CDPElementHandle(context, remoteObject, context._world.frame());
-    }
-    return new CDPJSHandle(context, remoteObject);
 }
 /**
  * @internal
@@ -334,7 +352,7 @@ export function evaluationString(fun, ...args) {
 export function addPageBinding(type, name) {
     // This is the CDP binding.
     // @ts-expect-error: In a different context.
-    const callCDP = globalThis[name];
+    const callCdp = globalThis[name];
     // We replace the CDP binding with a Puppeteer binding.
     Object.assign(globalThis, {
         [name](...args) {
@@ -346,7 +364,7 @@ export function addPageBinding(type, name) {
             const seq = (callPuppeteer.lastSeq ?? 0) + 1;
             callPuppeteer.lastSeq = seq;
             callPuppeteer.args.set(seq, args);
-            callCDP(JSON.stringify({
+            callCdp(JSON.stringify({
                 type,
                 name,
                 seq,
@@ -478,7 +496,7 @@ export async function getReadableFromProtocolStream(client, handle) {
 export async function setPageContent(page, content) {
     // We rely upon the fact that document.open() will reset frame lifecycle with "init"
     // lifecycle event. @see https://crrev.com/608658
-    return page.evaluate(html => {
+    return await page.evaluate(html => {
         document.open();
         document.write(html);
         document.close();
@@ -517,5 +535,29 @@ export function validateDialogType(type) {
     }
     assert(dialogType, `Unknown javascript dialog type: ${type}`);
     return dialogType;
+}
+/**
+ * @internal
+ */
+export function timeout(ms) {
+    return ms === 0
+        ? NEVER
+        : timer(ms).pipe(map(() => {
+            throw new TimeoutError(`Timed out after waiting ${ms}ms`);
+        }));
+}
+/**
+ * @internal
+ */
+export const UTILITY_WORLD_NAME = '__puppeteer_utility_world__';
+/**
+ * @internal
+ */
+export const SOURCE_URL_REGEX = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
+/**
+ * @internal
+ */
+export function getSourceUrlComment(url) {
+    return `//# sourceURL=${url}`;
 }
 //# sourceMappingURL=util.js.map

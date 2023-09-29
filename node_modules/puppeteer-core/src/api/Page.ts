@@ -16,9 +16,11 @@
 
 import type {Readable} from 'stream';
 
-import {Protocol} from 'devtools-protocol';
+import type {Protocol} from 'devtools-protocol';
 
 import {
+  delay,
+  filter,
   filterAsync,
   first,
   firstValueFrom,
@@ -26,36 +28,42 @@ import {
   fromEvent,
   map,
   merge,
-  Observable,
+  of,
   raceWith,
-  timer,
+  startWith,
+  switchMap,
+  type Observable,
 } from '../../third_party/rxjs/rxjs.js';
 import type {HTTPRequest} from '../api/HTTPRequest.js';
 import type {HTTPResponse} from '../api/HTTPResponse.js';
-import type {Accessibility} from '../common/Accessibility.js';
-import type {CDPSession} from '../common/Connection.js';
+import type {BidiNetworkManager} from '../bidi/NetworkManager.js';
+import type {Accessibility} from '../cdp/Accessibility.js';
+import type {Coverage} from '../cdp/Coverage.js';
+import type {DeviceRequestPrompt} from '../cdp/DeviceRequestPrompt.js';
+import {
+  NetworkManagerEvent,
+  type NetworkManager as CdpNetworkManager,
+  type Credentials,
+  type NetworkConditions,
+} from '../cdp/NetworkManager.js';
+import type {Tracing} from '../cdp/Tracing.js';
+import type {WebWorker} from '../cdp/WebWorker.js';
 import type {ConsoleMessage} from '../common/ConsoleMessage.js';
-import type {Coverage} from '../common/Coverage.js';
-import {Device} from '../common/Device.js';
-import {DeviceRequestPrompt} from '../common/DeviceRequestPrompt.js';
-import {TargetCloseError, TimeoutError} from '../common/Errors.js';
-import {EventEmitter, Handler} from '../common/EventEmitter.js';
+import type {Device} from '../common/Device.js';
+import {TargetCloseError} from '../common/Errors.js';
+import {
+  EventEmitter,
+  type EventsWithWildcard,
+  type EventType,
+  type Handler,
+} from '../common/EventEmitter.js';
 import type {FileChooser} from '../common/FileChooser.js';
-import type {WaitForSelectorOptions} from '../common/IsolatedWorld.js';
-import type {PuppeteerLifeCycleEvent} from '../common/LifecycleWatcher.js';
 import {
-  Credentials,
-  NetworkConditions,
-  NetworkManagerEmittedEvents,
-} from '../common/NetworkManager.js';
-import {
-  LowerCasePaperFormat,
   paperFormats,
-  ParsedPDFOptions,
-  PDFOptions,
+  type LowerCasePaperFormat,
+  type ParsedPDFOptions,
+  type PDFOptions,
 } from '../common/PDFOptions.js';
-import type {Viewport} from '../common/PuppeteerViewport.js';
-import type {Tracing} from '../common/Tracing.js';
 import type {
   Awaitable,
   EvaluateFunc,
@@ -64,18 +72,26 @@ import type {
   NodeFor,
 } from '../common/types.js';
 import {
+  debugError,
   importFSPromises,
   isNumber,
   isString,
-  waitForEvent,
+  timeout,
   withSourcePuppeteerURLIfNone,
 } from '../common/util.js';
-import type {WebWorker} from '../common/WebWorker.js';
+import type {Viewport} from '../common/Viewport.js';
 import {assert} from '../util/assert.js';
-import {Deferred} from '../util/Deferred.js';
+import {guarded} from '../util/decorators.js';
+import type {Deferred} from '../util/Deferred.js';
+import {
+  AsyncDisposableStack,
+  asyncDisposeSymbol,
+  disposeSymbol,
+} from '../util/disposable.js';
 
 import type {Browser} from './Browser.js';
 import type {BrowserContext} from './BrowserContext.js';
+import type {CDPSession} from './CDPSession.js';
 import type {Dialog} from './Dialog.js';
 import type {ClickOptions, ElementHandle} from './ElementHandle.js';
 import type {
@@ -83,14 +99,21 @@ import type {
   FrameAddScriptTagOptions,
   FrameAddStyleTagOptions,
   FrameWaitForFunctionOptions,
+  GoToOptions,
+  WaitForOptions,
 } from './Frame.js';
-import {Keyboard, KeyboardTypeOptions, Mouse, Touchscreen} from './Input.js';
+import type {
+  Keyboard,
+  KeyboardTypeOptions,
+  Mouse,
+  Touchscreen,
+} from './Input.js';
 import type {JSHandle} from './JSHandle.js';
 import {
-  AwaitedLocator,
   FunctionLocator,
   Locator,
   NodeLocator,
+  type AwaitedLocator,
 } from './locators/locators.js';
 import type {Target} from './Target.js';
 
@@ -131,18 +154,33 @@ export interface WaitTimeoutOptions {
 /**
  * @public
  */
-export interface WaitForOptions {
+export interface WaitForSelectorOptions {
   /**
-   * Maximum wait time in milliseconds. Pass 0 to disable the timeout.
+   * Wait for the selected element to be present in DOM and to be visible, i.e.
+   * to not have `display: none` or `visibility: hidden` CSS properties.
    *
-   * The default value can be changed by using the
-   * {@link Page.setDefaultTimeout} or {@link Page.setDefaultNavigationTimeout}
-   * methods.
+   * @defaultValue `false`
+   */
+  visible?: boolean;
+  /**
+   * Wait for the selected element to not be found in the DOM or to be hidden,
+   * i.e. have `display: none` or `visibility: hidden` CSS properties.
    *
-   * @defaultValue `30000`
+   * @defaultValue `false`
+   */
+  hidden?: boolean;
+  /**
+   * Maximum time to wait in milliseconds. Pass `0` to disable timeout.
+   *
+   * The default value can be changed by using {@link Page.setDefaultTimeout}
+   *
+   * @defaultValue `30_000` (30 seconds)
    */
   timeout?: number;
-  waitUntil?: PuppeteerLifeCycleEvent | PuppeteerLifeCycleEvent[];
+  /**
+   * A signal object that allows you to cancel a waitForSelector call.
+   */
+  signal?: AbortSignal;
 }
 
 /**
@@ -194,9 +232,31 @@ export interface ScreenshotOptions {
    */
   optimizeForSpeed?: boolean;
   /**
-   * @defaultValue `png`
+   * @defaultValue `'png'`
    */
   type?: 'png' | 'jpeg' | 'webp';
+  /**
+   * Quality of the image, between 0-100. Not applicable to `png` images.
+   */
+  quality?: number;
+  /**
+   * Capture the screenshot from the surface, rather than the view.
+   *
+   * @defaultValue `true`
+   */
+  fromSurface?: boolean;
+  /**
+   * When `true`, takes a screenshot of the full page.
+   *
+   * @defaultValue `false`
+   */
+  fullPage?: boolean;
+  /**
+   * Hides default white background and allows capturing screenshots with transparency.
+   *
+   * @defaultValue `false`
+   */
+  omitBackground?: boolean;
   /**
    * The file path to save the image to. The screenshot type will be inferred
    * from file extension. If path is a relative path, then it is resolved
@@ -205,38 +265,29 @@ export interface ScreenshotOptions {
    */
   path?: string;
   /**
-   * When `true`, takes a screenshot of the full page.
-   * @defaultValue `false`
-   */
-  fullPage?: boolean;
-  /**
-   * An object which specifies the clipping region of the page.
+   * Specifies the region of the page to clip.
    */
   clip?: ScreenshotClip;
   /**
-   * Quality of the image, between 0-100. Not applicable to `png` images.
-   */
-  quality?: number;
-  /**
-   * Hides default white background and allows capturing screenshots with transparency.
-   * @defaultValue `false`
-   */
-  omitBackground?: boolean;
-  /**
    * Encoding of the image.
-   * @defaultValue `binary`
+   *
+   * @defaultValue `'binary'`
    */
   encoding?: 'base64' | 'binary';
   /**
    * Capture the screenshot beyond the viewport.
+   *
    * @defaultValue `true`
    */
   captureBeyondViewport?: boolean;
   /**
-   * Capture the screenshot from the surface, rather than the view.
-   * @defaultValue `true`
+   * TODO(jrandolf): Investigate whether viewport expansion is a better
+   * alternative for cross-browser screenshots as opposed to
+   * `captureBeyondViewport`.
+   *
+   * @internal
    */
-  fromSurface?: boolean;
+  allowViewportExpansion?: boolean;
 }
 
 /**
@@ -244,7 +295,7 @@ export interface ScreenshotOptions {
  *
  * @public
  */
-export const enum PageEmittedEvents {
+export const enum PageEvent {
   /**
    * Emitted when the page closes.
    */
@@ -391,41 +442,71 @@ export const enum PageEmittedEvents {
   WorkerDestroyed = 'workerdestroyed',
 }
 
+export {
+  /**
+   * All the events that a page instance may emit.
+   *
+   * @deprecated Use {@link PageEvent}.
+   */
+  PageEvent as PageEmittedEvents,
+};
+
 /**
  * Denotes the objects received by callback functions for page events.
  *
- * See {@link PageEmittedEvents} for more detail on the events and when they are
+ * See {@link PageEvent} for more detail on the events and when they are
  * emitted.
  *
  * @public
  */
-export interface PageEventObject {
-  close: never;
-  console: ConsoleMessage;
-  dialog: Dialog;
-  domcontentloaded: never;
-  error: Error;
-  frameattached: Frame;
-  framedetached: Frame;
-  framenavigated: Frame;
-  load: never;
-  metrics: {title: string; metrics: Metrics};
-  pageerror: Error;
-  popup: Page;
-  request: HTTPRequest;
-  response: HTTPResponse;
-  requestfailed: HTTPRequest;
-  requestfinished: HTTPRequest;
-  requestservedfromcache: HTTPRequest;
-  workercreated: WebWorker;
-  workerdestroyed: WebWorker;
+export interface PageEvents extends Record<EventType, unknown> {
+  [PageEvent.Close]: undefined;
+  [PageEvent.Console]: ConsoleMessage;
+  [PageEvent.Dialog]: Dialog;
+  [PageEvent.DOMContentLoaded]: undefined;
+  [PageEvent.Error]: Error;
+  [PageEvent.FrameAttached]: Frame;
+  [PageEvent.FrameDetached]: Frame;
+  [PageEvent.FrameNavigated]: Frame;
+  [PageEvent.Load]: undefined;
+  [PageEvent.Metrics]: {title: string; metrics: Metrics};
+  [PageEvent.PageError]: Error;
+  [PageEvent.Popup]: Page | null;
+  [PageEvent.Request]: HTTPRequest;
+  [PageEvent.Response]: HTTPResponse;
+  [PageEvent.RequestFailed]: HTTPRequest;
+  [PageEvent.RequestFinished]: HTTPRequest;
+  [PageEvent.RequestServedFromCache]: HTTPRequest;
+  [PageEvent.WorkerCreated]: WebWorker;
+  [PageEvent.WorkerDestroyed]: WebWorker;
 }
+
+export type {
+  /**
+   * @deprecated Use {@link PageEvents}.
+   */
+  PageEvents as PageEventObject,
+};
 
 /**
  * @public
  */
 export interface NewDocumentScriptEvaluation {
   identifier: string;
+}
+
+/**
+ * @internal
+ */
+export function setDefaultScreenshotOptions(options: ScreenshotOptions): void {
+  options.optimizeForSpeed ??= false;
+  options.type ??= 'png';
+  options.fromSurface ??= true;
+  options.fullPage ??= false;
+  options.omitBackground ??= false;
+  options.encoding ??= 'binary';
+  options.captureBeyondViewport ??= true;
+  options.allowViewportExpansion ??= options.captureBeyondViewport;
 }
 
 /**
@@ -455,7 +536,7 @@ export interface NewDocumentScriptEvaluation {
  * ```
  *
  * The Page class extends from Puppeteer's {@link EventEmitter} class and will
- * emit various events which are documented in the {@link PageEmittedEvents} enum.
+ * emit various events which are documented in the {@link PageEvent} enum.
  *
  * @example
  * This example logs a message for a single page `load` event:
@@ -464,7 +545,7 @@ export interface NewDocumentScriptEvaluation {
  * page.once('load', () => console.log('Page loaded!'));
  * ```
  *
- * To unsubscribe from events use the {@link Page.off} method:
+ * To unsubscribe from events use the {@link EventEmitter.off} method:
  *
  * ```ts
  * function logRequest(interceptedRequest) {
@@ -477,8 +558,13 @@ export interface NewDocumentScriptEvaluation {
  *
  * @public
  */
-export class Page extends EventEmitter {
-  #handlerMap = new WeakMap<Handler<any>, Handler<any>>();
+export abstract class Page extends EventEmitter<PageEvents> {
+  /**
+   * @internal
+   */
+  _isDragging = false;
+
+  #requestHandlers = new WeakMap<Handler<HTTPRequest>, Handler<HTTPRequest>>();
 
   /**
    * @internal
@@ -496,6 +582,10 @@ export class Page extends EventEmitter {
 
   /**
    * `true` if drag events are being intercepted, `false` otherwise.
+   *
+   * @deprecated We no longer support intercepting drag payloads. Use the new
+   * drag APIs found on {@link ElementHandle} to drag (or just use the
+   * {@link Page.mouse}).
    */
   isDragInterceptionEnabled(): boolean {
     throw new Error('Not implemented');
@@ -511,52 +601,56 @@ export class Page extends EventEmitter {
   /**
    * Listen to page events.
    *
-   * :::note
-   *
+   * @remarks
    * This method exists to define event typings and handle proper wireup of
    * cooperative request interception. Actual event listening and dispatching is
    * delegated to {@link EventEmitter}.
    *
-   * :::
+   * @internal
    */
-  override on<K extends keyof PageEventObject>(
-    eventName: K,
-    handler: (event: PageEventObject[K]) => void
+  override on<K extends keyof EventsWithWildcard<PageEvents>>(
+    type: K,
+    handler: (event: EventsWithWildcard<PageEvents>[K]) => void
   ): this {
-    if (eventName === 'request') {
-      const wrap =
-        this.#handlerMap.get(handler) ||
-        ((event: HTTPRequest) => {
-          event.enqueueInterceptAction(() => {
-            return handler(event as PageEventObject[K]);
-          });
+    if (type !== PageEvent.Request) {
+      return super.on(type, handler);
+    }
+    let wrapper = this.#requestHandlers.get(
+      handler as (event: PageEvents[PageEvent.Request]) => void
+    );
+    if (wrapper === undefined) {
+      wrapper = (event: HTTPRequest) => {
+        event.enqueueInterceptAction(() => {
+          return handler(event as EventsWithWildcard<PageEvents>[K]);
         });
-
-      this.#handlerMap.set(handler, wrap);
-
-      return super.on(eventName, wrap);
+      };
+      this.#requestHandlers.set(
+        handler as (event: PageEvents[PageEvent.Request]) => void,
+        wrapper
+      );
     }
-    return super.on(eventName, handler);
+    return super.on(
+      type,
+      wrapper as (event: EventsWithWildcard<PageEvents>[K]) => void
+    );
   }
 
-  override once<K extends keyof PageEventObject>(
-    eventName: K,
-    handler: (event: PageEventObject[K]) => void
+  /**
+   * @internal
+   */
+  override off<K extends keyof EventsWithWildcard<PageEvents>>(
+    type: K,
+    handler: (event: EventsWithWildcard<PageEvents>[K]) => void
   ): this {
-    // Note: this method only exists to define the types; we delegate the impl
-    // to EventEmitter.
-    return super.once(eventName, handler);
-  }
-
-  override off<K extends keyof PageEventObject>(
-    eventName: K,
-    handler: (event: PageEventObject[K]) => void
-  ): this {
-    if (eventName === 'request') {
-      handler = this.#handlerMap.get(handler) || handler;
+    if (type === PageEvent.Request) {
+      handler =
+        (this.#requestHandlers.get(
+          handler as (
+            event: EventsWithWildcard<PageEvents>[PageEvent.Request]
+          ) => void
+        ) as (event: EventsWithWildcard<PageEvents>[K]) => void) || handler;
     }
-
-    return super.off(eventName, handler);
+    return super.off(type, handler);
   }
 
   /**
@@ -620,16 +714,12 @@ export class Page extends EventEmitter {
   /**
    * Get the browser the page belongs to.
    */
-  browser(): Browser {
-    throw new Error('Not implemented');
-  }
+  abstract browser(): Browser;
 
   /**
    * Get the browser context that the page belongs to.
    */
-  browserContext(): BrowserContext {
-    throw new Error('Not implemented');
-  }
+  abstract browserContext(): BrowserContext;
 
   /**
    * The page's main frame.
@@ -637,9 +727,7 @@ export class Page extends EventEmitter {
    * @remarks
    * Page is guaranteed to have a main frame which persists during navigations.
    */
-  mainFrame(): Frame {
-    throw new Error('Not implemented');
-  }
+  abstract mainFrame(): Frame;
 
   /**
    * Creates a Chrome Devtools Protocol session attached to the page.
@@ -651,9 +739,7 @@ export class Page extends EventEmitter {
   /**
    * {@inheritDoc Keyboard}
    */
-  get keyboard(): Keyboard {
-    throw new Error('Not implemented');
-  }
+  abstract get keyboard(): Keyboard;
 
   /**
    * {@inheritDoc Touchscreen}
@@ -665,30 +751,22 @@ export class Page extends EventEmitter {
   /**
    * {@inheritDoc Coverage}
    */
-  get coverage(): Coverage {
-    throw new Error('Not implemented');
-  }
+  abstract get coverage(): Coverage;
 
   /**
    * {@inheritDoc Tracing}
    */
-  get tracing(): Tracing {
-    throw new Error('Not implemented');
-  }
+  abstract get tracing(): Tracing;
 
   /**
    * {@inheritDoc Accessibility}
    */
-  get accessibility(): Accessibility {
-    throw new Error('Not implemented');
-  }
+  abstract get accessibility(): Accessibility;
 
   /**
    * An array of all frames attached to the page.
    */
-  frames(): Frame[] {
-    throw new Error('Not implemented');
-  }
+  abstract frames(): Frame[];
 
   /**
    * All of the dedicated {@link
@@ -756,10 +834,9 @@ export class Page extends EventEmitter {
   /**
    * @param enabled - Whether to enable drag interception.
    *
-   * @remarks
-   * Activating drag interception enables the `Input.drag`,
-   * methods This provides the capability to capture drag events emitted
-   * on the page, which can then be used to simulate drag-and-drop.
+   * @deprecated We no longer support intercepting drag payloads. Use the new
+   * drag APIs found on {@link ElementHandle} to drag (or just use the
+   * {@link Page.mouse}).
    */
   async setDragInterception(enabled: boolean): Promise<void>;
   async setDragInterception(): Promise<void> {
@@ -829,25 +906,17 @@ export class Page extends EventEmitter {
    * - {@link Page.waitForNavigation | page.waitForNavigation(options)}
    *   @param timeout - Maximum navigation time in milliseconds.
    */
-  setDefaultNavigationTimeout(timeout: number): void;
-  setDefaultNavigationTimeout(): void {
-    throw new Error('Not implemented');
-  }
+  abstract setDefaultNavigationTimeout(timeout: number): void;
 
   /**
    * @param timeout - Maximum time in milliseconds.
    */
-  setDefaultTimeout(timeout: number): void;
-  setDefaultTimeout(): void {
-    throw new Error('Not implemented');
-  }
+  abstract setDefaultTimeout(timeout: number): void;
 
   /**
    * Maximum time in milliseconds.
    */
-  getDefaultTimeout(): number {
-    throw new Error('Not implemented');
-  }
+  abstract getDefaultTimeout(): number;
 
   /**
    * Creates a locator for the provided selector. See {@link Locator} for
@@ -902,7 +971,7 @@ export class Page extends EventEmitter {
   async $<Selector extends string>(
     selector: Selector
   ): Promise<ElementHandle<NodeFor<Selector>> | null> {
-    return this.mainFrame().$(selector);
+    return await this.mainFrame().$(selector);
   }
 
   /**
@@ -915,7 +984,7 @@ export class Page extends EventEmitter {
   async $$<Selector extends string>(
     selector: Selector
   ): Promise<Array<ElementHandle<NodeFor<Selector>>>> {
-    return this.mainFrame().$$(selector);
+    return await this.mainFrame().$$(selector);
   }
 
   /**
@@ -981,12 +1050,12 @@ export class Page extends EventEmitter {
   >(
     pageFunction: Func | string,
     ...args: Params
-  ): Promise<HandleFor<Awaited<ReturnType<Func>>>>;
-  async evaluateHandle<
-    Params extends unknown[],
-    Func extends EvaluateFunc<Params> = EvaluateFunc<Params>,
-  >(): Promise<HandleFor<Awaited<ReturnType<Func>>>> {
-    throw new Error('Not implemented');
+  ): Promise<HandleFor<Awaited<ReturnType<Func>>>> {
+    pageFunction = withSourcePuppeteerURLIfNone(
+      this.evaluateHandle.name,
+      pageFunction
+    );
+    return await this.mainFrame().evaluateHandle(pageFunction, ...args);
   }
 
   /**
@@ -1012,12 +1081,9 @@ export class Page extends EventEmitter {
    * @returns Promise which resolves to a handle to an array of objects with
    * this prototype.
    */
-  async queryObjects<Prototype>(
+  abstract queryObjects<Prototype>(
     prototypeHandle: JSHandle<Prototype>
   ): Promise<JSHandle<Prototype[]>>;
-  async queryObjects<Prototype>(): Promise<JSHandle<Prototype[]>> {
-    throw new Error('Not implemented');
-  }
 
   /**
    * This method runs `document.querySelector` within the page and passes the
@@ -1094,7 +1160,7 @@ export class Page extends EventEmitter {
     ...args: Params
   ): Promise<Awaited<ReturnType<Func>>> {
     pageFunction = withSourcePuppeteerURLIfNone(this.$eval.name, pageFunction);
-    return this.mainFrame().$eval(selector, pageFunction, ...args);
+    return await this.mainFrame().$eval(selector, pageFunction, ...args);
   }
 
   /**
@@ -1172,7 +1238,7 @@ export class Page extends EventEmitter {
     ...args: Params
   ): Promise<Awaited<ReturnType<Func>>> {
     pageFunction = withSourcePuppeteerURLIfNone(this.$$eval.name, pageFunction);
-    return this.mainFrame().$$eval(selector, pageFunction, ...args);
+    return await this.mainFrame().$$eval(selector, pageFunction, ...args);
   }
 
   /**
@@ -1186,7 +1252,7 @@ export class Page extends EventEmitter {
    * @param expression - Expression to evaluate
    */
   async $x(expression: string): Promise<Array<ElementHandle<Node>>> {
-    return this.mainFrame().$x(expression);
+    return await this.mainFrame().$x(expression);
   }
 
   /**
@@ -1231,7 +1297,7 @@ export class Page extends EventEmitter {
   async addScriptTag(
     options: FrameAddScriptTagOptions
   ): Promise<ElementHandle<HTMLScriptElement>> {
-    return this.mainFrame().addScriptTag(options);
+    return await this.mainFrame().addScriptTag(options);
   }
 
   /**
@@ -1253,7 +1319,7 @@ export class Page extends EventEmitter {
   async addStyleTag(
     options: FrameAddStyleTagOptions
   ): Promise<ElementHandle<HTMLStyleElement | HTMLLinkElement>> {
-    return this.mainFrame().addStyleTag(options);
+    return await this.mainFrame().addStyleTag(options);
   }
 
   /**
@@ -1326,13 +1392,10 @@ export class Page extends EventEmitter {
    * @param pptrFunction - Callback function which will be called in Puppeteer's
    * context.
    */
-  async exposeFunction(
+  abstract exposeFunction(
     name: string,
     pptrFunction: Function | {default: Function}
   ): Promise<void>;
-  async exposeFunction(): Promise<void> {
-    throw new Error('Not implemented');
-  }
 
   /**
    * The method removes a previously added function via ${@link Page.exposeFunction}
@@ -1385,13 +1448,10 @@ export class Page extends EventEmitter {
    * page
    * @returns Promise which resolves when the user agent is set.
    */
-  async setUserAgent(
+  abstract setUserAgent(
     userAgent: string,
     userAgentMetadata?: Protocol.Emulation.UserAgentMetadata
   ): Promise<void>;
-  async setUserAgent(): Promise<void> {
-    throw new Error('Not implemented');
-  }
 
   /**
    * Object containing metrics as key/value pairs.
@@ -1439,14 +1499,14 @@ export class Page extends EventEmitter {
    * {@link Frame.url | page.mainFrame().url()}.
    */
   url(): string {
-    throw new Error('Not implemented');
+    return this.mainFrame().url();
   }
 
   /**
    * The full HTML contents of the page, including the DOCTYPE.
    */
   async content(): Promise<string> {
-    throw new Error('Not implemented');
+    return await this.mainFrame().content();
   }
 
   /**
@@ -1475,46 +1535,34 @@ export class Page extends EventEmitter {
    * - `networkidle2` : consider setting content to be finished when there are
    *   no more than 2 network connections for at least `500` ms.
    */
-  async setContent(html: string, options?: WaitForOptions): Promise<void>;
-  async setContent(): Promise<void> {
-    throw new Error('Not implemented');
+  async setContent(html: string, options?: WaitForOptions): Promise<void> {
+    await this.mainFrame().setContent(html, options);
   }
 
   /**
+   * Navigates the page to the given `url`.
+   *
+   * @remarks
+   * Navigation to `about:blank` or navigation to the same URL with a different
+   * hash will succeed and return `null`.
+   *
+   * :::warning
+   *
+   * Headless mode doesn't support navigation to a PDF document. See the {@link
+   * https://bugs.chromium.org/p/chromium/issues/detail?id=761295 | upstream
+   * issue}.
+   *
+   * :::
+   *
+   * Shortcut for {@link Frame.goto | page.mainFrame().goto(url, options)}.
+   *
    * @param url - URL to navigate page to. The URL should include scheme, e.g.
    * `https://`
-   * @param options - Navigation Parameter
-   * @returns Promise which resolves to the main resource response. In case of
+   * @param options - Options to configure waiting behavior.
+   * @returns A promise which resolves to the main resource response. In case of
    * multiple redirects, the navigation will resolve with the response of the
    * last redirect.
-   * @remarks
-   * The argument `options` might have the following properties:
-   *
-   * - `timeout` : Maximum navigation time in milliseconds, defaults to 30
-   *   seconds, pass 0 to disable timeout. The default value can be changed by
-   *   using the {@link Page.setDefaultNavigationTimeout} or
-   *   {@link Page.setDefaultTimeout} methods.
-   *
-   * - `waitUntil`:When to consider navigation succeeded, defaults to `load`.
-   *   Given an array of event strings, navigation is considered to be
-   *   successful after all events have been fired. Events can be either:<br/>
-   * - `load` : consider navigation to be finished when the load event is
-   *   fired.<br/>
-   * - `domcontentloaded` : consider navigation to be finished when the
-   *   DOMContentLoaded event is fired.<br/>
-   * - `networkidle0` : consider navigation to be finished when there are no
-   *   more than 0 network connections for at least `500` ms.<br/>
-   * - `networkidle2` : consider navigation to be finished when there are no
-   *   more than 2 network connections for at least `500` ms.
-   *
-   * - `referer` : Referer header value. If provided it will take preference
-   *   over the referer header value set by
-   *   {@link Page.setExtraHTTPHeaders |page.setExtraHTTPHeaders()}.<br/>
-   * - `referrerPolicy` : ReferrerPolicy. If provided it will take preference
-   *   over the referer-policy header value set by
-   *   {@link Page.setExtraHTTPHeaders |page.setExtraHTTPHeaders()}.
-   *
-   * `page.goto` will throw an error if:
+   * @throws If:
    *
    * - there's an SSL error (e.g. in case of self-signed certificates).
    * - target URL is invalid.
@@ -1522,59 +1570,24 @@ export class Page extends EventEmitter {
    * - the remote server does not respond or is unreachable.
    * - the main resource failed to load.
    *
-   * `page.goto` will not throw an error when any valid HTTP status code is
-   * returned by the remote server, including 404 "Not Found" and 500
-   * "Internal Server Error". The status code for such responses can be
-   * retrieved by calling response.status().
-   *
-   * NOTE: `page.goto` either throws an error or returns a main resource
-   * response. The only exceptions are navigation to about:blank or navigation
-   * to the same URL with a different hash, which would succeed and return null.
-   *
-   * NOTE: Headless mode doesn't support navigation to a PDF document. See the
-   * {@link https://bugs.chromium.org/p/chromium/issues/detail?id=761295 |
-   * upstream issue}.
-   *
-   * Shortcut for {@link Frame.goto | page.mainFrame().goto(url, options)}.
+   * This method will not throw an error when any valid HTTP status code is
+   * returned by the remote server, including 404 "Not Found" and 500 "Internal
+   * Server Error". The status code for such responses can be retrieved by
+   * calling {@link HTTPResponse.status}.
    */
-  async goto(
-    url: string,
-    options?: WaitForOptions & {referer?: string; referrerPolicy?: string}
-  ): Promise<HTTPResponse | null>;
-  async goto(): Promise<HTTPResponse | null> {
-    throw new Error('Not implemented');
+  async goto(url: string, options?: GoToOptions): Promise<HTTPResponse | null> {
+    return await this.mainFrame().goto(url, options);
   }
 
   /**
-   * @param options - Navigation parameters which might have the following
-   * properties:
-   * @returns Promise which resolves to the main resource response. In case of
+   * Reloads the page.
+   *
+   * @param options - Options to configure waiting behavior.
+   * @returns A promise which resolves to the main resource response. In case of
    * multiple redirects, the navigation will resolve with the response of the
    * last redirect.
-   * @remarks
-   * The argument `options` might have the following properties:
-   *
-   * - `timeout` : Maximum navigation time in milliseconds, defaults to 30
-   *   seconds, pass 0 to disable timeout. The default value can be changed by
-   *   using the {@link Page.setDefaultNavigationTimeout} or
-   *   {@link Page.setDefaultTimeout} methods.
-   *
-   * - `waitUntil`: When to consider navigation succeeded, defaults to `load`.
-   *   Given an array of event strings, navigation is considered to be
-   *   successful after all events have been fired. Events can be either:<br/>
-   * - `load` : consider navigation to be finished when the load event is
-   *   fired.<br/>
-   * - `domcontentloaded` : consider navigation to be finished when the
-   *   DOMContentLoaded event is fired.<br/>
-   * - `networkidle0` : consider navigation to be finished when there are no
-   *   more than 0 network connections for at least `500` ms.<br/>
-   * - `networkidle2` : consider navigation to be finished when there are no
-   *   more than 2 network connections for at least `500` ms.
    */
-  async reload(options?: WaitForOptions): Promise<HTTPResponse | null>;
-  async reload(): Promise<HTTPResponse | null> {
-    throw new Error('Not implemented');
-  }
+  abstract reload(options?: WaitForOptions): Promise<HTTPResponse | null>;
 
   /**
    * Waits for the page to navigate to a new URL or to reload. It is useful when
@@ -1632,13 +1645,10 @@ export class Page extends EventEmitter {
    *   `0` to disable the timeout. The default value can be changed by using the
    *   {@link Page.setDefaultTimeout} method.
    */
-  async waitForRequest(
+  abstract waitForRequest(
     urlOrPredicate: string | ((req: HTTPRequest) => boolean | Promise<boolean>),
     options?: {timeout?: number}
   ): Promise<HTTPRequest>;
-  async waitForRequest(): Promise<HTTPRequest> {
-    throw new Error('Not implemented');
-  }
 
   /**
    * @param urlOrPredicate - A URL or predicate to wait for.
@@ -1667,92 +1677,55 @@ export class Page extends EventEmitter {
    *   pass `0` to disable the timeout. The default value can be changed by using
    *   the {@link Page.setDefaultTimeout} method.
    */
-  async waitForResponse(
+  abstract waitForResponse(
     urlOrPredicate:
       | string
       | ((res: HTTPResponse) => boolean | Promise<boolean>),
     options?: {timeout?: number}
   ): Promise<HTTPResponse>;
-  async waitForResponse(): Promise<HTTPResponse> {
-    throw new Error('Not implemented');
-  }
 
   /**
    * @param options - Optional waiting parameters
    * @returns Promise which resolves when network is idle
    */
-  async waitForNetworkIdle(options?: {
+  abstract waitForNetworkIdle(options?: {
     idleTime?: number;
     timeout?: number;
   }): Promise<void>;
-  async waitForNetworkIdle(): Promise<void> {
-    throw new Error('Not implemented');
-  }
 
   /**
    * @internal
    */
   protected async _waitForNetworkIdle(
-    networkManager: EventEmitter & {
-      inFlightRequestsCount: () => number;
-    },
+    networkManager: BidiNetworkManager | CdpNetworkManager,
     idleTime: number,
-    timeout: number,
+    ms: number,
     closedDeferred: Deferred<TargetCloseError>
   ): Promise<void> {
-    const idleDeferred = Deferred.create<void>();
-    const abortDeferred = Deferred.create<Error>();
-
-    let idleTimer: NodeJS.Timeout | undefined;
-    const cleanup = () => {
-      clearTimeout(idleTimer);
-      abortDeferred.reject(new Error('abort'));
-    };
-
-    const evaluate = () => {
-      clearTimeout(idleTimer);
-
-      if (networkManager.inFlightRequestsCount() === 0) {
-        idleTimer = setTimeout(() => {
-          return idleDeferred.resolve();
-        }, idleTime);
-      }
-    };
-
-    const listenToEvent = (event: symbol) => {
-      return waitForEvent(
-        networkManager,
-        event,
-        () => {
-          evaluate();
-          return false;
-        },
-        timeout,
-        abortDeferred
-      );
-    };
-
-    const eventPromises = [
-      listenToEvent(NetworkManagerEmittedEvents.Request),
-      listenToEvent(NetworkManagerEmittedEvents.Response),
-      listenToEvent(NetworkManagerEmittedEvents.RequestFailed),
-    ];
-
-    evaluate();
-
-    // We don't want to reject the closed deferred when
-    // the race if finished so we pass the Promise instead
-    const closedPromise = closedDeferred.valueOrThrow();
-
-    await Deferred.race([idleDeferred, ...eventPromises, closedPromise]).then(
-      r => {
-        cleanup();
-        return r;
-      },
-      error => {
-        cleanup();
-        throw error;
-      }
+    await firstValueFrom(
+      merge(
+        fromEvent(
+          networkManager,
+          NetworkManagerEvent.Request as unknown as string
+        ),
+        fromEvent(
+          networkManager,
+          NetworkManagerEvent.Response as unknown as string
+        ),
+        fromEvent(
+          networkManager,
+          NetworkManagerEvent.RequestFailed as unknown as string
+        )
+      ).pipe(
+        startWith(null),
+        filter(() => {
+          return networkManager.inFlightRequestsCount() === 0;
+        }),
+        switchMap(v => {
+          return of(v).pipe(delay(idleTime));
+        }),
+        raceWith(timeout(ms), from(closedDeferred.valueOrThrow()))
+      )
     );
   }
 
@@ -1779,21 +1752,17 @@ export class Page extends EventEmitter {
       };
     }
 
-    return firstValueFrom(
+    return await firstValueFrom(
       merge(
-        fromEvent(this, PageEmittedEvents.FrameAttached) as Observable<Frame>,
-        fromEvent(this, PageEmittedEvents.FrameNavigated) as Observable<Frame>,
+        fromEvent(this, PageEvent.FrameAttached) as Observable<Frame>,
+        fromEvent(this, PageEvent.FrameNavigated) as Observable<Frame>,
         from(this.frames())
       ).pipe(
         filterAsync(urlOrPredicate),
         first(),
         raceWith(
-          timer(ms === 0 ? Infinity : ms).pipe(
-            map(() => {
-              throw new TimeoutError(`Timed out after waiting ${ms}ms`);
-            })
-          ),
-          fromEvent(this, PageEmittedEvents.Close).pipe(
+          timeout(ms),
+          fromEvent(this, PageEvent.Close).pipe(
             map(() => {
               throw new TargetCloseError('Page closed.');
             })
@@ -1868,9 +1837,7 @@ export class Page extends EventEmitter {
   /**
    * Brings page to front (activates tab).
    */
-  async bringToFront(): Promise<void> {
-    throw new Error('Not implemented');
-  }
+  abstract bringToFront(): Promise<void>;
 
   /**
    * Emulates a given device's metrics and user agent.
@@ -1928,10 +1895,7 @@ export class Page extends EventEmitter {
    * evaluation. Usually, this means that `page.setBypassCSP` should be called
    * before navigating to the domain.
    */
-  async setBypassCSP(enabled: boolean): Promise<void>;
-  async setBypassCSP(): Promise<void> {
-    throw new Error('Not implemented');
-  }
+  abstract setBypassCSP(enabled: boolean): Promise<void>;
 
   /**
    * @param type - Changes the CSS media type of the page. The only allowed
@@ -2151,10 +2115,7 @@ export class Page extends EventEmitter {
    * NOTE: in certain cases, setting viewport will reload the page in order to
    * set the isMobile or hasTouch properties.
    */
-  async setViewport(viewport: Viewport): Promise<void>;
-  async setViewport(): Promise<void> {
-    throw new Error('Not implemented');
-  }
+  abstract setViewport(viewport: Viewport): Promise<void>;
 
   /**
    * Current page viewport settings.
@@ -2177,9 +2138,7 @@ export class Page extends EventEmitter {
    * - `isLandScape`: Specifies if viewport is in landscape mode. Defaults to
    *   `false`.
    */
-  viewport(): Viewport | null {
-    throw new Error('Not implemented');
-  }
+  abstract viewport(): Viewport | null;
 
   /**
    * Evaluates a function in the page's context and returns the result.
@@ -2234,12 +2193,12 @@ export class Page extends EventEmitter {
   >(
     pageFunction: Func | string,
     ...args: Params
-  ): Promise<Awaited<ReturnType<Func>>>;
-  async evaluate<
-    Params extends unknown[],
-    Func extends EvaluateFunc<Params> = EvaluateFunc<Params>,
-  >(): Promise<Awaited<ReturnType<Func>>> {
-    throw new Error('Not implemented');
+  ): Promise<Awaited<ReturnType<Func>>> {
+    pageFunction = withSourcePuppeteerURLIfNone(
+      this.evaluate.name,
+      pageFunction
+    );
+    return await this.mainFrame().evaluate(pageFunction, ...args);
   }
 
   /**
@@ -2274,26 +2233,22 @@ export class Page extends EventEmitter {
    * await page.evaluateOnNewDocument(preloadFile);
    * ```
    */
-  async evaluateOnNewDocument<
+  abstract evaluateOnNewDocument<
     Params extends unknown[],
     Func extends (...args: Params) => unknown = (...args: Params) => unknown,
   >(
     pageFunction: Func | string,
     ...args: Params
   ): Promise<NewDocumentScriptEvaluation>;
-  async evaluateOnNewDocument(): Promise<NewDocumentScriptEvaluation> {
-    throw new Error('Not implemented');
-  }
 
   /**
    * Removes script that injected into page by Page.evaluateOnNewDocument.
    *
    * @param identifier - script identifier
    */
-  async removeScriptToEvaluateOnNewDocument(identifier: string): Promise<void>;
-  async removeScriptToEvaluateOnNewDocument(): Promise<void> {
-    throw new Error('Not implemented');
-  }
+  abstract removeScriptToEvaluateOnNewDocument(
+    identifier: string
+  ): Promise<void>;
 
   /**
    * Toggles ignoring cache for each request based on the enabled state. By
@@ -2301,10 +2256,7 @@ export class Page extends EventEmitter {
    * @param enabled - sets the `enabled` state of cache
    * @defaultValue `true`
    */
-  async setCacheEnabled(enabled?: boolean): Promise<void>;
-  async setCacheEnabled(): Promise<void> {
-    throw new Error('Not implemented');
-  }
+  abstract setCacheEnabled(enabled?: boolean): Promise<void>;
 
   /**
    * @internal
@@ -2323,63 +2275,202 @@ export class Page extends EventEmitter {
   }
 
   /**
-   * Captures screenshot of the current page.
+   * Captures a screenshot of this {@link Page | page}.
    *
-   * @remarks
-   * Options object which might have the following properties:
-   *
-   * - `path` : The file path to save the image to. The screenshot type
-   *   will be inferred from file extension. If `path` is a relative path, then
-   *   it is resolved relative to
-   *   {@link https://nodejs.org/api/process.html#process_process_cwd
-   *   | current working directory}.
-   *   If no path is provided, the image won't be saved to the disk.
-   *
-   * - `type` : Specify screenshot type, can be `jpeg`, `png` or `webp`.
-   *   Defaults to 'png'.
-   *
-   * - `quality` : The quality of the image, between 0-100. Not
-   *   applicable to `png` images.
-   *
-   * - `fullPage` : When true, takes a screenshot of the full
-   *   scrollable page. Defaults to `false`.
-   *
-   * - `clip` : An object which specifies clipping region of the page.
-   *   Should have the following fields:<br/>
-   * - `x` : x-coordinate of top-left corner of clip area.<br/>
-   * - `y` : y-coordinate of top-left corner of clip area.<br/>
-   * - `width` : width of clipping area.<br/>
-   * - `height` : height of clipping area.
-   *
-   * - `omitBackground` : Hides default white background and allows
-   *   capturing screenshots with transparency. Defaults to `false`.
-   *
-   * - `encoding` : The encoding of the image, can be either base64 or
-   *   binary. Defaults to `binary`.
-   *
-   * - `captureBeyondViewport` : When true, captures screenshot
-   *   {@link https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-captureScreenshot
-   *   | beyond the viewport}. When false, falls back to old behaviour,
-   *   and cuts the screenshot by the viewport size. Defaults to `true`.
-   *
-   * - `fromSurface` : When true, captures screenshot
-   *   {@link https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-captureScreenshot
-   *   | from the surface rather than the view}. When false, works only in
-   *   headful mode and ignores page viewport (but not browser window's
-   *   bounds). Defaults to `true`.
-   *
-   * @returns Promise which resolves to buffer or a base64 string (depending on
-   * the value of `encoding`) with captured screenshot.
+   * @param options - Configures screenshot behavior.
    */
-  screenshot(
-    options: ScreenshotOptions & {encoding: 'base64'}
+  async screenshot(
+    options: Readonly<ScreenshotOptions> & {encoding: 'base64'}
   ): Promise<string>;
-  screenshot(
-    options?: ScreenshotOptions & {encoding?: 'binary'}
-  ): Promise<Buffer>;
-  async screenshot(options?: ScreenshotOptions): Promise<Buffer | string>;
-  async screenshot(): Promise<Buffer | string> {
-    throw new Error('Not implemented');
+  async screenshot(options?: Readonly<ScreenshotOptions>): Promise<Buffer>;
+  @guarded(function () {
+    return this.browser();
+  })
+  async screenshot(
+    userOptions: Readonly<ScreenshotOptions> = {}
+  ): Promise<Buffer | string> {
+    await this.bringToFront();
+
+    // TODO: use structuredClone after Node 16 support is dropped.«
+    const options = {
+      ...userOptions,
+      clip: userOptions.clip
+        ? {
+            ...userOptions.clip,
+          }
+        : undefined,
+    };
+    if (options.type === undefined && options.path !== undefined) {
+      const filePath = options.path;
+      // Note we cannot use Node.js here due to browser compatability.
+      const extension = filePath
+        .slice(filePath.lastIndexOf('.') + 1)
+        .toLowerCase();
+      switch (extension) {
+        case 'png':
+          options.type = 'png';
+          break;
+        case 'jpeg':
+        case 'jpg':
+          options.type = 'jpeg';
+          break;
+        case 'webp':
+          options.type = 'webp';
+          break;
+      }
+    }
+    if (options.quality) {
+      assert(
+        options.type === 'jpeg' || options.type === 'webp',
+        `options.quality is unsupported for the ${options.type} screenshots`
+      );
+      assert(
+        typeof options.quality === 'number',
+        `Expected options.quality to be a number but found ${typeof options.quality}`
+      );
+      assert(
+        Number.isInteger(options.quality),
+        'Expected options.quality to be an integer'
+      );
+      assert(
+        options.quality >= 0 && options.quality <= 100,
+        `Expected options.quality to be between 0 and 100 (inclusive), got ${options.quality}`
+      );
+    }
+    assert(
+      !options.clip || !options.fullPage,
+      'options.clip and options.fullPage are exclusive'
+    );
+    if (options.clip) {
+      assert(
+        typeof options.clip.x === 'number',
+        `Expected options.clip.x to be a number but found ${typeof options.clip
+          .x}`
+      );
+      assert(
+        typeof options.clip.y === 'number',
+        `Expected options.clip.y to be a number but found ${typeof options.clip
+          .y}`
+      );
+      assert(
+        typeof options.clip.width === 'number',
+        `Expected options.clip.width to be a number but found ${typeof options
+          .clip.width}`
+      );
+      assert(
+        typeof options.clip.height === 'number',
+        `Expected options.clip.height to be a number but found ${typeof options
+          .clip.height}`
+      );
+      assert(
+        options.clip.width !== 0,
+        'Expected options.clip.width not to be 0.'
+      );
+      assert(
+        options.clip.height !== 0,
+        'Expected options.clip.height not to be 0.'
+      );
+    }
+
+    setDefaultScreenshotOptions(options);
+
+    options.clip = options.clip && roundClip(normalizeClip(options.clip));
+
+    await using stack = new AsyncDisposableStack();
+    if (options.allowViewportExpansion || options.captureBeyondViewport) {
+      if (options.fullPage) {
+        const dimensions = await this.mainFrame()
+          .isolatedRealm()
+          .evaluate(() => {
+            const {scrollHeight, scrollWidth} = document.documentElement;
+            const {height: viewportHeight, width: viewportWidth} =
+              window.visualViewport!;
+            return {
+              height: Math.max(scrollHeight, viewportHeight),
+              width: Math.max(scrollWidth, viewportWidth),
+            };
+          });
+        options.clip = {...dimensions, x: 0, y: 0};
+        stack.use(
+          await this._createTemporaryViewportContainingBox(options.clip)
+        );
+      } else if (options.clip && !options.captureBeyondViewport) {
+        stack.use(
+          options.clip &&
+            (await this._createTemporaryViewportContainingBox(options.clip))
+        );
+      } else if (!options.clip) {
+        options.captureBeyondViewport = false;
+      }
+    }
+
+    const data = await this._screenshot(options);
+    if (options.encoding === 'base64') {
+      return data;
+    }
+    const buffer = Buffer.from(data, 'base64');
+    await this._maybeWriteBufferToFile(options.path, buffer);
+    return buffer;
+  }
+
+  /**
+   * @internal
+   */
+  abstract _screenshot(options: Readonly<ScreenshotOptions>): Promise<string>;
+
+  /**
+   * @internal
+   */
+  async _createTemporaryViewportContainingBox(
+    clip: ScreenshotClip
+  ): Promise<AsyncDisposable> {
+    const viewport = await this.mainFrame()
+      .isolatedRealm()
+      .evaluate(() => {
+        return {
+          pageLeft: window.visualViewport!.pageLeft,
+          pageTop: window.visualViewport!.pageTop,
+          width: window.visualViewport!.width,
+          height: window.visualViewport!.height,
+        };
+      });
+    await using stack = new AsyncDisposableStack();
+    if (clip.x < viewport.pageLeft || clip.y < viewport.pageTop) {
+      await this.evaluate(
+        (left, top) => {
+          window.scroll({left, top, behavior: 'instant'});
+        },
+        Math.floor(clip.x),
+        Math.floor(clip.y)
+      );
+      stack.defer(async () => {
+        await this.evaluate(
+          (left, top) => {
+            window.scroll({left, top, behavior: 'instant'});
+          },
+          viewport.pageLeft,
+          viewport.pageTop
+        ).catch(debugError);
+      });
+    }
+    if (
+      clip.width + clip.x > viewport.width ||
+      clip.height + clip.y > viewport.height
+    ) {
+      const originalViewport = this.viewport() ?? {
+        width: 0,
+        height: 0,
+      };
+      // We add 1 for fractional x and y.
+      await this.setViewport({
+        width: Math.max(viewport.width, Math.ceil(clip.width + clip.x)),
+        height: Math.max(viewport.height, Math.ceil(clip.height + clip.y)),
+      });
+      stack.defer(async () => {
+        await this.setViewport(originalViewport).catch(debugError);
+      });
+    }
+    return stack.move();
   }
 
   /**
@@ -2460,10 +2551,7 @@ export class Page extends EventEmitter {
   /**
    * {@inheritDoc Page.createPDFStream}
    */
-  async pdf(options?: PDFOptions): Promise<Buffer>;
-  async pdf(): Promise<Buffer> {
-    throw new Error('Not implemented');
-  }
+  abstract pdf(options?: PDFOptions): Promise<Buffer>;
 
   /**
    * The page's title
@@ -2472,28 +2560,21 @@ export class Page extends EventEmitter {
    * Shortcut for {@link Frame.title | page.mainFrame().title()}.
    */
   async title(): Promise<string> {
-    throw new Error('Not implemented');
+    return await this.mainFrame().title();
   }
 
-  async close(options?: {runBeforeUnload?: boolean}): Promise<void>;
-  async close(): Promise<void> {
-    throw new Error('Not implemented');
-  }
+  abstract close(options?: {runBeforeUnload?: boolean}): Promise<void>;
 
   /**
    * Indicates that the page has been closed.
    * @returns
    */
-  isClosed(): boolean {
-    throw new Error('Not implemented');
-  }
+  abstract isClosed(): boolean;
 
   /**
    * {@inheritDoc Mouse}
    */
-  get mouse(): Mouse {
-    throw new Error('Not implemented');
-  }
+  abstract get mouse(): Mouse;
 
   /**
    * This method fetches an element with `selector`, scrolls it into view if
@@ -2873,6 +2954,16 @@ export class Page extends EventEmitter {
   waitForDevicePrompt(): Promise<DeviceRequestPrompt> {
     throw new Error('Not implemented');
   }
+
+  /** @internal */
+  [disposeSymbol](): void {
+    return void this.close().catch(debugError);
+  }
+
+  /** @internal */
+  [asyncDisposeSymbol](): Promise<void> {
+    return this.close();
+  }
 }
 
 /**
@@ -2936,4 +3027,37 @@ function convertPrintParameterToInches(
     );
   }
   return pixels / unitToPixels[lengthUnit];
+}
+
+/** @see https://w3c.github.io/webdriver-bidi/#normalize-rect */
+function normalizeClip(clip: Readonly<ScreenshotClip>): ScreenshotClip {
+  return {
+    ...(clip.width < 0
+      ? {
+          x: clip.x + clip.width,
+          width: -clip.width,
+        }
+      : {
+          x: clip.x,
+          width: clip.width,
+        }),
+    ...(clip.height < 0
+      ? {
+          y: clip.y + clip.height,
+          height: -clip.height,
+        }
+      : {
+          y: clip.y,
+          height: clip.height,
+        }),
+    scale: clip.scale,
+  };
+}
+
+function roundClip(clip: Readonly<ScreenshotClip>): ScreenshotClip {
+  const x = Math.round(clip.x);
+  const y = Math.round(clip.y);
+  const width = Math.round(clip.width + clip.x - x);
+  const height = Math.round(clip.height + clip.y - y);
+  return {x, y, width, height, scale: clip.scale};
 }

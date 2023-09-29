@@ -17,11 +17,11 @@ import { existsSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { Browser as InstalledBrowser, CDP_WEBSOCKET_ENDPOINT_REGEX, launch, TimeoutError as BrowsersTimeoutError, WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX, computeExecutablePath, } from '@puppeteer/browsers';
-import { CDPBrowser } from '../common/Browser.js';
-import { Connection } from '../common/Connection.js';
+import { CdpBrowser } from '../cdp/Browser.js';
+import { Connection } from '../cdp/Connection.js';
 import { TimeoutError } from '../common/Errors.js';
-import { NodeWebSocketTransport as WebSocketTransport } from '../common/NodeWebSocketTransport.js';
 import { debugError } from '../common/util.js';
+import { NodeWebSocketTransport as WebSocketTransport } from './NodeWebSocketTransport.js';
 import { PipeTransport } from './PipeTransport.js';
 /**
  * Describes a launcher - a class that is able to create and launch a browser instance.
@@ -90,21 +90,21 @@ export class ProductLauncher {
             }
             else {
                 if (usePipe) {
-                    connection = await this.createCDPPipeConnection(browserProcess, {
+                    connection = await this.createCdpPipeConnection(browserProcess, {
                         timeout,
                         protocolTimeout,
                         slowMo,
                     });
                 }
                 else {
-                    connection = await this.createCDPSocketConnection(browserProcess, {
+                    connection = await this.createCdpSocketConnection(browserProcess, {
                         timeout,
                         protocolTimeout,
                         slowMo,
                     });
                 }
                 if (protocol === 'webDriverBiDi') {
-                    browser = await this.createBiDiOverCDPBrowser(browserProcess, connection, browserCloseCallback, {
+                    browser = await this.createBiDiOverCdpBrowser(browserProcess, connection, browserCloseCallback, {
                         timeout,
                         protocolTimeout,
                         slowMo,
@@ -113,7 +113,7 @@ export class ProductLauncher {
                     });
                 }
                 else {
-                    browser = await CDPBrowser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter);
+                    browser = await CdpBrowser._create(this.product, connection, [], ignoreHTTPSErrors, defaultViewport, browserProcess.nodeProcess, browserCloseCallback, options.targetFilter);
                 }
             }
         }
@@ -185,7 +185,7 @@ export class ProductLauncher {
     /**
      * @internal
      */
-    async createCDPSocketConnection(browserProcess, opts) {
+    async createCdpSocketConnection(browserProcess, opts) {
         const browserWSEndpoint = await browserProcess.waitForLineOutput(CDP_WEBSOCKET_ENDPOINT_REGEX, opts.timeout);
         const transport = await WebSocketTransport.create(browserWSEndpoint);
         return new Connection(browserWSEndpoint, transport, opts.slowMo, opts.protocolTimeout);
@@ -193,7 +193,7 @@ export class ProductLauncher {
     /**
      * @internal
      */
-    async createCDPPipeConnection(browserProcess, opts) {
+    async createCdpPipeConnection(browserProcess, opts) {
         // stdio was assigned during start(), and the 'pipe' option there adds the
         // 4th and 5th items to stdio array
         const { 3: pipeWrite, 4: pipeRead } = browserProcess.nodeProcess.stdio;
@@ -203,12 +203,11 @@ export class ProductLauncher {
     /**
      * @internal
      */
-    async createBiDiOverCDPBrowser(browserProcess, connection, closeCallback, opts) {
+    async createBiDiOverCdpBrowser(browserProcess, connection, closeCallback, opts) {
         // TODO: use other options too.
-        const BiDi = await import(
-        /* webpackIgnore: true */ '../common/bidi/bidi.js');
-        const bidiConnection = await BiDi.connectBidiOverCDP(connection);
-        return await BiDi.Browser.create({
+        const BiDi = await import(/* webpackIgnore: true */ '../bidi/bidi.js');
+        const bidiConnection = await BiDi.connectBidiOverCdp(connection);
+        return await BiDi.BidiBrowser.create({
             connection: bidiConnection,
             closeCallback,
             process: browserProcess.nodeProcess,
@@ -222,11 +221,10 @@ export class ProductLauncher {
     async createBiDiBrowser(browserProcess, closeCallback, opts) {
         const browserWSEndpoint = (await browserProcess.waitForLineOutput(WEBDRIVER_BIDI_WEBSOCKET_ENDPOINT_REGEX, opts.timeout)) + '/session';
         const transport = await WebSocketTransport.create(browserWSEndpoint);
-        const BiDi = await import(
-        /* webpackIgnore: true */ '../common/bidi/bidi.js');
-        const bidiConnection = new BiDi.Connection(browserWSEndpoint, transport, opts.slowMo, opts.protocolTimeout);
+        const BiDi = await import(/* webpackIgnore: true */ '../bidi/bidi.js');
+        const bidiConnection = new BiDi.BidiConnection(browserWSEndpoint, transport, opts.slowMo, opts.protocolTimeout);
         // TODO: use other options too.
-        return await BiDi.Browser.create({
+        return await BiDi.BidiBrowser.create({
             connection: bidiConnection,
             closeCallback,
             process: browserProcess.nodeProcess,

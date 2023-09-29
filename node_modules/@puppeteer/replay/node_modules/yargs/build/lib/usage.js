@@ -346,7 +346,9 @@ export function usage(yargs, shim) {
                     padding: [0, 2, 0, 2 + getIndentation(kswitch)],
                     width: maxWidth(switches, theWrap) + 4,
                 }, desc);
-                if (extra)
+                const shouldHideOptionExtras = yargs.getInternalMethods().getUsageConfiguration()['hide-types'] ===
+                    true;
+                if (extra && !shouldHideOptionExtras)
                     ui.div({ text: extra, padding: [0, 0, 0, 2], align: 'right' });
                 else
                     ui.div();

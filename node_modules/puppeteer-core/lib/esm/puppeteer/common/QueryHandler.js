@@ -13,7 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ElementHandle } from '../api/ElementHandle.js';
+var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+        var dispose;
+        if (async) {
+            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+            dispose = value[Symbol.asyncDispose];
+        }
+        if (dispose === void 0) {
+            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+            dispose = value[Symbol.dispose];
+        }
+        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        env.stack.push({ value: value, dispose: dispose, async: async });
+    }
+    else if (async) {
+        env.stack.push({ async: true });
+    }
+    return value;
+};
+var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
+    return function (env) {
+        function fail(e) {
+            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+            env.hasError = true;
+        }
+        function next() {
+            while (env.stack.length) {
+                var rec = env.stack.pop();
+                try {
+                    var result = rec.dispose && rec.dispose.call(rec.value);
+                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                }
+                catch (e) {
+                    fail(e);
+                }
+            }
+            if (env.hasError) throw env.error;
+        }
+        return next();
+    };
+})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+});
 import { isErrorLike } from '../util/ErrorLike.js';
 import { interpolateFunction, stringifyFunction } from '../util/Function.js';
 import { transposeIterableHandle } from './HandleIterator.js';
@@ -66,11 +110,20 @@ export class QueryHandler {
      * Akin to {@link https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll | Document.querySelectorAll()}.
      */
     static async *queryAll(element, selector) {
-        element.assertElementHasWorld();
-        const handle = await element.evaluateHandle(this._querySelectorAll, selector, LazyArg.create(context => {
-            return context.puppeteerUtil;
-        }));
-        yield* transposeIterableHandle(handle);
+        const env_1 = { stack: [], error: void 0, hasError: false };
+        try {
+            const handle = __addDisposableResource(env_1, await element.evaluateHandle(this._querySelectorAll, selector, LazyArg.create(context => {
+                return context.puppeteerUtil;
+            })), false);
+            yield* transposeIterableHandle(handle);
+        }
+        catch (e_1) {
+            env_1.error = e_1;
+            env_1.hasError = true;
+        }
+        finally {
+            __disposeResources(env_1);
+        }
     }
     /**
      * Queries for a single node given a selector and {@link ElementHandle}.
@@ -78,15 +131,24 @@ export class QueryHandler {
      * Akin to {@link https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector}.
      */
     static async queryOne(element, selector) {
-        element.assertElementHasWorld();
-        const result = await element.evaluateHandle(this._querySelector, selector, LazyArg.create(context => {
-            return context.puppeteerUtil;
-        }));
-        if (!(result instanceof ElementHandle)) {
-            await result.dispose();
-            return null;
+        const env_2 = { stack: [], error: void 0, hasError: false };
+        try {
+            const result = __addDisposableResource(env_2, await element.evaluateHandle(this._querySelector, selector, LazyArg.create(context => {
+                return context.puppeteerUtil;
+            })), false);
+            const { ElementHandle } = await import('../api/ElementHandle.js');
+            if (!(result instanceof ElementHandle)) {
+                return null;
+            }
+            return result.move();
         }
-        return result;
+        catch (e_2) {
+            env_2.error = e_2;
+            env_2.hasError = true;
+        }
+        finally {
+            __disposeResources(env_2);
+        }
     }
     /**
      * Waits until a single node appears for a given selector and
@@ -96,54 +158,68 @@ export class QueryHandler {
      * result to the main world.
      */
     static async waitFor(elementOrFrame, selector, options) {
-        let frame;
-        let element;
-        if (!(elementOrFrame instanceof ElementHandle)) {
-            frame = elementOrFrame;
-        }
-        else {
-            frame = elementOrFrame.frame;
-            element = await frame.isolatedRealm().adoptHandle(elementOrFrame);
-        }
-        const { visible = false, hidden = false, timeout, signal } = options;
+        const env_3 = { stack: [], error: void 0, hasError: false };
         try {
-            signal?.throwIfAborted();
-            const handle = await frame.isolatedRealm().waitForFunction(async (PuppeteerUtil, query, selector, root, visible) => {
-                const querySelector = PuppeteerUtil.createFunction(query);
-                const node = await querySelector(root ?? document, selector, PuppeteerUtil);
-                return PuppeteerUtil.checkVisibility(node, visible);
-            }, {
-                polling: visible || hidden ? 'raf' : 'mutation',
-                root: element,
-                timeout,
-                signal,
-            }, LazyArg.create(context => {
-                return context.puppeteerUtil;
-            }), stringifyFunction(this._querySelector), selector, element, visible ? true : hidden ? false : undefined);
-            if (signal?.aborted) {
-                await handle.dispose();
-                throw signal.reason;
+            const { ElementHandle } = await import('../api/ElementHandle.js');
+            let frame;
+            const element = __addDisposableResource(env_3, await (async () => {
+                if (!(elementOrFrame instanceof ElementHandle)) {
+                    frame = elementOrFrame;
+                    return;
+                }
+                frame = elementOrFrame.frame;
+                return await frame.isolatedRealm().adoptHandle(elementOrFrame);
+            })(), false);
+            const { visible = false, hidden = false, timeout, signal } = options;
+            try {
+                const env_4 = { stack: [], error: void 0, hasError: false };
+                try {
+                    signal?.throwIfAborted();
+                    const handle = __addDisposableResource(env_4, await frame.isolatedRealm().waitForFunction(async (PuppeteerUtil, query, selector, root, visible) => {
+                        const querySelector = PuppeteerUtil.createFunction(query);
+                        const node = await querySelector(root ?? document, selector, PuppeteerUtil);
+                        return PuppeteerUtil.checkVisibility(node, visible);
+                    }, {
+                        polling: visible || hidden ? 'raf' : 'mutation',
+                        root: element,
+                        timeout,
+                        signal,
+                    }, LazyArg.create(context => {
+                        return context.puppeteerUtil;
+                    }), stringifyFunction(this._querySelector), selector, element, visible ? true : hidden ? false : undefined), false);
+                    if (signal?.aborted) {
+                        throw signal.reason;
+                    }
+                    if (!(handle instanceof ElementHandle)) {
+                        return null;
+                    }
+                    return await frame.mainRealm().transferHandle(handle);
+                }
+                catch (e_3) {
+                    env_4.error = e_3;
+                    env_4.hasError = true;
+                }
+                finally {
+                    __disposeResources(env_4);
+                }
             }
-            if (!(handle instanceof ElementHandle)) {
-                await handle.dispose();
-                return null;
+            catch (error) {
+                if (!isErrorLike(error)) {
+                    throw error;
+                }
+                if (error.name === 'AbortError') {
+                    throw error;
+                }
+                error.message = `Waiting for selector \`${selector}\` failed: ${error.message}`;
+                throw error;
             }
-            return frame.mainRealm().transferHandle(handle);
         }
-        catch (error) {
-            if (!isErrorLike(error)) {
-                throw error;
-            }
-            if (error.name === 'AbortError') {
-                throw error;
-            }
-            error.message = `Waiting for selector \`${selector}\` failed: ${error.message}`;
-            throw error;
+        catch (e_4) {
+            env_3.error = e_4;
+            env_3.hasError = true;
         }
         finally {
-            if (element) {
-                await element.dispose();
-            }
+            __disposeResources(env_3);
         }
     }
 }

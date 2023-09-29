@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { QueryHandler, QuerySelector, QuerySelectorAll } from './QueryHandler.js';
+import { QueryHandler, type QuerySelector, type QuerySelectorAll } from './QueryHandler.js';
 /**
  * @internal
  */

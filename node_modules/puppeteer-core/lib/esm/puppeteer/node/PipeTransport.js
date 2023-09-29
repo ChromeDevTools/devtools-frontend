@@ -1,29 +1,29 @@
-import { addEventListener, debugError, removeEventListeners, } from '../common/util.js';
+import { EventSubscription } from '../common/EventEmitter.js';
+import { debugError } from '../common/util.js';
 import { assert } from '../util/assert.js';
+import { DisposableStack } from '../util/disposable.js';
 /**
  * @internal
  */
 export class PipeTransport {
     #pipeWrite;
-    #eventListeners;
+    #subscriptions = new DisposableStack();
     #isClosed = false;
     #pendingMessage = '';
     onclose;
     onmessage;
     constructor(pipeWrite, pipeRead) {
         this.#pipeWrite = pipeWrite;
-        this.#eventListeners = [
-            addEventListener(pipeRead, 'data', buffer => {
-                return this.#dispatch(buffer);
-            }),
-            addEventListener(pipeRead, 'close', () => {
-                if (this.onclose) {
-                    this.onclose.call(null);
-                }
-            }),
-            addEventListener(pipeRead, 'error', debugError),
-            addEventListener(pipeWrite, 'error', debugError),
-        ];
+        this.#subscriptions.use(new EventSubscription(pipeRead, 'data', (buffer) => {
+            return this.#dispatch(buffer);
+        }));
+        this.#subscriptions.use(new EventSubscription(pipeRead, 'close', () => {
+            if (this.onclose) {
+                this.onclose.call(null);
+            }
+        }));
+        this.#subscriptions.use(new EventSubscription(pipeRead, 'error', debugError));
+        this.#subscriptions.use(new EventSubscription(pipeWrite, 'error', debugError));
     }
     send(message) {
         assert(!this.#isClosed, '`PipeTransport` is closed.');
@@ -54,7 +54,7 @@ export class PipeTransport {
     }
     close() {
         this.#isClosed = true;
-        removeEventListeners(this.#eventListeners);
+        this.#subscriptions.dispose();
     }
 }
 //# sourceMappingURL=PipeTransport.js.map

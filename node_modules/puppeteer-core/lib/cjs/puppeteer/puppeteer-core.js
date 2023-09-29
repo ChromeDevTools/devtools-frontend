@@ -31,6 +31,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.launch = exports.executablePath = exports.defaultArgs = exports.connect = void 0;
 __exportStar(require("./api/api.js"), exports);
+__exportStar(require("./cdp/cdp.js"), exports);
 __exportStar(require("./common/common.js"), exports);
 __exportStar(require("./node/node.js"), exports);
 __exportStar(require("./revisions.js"), exports);

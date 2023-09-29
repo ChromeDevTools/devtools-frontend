@@ -37,7 +37,7 @@ describe('Dual screen mode', async () => {
     // toggle button should not be found
     const toggleButton = await selectToggleButton();
     const element = toggleButton.asElement();
-    const hidden = element ? element.evaluate(x => x.classList.contains('hidden')) : false;
+    const hidden = element ? element.evaluate(x => (x as Element).classList.contains('hidden')) : false;
     assert(hidden);
   });
 });

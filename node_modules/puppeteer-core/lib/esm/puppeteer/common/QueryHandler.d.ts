@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ElementHandle } from '../api/ElementHandle.js';
+import type { ElementHandle } from '../api/ElementHandle.js';
 import type { Frame } from '../api/Frame.js';
+import type { WaitForSelectorOptions } from '../api/Page.js';
 import type PuppeteerUtil from '../injected/injected.js';
-import type { WaitForSelectorOptions } from './IsolatedWorld.js';
 import type { Awaitable, AwaitableIterable } from './types.js';
 /**
  * @internal

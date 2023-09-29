@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import {JSHandle} from '../api/JSHandle.js';
+import type {JSHandle} from '../api/JSHandle.js';
+import {DisposableStack, disposeSymbol} from '../util/disposable.js';
 
-import {AwaitableIterable, HandleFor} from './types.js';
+import type {AwaitableIterable, HandleFor} from './types.js';
 
 const DEFAULT_BATCH_SIZE = 20;
 
@@ -31,7 +32,7 @@ async function* fastTransposeIteratorHandle<T>(
   iterator: JSHandle<AwaitableIterator<T>>,
   size: number
 ) {
-  const array = await iterator.evaluateHandle(async (iterator, size) => {
+  using array = await iterator.evaluateHandle(async (iterator, size) => {
     const results = [];
     while (results.length < size) {
       const result = await iterator.next();
@@ -43,8 +44,14 @@ async function* fastTransposeIteratorHandle<T>(
     return results;
   }, size);
   const properties = (await array.getProperties()) as Map<string, HandleFor<T>>;
-  await array.dispose();
-  yield* properties.values();
+  const handles = properties.values();
+  using stack = new DisposableStack();
+  stack.defer(() => {
+    for (using handle of handles) {
+      handle[disposeSymbol]();
+    }
+  });
+  yield* handles;
   return properties.size === 0;
 }
 
@@ -57,12 +64,8 @@ async function* transposeIteratorHandle<T>(
   iterator: JSHandle<AwaitableIterator<T>>
 ) {
   let size = DEFAULT_BATCH_SIZE;
-  try {
-    while (!(yield* fastTransposeIteratorHandle(iterator, size))) {
-      size <<= 1;
-    }
-  } finally {
-    await iterator.dispose();
+  while (!(yield* fastTransposeIteratorHandle(iterator, size))) {
+    size <<= 1;
   }
 }
 
@@ -74,11 +77,10 @@ type AwaitableIterator<T> = Iterator<T> | AsyncIterator<T>;
 export async function* transposeIterableHandle<T>(
   handle: JSHandle<AwaitableIterable<T>>
 ): AsyncIterableIterator<HandleFor<T>> {
-  yield* transposeIteratorHandle(
-    await handle.evaluateHandle(iterable => {
-      return (async function* () {
-        yield* iterable;
-      })();
-    })
-  );
+  using generatorHandle = await handle.evaluateHandle(iterable => {
+    return (async function* () {
+      yield* iterable;
+    })();
+  });
+  yield* transposeIteratorHandle(generatorHandle);
 }

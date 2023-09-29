@@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _YargsInstance_command, _YargsInstance_cwd, _YargsInstance_context, _YargsInstance_completion, _YargsInstance_completionCommand, _YargsInstance_defaultShowHiddenOpt, _YargsInstance_exitError, _YargsInstance_detectLocale, _YargsInstance_emittedWarnings, _YargsInstance_exitProcess, _YargsInstance_frozens, _YargsInstance_globalMiddleware, _YargsInstance_groups, _YargsInstance_hasOutput, _YargsInstance_helpOpt, _YargsInstance_isGlobalContext, _YargsInstance_logger, _YargsInstance_output, _YargsInstance_options, _YargsInstance_parentRequire, _YargsInstance_parserConfig, _YargsInstance_parseFn, _YargsInstance_parseContext, _YargsInstance_pkgs, _YargsInstance_preservedGroups, _YargsInstance_processArgs, _YargsInstance_recommendCommands, _YargsInstance_shim, _YargsInstance_strict, _YargsInstance_strictCommands, _YargsInstance_strictOptions, _YargsInstance_usage, _YargsInstance_versionOpt, _YargsInstance_validation;
+var _YargsInstance_command, _YargsInstance_cwd, _YargsInstance_context, _YargsInstance_completion, _YargsInstance_completionCommand, _YargsInstance_defaultShowHiddenOpt, _YargsInstance_exitError, _YargsInstance_detectLocale, _YargsInstance_emittedWarnings, _YargsInstance_exitProcess, _YargsInstance_frozens, _YargsInstance_globalMiddleware, _YargsInstance_groups, _YargsInstance_hasOutput, _YargsInstance_helpOpt, _YargsInstance_isGlobalContext, _YargsInstance_logger, _YargsInstance_output, _YargsInstance_options, _YargsInstance_parentRequire, _YargsInstance_parserConfig, _YargsInstance_parseFn, _YargsInstance_parseContext, _YargsInstance_pkgs, _YargsInstance_preservedGroups, _YargsInstance_processArgs, _YargsInstance_recommendCommands, _YargsInstance_shim, _YargsInstance_strict, _YargsInstance_strictCommands, _YargsInstance_strictOptions, _YargsInstance_usage, _YargsInstance_usageConfig, _YargsInstance_versionOpt, _YargsInstance_validation;
 import { command as Command, } from './command.js';
 import { assertNotStrictEqual, assertSingleKey, objectKeys, } from './typings/common-types.js';
 import { YError } from './yerror.js';
@@ -44,6 +44,7 @@ const kEmitWarning = Symbol('emitWarning');
 const kFreeze = Symbol('freeze');
 const kGetDollarZero = Symbol('getDollarZero');
 const kGetParserConfiguration = Symbol('getParserConfiguration');
+const kGetUsageConfiguration = Symbol('getUsageConfiguration');
 const kGuessLocale = Symbol('guessLocale');
 const kGuessVersion = Symbol('guessVersion');
 const kParsePositionalNumbers = Symbol('parsePositionalNumbers');
@@ -108,6 +109,7 @@ export class YargsInstance {
         _YargsInstance_strictCommands.set(this, false);
         _YargsInstance_strictOptions.set(this, false);
         _YargsInstance_usage.set(this, void 0);
+        _YargsInstance_usageConfig.set(this, {});
         _YargsInstance_versionOpt.set(this, null);
         _YargsInstance_validation.set(this, void 0);
         __classPrivateFieldSet(this, _YargsInstance_shim, shim, "f");
@@ -924,6 +926,11 @@ export class YargsInstance {
             return this;
         }
     }
+    usageConfiguration(config) {
+        argsert('<object>', [config], arguments.length);
+        __classPrivateFieldSet(this, _YargsInstance_usageConfig, config, "f");
+        return this;
+    }
     version(opt, msg, ver) {
         const defaultVersionOpt = 'version';
         argsert('[boolean|string] [string] [string]', [opt, msg, ver], arguments.length);
@@ -959,7 +966,7 @@ export class YargsInstance {
         __classPrivateFieldGet(this, _YargsInstance_usage, "f").wrap(cols);
         return this;
     }
-    [(_YargsInstance_command = new WeakMap(), _YargsInstance_cwd = new WeakMap(), _YargsInstance_context = new WeakMap(), _YargsInstance_completion = new WeakMap(), _YargsInstance_completionCommand = new WeakMap(), _YargsInstance_defaultShowHiddenOpt = new WeakMap(), _YargsInstance_exitError = new WeakMap(), _YargsInstance_detectLocale = new WeakMap(), _YargsInstance_emittedWarnings = new WeakMap(), _YargsInstance_exitProcess = new WeakMap(), _YargsInstance_frozens = new WeakMap(), _YargsInstance_globalMiddleware = new WeakMap(), _YargsInstance_groups = new WeakMap(), _YargsInstance_hasOutput = new WeakMap(), _YargsInstance_helpOpt = new WeakMap(), _YargsInstance_isGlobalContext = new WeakMap(), _YargsInstance_logger = new WeakMap(), _YargsInstance_output = new WeakMap(), _YargsInstance_options = new WeakMap(), _YargsInstance_parentRequire = new WeakMap(), _YargsInstance_parserConfig = new WeakMap(), _YargsInstance_parseFn = new WeakMap(), _YargsInstance_parseContext = new WeakMap(), _YargsInstance_pkgs = new WeakMap(), _YargsInstance_preservedGroups = new WeakMap(), _YargsInstance_processArgs = new WeakMap(), _YargsInstance_recommendCommands = new WeakMap(), _YargsInstance_shim = new WeakMap(), _YargsInstance_strict = new WeakMap(), _YargsInstance_strictCommands = new WeakMap(), _YargsInstance_strictOptions = new WeakMap(), _YargsInstance_usage = new WeakMap(), _YargsInstance_versionOpt = new WeakMap(), _YargsInstance_validation = new WeakMap(), kCopyDoubleDash)](argv) {
+    [(_YargsInstance_command = new WeakMap(), _YargsInstance_cwd = new WeakMap(), _YargsInstance_context = new WeakMap(), _YargsInstance_completion = new WeakMap(), _YargsInstance_completionCommand = new WeakMap(), _YargsInstance_defaultShowHiddenOpt = new WeakMap(), _YargsInstance_exitError = new WeakMap(), _YargsInstance_detectLocale = new WeakMap(), _YargsInstance_emittedWarnings = new WeakMap(), _YargsInstance_exitProcess = new WeakMap(), _YargsInstance_frozens = new WeakMap(), _YargsInstance_globalMiddleware = new WeakMap(), _YargsInstance_groups = new WeakMap(), _YargsInstance_hasOutput = new WeakMap(), _YargsInstance_helpOpt = new WeakMap(), _YargsInstance_isGlobalContext = new WeakMap(), _YargsInstance_logger = new WeakMap(), _YargsInstance_output = new WeakMap(), _YargsInstance_options = new WeakMap(), _YargsInstance_parentRequire = new WeakMap(), _YargsInstance_parserConfig = new WeakMap(), _YargsInstance_parseFn = new WeakMap(), _YargsInstance_parseContext = new WeakMap(), _YargsInstance_pkgs = new WeakMap(), _YargsInstance_preservedGroups = new WeakMap(), _YargsInstance_processArgs = new WeakMap(), _YargsInstance_recommendCommands = new WeakMap(), _YargsInstance_shim = new WeakMap(), _YargsInstance_strict = new WeakMap(), _YargsInstance_strictCommands = new WeakMap(), _YargsInstance_strictOptions = new WeakMap(), _YargsInstance_usage = new WeakMap(), _YargsInstance_usageConfig = new WeakMap(), _YargsInstance_versionOpt = new WeakMap(), _YargsInstance_validation = new WeakMap(), kCopyDoubleDash)](argv) {
         if (!argv._ || !argv['--'])
             return argv;
         argv._.push.apply(argv._, argv['--']);
@@ -1058,6 +1065,9 @@ export class YargsInstance {
     }
     [kGetParserConfiguration]() {
         return __classPrivateFieldGet(this, _YargsInstance_parserConfig, "f");
+    }
+    [kGetUsageConfiguration]() {
+        return __classPrivateFieldGet(this, _YargsInstance_usageConfig, "f");
     }
     [kGuessLocale]() {
         if (!__classPrivateFieldGet(this, _YargsInstance_detectLocale, "f"))
@@ -1190,6 +1200,7 @@ export class YargsInstance {
             getLoggerInstance: this[kGetLoggerInstance].bind(this),
             getParseContext: this[kGetParseContext].bind(this),
             getParserConfiguration: this[kGetParserConfiguration].bind(this),
+            getUsageConfiguration: this[kGetUsageConfiguration].bind(this),
             getUsageInstance: this[kGetUsageInstance].bind(this),
             getValidationInstance: this[kGetValidationInstance].bind(this),
             hasParseCallback: this[kHasParseCallback].bind(this),

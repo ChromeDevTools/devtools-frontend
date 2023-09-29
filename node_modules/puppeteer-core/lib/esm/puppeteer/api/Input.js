@@ -59,21 +59,6 @@ export class Keyboard {
      * @internal
      */
     constructor() { }
-    async down() {
-        throw new Error('Not implemented');
-    }
-    async up() {
-        throw new Error('Not implemented');
-    }
-    async sendCharacter() {
-        throw new Error('Not implemented');
-    }
-    async type() {
-        throw new Error('Not implemented');
-    }
-    async press() {
-        throw new Error('Not implemented');
-    }
 }
 /**
  * Enum of valid mouse buttons.

@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * Order of exports matters
+ * Don't sort
+ */
 export * from './Locator.js';
-export * from './NodeLocator.js';
-export * from './FilteredLocator.js';
-export * from './RaceLocator.js';
 export * from './DelegatedLocator.js';
-export * from './MappedLocator.js';
+export * from './FilteredLocator.js';
 export * from './FunctionLocator.js';
+export * from './MappedLocator.js';
+export * from './NodeLocator.js';
+export * from './RaceLocator.js';
 //# sourceMappingURL=locators.d.ts.map

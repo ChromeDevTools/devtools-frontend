@@ -27,7 +27,7 @@ export class LazyArg {
         this.#get = get;
     }
     async get(context) {
-        return this.#get(context);
+        return await this.#get(context);
     }
 }
 //# sourceMappingURL=LazyArg.js.map

@@ -131,6 +131,7 @@ export class CommandInstance {
         const builder = commandHandler.builder;
         let innerYargs = yargs;
         if (isCommandBuilderCallback(builder)) {
+            yargs.getInternalMethods().getUsageInstance().freeze();
             const builderOutput = builder(yargs.getInternalMethods().reset(aliases), helpOrVersionSet);
             if (isPromise(builderOutput)) {
                 return builderOutput.then(output => {
@@ -140,6 +141,7 @@ export class CommandInstance {
             }
         }
         else if (isCommandBuilderOptionDefinitions(builder)) {
+            yargs.getInternalMethods().getUsageInstance().freeze();
             innerYargs = yargs.getInternalMethods().reset(aliases);
             Object.keys(commandHandler.builder).forEach(key => {
                 innerYargs.option(key, builder[key]);

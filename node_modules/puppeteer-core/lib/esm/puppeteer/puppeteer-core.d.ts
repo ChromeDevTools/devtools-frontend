@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { Protocol } from 'devtools-protocol';
+export type { Protocol } from 'devtools-protocol';
 export * from './api/api.js';
+export * from './cdp/cdp.js';
 export * from './common/common.js';
 export * from './node/node.js';
 export * from './revisions.js';
@@ -32,7 +33,7 @@ export declare const
 /**
  * @public
  */
-connect: (options: import("./common/Puppeteer.js").ConnectOptions) => Promise<import("./api/Browser.js").Browser>, 
+connect: (options: import("./cdp/Puppeteer.js").ConnectOptions) => Promise<import("./api/Browser.js").Browser>, 
 /**
  * @public
  */

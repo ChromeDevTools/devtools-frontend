@@ -242,10 +242,9 @@ async function startServer() {
         contents: '',
     };
     const server = http.createServer(async (req, res) => {
-        var _a;
         if (req.method === 'GET') {
             for (const [file, content] of files.entries()) {
-                if ((_a = req.url) === null || _a === void 0 ? void 0 : _a.endsWith(file)) {
+                if (req.url?.endsWith(file)) {
                     res.writeHead(200, { 'Content-Type': 'text/html' });
                     res.end(content);
                     return;

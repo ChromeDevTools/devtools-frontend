@@ -2180,6 +2180,12 @@
                             "description": "Deep serialization depth. Default is full depth. Respected only in `deep` serialization mode.",
                             "optional": true,
                             "type": "integer"
+                        },
+                        {
+                            "name": "additionalParameters",
+                            "description": "Embedder-specific parameters. For example if connected to V8 in Chrome these control DOM\nserialization via `maxNodeDepth: integer` and `includeShadowTree: \"none\" | \"open\" | \"all\"`.\nValues can be only of type string or integer.",
+                            "optional": true,
+                            "type": "object"
                         }
                     ]
                 },

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import {JSHandle} from '../api/JSHandle.js';
-import PuppeteerUtil from '../injected/injected.js';
+import type {JSHandle} from '../api/JSHandle.js';
+import type PuppeteerUtil from '../injected/injected.js';
 
 /**
  * @internal
@@ -42,6 +42,6 @@ export class LazyArg<T, Context = PuppeteerUtilWrapper> {
   }
 
   async get(context: Context): Promise<T> {
-    return this.#get(context);
+    return await this.#get(context);
   }
 }

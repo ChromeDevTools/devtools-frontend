@@ -71,12 +71,6 @@ export class Dialog {
         return this.#defaultValue;
     }
     /**
-     * @internal
-     */
-    sendCommand(_options) {
-        throw new Error('Not implemented');
-    }
-    /**
      * A promise that resolves when the dialog has been accepted.
      *
      * @param promptText - optional text that will be entered in the dialog

@@ -1333,7 +1333,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
   private messagesPasted(event: Event): void {
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.SELF_XSS_WARNING) &&
-        !this.selfXssWarningDisabledSetting.get()) {
+        !Root.Runtime.Runtime.queryParam('isChromeForTesting') && !this.selfXssWarningDisabledSetting.get()) {
       event.preventDefault();
       this.prompt.showSelfXssWarning();
     }

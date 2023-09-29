@@ -141,4 +141,18 @@ describe('Performance panel', () => {
     // With some changes made to timeline-details-view it passes with a diff of 1.98 so reduce it to 1.
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-screenshot-frames.png', 1);
   });
+
+  itScreenshot('renders correctly with the OLD_ENGINE ThreadTracksSource', async () => {
+    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev&threadTracksSource=old');
+    await waitFor('.timeline-flamechart');
+    const panel = await waitFor('body');
+    await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-old-engine.png', 1);
+  });
+
+  itScreenshot('renders correctly with the NEW_ENGINE ThreadTracksSource', async () => {
+    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev&threadTracksSource=new');
+    await waitFor('.timeline-flamechart');
+    const panel = await waitFor('body');
+    await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-new-engine.png', 1);
+  });
 });

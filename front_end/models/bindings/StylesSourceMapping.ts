@@ -62,6 +62,10 @@ export class StylesSourceMapping implements SourceMapping {
     ];
   }
 
+  addSourceMap(sourceUrl: Platform.DevToolsPath.UrlString, sourceMapUrl: Platform.DevToolsPath.UrlString): void {
+    this.#styleFiles.get(sourceUrl)?.addSourceMap(sourceUrl, sourceMapUrl);
+  }
+
   rawLocationToUILocation(rawLocation: SDK.CSSModel.CSSLocation): Workspace.UISourceCode.UILocation|null {
     const header = rawLocation.header();
     if (!header || !this.acceptsHeader(header)) {
@@ -328,5 +332,13 @@ export class StyleFile implements TextUtils.ContentProvider.ContentProvider {
 
   getUiSourceCode(): Workspace.UISourceCode.UISourceCode {
     return this.uiSourceCode;
+  }
+
+  addSourceMap(sourceUrl: Platform.DevToolsPath.UrlString, sourceMapUrl: Platform.DevToolsPath.UrlString): void {
+    const sourceMapManager = this.#cssModel.sourceMapManager();
+    this.headers.forEach(header => {
+      sourceMapManager.detachSourceMap(header);
+      sourceMapManager.attachSourceMap(header, sourceUrl, sourceMapUrl);
+    });
   }
 }

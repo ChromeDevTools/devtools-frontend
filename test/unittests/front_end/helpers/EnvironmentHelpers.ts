@@ -296,11 +296,10 @@ export async function deinitializeGlobalVars() {
   delete globalObject.SDK;
   delete globalObject.ls;
 
-  Root.Runtime.experiments.clearForTest();
-
   for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
     target.dispose('deinitializeGlobalVars');
   }
+
   // Remove instances.
   await deinitializeGlobalLocaleVars();
   Logs.NetworkLog.NetworkLog.removeInstance();
@@ -326,6 +325,8 @@ export async function deinitializeGlobalVars() {
     UI.InspectorView.InspectorView.removeInstance();
     UI.ActionRegistry.ActionRegistry.reset();
   }
+
+  Root.Runtime.experiments.clearForTest();
 }
 
 export function describeWithEnvironment(title: string, fn: (this: Mocha.Suite) => void, opts: {reset: boolean} = {

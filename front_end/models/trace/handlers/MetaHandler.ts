@@ -8,9 +8,7 @@ import * as Types from '../types/types.js';
 import {HandlerState} from './types.js';
 
 // We track the renderer processes we see in each frame on the way through the trace.
-const rendererProcessesByFrameId = new Map<
-    string,
-    Map<Types.TraceEvents.ProcessID, {window: Types.Timing.TraceWindow, frame: Types.TraceEvents.TraceFrame}[]>>();
+const rendererProcessesByFrameId: FrameProcessData = new Map();
 
 // We will often want to key data by Frame IDs, and commonly we'll care most
 // about the main frame's ID, so we store and expose that.
@@ -346,6 +344,20 @@ type MetaHandlerData = {
               mainFrameNavigations: Types.TraceEvents.TraceEventNavigationStart[],
 };
 
+// Each frame has a single render process at a given time but it can have
+// multiple render processes  during a trace, for example if a navigation
+// occurred in the frame. This map tracks the process that was active for
+// each frame at each point in time. Also, because a process can be
+// assigned to multiple URLs, there is a window for each URL a process
+// was assigned.
+//
+// Note that different sites always end up in different render
+// processes, however two different URLs can point to the same site.
+// For example: https://google.com and https://maps.google.com point to
+// the same site.
+// Read more about this in
+// https://developer.chrome.com/articles/renderingng-architecture/#threads
+// and https://web.dev/same-site-same-origin/
 export type FrameProcessData =
     Map<string,
         Map<Types.TraceEvents.ProcessID, {frame: Types.TraceEvents.TraceFrame, window: Types.Timing.TraceWindow}[]>>;

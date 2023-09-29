@@ -121,17 +121,6 @@ function storePageLoadMetricAgainstNavigationId(
     return;
   }
 
-  // We compare the timestamp of the event to determine if it happened during the
-  // time window in which its process was considered active.
-  const minTime = processData[0].window.min;
-  const maxTime = processData.at(-1)?.window.max || 0;
-  const eventBelongsToProcess = event.ts >= minTime && event.ts <= maxTime;
-
-  if (!eventBelongsToProcess) {
-    // If the event occurred outside its process' active time window we ignore it.
-    return;
-  }
-
   if (Types.TraceEvents.isTraceEventFirstContentfulPaint(event)) {
     const fcpTime = Types.Timing.MicroSeconds(event.ts - navigation.ts);
     const score = Helpers.Timing.formatMicrosecondsTime(fcpTime, {

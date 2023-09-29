@@ -7,14 +7,16 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {
   $$,
+  $textContent,
   click,
+  clickElement,
   hasClass,
   matchStringTable,
   waitFor,
   waitForClass,
-  clickElement,
   waitForFunction,
 } from '../../shared/helper.js';
+
 import {openPanelViaMoreTools} from './settings-helpers.js';
 
 export const CATEGORY = '.issue-category:not(.hidden-issues)';
@@ -36,9 +38,8 @@ export const HIDE_THIS_ISSUE = 'Hide issues like this';
 export const UNHIDE_THIS_ISSUE = 'Unhide issues like this';
 export const UNHIDE_ALL_ISSUES = '.unhide-all-issues-button';
 
-export async function getHideIssuesMenu() {
-  const menu = await waitFor(HIDE_ISSUES_MENU);
-  return menu;
+export async function getHideIssuesMenu(root?: puppeteer.JSHandle) {
+  return await waitFor(HIDE_ISSUES_MENU, root);
 }
 
 export async function navigateToIssuesTab() {
@@ -125,9 +126,7 @@ export async function getAndExpandSpecificIssueByTitle(issueMessage: string):
 
 export async function getIssueHeaderByTitle(issueMessage: string):
     Promise<puppeteer.ElementHandle<HTMLElement>|undefined> {
-  const issueMessageElement = await waitFor(ISSUE_TITLE);
-  const selectedIssueMessage = await issueMessageElement.evaluate(node => node.textContent);
-  assert.strictEqual(selectedIssueMessage, issueMessage);
+  const issueMessageElement = await waitForFunction(async () => await $textContent(issueMessage) ?? undefined);
   const header =
       await issueMessageElement.evaluateHandle(el => el.parentElement) as puppeteer.ElementHandle<HTMLElement>;
   if (header) {

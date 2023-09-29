@@ -27,18 +27,6 @@ import {
 } from '../helpers/issues-helpers.js';
 
 describe('Hide issues menu', async () => {
-  it('should be appended to the issue header', async () => {
-    await goToResource('issues/cross-origin-portal-post.html');
-    await navigateToIssuesTab();
-    const issueTitle = 'Cross-origin portal post messages are blocked on your site';
-    const issueHeader = await getIssueHeaderByTitle(issueTitle);
-    assertNotNullOrUndefined(issueHeader);
-    const hideIssuesMenu = await getHideIssuesMenu();
-    const menuDisplay = await hideIssuesMenu.evaluate(
-        node => window.getComputedStyle(node as HTMLElement).getPropertyValue('visibility'));
-    assert.strictEqual(menuDisplay, 'hidden');
-  });
-
   it('should become visible on hovering over the issue header', async () => {
     const {frontend} = getBrowserAndPages();
     frontend.evaluate(() => {
@@ -55,11 +43,29 @@ describe('Hide issues menu', async () => {
       // @ts-ignore
       window.addIssueForTest(issue);
     });
+    frontend.evaluate(() => {
+      const issue = {
+        code: 'DeprecationIssue',
+        details: {
+          deprecationIssueDetails: {
+            sourceCodeLocation: {
+              url: 'empty.html',
+              lineNumber: 1,
+              columnNumber: 1,
+            },
+            type: 'PrivacySandboxExtensionsAPI',
+          },
+        },
+      };
+      // @ts-ignore
+      window.addIssueForTest(issue);
+    });
+
     await navigateToIssuesTab();
-    const issueTitle = 'An ad on your site has exceeded resource limits';
+    const issueTitle = 'Deprecated Feature Used';
     const issueHeader = await getIssueHeaderByTitle(issueTitle);
     assertNotNullOrUndefined(issueHeader);
-    const hideIssuesMenu = await getHideIssuesMenu();
+    const hideIssuesMenu = await getHideIssuesMenu(issueHeader);
     let menuDisplay = await hideIssuesMenu.evaluate(
         node => window.getComputedStyle(node as HTMLElement).getPropertyValue('visibility'));
     assert.strictEqual(menuDisplay, 'hidden');

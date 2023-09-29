@@ -115,7 +115,8 @@ p {
   visibility: hidden;
 }
 
-.header:hover devtools-hide-issues-menu {
+.header:hover devtools-hide-issues-menu,
+.issue.selected devtools-hide-issues-menu {
   visibility: visible;
 }
 

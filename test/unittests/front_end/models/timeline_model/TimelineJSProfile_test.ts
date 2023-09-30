@@ -16,6 +16,7 @@ describe('TimelineJSProfile', () => {
     showAllEvents: false,
     showRuntimeCallStats: false,
     showNativeFunctions: false,
+    isDataOriginCpuProfile: false,
   };
 
   before(() => {

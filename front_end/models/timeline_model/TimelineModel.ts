@@ -151,6 +151,7 @@ export class TimelineModelImpl {
   private tracingModelInternal: TraceEngine.Legacy.TracingModel|null;
   private mainFrameLayerTreeId?: any;
   #isFreshRecording = false;
+  #isCpuProfile = false;
 
   constructor() {
     this.minimumRecordTimeInternal = 0;
@@ -333,8 +334,11 @@ export class TimelineModelImpl {
     return this.#isFreshRecording;
   }
 
-  setEvents(tracingModel: TraceEngine.Legacy.TracingModel, isFreshRecording: boolean = false): void {
+  setEvents(
+      tracingModel: TraceEngine.Legacy.TracingModel, isFreshRecording: boolean = false,
+      isCpuProfile: boolean = false): void {
     this.#isFreshRecording = isFreshRecording;
+    this.#isCpuProfile = isCpuProfile;
     this.reset();
     this.resetProcessingState();
     this.tracingModelInternal = tracingModel;
@@ -771,6 +775,7 @@ export class TimelineModelImpl {
       const jsFrameEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events, {
         showAllEvents: Root.Runtime.experiments.isEnabled('timelineShowAllEvents'),
         showRuntimeCallStats: Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats'),
+        isDataOriginCpuProfile: this.#isCpuProfile,
       });
       if (jsFrameEvents && jsFrameEvents.length) {
         events = Platform.ArrayUtilities.mergeOrdered(

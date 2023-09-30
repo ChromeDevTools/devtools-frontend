@@ -68,9 +68,10 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   async setTracingModel(model: TraceEngine.Legacy.TracingModel, isFreshRecording = false, options = {
     resolveSourceMaps: true,
+    isCpuProfile: false,
   }): Promise<void> {
     this.tracingModelInternal = model;
-    this.timelineModelInternal.setEvents(model, isFreshRecording);
+    this.timelineModelInternal.setEvents(model, isFreshRecording, options.isCpuProfile);
     if (options.resolveSourceMaps) {
       await this.addSourceMapListeners();
     }

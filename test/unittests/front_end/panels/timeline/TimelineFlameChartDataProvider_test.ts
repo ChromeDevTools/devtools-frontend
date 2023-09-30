@@ -61,7 +61,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
         assert.fail('Could not find Main track flame chart group');
       }
       const groupTreeEvents = dataProvider.groupTreeEvents(mainTrack);
-      assert.strictEqual(groupTreeEvents?.length, 28995);
+      assert.strictEqual(groupTreeEvents?.length, 28844);
     });
   });
 

@@ -35,9 +35,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TraceEngine from '../trace/trace.js';
 
-import {RecordType, EventOnTimelineData} from './TimelineModel.js';
-
-import {TracingLayerTree, type TracingLayerPayload, type TracingLayerTile} from './TracingLayerTree.js';
+import {EventOnTimelineData, RecordType} from './TimelineModel.js';
+import {type TracingLayerPayload, type TracingLayerTile, TracingLayerTree} from './TracingLayerTree.js';
 
 export class TimelineFrameModel {
   private readonly categoryMapper: (arg0: TraceEngine.Legacy.Event) => string;
@@ -58,7 +57,6 @@ export class TimelineFrameModel {
   private target!: SDK.Target.Target|null;
   private framePendingCommit?: PendingFrame|null;
   private lastBeginFrame?: number|null;
-  private lastDroppedFrame?: number|null;
   private lastNeedsBeginFrame?: number|null;
   private lastTaskBeginTime?: number|null;
   private layerTreeId?: number|null;
@@ -124,7 +122,6 @@ export class TimelineFrameModel {
     this.mainFrameRequested = false;
     this.framePendingCommit = null;
     this.lastBeginFrame = null;
-    this.lastDroppedFrame = null;
     this.lastNeedsBeginFrame = null;
     this.framePendingActivation = null;
     this.lastTaskBeginTime = null;
@@ -262,7 +259,6 @@ export class TimelineFrameModel {
       return;
     }
 
-    this.lastFrame.addTimeForCategories(this.framePendingActivation.timeByCategory);
     this.lastFrame.paints = this.framePendingActivation.paints;
     this.lastFrame.mainFrameId = this.framePendingActivation.mainFrameId;
     this.framePendingActivation = null;
@@ -300,8 +296,6 @@ export class TimelineFrameModel {
       this.processCompositorEvents(event);
       if (event.thread === this.currentProcessMainThread) {
         this.addMainThreadTraceEvent(event);
-      } else if (this.lastFrame && event.selfTime && !TraceEngine.Legacy.TracingModel.isTopLevelEvent(event)) {
-        this.lastFrame.addTimeForCategory(this.categoryMapper(event), event.selfTime);
       }
     }
   }
@@ -428,10 +422,6 @@ export class TimelineFrame {
   startTimeOffset: number;
   endTime: number;
   duration: number;
-  timeByCategory: {
-    [x: string]: number,
-  };
-  cpuTime: number;
   idle: boolean;
   dropped: boolean;
   isPartial: boolean;
@@ -444,8 +434,6 @@ export class TimelineFrame {
     this.startTimeOffset = startTimeOffset;
     this.endTime = this.startTime;
     this.duration = 0;
-    this.timeByCategory = {};
-    this.cpuTime = 0;
     this.idle = false;
     this.dropped = false;
     this.isPartial = false;
@@ -461,19 +449,6 @@ export class TimelineFrame {
 
   setLayerTree(layerTree: TracingFrameLayerTree|null): void {
     this.layerTree = layerTree;
-  }
-
-  addTimeForCategories(timeByCategory: {
-    [x: string]: number,
-  }): void {
-    for (const category in timeByCategory) {
-      this.addTimeForCategory(category, timeByCategory[category]);
-    }
-  }
-
-  addTimeForCategory(category: string, time: number): void {
-    this.timeByCategory[category] = (this.timeByCategory[category] || 0) + time;
-    this.cpuTime += time;
   }
 }
 

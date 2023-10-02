@@ -111,6 +111,7 @@ describeWithEnvironment('TraceProcessor', async function() {
         {
           Renderer: TraceModel.Handlers.ModelHandlers.Renderer,
           Samples: TraceModel.Handlers.ModelHandlers.Samples,
+          AuctionWorklets: TraceModel.Handlers.ModelHandlers.AuctionWorklets,
         },
         {
           ...TraceModel.Types.Configuration.DEFAULT,

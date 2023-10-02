@@ -186,6 +186,13 @@ export class CompatibilityTracksAppender {
     if (this.#traceParsedData.Renderer) {
       let rasterCount = 0;
       for (const [pid, process] of this.#traceParsedData.Renderer.processes) {
+        if (this.#traceParsedData.AuctionWorklets.worklets.has(pid)) {
+          // TODO(crbug.com/1478710): support and render Auction Worklets. The
+          // handler can parse the metadata, we need to now do the work to
+          // calculate the right titles for each of the Auction Worklet
+          // threads.
+          continue;
+        }
         for (const [tid, thread] of process.threads) {
           let threadType = ThreadType.OTHER;
           if (thread.name === 'CrRendererMain') {

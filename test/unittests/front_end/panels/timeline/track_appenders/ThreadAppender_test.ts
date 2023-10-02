@@ -496,6 +496,7 @@ describeWithEnvironment('ThreadAppender', function() {
         Renderer: rendererData,
         Workers: workersData,
         Warnings: warningsData,
+        AuctionWorklets: {worklets: new Map()},
       } as TraceModel.Handlers.Types.TraceParseData;
 
       // Add the script to ignore list and then append the flamechart data

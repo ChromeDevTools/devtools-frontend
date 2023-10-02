@@ -6,6 +6,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
+import {data as auctionWorkletsData} from './AuctionWorkletsHandler.js';
 import {data as metaHandlerData, type FrameProcessData} from './MetaHandler.js';
 import {data as samplesHandlerData} from './SamplesHandler.js';
 import {HandlerState, type TraceEventHandlerName} from './types.js';
@@ -263,13 +264,25 @@ export function assignThreadName(
  *  - Deletes processes with an unkonwn origin.
  */
 export function sanitizeProcesses(processes: Map<Types.TraceEvents.ProcessID, RendererProcess>): void {
+  const auctionWorklets = auctionWorkletsData().worklets;
   for (const [pid, process] of processes) {
     // If the process had no url, or if it had a malformed url that could not be
     // parsed for some reason, or if it's an "about:" origin, delete it.
     // This is done because we don't really care about processes for which we
     // can't provide actionable insights to the user (e.g. about:blank pages).
+    //
+    // There is one exception; AuctionWorklet processes get parsed in a
+    // separate handler, so at this point we check to see if the process has
+    // been found by the AuctionWorkletsHandler, and if so we update the URL.
+    // This ensures that we keep this process around and do not drop it due to
+    // the lack of a URL.
     if (process.url === null) {
-      processes.delete(pid);
+      const maybeWorklet = auctionWorklets.get(pid);
+      if (maybeWorklet) {
+        process.url = maybeWorklet.host;
+      } else {
+        processes.delete(pid);
+      }
       continue;
     }
     const asUrl = new URL(process.url);
@@ -489,7 +502,7 @@ export function makeCompleteEvent(event: Types.TraceEvents.TraceEventBegin|Types
 }
 
 export function deps(): TraceEventHandlerName[] {
-  return ['Meta', 'Samples'];
+  return ['Meta', 'Samples', 'AuctionWorklets'];
 }
 
 export interface RendererHandlerData {

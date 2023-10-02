@@ -567,7 +567,6 @@ grd_files_release_sources = [
   "front_end/panels/timeline/timeline.js",
   "front_end/panels/utils/utils.js",
   "front_end/panels/web_audio/graph_visualizer/graph_visualizer.js",
-  "front_end/panels/web_audio/web_audio-legacy.js",
   "front_end/panels/web_audio/web_audio-meta.js",
   "front_end/panels/web_audio/web_audio.js",
   "front_end/panels/webauthn/webauthn-meta.js",

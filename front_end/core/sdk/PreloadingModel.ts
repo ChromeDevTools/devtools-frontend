@@ -315,9 +315,6 @@ class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
     this.model.onPrefetchStatusUpdated(event);
   }
 
-  prerenderAttemptCompleted(_: Protocol.Preload.PrerenderAttemptCompletedEvent): void {
-  }
-
   prerenderStatusUpdated(event: Protocol.Preload.PrerenderStatusUpdatedEvent): void {
     this.model.onPrerenderStatusUpdated(event);
   }

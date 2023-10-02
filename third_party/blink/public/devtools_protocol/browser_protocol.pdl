@@ -5803,6 +5803,8 @@ domain Network
       # character if it appears in the middle of the cookie name, value, an
       # attribute name, or an attribute value.
       DisallowedCharacter
+      # Cookie contains no content or only whitespace.
+      NoCookieContent
 
   # Types of reasons why a cookie may not be sent with a request.
   experimental type CookieBlockedReason extends string
@@ -9355,11 +9357,13 @@ experimental domain Storage
       loaded
       bid
       win
+      additionalBid
+      additionalBidWin
 
   # Ad advertising element inside an interest group.
   type InterestGroupAd extends object
     properties
-      string renderUrl
+      string renderURL
       optional string metadata
 
   # The full details of an interest group.
@@ -9369,10 +9373,10 @@ experimental domain Storage
       string name
       Network.TimeSinceEpoch expirationTime
       string joiningOrigin
-      optional string biddingUrl
-      optional string biddingWasmHelperUrl
-      optional string updateUrl
-      optional string trustedBiddingSignalsUrl
+      optional string biddingLogicURL
+      optional string biddingWasmHelperURL
+      optional string updateURL
+      optional string trustedBiddingSignalsURL
       array of string trustedBiddingSignalsKeys
       optional string userBiddingSignals
       array of InterestGroupAd ads
@@ -11318,7 +11322,6 @@ experimental domain Preload
       LowEndDevice
       InvalidSchemeRedirect
       InvalidSchemeNavigation
-      InProgressNavigation
       NavigationRequestBlockedByCsp
       MainFrameNavigation
       MojoBinderPolicy
@@ -11342,7 +11345,7 @@ experimental domain Preload
       TriggerBackgrounded
       MemoryLimitExceeded
       DataSaverEnabled
-      HasEffectiveUrl
+      TriggerUrlHasEffectiveUrl
       ActivatedBeforeStarted
       InactivePageRestriction
       StartFailed
@@ -11377,18 +11380,9 @@ experimental domain Preload
       MaxNumOfRunningEagerPrerendersExceeded
       MaxNumOfRunningNonEagerPrerendersExceeded
       MaxNumOfRunningEmbedderPrerendersExceeded
-
-  # Fired when a prerender attempt is completed.
-  event prerenderAttemptCompleted
-    parameters
-      PreloadingAttemptKey key
-      # The frame id of the frame initiating prerendering.
-      Page.FrameId initiatingFrameId
-      string prerenderingUrl
-      PrerenderFinalStatus finalStatus
-      # This is used to give users more information about the name of the API call
-      # that is incompatible with prerender and has caused the cancellation of the attempt
-      optional string disallowedApiMethod
+      PrerenderingUrlHasEffectiveUrl
+      RedirectedPrerenderingUrlHasEffectiveUrl
+      ActivationUrlHasEffectiveUrl
 
   # Fired when a preload enabled state is updated.
   event preloadEnabledStateUpdated

@@ -88,6 +88,13 @@ export const generatedProperties = [
   "name": "-webkit-box-direction"
  },
  {
+  "keywords": [
+   "normal",
+   "reverse"
+  ],
+  "name": "-webkit-box-direction-alternative"
+ },
+ {
   "name": "-webkit-box-flex"
  },
  {
@@ -3437,6 +3444,14 @@ export const generatedProperties = [
  {
   "inherited": true,
   "keywords": [
+   "space-first",
+   "space-all"
+  ],
+  "name": "text-spacing-trim"
+ },
+ {
+  "inherited": true,
+  "keywords": [
    "capitalize",
    "uppercase",
    "lowercase",
@@ -3769,6 +3784,12 @@ export const generatedPropertyValues = {
   ]
  },
  "-webkit-box-direction": {
+  "values": [
+   "normal",
+   "reverse"
+  ]
+ },
+ "-webkit-box-direction-alternative": {
   "values": [
    "normal",
    "reverse"
@@ -5546,6 +5567,12 @@ export const generatedPropertyValues = {
   "values": [
    "none",
    "auto"
+  ]
+ },
+ "text-spacing-trim": {
+  "values": [
+   "space-first",
+   "space-all"
   ]
  },
  "text-transform": {

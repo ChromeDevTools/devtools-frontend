@@ -3736,11 +3736,6 @@ declare namespace ProtocolProxyApi {
     ruleSetRemoved(params: Protocol.Preload.RuleSetRemovedEvent): void;
 
     /**
-     * Fired when a prerender attempt is completed.
-     */
-    prerenderAttemptCompleted(params: Protocol.Preload.PrerenderAttemptCompletedEvent): void;
-
-    /**
      * Fired when a preload enabled state is updated.
      */
     preloadEnabledStateUpdated(params: Protocol.Preload.PreloadEnabledStateUpdatedEvent): void;

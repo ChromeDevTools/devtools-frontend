@@ -3301,7 +3301,6 @@
       keywords: ["auto"],
       typedom_types: ["Keyword", "Length", "Percentage"],
       valid_for_first_letter: true,
-      valid_for_position_fallback: true,
       logical_property_group: {
         name: "margin",
         resolver: "bottom",
@@ -3321,7 +3320,6 @@
       keywords: ["auto"],
       typedom_types: ["Keyword", "Length", "Percentage"],
       valid_for_first_letter: true,
-      valid_for_position_fallback: true,
       logical_property_group: {
         name: "margin",
         resolver: "left",
@@ -3341,7 +3339,6 @@
       keywords: ["auto"],
       typedom_types: ["Keyword", "Length", "Percentage"],
       valid_for_first_letter: true,
-      valid_for_position_fallback: true,
       logical_property_group: {
         name: "margin",
         resolver: "right",
@@ -3361,7 +3358,6 @@
       keywords: ["auto"],
       typedom_types: ["Keyword", "Length", "Percentage"],
       valid_for_first_letter: true,
-      valid_for_position_fallback: true,
       logical_property_group: {
         name: "margin",
         resolver: "top",
@@ -3624,7 +3620,7 @@
       field_group: "*",
       field_template: "external",
       include_paths: ["third_party/blink/renderer/platform/geometry/length_point.h"],
-      default_value: "LengthPoint(Length::Auto(), Length::Auto())",
+      default_value: "LengthPoint(Length::None(), Length::None())",
       type_name: "LengthPoint",
       converter: "ConvertOffsetPosition",
       keywords: ["auto", "normal"],
@@ -5105,6 +5101,19 @@
       typedom_types: ["Keyword", "Percentage"],
     },
     {
+      name: "text-spacing-trim",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      inherited: true,
+      font: true,
+      priority: "High",
+      type_name: "TextSpacingTrim",
+      include_paths: ["third_party/blink/renderer/platform/fonts/shaping/text_spacing_trim.h"],
+      keywords: ["space-first", "space-all"],
+      default_value: "space-first",
+      typedom_types: ["Keyword"],
+      runtime_flag: "CSSTextSpacingTrim",
+    },
+    {
       name: "text-transform",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       independent: true,
@@ -5578,6 +5587,17 @@
       field_template: "keyword",
       keywords: ["normal", "reverse"],
       default_value: "normal",
+      computed_style_protected_functions: ["getter"],
+    },
+    {
+      name: "-webkit-box-direction-alternative",
+      alternative_of: "-webkit-box-direction",
+      property_methods: ["CSSValueFromComputedStyleInternal"],
+      field_template: "keyword",
+      keywords: ["normal", "reverse"],
+      default_value: "normal",
+      computed_style_protected_functions: ["getter"],
+      runtime_flag: "NonInheritedWebkitBoxDirection",
     },
     {
       name: "-webkit-box-flex",
@@ -6317,7 +6337,6 @@
       typedom_types: ["Length", "Percentage"],
       keywords: ["auto"],
       valid_for_first_letter: true,
-      valid_for_position_fallback: true,
     },
     {
       name: "margin-inline-end",
@@ -6330,7 +6349,6 @@
       typedom_types: ["Length", "Percentage"],
       keywords: ["auto"],
       valid_for_first_letter: true,
-      valid_for_position_fallback: true,
     },
     {
       name: "margin-block-start",
@@ -6343,7 +6361,6 @@
       typedom_types: ["Length", "Percentage"],
       keywords: ["auto"],
       valid_for_first_letter: true,
-      valid_for_position_fallback: true,
     },
     {
       name: "margin-block-end",
@@ -6356,7 +6373,6 @@
       typedom_types: ["Length", "Percentage"],
       keywords: ["auto"],
       valid_for_first_letter: true,
-      valid_for_position_fallback: true,
     },
     {
       name: "padding-inline-start",
@@ -7277,21 +7293,16 @@
       longhands: ["margin-top", "margin-right", "margin-bottom", "margin-left"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       layout_dependent: true,
-      valid_for_position_fallback: true,
     },
     {
       name: "margin-block",
       longhands: ["margin-block-start", "margin-block-end"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
-      layout_dependent: true,
-      valid_for_position_fallback: true,
     },
     {
       name: "margin-inline",
       longhands: ["margin-inline-start", "margin-inline-end"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
-      layout_dependent: true,
-      valid_for_position_fallback: true,
     },
     {
       name: "marker",

@@ -5791,7 +5791,7 @@ export const NativeFunctions = [
   {
     name: '',
     signatures: [['index']],
-    receivers: ['DataTransferItemList','CSSKeyframesRule','CSSNumericArray','HTMLFormControlsCollection','RadioNodeList','HTMLAllCollection','AudioTrackList','TextTrackCueList','TextTrackList','VideoTrackList','SourceBufferList','TrackDefaultList','ImageTrackList','XRInputSourceArray']
+    receivers: ['DataTransferItemList','CSSKeyframesRule','CSSNumericArray','Window','HTMLFormControlsCollection','RadioNodeList','HTMLAllCollection','AudioTrackList','TextTrackCueList','TextTrackList','VideoTrackList','SourceBufferList','TrackDefaultList','ImageTrackList','XRInputSourceArray']
   },
   {
     name: '',
@@ -5806,7 +5806,7 @@ export const NativeFunctions = [
   {
     name: '',
     signatures: [['name']],
-    receivers: ['StyleSheetList','RTCStatsResponse']
+    receivers: ['StyleSheetList','WindowProperties','RTCStatsResponse']
   },
   {
     name: '',
@@ -5816,7 +5816,7 @@ export const NativeFunctions = [
   {
     name: '',
     signatures: [['index'],['name']],
-    receivers: ['Window','HTMLFormElement']
+    receivers: ['HTMLFormElement']
   },
   {
     name: '',
@@ -6250,6 +6250,10 @@ export const NativeFunctions = [
     signatures: [['announcement','?options']]
   },
   {
+    name: 'setSequentialFocusStartingPoint',
+    signatures: [['element']]
+  },
+  {
     name: 'DOMException',
     signatures: [['?message','?name']]
   },
@@ -6664,10 +6668,6 @@ export const NativeFunctions = [
   {
     name: 'sendMessageToEmbedder',
     signatures: [['message']]
-  },
-  {
-    name: 'IntersectionObserver',
-    signatures: [['callback','?options']]
   },
   {
     name: 'layoutNextFragment',
@@ -7103,6 +7103,10 @@ export const NativeFunctions = [
   {
     name: 'getUserInfo',
     signatures: [['config']]
+  },
+  {
+    name: 'setStatus',
+    signatures: [['status']]
   },
   {
     name: 'PasswordCredential',

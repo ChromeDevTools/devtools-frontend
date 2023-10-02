@@ -647,10 +647,6 @@ export namespace ProtocolMapping {
     'Preload.ruleSetUpdated': [Protocol.Preload.RuleSetUpdatedEvent];
     'Preload.ruleSetRemoved': [Protocol.Preload.RuleSetRemovedEvent];
     /**
-     * Fired when a prerender attempt is completed.
-     */
-    'Preload.prerenderAttemptCompleted': [Protocol.Preload.PrerenderAttemptCompletedEvent];
-    /**
      * Fired when a preload enabled state is updated.
      */
     'Preload.preloadEnabledStateUpdated': [Protocol.Preload.PreloadEnabledStateUpdatedEvent];

@@ -8359,6 +8359,7 @@ export namespace Network {
     SamePartyConflictsWithOtherAttributes = 'SamePartyConflictsWithOtherAttributes',
     NameValuePairExceedsMaxSize = 'NameValuePairExceedsMaxSize',
     DisallowedCharacter = 'DisallowedCharacter',
+    NoCookieContent = 'NoCookieContent',
   }
 
   /**
@@ -13368,13 +13369,15 @@ export namespace Storage {
     Loaded = 'loaded',
     Bid = 'bid',
     Win = 'win',
+    AdditionalBid = 'additionalBid',
+    AdditionalBidWin = 'additionalBidWin',
   }
 
   /**
    * Ad advertising element inside an interest group.
    */
   export interface InterestGroupAd {
-    renderUrl: string;
+    renderURL: string;
     metadata?: string;
   }
 
@@ -13386,10 +13389,10 @@ export namespace Storage {
     name: string;
     expirationTime: Network.TimeSinceEpoch;
     joiningOrigin: string;
-    biddingUrl?: string;
-    biddingWasmHelperUrl?: string;
-    updateUrl?: string;
-    trustedBiddingSignalsUrl?: string;
+    biddingLogicURL?: string;
+    biddingWasmHelperURL?: string;
+    updateURL?: string;
+    trustedBiddingSignalsURL?: string;
     trustedBiddingSignalsKeys: string[];
     userBiddingSignals?: string;
     ads: InterestGroupAd[];
@@ -15977,7 +15980,6 @@ export namespace Preload {
     LowEndDevice = 'LowEndDevice',
     InvalidSchemeRedirect = 'InvalidSchemeRedirect',
     InvalidSchemeNavigation = 'InvalidSchemeNavigation',
-    InProgressNavigation = 'InProgressNavigation',
     NavigationRequestBlockedByCsp = 'NavigationRequestBlockedByCsp',
     MainFrameNavigation = 'MainFrameNavigation',
     MojoBinderPolicy = 'MojoBinderPolicy',
@@ -16001,7 +16003,7 @@ export namespace Preload {
     TriggerBackgrounded = 'TriggerBackgrounded',
     MemoryLimitExceeded = 'MemoryLimitExceeded',
     DataSaverEnabled = 'DataSaverEnabled',
-    HasEffectiveUrl = 'HasEffectiveUrl',
+    TriggerUrlHasEffectiveUrl = 'TriggerUrlHasEffectiveUrl',
     ActivatedBeforeStarted = 'ActivatedBeforeStarted',
     InactivePageRestriction = 'InactivePageRestriction',
     StartFailed = 'StartFailed',
@@ -16036,6 +16038,9 @@ export namespace Preload {
     MaxNumOfRunningEagerPrerendersExceeded = 'MaxNumOfRunningEagerPrerendersExceeded',
     MaxNumOfRunningNonEagerPrerendersExceeded = 'MaxNumOfRunningNonEagerPrerendersExceeded',
     MaxNumOfRunningEmbedderPrerendersExceeded = 'MaxNumOfRunningEmbedderPrerendersExceeded',
+    PrerenderingUrlHasEffectiveUrl = 'PrerenderingUrlHasEffectiveUrl',
+    RedirectedPrerenderingUrlHasEffectiveUrl = 'RedirectedPrerenderingUrlHasEffectiveUrl',
+    ActivationUrlHasEffectiveUrl = 'ActivationUrlHasEffectiveUrl',
   }
 
   /**
@@ -16097,24 +16102,6 @@ export namespace Preload {
 
   export interface RuleSetRemovedEvent {
     id: RuleSetId;
-  }
-
-  /**
-   * Fired when a prerender attempt is completed.
-   */
-  export interface PrerenderAttemptCompletedEvent {
-    key: PreloadingAttemptKey;
-    /**
-     * The frame id of the frame initiating prerendering.
-     */
-    initiatingFrameId: Page.FrameId;
-    prerenderingUrl: string;
-    finalStatus: PrerenderFinalStatus;
-    /**
-     * This is used to give users more information about the name of the API call
-     * that is incompatible with prerender and has caused the cancellation of the attempt
-     */
-    disallowedApiMethod?: string;
   }
 
   /**
@@ -17660,8 +17647,7 @@ export namespace Runtime {
   }
 
   /**
-   * Represents options for serialization. Overrides `generatePreview`, `returnByValue` and
-   * `generateWebDriverValue`.
+   * Represents options for serialization. Overrides `generatePreview` and `returnByValue`.
    */
   export interface SerializationOptions {
     serialization: SerializationOptionsSerialization;
@@ -17794,10 +17780,6 @@ export namespace Runtime {
      * String representation of the object.
      */
     description?: string;
-    /**
-     * Deprecated. Use `deepSerializedValue` instead. WebDriver BiDi representation of the value.
-     */
-    webDriverValue?: DeepSerializedValue;
     /**
      * Deep serialized value.
      */
@@ -18309,15 +18291,8 @@ export namespace Runtime {
      */
     uniqueContextId?: string;
     /**
-     * Deprecated. Use `serializationOptions: {serialization:"deep"}` instead.
-     * Whether the result should contain `webDriverValue`, serialized according to
-     * https://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but
-     * resulting `objectId` is still provided.
-     */
-    generateWebDriverValue?: boolean;
-    /**
      * Specifies the result serialization. If provided, overrides
-     * `generatePreview`, `returnByValue` and `generateWebDriverValue`.
+     * `generatePreview` and `returnByValue`.
      */
     serializationOptions?: SerializationOptions;
   }
@@ -18443,16 +18418,8 @@ export namespace Runtime {
      */
     uniqueContextId?: string;
     /**
-     * Deprecated. Use `serializationOptions: {serialization:"deep"}` instead.
-     * Whether the result should contain `webDriverValue`, serialized
-     * according to
-     * https://w3c.github.io/webdriver-bidi. This is mutually exclusive with `returnByValue`, but
-     * resulting `objectId` is still provided.
-     */
-    generateWebDriverValue?: boolean;
-    /**
      * Specifies the result serialization. If provided, overrides
-     * `generatePreview`, `returnByValue` and `generateWebDriverValue`.
+     * `generatePreview` and `returnByValue`.
      */
     serializationOptions?: SerializationOptions;
   }

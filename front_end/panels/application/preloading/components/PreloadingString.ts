@@ -221,7 +221,7 @@ const UIStrings = {
   prerenderFinalStatusDataSaverEnabled:
       'The prerender was not performed because the user requested that the browser use less data.',
   /**
-   *  Description text for PrerenderFinalStatus::kHasEffectiveUrl.
+   *  Description text for PrerenderFinalStatus::TriggerUrlHasEffectiveUrl.
    */
   prerenderFinalStatusHasEffectiveUrl:
       'The initiating page cannot perform prerendering, because it has an effective URL that is different from its normal URL. (For example, the New Tab Page, or hosted apps.)',
@@ -346,6 +346,22 @@ const UIStrings = {
    */
   prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded:
       'The prerender was not performed because the initiating page already has too many non-eager prerenders ongoing. Remove other speculation rules to enable further prerendering.',
+  /**
+   * Description text for PrenderFinalStatus::kPrerenderingUrlHasEffectiveUrl.
+   */
+  prerenderFinalStatusPrerenderingUrlHasEffectiveUrl:
+      'The prerendering navigation failed because it has an effective URL that is different from its normal URL. (For example, the New Tab Page, or hosted apps.)',
+  /**
+   * Description text for PrenderFinalStatus::kRedirectedPrerenderingUrlHasEffectiveUrl.
+   */
+  prerenderFinalStatusRedirectedPrerenderingUrlHasEffectiveUrl:
+      'The prerendering navigation failed because it redirected to an effective URL that is different from its normal URL. (For example, the New Tab Page, or hosted apps.)',
+  /**
+   * Description text for PrenderFinalStatus::kActivationUrlHasEffectiveUrl.
+   */
+  prerenderFinalStatusActivationUrlHasEffectiveUrl:
+      'The prerender was not used because during activation time, navigation has an effective URL that is different from its normal URL. (For example, the New Tab Page, or hosted apps.)',
+
   /**
    *@description Text in grid and details: Preloading attempt is not yet triggered.
    */
@@ -504,9 +520,6 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
       return i18nString(UIStrings.prerenderFinalStatusInvalidSchemeRedirect);
     case Protocol.Preload.PrerenderFinalStatus.InvalidSchemeNavigation:
       return i18nString(UIStrings.prerenderFinalStatusInvalidSchemeNavigation);
-    case Protocol.Preload.PrerenderFinalStatus.InProgressNavigation:
-      // Not used.
-      return i18n.i18n.lockedString('Internal error');
     case Protocol.Preload.PrerenderFinalStatus.NavigationRequestBlockedByCsp:
       return i18nString(UIStrings.prerenderFinalStatusNavigationRequestBlockedByCsp);
     case Protocol.Preload.PrerenderFinalStatus.MainFrameNavigation:
@@ -561,7 +574,7 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
       return i18nString(UIStrings.prerenderFinalStatusMemoryLimitExceeded);
     case Protocol.Preload.PrerenderFinalStatus.DataSaverEnabled:
       return i18nString(UIStrings.prerenderFinalStatusDataSaverEnabled);
-    case Protocol.Preload.PrerenderFinalStatus.HasEffectiveUrl:
+    case Protocol.Preload.PrerenderFinalStatus.TriggerUrlHasEffectiveUrl:
       return i18nString(UIStrings.prerenderFinalStatusHasEffectiveUrl);
     case Protocol.Preload.PrerenderFinalStatus.ActivatedBeforeStarted:
       // Status for debugging.
@@ -644,6 +657,12 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
       return i18nString(UIStrings.prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded);
     case Protocol.Preload.PrerenderFinalStatus.MaxNumOfRunningNonEagerPrerendersExceeded:
       return i18nString(UIStrings.prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded);
+    case Protocol.Preload.PrerenderFinalStatus.PrerenderingUrlHasEffectiveUrl:
+      return i18nString(UIStrings.prerenderFinalStatusPrerenderingUrlHasEffectiveUrl);
+    case Protocol.Preload.PrerenderFinalStatus.RedirectedPrerenderingUrlHasEffectiveUrl:
+      return i18nString(UIStrings.prerenderFinalStatusRedirectedPrerenderingUrlHasEffectiveUrl);
+    case Protocol.Preload.PrerenderFinalStatus.ActivationUrlHasEffectiveUrl:
+      return i18nString(UIStrings.prerenderFinalStatusActivationUrlHasEffectiveUrl);
     default:
       // Note that we use switch and exhaustiveness check to prevent to
       // forget updating these strings, but allow to handle unknown

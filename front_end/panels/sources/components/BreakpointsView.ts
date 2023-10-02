@@ -589,6 +589,8 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             tabindex='0'
             @click=${clickHandler}
             @keydown=${this.#keyDownHandler}
+            role='checkbox'
+            aria-checked=${this.#pauseOnUncaughtExceptions}
             data-first-pause>
           <label class='checkbox-label'>
             <input type='checkbox' tabindex=-1 ?checked=${this.#pauseOnUncaughtExceptions} @change=${this.#onPauseOnUncaughtExceptionsStateChanged.bind(this)}>
@@ -599,6 +601,8 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
               tabindex='-1'
               @click=${clickHandler}
               @keydown=${this.#keyDownHandler}
+              role='checkbox'
+              aria-checked=${pauseOnCaughtIsChecked}
               data-last-pause>
             <label class='checkbox-label'>
               <input data-pause-on-caught-checkbox type='checkbox' tabindex=-1 ?checked=${pauseOnCaughtIsChecked} ?disabled=${pauseOnCaughtExceptionIsDisabled} @change=${this.#onPauseOnCaughtExceptionsStateChanged.bind(this)}>

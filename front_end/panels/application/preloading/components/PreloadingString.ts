@@ -335,17 +335,17 @@ const UIStrings = {
    * Description text for PrerenderFinalStatus::kMaxNumOfRunningEagerPrerendersExceeded.
    */
   prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded:
-      'The prerender was not performed because the initiating page already has too many eager prerenders ongoing. Remove other speculation rules to enable further prerendering.',
+      'The prerender was not performed because the initiating page already has too many prerenders ongoing. Remove other speculation rules to enable further prerendering.',
   /**
    * Description text for PrerenderFinalStatus::kMaxNumOfRunningEmbedderPrerendersExceeded.
    */
   prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded:
-      'The prerender was not performed because the initiating page already has too many embedder prerenders ongoing. Remove other speculation rules to enable further prerendering.',
+      'The prerender was not performed because the initiating page already has too many prerenders ongoing.',
   /**
    * Description text for PrerenderFinalStatus::kMaxNumOfRunningNonEagerPrerendersExceeded.
    */
   prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded:
-      'The prerender was not performed because the initiating page already has too many non-eager prerenders ongoing. Remove other speculation rules to enable further prerendering.',
+      'The prerender was not performed because the initiating page already has too many prerenders ongoing. Remove other speculation rules to enable further prerendering.',
   /**
    * Description text for PrenderFinalStatus::kPrerenderingUrlHasEffectiveUrl.
    */

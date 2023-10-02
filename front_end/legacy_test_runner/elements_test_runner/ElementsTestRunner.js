@@ -176,11 +176,11 @@ ElementsTestRunner.expandAndDumpEventListenersPromise = function(eventListenersV
 };
 
 ElementsTestRunner.inlineStyleSection = function() {
-  return UI.panels.elements.stylesWidget.sectionBlocks[0].sections[0];
+  return self.UI.panels.elements.stylesWidget.sectionBlocks[0].sections[0];
 };
 
 ElementsTestRunner.computedStyleWidget = function() {
-  return UI.panels.elements.computedStyleWidget;
+  return self.UI.panels.elements.computedStyleWidget;
 };
 
 ElementsTestRunner.dumpComputedStyle = async function(doNotAutoExpand, printInnerText) {
@@ -247,7 +247,7 @@ ElementsTestRunner.findComputedPropertyWithName = function(name) {
 };
 
 ElementsTestRunner.firstMatchedStyleSection = function() {
-  return UI.panels.elements.stylesWidget.sectionBlocks[0].sections[1];
+  return self.UI.panels.elements.stylesWidget.sectionBlocks[0].sections[1];
 };
 
 ElementsTestRunner.firstMediaTextElementInSection = function(section) {
@@ -393,17 +393,17 @@ ElementsTestRunner.selectNodeAndWaitForStylesWithComputed = function(idValue, ca
 };
 
 ElementsTestRunner.firstElementsTreeOutline = function() {
-  return UI.panels.elements.treeOutlines.values().next().value;
+  return self.UI.panels.elements.treeOutlines.values().next().value;
 };
 
 ElementsTestRunner.filterMatchedStyles = function(text) {
   const regex = (text ? new RegExp(text, 'i') : null);
   TestRunner.addResult('Filtering styles by: ' + text);
-  UI.panels.elements.stylesWidget.onFilterChanged(regex);
+  self.UI.panels.elements.stylesWidget.onFilterChanged(regex);
 };
 
 ElementsTestRunner.dumpRenderedMatchedStyles = function() {
-  const sectionBlocks = UI.panels.elements.stylesWidget.sectionBlocks;
+  const sectionBlocks = self.UI.panels.elements.stylesWidget.sectionBlocks;
 
   for (const block of sectionBlocks) {
     for (const section of block.sections) {
@@ -467,7 +467,7 @@ ElementsTestRunner.dumpRenderedMatchedStyles = function() {
 
 ElementsTestRunner.dumpSelectedElementStyles =
     async function(excludeComputed, excludeMatched, omitLonghands, includeSelectorGroupMarks, printInnerText) {
-  const sectionBlocks = UI.panels.elements.stylesWidget.sectionBlocks;
+  const sectionBlocks = self.UI.panels.elements.stylesWidget.sectionBlocks;
 
   if (!excludeComputed) {
     await ElementsTestRunner.dumpComputedStyle(false /* doNotAutoExpand */, printInnerText);
@@ -597,7 +597,7 @@ ElementsTestRunner.showEventListenersWidget = function() {
  * @return {Promise}
  */
 ElementsTestRunner.showComputedStyles = function() {
-  UI.panels.elements.sidebarPaneView.tabbedPane().selectTab('Computed', true);
+  self.UI.panels.elements.sidebarPaneView.tabbedPane().selectTab('Computed', true);
   return ElementsTestRunner.computedStyleWidget().doUpdate();
 };
 
@@ -654,7 +654,7 @@ ElementsTestRunner.getElementStylePropertyTreeItem = function(propertyName) {
 };
 
 ElementsTestRunner.getMatchedStylePropertyTreeItem = function(propertyName) {
-  const sectionBlocks = UI.panels.elements.stylesWidget.sectionBlocks;
+  const sectionBlocks = self.UI.panels.elements.stylesWidget.sectionBlocks;
 
   for (const block of sectionBlocks) {
     for (const section of block.sections) {
@@ -1172,7 +1172,7 @@ ElementsTestRunner.dumpBreadcrumb = function(message) {
   }
 
   const result = [];
-  const crumbs = UI.panels.elements.breadcrumbs.crumbsElement;
+  const crumbs = self.UI.panels.elements.breadcrumbs.crumbsElement;
   let crumb = crumbs.lastChild;
 
   while (crumb) {
@@ -1198,11 +1198,11 @@ ElementsTestRunner.addNewRuleInStyleSheet = function(styleSheetHeader, selector,
   TestRunner.addSniffer(
       Elements.StylesSidebarPane.StylesSidebarPane.prototype, 'addBlankSection',
       onBlankSection.bind(null, selector, callback));
-  UI.panels.elements.stylesWidget.createNewRuleInStyleSheet(styleSheetHeader);
+  self.UI.panels.elements.stylesWidget.createNewRuleInStyleSheet(styleSheetHeader);
 };
 
 ElementsTestRunner.addNewRule = function(selector, callback) {
-  UI.panels.elements.stylesWidget.contentElement.querySelector('.styles-pane-toolbar')
+  self.UI.panels.elements.stylesWidget.contentElement.querySelector('.styles-pane-toolbar')
       .shadowRoot.querySelector('.plus')
       .click();
   TestRunner.addSniffer(

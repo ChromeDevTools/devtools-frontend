@@ -6,6 +6,7 @@ import '../../ui/legacy/components/data_grid/data_grid-legacy.js';
 
 import * as HeapSnapshotWorker from '../../entrypoints/heap_snapshot_worker/heap_snapshot_worker.js';
 import * as Profiler from '../../panels/profiler/profiler.js';
+import * as UI from '../../ui/legacy/legacy.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
@@ -349,8 +350,9 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories();
 
 HeapProfilerTestRunner.startProfilerTest = function(callback) {
   TestRunner.addResult('Profiler was enabled.');
-  HeapProfilerTestRunner.panelReset = TestRunner.override(UI.panels.heap_profiler, 'reset', function() {}, true);
-  TestRunner.addSniffer(UI.panels.heap_profiler, 'addProfileHeader', HeapProfilerTestRunner.profileHeaderAdded, true);
+  HeapProfilerTestRunner.panelReset = TestRunner.override(self.UI.panels.heap_profiler, 'reset', function() {}, true);
+  TestRunner.addSniffer(
+      self.UI.panels.heap_profiler, 'addProfileHeader', HeapProfilerTestRunner.profileHeaderAdded, true);
   TestRunner.addSniffer(
       Profiler.ProfileView.ProfileView.prototype, 'refresh', HeapProfilerTestRunner.profileViewRefresh, true);
   TestRunner.addSniffer(
@@ -398,7 +400,7 @@ HeapProfilerTestRunner.runHeapSnapshotTestSuite = function(testSuite) {
     TestRunner.addResult(
         'Running: ' +
         /function\s([^(]*)/.exec(nextTest)[1]);
-    HeapProfilerTestRunner.panelReset.call(UI.panels.heap_profiler);
+    HeapProfilerTestRunner.panelReset.call(self.UI.panels.heap_profiler);
     TestRunner.safeWrap(nextTest)(runner, runner);
   }
 
@@ -620,7 +622,7 @@ HeapProfilerTestRunner.findMatchingRow = function(matcher, parent) {
 HeapProfilerTestRunner.switchToView = function(title, callback) {
   return new Promise(resolve => {
     callback = TestRunner.safeWrap(callback);
-    const view = UI.panels.heap_profiler.visibleView;
+    const view = self.UI.panels.heap_profiler.visibleView;
     view.changePerspectiveAndWait(title).then(callback).then(resolve);
     HeapProfilerTestRunner.currentGrid().scrollContainer.style.height = '10000px';
   });
@@ -642,8 +644,8 @@ HeapProfilerTestRunner.takeAndOpenSnapshot = async function(generator, callback)
 
   HeapProfilerTestRunner.takeAndOpenSnapshotCallback = callback;
   TestRunner.override(TestRunner.HeapProfilerAgent, 'invoke_takeHeapSnapshot', pushGeneratedSnapshot);
-  if (!self.UI.context.flavor(SDK.HeapProfilerModel)) {
-    await new Promise(resolve => self.UI.context.addFlavorChangeListener(SDK.HeapProfilerModel, resolve));
+  if (!UI.Context.Context.instance().flavor(SDK.HeapProfilerModel)) {
+    await new Promise(resolve => UI.Context.Context.instance().addFlavorChangeListener(SDK.HeapProfilerModel, resolve));
   }
   profileType.takeHeapSnapshot();
 };
@@ -667,7 +669,7 @@ HeapProfilerTestRunner.takeSnapshotPromise = function() {
         throw `FAILED: wrong number of recorded profiles was found. profiles.length = ${profiles.length}`;
       }
       const profile = profiles[0];
-      UI.panels.heap_profiler.showProfile(profile);
+      self.UI.panels.heap_profiler.showProfile(profile);
 
       const dataGrid = HeapProfilerTestRunner.currentProfileView().dataGrid;
       dataGrid.addEventListener(
@@ -687,7 +689,7 @@ HeapProfilerTestRunner.viewColumns = function() {
 };
 
 HeapProfilerTestRunner.currentProfileView = function() {
-  return UI.panels.heap_profiler.visibleView;
+  return self.UI.panels.heap_profiler.visibleView;
 };
 
 HeapProfilerTestRunner.currentGrid = function() {
@@ -718,13 +720,13 @@ HeapProfilerTestRunner.showProfileWhenAdded = function(title) {
 
 HeapProfilerTestRunner.profileHeaderAdded = function(profile) {
   if (HeapProfilerTestRunner.showProfileWhenAdded === profile.title) {
-    UI.panels.heap_profiler.showProfile(profile);
+    self.UI.panels.heap_profiler.showProfile(profile);
   }
 };
 
 HeapProfilerTestRunner.waitUntilProfileViewIsShown = function(title, callback) {
   callback = TestRunner.safeWrap(callback);
-  const profilesPanel = UI.panels.heap_profiler;
+  const profilesPanel = self.UI.panels.heap_profiler;
 
   if (profilesPanel.visibleView && profilesPanel.visibleView.profile &&
       profilesPanel.visibleView.profileHeader.title === title) {
@@ -744,8 +746,8 @@ HeapProfilerTestRunner.profileViewRefresh = function() {
 };
 
 HeapProfilerTestRunner.startSamplingHeapProfiler = async function() {
-  if (!self.UI.context.flavor(SDK.HeapProfilerModel)) {
-    await new Promise(resolve => self.UI.context.addFlavorChangeListener(SDK.HeapProfilerModel, resolve));
+  if (!UI.Context.Context.instance().flavor(SDK.HeapProfilerModel)) {
+    await new Promise(resolve => UI.Context.Context.instance().addFlavorChangeListener(SDK.HeapProfilerModel, resolve));
   }
   Profiler.HeapProfileView.SamplingHeapProfileType.instance.startRecordingProfile();
 };

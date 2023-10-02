@@ -103,7 +103,7 @@ SourcesTestRunner.replaceAndDumpChange = function(sourceFrame, searchConfig, rep
     oldLines.push(editor.line(i));
   }
 
-  const searchableView = UI.panels.sources.sourcesView().searchableView();
+  const searchableView = self.UI.panels.sources.sourcesView().searchableView();
   searchableView.showSearchField();
   searchableView.caseSensitiveButton.setToggled(searchConfig.caseSensitive);
   searchableView.regexButton.setToggled(searchConfig.isRegex);

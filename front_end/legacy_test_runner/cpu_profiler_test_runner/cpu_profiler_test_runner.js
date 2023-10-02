@@ -12,7 +12,7 @@ export const CPUProfilerTestRunner = {};
 
 CPUProfilerTestRunner.startProfilerTest = function(callback) {
   TestRunner.addResult('Profiler was enabled.');
-  TestRunner.addSniffer(UI.panels.js_profiler, 'addProfileHeader', CPUProfilerTestRunner.profileHeaderAdded, true);
+  TestRunner.addSniffer(self.UI.panels.js_profiler, 'addProfileHeader', CPUProfilerTestRunner.profileHeaderAdded, true);
   TestRunner.addSniffer(
       Profiler.ProfileView.ProfileView.prototype, 'refresh', CPUProfilerTestRunner.profileViewRefresh, true);
   TestRunner.safeWrap(callback)();
@@ -50,13 +50,13 @@ CPUProfilerTestRunner.showProfileWhenAdded = function(title) {
 
 CPUProfilerTestRunner.profileHeaderAdded = function(profile) {
   if (CPUProfilerTestRunner.showProfileWhenAdded === profile.title) {
-    UI.panels.js_profiler.showProfile(profile);
+    self.UI.panels.js_profiler.showProfile(profile);
   }
 };
 
 CPUProfilerTestRunner.waitUntilProfileViewIsShown = function(title, callback) {
   callback = TestRunner.safeWrap(callback);
-  const profilesPanel = UI.panels.js_profiler;
+  const profilesPanel = self.UI.panels.js_profiler;
 
   if (profilesPanel.visibleView && profilesPanel.visibleView.profile &&
       profilesPanel.visibleView.profileHeader.title === title) {

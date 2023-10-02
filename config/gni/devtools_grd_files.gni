@@ -658,7 +658,6 @@ grd_files_release_sources = [
   "front_end/ui/legacy/components/source_frame/source_frame.js",
   "front_end/ui/legacy/components/utils/utils-legacy.js",
   "front_end/ui/legacy/components/utils/utils.js",
-  "front_end/ui/legacy/legacy-legacy.js",
   "front_end/ui/legacy/legacy.js",
   "front_end/ui/legacy/theme_support/theme_support.js",
   "front_end/ui/legacy/utils/utils.js",

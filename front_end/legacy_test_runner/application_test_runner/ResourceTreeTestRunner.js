@@ -75,7 +75,7 @@ ApplicationTestRunner.dumpResourcesTree = function() {
     }
   }
 
-  dump(UI.panels.resources.sidebar.resourcesSection.treeElement, '');
+  dump(self.UI.panels.resources.sidebar.resourcesSection.treeElement, '');
 
   if (!ApplicationTestRunner.testSourceNavigator) {
     ApplicationTestRunner.testSourceNavigator = new Sources.SourcesNavigator.NetworkNavigatorView();

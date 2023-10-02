@@ -11,7 +11,7 @@ self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
 ApplicationTestRunner.dumpIndexedDBTree = async function() {
   TestRunner.addResult('Dumping IndexedDB tree:');
-  const indexedDBTreeElement = UI.panels.resources.sidebar.indexedDBListTreeElement;
+  const indexedDBTreeElement = self.UI.panels.resources.sidebar.indexedDBListTreeElement;
 
   if (!indexedDBTreeElement.childCount()) {
     TestRunner.addResult('    (empty)');
@@ -46,7 +46,7 @@ ApplicationTestRunner.dumpIndexedDBTree = async function() {
 
 ApplicationTestRunner.dumpObjectStores = async function() {
   TestRunner.addResult('Dumping ObjectStore data:');
-  const idbDatabaseTreeElement = UI.panels.resources.sidebar.indexedDBListTreeElement.idbDatabaseTreeElements[0];
+  const idbDatabaseTreeElement = self.UI.panels.resources.sidebar.indexedDBListTreeElement.idbDatabaseTreeElements[0];
   for (let i = 0; i < idbDatabaseTreeElement.childCount(); ++i) {
     const objectStoreTreeElement = idbDatabaseTreeElement.childAt(i);
     objectStoreTreeElement.onselect(false);

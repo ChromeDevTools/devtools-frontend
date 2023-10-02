@@ -32,7 +32,6 @@ ts_library("legacy_test_runner-source") {
     "../panels/console_counters:bundle",
     "../panels/event_listeners:bundle",
     "../third_party/diff:legacy",
-    "../ui/legacy:legacy",
     "../ui/legacy/components/color_picker:legacy",
     "../ui/legacy/components/data_grid:legacy",
     "../ui/legacy/components/inline_editor:legacy",

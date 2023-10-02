@@ -23,7 +23,7 @@ NetworkTestRunner.waitForRequestResponse = function(request) {
 };
 
 NetworkTestRunner.waitForNetworkLogViewNodeForRequest = function(request) {
-  const networkLogView = UI.panels.network.networkLogView;
+  const networkLogView = self.UI.panels.network.networkLogView;
   const node = networkLogView.nodeForRequest(request);
 
   if (node) {
@@ -54,11 +54,11 @@ NetworkTestRunner.waitForWebsocketFrameReceived = function(wsRequest, message) {
 };
 
 NetworkTestRunner.recordNetwork = function() {
-  UI.panels.network.networkLogView.setRecording(true);
+  self.UI.panels.network.networkLogView.setRecording(true);
 };
 
 NetworkTestRunner.networkWaterfallColumn = function() {
-  return UI.panels.network.networkLogView.columns().waterfallColumn;
+  return self.UI.panels.network.networkLogView.columns().waterfallColumn;
 };
 
 NetworkTestRunner.networkRequests = function() {

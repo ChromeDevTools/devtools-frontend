@@ -84,8 +84,8 @@ ApplicationTestRunner.showResource = function(resourceURL, callback) {
       return;
     }
 
-    UI.panels.resources.showResource(resource, 1);
-    const sourceFrame = UI.panels.resources.resourceViewForResource(resource);
+    self.UI.panels.resources.showResource(resource, 1);
+    const sourceFrame = self.UI.panels.resources.resourceViewForResource(resource);
 
     if (sourceFrame.loaded) {
       callbackWrapper(sourceFrame);
@@ -130,7 +130,7 @@ ApplicationTestRunner.waitForCookies = function() {
 };
 
 ApplicationTestRunner.dumpCookieDomains = function() {
-  const cookieListChildren = UI.panels.resources.sidebar.cookieListTreeElement.children();
+  const cookieListChildren = self.UI.panels.resources.sidebar.cookieListTreeElement.children();
   TestRunner.addResult('Available cookie domains:');
   for (const child of cookieListChildren) {
     TestRunner.addResult(child.cookieDomain);
@@ -138,13 +138,13 @@ ApplicationTestRunner.dumpCookieDomains = function() {
 };
 
 ApplicationTestRunner.dumpCookies = function() {
-  if (!UI.panels.resources.cookieView || !UI.panels.resources.cookieView.isShowing()) {
+  if (!self.UI.panels.resources.cookieView || !UI.panels.resources.cookieView.isShowing()) {
     TestRunner.addResult('No cookies visible');
     return;
   }
 
   TestRunner.addResult('Visible cookies');
-  for (const item of UI.panels.resources.cookieView.cookiesTable.data) {
+  for (const item of self.UI.panels.resources.cookieView.cookiesTable.data) {
     const cookies = item.cookies || [];
     for (const cookie of cookies) {
       TestRunner.addResult(`${cookie.name()}=${cookie.value()}`);

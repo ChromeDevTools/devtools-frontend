@@ -37,7 +37,7 @@ ApplicationTestRunner.waitForServiceWorker = function(callback) {
 };
 
 ApplicationTestRunner.dumpServiceWorkersView = function() {
-  const swView = UI.panels.resources.visibleView;
+  const swView = self.UI.panels.resources.visibleView;
 
   return swView.currentWorkersView.sectionList.childTextNodes()
       .map(function(node) {

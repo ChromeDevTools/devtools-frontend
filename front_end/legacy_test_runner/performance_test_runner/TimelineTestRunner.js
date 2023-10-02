@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Timeline from '../../panels/timeline/timeline.js';
 
 /**
@@ -269,7 +270,7 @@ PerformanceTestRunner.printTraceEventProperties = function(traceEvent) {
     data: traceEvent.args['data'] || traceEvent.args,
     endTime: traceEvent.endTime || traceEvent.startTime,
     frameId: frameId,
-    stackTrace: TimelineModel.TimelineData.forEvent(traceEvent).stackTrace,
+    stackTrace: TimelineModel.TimelineModel.EventOnTimelineData.forEvent(traceEvent).stackTrace,
     startTime: traceEvent.startTime,
     type: traceEvent.name
   };
@@ -290,7 +291,7 @@ PerformanceTestRunner.printTraceEventPropertiesWithDetails = async function(even
   TestRunner.waitForPendingLiveLocationUpdates();
   TestRunner.addResult(`Text details for ${event.name}: ${details}`);
 
-  if (TimelineModel.TimelineData.forEvent(event).warning) {
+  if (TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).warning) {
     TestRunner.addResult(`${event.name} has a warning`);
   }
 };
@@ -360,8 +361,8 @@ PerformanceTestRunner.dumpInvalidations = function(recordType, index, comment) {
   const event = PerformanceTestRunner.findTimelineEvent(recordType, index || 0);
 
   TestRunner.addArray(
-      TimelineModel.InvalidationTracker.invalidationEventsFor(event), PerformanceTestRunner.InvalidationFormatters, '',
-      comment);
+      TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event) || [],
+      PerformanceTestRunner.InvalidationFormatters, '', comment);
 };
 
 PerformanceTestRunner.dumpFlameChartProvider = function(provider, includeGroups) {

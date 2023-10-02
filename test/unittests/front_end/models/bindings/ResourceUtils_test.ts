@@ -83,6 +83,14 @@ describeWithMockConnection('ResourceUtils', () => {
           OTHER_PATH as Platform.DevToolsPath.UrlString);
     });
 
+    it('returns path relative to the main URL domain if path partially matches', async () => {
+      assert.strictEqual(
+          Bindings.ResourceUtils.displayNameForURL(
+              INSPECTED_URL_SCHEME + INSPECTED_URL_DOMAIN + '/' + INSPECTED_URL_PATH_COMPONENTS[1] + '/' as
+              Platform.DevToolsPath.UrlString),
+          '/' + INSPECTED_URL_PATH_COMPONENTS[1] + '/' as Platform.DevToolsPath.UrlString);
+    });
+
     it('returns main URL domain if it matches and the path is empty', async () => {
       assert.strictEqual(
           Bindings.ResourceUtils.displayNameForURL(

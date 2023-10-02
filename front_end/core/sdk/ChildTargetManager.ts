@@ -2,18 +2,30 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../core/i18n/i18n.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Host from '../host/host.js';
 import type * as ProtocolClient from '../protocol_client/protocol_client.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import type * as Protocol from '../../generated/protocol.js';
 
 import {ParallelConnection} from './Connections.js';
-
-import {Capability, Type, type Target} from './Target.js';
-import {SDKModel} from './SDKModel.js';
-import {Events as TargetManagerEvents, TargetManager} from './TargetManager.js';
 import {PrimaryPageChangeType, ResourceTreeModel} from './ResourceTreeModel.js';
+import {SDKModel} from './SDKModel.js';
+import {Capability, type Target, Type} from './Target.js';
+import {Events as TargetManagerEvents, TargetManager} from './TargetManager.js';
+
+const UIStrings = {
+  /**
+   * @description Text that refers to the main target. The main target is the primary webpage that
+   * DevTools is connected to. This text is used in various places in the UI as a label/name to inform
+   * the user which target/webpage they are currently connected to, as DevTools may connect to multiple
+   * targets at the same time in some scenarios.
+   */
+  main: 'Main',
+};
+const str_ = i18n.i18n.registerUIStrings('core/sdk/ChildTargetManager.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ChildTargetManager extends SDKModel<EventTypes> implements ProtocolProxyApi.TargetDispatcher {
   readonly #targetManager: TargetManager;
@@ -89,6 +101,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
         if (resourceTreeModel && resourceTreeModel.mainFrame) {
           resourceTreeModel.primaryPageChanged(resourceTreeModel.mainFrame, PrimaryPageChangeType.Activation);
         }
+        target.setName(i18nString(UIStrings.main));
       } else {
         target.updateTargetInfo(targetInfo);
       }

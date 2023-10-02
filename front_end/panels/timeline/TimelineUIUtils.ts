@@ -1003,6 +1003,10 @@ const UIStrings = {
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
+  cpuTime: 'CPU time',
+  /**
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
   layerTree: 'Layer tree',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
@@ -3104,6 +3108,7 @@ export class TimelineUIUtils {
 
     const duration = TimelineUIUtils.frameDuration(frame);
     contentHelper.appendElementRow(i18nString(UIStrings.duration), duration);
+    contentHelper.appendTextRow(i18nString(UIStrings.cpuTime), i18n.TimeUtilities.millisToString(frame.cpuTime, true));
     if (filmStrip && filmStripFrame) {
       const filmStripPreview = document.createElement('div');
       filmStripPreview.classList.add('timeline-filmstrip-preview');

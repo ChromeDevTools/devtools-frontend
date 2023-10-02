@@ -12,8 +12,73 @@ import {
 } from '../../helpers/TraceHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../helpers/MockConnection.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
+import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 describeWithMockConnection('TimelineFrameModel', () => {
+  describe('parsing frames', () => {
+    it('can parse out a trace and return the frames', async function() {
+      const target = createTarget();
+      const frameModel = new TimelineModel.TimelineFrameModel.TimelineFrameModel(event => event.name);
+
+      const models = await TraceLoader.allModels(this, 'web-dev.json.gz');
+
+      const mainTrack = models.timelineModel.tracks().find(track => {
+        return track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame;
+      });
+      const mainThread = mainTrack?.thread;
+      if (!mainThread) {
+        throw new Error('Could not find main thread');
+      }
+
+      frameModel.addTraceEvents(target, models.timelineModel.inspectedTargetEvents(), [{
+                                  thread: mainThread,
+                                  time: mainTrack.events[0].startTime,
+                                }]);
+
+      const parsedFrames = frameModel.getFrames();
+      assert.lengthOf(frameModel.getFrames(), 3);
+
+      assert.strictEqual(parsedFrames[0].startTime, 1020034959.113);
+      assert.strictEqual(parsedFrames[0].duration, 2.7699999809265137);
+      assert.isFalse(parsedFrames[0].idle);
+
+      assert.strictEqual(parsedFrames[1].startTime, 1020034961.883);
+      assert.strictEqual(parsedFrames[1].duration, 66.73199999332428);
+      assert.isFalse(parsedFrames[1].idle);
+
+      assert.strictEqual(parsedFrames[2].startTime, 1020035028.615);
+      assert.strictEqual(parsedFrames[2].duration, 16.682999968528748);
+      assert.isFalse(parsedFrames[2].idle);
+    });
+
+    it('identifies idle frames', async function() {
+      const target = createTarget();
+      const frameModel = new TimelineModel.TimelineFrameModel.TimelineFrameModel(event => event.name);
+
+      const models = await TraceLoader.allModels(this, 'style-invalidation-change-id.json.gz');
+
+      const mainTrack = models.timelineModel.tracks().find(track => {
+        return track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame;
+      });
+      const mainThread = mainTrack?.thread;
+      if (!mainThread) {
+        throw new Error('Could not find main thread');
+      }
+
+      frameModel.addTraceEvents(target, models.timelineModel.inspectedTargetEvents(), [{
+                                  thread: mainThread,
+                                  time: mainTrack.events[0].startTime,
+                                }]);
+
+      const parsedFrames = frameModel.getFrames();
+      assert.isFalse(parsedFrames[0].idle);
+      assert.isFalse(parsedFrames[1].idle);
+      assert.isFalse(parsedFrames[2].idle);
+      assert.isFalse(parsedFrames[3].idle);
+      assert.isTrue(parsedFrames[4].idle);
+    });
+  });
+
   describe('LayerPaintEvent', () => {
     beforeEach(() => {
       // https://chromedevtools.github.io/devtools-protocol/tot/LayerTree/#method-loadSnapshot

@@ -51,7 +51,6 @@ export class ChartViewport extends UI.Widget.VBox {
   private totalTime!: number;
   private isUpdateScheduled?: boolean;
   private cancelWindowTimesAnimation?: (() => void)|null;
-  #showVerticalScrollOnExpandInternal: boolean;
 
   constructor(delegate: ChartViewportDelegate) {
     super();
@@ -74,7 +73,6 @@ export class ChartViewport extends UI.Widget.VBox {
         this.endRangeSelection.bind(this), 'text', null);
 
     this.alwaysShowVerticalScrollInternal = false;
-    this.#showVerticalScrollOnExpandInternal = false;
     this.rangeSelectionEnabled = true;
     this.vScrollElement = this.contentElement.createChild('div', 'chart-viewport-v-scroll');
     this.vScrollContent = this.vScrollElement.createChild('div');
@@ -95,10 +93,6 @@ export class ChartViewport extends UI.Widget.VBox {
   alwaysShowVerticalScroll(): void {
     this.alwaysShowVerticalScrollInternal = true;
     this.vScrollElement.classList.add('always-show-scrollbar');
-  }
-
-  showVerticalScrollOnExpand(): void {
-    this.#showVerticalScrollOnExpandInternal = true;
   }
 
   disableRangeSelection(): void {
@@ -125,14 +119,8 @@ export class ChartViewport extends UI.Widget.VBox {
     this.updateContentElementSize();
   }
 
-  toggleScrollbar(expanded: boolean): void {
-    this.vScrollElement.classList.toggle('hidden', expanded);
-  }
-
   override onResize(): void {
-    if (!this.#showVerticalScrollOnExpandInternal) {
-      this.updateScrollBar();
-    }
+    this.updateScrollBar();
     this.updateContentElementSize();
     this.scheduleUpdate();
   }
@@ -170,9 +158,7 @@ export class ChartViewport extends UI.Widget.VBox {
   setContentHeight(totalHeight: number): void {
     this.totalHeight = totalHeight;
     this.vScrollContent.style.height = totalHeight + 'px';
-    if (!this.#showVerticalScrollOnExpandInternal) {
-      this.updateScrollBar();
-    }
+    this.updateScrollBar();
     this.updateContentElementSize();
     if (this.scrollTop + this.offsetHeight <= totalHeight) {
       return;

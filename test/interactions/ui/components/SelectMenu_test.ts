@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import type * as Menus from '../../../../front_end/ui/components/menus/menus.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../../test/interactions/helpers/shared.js';
 import {
   $,
@@ -15,13 +16,11 @@ import {
   waitForFunction,
   waitForNone,
 } from '../../../../test/shared/helper.js';
-import {describe, it} from '../../../../test/shared/mocha-extensions.js';
+import {describe, it, itScreenshot} from '../../../../test/shared/mocha-extensions.js';
 import {
   assertElementScreenshotUnchanged,
-  itScreenshot,
   waitForDialogAnimationEnd,
 } from '../../../shared/screenshots.js';
-import type * as Menus from '../../../../front_end/ui/components/menus/menus.js';
 
 type GetSelectMenuOptions = {
   placeholderSelector?: string,

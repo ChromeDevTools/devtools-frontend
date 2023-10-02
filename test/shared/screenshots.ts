@@ -20,7 +20,6 @@ import {
   timeout,
   waitFor,
 } from '../shared/helper.js';
-import {makeCustomWrappedIt} from '../shared/mocha-extensions.js';
 
 /**
  * The goldens screenshot folder is always taken from the source directory (NOT
@@ -335,8 +334,6 @@ function setGeneratedFileAsGolden(golden: string, generated: string) {
     assert.fail(`Error setting golden, ${e}`);
   }
 }
-
-export const itScreenshot = makeCustomWrappedIt('[screenshot]:');
 
 export async function waitForDialogAnimationEnd(root?: puppeteer.ElementHandle) {
   const ANIMATION_TIMEOUT = 2000;

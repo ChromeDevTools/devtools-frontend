@@ -685,8 +685,7 @@ describe('Recorder', function() {
         },
         {
           type: 'waitForExpression' as StepType.WaitForExpression,
-          // TODO: change `false` to `true` once prerendering is enabled.
-          expression: 'document.querySelector("div").innerText === "false"',
+          expression: 'document.querySelector("div").innerText === "true"',
         },
       ],
     });

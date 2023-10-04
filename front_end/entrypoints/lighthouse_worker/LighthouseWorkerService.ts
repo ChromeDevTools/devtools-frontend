@@ -68,7 +68,8 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
   });
 
   let puppeteerHandle: Awaited<ReturnType<
-      typeof PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper['connectPuppeteerToConnection']>>|undefined;
+      typeof PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper['connectPuppeteerToConnectionViaTab']>>|
+      undefined;
 
   try {
     // For timespan we only need to perform setup on startTimespan.
@@ -98,26 +99,15 @@ async function invokeLH(action: string, args: any): Promise<unknown> {
     const config = args.config || self.createConfig(args.categoryIDs, flags.formFactor);
     const url = args.url;
 
-    const {mainFrameId, mainTargetId, mainSessionId, targetInfos} = args;
+    const {rootTargetId, mainSessionId} = args;
     cdpConnection = new ConnectionProxy(mainSessionId);
-    puppeteerHandle = await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnection({
-      connection: cdpConnection,
-      mainFrameId,
-      targetInfos,
-      // For the most part, defer to Lighthouse for which targets are important.
-      // Excluding devtools targets is required for e2e tests to work, and LH doesn't support auditing DT targets anyway.
-      targetFilterCallback: targetInfo => {
-        if (targetInfo.url.startsWith('https://i0.devtools-frontend') || targetInfo.url.startsWith('devtools://')) {
-          return false;
-        }
-        // TODO only connect to iframes that are related to the main target. This requires refactoring in Puppeteer: https://github.com/puppeteer/puppeteer/issues/3667.
-        return (
-            targetInfo.targetId === mainTargetId || targetInfo.openerId === mainTargetId ||
-            targetInfo.type === 'iframe');
-      },
-      // Lighthouse can only audit normal pages.
-      isPageTargetCallback: targetInfo => targetInfo.type === 'page',
-    });
+    puppeteerHandle =
+        await PuppeteerService.PuppeteerConnection.PuppeteerConnectionHelper.connectPuppeteerToConnectionViaTab({
+          connection: cdpConnection,
+          rootTargetId,
+          // Lighthouse can only audit normal pages.
+          isPageTargetCallback: targetInfo => targetInfo.type === 'page',
+        });
 
     const {page} = puppeteerHandle;
     if (!page) {

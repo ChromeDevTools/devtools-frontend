@@ -223,6 +223,8 @@ function executeTestSuite({
   setEnvValueIfValuePresent('TARGET', target);
   setEnvValueIfValuePresent('TEST_PATTERNS', testFilePattern);
   setEnvValueIfValuePresent('COVERAGE', coverage);
+  // TODO(crbug.com/1484476): remove once the Tab target is enabled by default.
+  setEnvValueIfValuePresent('PUPPETEER_INTERNAL_TAB_TARGET', true);
 
   /**
    * This one has to be set as an ENV variable as Node looks for the NODE_PATH environment variable.

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
@@ -330,6 +331,53 @@ describeWithMockConnection('NetworkLog', () => {
 
     navigateTarget(mainFrameWithoutTabTarget);
     assert.strictEqual(networkLogResetEvents, 2);
+  });
+
+  describe('on primary page changed', () => {
+    let networkLog: Logs.NetworkLog.NetworkLog;
+    let resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
+    let frame: SDK.ResourceTreeModel.ResourceTreeFrame;
+
+    beforeEach(() => {
+      Common.Settings.Settings.instance().moduleSetting('network_log.preserve-log').set(false);
+      const target = createTarget();
+      const networkManager = target.model(SDK.NetworkManager.NetworkManager);
+      assertNotNullOrUndefined(networkManager);
+      networkLog = Logs.NetworkLog.NetworkLog.instance();
+      const networkDispatcher = new SDK.NetworkManager.NetworkDispatcher(networkManager);
+
+      const requestWillBeSentEvent1 = {requestId: 'mockId1', request: {url: 'example.com'}} as
+          Protocol.Network.RequestWillBeSentEvent;
+      networkDispatcher.requestWillBeSent(requestWillBeSentEvent1);
+      const requestWillBeSentEvent2 = {requestId: 'mockId2', request: {url: 'foo.com'}, loaderId: 'loaderId'} as
+          Protocol.Network.RequestWillBeSentEvent;
+      networkDispatcher.requestWillBeSent(requestWillBeSentEvent2);
+      assert.strictEqual(networkLog.requests().length, 2);
+
+      resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+      frame = {
+        url: 'http://example.com/',
+        backForwardCacheDetails: {},
+        unreachableUrl: () => Platform.DevToolsPath.EmptyUrlString,
+        resourceTreeModel: () => resourceTreeModel,
+      } as SDK.ResourceTreeModel.ResourceTreeFrame;
+    });
+
+    it('discards requests with mismatched loaderId on navigation', () => {
+      assertNotNullOrUndefined(resourceTreeModel);
+      resourceTreeModel.dispatchEventToListeners(
+          SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+          {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Navigation});
+      assert.deepEqual(networkLog.requests().map(request => request.requestId()), ['mockId1']);
+    });
+
+    it('does not discard requests on prerender activation', () => {
+      assertNotNullOrUndefined(resourceTreeModel);
+      resourceTreeModel.dispatchEventToListeners(
+          SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+          {frame, type: SDK.ResourceTreeModel.PrimaryPageChangeType.Activation});
+      assert.deepEqual(networkLog.requests().map(request => request.requestId()), ['mockId1', 'mockId2']);
+    });
   });
 
   it('removes preflight requests with a UnexpectedPrivateNetworkAccess CORS error', () => {

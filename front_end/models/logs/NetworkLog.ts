@@ -365,7 +365,8 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     let currentPageLoad: SDK.PageLoad.PageLoad|null = null;
     const requestsToAdd = [];
     for (const request of oldManagerRequests) {
-      if (request.loaderId !== mainFrame.loaderId) {
+      if (event.data.type !== SDK.ResourceTreeModel.PrimaryPageChangeType.Activation &&
+          request.loaderId !== mainFrame.loaderId) {
         continue;
       }
       if (!currentPageLoad) {

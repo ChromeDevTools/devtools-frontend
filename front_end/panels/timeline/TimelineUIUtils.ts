@@ -1424,13 +1424,11 @@ export class TimelineUIUtils {
         return TimelineUIUtils.colorForId(frame.url);
       }
     }
-    const color = TimelineUIUtils.eventStyle(event).category.color;
-    let parsedColor = TimelineUIUtils.eventStyle(event).category.getComputedValue(color);
+    let parsedColor = TimelineUIUtils.eventStyle(event).category.getComputedValue();
     // This event is considered idle time but still rendered as a scripting event here
     // to connect the StreamingCompileScriptParsing events it belongs to.
     if (event.name === TimelineModel.TimelineModel.RecordType.StreamingCompileScriptWaiting) {
-      const rawColor = TimelineUIUtils.categories().scripting.color;
-      parsedColor = TimelineUIUtils.categories().scripting.getComputedValue(rawColor);
+      parsedColor = TimelineUIUtils.categories().scripting.getComputedValue();
       if (!parsedColor) {
         throw new Error('Unable to parse color from TimelineUIUtils.categories().scripting.color');
       }
@@ -3060,7 +3058,7 @@ export class TimelineUIUtils {
       if (selfTime) {
         appendLegendRow(
             selfCategory.name, i18nString(UIStrings.sSelf, {PH1: selfCategory.title}), selfTime,
-            selfCategory.getCSSValue(selfCategory.color));
+            selfCategory.getCSSValue());
       }
       // Children of the same category.
       const categoryTime = aggregatedStats[selfCategory.name];
@@ -3068,7 +3066,7 @@ export class TimelineUIUtils {
       if (value > 0) {
         appendLegendRow(
             selfCategory.name, i18nString(UIStrings.sChildren, {PH1: selfCategory.title}), value,
-            selfCategory.getCSSValue(selfCategory.childColor));
+            selfCategory.getCSSValue());
       }
     }
 
@@ -3078,8 +3076,7 @@ export class TimelineUIUtils {
       if (category === selfCategory) {
         continue;
       }
-      appendLegendRow(
-          category.name, category.title, aggregatedStats[category.name], category.getCSSValue(category.color));
+      appendLegendRow(category.name, category.title, aggregatedStats[category.name], category.getCSSValue());
     }
 
     pieChart.data = {
@@ -3576,12 +3573,12 @@ export class TimelineCategory {
     return Boolean(this.hiddenInternal);
   }
 
-  getCSSValue(color: string): string {
-    return `var(${color})`;
+  getCSSValue(): string {
+    return `var(${this.color})`;
   }
 
-  getComputedValue(color: string): string {
-    return ThemeSupport.ThemeSupport.instance().getComputedValue(color);
+  getComputedValue(): string {
+    return ThemeSupport.ThemeSupport.instance().getComputedValue(this.color);
   }
 
   set hidden(hidden: boolean) {

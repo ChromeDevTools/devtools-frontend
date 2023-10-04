@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Application from '../../panels/application/application.js';
 import * as Sources from '../../panels/sources/sources.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
@@ -75,11 +77,11 @@ ApplicationTestRunner.dumpResourcesTree = function() {
     }
   }
 
-  dump(self.UI.panels.resources.sidebar.resourcesSection.treeElement, '');
+  dump(Application.ResourcesPanel.ResourcesPanel.instance().sidebar.resourcesSection.treeElement, '');
 
   if (!ApplicationTestRunner.testSourceNavigator) {
     ApplicationTestRunner.testSourceNavigator = new Sources.SourcesNavigator.NetworkNavigatorView();
-    ApplicationTestRunner.testSourceNavigator.show(self.UI.inspectorView.element);
+    ApplicationTestRunner.testSourceNavigator.show(UI.InspectorView.InspectorView.instance().element);
   }
 
   SourcesTestRunner.dumpNavigatorViewInAllModes(ApplicationTestRunner.testSourceNavigator);

@@ -350,9 +350,11 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories();
 
 HeapProfilerTestRunner.startProfilerTest = function(callback) {
   TestRunner.addResult('Profiler was enabled.');
-  HeapProfilerTestRunner.panelReset = TestRunner.override(self.UI.panels.heap_profiler, 'reset', function() {}, true);
+  HeapProfilerTestRunner.panelReset =
+      TestRunner.override(Profiler.HeapProfilerPanel.HeapProfilerPanel.instance(), 'reset', function() {}, true);
   TestRunner.addSniffer(
-      self.UI.panels.heap_profiler, 'addProfileHeader', HeapProfilerTestRunner.profileHeaderAdded, true);
+      Profiler.HeapProfilerPanel.HeapProfilerPanel.instance(), 'addProfileHeader',
+      HeapProfilerTestRunner.profileHeaderAdded, true);
   TestRunner.addSniffer(
       Profiler.ProfileView.ProfileView.prototype, 'refresh', HeapProfilerTestRunner.profileViewRefresh, true);
   TestRunner.addSniffer(
@@ -400,7 +402,7 @@ HeapProfilerTestRunner.runHeapSnapshotTestSuite = function(testSuite) {
     TestRunner.addResult(
         'Running: ' +
         /function\s([^(]*)/.exec(nextTest)[1]);
-    HeapProfilerTestRunner.panelReset.call(self.UI.panels.heap_profiler);
+    HeapProfilerTestRunner.panelReset.call(Profiler.HeapProfilerPanel.HeapProfilerPanel.instance());
     TestRunner.safeWrap(nextTest)(runner, runner);
   }
 
@@ -622,7 +624,7 @@ HeapProfilerTestRunner.findMatchingRow = function(matcher, parent) {
 HeapProfilerTestRunner.switchToView = function(title, callback) {
   return new Promise(resolve => {
     callback = TestRunner.safeWrap(callback);
-    const view = self.UI.panels.heap_profiler.visibleView;
+    const view = Profiler.HeapProfilerPanel.HeapProfilerPanel.instance().visibleView;
     view.changePerspectiveAndWait(title).then(callback).then(resolve);
     HeapProfilerTestRunner.currentGrid().scrollContainer.style.height = '10000px';
   });
@@ -669,7 +671,7 @@ HeapProfilerTestRunner.takeSnapshotPromise = function() {
         throw `FAILED: wrong number of recorded profiles was found. profiles.length = ${profiles.length}`;
       }
       const profile = profiles[0];
-      self.UI.panels.heap_profiler.showProfile(profile);
+      Profiler.HeapProfilerPanel.HeapProfilerPanel.instance().showProfile(profile);
 
       const dataGrid = HeapProfilerTestRunner.currentProfileView().dataGrid;
       dataGrid.addEventListener(
@@ -689,7 +691,7 @@ HeapProfilerTestRunner.viewColumns = function() {
 };
 
 HeapProfilerTestRunner.currentProfileView = function() {
-  return self.UI.panels.heap_profiler.visibleView;
+  return Profiler.HeapProfilerPanel.HeapProfilerPanel.instance().visibleView;
 };
 
 HeapProfilerTestRunner.currentGrid = function() {
@@ -720,13 +722,13 @@ HeapProfilerTestRunner.showProfileWhenAdded = function(title) {
 
 HeapProfilerTestRunner.profileHeaderAdded = function(profile) {
   if (HeapProfilerTestRunner.showProfileWhenAdded === profile.title) {
-    self.UI.panels.heap_profiler.showProfile(profile);
+    Profiler.HeapProfilerPanel.HeapProfilerPanel.instance().showProfile(profile);
   }
 };
 
 HeapProfilerTestRunner.waitUntilProfileViewIsShown = function(title, callback) {
   callback = TestRunner.safeWrap(callback);
-  const profilesPanel = self.UI.panels.heap_profiler;
+  const profilesPanel = Profiler.HeapProfilerPanel.HeapProfilerPanel.instance();
 
   if (profilesPanel.visibleView && profilesPanel.visibleView.profile &&
       profilesPanel.visibleView.profileHeader.title === title) {

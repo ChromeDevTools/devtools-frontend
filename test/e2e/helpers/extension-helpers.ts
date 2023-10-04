@@ -49,8 +49,7 @@ export async function loadExtension(name: string, startPage?: string) {
     const session = (frontend as unknown as CdpPage)._client();
     // TODO(chromium:1246836) remove once real extension tests are available
     const injectedAPI = await frontend.evaluate(
-        extensionInfo => globalThis.buildExtensionAPIInjectedScript(
-            extensionInfo, undefined, 'default', globalThis.UI.shortcutRegistry.globalShortcutKeys()),
+        extensionInfo => globalThis.buildExtensionAPIInjectedScript(extensionInfo, undefined, 'default', []),
         extensionInfo);
 
     function declareChrome() {

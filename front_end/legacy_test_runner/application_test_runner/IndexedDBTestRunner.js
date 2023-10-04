@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Application from '../../panels/application/application.js';
 import {ConsoleTestRunner} from '../console_test_runner/console_test_runner.js';
 
 /**
@@ -11,7 +12,7 @@ self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
 ApplicationTestRunner.dumpIndexedDBTree = async function() {
   TestRunner.addResult('Dumping IndexedDB tree:');
-  const indexedDBTreeElement = self.UI.panels.resources.sidebar.indexedDBListTreeElement;
+  const indexedDBTreeElement = Application.ResourcesPanel.ResourcesPanel.instance().sidebar.indexedDBListTreeElement;
 
   if (!indexedDBTreeElement.childCount()) {
     TestRunner.addResult('    (empty)');
@@ -46,7 +47,8 @@ ApplicationTestRunner.dumpIndexedDBTree = async function() {
 
 ApplicationTestRunner.dumpObjectStores = async function() {
   TestRunner.addResult('Dumping ObjectStore data:');
-  const idbDatabaseTreeElement = self.UI.panels.resources.sidebar.indexedDBListTreeElement.idbDatabaseTreeElements[0];
+  const idbDatabaseTreeElement =
+      Application.ResourcesPanel.ResourcesPanel.instance().sidebar.indexedDBListTreeElement.idbDatabaseTreeElements[0];
   for (let i = 0; i < idbDatabaseTreeElement.childCount(); ++i) {
     const objectStoreTreeElement = idbDatabaseTreeElement.childAt(i);
     objectStoreTreeElement.onselect(false);

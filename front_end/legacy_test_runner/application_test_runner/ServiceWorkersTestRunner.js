@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Application from '../../panels/application/application.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
@@ -37,7 +39,7 @@ ApplicationTestRunner.waitForServiceWorker = function(callback) {
 };
 
 ApplicationTestRunner.dumpServiceWorkersView = function() {
-  const swView = self.UI.panels.resources.visibleView;
+  const swView = Application.ResourcesPanel.ResourcesPanel.instance().visibleView;
 
   return swView.currentWorkersView.sectionList.childTextNodes()
       .map(function(node) {

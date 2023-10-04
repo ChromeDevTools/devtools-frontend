@@ -2,15 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Application from '../../panels/application/application.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
 self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
 ApplicationTestRunner.dumpCacheTree = async function(pathFilter) {
-  self.UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.expand();
   const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
-  self.UI.panels.resources.sidebar.cacheStorageListTreeElement.refreshCaches();
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
   await ApplicationTestRunner.dumpCacheTreeNoRefresh(pathFilter);
 };
@@ -26,7 +28,7 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
       TestRunner.addResult(' '.repeat(8) + entries.join(', '));
     }
   }
-  self.UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.expand();
 
   if (!pathFilter) {
     TestRunner.addResult('Dumping CacheStorage tree:');
@@ -34,7 +36,7 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
     TestRunner.addResult('Dumping CacheStorage tree with URL path filter string "' + pathFilter + '"');
   }
 
-  const cachesTreeElement = self.UI.panels.resources.sidebar.cacheStorageListTreeElement;
+  const cachesTreeElement = Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement;
 
   if (!cachesTreeElement.childCount()) {
     TestRunner.addResult('    (empty)');
@@ -75,19 +77,19 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
 };
 
 ApplicationTestRunner.dumpCachedEntryContent = async function(cacheName, requestUrl, withHeader) {
-  self.UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.expand();
   const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
-  self.UI.panels.resources.sidebar.cacheStorageListTreeElement.refreshCaches();
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
   await ApplicationTestRunner.dumpCachedEntryContentNoRefresh(cacheName, requestUrl, withHeader);
 };
 
 ApplicationTestRunner.dumpCachedEntryContentNoRefresh = async function(cacheName, requestUrl, withHeader) {
-  self.UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.expand();
 
   TestRunner.addResult('Dumping ' + cacheName + '\'s entry with request URL: ' + requestUrl);
 
-  const cachesTreeElement = self.UI.panels.resources.sidebar.cacheStorageListTreeElement;
+  const cachesTreeElement = Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement;
 
   for (let i = 0; i < cachesTreeElement.childCount(); ++i) {
     const cacheTreeElement = cachesTreeElement.childAt(i);
@@ -128,7 +130,7 @@ ApplicationTestRunner.dumpCachedEntryContentNoRefresh = async function(cacheName
 };
 
 ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optionalEntry) {
-  self.UI.panels.resources.sidebar.cacheStorageListTreeElement.expand();
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.expand();
 
   if (optionalEntry) {
     TestRunner.addResult('Deleting CacheStorage entry ' + optionalEntry + ' in cache ' + cacheName);
@@ -136,9 +138,9 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
     TestRunner.addResult('Deleting CacheStorage cache ' + cacheName);
   }
 
-  const cachesTreeElement = self.UI.panels.resources.sidebar.cacheStorageListTreeElement;
+  const cachesTreeElement = Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement;
   let promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
-  self.UI.panels.resources.sidebar.cacheStorageListTreeElement.refreshCaches();
+  Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
 
   if (!cachesTreeElement.childCount()) {

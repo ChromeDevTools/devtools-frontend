@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Sources from '../../panels/sources/sources.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
@@ -103,7 +104,7 @@ SourcesTestRunner.replaceAndDumpChange = function(sourceFrame, searchConfig, rep
     oldLines.push(editor.line(i));
   }
 
-  const searchableView = self.UI.panels.sources.sourcesView().searchableView();
+  const searchableView = Sources.SourcesPanel.SourcesPanel.instance().sourcesView().searchableView();
   searchableView.showSearchField();
   searchableView.caseSensitiveButton.setToggled(searchConfig.caseSensitive);
   searchableView.regexButton.setToggled(searchConfig.isRegex);

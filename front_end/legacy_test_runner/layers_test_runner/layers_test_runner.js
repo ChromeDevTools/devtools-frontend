@@ -64,7 +64,7 @@ LayersTestRunner.dumpLayers3DView = function(prefix, root) {
   }
 
   if (!root) {
-    root = self.UI.panels.layers.layers3DView.rotatingContainerElement;
+    root = Layers.LayersPanel.LayersPanel.instance().layers3DView.rotatingContainerElement;
   }
 
   if (root._layer) {

@@ -139,8 +139,8 @@ SourcesTestRunner.waitUntilResumedPromise = function() {
 };
 
 SourcesTestRunner.resumeExecution = function(callback) {
-  if (self.UI.panels.sources.paused()) {
-    self.UI.panels.sources.togglePause();
+  if (Sources.SourcesPanel.SourcesPanel.instance().paused()) {
+    Sources.SourcesPanel.SourcesPanel.instance().togglePause();
   }
 
   SourcesTestRunner.waitUntilResumed(callback);
@@ -185,31 +185,31 @@ SourcesTestRunner.waitUntilPausedAndDumpStackAndResume = function(callback, opti
 
 SourcesTestRunner.stepOver = function() {
   queueMicrotask(function() {
-    self.UI.panels.sources.stepOver();
+    Sources.SourcesPanel.SourcesPanel.instance().stepOver();
   });
 };
 
 SourcesTestRunner.stepInto = function() {
   queueMicrotask(function() {
-    self.UI.panels.sources.stepInto();
+    Sources.SourcesPanel.SourcesPanel.instance().stepInto();
   });
 };
 
 SourcesTestRunner.stepIntoAsync = function() {
   queueMicrotask(function() {
-    self.UI.panels.sources.stepIntoAsync();
+    Sources.SourcesPanel.SourcesPanel.instance().stepIntoAsync();
   });
 };
 
 SourcesTestRunner.stepOut = function() {
   queueMicrotask(function() {
-    self.UI.panels.sources.stepOut();
+    Sources.SourcesPanel.SourcesPanel.instance().stepOut();
   });
 };
 
 SourcesTestRunner.togglePause = function() {
   queueMicrotask(function() {
-    self.UI.panels.sources.togglePause();
+    Sources.SourcesPanel.SourcesPanel.instance().togglePause();
   });
 };
 
@@ -386,7 +386,7 @@ SourcesTestRunner.resumedScript = function() {
 };
 
 SourcesTestRunner.showUISourceCode = function(uiSourceCode, callback) {
-  const panel = self.UI.panels.sources;
+  const panel = Sources.SourcesPanel.SourcesPanel.instance();
   panel.showUISourceCode(uiSourceCode);
   const sourceFrame = panel.visibleView;
 
@@ -419,7 +419,7 @@ SourcesTestRunner.showScriptSourcePromise = function(scriptName) {
 };
 
 SourcesTestRunner.waitForScriptSource = function(scriptName, callback, contentType) {
-  const panel = self.UI.panels.sources;
+  const panel = Sources.SourcesPanel.SourcesPanel.instance();
   const uiSourceCodes = panel.workspace.uiSourceCodes();
 
   for (let i = 0; i < uiSourceCodes.length; ++i) {

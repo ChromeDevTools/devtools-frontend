@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
@@ -15,7 +16,7 @@ SourcesTestRunner.createTestEditor = function(clientHeight, textEditorDelegate) 
   clientHeight = clientHeight || 100;
   textEditor.element.style.height = clientHeight + 'px';
   textEditor.element.style.flex = 'none';
-  textEditor.show(self.UI.inspectorView.element);
+  textEditor.show(UI.InspectorView.InspectorView.instance().element);
   return textEditor;
 };
 

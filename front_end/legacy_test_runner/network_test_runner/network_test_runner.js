@@ -4,6 +4,7 @@
 
 import * as HAR from '../../models/har/har.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as Network from '../../panels/network/network.js';
 import {ConsoleTestRunner} from '../console_test_runner/console_test_runner.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
@@ -23,7 +24,7 @@ NetworkTestRunner.waitForRequestResponse = function(request) {
 };
 
 NetworkTestRunner.waitForNetworkLogViewNodeForRequest = function(request) {
-  const networkLogView = self.UI.panels.network.networkLogView;
+  const networkLogView = Network.NetworkPanel.NetworkPanel.instance().networkLogView;
   const node = networkLogView.nodeForRequest(request);
 
   if (node) {
@@ -54,11 +55,11 @@ NetworkTestRunner.waitForWebsocketFrameReceived = function(wsRequest, message) {
 };
 
 NetworkTestRunner.recordNetwork = function() {
-  self.UI.panels.network.networkLogView.setRecording(true);
+  Network.NetworkPanel.NetworkPanel.instance().networkLogView.setRecording(true);
 };
 
 NetworkTestRunner.networkWaterfallColumn = function() {
-  return self.UI.panels.network.networkLogView.columns().waterfallColumn;
+  return Network.NetworkPanel.NetworkPanel.instance().networkLogView.columns().waterfallColumn;
 };
 
 NetworkTestRunner.networkRequests = function() {

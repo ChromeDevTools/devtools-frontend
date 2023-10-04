@@ -5,6 +5,7 @@
 import '../../panels/coverage/coverage-legacy.js';
 import '../sources_test_runner/sources_test_runner.js';
 
+import * as UI from '../../ui/legacy/legacy.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
@@ -17,7 +18,7 @@ export const CoverageTestRunner = {};
  * @return {!Promise}
  */
 CoverageTestRunner.startCoverage = async function(jsCoveragePerBlock) {
-  self.UI.viewManager.showView('coverage');
+  UI.ViewManager.ViewManager.instance().showView('coverage');
   const coverageView = Coverage.CoverageView.instance();
   await coverageView.startRecording({reload: false, jsCoveragePerBlock});
 };
@@ -85,7 +86,7 @@ CoverageTestRunner.exportReport = async function() {
  * @return {!Promise<!SourceFrame.SourceFrame>}
  */
 CoverageTestRunner.sourceDecorated = async function(source) {
-  await self.UI.inspectorView.showPanel('sources');
+  await UI.InspectorView.InspectorView.instance().showPanel('sources');
   const decoratePromise = TestRunner.addSnifferPromise(Coverage.CoverageView.LineDecorator.prototype, 'innerDecorate');
   const sourceFrame = await SourcesTestRunner.showScriptSourcePromise(source);
   await decoratePromise;

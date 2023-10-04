@@ -33,6 +33,7 @@ export enum RegisteredAdorners {
   SLOT = 'slot',
   TOP_LAYER = 'top-layer',
   REVEAL = 'reveal',
+  MEDIA = 'media',
 }
 
 // This enum-like const object serves as the authoritative registry for all the
@@ -92,6 +93,12 @@ export function getRegisteredAdorner(which: RegisteredAdorners): RegisteredAdorn
         name: 'reveal',
         category: AdornerCategories.DEFAULT,
         enabledByDefault: true,
+      };
+    case RegisteredAdorners.MEDIA:
+      return {
+        name: 'media',
+        category: AdornerCategories.DEFAULT,
+        enabledByDefault: false,
       };
   }
 }

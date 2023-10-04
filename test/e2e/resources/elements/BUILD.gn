@@ -9,6 +9,7 @@ copy_to_gen("elements") {
     "accessibility-iframe-page.html",
     "accessibility-simple-page.html",
     "adornment-container-query.html",
+    "adornment-media.html",
     "adornment-scroll-snap.html",
     "adornment-shadow.html",
     "adornment.html",

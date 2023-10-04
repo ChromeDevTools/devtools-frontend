@@ -234,6 +234,10 @@ export class DOMNode {
     return this.#isSVGNodeInternal;
   }
 
+  isMediaNode(): boolean {
+    return this.#nodeNameInternal === 'AUDIO' || this.#nodeNameInternal === 'VIDEO';
+  }
+
   creationStackTrace(): Promise<Protocol.Runtime.StackTrace|null> {
     if (this.#creationStackTraceInternal) {
       return this.#creationStackTraceInternal;

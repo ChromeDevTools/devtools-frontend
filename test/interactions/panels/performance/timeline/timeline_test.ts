@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {click, waitFor, waitForFunction} from '../../../../shared/helper.js';
+import {click, getBrowserAndPages, timeout, waitFor, waitForFunction} from '../../../../shared/helper.js';
 import {describe, itScreenshot} from '../../../../shared/mocha-extensions.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
@@ -154,5 +154,21 @@ describe('Performance panel', () => {
     await waitFor('.timeline-flamechart');
     const panel = await waitFor('body');
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-new-engine.png', 1);
+  });
+
+  itScreenshot('supports the network track being expanded and then clicked', async () => {
+    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev');
+    await waitFor('.timeline-flamechart');
+    const panel = await waitFor('body');
+
+    const {frontend} = getBrowserAndPages();
+    // Click to expand the network track.
+    await frontend.mouse.click(27, 131);
+    await timeout(100);  // cannot await for DOM as this is a purely canvas change.
+    await assertElementScreenshotUnchanged(panel, 'performance/timeline-expand-network-panel.png', 1);
+    // Click to select a network event.
+    await frontend.mouse.click(104, 144);
+    await timeout(100);  // cannot await for DOM as this is a purely canvas change.
+    await assertElementScreenshotUnchanged(panel, 'performance/timeline-expand-network-panel-and-select-event.png', 1);
   });
 });

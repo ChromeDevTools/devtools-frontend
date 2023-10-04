@@ -48,7 +48,7 @@ import {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
 import {DOMModel, type DOMNode} from './DOMModel.js';
 import {
   Events as ResourceTreeModelEvents,
-  type PrimaryPageChangeType,
+  PrimaryPageChangeType,
   type ResourceTreeFrame,
   ResourceTreeModel,
 } from './ResourceTreeModel.js';
@@ -739,7 +739,7 @@ export class CSSModel extends SDKModel<EventTypes> {
     if (event.data.frame.backForwardCacheDetails.restoredFromCache) {
       await this.suspendModel();
       await this.resumeModel();
-    } else {
+    } else if (event.data.type !== PrimaryPageChangeType.Activation) {
       this.resetStyleSheets();
       this.resetFontFaces();
     }

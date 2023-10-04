@@ -700,7 +700,7 @@ export class ResourceTreeFrame {
     this.#idInternal = frameId;
     this.crossTargetParentFrameId = null;
 
-    this.#loaderIdInternal = (payload && payload.loaderId) || '';
+    this.#loaderIdInternal = payload?.loaderId || '';
     this.#nameInternal = payload && payload.name;
     this.#urlInternal =
         payload && payload.url as Platform.DevToolsPath.UrlString || Platform.DevToolsPath.EmptyUrlString;
@@ -895,7 +895,7 @@ export class ResourceTreeFrame {
   }
 
   /**
-   * Returns true is this is the primary frame of the browser tab. There can only be one primary frame for each
+   * Returns true if this is the primary frame of the browser tab. There can only be one primary frame for each
    * browser tab. It is the outermost frame being actively displayed in the browser tab.
    * https://chromium.googlesource.com/chromium/src/+/HEAD/docs/frame_trees.md
    */

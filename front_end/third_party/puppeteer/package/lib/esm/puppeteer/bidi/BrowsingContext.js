@@ -1,9 +1,9 @@
 import { CDPSession } from '../api/CDPSession.js';
 import { TargetCloseError } from '../common/Errors.js';
+import { debugError } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { BidiRealm } from './Realm.js';
-import { debugError } from './util.js';
 /**
  * @internal
  */

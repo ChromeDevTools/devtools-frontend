@@ -17,24 +17,24 @@
 /// <reference types="node" />
 import type { Readable } from 'stream';
 import type Protocol from 'devtools-protocol';
-import { type CDPSession } from '../api/CDPSession.js';
-import { type WaitForOptions } from '../api/Frame.js';
+import type { CDPSession } from '../api/CDPSession.js';
+import type { WaitForOptions } from '../api/Frame.js';
 import { Page, type GeolocationOptions, type MediaFeature, type NewDocumentScriptEvaluation, type ScreenshotOptions } from '../api/Page.js';
 import { Accessibility } from '../cdp/Accessibility.js';
 import { Coverage } from '../cdp/Coverage.js';
 import { Tracing } from '../cdp/Tracing.js';
-import { type PDFOptions } from '../common/PDFOptions.js';
-import { type Awaitable } from '../common/types.js';
-import { type Viewport } from '../common/Viewport.js';
-import { type BidiBrowser } from './Browser.js';
-import { type BidiBrowserContext } from './BrowserContext.js';
+import type { PDFOptions } from '../common/PDFOptions.js';
+import type { Awaitable } from '../common/types.js';
+import type { Viewport } from '../common/Viewport.js';
+import type { BidiBrowser } from './Browser.js';
+import type { BidiBrowserContext } from './BrowserContext.js';
 import { type BrowsingContext } from './BrowsingContext.js';
-import { type BidiConnection } from './Connection.js';
+import type { BidiConnection } from './Connection.js';
 import { BidiFrame } from './Frame.js';
-import { type BidiHTTPRequest } from './HTTPRequest.js';
-import { type BidiHTTPResponse } from './HTTPResponse.js';
+import type { BidiHTTPRequest } from './HTTPRequest.js';
+import type { BidiHTTPResponse } from './HTTPResponse.js';
 import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
-import { type BidiJSHandle } from './JSHandle.js';
+import type { BidiJSHandle } from './JSHandle.js';
 /**
  * @internal
  */

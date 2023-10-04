@@ -40,11 +40,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ExposeableFunction = void 0;
 const Bidi = __importStar(require("chromium-bidi/lib/cjs/protocol/protocol.js"));
+const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const Function_js_1 = require("../util/Function.js");
 const Serializer_js_1 = require("./Serializer.js");
-const util_js_1 = require("./util.js");
 /**
  * @internal
  */

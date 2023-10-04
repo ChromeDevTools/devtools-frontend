@@ -17,10 +17,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiBrowser = void 0;
 const Browser_js_1 = require("../api/Browser.js");
+const util_js_1 = require("../common/util.js");
 const BrowserContext_js_1 = require("./BrowserContext.js");
 const BrowsingContext_js_1 = require("./BrowsingContext.js");
 const Target_js_1 = require("./Target.js");
-const util_js_1 = require("./util.js");
 /**
  * @internal
  */

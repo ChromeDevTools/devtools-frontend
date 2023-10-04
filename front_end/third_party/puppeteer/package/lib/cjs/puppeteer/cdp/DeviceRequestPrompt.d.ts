@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import type Protocol from 'devtools-protocol';
-import { type CDPSession } from '../api/CDPSession.js';
-import { type WaitTimeoutOptions } from '../api/Page.js';
-import { type TimeoutSettings } from '../common/TimeoutSettings.js';
+import type { CDPSession } from '../api/CDPSession.js';
+import type { WaitTimeoutOptions } from '../api/Page.js';
+import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 /**
  * Device in a request prompt.
  *

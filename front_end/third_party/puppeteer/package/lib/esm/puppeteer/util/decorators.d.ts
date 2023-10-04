@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Disposed, type Moveable } from '../common/types.js';
+import type { Disposed, Moveable } from '../common/types.js';
 export declare function moveable<Class extends abstract new (...args: never[]) => Moveable>(Class: Class, _: ClassDecoratorContext<Class>): Class;
 export declare function throwIfDisposed<This extends Disposed>(message?: (value: This) => string): (target: (this: This, ...args: any[]) => any, _: unknown) => (this: This, ...args: any[]) => any;
 /**

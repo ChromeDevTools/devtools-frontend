@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import { type Frame } from '../api/Frame.js';
+import type { Frame } from '../api/Frame.js';
 import { HTTPRequest, type ResourceType } from '../api/HTTPRequest.js';
-import { type BidiHTTPResponse } from './HTTPResponse.js';
+import type { BidiHTTPResponse } from './HTTPResponse.js';
 /**
  * @internal
  */

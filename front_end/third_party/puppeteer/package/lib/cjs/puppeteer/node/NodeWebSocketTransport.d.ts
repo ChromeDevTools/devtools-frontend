@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import NodeWebSocket from 'ws';
-import { type ConnectionTransport } from '../common/ConnectionTransport.js';
+import type { ConnectionTransport } from '../common/ConnectionTransport.js';
 /**
  * @internal
  */

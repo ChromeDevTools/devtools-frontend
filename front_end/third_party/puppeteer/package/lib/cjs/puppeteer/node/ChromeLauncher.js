@@ -129,7 +129,6 @@ class ChromeLauncher extends ProductLauncher_js_1.ProductLauncher {
         ];
         if (!environment_js_1.USE_TAB_TARGET) {
             disabledFeatures.push('Prerender2');
-            disabledFeatures.push('BackForwardCache');
         }
         const chromeArguments = [
             '--allow-pre-commit-input',

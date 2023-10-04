@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type CDPSession } from '../api/CDPSession.js';
-import { type ElementHandle } from '../api/ElementHandle.js';
+import type { CDPSession } from '../api/CDPSession.js';
+import type { ElementHandle } from '../api/ElementHandle.js';
 /**
  * Represents a Node and the properties of it that are relevant to Accessibility.
  * @public

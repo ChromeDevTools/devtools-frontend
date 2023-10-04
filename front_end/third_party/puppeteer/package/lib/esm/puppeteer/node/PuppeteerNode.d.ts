@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Browser } from '../api/Browser.js';
-import { type BrowserConnectOptions } from '../cdp/BrowserConnector.js';
+import type { Browser } from '../api/Browser.js';
+import type { BrowserConnectOptions } from '../cdp/BrowserConnector.js';
 import { type CommonPuppeteerSettings, type ConnectOptions, Puppeteer } from '../cdp/Puppeteer.js';
-import { type Configuration } from '../common/Configuration.js';
-import { type Product } from '../common/Product.js';
-import { type BrowserLaunchArgumentOptions, type ChromeReleaseChannel, type LaunchOptions } from './LaunchOptions.js';
+import type { Configuration } from '../common/Configuration.js';
+import type { Product } from '../common/Product.js';
+import type { BrowserLaunchArgumentOptions, ChromeReleaseChannel, LaunchOptions } from './LaunchOptions.js';
 /**
  * @public
  */

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import { type BrowsingContext } from './BrowsingContext.js';
+import type { BrowsingContext } from './BrowsingContext.js';
 /**
  * @internal
  */

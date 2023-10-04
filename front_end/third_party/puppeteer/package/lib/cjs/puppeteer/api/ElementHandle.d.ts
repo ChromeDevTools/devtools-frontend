@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 /// <reference types="node" />
-import { type Protocol } from 'devtools-protocol';
-import { type Frame } from '../api/Frame.js';
-import { type ElementFor, type EvaluateFuncWith, type HandleFor, type HandleOr, type NodeFor } from '../common/types.js';
-import { type KeyInput } from '../common/USKeyboardLayout.js';
-import { type KeyboardTypeOptions, type KeyPressOptions, type MouseClickOptions } from './Input.js';
+import type { Protocol } from 'devtools-protocol';
+import type { Frame } from '../api/Frame.js';
+import type { ElementFor, EvaluateFuncWith, HandleFor, HandleOr, NodeFor } from '../common/types.js';
+import type { KeyInput } from '../common/USKeyboardLayout.js';
+import type { KeyboardTypeOptions, KeyPressOptions, MouseClickOptions } from './Input.js';
 import { JSHandle } from './JSHandle.js';
-import { type ScreenshotOptions, type WaitForSelectorOptions } from './Page.js';
+import type { ScreenshotOptions, WaitForSelectorOptions } from './Page.js';
 /**
  * @public
  */

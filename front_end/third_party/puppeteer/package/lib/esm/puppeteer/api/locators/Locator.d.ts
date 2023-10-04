@@ -15,8 +15,8 @@
  */
 import { type Observable, type OperatorFunction } from '../../../third_party/rxjs/rxjs.js';
 import { EventEmitter, type EventType } from '../../common/EventEmitter.js';
-import { type HandleFor } from '../../common/types.js';
-import { type ClickOptions } from '../ElementHandle.js';
+import type { HandleFor } from '../../common/types.js';
+import type { ClickOptions } from '../ElementHandle.js';
 import { type Action, type AwaitedLocator, type HandleMapper, type Mapper, type Predicate } from './locators.js';
 /**
  * For observables coming from promises, a delay is needed, otherwise RxJS will
@@ -106,7 +106,7 @@ LocatorEvent as LocatorEmittedEvents, };
 export interface LocatorEvents extends Record<EventType, unknown> {
     [LocatorEvent.Action]: undefined;
 }
-export { 
+export type { 
 /**
  * @deprecated Use {@link LocatorEvents}.
  */

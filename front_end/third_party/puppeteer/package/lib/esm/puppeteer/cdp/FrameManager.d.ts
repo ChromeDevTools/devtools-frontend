@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 import { type CDPSession } from '../api/CDPSession.js';
-import { type Page } from '../api/Page.js';
+import type { Page } from '../api/Page.js';
 import { EventEmitter, type EventType } from '../common/EventEmitter.js';
-import { type TimeoutSettings } from '../common/TimeoutSettings.js';
+import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import { CdpCDPSession } from './CDPSession.js';
 import { DeviceRequestPromptManager } from './DeviceRequestPrompt.js';
 import { ExecutionContext } from './ExecutionContext.js';
 import { CdpFrame } from './Frame.js';
 import { FrameTree } from './FrameTree.js';
 import { NetworkManager } from './NetworkManager.js';
-import { type CdpTarget } from './Target.js';
+import type { CdpTarget } from './Target.js';
 /**
  * We use symbols to prevent external parties listening to these events.
  * They are internal to Puppeteer.

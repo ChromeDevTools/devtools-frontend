@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import { type ConnectionTransport } from '../common/ConnectionTransport.js';
+import type { ConnectionTransport } from '../common/ConnectionTransport.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { type BrowsingContext } from './BrowsingContext.js';
 /**

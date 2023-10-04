@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Protocol } from 'devtools-protocol';
-import { type CDPSession } from '../api/CDPSession.js';
+import type { Protocol } from 'devtools-protocol';
+import type { CDPSession } from '../api/CDPSession.js';
 import type { ElementHandle } from '../api/ElementHandle.js';
-import { type JSHandle } from '../api/JSHandle.js';
-import { type EvaluateFunc, type HandleFor } from '../common/types.js';
+import type { JSHandle } from '../api/JSHandle.js';
+import type { EvaluateFunc, HandleFor } from '../common/types.js';
 import type PuppeteerUtil from '../injected/injected.js';
-import { type IsolatedWorld } from './IsolatedWorld.js';
+import type { IsolatedWorld } from './IsolatedWorld.js';
 /**
  * @internal
  */

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Protocol } from 'devtools-protocol';
-import { type CDPSession } from '../api/CDPSession.js';
+import type { Protocol } from 'devtools-protocol';
+import type { CDPSession } from '../api/CDPSession.js';
 import { ElementHandle, type AutofillData } from '../api/ElementHandle.js';
-import { type CdpFrame } from './Frame.js';
-import { type IsolatedWorld } from './IsolatedWorld.js';
+import type { CdpFrame } from './Frame.js';
+import type { IsolatedWorld } from './IsolatedWorld.js';
 import { CdpJSHandle } from './JSHandle.js';
 /**
  * The CdpElementHandle extends ElementHandle now to keep compatibility

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 import type Protocol from 'devtools-protocol';
-import { type ClickOptions, type ElementHandle } from '../api/ElementHandle.js';
-import { type HTTPResponse } from '../api/HTTPResponse.js';
-import { type Page, type WaitForSelectorOptions, type WaitTimeoutOptions } from '../api/Page.js';
-import { type DeviceRequestPrompt } from '../cdp/DeviceRequestPrompt.js';
-import { type IsolatedWorldChart } from '../cdp/IsolatedWorld.js';
-import { type PuppeteerLifeCycleEvent } from '../cdp/LifecycleWatcher.js';
+import type { ClickOptions, ElementHandle } from '../api/ElementHandle.js';
+import type { HTTPResponse } from '../api/HTTPResponse.js';
+import type { Page, WaitForSelectorOptions, WaitTimeoutOptions } from '../api/Page.js';
+import type { DeviceRequestPrompt } from '../cdp/DeviceRequestPrompt.js';
+import type { IsolatedWorldChart } from '../cdp/IsolatedWorld.js';
+import type { PuppeteerLifeCycleEvent } from '../cdp/LifecycleWatcher.js';
 import { EventEmitter, type EventType } from '../common/EventEmitter.js';
-import { type Awaitable, type EvaluateFunc, type EvaluateFuncWith, type HandleFor, type NodeFor } from '../common/types.js';
-import { type CDPSession } from './CDPSession.js';
-import { type KeyboardTypeOptions } from './Input.js';
+import type { Awaitable, EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from '../common/types.js';
+import type { CDPSession } from './CDPSession.js';
+import type { KeyboardTypeOptions } from './Input.js';
 import { type Locator } from './locators/locators.js';
-import { type Realm } from './Realm.js';
+import type { Realm } from './Realm.js';
 /**
  * @public
  */

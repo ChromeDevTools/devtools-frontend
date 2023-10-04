@@ -1,10 +1,10 @@
 import { launch } from '@puppeteer/browsers';
-import { type Browser, type BrowserCloseCallback } from '../api/Browser.js';
+import type { Browser, BrowserCloseCallback } from '../api/Browser.js';
 import { Connection } from '../cdp/Connection.js';
-import { type Product } from '../common/Product.js';
-import { type Viewport } from '../common/Viewport.js';
-import { type BrowserLaunchArgumentOptions, type ChromeReleaseChannel, type PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
-import { type PuppeteerNode } from './PuppeteerNode.js';
+import type { Product } from '../common/Product.js';
+import type { Viewport } from '../common/Viewport.js';
+import type { BrowserLaunchArgumentOptions, ChromeReleaseChannel, PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
+import type { PuppeteerNode } from './PuppeteerNode.js';
 /**
  * @internal
  */

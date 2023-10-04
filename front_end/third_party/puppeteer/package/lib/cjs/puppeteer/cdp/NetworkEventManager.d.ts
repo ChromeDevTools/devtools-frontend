@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Protocol } from 'devtools-protocol';
-import { type CdpHTTPRequest } from './HTTPRequest.js';
+import type { Protocol } from 'devtools-protocol';
+import type { CdpHTTPRequest } from './HTTPRequest.js';
 /**
  * @internal
  */

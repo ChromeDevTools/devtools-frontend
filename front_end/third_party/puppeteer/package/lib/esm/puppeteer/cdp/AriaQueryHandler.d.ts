@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type ElementHandle } from '../api/ElementHandle.js';
+import type { ElementHandle } from '../api/ElementHandle.js';
 import { QueryHandler, type QuerySelector } from '../common/QueryHandler.js';
-import { type AwaitableIterable } from '../common/types.js';
+import type { AwaitableIterable } from '../common/types.js';
 /**
  * @internal
  */

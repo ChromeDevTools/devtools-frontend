@@ -16,25 +16,25 @@
 /// <reference types="node" />
 /// <reference types="node" />
 import type { Readable } from 'stream';
-import { type Protocol } from 'devtools-protocol';
-import { type Browser } from '../api/Browser.js';
+import type { Protocol } from 'devtools-protocol';
+import type { Browser } from '../api/Browser.js';
 import type { BrowserContext } from '../api/BrowserContext.js';
 import { type CDPSession } from '../api/CDPSession.js';
-import { type Frame, type WaitForOptions } from '../api/Frame.js';
-import { type HTTPRequest } from '../api/HTTPRequest.js';
-import { type HTTPResponse } from '../api/HTTPResponse.js';
-import { type JSHandle } from '../api/JSHandle.js';
+import type { Frame, WaitForOptions } from '../api/Frame.js';
+import type { HTTPRequest } from '../api/HTTPRequest.js';
+import type { HTTPResponse } from '../api/HTTPResponse.js';
+import type { JSHandle } from '../api/JSHandle.js';
 import { Page, type GeolocationOptions, type MediaFeature, type Metrics, type NewDocumentScriptEvaluation, type ScreenshotOptions, type WaitTimeoutOptions } from '../api/Page.js';
 import { FileChooser } from '../common/FileChooser.js';
-import { type PDFOptions } from '../common/PDFOptions.js';
-import { type Viewport } from '../common/Viewport.js';
+import type { PDFOptions } from '../common/PDFOptions.js';
+import type { Viewport } from '../common/Viewport.js';
 import { Accessibility } from './Accessibility.js';
 import { Coverage } from './Coverage.js';
-import { type DeviceRequestPrompt } from './DeviceRequestPrompt.js';
-import { type CdpFrame } from './Frame.js';
+import type { DeviceRequestPrompt } from './DeviceRequestPrompt.js';
+import type { CdpFrame } from './Frame.js';
 import { CdpKeyboard, CdpMouse, CdpTouchscreen } from './Input.js';
 import { type Credentials, type NetworkConditions } from './NetworkManager.js';
-import { type CdpTarget } from './Target.js';
+import type { CdpTarget } from './Target.js';
 import { Tracing } from './Tracing.js';
 import { WebWorker } from './WebWorker.js';
 /**

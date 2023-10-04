@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import { Browser, } from '../api/Browser.js';
+import { debugError } from '../common/util.js';
 import { BidiBrowserContext } from './BrowserContext.js';
 import { BrowsingContext, BrowsingContextEvent } from './BrowsingContext.js';
 import { BiDiBrowserTarget, BiDiBrowsingContextTarget, BiDiPageTarget, } from './Target.js';
-import { debugError } from './util.js';
 /**
  * @internal
  */

@@ -16,8 +16,8 @@
 import { CallbackRegistry } from '../cdp/Connection.js';
 import { debug } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
+import { debugError } from '../common/util.js';
 import { cdpSessions } from './BrowsingContext.js';
-import { debugError } from './util.js';
 const debugProtocolSend = debug('puppeteer:webDriverBiDi:SEND ►');
 const debugProtocolReceive = debug('puppeteer:webDriverBiDi:RECV ◀');
 /**

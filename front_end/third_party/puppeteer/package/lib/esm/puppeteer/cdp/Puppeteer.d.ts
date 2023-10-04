@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Browser } from '../api/Browser.js';
-import { type ConnectionTransport } from '../common/ConnectionTransport.js';
+import type { Browser } from '../api/Browser.js';
+import type { ConnectionTransport } from '../common/ConnectionTransport.js';
 import { type CustomQueryHandler } from '../common/CustomQueryHandler.js';
 import { type BrowserConnectOptions } from './BrowserConnector.js';
 /**

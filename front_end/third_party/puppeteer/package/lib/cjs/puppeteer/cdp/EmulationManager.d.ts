@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Protocol } from 'devtools-protocol';
+import type { Protocol } from 'devtools-protocol';
 import { type CDPSession } from '../api/CDPSession.js';
-import { type GeolocationOptions, type MediaFeature } from '../api/Page.js';
-import { type Viewport } from '../common/Viewport.js';
+import type { GeolocationOptions, MediaFeature } from '../api/Page.js';
+import type { Viewport } from '../common/Viewport.js';
 /**
  * @internal
  */

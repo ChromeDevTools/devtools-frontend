@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type HTTPResponse } from '../api/HTTPResponse.js';
-import { type TimeoutError } from '../common/Errors.js';
-import { type CdpFrame } from './Frame.js';
+import type { HTTPResponse } from '../api/HTTPResponse.js';
+import type { TimeoutError } from '../common/Errors.js';
+import type { CdpFrame } from './Frame.js';
 import { type NetworkManager } from './NetworkManager.js';
 /**
  * @public

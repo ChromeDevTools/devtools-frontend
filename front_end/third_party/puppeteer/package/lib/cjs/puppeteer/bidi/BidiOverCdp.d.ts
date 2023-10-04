@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Connection as CdpConnection } from '../cdp/Connection.js';
+import type { Connection as CdpConnection } from '../cdp/Connection.js';
 import { BidiConnection } from './Connection.js';
 /**
  * @internal

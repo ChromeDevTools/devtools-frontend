@@ -1,4 +1,4 @@
-import { type ExecutionContext } from './ExecutionContext.js';
+import type { ExecutionContext } from './ExecutionContext.js';
 /**
  * @internal
  */

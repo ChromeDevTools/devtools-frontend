@@ -2,16 +2,16 @@ import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import type ProtocolMapping from 'devtools-protocol/types/protocol-mapping.js';
 
 import {CDPSession} from '../api/CDPSession.js';
-import {type Connection as CdpConnection} from '../cdp/Connection.js';
-import {type PuppeteerLifeCycleEvent} from '../cdp/LifecycleWatcher.js';
+import type {Connection as CdpConnection} from '../cdp/Connection.js';
+import type {PuppeteerLifeCycleEvent} from '../cdp/LifecycleWatcher.js';
 import {TargetCloseError} from '../common/Errors.js';
-import {type EventType} from '../common/EventEmitter.js';
+import type {EventType} from '../common/EventEmitter.js';
+import {debugError} from '../common/util.js';
 import {assert} from '../util/assert.js';
 import {Deferred} from '../util/Deferred.js';
 
-import {type BidiConnection} from './Connection.js';
+import type {BidiConnection} from './Connection.js';
 import {BidiRealm} from './Realm.js';
-import {debugError} from './util.js';
 
 /**
  * @internal

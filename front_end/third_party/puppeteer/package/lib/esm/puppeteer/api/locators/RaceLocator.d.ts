@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { type Observable } from '../../../third_party/rxjs/rxjs.js';
-import { type HandleFor } from '../../common/types.js';
+import type { HandleFor } from '../../common/types.js';
 import { type ActionOptions, Locator } from './locators.js';
 /**
  * @public

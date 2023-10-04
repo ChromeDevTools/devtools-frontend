@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import { type BidiRealm } from './Realm.js';
-/**
- * @internal
- */
-export declare const debugError: (...args: unknown[]) => void;
+import type { BidiRealm } from './Realm.js';
 /**
  * @internal
  */

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 import { type Observable } from '../../../third_party/rxjs/rxjs.js';
-import { type HandleFor, type NodeFor } from '../../common/types.js';
-import { type Frame } from '../Frame.js';
-import { type Page } from '../Page.js';
+import type { HandleFor, NodeFor } from '../../common/types.js';
+import type { Frame } from '../Frame.js';
+import type { Page } from '../Page.js';
 import { type ActionOptions, Locator } from './locators.js';
 /**
  * @internal

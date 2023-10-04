@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { type Observable } from '../../../third_party/rxjs/rxjs.js';
-import { type Awaitable, type HandleFor } from '../../common/types.js';
+import type { Awaitable, HandleFor } from '../../common/types.js';
 import { type ActionOptions, DelegatedLocator, type Locator } from './locators.js';
 /**
  * @public

@@ -15,14 +15,9 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createEvaluationError = exports.releaseReference = exports.debugError = void 0;
-const Debug_js_1 = require("../common/Debug.js");
+exports.createEvaluationError = exports.releaseReference = void 0;
 const util_js_1 = require("../common/util.js");
 const Serializer_js_1 = require("./Serializer.js");
-/**
- * @internal
- */
-exports.debugError = (0, Debug_js_1.debug)('puppeteer:error');
 /**
  * @internal
  */
@@ -38,7 +33,7 @@ async function releaseReference(client, remoteReference) {
         .catch((error) => {
         // Exceptions might happen in case of a page been navigated or closed.
         // Swallow these since they are harmless and we don't leak anything in this case.
-        (0, exports.debugError)(error);
+        (0, util_js_1.debugError)(error);
     });
 }
 exports.releaseReference = releaseReference;

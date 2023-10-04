@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Protocol } from 'devtools-protocol';
-import { type CDPSession } from '../api/CDPSession.js';
-import { type EventEmitter, type EventType } from '../common/EventEmitter.js';
-import { type CdpTarget } from './Target.js';
+import type { Protocol } from 'devtools-protocol';
+import type { CDPSession } from '../api/CDPSession.js';
+import type { EventEmitter, EventType } from '../common/EventEmitter.js';
+import type { CdpTarget } from './Target.js';
 /**
  * @internal
  */

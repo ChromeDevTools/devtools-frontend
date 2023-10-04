@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import { type ElementHandle } from '../api/ElementHandle.js';
+import type { ElementHandle } from '../api/ElementHandle.js';
 import { JSHandle } from '../api/JSHandle.js';
-import { type BidiRealm } from './Realm.js';
-import { type Sandbox } from './Sandbox.js';
+import type { BidiRealm } from './Realm.js';
+import type { Sandbox } from './Sandbox.js';
 /**
  * @internal
  */

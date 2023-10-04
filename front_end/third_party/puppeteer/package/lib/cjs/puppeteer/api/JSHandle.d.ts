@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import type Protocol from 'devtools-protocol';
-import { type EvaluateFuncWith, type HandleFor, type HandleOr } from '../common/types.js';
+import type { EvaluateFuncWith, HandleFor, HandleOr } from '../common/types.js';
 import { disposeSymbol, asyncDisposeSymbol } from '../util/disposable.js';
-import { type ElementHandle } from './ElementHandle.js';
-import { type Realm } from './Realm.js';
+import type { ElementHandle } from './ElementHandle.js';
+import type { Realm } from './Realm.js';
 /**
  * Represents a reference to a JavaScript object. Instances can be created using
  * {@link Page.evaluateHandle}.

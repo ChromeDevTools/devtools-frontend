@@ -16,13 +16,15 @@
 /// <reference types="node" />
 /// <reference types="node" />
 /// <reference types="node" />
+/// <reference types="node" />
+import type FS from 'fs/promises';
 import type { Readable } from 'stream';
 import type { Protocol } from 'devtools-protocol';
 import { type Observable } from '../../third_party/rxjs/rxjs.js';
 import type { CDPSession } from '../api/CDPSession.js';
-import { type Page } from '../api/Page.js';
+import type { Page } from '../api/Page.js';
 import { Deferred } from '../util/Deferred.js';
-import { type Awaitable } from './types.js';
+import type { Awaitable } from './types.js';
 /**
  * @internal
  */
@@ -103,7 +105,7 @@ export declare function waitWithTimeout<T>(promise: Promise<T>, taskName: string
 /**
  * @internal
  */
-export declare function importFSPromises(): Promise<typeof import('fs/promises')>;
+export declare function importFSPromises(): Promise<typeof FS>;
 /**
  * @internal
  */

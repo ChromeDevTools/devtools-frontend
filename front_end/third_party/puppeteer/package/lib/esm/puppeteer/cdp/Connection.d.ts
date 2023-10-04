@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Protocol } from 'devtools-protocol';
-import { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
+import type { Protocol } from 'devtools-protocol';
+import type { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
 import { type CDPSession, type CDPSessionEvents } from '../api/CDPSession.js';
-import { ConnectionTransport } from '../common/ConnectionTransport.js';
+import type { ConnectionTransport } from '../common/ConnectionTransport.js';
 import { ProtocolError } from '../common/Errors.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { Deferred } from '../util/Deferred.js';
 /**
  * @public
  */
-export { ConnectionTransport, ProtocolMapping };
+export type { ConnectionTransport, ProtocolMapping };
 /**
  * @internal
  */

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Protocol } from 'devtools-protocol';
-import { type CDPSession } from '../api/CDPSession.js';
-import { type Frame } from '../api/Frame.js';
+import type { Protocol } from 'devtools-protocol';
+import type { CDPSession } from '../api/CDPSession.js';
+import type { Frame } from '../api/Frame.js';
 import { type ContinueRequestOverrides, type ErrorCode, HTTPRequest, type InterceptResolutionState, type ResourceType, type ResponseForRequest } from '../api/HTTPRequest.js';
-import { type HTTPResponse } from '../api/HTTPResponse.js';
+import type { HTTPResponse } from '../api/HTTPResponse.js';
 /**
  * @internal
  */

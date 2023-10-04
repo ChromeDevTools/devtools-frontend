@@ -16,15 +16,15 @@
 
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 
-import {type Awaitable, type FlattenHandle} from '../common/types.js';
+import type {Awaitable, FlattenHandle} from '../common/types.js';
+import {debugError} from '../common/util.js';
 import {assert} from '../util/assert.js';
 import {Deferred} from '../util/Deferred.js';
 import {interpolateFunction, stringifyFunction} from '../util/Function.js';
 
-import {type BidiConnection} from './Connection.js';
-import {type BidiFrame} from './Frame.js';
+import type {BidiConnection} from './Connection.js';
+import type {BidiFrame} from './Frame.js';
 import {BidiSerializer} from './Serializer.js';
-import {debugError} from './util.js';
 
 type SendArgsChannel<Args> = (value: [id: number, args: Args]) => void;
 type SendResolveChannel<Ret> = (

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 /// <reference types="node" />
-import { type ChildProcess } from 'child_process';
+import type { ChildProcess } from 'child_process';
 import { Browser as BrowserBase, type BrowserCloseCallback, type BrowserContextOptions, type IsPageTargetCallback, type Permission, type TargetFilterCallback } from '../api/Browser.js';
 import { BrowserContext } from '../api/BrowserContext.js';
-import { type Page } from '../api/Page.js';
-import { type Target } from '../api/Target.js';
-import { type Viewport } from '../common/Viewport.js';
-import { type Connection } from './Connection.js';
+import type { Page } from '../api/Page.js';
+import type { Target } from '../api/Target.js';
+import type { Viewport } from '../common/Viewport.js';
+import type { Connection } from './Connection.js';
 import { type CdpTarget } from './Target.js';
 import { type TargetManager } from './TargetManager.js';
 /**

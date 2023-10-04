@@ -13,13 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { debug } from '../common/Debug.js';
-import { PuppeteerURL } from '../common/util.js';
+import { PuppeteerURL, debugError } from '../common/util.js';
 import { BidiSerializer } from './Serializer.js';
-/**
- * @internal
- */
-export const debugError = debug('puppeteer:error');
 /**
  * @internal
  */

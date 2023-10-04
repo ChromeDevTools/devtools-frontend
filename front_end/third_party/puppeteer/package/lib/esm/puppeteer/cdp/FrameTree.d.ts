@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Frame } from '../api/Frame.js';
+import type { Frame } from '../api/Frame.js';
 /**
  * Keeps track of the page frame tree and it's is managed by
  * {@link FrameManager}. FrameTree uses frame IDs to reference frame and it

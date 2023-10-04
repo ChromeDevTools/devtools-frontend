@@ -1,7 +1,7 @@
-import { type ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
+import type { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
 import { type CDPEvents, CDPSession } from '../api/CDPSession.js';
 import { type Connection } from './Connection.js';
-import { type CdpTarget } from './Target.js';
+import type { CdpTarget } from './Target.js';
 /**
  * @internal
  */

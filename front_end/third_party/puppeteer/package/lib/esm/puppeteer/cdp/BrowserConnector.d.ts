@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type IsPageTargetCallback, type TargetFilterCallback } from '../api/Browser.js';
-import { type Viewport } from '../common/Viewport.js';
+import type { IsPageTargetCallback, TargetFilterCallback } from '../api/Browser.js';
+import type { Viewport } from '../common/Viewport.js';
 import { CdpBrowser } from './Browser.js';
 import type { ConnectOptions } from './Puppeteer.js';
 /**

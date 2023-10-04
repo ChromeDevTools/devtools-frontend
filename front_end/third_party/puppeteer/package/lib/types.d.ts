@@ -1,9 +1,9 @@
 /// <reference types="node" />
 
-import { ChildProcess } from 'child_process';
+import type { ChildProcess } from 'child_process';
 import { EventType } from 'mitt';
 import { Protocol } from 'devtools-protocol';
-import { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
+import type { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
 import type { Readable } from 'stream';
 
 /**

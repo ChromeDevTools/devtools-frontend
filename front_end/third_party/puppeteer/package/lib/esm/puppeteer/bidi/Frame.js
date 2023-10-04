@@ -48,9 +48,11 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     done = true;
 };
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import { firstValueFrom, from, fromEvent, merge, raceWith, switchMap, } from '../../third_party/rxjs/rxjs.js';
 import { Frame, throwIfDetached, } from '../api/Frame.js';
 import { ProtocolError, TimeoutError } from '../common/Errors.js';
-import { UTILITY_WORLD_NAME, setPageContent, waitForEvent, waitWithTimeout, } from '../common/util.js';
+import { UTILITY_WORLD_NAME, setPageContent, waitWithTimeout, } from '../common/util.js';
+import { timeout } from '../common/util.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { getWaitUntilSingle, lifeCycleToSubscribedEvent, } from './BrowsingContext.js';
@@ -158,25 +160,11 @@ let BidiFrame = (() => {
             return this.#context;
         }
         async waitForNavigation(options = {}) {
-            const { waitUntil = 'load', timeout = this.#timeoutSettings.navigationTimeout(), } = options;
+            const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
             const waitUntilEvent = lifeCycleToSubscribedEvent.get(getWaitUntilSingle(waitUntil));
-            const [info] = await Deferred.race([
-                // TODO(lightning00blade): Should also keep tack of
-                // navigationAborted and navigationFailed
-                Promise.all([
-                    waitForEvent(this.#context, waitUntilEvent, () => {
-                        return true;
-                    }, timeout, this.#abortDeferred.valueOrThrow()),
-                    waitForEvent(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.NavigationStarted, () => {
-                        return true;
-                    }, timeout, this.#abortDeferred.valueOrThrow()),
-                ]),
-                waitForEvent(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.FragmentNavigated, () => {
-                    return true;
-                }, timeout, this.#abortDeferred.valueOrThrow()).then(info => {
-                    return [info, undefined];
-                }),
-            ]);
+            const info = await firstValueFrom(merge(fromEvent(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.NavigationStarted).pipe(switchMap(() => {
+                return fromEvent(this.#context, waitUntilEvent);
+            })), fromEvent(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.FragmentNavigated)).pipe(raceWith(timeout(ms), from(this.#abortDeferred.valueOrThrow()))));
             return this.#page.getNavigationResponse(info.navigation);
         }
         get detached() {

@@ -1,12 +1,12 @@
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { EventEmitter, type EventType } from '../common/EventEmitter.js';
-import { type EvaluateFunc, type HandleFor } from '../common/types.js';
+import type { EvaluateFunc, HandleFor } from '../common/types.js';
 import type PuppeteerUtil from '../injected/injected.js';
 import { disposeSymbol } from '../util/disposable.js';
-import { type BidiConnection } from './Connection.js';
+import type { BidiConnection } from './Connection.js';
 import { BidiElementHandle } from './ElementHandle.js';
 import { BidiJSHandle } from './JSHandle.js';
-import { type Sandbox } from './Sandbox.js';
+import type { Sandbox } from './Sandbox.js';
 /**
  * @internal
  */

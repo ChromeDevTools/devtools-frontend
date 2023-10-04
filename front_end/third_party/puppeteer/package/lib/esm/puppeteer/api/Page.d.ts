@@ -16,25 +16,25 @@
 /// <reference types="node" />
 /// <reference types="node" />
 import type { Readable } from 'stream';
-import { type Protocol } from 'devtools-protocol';
+import type { Protocol } from 'devtools-protocol';
 import type { HTTPRequest } from '../api/HTTPRequest.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { BidiNetworkManager } from '../bidi/NetworkManager.js';
 import type { Accessibility } from '../cdp/Accessibility.js';
 import type { Coverage } from '../cdp/Coverage.js';
-import { type DeviceRequestPrompt } from '../cdp/DeviceRequestPrompt.js';
+import type { DeviceRequestPrompt } from '../cdp/DeviceRequestPrompt.js';
 import { type NetworkManager as CdpNetworkManager, type Credentials, type NetworkConditions } from '../cdp/NetworkManager.js';
 import type { Tracing } from '../cdp/Tracing.js';
 import type { WebWorker } from '../cdp/WebWorker.js';
 import type { ConsoleMessage } from '../common/ConsoleMessage.js';
-import { type Device } from '../common/Device.js';
+import type { Device } from '../common/Device.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter, type EventsWithWildcard, type EventType } from '../common/EventEmitter.js';
 import type { FileChooser } from '../common/FileChooser.js';
 import { type ParsedPDFOptions, type PDFOptions } from '../common/PDFOptions.js';
 import type { Awaitable, EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from '../common/types.js';
 import type { Viewport } from '../common/Viewport.js';
-import { type Deferred } from '../util/Deferred.js';
+import type { Deferred } from '../util/Deferred.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
 import type { Browser } from './Browser.js';
 import type { BrowserContext } from './BrowserContext.js';
@@ -42,7 +42,7 @@ import type { CDPSession } from './CDPSession.js';
 import type { Dialog } from './Dialog.js';
 import type { ClickOptions, ElementHandle } from './ElementHandle.js';
 import type { Frame, FrameAddScriptTagOptions, FrameAddStyleTagOptions, FrameWaitForFunctionOptions, GoToOptions, WaitForOptions } from './Frame.js';
-import { type Keyboard, type KeyboardTypeOptions, type Mouse, type Touchscreen } from './Input.js';
+import type { Keyboard, KeyboardTypeOptions, Mouse, Touchscreen } from './Input.js';
 import type { JSHandle } from './JSHandle.js';
 import { Locator, type AwaitedLocator } from './locators/locators.js';
 import type { Target } from './Target.js';
@@ -402,7 +402,7 @@ export interface PageEvents extends Record<EventType, unknown> {
     [PageEvent.WorkerCreated]: WebWorker;
     [PageEvent.WorkerDestroyed]: WebWorker;
 }
-export { 
+export type { 
 /**
  * @deprecated Use {@link PageEvents}.
  */

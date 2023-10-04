@@ -74,9 +74,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiFrame = exports.lifeCycleToReadinessState = void 0;
 const Bidi = __importStar(require("chromium-bidi/lib/cjs/protocol/protocol.js"));
+const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const Frame_js_1 = require("../api/Frame.js");
 const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
+const util_js_2 = require("../common/util.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const BrowsingContext_js_1 = require("./BrowsingContext.js");
@@ -184,25 +186,11 @@ let BidiFrame = (() => {
             return this.#context;
         }
         async waitForNavigation(options = {}) {
-            const { waitUntil = 'load', timeout = this.#timeoutSettings.navigationTimeout(), } = options;
+            const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
             const waitUntilEvent = BrowsingContext_js_1.lifeCycleToSubscribedEvent.get((0, BrowsingContext_js_1.getWaitUntilSingle)(waitUntil));
-            const [info] = await Deferred_js_1.Deferred.race([
-                // TODO(lightning00blade): Should also keep tack of
-                // navigationAborted and navigationFailed
-                Promise.all([
-                    (0, util_js_1.waitForEvent)(this.#context, waitUntilEvent, () => {
-                        return true;
-                    }, timeout, this.#abortDeferred.valueOrThrow()),
-                    (0, util_js_1.waitForEvent)(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.NavigationStarted, () => {
-                        return true;
-                    }, timeout, this.#abortDeferred.valueOrThrow()),
-                ]),
-                (0, util_js_1.waitForEvent)(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.FragmentNavigated, () => {
-                    return true;
-                }, timeout, this.#abortDeferred.valueOrThrow()).then(info => {
-                    return [info, undefined];
-                }),
-            ]);
+            const info = await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.merge)((0, rxjs_js_1.fromEvent)(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.NavigationStarted).pipe((0, rxjs_js_1.switchMap)(() => {
+                return (0, rxjs_js_1.fromEvent)(this.#context, waitUntilEvent);
+            })), (0, rxjs_js_1.fromEvent)(this.#context, Bidi.ChromiumBidi.BrowsingContext.EventNames.FragmentNavigated)).pipe((0, rxjs_js_1.raceWith)((0, util_js_2.timeout)(ms), (0, rxjs_js_1.from)(this.#abortDeferred.valueOrThrow()))));
             return this.#page.getNavigationResponse(info.navigation);
         }
         get detached() {

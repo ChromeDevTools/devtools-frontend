@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 /// <reference types="node" />
-import { type ChildProcess } from 'child_process';
-import { type Protocol } from 'devtools-protocol';
+import type { ChildProcess } from 'child_process';
+import type { Protocol } from 'devtools-protocol';
 import { EventEmitter, type EventType } from '../common/EventEmitter.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
 import type { BrowserContext } from './BrowserContext.js';

@@ -19,8 +19,8 @@ exports.BidiConnection = void 0;
 const Connection_js_1 = require("../cdp/Connection.js");
 const Debug_js_1 = require("../common/Debug.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
+const util_js_1 = require("../common/util.js");
 const BrowsingContext_js_1 = require("./BrowsingContext.js");
-const util_js_1 = require("./util.js");
 const debugProtocolSend = (0, Debug_js_1.debug)('puppeteer:webDriverBiDi:SEND ►');
 const debugProtocolReceive = (0, Debug_js_1.debug)('puppeteer:webDriverBiDi:RECV ◀');
 /**

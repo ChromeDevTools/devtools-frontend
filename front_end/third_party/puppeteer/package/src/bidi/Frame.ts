@@ -16,23 +16,32 @@
 
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 
-import {type CDPSession} from '../api/CDPSession.js';
+import {
+  type Observable,
+  firstValueFrom,
+  from,
+  fromEvent,
+  merge,
+  raceWith,
+  switchMap,
+} from '../../third_party/rxjs/rxjs.js';
+import type {CDPSession} from '../api/CDPSession.js';
 import {
   Frame,
   type GoToOptions,
   type WaitForOptions,
   throwIfDetached,
 } from '../api/Frame.js';
-import {type PuppeteerLifeCycleEvent} from '../cdp/LifecycleWatcher.js';
+import type {PuppeteerLifeCycleEvent} from '../cdp/LifecycleWatcher.js';
 import {ProtocolError, TimeoutError} from '../common/Errors.js';
-import {type TimeoutSettings} from '../common/TimeoutSettings.js';
-import {type Awaitable} from '../common/types.js';
+import type {TimeoutSettings} from '../common/TimeoutSettings.js';
+import type {Awaitable} from '../common/types.js';
 import {
   UTILITY_WORLD_NAME,
   setPageContent,
-  waitForEvent,
   waitWithTimeout,
 } from '../common/util.js';
+import {timeout} from '../common/util.js';
 import {Deferred} from '../util/Deferred.js';
 import {disposeSymbol} from '../util/disposable.js';
 
@@ -42,8 +51,8 @@ import {
   type BrowsingContext,
 } from './BrowsingContext.js';
 import {ExposeableFunction} from './ExposedFunction.js';
-import {type BidiHTTPResponse} from './HTTPResponse.js';
-import {type BidiPage} from './Page.js';
+import type {BidiHTTPResponse} from './HTTPResponse.js';
+import type {BidiPage} from './Page.js';
 import {
   MAIN_SANDBOX,
   PUPPETEER_SANDBOX,
@@ -70,7 +79,7 @@ export class BidiFrame extends Frame {
   #page: BidiPage;
   #context: BrowsingContext;
   #timeoutSettings: TimeoutSettings;
-  #abortDeferred = Deferred.create<Error>();
+  #abortDeferred = Deferred.create<never>();
   #disposed = false;
   sandboxes: SandboxChart;
   override _id: string;
@@ -201,48 +210,32 @@ export class BidiFrame extends Frame {
   ): Promise<BidiHTTPResponse | null> {
     const {
       waitUntil = 'load',
-      timeout = this.#timeoutSettings.navigationTimeout(),
+      timeout: ms = this.#timeoutSettings.navigationTimeout(),
     } = options;
 
     const waitUntilEvent = lifeCycleToSubscribedEvent.get(
       getWaitUntilSingle(waitUntil)
     ) as string;
 
-    const [info] = await Deferred.race([
-      // TODO(lightning00blade): Should also keep tack of
-      // navigationAborted and navigationFailed
-      Promise.all([
-        waitForEvent<Bidi.BrowsingContext.NavigationInfo>(
+    const info = await firstValueFrom(
+      merge(
+        fromEvent(
           this.#context,
-          waitUntilEvent,
-          () => {
-            return true;
-          },
-          timeout,
-          this.#abortDeferred.valueOrThrow()
+          Bidi.ChromiumBidi.BrowsingContext.EventNames.NavigationStarted
+        ).pipe(
+          switchMap(() => {
+            return fromEvent(
+              this.#context,
+              waitUntilEvent
+            ) as Observable<Bidi.BrowsingContext.NavigationInfo>;
+          })
         ),
-        waitForEvent(
+        fromEvent(
           this.#context,
-          Bidi.ChromiumBidi.BrowsingContext.EventNames.NavigationStarted,
-          () => {
-            return true;
-          },
-          timeout,
-          this.#abortDeferred.valueOrThrow()
-        ),
-      ]),
-      waitForEvent<Bidi.BrowsingContext.NavigationInfo>(
-        this.#context,
-        Bidi.ChromiumBidi.BrowsingContext.EventNames.FragmentNavigated,
-        () => {
-          return true;
-        },
-        timeout,
-        this.#abortDeferred.valueOrThrow()
-      ).then(info => {
-        return [info, undefined];
-      }),
-    ]);
+          Bidi.ChromiumBidi.BrowsingContext.EventNames.FragmentNavigated
+        ) as Observable<Bidi.BrowsingContext.NavigationInfo>
+      ).pipe(raceWith(timeout(ms), from(this.#abortDeferred.valueOrThrow())))
+    );
 
     return this.#page.getNavigationResponse(info.navigation);
   }

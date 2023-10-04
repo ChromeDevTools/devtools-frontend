@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import { debugError } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { interpolateFunction, stringifyFunction } from '../util/Function.js';
 import { BidiSerializer } from './Serializer.js';
-import { debugError } from './util.js';
 /**
  * @internal
  */

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type Protocol } from 'devtools-protocol';
-import { type KeyInput } from '../common/USKeyboardLayout.js';
-import { type Point } from './ElementHandle.js';
+import type { Protocol } from 'devtools-protocol';
+import type { KeyInput } from '../common/USKeyboardLayout.js';
+import type { Point } from './ElementHandle.js';
 /**
  * @public
  */

@@ -3,10 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getWaitUntilSingle = exports.BrowsingContext = exports.BrowsingContextEvent = exports.CdpSessionWrapper = exports.cdpSessions = exports.lifeCycleToSubscribedEvent = void 0;
 const CDPSession_js_1 = require("../api/CDPSession.js");
 const Errors_js_1 = require("../common/Errors.js");
+const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const Realm_js_1 = require("./Realm.js");
-const util_js_1 = require("./util.js");
 /**
  * @internal
  */

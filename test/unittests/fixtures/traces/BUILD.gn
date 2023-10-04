@@ -29,6 +29,7 @@ copy_to_gen("traces") {
     "lcp-images.json.gz",
     "lcp-web-font.json.gz",
     "load-simple.json.gz",
+    "mainWasm_profile.json.gz",
     "many-requests.json.gz",
     "missing-process-data.json.gz",
     "missing-tracing-start.json.gz",

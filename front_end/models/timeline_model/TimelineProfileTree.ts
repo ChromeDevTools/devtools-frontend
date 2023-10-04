@@ -105,7 +105,7 @@ export class TopDownNode extends Node {
     const startTime = root.startTime;
     const endTime = root.endTime;
     const instantEventCallback = root.doNotAggregate ? onInstantEvent : undefined;
-    const eventIdCallback = root.doNotAggregate ? undefined : _eventId;
+    const eventIdCallback = root.doNotAggregate ? undefined : generateEventID;
     const eventGroupIdCallback = root.getEventGroupIdCallback();
     let depth = 0;
     // The amount of ancestors found to match this node's ancestors
@@ -346,7 +346,7 @@ export class BottomUpRootNode extends Node {
       const duration = actualEndTime - Math.max(currentStartTime, startTime);
       selfTimeStack[selfTimeStack.length - 1] -= duration;
       selfTimeStack.push(duration);
-      const id = _eventId(e);
+      const id = generateEventID(e);
       const noNodeOnStack = !totalTimeById.has(id);
       if (noNodeOnStack) {
         totalTimeById.set(id, duration);
@@ -355,7 +355,7 @@ export class BottomUpRootNode extends Node {
     }
 
     function onEndEvent(e: TraceEngine.Legacy.CompatibleTraceEvent): void {
-      const id = _eventId(e);
+      const id = generateEventID(e);
       let node = nodeById.get(id);
       if (!node) {
         node = new BottomUpNode(root, id, e, false, root);
@@ -476,7 +476,7 @@ export class BottomUpNode extends Node {
       }
       selfTimeStack[selfTimeStack.length - 1] -= duration;
       selfTimeStack.push(duration);
-      const id = _eventId(e);
+      const id = generateEventID(e);
       eventIdStack.push(id);
       eventStack.push(e);
     }
@@ -551,11 +551,19 @@ export function eventStackFrame(event: TraceEngine.Legacy.Event|
   return EventOnTimelineData.forEvent(event).topFrame();
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export function _eventId(event: TraceEngine.Legacy.CompatibleTraceEvent): string {
+export function generateEventID(event: TraceEngine.Legacy.CompatibleTraceEvent): string {
+  if (TraceEngine.Legacy.eventIsFromNewEngine(event) && TraceEngine.Types.TraceEvents.isProfileCall(event)) {
+    const name = TimelineJSProfileProcessor.isNativeRuntimeFrame(event.callFrame) ?
+        TimelineJSProfileProcessor.nativeGroup(event.callFrame.functionName) :
+        event.callFrame.functionName;
+    const location = event.callFrame.scriptId || event.callFrame.url || '';
+    return `f:${name}@${location}`;
+  }
+
   if (event.name === RecordType.TimeStamp) {
     return `${event.name}:${event.args.data.message}`;
   }
+
   if (!TimelineModelImpl.isJsFrameEvent(event)) {
     return event.name;
   }

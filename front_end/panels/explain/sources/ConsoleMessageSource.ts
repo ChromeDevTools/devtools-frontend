@@ -62,33 +62,119 @@ export class ConsoleMessageSource {
       }
     }
 
-    return `You are an expert software engineer looking at a console message in DevTools.
-Given a console message, give an explanation of what the console message means.
-Start with the explanation immediately without repeating the given console message.
-Respond only with the explanation, no console message.
+    const consoleMessageHeader = '### Console message:';
+    const relatedCodeHeader = '### Code that generated the error:';
+    const explanationHeader = '### Summary:';
 
-### Console message:
-Script snippet #1:1 Uncaught Error: Unexpected\n    at Script snippet #1:1:7\n(anonymous) @ Script snippet #1:1
+    const preamble = `
+You are an expert software engineer looking at a console message in DevTools.
 
-### Explanation:
-An unexpected error has been thrown.
+You will follow these rules strictly:
+- Answer the question as truthfully as possible using the provided context
+- if you don't have the answer, say "I don't know" and suggest looking for this information
+  elsewhere
+- Start with the explanation immediately without repeating the given console message.
+- Always wrap code with three backticks (\`\`\`)
 
-### Code that threw an error:
+${consoleMessageHeader}
+Uncaught TypeError: Cannot read properties of undefined (reading 'setState') at home.jsx:15
+    at delta (home.jsx:15:14)
+    at Object.Dc (react-dom.production.min.js:54:317)
+    at Fc (react-dom.production.min.js:54:471)
+    at jc (react-dom.production.min.js:55:35)
+    at ai (react-dom.production.min.js:105:68)
+    at Ks (react-dom.production.min.js:106:380)
+    at react-dom.production.min.js:117:104
+    at Pu (react-dom.production.min.js:274:42)
+    at vs (react-dom.production.min.js:52:375)
+    at Dl (react-dom.production.min.js:109:469)
+delta @ home.jsx:15
 
+
+Dc @ react-dom.production.min.js:54
+Fc @ react-dom.production.min.js:54
+jc @ react-dom.production.min.js:55
+ai @ react-dom.production.min.js:105
+Ks @ react-dom.production.min.js:106
+(anonymous) @ react-dom.production.min.js:117
+Pu @ react-dom.production.min.js:274
+vs @ react-dom.production.min.js:52
+Dl @ react-dom.production.min.js:109
+eu @ react-dom.production.min.js:74
+bc @ react-dom.production.min.js:73
+
+${relatedCodeHeader}
 \`\`\`
-throw new Error('Unexpected');
-\`\`\`
----
+  class Counter extends React.Component {
+    constructor(props) {
+        super(props);
 
-### Console message:
+        this.state = {
+            count : 1
+        };
+
+        this.delta.bind(this);
+    }
+
+    delta() {
+        this.setState({
+            count : this.state.count++
+        });
+    }
+
+    render() {
+        return (
+            <div>
+                <h1>{this.state.count}</h1>
+                <button onClick={this.delta}>+</button>
+            </div>
+        );
+    }
+}
+\`\`\`
+
+${explanationHeader}
+The error occurs because this.delta is not bound to the instance of the Counter component. The fix is it to change the code to be \` this.delta = this.delta.bind(this);\`
+
+${consoleMessageHeader}
+Uncaught TypeError: Cannot set properties of null (setting 'innerHTML')
+    at (index):57:49
+(anonymous) @ (index):57
+
+${relatedCodeHeader}
+\`\`\`
+    <script>
+      document.getElementById("test").innerHTML = "Element does not exist";
+    </script>
+    <div id="test"></div>
+\`\`\`
+
+${explanationHeader}
+The error means that getElementById returns null instead of the div element. This happens because the script runs before the element is added to the DOM.
+
+${consoleMessageHeader}
+Uncaught SyntaxError: Unexpected token ')' (at script.js:39:14)
+
+${relatedCodeHeader}
+\`\`\`
+if (10 < 120)) {
+  console.log('test')
+}
+\`\`\`
+
+${explanationHeader}
+There is an extra closing \`)\`. Remove it to fix the issue.`;
+
+    return `${preamble}
+
+${consoleMessageHeader}
 ${this.#consoleMessage.toExportString()}
 
-### Code that threw an error:
-
+${relatedCodeHeader}
 \`\`\`
 ${relatedCode.join('\n')}
 \`\`\`
 
-### Explanation:`;
+${explanationHeader}`;
   }
 }

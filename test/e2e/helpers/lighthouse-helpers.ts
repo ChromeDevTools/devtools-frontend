@@ -50,10 +50,10 @@ export async function waitForResult() {
   await target.bringToFront();
 
   await waitForFunction(() => {
-    return frontend.evaluate(() => {
-      // @ts-expect-error frontend global UI
-      return UI.panels.lighthouse.reportSelector.hasItems();
-    });
+    return frontend.evaluate(`(async () => {
+      const Lighthouse = await import('./panels/lighthouse/lighthouse.js');
+      return Lighthouse.LighthousePanel.LighthousePanel.instance().reportSelector.hasItems();
+    })()`);
   });
 
   // Bring the DT frontend back in front to render the Lighthouse report.

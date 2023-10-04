@@ -129,6 +129,8 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   private navigationProgressBar?: ProgressTracker;
   private touchInputToggle?: HTMLButtonElement;
   private mouseInputToggle?: HTMLButtonElement;
+  private touchInputToggleIcon?: IconButton.Icon.Icon;
+  private mouseInputToggleIcon?: IconButton.Icon.Icon;
   private historyIndex?: number;
   private historyEntries?: Protocol.Page.NavigationEntry[];
   constructor(screenCaptureModel: SDK.ScreenCaptureModel.ScreenCaptureModel) {
@@ -674,7 +676,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   private createNavigationBar(): void {
     this.navigationBar = this.element.createChild('div', 'screencast-navigation') as HTMLElement;
 
-    this.navigationBack = this.navigationBar.createChild('button') as HTMLButtonElement;
+    this.navigationBack = this.navigationBar.createChild('button', 'navigation') as HTMLButtonElement;
     {
       const icon = this.navigationBack.appendChild(new IconButton.Icon.Icon());
       icon.data = {color: 'var(--icon-default)', iconName: 'arrow-back'};
@@ -682,7 +684,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.navigationBack.disabled = true;
     UI.ARIAUtils.setLabel(this.navigationBack, i18nString(UIStrings.back));
 
-    this.navigationForward = this.navigationBar.createChild('button') as HTMLButtonElement;
+    this.navigationForward = this.navigationBar.createChild('button', 'navigation') as HTMLButtonElement;
     {
       const icon = this.navigationForward.appendChild(new IconButton.Icon.Icon());
       icon.data = {color: 'var(--icon-default)', iconName: 'arrow-forward'};
@@ -690,7 +692,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.navigationForward.disabled = true;
     UI.ARIAUtils.setLabel(this.navigationForward, i18nString(UIStrings.forward));
 
-    this.navigationReload = this.navigationBar.createChild('button');
+    this.navigationReload = this.navigationBar.createChild('button', 'navigation');
     {
       const icon = this.navigationReload.appendChild(new IconButton.Icon.Icon());
       icon.data = {color: 'var(--icon-default)', iconName: 'refresh'};
@@ -701,20 +703,20 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.navigationUrl.type = 'text';
     UI.ARIAUtils.setLabel(this.navigationUrl, i18nString(UIStrings.addressBar));
 
-    this.touchInputToggle = this.navigationBar.createChild('button') as HTMLButtonElement;
-    {
-      const icon = this.touchInputToggle.appendChild(new IconButton.Icon.Icon());
-      icon.data = {color: 'var(--icon-default)', iconName: 'touch-app'};
-    }
-    UI.ARIAUtils.setLabel(this.touchInputToggle, i18nString(UIStrings.touchInput));
-
     this.mouseInputToggle = this.navigationBar.createChild('button') as HTMLButtonElement;
     this.mouseInputToggle.disabled = true;
     {
-      const icon = this.mouseInputToggle.appendChild(new IconButton.Icon.Icon());
-      icon.data = {color: 'var(--icon-default)', iconName: 'mouse'};
+      this.mouseInputToggleIcon = this.mouseInputToggle.appendChild(new IconButton.Icon.Icon());
+      this.mouseInputToggleIcon.data = {color: 'var(--icon-toggled)', iconName: 'mouse'};
     }
     UI.ARIAUtils.setLabel(this.mouseInputToggle, i18nString(UIStrings.mouseInput));
+
+    this.touchInputToggle = this.navigationBar.createChild('button') as HTMLButtonElement;
+    {
+      this.touchInputToggleIcon = this.touchInputToggle.appendChild(new IconButton.Icon.Icon());
+      this.touchInputToggleIcon.data = {color: 'var(--icon-default)', iconName: 'touch-app'};
+    }
+    UI.ARIAUtils.setLabel(this.touchInputToggle, i18nString(UIStrings.touchInput));
 
     this.navigationProgressBar = new ProgressTracker(
         this.resourceTreeModel, this.networkManager, this.navigationBar.createChild('div', 'progress') as HTMLElement);
@@ -771,7 +773,8 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
   }
 
   #toggleTouchEmulation(value: boolean): void {
-    if (!this.canvasContainerElement || !this.isCasting || !this.mouseInputToggle || !this.touchInputToggle) {
+    if (!this.canvasContainerElement || !this.isCasting || !this.mouseInputToggle || !this.touchInputToggle ||
+        !this.mouseInputToggleIcon || !this.touchInputToggleIcon) {
       return;
     }
     const models = SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel);
@@ -780,6 +783,14 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     }
     this.mouseInputToggle.disabled = !value;
     this.touchInputToggle.disabled = value;
+    this.mouseInputToggleIcon.data = {
+      ...this.mouseInputToggleIcon.data,
+      color: this.mouseInputToggle.disabled ? 'var(--icon-toggled)' : 'var(--icon-default)',
+    };
+    this.touchInputToggleIcon.data = {
+      ...this.touchInputToggleIcon.data,
+      color: this.touchInputToggle.disabled ? 'var(--icon-toggled)' : 'var(--icon-default)',
+    };
     this.canvasContainerElement.classList.toggle('touchable', value);
   }
 

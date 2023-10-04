@@ -704,7 +704,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.touchInputToggle = this.navigationBar.createChild('button') as HTMLButtonElement;
     {
       const icon = this.touchInputToggle.appendChild(new IconButton.Icon.Icon());
-      icon.data = {color: 'var(--icon-default)', iconName: 'hand-pointer'};
+      icon.data = {color: 'var(--icon-default)', iconName: 'touch-app'};
     }
     UI.ARIAUtils.setLabel(this.touchInputToggle, i18nString(UIStrings.touchInput));
 
@@ -712,7 +712,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.mouseInputToggle.disabled = true;
     {
       const icon = this.mouseInputToggle.appendChild(new IconButton.Icon.Icon());
-      icon.data = {color: 'var(--icon-default)', iconName: 'pointer'};
+      icon.data = {color: 'var(--icon-default)', iconName: 'mouse'};
     }
     UI.ARIAUtils.setLabel(this.mouseInputToggle, i18nString(UIStrings.mouseInput));
 

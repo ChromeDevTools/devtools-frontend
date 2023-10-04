@@ -10,7 +10,7 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {AnimationsTrackAppender} from './AnimationsTrackAppender.js';
 import {getEventLevel} from './AppenderUtils.js';
-import {EventStyles} from './EventUICategory.js';
+import {getEventStyle} from './EventUICategory.js';
 import {GPUTrackAppender} from './GPUTrackAppender.js';
 import {InteractionsTrackAppender} from './InteractionsTrackAppender.js';
 import {LayoutShiftsTrackAppender} from './LayoutShiftsTrackAppender.js';
@@ -474,7 +474,7 @@ export class CompatibilityTracksAppender {
   entryIsVisibleInTimeline(entry: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
     // Default styles are globally defined for each event name. Some
     // events are hidden by default.
-    const eventStyle = EventStyles.get(entry.name as TraceEngine.Types.TraceEvents.KnownEventName);
+    const eventStyle = getEventStyle(entry.name as TraceEngine.Types.TraceEvents.KnownEventName);
     const eventIsTiming = TraceEngine.Types.TraceEvents.isTraceEventConsoleTime(entry) ||
         TraceEngine.Types.TraceEvents.isTraceEventPerformanceMeasure(entry) ||
         TraceEngine.Types.TraceEvents.isTraceEventPerformanceMark(entry);

@@ -46,11 +46,10 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.css.js';
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {CLSRect} from './CLSLinkifier.js';
 import * as TimelineComponents from './components/components.js';
-import {EventStyles} from './EventUICategory.js';
+import {getCategoryStyles, getEventStyle, TimelineCategory, TimelineRecordStyle} from './EventUICategory.js';
 import {titleForInteractionEvent} from './InteractionsTrackAppender.js';
 import invalidationsTreeStyles from './invalidationsTree.css.js';
 import {TimelinePanel} from './TimelinePanel.js';
@@ -1408,6 +1407,11 @@ export class TimelineUIUtils {
       return new TimelineRecordStyle(event.name, TimelineUIUtils.categories()['scripting']);
     }
 
+    if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
+      const defaultStyles = new TimelineRecordStyle(event.name, getCategoryStyles().Other);
+      return getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName) || defaultStyles;
+    }
+
     let result: TimelineRecordStyle = eventStyles[event.name];
     // If there's no defined RecordStyle for this event, define as other & hidden.
     if (!result) {
@@ -1417,9 +1421,15 @@ export class TimelineUIUtils {
     return result;
   }
 
-  static eventColor(event: TraceEngine.Legacy.Event): string {
+  static eventColor(event: TraceEngine.Legacy.CompatibleTraceEvent): string {
     if (TimelineModel.TimelineModel.TimelineModelImpl.isJsFrameEvent(event)) {
       const frame = event.args['data'];
+      if (TimelineUIUtils.isUserFrame(frame)) {
+        return TimelineUIUtils.colorForId(frame.url);
+      }
+    }
+    if (TraceEngine.Legacy.eventIsFromNewEngine(event) && TraceEngine.Types.TraceEvents.isProfileCall(event)) {
+      const frame = event.callFrame;
       if (TimelineUIUtils.isUserFrame(frame)) {
         return TimelineUIUtils.colorForId(frame.url);
       }
@@ -1973,7 +1983,7 @@ export class TimelineUIUtils {
     const contentHelper = new TimelineDetailsContentHelper(model.targetByEvent(event), linkifier);
 
     const defaultColorForEvent = TraceEngine.Legacy.eventIsFromNewEngine(event) ?
-        EventStyles.get(event.name as TraceEngine.Types.TraceEvents.KnownEventName)?.categoryStyle.color :
+        getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category.color :
         TimelineUIUtils.eventStyle(event).category.color;
     const color = model.isMarkerEvent(event) ? TimelineUIUtils.markerStyleForEvent(event).color : defaultColorForEvent;
 
@@ -3338,18 +3348,6 @@ export class TimelineUIUtils {
   }
 }
 
-export class TimelineRecordStyle {
-  title: string;
-  category: TimelineCategory;
-  hidden: boolean;
-
-  constructor(title: string, category: TimelineCategory, hidden: boolean|undefined = false) {
-    this.title = title;
-    this.category = category;
-    this.hidden = hidden;
-  }
-}
-
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
 export enum NetworkCategory {
@@ -3549,40 +3547,6 @@ export class EventDispatchTypeDescriptor {
     this.priority = priority;
     this.color = color;
     this.eventTypes = eventTypes;
-  }
-}
-
-export class TimelineCategory {
-  name: string;
-  title: string;
-  visible: boolean;
-  childColor: string;
-  color: string;
-  private hiddenInternal?: boolean;
-
-  constructor(name: string, title: string, visible: boolean, childColor: string, color: string) {
-    this.name = name;
-    this.title = title;
-    this.visible = visible;
-    this.childColor = childColor;
-    this.color = color;
-    this.hidden = false;
-  }
-
-  get hidden(): boolean {
-    return Boolean(this.hiddenInternal);
-  }
-
-  getCSSValue(): string {
-    return `var(${this.color})`;
-  }
-
-  getComputedValue(): string {
-    return ThemeSupport.ThemeSupport.instance().getComputedValue(this.color);
-  }
-
-  set hidden(hidden: boolean) {
-    this.hiddenInternal = hidden;
   }
 }
 

@@ -569,4 +569,19 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.deepEqual(details, 'Pointer');
     });
   });
+  describe('eventStyle', function() {
+    it('returns the correct style for profile calls', async function() {
+      const data = await TraceLoader.allModels(this, 'simple-js-program.json.gz');
+      const rendererHandler = data.traceParsedData.Renderer;
+      if (!rendererHandler) {
+        throw new Error('RendererHandler is undefined');
+      }
+      const [process] = rendererHandler.processes.values();
+      const [thread] = process.threads.values();
+      const profileCalls = thread.entries.filter(entry => TraceEngine.Types.TraceEvents.isProfileCall(entry));
+      const style = Timeline.TimelineUIUtils.TimelineUIUtils.eventStyle(profileCalls[0]);
+      assert.strictEqual(style.category.name, 'scripting');
+      assert.strictEqual(style.category.color, '--app-color-scripting');
+    });
+  });
 });

@@ -786,8 +786,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     icon: (Element|undefined),
   } {
     const categories = TimelineUIUtils.categories();
-    const color =
-        node.id ? TimelineUIUtils.eventColor((node.event as TraceEngine.Legacy.Event)) : categories['other'].color;
+    const color = node.id && node.event ? TimelineUIUtils.eventColor(node.event) : categories['other'].color;
     const unattributed = i18nString(UIStrings.unattributed);
 
     const id = typeof node.id === 'symbol' ? undefined : node.id;

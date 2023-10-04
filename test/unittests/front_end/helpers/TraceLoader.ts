@@ -18,7 +18,18 @@ import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
 // simplify this into one method that loads the new engine and none of the old
 // ones.
 const fileContentsCache = new Map<string, TraceEngine.Types.File.Contents>();
-const traceEngineCache = new Map<string, TraceEngine.Handlers.Types.TraceParseData>();
+
+// The new engine cache is a map of maps of:
+// trace file name => trace engine configuration => trace data
+//
+// The first map is a Map of string (which is the name of the trace file) to a
+// new map, where the key is the trace engine configuration stringified.
+// This ensures that we cache as much as we can, but if you load the same trace
+// file with different trace engine configurations, we will not use the cache
+// and will reparse. This is required as some of the settings and experiments
+// change if events are kept and dropped.
+const traceEngineCache = new Map<string, Map<string, TraceEngine.Handlers.Types.TraceParseData>>();
+
 export type AllModelsLoaded = Readonly<{
   tracingModel: TraceEngine.Legacy.TracingModel,
   timelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
@@ -96,16 +107,28 @@ export class TraceLoader {
    *
    * @param file The name of the trace file to be loaded.
    * The trace file should be in /test/unittests/fixtures/traces folder.
+   *
+   * @param config The config the new trace engine should run with. Optional,
+   * will fall back to the Default config if not provided.
    */
-  static async traceEngine(context: Mocha.Context|Mocha.Suite|null, name: string):
+  static async traceEngine(
+      context: Mocha.Context|Mocha.Suite|null, name: string,
+      config: TraceEngine.Types.Configuration.Configuration = TraceEngine.Types.Configuration.DEFAULT):
       Promise<TraceEngine.Handlers.Types.TraceParseData> {
-    const cached = traceEngineCache.get(name);
-    if (cached) {
-      return cached;
+    const configCacheKey = TraceEngine.Types.Configuration.configToCacheKey(config);
+
+    const fromCache = traceEngineCache.get(name)?.get(configCacheKey);
+    if (fromCache) {
+      return fromCache;
     }
     const fileContents = await TraceLoader.fixtureContents(context, name);
-    const traceEngineData = await executeTraceEngineOnFileContents(fileContents);
-    traceEngineCache.set(name, traceEngineData.traceParsedData);
+    const traceEngineData =
+        await executeTraceEngineOnFileContents(fileContents, /* emulate fresh recording */ false, config);
+
+    const cacheByName = traceEngineCache.get(name) || new Map<string, TraceEngine.Handlers.Types.TraceParseData>();
+    cacheByName.set(configCacheKey, traceEngineData.traceParsedData);
+    traceEngineCache.set(name, cacheByName);
+
     return traceEngineData.traceParsedData;
   }
 
@@ -204,13 +227,14 @@ function decodeGzipBuffer(buffer: ArrayBuffer): Promise<ArrayBuffer> {
 }
 
 async function executeTraceEngineOnFileContents(
-    contents: TraceEngine.Types.File.Contents, emulateFreshRecording = false): Promise<{
+    contents: TraceEngine.Types.File.Contents, emulateFreshRecording = false,
+    traceEngineConfig?: TraceEngine.Types.Configuration.Configuration): Promise<{
   metadata: TraceEngine.Types.File.MetaData,
   traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
 }> {
   const events = 'traceEvents' in contents ? contents.traceEvents : contents;
   return new Promise((resolve, reject) => {
-    const model = TraceEngine.TraceModel.Model.createWithAllHandlers();
+    const model = TraceEngine.TraceModel.Model.createWithAllHandlers(traceEngineConfig);
     model.addEventListener(TraceEngine.TraceModel.ModelUpdateEvent.eventName, (event: Event) => {
       const {data} = event as TraceEngine.TraceModel.ModelUpdateEvent;
 

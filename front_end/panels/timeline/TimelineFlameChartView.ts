@@ -182,6 +182,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.delegate.select(TimelineSelection.fromRange(startTime, endTime));
   }
 
+  getMainFlameChart(): PerfUI.FlameChart.FlameChart {
+    return this.mainFlameChart;
+  }
+
   updateSelectedGroup(flameChart: PerfUI.FlameChart.FlameChart, group: PerfUI.FlameChart.Group|null): void {
     if (flameChart !== this.mainFlameChart) {
       return;

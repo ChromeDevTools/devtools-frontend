@@ -27,6 +27,13 @@ describe('Performance panel overview/minimap', () => {
     await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview-busy-network.png', 3);
   });
 
+  itScreenshot('shows the resizers in the overview', async () => {
+    await loadComponentDocExample(
+        'performance_panel/overview.html?trace=one-second-interaction&windowStart=141251500&windowEnd=141253500');
+    const pane = await waitFor('.container #timeline-overview-pane');
+    await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview-resizers.png', 3);
+  });
+
   itScreenshot('shows the memory usage', async () => {
     await loadComponentDocExample('performance_panel/overview.html?trace=web-dev');
     const pane = await waitFor('.container-with-memory #timeline-overview-pane');

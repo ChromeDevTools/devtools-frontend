@@ -16,16 +16,19 @@
   min-width: 0.5em;
   background: transparent;
   border: none;
+  border-radius: 4px;
   outline: none;
   display: inline-block;
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
-}
 
-.editable:hover,
-.editable:focus {
-  box-shadow: 0 0 0 1px var(--color-details-hairline);
-  border-radius: 2px;
+  &:hover {
+    border: 1px solid var(--sys-color-neutral-outline);
+  }
+
+  &:focus {
+    border: 1px solid var(--sys-color-state-focus-ring);
+  }
 }
 
 .editable::selection {

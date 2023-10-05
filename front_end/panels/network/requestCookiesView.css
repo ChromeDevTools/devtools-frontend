@@ -15,7 +15,7 @@
   font-size: 12px;
   font-weight: bold;
   margin-right: 30px;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .request-cookies-view .cookie-line {

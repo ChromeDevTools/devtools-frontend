@@ -234,7 +234,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
       const y = ((band === -1) ? 0 : (band % this.numBands + 1)) * _bandHeight + paddingTop;
       const timeRanges = RequestTimingView.calculateRequestTimeRanges(request, this.calculator().minimumBoundary());
 
-      context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--legacy-selection-bg-color');
+      context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-tonal-container');
 
       // The network overview works in seconds, but the calcululator deals in
       // milliseconds, hence the multiplication by 1000.
@@ -299,20 +299,20 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
 }
 
 export const RequestTimeRangeNameToColor = {
-  [RequestTimeRangeNames.Total]: '--override-network-overview-total',
-  [RequestTimeRangeNames.Blocking]: '--override-network-overview-blocking',
-  [RequestTimeRangeNames.Connecting]: '--override-network-overview-connecting',
-  [RequestTimeRangeNames.ServiceWorker]: '--override-network-overview-service-worker',
-  [RequestTimeRangeNames.ServiceWorkerPreparation]: '--override-network-overview-service-worker',
-  [RequestTimeRangeNames.ServiceWorkerRespondWith]: '--override-network-overview-service-worker-respond-with',
-  [RequestTimeRangeNames.Push]: '--override-network-overview-push',
+  [RequestTimeRangeNames.Total]: '--network-overview-total',
+  [RequestTimeRangeNames.Blocking]: '--network-overview-blocking',
+  [RequestTimeRangeNames.Connecting]: '--network-overview-connecting',
+  [RequestTimeRangeNames.ServiceWorker]: '--network-overview-service-worker',
+  [RequestTimeRangeNames.ServiceWorkerPreparation]: '--network-overview-service-worker',
+  [RequestTimeRangeNames.ServiceWorkerRespondWith]: '--network-overview-service-worker-respond-with',
+  [RequestTimeRangeNames.Push]: '--network-overview-push',
   [RequestTimeRangeNames.Proxy]: '--override-network-overview-proxy',
-  [RequestTimeRangeNames.DNS]: '--override-network-overview-dns',
-  [RequestTimeRangeNames.SSL]: '--override-network-overview-ssl',
+  [RequestTimeRangeNames.DNS]: '--network-overview-dns',
+  [RequestTimeRangeNames.SSL]: '--network-overview-ssl',
   [RequestTimeRangeNames.Sending]: '--override-network-overview-sending',
-  [RequestTimeRangeNames.Waiting]: '--override-network-overview-waiting',
-  [RequestTimeRangeNames.Receiving]: '--override-network-overview-receiving',
-  [RequestTimeRangeNames.Queueing]: '--override-network-overview-queueing',
+  [RequestTimeRangeNames.Waiting]: '--network-overview-waiting',
+  [RequestTimeRangeNames.Receiving]: '--network-overview-receiving',
+  [RequestTimeRangeNames.Queueing]: '--network-overview-queueing',
 } as {[key: string]: string};
 
 // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)

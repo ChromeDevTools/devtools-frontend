@@ -98,7 +98,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     this.styleForWaitingResourceType = resourceStyleTuple[0];
     this.styleForDownloadingResourceType = resourceStyleTuple[1];
 
-    const baseLineColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-disabled');
+    const baseLineColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-state-disabled');
     this.wiskerStyle = {borderColor: baseLineColor, lineWidth: 1, fillStyle: undefined};
     this.hoverDetailsStyle = {fillStyle: baseLineColor, lineWidth: 1, borderColor: baseLineColor};
 
@@ -420,7 +420,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     this.drawLayers(context, useTimingBars);
 
     context.save();
-    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-disabled');
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-state-disabled');
     for (const textData of this.textLayers) {
       context.fillText(textData.text, textData.x, textData.y);
     }

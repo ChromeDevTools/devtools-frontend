@@ -588,7 +588,7 @@
   --sys-color-on-tertiary-container: var(--ref-palette-tertiary90);
   --sys-color-error-container: var(--ref-palette-error30);
   --sys-color-on-error-container: var(--ref-palette-error90);
-  --sys-color-neutral-container: var(--ref-palette-neutral15);
+  --sys-color-neutral-container: var(--ref-palette-neutral10);
   --sys-color-omnibox-container: var(--ref-palette-neutral15);
 
   /* Prominent accent colors */

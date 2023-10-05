@@ -14,7 +14,7 @@
 }
 
 .request-initiator-view-section-title:focus-visible {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-state-focus-highlight);
 }
 
 @media (forced-colors: active) {

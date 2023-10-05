@@ -4,15 +4,6 @@
  * found in the LICENSE file.
  */
 
-devtools-request-headers-category {
-  --override-header-highlight-background-color: #ffff78;
-}
-
-.-theme-with-dark-background devtools-request-headers-category,
-:host-context(.-theme-with-dark-background) devtools-request-headers-category {
-  --override-header-highlight-background-color: #4c4c33;
-}
-
 .header {
   background-color: var(--sys-color-surface1);
   border-bottom: 1px solid var(--sys-color-divider);
@@ -22,8 +13,7 @@ devtools-request-headers-category {
 }
 
 .header::marker {
-  color: rgb(110 110 110); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  color: var(--sys-color-state-disabled);
   font-size: 11px;
   line-height: 1;
 }
@@ -69,7 +59,7 @@ div.raw-headers-row {
 }
 
 .header-name {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   font-weight: 400;
   width: 30%;
   min-width: 160px;
@@ -106,11 +96,11 @@ div.raw-headers-row {
 }
 
 .green-circle::before {
-  background-color: var(--color-accent-green);
+  background-color: var(--sys-color-green-bright);
 }
 
 .red-circle::before {
-  background-color: var(--color-accent-red);
+  background-color: var(--sys-color-error-bright);
 }
 
 .yellow-circle::before {
@@ -118,7 +108,7 @@ div.raw-headers-row {
 }
 
 .status-with-comment {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .raw-headers {
@@ -130,7 +120,7 @@ div.raw-headers-row {
 
 .link,
 .devtools-link {
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
   outline-offset: 2px;
@@ -153,7 +143,7 @@ div.raw-headers-row {
 }
 
 .header .devtools-link {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 x-link { /* stylelint-disable-line selector-type-no-unknown */
@@ -165,7 +155,7 @@ x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
 }
 
 .purple.dot::before {
-  background-color: var(--color-purple-bright);
+  background-color: var(--sys-color-purple-bright);
   content: url("Images/empty.svg");
   width: 6px;
   height: 6px;
@@ -178,9 +168,9 @@ x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
 }
 
 summary label {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 summary label:hover {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }

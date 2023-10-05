@@ -5,7 +5,7 @@
  */
 
 .panel.network .toolbar.binary-view-toolbar {
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
   border-bottom: 0;
   padding-left: 5px;
 }

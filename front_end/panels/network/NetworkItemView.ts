@@ -162,7 +162,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
       if (this.requestInternal.hasOverriddenHeaders()) {
         const icon = new IconButton.Icon.Icon();
-        icon.data = {iconName: 'small-status-dot', color: 'var(--color-purple-bright)', width: '16px', height: '16px'};
+        icon.data =
+            {iconName: 'small-status-dot', color: 'var(--sys-color-purple-bright)', width: '16px', height: '16px'};
         this.setTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent, icon);
       }
     } else {
@@ -202,7 +203,8 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
       if (this.requestInternal.hasOverriddenContent) {
         const icon = new IconButton.Icon.Icon();
-        icon.data = {iconName: 'small-status-dot', color: 'var(--color-purple-bright)', width: '16px', height: '16px'};
+        icon.data =
+            {iconName: 'small-status-dot', color: 'var(--sys-color-purple-bright)', width: '16px', height: '16px'};
         this.setTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.Response, icon);
       }
     }

@@ -173,13 +173,26 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 
   private onWindowChanged(): void {
     if (!this.selection) {
-      this.updateContentsFromWindow();
+      this.scheduleUpdateContentsFromWindow();
     }
   }
 
-  private updateContentsFromWindow(): void {
+  /**
+   * This forces a recalculation and rerendering of the timings
+   * breakdown of a track.
+   * User actions like zooming or scrolling can trigger many updates in
+   * short time windows, so we debounce the calls in those cases. Single
+   * sporadic calls (like selecting a new track) don't need to be
+   * debounced. The forceImmediateUpdate param configures the debouncing
+   * behaviour.
+   */
+  private scheduleUpdateContentsFromWindow(forceImmediateUpdate: boolean = false): void {
     if (!this.model) {
       this.setContent(UI.Fragment.html`<div/>`);
+      return;
+    }
+    if (forceImmediateUpdate) {
+      this.updateContentsFromWindow();
       return;
     }
 
@@ -188,11 +201,15 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       this.updateContentsScheduled = true;
       setTimeout(() => {
         this.updateContentsScheduled = false;
-        const window = this.model.window();
-        this.updateSelectedRangeStats(window.left, window.right);
-        this.updateContents();
+        this.updateContentsFromWindow();
       }, 100);
     }
+  }
+
+  private updateContentsFromWindow(): void {
+    const window = this.model.window();
+    this.updateSelectedRangeStats(window.left, window.right);
+    this.updateContents();
   }
 
   #getFilmStripFrame(frame: TimelineModel.TimelineFrameModel.TimelineFrame): TraceEngine.Extras.FilmStrip.Frame|null {
@@ -216,7 +233,9 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.detailsLinkifier.reset();
     this.selection = selection;
     if (!this.selection) {
-      this.updateContentsFromWindow();
+      // Update instantly using forceImmediateUpdate, since we are only
+      // making a single call and don't need to debounce.
+      this.scheduleUpdateContentsFromWindow(/* forceImmediateUpdate */ true);
       return;
     }
     const selectionObject = this.selection.object;

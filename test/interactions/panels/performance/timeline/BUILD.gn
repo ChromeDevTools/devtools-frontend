@@ -16,11 +16,13 @@ node_ts_library("timeline") {
     "overview_test.ts",
     "rasterizer_tracks_test.ts",
     "thread_tracks_test.ts",
+    "timeline_selection_test.ts",
     "timeline_test.ts",
     "timings_track_test.ts",
   ]
 
   deps = [
+    "../../../../../front_end/panels/timeline:bundle",
     "../../../../shared",
     "../../../helpers",
   ]

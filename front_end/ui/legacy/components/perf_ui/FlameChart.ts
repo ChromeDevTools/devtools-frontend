@@ -332,7 +332,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.updateHighlight();
   }
 
-  private timelineData(): FlameChartTimelineData|null {
+  timelineData(): FlameChartTimelineData|null {
     if (!this.dataProvider) {
       return null;
     }
@@ -985,6 +985,36 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return -1;
   }
 
+  /**
+   * Given an entry's index, retrns its coordinates relative to the
+   * viewport.
+   */
+  entryIndexToCoordinates(entryIndex: number): {x: number, y: number}|null {
+    const timelineData = this.timelineData();
+    const {x: canvasViewportOffsetX, y: canvasViewportOffsetY} = this.canvas.getBoundingClientRect();
+    if (!timelineData || !this.visibleLevelOffsets) {
+      return null;
+    }
+
+    const x = this.chartViewport.timeToPosition(timelineData.entryStartTimes[entryIndex]) + canvasViewportOffsetX;
+    const y = this.visibleLevelOffsets[timelineData.entryLevels[entryIndex]] - this.chartViewport.scrollOffset() +
+        canvasViewportOffsetY;
+    return {x, y};
+  }
+
+  /**
+   * Returns the offset of the canvas relative to the viewport.
+   */
+  getCanvasOffset(): {x: number, y: number} {
+    return this.canvas.getBoundingClientRect();
+  }
+
+  /**
+   * Returns the y scroll of the chart viewport.
+   */
+  getScrollOffset(): number {
+    return this.chartViewport.scrollOffset();
+  }
   private coordinatesToGroupIndex(x: number, y: number, headerOnly: boolean): number {
     if (!this.rawTimelineData || !this.rawTimelineData.groups || !this.groupOffsets) {
       return -1;

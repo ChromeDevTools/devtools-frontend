@@ -255,7 +255,7 @@ export enum ThreadTracksSource {
 }
 
 // TODO(crbug.com/1428024): Use the new engine.
-const DEFAULT_THREAD_TRACKS_SOURCE = ThreadTracksSource.NEW_ENGINE;
+const DEFAULT_THREAD_TRACKS_SOURCE = ThreadTracksSource.OLD_ENGINE;
 
 // TypeScript will presumably get these types at some stage, and when it
 // does these temporary types should be removed.

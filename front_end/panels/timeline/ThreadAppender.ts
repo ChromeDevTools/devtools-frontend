@@ -75,6 +75,48 @@ const UIStrings = {
    *@example {2} PH1
    */
   rasterizerThreadS: 'Rasterizer Thread {PH1}',
+  /**
+   *@description Title of a bidder auction worklet with known URL in the timeline flame chart of the Performance panel
+   *@example {https://google.com} PH1
+   */
+  bidderWorkletS: 'Bidder Worklet — {PH1}',
+  /**
+   *@description Title of a bidder auction worklet in the timeline flame chart of the Performance panel with an unknown URL
+   */
+  bidderWorklet: 'Bidder Worklet',
+
+  /**
+   *@description Title of a seller auction worklet in the timeline flame chart of the Performance panel with an unknown URL
+   */
+  sellerWorklet: 'Seller Worklet',
+
+  /**
+   *@description Title of an auction worklet in the timeline flame chart of the Performance panel with an unknown URL
+   */
+  unknownWorklet: 'Auction Worklet',
+
+  /**
+   *@description Title of control thread of a service process for an auction worklet in the timeline flame chart of the Performance panel with an unknown URL
+   */
+  workletService: 'Auction Worklet Service',
+
+  /**
+   *@description Title of a seller auction worklet with known URL in the timeline flame chart of the Performance panel
+   *@example {https://google.com} PH1
+   */
+  sellerWorkletS: 'Seller Worklet — {PH1}',
+
+  /**
+   *@description Title of an auction worklet with known URL in the timeline flame chart of the Performance panel
+   *@example {https://google.com} PH1
+   */
+  unknownWorkletS: 'Auction Worklet — {PH1}',
+
+  /**
+   *@description Title of control thread of a service process for an auction worklet with known URL in the timeline flame chart of the Performance panel
+   * @example {https://google.com} PH1
+   */
+  workletServiceS: 'Auction Worklet Service — {PH1}',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/ThreadAppender.ts', UIStrings);
@@ -84,6 +126,7 @@ export const enum ThreadType {
   MAIN_THREAD = 'MAIN_THREAD',
   WORKER = 'WORKER',
   RASTERIZER = 'RASTERIZER',
+  AUCTION_WORKLET = 'AUCTION_WORKLET',
   OTHER = 'OTHER',
 }
 
@@ -152,6 +195,20 @@ export class ThreadAppender implements TrackAppender {
     this.#threadDefaultName = threadName || i18nString(UIStrings.threadS, {PH1: threadId});
     this.isOnMainFrame = Boolean(this.#traceParsedData.Renderer?.processes.get(processId)?.isOnMainFrame);
     this.threadType = type;
+    // AuctionWorklets are threads, so we re-use this appender rather than
+    // duplicate it, but we change the name because we want to render these
+    // lower down than other threads.
+    if (this.#traceParsedData.AuctionWorklets.worklets.has(processId)) {
+      this.appenderName = 'Thread_AuctionWorklet';
+    }
+  }
+
+  processId(): TraceEngine.Types.TraceEvents.ProcessID {
+    return this.#processId;
+  }
+
+  threadId(): TraceEngine.Types.TraceEvents.ThreadID {
+    return this.#threadId;
   }
 
   /**
@@ -245,10 +302,67 @@ export class ThreadAppender implements TrackAppender {
         break;
       case ThreadType.OTHER:
         break;
+      case ThreadType.AUCTION_WORKLET:
+        threadTypeLabel = this.#buildNameForAuctionWorklet();
+        break;
       default:
         return Platform.assertNever(this.threadType, `Unknown thread type: ${this.threadType}`);
     }
     return threadTypeLabel || this.#threadDefaultName;
+  }
+
+  #buildNameForAuctionWorklet(): string {
+    const workletMetadataEvent = this.#traceParsedData.AuctionWorklets.worklets.get(this.#processId);
+    // We should always have this event - if we do not, we were instantiated with invalid data.
+    if (!workletMetadataEvent) {
+      return i18nString(UIStrings.unknownWorklet);
+    }
+
+    // Host could be empty - in which case we do not want to add it.
+    const host = workletMetadataEvent.host ? `https://${workletMetadataEvent.host}` : '';
+    const shouldAddHost = host.length > 0;
+
+    // For each Auction Worklet in a page there are two threads we care about on the same process.
+    // 1. The "Worklet Service" which is a generic helper service. This thread
+    // is always named "auction_worklet.CrUtilityMain".
+    //
+    // 2. The "Seller/Bidder" service. This thread is always named
+    // "AuctionV8HelperThread". The AuctionWorkets handler does the job of
+    // figuring this out for us - the metadata event it provides for each
+    // worklet process will have a `type` already set.
+    //
+    // Therefore, for this given thread, which we know is part of
+    // an AuctionWorklet process, we need to figure out if this thread is the
+    // generic service, or a seller/bidder worklet.
+    //
+    // Note that the worklet could also have the "unknown" type - this is not
+    // expected but implemented to prevent trace event changes causing DevTools
+    // to break with unknown worklet types.
+    const isUtilityThread = workletMetadataEvent.args.data.utilityThread.tid === this.#threadId;
+    const isBidderOrSeller = workletMetadataEvent.args.data.v8HelperThread.tid === this.#threadId;
+
+    if (isUtilityThread) {
+      return shouldAddHost ? i18nString(UIStrings.workletServiceS, {PH1: host}) : i18nString(UIStrings.workletService);
+    }
+
+    if (isBidderOrSeller) {
+      switch (workletMetadataEvent.type) {
+        case TraceEngine.Types.TraceEvents.AuctionWorkletType.SELLER:
+          return shouldAddHost ? i18nString(UIStrings.sellerWorkletS, {PH1: host}) :
+                                 i18nString(UIStrings.sellerWorklet);
+        case TraceEngine.Types.TraceEvents.AuctionWorkletType.BIDDER:
+          return shouldAddHost ? i18nString(UIStrings.bidderWorkletS, {PH1: host}) :
+                                 i18nString(UIStrings.bidderWorklet);
+        case TraceEngine.Types.TraceEvents.AuctionWorkletType.UNKNOWN:
+          return shouldAddHost ? i18nString(UIStrings.unknownWorkletS, {PH1: host}) :
+                                 i18nString(UIStrings.unknownWorklet);
+        default:
+          Platform.assertNever(
+              workletMetadataEvent.type, `Unexpected Auction Worklet Type ${workletMetadataEvent.type}`);
+      }
+    }
+    // We should never reach here, but just in case!
+    return shouldAddHost ? i18nString(UIStrings.unknownWorkletS, {PH1: host}) : i18nString(UIStrings.unknownWorklet);
   }
 
   #buildNameForWorker(): string {

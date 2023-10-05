@@ -78,7 +78,8 @@ export interface TrackAppender {
   highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo;
 }
 
-export const TrackNames = ['Animations', 'Timings', 'Interactions', 'GPU', 'LayoutShifts', 'Thread'] as const;
+export const TrackNames =
+    ['Animations', 'Timings', 'Interactions', 'GPU', 'LayoutShifts', 'Thread', 'Thread_AuctionWorklet'] as const;
 // Network track will use TrackAppender interface, but it won't be shown in Main flamechart.
 // So manually add it to TrackAppenderName.
 export type TrackAppenderName = typeof TrackNames[number]|'Network';
@@ -177,22 +178,36 @@ export class CompatibilityTracksAppender {
           return 2;
         case ThreadType.RASTERIZER:
           return 3;
-        case ThreadType.OTHER:
+        case ThreadType.AUCTION_WORKLET:
           return 4;
-        default:
+        case ThreadType.OTHER:
           return 5;
+        default:
+          return 6;
       }
     };
     if (this.#traceParsedData.Renderer) {
       let rasterCount = 0;
       for (const [pid, process] of this.#traceParsedData.Renderer.processes) {
         if (this.#traceParsedData.AuctionWorklets.worklets.has(pid)) {
-          // TODO(crbug.com/1478710): support and render Auction Worklets. The
-          // handler can parse the metadata, we need to now do the work to
-          // calculate the right titles for each of the Auction Worklet
-          // threads.
+          const workletEvent = this.#traceParsedData.AuctionWorklets.worklets.get(pid);
+          if (!workletEvent) {
+            continue;
+          }
+
+          // Each AuctionWorklet event represents two threads:
+          // 1. the Utility Thread
+          // 2. the V8 Helper Thread
+          // Note that the names passed here are not used visually. TODO: remove this name?
+          this.#threadAppenders.push(new ThreadAppender(
+              this, this.#flameChartData, this.#traceParsedData, pid, workletEvent.args.data.utilityThread.tid,
+              'auction-worket-utility', ThreadType.AUCTION_WORKLET, 0));
+          this.#threadAppenders.push(new ThreadAppender(
+              this, this.#flameChartData, this.#traceParsedData, pid, workletEvent.args.data.v8HelperThread.tid,
+              'auction-worklet-v8helper', ThreadType.AUCTION_WORKLET, 0));
           continue;
         }
+
         for (const [tid, thread] of process.threads) {
           let threadType = ThreadType.OTHER;
           if (thread.name === 'CrRendererMain') {

@@ -407,6 +407,7 @@ describeWithEnvironment('ThreadAppender', function() {
     assert.strictEqual(flameChartData.groups[3].name, 'ThreadPoolForegroundWorker');
     assert.strictEqual(flameChartData.groups[4].name, 'ThreadPoolServiceThread');
   });
+
   describe('ignore listing', () => {
     let ignoreListManager: Bindings.IgnoreListManager.IgnoreListManager;
     beforeEach(() => {
@@ -520,6 +521,79 @@ describeWithEnvironment('ThreadAppender', function() {
       assert.deepEqual(flameChartData.entryTotalTimes, [0.2, 0.1, 0.025, 0.1]);
       assert.strictEqual(threadAppenders.length, 1);
       assert.strictEqual(threadAppenders[0].titleForEvent(callFrameB), 'On ignore list');
+    });
+  });
+
+  describe('AuctionWorklet threads', () => {
+    // We have to set these up because the ThreadAppender includes logic for
+    // ignoring events that relies on the IgnoreListManager.
+    beforeEach(() => {
+      const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+        forceNew: true,
+        resourceMapping,
+        targetManager,
+      });
+      Bindings.IgnoreListManager.IgnoreListManager.instance({
+        forceNew: true,
+        debuggerWorkspaceBinding,
+      });
+    });
+
+    afterEach(() => {
+      SDK.TargetManager.TargetManager.removeInstance();
+      Workspace.Workspace.WorkspaceImpl.removeInstance();
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
+      Bindings.IgnoreListManager.IgnoreListManager.removeInstance();
+    });
+
+    it('finds all the worklet threads', async function() {
+      const {threadAppenders} = await renderThreadAppendersFromTrace(this, 'fenced-frame-fledge.json.gz');
+      const workletAppenders = threadAppenders.filter(threadAppender => {
+        return threadAppender.trackName().includes('Worklet');
+      });
+      assert.lengthOf(workletAppenders, 6);
+    });
+
+    it('sets the title correctly for an Auction Worklet service', async function() {
+      const UTILITY_THREAD_PID = 776435 as TraceModel.Types.TraceEvents.ProcessID;
+      const UTILITY_THREAD_TID = 1 as TraceModel.Types.TraceEvents.ThreadID;
+      const {threadAppenders} = await renderThreadAppendersFromTrace(this, 'fenced-frame-fledge.json.gz');
+      const appender = threadAppenders.find(threadAppender => {
+        return threadAppender.processId() === UTILITY_THREAD_PID && threadAppender.threadId() === UTILITY_THREAD_TID;
+      });
+      if (!appender) {
+        throw new Error('Could not find expected thread appender');
+      }
+      assert.strictEqual(appender.trackName(), 'Auction Worklet Service — https://ssp-fledge-demo.glitch.me');
+    });
+
+    it('sets the title correctly for an Auction Worklet seller service', async function() {
+      const SELLER_THREAD_PID = 776435 as TraceModel.Types.TraceEvents.ProcessID;
+      const SELLER_THREAD_TID = 6 as TraceModel.Types.TraceEvents.ThreadID;
+      const {threadAppenders} = await renderThreadAppendersFromTrace(this, 'fenced-frame-fledge.json.gz');
+      const appender = threadAppenders.find(threadAppender => {
+        return threadAppender.processId() === SELLER_THREAD_PID && threadAppender.threadId() === SELLER_THREAD_TID;
+      });
+      if (!appender) {
+        throw new Error('Could not find expected thread appender');
+      }
+      assert.strictEqual(appender.trackName(), 'Seller Worklet — https://ssp-fledge-demo.glitch.me');
+    });
+
+    it('sets the title correctly for an Auction Worklet bidder service', async function() {
+      const BIDDER_THREAD_PID = 776436 as TraceModel.Types.TraceEvents.ProcessID;
+      const BIDDER_THREAD_TID = 6 as TraceModel.Types.TraceEvents.ThreadID;
+      const {threadAppenders} = await renderThreadAppendersFromTrace(this, 'fenced-frame-fledge.json.gz');
+      const appender = threadAppenders.find(threadAppender => {
+        return threadAppender.processId() === BIDDER_THREAD_PID && threadAppender.threadId() === BIDDER_THREAD_TID;
+      });
+      if (!appender) {
+        throw new Error('Could not find expected thread appender');
+      }
+      assert.strictEqual(appender.trackName(), 'Bidder Worklet — https://dsp-fledge-demo.glitch.me');
     });
   });
 });

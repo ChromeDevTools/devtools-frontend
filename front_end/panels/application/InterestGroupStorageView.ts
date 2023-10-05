@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as UI from '../../ui/legacy/legacy.js';
+import * as Protocol from '../../generated/protocol.js';
 import type * as DataGrid from '../../ui/components/data_grid/data_grid.js';
-import type * as Protocol from '../../generated/protocol.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
-import * as ApplicationComponents from './components/components.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
+import * as ApplicationComponents from './components/components.js';
 import interestGroupStorageViewStyles from './interestGroupStorageView.css.js';
 
 const UIStrings = {
@@ -89,6 +89,7 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
     this.events = [];
     this.interestGroupGrid.data = this.events;
     this.setSidebarWidget(this.noDisplayView);
+    this.sidebarUpdatedForTesting();
   }
 
   private async onFocus(event: Event): Promise<void> {
@@ -100,11 +101,19 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
 
     const ownerOrigin = row.cells.find(cell => cell.columnId === 'event-group-owner')?.value as string;
     const name = row.cells.find(cell => cell.columnId === 'event-group-name')?.value as string;
+    const eventType =
+        row.cells.find(cell => cell.columnId === 'event-type')?.value as Protocol.Storage.InterestGroupAccessType;
     if (!ownerOrigin || !name) {
       return;
     }
 
-    const details = await this.detailsGetter.getInterestGroupDetails(ownerOrigin, name);
+    let details = null;
+    // Details of additional bids can't be looked up like regular bids,
+    // they are ephemeral to the auction.
+    if (eventType !== Protocol.Storage.InterestGroupAccessType.AdditionalBid &&
+        eventType !== Protocol.Storage.InterestGroupAccessType.AdditionalBidWin) {
+      details = await this.detailsGetter.getInterestGroupDetails(ownerOrigin, name);
+    }
     if (details) {
       const jsonView = await SourceFrame.JSONView.JSONView.createView(JSON.stringify(details));
       jsonView?.setMinimumSize(0, 40);
@@ -114,6 +123,7 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
     } else {
       this.setSidebarWidget(this.noDataView);
     }
+    this.sidebarUpdatedForTesting();
   }
 
   getEventsForTesting(): Array<Protocol.Storage.InterestGroupAccessedEvent> {
@@ -122,5 +132,8 @@ export class InterestGroupStorageView extends UI.SplitWidget.SplitWidget {
 
   getInterestGroupGridForTesting(): ApplicationComponents.InterestGroupAccessGrid.InterestGroupAccessGrid {
     return this.interestGroupGrid;
+  }
+
+  sidebarUpdatedForTesting(): void {
   }
 }

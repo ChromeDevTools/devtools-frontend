@@ -24,7 +24,7 @@
 }
 
 .profile-launcher-view-content p {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   margin-top: 1px;
   margin-left: 22px;
 }
@@ -34,7 +34,7 @@
 }
 
 .profile-launcher-view-content button.running {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
 }
 
 .profile-launcher-view-content > div {
@@ -52,7 +52,7 @@
 
 .profile-launcher-target-list {
   margin-bottom: 6px;
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-divider);
   flex: 150px 1 0;
 }
 
@@ -106,11 +106,11 @@
 
 .profile-memory-usage-item-trend {
   min-width: 5em;
-  color: var(--color-accent-green);
+  color: var(--sys-color-tertiary);
 }
 
 .profile-memory-usage-item-trend.increasing {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
 }
 
 .profile-launcher-buttons {

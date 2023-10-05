@@ -60,11 +60,11 @@
 .heap-snapshot-view td.object-column .objects-count {
   margin-left: 10px;
   font-size: 11px;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .heap-snapshot-view tr:not(.selected) .object-value-id {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .profile-view .heap-tracking-overview {
@@ -145,7 +145,7 @@
 
 .heap-snapshot-view tr:not(.selected) td.object-column span.heap-object-tag,
 .heap-snapshot-view tr:not(.selected) td.object-column span.grayed {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .heap-snapshot-view tr:not(.selected) .cycled-ancessor-node {
@@ -188,29 +188,21 @@
 .heap-allocation-stack .stack-frame {
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   padding: 2px;
 }
 
 .heap-allocation-stack .stack-frame:focus {
-  background-color: var(--legacy-selection-bg-color);
-  color: var(--legacy-selection-fg-color);
-}
-
-.heap-allocation-stack .stack-frame:focus:hover {
-  background-color: var(--legacy-accent-color-hover);
+  background-color: var(--sys-color-tonal-container);
+  color: var(--sys-color-on-tonal-container);
 }
 
 .heap-allocation-stack .stack-frame:hover:not(:focus) {
-  background-color: var(--color-background-hover-overlay);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .heap-allocation-stack .stack-frame .devtools-link {
-  color: var(--color-text-secondary);
-}
-
-.heap-allocation-stack .stack-frame:focus .devtools-link {
-  color: var(--legacy-selection-fg-color);
+  color: var(--sys-color-primary);
 }
 
 .no-heap-allocation-stack {

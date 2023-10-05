@@ -605,7 +605,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
         .data = {iconName: 'arrow-up-down', color: 'var(--icon-request-response)', width: '16px', height: '16px'};
     const newRow: DataGrid.DataGridUtils.Row = {
       styles: {
-        '--override-data-grid-row-background-color': 'var(--override-data-grid-sent-message-row-background-color)',
+        '--override-data-grid-row-background-color': 'var(--sys-color-surface3)',
       },
       cells: [
         {columnId: 'method', value: message.method, title: message.method},

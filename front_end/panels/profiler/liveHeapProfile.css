@@ -14,9 +14,9 @@
 }
 
 .data-grid tr:not(.selected) td .size-units {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .toolbar {
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
 }

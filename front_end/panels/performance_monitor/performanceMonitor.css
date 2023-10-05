@@ -85,7 +85,7 @@
 
 .perfmon-indicator:hover,
 .perfmon-indicator:focus-visible {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .perfmon-indicator-swatch {
@@ -97,7 +97,7 @@
 }
 
 .perfmon-indicator:not(.active) .perfmon-indicator-title {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .perfmon-indicator-value {

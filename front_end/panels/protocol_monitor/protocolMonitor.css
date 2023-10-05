@@ -4,19 +4,10 @@
  * found in the LICENSE file.
  */
 
-.protocol-monitor {
-  --override-data-grid-sent-message-row-background-color: rgb(240 246 255);
-}
-
-.-theme-with-dark-background .protocol-monitor,
-:host-context(.-theme-with-dark-background) .protocol-monitor {
-  --override-data-grid-sent-message-row-background-color: rgb(43 46 56);
-}
-
 .protocol-monitor .protocol-monitor-toolbar {
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
 }
 
 .protocol-monitor .protocol-monitor-bottom-toolbar {
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
 }

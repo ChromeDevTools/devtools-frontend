@@ -1691,6 +1691,9 @@
   "panels/accessibility/AccessibilityNodeView.ts | elementIsHiddenBy": {
     "message": "Element is hidden by active modal dialogue: "
   },
+  "panels/accessibility/AccessibilityNodeView.ts | elementIsHiddenByChildTree": {
+    "message": "Element is hidden by a child accessibility tree: "
+  },
   "panels/accessibility/AccessibilityNodeView.ts | elementIsInAnInertSubTree": {
     "message": "Element is in an inert subtree from "
   },

@@ -8,7 +8,13 @@
   display: flex;
   align-items: center;
   height: 29px;
-  padding: 6px 2px;
+  padding: 3px;
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+
+.breadcrumbs::-webkit-scrollbar {
+  display: none;
 }
 
 .breadcrumb {
@@ -22,9 +28,10 @@
 
 .range {
   font-size: 12px;
+  white-space: nowrap;
 }
 
 .last-breadcrumb {
   font-weight: bold;
-  color: var(--color-selection-highlight-border);
+  color: var(--app-color-active-breadcrumb);
 }

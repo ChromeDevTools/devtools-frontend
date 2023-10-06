@@ -399,6 +399,11 @@
   --app-color-async: var(--ref-palette-error60);
   --app-color-async-children: var(--ref-palette-error70);
   --app-color-other: var(--ref-palette-neutral87);
+
+  /**
+   * Color for the active breadcrumb in the Performance Panel timeline.
+   */
+  --app-color-active-breadcrumb: var(--ref-palette-blue40);
 }
 
 .-theme-with-dark-background {
@@ -757,5 +762,5 @@
   /**
    * Color for the active breadcrumb in the Performance Panel timeline.
    */
-  --app-color-active-breadcrumb: rgb(11 87 208);
+  --app-color-active-breadcrumb: var(--ref-palette-blue40);
 }

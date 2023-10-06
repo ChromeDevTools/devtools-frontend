@@ -142,6 +142,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private breadcrumbButtonContainerElement: HTMLElement;
   private createBreadcrumbButton: HTMLElement;
   private curtainsRange?: HTMLElement;
+  private breadcrumbZoomIcon?: IconButton.Icon.Icon;
 
   private overviewWindowSelector!: WindowSelector|undefined;
   private offsetLeft!: number;
@@ -157,6 +158,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   constructor(parentElement: Element, dividersLabelBarElement?: Element, calculator?: Calculator) {
     super();
     this.parentElement = parentElement;
+    this.parentElement.classList.add('parent-element');
     UI.ARIAUtils.markAsGroup(this.parentElement);
     this.calculator = calculator;
 
@@ -214,19 +216,31 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.breadcrumbButtonContainerElement.classList.add('create-breadcrumb-button-container');
     this.createBreadcrumbButton.classList.add('create-breadcrumb-button');
 
-    const zoomIcon = new IconButton.Icon.Icon();
-    zoomIcon.data = {
+    this.breadcrumbZoomIcon = new IconButton.Icon.Icon();
+    this.breadcrumbZoomIcon.data = {
       iconName: 'zoom-in',
       color: 'var(--icon-default)',
       width: '20px',
       height: '20px',
     };
-    this.createBreadcrumbButton.appendChild(zoomIcon);
+    this.createBreadcrumbButton.appendChild(this.breadcrumbZoomIcon);
     this.createBreadcrumbButton.addEventListener('click', () => {
       this.createBreadcrumb();
     });
 
     this.breadcrumbsEnabled = true;
+
+    this.parentElement.addEventListener('mouseover', () => {
+      if ((this.windowLeft ?? 0) <= 0 && (this.windowRight ?? 1) >= 1) {
+        this.breadcrumbButtonContainerElement.style.visibility = 'hidden';
+      } else {
+        this.breadcrumbButtonContainerElement.style.visibility = 'visible';
+      }
+    });
+
+    this.parentElement.addEventListener('mouseout', () => {
+      this.breadcrumbButtonContainerElement.style.visibility = 'hidden';
+    });
   }
 
   private onRightResizeElementFocused(): void {
@@ -263,12 +277,14 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   private leftResizeElementDragging(event: Event): void {
+    this.breadcrumbButtonContainerElement.style.visibility = 'visible';
     const mouseEvent = (event as MouseEvent);
     this.resizeWindowLeft(mouseEvent.pageX - (this.resizerParentOffsetLeft || 0));
     event.preventDefault();
   }
 
   private rightResizeElementDragging(event: Event): void {
+    this.breadcrumbButtonContainerElement.style.visibility = 'visible';
     const mouseEvent = (event as MouseEvent);
     this.resizeWindowRight(mouseEvent.pageX - (this.resizerParentOffsetLeft || 0));
     event.preventDefault();
@@ -371,6 +387,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   private windowDragging(event: Event): void {
+    this.breadcrumbButtonContainerElement.style.visibility = 'visible';
     const mouseEvent = (event as MouseEvent);
     mouseEvent.preventDefault();
     let delta: number = (mouseEvent.pageX - this.dragStartPoint) / this.parentElement.clientWidth;
@@ -514,11 +531,13 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.leftCurtainElement.style.width = leftResizerPercLeftOffsetString;
     this.rightCurtainElement.style.width = rightResizerPercRightOffset + '%';
 
-    this.breadcrumbButtonContainerElement.style.marginLeft = leftResizerPercLeftOffsetString;
-    this.breadcrumbButtonContainerElement.style.marginRight = (100 - rightResizerPercLeftOffset) + '%';
+    this.breadcrumbButtonContainerElement.style.marginLeft =
+        (leftResizerPercLeftOffset > 0) ? leftResizerPercLeftOffset + '%' : '0%';
+    this.breadcrumbButtonContainerElement.style.marginRight =
+        (rightResizerPercRightOffset > 0) ? rightResizerPercRightOffset + '%' : '0%';
 
     if (this.curtainsRange) {
-      this.curtainsRange.textContent = (this.getRawSliderValue(false) - this.getRawSliderValue(true)).toFixed(0) + 'ms';
+      this.curtainsRange.textContent = this.getWindowRange().toFixed(0) + ' ms';
     }
 
     this.updateResizeElementPositionValue(leftResizerPercLeftOffset, rightResizerPercLeftOffset);
@@ -527,6 +546,33 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     } else {
       this.updateResizeElementPercentageLabels(leftResizerPercLeftOffsetString, rightResizerPercLeftOffsetString);
     }
+
+    this.toggleZoomButtonDisplay();
+  }
+
+  private toggleZoomButtonDisplay(): void {
+    if (this.breadcrumbZoomIcon) {
+      // disable button that creates breadcrumbs and hide the zoom icon
+      // when the selected window is smaller than 4.5 ms
+      // 4.5 is rounded to 5 in the UI
+      if (this.getWindowRange() < 4.5) {
+        this.breadcrumbZoomIcon.style.display = 'none';
+        this.breadcrumbButtonContainerElement.style.pointerEvents = 'none';
+      } else {
+        this.breadcrumbZoomIcon.style.display = 'flex';
+        this.breadcrumbButtonContainerElement.style.pointerEvents = 'auto';
+      }
+    }
+  }
+
+  private getWindowRange(): number {
+    if (!this.calculator) {
+      throw new Error('No calculator to calculate window range');
+    }
+
+    const left = (this.windowLeft && this.windowLeft > 0) ? this.windowLeft : 0;
+    const right = (this.windowRight && this.windowRight < 1) ? this.windowRight : 1;
+    return (this.calculator.boundarySpan() * (right - left));
   }
 
   private setWindowPosition(start: number|null, end: number|null): void {

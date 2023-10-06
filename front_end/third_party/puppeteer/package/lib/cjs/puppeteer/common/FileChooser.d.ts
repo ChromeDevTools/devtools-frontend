@@ -62,6 +62,6 @@ export declare class FileChooser {
     /**
      * Closes the file chooser without selecting any files.
      */
-    cancel(): void;
+    cancel(): Promise<void>;
 }
 //# sourceMappingURL=FileChooser.d.ts.map

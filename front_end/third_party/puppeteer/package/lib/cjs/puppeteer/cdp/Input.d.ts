@@ -61,7 +61,6 @@ export declare class CdpTouchscreen extends Touchscreen {
     #private;
     constructor(client: CDPSession, keyboard: CdpKeyboard);
     updateClient(client: CDPSession): void;
-    tap(x: number, y: number): Promise<void>;
     touchStart(x: number, y: number): Promise<void>;
     touchMove(x: number, y: number): Promise<void>;
     touchEnd(): Promise<void>;

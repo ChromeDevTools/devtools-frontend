@@ -428,7 +428,7 @@ export declare class Mouse {
  * The Touchscreen class exposes touchscreen events.
  * @public
  */
-export declare class Touchscreen {
+export declare abstract class Touchscreen {
     /**
      * @internal
      */
@@ -444,7 +444,7 @@ export declare class Touchscreen {
      * @param x - Horizontal position of the tap.
      * @param y - Vertical position of the tap.
      */
-    touchStart(x: number, y: number): Promise<void>;
+    abstract touchStart(x: number, y: number): Promise<void>;
     /**
      * Dispatches a `touchMove` event.
      * @param x - Horizontal position of the move.
@@ -457,10 +457,10 @@ export declare class Touchscreen {
      * {@link https://developer.chrome.com/blog/a-more-compatible-smoother-touch/#chromes-new-model-the-throttled-async-touchmove-model | throttles}
      * touch move events.
      */
-    touchMove(x: number, y: number): Promise<void>;
+    abstract touchMove(x: number, y: number): Promise<void>;
     /**
      * Dispatches a `touchend` event.
      */
-    touchEnd(): Promise<void>;
+    abstract touchEnd(): Promise<void>;
 }
 //# sourceMappingURL=Input.d.ts.map

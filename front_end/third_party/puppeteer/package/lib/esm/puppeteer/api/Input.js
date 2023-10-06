@@ -195,17 +195,14 @@ export class Touchscreen {
      * @internal
      */
     constructor() { }
-    async tap() {
-        throw new Error('Not implemented');
-    }
-    async touchStart() {
-        throw new Error('Not implemented');
-    }
-    async touchMove() {
-        throw new Error('Not implemented');
-    }
-    async touchEnd() {
-        throw new Error('Not implemented');
+    /**
+     * Dispatches a `touchstart` and `touchend` event.
+     * @param x - Horizontal position of the tap.
+     * @param y - Vertical position of the tap.
+     */
+    async tap(x, y) {
+        await this.touchStart(x, y);
+        await this.touchEnd();
     }
 }
 //# sourceMappingURL=Input.js.map

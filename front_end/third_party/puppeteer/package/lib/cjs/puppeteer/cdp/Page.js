@@ -224,7 +224,14 @@ class CdpPage extends Page_js_1.Page {
         this.#tracing = new Tracing_js_1.Tracing(client);
         this.#coverage = new Coverage_js_1.Coverage(client);
         this.#viewport = null;
-        this.#setupEventListeners();
+        for (const [eventName, handler] of this.#frameManagerHandlers) {
+            this.#frameManager.on(eventName, handler);
+        }
+        for (const [eventName, handler] of this.#networkManagerHandlers) {
+            // TODO: Remove any.
+            this.#frameManager.networkManager.on(eventName, handler);
+        }
+        this.#setupPrimaryTargetListeners();
         this.#tabSession?.on(CDPSession_js_1.CDPSessionEvent.Swapped, async (newSession) => {
             this.#client = newSession;
             (0, assert_js_1.assert)(this.#client instanceof CDPSession_js_2.CdpCDPSession, 'CDPSession is not instance of CDPSessionImpl');
@@ -238,7 +245,7 @@ class CdpPage extends Page_js_1.Page {
             this.#tracing.updateClient(newSession);
             this.#coverage.updateClient(newSession);
             await this.#frameManager.swapFrameTree(newSession);
-            this.#setupEventListeners();
+            this.#setupPrimaryTargetListeners();
         });
         this.#tabSession?.on(CDPSession_js_1.CDPSessionEvent.Ready, session => {
             (0, assert_js_1.assert)(session instanceof CDPSession_js_2.CdpCDPSession);
@@ -251,22 +258,19 @@ class CdpPage extends Page_js_1.Page {
                 .catch(util_js_1.debugError);
         });
     }
-    #setupEventListeners() {
+    /**
+     * Sets up listeners for the primary target. The primary target can change
+     * during a navigation to a prerended page.
+     */
+    #setupPrimaryTargetListeners() {
         this.#client.on(CDPSession_js_1.CDPSessionEvent.Ready, this.#onAttachedToTarget);
-        this.#target
-            ._targetManager()
-            .on("targetGone" /* TargetManagerEvent.TargetGone */, this.#onDetachedFromTarget);
-        for (const [eventName, handler] of this.#frameManagerHandlers) {
-            this.#frameManager.on(eventName, handler);
-        }
-        for (const [eventName, handler] of this.#networkManagerHandlers) {
-            // TODO: Remove any.
-            this.#frameManager.networkManager.on(eventName, handler);
-        }
         for (const [eventName, handler] of this.#sessionHandlers) {
             // TODO: Remove any.
             this.#client.on(eventName, handler);
         }
+        this.#target
+            ._targetManager()
+            .on("targetGone" /* TargetManagerEvent.TargetGone */, this.#onDetachedFromTarget);
         this.#target._isClosedDeferred
             .valueOrThrow()
             .then(() => {

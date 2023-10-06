@@ -67,7 +67,6 @@ export declare class BidiMouse extends Mouse {
 export declare class BidiTouchscreen extends Touchscreen {
     #private;
     constructor(context: BrowsingContext);
-    tap(x: number, y: number, options?: BidiTouchMoveOptions): Promise<void>;
     touchStart(x: number, y: number, options?: BidiTouchMoveOptions): Promise<void>;
     touchMove(x: number, y: number, options?: BidiTouchMoveOptions): Promise<void>;
     touchEnd(): Promise<void>;

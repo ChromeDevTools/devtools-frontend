@@ -552,10 +552,6 @@ class BidiTouchscreen extends Input_js_1.Touchscreen {
         super();
         this.#context = context;
     }
-    async tap(x, y, options = {}) {
-        await this.touchStart(x, y, options);
-        await this.touchEnd();
-    }
     async touchStart(x, y, options = {}) {
         await this.#context.connection.send('input.performActions', {
             context: this.#context.id,

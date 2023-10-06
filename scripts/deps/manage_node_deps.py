@@ -91,7 +91,7 @@ DEPS = {
     "postcss": "8.4.5",
     "cssnano": "5.1.14",
     "cssnano-preset-lite": "2.1.3",
-    "puppeteer-core": "21.3.6",
+    "puppeteer-core": "21.3.8",
     "recast": "0.20.5",
     "rimraf": "3.0.2",
     "rollup": "2.63.0",

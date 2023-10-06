@@ -171,29 +171,30 @@ let CdpElementHandle = (() => {
                     return path.resolve(filePath);
                 }
             });
-            const { node } = await this.client.send('DOM.describeNode', {
-                objectId: this.id,
-            });
-            const { backendNodeId } = node;
-            /*  The zero-length array is a special case, it seems that
-                 DOM.setFileInputFiles does not actually update the files in that case,
-                 so the solution is to eval the element value to a new FileList directly.
+            /**
+             * The zero-length array is a special case, it seems that
+             * DOM.setFileInputFiles does not actually update the files in that case, so
+             * the solution is to eval the element value to a new FileList directly.
              */
             if (files.length === 0) {
+                // XXX: These events should converted to trusted events. Perhaps do this
+                // in `DOM.setFileInputFiles`?
                 await this.evaluate(element => {
                     element.files = new DataTransfer().files;
                     // Dispatch events for this case because it should behave akin to a user action.
-                    element.dispatchEvent(new Event('input', { bubbles: true }));
+                    element.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
                     element.dispatchEvent(new Event('change', { bubbles: true }));
                 });
+                return;
             }
-            else {
-                await this.client.send('DOM.setFileInputFiles', {
-                    objectId: this.id,
-                    files,
-                    backendNodeId,
-                });
-            }
+            const { node: { backendNodeId }, } = await this.client.send('DOM.describeNode', {
+                objectId: this.id,
+            });
+            await this.client.send('DOM.setFileInputFiles', {
+                objectId: this.id,
+                files,
+                backendNodeId,
+            });
         }
         async autofill(data) {
             const nodeInfo = await this.client.send('DOM.describeNode', {

@@ -439,23 +439,31 @@ export class CdpTouchscreen extends Touchscreen {
     updateClient(client) {
         this.#client = client;
     }
-    async tap(x, y) {
-        await this.touchStart(x, y);
-        await this.touchEnd();
-    }
     async touchStart(x, y) {
-        const touchPoints = [{ x: Math.round(x), y: Math.round(y) }];
         await this.#client.send('Input.dispatchTouchEvent', {
             type: 'touchStart',
-            touchPoints,
+            touchPoints: [
+                {
+                    x: Math.round(x),
+                    y: Math.round(y),
+                    radiusX: 0.5,
+                    radiusY: 0.5,
+                },
+            ],
             modifiers: this.#keyboard._modifiers,
         });
     }
     async touchMove(x, y) {
-        const movePoints = [{ x: Math.round(x), y: Math.round(y) }];
         await this.#client.send('Input.dispatchTouchEvent', {
             type: 'touchMove',
-            touchPoints: movePoints,
+            touchPoints: [
+                {
+                    x: Math.round(x),
+                    y: Math.round(y),
+                    radiusX: 0.5,
+                    radiusY: 0.5,
+                },
+            ],
             modifiers: this.#keyboard._modifiers,
         });
     }

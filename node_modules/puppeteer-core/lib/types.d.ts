@@ -1951,7 +1951,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
     boxModel(): Promise<BoxModel | null>;
     /**
      * This method scrolls element into view if needed, and then uses
-     * {@link Page.(screenshot:3) } to take a screenshot of the element.
+     * {@link Page.(screenshot:2) } to take a screenshot of the element.
      * If the element is detached from DOM, the method throws an error.
      */
     screenshot(this: ElementHandle<Element>, options?: Readonly<ElementScreenshotOptions>): Promise<string | Buffer>;
@@ -2218,7 +2218,7 @@ export declare class FileChooser {
     /**
      * Closes the file chooser without selecting any files.
      */
-    cancel(): void;
+    cancel(): Promise<void>;
 }
 
 /* Excluded from this release type: FilteredLocator */
@@ -7180,7 +7180,7 @@ export declare class TimeoutError extends CustomError {
  * The Touchscreen class exposes touchscreen events.
  * @public
  */
-export declare class Touchscreen {
+export declare abstract class Touchscreen {
     /* Excluded from this release type: __constructor */
     /**
      * Dispatches a `touchstart` and `touchend` event.
@@ -7193,7 +7193,7 @@ export declare class Touchscreen {
      * @param x - Horizontal position of the tap.
      * @param y - Vertical position of the tap.
      */
-    touchStart(x: number, y: number): Promise<void>;
+    abstract touchStart(x: number, y: number): Promise<void>;
     /**
      * Dispatches a `touchMove` event.
      * @param x - Horizontal position of the move.
@@ -7206,11 +7206,11 @@ export declare class Touchscreen {
      * {@link https://developer.chrome.com/blog/a-more-compatible-smoother-touch/#chromes-new-model-the-throttled-async-touchmove-model | throttles}
      * touch move events.
      */
-    touchMove(x: number, y: number): Promise<void>;
+    abstract touchMove(x: number, y: number): Promise<void>;
     /**
      * Dispatches a `touchend` event.
      */
-    touchEnd(): Promise<void>;
+    abstract touchEnd(): Promise<void>;
 }
 
 /**

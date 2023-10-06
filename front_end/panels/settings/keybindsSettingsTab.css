@@ -25,15 +25,15 @@ h1 {
 
 .keybinds-key {
   padding: 0.1em 0.6em;
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-divider);
   font-size: 11px;
-  background-color: var(--color-background-elevation-1);
-  color: var(--color-text-primary);
+  background-color: var(--sys-color-neutral-container);
+  color: var(--sys-color-on-surface);
   box-shadow: var(--box-shadow-outline-color);
   border-radius: 3px;
   display: inline-block;
   margin: 0 0.1em;
-  text-shadow: 0 1px 0 var(--color-background);
+  text-shadow: 0 1px 0 var(--sys-color-cdt-base-container);
   line-height: 1.5;
   white-space: nowrap;
 }
@@ -47,7 +47,7 @@ h1 {
 }
 
 .keybinds-list-item:focus-visible {
-  background-color: var(--legacy-focus-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .keybinds-list-item:not(.keybinds-category-header) {
@@ -84,7 +84,7 @@ h1 {
 }
 
 .keybinds-error {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
 }
 
 .keybinds-list-item.keybinds-editing .keybinds-shortcut {
@@ -103,11 +103,11 @@ h1 {
 }
 
 .keybinds-list-item button:hover .icon-mask {
-  background-color: var(--color-text-primary);
+  background-color: var(--sys-color-on-surface);
 }
 
 .keybinds-list-item button:focus-visible {
-  background-color: var(--legacy-focus-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .keybinds-list-item button[disabled] {
@@ -136,7 +136,7 @@ h1 {
 .keybinds-list-text {
   padding: 3px 0;
   user-select: none;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   text-align: start;
   position: relative;
   margin-right: 0;
@@ -164,7 +164,7 @@ h1 {
 
 .keybinds-set-select label p {
   display: inline;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .keybinds-set-select select {

@@ -35,7 +35,7 @@
   align-items: center;
   flex: auto 1 1;
   overflow: hidden;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   user-select: none;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -98,7 +98,7 @@ li .devices-edit-client-hints-heading {
 }
 
 .devices-edit-client-hints-heading a:focus {
-  box-shadow: var(--legacy-focus-ring-active-shadow);
+  box-shadow: var(--sys-color-state-focus-ring);
 }
 
 .devices-edit-fields input {

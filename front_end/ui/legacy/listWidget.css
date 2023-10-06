@@ -80,7 +80,6 @@
   align-items: stretch;
   flex: none;
   background: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
   overflow: hidden;
 }
 

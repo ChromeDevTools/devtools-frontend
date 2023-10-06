@@ -46,6 +46,7 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('core/sdk/EventBreakpointsModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 const enum InstrumentationNames {
   BeforeBidderWorkletBiddingStart = 'beforeBidderWorkletBiddingStart',
@@ -54,20 +55,17 @@ const enum InstrumentationNames {
   BeforeSellerWorkletReportingStart = 'beforeSellerWorkletReportingStart',
 }
 
+// We use an object literal instead of an ES map since TS ensures that all
+// variants of the `InstrumentationNames` enum are present.
+const INSTRUMENTATION_NAME_TITELS: Record<InstrumentationNames, () => Common.UIString.LocalizedString> = {
+  [InstrumentationNames.BeforeBidderWorkletBiddingStart]: i18nLazyString(UIStrings.beforeBidderWorkletBiddingStart),
+  [InstrumentationNames.BeforeBidderWorkletReportingStart]: i18nLazyString(UIStrings.beforeBidderWorkletReportingStart),
+  [InstrumentationNames.BeforeSellerWorkletScoringStart]: i18nLazyString(UIStrings.beforeSellerWorkletScoringStart),
+  [InstrumentationNames.BeforeSellerWorkletReportingStart]: i18nLazyString(UIStrings.beforeSellerWorkletReportingStart),
+};
+
 function getTitleForInstrumentationName(instrumentationName: InstrumentationNames): Common.UIString.LocalizedString {
-  switch (instrumentationName) {
-    case InstrumentationNames.BeforeBidderWorkletBiddingStart:
-      return i18nString(UIStrings.beforeBidderWorkletBiddingStart);
-
-    case InstrumentationNames.BeforeBidderWorkletReportingStart:
-      return i18nString(UIStrings.beforeBidderWorkletReportingStart);
-
-    case InstrumentationNames.BeforeSellerWorkletScoringStart:
-      return i18nString(UIStrings.beforeSellerWorkletScoringStart);
-
-    case InstrumentationNames.BeforeSellerWorkletReportingStart:
-      return i18nString(UIStrings.beforeSellerWorkletReportingStart);
-  }
+  return INSTRUMENTATION_NAME_TITELS[instrumentationName]();
 }
 
 export class EventBreakpointsModel extends SDKModel<void> {

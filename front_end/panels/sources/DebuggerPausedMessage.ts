@@ -147,10 +147,10 @@ export class DebuggerPausedMessage {
     const mainElement = messageWrapper.createChild('div', 'status-main');
     const mainIcon = new IconButton.Icon.Icon();
     mainIcon.data = {
-      iconName: 'info-filled',
-      color: 'var(--icon-default)',
-      width: '14px',
-      height: '14px',
+      iconName: 'info',
+      color: 'var(--sys-color-on-yellow-container)',
+      width: '16px',
+      height: '16px',
     };
     mainElement.appendChild(mainIcon);
     const breakpointType = BreakpointTypeNouns.get(data.type);
@@ -268,10 +268,10 @@ export class DebuggerPausedMessage {
       const mainElement = messageWrapper.createChild('div', 'status-main');
       const mainIcon = new IconButton.Icon.Icon();
       mainIcon.data = {
-        iconName: errorLike ? 'cross-circle-filled' : 'info-filled',
-        color: errorLike ? 'var(--icon-error)' : 'var(--icon-default)',
-        width: '14px',
-        height: '14px',
+        iconName: errorLike ? 'cross-circle-filled' : 'info',
+        color: errorLike ? 'var(--icon-error)' : 'var(--sys-color-on-yellow-container)',
+        width: '16px',
+        height: '16px',
       };
       mainElement.appendChild(mainIcon);
       mainElement.appendChild(document.createTextNode(mainText));

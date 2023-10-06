@@ -22,7 +22,7 @@
 }
 
 .thread-item:focus-visible {
-  background-color: var(--legacy-focus-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .thread-item-title,
@@ -33,7 +33,7 @@
 }
 
 .thread-item-paused-state {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
   margin-left: auto;
   padding: 0 10px;
 }

@@ -5,13 +5,11 @@
  */
 
 .call-frame-warnings-message {
-  --override-ignore-message-background-color: #ffffc2;
-
   text-align: center;
   font-style: italic;
   padding: 4px;
-  color: var(--color-text-secondary);
-  background-color: var(--override-ignore-message-background-color);
+  color: var(--sys-color-on-surface-yellow);
+  background-color: var(--sys-color-surface-yellow);
 }
 
 .ignore-listed-message {
@@ -19,14 +17,9 @@
 }
 
 .ignore-listed-message-label {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   align-items: center;
   display: flex;
-}
-
-.-theme-with-dark-background .ignore-listed-message,
-:host-context(.-theme-with-dark-background) .ignore-listed-message {
-  --override-ignore-message-background-color: rgb(72 72 0);
 }
 
 .show-more-message > .link {
@@ -37,7 +30,7 @@
   text-align: center;
   font-style: italic;
   padding: 4px;
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
 }
 
 .call-frame-item {
@@ -59,7 +52,7 @@
 }
 
 .call-frame-item:not(.async-header) {
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
 }
 
 .call-frame-item-title,
@@ -70,8 +63,8 @@
 
 .async-header .call-frame-item-title {
   font-weight: bold;
-  color: var(--color-text-primary);
-  background-color: var(--color-background);
+  color: var(--sys-color-on-surface);
+  background-color: var(--sys-color-cdt-base-container);
   margin-left: -5px;
   padding: 0 5px;
   z-index: 1;
@@ -79,7 +72,7 @@
 
 .call-frame-item:focus-visible,
 .call-frame-item.async-header:focus-visible .call-frame-item-title {
-  background-color: var(--legacy-focus-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }
 
 .ignore-listed-checkbox:focus-visible {
@@ -87,11 +80,11 @@
 }
 
 .call-frame-item:not(.async-header):hover {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .call-frame-location {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   margin-left: auto;
   padding: 0 10px;
 }
@@ -99,7 +92,7 @@
 .async-header::before {
   content: " ";
   width: 100%;
-  border-top: 1px solid var(--color-details-hairline);
+  border-top: 1px solid var(--sys-color-divider);
   margin-top: 8px;
   position: absolute;
   left: 0;

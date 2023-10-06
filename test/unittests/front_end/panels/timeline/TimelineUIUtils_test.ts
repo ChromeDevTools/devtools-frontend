@@ -324,6 +324,43 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
       assert.strictEqual('rgb(2 2 2)', Timeline.TimelineUIUtils.TimelineUIUtils.eventColor(event));
     });
+    it('assigns the correct color to the swatch of an event\'s title', async function() {
+      const data = await TraceLoader.allModels(this, 'lcp-web-font.json.gz');
+      const events = data.traceParsedData.Renderer.allRendererEvents;
+      const task = events.find(event => {
+        return event.name.includes('RunTask');
+      });
+      if (!task) {
+        throw new Error('Could not find expected event.');
+      }
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          task,
+          data.timelineModel,
+          new Components.Linkifier.Linkifier(),
+          false,
+      );
+      const titleSwatch: HTMLElement|null = details.querySelector('.timeline-details-chip-title div');
+      assert.strictEqual(titleSwatch?.style.backgroundColor, 'rgb(10, 10, 10)');
+    });
+    it('assigns the correct color to the swatch of a network request title', async function() {
+      const data = await TraceLoader.allModels(this, 'lcp-web-font.json.gz');
+      const networkRequests = data.traceParsedData.NetworkRequests.byTime;
+      const cssRequest = networkRequests.find(request => {
+        return request.args.data.url === 'http://localhost:3000/app.css';
+      });
+      if (!cssRequest) {
+        throw new Error('Could not find expected network request.');
+      }
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildSyntheticNetworkRequestDetails(
+          cssRequest,
+          data.timelineModel,
+          new Components.Linkifier.Linkifier(),
+      );
+      const titleSwatch: HTMLElement|null = details.querySelector('.timeline-details-chip-title div');
+      assert.strictEqual(titleSwatch?.style.backgroundColor, 'rgb(4, 4, 4)');
+    });
   });
 
   describe('testContentMatching', () => {

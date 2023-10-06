@@ -46,6 +46,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.css.js';
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {CLSRect} from './CLSLinkifier.js';
 import * as TimelineComponents from './components/components.js';
@@ -1522,18 +1523,25 @@ export class TimelineUIUtils {
 
   static networkCategoryColor(category: NetworkCategory): string {
     const categories = NetworkCategory;
+    let cssVarName = '--app-color-system';
     switch (category) {
       case categories.HTML:
-        return '--app-color-loading';
+        cssVarName = '--app-color-loading';
+        break;
       case categories.Script:
-        return '--app-color-scripting';
+        cssVarName = '--app-color-scripting';
+        break;
       case categories.Style:
-        return '--app-color-rendering';
+        cssVarName = '--app-color-rendering';
+        break;
       case categories.Media:
-        return '--app-color-painting';
+        cssVarName = '--app-color-painting';
+        break;
       default:
-        return '--app-color-system';
+        cssVarName = '--app-color-system';
+        break;
     }
+    return ThemeSupport.ThemeSupport.instance().getComputedValue(cssVarName);
   }
 
   static async buildDetailsTextForTraceEvent(event: TraceEngine.Legacy.Event|
@@ -1983,8 +1991,8 @@ export class TimelineUIUtils {
     const contentHelper = new TimelineDetailsContentHelper(model.targetByEvent(event), linkifier);
 
     const defaultColorForEvent = TraceEngine.Legacy.eventIsFromNewEngine(event) ?
-        getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category.color :
-        TimelineUIUtils.eventStyle(event).category.color;
+        getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category.getComputedValue() :
+        TimelineUIUtils.eventStyle(event).category.getComputedValue();
     const color = model.isMarkerEvent(event) ? TimelineUIUtils.markerStyleForEvent(event).color : defaultColorForEvent;
 
     contentHelper.addSection(TimelineUIUtils.eventTitle(event), color);

@@ -118,8 +118,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     if (!this.#networkTrackAppender) {
       throw new Error('networkTrackAppender should not be empty');
     }
-    return ThemeSupport.ThemeSupport.instance().getComputedValue(
-        this.#networkTrackAppender.colorForEvent(this.#events[index]));
+    return this.#networkTrackAppender.colorForEvent(this.#events[index]);
   }
 
   textColor(_index: number): string {

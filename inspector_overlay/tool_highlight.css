@@ -188,7 +188,7 @@ body {
 }
 
 .dimensions {
-  color: hsl(0deg 0% 45%);
+  color: var(--sys-color-outline);
   text-align: right;
   margin-left: 10px;
 }

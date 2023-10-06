@@ -46,7 +46,11 @@
 .security-summary:not(.security-summary-neutral) .lock-icon-neutral,
 .security-summary:not(.security-summary-insecure) .lock-icon-insecure,
 .security-summary:not(.security-summary-insecure-broken) .lock-icon-insecure-broken {
-  background-color: var(--color-text-disabled);
+  background-color: var(--sys-color-state-disabled);
+}
+
+.security-summary.security-summary-insecure .lock-icon-insecure {
+  background-color: var(--sys-color-orange-bright);
 }
 
 @media (forced-colors: active) {
@@ -114,7 +118,7 @@
 .security-summary-secure .triangle-pointer,
 .security-summary-secure .security-summary-text,
 .security-explanation-title-secure {
-  color: var(--color-accent-green);
+  color: var(--sys-color-tertiary);
 }
 
 .security-summary-insecure-broken .triangle-pointer,
@@ -122,7 +126,7 @@
 .security-explanation-title-neutral,
 .security-explanation-title-insecure,
 .security-explanation-title-insecure-broken {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
 }
 
 .security-explanation-list {
@@ -149,7 +153,7 @@
   display: flex;
   white-space: nowrap;
   border: none;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .security-explanation-text {
@@ -166,7 +170,7 @@
 }
 
 .security-explanation-title {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   margin-top: 1px;
   margin-bottom: 8px;
 }

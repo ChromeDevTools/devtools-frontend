@@ -38,7 +38,7 @@
   align-items: center;
   position: relative;
   padding-left: 1px;
-  border-bottom: 1px solid var(--color-details-hairline);
+  border-bottom: 1px solid var(--sys-color-divider);
   background-origin: padding-box;
   background-clip: padding-box;
 }
@@ -67,9 +67,7 @@
 }
 
 .screencast-navigation .progress {
-  --override-progress-background-color: rgb(66 129 235);
-
-  background-color: var(--override-progress-background-color);
+  background-color: var(--sys-color-primary-bright);
   height: 3px;
   left: 0;
   position: absolute;
@@ -78,25 +76,20 @@
   z-index: 2;  /* Above .screencast-glasspane. */
 }
 
-.-theme-with-dark-background .screencast-navigation .progress,
-:host-context(.-theme-with-dark-background) .screencast-navigation .progress {
-  --override-progress-background-color: rgb(20 83 189);
-}
-
 .screencast-viewport {
   display: flex;
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-divider);
   border-radius: 20px;
   flex: none;
   padding: 20px;
   margin: auto;
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-surface-variant);
 }
 
 .screencast-canvas-container {
   flex: auto;
   display: flex;
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-divider);
   position: relative;
 }
 
@@ -115,17 +108,16 @@
 }
 
 .screencast-tag-name {
-  color: var(--color-token-tag);
+  color: var(--sys-color-token-tag);
 }
 
 .screencast-attribute {
-  color: var(--color-token-attribute);
+  color: var(--sys-color-token-attribute);
 }
 
 .screencast-dimension {
-  --override-dimension-color: hsl(0deg 0% 45%);
   /* Keep this in sync with tool_highlight.css (.dimensions) */
-  color: var(--override-dimension-color);
+  color: var(--sys-color-outline);
 }
 
 .screencast-glasspane {

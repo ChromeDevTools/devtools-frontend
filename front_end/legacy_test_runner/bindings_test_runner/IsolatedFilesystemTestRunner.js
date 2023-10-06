@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as Persistence from '../../models/persistence/persistence.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
@@ -50,7 +51,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
         Host.InspectorFrontendHostAPI.Events.FileSystemAdded,
         {fileSystem: {fileSystemPath: this.fileSystemPath, fileSystemName: this.fileSystemPath, type}});
 
-    self.Persistence.isolatedFileSystemManager.addEventListener(
+    Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addEventListener(
         Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, created);
 
     function created(event) {
@@ -59,7 +60,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
         return;
       }
 
-      self.Persistence.isolatedFileSystemManager.removeEventListener(
+      Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().removeEventListener(
           Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, created);
       callback(fileSystem);
     }

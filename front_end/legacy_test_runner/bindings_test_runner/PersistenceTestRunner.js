@@ -2,19 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Persistence from '../../models/persistence/persistence.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
 
 self.BindingsTestRunner = self.BindingsTestRunner || {};
 
-Persistence.PersistenceBinding.prototype.toString = function() {
+Persistence.Persistence.PersistenceBinding.prototype.toString = function() {
   const lines = ['{', '       network: ' + this.network.url(), '    fileSystem: ' + this.fileSystem.url(), '}'];
 
   return lines.join('\n');
 };
 
-Persistence.AutomappingStatus.prototype.toString = function() {
+Persistence.Automapping.AutomappingStatus.prototype.toString = function() {
   const lines = [
     '{', '       network: ' + this.network.url(), '    fileSystem: ' + this.fileSystem.url(),
     '    exactMatch: ' + this.exactMatch, '}'
@@ -27,7 +29,7 @@ BindingsTestRunner.waitForBinding = async function(fileName) {
   const uiSourceCodes = self.Workspace.workspace.uiSourceCodes();
 
   for (const uiSourceCode of uiSourceCodes) {
-    const binding = self.Persistence.persistence.binding(uiSourceCode);
+    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
 
     if (!binding) {
       continue;
@@ -39,7 +41,7 @@ BindingsTestRunner.waitForBinding = async function(fileName) {
   }
 
   return TestRunner.waitForEvent(
-      Persistence.Persistence.Events.BindingCreated, self.Persistence.persistence,
+      Persistence.Persistence.Events.BindingCreated, Persistence.Persistence.PersistenceImpl.instance(),
       binding => binding.network.name() === fileName || binding.fileSystem.name() === fileName);
 };
 
@@ -51,7 +53,7 @@ BindingsTestRunner.addFooJSFile = function(fs) {
 };
 
 BindingsTestRunner.initializeTestMapping = function() {
-  return new TestMapping(self.Persistence.persistence);
+  return new TestMapping(Persistence.Persistence.PersistenceImpl.instance());
 };
 
 class TestMapping {
@@ -70,7 +72,7 @@ class TestMapping {
 
     const networkUISourceCode = await TestRunner.waitForUISourceCode(urlSuffix, Workspace.projectTypes.Network);
     const fileSystemUISourceCode = await TestRunner.waitForUISourceCode(urlSuffix, Workspace.projectTypes.FileSystem);
-    const binding = new Persistence.PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
+    const binding = new Persistence.Persistence.PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
     this.bindings.add(binding);
     await this.persistence.addBindingForTest(binding);
   }

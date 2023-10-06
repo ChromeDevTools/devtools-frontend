@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 /**
@@ -58,12 +59,13 @@ BindingsTestRunner.AutomappingTest = function(workspace) {
       this.workspace, 'AUTOMAPPING', Workspace.projectTypes.Network, 'simple website');
 
   if (workspace !== self.Workspace.workspace) {
-    new Persistence.FileSystemWorkspaceBinding(self.Persistence.isolatedFileSystemManager, this.workspace);
+    new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(
+        Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance(), this.workspace);
   }
 
   this.failedBindingsCount = 0;
-  this.automapping =
-      new Persistence.Automapping(this.workspace, this._onStatusAdded.bind(this), this._onStatusRemoved.bind(this));
+  this.automapping = new Persistence.Automapping.Automapping(
+      this.workspace, this._onStatusAdded.bind(this), this._onStatusRemoved.bind(this));
   TestRunner.addSniffer(this.automapping, 'onBindingFailedForTest', this._onBindingFailed.bind(this), true);
   TestRunner.addSniffer(this.automapping, 'onSweepHappenedForTest', this._onSweepHappened.bind(this), true);
 };

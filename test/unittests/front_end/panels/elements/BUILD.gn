@@ -11,6 +11,7 @@ ts_library("elements") {
     "CSSPropertyPrompt_test.ts",
     "CSSRuleValidator_test.ts",
     "ClassesPaneWidget_test.ts",
+    "DOMLinkifier_test.ts",
     "ElementsPanel_test.ts",
     "ElementsTreeElementHighlighter_test.ts",
     "InspectElementModeController_test.ts",

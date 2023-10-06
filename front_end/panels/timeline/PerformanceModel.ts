@@ -22,6 +22,7 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
   private windowInternal: Window;
   private willResolveNames = false;
   private recordStartTimeInternal?: number;
+  #activeBreadcrumbWindow?: TraceEngine.Types.Timing.TraceWindow;
 
   constructor() {
     super();
@@ -179,11 +180,15 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     return this.frameModelInternal;
   }
 
-  setWindow(window: Window, animate?: boolean): void {
-    const didWindowChange = this.windowInternal.left !== window.left || this.windowInternal.right !== window.right;
+  setWindow(window: Window, animate?: boolean, breadcrumb?: TraceEngine.Types.Timing.TraceWindow): void {
+    const didWindowOrBreadcrumbChange = this.windowInternal.left !== window.left ||
+        this.windowInternal.right !== window.right || (breadcrumb && (this.#activeBreadcrumbWindow !== breadcrumb));
     this.windowInternal = window;
-    if (didWindowChange) {
-      this.dispatchEventToListeners(Events.WindowChanged, {window, animate});
+    if (breadcrumb) {
+      this.#activeBreadcrumbWindow = breadcrumb;
+    }
+    if (didWindowOrBreadcrumbChange) {
+      this.dispatchEventToListeners(Events.WindowChanged, {window, animate, breadcrumbWindow: breadcrumb});
     }
   }
 
@@ -272,6 +277,7 @@ export enum Events {
 export interface WindowChangedEvent {
   window: Window;
   animate: boolean|undefined;
+  breadcrumbWindow?: TraceEngine.Types.Timing.TraceWindow;
 }
 
 export type EventTypes = {

@@ -73,6 +73,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private selectedSearchResult?: number;
   private searchRegex?: RegExp;
   #traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null;
+  #currentBreadcrumbTimeWindow?: TraceEngine.Types.Timing.TraceWindow;
 
   constructor(
       delegate: TimelineModeViewDelegate, threadTracksSource: ThreadTracksSource = ThreadTracksSource.BOTH_ENGINES) {
@@ -166,9 +167,28 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   private onWindowChanged(event: Common.EventTarget.EventTargetEvent<WindowChangedEvent>): void {
     const {window, animate} = event.data;
-    this.mainFlameChart.setWindowTimes(window.left, window.right, animate);
-    this.networkFlameChart.setWindowTimes(window.left, window.right, animate);
-    this.networkDataProvider.setWindowTimes(window.left, window.right);
+
+    if (event.data.breadcrumbWindow) {
+      this.#currentBreadcrumbTimeWindow = event.data.breadcrumbWindow;
+      const minMilliseconds = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.data.breadcrumbWindow.min);
+      const maxMilliseconds = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.data.breadcrumbWindow.max);
+      this.mainFlameChart.setTotalAndMinimumBreadcrumbValues(minMilliseconds, maxMilliseconds);
+      this.networkFlameChart.setTotalAndMinimumBreadcrumbValues(minMilliseconds, maxMilliseconds);
+      this.mainFlameChart.update();
+    }
+
+    // If breadcrumbs are not activated, update window times at all times,
+    // If breadcrumbs exist, do not update to window times outside the breadcrumb
+    const isWindowWithinBreadcrumb =
+        (this.#currentBreadcrumbTimeWindow &&
+         !(this.#currentBreadcrumbTimeWindow.min > window.left ||
+           this.#currentBreadcrumbTimeWindow.max < window.right));
+    if (!this.#currentBreadcrumbTimeWindow || isWindowWithinBreadcrumb) {
+      this.mainFlameChart.setWindowTimes(window.left, window.right, animate);
+      this.networkFlameChart.setWindowTimes(window.left, window.right, animate);
+      this.networkDataProvider.setWindowTimes(window.left, window.right);
+    }
+
     this.updateSearchResults(false, false);
   }
 

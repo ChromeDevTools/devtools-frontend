@@ -274,9 +274,11 @@ export enum Events {
   BreadcrumbAdded = 'BreadcrumbAdded',
 }
 
+// TODO(alinavarkki): Replace this event with PerformanceModel WindowChanged event
 export interface WindowChangedEvent {
   startTime: number;
   endTime: number;
+  breadcrumb?: TraceEngine.Types.Timing.TraceWindow;
 }
 
 export interface BreadcrumbAddedEvent {

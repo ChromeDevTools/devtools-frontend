@@ -48,6 +48,8 @@ describe('Timeline breadcrumbs', () => {
     assert.deepEqual(
         TimelineComponents.Breadcrumbs.flattenBreadcrumbs(initialBreadcrumb),
         [initialBreadcrumb, breadcrumb1, breadcrumb2]);
+
+    assert.deepEqual(crumbs.lastBreadcrumb, breadcrumb2);
   });
 
   it('can remove breadcrumbs', () => {
@@ -92,12 +94,14 @@ describe('Timeline breadcrumbs', () => {
     assert.deepEqual(
         TimelineComponents.Breadcrumbs.flattenBreadcrumbs(initialBreadcrumb),
         [initialBreadcrumb, breadcrumb1, breadcrumb2]);
+    assert.deepEqual(crumbs.lastBreadcrumb, breadcrumb2);
     crumbs.makeBreadcrumbActive(breadcrumb1);
 
     breadcrumb1.child = null;
 
     assert.deepEqual(
         TimelineComponents.Breadcrumbs.flattenBreadcrumbs(initialBreadcrumb), [initialBreadcrumb, breadcrumb1]);
+    assert.deepEqual(crumbs.lastBreadcrumb, breadcrumb1);
   });
 
   it('can not create a breadcrumb equal to the parent breadcrumb', () => {
@@ -162,5 +166,6 @@ describe('Timeline breadcrumbs', () => {
     assert.deepEqual(
         TimelineComponents.Breadcrumbs.flattenBreadcrumbs(initialBreadcrumb),
         [initialBreadcrumb, breadcrumb1, breadcrumb2]);
+    assert.deepEqual(crumbs.lastBreadcrumb, breadcrumb2);
   });
 });

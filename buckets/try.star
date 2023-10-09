@@ -169,7 +169,7 @@ builder_coverage(
     builder_name_pattern = "devtools_frontend_%s_dbg",
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout,
-    properties = {"builder_config": "Debug"},
+    properties = {"builder_config": "Debug", "parallel": True},
 )
 
 builder_coverage(

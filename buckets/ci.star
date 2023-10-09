@@ -126,7 +126,7 @@ DevTools Linux</a> but has devtools_skip_typecheck=True.""",
             name = "Linux Compile Debug",
             recipe_name = "devtools/devtools-frontend",
             consoles = ["ci", "beta", "stable", "extended"],
-            properties = {"builder_config": "Debug"},
+            properties = {"builder_config": "Debug", "parallel": True},
         ),
         builder_descriptor(
             name = "Linux Compile Debug Fastbuild",

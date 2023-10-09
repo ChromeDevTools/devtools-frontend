@@ -68,7 +68,7 @@ th {
   box-sizing: border-box;
   padding: 1px 4px;
   border-left: 1px solid var(--sys-color-divider);
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   height: var(--table-row-height);
   user-select: text;
   /* Ensure that text properly cuts off if horizontal space is too narrow */
@@ -89,7 +89,7 @@ th {
 
 td:focus,
 th:focus {
-  outline: var(--color-primary-old) auto 1px;
+  outline: var(--sys-color-primary) auto 1px;
 }
 
 th:hover.sortable {
@@ -140,7 +140,7 @@ th.firstVisibleColumn {
   width: 0;
   border-left: 0.4em solid transparent;
   border-right: 0.4em solid transparent;
-  border-top: 0.4em solid var(--color-text-secondary);
+  border-top: 0.4em solid var(--sys-color-token-subtle);
   position: absolute;
   right: 0.5em;
   top: 0.85em;
@@ -149,7 +149,7 @@ th.firstVisibleColumn {
 [aria-sort="ascending"]::after {
   content: "";
   width: 0;
-  border-bottom: 0.4em solid var(--color-text-secondary);
+  border-bottom: 0.4em solid var(--sys-color-token-subtle);
   border-left: 0.4em solid transparent;
   border-right: 0.4em solid transparent;
   position: absolute;

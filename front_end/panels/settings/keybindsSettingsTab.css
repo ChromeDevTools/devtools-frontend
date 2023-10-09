@@ -25,7 +25,7 @@ h1 {
 
 .keybinds-key {
   padding: 0.1em 0.6em;
-  border: 1px solid var(--sys-color-divider);
+  border: 1px solid var(--sys-color-neutral-outline);
   font-size: 11px;
   background-color: var(--sys-color-neutral-container);
   color: var(--sys-color-on-surface);

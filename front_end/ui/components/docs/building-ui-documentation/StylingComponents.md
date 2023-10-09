@@ -49,13 +49,13 @@ connectedCallback() {
 
 Use `:host` to style the component itself. By default elements are `display: inline`. Often it can be useful to set `display: block`.
 
-Remember to use theme colors (`var(--color-text-primary)`) when styling elements to ensure consistency across DevTools.
+Remember to use theme colors (`var(--sys-color-on-surface)`) when styling elements to ensure consistency across DevTools.
 
 If you want your component to have its colors configurable by users, consider defining `--override` variables. In your component's CSS, you would have something like:
 
 ```css
 :host {
-  color: var(--override-custom-color, var(--color-text-primary));
+  color: var(--override-custom-color, var(--sys-color-on-surface));
 }
 ```
 

@@ -276,7 +276,7 @@ export class Button extends HTMLElement {
             .data=${{
               iconPath: this.#props.iconUrl,
               iconName: this.#props.iconName,
-              color: 'var(--color-background)',
+              color: 'var(--sys-color-cdt-base-container)',
               width: this.#props.iconWidth || undefined,
               height: this.#props.iconHeight || undefined,
             } as IconButton.Icon.IconData}

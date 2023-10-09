@@ -15,7 +15,7 @@
 }
 
 .diff-line-number {
-  color: var(--color-line-number);
+  color: var(--sys-color-token-subtle);
   padding: 0 3px 0 9px;
   text-align: right;
   user-select: none;

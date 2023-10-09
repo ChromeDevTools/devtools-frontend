@@ -21,7 +21,7 @@ const data: TreeOutline.TreeOutline.TreeOutlineData<TreeNodeData> = {
     const valueStyles = LitHtml.Directives.styleMap({
       paddingLeft: '10px',
       fontStyle: 'italic',
-      color: 'var(--color-syntax-1)',
+      color: 'var(--sys-color-token-property-special)',
     });
     return LitHtml.html`<code>${cssProperty}</code>:${
         state.isExpanded ? LitHtml.nothing : LitHtml.html`<code style=${valueStyles}>${cssValue}</code>`}`;

@@ -25,7 +25,7 @@
   align-items: center;
   overflow: auto;
   font-size: 13px;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .web-audio-landing-page > div {
@@ -53,7 +53,7 @@
 .context-detail-container {
   flex: none;
   display: flex;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   flex-direction: column;
 }
 
@@ -82,7 +82,7 @@
 }
 
 .context-detail-row-entry:not(:empty) {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   overflow: hidden;
   width: 130px;
 }

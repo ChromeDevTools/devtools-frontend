@@ -1015,6 +1015,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   getScrollOffset(): number {
     return this.chartViewport.scrollOffset();
   }
+
   private coordinatesToGroupIndex(x: number, y: number, headerOnly: boolean): number {
     if (!this.rawTimelineData || !this.rawTimelineData.groups || !this.groupOffsets) {
       return -1;
@@ -1025,29 +1026,32 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     y += this.chartViewport.scrollOffset();
     const groups = this.rawTimelineData.groups || [];
-    const group =
+    const groupIndex =
         Platform.ArrayUtilities.upperBound(this.groupOffsets, y, Platform.ArrayUtilities.DEFAULT_COMPARATOR) - 1;
-    if (group < 0 || group >= groups.length) {
+    if (groupIndex < 0 || groupIndex >= groups.length) {
       return -1;
     }
-    const height = headerOnly ? groups[group].style.height : this.groupOffsets[group + 1] - this.groupOffsets[group];
-    if (y - this.groupOffsets[group] >= height) {
+    // |groupIndex + 1| is safe here because we added one more element to |this.groupOffsets| to represent the end of
+    // all groups.
+    const height = headerOnly ? groups[groupIndex].style.height :
+                                this.groupOffsets[groupIndex + 1] - this.groupOffsets[groupIndex];
+    if (y - this.groupOffsets[groupIndex] >= height) {
       return -1;
     }
     if (!headerOnly) {
-      return group;
+      return groupIndex;
     }
 
     const context = (this.canvas.getContext('2d') as CanvasRenderingContext2D);
     context.save();
     context.font = this.#font;
-    const right = this.headerLeftPadding + this.labelWidthForGroup(context, groups[group]);
+    const right = this.headerLeftPadding + this.labelWidthForGroup(context, groups[groupIndex]);
     context.restore();
     if (x > right) {
       return -1;
     }
 
-    return group;
+    return groupIndex;
   }
 
   private markerIndexBeforeTime(time: number): number {
@@ -1310,7 +1314,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     const height = this.offsetHeight;
     const top = this.chartViewport.scrollOffset();
-    const visibleLevelOffsets = this.visibleLevelOffsets ? this.visibleLevelOffsets : new Uint32Array();
+    const visibleLevelOffsets = this.visibleLevelOffsets ?? new Uint32Array();
 
     const textPadding = this.textPadding;
     // How wide in pixels / long in duration an event needs to be to make it
@@ -1623,7 +1627,21 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.restore();
   }
 
-  private forEachGroup(callback: (arg0: number, arg1: number, arg2: Group, arg3: boolean, arg4: number) => void): void {
+  /**
+   * @callback GroupCallback
+   * @param groupTop pixels between group top and the top of the flame chart.
+   * @param groupIndex
+   * @param group
+   * @param isFirstGroup if the group is the first one of this nesting level.
+   * @param height pixels of height of this group
+   */
+  /**
+   * Process the pixels of start and end, and other data of each group, which are used in drawing the group.
+   * @param {GroupCallback} callback
+   */
+  private forEachGroup(
+      callback: (groupTop: number, groupIndex: number, group: Group, isFirstGroup: boolean, height: number) => void):
+      void {
     if (!this.rawTimelineData) {
       return;
     }

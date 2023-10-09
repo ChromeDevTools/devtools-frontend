@@ -520,15 +520,24 @@ describeWithEnvironment('FlameChart', () => {
       const initialXPosition = chartInstance.computePosition(timelineData.entryStartTimes[entryIndex]);
       assert.deepEqual(
           chartInstance.entryIndexToCoordinates(entryIndex),
+          // For index 0, it is in level 1, so vertically there are only the ruler(17) and the level 0(17) and the
+          // header of Group 0 (17) and beyond it.
           {x: initialXPosition + canvasOffsetX, y: 51 + canvasOffsetY + chartInstance.getScrollOffset()});
 
       // Emulate two scrolls to force a change in coordinates.
+      // For index 3, it is in level 1, so vertically there are the ruler(17) and the header of Group 0 (17), the
+      // level 0 (17) beyond it.
+      // When select it, it will scroll the level offset(17 + 17 + 17 = 51) and its height(17), which means
+      // |chartInstance.getScrollOffset()| returns 68.
       chartInstance.setSelectedEntry(3);
       assert.deepEqual(
           chartInstance.entryIndexToCoordinates(entryIndex),
+          // For index 0, so we need to minus the scroll offset(68) and |chartInstance.getScrollOffset()|, so it is
+          // 51 - 68 - 68 = -85.
           {x: initialXPosition + canvasOffsetX, y: -85 + canvasOffsetY + chartInstance.getScrollOffset()});
       chartInstance.setWindowTimes(250, 600);
       const finalXPosition = chartInstance.computePosition(timelineData.entryStartTimes[entryIndex]);
+      // For this case, there is no vertical scroll, so it is still -85.
       assert.deepEqual(
           chartInstance.entryIndexToCoordinates(entryIndex),
           {x: finalXPosition + canvasOffsetX, y: -85 + canvasOffsetY + chartInstance.getScrollOffset()});

@@ -284,6 +284,7 @@
   --sys-color-state-ripple-neutral-on-subtle: rgb(31 31 31 / 8%);
   --sys-color-state-ripple-primary: rgb(124 172 248 / 32%);
   --sys-color-state-focus-ring: var(--ref-palette-primary40);
+  --sys-color-state-focus-select: var(--ref-palette-primary80);
   --sys-color-state-focus-highlight: rgb(31 31 31 / 6%);
   --sys-color-state-disabled: rgb(31 31 31 / 38%);
   --sys-color-state-disabled-container: rgb(31 31 31 / 12%);
@@ -638,6 +639,7 @@
   --sys-color-state-ripple-neutral-on-subtle: rgb(253 252 251 / 16%);
   --sys-color-state-ripple-primary: rgb(76 141 246 / 32%);
   --sys-color-state-focus-ring: var(--ref-palette-primary80);
+  --sys-color-state-focus-select: var(--ref-palette-secondary50);
   --sys-color-state-focus-highlight: rgb(253 252 251 / 10%);
   --sys-color-state-disabled: rgb(227 227 227 / 100%);
   --sys-color-state-disabled-container: rgb(227 227 227 / 12%);

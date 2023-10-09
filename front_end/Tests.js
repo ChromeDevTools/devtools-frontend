@@ -55,7 +55,6 @@
   let UI;
   /** @type {import('./models/workspace/workspace.js')} */
   let Workspace;
-
   const TestSuite = class {
     /**
      * Test suite for interactive UI tests.
@@ -1293,30 +1292,6 @@
 
   TestSuite.prototype.enableExperiment = function(name) {
     Root.Runtime.experiments.enableForTest(name);
-  };
-
-  TestSuite.prototype.checkInputEventsPresent = function() {
-    const expectedEvents = new Set(arguments);
-    const model = Timeline.TimelinePanel.TimelinePanel.instance().performanceModel?.timelineModel();
-    const asyncEvents = model.virtualThreads().find(thread => thread.isMainFrame).asyncEventsByGroup;
-    const input = asyncEvents.get(TimelineModel.TimelineModel.AsyncEventGroup.input) || [];
-    const prefix = 'InputLatency::';
-    for (const e of input) {
-      if (!e.name.startsWith(prefix)) {
-        continue;
-      }
-      if (e.steps.length < 2) {
-        continue;
-      }
-      if (e.name.startsWith(prefix + 'Mouse') &&
-          typeof TimelineModel.TimelineData.forEvent(e.steps[0]).timeWaitingForMainThread !== 'number') {
-        throw `Missing timeWaitingForMainThread on ${e.name}`;
-      }
-      expectedEvents.delete(e.name.substr(prefix.length));
-    }
-    if (expectedEvents.size) {
-      throw 'Some expected events are not found: ' + Array.from(expectedEvents.keys()).join(',');
-    }
   };
 
   TestSuite.prototype.testInspectedElementIs = async function(nodeName) {

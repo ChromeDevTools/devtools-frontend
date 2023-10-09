@@ -38,7 +38,6 @@ group("legacy_entrypoints") {
     "core/sdk:legacy",
     "models/breakpoints:legacy",
     "models/persistence:legacy",
-    "models/timeline_model:legacy",
     "models/trace:legacy",
     "models/workspace:legacy",
     "models/workspace_diff:legacy",

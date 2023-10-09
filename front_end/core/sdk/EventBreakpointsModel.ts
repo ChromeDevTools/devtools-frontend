@@ -18,7 +18,42 @@ const UIStrings = {
    * @description Category of breakpoints
    */
   auctionWorklet: 'Ad Auction Worklet',
-
+  /**
+   *@description Text that refers to the animation of the web page
+   */
+  animation: 'Animation',
+  /**
+   *@description Text in DOMDebugger Model
+   */
+  canvas: 'Canvas',
+  /**
+   *@description Title for a group of cities
+   */
+  geolocation: 'Geolocation',
+  /**
+   *@description Text in DOMDebugger Model
+   */
+  notification: 'Notification',
+  /**
+   *@description Text to parse something
+   */
+  parse: 'Parse',
+  /**
+   *@description Label for a group of JavaScript files
+   */
+  script: 'Script',
+  /**
+   *@description Text in DOMDebugger Model
+   */
+  timer: 'Timer',
+  /**
+   *@description Text in DOMDebugger Model
+   */
+  window: 'Window',
+  /**
+   *@description Title of the WebAudio tool
+   */
+  webaudio: 'WebAudio',
   /**
    * @description Name of a breakpoint type.
    * https://github.com/WICG/turtledove/blob/main/FLEDGE.md#32-on-device-bidding
@@ -42,6 +77,63 @@ const UIStrings = {
    * https://github.com/WICG/turtledove/blob/main/FLEDGE.md#51-seller-reporting-on-render
    */
   beforeSellerWorkletReportingStart: 'Seller Reporting Phase Start',
+  /**
+   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   *@example {setTimeout} PH1
+   */
+  setTimeoutOrIntervalFired: '{PH1} fired',
+  /**
+   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   */
+  scriptFirstStatement: 'Script First Statement',
+  /**
+   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   */
+  scriptBlockedByContentSecurity: 'Script Blocked by Content Security Policy',
+  /**
+   *@description Text for the request animation frame event
+   */
+  requestAnimationFrame: 'Request Animation Frame',
+  /**
+   *@description Text to cancel the animation frame
+   */
+  cancelAnimationFrame: 'Cancel Animation Frame',
+  /**
+   *@description Text for the event that an animation frame is fired
+   */
+  animationFrameFired: 'Animation Frame Fired',
+  /**
+   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   */
+  webglErrorFired: 'WebGL Error Fired',
+  /**
+   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   */
+  webglWarningFired: 'WebGL Warning Fired',
+  /**
+   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
+   */
+  setInnerhtml: 'Set `innerHTML`',
+  /**
+   *@description Name of a breakpoint type in the Sources Panel.
+   */
+  createCanvasContext: 'Create canvas context',
+  /**
+   *@description Name of a breakpoint type in the Sources Panel.
+   */
+  createAudiocontext: 'Create `AudioContext`',
+  /**
+   *@description Name of a breakpoint type in the Sources Panel. Close is a verb.
+   */
+  closeAudiocontext: 'Close `AudioContext`',
+  /**
+   *@description Name of a breakpoint type in the Sources Panel. Resume is a verb.
+   */
+  resumeAudiocontext: 'Resume `AudioContext`',
+  /**
+   *@description Name of a breakpoint type in the Sources Panel.
+   */
+  suspendAudiocontext: 'Suspend `AudioContext`',
 };
 
 const str_ = i18n.i18n.registerUIStrings('core/sdk/EventBreakpointsModel.ts', UIStrings);
@@ -53,6 +145,30 @@ const enum InstrumentationNames {
   BeforeBidderWorkletReportingStart = 'beforeBidderWorkletReportingStart',
   BeforeSellerWorkletScoringStart = 'beforeSellerWorkletScoringStart',
   BeforeSellerWorkletReportingStart = 'beforeSellerWorkletReportingStart',
+  SetTimeout = 'setTimeout',
+  ClearTimeout = 'clearTimeout',
+  SetInterval = 'setInterval',
+  ClearInterval = 'clearInterval',
+  SetTimeoutCallback = 'setTimeout.callback',
+  SetIntervalCallback = 'setInterval.callback',
+  ScriptFirstStatement = 'scriptFirstStatement',
+  ScriptBlockedByCSP = 'scriptBlockedByCSP',
+  RequestAnimationFrame = 'requestAnimationFrame',
+  CancelAnimationFrame = 'cancelAnimationFrame',
+  RequestAnimationFrameCallback = 'requestAnimationFrame.callback',
+  WebGLErrorFired = 'webglErrorFired',
+  WebGLWarningFired = 'webglWarningFired',
+  ElementSetInnerHTML = 'Element.setInnerHTML',
+  CanvasContextCreated = 'canvasContextCreated',
+  GeolocationGetCurrentPosition = 'Geolocation.getCurrentPosition',
+  GeolocationWatchPosition = 'Geolocation.watchPosition',
+  NotificationRequestPermission = 'Notification.requestPermission',
+  DOMWindowClose = 'DOMWindow.close',
+  DocumentWrite = 'Document.write',
+  AudioContextCreated = 'audioContextCreated',
+  AudioContextClosed = 'audioContextClosed',
+  AudioContextResumed = 'audioContextResumed',
+  AudioContextSuspended = 'audioContextSuspended',
 }
 
 // We use an object literal instead of an ES map since TS ensures that all
@@ -62,6 +178,30 @@ const INSTRUMENTATION_NAME_TITELS: Record<InstrumentationNames, () => Common.UIS
   [InstrumentationNames.BeforeBidderWorkletReportingStart]: i18nLazyString(UIStrings.beforeBidderWorkletReportingStart),
   [InstrumentationNames.BeforeSellerWorkletScoringStart]: i18nLazyString(UIStrings.beforeSellerWorkletScoringStart),
   [InstrumentationNames.BeforeSellerWorkletReportingStart]: i18nLazyString(UIStrings.beforeSellerWorkletReportingStart),
+  [InstrumentationNames.SetTimeout]: i18n.i18n.lockedLazyString('setTimeout'),
+  [InstrumentationNames.ClearTimeout]: i18n.i18n.lockedLazyString('clearTimeout'),
+  [InstrumentationNames.SetInterval]: i18n.i18n.lockedLazyString('setInterval'),
+  [InstrumentationNames.ClearInterval]: i18n.i18n.lockedLazyString('clearInterval'),
+  [InstrumentationNames.SetTimeoutCallback]: i18nLazyString(UIStrings.setTimeoutOrIntervalFired, {PH1: 'setTimeout'}),
+  [InstrumentationNames.SetIntervalCallback]: i18nLazyString(UIStrings.setTimeoutOrIntervalFired, {PH1: 'setInterval'}),
+  [InstrumentationNames.ScriptFirstStatement]: i18nLazyString(UIStrings.scriptFirstStatement),
+  [InstrumentationNames.ScriptBlockedByCSP]: i18nLazyString(UIStrings.scriptBlockedByContentSecurity),
+  [InstrumentationNames.RequestAnimationFrame]: i18nLazyString(UIStrings.requestAnimationFrame),
+  [InstrumentationNames.CancelAnimationFrame]: i18nLazyString(UIStrings.cancelAnimationFrame),
+  [InstrumentationNames.RequestAnimationFrameCallback]: i18nLazyString(UIStrings.animationFrameFired),
+  [InstrumentationNames.WebGLErrorFired]: i18nLazyString(UIStrings.webglErrorFired),
+  [InstrumentationNames.WebGLWarningFired]: i18nLazyString(UIStrings.webglWarningFired),
+  [InstrumentationNames.ElementSetInnerHTML]: i18nLazyString(UIStrings.setInnerhtml),
+  [InstrumentationNames.CanvasContextCreated]: i18nLazyString(UIStrings.createCanvasContext),
+  [InstrumentationNames.GeolocationGetCurrentPosition]: i18n.i18n.lockedLazyString('getCurrentPosition'),
+  [InstrumentationNames.GeolocationWatchPosition]: i18n.i18n.lockedLazyString('watchPosition'),
+  [InstrumentationNames.NotificationRequestPermission]: i18n.i18n.lockedLazyString('requestPermission'),
+  [InstrumentationNames.DOMWindowClose]: i18n.i18n.lockedLazyString('window.close'),
+  [InstrumentationNames.DocumentWrite]: i18n.i18n.lockedLazyString('document.write'),
+  [InstrumentationNames.AudioContextCreated]: i18nLazyString(UIStrings.createAudiocontext),
+  [InstrumentationNames.AudioContextClosed]: i18nLazyString(UIStrings.closeAudiocontext),
+  [InstrumentationNames.AudioContextResumed]: i18nLazyString(UIStrings.resumeAudiocontext),
+  [InstrumentationNames.AudioContextSuspended]: i18nLazyString(UIStrings.suspendAudiocontext),
 };
 
 function getTitleForInstrumentationName(instrumentationName: InstrumentationNames): Common.UIString.LocalizedString {
@@ -118,6 +258,48 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
       InstrumentationNames.BeforeBidderWorkletReportingStart,
       InstrumentationNames.BeforeSellerWorkletScoringStart,
       InstrumentationNames.BeforeSellerWorkletReportingStart,
+    ]);
+    this.createInstrumentationBreakpoints(i18nString(UIStrings.animation), [
+      InstrumentationNames.RequestAnimationFrame,
+      InstrumentationNames.CancelAnimationFrame,
+      InstrumentationNames.RequestAnimationFrameCallback,
+    ]);
+    this.createInstrumentationBreakpoints(i18nString(UIStrings.canvas), [
+      InstrumentationNames.CanvasContextCreated,
+      InstrumentationNames.WebGLErrorFired,
+      InstrumentationNames.WebGLWarningFired,
+    ]);
+    this.createInstrumentationBreakpoints(i18nString(UIStrings.geolocation), [
+      InstrumentationNames.GeolocationGetCurrentPosition,
+      InstrumentationNames.GeolocationWatchPosition,
+    ]);
+    this.createInstrumentationBreakpoints(i18nString(UIStrings.notification), [
+      InstrumentationNames.NotificationRequestPermission,
+    ]);
+    this.createInstrumentationBreakpoints(i18nString(UIStrings.parse), [
+      InstrumentationNames.ElementSetInnerHTML,
+      InstrumentationNames.DocumentWrite,
+    ]);
+    this.createInstrumentationBreakpoints(i18nString(UIStrings.script), [
+      InstrumentationNames.ScriptFirstStatement,
+      InstrumentationNames.ScriptBlockedByCSP,
+    ]);
+    this.createInstrumentationBreakpoints(i18nString(UIStrings.timer), [
+      InstrumentationNames.SetTimeout,
+      InstrumentationNames.ClearTimeout,
+      InstrumentationNames.SetInterval,
+      InstrumentationNames.ClearInterval,
+      InstrumentationNames.SetTimeoutCallback,
+      InstrumentationNames.SetIntervalCallback,
+    ]);
+    this.createInstrumentationBreakpoints(i18nString(UIStrings.window), [
+      InstrumentationNames.DOMWindowClose,
+    ]);
+    this.createInstrumentationBreakpoints(i18nString(UIStrings.webaudio), [
+      InstrumentationNames.AudioContextCreated,
+      InstrumentationNames.AudioContextClosed,
+      InstrumentationNames.AudioContextResumed,
+      InstrumentationNames.AudioContextSuspended,
     ]);
 
     TargetManager.instance().observeModels(EventBreakpointsModel, this);

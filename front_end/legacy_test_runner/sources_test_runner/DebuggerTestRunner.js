@@ -12,6 +12,8 @@ import * as Sources from '../../panels/sources/sources.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import * as SDKModule from '../../core/sdk/sdk.js';
+
 SourcesTestRunner.startDebuggerTest = async function(callback, quiet) {
   console.assert(TestRunner.debuggerModel.debuggerEnabled(), 'Debugger has to be enabled');
 
@@ -630,7 +632,11 @@ SourcesTestRunner.setEventListenerBreakpoint = function(id, enabled, targetName)
     auxData.targetName = targetName;
   }
 
-  const breakpoint = self.SDK.domDebuggerManager.resolveEventListenerBreakpoint(auxData);
+  let breakpoint = SDKModule.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpoint(auxData);
+  if (!breakpoint) {
+    breakpoint =
+        SDKModule.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpoint(auxData);
+  }
 
   if (breakpoint.enabled() !== enabled) {
     pane.breakpoints.get(breakpoint).checkbox.checked = enabled;

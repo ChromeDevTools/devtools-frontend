@@ -37,42 +37,6 @@ const UIStrings = {
    */
   policyViolations: 'Policy Violations',
   /**
-   *@description Text that refers to the animation of the web page
-   */
-  animation: 'Animation',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  canvas: 'Canvas',
-  /**
-   *@description Title for a group of cities
-   */
-  geolocation: 'Geolocation',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  notification: 'Notification',
-  /**
-   *@description Text to parse something
-   */
-  parse: 'Parse',
-  /**
-   *@description Label for a group of JavaScript files
-   */
-  script: 'Script',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  timer: 'Timer',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  window: 'Window',
-  /**
-   *@description Title of the WebAudio tool
-   */
-  webaudio: 'WebAudio',
-  /**
    *@description Text that appears on a button for the media resource type filter.
    */
   media: 'Media',
@@ -125,63 +89,6 @@ const UIStrings = {
    */
   xhr: 'XHR',
   /**
-   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
-   *@example {setTimeout} PH1
-   */
-  setTimeoutOrIntervalFired: '{PH1} fired',
-  /**
-   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
-   */
-  scriptFirstStatement: 'Script First Statement',
-  /**
-   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
-   */
-  scriptBlockedByContentSecurity: 'Script Blocked by Content Security Policy',
-  /**
-   *@description Text for the request animation frame event
-   */
-  requestAnimationFrame: 'Request Animation Frame',
-  /**
-   *@description Text to cancel the animation frame
-   */
-  cancelAnimationFrame: 'Cancel Animation Frame',
-  /**
-   *@description Text for the event that an animation frame is fired
-   */
-  animationFrameFired: 'Animation Frame Fired',
-  /**
-   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
-   */
-  webglErrorFired: 'WebGL Error Fired',
-  /**
-   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
-   */
-  webglWarningFired: 'WebGL Warning Fired',
-  /**
-   *@description Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel
-   */
-  setInnerhtml: 'Set `innerHTML`',
-  /**
-   *@description Name of a breakpoint type in the Sources Panel.
-   */
-  createCanvasContext: 'Create canvas context',
-  /**
-   *@description Name of a breakpoint type in the Sources Panel.
-   */
-  createAudiocontext: 'Create `AudioContext`',
-  /**
-   *@description Name of a breakpoint type in the Sources Panel. Close is a verb.
-   */
-  closeAudiocontext: 'Close `AudioContext`',
-  /**
-   *@description Name of a breakpoint type in the Sources Panel. Resume is a verb.
-   */
-  resumeAudiocontext: 'Resume `AudioContext`',
-  /**
-   *@description Name of a breakpoint type in the Sources Panel.
-   */
-  suspendAudiocontext: 'Suspend `AudioContext`',
-  /**
    *@description Error message text
    *@example {Snag Error} PH1
    */
@@ -198,36 +105,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/DOMDebuggerModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-// Some instrumentation breakpoints have their titles adjusted to localized
-// versions, and some are merely renamed to more recognizable names.
-//
-// This function returns a table that links the breakpoint names and replacement
-// titles.
-function getInstrumentationBreakpointTitles(): [string, string|Common.UIString.LocalizedString][] {
-  return [
-    ['setTimeout.callback', i18nString(UIStrings.setTimeoutOrIntervalFired, {PH1: 'setTimeout'})],
-    ['setInterval.callback', i18nString(UIStrings.setTimeoutOrIntervalFired, {PH1: 'setInterval'})],
-    ['scriptFirstStatement', i18nString(UIStrings.scriptFirstStatement)],
-    ['scriptBlockedByCSP', i18nString(UIStrings.scriptBlockedByContentSecurity)],
-    ['requestAnimationFrame', i18nString(UIStrings.requestAnimationFrame)],
-    ['cancelAnimationFrame', i18nString(UIStrings.cancelAnimationFrame)],
-    ['requestAnimationFrame.callback', i18nString(UIStrings.animationFrameFired)],
-    ['webglErrorFired', i18nString(UIStrings.webglErrorFired)],
-    ['webglWarningFired', i18nString(UIStrings.webglWarningFired)],
-    ['Element.setInnerHTML', i18nString(UIStrings.setInnerhtml)],
-    ['canvasContextCreated', i18nString(UIStrings.createCanvasContext)],
-    ['Geolocation.getCurrentPosition', 'getCurrentPosition'],
-    ['Geolocation.watchPosition', 'watchPosition'],
-    ['Notification.requestPermission', 'requestPermission'],
-    ['DOMWindow.close', 'window.close'],
-    ['Document.write', 'document.write'],
-    ['audioContextCreated', i18nString(UIStrings.createAudiocontext)],
-    ['audioContextClosed', i18nString(UIStrings.closeAudiocontext)],
-    ['audioContextResumed', i18nString(UIStrings.resumeAudiocontext)],
-    ['audioContextSuspended', i18nString(UIStrings.suspendAudiocontext)],
-  ];
-}
 
 export class DOMDebuggerModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.DOMDebuggerApi;
@@ -777,24 +654,6 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
         Protocol.DOMDebugger.CSPViolationType.TrustedtypePolicyViolation));
 
     this.#eventListenerBreakpointsInternal = [];
-    this.createInstrumentationBreakpoints(
-        i18nString(UIStrings.animation),
-        ['requestAnimationFrame', 'cancelAnimationFrame', 'requestAnimationFrame.callback']);
-    this.createInstrumentationBreakpoints(
-        i18nString(UIStrings.canvas), ['canvasContextCreated', 'webglErrorFired', 'webglWarningFired']);
-    this.createInstrumentationBreakpoints(
-        i18nString(UIStrings.geolocation), ['Geolocation.getCurrentPosition', 'Geolocation.watchPosition']);
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.notification), ['Notification.requestPermission']);
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.parse), ['Element.setInnerHTML', 'Document.write']);
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.script), ['scriptFirstStatement', 'scriptBlockedByCSP']);
-    this.createInstrumentationBreakpoints(
-        i18nString(UIStrings.timer),
-        ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'setTimeout.callback', 'setInterval.callback']);
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.window), ['DOMWindow.close']);
-    this.createInstrumentationBreakpoints(
-        i18nString(UIStrings.webaudio),
-        ['audioContextCreated', 'audioContextClosed', 'audioContextResumed', 'audioContextSuspended']);
-
     this.createEventListenerBreakpoints(
         i18nString(UIStrings.media),
         [
@@ -897,13 +756,6 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
         i18nString(UIStrings.xhr),
         ['readystatechange', 'load', 'loadstart', 'loadend', 'abort', 'error', 'progress', 'timeout'],
         ['xmlhttprequest', 'xmlhttprequestupload']);
-
-    for (const [name, newTitle] of getInstrumentationBreakpointTitles()) {
-      const breakpoint = this.resolveEventListenerBreakpointInternal('instrumentation:' + name);
-      if (breakpoint) {
-        breakpoint.setTitle(newTitle);
-      }
-    }
 
     TargetManager.instance().observeModels(DOMDebuggerModel, this);
   }

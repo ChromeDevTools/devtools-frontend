@@ -6,6 +6,8 @@
 
 :host {
   overflow: hidden;
+
+  --timeline-controls-width: 150px;
 }
 
 .animation-node-row {
@@ -15,20 +17,16 @@
 }
 
 .animation-node-description {
-  width: 150px;
   padding-left: 8px;
   overflow: hidden;
   position: relative;
-  transform-style: preserve-3d;
-  border-bottom: 1px solid var(--sys-color-divider);
-  margin-bottom: -1px;
   background-color: var(--sys-color-cdt-base-container);
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: flex-start;
   white-space: nowrap;
-  flex: 0 0 150px;
+  flex: 0 0 var(--timeline-controls-width);
 }
 
 .animation-node-description > * {
@@ -118,7 +116,7 @@ circle.animation-keyframe-point:active {
   content: "";
   height: calc(100% - 48px - 28px);
   position: absolute;
-  width: 150px;
+  width: var(--timeline-controls-width);
   left: 0;
   margin-top: 28px;
   background-color: var(--sys-color-cdt-base-container);
@@ -127,7 +125,7 @@ circle.animation-keyframe-point:active {
 }
 
 .animation-controls {
-  flex: 0 0 150px;
+  flex: 0 0 var(--timeline-controls-width);
   position: relative;
   display: flex;
   justify-content: flex-end;
@@ -216,7 +214,7 @@ circle.animation-keyframe-point:active {
 
 .grid-overflow-wrapper {
   position: absolute;
-  left: 140px;
+  left: calc(var(--timeline-controls-width) - 10px);
   top: 76px;
   z-index: 1;
   overflow: hidden;
@@ -299,7 +297,7 @@ text.animation-timeline-grid-label {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 150px;
+  margin-left: var(--timeline-controls-width);
   padding: 10px;
 }
 
@@ -460,6 +458,18 @@ text.animation-timeline-grid-label {
 
 .animation-buffer-preview:hover .animation-remove-button {
   display: flex;
+}
+
+.timeline-controls-resizer {
+  position: absolute;
+  width: 6px;
+  height: 100%;
+  left: var(--timeline-controls-width);
+  top: 104px;
+  z-index: 3;
+  /* We put this a bit to the left of the line to allow dragging
+  the delay point of the keyframes */
+  margin-left: -4px;
 }
 
 @media (forced-colors: active) {

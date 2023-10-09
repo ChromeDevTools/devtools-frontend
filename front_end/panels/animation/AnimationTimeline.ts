@@ -89,6 +89,10 @@ const nodeUIsByNode = new WeakMap<SDK.DOMModel.DOMNode, NodeUI>();
 
 const playbackRates = new WeakMap<HTMLElement, number>();
 
+const MIN_TIMELINE_CONTROLS_WIDTH = 120;
+const DEFAULT_TIMELINE_CONTROLS_WIDTH = 150;
+const MAX_TIMELINE_CONTROLS_WIDTH = 720;
+
 let animationTimelineInstance: AnimationTimeline;
 
 export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManager.SDKModelObserver<AnimationModel> {
@@ -124,12 +128,14 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   #gridOffsetLeft?: number;
   #originalScrubberTime?: number|null;
   #originalMousePosition?: number;
+  #timelineControlsResizer: HTMLElement;
 
   private constructor() {
     super(true);
 
     this.element.classList.add('animations-timeline');
 
+    this.#timelineControlsResizer = this.contentElement.createChild('div', 'timeline-controls-resizer');
     this.#gridWrapper = this.contentElement.createChild('div', 'grid-overflow-wrapper');
     this.#grid = UI.UIUtils.createSVGChild(this.#gridWrapper, 'svg', 'animation-timeline-grid');
 
@@ -142,16 +148,21 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
     /** @const */ this.#defaultDuration = 100;
     this.#durationInternal = this.#defaultDuration;
-    /** @const */ this.#timelineControlsWidth = 150;
     this.#nodesMap = new Map();
     this.#uiAnimations = [];
     this.#groupBuffer = [];
     this.#previewMap = new Map();
     this.#animationsMap = new Map();
+
+    this.#timelineControlsWidth = DEFAULT_TIMELINE_CONTROLS_WIDTH;
+    this.element.style.setProperty('--timeline-controls-width', `${this.#timelineControlsWidth}px`);
+
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.NodeRemoved, this.nodeRemoved, this, {scoped: true});
     SDK.TargetManager.TargetManager.instance().observeModels(AnimationModel, this, {scoped: true});
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.nodeChanged, this);
+
+    this.#setupTimelineControlsResizer();
   }
 
   static instance(opts?: {forceNew: boolean}): AnimationTimeline {
@@ -159,6 +170,32 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       animationTimelineInstance = new AnimationTimeline();
     }
     return animationTimelineInstance;
+  }
+
+  #setupTimelineControlsResizer(): void {
+    let resizeOriginX: number|undefined = undefined;
+    UI.UIUtils.installDragHandle(
+        this.#timelineControlsResizer,
+        (ev: MouseEvent) => {
+          resizeOriginX = ev.clientX;
+          return true;
+        },
+        (ev: MouseEvent) => {
+          if (resizeOriginX === undefined) {
+            return;
+          }
+
+          const newWidth = this.#timelineControlsWidth + ev.clientX - resizeOriginX;
+          this.#timelineControlsWidth =
+              Math.min(Math.max(newWidth, MIN_TIMELINE_CONTROLS_WIDTH), MAX_TIMELINE_CONTROLS_WIDTH);
+          resizeOriginX = ev.clientX;
+          this.element.style.setProperty('--timeline-controls-width', this.#timelineControlsWidth + 'px');
+          this.onResize();
+        },
+        () => {
+          resizeOriginX = undefined;
+        },
+        'ew-resize');
   }
 
   get previewMap(): Map<AnimationGroup, AnimationGroupPreviewUI> {
@@ -706,7 +743,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.#gridWrapper.style.height = gridHeight.toString() + 'px';
     this.#grid.setAttribute('width', gridWidth);
     this.#grid.setAttribute('height', gridHeight.toString());
-    this.#grid.setAttribute('shape-rendering', 'crispEdges');
     this.#grid.removeChildren();
     let lastDraw: number|undefined = undefined;
     for (let time = 0; time < this.duration(); time += gridSize) {
@@ -767,19 +803,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
   width(): number {
     return this.#cachedTimelineWidth || 0;
-  }
-
-  private resizeWindow(animation: AnimationImpl): boolean {
-    let resized = false;
-
-    // This shows at most 3 iterations
-    const duration = animation.source().duration() * Math.min(2, animation.source().iterations());
-    const requiredDuration = animation.source().delay() + duration + animation.source().endDelay();
-    if (requiredDuration > this.#durationInternal) {
-      resized = true;
-      this.#durationInternal = requiredDuration + 200;
-    }
-    return resized;
   }
 
   private syncScrubber(): void {

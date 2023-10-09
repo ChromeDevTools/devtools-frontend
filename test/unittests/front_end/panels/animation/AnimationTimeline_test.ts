@@ -55,4 +55,40 @@ describeWithMockConnection('AnimationTimeline', () => {
 
   it('updates UI on in scope animation group start', updatesUiOnEvent(true));
   it('does not update UI on out of scope animation group start', updatesUiOnEvent(false));
+
+  describe('resizing time controls', () => {
+    it('updates --timeline-controls-width and calls onResize', async () => {
+      view = Animation.AnimationTimeline.AnimationTimeline.instance({forceNew: true});
+      view.markAsRoot();
+      view.show(document.body);
+      const onResizeStub = sinon.stub(view, 'onResize');
+      await new Promise<void>(resolve => setTimeout(resolve, 0));
+
+      const resizer = view.contentElement.querySelector('.timeline-controls-resizer');
+      assertNotNullOrUndefined(resizer);
+
+      const initialWidth = view.element.style.getPropertyValue('--timeline-controls-width');
+      assert.strictEqual(initialWidth, '150px');
+
+      const resizerRect = resizer.getBoundingClientRect();
+      resizer.dispatchEvent(
+          new PointerEvent('pointerdown', {
+            clientX: resizerRect.x + resizerRect.width / 2,
+            clientY: resizerRect.y + resizerRect.height / 2,
+          }),
+      );
+      resizer.ownerDocument.dispatchEvent(
+          new PointerEvent('pointermove', {
+            buttons: 1,
+            clientX: (resizerRect.x + resizerRect.width / 2) + 20,
+            clientY: resizerRect.y + resizerRect.height / 2,
+          }),
+      );
+      resizer.ownerDocument.dispatchEvent(new PointerEvent('pointerup'));
+
+      const afterResizeWidth = view.element.style.getPropertyValue('--timeline-controls-width');
+      assert.notStrictEqual(initialWidth, afterResizeWidth);
+      assert.isTrue(onResizeStub.calledOnce);
+    });
+  });
 });

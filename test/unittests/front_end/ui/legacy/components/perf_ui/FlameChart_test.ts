@@ -543,4 +543,126 @@ describeWithEnvironment('FlameChart', () => {
           {x: finalXPosition + canvasOffsetX, y: -85 + canvasOffsetY + chartInstance.getScrollOffset()});
     });
   });
+
+  describe('buildGroupTree', () => {
+    class BuildGroupTreeTestProvider extends FakeFlameChartProvider {
+      override maxStackDepth(): number {
+        return 6;
+      }
+      override timelineData(): PerfUI.FlameChart.FlameChartTimelineData {
+        return PerfUI.FlameChart.FlameChartTimelineData.create({
+          entryLevels: [],
+          entryStartTimes: [],
+          entryTotalTimes: [],
+          groups: [
+            {
+              name: 'Test Group 0' as Platform.UIString.LocalizedString,
+              startLevel: 0,
+              style: defaultGroupStyle,
+            },
+            {
+              name: 'Test Group 1' as Platform.UIString.LocalizedString,
+              startLevel: 1,
+              style: defaultGroupStyle,
+            },
+            {
+              name: 'Test Group 2' as Platform.UIString.LocalizedString,
+              startLevel: 2,
+              style: {...defaultGroupStyle, collapsible: true, nestingLevel: 1},
+            },
+            {
+              name: 'Test Group 3' as Platform.UIString.LocalizedString,
+              startLevel: 3,
+              style: {...defaultGroupStyle, collapsible: true, nestingLevel: 2},
+            },
+            {
+              name: 'Test Group 4' as Platform.UIString.LocalizedString,
+              startLevel: 4,
+              style: {...defaultGroupStyle, collapsible: true, nestingLevel: 1},
+            },
+            {
+              name: 'Test Group 5' as Platform.UIString.LocalizedString,
+              startLevel: 5,
+              style: {...defaultGroupStyle, collapsible: true, nestingLevel: 0},
+            },
+          ],
+        });
+      }
+    }
+
+    it('builds the group tree correctly', async () => {
+      const provider = new BuildGroupTreeTestProvider();
+      const delegate = new MockFlameChartDelegate();
+      chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+      const root = chartInstance.buildGroupTree(provider.timelineData().groups);
+
+      // The built tree should be
+      //               Root
+      //        /       |         \
+      // Group0       Group1         Group5
+      //             /      \
+      //           Group2   Group4
+      //             |
+      //           Group3
+      const groupNode5 = {
+        index: 5,
+        nestingLevel: 0,
+        startLevel: 5,
+        // This is the last group, so it will use the end level of the data provider, which is
+        // returned by |dataProvider.maxStackDepth()|, and it is 3.
+        endLevel: 6,
+        children: [],
+      };
+      const groupNode4 = {
+        index: 4,
+        nestingLevel: 1,
+        startLevel: 4,
+        // The next group is 'Test Group 5', its start level is 5.
+        endLevel: 5,
+        children: [],
+      };
+      const groupNode3 = {
+        index: 3,
+        nestingLevel: 2,
+        startLevel: 3,
+        // The next group is 'Test Group 4', its start level is 4.
+        endLevel: 4,
+        children: [],
+      };
+      const groupNode2 = {
+        index: 2,
+        nestingLevel: 1,
+        startLevel: 2,
+        // The next group is 'Test Group 3', its start level is 3.
+        endLevel: 3,
+        children: [groupNode3],
+      };
+      const groupNode1 = {
+        index: 1,
+        nestingLevel: 0,
+        startLevel: 1,
+        // The next group is 'Test Group 2', its start level is 2.
+        endLevel: 2,
+        children: [groupNode2, groupNode4],
+      };
+      const groupNode0 = {
+        index: 0,
+        nestingLevel: 0,
+        startLevel: 0,
+        // The next group is 'Test Group 1', its start level is 1.
+        endLevel: 1,
+        children: [],
+      };
+      const expectedGroupNodeRoot = {
+        index: -1,
+        nestingLevel: -1,
+        startLevel: 0,
+        // The next group is 'Test Group 0', its start level is 0.
+        endLevel: 0,
+        children: [groupNode0, groupNode1, groupNode5],
+      };
+
+      assert.deepEqual(root, expectedGroupNodeRoot);
+    });
+  });
 });

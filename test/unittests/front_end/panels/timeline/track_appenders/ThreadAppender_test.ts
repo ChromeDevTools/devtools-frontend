@@ -523,7 +523,53 @@ describeWithEnvironment('ThreadAppender', function() {
       assert.strictEqual(threadAppenders[0].titleForEvent(callFrameB), 'On ignore list');
     });
   });
+  describe('showAllEvents', () => {
+    beforeEach(() => {
+      const targetManager = SDK.TargetManager.TargetManager.instance({forceNew: true});
+      const workspace = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
+      const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+        forceNew: true,
+        resourceMapping,
+        targetManager,
+      });
+      Bindings.IgnoreListManager.IgnoreListManager.instance({
+        forceNew: true,
+        debuggerWorkspaceBinding,
+      });
+    });
+    afterEach(() => {
+      SDK.TargetManager.TargetManager.removeInstance();
+      Workspace.Workspace.WorkspaceImpl.removeInstance();
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.removeInstance();
+      Bindings.IgnoreListManager.IgnoreListManager.removeInstance();
+    });
+    it('appends unknown events to the flame chart data only when the experiment is enabled', async function() {
+      const fileName = 'react-hello-world.json.gz';
+      const bizarreName = 'BackForwardCacheBufferLimitTracker::DidRemoveFrameOrWorkerFromBackForwardCache';
+      // Look up a trace event with an name we are not tracking anywhere and make sure it's not
+      // appended to the timeline data.
+      const initialTimelineData = await renderThreadAppendersFromTrace(this, fileName);
+      let unknownEventIndex = initialTimelineData.entryData.findIndex(entry => {
+        const event = entry as TraceModel.Types.TraceEvents.TraceEventData;
+        return event.name === bizarreName;
+      });
+      assert.strictEqual(unknownEventIndex, -1);
 
+      // Now enable the experiment and make sure the event is appended to the timeline data this time
+      Root.Runtime.experiments.enableForTest('timelineShowAllEvents');
+      const finalTimelineData = await renderThreadAppendersFromTrace(this, fileName);
+      const finalFlamechartData = finalTimelineData.flameChartData;
+      unknownEventIndex = finalTimelineData.entryData.findIndex(entry => {
+        const event = entry as TraceModel.Types.TraceEvents.TraceEventData;
+        return event.name === bizarreName;
+      });
+      assert.isAbove(unknownEventIndex, -1);
+      assert.isDefined(finalFlamechartData.entryStartTimes);
+      assert.isDefined(finalFlamechartData.entryTotalTimes);
+      Root.Runtime.experiments.disableForTest('timelineShowAllEvents');
+    });
+  });
   describe('AuctionWorklet threads', () => {
     // We have to set these up because the ThreadAppender includes logic for
     // ignoring events that relies on the IgnoreListManager.

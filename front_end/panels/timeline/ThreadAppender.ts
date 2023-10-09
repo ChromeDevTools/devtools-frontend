@@ -157,6 +157,7 @@ export class ThreadAppender implements TrackAppender {
   readonly threadType: ThreadType = ThreadType.MAIN_THREAD;
   readonly isOnMainFrame: boolean;
   #ignoreListingEnabled = Root.Runtime.experiments.isEnabled('ignoreListJSFramesOnTimeline');
+  #showAllEventsEnabled = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
   // TODO(crbug.com/1428024) Clean up API so that we don't have to pass
   // a raster index to the appender (for instance, by querying the flame
   // chart data in the appender or by passing data about the flamechart
@@ -410,7 +411,15 @@ export class ThreadAppender implements TrackAppender {
       let nextLevel = startingLevel;
       const entry = node.entry;
       const entryIsIgnoreListed = this.isIgnoreListedEntry(entry);
-      const entryIsVisible = this.#compatibilityBuilder.entryIsVisibleInTimeline(entry);
+      // Events' visibility is determined from their predefined styles,
+      // which is something that's not available in the engine data.
+      // Thus it needs to be checked in the appenders, but preemptively
+      // checking if there are visible events and returning early if not
+      // is potentially expensive since, in theory, we would be adding
+      // another traversal to the entries array (which could grow
+      // large). To avoid the extra cost we  add the check in the
+      // traversal we already need to append events.
+      const entryIsVisible = this.#compatibilityBuilder.entryIsVisibleInTimeline(entry) || this.#showAllEventsEnabled;
       // For ignore listing support, these two conditions need to be met
       // to not append a profile call to the flame chart:
       // 1. It is ignore listed
@@ -436,17 +445,6 @@ export class ThreadAppender implements TrackAppender {
   }
 
   #appendEntryAtLevel(entry: TraceEngine.Types.TraceEvents.TraceEventData, level: number): void {
-    // Events' visibility is determined from their predefined styles,
-    // which is something that's not available in the engine data.
-    // Thus it needs to be checked in the appenders, but preemptively
-    // checking if there are visible events and returning early if not
-    // is potentially expensive since, in theory, we would be adding
-    // another traversal to the entries array (which could grow
-    // large). To avoid the extra cost we  add the check in the
-    // traversal we already need to append events.
-    if (!this.#compatibilityBuilder.entryIsVisibleInTimeline(entry)) {
-      return;
-    }
     this.#ensureTrackHeaderAppended(level);
     const index = this.#compatibilityBuilder.appendEventAtLevel(entry, level, this);
     this.#addDecorationsToEntry(entry, index);
@@ -503,10 +501,9 @@ export class ThreadAppender implements TrackAppender {
       // Otherwise, return a color created based on its URL.
       return this.#colorGenerator.colorForID(event.callFrame.url);
     }
-    const idForColorGeneration = this.titleForEvent(event);
     const defaultColor =
         getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category.getComputedValue();
-    return defaultColor || this.#colorGenerator.colorForID(idForColorGeneration);
+    return defaultColor || getCategoryStyles().Other.getComputedValue();
   }
 
   /**

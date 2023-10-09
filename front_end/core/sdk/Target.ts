@@ -39,7 +39,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         this.#capabilitiesMask = Capability.Browser | Capability.Storage | Capability.DOM | Capability.JS |
             Capability.Log | Capability.Network | Capability.Target | Capability.Tracing | Capability.Emulation |
             Capability.Input | Capability.Inspector | Capability.Audits | Capability.WebAuthn | Capability.IO |
-            Capability.Media;
+            Capability.Media | Capability.EventBreakpoints;
         if (parentTarget?.type() !== Type.Frame) {
           // This matches backend exposing certain capabilities only for the main frame.
           this.#capabilitiesMask |=
@@ -54,21 +54,21 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         break;
       case Type.ServiceWorker:
         this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
-            Capability.Inspector | Capability.IO;
+            Capability.Inspector | Capability.IO | Capability.EventBreakpoints;
         if (parentTarget?.type() !== Type.Frame) {
           this.#capabilitiesMask |= Capability.Browser;
         }
         break;
       case Type.SharedWorker:
         this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
-            Capability.IO | Capability.Media | Capability.Inspector;
+            Capability.IO | Capability.Media | Capability.Inspector | Capability.EventBreakpoints;
         break;
       case Type.SharedStorageWorklet:
-        this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Inspector;
+        this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Inspector | Capability.EventBreakpoints;
         break;
       case Type.Worker:
         this.#capabilitiesMask = Capability.JS | Capability.Log | Capability.Network | Capability.Target |
-            Capability.IO | Capability.Media | Capability.Emulation;
+            Capability.IO | Capability.Media | Capability.Emulation | Capability.EventBreakpoints;
         break;
       case Type.Node:
         this.#capabilitiesMask = Capability.JS;

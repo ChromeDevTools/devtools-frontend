@@ -2468,6 +2468,7 @@ export class ButtonProvider implements UI.Toolbar.Provider {
   }
 
   private clicked(): void {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.NewStyleRuleAdded);
     void StylesSidebarPane.instance().createNewRuleInViaInspectorStyleSheet();
   }
 

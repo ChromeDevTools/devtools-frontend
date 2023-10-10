@@ -582,7 +582,8 @@ export enum Action {
   WorkspaceSelectFolder = 108,
   OverrideContentContextMenuSourceMappedWarning = 109,
   OverrideContentContextMenuRedirectToDeployed = 110,
-  MaxValue = 111,
+  NewStyleRuleAdded = 111,
+  MaxValue = 112,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

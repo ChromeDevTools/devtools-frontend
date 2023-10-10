@@ -11,6 +11,7 @@ devtools_module("helpers") {
     "SamplesIntegrator.ts",
     "Timing.ts",
     "Trace.ts",
+    "TreeHelpers.ts",
   ]
 
   deps = [

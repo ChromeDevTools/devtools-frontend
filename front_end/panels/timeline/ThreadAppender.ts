@@ -143,7 +143,7 @@ export class ThreadAppender implements TrackAppender {
   #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData;
 
   #entries: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
-  #tree: TraceEngine.Handlers.ModelHandlers.Renderer.RendererTree;
+  #tree: TraceEngine.Helpers.TreeHelpers.TraceEntryTree;
   #processId: TraceEngine.Types.TraceEvents.ProcessID;
   #threadId: TraceEngine.Types.TraceEvents.ThreadID;
   #threadDefaultName: string;
@@ -404,7 +404,7 @@ export class ThreadAppender implements TrackAppender {
    * listed is done before appending.
    */
   #appendNodesAtLevel(
-      nodes: Iterable<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode>, startingLevel: number,
+      nodes: Iterable<TraceEngine.Helpers.TreeHelpers.TraceEntryNode>, startingLevel: number,
       parentIsIgnoredListed: boolean = false): number {
     let maxDepthInTree = startingLevel;
     for (const node of nodes) {

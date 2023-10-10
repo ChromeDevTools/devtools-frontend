@@ -27,9 +27,8 @@ function getMainThread(data: TraceEngine.Handlers.ModelHandlers.Renderer.Rendere
 }
 
 function findFirstEntry(
-    allEntries: readonly TraceEngine.Types.TraceEvents.RendererEntry[],
-    predicate: (entry: TraceEngine.Types.TraceEvents.RendererEntry) =>
-        boolean): TraceEngine.Types.TraceEvents.RendererEntry {
+    allEntries: readonly TraceEngine.Types.TraceEvents.TraceEntry[],
+    predicate: (entry: TraceEngine.Types.TraceEvents.TraceEntry) => boolean): TraceEngine.Types.TraceEvents.TraceEntry {
   const entry = allEntries.find(entry => predicate(entry));
   if (!entry) {
     throw new Error('Could not find expected entry.');

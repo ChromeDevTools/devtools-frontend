@@ -193,7 +193,7 @@ export const defaultTraceEvent: TraceEngine.Types.TraceEvents.TraceEventData = {
  * @see RendererHandler.ts
  */
 export function getTree(thread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread):
-    TraceEngine.Handlers.ModelHandlers.Renderer.RendererTree {
+    TraceEngine.Helpers.TreeHelpers.TraceEntryTree {
   const tree = thread.tree;
   if (!tree) {
     assert(false, `Couldn't get tree in thread ${thread.name}`);
@@ -207,7 +207,7 @@ export function getTree(thread: TraceEngine.Handlers.ModelHandlers.Renderer.Rend
  * @see RendererHandler.ts
  */
 export function getRootAt(thread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread, index: number):
-    TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode {
+    TraceEngine.Helpers.TreeHelpers.TraceEntryNode {
   const tree = getTree(thread);
   const node = [...tree.roots][index];
   if (node === undefined) {
@@ -223,8 +223,7 @@ export function getRootAt(thread: TraceEngine.Handlers.ModelHandlers.Renderer.Re
  */
 export function getNodeFor(
     thread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread,
-    nodeId: TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNodeId):
-    TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode {
+    nodeId: TraceEngine.Helpers.TreeHelpers.TraceEntryNodeId): TraceEngine.Helpers.TreeHelpers.TraceEntryNode {
   const tree = getTree(thread);
   const node = tree.nodes.get(nodeId);
   if (!node) {
@@ -237,7 +236,7 @@ export function getNodeFor(
 /**
  * Gets all the `events` for the `nodes`.
  */
-export function getEventsIn(nodes: IterableIterator<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode>):
+export function getEventsIn(nodes: IterableIterator<TraceEngine.Helpers.TreeHelpers.TraceEntryNode>):
     TraceEngine.Types.TraceEvents.TraceEventData[] {
   return [...nodes].flatMap(node => node ? node.entry : []);
 }
@@ -245,15 +244,15 @@ export function getEventsIn(nodes: IterableIterator<TraceEngine.Handlers.ModelHa
  * Pretty-prints a tree.
  */
 export function prettyPrint(
-    tree: TraceEngine.Handlers.ModelHandlers.Renderer.RendererTree,
-    predicate: (
-        node: TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode,
-        event: TraceEngine.Types.TraceEvents.RendererEntry) => boolean = () => true,
+    tree: TraceEngine.Helpers.TreeHelpers.TraceEntryTree,
+    predicate:
+        (node: TraceEngine.Helpers.TreeHelpers.TraceEntryNode, event: TraceEngine.Types.TraceEvents.TraceEntry) =>
+            boolean = () => true,
     indentation: number = 2, delimiter: string = ' ', prefix: string = '-', newline: string = '\n',
     out: string = ''): string {
   let skipped = false;
   return printNodes(tree.roots);
-  function printNodes(nodes: Set<TraceEngine.Handlers.ModelHandlers.Renderer.RendererEntryNode>): string {
+  function printNodes(nodes: Set<TraceEngine.Helpers.TreeHelpers.TraceEntryNode>): string {
     for (const node of nodes) {
       const event = node.entry;
       if (!predicate(node, event)) {
@@ -469,9 +468,9 @@ export function makeFakeSDKEventFromPayload(payloadOptions: FakeEventPayload): T
  * Mocks an object compatible with the return type of the
  * RendererHandler using only an array of ordered entries.
  */
-export function makeMockRendererHandlerData(entries: TraceEngine.Types.TraceEvents.RendererEntry[]):
+export function makeMockRendererHandlerData(entries: TraceEngine.Types.TraceEvents.TraceEntry[]):
     TraceEngine.Handlers.ModelHandlers.Renderer.RendererHandlerData {
-  const {tree, entryToNode} = TraceEngine.Handlers.ModelHandlers.Renderer.treify(entries, {filter: {has: () => true}});
+  const {tree, entryToNode} = TraceEngine.Helpers.TreeHelpers.treify(entries, {filter: {has: () => true}});
   const mockThread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread = {
     tree,
     name: 'thread',

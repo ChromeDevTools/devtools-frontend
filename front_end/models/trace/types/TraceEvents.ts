@@ -1019,14 +1019,14 @@ export interface TraceEventSyntheticProfileCall extends SyntheticEventWithSelfTi
  */
 export type SyntheticRendererEvent = TraceEventRendererEvent&SyntheticEventWithSelfTime;
 
-export type RendererEntry = SyntheticRendererEvent|TraceEventSyntheticProfileCall;
+export type TraceEntry = SyntheticRendererEvent|TraceEventSyntheticProfileCall;
 
 export function isSyntheticInteractionEvent(event: TraceEventData): event is SyntheticInteractionEvent {
   return Boolean(
       'interactionId' in event && event.args?.data && 'beginEvent' in event.args.data && 'endEvent' in event.args.data);
 }
 
-export function isRendererEvent(event: TraceEventData): event is RendererEntry {
+export function isRendererEvent(event: TraceEventData): event is TraceEntry {
   return isTraceEventRendererEvent(event) || isProfileCall(event);
 }
 

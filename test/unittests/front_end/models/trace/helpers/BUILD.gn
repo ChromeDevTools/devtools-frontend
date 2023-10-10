@@ -10,6 +10,7 @@ ts_library("helpers") {
     "SamplesIntegrator_test.ts",
     "Timing_test.ts",
     "Trace_test.ts",
+    "TreeHelpers_test.ts",
   ]
 
   deps = [

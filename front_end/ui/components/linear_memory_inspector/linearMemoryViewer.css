@@ -14,7 +14,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   box-sizing: border-box;
-  background: var(--color-background);
+  background: var(--sys-color-cdt-base-container);
   outline: none;
 }
 
@@ -31,14 +31,14 @@
 }
 
 .cell.selected {
-  border-color: var(--color-syntax-3);
-  color: var(--color-syntax-3);
-  background-color: var(--legacy-item-selection-bg-color);
+  border-color: var(--sys-color-token-attribute-value);
+  color: var(--sys-color-token-attribute-value);
+  background-color: var(--sys-color-primary);
 }
 
 .byte-cell {
   min-width: 21px;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .byte-group-margin {
@@ -47,40 +47,34 @@
 
 .text-cell {
   min-width: 14px;
-  color: var(--color-syntax-3);
+  color: var(--sys-color-token-attribute-value);
 }
 
 .address {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
 }
 
 .address.selected {
   font-weight: bold;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .divider {
   width: 1px;
   height: inherit;
-  background-color: var(--color-details-hairline);
+  background-color: var(--sys-color-divider);
   margin: 0 4px;
 }
 
 .highlight-area {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-surface-variant);
 }
 
 .cell.focused-area {
-  background-color: var(--color-primary-variant);
-  color: var(--color-button-primary-text);
+  background-color: var(--sys-color-inverse-primary);
+  color: var(--sys-color-on-primary);
 }
 
 .cell.focused-area.selected {
-  background: rgb(1 74 195); /* stylelint-disable-line plugin/use_theme_colors */
-  border-color: var(--color-button-outline-focus);
-}
-
-:host-context(.-theme-with-dark-background) .cell.focused-area.selected {
-  background: rgb(192 216 255); /* stylelint-disable-line plugin/use_theme_colors */
-  border-color: var(--color-button-outline-focus);
+  border-color: var(--sys-color-state-focus-ring);
 }

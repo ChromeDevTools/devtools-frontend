@@ -10,10 +10,8 @@
 }
 
 .value-interpreter {
-  --override-text-highlight-color: #80868b;
-
-  border: var(--legacy-divider-border);
-  background-color: var(--color-background-elevation-1);
+  border: 1px solid var(--sys-color-divider);
+  background-color: var(--sys-color-cdt-base-container);
   overflow: hidden;
   width: 400px;
 }
@@ -46,6 +44,5 @@
   display: block;
   height: 1px;
   margin-bottom: 12px;
-  background-color: var(--color-details-hairline, #d0d0d0); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  background-color: var(--sys-color-divider);
 }

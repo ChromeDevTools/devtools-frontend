@@ -10,15 +10,15 @@
   flex-wrap: wrap;
   justify-content: left;
   align-items: center;
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   margin: 8px 0;
   gap: 8px;
   row-gap: 6px;
 }
 
 .highlight-chip {
-  background: var(--color-background);
-  border: 1px solid var(--color-button-secondary-border);
+  background: var(--sys-color-cdt-base-container);
+  border: 1px solid var(--sys-color-divider);
   height: 18px;
   border-radius: 4px;
   flex: 0 0 auto;
@@ -28,7 +28,7 @@
 }
 
 .highlight-chip:hover {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .delete-highlight-container {
@@ -55,7 +55,7 @@
 }
 
 .delete-highlight-button:hover {
-  background-color: var(--color-details-hairline);
+  background-color: var(--sys-color-state-hover-on-subtle);
   border-radius: 50%;
 }
 
@@ -85,11 +85,11 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .value {
-  color: var(--color-syntax-2);
+  color: var(--sys-color-token-tag);
 }
 
 .separator {
@@ -98,8 +98,8 @@
 }
 
 .highlight-chip.focused {
-  border-color: var(--color-primary-old);
-  background-color: var(--color-button-secondary-background-hovering);
+  outline: 2px solid var(--sys-color-state-focus-ring);
+  outline-offset: 2px;
 }
 
 .highlight-chip:hover > .delete-highlight-container {

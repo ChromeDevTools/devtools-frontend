@@ -11,7 +11,7 @@
   line-height: 1.16;
   letter-spacing: 0.015em;
   border: 1px solid var(--sys-color-neutral-outline);
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   border-radius: 3px;
   background-color: var(--sys-color-cdt-base-container);
   font-family: inherit;
@@ -24,5 +24,5 @@
 }
 
 .devtools-text-input::placeholder {
-  color: var(--color-input-text-disabled);
+  color: var(--sys-color-state-disabled);
 }

@@ -184,7 +184,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
         <select title=${i18nString(UIStrings.changeValueTypeMode)}
           data-mode-settings="true"
           class="chrome-select"
-          style="border: none; background-color: transparent; cursor: pointer; color: var(--color-text-secondary);"
+          style="border: none; background-color: transparent; cursor: pointer; color: var(--sys-color-token-subtle);"
           @change=${this.#onValueTypeModeChange.bind(this, type)}>
             ${VALUE_TYPE_MODE_LIST.filter(x => isValidMode(type, x)).map(mode => {
               return html`

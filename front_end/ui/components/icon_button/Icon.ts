@@ -32,7 +32,7 @@ export class Icon extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #iconPath: Readonly<string> = '';
-  #color: Readonly<string> = 'rgb(110 110 110)';
+  #color: Readonly<string> = 'var(--icon-default)';
   #width: Readonly<string> = '100%';
   #height: Readonly<string> = '100%';
   #iconName?: Readonly<string>;

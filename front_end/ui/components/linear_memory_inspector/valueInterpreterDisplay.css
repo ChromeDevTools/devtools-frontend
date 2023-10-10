@@ -9,10 +9,6 @@
   display: flex;
 }
 
-.mode-type {
-  color: var(--override-text-highlight-color);
-}
-
 .value-types {
   width: 100%;
   display: grid;
@@ -67,5 +63,5 @@
 }
 
 .selectable-text::selection {
-  background-color: var(--legacy-item-selection-bg-color);
+  background-color: var(--sys-color-tonal-container);
 }

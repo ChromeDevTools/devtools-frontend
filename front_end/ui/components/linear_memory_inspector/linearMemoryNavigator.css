@@ -11,8 +11,8 @@
   justify-content: space-between;
   overflow: hidden;
   align-items: center;
-  background-color: var(--color-background);
-  color: var(--color-text-primary);
+  background-color: var(--sys-color-cdt-base-container);
+  color: var(--sys-color-on-surface);
 }
 
 .navigator-item {
@@ -24,13 +24,13 @@
 .address-input {
   text-align: center;
   outline: none;
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-background-elevation-2);
+  color: var(--sys-color-on-surface);
+  border: 1px solid var(--sys-color-neutral-outline);
   background: transparent;
 }
 
 .address-input.invalid {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
 }
 
 .navigator-button {

@@ -14,7 +14,7 @@
   text-decoration: var(--issue-link-text-decoration, underline);
   cursor: pointer;
   font-size: var(--issue-link-font-size, 14px);
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   outline-offset: 2px;
   border: none;
   background: none;

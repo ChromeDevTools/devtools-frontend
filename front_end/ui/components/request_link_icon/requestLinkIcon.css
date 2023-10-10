@@ -21,5 +21,5 @@ devtools-icon {
 }
 
 .link span {
-  color: var(--color-link);
+  color: var(--sys-color-primary);
 }

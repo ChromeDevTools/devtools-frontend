@@ -75,7 +75,7 @@ devtools-editable-content:focus ~ devtools-suggestion-box {
 }
 
 .suggestions > li:hover {
-  background-color: var(--item-hover-color);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .suggestions > li.selected {

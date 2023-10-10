@@ -531,8 +531,17 @@ export class FakeFlameChartProvider implements PerfUI.FlameChart.FlameChartDataP
     return null;
   }
 
-  entryColor(_entryIndex: number): string {
-    return 'lightblue';
+  entryColor(entryIndex: number): string {
+    return [
+      'lightblue',
+      'lightpink',
+      'yellow',
+      'lightgray',
+      'lightgreen',
+      'lightsalmon',
+      'orange',
+      'pink',
+    ][entryIndex % 8];
   }
 
   decorateEntry(): boolean {

@@ -481,66 +481,234 @@ describeWithEnvironment('FlameChart', () => {
     });
   });
 
-  describe('entryIndexToCoordinates', () => {
-    class SetSelectedEntryTestProvider extends FakeFlameChartProvider {
+  describe('Index to/from coordinates coversion', () => {
+    class IndexAndCoordinatesConversionTestProvider extends FakeFlameChartProvider {
       override entryColor(_entryIndex: number): string {
         return 'red';
       }
 
+      override maxStackDepth(): number {
+        return 2;
+      }
+
       override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
         return PerfUI.FlameChart.FlameChartTimelineData.create({
-          entryLevels: [1, 1, 1, 1],
+          entryLevels: [0, 0, 1, 1],
           entryStartTimes: [5, 60, 80, 300],
           entryTotalTimes: [50, 10, 10, 500],
-          groups: [{
-            name: 'Test Group' as Platform.UIString.LocalizedString,
-            startLevel: 1,
-            style: defaultGroupStyle,
-          }],
+          groups: [
+            {
+              name: 'Test Group' as Platform.UIString.LocalizedString,
+              startLevel: 0,
+              style: defaultGroupStyle,
+            },
+            {
+              name: 'Test Group 1' as Platform.UIString.LocalizedString,
+              startLevel: 1,
+              style: defaultGroupStyle,
+            },
+          ],
         });
       }
     }
 
-    it('returns the correct coordinates for a given entry', async () => {
-      const provider = new SetSelectedEntryTestProvider();
-      const delegate = new MockFlameChartDelegate();
-      chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
-      // Make the width narrow so that not everything fits
-      chartInstance.setSize(100, 400);
-      chartInstance.setWindowTimes(0, 100);
-      renderChart(chartInstance);
-      const timelineData = chartInstance.timelineData();
-      if (!timelineData) {
-        throw new Error('Could not find timeline data');
-      }
-      const entryIndex = 0;
-      const {x: canvasOffsetX, y: canvasOffsetY} = chartInstance.getCanvasOffset();
-      // TODO(crbug.com/1440169): We can get all the expected values from
-      // the chart's data and avoid magic numbers
-      const initialXPosition = chartInstance.computePosition(timelineData.entryStartTimes[entryIndex]);
-      assert.deepEqual(
-          chartInstance.entryIndexToCoordinates(entryIndex),
-          // For index 0, it is in level 1, so vertically there are only the ruler(17) and the level 0(17) and the
-          // header of Group 0 (17) and beyond it.
-          {x: initialXPosition + canvasOffsetX, y: 51 + canvasOffsetY + chartInstance.getScrollOffset()});
+    describe('entryIndexToCoordinates', () => {
+      it('returns the correct coordinates for a given entry', () => {
+        const provider = new IndexAndCoordinatesConversionTestProvider();
+        const delegate = new MockFlameChartDelegate();
+        chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+        // Make the width narrow so that not everything fits
+        chartInstance.setSize(100, 400);
+        chartInstance.setWindowTimes(0, 100);
+        renderChart(chartInstance);
+        const timelineData = chartInstance.timelineData();
+        if (!timelineData) {
+          throw new Error('Could not find timeline data');
+        }
+        const entryIndex = 0;
+        const {x: canvasOffsetX, y: canvasOffsetY} = chartInstance.getCanvasOffset();
+        // TODO(crbug.com/1440169): We can get all the expected values from
+        // the chart's data and avoid magic numbers
+        const initialXPosition = chartInstance.computePosition(timelineData.entryStartTimes[entryIndex]);
+        assert.deepEqual(
+            chartInstance.entryIndexToCoordinates(entryIndex),
+            // For index 0, it is in level 0, so vertically there are only the ruler(17) and the
+            // header of Group 0 (17) and beyond it.
+            {x: initialXPosition + canvasOffsetX, y: 34 + canvasOffsetY + chartInstance.getScrollOffset()});
 
-      // Emulate two scrolls to force a change in coordinates.
-      // For index 3, it is in level 1, so vertically there are the ruler(17) and the header of Group 0 (17), the
-      // level 0 (17) beyond it.
-      // When select it, it will scroll the level offset(17 + 17 + 17 = 51) and its height(17), which means
-      // |chartInstance.getScrollOffset()| returns 68.
-      chartInstance.setSelectedEntry(3);
-      assert.deepEqual(
-          chartInstance.entryIndexToCoordinates(entryIndex),
-          // For index 0, so we need to minus the scroll offset(68) and |chartInstance.getScrollOffset()|, so it is
-          // 51 - 68 - 68 = -85.
-          {x: initialXPosition + canvasOffsetX, y: -85 + canvasOffsetY + chartInstance.getScrollOffset()});
-      chartInstance.setWindowTimes(250, 600);
-      const finalXPosition = chartInstance.computePosition(timelineData.entryStartTimes[entryIndex]);
-      // For this case, there is no vertical scroll, so it is still -85.
-      assert.deepEqual(
-          chartInstance.entryIndexToCoordinates(entryIndex),
-          {x: finalXPosition + canvasOffsetX, y: -85 + canvasOffsetY + chartInstance.getScrollOffset()});
+        // Emulate two scrolls to force a change in coordinates.
+        // For index 3, it is in level 1, so vertically there are the ruler(17) and the header of Group 0 (17), the
+        // level 0 (17), the padding of Group 1 (4) and the header of Group 1 (17) beyond it.
+        // When select it, it will scroll the level offset(17 + 17 + 17 + 4 + 17 = 72) and its height(17), which means
+        // |chartInstance.getScrollOffset()| returns 89.
+        chartInstance.setSelectedEntry(3);
+        assert.deepEqual(
+            chartInstance.entryIndexToCoordinates(entryIndex),
+            // For index 0, so we need to minus the scroll offset(68) and |chartInstance.getScrollOffset()|, so it is
+            // 34 - 89 - 89 = -144.
+            {x: initialXPosition + canvasOffsetX, y: -144 + canvasOffsetY + chartInstance.getScrollOffset()});
+        chartInstance.setWindowTimes(250, 600);
+        const finalXPosition = chartInstance.computePosition(timelineData.entryStartTimes[entryIndex]);
+        // For this case, there is no vertical scroll, so it is still -144.
+        assert.deepEqual(
+            chartInstance.entryIndexToCoordinates(entryIndex),
+            {x: finalXPosition + canvasOffsetX, y: -144 + canvasOffsetY + chartInstance.getScrollOffset()});
+      });
+
+      it('returns the correct coordinates after re-order', () => {
+        const provider = new IndexAndCoordinatesConversionTestProvider();
+        const delegate = new MockFlameChartDelegate();
+        chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+        // Make the width narrow so that not everything fits
+        chartInstance.setSize(100, 400);
+        chartInstance.setWindowTimes(0, 100);
+        renderChart(chartInstance);
+        const timelineData = chartInstance.timelineData();
+        if (!timelineData) {
+          throw new Error('Could not find timeline data');
+        }
+        const entryIndex = 0;
+        const {x: canvasOffsetX, y: canvasOffsetY} = chartInstance.getCanvasOffset();
+        // TODO(crbug.com/1440169): We can get all the expected values from
+        // the chart's data and avoid magic numbers
+        const initialXPosition = chartInstance.computePosition(timelineData.entryStartTimes[entryIndex]);
+        assert.deepEqual(
+            chartInstance.entryIndexToCoordinates(entryIndex),
+            // For index 0, it is in level 0, so vertically there are only the ruler(17) and the
+            // header of Group 0 (17) and beyond it.
+            {x: initialXPosition + canvasOffsetX, y: 34 + canvasOffsetY + chartInstance.getScrollOffset()});
+
+        chartInstance.moveGroupDown(0);
+        assert.deepEqual(
+            chartInstance.entryIndexToCoordinates(entryIndex),
+            // Move Group 0 down. So for index 0, it is in level 1, so vertically there are the ruler(17), the header of
+            // Group 1 (17), level 1(inside Group 1, 17), padding of Group 0(4), and header of Group 0 (17)beyond it.
+            {x: initialXPosition + canvasOffsetX, y: 72 + canvasOffsetY + chartInstance.getScrollOffset()});
+      });
+    });
+
+    describe('coordinatesToEntryIndex', () => {
+      it('returns the correct entry index for given coordinates', () => {
+        const provider = new IndexAndCoordinatesConversionTestProvider();
+        const delegate = new MockFlameChartDelegate();
+        chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+
+        // Make the width narrow so that not everything fits
+        chartInstance.setSize(100, 400);
+        chartInstance.setWindowTimes(0, 100);
+        renderChart(chartInstance);
+        const timelineData = chartInstance.timelineData();
+        if (!timelineData) {
+          throw new Error('Could not find timeline data');
+        }
+        const startXPosition = chartInstance.computePosition(timelineData.entryStartTimes[0]);
+        const beforeStartXPosition = chartInstance.computePosition(timelineData.entryStartTimes[0] - 1);
+        const endXPosition =
+            chartInstance.computePosition(timelineData.entryStartTimes[0] + timelineData.entryTotalTimes[0]);
+        const afterEndXPosition =
+            chartInstance.computePosition(timelineData.entryStartTimes[0] + timelineData.entryTotalTimes[0] + 1);
+
+        // For index 0, it is in level 0, so vertically there are only the ruler(17) and the
+        // header of Group 0 (17) and beyond it.
+        // And the height of level 0 is 17.
+        // So the index 0 can be mapped from
+        //   x: around startXPosition to endXPosition, the reason is x is related to zoom ratio and has some rounds
+        //      during calculation.
+        //   y: 34(inclusive) to 51(exclusive)
+        assert.strictEqual(chartInstance.coordinatesToEntryIndex(beforeStartXPosition + 1, 34), -1);
+        assert.strictEqual(chartInstance.coordinatesToEntryIndex(startXPosition, 34), 0);
+        assert.strictEqual(chartInstance.coordinatesToEntryIndex(endXPosition, 34), 0);
+        assert.strictEqual(chartInstance.coordinatesToEntryIndex(afterEndXPosition + 3, 34), -1);
+        assert.strictEqual(chartInstance.coordinatesToEntryIndex(startXPosition, 33), -1);
+        assert.strictEqual(chartInstance.coordinatesToEntryIndex(startXPosition, 34), 0);
+        assert.strictEqual(chartInstance.coordinatesToEntryIndex(startXPosition, 50), 0);
+        assert.strictEqual(chartInstance.coordinatesToEntryIndex(startXPosition, 51), -1);
+      });
+
+      it('returns the correct entry index for given coordinates after re-order', () => {
+        const provider = new IndexAndCoordinatesConversionTestProvider();
+        const delegate = new MockFlameChartDelegate();
+        chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+
+        // Make the width narrow so that not everything fits
+        chartInstance.setSize(100, 400);
+        chartInstance.setWindowTimes(0, 100);
+        renderChart(chartInstance);
+        const timelineData = chartInstance.timelineData();
+        if (!timelineData) {
+          throw new Error('Could not find timeline data');
+        }
+        const startXPosition = chartInstance.computePosition(timelineData.entryStartTimes[0]);
+
+        chartInstance.moveGroupDown(0);
+        // Ro-order group will only affect the vertical offsets, so we just need to test |y|.
+        // Move Group 0 down. So for index 0, it is in level 1, so vertically there are the ruler(17), the header of
+        // Group 1 (17), level 1(inside Group 1, 17), padding of Group 0(4), and header of Group 0 (17)beyond it.
+        // And the height of level 0 is 17.
+        // So the entry 0 can be mapped from
+        //   y: 72(inclusive) to 89(exclusive)
+        assert.strictEqual(chartInstance.coordinatesToEntryIndex(startXPosition, 71), -1);
+        assert.strictEqual(chartInstance.coordinatesToEntryIndex(startXPosition, 72), 0);
+        assert.strictEqual(chartInstance.coordinatesToEntryIndex(startXPosition, 88), 0);
+        assert.strictEqual(chartInstance.coordinatesToEntryIndex(startXPosition, 89), -1);
+      });
+    });
+
+    describe('coordinatesToGroupIndex', () => {
+      it('returns the correct group index for given coordinates', () => {
+        const provider = new IndexAndCoordinatesConversionTestProvider();
+        const delegate = new MockFlameChartDelegate();
+        chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+
+        // Make the width narrow so that not everything fits
+        chartInstance.setSize(100, 400);
+        chartInstance.setWindowTimes(0, 100);
+        renderChart(chartInstance);
+        const timelineData = chartInstance.timelineData();
+        if (!timelineData) {
+          throw new Error('Could not find timeline data');
+        }
+
+        // For group 0, vertically there are only the ruler(17) beyond it. So it starts from 17.
+        // For group 1, vertically there are only the ruler(17), header of Group 0 (17), level 0(17), padding of
+        // Group 1(4) and header beyond it. So it starts from 55.
+        // So the group 0 can be mapped from
+        //   x: any inside the view
+        //   y: 17(inclusive) to 55(exclusive)
+        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 16, /* headerOnly= */ false), -1);
+        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 17, /* headerOnly= */ false), 0);
+        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 50, /* headerOnly= */ false), 0);
+        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 55, /* headerOnly= */ false), 1);
+      });
+
+      it('returns the correct group index for given coordinates after re-order', () => {
+        const provider = new IndexAndCoordinatesConversionTestProvider();
+        const delegate = new MockFlameChartDelegate();
+        chartInstance = new PerfUI.FlameChart.FlameChart(provider, delegate);
+
+        // Make the width narrow so that not everything fits
+        chartInstance.setSize(100, 400);
+        chartInstance.setWindowTimes(0, 100);
+        renderChart(chartInstance);
+        const timelineData = chartInstance.timelineData();
+        if (!timelineData) {
+          throw new Error('Could not find timeline data');
+        }
+
+        chartInstance.moveGroupDown(0);
+        // Ro-order group will only affect the vertical offsets, so we just need to test |y|.
+        // Move Group 0 down. So for group 0, vertically there are only the ruler(17), header of Group 1 (17),
+        // level 1(17), padding of Group 0(4) and header beyond it. So it starts from 55.
+        // And now the Group 0 is the last group, so the end of the Group 0 is 55 + header of Group 0(17) + level 0(17)
+        // = 89
+        // So the entry 0 can be mapped from
+        //   y: 55(inclusive) to 89(exclusive)
+        // Now Group 1 will be before Group 0. so (y)54 will be mapped to Group 1
+        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 54, /* headerOnly= */ false), 1);
+        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 55, /* headerOnly= */ false), 0);
+        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 88, /* headerOnly= */ false), 0);
+        assert.strictEqual(chartInstance.coordinatesToGroupIndex(0, 89, /* headerOnly= */ false), -1);
+      });
     });
   });
 

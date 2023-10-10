@@ -13,6 +13,16 @@ import * as TraceEngine from '../../../../models/trace/trace.js';
 await EnvironmentHelpers.initializeGlobalVars();
 await ComponentSetup.ComponentServerSetup.setup();
 
+const defaultGroupStyle = {
+  height: 17,
+  padding: 4,
+  collapsible: false,
+  color: 'black',
+  backgroundColor: 'grey',
+  nestingLevel: 0,
+  itemsHeight: 17,
+};
+
 /**
  * Render a basic flame chart with 3 events on the same level
  **/
@@ -25,43 +35,19 @@ function renderExample1() {
         entryTotalTimes: [50, 10, 10, 50, 10, 10, 50, 10, 10],
         groups: [
           {
-            name: 'Test Group' as Platform.UIString.LocalizedString,
+            name: 'Test Group 0' as Platform.UIString.LocalizedString,
             startLevel: 0,
-            style: {
-              height: 17,
-              padding: 4,
-              collapsible: true,
-              color: 'black',
-              backgroundColor: 'grey',
-              nestingLevel: 0,
-              itemsHeight: 17,
-            },
+            style: {...defaultGroupStyle, collapsible: true},
+          },
+          {
+            name: 'Test Group 1' as Platform.UIString.LocalizedString,
+            startLevel: 1,
+            style: {...defaultGroupStyle, collapsible: true, color: 'red', backgroundColor: 'green'},
           },
           {
             name: 'Test Group 2' as Platform.UIString.LocalizedString,
-            startLevel: 1,
-            style: {
-              height: 17,
-              padding: 4,
-              collapsible: true,
-              color: 'red',
-              backgroundColor: 'green',
-              nestingLevel: 0,
-              itemsHeight: 17,
-            },
-          },
-          {
-            name: 'Test Group 3' as Platform.UIString.LocalizedString,
             startLevel: 2,
-            style: {
-              height: 17,
-              padding: 4,
-              collapsible: true,
-              color: 'blue',
-              backgroundColor: 'yellow',
-              nestingLevel: 0,
-              itemsHeight: 17,
-            },
+            style: {...defaultGroupStyle, collapsible: true, color: 'blue', backgroundColor: 'yellow'},
           },
         ],
       });
@@ -80,15 +66,6 @@ function renderExample1() {
   flameChart.setWindowTimes(0, 100);
   flameChart.show(container);
   flameChart.update();
-
-  const buttonHide = document.querySelector('#hide');
-  buttonHide?.addEventListener('click', () => {
-    flameChart.hideGroup(1);
-  });
-  const buttonUnhide = document.querySelector('#unhide');
-  buttonUnhide?.addEventListener('click', () => {
-    flameChart.showGroup(1);
-  });
 }
 
 /**
@@ -120,15 +97,7 @@ function renderExample2() {
         groups: [{
           name: 'Testing Candy Stripe decorations and warning triangles' as Platform.UIString.LocalizedString,
           startLevel: 0,
-          style: {
-            height: 17,
-            padding: 4,
-            collapsible: false,
-            color: 'black',
-            backgroundColor: 'grey',
-            nestingLevel: 0,
-            itemsHeight: 17,
-          },
+          style: defaultGroupStyle,
         }],
       });
     }
@@ -160,43 +129,19 @@ function renderExample3() {
         entryTotalTimes: [50, 50, 50],
         groups: [
           {
-            name: 'Test Group' as Platform.UIString.LocalizedString,
+            name: 'Test Group 0' as Platform.UIString.LocalizedString,
             startLevel: 0,
-            style: {
-              height: 17,
-              padding: 4,
-              collapsible: true,
-              color: 'black',
-              backgroundColor: 'grey',
-              nestingLevel: 0,
-              itemsHeight: 17,
-            },
+            style: {...defaultGroupStyle, collapsible: true},
           },
           {
-            name: 'Test Nested Group' as Platform.UIString.LocalizedString,
+            name: 'Test Nested Group 1' as Platform.UIString.LocalizedString,
             startLevel: 0,
-            style: {
-              height: 17,
-              padding: 4,
-              collapsible: true,
-              color: 'red',
-              backgroundColor: 'green',
-              nestingLevel: 1,
-              itemsHeight: 17,
-            },
+            style: {...defaultGroupStyle, collapsible: true, color: 'red', backgroundColor: 'green'},
           },
           {
-            name: 'Test Group 3' as Platform.UIString.LocalizedString,
+            name: 'Test Group 2' as Platform.UIString.LocalizedString,
             startLevel: 2,
-            style: {
-              height: 17,
-              padding: 4,
-              collapsible: true,
-              color: 'blue',
-              backgroundColor: 'yellow',
-              nestingLevel: 0,
-              itemsHeight: 17,
-            },
+            style: {...defaultGroupStyle, collapsible: true, color: 'blue', backgroundColor: 'yellow'},
           },
         ],
       });
@@ -217,6 +162,85 @@ function renderExample3() {
   flameChart.update();
 }
 
+/**
+ * Render a flame chart with nested case and buttons to hide/unhide and reorder
+ * tracks
+ **/
+function renderExample4() {
+  class FakeProviderWithBasicEvents extends TraceHelpers.FakeFlameChartProvider {
+    override timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
+      return PerfUI.FlameChart.FlameChartTimelineData.create({
+        entryLevels: [0, 0, 1, 1, 2, 2, 3, 3],
+        entryStartTimes: [5, 60, 5, 60, 5, 60],
+        entryTotalTimes: [50, 10, 50, 10, 50, 10],
+        groups: [
+          {
+            name: 'Test Group 0' as Platform.UIString.LocalizedString,
+            startLevel: 0,
+            expanded: true,
+            style: {...defaultGroupStyle, collapsible: true},
+          },
+          {
+            name: 'Test Group 1' as Platform.UIString.LocalizedString,
+            startLevel: 1,
+            expanded: true,
+            style: {...defaultGroupStyle, collapsible: true, color: 'red', backgroundColor: 'green'},
+          },
+          {
+            name: 'Test Group 2' as Platform.UIString.LocalizedString,
+            startLevel: 2,
+            expanded: true,
+            style: {...defaultGroupStyle, collapsible: true, color: 'blue', backgroundColor: 'yellow'},
+          },
+          {
+            name: 'Test Group 3' as Platform.UIString.LocalizedString,
+            startLevel: 2,
+            expanded: true,
+            style: {...defaultGroupStyle, nestingLevel: 1},
+          },
+        ],
+      });
+    }
+  }
+
+  const container = document.querySelector('div#container4');
+  if (!container) {
+    throw new Error('No container');
+  }
+  const delegate = new TraceHelpers.MockFlameChartDelegate();
+  const dataProvider = new FakeProviderWithBasicEvents();
+  const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);
+
+  flameChart.markAsRoot();
+  flameChart.setWindowTimes(0, 100);
+  flameChart.show(container);
+  flameChart.update();
+
+  const indexInput = document.querySelector('#indexOfTrack') as HTMLInputElement;
+  const buttonHide = document.querySelector('#hide');
+  buttonHide?.addEventListener('click', () => {
+    const index = Number(indexInput.value);
+    flameChart.hideGroup(index);
+  });
+  const buttonUnhide = document.querySelector('#unhide');
+  buttonUnhide?.addEventListener('click', () => {
+    const index = Number(indexInput.value);
+    flameChart.showGroup(index);
+  });
+
+  const buttonForMoveUp = document.querySelector('#testForMoveUp');
+  buttonForMoveUp?.addEventListener('click', () => {
+    const index = Number(indexInput.value);
+    flameChart.moveGroupUp(index);
+  });
+  const buttonForMoveDown = document.querySelector('#testForMoveDown');
+  buttonForMoveDown?.addEventListener('click', () => {
+    const index = Number(indexInput.value);
+    flameChart.moveGroupDown(index);
+  });
+}
+
 renderExample1();
 renderExample2();
 renderExample3();
+renderExample4();

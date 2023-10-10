@@ -18,9 +18,11 @@ import * as SourcesComponents from '../../../../../front_end/panels/sources/comp
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import {
+  createTarget,
   describeWithEnvironment,
 } from '../../helpers/EnvironmentHelpers.js';
-import {createFileSystemUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
+import {createFileSystemUISourceCode, createContentProviderUISourceCodes} from '../../helpers/UISourceCodeHelpers.js';
+import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
 describeWithEnvironment('SourcesView', () => {
   beforeEach(async () => {
@@ -117,5 +119,71 @@ describeWithEnvironment('SourcesView', () => {
 
       assert.isTrue(sourcesPanelFileOpenedSpy.calledWithExactly('text/typescript'));
     });
+  });
+});
+
+describeWithMockConnection('SourcesView', () => {
+  let target1: SDK.Target.Target;
+  let target2: SDK.Target.Target;
+
+  beforeEach(() => {
+    const actionRegistryInstance = UI.ActionRegistry.ActionRegistry.instance({forceNew: true});
+    UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
+    target1 = createTarget();
+    target2 = createTarget();
+    const targetManager = target1.targetManager();
+    targetManager.setScopeTarget(target1);
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({forceNew: true, resourceMapping, targetManager});
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+    });
+    Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
+    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance(
+        {forceNew: true, targetManager, workspace, debuggerWorkspaceBinding});
+    Persistence.Persistence.PersistenceImpl.instance({forceNew: true, workspace, breakpointManager});
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({forceNew: true, workspace});
+  });
+
+  it('creates editor tabs only for in-scope uiSourceCodes', () => {
+    const addUISourceCodeSpy =
+        sinon.spy(Sources.TabbedEditorContainer.TabbedEditorContainer.prototype, 'addUISourceCode');
+    const removeUISourceCodesSpy =
+        sinon.spy(Sources.TabbedEditorContainer.TabbedEditorContainer.prototype, 'removeUISourceCodes');
+
+    createContentProviderUISourceCodes({
+      items: [
+        {url: 'http://example.com/a.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+        {url: 'http://example.com/b.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+      ],
+      projectId: 'projectId1',
+      projectType: Workspace.Workspace.projectTypes.Network,
+      target: target1,
+    });
+
+    createContentProviderUISourceCodes({
+      items: [
+        {url: 'http://foo.com/script.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+      ],
+      projectId: 'projectId2',
+      projectType: Workspace.Workspace.projectTypes.Network,
+      target: target2,
+    });
+
+    new Sources.SourcesView.SourcesView();
+    let addedURLs = addUISourceCodeSpy.args.map(args => args[0].url());
+    assert.deepEqual(addedURLs, ['http://example.com/a.js', 'http://example.com/b.js']);
+    assert.isTrue(removeUISourceCodesSpy.notCalled);
+
+    addUISourceCodeSpy.resetHistory();
+    target2.targetManager().setScopeTarget(target2);
+    addedURLs = addUISourceCodeSpy.args.map(args => args[0].url());
+    assert.deepEqual(addedURLs, ['http://foo.com/script.js']);
+    const removedURLs = removeUISourceCodesSpy.args.map(args => args[0][0].url());
+    assert.deepEqual(removedURLs, ['http://example.com/a.js', 'http://example.com/b.js']);
   });
 });

@@ -7,6 +7,8 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as QuickOpen from '../../ui/legacy/components/quick_open/quick_open.js';
@@ -110,6 +112,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
     workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.uiSourceCodeRemoved, this);
     workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this.projectRemoved.bind(this), this);
+    SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.#onScopeChange.bind(this));
 
     function handleBeforeUnload(event: Event): void {
       if (event.returnValue) {
@@ -324,6 +327,18 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.historyManager.rollover();
   }
 
+  #onScopeChange(): void {
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    for (const uiSourceCode of workspace.uiSourceCodes()) {
+      const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
+      if (SDK.TargetManager.TargetManager.instance().isInScope(target)) {
+        this.addUISourceCode(uiSourceCode);
+      } else {
+        this.removeUISourceCodes([uiSourceCode]);
+      }
+    }
+  }
+
   private uiSourceCodeAdded(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
     const uiSourceCode = event.data;
     this.addUISourceCode(uiSourceCode);
@@ -336,6 +351,10 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     if (uiSourceCode.project().type() === Workspace.Workspace.projectTypes.FileSystem &&
         Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(uiSourceCode.project()) ===
             'overrides') {
+      return;
+    }
+    const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
+    if (!SDK.TargetManager.TargetManager.instance().isInScope(target)) {
       return;
     }
     this.editorContainer.addUISourceCode(uiSourceCode);

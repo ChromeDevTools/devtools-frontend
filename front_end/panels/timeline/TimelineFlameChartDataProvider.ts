@@ -139,6 +139,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private compatibilityTracksAppender: CompatibilityTracksAppender|null;
   private legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl|null;
   private traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null;
+  private isCpuProfile = false;
   /**
    * Raster threads are tracked and enumerated with this property. This is also
    * used to group all raster threads together in the same track, instead of
@@ -224,12 +225,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   setModel(
-      performanceModel: PerformanceModel|null,
-      newTraceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null): void {
+      performanceModel: PerformanceModel|null, newTraceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null,
+      isCpuProfile = false): void {
     this.reset();
     this.legacyPerformanceModel = performanceModel;
     this.legacyTimelineModel = performanceModel && performanceModel.timelineModel();
     this.traceEngineData = newTraceEngineData;
+    this.isCpuProfile = isCpuProfile;
     if (this.legacyTimelineModel) {
       this.minimumBoundaryInternal = this.legacyTimelineModel.minimumRecordTime();
       this.timeSpan = this.legacyTimelineModel.isEmpty() ?
@@ -446,17 +448,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
     }
   }
-  private legacyTrackIsForAuctionWorklet(legacyTrack: TimelineModel.TimelineModel.Track): boolean {
-    const threadName = legacyTrack.thread?.name();
-    if (!threadName) {
-      return false;
-    }
-    return threadName === TimelineModel.TimelineModel.TimelineModelImpl.AuctionWorkletThreadName ||
-        threadName.endsWith(TimelineModel.TimelineModel.TimelineModelImpl.UtilityMainThreadNameSuffix);
-  }
 
   private processInspectorTrace(): void {
-    this.appendFrames();
+    if (!this.isCpuProfile) {
+      this.appendFrames();
+    }
 
     const weight = (track: {type?: string, forMainFrame?: boolean, appenderName?: TrackAppenderName}): number => {
       if (track.appenderName !== undefined) {
@@ -500,8 +496,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const allTrackAppenders =
         this.compatibilityTracksAppender ? this.compatibilityTracksAppender.allVisibleTrackAppenders() : [];
 
-    const legacyTracks =
-        this.#threadTracksSource === ThreadTracksSource.NEW_ENGINE ? [] : this.legacyTimelineModel.tracks();
+    const legacyTracks = this.#threadTracksSource === ThreadTracksSource.NEW_ENGINE && !this.isCpuProfile ?
+        [] :
+        this.legacyTimelineModel.tracks();
 
     const newTracks = allTrackAppenders.filter(trackAppender => {
       if (trackAppender instanceof ThreadAppender) {

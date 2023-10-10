@@ -871,7 +871,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     this.uiSourceCodeNodes.delete(uiSourceCode, node);
     const project = uiSourceCode.project();
     const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
-    const frame = node.frame();
+    let frame = node.frame();
 
     let parentNode: (NavigatorTreeNode|null) = node.parent;
     if (!parentNode) {
@@ -900,15 +900,15 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
         this.discardFrame(
             frame as SDK.ResourceTreeModel.ResourceTreeFrame,
             Boolean(this.groupByAuthored) && uiSourceCode.contentType().isFromSourceMap());
-        break;
+        frame = (frame as SDK.ResourceTreeModel.ResourceTreeFrame).parentFrame();
+      } else {
+        const folderId = this.folderNodeId(
+            project, target, frame, uiSourceCode.origin(), uiSourceCode.contentType().isFromSourceMap(),
+            currentNode instanceof NavigatorFolderTreeNode && currentNode.folderPath ||
+                Platform.DevToolsPath.EmptyEncodedPathString);
+        this.subfolderNodes.delete(folderId);
+        parentNode.removeChild(currentNode);
       }
-
-      const folderId = this.folderNodeId(
-          project, target, frame, uiSourceCode.origin(), uiSourceCode.contentType().isFromSourceMap(),
-          currentNode instanceof NavigatorFolderTreeNode && currentNode.folderPath ||
-              Platform.DevToolsPath.EmptyEncodedPathString);
-      this.subfolderNodes.delete(folderId);
-      parentNode.removeChild(currentNode);
 
       if (currentNode === this.authoredNode) {
         this.authoredNode = undefined;

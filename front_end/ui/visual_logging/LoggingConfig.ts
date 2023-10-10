@@ -48,3 +48,27 @@ function parseJsLog(jslog: string): LoggingConfig {
 
   return config;
 }
+
+export interface ConfigStringBuilder {
+  context: (value: number) => ConfigStringBuilder;
+  track: (options: {click?: boolean, change?: boolean, keydown?: boolean|string}) => ConfigStringBuilder;
+  toString: () => string;
+}
+
+export function makeConfigStringBuilder(veName: string): ConfigStringBuilder {
+  const components = [veName];
+  return {
+    context: function(value: number): ConfigStringBuilder {
+      components.push(`context: ${value}`);
+      return this;
+    },
+    track: function(options: {click?: boolean, change?: boolean, keydown?: boolean|string}): ConfigStringBuilder {
+      components.push(`track: ${
+          Object.entries(options).map(([key, value]) => value !== true ? `${key}: ${value}` : key).join(', ')}`);
+      return this;
+    },
+    toString: function(): string {
+      return components.join('; ');
+    },
+  };
+}

@@ -48,4 +48,15 @@ describe('LoggingConfig', () => {
     const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
     assert.strictEqual(config.context, 42);
   });
+
+  it('builds a string config', () => {
+    const treeItem = VisualLogging.LoggingConfig.makeConfigStringBuilder.bind(null, 'TreeItem');
+    assert.strictEqual(`${treeItem()}`, 'TreeItem');
+    assert.strictEqual(`${treeItem().context(42)}`, 'TreeItem; context: 42');
+    assert.strictEqual(`${treeItem().track({click: true})}`, 'TreeItem; track: click');
+    assert.strictEqual(`${treeItem().track({click: true, change: true})}`, 'TreeItem; track: click, change');
+    assert.strictEqual(`${treeItem().track({keydown: 'Enter'})}`, 'TreeItem; track: keydown: Enter');
+    assert.strictEqual(
+        `${treeItem().context(42).track({keydown: 'Enter'})}`, 'TreeItem; context: 42; track: keydown: Enter');
+  });
 });

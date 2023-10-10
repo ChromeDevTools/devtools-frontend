@@ -1,16 +1,10 @@
-# Chrome DevTools frontend
+# rn-chrome-devtools-frontend
 
-<!-- [START badges] -->
+Source code for React Native's debugger frontend, based on Chrome DevTools. This project is periodically compiled and checked into the React Native repo as [`@react-native/debugger-frontend`](https://github.com/facebook/react-native/tree/main/packages/debugger-frontend).
 
-[![npm package](https://img.shields.io/npm/v/chrome-devtools-frontend.svg)](https://npmjs.org/package/chrome-devtools-frontend)
+This repository is a fork of [ChromeDevTools/devtools-frontend](https://github.com/ChromeDevTools/devtools-frontend).
 
-<!-- [END badges] -->
-
-The client-side of the Chrome DevTools, including all JS & CSS to run the DevTools webapp.
-
-### Source code
-
-The frontend is available on [chromium.googlesource.com](https://chromium.googlesource.com/devtools/devtools-frontend).
+## Contributing
 
 ### Project documentation
 
@@ -27,26 +21,16 @@ documentation.
 - Contributing To Chrome DevTools Protocol: [docs.google.com](https://goo.gle/devtools-contribution-guide-cdp)
 - DevTools Design Review Guidelines: [design_guidelines.md](docs/design_guidelines.md)
 
-### Source mirrors
+---
 
-DevTools frontend repository is mirrored on [GitHub](https://github.com/ChromeDevTools/devtools-frontend).
+### [Code of Conduct](https://code.fb.com/codeofconduct)
 
-DevTools frontend is also available on NPM as the [chrome-devtools-frontend](https://www.npmjs.com/package/chrome-devtools-frontend) package. It's not currently available via CJS or ES modules, so consuming this package in other tools may require [some effort](https://github.com/paulirish/devtools-timeline-model/blob/master/index.js).
+Meta has adopted a Code of Conduct that we expect project participants to adhere to. Please read [the full text](https://code.fb.com/codeofconduct) so that you can understand what actions will and will not be tolerated.
 
-The version number of the npm package (e.g. `1.0.373466`) refers to the Chromium commit position of latest frontend git commit. It's incremented with every Chromium commit, however the package is updated roughly daily.
+### [Contributing guide](https://github.com/facebookexperimental/rn-chrome-devtools-frontend/blob/main/CONTRIBUTING.md)
 
-### Getting in touch
+Read the [contributing guide](https://github.com/facebookexperimental/rn-chrome-devtools-frontend/blob/main/CONTRIBUTING.md) to learn about our development process.
 
-- All DevTools commits: [View the log] or follow [@DevToolsCommits] on Twitter
-- [All open DevTools tickets] on crbug.com
-- File a new DevTools ticket: [new.crbug.com](https://bugs.chromium.org/p/chromium/issues/entry?labels=OS-All,Type-Bug,Pri-2&components=Platform%3EDevTools)
-- Code reviews mailing list: [devtools-reviews@chromium.org]
-- [@ChromeDevTools] on Twitter
-- Chrome DevTools mailing list: [groups.google.com/forum/google-chrome-developer-tools](https://groups.google.com/forum/#!forum/google-chrome-developer-tools)
+## License
 
-  [devtools-reviews@chromium.org]: https://groups.google.com/a/chromium.org/forum/#!forum/devtools-reviews
-  [View the log]: https://chromium.googlesource.com/devtools/devtools-frontend/+log/main
-  [@ChromeDevTools]: http://twitter.com/ChromeDevTools
-  [@DevToolsCommits]: http://twitter.com/DevToolsCommits
-  [All open DevTools tickets]: https://bugs.chromium.org/p/chromium/issues/list?can=2&q=component%3APlatform%3EDevTools&sort=&groupby=&colspec=ID+Stars+Owner+Summary+Modified+Opened
-  [test waterfall]: https://ci.chromium.org/p/devtools-frontend/g/main/console
+This project extends the BSD 3-Clause license from [ChromeDevTools/devtools-frontend](https://github.com/ChromeDevTools/devtools-frontend/blob/main/LICENSE), viewable in the LICENSE file.

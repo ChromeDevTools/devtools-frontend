@@ -1,0 +1,22 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../../third_party/typescript/typescript.gni")
+
+ts_library("visual_logging") {
+  testonly = true
+  sources = [
+    "DomState_test.ts",
+    "LoggingConfig_test.ts",
+    "LoggingDriver_test.ts",
+    "LoggingEvents_test.ts",
+    "LoggingState_test.ts",
+  ]
+
+  deps = [
+    "../../../../../front_end/ui/visual_logging:bundle",
+    "../../../../../front_end/ui/visual_logging:testing",
+    "../../helpers",
+  ]
+}

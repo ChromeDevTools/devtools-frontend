@@ -1,0 +1,41 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_module.gni")
+
+devtools_module("visual_logging") {
+  sources = [
+    "DomState.ts",
+    "LoggingConfig.ts",
+    "LoggingDriver.ts",
+    "LoggingEvents.ts",
+    "LoggingState.ts",
+  ]
+  deps = [
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../components/render_coordinator:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "visual_logging.ts"
+
+  deps = [ ":visual_logging" ]
+
+  visibility = [
+    "../../../test/unittests/front_end/ui/visual_logging/*",
+    "../../entrypoints/main/*",
+    "../legacy/*",
+  ]
+}
+
+devtools_entrypoint("testing") {
+  entrypoint = "visual_logging-testing.ts"
+
+  deps = [ ":visual_logging" ]
+
+  visibility = [ "../../../test/unittests/front_end/ui/visual_logging/*" ]
+}

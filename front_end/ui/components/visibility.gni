@@ -11,7 +11,7 @@ declare_args() {
 default_components_visibility = [
   "../../../panels/*",
   "../docs/*",
-  "../*",
+  "../../*",
   "../../../../test/unittests/front_end/ui/components/*",
   "../../../../test/unittests/front_end/panels/*",
 ]

@@ -99,5 +99,6 @@ group("front_end") {
     "ui/legacy/components/utils",
     "ui/legacy/theme_support",
     "ui/lit-html",
+    "ui/visual_logging",
   ]
 }

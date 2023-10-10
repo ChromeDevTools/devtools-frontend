@@ -471,11 +471,7 @@ export function makeFakeSDKEventFromPayload(payloadOptions: FakeEventPayload): T
  */
 export function makeMockRendererHandlerData(entries: TraceEngine.Types.TraceEvents.RendererEntry[]):
     TraceEngine.Handlers.ModelHandlers.Renderer.RendererHandlerData {
-  const tree = TraceEngine.Handlers.ModelHandlers.Renderer.treify(entries, {filter: {has: () => true}});
-  const entryToNode = new Map();
-  for (const node of tree.nodes.values()) {
-    entryToNode.set(node.entry, node);
-  }
+  const {tree, entryToNode} = TraceEngine.Handlers.ModelHandlers.Renderer.treify(entries, {filter: {has: () => true}});
   const mockThread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread = {
     tree,
     name: 'thread',

@@ -645,7 +645,7 @@ describeWithEnvironment('RendererHandler', function() {
     ];
 
     TraceModel.Helpers.Trace.sortTraceEventsInPlace(data);
-    const tree = TraceModel.Handlers.ModelHandlers.Renderer.treify(data, {filter: {has: () => true}});
+    const {tree} = TraceModel.Handlers.ModelHandlers.Renderer.treify(data, {filter: {has: () => true}});
 
     assert.strictEqual(tree.maxDepth, 3, 'Got the correct tree max depth');
 
@@ -712,7 +712,7 @@ describeWithEnvironment('RendererHandler', function() {
 
     TraceModel.Helpers.Trace.sortTraceEventsInPlace(data);
     const filter = new Set(['A', 'D']);
-    const tree = TraceModel.Handlers.ModelHandlers.Renderer.treify(data, {filter});
+    const {tree} = TraceModel.Handlers.ModelHandlers.Renderer.treify(data, {filter});
 
     assert.strictEqual(tree.maxDepth, 2, 'Got the correct tree max depth');
 
@@ -757,7 +757,7 @@ describeWithEnvironment('RendererHandler', function() {
     ];
 
     TraceModel.Helpers.Trace.sortTraceEventsInPlace(data);
-    const tree = TraceModel.Handlers.ModelHandlers.Renderer.treify(data, {filter: {has: () => true}});
+    const {tree} = TraceModel.Handlers.ModelHandlers.Renderer.treify(data, {filter: {has: () => true}});
 
     assert.strictEqual(tree.maxDepth, 3, 'Got the correct tree max depth');
 
@@ -823,7 +823,7 @@ describeWithEnvironment('RendererHandler', function() {
     ] as TraceModel.Types.TraceEvents.RendererEntry[];
 
     TraceModel.Helpers.Trace.sortTraceEventsInPlace(data);
-    const tree = TraceModel.Handlers.ModelHandlers.Renderer.treify(data, {filter: {has: () => true}});
+    const {tree} = TraceModel.Handlers.ModelHandlers.Renderer.treify(data, {filter: {has: () => true}});
 
     const nodeA = [...tree.roots].at(0);
     const nodeE = [...tree.roots].at(1);
@@ -1187,7 +1187,7 @@ describeWithEnvironment('RendererHandler', function() {
 
       const profileCalls = [makeProfileCall('a', 100, 200), makeProfileCall('b', 300, 200)];
       const allEntries = TraceModel.Helpers.Trace.mergeEventsInOrder(traceEvents, profileCalls);
-      const tree = TraceModel.Handlers.ModelHandlers.Renderer.treify(allEntries, {filter: {has: () => true}});
+      const {tree} = TraceModel.Handlers.ModelHandlers.Renderer.treify(allEntries, {filter: {has: () => true}});
       assert.strictEqual(prettyPrint(tree), `
 -EvaluateScript [0.5ms]
   -v8.run [0.49ms]
@@ -1202,7 +1202,7 @@ describeWithEnvironment('RendererHandler', function() {
         makeProfileCall('c', 300, 200),
         makeProfileCall('d', 400, 100),
       ];
-      const tree = TraceModel.Handlers.ModelHandlers.Renderer.treify(allEntries, {filter: {has: () => true}});
+      const {tree} = TraceModel.Handlers.ModelHandlers.Renderer.treify(allEntries, {filter: {has: () => true}});
       assert.strictEqual(prettyPrint(tree), `
 -ProfileCall (a) [0.2ms]
 -ProfileCall (b) [0.2ms]
@@ -1288,5 +1288,87 @@ describeWithEnvironment('RendererHandler', function() {
       // Ensure that the URL was set properly based on the AuctionWorklets metadata event.
       assert.isTrue(process?.url?.includes('fledge-demo.glitch.me'));
     }
+  });
+
+  describe('walking trees', () => {
+    it('walkTree walks the entire tree and visits all the roots as well as all children', async () => {
+      /**
+       * |------------- Task A -------------||-- Task E --|
+       *  |-- Task B --||-- Task D --|
+       *   |- Task C -|
+       */
+      const data = [
+        makeCompleteEvent('A', 0, 10),  // 0..10
+        makeCompleteEvent('B', 1, 3),   // 1..4
+        makeCompleteEvent('D', 5, 3),   // 5..8
+        makeCompleteEvent('C', 2, 1),   // 2..3
+        makeCompleteEvent('E', 11, 3),  // 11..14
+      ];
+      TraceModel.Helpers.Trace.sortTraceEventsInPlace(data);
+      const {tree, entryToNode} = TraceModel.Handlers.ModelHandlers.Renderer.treify(data, {filter: {has: () => true}});
+
+      const callOrder: Array<{type: 'START' | 'END', entryName: string}> = [];
+      function onEntryStart(entry: TraceModel.Types.TraceEvents.RendererEntry): void {
+        callOrder.push({type: 'START', entryName: entry.name});
+      }
+      function onEntryEnd(entry: TraceModel.Types.TraceEvents.RendererEntry): void {
+        callOrder.push({type: 'END', entryName: entry.name});
+      }
+      TraceModel.Handlers.ModelHandlers.Renderer.walkEntireTree(entryToNode, tree, onEntryStart, onEntryEnd);
+      assert.deepEqual(callOrder, [
+        {type: 'START', entryName: 'A'},
+        {type: 'START', entryName: 'B'},
+        {type: 'START', entryName: 'C'},
+        {type: 'END', entryName: 'C'},
+        {type: 'END', entryName: 'B'},
+        {type: 'START', entryName: 'D'},
+        {type: 'END', entryName: 'D'},
+        {type: 'END', entryName: 'A'},
+        {type: 'START', entryName: 'E'},
+        {type: 'END', entryName: 'E'},
+      ]);
+    });
+
+    it('walkTreeFromEntry walks the tree down and then back up and calls onEntryStart and onEntryEnd', async () => {
+      /**
+       * |------------- Task A -------------||-- Task E --|
+       *  |-- Task B --||-- Task D --|
+       *   |- Task C -|
+       */
+      const data = [
+        makeCompleteEvent('A', 0, 10),  // 0..10
+        makeCompleteEvent('B', 1, 3),   // 1..4
+        makeCompleteEvent('D', 5, 3),   // 5..8
+        makeCompleteEvent('C', 2, 1),   // 2..3
+        makeCompleteEvent('E', 11, 3),  // 11..14
+      ];
+      TraceModel.Helpers.Trace.sortTraceEventsInPlace(data);
+      const {tree, entryToNode} = TraceModel.Handlers.ModelHandlers.Renderer.treify(data, {filter: {has: () => true}});
+
+      const callOrder: Array<{type: 'START' | 'END', entryName: string}> = [];
+      function onEntryStart(entry: TraceModel.Types.TraceEvents.RendererEntry): void {
+        callOrder.push({type: 'START', entryName: entry.name});
+      }
+      function onEntryEnd(entry: TraceModel.Types.TraceEvents.RendererEntry): void {
+        callOrder.push({type: 'END', entryName: entry.name});
+      }
+      const rootNode = Array.from(tree.roots).at(0);
+      if (!rootNode) {
+        throw new Error('Could not find root node');
+      }
+      assert.strictEqual(rootNode.entry.name, 'A');
+      TraceModel.Handlers.ModelHandlers.Renderer.walkTreeFromEntry(
+          entryToNode, rootNode.entry, onEntryStart, onEntryEnd);
+      assert.deepEqual(callOrder, [
+        {type: 'START', entryName: 'A'},
+        {type: 'START', entryName: 'B'},
+        {type: 'START', entryName: 'C'},
+        {type: 'END', entryName: 'C'},
+        {type: 'END', entryName: 'B'},
+        {type: 'START', entryName: 'D'},
+        {type: 'END', entryName: 'D'},
+        {type: 'END', entryName: 'A'},
+      ]);
+    });
   });
 });

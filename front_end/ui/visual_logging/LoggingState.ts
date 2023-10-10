@@ -5,6 +5,7 @@ import {getLoggingConfig, type LoggingConfig} from './LoggingConfig.js';
 
 export interface LoggingState {
   impressionLogged: boolean;
+  processed: boolean;
   config: LoggingConfig;
   veid: number;
   parent: LoggingState|null;
@@ -21,6 +22,7 @@ export function resetStateForTesting(): void {
 export function getLoggingState(element: Element, parent?: Element): LoggingState {
   const elementState = state.get(element) || {
     impressionLogged: false,
+    processed: false,
     config: getLoggingConfig(element),
     veid: ++nextVeId,
     parent: parent ? getLoggingState(parent) : null,

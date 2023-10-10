@@ -29,7 +29,8 @@ describe('LoggingDriver', () => {
     parent.style.width = '300px';
     parent.style.height = '300px';
     const element = document.createElement('div') as HTMLElement;
-    element.setAttribute('jslog', 'TreeItem; context:42');
+    element.id = 'element';
+    element.setAttribute('jslog', 'TreeItem; context:42; track: click');
     element.style.width = '300px';
     element.style.height = '300px';
     parent.appendChild(element);
@@ -110,5 +111,33 @@ describe('LoggingDriver', () => {
     VisualLogging.startLogging({domProcessingThrottler: throttler});
     shadowContent.innerHTML = '<div jslog="TreeItem" style="width:300px;height:300px"></div>';
     await assertImpressionRecordedDeferred();
+  });
+
+  it('logs clicks', async () => {
+    addLoggableElements();
+    VisualLogging.startLogging({domProcessingThrottler: throttler});
+    const recordClick = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordClick',
+    );
+
+    const element = document.getElementById('element') as HTMLElement;
+    element.click();
+
+    assert.isTrue(recordClick.calledOnce);
+  });
+
+  it('does not log clicks if not configured', async () => {
+    addLoggableElements();
+    VisualLogging.startLogging({domProcessingThrottler: throttler});
+    const recordClick = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordClick',
+    );
+
+    const parent = document.getElementById('parent') as HTMLElement;
+    parent.click();
+
+    assert.isFalse(recordClick.called);
   });
 });

@@ -6,19 +6,24 @@ import * as Common from '../../core/common/common.js';
 import * as Coordinator from '../components/render_coordinator/render_coordinator.js';
 
 import {getDomState, isVisible} from './DomState.js';
-import {logImpressions} from './LoggingEvents.js';
+import {logChange, logClick, logImpressions, logKeyDown} from './LoggingEvents.js';
 import {getLoggingState} from './LoggingState.js';
 
 const PROCESS_DOM_INTERVAL = 500;
+const KEYBOARD_LOG_INTERVAL = 3000;
 
 let domProcessingThrottler: Common.Throttler.Throttler;
+let keyboardLogThrottler: Common.Throttler.Throttler;
 
 function observeMutations(root: Node): void {
   new MutationObserver(scheduleProcessDom).observe(root, {attributes: true, childList: true, subtree: true});
 }
 
-export function startLogging(options?: {domProcessingThrottler?: Common.Throttler.Throttler}): void {
+export function startLogging(
+    options?: {domProcessingThrottler?: Common.Throttler.Throttler, keyboardLogThrottler?: Common.Throttler.Throttler}):
+    void {
   domProcessingThrottler = options?.domProcessingThrottler || new Common.Throttler.Throttler(PROCESS_DOM_INTERVAL);
+  keyboardLogThrottler = options?.domProcessingThrottler || new Common.Throttler.Throttler(KEYBOARD_LOG_INTERVAL);
   if (['interactive', 'complete'].includes(document.readyState)) {
     processDom();
   }
@@ -58,6 +63,19 @@ function processDom(): void {
         visibleElements.push(element);
         loggingState.impressionLogged = true;
       }
+    }
+    if (!loggingState.processed) {
+      if (loggingState.config.track?.has('click')) {
+        element.addEventListener('click', logClick, {capture: true});
+      }
+      if (loggingState.config.track?.has('change')) {
+        element.addEventListener('change', logChange, {capture: true});
+      }
+      const trackKeyDown = loggingState.config.track?.get('keydown');
+      if (trackKeyDown) {
+        element.addEventListener('keydown', logKeyDown(trackKeyDown.split(','), keyboardLogThrottler), {capture: true});
+      }
+      loggingState.processed = true;
     }
   }
   logImpressions(visibleElements);

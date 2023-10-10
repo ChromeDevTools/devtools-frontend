@@ -154,17 +154,17 @@ export interface ImpressionEvent {
 export interface ClickEvent {
   veid: number;
   mouseButton: number;
-  context: number;
+  context?: number;
 }
 
 export interface ChangeEvent {
   veid: number;
-  context: number;
+  context?: number;
 }
 
 export interface KeyDownEvent {
   veid: number;
-  context: number;
+  context?: number;
 }
 
 // While `EventDescriptors` are used to dynamically dispatch host binding events,

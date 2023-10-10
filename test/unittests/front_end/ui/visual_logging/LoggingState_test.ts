@@ -24,7 +24,8 @@ describe('LoggingState', () => {
       impressionLogged: false,
       config: {ve: 1, context: 42},
       veid: 1,
-      parent: {impressionLogged: false, config: {ve: 1}, veid: 2, parent: null},
+      processed: false,
+      parent: {impressionLogged: false, config: {ve: 1}, veid: 2, processed: false, parent: null},
     });
   });
 

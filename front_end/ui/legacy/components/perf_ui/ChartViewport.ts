@@ -312,9 +312,12 @@ export class ChartViewport extends UI.Widget.VBox {
 
   private updateCursorPosition(e: Event): void {
     const mouseEvent = (e as MouseEvent);
-    this.showCursor(mouseEvent.shiftKey);
-    this.cursorElement.style.left = mouseEvent.offsetX + 'px';
     this.lastMouseOffsetX = mouseEvent.offsetX;
+    const shouldShowCursor = mouseEvent.shiftKey && !mouseEvent.metaKey;
+    this.showCursor(shouldShowCursor);
+    if (shouldShowCursor) {
+      this.cursorElement.style.left = mouseEvent.offsetX + 'px';
+    }
   }
 
   pixelToTime(x: number): number {

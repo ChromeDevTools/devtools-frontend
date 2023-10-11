@@ -274,6 +274,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   hideHighlight(): void {
     this.entryInfo.removeChildren();
+    if (this.highlightedEntryIndex === -1) {
+      return;
+    }
     this.highlightedEntryIndex = -1;
     this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
     this.dispatchEventToListeners(Events.EntryHighlighted, -1);

@@ -1034,7 +1034,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           showTimer: undefined,
         },
         // When recording failed, we should load null to go back to the landing page.
-        () => this.loadingComplete(/* tracingModel= */ null, /* exclusiveFilter= */ null, /* isCpuProfile= */ false));
+        async () => {
+          this.statusPane?.remove();
+          await this.loadingComplete(/* tracingModel= */ null, /* exclusiveFilter= */ null, /* isCpuProfile= */ false);
+        });
     this.statusPane.showPane(this.statusPaneContainer);
     this.statusPane.updateStatus(i18nString(UIStrings.recordingFailed));
 

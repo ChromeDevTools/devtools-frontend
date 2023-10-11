@@ -774,7 +774,7 @@
     "message": "Syntax"
   },
   "core/audits/csp-xss.js | metaTagMessage": {
-    "message": "The page contains a CSP defined in a <meta> tag. Consider moving the CSP to an HTTP header or defining another strict CSP in an HTTP header."
+    "message": "The page contains a CSP defined in a `<meta>` tag. Consider moving the CSP to an HTTP header or defining another strict CSP in an HTTP header."
   },
   "core/audits/csp-xss.js | noCsp": {
     "message": "No CSP found in enforcement mode"
@@ -1026,7 +1026,7 @@
     "message": "Page is loaded in an incognito window"
   },
   "core/audits/installable-manifest.js | manifest-display-not-supported": {
-    "message": "Manifest 'display' property must be one of 'standalone', 'fullscreen', or 'minimal-ui'"
+    "message": "Manifest `display` property must be one of `standalone`, `fullscreen`, or `minimal-ui`"
   },
   "core/audits/installable-manifest.js | manifest-display-override-not-supported": {
     "message": "Manifest contains 'display_override' field, and the first supported display mode must be one of 'standalone', 'fullscreen', or 'minimal-ui'"
@@ -1038,7 +1038,7 @@
     "message": "Manifest URL changed while the manifest was being fetched."
   },
   "core/audits/installable-manifest.js | manifest-missing-name-or-short-name": {
-    "message": "Manifest does not contain a 'name' or 'short_name' field"
+    "message": "Manifest does not contain a `name` or `short_name` field"
   },
   "core/audits/installable-manifest.js | manifest-missing-suitable-icon": {
     "message": "Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {value0} px is required, the sizes attribute must be set, and the purpose attribute, if set, must include \"any\"."
@@ -2211,25 +2211,25 @@
     "message": "Pages that use WebXR are not currently eligible for back/forward cache."
   },
   "core/lib/csp-evaluator.js | allowlistFallback": {
-    "message": "Consider adding https: and http: URL schemes (ignored by browsers supporting 'strict-dynamic') to be backward compatible with older browsers."
+    "message": "Consider adding https: and http: URL schemes (ignored by browsers supporting `'strict-dynamic'`) to be backward compatible with older browsers."
   },
   "core/lib/csp-evaluator.js | deprecatedDisownOpener": {
-    "message": "disown-opener is deprecated since CSP3. Please, use the Cross-Origin-Opener-Policy header instead."
+    "message": "`disown-opener` is deprecated since CSP3. Please, use the Cross-Origin-Opener-Policy header instead."
   },
   "core/lib/csp-evaluator.js | deprecatedReferrer": {
-    "message": "referrer is deprecated since CSP2. Please, use the Referrer-Policy header instead."
+    "message": "`referrer` is deprecated since CSP2. Please, use the Referrer-Policy header instead."
   },
   "core/lib/csp-evaluator.js | deprecatedReflectedXSS": {
-    "message": "reflected-xss is deprecated since CSP2. Please, use the X-XSS-Protection header instead."
+    "message": "`reflected-xss` is deprecated since CSP2. Please, use the X-XSS-Protection header instead."
   },
   "core/lib/csp-evaluator.js | missingBaseUri": {
-    "message": "Missing base-uri allows injected <base> tags to set the base URL for all relative URLs (e.g. scripts) to an attacker controlled domain. Consider setting base-uri to 'none' or 'self'."
+    "message": "Missing `base-uri` allows injected `<base>` tags to set the base URL for all relative URLs (e.g. scripts) to an attacker controlled domain. Consider setting `base-uri` to `'none'` or `'self'`."
   },
   "core/lib/csp-evaluator.js | missingObjectSrc": {
-    "message": "Missing object-src allows the injection of plugins that execute unsafe scripts. Consider setting object-src to 'none' if you can."
+    "message": "Missing `object-src` allows the injection of plugins that execute unsafe scripts. Consider setting `object-src` to `'none'` if you can."
   },
   "core/lib/csp-evaluator.js | missingScriptSrc": {
-    "message": "script-src directive is missing. This can allow the execution of unsafe scripts."
+    "message": "`script-src` directive is missing. This can allow the execution of unsafe scripts."
   },
   "core/lib/csp-evaluator.js | missingSemicolon": {
     "message": "Did you forget the semicolon? {keyword} seems to be a directive, not a keyword."
@@ -2250,10 +2250,10 @@
     "message": "No CSP configures a reporting destination. This makes it difficult to maintain the CSP over time and monitor for any breakages."
   },
   "core/lib/csp-evaluator.js | reportToOnly": {
-    "message": "The reporting destination is only configured via the report-to directive. This directive is only supported in Chromium-based browsers so it is recommended to also use a report-uri directive."
+    "message": "The reporting destination is only configured via the report-to directive. This directive is only supported in Chromium-based browsers so it is recommended to also use a `report-uri` directive."
   },
   "core/lib/csp-evaluator.js | strictDynamic": {
-    "message": "Host allowlists can frequently be bypassed. Consider using CSP nonces or hashes instead, along with 'strict-dynamic' if necessary."
+    "message": "Host allowlists can frequently be bypassed. Consider using CSP nonces or hashes instead, along with `'strict-dynamic'` if necessary."
   },
   "core/lib/csp-evaluator.js | unknownDirective": {
     "message": "Unknown CSP directive."
@@ -2262,10 +2262,10 @@
     "message": "{keyword} seems to be an invalid keyword."
   },
   "core/lib/csp-evaluator.js | unsafeInline": {
-    "message": "'unsafe-inline' allows the execution of unsafe in-page scripts and event handlers. Consider using CSP nonces or hashes to allow scripts individually."
+    "message": "`'unsafe-inline'` allows the execution of unsafe in-page scripts and event handlers. Consider using CSP nonces or hashes to allow scripts individually."
   },
   "core/lib/csp-evaluator.js | unsafeInlineFallback": {
-    "message": "Consider adding 'unsafe-inline' (ignored by browsers supporting nonces/hashes) to be backward compatible with older browsers."
+    "message": "Consider adding `'unsafe-inline'` (ignored by browsers supporting nonces/hashes) to be backward compatible with older browsers."
   },
   "core/lib/deprecation-description.js | feature": {
     "message": "Check the feature status page for more details."

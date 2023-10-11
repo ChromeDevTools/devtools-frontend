@@ -1,4 +1,4 @@
-declare var I: {
+declare var X: {
     new (e: any, t: any): {
         _document: any;
         _lighthouseChannel: string;
@@ -6,6 +6,7 @@ declare var I: {
         rootEl: any;
         createElement(e: any, t: any): any;
         createElementNS(e: any, t: any, n: any): any;
+        createSVGElement(e: any, t: any): any;
         createFragment(): any;
         createTextNode(e: any): any;
         createChildOf(e: any, t: any, n: any): any;
@@ -19,12 +20,13 @@ declare var I: {
         document(): any;
         isDevTools(): boolean;
         find(e: any, t: any): any;
+        maybeFind(e: any, t: any): any;
         findAll(e: any, t: any): any[];
         fireEventOn(e: any, t: any, n: any): void;
         saveFile(e: any, t: any): void;
     };
 };
-declare var $: {
+declare var te: {
     new (e: any): {
         _dom: any;
         _opts: {};
@@ -38,7 +40,7 @@ declare var $: {
         _renderReport(e: any): any;
     };
 };
-declare var B: {
+declare var ne: {
     new (e: any, t?: {}): {
         _dom: any;
         _opts: {};
@@ -98,15 +100,15 @@ declare var B: {
         _saveFile(e: any): void;
     };
 };
-declare namespace Xe {
-    export { Qe as registerLocaleData };
-    export { Ye as hasLocale };
+declare namespace Mt {
+    export { zt as registerLocaleData };
+    export { Lt as hasLocale };
 }
-declare function Je(o: any, e?: {}): HTMLElement;
-declare function Ze(o: any, e: any): {
+declare function St(r: any, e?: {}): HTMLElement;
+declare function Ct(r: any, e: any): {
     lhr: any;
     missingIcuMessageIds: any[];
 };
-declare function Qe(o: any, e: any): void;
-declare function Ye(o: any): boolean;
-export { I as DOM, $ as ReportRenderer, B as ReportUIFeatures, Xe as format, Je as renderReport, Ze as swapLocale };
+declare function zt(r: any, e: any): void;
+declare function Lt(r: any): boolean;
+export { X as DOM, te as ReportRenderer, ne as ReportUIFeatures, Mt as format, St as renderReport, Ct as swapLocale };

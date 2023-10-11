@@ -131,6 +131,7 @@ const REGISTERED_EXPERIMENTS = [
   'useSourceMapScopes',
   'fontEditor',
   'networkPanelFilterBarRedesign',
+  'breadcrumbsPerformancePanel',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {

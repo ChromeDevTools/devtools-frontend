@@ -1010,7 +1010,6 @@ export interface SyntheticEventWithSelfTime extends TraceEventData {
 export interface TraceEventSyntheticProfileCall extends SyntheticEventWithSelfTime {
   callFrame: Protocol.Runtime.CallFrame;
   nodeId: Protocol.integer;
-  children?: TraceEventSyntheticProfileCall[];
 }
 
 /**

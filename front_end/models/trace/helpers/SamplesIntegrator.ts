@@ -7,7 +7,7 @@ import type * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 import * as Types from '../types/types.js';
 
 import {millisecondsToMicroseconds} from './Timing.js';
-import {mergeEventsInOrder} from './Trace.js';
+import {makeProfileCall, mergeEventsInOrder} from './Trace.js';
 
 /**
  * This is a helper that integrates CPU profiling data coming in the
@@ -226,7 +226,7 @@ export class SamplesIntegrator {
       if (!node) {
         continue;
       }
-      const call = SamplesIntegrator.makeProfileCall(node, timestamp, this.#processId, this.#threadId);
+      const call = makeProfileCall(node, timestamp, this.#processId, this.#threadId);
       calls.push(call);
     }
     return calls;
@@ -244,7 +244,7 @@ export class SamplesIntegrator {
     // Add the stack trace in reverse order (bottom first).
     let i = callFrames.length - 1;
     while (node) {
-      callFrames[i--] = SamplesIntegrator.makeProfileCall(node, profileCall.ts, this.#processId, this.#threadId);
+      callFrames[i--] = makeProfileCall(node, profileCall.ts, this.#processId, this.#threadId);
       node = node.parent;
     }
     return callFrames;
@@ -419,23 +419,5 @@ export class SamplesIntegrator {
       stack[j++] = stack[i];
     }
     stack.length = j;
-  }
-
-  static makeProfileCall(
-      node: CPUProfile.ProfileTreeModel.ProfileNode, ts: Types.Timing.MicroSeconds, pid: Types.TraceEvents.ProcessID,
-      tid: Types.TraceEvents.ThreadID): Types.TraceEvents.TraceEventSyntheticProfileCall {
-    return {
-      cat: '',
-      name: 'ProfileCall',
-      nodeId: node.id,
-      args: {},
-      ph: Types.TraceEvents.Phase.COMPLETE,
-      pid,
-      tid,
-      ts,
-      dur: Types.Timing.MicroSeconds(0),
-      selfTime: Types.Timing.MicroSeconds(0),
-      callFrame: node.callFrame,
-    };
   }
 }

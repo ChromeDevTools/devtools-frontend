@@ -152,6 +152,7 @@ describeWithEnvironment('SamplesHandler', function() {
       await TraceModel.Handlers.ModelHandlers.Samples.finalize();
       const data = TraceModel.Handlers.ModelHandlers.Samples.data();
       const calls = data.profilesInProcess.get(pid)?.get(tid)?.profileCalls;
+      const tree = data.profilesInProcess.get(pid)?.get(tid)?.profileTree;
       const expectedResult = [
         {id: A, ts: 0, dur: 154, selfTime: 58, children: [B, D]},
         {id: B, ts: 1, dur: 27, selfTime: 9, children: [C]},
@@ -159,13 +160,19 @@ describeWithEnvironment('SamplesHandler', function() {
         {id: D, ts: 36, dur: 69, selfTime: 69, children: []},
         {id: E, ts: 154, dur: 117, selfTime: 117, children: []},
       ];
-      const callsTestData = calls?.map(c => ({
-                                         id: c.nodeId,
-                                         dur: Math.round(c.dur || 0),
-                                         ts: c.ts,
-                                         selfTime: Math.round(c.selfTime || 0),
-                                         children: c.children?.map(child => child.nodeId) || [],
-                                       }));
+      const callsTestData = calls?.map(
+          c => {
+            const children =
+                tree?.nodes.get(c.nodeId as TraceModel.Helpers.TreeHelpers.TraceEntryNodeId)?.children || new Set();
+            return ({
+              id: c.nodeId,
+              dur: Math.round(c.dur || 0),
+              ts: c.ts,
+              selfTime: Math.round(c.selfTime || 0),
+              children: [...children].map(child => child.id) || [],
+            });
+          },
+      );
 
       assert.deepEqual(callsTestData, expectedResult);
     });
@@ -176,20 +183,25 @@ describeWithEnvironment('SamplesHandler', function() {
       const firstProcessId = TraceModel.Types.TraceEvents.ProcessID(2236123);
       const profilesFirstProcess = data.profilesInProcess.get(firstProcessId);
       const calls = profilesFirstProcess?.get(threadId)?.profileCalls.slice(0, 5);
+      const tree = profilesFirstProcess?.get(threadId)?.profileTree;
       const expectedResult = [
         {'id': 2, 'dur': 392, 'ts': 643496962681, 'selfTime': 392, 'children': []},
-        {'id': 4, 'dur': 682, 'ts': 643496963073, 'selfTime': 160, 'children': [5]},
         {'id': 3, 'dur': 682, 'ts': 643496963073, 'selfTime': 0, 'children': [4]},
+        {'id': 4, 'dur': 682, 'ts': 643496963073, 'selfTime': 160, 'children': [5]},
         {'id': 5, 'dur': 522, 'ts': 643496963233, 'selfTime': 178, 'children': [6, 7]},
         {'id': 6, 'dur': 175, 'ts': 643496963411, 'selfTime': 175, 'children': []},
       ];
-      const callsTestData = calls?.map(c => ({
-                                         id: c.nodeId,
-                                         dur: Math.round(c.dur || 0),
-                                         ts: c.ts,
-                                         selfTime: Math.round(c.selfTime || 0),
-                                         children: c.children?.map(child => child.nodeId) || [],
-                                       }));
+      const callsTestData = calls?.map(c => {
+        const children =
+            tree?.nodes.get(c.nodeId as TraceModel.Helpers.TreeHelpers.TraceEntryNodeId)?.children || new Set();
+        return {
+          id: c.nodeId,
+          dur: Math.round(c.dur || 0),
+          ts: c.ts,
+          selfTime: Math.round(c.selfTime || 0),
+          children: [...children].map(child => child.id) || [],
+        };
+      });
       assert.deepEqual(callsTestData, expectedResult);
     });
   });

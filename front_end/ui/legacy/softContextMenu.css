@@ -116,10 +116,6 @@
   margin: -1px 5px -1px 0;
 }
 
-.soft-context-menu-item-mouse-over .checkmark {
-  filter: none;
-}
-
 .soft-context-menu-item .checkmark {
   opacity: 0%;
 }
@@ -128,18 +124,14 @@
   opacity: 100%;
 }
 
-:host-context(.-theme-with-dark-background) .checkmark {
-  filter: invert(80%);
-}
-
 @media (forced-colors: active) {
   .soft-context-menu-item {
     color: canvastext;
   }
 
-  .soft-context-menu-item-mouse-over,
-  .-theme-with-dark-background .soft-context-menu-item-mouse-over,
-  :host-context(.-theme-with-dark-background) .soft-context-menu-item-mouse-over {
+  .soft-context-menu-item.soft-context-menu-item-mouse-over,
+  .-theme-with-dark-background .soft-context-menu-item.soft-context-menu-item-mouse-over,
+  :host-context(.-theme-with-dark-background) .soft-context-menu-item.soft-context-menu-item-mouse-over {
     background-color: Highlight;
     color: HighlightText;
     forced-color-adjust: none;
@@ -149,7 +141,7 @@
     --icon-color: ButtonText;
   }
 
-  .soft-context-menu .soft-context-menu-item-mouse-over devtools-icon {
+  .soft-context-menu .soft-context-menu-item.soft-context-menu-item-mouse-over devtools-icon {
     --icon-color: HighlightText;
   }
 
@@ -157,7 +149,7 @@
     color: ButtonText;
   }
 
-  .soft-context-menu-item-mouse-over .soft-context-menu-shortcut {
+  .soft-context-menu-item.soft-context-menu-item-mouse-over .soft-context-menu-shortcut {
     color: HighlightText;
   }
 
@@ -179,7 +171,7 @@
     filter: invert(100%);
   }
 
-  .soft-context-menu-item-mouse-over .spritesheet-smallicons:not(.icon-mask) {
+  .soft-context-menu-item.soft-context-menu-item-mouse-over .spritesheet-smallicons:not(.icon-mask) {
     filter: invert(0);
   }
 }

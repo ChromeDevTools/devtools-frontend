@@ -6,7 +6,7 @@
 
 .link:link,
 .link:visited {
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
   outline-offset: 2px;

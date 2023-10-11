@@ -14,7 +14,7 @@ h1 {
   line-height: 28px;
   padding: 0;
   margin-top: 0;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .intro-steps {
@@ -25,7 +25,7 @@ h1 {
 }
 
 .intro-steps li {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   counter-increment: custom-counter;
   font-size: 13px;
   letter-spacing: 0.03em;
@@ -35,12 +35,12 @@ h1 {
 }
 
 .intro-steps li::before {
-  --override-color-counter-background: rgba(26 115 232 / 25%);
+  --override-color-counter-background: var(--sys-color-tonal-container);
 
   box-sizing: border-box;
   background: var(--override-color-counter-background);
   border-radius: 50%;
-  color: var(--color-primary-old);
+  color: var(--sys-color-primary);
   content: counter(custom-counter);
   font-size: 12px;
   height: 18px;

@@ -5,18 +5,16 @@
  */
 
 :host {
-  --override-transparent: rgb(0 0 0 / 0%);
-
-  border: 1px solid var(--color-input-outline);
+  border: 1px solid var(--sys-color-neutral-outline);
   border-radius: 3px;
   width: fit-content;
   display: flex;
   align-items: center;
-  background-color: var(--override-select-menu-background-color, var(--color-background));
+  background-color: var(--override-select-menu-background-color, var(--sys-color-cdt-base-container));
 }
 
 :host([has-open-dialog]) {
-  background-color: var(--override-select-menu-active-background-color, var(--color-background-elevation-2));
+  background-color: var(--override-select-menu-active-background-color, var(--sys-color-neutral-container));
 }
 
 button {
@@ -24,7 +22,7 @@ button {
 }
 
 #side-button {
-  border: 1px solid var(--override-select-menu-border, var(--color-background-elevation-2));
+  border: 1px solid var(--override-select-menu-border, var(--sys-color-neutral-outline));
   border-radius: 3px 0 0 3px;
   border-right: none;
   height: 100%;

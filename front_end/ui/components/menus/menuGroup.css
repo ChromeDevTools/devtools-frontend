@@ -9,6 +9,6 @@
   font-size: 12px;
   line-height: 16px;
   position: relative;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   display: block;
 }

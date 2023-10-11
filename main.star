@@ -23,6 +23,22 @@ lucicfg.config(
     lint_checks = ["none", "+formatting"],
 )
 
+def analysis_bindings():
+    return [
+        luci.binding(
+            roles = "role/analysis.reader",
+            groups = "all",
+        ),
+        luci.binding(
+            roles = "role/analysis.queryUser",
+            groups = "mdb/v8-infra",
+        ),
+        luci.binding(
+            roles = "role/analysis.editor",
+            groups = "mdb/v8-infra",
+        ),
+    ]
+
 luci.project(
     name = "devtools-frontend",
     buildbucket = "cr-buildbucket.appspot.com",
@@ -77,7 +93,7 @@ luci.project(
                 "chrome-gold@chops-service-accounts.iam.gserviceaccount.com",
             ],
         ),
-    ],
+    ] + analysis_bindings(),
 )
 
 ## Swarming permissions (enable LED runs and "Debug" button)

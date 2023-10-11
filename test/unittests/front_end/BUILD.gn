@@ -75,6 +75,7 @@ group("front_end") {
     "panels/timeline",
     "panels/utils",
     "panels/webauthn",
+    "services/trace_bounds",
     "test_setup",
     "third_party/i18n",
     "ui",

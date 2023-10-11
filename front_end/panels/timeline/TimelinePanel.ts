@@ -42,6 +42,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PanelFeedback from '../../ui/components/panel_feedback/panel_feedback.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -325,7 +326,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #traceEngineActiveTraceIndex = -1;
   #threadTracksSource: ThreadTracksSource;
   #sourceMapsResolver: SourceMapsResolver|null = null;
-
   #onSourceMapsNodeNamesResolvedBound = this.#onSourceMapsNodeNamesResolved.bind(this);
 
   constructor(threadTracksSource: ThreadTracksSource) {
@@ -1135,6 +1135,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const traceParsedData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
     const isCpuProfile = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex)?.dataOrigin ===
         TraceEngine.Types.File.DataOrigin.CPUProfile;
+    if (traceParsedData) {
+      TraceBounds.TraceBounds.BoundsManager.instance({
+        forceNew: true,
+        initialBounds: traceParsedData.Meta.traceBounds,
+      });
+    }
     this.flameChart.setModel(model, traceParsedData, isCpuProfile);
 
     this.updateOverviewControls();

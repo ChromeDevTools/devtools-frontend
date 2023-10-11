@@ -123,7 +123,7 @@ export class TimelineEventOverviewNetwork extends TimelineEventOverview {
           max: end,
           range: end - start,
         } :
-        TraceEngine.Helpers.Timing.traceBoundsMilliseconds(this.#traceParsedData.Meta.traceBounds);
+        TraceEngine.Helpers.Timing.traceBoundsMilliSeconds(this.#traceParsedData.Meta.traceBounds);
 
     // We draw two paths, so each can take up half the height
     const pathHeight = this.height() / 2;
@@ -529,7 +529,7 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
           max: end,
           range: end - start,
         } :
-        TraceEngine.Helpers.Timing.traceBoundsMilliseconds(this.#traceParsedData.Meta.traceBounds);
+        TraceEngine.Helpers.Timing.traceBoundsMilliSeconds(this.#traceParsedData.Meta.traceBounds);
     const minTime = boundsMs.min;
     const maxTime = boundsMs.max;
 

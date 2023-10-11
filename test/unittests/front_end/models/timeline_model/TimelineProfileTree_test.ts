@@ -332,7 +332,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
     it('correctly keeps ProfileCall nodes and uses them to build up the tree', async function() {
       const models = await TraceLoader.allModels(this, 'mainWasm_profile.json.gz');
       const mainThread = getMainThread(models.traceParsedData.Renderer);
-      const bounds = TraceEngine.Helpers.Timing.traceBoundsMilliseconds(models.traceParsedData.Meta.traceBounds);
+      const bounds = TraceEngine.Helpers.Timing.traceBoundsMilliSeconds(models.traceParsedData.Meta.traceBounds);
 
       // Replicate the filters as they would be when renderering in the actual panel.
       const textFilter = new Timeline.TimelineFilters.TimelineRegExp();

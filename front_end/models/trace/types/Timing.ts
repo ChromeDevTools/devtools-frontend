@@ -35,3 +35,9 @@ export interface TraceWindow {
   max: MicroSeconds;
   range: MicroSeconds;
 }
+
+export interface TraceWindowMilliSeconds {
+  min: MilliSeconds;
+  max: MilliSeconds;
+  range: MilliSeconds;
+}

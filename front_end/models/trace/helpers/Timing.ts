@@ -187,14 +187,29 @@ export function eventTimingsSeconds(event: Types.TraceEvents.TraceEventData): Ev
   };
 }
 
-export function traceBoundsMilliseconds(bounds: Types.Timing.TraceWindow): {
-  min: Types.Timing.MilliSeconds,
-  max: Types.Timing.MilliSeconds,
-  range: Types.Timing.MilliSeconds,
-} {
+export function traceBoundsMilliSeconds(bounds: Types.Timing.TraceWindow): Types.Timing.TraceWindowMilliSeconds {
   return {
     min: microSecondsToMilliseconds(bounds.min),
     max: microSecondsToMilliseconds(bounds.max),
     range: microSecondsToMilliseconds(bounds.range),
   };
+}
+
+export function traceBoundsMillisecondsToMicroSeconds(bounds: Types.Timing.TraceWindowMilliSeconds):
+    Types.Timing.TraceWindow {
+  return {
+    min: millisecondsToMicroseconds(bounds.min),
+    max: millisecondsToMicroseconds(bounds.max),
+    range: millisecondsToMicroseconds(bounds.range),
+  };
+}
+
+export function traceWindowFromMilliSeconds(
+    min: Types.Timing.MilliSeconds, max: Types.Timing.MilliSeconds): Types.Timing.TraceWindow {
+  const traceWindow: Types.Timing.TraceWindow = {
+    min: millisecondsToMicroseconds(min),
+    max: millisecondsToMicroseconds(max),
+    range: millisecondsToMicroseconds(Types.Timing.MilliSeconds(max - min)),
+  };
+  return traceWindow;
 }

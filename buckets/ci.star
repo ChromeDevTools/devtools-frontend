@@ -120,6 +120,7 @@ DevTools Linux</a> but has devtools_skip_typecheck=True.""",
             properties = {
                 "builder_config": "Debug",
                 "devtools_skip_typecheck": True,
+                "parallel": True,
             },
             description_html = """
 This is the same with <a href="https://ci.chromium.org/p/devtools-frontend/builders/ci/Linux%20Compile%20Debug">
@@ -129,8 +130,7 @@ Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
             name = "Linux Compile Full Release",
             recipe_name = "devtools/devtools-frontend",
             consoles = ["ci"],
-            properties = {"clobber": True},
-            execution_timeout = time.hour * 3 / 2,
+            properties = {"clobber": True, "parallel": True},
         ),
         builder_descriptor(
             name = "Stand-alone Mac",

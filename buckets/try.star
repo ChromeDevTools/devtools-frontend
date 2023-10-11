@@ -100,6 +100,7 @@ try_builder(
     properties = {
         "builder_config": "Debug",
         "devtools_skip_typecheck": True,
+        "parallel": True,
     },
     description_html = """
 This is the same with <a href="https://ci.chromium.org/p/devtools-frontend/builders/try/devtools_frontend_linux_dbg">
@@ -113,7 +114,7 @@ builder_coverage(
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout,
     build_numbers = True,
-    properties = {"run_experimental_steps": True},
+    properties = {"run_experimental_steps": True, "parallel": True},
 )
 
 builder_coverage(

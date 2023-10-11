@@ -222,6 +222,9 @@ export class SoftContextMenu {
     menuItemElement.classList.add('soft-context-menu-item');
     menuItemElement.tabIndex = -1;
     ARIAUtils.markAsMenuItem(menuItemElement);
+    if (item.checked) {
+      menuItemElement.setAttribute('checked', '');
+    }
     const checkMarkElement = new IconButton.Icon.Icon();
     checkMarkElement.data = {iconName: 'checkmark', color: 'var(--icon-default)', width: '14px', height: '14px'};
     checkMarkElement.classList.add('checkmark');
@@ -232,9 +235,6 @@ export class SoftContextMenu {
         '14px';  // <devtools-icon> collapses to 0 width otherwise, throwing off alignment.
     checkMarkElement.style.minHeight = '14px';
     menuItemElement.appendChild(checkMarkElement);
-    if (!item.checked) {
-      checkMarkElement.style.opacity = '0';
-    }
     if (item.tooltip) {
       Tooltip.install(menuItemElement, item.tooltip);
     }
@@ -315,7 +315,6 @@ export class SoftContextMenu {
     menuItemElement.appendChild(checkMarkElement);
     checkMarkElement.style.minWidth =
         '14px';  // <devtools-icon> collapses to 0 width otherwise, throwing off alignment.
-    checkMarkElement.style.opacity = '0';
 
     createTextChild(menuItemElement, item.label || '');
     ARIAUtils.setExpanded(menuItemElement, false);
@@ -378,9 +377,10 @@ export class SoftContextMenu {
     if (!element) {
       return;
     }
-    const checkMarkElement = element.querySelector<IconButton.Icon.Icon>('[class="checkmark"]');
-    if (checkMarkElement) {
-      checkMarkElement.style.opacity = item.checked ? '1' : '0';
+    if (checked) {
+      element.setAttribute('checked', '');
+    } else {
+      element.removeAttribute('checked');
     }
 
     const checkedState = item.checked ? i18nString(UIStrings.checked) : i18nString(UIStrings.unchecked);

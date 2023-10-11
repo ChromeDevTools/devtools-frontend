@@ -117,8 +117,15 @@
 }
 
 .soft-context-menu-item-mouse-over .checkmark {
-  opacity: 100%;
   filter: none;
+}
+
+.soft-context-menu-item .checkmark {
+  opacity: 0%;
+}
+
+.soft-context-menu-item[checked] .checkmark {
+  opacity: 100%;
 }
 
 :host-context(.-theme-with-dark-background) .checkmark {

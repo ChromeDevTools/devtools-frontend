@@ -11,7 +11,6 @@ import * as HAR from '../../../../../front_end/models/har/har.js';
 import * as Logs from '../../../../../front_end/models/logs/logs.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Network from '../../../../../front_end/panels/network/network.js';
-import type * as IconButton from '../../../../../front_end/ui/components/icon_button/icon_button.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {
@@ -319,11 +318,10 @@ describeWithMockConnection('NetworkLogView', () => {
       }
       const softMenu = getSoftMenu();
       const hideExtensionURL = getDropdownItem(softMenu, 'Hide extension URLs');
-      const hideExtensionURLCheckmark = getCheckmark(hideExtensionURL);
-      assert.strictEqual(hideExtensionURLCheckmark.style.opacity, '0');
+      assert.isFalse(hideExtensionURL.hasAttribute('checked'));
       dispatchMouseUpEvent(hideExtensionURL);
       await raf();
-      assert.strictEqual(hideExtensionURLCheckmark.style.opacity, '1');
+      assert.isTrue(hideExtensionURL.hasAttribute('checked'));
 
       assert.deepEqual(
           rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
@@ -508,11 +506,10 @@ describeWithMockConnection('NetworkLogView', () => {
       }
       const softMenu = getSoftMenu();
       const blockedResponseCookies = getDropdownItem(softMenu, 'Blocked response cookies');
-      const blockedResponseCookiesCheckmark = getCheckmark(blockedResponseCookies);
-      assert.strictEqual(blockedResponseCookiesCheckmark.style.opacity, '0');
+      assert.isFalse(blockedResponseCookies.hasAttribute('checked'));
       dispatchMouseUpEvent(blockedResponseCookies);
       await raf();
-      assert.strictEqual(blockedResponseCookiesCheckmark.style.opacity, '1');
+      assert.isTrue(blockedResponseCookies.hasAttribute('checked'));
 
       assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
         'url1' as Platform.DevToolsPath.UrlString,
@@ -731,10 +728,4 @@ function getDropdownItem(softMenu: HTMLElement, label: string) {
   const item = softMenu?.querySelector(`[aria-label^="${label}"]`);
   assertElement(item, HTMLElement);
   return item;
-}
-
-function getCheckmark(item: HTMLElement) {
-  const checkmark = item.querySelector<IconButton.Icon.Icon>('.checkmark');
-  assertElement(checkmark, HTMLElement);
-  return checkmark;
 }

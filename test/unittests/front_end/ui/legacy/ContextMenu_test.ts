@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as IconButton from '../../../../../front_end/ui/components/icon_button/icon_button.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {assertElement, assertShadowRoot, dispatchMouseUpEvent} from '../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
@@ -43,26 +42,21 @@ describeWithEnvironment('ContextMenu', () => {
 
     const item0 = softMenuElement.querySelector('[aria-label^="item0"]');
     assertElement(item0, HTMLElement);
-    const checkMark0 = item0.querySelector<IconButton.Icon.Icon>('.checkmark');
-    assertElement(checkMark0, HTMLElement);
-
     const item1 = softMenuElement.querySelector('[aria-label^="item1"]');
     assertElement(item1, HTMLElement);
-    const checkMark1 = item1.querySelector<IconButton.Icon.Icon>('.checkmark');
-    assertElement(checkMark1, HTMLElement);
 
-    assert.strictEqual(checkMark0.style.opacity, '0');
-    assert.strictEqual(checkMark1.style.opacity, '0');
+    assert.isFalse(item0.hasAttribute('checked'));
+    assert.isFalse(item1.hasAttribute('checked'));
 
     dispatchMouseUpEvent(item0);
     dispatchMouseUpEvent(item1);
-    assert.strictEqual(checkMark0.style.opacity, '1');
-    assert.strictEqual(checkMark1.style.opacity, '1');
+    assert.isTrue(item0.hasAttribute('checked'));
+    assert.isTrue(item1.hasAttribute('checked'));
     assert.isTrue(!contextMenuDiscardSpy.called);
 
     dispatchMouseUpEvent(item0);
-    assert.strictEqual(checkMark0.style.opacity, '0');
-    assert.strictEqual(checkMark1.style.opacity, '1');
+    assert.isFalse(item0.hasAttribute('checked'));
+    assert.isTrue(item1.hasAttribute('checked'));
     assert.isTrue(!contextMenuDiscardSpy.called);
 
     softMenu.discard();

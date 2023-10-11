@@ -39,7 +39,7 @@ describe('TraceBounds', () => {
       max: TraceEngine.Types.Timing.MicroSeconds(20_000),
       range: TraceEngine.Types.Timing.MicroSeconds(10_000),
     };
-    const newBoundsMilliSeconds = TraceEngine.Helpers.Timing.traceBoundsMilliSeconds(newBoundsMicroSeconds);
+    const newBoundsMilliSeconds = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(newBoundsMicroSeconds);
 
     manager.setNewBounds(newBoundsMicroSeconds);
 

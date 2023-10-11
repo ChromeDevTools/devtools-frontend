@@ -62,7 +62,7 @@ export class BoundsManager extends EventTarget {
     return this.#entireTraceBounds;
   }
   entireTraceBoundsMilliSeconds(): Readonly<TraceEngine.Types.Timing.TraceWindowMilliSeconds> {
-    return TraceEngine.Helpers.Timing.traceBoundsMilliSeconds(this.#entireTraceBounds);
+    return TraceEngine.Helpers.Timing.traceWindowMilliSeconds(this.#entireTraceBounds);
   }
 
   currentBoundsMicroSeconds(): Readonly<TraceEngine.Types.Timing.TraceWindow> {
@@ -70,7 +70,7 @@ export class BoundsManager extends EventTarget {
   }
 
   currentBoundsMilliSeconds(): Readonly<TraceEngine.Types.Timing.TraceWindowMilliSeconds> {
-    return TraceEngine.Helpers.Timing.traceBoundsMilliSeconds(this.#currentBounds);
+    return TraceEngine.Helpers.Timing.traceWindowMilliSeconds(this.#currentBounds);
   }
 
   setNewBounds(bounds: TraceEngine.Types.Timing.TraceWindow): void {

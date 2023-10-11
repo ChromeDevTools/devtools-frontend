@@ -2176,7 +2176,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return currentOffset;
     }
 
-    const groups = this.rawTimelineData?.groups || [];
+    const groups = this.rawTimelineData?.groups;
+    if (!groups) {
+      return currentOffset;
+    }
 
     if (groupNode.index >= 0) {
       this.groupOffsets[groupNode.index] = currentOffset;
@@ -2247,7 +2250,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     for (const child of groupNode.children) {
       // If the child is not the first child, we will add a padding top.
-      if (thisGroupLevelsAreVisible && !groups[child.index].hidden && child !== groupNode.children[0]) {
+      if (thisGroupLevelsAreVisible && !groups[child.index]?.hidden && child !== groupNode.children[0]) {
         currentOffset += groups[child.index].style.padding ?? 0;
       }
       currentOffset =

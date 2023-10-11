@@ -162,7 +162,7 @@
 }
 
 .data-grid th:hover .sort-order-icon-container {
-  background-color: var(--color-background-highlight);
+  background-color: var(--sys-color-on-surface);
 }
 
 .data-grid th .sort-order-icon {
@@ -182,7 +182,7 @@
 }
 
 .data-grid th.sortable:hover {
-  background-color: var(--color-background-highlight);
+  background-color: var(--sys-color-on-surface);
 }
 
 .data-grid .top-filler-td {
@@ -231,11 +231,11 @@
 }
 
 .data-grid tbody tr.revealed.selected.dirty {
-  color: var(--color-selected-option);
+  color: var(--sys-color-on-tonal-container);
 }
 
 .data-grid.no-selection:focus-visible {
-  border: 1px solid var(--color-primary-old) !important; /* stylelint-disable-line declaration-no-important */
+  border: 1px solid var(--sys-color-state-focus-ring) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .data-grid:focus tbody tr.selected {
@@ -244,13 +244,13 @@
 }
 
 .data-grid tbody tr.selected.dirty {
-  --override-data-grid-dirty-background-color: hsl(0deg 100% 30%);
+  --override-data-grid-dirty-background-color: var(--sys-color-error);
 
   background-color: var(--override-data-grid-dirty-background-color);
 }
 
 .data-grid:focus tr.selected.dirty {
-  --override-data-grid-dirty-background-color: hsl(0deg 100% 70%);
+  --override-data-grid-dirty-background-color: var(--sys-color-error-container);
 }
 
 .data-grid:focus tr.selected .devtools-link {
@@ -258,19 +258,19 @@
 }
 
 .data-grid:focus tr.parent.selected td.disclosure::before {
-  background-color: var(--icon-force-white);
+  background-color: var(--sys-color-on-tonal-container);
 }
 
 .data-grid tr.inactive {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
   font-style: italic;
 }
 
 .data-grid tr.dirty {
-  --override-data-grid-dirty-background-color: hsl(0deg 100% 92%);
+  --override-data-grid-dirty-background-color: var(--sys-color-surface-error);
 
   background-color: var(--override-data-grid-dirty-background-color);
-  color: var(--color-red);
+  color: var(--sys-color-error);
   font-style: normal;
 }
 

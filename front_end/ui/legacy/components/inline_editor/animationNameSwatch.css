@@ -9,7 +9,7 @@
 .animation-name-link:not(.undefined) {
   cursor: pointer;
   text-underline-offset: 2px;
-  color: var(--color-link);
+  color: var(--sys-color-primary);
 }
 
 .animation-name-link:hover:not(.undefined) {
@@ -21,7 +21,7 @@
 }
 
 .animation-name-link.undefined {
-  --override-animation-name-link-undefined-color: rgb(102 102 102);
+  --override-animation-name-link-undefined-color: var(--sys-color-state-disabled);
 
   color: var(--override-animation-name-link-undefined-color);
 }

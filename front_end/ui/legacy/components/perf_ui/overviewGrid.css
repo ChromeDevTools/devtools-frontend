@@ -93,6 +93,7 @@
 }
 
 .create-breadcrumb-button-container {
+  visibility: hidden;
   display: flex;
   position: absolute;
   top: 20px;

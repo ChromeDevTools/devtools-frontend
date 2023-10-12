@@ -3,11 +3,14 @@
 // found in the LICENSE file.
 import * as LoggingConfig from './LoggingConfig.js';
 import * as LoggingDriver from './LoggingDriver.js';
+import * as LoggingState from './LoggingState.js';
 
 const {startLogging} = LoggingDriver;
+const {registerContextProvider} = LoggingState;
 const treeItem = LoggingConfig.makeConfigStringBuilder('TreeItem');
 
 export {
   startLogging,
+  registerContextProvider,
   treeItem,
 };

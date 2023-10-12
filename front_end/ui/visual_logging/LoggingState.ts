@@ -7,6 +7,7 @@ export interface LoggingState {
   impressionLogged: boolean;
   processed: boolean;
   config: LoggingConfig;
+  context: ContextProvider;
   veid: number;
   parent: LoggingState|null;
 }
@@ -20,13 +21,43 @@ export function resetStateForTesting(): void {
 }
 
 export function getLoggingState(element: Element, parent?: Element): LoggingState {
+  const config = getLoggingConfig(element);
   const elementState = state.get(element) || {
     impressionLogged: false,
     processed: false,
-    config: getLoggingConfig(element),
+    config,
+    context: resolveContext(config.context),
     veid: ++nextVeId,
     parent: parent ? getLoggingState(parent) : null,
   };
   state.set(element, elementState);
   return elementState;
 }
+
+export type ContextProvider = (e: Element|Event) => Promise<number|undefined>;
+const contextProviders = new Map<string, ContextProvider>();
+
+export function registerContextProvider(name: string, provider: ContextProvider): void {
+  if (contextProviders.has(name)) {
+    throw new Error(`Context provider with the name '${name} is already registered'`);
+  }
+  contextProviders.set(name, provider);
+}
+
+const resolveContext = (context?: string): ContextProvider => {
+  if (!context) {
+    return () => Promise.resolve(undefined);
+  }
+  const contextProvider = contextProviders.get(context);
+  if (contextProvider) {
+    return contextProvider;
+  }
+  const number = parseInt(context, 10);
+  if (!isNaN(number)) {
+    return () => Promise.resolve(number);
+  }
+  const encoder = new TextEncoder();
+  const data = encoder.encode(context);
+  const hash = crypto.subtle.digest('SHA-1', data).then(x => (new DataView(x)).getUint32(0, true));
+  return () => hash;
+};

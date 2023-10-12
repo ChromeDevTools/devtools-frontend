@@ -19,13 +19,13 @@ function observeMutations(root: Node): void {
   new MutationObserver(scheduleProcessDom).observe(root, {attributes: true, childList: true, subtree: true});
 }
 
-export function startLogging(
+export async function startLogging(
     options?: {domProcessingThrottler?: Common.Throttler.Throttler, keyboardLogThrottler?: Common.Throttler.Throttler}):
-    void {
+    Promise<void> {
   domProcessingThrottler = options?.domProcessingThrottler || new Common.Throttler.Throttler(PROCESS_DOM_INTERVAL);
   keyboardLogThrottler = options?.domProcessingThrottler || new Common.Throttler.Throttler(KEYBOARD_LOG_INTERVAL);
   if (['interactive', 'complete'].includes(document.readyState)) {
-    processDom();
+    await processDom();
   }
   document.addEventListener('visibilitychange', scheduleProcessDom);
   window.addEventListener('scroll', scheduleProcessDom);
@@ -48,7 +48,7 @@ function observeMutationsInShadowRoots(shadowRoots: ShadowRoot[]): void {
   }
 }
 
-function processDom(): void {
+async function processDom(): Promise<void> {
   if (document.hidden) {
     return;
   }
@@ -78,5 +78,5 @@ function processDom(): void {
       loggingState.processed = true;
     }
   }
-  logImpressions(visibleElements);
+  await logImpressions(visibleElements);
 }

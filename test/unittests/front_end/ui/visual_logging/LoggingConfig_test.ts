@@ -40,13 +40,13 @@ describe('LoggingConfig', () => {
   it('can parse simple context attribute', () => {
     element.setAttribute('jslog', 'TreeItem;context:42');
     const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
-    assert.strictEqual(config.context, 42);
+    assert.strictEqual(config.context, '42');
   });
 
   it('ignores whitespaces while parsnng', () => {
     element.setAttribute('jslog', 'TreeItem;     context:   42');
     const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
-    assert.strictEqual(config.context, 42);
+    assert.strictEqual(config.context, '42');
   });
 
   it('builds a string config', () => {

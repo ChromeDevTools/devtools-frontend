@@ -7,7 +7,7 @@ const LOGGING_ATTRIBUTE = 'jslog';
 export interface LoggingConfig {
   ve: number;
   track?: Map<string, string>;
-  context?: number;
+  context?: string;
 }
 
 export function needsLogging(element: Element): boolean {
@@ -36,9 +36,8 @@ function parseJsLog(jslog: string): LoggingConfig {
     throw new Error('Unkown VE: ' + jslog);
   }
   const config: LoggingConfig = {ve};
-  const contextString = getComponent('context:');
-  const context = contextString ? parseInt(contextString, 10) : NaN;
-  if (!Number.isNaN(context)) {
+  const context = getComponent('context:');
+  if (context) {
     config.context = context;
   }
   const trackString = getComponent('track:');

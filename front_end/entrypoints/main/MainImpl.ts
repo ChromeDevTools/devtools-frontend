@@ -437,6 +437,7 @@ export class MainImpl {
       Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING,
       Root.Runtime.ExperimentName.HEADER_OVERRIDES,
       Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,
+      Root.Runtime.ExperimentName.SELF_XSS_WARNING,
     ]);
 
     Root.Runtime.experiments.setNonConfigurableExperiments([

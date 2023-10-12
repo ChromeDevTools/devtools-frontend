@@ -89,16 +89,6 @@ const UIStrings = {
    */
   xhr: 'XHR',
   /**
-   *@description Error message text
-   *@example {Snag Error} PH1
-   */
-  webglErrorFiredS: 'WebGL Error Fired ({PH1})',
-  /**
-   *@description Text in DOMDebugger Model
-   *@example {"script-src 'self'"} PH1
-   */
-  scriptBlockedDueToContent: 'Script blocked due to Content Security Policy directive: {PH1}',
-  /**
    *@description Text for the service worker type.
    */
   worker: 'Worker',
@@ -830,17 +820,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
     directiveText: string,
     targetName: string,
   }): string {
-    const id = auxData['eventName'];
-    if (id === 'instrumentation:webglErrorFired' && auxData['webglErrorName']) {
-      let errorName: string = auxData['webglErrorName'];
-      // If there is a hex code of the error, display only this.
-      errorName = errorName.replace(/^.*(0x[0-9a-f]+).*$/i, '$1');
-      return i18nString(UIStrings.webglErrorFiredS, {PH1: errorName});
-    }
-    if (id === 'instrumentation:scriptBlockedByCSP' && auxData['directiveText']) {
-      return i18nString(UIStrings.scriptBlockedDueToContent, {PH1: auxData['directiveText']});
-    }
-    const breakpoint = this.resolveEventListenerBreakpointInternal(id, auxData['targetName']);
+    const breakpoint = this.resolveEventListenerBreakpointInternal(auxData['eventName'], auxData['targetName']);
     if (!breakpoint) {
       return '';
     }

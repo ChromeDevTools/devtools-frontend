@@ -203,7 +203,11 @@ export class DebuggerPausedMessage {
       if (details.auxData) {
         const maybeNonDomEventNameForUI =
             SDK.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpointTitle(
-                (details.auxData as {eventName: string}));
+                (details.auxData as {
+                  directiveText: string,
+                  eventName: string,
+                  webglErrorName: string,
+                }));
         if (maybeNonDomEventNameForUI) {
           eventNameForUI = maybeNonDomEventNameForUI;
         } else {

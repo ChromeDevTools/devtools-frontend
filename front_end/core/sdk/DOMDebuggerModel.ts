@@ -576,13 +576,10 @@ export class CSPViolationBreakpoint extends CategorizedBreakpoint {
 }
 
 export class DOMEventListenerBreakpoint extends CategorizedBreakpoint {
-  readonly instrumentationName: string;
   readonly eventName: string;
   readonly eventTargetNames: string[];
-  constructor(
-      instrumentationName: string, eventName: string, eventTargetNames: string[], category: string, title: string) {
+  constructor(eventName: string, eventTargetNames: string[], category: string, title: string) {
     super(category, title);
-    this.instrumentationName = instrumentationName;
     this.eventName = eventName;
     this.eventTargetNames = eventTargetNames;
   }
@@ -598,26 +595,16 @@ export class DOMEventListenerBreakpoint extends CategorizedBreakpoint {
   }
 
   updateOnModel(model: DOMDebuggerModel): void {
-    if (this.instrumentationName) {
+    for (const eventTargetName of this.eventTargetNames) {
       if (this.enabled()) {
-        void model.agent.invoke_setInstrumentationBreakpoint({eventName: this.instrumentationName});
+        void model.agent.invoke_setEventListenerBreakpoint({eventName: this.eventName, targetName: eventTargetName});
       } else {
-        void model.agent.invoke_removeInstrumentationBreakpoint({eventName: this.instrumentationName});
-      }
-    } else {
-      for (const eventTargetName of this.eventTargetNames) {
-        if (this.enabled()) {
-          void model.agent.invoke_setEventListenerBreakpoint({eventName: this.eventName, targetName: eventTargetName});
-        } else {
-          void model.agent.invoke_removeEventListenerBreakpoint(
-              {eventName: this.eventName, targetName: eventTargetName});
-        }
+        void model.agent.invoke_removeEventListenerBreakpoint({eventName: this.eventName, targetName: eventTargetName});
       }
     }
   }
 
   static readonly listener = 'listener:';
-  static readonly instrumentation = 'instrumentation:';
 }
 
 let domDebuggerManagerInstance: DOMDebuggerManager;
@@ -765,29 +752,17 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
     return this.#cspViolationsToBreakOn.slice();
   }
 
-  private createInstrumentationBreakpoints(category: string, instrumentationNames: string[]): void {
-    for (const instrumentationName of instrumentationNames) {
-      this.#eventListenerBreakpointsInternal.push(
-          new DOMEventListenerBreakpoint(instrumentationName, '', [], category, instrumentationName));
-    }
-  }
-
   private createEventListenerBreakpoints(category: string, eventNames: string[], eventTargetNames: string[]): void {
     for (const eventName of eventNames) {
       this.#eventListenerBreakpointsInternal.push(
-          new DOMEventListenerBreakpoint('', eventName, eventTargetNames, category, eventName));
+          new DOMEventListenerBreakpoint(eventName, eventTargetNames, category, eventName));
     }
   }
 
   private resolveEventListenerBreakpointInternal(eventName: string, eventTargetName?: string):
       DOMEventListenerBreakpoint|null {
-    const instrumentationPrefix = 'instrumentation:';
     const listenerPrefix = 'listener:';
-    let instrumentationName = '';
-    if (eventName.startsWith(instrumentationPrefix)) {
-      instrumentationName = eventName.substring(instrumentationPrefix.length);
-      eventName = '';
-    } else if (eventName.startsWith(listenerPrefix)) {
+    if (eventName.startsWith(listenerPrefix)) {
       eventName = eventName.substring(listenerPrefix.length);
     } else {
       return null;
@@ -795,9 +770,6 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
     eventTargetName = (eventTargetName || '*').toLowerCase();
     let result: DOMEventListenerBreakpoint|null = null;
     for (const breakpoint of this.#eventListenerBreakpointsInternal) {
-      if (instrumentationName && breakpoint.instrumentationName === instrumentationName) {
-        result = breakpoint;
-      }
       if (eventName && breakpoint.eventName === eventName &&
           breakpoint.eventTargetNames.indexOf(eventTargetName) !== -1) {
         result = breakpoint;

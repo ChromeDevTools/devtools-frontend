@@ -10,7 +10,8 @@ If you would like to add a new third_party package to this directory, please per
 
 1. Assess the increase in bundle size and make sure this is not too big.
 This will be determined on a case-by-case basis, taking into account the portion of DevTools users that will take advantage of the new feature.
-    1. If you are unsure whether the size will be an issue, please email devtools-dev+third_party@chromium.org for guidance before opening any CL.
+    1. To determine by how much the bundle size increases, build Chromium both with and without the additional package. Then compare the size of the DevTools bundles via `ls -l out/Default/gen/content/browser/devtools/devtools_resources.pak`.
+    2. If you are unsure whether the size will be an issue, please email devtools-dev+third_party@chromium.org for guidance before opening any CL.
 1. Obtain security review from chrome. You can read full guidance on this process [here](https://www.chromium.org/Home/chromium-security/security-reviews).
     1. Send an email to security@chromium.org with some context, the package you want to add and a link to a Design Doc or other documentation
     1. Add devtools-dev+security@ in the CC and start the title with `[DevTools]`.

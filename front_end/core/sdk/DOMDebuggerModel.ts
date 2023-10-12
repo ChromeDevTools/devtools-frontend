@@ -2,29 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import * as Protocol from '../../generated/protocol.js';
 
-import {CategorizedBreakpoint} from './CategorizedBreakpoint.js';
+import {CategorizedBreakpoint, Category} from './CategorizedBreakpoint.js';
 import {type Location} from './DebuggerModel.js';
-
-import {DOMModel, Events as DOMModelEvents, type DOMNode} from './DOMModel.js';
+import {DOMModel, type DOMNode, Events as DOMModelEvents} from './DOMModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {RuntimeModel} from './RuntimeModel.js';
-
-import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
-
-import {TargetManager, type SDKModelObserver} from './TargetManager.js';
+import {Capability, type Target} from './Target.js';
+import {type SDKModelObserver, TargetManager} from './TargetManager.js';
 
 const UIStrings = {
-  /**
-   *@description Title for a category of breakpoints on Trusted Type violations
-   */
-  trustedTypeViolations: 'Trusted Type Violations',
   /**
    * @description Noun. Title for a checkbox that turns on breakpoints on Trusted Type sink violations.
    * "Trusted Types" is a Web API. A "Sink" (Noun, singular) is a special function, akin to a data sink, that expects
@@ -36,62 +29,6 @@ const UIStrings = {
    *@description Title for a checkbox that turns on breakpoints on Trusted Type policy violations
    */
   policyViolations: 'Policy Violations',
-  /**
-   *@description Text that appears on a button for the media resource type filter.
-   */
-  media: 'Media',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  pictureinpicture: 'Picture-in-Picture',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  clipboard: 'Clipboard',
-  /**
-   * @description Noun. Describes a group of DOM events (such as 'select' and 'submit') in this context.
-   */
-  control: 'Control',
-  /**
-   *@description Text that refers to device such as a phone
-   */
-  device: 'Device',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  domMutation: 'DOM Mutation',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  dragDrop: 'Drag / drop',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  keyboard: 'Keyboard',
-  /**
-   *@description Text to load something
-   */
-  load: 'Load',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  mouse: 'Mouse',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  pointer: 'Pointer',
-  /**
-   *@description Text for the touch type to simulate on a device
-   */
-  touch: 'Touch',
-  /**
-   *@description Text that appears on a button for the xhr resource type filter.
-   */
-  xhr: 'XHR',
-  /**
-   *@description Text for the service worker type.
-   */
-  worker: 'Worker',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/DOMDebuggerModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -565,7 +502,7 @@ export namespace EventListener {
 
 export class CSPViolationBreakpoint extends CategorizedBreakpoint {
   readonly #typeInternal: Protocol.DOMDebugger.CSPViolationType;
-  constructor(category: string, title: string, type: Protocol.DOMDebugger.CSPViolationType) {
+  constructor(category: Category, title: string, type: Protocol.DOMDebugger.CSPViolationType) {
     super(category, title);
     this.#typeInternal = type;
   }
@@ -578,7 +515,7 @@ export class CSPViolationBreakpoint extends CategorizedBreakpoint {
 export class DOMEventListenerBreakpoint extends CategorizedBreakpoint {
   readonly eventName: string;
   readonly eventTargetNames: string[];
-  constructor(eventName: string, eventTargetNames: string[], category: string, title: string) {
+  constructor(eventName: string, eventTargetNames: string[], category: Category, title: string) {
     super(category, title);
     this.eventName = eventName;
     this.eventTargetNames = eventTargetNames;
@@ -624,15 +561,15 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
 
     this.#cspViolationsToBreakOn = [];
     this.#cspViolationsToBreakOn.push(new CSPViolationBreakpoint(
-        i18nString(UIStrings.trustedTypeViolations), i18nString(UIStrings.sinkViolations),
+        Category.TrustedTypeViolation, i18nString(UIStrings.sinkViolations),
         Protocol.DOMDebugger.CSPViolationType.TrustedtypeSinkViolation));
     this.#cspViolationsToBreakOn.push(new CSPViolationBreakpoint(
-        i18nString(UIStrings.trustedTypeViolations), i18nString(UIStrings.policyViolations),
+        Category.TrustedTypeViolation, i18nString(UIStrings.policyViolations),
         Protocol.DOMDebugger.CSPViolationType.TrustedtypePolicyViolation));
 
     this.#eventListenerBreakpointsInternal = [];
     this.createEventListenerBreakpoints(
-        i18nString(UIStrings.media),
+        Category.Media,
         [
           'play',      'pause',          'playing',    'canplay',    'canplaythrough', 'seeking',
           'seeked',    'timeupdate',     'ended',      'ratechange', 'durationchange', 'volumechange',
@@ -641,17 +578,17 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
         ],
         ['audio', 'video']);
     this.createEventListenerBreakpoints(
-        i18nString(UIStrings.pictureinpicture), ['enterpictureinpicture', 'leavepictureinpicture'], ['video']);
-    this.createEventListenerBreakpoints(i18nString(UIStrings.pictureinpicture), ['resize'], ['PictureInPictureWindow']);
-    this.createEventListenerBreakpoints(i18nString(UIStrings.pictureinpicture), ['enter'], ['documentPictureInPicture']);
+        Category.PictureInPicture, ['enterpictureinpicture', 'leavepictureinpicture'], ['video']);
+    this.createEventListenerBreakpoints(Category.PictureInPicture, ['resize'], ['PictureInPictureWindow']);
+    this.createEventListenerBreakpoints(Category.PictureInPicture, ['enter'], ['documentPictureInPicture']);
     this.createEventListenerBreakpoints(
-        i18nString(UIStrings.clipboard), ['copy', 'cut', 'paste', 'beforecopy', 'beforecut', 'beforepaste'], ['*']);
+        Category.Clipboard, ['copy', 'cut', 'paste', 'beforecopy', 'beforecut', 'beforepaste'], ['*']);
     this.createEventListenerBreakpoints(
-        i18nString(UIStrings.control),
+        Category.Control,
         ['resize', 'scroll', 'scrollend', 'zoom', 'focus', 'blur', 'select', 'change', 'submit', 'reset'], ['*']);
-    this.createEventListenerBreakpoints(i18nString(UIStrings.device), ['deviceorientation', 'devicemotion'], ['*']);
+    this.createEventListenerBreakpoints(Category.Device, ['deviceorientation', 'devicemotion'], ['*']);
     this.createEventListenerBreakpoints(
-        i18nString(UIStrings.domMutation),
+        Category.DomMutation,
         [
           'DOMActivate',
           'DOMFocusIn',
@@ -667,13 +604,11 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
         ],
         ['*']);
     this.createEventListenerBreakpoints(
-        i18nString(UIStrings.dragDrop), ['drag', 'dragstart', 'dragend', 'dragenter', 'dragover', 'dragleave', 'drop'],
-        ['*']);
+        Category.DragDrop, ['drag', 'dragstart', 'dragend', 'dragenter', 'dragover', 'dragleave', 'drop'], ['*']);
 
+    this.createEventListenerBreakpoints(Category.Keyboard, ['keydown', 'keyup', 'keypress', 'input'], ['*']);
     this.createEventListenerBreakpoints(
-        i18nString(UIStrings.keyboard), ['keydown', 'keyup', 'keypress', 'input'], ['*']);
-    this.createEventListenerBreakpoints(
-        i18nString(UIStrings.load),
+        Category.Load,
         [
           'load',
           'beforeunload',
@@ -693,7 +628,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
         ],
         ['*']);
     this.createEventListenerBreakpoints(
-        i18nString(UIStrings.mouse),
+        Category.Mouse,
         [
           'auxclick',
           'click',
@@ -711,7 +646,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
         ],
         ['*']);
     this.createEventListenerBreakpoints(
-        i18nString(UIStrings.pointer),
+        Category.Pointer,
         [
           'pointerover',
           'pointerout',
@@ -726,12 +661,10 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
           'pointerrawupdate',
         ],
         ['*']);
+    this.createEventListenerBreakpoints(Category.Touch, ['touchstart', 'touchmove', 'touchend', 'touchcancel'], ['*']);
+    this.createEventListenerBreakpoints(Category.Worker, ['message', 'messageerror'], ['*']);
     this.createEventListenerBreakpoints(
-        i18nString(UIStrings.touch), ['touchstart', 'touchmove', 'touchend', 'touchcancel'], ['*']);
-    this.createEventListenerBreakpoints(i18nString(UIStrings.worker), ['message', 'messageerror'], ['*']);
-    this.createEventListenerBreakpoints(
-        i18nString(UIStrings.xhr),
-        ['readystatechange', 'load', 'loadstart', 'loadend', 'abort', 'error', 'progress', 'timeout'],
+        Category.Xhr, ['readystatechange', 'load', 'loadstart', 'loadend', 'abort', 'error', 'progress', 'timeout'],
         ['xmlhttprequest', 'xmlhttprequestupload']);
 
     TargetManager.instance().observeModels(DOMDebuggerModel, this);
@@ -752,7 +685,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
     return this.#cspViolationsToBreakOn.slice();
   }
 
-  private createEventListenerBreakpoints(category: string, eventNames: string[], eventTargetNames: string[]): void {
+  private createEventListenerBreakpoints(category: Category, eventNames: string[], eventTargetNames: string[]): void {
     for (const eventName of eventNames) {
       this.#eventListenerBreakpointsInternal.push(
           new DOMEventListenerBreakpoint(eventName, eventTargetNames, category, eventName));

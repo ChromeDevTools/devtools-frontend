@@ -16,10 +16,7 @@ export class EventListenerBreakpointsSidebarPane extends CategorizedBreakpointsS
     const nonDomBreakpoints = SDK.EventBreakpointsModel.EventBreakpointsManager.instance().eventListenerBreakpoints();
     breakpoints = breakpoints.concat(nonDomBreakpoints);
 
-    const categories = breakpoints.map(breakpoint => breakpoint.category());
-    categories.sort();
-    super(
-        categories, breakpoints, 'sources.eventListenerBreakpoints', Protocol.Debugger.PausedEventReason.EventListener);
+    super(breakpoints, 'sources.eventListenerBreakpoints', Protocol.Debugger.PausedEventReason.EventListener);
   }
 
   static instance(): EventListenerBreakpointsSidebarPane {

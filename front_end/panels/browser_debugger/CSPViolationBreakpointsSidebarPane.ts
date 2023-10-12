@@ -13,9 +13,7 @@ export class CSPViolationBreakpointsSidebarPane extends CategorizedBreakpointsSi
   private constructor() {
     const breakpoints: SDK.DOMDebuggerModel.CSPViolationBreakpoint[] =
         SDK.DOMDebuggerModel.DOMDebuggerManager.instance().cspViolationBreakpoints();
-    const categories = breakpoints.map(breakpoint => breakpoint.category());
-    categories.sort();
-    super(categories, breakpoints, 'sources.cspViolationBreakpoints', Protocol.Debugger.PausedEventReason.CSPViolation);
+    super(breakpoints, 'sources.cspViolationBreakpoints', Protocol.Debugger.PausedEventReason.CSPViolation);
   }
 
   static instance(): CSPViolationBreakpointsSidebarPane {

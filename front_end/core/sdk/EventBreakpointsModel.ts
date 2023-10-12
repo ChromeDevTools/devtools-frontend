@@ -2,58 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import type * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
-import {CategorizedBreakpoint} from './CategorizedBreakpoint.js';
-
-import {Capability, type Target} from './Target.js';
+import {CategorizedBreakpoint, Category} from './CategorizedBreakpoint.js';
 import {SDKModel} from './SDKModel.js';
-
-import {TargetManager, type SDKModelObserver} from './TargetManager.js';
+import {Capability, type Target} from './Target.js';
+import {type SDKModelObserver, TargetManager} from './TargetManager.js';
 
 const UIStrings = {
-  /**
-   * @description Category of breakpoints
-   */
-  auctionWorklet: 'Ad Auction Worklet',
-  /**
-   *@description Text that refers to the animation of the web page
-   */
-  animation: 'Animation',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  canvas: 'Canvas',
-  /**
-   *@description Title for a group of cities
-   */
-  geolocation: 'Geolocation',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  notification: 'Notification',
-  /**
-   *@description Text to parse something
-   */
-  parse: 'Parse',
-  /**
-   *@description Label for a group of JavaScript files
-   */
-  script: 'Script',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  timer: 'Timer',
-  /**
-   *@description Text in DOMDebugger Model
-   */
-  window: 'Window',
-  /**
-   *@description Title of the WebAudio tool
-   */
-  webaudio: 'WebAudio',
   /**
    * @description Name of a breakpoint type.
    * https://github.com/WICG/turtledove/blob/main/FLEDGE.md#32-on-device-bidding
@@ -231,7 +189,7 @@ export class EventBreakpointsModel extends SDKModel<void> {
 // instrumentation breakpoints in targets that run JS but do not have a DOM.
 class EventListenerBreakpoint extends CategorizedBreakpoint {
   readonly instrumentationName: string;
-  constructor(instrumentationName: InstrumentationNames, category: string) {
+  constructor(instrumentationName: InstrumentationNames, category: Category) {
     super(category, getTitleForInstrumentationName(instrumentationName));
     this.instrumentationName = instrumentationName;
   }
@@ -263,38 +221,38 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
   readonly #eventListenerBreakpointsInternal: EventListenerBreakpoint[] = [];
 
   constructor() {
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.auctionWorklet), [
+    this.createInstrumentationBreakpoints(Category.AuctionWorklet, [
       InstrumentationNames.BeforeBidderWorkletBiddingStart,
       InstrumentationNames.BeforeBidderWorkletReportingStart,
       InstrumentationNames.BeforeSellerWorkletScoringStart,
       InstrumentationNames.BeforeSellerWorkletReportingStart,
     ]);
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.animation), [
+    this.createInstrumentationBreakpoints(Category.Animation, [
       InstrumentationNames.RequestAnimationFrame,
       InstrumentationNames.CancelAnimationFrame,
       InstrumentationNames.RequestAnimationFrameCallback,
     ]);
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.canvas), [
+    this.createInstrumentationBreakpoints(Category.Canvas, [
       InstrumentationNames.CanvasContextCreated,
       InstrumentationNames.WebGLErrorFired,
       InstrumentationNames.WebGLWarningFired,
     ]);
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.geolocation), [
+    this.createInstrumentationBreakpoints(Category.Geolocation, [
       InstrumentationNames.GeolocationGetCurrentPosition,
       InstrumentationNames.GeolocationWatchPosition,
     ]);
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.notification), [
+    this.createInstrumentationBreakpoints(Category.Notification, [
       InstrumentationNames.NotificationRequestPermission,
     ]);
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.parse), [
+    this.createInstrumentationBreakpoints(Category.Parse, [
       InstrumentationNames.ElementSetInnerHTML,
       InstrumentationNames.DocumentWrite,
     ]);
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.script), [
+    this.createInstrumentationBreakpoints(Category.Script, [
       InstrumentationNames.ScriptFirstStatement,
       InstrumentationNames.ScriptBlockedByCSP,
     ]);
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.timer), [
+    this.createInstrumentationBreakpoints(Category.Timer, [
       InstrumentationNames.SetTimeout,
       InstrumentationNames.ClearTimeout,
       InstrumentationNames.SetInterval,
@@ -302,10 +260,10 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
       InstrumentationNames.SetTimeoutCallback,
       InstrumentationNames.SetIntervalCallback,
     ]);
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.window), [
+    this.createInstrumentationBreakpoints(Category.Window, [
       InstrumentationNames.DOMWindowClose,
     ]);
-    this.createInstrumentationBreakpoints(i18nString(UIStrings.webaudio), [
+    this.createInstrumentationBreakpoints(Category.WebAudio, [
       InstrumentationNames.AudioContextCreated,
       InstrumentationNames.AudioContextClosed,
       InstrumentationNames.AudioContextResumed,
@@ -326,7 +284,7 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
     return eventBreakpointManagerInstance;
   }
 
-  private createInstrumentationBreakpoints(category: string, instrumentationNames: InstrumentationNames[]): void {
+  private createInstrumentationBreakpoints(category: Category, instrumentationNames: InstrumentationNames[]): void {
     for (const instrumentationName of instrumentationNames) {
       this.#eventListenerBreakpointsInternal.push(new EventListenerBreakpoint(instrumentationName, category));
     }

@@ -197,11 +197,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (this.model) {
       this.model.setWindow({left: windowStartTime, right: windowEndTime}, animate);
     }
-    TraceBounds.TraceBounds.BoundsManager.instance().setNewBounds(
+    TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
         TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
             TraceEngine.Types.Timing.MilliSeconds(windowStartTime),
             TraceEngine.Types.Timing.MilliSeconds(windowEndTime),
             ),
+        {shouldAnimate: animate},
     );
   }
 

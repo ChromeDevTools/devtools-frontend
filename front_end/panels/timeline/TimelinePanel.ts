@@ -508,7 +508,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const right = Number.isFinite(event.data.endTime) ? event.data.endTime : this.performanceModel.maximumRecordTime();
     this.performanceModel.setWindow({left, right}, /* animate */ true, event.data.breadcrumb);
 
-    TraceBounds.TraceBounds.BoundsManager.instance().setNewBounds(
+    TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
         TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
             TraceEngine.Types.Timing.MilliSeconds(left),
             TraceEngine.Types.Timing.MilliSeconds(right),
@@ -1169,7 +1169,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       model.setWindow({left, right});
       this.#minimapComponent.setWindowTimes(left, right);
       if (traceParsedData) {
-        TraceBounds.TraceBounds.BoundsManager.instance().setNewBounds(
+        TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
             TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(left, right),
         );
       }
@@ -1589,7 +1589,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     this.performanceModel.setWindow({left: window.left + offset, right: window.right + offset}, /* animate */ true);
 
-    TraceBounds.TraceBounds.BoundsManager.instance().setNewBounds(
+    TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
         TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
             TraceEngine.Types.Timing.MilliSeconds(window.left + offset),
             TraceEngine.Types.Timing.MilliSeconds(window.right + offset),

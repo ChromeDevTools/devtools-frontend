@@ -2,23 +2,52 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceEngine from '../../models/trace/trace.js';
+import type * as TraceEngine from '../../models/trace/trace.js';
 
 let instance: BoundsManager|null = null;
 
-export class CurrentBoundsChanged extends Event {
-  static readonly eventName = 'currentboundschanged';
+export class TimelineVisibleWindowChanged extends Event {
+  static readonly eventName = 'timelinevisiblewindowchanged';
 
-  constructor(
-      public newBounds: TraceEngine.Types.Timing.TraceWindow,
-      public newBoundsMilliSeconds: TraceEngine.Types.Timing.TraceWindowMilliSeconds, public shouldAnimate: boolean) {
-    super(CurrentBoundsChanged.eventName, {composed: true, bubbles: true});
+  constructor(public state: Readonly<TraceWindows>, public shouldAnimate: boolean) {
+    super(TimelineVisibleWindowChanged.eventName, {composed: true, bubbles: true});
   }
 }
-declare global {
-  interface HTMLElementEventMap {
-    [CurrentBoundsChanged.eventName]: CurrentBoundsChanged;
+
+export class MiniMapBoundsChanged extends Event {
+  static readonly eventName = 'minimapboundschanged';
+
+  constructor(
+      public state: Readonly<TraceWindows>,
+  ) {
+    super(MiniMapBoundsChanged.eventName, {composed: true, bubbles: true});
   }
+}
+
+export interface TraceWindows {
+  /**
+   * This is the bounds of the entire trace. Once a trace is imported/recorded
+   * and this is set, it cannot be changed.
+   */
+  readonly entireTraceBounds: TraceEngine.Types.Timing.TraceWindow;
+  /**
+   * This is the bounds of the minimap and represents the left and right bound
+   * being shown by the minimap. It can be changed by a user action: for
+   * example, when a user creates a breadcrumb, that breadcrumb becomes the
+   * minimap trace bounds. By default, and when a trace is first loaded, the
+   * minimapTraceBounds are equivalent to the entireTraceBounds.
+   */
+  minimapTraceBounds: TraceEngine.Types.Timing.TraceWindow;
+  /**
+   * This represents the trace window that is being shown on the main timeline.
+   * The reason this is called a "Window" rather than "Bounds" is because the
+   * user is not bound by this value - they can use their mouse to pan/zoom
+   * in/out beyond the limits of this window (the limit is the
+   * minimapTraceBounds). Another way to think of this value is that the
+   * min/max of this value is what is represented by the two drag handles on
+   * the TimelineMiniMap that the user can drag to change their current window.
+   */
+  timelineTraceWindow: TraceEngine.Types.Timing.TraceWindow;
 }
 
 export class BoundsManager extends EventTarget {
@@ -40,66 +69,55 @@ export class BoundsManager extends EventTarget {
     instance = null;
   }
 
-  static traceWindowFromMilliSeconds(
-      min: TraceEngine.Types.Timing.MilliSeconds,
-      max: TraceEngine.Types.Timing.MilliSeconds): TraceEngine.Types.Timing.TraceWindow {
-    const traceWindow: TraceEngine.Types.Timing.TraceWindow = {
-      min: TraceEngine.Helpers.Timing.millisecondsToMicroseconds(min),
-      max: TraceEngine.Helpers.Timing.millisecondsToMicroseconds(max),
-      range: TraceEngine.Helpers.Timing.millisecondsToMicroseconds(TraceEngine.Types.Timing.MilliSeconds(max - min)),
-    };
-    return traceWindow;
-  }
-
-  // Represents the bounds of the entire trace. Once set, it cannot be changed.
-  readonly #entireTraceBounds: TraceEngine.Types.Timing.TraceWindow;
-  // Represents the visible bounds that the user is looking at. This can change
-  // as the user works with the panel and e.g. zooms or creates breadcrumbs.
-  #currentBounds: TraceEngine.Types.Timing.TraceWindow;
+  #currentState: TraceWindows;
 
   private constructor(initialBounds: TraceEngine.Types.Timing.TraceWindow) {
     super();
-    this.#entireTraceBounds = initialBounds;
-    this.#currentBounds = initialBounds;
+    this.#currentState = {
+      entireTraceBounds: initialBounds,
+      minimapTraceBounds: initialBounds,
+      timelineTraceWindow: initialBounds,
+    };
   }
 
-  entireTraceBoundsMicroSeconds(): Readonly<TraceEngine.Types.Timing.TraceWindow> {
-    return this.#entireTraceBounds;
-  }
-  entireTraceBoundsMilliSeconds(): Readonly<TraceEngine.Types.Timing.TraceWindowMilliSeconds> {
-    return TraceEngine.Helpers.Timing.traceWindowMilliSeconds(this.#entireTraceBounds);
+  get state(): Readonly<TraceWindows> {
+    return this.#currentState;
   }
 
-  currentBoundsMicroSeconds(): Readonly<TraceEngine.Types.Timing.TraceWindow> {
-    return this.#currentBounds;
+  setMiniMapBounds(newBounds: TraceEngine.Types.Timing.TraceWindow): void {
+    const existingBounds = this.#currentState.minimapTraceBounds;
+    if (newBounds.min === existingBounds.min && newBounds.max === existingBounds.max) {
+      // New bounds are identical to the old ones so no action required.
+      return;
+    }
+
+    if (newBounds.range < 5_000) {
+      // Minimum minimap bounds range is 5 milliseconds.
+      return;
+    }
+
+    this.#currentState.minimapTraceBounds = newBounds;
+    this.dispatchEvent(new MiniMapBoundsChanged(this.#currentState));
   }
 
-  currentBoundsMilliSeconds(): Readonly<TraceEngine.Types.Timing.TraceWindowMilliSeconds> {
-    return TraceEngine.Helpers.Timing.traceWindowMilliSeconds(this.#currentBounds);
-  }
-
-  setNewBounds(bounds: TraceEngine.Types.Timing.TraceWindow, options: {
+  setTimelineVisibleWindow(newWindow: TraceEngine.Types.Timing.TraceWindow, options: {
     shouldAnimate: boolean,
   } = {
     shouldAnimate: false,
   }): void {
-    if (bounds.min === this.#currentBounds.min && bounds.max === this.#currentBounds.max) {
-      // New bounds are identical to the old ones, so we can ignore this update.
+    const existingWindow = this.#currentState.timelineTraceWindow;
+    if (newWindow.min === existingWindow.min && newWindow.max === existingWindow.max) {
+      // New bounds are identical to the old ones so no action required.
       return;
     }
 
-    if (bounds.range < 1000) {
-      // Do not let ranges get to less than 1millisecond.
+    if (newWindow.range < 1_000) {
+      // Minimum timeline visible window range is 1 millisecond.
       return;
     }
 
-    this.#currentBounds = bounds;
-    this.dispatchEvent(
-        new CurrentBoundsChanged(
-            this.currentBoundsMicroSeconds(),
-            this.currentBoundsMilliSeconds(),
-            options.shouldAnimate,
-            ),
-    );
+    this.#currentState.timelineTraceWindow = newWindow;
+
+    this.dispatchEvent(new TimelineVisibleWindowChanged(this.#currentState, options.shouldAnimate));
   }
 }

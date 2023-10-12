@@ -190,15 +190,16 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     }
     if (didWindowOrBreadcrumbChange) {
       this.dispatchEventToListeners(Events.WindowChanged, {window, animate, breadcrumbWindow: breadcrumb});
-      // If we have a breadcrumb, that is the active window. If not, use the actual window.
-      TraceBounds.TraceBounds.BoundsManager.instance().setNewBounds(
-          breadcrumb ||
-              TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
-                  TraceEngine.Types.Timing.MilliSeconds(window.left),
-                  TraceEngine.Types.Timing.MilliSeconds(window.right),
-                  ),
+      TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
+          TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
+              TraceEngine.Types.Timing.MilliSeconds(window.left),
+              TraceEngine.Types.Timing.MilliSeconds(window.right),
+              ),
           {shouldAnimate: Boolean(animate)},
       );
+      if (breadcrumb) {
+        TraceBounds.TraceBounds.BoundsManager.instance().setMiniMapBounds(breadcrumb);
+      }
     }
   }
 

@@ -11,69 +11,97 @@ const baseTraceWindow: TraceEngine.Types.Timing.TraceWindow = {
   range: TraceEngine.Types.Timing.MicroSeconds(10_000),
 };
 
-const baseTraceWindowMilliSeconds: TraceEngine.Types.Timing.TraceWindowMilliSeconds = {
-  min: TraceEngine.Types.Timing.MilliSeconds(0),
-  max: TraceEngine.Types.Timing.MilliSeconds(10),
-  range: TraceEngine.Types.Timing.MilliSeconds(10),
-};
 describe('TraceBounds', () => {
-  it('is initialized with the entire trace window', async () => {
+  it('is initialized with the entire trace window and sets the state accordingly', async () => {
     const manager = TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true, initialBounds: baseTraceWindow});
-    assert.deepEqual(manager.entireTraceBoundsMicroSeconds(), baseTraceWindow);
-    assert.deepEqual(manager.currentBoundsMicroSeconds(), baseTraceWindow);
+    assert.deepEqual(manager.state, {
+      entireTraceBounds: baseTraceWindow,
+      minimapTraceBounds: baseTraceWindow,
+      timelineTraceWindow: baseTraceWindow,
+    });
   });
 
-  it('provides values in milliseconds also', async () => {
+  it('can update the minimap bounds and dispatches events', async () => {
     const manager = TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true, initialBounds: baseTraceWindow});
-    assert.deepEqual(manager.entireTraceBoundsMilliSeconds(), baseTraceWindowMilliSeconds);
-    assert.deepEqual(manager.currentBoundsMilliSeconds(), baseTraceWindowMilliSeconds);
-  });
+    const onMiniMapBoundsChange = sinon.spy();
+    manager.addEventListener(TraceBounds.TraceBounds.MiniMapBoundsChanged.eventName, onMiniMapBoundsChange);
 
-  it('sets the new bounds and dispatches an event to any listeners', async () => {
-    const manager = TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true, initialBounds: baseTraceWindow});
-    const onWindowChange = sinon.spy();
-    manager.addEventListener(TraceBounds.TraceBounds.CurrentBoundsChanged.eventName, onWindowChange);
-
-    const newBoundsMicroSeconds = {
+    const newMiniMapBounds = {
       min: TraceEngine.Types.Timing.MicroSeconds(10_000),
       max: TraceEngine.Types.Timing.MicroSeconds(20_000),
       range: TraceEngine.Types.Timing.MicroSeconds(10_000),
     };
-    const newBoundsMilliSeconds = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(newBoundsMicroSeconds);
 
-    manager.setNewBounds(newBoundsMicroSeconds);
-
-    assert.strictEqual(onWindowChange.callCount, 1);
-    const dataFromEvent = onWindowChange.firstCall.args[0] as TraceBounds.TraceBounds.CurrentBoundsChanged;
-    assert.deepEqual(dataFromEvent.newBounds, newBoundsMicroSeconds);
-    assert.deepEqual(dataFromEvent.newBoundsMilliSeconds, newBoundsMilliSeconds);
-
-    assert.deepEqual(manager.currentBoundsMicroSeconds(), newBoundsMicroSeconds);
-    assert.deepEqual(manager.currentBoundsMilliSeconds(), newBoundsMilliSeconds);
+    manager.setMiniMapBounds(newMiniMapBounds);
+    assert.strictEqual(onMiniMapBoundsChange.callCount, 1);
+    const dataFromEvent = onMiniMapBoundsChange.firstCall.args[0] as TraceBounds.TraceBounds.MiniMapBoundsChanged;
+    assert.deepEqual(dataFromEvent.state, {
+      entireTraceBounds: baseTraceWindow,
+      minimapTraceBounds: newMiniMapBounds,
+      timelineTraceWindow: baseTraceWindow,
+    });
   });
 
-  it('does not dispatch an event if the "new" bounds are identical to the existing ones', async () => {
+  it('can update the visible timeline window and dispatch an event', async () => {
     const manager = TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true, initialBounds: baseTraceWindow});
-    const onWindowChange = sinon.spy();
-    manager.addEventListener(TraceBounds.TraceBounds.CurrentBoundsChanged.eventName, onWindowChange);
+    const onVisibleWindowChange = sinon.spy();
+    manager.addEventListener(TraceBounds.TraceBounds.TimelineVisibleWindowChanged.eventName, onVisibleWindowChange);
 
-    manager.setNewBounds(baseTraceWindow);
+    const newVisibleWindow = {
+      min: TraceEngine.Types.Timing.MicroSeconds(10_000),
+      max: TraceEngine.Types.Timing.MicroSeconds(20_000),
+      range: TraceEngine.Types.Timing.MicroSeconds(10_000),
+    };
 
-    assert.strictEqual(onWindowChange.callCount, 0);
+    manager.setTimelineVisibleWindow(newVisibleWindow);
+
+    assert.strictEqual(onVisibleWindowChange.callCount, 1);
+    const dataFromEvent =
+        onVisibleWindowChange.firstCall.args[0] as TraceBounds.TraceBounds.TimelineVisibleWindowChanged;
+    assert.deepEqual(dataFromEvent.state, {
+      entireTraceBounds: baseTraceWindow,
+      minimapTraceBounds: baseTraceWindow,
+      timelineTraceWindow: newVisibleWindow,
+    });
   });
 
-  it('does not dispatch if the range of the new bounds is 1millseconds or less as that is too small', async () => {
+  it('does not update or dispatch if the range of the new trace window is less than 1ms', async () => {
     const manager = TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true, initialBounds: baseTraceWindow});
-    const onWindowChange = sinon.spy();
-    manager.addEventListener(TraceBounds.TraceBounds.CurrentBoundsChanged.eventName, onWindowChange);
+    const onVisibleWindowChange = sinon.spy();
+    manager.addEventListener(TraceBounds.TraceBounds.TimelineVisibleWindowChanged.eventName, onVisibleWindowChange);
 
-    const newBoundsMicroSeconds = {
+    const newVisibleWindow = {
       min: TraceEngine.Types.Timing.MicroSeconds(10_000),
       max: TraceEngine.Types.Timing.MicroSeconds(10_500),
       range: TraceEngine.Types.Timing.MicroSeconds(500),
     };
-    manager.setNewBounds(newBoundsMicroSeconds);
 
-    assert.strictEqual(onWindowChange.callCount, 0);
+    manager.setTimelineVisibleWindow(newVisibleWindow);
+    assert.strictEqual(onVisibleWindowChange.callCount, 0);
+    assert.deepEqual(manager.state, {
+      entireTraceBounds: baseTraceWindow,
+      minimapTraceBounds: baseTraceWindow,
+      timelineTraceWindow: baseTraceWindow,
+    });
+  });
+
+  it('does not update or dispatch if the range of the new minimap bounds is less than 5ms', async () => {
+    const manager = TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true, initialBounds: baseTraceWindow});
+    const onMiniMapBoundsChange = sinon.spy();
+    manager.addEventListener(TraceBounds.TraceBounds.MiniMapBoundsChanged.eventName, onMiniMapBoundsChange);
+
+    const newMiniMapBounds = {
+      min: TraceEngine.Types.Timing.MicroSeconds(10_000),
+      max: TraceEngine.Types.Timing.MicroSeconds(14_500),
+      range: TraceEngine.Types.Timing.MicroSeconds(4_500),
+    };
+
+    manager.setMiniMapBounds(newMiniMapBounds);
+    assert.strictEqual(onMiniMapBoundsChange.callCount, 0);
+    assert.deepEqual(manager.state, {
+      entireTraceBounds: baseTraceWindow,
+      minimapTraceBounds: baseTraceWindow,
+      timelineTraceWindow: baseTraceWindow,
+    });
   });
 });

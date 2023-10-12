@@ -63,7 +63,7 @@ button {
 button.small {
   --button-height: 20px;
 
-  border-radius: 10px calc(var(--button-has-right-border-radius) * 2px) calc(var(--button-has-right-border-radius) * 2px) 2px;
+  border-radius: 2px calc(var(--button-has-right-border-radius) * 2px) calc(var(--button-has-right-border-radius) * 2px) 2px;
 }
 
 button:focus-visible {
@@ -77,11 +77,14 @@ button.round {
   --button-width: 24px;
 
   background: transparent;
-  border-radius: 12px calc(var(--button-has-right-border-radius) * 2px) calc(var(--button-has-right-border-radius) * 2px) 2px;
   border: none;
   overflow: hidden;
   padding: 0;
   white-space: nowrap;
+}
+
+button.toolbar {
+  border-radius: 2px calc(var(--button-has-right-border-radius) * 2px) calc(var(--button-has-right-border-radius) * 2px) 2px;
 }
 
 button.round {

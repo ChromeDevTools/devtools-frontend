@@ -264,6 +264,10 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
         const computedColorValue = categories[categoryOrder[i]].getComputedValue();
         ctx.fillStyle = computedColorValue;
         ctx.fill(paths[i]);
+
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 1;
+        ctx.stroke(paths[i]);
       }
     }
 

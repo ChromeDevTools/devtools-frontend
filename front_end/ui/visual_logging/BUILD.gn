@@ -28,6 +28,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     "../../../test/unittests/front_end/ui/visual_logging/*",
     "../../entrypoints/main/*",
+    "../../panels/*",
     "../legacy/*",
   ]
 }

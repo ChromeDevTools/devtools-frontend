@@ -665,6 +665,7 @@ grd_files_release_sources = [
   "front_end/ui/legacy/theme_support/theme_support.js",
   "front_end/ui/legacy/utils/utils.js",
   "front_end/ui/lit-html/lit-html.js",
+  "front_end/ui/visual_logging/visual_logging.js",
   "front_end/worker_app.html",
 ]
 
@@ -2134,6 +2135,11 @@ grd_files_debug_sources = [
   "front_end/ui/legacy/utils/register-custom-element.js",
   "front_end/ui/legacy/viewContainers.css.legacy.js",
   "front_end/ui/lit-html/static.js",
+  "front_end/ui/visual_logging/DomState.js",
+  "front_end/ui/visual_logging/LoggingConfig.js",
+  "front_end/ui/visual_logging/LoggingDriver.js",
+  "front_end/ui/visual_logging/LoggingEvents.js",
+  "front_end/ui/visual_logging/LoggingState.js",
 ]
 
 # Confirm that there is no overlap between the two lists.

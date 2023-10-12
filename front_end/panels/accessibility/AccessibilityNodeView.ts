@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import accessibilityNodeStyles from './accessibilityNode.css.js';
 import {AXAttributes, AXNativeSourceTypes, AXSourceTypes} from './AccessibilityStrings.js';
@@ -124,6 +125,7 @@ export class AXNodeSubPane extends AccessibilitySubPane {
     this.axNode = null;
 
     this.contentElement.classList.add('ax-subpane');
+    this.contentElement.setAttribute('jslog', `${VisualLogging.accessibilityComputedProperties()}`);
 
     this.noNodeInfo = this.createInfo(i18nString(UIStrings.noAccessibilityNode));
     this.ignoredInfo = this.createInfo(i18nString(UIStrings.accessibilityNodeNotExposed), 'ax-ignored-info hidden');

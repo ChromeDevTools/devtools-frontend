@@ -7,10 +7,21 @@ import * as LoggingState from './LoggingState.js';
 
 const {startLogging} = LoggingDriver;
 const {registerContextProvider} = LoggingState;
-const treeItem = LoggingConfig.makeConfigStringBuilder('TreeItem');
+const treeItem = LoggingConfig.makeConfigStringBuilder.bind(null, 'TreeItem');
+const ariaAttributes = LoggingConfig.makeConfigStringBuilder.bind(null, 'AriaAttributes');
+const accessibilityComputedProperties =
+    LoggingConfig.makeConfigStringBuilder.bind(null, 'AccessibilityComputedProperties');
+const accessibilityPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'AccessibilityPane');
+const accessibilitySourceOrder = LoggingConfig.makeConfigStringBuilder.bind(null, 'AccessibilitySourceOrder');
+const toggle = LoggingConfig.makeConfigStringBuilder.bind(null, 'Toggle');
 
 export {
   startLogging,
   registerContextProvider,
   treeItem,
+  ariaAttributes,
+  accessibilityComputedProperties,
+  accessibilityPane,
+  accessibilitySourceOrder,
+  toggle,
 };

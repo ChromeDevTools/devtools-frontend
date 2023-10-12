@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../panels/console/console-legacy.js';
 import '../../ui/legacy/components/object_ui/object_ui-legacy.js';
 
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Console from '../../panels/console/console.js';
 import * as ConsoleCounters from '../../panels/console_counters/console_counters.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {TestRunner} from '../test_runner/test_runner.js';
@@ -38,7 +38,7 @@ ConsoleTestRunner.dumpConsoleMessages = async function(printOriginatingCommand, 
 ConsoleTestRunner.dumpConsoleMessagesIntoArray = async function(printOriginatingCommand, dumpClassNames, formatter) {
   formatter = formatter || ConsoleTestRunner.prepareConsoleMessageText;
   const result = [];
-  const consoleView = Console.ConsoleView.instance();
+  const consoleView = Console.ConsoleView.ConsoleView.instance();
   const originalViewportStyle = consoleView.viewport.element.style;
   const originalSize = {width: originalViewportStyle.width, height: originalViewportStyle.height};
   ConsoleTestRunner.disableConsoleViewport();
@@ -125,14 +125,14 @@ ConsoleTestRunner.prepareConsoleMessageTextTrimmed = function(messageElement) {
 };
 
 /**
- * @param {!Console.ConsoleViewMessage} viewMessage
+ * @param {!Console.ConsoleViewMessage.ConsoleViewMessage} viewMessage
  * @param {boolean} forceInvalidate
  * @param {!Array<string>} results
  * @return {boolean}
  */
 ConsoleTestRunner.dumpConsoleTableMessage = function(viewMessage, forceInvalidate, results) {
   if (forceInvalidate) {
-    Console.ConsoleView.instance().viewport.invalidate();
+    Console.ConsoleView.ConsoleView.instance().viewport.invalidate();
   }
   const formattedTable = viewMessage.element().querySelector('.console-message-formatted-table');
   if (!formattedTable) {
@@ -189,7 +189,7 @@ ConsoleTestRunner.disableConsoleViewport = function() {
  * @param {number} height
  */
 ConsoleTestRunner.fixConsoleViewportDimensions = function(width, height) {
-  const viewport = Console.ConsoleView.instance().viewport;
+  const viewport = Console.ConsoleView.ConsoleView.instance().viewport;
   viewport.element.style.width = width + 'px';
   viewport.element.style.height = height + 'px';
   viewport.element.style.position = 'absolute';
@@ -217,7 +217,7 @@ ConsoleTestRunner.evaluateInConsole = function(code, callback, dontForceMainCont
   }
   callback = TestRunner.safeWrap(callback);
 
-  const consoleView = Console.ConsoleView.instance();
+  const consoleView = Console.ConsoleView.ConsoleView.instance();
   consoleView.prompt.appendCommand(code, true);
   ConsoleTestRunner.addConsoleViewSniffer(function(commandResult) {
     const element = commandResult.toMessageElement();
@@ -248,11 +248,11 @@ ConsoleTestRunner.evaluateInConsolePromise = function(code, dontForceMainContext
  * @param {boolean=} opt_sticky
  */
 ConsoleTestRunner.addConsoleViewSniffer = function(override, opt_sticky) {
-  TestRunner.addSniffer(Console.ConsoleView.prototype, 'consoleMessageAddedForTest', override, opt_sticky);
+  TestRunner.addSniffer(Console.ConsoleView.ConsoleView.prototype, 'consoleMessageAddedForTest', override, opt_sticky);
 };
 
 ConsoleTestRunner.waitForPendingViewportUpdates = async function() {
-  const refreshPromise = Console.ConsoleView.instance().scheduledRefreshPromiseForTest || Promise.resolve();
+  const refreshPromise = Console.ConsoleView.ConsoleView.instance().scheduledRefreshPromiseForTest || Promise.resolve();
   await refreshPromise;
 };
 
@@ -287,7 +287,7 @@ ConsoleTestRunner.evaluateInConsoleAndDumpPromise = function(code, dontForceMain
  * @return {number}
  */
 ConsoleTestRunner.consoleMessagesCount = function() {
-  const consoleView = Console.ConsoleView.instance();
+  const consoleView = Console.ConsoleView.ConsoleView.instance();
   return consoleView.consoleMessages.length;
 };
 
@@ -340,7 +340,7 @@ ConsoleTestRunner.dumpConsoleMessagesIgnoreErrorStackFrames =
 };
 
 ConsoleTestRunner.dumpConsoleMessagesWithStyles = function() {
-  const messageViews = Console.ConsoleView.instance().visibleViewMessages;
+  const messageViews = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
   for (let i = 0; i < messageViews.length; ++i) {
     const element = messageViews[i].element();
     const messageText = ConsoleTestRunner.prepareConsoleMessageText(element);
@@ -358,7 +358,7 @@ ConsoleTestRunner.dumpConsoleMessagesWithStyles = function() {
  */
 ConsoleTestRunner.dumpConsoleMessagesWithClasses = async function(sortMessages, trimMessages) {
   const result = [];
-  const messageViews = Console.ConsoleView.instance().visibleViewMessages;
+  const messageViews = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
   for (let i = 0; i < messageViews.length; ++i) {
     const element = messageViews[i].element();
     const contentElement = messageViews[i].contentElement();
@@ -377,7 +377,7 @@ ConsoleTestRunner.dumpConsoleMessagesWithClasses = async function(sortMessages, 
 };
 
 ConsoleTestRunner.dumpConsoleClassesBrief = async function() {
-  const messageViews = Console.ConsoleView.instance().visibleViewMessages;
+  const messageViews = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
   for (let i = 0; i < messageViews.length; ++i) {
     const repeatText = messageViews[i].repeatCount() > 1 ? (' x' + messageViews[i].repeatCount()) : '';
     const element = messageViews[i].toMessageElement();
@@ -403,8 +403,8 @@ ConsoleTestRunner.dumpConsoleCounters = async function() {
  * @param {function(!ObjectUI.ObjectPropertiesSection):boolean} sectionFilter
  */
 ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, sectionFilter) {
-  Console.ConsoleView.instance().invalidateViewport();
-  const messageViews = Console.ConsoleView.instance().visibleViewMessages;
+  Console.ConsoleView.ConsoleView.instance().invalidateViewport();
+  const messageViews = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
 
   // Initiate round-trips to fetch necessary data for further rendering.
   for (let i = 0; i < messageViews.length; ++i) {
@@ -463,7 +463,7 @@ ConsoleTestRunner.expandConsoleMessagesPromise = function(deepFilter, sectionFil
  * @param {!Function} callback
  */
 ConsoleTestRunner.expandGettersInConsoleMessages = function(callback) {
-  const messageViews = Console.ConsoleView.instance().visibleViewMessages;
+  const messageViews = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
   const properties = [];
   let propertiesCount = 0;
   TestRunner.addSniffer(ObjectUI.ObjectPropertyTreeElement.prototype, 'updateExpandable', propertyExpandableUpdated);
@@ -496,7 +496,7 @@ ConsoleTestRunner.expandGettersInConsoleMessages = function(callback) {
  * @param {!Function} callback
  */
 ConsoleTestRunner.expandConsoleMessagesErrorParameters = function(callback) {
-  const messageViews = Console.ConsoleView.instance().visibleViewMessages;
+  const messageViews = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
   // Initiate round-trips to fetch necessary data for further rendering.
   for (let i = 0; i < messageViews.length; ++i) {
     messageViews[i].element();
@@ -508,7 +508,7 @@ ConsoleTestRunner.expandConsoleMessagesErrorParameters = function(callback) {
  * @param {!Function} callback
  */
 ConsoleTestRunner.waitForRemoteObjectsConsoleMessages = function(callback) {
-  const messages = Console.ConsoleView.instance().visibleViewMessages;
+  const messages = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
   for (let i = 0; i < messages.length; ++i) {
     messages[i].toMessageElement();
   }
@@ -530,11 +530,12 @@ ConsoleTestRunner.waitUntilConsoleEditorLoaded = function() {
   const promise = new Promise(x => {
     fulfill = x;
   });
-  const prompt = Console.ConsoleView.instance().prompt;
+  const prompt = Console.ConsoleView.ConsoleView.instance().prompt;
   if (prompt.editor) {
     fulfill(prompt.editor);
   } else {
-    TestRunner.addSniffer(Console.ConsolePrompt.prototype, 'editorSetForTest', _ => fulfill(prompt.editor));
+    TestRunner.addSniffer(
+        Console.ConsolePrompt.ConsolePrompt.prototype, 'editorSetForTest', _ => fulfill(prompt.editor));
   }
   return promise;
 };
@@ -580,7 +581,7 @@ ConsoleTestRunner.waitUntilNthMessageReceivedPromise = function(count) {
  * @param {string} namePrefix
  */
 ConsoleTestRunner.changeExecutionContext = function(namePrefix) {
-  const selector = Console.ConsoleView.instance().consoleContextSelector;
+  const selector = Console.ConsoleView.ConsoleView.instance().consoleContextSelector;
   for (const executionContext of selector.items) {
     if (selector.titleFor(executionContext).startsWith(namePrefix)) {
       UI.Context.Context.instance().setFlavor(SDK.ExecutionContext, executionContext);
@@ -595,7 +596,7 @@ ConsoleTestRunner.changeExecutionContext = function(namePrefix) {
  * @param {!Function} callback
  */
 ConsoleTestRunner.waitForConsoleMessages = function(expectedCount, callback) {
-  const consoleView = Console.ConsoleView.instance();
+  const consoleView = Console.ConsoleView.ConsoleView.instance();
   checkAndReturn();
 
   function checkAndReturn() {
@@ -625,7 +626,7 @@ ConsoleTestRunner.waitForConsoleMessagesPromise = async function(expectedCount) 
  * @param {number} toTextOffset
  */
 ConsoleTestRunner.selectConsoleMessages = async function(fromMessage, fromTextOffset, toMessage, toTextOffset) {
-  const consoleView = Console.ConsoleView.instance();
+  const consoleView = Console.ConsoleView.ConsoleView.instance();
   const fromElement = consoleView.itemElement(fromMessage).element();
   const toElement = consoleView.itemElement(toMessage).element();
   await TestRunner.waitForPendingLiveLocationUpdates();
@@ -682,7 +683,7 @@ ConsoleTestRunner.wrapListener = function(func) {
 };
 
 ConsoleTestRunner.dumpStackTraces = function() {
-  const viewMessages = Console.ConsoleView.instance().visibleViewMessages;
+  const viewMessages = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
   for (let i = 0; i < viewMessages.length; ++i) {
     const m = viewMessages[i].consoleMessage();
     TestRunner.addResult(
@@ -704,7 +705,7 @@ ConsoleTestRunner.dumpStackTraces = function() {
  * @return {!{first: number, last: number, count: number}}
  */
 ConsoleTestRunner.visibleIndices = function() {
-  const consoleView = Console.ConsoleView.instance();
+  const consoleView = Console.ConsoleView.ConsoleView.instance();
   const viewport = consoleView.viewport;
   const viewportRect = viewport.element.getBoundingClientRect();
   let first = -1;

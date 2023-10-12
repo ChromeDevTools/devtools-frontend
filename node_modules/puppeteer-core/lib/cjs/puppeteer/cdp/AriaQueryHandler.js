@@ -19,6 +19,7 @@ exports.ARIAQueryHandler = void 0;
 const QueryHandler_js_1 = require("../common/QueryHandler.js");
 const assert_js_1 = require("../util/assert.js");
 const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
+const NON_ELEMENT_NODE_ROLES = new Set(['StaticText', 'InlineTextBox']);
 const queryAXTree = async (client, element, accessibleName, role) => {
     const { nodes } = await client.send('Accessibility.queryAXTree', {
         objectId: element.id,
@@ -26,7 +27,7 @@ const queryAXTree = async (client, element, accessibleName, role) => {
         role,
     });
     return nodes.filter((node) => {
-        return !node.role || node.role.value !== 'StaticText';
+        return !node.role || !NON_ELEMENT_NODE_ROLES.has(node.role.value);
     });
 };
 const isKnownAttribute = (attribute) => {

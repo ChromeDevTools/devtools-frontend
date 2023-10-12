@@ -96,9 +96,9 @@ Since DevTools is a complex application that integrates with Chromium, it is bui
 The build system ensures that all relevant files are correctly defined for consumption by Chromium.
 It also integrates with (third_party) tooling such as a type checker ([TypeScript]) and upstream Chromium packages ([Chrome DevTools Protocol]).
 
-DevTools-specific GN templates are defined in [scripts/build/ninja/](scripts/build/ninja/).
-Chromium consumes the output of the DevTools GN target [:generate_devtools_grd defined in BUILD.gn](BUILD.gn), which generates a GRD bundle using [GRIT].
-Detailed descriptions about each template are included in [scripts/build/ninja/README.md](scripts/build/ninja/README.md).
+DevTools-specific GN templates are defined in [scripts/build/ninja/](../scripts/build/ninja/).
+Chromium consumes the output of the DevTools GN target [:generate_devtools_grd defined in BUILD.gn](../BUILD.gn), which generates a GRD bundle using [GRIT].
+Detailed descriptions about each template are included in [scripts/build/ninja/README.md](../scripts/build/ninja/README.md).
 
 # Startup process overview
 
@@ -113,7 +113,7 @@ Features themselves use static imports for loading core and feature-specific fun
 
 ![A high-level overview of how feature implementations are lazily loaded in the DevTools startup process](architecture_of_devtools_lazy_loading_features.png)
 
-Enforcement of the rules regarding loading is implemented using the [ESLint] rule defined in [scripts/eslint_rules/lib/es_modules_import.js](scripts/eslint_rules/lib/es_modules_import.js).
+Enforcement of the rules regarding loading is implemented using the [ESLint] rule defined in [scripts/eslint_rules/lib/es_modules_import.js](../scripts/eslint_rules/lib/es_modules_import.js).
 
 ## DevTools application entrypoints
 
@@ -132,18 +132,18 @@ Extensions add functionality to the DevTools application using declarative regis
 There are multiple types of extensions, including how DevTools handles its own internal business logic or to declare user-facing features with localized strings.
 There are 4 main types of extensions:
 
-* [UI.ActionRegistration.Action](front_end/ui/ActionRegistration.ts)
-* [UI.View.View](front_end/ui/View.js)
-* [Common.Settings.Setting](front_end/common/Settings.js)
+* [UI.ActionRegistration.Action](../front_end/ui/legacy/ActionRegistration.ts)
+* [UI.View.View](../front_end/ui/legacy/View.ts)
+* [Common.Settings.Setting](../front_end/core/common/Settings.ts)
 * General type lookups.
 
 Each specific extension is documented in the README of their respective folder.
 
 The registration of a particular extension implemented in `module` must always be declared in a `<module>-meta.ts` in the same folder.
 The meta files should be included by all relevant DevTools application entrypoints.
-If you want to make functionality available in all DevTools application entrypoints, you can import it in [shell.js](front_end/shell.js).
+If you want to make functionality available in all DevTools application entrypoints, you can import it in [shell.ts](../front_end/entrypoints/shell.ts).
 
-For example, the meta declaration file for [front_end/network/](front_end/network/) is called [front_end/network/network-meta.ts](front_end/network/network-meta.ts) and defined in [front_end/network/BUILD.gn](front_end/network/BUILD.gn):
+For example, the meta declaration file for [front_end/panels/network/](../front_end/panels/network/) is called [front_end/panels/network/network-meta.ts](../front_end/panels/network/network-meta.ts) and defined in [front_end/panels/network/BUILD.gn](../front_end/panels/network/BUILD.gn):
 
 ```python
 devtools_entrypoint("meta") {
@@ -156,7 +156,7 @@ devtools_entrypoint("meta") {
 }
 ```
 
-Below is an example implementation of a `<module>-meta.ts` (using [front_end/network/network-meta.ts](front_end/network/network-meta.ts) as running example).
+Below is an example implementation of a `<module>-meta.ts` (using [front_end/panels/network/network-meta.ts](../front_end/panels/network/network-meta.ts) as running example).
 For information about the localization system, please see [l10n.md](l10n.md).
 
 ```ts
@@ -257,7 +257,7 @@ UI.ActionRegistration.registerActionExtension({
 });
 ```
 
-The ":meta" `devtools_entrypoint` is added as a dependency to all DevTools application entrypoints defined in [front_end/BUILD.gn](front_end/BUILD.gn).
+The ":meta" `devtools_entrypoint` is added as a dependency to all DevTools application entrypoints defined in [front_end/BUILD.gn](../front_end/BUILD.gn).
 
 # Folder structure
 

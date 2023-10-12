@@ -6,17 +6,14 @@
 
 <!-- [END badges] -->
 
-The client-side of the Chrome DevTools, including all JS & CSS to run the DevTools webapp.
+The client-side of the Chrome DevTools, including all TypeScript & CSS to run the DevTools webapp.
 
-### Source code
+### Source code and documentation
 
 The frontend is available on [chromium.googlesource.com](https://chromium.googlesource.com/devtools/devtools-frontend).
-
-### Project documentation
-
 Check out the [project documentation](https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/README.md)
-for instructions to set up, use, and maintain a DevTools front-end checkout, as well as design guidelines, and architectural
-documentation.
+for instructions to [set up](https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/get_the_code.md), use, and
+maintain a DevTools front-end checkout, as well as design guidelines, and architectural documentation.
 
 ### Additional references
 

@@ -30,7 +30,7 @@ describe('LoggingDriver', () => {
     parent.style.height = '300px';
     const element = document.createElement('div') as HTMLElement;
     element.id = 'element';
-    element.setAttribute('jslog', 'TreeItem; context:42; track: click');
+    element.setAttribute('jslog', 'TreeItem; context:42; track: click, keydown');
     element.style.width = '300px';
     element.style.height = '300px';
     parent.appendChild(element);
@@ -139,5 +139,26 @@ describe('LoggingDriver', () => {
     parent.click();
 
     assert.isFalse(recordClick.called);
+  });
+
+  it('logs keydown', async () => {
+    const domProcessingThrottler = new Common.Throttler.Throttler(100000);
+    const keyboardLogThrottler = new Common.Throttler.Throttler(100000);
+    addLoggableElements();
+    await VisualLogging.startLogging({domProcessingThrottler, keyboardLogThrottler});
+    const recordKeyDown = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordKeyDown',
+    );
+
+    const element = document.getElementById('element') as HTMLElement;
+    element.dispatchEvent(new KeyboardEvent('keydown', {'key': 'a'}));
+    element.dispatchEvent(new KeyboardEvent('keydown', {'key': 'b'}));
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.exists(keyboardLogThrottler.process);
+    assert.isFalse(recordKeyDown.called);
+
+    await keyboardLogThrottler.process?.();
+    assert.isTrue(recordKeyDown.calledOnce);
   });
 });

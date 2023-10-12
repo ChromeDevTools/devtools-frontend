@@ -23,7 +23,7 @@ export async function startLogging(
     options?: {domProcessingThrottler?: Common.Throttler.Throttler, keyboardLogThrottler?: Common.Throttler.Throttler}):
     Promise<void> {
   domProcessingThrottler = options?.domProcessingThrottler || new Common.Throttler.Throttler(PROCESS_DOM_INTERVAL);
-  keyboardLogThrottler = options?.domProcessingThrottler || new Common.Throttler.Throttler(KEYBOARD_LOG_INTERVAL);
+  keyboardLogThrottler = options?.keyboardLogThrottler || new Common.Throttler.Throttler(KEYBOARD_LOG_INTERVAL);
   if (['interactive', 'complete'].includes(document.readyState)) {
     await processDom();
   }
@@ -71,9 +71,10 @@ async function processDom(): Promise<void> {
       if (loggingState.config.track?.has('change')) {
         element.addEventListener('change', logChange, {capture: true});
       }
-      const trackKeyDown = loggingState.config.track?.get('keydown');
+      const trackKeyDown = loggingState.config.track?.has('keydown');
+      const codes = loggingState.config.track?.get('keydown')?.split(',') || [];
       if (trackKeyDown) {
-        element.addEventListener('keydown', logKeyDown(trackKeyDown.split(','), keyboardLogThrottler), {capture: true});
+        element.addEventListener('keydown', logKeyDown(codes, keyboardLogThrottler), {capture: true});
       }
       loggingState.processed = true;
     }

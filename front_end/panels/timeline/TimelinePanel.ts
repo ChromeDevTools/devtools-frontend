@@ -507,6 +507,16 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const left = (event.data.startTime > 0) ? event.data.startTime : this.performanceModel.minimumRecordTime();
     const right = Number.isFinite(event.data.endTime) ? event.data.endTime : this.performanceModel.maximumRecordTime();
     this.performanceModel.setWindow({left, right}, /* animate */ true, event.data.breadcrumb);
+
+    TraceBounds.TraceBounds.BoundsManager.instance().setNewBounds(
+        TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
+            TraceEngine.Types.Timing.MilliSeconds(left),
+            TraceEngine.Types.Timing.MilliSeconds(right),
+            ),
+        {
+          shouldAnimate: true,
+        },
+    );
   }
 
   private onModelWindowChanged(event: Common.EventTarget.EventTargetEvent<WindowChangedEvent>): void {
@@ -1155,8 +1165,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(profile.cpuProfileData, profile.target);
       }
       this.flameChart.setSelection(null);
-      model.zoomWindowToMainThreadActivity();
-      this.#minimapComponent.setWindowTimes(model.window().left, model.window().right);
+      const {left, right} = model.calculateWindowForMainThreadActivity();
+      model.setWindow({left, right});
+      this.#minimapComponent.setWindowTimes(left, right);
+      if (traceParsedData) {
+        TraceBounds.TraceBounds.BoundsManager.instance().setNewBounds(
+            TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(left, right),
+        );
+      }
     }
 
     this.updateOverviewControls();
@@ -1572,6 +1588,16 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       offset = startTime - window.left;
     }
     this.performanceModel.setWindow({left: window.left + offset, right: window.right + offset}, /* animate */ true);
+
+    TraceBounds.TraceBounds.BoundsManager.instance().setNewBounds(
+        TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
+            TraceEngine.Types.Timing.MilliSeconds(window.left + offset),
+            TraceEngine.Types.Timing.MilliSeconds(window.right + offset),
+            ),
+        {
+          shouldAnimate: true,
+        },
+    );
   }
 
   private handleDrop(dataTransfer: DataTransfer): void {

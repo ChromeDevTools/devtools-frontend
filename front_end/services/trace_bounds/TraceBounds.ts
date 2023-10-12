@@ -11,8 +11,13 @@ export class CurrentBoundsChanged extends Event {
 
   constructor(
       public newBounds: TraceEngine.Types.Timing.TraceWindow,
-      public newBoundsMilliSeconds: TraceEngine.Types.Timing.TraceWindowMilliSeconds) {
+      public newBoundsMilliSeconds: TraceEngine.Types.Timing.TraceWindowMilliSeconds, public shouldAnimate: boolean) {
     super(CurrentBoundsChanged.eventName, {composed: true, bubbles: true});
+  }
+}
+declare global {
+  interface HTMLElementEventMap {
+    [CurrentBoundsChanged.eventName]: CurrentBoundsChanged;
   }
 }
 
@@ -73,7 +78,11 @@ export class BoundsManager extends EventTarget {
     return TraceEngine.Helpers.Timing.traceWindowMilliSeconds(this.#currentBounds);
   }
 
-  setNewBounds(bounds: TraceEngine.Types.Timing.TraceWindow): void {
+  setNewBounds(bounds: TraceEngine.Types.Timing.TraceWindow, options: {
+    shouldAnimate: boolean,
+  } = {
+    shouldAnimate: false,
+  }): void {
     if (bounds.min === this.#currentBounds.min && bounds.max === this.#currentBounds.max) {
       // New bounds are identical to the old ones, so we can ignore this update.
       return;
@@ -89,6 +98,7 @@ export class BoundsManager extends EventTarget {
         new CurrentBoundsChanged(
             this.currentBoundsMicroSeconds(),
             this.currentBoundsMilliSeconds(),
+            options.shouldAnimate,
             ),
     );
   }

@@ -10,6 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -196,6 +197,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (this.model) {
       this.model.setWindow({left: windowStartTime, right: windowEndTime}, animate);
     }
+    TraceBounds.TraceBounds.BoundsManager.instance().setNewBounds(
+        TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
+            TraceEngine.Types.Timing.MilliSeconds(windowStartTime),
+            TraceEngine.Types.Timing.MilliSeconds(windowEndTime),
+            ),
+    );
   }
 
   updateRangeSelection(startTime: number, endTime: number): void {

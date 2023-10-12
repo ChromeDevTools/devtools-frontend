@@ -25,17 +25,23 @@ async function renderMiniMap(containerSelector: string, options: {showMemory: bo
   if (!container) {
     throw new Error('could not find container');
   }
+
+  const models = await TraceLoader.TraceLoader.allModels(null, fileName);
+
+  const {left, right} = models.performanceModel.calculateWindowForMainThreadActivity();
+  models.performanceModel.setWindow({left, right});
+
   const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
+
   minimap.activateBreadcrumbs();
   minimap.markAsRoot();
   minimap.show(container);
-
-  const models = await TraceLoader.TraceLoader.allModels(null, fileName);
 
   minimap.setBounds(
       TraceEngine.Types.Timing.MilliSeconds(models.timelineModel.minimumRecordTime()),
       TraceEngine.Types.Timing.MilliSeconds(models.timelineModel.maximumRecordTime()),
   );
+
   minimap.setData({
     traceParsedData: models.traceParsedData,
     performanceModel: models.performanceModel,
@@ -44,7 +50,6 @@ async function renderMiniMap(containerSelector: string, options: {showMemory: bo
       showScreenshots: true,
     },
   });
-  models.performanceModel.zoomWindowToMainThreadActivity();
   if (customStartWindowTime && customEndWindowTime) {
     minimap.setWindowTimes(Number(customStartWindowTime), Number(customEndWindowTime));
   } else {

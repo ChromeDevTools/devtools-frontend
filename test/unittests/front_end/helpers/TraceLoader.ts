@@ -5,6 +5,7 @@
 import type * as TimelineModel from '../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
+import * as TraceBounds from '../../../../front_end/services/trace_bounds/trace_bounds.js';
 
 // We maintain three caches:
 // 1. The file contents JSON.parsed for a given trace file.
@@ -164,6 +165,11 @@ export class TraceLoader {
     tracingModel.tracingComplete();
     await performanceModel.setTracingModel(tracingModel);
     const timelineModel = performanceModel.timelineModel();
+
+    TraceBounds.TraceBounds.BoundsManager.instance({
+      forceNew: true,
+      initialBounds: traceEngineData.traceParsedData.Meta.traceBounds,
+    });
 
     const result: AllModelsLoaded = {
       tracingModel,

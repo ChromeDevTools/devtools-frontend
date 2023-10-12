@@ -7,7 +7,8 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
+import * as TraceEngine from '../../models/trace/trace.js';
+import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
@@ -189,6 +190,15 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     }
     if (didWindowOrBreadcrumbChange) {
       this.dispatchEventToListeners(Events.WindowChanged, {window, animate, breadcrumbWindow: breadcrumb});
+      // If we have a breadcrumb, that is the active window. If not, use the actual window.
+      TraceBounds.TraceBounds.BoundsManager.instance().setNewBounds(
+          breadcrumb ||
+              TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
+                  TraceEngine.Types.Timing.MilliSeconds(window.left),
+                  TraceEngine.Types.Timing.MilliSeconds(window.right),
+                  ),
+          {shouldAnimate: Boolean(animate)},
+      );
     }
   }
 
@@ -204,7 +214,10 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     return this.timelineModelInternal.maximumRecordTime();
   }
 
-  zoomWindowToMainThreadActivity(): void {
+  calculateWindowForMainThreadActivity(): {
+    left: TraceEngine.Types.Timing.MilliSeconds,
+    right: TraceEngine.Types.Timing.MilliSeconds,
+  } {
     const timelineModel = this.timelineModelInternal;
     let tasks: TraceEngine.Legacy.Event[] = [];
     for (const track of timelineModel.tracks()) {
@@ -214,8 +227,10 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
       }
     }
     if (!tasks.length) {
-      this.setWindow({left: timelineModel.minimumRecordTime(), right: timelineModel.maximumRecordTime()});
-      return;
+      return {
+        left: TraceEngine.Types.Timing.MilliSeconds(timelineModel.minimumRecordTime()),
+        right: TraceEngine.Types.Timing.MilliSeconds(timelineModel.maximumRecordTime()),
+      };
     }
 
     /**
@@ -264,7 +279,10 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
       leftTime = Math.max(leftTime - 0.05 * zoomedInSpan, timelineModel.minimumRecordTime());
       rightTime = Math.min(rightTime + 0.05 * zoomedInSpan, timelineModel.maximumRecordTime());
     }
-    this.setWindow({left: leftTime, right: rightTime});
+    return {
+      left: TraceEngine.Types.Timing.MilliSeconds(leftTime),
+      right: TraceEngine.Types.Timing.MilliSeconds(rightTime),
+    };
   }
 }
 

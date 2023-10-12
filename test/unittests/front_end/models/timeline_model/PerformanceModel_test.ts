@@ -54,9 +54,9 @@ describeWithEnvironment('PerformanceModel', () => {
 
     const perfModel = new Timeline.PerformanceModel.PerformanceModel();
     await perfModel.setTracingModel(tracingModel);
-    perfModel.zoomWindowToMainThreadActivity();
+    const newWindow = perfModel.calculateWindowForMainThreadActivity();
 
-    assert.deepEqual(perfModel.window(), {
+    assert.deepEqual(newWindow, {
       // Left window = 100ms which is the first timestamp of the first event
       left: 100,
       // Right window = 450ms which is the end of the last event (400ms start, 50ms duration)
@@ -115,9 +115,9 @@ describeWithEnvironment('PerformanceModel', () => {
 
     const perfModel = new Timeline.PerformanceModel.PerformanceModel();
     await perfModel.setTracingModel(tracingModel);
-    perfModel.zoomWindowToMainThreadActivity();
+    const newWindow = perfModel.calculateWindowForMainThreadActivity();
 
-    assert.deepEqual(perfModel.window(), {
+    assert.deepEqual(newWindow, {
       // This trace has:
       // 1 event at 1
       // 4 events between 200 and 230ms
@@ -183,9 +183,9 @@ describeWithEnvironment('PerformanceModel', () => {
 
     const perfModel = new Timeline.PerformanceModel.PerformanceModel();
     await perfModel.setTracingModel(tracingModel);
-    perfModel.zoomWindowToMainThreadActivity();
+    const newWindow = perfModel.calculateWindowForMainThreadActivity();
 
-    assert.deepEqual(perfModel.window(), {
+    assert.deepEqual(newWindow, {
       left: tracingModel.minimumRecordTime(),
       right: tracingModel.maximumRecordTime(),
     });

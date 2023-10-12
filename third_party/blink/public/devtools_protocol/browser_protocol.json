@@ -15275,6 +15275,28 @@
                     ]
                 },
                 {
+                    "id": "WindowControlsOverlayConfig",
+                    "description": "Configuration for Windows Control Overlay",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "showCSS",
+                            "description": "Whether the title bar CSS should be shown when emulating the Window Controls Overlay.",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "selectedPlatform",
+                            "description": "Seleted platforms to show the overlay.",
+                            "type": "string"
+                        },
+                        {
+                            "name": "themeColor",
+                            "description": "The theme color defined in app manifest.",
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
                     "id": "ContainerQueryHighlightConfig",
                     "type": "object",
                     "properties": [
@@ -15806,6 +15828,18 @@
                             "items": {
                                 "$ref": "IsolatedElementHighlightConfig"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "setShowWindowControlsOverlay",
+                    "description": "Show Window Controls Overlay for PWA",
+                    "parameters": [
+                        {
+                            "name": "windowControlsOverlayConfig",
+                            "description": "Window Controls Overlay data, null means hide WCO",
+                            "optional": true,
+                            "$ref": "WindowControlsOverlayConfig"
                         }
                     ]
                 }

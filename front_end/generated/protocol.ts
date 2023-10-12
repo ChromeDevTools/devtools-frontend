@@ -10343,6 +10343,24 @@ export namespace Overlay {
     outlineColor?: DOM.RGBA;
   }
 
+  /**
+   * Configuration for Windows Control Overlay
+   */
+  export interface WindowControlsOverlayConfig {
+    /**
+     * Whether the title bar CSS should be shown when emulating the Window Controls Overlay.
+     */
+    showCSS: boolean;
+    /**
+     * Seleted platforms to show the overlay.
+     */
+    selectedPlatform: string;
+    /**
+     * The theme color defined in app manifest.
+     */
+    themeColor: string;
+  }
+
   export interface ContainerQueryHighlightConfig {
     /**
      * A descriptor for the highlight appearance of container query containers.
@@ -10675,6 +10693,13 @@ export namespace Overlay {
      * An array of node identifiers and descriptors for the highlight appearance.
      */
     isolatedElementHighlightConfigs: IsolatedElementHighlightConfig[];
+  }
+
+  export interface SetShowWindowControlsOverlayRequest {
+    /**
+     * Window Controls Overlay data, null means hide WCO
+     */
+    windowControlsOverlayConfig?: WindowControlsOverlayConfig;
   }
 
   /**

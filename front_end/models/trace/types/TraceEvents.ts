@@ -118,6 +118,19 @@ export interface TraceEventSample extends TraceEventData {
   ph: Phase.SAMPLE;
 }
 
+/**
+ * A fake trace event created to support CDP.Profiler.Profiles in the
+ * trace engine.
+ */
+export interface SyntheticTraceEventCpuProfile extends TraceEventInstant {
+  name: 'CpuProfile';
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      cpuProfile: Protocol.Profiler.Profile,
+    },
+  };
+}
+
 export interface TraceEventProfile extends TraceEventSample {
   name: 'Profile';
   id: ProfileID;
@@ -1219,6 +1232,11 @@ export function isTraceEventGPUTask(traceEventData: TraceEventData): traceEventD
 
 export function isTraceEventProfile(traceEventData: TraceEventData): traceEventData is TraceEventProfile {
   return traceEventData.name === 'Profile';
+}
+
+export function isSyntheticTraceEventCpuProfile(traceEventData: TraceEventData):
+    traceEventData is SyntheticTraceEventCpuProfile {
+  return traceEventData.name === 'CpuProfile';
 }
 
 export function isTraceEventProfileChunk(traceEventData: TraceEventData): traceEventData is TraceEventProfileChunk {

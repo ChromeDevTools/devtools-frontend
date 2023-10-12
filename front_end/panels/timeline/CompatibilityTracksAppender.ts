@@ -96,6 +96,7 @@ export class CompatibilityTracksAppender {
   #indexForEvent = new WeakMap<TraceEngine.Types.TraceEvents.TraceEventData, number>();
   #allTrackAppenders: TrackAppender[] = [];
   #visibleTrackNames: Set<TrackAppenderName> = new Set([...TrackNames]);
+  #isCpuProfile = false;
 
   // TODO(crbug.com/1416533)
   // These are used only for compatibility with the legacy flame chart
@@ -127,7 +128,8 @@ export class CompatibilityTracksAppender {
   constructor(
       flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
       traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData, entryData: TimelineFlameChartEntry[],
-      legacyEntryTypeByLevel: EntryType[], legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl) {
+      legacyEntryTypeByLevel: EntryType[], legacyTimelineModel: TimelineModel.TimelineModel.TimelineModelImpl,
+      isCpuProfile = false) {
     this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
     this.#entryData = entryData;
@@ -138,7 +140,7 @@ export class CompatibilityTracksAppender {
         /* alphaSpace= */ 0.7);
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
     this.#legacyTimelineModel = legacyTimelineModel;
-
+    this.#isCpuProfile = isCpuProfile;
     this.#timingsTrackAppender =
         new TimingsTrackAppender(this, this.#flameChartData, this.#traceParsedData, this.#colorGenerator);
     this.#allTrackAppenders.push(this.#timingsTrackAppender);
@@ -186,7 +188,14 @@ export class CompatibilityTracksAppender {
           return 6;
       }
     };
-    if (this.#traceParsedData.Renderer) {
+    if (this.#isCpuProfile && this.#traceParsedData.Samples) {
+      for (const [pid, process] of this.#traceParsedData.Samples.profilesInProcess) {
+        for (const tid of process.keys()) {
+          this.#threadAppenders.push(new ThreadAppender(
+              this, this.#flameChartData, this.#traceParsedData, pid, tid, null, ThreadType.CPU_PROFILE));
+        }
+      }
+    } else if (this.#traceParsedData.Renderer) {
       let rasterCount = 0;
       for (const [pid, process] of this.#traceParsedData.Renderer.processes) {
         if (this.#traceParsedData.AuctionWorklets.worklets.has(pid)) {
@@ -201,10 +210,10 @@ export class CompatibilityTracksAppender {
           // Note that the names passed here are not used visually. TODO: remove this name?
           this.#threadAppenders.push(new ThreadAppender(
               this, this.#flameChartData, this.#traceParsedData, pid, workletEvent.args.data.utilityThread.tid,
-              'auction-worket-utility', ThreadType.AUCTION_WORKLET, 0));
+              'auction-worket-utility', ThreadType.AUCTION_WORKLET));
           this.#threadAppenders.push(new ThreadAppender(
               this, this.#flameChartData, this.#traceParsedData, pid, workletEvent.args.data.v8HelperThread.tid,
-              'auction-worklet-v8helper', ThreadType.AUCTION_WORKLET, 0));
+              'auction-worklet-v8helper', ThreadType.AUCTION_WORKLET));
           continue;
         }
 

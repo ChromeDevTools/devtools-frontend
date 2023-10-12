@@ -270,7 +270,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       this.timelineDataInternal = this.#instantiateTimelineData();
       this.compatibilityTracksAppender = new CompatibilityTracksAppender(
           this.timelineDataInternal, this.traceEngineData, this.entryData, this.entryTypeByLevel,
-          this.legacyTimelineModel);
+          this.legacyTimelineModel, this.isCpuProfile);
     }
     return this.compatibilityTracksAppender;
   }
@@ -496,9 +496,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const allTrackAppenders =
         this.compatibilityTracksAppender ? this.compatibilityTracksAppender.allVisibleTrackAppenders() : [];
 
-    const legacyTracks = this.#threadTracksSource === ThreadTracksSource.NEW_ENGINE && !this.isCpuProfile ?
-        [] :
-        this.legacyTimelineModel.tracks();
+    const legacyTracks =
+        this.#threadTracksSource === ThreadTracksSource.NEW_ENGINE ? [] : this.legacyTimelineModel.tracks();
 
     const newTracks = allTrackAppenders.filter(trackAppender => {
       if (trackAppender instanceof ThreadAppender) {
@@ -534,7 +533,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       // current appender is a ThreadAppender and represnets the Main Thread.
       // If it is, we mark the group as selected.
       if (this.timelineDataInternal && !this.timelineDataInternal.selectedGroup) {
-        if (trackOrAppender instanceof ThreadAppender && trackOrAppender.threadType === ThreadType.MAIN_THREAD) {
+        if (trackOrAppender instanceof ThreadAppender &&
+            (trackOrAppender.threadType === ThreadType.MAIN_THREAD ||
+             trackOrAppender.threadType === ThreadType.CPU_PROFILE)) {
           const group = this.compatibilityTracksAppender?.groupForAppender(trackOrAppender);
           if (group) {
             this.timelineDataInternal.selectedGroup = group;

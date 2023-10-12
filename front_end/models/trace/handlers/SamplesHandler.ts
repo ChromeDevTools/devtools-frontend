@@ -121,6 +121,26 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     throw new Error('Samples Handler is not initialized');
   }
 
+  /**
+   * A fake trace event created to support CDP.Profiler.Profiles in the
+   * trace engine.
+   */
+  if (Types.TraceEvents.isSyntheticTraceEventCpuProfile(event)) {
+    // At the moment we are attaching to a single node target so we
+    // should only get a single CPU profile. The values of the process
+    // id and thread id are not really important, so we use the data
+    // in the fake event. Should multi-thread CPU profiling be supported
+    // we could use these fields in the event to pass thread info.
+    const pid = event.pid;
+    const tid = event.tid;
+    // Create an arbitrary profile id.
+    const profileId = '0x1' as Types.TraceEvents.ProfileID;
+    const profileData = getOrCreatePreProcessedData(pid, profileId);
+    profileData.rawProfile = event.args.data.cpuProfile;
+    profileData.threadId = tid;
+    return;
+  }
+
   if (Types.TraceEvents.isTraceEventProfile(event)) {
     // Do not use event.args.data.startTime as it is in CLOCK_MONOTONIC domain,
     // but use profileEvent.ts which has been translated to Perfetto's clock
@@ -181,6 +201,7 @@ export async function finalize(): Promise<void> {
     throw new Error('Samples Handler is not initialized');
   }
   buildProfileCalls();
+
   handlerState = HandlerState.FINALIZED;
 }
 

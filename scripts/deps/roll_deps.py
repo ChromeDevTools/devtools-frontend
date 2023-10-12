@@ -64,6 +64,7 @@ def parse_options(cli_args):
         '--ref',
         type=ReferenceMode,
         choices=list(ReferenceMode),
+        default=ReferenceMode.Tot,
         help='Defaults to tot. '
         'If tot, fetch origin/main of Chromium repository and use it. '
         'If working-tree, use working tree as is.')

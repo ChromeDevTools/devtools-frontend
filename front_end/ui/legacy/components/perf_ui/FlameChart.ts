@@ -2456,7 +2456,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.highlightedMarkerIndex = -1;
     this.highlightedEntryIndex = -1;
     this.selectedEntryIndex = -1;
-    this.chartViewport.scheduleUpdate();
   }
 
   scheduleUpdate(): void {

@@ -144,7 +144,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryInvoked, this.onNetworkEntrySelected, this);
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.EntryHighlighted, this.onEntryHighlighted, this);
 
-    this.boundRefresh = this.refresh.bind(this);
+    this.boundRefresh = this.#reset.bind(this);
     this.#selectedEvents = null;
 
     this.mainDataProvider.setEventColorMapping(TimelineUIUtils.eventColor);
@@ -220,7 +220,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
     this.selectedGroupName = group?.name || null;
     this.#selectedEvents = group ? this.mainDataProvider.groupTreeEvents(group) : null;
-    this.updateTrack();
+    this.#updateTrack();
   }
 
   setModel(
@@ -235,6 +235,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.#selectedEvents = null;
     this.mainDataProvider.setModel(this.model, newTraceEngineData, isCpuProfile);
     this.networkDataProvider.setModel(newTraceEngineData);
+    this.#reset();
     if (this.model) {
       this.eventListeners = [
         this.model.addEventListener(PerformanceModelEvents.WindowChanged, this.onWindowChanged, this),
@@ -244,19 +245,13 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       this.networkFlameChart.setWindowTimes(window.left, window.right);
       this.networkDataProvider.setWindowTimes(window.left, window.right);
       this.updateSearchResults(false, false);
+      this.updateColorMapper();
     }
-    this.updateColorMapper();
-    this.updateTrack();
-    this.refresh();
+    this.#updateTrack();
+    this.#updateFlameCharts();
   }
 
-  private updateTrack(): void {
-    this.countersView.setModel(this.model, this.#selectedEvents);
-    // TODO(crbug.com/1459265):  Change to await after migration work.
-    void this.detailsView.setModel(this.model, this.#traceEngineData, this.#selectedEvents);
-  }
-
-  private refresh(): void {
+  #reset(): void {
     if (this.networkDataProvider.isEmpty()) {
       this.mainFlameChart.enableRuler(true);
       this.networkSplitWidget.hideSidebar();
@@ -268,6 +263,17 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart.reset();
     this.networkFlameChart.reset();
     this.updateSearchResults(false, false);
+  }
+
+  #updateTrack(): void {
+    this.countersView.setModel(this.model, this.#selectedEvents);
+    // TODO(crbug.com/1459265):  Change to await after migration work.
+    void this.detailsView.setModel(this.model, this.#traceEngineData, this.#selectedEvents);
+  }
+
+  #updateFlameCharts(): void {
+    this.mainFlameChart.scheduleUpdate();
+    this.networkFlameChart.scheduleUpdate();
   }
 
   private onEntryHighlighted(commonEvent: Common.EventTarget.EventTargetEvent<number>): void {
@@ -328,8 +334,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (this.needsResizeToPreferredHeights) {
       this.resizeToPreferredHeights();
     }
-    this.mainFlameChart.scheduleUpdate();
-    this.networkFlameChart.scheduleUpdate();
+    this.#updateFlameCharts();
   }
 
   private updateCountersGraphToggle(): void {

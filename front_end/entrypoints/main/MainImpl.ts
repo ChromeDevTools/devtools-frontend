@@ -322,12 +322,6 @@ export class MainImpl {
     Root.Runtime.experiments.register('setAllBreakpointsEagerly', 'Set all breakpoints eagerly at startup');
     Root.Runtime.experiments.register('useSourceMapScopes', 'Use scope information from source maps', true);
 
-    // Dual-screen
-    Root.Runtime.experiments.register(
-        'dualScreenSupport', 'Emulation: Support dual screen mode', undefined,
-        'https://developer.chrome.com/blog/new-in-devtools-89#dual-screen');
-    Root.Runtime.experiments.setEnabled('dualScreenSupport', true);
-
     // Advanced Perceptual Contrast Algorithm.
     Root.Runtime.experiments.register(
         'APCA',

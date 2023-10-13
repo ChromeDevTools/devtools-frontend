@@ -6,7 +6,6 @@ import type * as puppeteer from 'puppeteer-core';
 import {
   $,
   click,
-  enableExperiment,
   getBrowserAndPages,
   goToResource,
   reloadDevTools,
@@ -53,8 +52,8 @@ export const showMediaQueryInspector = async () => {
   await waitFor(MEDIA_QUERY_INSPECTOR_SELECTOR);
 };
 
-export const startEmulationWithDualScreenFlag = async () => {
-  await enableExperiment('dualScreenSupport', {canDock: true});
+export const startEmulationWithDualScreenPage = async () => {
+  await reloadDockableFrontEnd();
   await goToResource('emulation/dual-screen-inspector.html');
   await waitFor('.tabbed-pane-left-toolbar');
   await openDeviceToolbar();

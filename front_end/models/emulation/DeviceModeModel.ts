@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -87,7 +86,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   #appliedDeviceSizeInternal: UI.Geometry.Size;
   #appliedDeviceScaleFactorInternal: number;
   #appliedUserAgentTypeInternal: UA;
-  readonly #experimentDualScreenSupport: boolean;
   readonly #webPlatformExperimentalFeaturesEnabledInternal: boolean;
   readonly #scaleSettingInternal: Common.Settings.Setting<number>;
   #scaleInternal: number;
@@ -117,7 +115,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.#appliedDeviceSizeInternal = new UI.Geometry.Size(1, 1);
     this.#appliedDeviceScaleFactorInternal = window.devicePixelRatio;
     this.#appliedUserAgentTypeInternal = UA.Desktop;
-    this.#experimentDualScreenSupport = Root.Runtime.experiments.isEnabled('dualScreenSupport');
     this.#webPlatformExperimentalFeaturesEnabledInternal =
         window.visualViewport ? 'segments' in window.visualViewport : false;
 
@@ -712,7 +709,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   shouldReportDisplayFeature(): boolean {
-    return this.#webPlatformExperimentalFeaturesEnabledInternal && this.#experimentDualScreenSupport;
+    return this.#webPlatformExperimentalFeaturesEnabledInternal;
   }
 
   async captureScreenshot(fullSize: boolean, clip?: Protocol.Page.Viewport): Promise<string|null> {
@@ -779,7 +776,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const orientation = (this.#deviceInternal && this.#modeInternal) ?
         this.#deviceInternal.orientationByName(this.#modeInternal.orientation) :
         null;
-    if (this.#experimentDualScreenSupport && orientation && orientation.hinge) {
+    if (orientation && orientation.hinge) {
       overlayModel.showHingeForDualScreen(orientation.hinge);
       return;
     }

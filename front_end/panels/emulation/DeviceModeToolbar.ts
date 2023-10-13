@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -194,7 +193,6 @@ export class DeviceModeToolbar {
   private model: EmulationModel.DeviceModeModel.DeviceModeModel;
   private readonly showMediaInspectorSetting: Common.Settings.Setting<boolean>;
   private readonly showRulersSetting: Common.Settings.Setting<boolean>;
-  private readonly experimentDualScreenSupport: boolean;
   private readonly deviceOutlineSetting: Common.Settings.Setting<boolean>;
   private readonly showDeviceScaleFactorSetting: Common.Settings.Setting<boolean>;
   private readonly showUserAgentTypeSetting: Common.Settings.Setting<boolean>;
@@ -228,8 +226,6 @@ export class DeviceModeToolbar {
     this.model = model;
     this.showMediaInspectorSetting = showMediaInspectorSetting;
     this.showRulersSetting = showRulersSetting;
-
-    this.experimentDualScreenSupport = Root.Runtime.experiments.isEnabled('dualScreenSupport');
 
     this.deviceOutlineSetting = this.model.deviceOutlineSetting();
     this.showDeviceScaleFactorSetting =
@@ -365,13 +361,12 @@ export class DeviceModeToolbar {
     this.modeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.modeMenuClicked, this);
     toolbar.appendToolbarItem(this.modeButton);
 
-    if (this.experimentDualScreenSupport) {
-      this.spanButton = new UI.Toolbar.ToolbarButton('', 'device-fold');
-      this.spanButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.spanClicked, this);
-      toolbar.appendToolbarItem(this.spanButton);
+    // Show dual screen toolbar.
+    this.spanButton = new UI.Toolbar.ToolbarButton('', 'device-fold');
+    this.spanButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.spanClicked, this);
+    toolbar.appendToolbarItem(this.spanButton);
 
-      this.createExperimentalButton(toolbar);
-    }
+    this.createExperimentalButton(toolbar);
   }
 
   private createExperimentalButton(toolbar: UI.Toolbar.Toolbar): void {
@@ -771,7 +766,7 @@ export class DeviceModeToolbar {
       this.cachedModelDevice = device;
     }
 
-    if (this.experimentDualScreenSupport && this.experimentalButton) {
+    if (this.experimentalButton) {
       const device = this.model.device();
       if (device && device.isDualScreen) {
         this.spanButton.setVisible(true);

@@ -5,7 +5,6 @@
 import type * as Lighthouse from '../../../../../front_end/panels/lighthouse/lighthouse.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import type * as Common from '../../../../../front_end/core/common/common.js';
-import * as Root from '../../../../../front_end/core/root/root.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
@@ -60,7 +59,6 @@ describeWithMockConnection('LighthousePanel', async () => {
 
       controller = new LighthouseModule.LighthouseController.LighthouseController(protocolService);
 
-      Root.Runtime.experiments.register('dualScreenSupport', 'Emulation: Support dual screen mode', undefined, '');
       stubNoopSettings();
     });
 

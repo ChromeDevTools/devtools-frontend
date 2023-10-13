@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as EmulationModel from '../../../../../front_end/models/emulation/emulation.js';
 import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
@@ -83,7 +82,6 @@ describeWithMockConnection('DeviceModeModel', () => {
     let target: SDK.Target.Target;
 
     beforeEach(() => {
-      Root.Runtime.experiments.register('dualScreenSupport', '', undefined, '');
       stubNoopSettings();
       target = targetFactory();
     });

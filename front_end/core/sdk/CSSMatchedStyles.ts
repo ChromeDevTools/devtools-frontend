@@ -20,6 +20,144 @@ export function parseCSSVariableNameAndFallback(cssVariableValue: string): {
   return {variableName: match && match[1].trim(), fallback: match && match[2]};
 }
 
+function containsStyle(styles: CSSStyleDeclaration[]|Set<CSSStyleDeclaration>, query: CSSStyleDeclaration): boolean {
+  if (!query.styleSheetId || !query.range) {
+    return false;
+  }
+  for (const style of styles) {
+    if (query.styleSheetId === style.styleSheetId && style.range && query.range.equal(style.range)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function containsInherited(style: CSSStyleDeclaration): boolean {
+  const properties = style.allProperties();
+  for (let i = 0; i < properties.length; ++i) {
+    const property = properties[i];
+    // Does this style contain non-overridden inherited property?
+    if (property.activeInStyle() && cssMetadata().isPropertyInherited(property.name)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function cleanUserAgentPayload(payload: Protocol.CSS.RuleMatch[]): Protocol.CSS.RuleMatch[] {
+  for (const ruleMatch of payload) {
+    cleanUserAgentSelectors(ruleMatch);
+  }
+
+  // Merge UA rules that are sequential and have similar selector/media.
+  const cleanMatchedPayload = [];
+  for (const ruleMatch of payload) {
+    const lastMatch = cleanMatchedPayload[cleanMatchedPayload.length - 1];
+    if (!lastMatch || ruleMatch.rule.origin !== 'user-agent' || lastMatch.rule.origin !== 'user-agent' ||
+        ruleMatch.rule.selectorList.text !== lastMatch.rule.selectorList.text ||
+        mediaText(ruleMatch) !== mediaText(lastMatch)) {
+      cleanMatchedPayload.push(ruleMatch);
+      continue;
+    }
+    mergeRule(ruleMatch, lastMatch);
+  }
+  return cleanMatchedPayload;
+
+  function mergeRule(from: Protocol.CSS.RuleMatch, to: Protocol.CSS.RuleMatch): void {
+    const shorthands = (new Map() as Map<string, string>);
+    const properties = (new Map() as Map<string, string>);
+    for (const entry of to.rule.style.shorthandEntries) {
+      shorthands.set(entry.name, entry.value);
+    }
+    for (const entry of to.rule.style.cssProperties) {
+      properties.set(entry.name, entry.value);
+    }
+    for (const entry of from.rule.style.shorthandEntries) {
+      shorthands.set(entry.name, entry.value);
+    }
+    for (const entry of from.rule.style.cssProperties) {
+      properties.set(entry.name, entry.value);
+    }
+    to.rule.style.shorthandEntries = [...shorthands.entries()].map(([name, value]) => ({name, value}));
+    to.rule.style.cssProperties = [...properties.entries()].map(([name, value]) => ({name, value}));
+  }
+
+  function mediaText(ruleMatch: Protocol.CSS.RuleMatch): string|null {
+    if (!ruleMatch.rule.media) {
+      return null;
+    }
+    return ruleMatch.rule.media.map(media => media.text).join(', ');
+  }
+
+  function cleanUserAgentSelectors(ruleMatch: Protocol.CSS.RuleMatch): void {
+    const {matchingSelectors, rule} = ruleMatch;
+    if (rule.origin !== 'user-agent' || !matchingSelectors.length) {
+      return;
+    }
+    rule.selectorList.selectors = rule.selectorList.selectors.filter((item, i) => matchingSelectors.includes(i));
+    rule.selectorList.text = rule.selectorList.selectors.map(item => item.text).join(', ');
+    ruleMatch.matchingSelectors = matchingSelectors.map((item, i) => i);
+  }
+}
+
+/**
+ * Return a mapping of the highlight names in the specified RuleMatch to
+ * the indices of selectors in that selector list with that highlight name.
+ *
+ * For example, consider the following ruleset:
+ * span::highlight(foo), div, #mySpan::highlight(bar), .highlighted::highlight(foo) {
+ *   color: blue;
+ * }
+ *
+ * For a <span id="mySpan" class="highlighted"></span>, a RuleMatch for that span
+ * would have matchingSelectors [0, 2, 3] indicating that the span
+ * matches all of the highlight selectors.
+ *
+ * For that RuleMatch, this function would produce the following map:
+ * {
+ *  "foo": [0, 3],
+ *  "bar": [2]
+ * }
+ *
+ * @param ruleMatch
+ * @returns A mapping of highlight names to lists of indices into the selector
+ * list associated with ruleMatch. The indices correspond to the selectors in the rule
+ * associated with the key's highlight name.
+ */
+function customHighlightNamesToMatchingSelectorIndices(ruleMatch: Protocol.CSS.RuleMatch): Map<string, number[]> {
+  const highlightNamesToMatchingSelectors = new Map<string, number[]>();
+
+  for (let i = 0; i < ruleMatch.matchingSelectors.length; i++) {
+    const matchingSelectorIndex = ruleMatch.matchingSelectors[i];
+    const selectorText = ruleMatch.rule.selectorList.selectors[matchingSelectorIndex].text;
+    const highlightNameMatch = selectorText.match(/::highlight\((.*)\)/);
+    if (highlightNameMatch) {
+      const highlightName = highlightNameMatch[1];
+      const selectorsForName = highlightNamesToMatchingSelectors.get(highlightName);
+      if (selectorsForName) {
+        selectorsForName.push(matchingSelectorIndex);
+      } else {
+        highlightNamesToMatchingSelectors.set(highlightName, [matchingSelectorIndex]);
+      }
+    }
+  }
+  return highlightNamesToMatchingSelectors;
+}
+
+function queryMatches(style: CSSStyleDeclaration): boolean {
+  if (!style.parentRule) {
+    return true;
+  }
+  const parentRule = style.parentRule as CSSStyleRule;
+  const queries = [...parentRule.media, ...parentRule.containerQueries, ...parentRule.supports, ...parentRule.scopes];
+  for (const query of queries) {
+    if (!query.active()) {
+      return false;
+    }
+  }
+  return true;
+}
+
 interface CSSMatchedStylesPayload {
   cssModel: CSSModel;
   node: DOMNode;
@@ -165,62 +303,6 @@ export class CSSMatchedStyles {
     for (const prop of this.#registeredProperties) {
       this.#registeredPropertyMap.set(prop.propertyName(), prop);
     }
-
-    function cleanUserAgentPayload(payload: Protocol.CSS.RuleMatch[]): Protocol.CSS.RuleMatch[] {
-      for (const ruleMatch of payload) {
-        cleanUserAgentSelectors(ruleMatch);
-      }
-
-      // Merge UA rules that are sequential and have similar selector/media.
-      const cleanMatchedPayload = [];
-      for (const ruleMatch of payload) {
-        const lastMatch = cleanMatchedPayload[cleanMatchedPayload.length - 1];
-        if (!lastMatch || ruleMatch.rule.origin !== 'user-agent' || lastMatch.rule.origin !== 'user-agent' ||
-            ruleMatch.rule.selectorList.text !== lastMatch.rule.selectorList.text ||
-            mediaText(ruleMatch) !== mediaText(lastMatch)) {
-          cleanMatchedPayload.push(ruleMatch);
-          continue;
-        }
-        mergeRule(ruleMatch, lastMatch);
-      }
-      return cleanMatchedPayload;
-
-      function mergeRule(from: Protocol.CSS.RuleMatch, to: Protocol.CSS.RuleMatch): void {
-        const shorthands = (new Map() as Map<string, string>);
-        const properties = (new Map() as Map<string, string>);
-        for (const entry of to.rule.style.shorthandEntries) {
-          shorthands.set(entry.name, entry.value);
-        }
-        for (const entry of to.rule.style.cssProperties) {
-          properties.set(entry.name, entry.value);
-        }
-        for (const entry of from.rule.style.shorthandEntries) {
-          shorthands.set(entry.name, entry.value);
-        }
-        for (const entry of from.rule.style.cssProperties) {
-          properties.set(entry.name, entry.value);
-        }
-        to.rule.style.shorthandEntries = [...shorthands.entries()].map(([name, value]) => ({name, value}));
-        to.rule.style.cssProperties = [...properties.entries()].map(([name, value]) => ({name, value}));
-      }
-
-      function mediaText(ruleMatch: Protocol.CSS.RuleMatch): string|null {
-        if (!ruleMatch.rule.media) {
-          return null;
-        }
-        return ruleMatch.rule.media.map(media => media.text).join(', ');
-      }
-
-      function cleanUserAgentSelectors(ruleMatch: Protocol.CSS.RuleMatch): void {
-        const {matchingSelectors, rule} = ruleMatch;
-        if (rule.origin !== 'user-agent' || !matchingSelectors.length) {
-          return;
-        }
-        rule.selectorList.selectors = rule.selectorList.selectors.filter((item, i) => matchingSelectors.includes(i));
-        rule.selectorList.text = rule.selectorList.selectors.map(item => item.text).join(', ');
-        ruleMatch.matchingSelectors = matchingSelectors.map((item, i) => i);
-      }
-    }
   }
 
   private buildMainCascade(
@@ -274,7 +356,7 @@ export class CSSMatchedStyles {
       const inheritedInlineStyle = entryPayload.inlineStyle ?
           new CSSStyleDeclaration(this.#cssModelInternal, null, entryPayload.inlineStyle, Type.Inline) :
           null;
-      if (inheritedInlineStyle && this.containsInherited(inheritedInlineStyle)) {
+      if (inheritedInlineStyle && containsInherited(inheritedInlineStyle)) {
         this.#nodeForStyleInternal.set(inheritedInlineStyle, parentNode);
         inheritedStyles.push(inheritedInlineStyle);
         this.#inheritedStyles.add(inheritedInlineStyle);
@@ -284,7 +366,7 @@ export class CSSMatchedStyles {
       for (let j = inheritedMatchedCSSRules.length - 1; j >= 0; --j) {
         const inheritedRule = new CSSStyleRule(this.#cssModelInternal, inheritedMatchedCSSRules[j].rule);
         this.addMatchingSelectors(parentNode, inheritedRule, inheritedMatchedCSSRules[j].matchingSelectors);
-        if (!this.containsInherited(inheritedRule.style)) {
+        if (!containsInherited(inheritedRule.style)) {
           continue;
         }
         if (containsStyle(nodeStyles, inheritedRule.style) ||
@@ -300,19 +382,6 @@ export class CSSMatchedStyles {
     }
 
     return new DOMInheritanceCascade(nodeCascades, this.#registeredProperties);
-
-    function containsStyle(
-        styles: CSSStyleDeclaration[]|Set<CSSStyleDeclaration>, query: CSSStyleDeclaration): boolean {
-      if (!query.styleSheetId || !query.range) {
-        return false;
-      }
-      for (const style of styles) {
-        if (query.styleSheetId === style.styleSheetId && style.range && query.range.equal(style.range)) {
-          return true;
-        }
-      }
-      return false;
-    }
   }
 
   /**
@@ -330,7 +399,7 @@ export class CSSMatchedStyles {
     const splitHighlightRules = new Map<string, CSSStyleDeclaration[]>();
 
     for (let j = rules.length - 1; j >= 0; --j) {
-      const highlightNamesToMatchingSelectorIndices = this.customHighlightNamesToMatchingSelectorIndices(rules[j]);
+      const highlightNamesToMatchingSelectorIndices = customHighlightNamesToMatchingSelectorIndices(rules[j]);
 
       for (const [highlightName, matchingSelectors] of highlightNamesToMatchingSelectorIndices) {
         const pseudoRule = new CSSStyleRule(this.#cssModelInternal, rules[j].rule);
@@ -358,50 +427,6 @@ export class CSSMatchedStyles {
         pseudoCascades.set(highlightName, [nodeCascade]);
       }
     }
-  }
-
-  /**
-   * Return a mapping of the highlight names in the specified RuleMatch to
-   * the indices of selectors in that selector list with that highlight name.
-   *
-   * For example, consider the following ruleset:
-   * span::highlight(foo), div, #mySpan::highlight(bar), .highlighted::highlight(foo) {
-   *   color: blue;
-   * }
-   *
-   * For a <span id="mySpan" class="highlighted"></span>, a RuleMatch for that span
-   * would have matchingSelectors [0, 2, 3] indicating that the span
-   * matches all of the highlight selectors.
-   *
-   * For that RuleMatch, this function would produce the following map:
-   * {
-   *  "foo": [0, 3],
-   *  "bar": [2]
-   * }
-   *
-   * @param ruleMatch
-   * @returns A mapping of highlight names to lists of indices into the selector
-   * list associated with ruleMatch. The indices correspond to the selectors in the rule
-   * associated with the key's highlight name.
-   */
-  private customHighlightNamesToMatchingSelectorIndices(ruleMatch: Protocol.CSS.RuleMatch): Map<string, number[]> {
-    const highlightNamesToMatchingSelectors = new Map<string, number[]>();
-
-    for (let i = 0; i < ruleMatch.matchingSelectors.length; i++) {
-      const matchingSelectorIndex = ruleMatch.matchingSelectors[i];
-      const selectorText = ruleMatch.rule.selectorList.selectors[matchingSelectorIndex].text;
-      const highlightNameMatch = selectorText.match(/::highlight\((.*)\)/);
-      if (highlightNameMatch) {
-        const highlightName = highlightNameMatch[1];
-        const selectorsForName = highlightNamesToMatchingSelectors.get(highlightName);
-        if (selectorsForName) {
-          selectorsForName.push(matchingSelectorIndex);
-        } else {
-          highlightNamesToMatchingSelectors.set(highlightName, [matchingSelectorIndex]);
-        }
-      }
-    }
-    return highlightNamesToMatchingSelectors;
   }
 
   private buildPseudoCascades(
@@ -499,7 +524,9 @@ export class CSSMatchedStyles {
       this: CSSMatchedStyles, node: DOMNode, rule: CSSStyleRule, matchingSelectorIndices: number[]): void {
     for (const matchingSelectorIndex of matchingSelectorIndices) {
       const selector = rule.selectors[matchingSelectorIndex];
-      selector && this.setSelectorMatches(node, selector.text, true);
+      if (selector) {
+        this.setSelectorMatches(node, selector.text, true);
+      }
     }
   }
 
@@ -512,8 +539,7 @@ export class CSSMatchedStyles {
   }
 
   hasMatchingSelectors(rule: CSSStyleRule): boolean {
-    const matchingSelectors = this.getMatchingSelectors(rule);
-    return matchingSelectors.length > 0 && this.queryMatches(rule.style);
+    return this.getMatchingSelectors(rule).length > 0 && queryMatches(rule.style);
   }
 
   getParentLayoutNodeId(): Protocol.DOM.NodeId|undefined {
@@ -595,20 +621,6 @@ export class CSSMatchedStyles {
     map.set(selectorText, value);
   }
 
-  queryMatches(style: CSSStyleDeclaration): boolean {
-    if (!style.parentRule) {
-      return true;
-    }
-    const parentRule = style.parentRule as CSSStyleRule;
-    const queries = [...parentRule.media, ...parentRule.containerQueries, ...parentRule.supports, ...parentRule.scopes];
-    for (const query of queries) {
-      if (!query.active()) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   nodeStyles(): CSSStyleDeclaration[] {
     return this.#mainDOMCascade.styles();
   }
@@ -645,18 +657,6 @@ export class CSSMatchedStyles {
 
   customHighlightPseudoNames(): Set<string> {
     return new Set(this.#customHighlightPseudoDOMCascades.keys());
-  }
-
-  private containsInherited(style: CSSStyleDeclaration): boolean {
-    const properties = style.allProperties();
-    for (let i = 0; i < properties.length; ++i) {
-      const property = properties[i];
-      // Does this style contain non-overridden inherited property?
-      if (property.activeInStyle() && cssMetadata().isPropertyInherited(property.name)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   nodeForStyle(style: CSSStyleDeclaration): DOMNode|null {

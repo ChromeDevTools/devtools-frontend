@@ -395,7 +395,7 @@ function getTooltipHost(): ShadowRoot {
                                  }),
                                ],
                              })
-                             .facet(CM.EditorView.styleModule);
+                             .facet<readonly CM.StyleModule[]>(CM.EditorView.styleModule);
     const host = document.body.appendChild(document.createElement('div'));
     host.className = 'editor-tooltip-host';
     tooltipHost = host.attachShadow({mode: 'open'});

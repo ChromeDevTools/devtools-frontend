@@ -201,7 +201,9 @@ export class TextEditor extends HTMLElement {
   }
 
   #ensureSettingListeners(): void {
-    const dynamicSettings = this.#activeEditor ? this.#activeEditor.state.facet(dynamicSetting) : DynamicSetting.none;
+    const dynamicSettings = this.#activeEditor ?
+        this.#activeEditor.state.facet<readonly DynamicSetting<unknown>[]>(dynamicSetting) :
+        DynamicSetting.none;
     if (dynamicSettings === this.#dynamicSettings) {
       return;
     }

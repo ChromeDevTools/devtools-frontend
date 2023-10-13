@@ -40,7 +40,6 @@ group("legacy_entrypoints") {
     "models/persistence:legacy",
     "models/trace:legacy",
     "models/workspace:legacy",
-    "models/workspace_diff:legacy",
     "panels/accessibility:legacy",
     "panels/animation:legacy",
     "panels/application:legacy",

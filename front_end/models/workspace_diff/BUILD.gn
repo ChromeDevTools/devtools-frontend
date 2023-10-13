@@ -34,11 +34,3 @@ devtools_entrypoint("bundle") {
 
   visibility += devtools_models_visibility
 }
-
-devtools_entrypoint("legacy") {
-  entrypoint = "workspace_diff-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [ "../..:legacy_entrypoints" ]
-}

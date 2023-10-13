@@ -270,7 +270,6 @@ const mappingForLayoutTests = new Map([
   ['panels/snippets', 'snippets'],
   ['panels/settings', 'settings'],
   ['models/persistence', 'persistence'],
-  ['models/workspace_diff', 'workspace_diff'],
   ['entrypoints/main', 'main'],
   ['third_party/diff', 'diff'],
   ['ui/legacy/components/inline_editor', 'inline_editor'],

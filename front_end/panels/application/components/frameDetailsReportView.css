@@ -59,13 +59,9 @@ button.text-link {
 
 .inline-name {
   color: var(--sys-color-token-subtle);
-  padding-left: 2ex;
+  padding-right: 4px;
   user-select: none;
   white-space: pre-line;
-}
-
-.inline-name::after {
-  content: ":\u00a0";
 }
 
 .inline-items {

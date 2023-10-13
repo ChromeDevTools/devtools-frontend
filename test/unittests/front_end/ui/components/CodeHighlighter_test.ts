@@ -65,6 +65,10 @@ it('can highlight JavaScript compatible with CodeMirror 5', testHighlight(`
   [property x]: [type boolean]
 }`, 'text/typescript'));
 
+it('can highlight TypeScript with the new `using` keyword', testHighlight(`
+[keyword using] [definition resource] = [variable getResource]()
+`, 'text/typescript'));
+
   it('can highlight JSX', testHighlight(`
 [keyword function] [definition App]() {
   [keyword return] (

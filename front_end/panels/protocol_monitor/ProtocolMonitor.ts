@@ -260,7 +260,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
           title: i18nString(UIStrings.elapsedTime),
           sortable: true,
           widthWeighting: 2,
-          visible: true,
+          visible: false,
           hideable: true,
         },
         {

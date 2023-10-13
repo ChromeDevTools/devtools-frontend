@@ -43,6 +43,12 @@ describe('LoggingConfig', () => {
     assert.strictEqual(config.context, '42');
   });
 
+  it('can parse parent attribute', () => {
+    element.setAttribute('jslog', 'TreeItem;parent:customProvider');
+    const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+    assert.strictEqual(config.parent, 'customProvider');
+  });
+
   it('ignores whitespaces while parsnng', () => {
     element.setAttribute('jslog', 'TreeItem;     context:   42');
     const config = VisualLogging.LoggingConfig.getLoggingConfig(element);

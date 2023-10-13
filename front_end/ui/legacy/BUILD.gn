@@ -142,6 +142,7 @@ devtools_module("ui") {
     "../components/icon_button:bundle",
     "../components/settings:bundle",
     "../lit-html:bundle",
+    "../visual_logging:bundle",
     "utils:bundle",
   ]
 }

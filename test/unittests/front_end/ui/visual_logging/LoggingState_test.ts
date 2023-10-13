@@ -59,4 +59,16 @@ describe('LoggingState', () => {
     assert.isTrue(provider.calledOnceWith(element));
     assert.strictEqual(123, context);
   });
+
+  it('uses a custom parent provider', async () => {
+    const provider = sinon.stub();
+    const customParent = document.createElement('div');
+    customParent.setAttribute('jslog', 'TreeItem; context: 123');
+    provider.returns(customParent);
+    VisualLogging.LoggingState.registerParentProvider('custom', provider);
+    element.setAttribute('jslog', 'TreeItem; parent: custom');
+    const state = VisualLogging.LoggingState.getLoggingState(element);
+    assert.isTrue(provider.calledOnceWith(element));
+    assert.strictEqual(123, await state.parent?.context(element));
+  });
 });

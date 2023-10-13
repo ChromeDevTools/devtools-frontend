@@ -50,6 +50,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ElementsComponents from './components/components.js';
 import {type ComputedStyleChangedEvent, ComputedStyleModel} from './ComputedStyleModel.js';
@@ -296,6 +297,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.hasMatchedStyles = false;
 
     this.contentElement.classList.add('styles-pane');
+    this.contentElement.setAttribute('jslog', `${VisualLogging.stylesPane()}`);
 
     this.sectionBlocks = [];
     this.idleCallbackManager = null;
@@ -509,6 +511,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     input.type = 'search';
     input.classList.add('custom-search-input');
     input.placeholder = placeholder;
+    input.setAttribute('jslog', `${VisualLogging.filterTextField().track({keydown: true})}`);
 
     function searchHandler(): void {
       const regex = input.value ? new RegExp(Platform.StringUtilities.escapeForRegExp(input.value), 'i') : null;
@@ -1572,6 +1575,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 
     const button =
         new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleRenderingEmulations), 'brush', 'brush-filled');
+    button.element.setAttribute(
+        'jslog', `${VisualLogging.toggle().track({click: true}).context('renderingEmulations')}`);
     button.element.addEventListener('click', event => {
       const boundingRect = button.element.getBoundingClientRect();
       const menu = new UI.ContextMenu.ContextMenu(event, {
@@ -1694,6 +1699,7 @@ export class SectionBlock {
   static createPseudoTypeBlock(pseudoType: Protocol.DOM.PseudoType, pseudoArgument: string|null): SectionBlock {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
+    separatorElement.setAttribute('jslog', `${VisualLogging.stylePropertiesSectionSeparator().context('pseudotype')}`);
     const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : '';
     const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
     separatorElement.textContent = i18nString(UIStrings.pseudoSElement, {PH1: pseudoTypeString});
@@ -1705,6 +1711,8 @@ export class SectionBlock {
       node: SDK.DOMModel.DOMNode): Promise<SectionBlock> {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
+    separatorElement.setAttribute(
+        'jslog', `${VisualLogging.stylePropertiesSectionSeparator().context('inherited-pseudotype')}`);
     const pseudoArgumentString = pseudoArgument ? `(${pseudoArgument})` : '';
     const pseudoTypeString = `${pseudoType}${pseudoArgumentString}`;
     UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFromSPseudoOf, {PH1: pseudoTypeString}));
@@ -1727,6 +1735,7 @@ export class SectionBlock {
   static createKeyframesBlock(keyframesName: string): SectionBlock {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
+    separatorElement.setAttribute('jslog', `${VisualLogging.stylePropertiesSectionSeparator().context('keyframes')}`);
     separatorElement.textContent = `@keyframes ${keyframesName}`;
     return new SectionBlock(separatorElement);
   }
@@ -1734,6 +1743,8 @@ export class SectionBlock {
   static createPositionFallbackBlock(positionFallbackName: string): SectionBlock {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
+    separatorElement.setAttribute(
+        'jslog', `${VisualLogging.stylePropertiesSectionSeparator().context('position-fallback')}`);
     separatorElement.textContent = `@position-fallback ${positionFallbackName}`;
     return new SectionBlock(separatorElement);
   }
@@ -1741,6 +1752,7 @@ export class SectionBlock {
   static async createInheritedNodeBlock(node: SDK.DOMModel.DOMNode): Promise<SectionBlock> {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator';
+    separatorElement.setAttribute('jslog', `${VisualLogging.stylePropertiesSectionSeparator().context('inherited')}`);
     UI.UIUtils.createTextChild(separatorElement, i18nString(UIStrings.inheritedFroms));
     const link = await Common.Linkifier.Linkifier.linkify(node, {
       preventKeyboardFocus: true,
@@ -1753,6 +1765,7 @@ export class SectionBlock {
   static createLayerBlock(rule: SDK.CSSRule.CSSStyleRule): SectionBlock {
     const separatorElement = document.createElement('div');
     separatorElement.className = 'sidebar-separator layer-separator';
+    separatorElement.setAttribute('jslog', `${VisualLogging.stylePropertiesSectionSeparator().context('layer')}`);
     UI.UIUtils.createTextChild(separatorElement.createChild('div'), i18nString(UIStrings.layer));
     const layers = rule.layers;
     if (!layers.length && rule.origin === Protocol.CSS.StyleSheetOrigin.UserAgent) {
@@ -2444,6 +2457,7 @@ export class ButtonProvider implements UI.Toolbar.Provider {
     this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
     const longclickTriangle = UI.Icon.Icon.create('triangle-bottom-right', 'long-click-glyph');
     this.button.element.appendChild(longclickTriangle);
+    this.button.element.setAttribute('jslog', `${VisualLogging.addStylesRule().track({click: true})}`);
 
     new UI.UIUtils.LongClickController(this.button.element, this.longClicked.bind(this));
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, onNodeChanged.bind(this));

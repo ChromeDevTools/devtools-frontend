@@ -42,6 +42,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {FontEditorSectionManager} from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
@@ -176,6 +177,7 @@ export class StylePropertiesSection {
     this.element.classList.add('styles-section');
     this.element.classList.add('matched-styles');
     this.element.classList.add('monospace');
+    this.element.setAttribute('jslog', `${VisualLogging.stylePropertiesSection()}`);
     UI.ARIAUtils.setLabel(this.element, `${this.headerText()}, css selector`);
     this.element.tabIndex = -1;
     UI.ARIAUtils.markAsListitem(this.element);
@@ -194,6 +196,7 @@ export class StylePropertiesSection {
     this.innerElement.appendChild(this.propertiesTreeOutline.element);
 
     this.showAllButton = UI.UIUtils.createTextButton('', this.showAllItems.bind(this), 'styles-show-all');
+    this.showAllButton.setAttribute('jslog', `${VisualLogging.showAllStyleProperties().track({click: true})}`);
     this.innerElement.appendChild(this.showAllButton);
 
     const selectorContainer = document.createElement('div');
@@ -216,6 +219,7 @@ export class StylePropertiesSection {
       const newRuleButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.insertStyleRuleBelow), 'plus');
       newRuleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.onNewRuleClick, this);
       newRuleButton.element.tabIndex = -1;
+      newRuleButton.element.setAttribute('jslog', `${VisualLogging.addStylesRule().track({click: true})}`);
       if (!this.newStyleRuleToolbar) {
         this.newStyleRuleToolbar =
             new UI.Toolbar.Toolbar('sidebar-pane-section-toolbar new-rule-toolbar', this.innerElement);
@@ -249,6 +253,7 @@ export class StylePropertiesSection {
     }
 
     this.selectorElement.addEventListener('click', this.handleSelectorClick.bind(this), false);
+    this.selectorElement.setAttribute('jslog', `${VisualLogging.stylesSelector().track({click: true})}`);
     this.element.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), false);
     this.element.addEventListener('mousedown', this.handleEmptySpaceMouseDown.bind(this), false);
     this.element.addEventListener('click', this.handleEmptySpaceClick.bind(this), false);

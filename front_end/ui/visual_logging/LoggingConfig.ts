@@ -8,6 +8,7 @@ export interface LoggingConfig {
   ve: number;
   track?: Map<string, string>;
   context?: string;
+  parent?: string;
 }
 
 export function needsLogging(element: Element): boolean {
@@ -26,6 +27,14 @@ enum VisualElements {
   AccessibilityPane = 4,
   AccessibilitySourceOrder = 5,
   Toggle = 6,
+  AddStylesRule = 7,
+  FilterTextField = 8,
+  ShowAllStyleProperties = 9,
+  StylePropertiesSection = 10,
+  StylePropertiesSectionSeparator = 11,
+  StylesPane = 12,
+  StylesSelector = 13,
+  TreeItemExpand = 14,
 }
 
 function resolveVe(ve: string): number {
@@ -45,6 +54,12 @@ function parseJsLog(jslog: string): LoggingConfig {
   if (context) {
     config.context = context;
   }
+
+  const parent = getComponent('parent:');
+  if (parent) {
+    config.parent = parent;
+  }
+
   const trackString = getComponent('track:');
   if (trackString) {
     config.track = new Map<string, string>(trackString.split(',').map(t => t.split(':') as [string, string]));
@@ -55,6 +70,7 @@ function parseJsLog(jslog: string): LoggingConfig {
 
 export interface ConfigStringBuilder {
   context: (value: string|number) => ConfigStringBuilder;
+  parent: (value: string) => ConfigStringBuilder;
   track: (options: {click?: boolean, change?: boolean, keydown?: boolean|string}) => ConfigStringBuilder;
   toString: () => string;
 }
@@ -64,6 +80,10 @@ export function makeConfigStringBuilder(veName: string): ConfigStringBuilder {
   return {
     context: function(value: string|number): ConfigStringBuilder {
       components.push(`context: ${value}`);
+      return this;
+    },
+    parent: function(value: string): ConfigStringBuilder {
+      components.push(`parent: ${value}`);
       return this;
     },
     track: function(options: {click?: boolean, change?: boolean, keydown?: boolean|string}): ConfigStringBuilder {

@@ -14,6 +14,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as ColorPicker from '../../ui/legacy/components/color_picker/color_picker.js';
 import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
   BezierPopoverIcon,
@@ -936,8 +937,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.updateState();
     if (this.isExpandable()) {
       this.expandElement = UI.Icon.Icon.create('triangle-right', 'expand-icon');
-    } else {
-      this.expandElement = null;
+      this.expandElement.setAttribute('jslog', `${VisualLogging.treeItemExpand().track({click: true})}`);
     }
 
     const propertyRenderer =
@@ -1049,6 +1049,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       enabledCheckboxElement.className = 'enabled-button';
       enabledCheckboxElement.type = 'checkbox';
       enabledCheckboxElement.checked = !this.property.disabled;
+      enabledCheckboxElement.setAttribute('jslog', `${VisualLogging.toggle().track({click: true})}`);
       enabledCheckboxElement.addEventListener('mousedown', event => event.consume(), false);
       enabledCheckboxElement.addEventListener('click', event => {
         void this.toggleDisabled(!this.property.disabled);

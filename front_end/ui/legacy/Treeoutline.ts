@@ -35,19 +35,18 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as IconButton from '../components/icon_button/icon_button.js';
+import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import * as ThemeSupport from './theme_support/theme_support.js';
-import * as Utils from './utils/utils.js';
-
-import type * as IconButton from '../components/icon_button/icon_button.js';
 import {type Icon} from './Icon.js';
-
-import {InplaceEditor, type Config} from './InplaceEditor.js';
+import {type Config, InplaceEditor} from './InplaceEditor.js';
 import {Keys} from './KeyboardShortcut.js';
+import * as ThemeSupport from './theme_support/theme_support.js';
 import {Tooltip} from './Tooltip.js';
-import {deepElementFromPoint, enclosingNodeOrSelfWithNodeNameInArray, isEditing} from './UIUtils.js';
 import treeoutlineStyles from './treeoutline.css.legacy.js';
+import {deepElementFromPoint, enclosingNodeOrSelfWithNodeNameInArray, isEditing} from './UIUtils.js';
+import * as Utils from './utils/utils.js';
 
 type AnyIcon = Icon|IconButton.Icon.Icon;
 
@@ -473,6 +472,9 @@ export class TreeElement {
     this.listItemNode.addEventListener('mousedown', (this.handleMouseDown.bind(this) as EventListener), false);
     this.listItemNode.addEventListener('click', (this.treeElementToggled.bind(this) as EventListener), false);
     this.listItemNode.addEventListener('dblclick', this.handleDoubleClick.bind(this), false);
+    this.listItemNode.setAttribute(
+        'jslog',
+        `${VisualLogging.treeItem().track({click: true}).parent('parentTreeItem').context('disclosureTriangle')}`);
     ARIAUtils.markAsTreeitem(this.listItemNode);
 
     this.childrenInternal = null;
@@ -1391,3 +1393,24 @@ export class TreeElement {
     this.disableSelectFocus = toggle;
   }
 }
+
+function disclosureTriangleLoggingContextProvider(e: Element|Event): Promise<number|undefined> {
+  if (e instanceof Element) {
+    return Promise.resolve(e.classList.contains('parent') ? 1 : 0);
+  }
+  if (e instanceof MouseEvent && e.currentTarget instanceof Node) {
+    const treeElement = TreeElement.getTreeElementBylistItemNode(e.currentTarget);
+    if (treeElement) {
+      return Promise.resolve(treeElement.isEventWithinDisclosureTriangle(e) ? 1 : 0);
+    }
+  }
+  return Promise.resolve(undefined);
+}
+
+function loggingParentProvider(e: Element): Element|undefined {
+  const treeElement = TreeElement.getTreeElementBylistItemNode(e);
+  return treeElement?.parent?.listItemElement;
+}
+
+VisualLogging.registerContextProvider('disclosureTriangle', disclosureTriangleLoggingContextProvider);
+VisualLogging.registerParentProvider('parentTreeItem', loggingParentProvider);

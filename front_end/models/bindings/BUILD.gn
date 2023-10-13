@@ -53,6 +53,7 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/models/formatter/*",
     "../../../test/unittests/front_end/panels/console/*",
     "../../../test/unittests/front_end/panels/coverage/*",
+    "../../../test/unittests/front_end/panels/sources/*",
     "../../../test/unittests/front_end/panels/timeline/*",
     "../../entrypoints/main/*",
     "../../legacy_test_runner/*",

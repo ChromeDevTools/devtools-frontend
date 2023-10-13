@@ -91,14 +91,6 @@ devtools_entrypoint("bundle") {
   visibility += devtools_ui_legacy_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "perf_ui-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [ "../../../..:legacy_entrypoints" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "perf_ui-meta.ts"
 

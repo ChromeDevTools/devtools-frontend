@@ -1861,6 +1861,13 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
+     * Removes all breakpoints
+     */
+    'EventBreakpoints.disable': {
+      paramsType: [];
+      returnType: void;
+    };
+    /**
      * Disables DOM snapshot agent for the given page.
      */
     'DOMSnapshot.disable': {
@@ -4238,11 +4245,11 @@ export namespace ProtocolMapping {
       returnType: void;
     };
     /**
-     * Only valid if the dialog type is ConfirmIdpSignin. Acts as if the user had
+     * Only valid if the dialog type is ConfirmIdpLogin. Acts as if the user had
      * clicked the continue button.
      */
-    'FedCm.confirmIdpSignin': {
-      paramsType: [Protocol.FedCm.ConfirmIdpSigninRequest];
+    'FedCm.confirmIdpLogin': {
+      paramsType: [Protocol.FedCm.ConfirmIdpLoginRequest];
       returnType: void;
     };
     'FedCm.dismissDialog': {

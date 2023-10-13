@@ -52,6 +52,19 @@ export const generatedProperties = [
   "name": "-alternative-view-timeline-with-inset"
  },
  {
+  "longhands": [
+   "mask-image",
+   "-webkit-mask-position-x",
+   "-webkit-mask-position-y",
+   "mask-size",
+   "-webkit-mask-repeat-x",
+   "-webkit-mask-repeat-y",
+   "mask-origin",
+   "mask-clip"
+  ],
+  "name": "-webkit-alternative-mask"
+ },
+ {
   "inherited": true,
   "name": "-webkit-border-horizontal-spacing"
  },
@@ -1898,8 +1911,8 @@ export const generatedProperties = [
  },
  {
   "keywords": [
-   "auto",
-   "normal"
+   "fixed",
+   "content"
   ],
   "name": "form-sizing"
  },
@@ -2332,6 +2345,18 @@ export const generatedProperties = [
  },
  {
   "name": "mask"
+ },
+ {
+  "name": "mask-clip"
+ },
+ {
+  "name": "mask-image"
+ },
+ {
+  "name": "mask-origin"
+ },
+ {
+  "name": "mask-size"
  },
  {
   "keywords": [
@@ -2869,9 +2894,6 @@ export const generatedProperties = [
    "smooth"
   ],
   "name": "scroll-behavior"
- },
- {
-  "name": "scroll-customization"
  },
  {
   "longhands": [
@@ -4759,8 +4781,8 @@ export const generatedPropertyValues = {
  },
  "form-sizing": {
   "values": [
-   "auto",
-   "normal"
+   "fixed",
+   "content"
   ]
  },
  "grid-auto-columns": {
@@ -5840,6 +5862,22 @@ export const generatedAliasesFor = new Map([
  [
   "-webkit-alternative-animation-with-timeline",
   "-alternative-animation-with-timeline"
+ ],
+ [
+  "-webkit-alternative-mask-clip",
+  "mask-clip"
+ ],
+ [
+  "-webkit-alternative-mask-image",
+  "mask-image"
+ ],
+ [
+  "-webkit-alternative-mask-origin",
+  "mask-origin"
+ ],
+ [
+  "-webkit-alternative-mask-size",
+  "mask-size"
  ],
  [
   "-webkit-animation",

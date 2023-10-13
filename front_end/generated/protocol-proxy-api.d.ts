@@ -1258,6 +1258,11 @@ declare namespace ProtocolProxyApi {
      */
     invoke_removeInstrumentationBreakpoint(params: Protocol.EventBreakpoints.RemoveInstrumentationBreakpointRequest): Promise<Protocol.ProtocolResponseWithError>;
 
+    /**
+     * Removes all breakpoints
+     */
+    invoke_disable(): Promise<Protocol.ProtocolResponseWithError>;
+
   }
   export interface EventBreakpointsDispatcher {
   }
@@ -3770,10 +3775,10 @@ declare namespace ProtocolProxyApi {
     invoke_selectAccount(params: Protocol.FedCm.SelectAccountRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     /**
-     * Only valid if the dialog type is ConfirmIdpSignin. Acts as if the user had
+     * Only valid if the dialog type is ConfirmIdpLogin. Acts as if the user had
      * clicked the continue button.
      */
-    invoke_confirmIdpSignin(params: Protocol.FedCm.ConfirmIdpSigninRequest): Promise<Protocol.ProtocolResponseWithError>;
+    invoke_confirmIdpLogin(params: Protocol.FedCm.ConfirmIdpLoginRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_dismissDialog(params: Protocol.FedCm.DismissDialogRequest): Promise<Protocol.ProtocolResponseWithError>;
 

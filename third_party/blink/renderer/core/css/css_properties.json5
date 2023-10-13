@@ -1466,8 +1466,8 @@
       field_group: "visual",
       field_template: "keyword",
       property_methods: ["CSSValueFromComputedStyleInternal"],
-      keywords: ["auto", "normal"],
-      default_value: "auto",
+      keywords: ["fixed", "content"],
+      default_value: "fixed",
       typedom_types: ["Keyword"],
       runtime_flag: "CssFormSizing",
     },
@@ -3301,6 +3301,7 @@
       keywords: ["auto"],
       typedom_types: ["Keyword", "Length", "Percentage"],
       valid_for_first_letter: true,
+      valid_for_position_fallback: true,
       logical_property_group: {
         name: "margin",
         resolver: "bottom",
@@ -3320,6 +3321,7 @@
       keywords: ["auto"],
       typedom_types: ["Keyword", "Length", "Percentage"],
       valid_for_first_letter: true,
+      valid_for_position_fallback: true,
       logical_property_group: {
         name: "margin",
         resolver: "left",
@@ -3339,6 +3341,7 @@
       keywords: ["auto"],
       typedom_types: ["Keyword", "Length", "Percentage"],
       valid_for_first_letter: true,
+      valid_for_position_fallback: true,
       logical_property_group: {
         name: "margin",
         resolver: "right",
@@ -3358,6 +3361,7 @@
       keywords: ["auto"],
       typedom_types: ["Keyword", "Length", "Percentage"],
       valid_for_first_letter: true,
+      valid_for_position_fallback: true,
       logical_property_group: {
         name: "margin",
         resolver: "top",
@@ -4247,18 +4251,6 @@
         resolver: "block-end",
       },
       typedom_types: ["Keyword", "Length"],
-    },
-    {
-      name: "scroll-customization",
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      converter: "ConvertFlags<blink::scroll_customization::ScrollDirection>",
-      type_name: "scroll_customization::ScrollDirection",
-      field_group: "*",
-      field_size: 4,
-      field_template: "primitive",
-      default_value: "scroll_customization::kScrollDirectionNone",
-      include_paths: ["third_party/blink/renderer/core/scroll/scroll_customization.h"],
-      runtime_flag: "ScrollCustomization",
     },
     {
       name: "scroll-margin-block-start",
@@ -5458,7 +5450,6 @@
       field_template: "external",
       keywords: ["none"],
       typedom_types: ["Keyword"],
-      runtime_flag: "ViewTransition",
     },
     {
       name: "visibility",
@@ -5834,6 +5825,21 @@
       },
     },
     {
+      name: "mask-clip",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      style_builder_template: "mask_layer",
+      style_builder_template_args: {
+        fill_type: "Clip",
+      },
+      runtime_flag: "CSSMaskingInterop",
+    },
+    {
+      name: "-webkit-alternative-mask-clip",
+      alternative_of: "-webkit-mask-clip",
+      alias_for: "mask-clip",
+      runtime_flag: "CSSMaskingInterop",
+    },
+    {
       name: "-webkit-mask-clip",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       style_builder_template: "mask_layer",
@@ -5850,6 +5856,22 @@
       },
     },
     {
+      name: "mask-image",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      style_builder_template: "mask_layer",
+      style_builder_template_args: {
+        fill_type: "Image",
+        fill_type_getter: "GetImage"
+      },
+      runtime_flag: "CSSMaskingInterop",
+    },
+    {
+      name: "-webkit-alternative-mask-image",
+      alternative_of: "-webkit-mask-image",
+      alias_for: "mask-image",
+      runtime_flag: "CSSMaskingInterop",
+    },
+    {
       name: "-webkit-mask-image",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       interpolable: true,
@@ -5858,6 +5880,21 @@
         fill_type: "Image",
         fill_type_getter: "GetImage"
       },
+    },
+    {
+      name: "mask-origin",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      style_builder_template: "mask_layer",
+      style_builder_template_args: {
+        fill_type: "Origin",
+      },
+      runtime_flag: "CSSMaskingInterop",
+    },
+    {
+      name: "-webkit-alternative-mask-origin",
+      alternative_of: "-webkit-mask-origin",
+      alias_for: "mask-origin",
+      runtime_flag: "CSSMaskingInterop",
     },
     {
       name: "-webkit-mask-origin",
@@ -5902,6 +5939,22 @@
         fill_type: "RepeatY",
       },
       computable: false,
+    },
+    {
+      name: "mask-size",
+      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
+      interpolable: true,
+      style_builder_template: "mask_layer",
+      style_builder_template_args: {
+        fill_type: "Size",
+      },
+      runtime_flag: "CSSMaskingInterop",
+    },
+    {
+      name: "-webkit-alternative-mask-size",
+      alternative_of: "-webkit-mask-size",
+      alias_for: "mask-size",
+      runtime_flag: "CSSMaskingInterop",
     },
     {
       name: "-webkit-mask-size",
@@ -6337,6 +6390,7 @@
       typedom_types: ["Length", "Percentage"],
       keywords: ["auto"],
       valid_for_first_letter: true,
+      valid_for_position_fallback: true,
     },
     {
       name: "margin-inline-end",
@@ -6349,6 +6403,7 @@
       typedom_types: ["Length", "Percentage"],
       keywords: ["auto"],
       valid_for_first_letter: true,
+      valid_for_position_fallback: true,
     },
     {
       name: "margin-block-start",
@@ -6361,6 +6416,7 @@
       typedom_types: ["Length", "Percentage"],
       keywords: ["auto"],
       valid_for_first_letter: true,
+      valid_for_position_fallback: true,
     },
     {
       name: "margin-block-end",
@@ -6373,6 +6429,7 @@
       typedom_types: ["Length", "Percentage"],
       keywords: ["auto"],
       valid_for_first_letter: true,
+      valid_for_position_fallback: true,
     },
     {
       name: "padding-inline-start",
@@ -7293,16 +7350,21 @@
       longhands: ["margin-top", "margin-right", "margin-bottom", "margin-left"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
       layout_dependent: true,
+      valid_for_position_fallback: true,
     },
     {
       name: "margin-block",
       longhands: ["margin-block-start", "margin-block-end"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      layout_dependent: true,
+      valid_for_position_fallback: true,
     },
     {
       name: "margin-inline",
       longhands: ["margin-inline-start", "margin-inline-end"],
       property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      layout_dependent: true,
+      valid_for_position_fallback: true,
     },
     {
       name: "marker",
@@ -7502,6 +7564,19 @@
         "-webkit-mask-repeat-y", "-webkit-mask-origin", "-webkit-mask-clip"
       ],
       property_methods: ["ParseShorthand"],
+    },
+    // This alternative of -webkit-mask is active when CSSMaskingInterop is
+    // enabled.
+    {
+      name: "-webkit-alternative-mask",
+      alternative_of: "-webkit-mask",
+      longhands: [
+        "mask-image", "-webkit-mask-position-x",
+        "-webkit-mask-position-y", "mask-size", "-webkit-mask-repeat-x",
+        "-webkit-mask-repeat-y", "mask-origin", "mask-clip"
+      ],
+      property_methods: ["ParseShorthand"],
+      runtime_flag: "CSSMaskingInterop",
     },
     {
       name: "-webkit-mask-box-image",

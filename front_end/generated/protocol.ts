@@ -1095,6 +1095,7 @@ export namespace Audits {
     RpPageNotVisible = 'RpPageNotVisible',
     SilentMediationFailure = 'SilentMediationFailure',
     ThirdPartyCookiesBlocked = 'ThirdPartyCookiesBlocked',
+    NotSignedInWithIdp = 'NotSignedInWithIdp',
   }
 
   export interface FederatedAuthUserInfoRequestIssueDetails {
@@ -4840,10 +4841,9 @@ export namespace DOMDebugger {
 }
 
 /**
- * EventBreakpoints permits setting breakpoints on particular operations and
- * events in targets that run JavaScript but do not have a DOM.
- * JavaScript execution will stop on these operations as if there was a regular
- * breakpoint set.
+ * EventBreakpoints permits setting JavaScript breakpoints on operations and events
+ * occurring in native code invoked from JavaScript. Once breakpoint is hit, it is
+ * reported through Debugger domain, similarly to regular breakpoints being hit.
  */
 export namespace EventBreakpoints {
 
@@ -6495,11 +6495,11 @@ export namespace Input {
     /**
      * The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0)
      */
-    tiltX?: integer;
+    tiltX?: number;
     /**
      * The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
      */
-    tiltY?: integer;
+    tiltY?: number;
     /**
      * The clockwise rotation of a pen stylus around its own major axis, in degrees in the range [0,359] (default: 0).
      */
@@ -6758,11 +6758,11 @@ export namespace Input {
     /**
      * The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0).
      */
-    tiltX?: integer;
+    tiltX?: number;
     /**
      * The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
      */
-    tiltY?: integer;
+    tiltY?: number;
     /**
      * The clockwise rotation of a pen stylus around its own major axis, in degrees in the range [0,359] (default: 0).
      */
@@ -13396,6 +13396,7 @@ export namespace Storage {
     Win = 'win',
     AdditionalBid = 'additionalBid',
     AdditionalBidWin = 'additionalBidWin',
+    Clear = 'clear',
   }
 
   /**
@@ -13601,17 +13602,12 @@ export namespace Storage {
     /**
      * duration in seconds
      */
-    expiry?: integer;
-    /**
-     * eventReportWindow and eventReportWindows are mutually exclusive
-     * duration in seconds
-     */
-    eventReportWindow?: integer;
-    eventReportWindows?: AttributionReportingEventReportWindows;
+    expiry: integer;
+    eventReportWindows: AttributionReportingEventReportWindows;
     /**
      * duration in seconds
      */
-    aggregatableReportWindow?: integer;
+    aggregatableReportWindow: integer;
     type: AttributionReportingSourceType;
     sourceOrigin: string;
     reportingOrigin: string;
@@ -16057,7 +16053,6 @@ export namespace Preload {
     MemoryPressureOnTrigger = 'MemoryPressureOnTrigger',
     MemoryPressureAfterTriggered = 'MemoryPressureAfterTriggered',
     PrerenderingDisabledByDevTools = 'PrerenderingDisabledByDevTools',
-    ResourceLoadBlockedByClient = 'ResourceLoadBlockedByClient',
     SpeculationRuleRemoved = 'SpeculationRuleRemoved',
     ActivatedWithAuxiliaryBrowsingContexts = 'ActivatedWithAuxiliaryBrowsingContexts',
     MaxNumOfRunningEagerPrerendersExceeded = 'MaxNumOfRunningEagerPrerendersExceeded',
@@ -16198,7 +16193,7 @@ export namespace FedCm {
   export const enum DialogType {
     AccountChooser = 'AccountChooser',
     AutoReauthn = 'AutoReauthn',
-    ConfirmIdpSignin = 'ConfirmIdpSignin',
+    ConfirmIdpLogin = 'ConfirmIdpLogin',
   }
 
   /**
@@ -16211,7 +16206,7 @@ export namespace FedCm {
     givenName: string;
     pictureUrl: string;
     idpConfigUrl: string;
-    idpSigninUrl: string;
+    idpLoginUrl: string;
     loginState: LoginState;
     /**
      * These two are only set if the loginState is signUp
@@ -16234,7 +16229,7 @@ export namespace FedCm {
     accountIndex: integer;
   }
 
-  export interface ConfirmIdpSigninRequest {
+  export interface ConfirmIdpLoginRequest {
     dialogId: string;
   }
 

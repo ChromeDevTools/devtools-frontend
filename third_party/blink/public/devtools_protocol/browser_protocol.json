@@ -1638,7 +1638,8 @@
                         "Canceled",
                         "RpPageNotVisible",
                         "SilentMediationFailure",
-                        "ThirdPartyCookiesBlocked"
+                        "ThirdPartyCookiesBlocked",
+                        "NotSignedInWithIdp"
                     ]
                 },
                 {
@@ -6980,7 +6981,6 @@
             "description": "DOM debugging allows setting breakpoints on particular DOM operations and events. JavaScript\nexecution will stop on these operations as if there was a regular breakpoint set.",
             "dependencies": [
                 "DOM",
-                "Debugger",
                 "Runtime"
             ],
             "types": [
@@ -7137,6 +7137,8 @@
                     "name": "removeInstrumentationBreakpoint",
                     "description": "Removes breakpoint on particular native event.",
                     "experimental": true,
+                    "deprecated": true,
+                    "redirect": "EventBreakpoints",
                     "parameters": [
                         {
                             "name": "eventName",
@@ -7209,6 +7211,8 @@
                     "name": "setInstrumentationBreakpoint",
                     "description": "Sets breakpoint on particular native event.",
                     "experimental": true,
+                    "deprecated": true,
+                    "redirect": "EventBreakpoints",
                     "parameters": [
                         {
                             "name": "eventName",
@@ -7232,7 +7236,7 @@
         },
         {
             "domain": "EventBreakpoints",
-            "description": "EventBreakpoints permits setting breakpoints on particular operations and\nevents in targets that run JavaScript but do not have a DOM.\nJavaScript execution will stop on these operations as if there was a regular\nbreakpoint set.",
+            "description": "EventBreakpoints permits setting JavaScript breakpoints on operations and events\noccurring in native code invoked from JavaScript. Once breakpoint is hit, it is\nreported through Debugger domain, similarly to regular breakpoints being hit.",
             "experimental": true,
             "commands": [
                 {
@@ -7256,6 +7260,10 @@
                             "type": "string"
                         }
                     ]
+                },
+                {
+                    "name": "disable",
+                    "description": "Removes all breakpoints"
                 }
             ]
         },
@@ -9862,16 +9870,14 @@
                         {
                             "name": "tiltX",
                             "description": "The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0)",
-                            "experimental": true,
                             "optional": true,
-                            "type": "integer"
+                            "type": "number"
                         },
                         {
                             "name": "tiltY",
                             "description": "The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).",
-                            "experimental": true,
                             "optional": true,
-                            "type": "integer"
+                            "type": "number"
                         },
                         {
                             "name": "twist",
@@ -10235,16 +10241,14 @@
                         {
                             "name": "tiltX",
                             "description": "The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0).",
-                            "experimental": true,
                             "optional": true,
-                            "type": "integer"
+                            "type": "number"
                         },
                         {
                             "name": "tiltY",
                             "description": "The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).",
-                            "experimental": true,
                             "optional": true,
-                            "type": "integer"
+                            "type": "number"
                         },
                         {
                             "name": "twist",
@@ -19867,7 +19871,8 @@
                         "bid",
                         "win",
                         "additionalBid",
-                        "additionalBidWin"
+                        "additionalBidWin",
+                        "clear"
                     ]
                 },
                 {
@@ -20243,24 +20248,15 @@
                         {
                             "name": "expiry",
                             "description": "duration in seconds",
-                            "optional": true,
-                            "type": "integer"
-                        },
-                        {
-                            "name": "eventReportWindow",
-                            "description": "eventReportWindow and eventReportWindows are mutually exclusive\nduration in seconds",
-                            "optional": true,
                             "type": "integer"
                         },
                         {
                             "name": "eventReportWindows",
-                            "optional": true,
                             "$ref": "AttributionReportingEventReportWindows"
                         },
                         {
                             "name": "aggregatableReportWindow",
                             "description": "duration in seconds",
-                            "optional": true,
                             "type": "integer"
                         },
                         {
@@ -24054,7 +24050,6 @@
                         "MemoryPressureOnTrigger",
                         "MemoryPressureAfterTriggered",
                         "PrerenderingDisabledByDevTools",
-                        "ResourceLoadBlockedByClient",
                         "SpeculationRuleRemoved",
                         "ActivatedWithAuxiliaryBrowsingContexts",
                         "MaxNumOfRunningEagerPrerendersExceeded",
@@ -24266,7 +24261,7 @@
                     "enum": [
                         "AccountChooser",
                         "AutoReauthn",
-                        "ConfirmIdpSignin"
+                        "ConfirmIdpLogin"
                     ]
                 },
                 {
@@ -24299,7 +24294,7 @@
                             "type": "string"
                         },
                         {
-                            "name": "idpSigninUrl",
+                            "name": "idpLoginUrl",
                             "type": "string"
                         },
                         {
@@ -24381,8 +24376,8 @@
                     ]
                 },
                 {
-                    "name": "confirmIdpSignin",
-                    "description": "Only valid if the dialog type is ConfirmIdpSignin. Acts as if the user had\nclicked the continue button.",
+                    "name": "confirmIdpLogin",
+                    "description": "Only valid if the dialog type is ConfirmIdpLogin. Acts as if the user had\nclicked the continue button.",
                     "parameters": [
                         {
                             "name": "dialogId",

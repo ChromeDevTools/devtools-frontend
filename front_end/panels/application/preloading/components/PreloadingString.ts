@@ -318,10 +318,6 @@ const UIStrings = {
   prerenderFinalStatusPrerenderingDisabledByDevTools:
       'The prerender was not performed because DevTools has been used to disable prerendering.',
   /**
-   *  Description text for PrerenderFinalStatus::kResourceLoadBlockedByClient.
-   */
-  prerenderFinalStatusResourceLoadBlockedByClient: 'Some resource load was blocked.',
-  /**
    * Description text for PrerenderFinalStatus::kSpeculationRuleRemoved.
    */
   prerenderFinalStatusSpeculationRuleRemoved:
@@ -645,8 +641,6 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
       return i18nString(UIStrings.prerenderFinalStatusMemoryPressureAfterTriggered);
     case Protocol.Preload.PrerenderFinalStatus.PrerenderingDisabledByDevTools:
       return i18nString(UIStrings.prerenderFinalStatusPrerenderingDisabledByDevTools);
-    case Protocol.Preload.PrerenderFinalStatus.ResourceLoadBlockedByClient:
-      return i18nString(UIStrings.prerenderFinalStatusResourceLoadBlockedByClient);
     case Protocol.Preload.PrerenderFinalStatus.SpeculationRuleRemoved:
       return i18nString(UIStrings.prerenderFinalStatusSpeculationRuleRemoved);
     case Protocol.Preload.PrerenderFinalStatus.ActivatedWithAuxiliaryBrowsingContexts:

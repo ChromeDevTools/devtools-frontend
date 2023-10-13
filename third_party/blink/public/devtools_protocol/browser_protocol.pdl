@@ -824,6 +824,7 @@ experimental domain Audits
       RpPageNotVisible
       SilentMediationFailure
       ThirdPartyCookiesBlocked
+      NotSignedInWithIdp
 
   type FederatedAuthUserInfoRequestIssueDetails extends object
     properties
@@ -3268,7 +3269,6 @@ domain DOM
 # execution will stop on these operations as if there was a regular breakpoint set.
 domain DOMDebugger
   depends on DOM
-  depends on Debugger
   depends on Runtime
 
   # DOM breakpoint type.
@@ -3340,7 +3340,8 @@ domain DOMDebugger
       experimental optional string targetName
 
   # Removes breakpoint on particular native event.
-  experimental command removeInstrumentationBreakpoint
+  experimental deprecated command removeInstrumentationBreakpoint
+    redirect EventBreakpoints
     parameters
       # Instrumentation name to stop on.
       string eventName
@@ -3375,7 +3376,8 @@ domain DOMDebugger
       experimental optional string targetName
 
   # Sets breakpoint on particular native event.
-  experimental command setInstrumentationBreakpoint
+  experimental deprecated command setInstrumentationBreakpoint
+    redirect EventBreakpoints
     parameters
       # Instrumentation name to stop on.
       string eventName
@@ -3386,10 +3388,9 @@ domain DOMDebugger
       # Resource URL substring. All XHRs having this substring in the URL will get stopped upon.
       string url
 
-# EventBreakpoints permits setting breakpoints on particular operations and
-# events in targets that run JavaScript but do not have a DOM.
-# JavaScript execution will stop on these operations as if there was a regular
-# breakpoint set.
+# EventBreakpoints permits setting JavaScript breakpoints on operations and events
+# occurring in native code invoked from JavaScript. Once breakpoint is hit, it is
+# reported through Debugger domain, similarly to regular breakpoints being hit.
 experimental domain EventBreakpoints
   # Sets breakpoint on particular native event.
   command setInstrumentationBreakpoint
@@ -3402,6 +3403,9 @@ experimental domain EventBreakpoints
     parameters
       # Instrumentation name to stop on.
       string eventName
+
+  # Removes all breakpoints
+  command disable
 
 # This domain facilitates obtaining document snapshots with DOM, layout, and style information.
 experimental domain DOMSnapshot
@@ -4495,9 +4499,9 @@ domain Input
       # The normalized tangential pressure, which has a range of [-1,1] (default: 0).
       experimental optional number tangentialPressure
       # The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0)
-      experimental optional integer tiltX
+      optional number tiltX
       # The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
-      experimental optional integer tiltY
+      optional number tiltY
       # The clockwise rotation of a pen stylus around its own major axis, in degrees in the range [0,359] (default: 0).
       experimental optional integer twist
       # Identifier used to track touch sources between events, must be unique within an event.
@@ -4663,9 +4667,9 @@ domain Input
       # The normalized tangential pressure, which has a range of [-1,1] (default: 0).
       experimental optional number tangentialPressure
       # The plane angle between the Y-Z plane and the plane containing both the stylus axis and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right (default: 0).
-      experimental optional integer tiltX
+      optional number tiltX
       # The plane angle between the X-Z plane and the plane containing both the stylus axis and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the user (default: 0).
-      experimental optional integer tiltY
+      optional number tiltY
       # The clockwise rotation of a pen stylus around its own major axis, in degrees in the range [0,359] (default: 0).
       experimental optional integer twist
       # X delta in CSS pixels for mouse wheel event (default: 0).
@@ -9375,6 +9379,7 @@ experimental domain Storage
       win
       additionalBid
       additionalBidWin
+      clear
 
   # Ad advertising element inside an interest group.
   type InterestGroupAd extends object
@@ -9835,13 +9840,10 @@ experimental domain Storage
     properties
       Network.TimeSinceEpoch time
       # duration in seconds
-      optional integer expiry
-      # eventReportWindow and eventReportWindows are mutually exclusive
+      integer expiry
+      AttributionReportingEventReportWindows eventReportWindows
       # duration in seconds
-      optional integer eventReportWindow
-      optional AttributionReportingEventReportWindows eventReportWindows
-      # duration in seconds
-      optional integer aggregatableReportWindow
+      integer aggregatableReportWindow
       AttributionReportingSourceType type
       string sourceOrigin
       string reportingOrigin
@@ -11390,7 +11392,6 @@ experimental domain Preload
       MemoryPressureOnTrigger
       MemoryPressureAfterTriggered
       PrerenderingDisabledByDevTools
-      ResourceLoadBlockedByClient
       SpeculationRuleRemoved
       ActivatedWithAuxiliaryBrowsingContexts
       MaxNumOfRunningEagerPrerendersExceeded
@@ -11503,7 +11504,7 @@ experimental domain FedCm
     enum
       AccountChooser
       AutoReauthn
-      ConfirmIdpSignin
+      ConfirmIdpLogin
 
   # Corresponds to IdentityRequestAccount
   type Account extends object
@@ -11514,7 +11515,7 @@ experimental domain FedCm
       string givenName
       string pictureUrl
       string idpConfigUrl
-      string idpSigninUrl
+      string idpLoginUrl
       LoginState loginState
       # These two are only set if the loginState is signUp
       optional string termsOfServiceUrl
@@ -11544,9 +11545,9 @@ experimental domain FedCm
       string dialogId
       integer accountIndex
 
-  # Only valid if the dialog type is ConfirmIdpSignin. Acts as if the user had
+  # Only valid if the dialog type is ConfirmIdpLogin. Acts as if the user had
   # clicked the continue button.
-  command confirmIdpSignin
+  command confirmIdpLogin
     parameters
       string dialogId
 

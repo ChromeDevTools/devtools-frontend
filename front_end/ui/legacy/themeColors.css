@@ -720,7 +720,7 @@
   --sys-color-token-definition: var(--ref-palette-primary70);
   --sys-color-token-variable-special: var(--ref-palette-primary40);
   --sys-color-token-builtin: var(--ref-palette-primary80);
-  --sys-color-token-keyword: var(--ref-palette-primary40);
+  --sys-color-token-keyword: var(--ref-palette-purple60);
   --sys-color-token-number: var(--ref-palette-tertiary90);
   --sys-color-token-string: var(--ref-palette-orange70);
   --sys-color-token-string-special: var(--ref-palette-orange70);

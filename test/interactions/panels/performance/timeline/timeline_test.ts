@@ -7,8 +7,11 @@ import {describe, itScreenshot} from '../../../../shared/mocha-extensions.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
 
-describe('Performance panel', () => {
+describe('Performance panel', function() {
   preloadForCodeCoverage('performance_panel/basic.html');
+  // TODO(crbug.com/1492405): Improve perf panel trace load speed to
+  // prevent timeout bump.
+  this.timeout(20_000);
 
   itScreenshot('loads a trace file and renders it in the timeline', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=basic');
@@ -167,7 +170,7 @@ describe('Performance panel', () => {
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-new-engine.png', 1);
   });
 
-  itScreenshot('supports the network track being expanded and then clicked', async () => {
+  itScreenshot('supports the network track being expanded and then clicked', async function() {
     await loadComponentDocExample('performance_panel/basic.html?trace=web-dev');
     await waitFor('.timeline-flamechart');
     const panel = await waitFor('body');

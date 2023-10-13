@@ -10,7 +10,11 @@ import {getBrowserAndPages, waitFor, waitForMany} from '../../../../shared/helpe
 import {describe} from '../../../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
 
-describe('FlameChart', () => {
+describe('FlameChart', function() {
+  // TODO(crbug.com/1492405): Improve perf panel trace load speed to
+  // prevent timeout bump.
+  this.timeout(20_000);
+
   preloadForCodeCoverage('performance_panel/basic.html');
 
   async function getCoordinatesForEntry(entryIndex: number): Promise<{x: number, y: number}> {

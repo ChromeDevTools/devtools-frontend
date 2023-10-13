@@ -7,7 +7,10 @@ import {describe, itScreenshot} from '../../../../shared/mocha-extensions.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
 
-describe('Performance panel overview/minimap', () => {
+describe('Performance panel overview/minimap', function() {
+  // TODO(crbug.com/1492405): Improve perf panel trace load speed to
+  // prevent timeout bump.
+  this.timeout(20_000);
   preloadForCodeCoverage('performance_panel/overview.html');
   itScreenshot('renders the overview', async () => {
     await loadComponentDocExample('performance_panel/overview.html?trace=web-dev');

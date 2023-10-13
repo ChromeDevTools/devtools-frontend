@@ -53,6 +53,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ExecutionContextSelector} from './ExecutionContextSelector.js';
 
@@ -154,6 +155,7 @@ export class MainImpl {
     await this.requestAndRegisterLocaleData();
 
     Host.userMetrics.syncSetting(Common.Settings.Settings.instance().moduleSetting<boolean>('sync_preferences').get());
+    void VisualLogging.startLogging();
 
     void this.#createAppUI();
   }

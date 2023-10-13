@@ -7,15 +7,14 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Feedback from '../../ui/components/panel_feedback/panel_feedback.js';
 import * as UI from '../../ui/legacy/legacy.js';
-
-import axBreadcrumbsStyles from './axBreadcrumbs.css.js';
-
-import type * as Protocol from '../../generated/protocol.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type AccessibilitySidebarView} from './AccessibilitySidebarView.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
+import axBreadcrumbsStyles from './axBreadcrumbs.css.js';
 
 const UIStrings = {
   /**
@@ -70,6 +69,8 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
 
     this.hoveredBreadcrumb = null;
     const previewToggle = new Feedback.PreviewToggle.PreviewToggle();
+    previewToggle.setAttribute(
+        'jslog', `${VisualLogging.toggle().track({click: true}).context('fullAccessibilityTree')}`);
     const name = i18nString(UIStrings.fullTreeExperimentName);
     const experiment = Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE;
     const onChangeCallback: (checked: boolean) => void = checked => {
@@ -446,6 +447,7 @@ export class AXBreadcrumb {
 
     this.elementInternal = document.createElement('div');
     this.elementInternal.classList.add('ax-breadcrumb');
+    this.elementInternal.setAttribute('jslog', `${VisualLogging.treeItem().track({click: true})}`);
     elementsToAXBreadcrumb.set(this.elementInternal, this);
 
     this.nodeElementInternal = document.createElement('div');

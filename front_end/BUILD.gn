@@ -45,7 +45,6 @@ group("legacy_entrypoints") {
     "panels/changes:legacy",
     "panels/coverage:legacy",
     "panels/emulation:legacy",
-    "panels/layer_viewer:legacy",
     "panels/lighthouse:legacy",
     "panels/mobile_throttling:legacy",
     "panels/search:legacy",

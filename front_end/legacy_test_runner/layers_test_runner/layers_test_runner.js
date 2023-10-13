@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../panels/layer_viewer/layer_viewer-legacy.js';
 import '../../ui/legacy/components/utils/utils-legacy.js';
 
 import * as Elements from '../../panels/elements/elements.js';
+import * as LayerViewer from '../../panels/layer_viewer/layer_viewer.js';
 import * as Layers from '../../panels/layers/layers.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
@@ -139,7 +139,7 @@ LayersTestRunner.dispatchMouseEvent = function(eventType, button, element, offse
 };
 
 LayersTestRunner.findLayerTreeElement = function(layer) {
-  const element = LayerViewer.LayerTreeElement.layerToTreeElement.get(layer);
+  const element = LayerViewer.LayerTreeOutline.layerToTreeElement.get(layer);
   element.reveal();
   return element.listItemElement;
 };

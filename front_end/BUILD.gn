@@ -42,7 +42,6 @@ group("legacy_entrypoints") {
     "models/workspace:legacy",
     "panels/animation:legacy",
     "panels/browser_debugger:legacy",
-    "panels/changes:legacy",
     "panels/coverage:legacy",
     "panels/emulation:legacy",
     "panels/lighthouse:legacy",

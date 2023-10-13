@@ -312,6 +312,7 @@
   --sys-color-cyan-bright: var(--ref-palette-cyan50);
   --sys-color-purple-bright: var(--ref-palette-purple50);
   --sys-color-neutral-bright: var(--ref-palette-neutral70);
+  --sys-color-pink-bright: var(--ref-palette-pink60);
 
   /* Prominent accent colors for text */
 
@@ -327,6 +328,8 @@
   --sys-color-on-cyan: var(--ref-palette-cyan100);
   --sys-color-purple: var(--ref-palette-purple40);
   --sys-color-on-purple: var(--ref-palette-purple100);
+  --sys-color-pink: var(--ref-palette-pink40);
+  --sys-color-on-pink: var(--ref-palette-pink100);
 
   /* Containers */
 

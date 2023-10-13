@@ -461,7 +461,6 @@ grd_files_release_sources = [
   "front_end/models/workspace_diff/workspace_diff.js",
   "front_end/ndb_app.html",
   "front_end/node_app.html",
-  "front_end/panels/accessibility/accessibility-legacy.js",
   "front_end/panels/accessibility/accessibility-meta.js",
   "front_end/panels/accessibility/accessibility.js",
   "front_end/panels/animation/animation-legacy.js",

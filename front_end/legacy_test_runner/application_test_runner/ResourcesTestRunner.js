@@ -21,7 +21,7 @@ ApplicationTestRunner.resetState = async function() {
       continue;
     }
     const securityOrigin = new Common.ParsedURL.ParsedURL(target.inspectedURL()).securityOrigin();
-    await target.storageAgent().clearDataForOrigin(securityOrigin, Resources.StorageView.AllStorageTypes.join(','));
+    await target.storageAgent().clearDataForOrigin(securityOrigin, Application.StorageView.AllStorageTypes.join(','));
   }
 };
 
@@ -155,15 +155,15 @@ ApplicationTestRunner.dumpCookies = function() {
 };
 
 ApplicationTestRunner.databaseModel = function() {
-  return TestRunner.mainTarget.model(Resources.DatabaseModel);
+  return TestRunner.mainTarget.model(Application.DatabaseModel.DatabaseModel);
 };
 
 ApplicationTestRunner.domStorageModel = function() {
-  return TestRunner.mainTarget.model(Resources.DOMStorageModel);
+  return TestRunner.mainTarget.model(Application.DOMStorageModel.DOMStorageModel);
 };
 
 ApplicationTestRunner.indexedDBModel = function() {
-  return TestRunner.mainTarget.model(Resources.IndexedDBModel);
+  return TestRunner.mainTarget.model(Application.IndexedDBModel.IndexedDBModel);
 };
 
 TestRunner.deprecatedInitAsync(`

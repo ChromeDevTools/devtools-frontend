@@ -67,7 +67,7 @@ self['onerror'] = (message, source, lineno, colno, error) => {
 };
 (() => {
   self.addEventListener('unhandledrejection', event => {
-    addResult(`PROMISE FAILURE: ${event.reason.stack}`);
+    addResult(`PROMISE FAILURE: ${event.reason.stack ?? event.reason}`);
     completeTest();
   });
 })();
@@ -264,7 +264,6 @@ const mappingForLayoutTests = new Map([
   ['panels/emulation', 'emulation'],
   ['panels/mobile_throttling', 'mobile_throttling'],
   ['panels/network', 'network'],
-  ['panels/application', 'resources'],
   ['panels/search', 'search'],
   ['panels/sources', 'sources'],
   ['panels/snippets', 'snippets'],

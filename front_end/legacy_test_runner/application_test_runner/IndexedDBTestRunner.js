@@ -151,7 +151,7 @@ ApplicationTestRunner.createIndexedDBModel = function() {
   const target = self.SDK.targetManager.primaryPageTarget();
   const storageBucketModel = target.model(SDK.StorageBucketsModel);
   storageBucketModel.enable();
-  const indexedDBModel = target.model(Resources.IndexedDBModel);
+  const indexedDBModel = target.model(Application.IndexedDBModel.IndexedDBModel);
   indexedDBModel.enable();
   return indexedDBModel;
 };

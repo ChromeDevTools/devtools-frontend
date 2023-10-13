@@ -163,7 +163,8 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
       return;
     }
 
-    promise = TestRunner.addSnifferPromise(Resources.ServiceWorkerCacheView.prototype, 'updateDataCallback');
+    promise = TestRunner.addSnifferPromise(
+        Application.ServiceWorkerCacheViews.ServiceWorkerCacheView.prototype, 'updateDataCallback');
     let view = cacheTreeElement.view;
 
     if (!view) {

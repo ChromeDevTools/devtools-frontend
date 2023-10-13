@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import '../test_runner/test_runner.js';
-import '../../panels/application/application-legacy.js';
 import '../sources_test_runner/sources_test_runner.js';
 import './CacheStorageTestRunner.js';
 import './IndexedDBTestRunner.js';

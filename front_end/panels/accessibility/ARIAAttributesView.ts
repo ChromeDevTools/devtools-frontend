@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as Platform from '../../core/platform/platform.js';
 
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 import {ariaMetadata} from './ARIAMetadata.js';
@@ -31,7 +30,6 @@ export class ARIAAttributesPane extends AccessibilitySubPane {
 
     this.noPropertiesInfo = this.createInfo(i18nString(UIStrings.noAriaAttributes));
     this.treeOutline = this.createTreeOutline();
-    this.element.setAttribute('jslog', `${VisualLogging.ariaAttributes()}`);
   }
 
   override setNode(node: SDK.DOMModel.DOMNode|null): void {

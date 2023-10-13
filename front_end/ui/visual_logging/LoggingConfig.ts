@@ -21,11 +21,6 @@ export function getLoggingConfig(element: Element): LoggingConfig {
 // eslint-disable-next-line rulesdir/const_enum
 enum VisualElements {
   TreeItem = 1,
-  AriaAttributes = 2,
-  AccessibilityComputedProperties = 3,
-  AccessibilityPane = 4,
-  AccessibilitySourceOrder = 5,
-  Toggle = 6,
 }
 
 function resolveVe(ve: string): number {
@@ -54,7 +49,7 @@ function parseJsLog(jslog: string): LoggingConfig {
 }
 
 export interface ConfigStringBuilder {
-  context: (value: string|number) => ConfigStringBuilder;
+  context: (value: number) => ConfigStringBuilder;
   track: (options: {click?: boolean, change?: boolean, keydown?: boolean|string}) => ConfigStringBuilder;
   toString: () => string;
 }
@@ -62,7 +57,7 @@ export interface ConfigStringBuilder {
 export function makeConfigStringBuilder(veName: string): ConfigStringBuilder {
   const components = [veName];
   return {
-    context: function(value: string|number): ConfigStringBuilder {
+    context: function(value: number): ConfigStringBuilder {
       components.push(`context: ${value}`);
       return this;
     },

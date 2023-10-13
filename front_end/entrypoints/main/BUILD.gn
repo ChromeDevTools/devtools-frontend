@@ -33,7 +33,6 @@ devtools_module("main") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/legacy/theme_support:bundle",
-    "../../ui/visual_logging:bundle",
   ]
 }
 

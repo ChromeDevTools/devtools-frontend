@@ -6,7 +6,6 @@ import type * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AXNodeSubPane} from './AccessibilityNodeView.js';
 import {ARIAAttributesPane} from './ARIAAttributesView.js';
@@ -43,7 +42,6 @@ export class AccessibilitySidebarView extends UI.ThrottledWidget.ThrottledWidget
       void this.sidebarPaneStack.showView(this.sourceOrderSubPane);
     }
     this.sidebarPaneStack.widget().show(this.element);
-    this.element.setAttribute('jslog', `${VisualLogging.accessibilityPane()}`);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.pullNode, this);
     this.pullNode();
   }

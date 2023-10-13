@@ -38,7 +38,6 @@ devtools_module("accessibility") {
     "../../generated:protocol",
     "../../ui/components/panel_feedback:bundle",
     "../../ui/legacy:bundle",
-    "../../ui/visual_logging:bundle",
   ]
 }
 

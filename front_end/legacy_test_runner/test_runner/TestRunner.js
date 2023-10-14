@@ -269,7 +269,6 @@ const mappingForLayoutTests = new Map([
   ['panels/settings', 'settings'],
   ['models/persistence', 'persistence'],
   ['entrypoints/main', 'main'],
-  ['third_party/diff', 'diff'],
   ['ui/legacy/components/inline_editor', 'inline_editor'],
   ['ui/legacy/components/data_grid', 'data_grid'],
   ['ui/legacy/components/perf_ui', 'perf_ui'],

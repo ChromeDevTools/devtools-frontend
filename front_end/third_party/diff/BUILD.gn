@@ -33,14 +33,3 @@ devtools_entrypoint("bundle") {
 
   visibility += devtools_third_party_visibility
 }
-
-devtools_entrypoint("legacy") {
-  entrypoint = "diff-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../legacy_test_runner/*",
-  ]
-}

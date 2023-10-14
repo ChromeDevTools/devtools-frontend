@@ -8,6 +8,7 @@
 self.BindingsTestRunner = self.BindingsTestRunner || {};
 
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Diff from '../../third_party/diff/diff.js';
 
 BindingsTestRunner.cleanupURL = function(url) {
   if (!url.startsWith('debugger://')) {
@@ -28,7 +29,7 @@ BindingsTestRunner.dumpWorkspace = function(previousSnapshot) {
   let removedLines = [];
 
   if (previousSnapshot) {
-    const diff = Diff.Diff.lineDiff(previousSnapshot, urls);
+    const diff = Diff.Diff.DiffWrapper.lineDiff(previousSnapshot, urls);
     const removedEntries = diff.filter(entry => entry[0] === Diff.Diff.Operation.Delete).map(entry => entry[1]);
     removedLines = [].concat.apply([], removedEntries);
     let index = 0;

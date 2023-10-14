@@ -10,7 +10,6 @@ import '../panels/animation/animation-legacy.js';
 import '../models/breakpoints/breakpoints-legacy.js';
 import '../ui/legacy/components/color_picker/color_picker-legacy.js';
 import '../ui/legacy/components/data_grid/data_grid-legacy.js';
-import '../third_party/diff/diff-legacy.js';
 import '../ui/legacy/components/inline_editor/inline_editor-legacy.js';
 import '../models/trace/trace-legacy.js';
 import '../core/sdk/sdk-legacy.js';

@@ -53,11 +53,6 @@ export class EventBreakpointsModel extends SDKModel<void> {
 // This implementation (as opposed to similar class in DOMDebuggerModel) is for
 // instrumentation breakpoints in targets that run JS but do not have a DOM.
 class EventListenerBreakpoint extends CategorizedBreakpoint {
-  readonly instrumentationName: string;
-  constructor(instrumentationName: InstrumentationNames, category: Category) {
-    super(category, instrumentationName);
-    this.instrumentationName = instrumentationName;
-  }
 
   override setEnabled(enabled: boolean): void {
     if (this.enabled() === enabled) {
@@ -71,9 +66,9 @@ class EventListenerBreakpoint extends CategorizedBreakpoint {
 
   updateOnModel(model: EventBreakpointsModel): void {
     if (this.enabled()) {
-      void model.agent.invoke_setInstrumentationBreakpoint({eventName: this.instrumentationName});
+      void model.agent.invoke_setInstrumentationBreakpoint({eventName: this.name});
     } else {
-      void model.agent.invoke_removeInstrumentationBreakpoint({eventName: this.instrumentationName});
+      void model.agent.invoke_removeInstrumentationBreakpoint({eventName: this.name});
     }
   }
 
@@ -151,7 +146,7 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
 
   private createInstrumentationBreakpoints(category: Category, instrumentationNames: InstrumentationNames[]): void {
     for (const instrumentationName of instrumentationNames) {
-      this.#eventListenerBreakpointsInternal.push(new EventListenerBreakpoint(instrumentationName, category));
+      this.#eventListenerBreakpointsInternal.push(new EventListenerBreakpoint(category, instrumentationName));
     }
   }
 
@@ -165,7 +160,7 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
     }
 
     const instrumentationName = eventName.substring(EventListenerBreakpoint.instrumentationPrefix.length);
-    return this.#eventListenerBreakpointsInternal.find(b => b.instrumentationName === instrumentationName) || null;
+    return this.#eventListenerBreakpointsInternal.find(b => b.name === instrumentationName) || null;
   }
 
   modelAdded(eventBreakpointModel: EventBreakpointsModel): void {

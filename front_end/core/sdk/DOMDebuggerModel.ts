@@ -496,11 +496,9 @@ export class CSPViolationBreakpoint extends CategorizedBreakpoint {
 }
 
 export class DOMEventListenerBreakpoint extends CategorizedBreakpoint {
-  readonly eventName: string;
   readonly eventTargetNames: string[];
   constructor(eventName: string, eventTargetNames: string[], category: Category) {
     super(category, eventName);
-    this.eventName = eventName;
     this.eventTargetNames = eventTargetNames;
   }
 
@@ -517,9 +515,9 @@ export class DOMEventListenerBreakpoint extends CategorizedBreakpoint {
   updateOnModel(model: DOMDebuggerModel): void {
     for (const eventTargetName of this.eventTargetNames) {
       if (this.enabled()) {
-        void model.agent.invoke_setEventListenerBreakpoint({eventName: this.eventName, targetName: eventTargetName});
+        void model.agent.invoke_setEventListenerBreakpoint({eventName: this.name, targetName: eventTargetName});
       } else {
-        void model.agent.invoke_removeEventListenerBreakpoint({eventName: this.eventName, targetName: eventTargetName});
+        void model.agent.invoke_removeEventListenerBreakpoint({eventName: this.name, targetName: eventTargetName});
       }
     }
   }
@@ -684,11 +682,10 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
     targetName = (targetName || '*').toLowerCase();
     let result: DOMEventListenerBreakpoint|null = null;
     for (const breakpoint of this.#eventListenerBreakpointsInternal) {
-      if (eventName && breakpoint.eventName === eventName && breakpoint.eventTargetNames.indexOf(targetName) !== -1) {
+      if (eventName && breakpoint.name === eventName && breakpoint.eventTargetNames.indexOf(targetName) !== -1) {
         result = breakpoint;
       }
-      if (!result && eventName && breakpoint.eventName === eventName &&
-          breakpoint.eventTargetNames.indexOf('*') !== -1) {
+      if (!result && eventName && breakpoint.name === eventName && breakpoint.eventTargetNames.indexOf('*') !== -1) {
         result = breakpoint;
       }
     }

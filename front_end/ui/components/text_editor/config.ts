@@ -170,7 +170,7 @@ export const autocompletion = new DynamicSetting<boolean>(
             return state.field(conservativeCompletion, false) ? 'cm-conservativeCompletion' : '';
           },
           defaultKeymap: false,
-          updateSyncTime: 500,
+          updateSyncTime: 100,
         }),
          CM.Prec.highest(CM.keymap.of([
            {key: 'End', run: acceptCompletionIfAtEndOfLine},

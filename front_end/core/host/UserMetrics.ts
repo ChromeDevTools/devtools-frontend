@@ -925,7 +925,6 @@ export enum DevtoolsExperiments {
   'justMyCode' = 65,
   'timelineAsConsoleProfileResultPanel' = 67,
   'preloadingStatusPanel' = 68,
-  'disableColorFormatSetting' = 69,
   'outermostTargetSelector' = 71,
   'jsProfilerTemporarilyEnable' = 72,
   'highlightErrorsElementsPanel' = 73,

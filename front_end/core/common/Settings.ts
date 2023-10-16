@@ -31,7 +31,6 @@
 import type * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import {Format, type Color} from './Color.js';
 import {Console} from './Console.js';
 import {type GenericEvents, type EventDescriptor, type EventTargetEvent} from './EventTarget.js';
 import {ObjectWrapper} from './Object.js';
@@ -1271,24 +1270,6 @@ export function moduleSetting(settingName: string): Setting<unknown> {
 
 export function settingForTest(settingName: string): Setting<unknown> {
   return Settings.instance().settingForTest(settingName);
-}
-
-export function detectColorFormat(color: Color): Format {
-  let format;
-  const formatSetting = Settings.instance().moduleSetting('colorFormat').get();
-  if (formatSetting === Format.RGB) {
-    format = Format.RGB;
-  } else if (formatSetting === Format.HSL) {
-    format = Format.HSL;
-  } else if (formatSetting === Format.HWB) {
-    format = Format.HWB;
-  } else if (formatSetting === Format.HEX) {
-    format = color.asLegacyColor().detectHEXFormat();
-  } else {
-    format = color.format();
-  }
-
-  return format;
 }
 
 export {

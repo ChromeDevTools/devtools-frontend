@@ -98,9 +98,7 @@ export class ColorSwatch extends HTMLElement {
       this.color = color;
     }
 
-    if (typeof formatOrUseUserSetting === 'boolean' && formatOrUseUserSetting) {
-      this.format = Common.Settings.detectColorFormat(this.color);
-    } else if (typeof formatOrUseUserSetting === 'string') {
+    if (typeof formatOrUseUserSetting === 'string') {
       this.format = Common.Color.getFormat(formatOrUseUserSetting);
     } else {
       this.format = this.color.format();

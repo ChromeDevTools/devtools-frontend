@@ -289,8 +289,6 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
     const fontsWidget = new PlatformFontsWidget(this.computedStyleModel);
     fontsWidget.show(this.contentElement);
-
-    Common.Settings.Settings.instance().moduleSetting('colorFormat').addChangeListener(this.update.bind(this));
   }
 
   override onResize(): void {

@@ -502,10 +502,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
 
     this.contentElement.classList.add('manifest-container');
 
-    Common.Settings.Settings.instance()
-        .moduleSetting('colorFormat')
-        .addChangeListener(this.updateManifest.bind(this, true));
-
     this.emptyView = emptyView;
     this.emptyView.appendLink('https://web.dev/add-manifest/' as Platform.DevToolsPath.UrlString);
 

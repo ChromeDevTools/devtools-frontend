@@ -260,7 +260,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     super(true /* delegatesFocus */);
     this.setMinimumSize(96, 26);
     this.registerCSSFiles([stylesSidebarPaneStyles]);
-    Common.Settings.Settings.instance().moduleSetting('colorFormat').addChangeListener(this.update.bind(this));
     Common.Settings.Settings.instance().moduleSetting('textEditorIndent').addChangeListener(this.update.bind(this));
 
     this.currentToolbarPane = null;

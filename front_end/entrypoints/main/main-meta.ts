@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -133,30 +132,6 @@ const UIStrings = {
   /**
    *@description Title of a setting under the Appearance category in Settings
    */
-  colorFormat: 'Color format:',
-  /**
-   *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
-   */
-  setColorFormatAsAuthored: 'Set color format as authored',
-  /**
-   *@description A drop-down menu option to set color format as authored
-   */
-  asAuthored: 'As authored',
-  /**
-   *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
-   */
-  setColorFormatToHex: 'Set color format to HEX',
-  /**
-   *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
-   */
-  setColorFormatToRgb: 'Set color format to RGB',
-  /**
-   *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
-   */
-  setColorFormatToHsl: 'Set color format to HSL',
-  /**
-   *@description Title of a setting under the Appearance category in Settings
-   */
   enableCtrlShortcutToSwitchPanels: 'Enable Ctrl + 1-9 shortcut to switch panels',
   /**
    *@description (Mac only) Title of a setting under the Appearance category in Settings
@@ -214,11 +189,6 @@ const UIStrings = {
    * of syncing DevTools settings via Chrome Sync.
    */
   enableSync: 'Enable settings sync',
-  /**
-   *@description Tooltip for the colorFormat setting to inform of its deprecation
-   */
-  colorFormatSettingDisabled:
-      'This setting is deprecated because it is incompatible with modern color spaces. To re-enable it, disable the corresponding experiment.',
   /**
    * @description A command available in the command menu to perform searches, for example in the
    * elements panel, as user types, rather than only when they press Enter.
@@ -656,46 +626,6 @@ Common.Settings.registerSettingExtension({
       value: 'auto',
     },
   ],
-});
-
-// TODO(chromium:1392054) This setting is deprecated, to be removed after a grace period!
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.APPEARANCE,
-  storageType: Common.Settings.SettingStorageType.Synced,
-  title: i18nLazyString(UIStrings.colorFormat),
-  settingName: 'colorFormat',
-  settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'original',
-  options: [
-    {
-      title: i18nLazyString(UIStrings.setColorFormatAsAuthored),
-      text: i18nLazyString(UIStrings.asAuthored),
-      value: 'original',
-    },
-    {
-      title: i18nLazyString(UIStrings.setColorFormatToHex),
-      text: 'HEX: #dac0de',
-      value: 'hex',
-      raw: true,
-    },
-    {
-      title: i18nLazyString(UIStrings.setColorFormatToRgb),
-      text: 'RGB: rgb(128 255 255)',
-      value: 'rgb',
-      raw: true,
-    },
-    {
-      title: i18nLazyString(UIStrings.setColorFormatToHsl),
-      text: 'HSL: hsl(300deg 80% 90%)',
-      value: 'hsl',
-      raw: true,
-    },
-  ],
-  deprecationNotice: {
-    disabled: true,
-    warning: i18nLazyString(UIStrings.colorFormatSettingDisabled),
-    experiment: Root.Runtime.ExperimentName.DISABLE_COLOR_FORMAT_SETTING,
-  },
 });
 
 Common.Settings.registerSettingExtension({

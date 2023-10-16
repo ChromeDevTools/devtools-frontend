@@ -495,8 +495,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   private buildHighlightConfig(mode: string|undefined = 'all', showDetailedToolip: boolean|undefined = false):
       Protocol.Overlay.HighlightConfig {
     const showRulers = Common.Settings.Settings.instance().moduleSetting('showMetricsRulers').get();
-    const colorFormat = Common.Settings.Settings.instance().moduleSetting('colorFormat').get();
-
     const highlightConfig: Protocol.Overlay.HighlightConfig = {
       showInfo: mode === 'all' || mode === 'container-outline',
       showRulers: showRulers,
@@ -714,13 +712,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
           pattern: Protocol.Overlay.LineStylePattern.Dashed,
         },
       };
-    }
-
-    // the backend does not support the 'original' format because
-    // it currently cannot retrieve the original format using computed styles
-    const supportedColorFormats = new Set(['rgb', 'hsl', 'hex']);
-    if (supportedColorFormats.has(colorFormat)) {
-      highlightConfig.colorFormat = colorFormat;
     }
 
     return highlightConfig;

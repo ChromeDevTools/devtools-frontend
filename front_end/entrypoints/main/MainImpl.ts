@@ -396,11 +396,6 @@ export class MainImpl {
         true);
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.DISABLE_COLOR_FORMAT_SETTING,
-        // Adding the reload hint here because users getting here are likely coming from inside the settings UI, but the regular reminder bar is only shown after the UI is closed which they're not going to see.
-        'Disable the deprecated `Color format` setting (requires reloading DevTools)', false);
-
-    Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,
         'Enable background page selector (e.g. for prerendering debugging)', false);
 
@@ -431,7 +426,6 @@ export class MainImpl {
       'keyboardShortcutEditor',
       'sourcesPrettyPrint',
       'setAllBreakpointsEagerly',
-      Root.Runtime.ExperimentName.DISABLE_COLOR_FORMAT_SETTING,
       Root.Runtime.ExperimentName.TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL,
       Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING,
       Root.Runtime.ExperimentName.HEADER_OVERRIDES,

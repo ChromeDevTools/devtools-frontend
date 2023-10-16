@@ -269,12 +269,7 @@ const mappingForLayoutTests = new Map([
   ['panels/settings', 'settings'],
   ['models/persistence', 'persistence'],
   ['entrypoints/main', 'main'],
-  ['ui/legacy/components/inline_editor', 'inline_editor'],
-  ['ui/legacy/components/data_grid', 'data_grid'],
   ['ui/legacy/components/source_frame', 'source_frame'],
-  ['ui/legacy/components/color_picker', 'color_picker'],
-  ['ui/legacy/components/cookie_table', 'cookie_table'],
-  ['ui/legacy/components/quick_open', 'quick_open'],
   ['ui/legacy/components/utils', 'components'],
 ]);
 

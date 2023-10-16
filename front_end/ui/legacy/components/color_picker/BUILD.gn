@@ -53,14 +53,3 @@ devtools_entrypoint("bundle") {
 
   visibility += devtools_ui_legacy_visibility
 }
-
-devtools_entrypoint("legacy") {
-  entrypoint = "color_picker-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [
-    "../../../..:legacy_entrypoints",
-    "../../../../legacy_test_runner/*",
-  ]
-}

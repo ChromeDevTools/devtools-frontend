@@ -2,11 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../ui/legacy/components/object_ui/object_ui-legacy.js';
-
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Console from '../../panels/console/console.js';
 import * as ConsoleCounters from '../../panels/console_counters/console_counters.js';
+import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
@@ -400,7 +399,7 @@ ConsoleTestRunner.dumpConsoleCounters = async function() {
 /**
  * @param {!Function} callback
  * @param {function(!Element):boolean} deepFilter
- * @param {function(!ObjectUI.ObjectPropertiesSection):boolean} sectionFilter
+ * @param {function(!ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection):boolean} sectionFilter
  */
 ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, sectionFilter) {
   Console.ConsoleView.ConsoleView.instance().invalidateViewport();
@@ -452,7 +451,7 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
 
 /**
  * @param {function(!Element):boolean} deepFilter
- * @param {function(!ObjectUI.ObjectPropertiesSection):boolean} sectionFilter
+ * @param {function(!ObjectUI.ObjectPropertiesSection.ObjectPropertiesSection):boolean} sectionFilter
  * @return {!Promise}
  */
 ConsoleTestRunner.expandConsoleMessagesPromise = function(deepFilter, sectionFilter) {
@@ -466,7 +465,9 @@ ConsoleTestRunner.expandGettersInConsoleMessages = function(callback) {
   const messageViews = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
   const properties = [];
   let propertiesCount = 0;
-  TestRunner.addSniffer(ObjectUI.ObjectPropertyTreeElement.prototype, 'updateExpandable', propertyExpandableUpdated);
+  TestRunner.addSniffer(
+      ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.prototype, 'updateExpandable',
+      propertyExpandableUpdated);
   for (let i = 0; i < messageViews.length; ++i) {
     const element = messageViews[i].element();
     for (let node = element; node; node = node.traverseNextNode(element)) {
@@ -487,7 +488,8 @@ ConsoleTestRunner.expandGettersInConsoleMessages = function(callback) {
       TestRunner.deprecatedRunAfterPendingDispatches(callback);
     } else {
       TestRunner.addSniffer(
-          ObjectUI.ObjectPropertyTreeElement.prototype, 'updateExpandable', propertyExpandableUpdated);
+          ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.prototype, 'updateExpandable',
+          propertyExpandableUpdated);
     }
   }
 };

@@ -50,12 +50,6 @@ group("legacy_entrypoints") {
     "panels/security:legacy",
     "panels/settings:legacy",
     "panels/snippets:legacy",
-    "ui/legacy/components/color_picker:legacy",
-    "ui/legacy/components/cookie_table:legacy",
-    "ui/legacy/components/data_grid:legacy",
-    "ui/legacy/components/inline_editor:legacy",
-    "ui/legacy/components/object_ui:legacy",
-    "ui/legacy/components/quick_open:legacy",
     "ui/legacy/components/source_frame:legacy",
     "ui/legacy/components/utils:legacy",
   ]

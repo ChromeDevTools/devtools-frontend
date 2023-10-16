@@ -30,9 +30,6 @@ ts_library("legacy_test_runner-source") {
     "../panels/animation:legacy",
     "../panels/console_counters:bundle",
     "../panels/event_listeners:bundle",
-    "../ui/legacy/components/color_picker:legacy",
-    "../ui/legacy/components/data_grid:legacy",
-    "../ui/legacy/components/inline_editor:legacy",
     "../ui/legacy/components/utils:legacy",
     "test_runner:bundle",
   ]

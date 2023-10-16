@@ -453,6 +453,11 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordPerformanceHistogram(
         'DevTools.Workspaces.PopulateWallClocktime', wallClockTimeInMilliseconds);
   }
+
+  visualLoggingProcessingDone(timeInMilliseconds: number): void {
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+        'DevTools.VisualLogging.ProcessingTime', timeInMilliseconds);
+  }
 }
 
 /**

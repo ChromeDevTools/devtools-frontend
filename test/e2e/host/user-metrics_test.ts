@@ -395,8 +395,7 @@ describe('User Metrics', () => {
 
     const events = await retrieveRecordedPerformanceHistogramEvents(frontend);
 
-    assert.strictEqual(events.length, 1);
-    assert.strictEqual(events[0].histogramName, 'DevTools.Launch.Timeline');
+    assert.include(events.map(e => e.histogramName), 'DevTools.Launch.Timeline');
   });
 
   it('records the selected language', async () => {

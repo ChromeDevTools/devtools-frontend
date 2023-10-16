@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Coordinator from '../components/render_coordinator/render_coordinator.js';
 
 import {getDomState, isVisible} from './DomState.js';
@@ -52,6 +53,7 @@ async function processDom(): Promise<void> {
   if (document.hidden) {
     return;
   }
+  const startTime = performance.now();
   const {loggables, shadowRoots} = getDomState();
   const visibleElements: Element[] = [];
   const viewportRect = new DOMRect(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight);
@@ -80,4 +82,5 @@ async function processDom(): Promise<void> {
     }
   }
   await logImpressions(visibleElements);
+  Host.userMetrics.visualLoggingProcessingDone(performance.now() - startTime);
 }

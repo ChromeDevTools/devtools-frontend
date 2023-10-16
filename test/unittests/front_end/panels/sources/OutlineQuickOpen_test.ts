@@ -347,6 +347,23 @@ describe('OutlineQuickOpen', () => {
       );
     });
 
+    it('for private methods', () => {
+      assert.deepEqual(
+          javaScriptOutline(
+              'class A {\n' +
+              '  private #foo() {}\n' +
+              '  public static #bar(x) {}\n' +
+              '  protected async #baz(){}\n' +
+              '}'),
+          [
+            {title: 'class A', lineNumber: 0, columnNumber: 6},
+            {title: '#foo', subtitle: '()', lineNumber: 1, columnNumber: 10},
+            {title: 'static #bar', subtitle: '(x)', lineNumber: 2, columnNumber: 16},
+            {title: 'async #baz', subtitle: '()', lineNumber: 3, columnNumber: 18},
+          ],
+      );
+    });
+
     it('even in the presence of syntax errors', () => {
       assert.deepEqual(
           javaScriptOutline(`
@@ -517,6 +534,23 @@ const formatName = (name) => {
             {title: 'class Foo', lineNumber: 0, columnNumber: 6},
             {title: 'foo', subtitle: '()', lineNumber: 1, columnNumber: 10},
             {title: '*bar', subtitle: '()', lineNumber: 2, columnNumber: 11},
+          ],
+      );
+    });
+
+    it('for private methods', () => {
+      assert.deepEqual(
+          typeScriptOutline(
+              'class A {\n' +
+              '  private #foo() {}\n' +
+              '  public static #bar(x) {}\n' +
+              '  protected async #baz(){}\n' +
+              '}'),
+          [
+            {title: 'class A', lineNumber: 0, columnNumber: 6},
+            {title: '#foo', subtitle: '()', lineNumber: 1, columnNumber: 10},
+            {title: 'static #bar', subtitle: '(x)', lineNumber: 2, columnNumber: 16},
+            {title: 'async #baz', subtitle: '()', lineNumber: 3, columnNumber: 18},
           ],
       );
     });

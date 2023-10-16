@@ -103,6 +103,7 @@ export function outline(state: CodeMirror.EditorState): OutlineItem[] {
               prefix += '*';
               break;
             case 'PropertyDefinition':
+            case 'PrivatePropertyDefinition':
             case 'VariableDefinition': {
               const title = prefix + state.sliceDoc(cursor.from, cursor.to);
               const {lineNumber, columnNumber} = toLineColumn(cursor.from);

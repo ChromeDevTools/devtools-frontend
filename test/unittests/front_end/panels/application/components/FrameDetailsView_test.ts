@@ -123,6 +123,12 @@ describeWithRealConnection('FrameDetailsView', () => {
         value: Protocol.Network.CrossOriginOpenerPolicyValue.SameOrigin,
         reportOnlyValue: Protocol.Network.CrossOriginOpenerPolicyValue.SameOrigin,
       },
+      csp: [{
+        source: Protocol.Network.ContentSecurityPolicySource.HTTP,
+        isEnforced: true,
+        effectiveDirectives:
+            'base-uri \'self\'; object-src \'none\'; script-src \'strict-dynamic\' \'unsafe-inline\' https: http: \'nonce-GsVjHiIoejpPhMPOHDQZ90yc9eJn1s\' \'unsafe-eval\'; report-uri https://www.example.com/csp',
+      }],
     });
 
     const component = new ApplicationComponents.FrameDetailsView.FrameDetailsReportView(frame);
@@ -144,6 +150,7 @@ describeWithRealConnection('FrameDetailsView', () => {
       'Cross-Origin Isolated',
       'Cross-Origin Embedder Policy (COEP)',
       'Cross-Origin Opener Policy (COOP)',
+      'Content-Security-Policy',
       'SharedArrayBuffers',
       'Measure Memory',
     ]);
@@ -160,6 +167,7 @@ describeWithRealConnection('FrameDetailsView', () => {
       'Yes',
       'None',
       'SameOrigin',
+      'HTTP headerbase-uri: \'self\'object-src: \'none\'script-src: \'strict-dynamic\', \'unsafe-inline\', https:, http:, \'nonce-GsVjHiIoejpPhMPOHDQZ90yc9eJn1s\', \'unsafe-eval\'report-uri: https://www.example.com/csp',
       'available, transferable',
       'available\xA0Learn more',
     ]);

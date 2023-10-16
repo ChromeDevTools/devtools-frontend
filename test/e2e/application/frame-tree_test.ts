@@ -56,6 +56,23 @@ declare global {
   }
 }
 
+const getFieldValuesTextContent = async () => {
+  const fieldValues = await getTrimmedTextContent('devtools-report-value');
+  if (fieldValues[0]) {
+    // This contains some CSS from the svg icon link being rendered. It's
+    // system-specific, so we get rid of it and only look at the (URL) text.
+    fieldValues[0] = getTrailingURL(fieldValues[0]);
+  }
+  if (fieldValues[10] && fieldValues[10].includes('accelerometer')) {
+    fieldValues[10] = 'accelerometer';
+  }
+  // Make sure the length is equivalent to the expected value below
+  if (fieldValues.length === 11) {
+    return fieldValues;
+  }
+  return undefined;
+};
+
 describe('The Application Tab', async () => {
   afterEach(async () => {
     const {target} = getBrowserAndPages();
@@ -72,22 +89,7 @@ describe('The Application Tab', async () => {
     await click('#tab-resources');
     await doubleClickSourceTreeItem(TOP_FRAME_SELECTOR);
 
-    const fieldValuesTextContent = await waitForFunction(async () => {
-      const fieldValues = await getTrimmedTextContent('devtools-report-value');
-      if (fieldValues[0]) {
-        // This contains some CSS from the svg icon link being rendered. It's
-        // system-specific, so we get rid of it and only look at the (URL) text.
-        fieldValues[0] = getTrailingURL(fieldValues[0]);
-      }
-      if (fieldValues[9] && fieldValues[9].includes('accelerometer')) {
-        fieldValues[9] = 'accelerometer';
-      }
-      // Make sure the length is equivalent to the expected value below
-      if (fieldValues.length === 10) {
-        return fieldValues;
-      }
-      return undefined;
-    });
+    const fieldValuesTextContent = await waitForFunction(getFieldValuesTextContent);
     const expected = [
       `https://localhost:${getTestServerPort()}/test/e2e/resources/application/frame-tree.html`,
       `https://localhost:${getTestServerPort()}`,
@@ -96,6 +98,7 @@ describe('The Application Tab', async () => {
       'No',
       'None',
       'UnsafeNone',
+      'None',
       'unavailable\xA0requires cross-origin isolated context',
       'unavailable\xA0Learn more',
       'accelerometer',
@@ -295,22 +298,7 @@ describe('The Application Tab', async () => {
     await doubleClickSourceTreeItem(IFRAME_FRAME_ID_SELECTOR);
 
     // check iframe's URL after pageload
-    const fieldValuesTextContent = await waitForFunction(async () => {
-      const fieldValues = await getTrimmedTextContent('devtools-report-value');
-      if (fieldValues[0]) {
-        // This contains some CSS from the svg icon link being rendered. It's
-        // system-specific, so we get rid of it and only look at the (URL) text.
-        fieldValues[0] = getTrailingURL(fieldValues[0]);
-      }
-      if (fieldValues[9] && fieldValues[9].includes('accelerometer')) {
-        fieldValues[9] = 'accelerometer';
-      }
-      // Make sure the length is equivalent to the expected value below
-      if (fieldValues.length === 10) {
-        return fieldValues;
-      }
-      return undefined;
-    });
+    const fieldValuesTextContent = await waitForFunction(getFieldValuesTextContent);
     const expected = [
       `https://localhost:${getTestServerPort()}/test/e2e/resources/application/iframe.html`,
       `https://localhost:${getTestServerPort()}`,
@@ -319,6 +307,7 @@ describe('The Application Tab', async () => {
       'No',
       'None',
       'UnsafeNone',
+      'None',
       'unavailable\xA0requires cross-origin isolated context',
       'unavailable\xA0Learn more',
       'accelerometer',
@@ -340,20 +329,7 @@ describe('The Application Tab', async () => {
 
     // check that iframe's URL has changed
     await doubleClickSourceTreeItem(MAIN_FRAME_SELECTOR);
-    const fieldValuesTextContent2 = await waitForFunction(async () => {
-      const fieldValues = await getTrimmedTextContent('devtools-report-value');
-      if (fieldValues[0]) {
-        fieldValues[0] = getTrailingURL(fieldValues[0]);
-      }
-      if (fieldValues[9] && fieldValues[9].includes('accelerometer')) {
-        fieldValues[9] = 'accelerometer';
-      }
-      // Make sure the length is equivalent to the expected value below
-      if (fieldValues.length === 10) {
-        return fieldValues;
-      }
-      return undefined;
-    });
+    const fieldValuesTextContent2 = await waitForFunction(getFieldValuesTextContent);
     const expected2 = [
       `https://localhost:${getTestServerPort()}/test/e2e/resources/application/main-frame.html`,
       `https://localhost:${getTestServerPort()}`,
@@ -362,6 +338,7 @@ describe('The Application Tab', async () => {
       'No',
       'None',
       'UnsafeNone',
+      'None',
       'unavailable\xA0requires cross-origin isolated context',
       'unavailable\xA0Learn more',
       'accelerometer',

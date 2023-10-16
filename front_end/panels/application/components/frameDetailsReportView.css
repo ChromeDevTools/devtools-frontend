@@ -78,6 +78,19 @@ button.text-link {
   min-width: auto;
 }
 
+.bold {
+  font-weight: bold;
+}
+
+.link:not(button):has(devtools-icon) {
+  vertical-align: sub;
+  padding-left: 2px;
+}
+
+.inline-icon {
+  margin-bottom: -5px;
+}
+
 @media (forced-colors: active) {
   .link,
   .devtools-link {

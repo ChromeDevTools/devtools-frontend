@@ -12,7 +12,6 @@ import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/plat
 import * as ReportView from '../../../../../../../front_end/ui/components/report_view/report_view.js';
 import {
   assertShadowRoot,
-  getCleanTextContentFromElements,
   getElementsWithinComponent,
   renderElementIntoDOM,
 } from '../../../../helpers/DOMHelpers.js';
@@ -21,12 +20,6 @@ import {describeWithEnvironment} from '../../../../helpers/EnvironmentHelpers.js
 const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
-const zip2 = <T, S>(xs: T[], ys: S[]): [T, S][] => {
-  assert.strictEqual(xs.length, ys.length);
-
-  return Array.from(xs.map((_, i) => [xs[i], ys[i]]));
-};
 
 const renderUsedPreloadingView =
     async(data: PreloadingComponents.UsedPreloadingView.UsedPreloadingViewData): Promise<HTMLElement> => {
@@ -174,7 +167,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
-    assert.strictEqual(headers.length, 1);
+    assert.strictEqual(headers.length, 2);
     assert.strictEqual(sections.length, 3);
 
     assert.include(headers[0]?.textContent, 'Preloading status');
@@ -182,14 +175,10 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         sections[0]?.textContent,
         'The initiating page attempted to prefetch this page\'s URL, but the prefetch failed, so a full navigation was performed instead.');
 
-    const keys = getCleanTextContentFromElements(sections[1], 'devtools-report-key');
-    const values = getCleanTextContentFromElements(sections[1], 'devtools-report-value');
-    assert.deepEqual(zip2(keys, values), [
-      [
-        'Failure reason',
-        'The prefetch was not performed because the initiating page already has too many prefetches ongoing.',
-      ],
-    ]);
+    assert.include(headers[1]?.textContent, 'Failure reason');
+    assert.include(
+        sections[1]?.textContent,
+        'The prefetch was not performed because the initiating page already has too many prefetches ongoing.');
   });
 
   it('renderes prerender failed', async () => {
@@ -232,7 +221,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
-    assert.strictEqual(headers.length, 1);
+    assert.strictEqual(headers.length, 2);
     assert.strictEqual(sections.length, 3);
 
     assert.include(headers[0]?.textContent, 'Preloading status');
@@ -240,14 +229,10 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         sections[0]?.textContent,
         'The initiating page attempted to prerender this page\'s URL, but the prerender failed, so a full navigation was performed instead.');
 
-    const keys = getCleanTextContentFromElements(sections[1], 'devtools-report-key');
-    const values = getCleanTextContentFromElements(sections[1], 'devtools-report-value');
-    assert.deepEqual(zip2(keys, values), [
-      [
-        'Failure reason',
-        'The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
-      ],
-    ]);
+    assert.include(headers[1]?.textContent, 'Failure reason');
+    assert.include(
+        sections[1]?.textContent,
+        'The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)');
   });
 
   it('renderes prerender -> prefetch downgraded and used', async () => {
@@ -290,7 +275,7 @@ describeWithEnvironment('UsedPreloadingView', async () => {
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
-    assert.strictEqual(headers.length, 1);
+    assert.strictEqual(headers.length, 2);
     assert.strictEqual(sections.length, 3);
 
     assert.include(headers[0]?.textContent, 'Preloading status');
@@ -298,14 +283,10 @@ describeWithEnvironment('UsedPreloadingView', async () => {
         sections[0]?.textContent,
         'The initiating page attempted to prerender this page\'s URL. The prerender failed, but the resulting response body was still used as a prefetch.');
 
-    const keys = getCleanTextContentFromElements(sections[1], 'devtools-report-key');
-    const values = getCleanTextContentFromElements(sections[1], 'devtools-report-value');
-    assert.deepEqual(zip2(keys, values), [
-      [
-        'Failure reason',
-        'The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
-      ],
-    ]);
+    assert.include(headers[1]?.textContent, 'Failure reason');
+    assert.include(
+        sections[1]?.textContent,
+        'The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)');
   });
 
   it('renders no preloading attempts used', async () => {

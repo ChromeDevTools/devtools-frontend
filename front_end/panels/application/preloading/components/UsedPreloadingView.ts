@@ -193,13 +193,11 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       maybeFailureReason = LitHtml.html`
-        <${ReportView.ReportView.ReportSection.litTagName}>
-          <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsFailureReason)}</${
-            ReportView.ReportView.ReportKey.litTagName}>
-          <${ReportView.ReportView.ReportValue.litTagName}>
-            ${maybeFailureReasonMessage}
-          </${ReportView.ReportView.ReportValue.litTagName}>
-        </${ReportView.ReportView.ReportSection.litTagName}>
+      <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.detailsFailureReason)}</${
+        ReportView.ReportView.ReportSectionHeader.litTagName}>
+      <${ReportView.ReportView.ReportSection.litTagName}>
+        ${maybeFailureReasonMessage}
+      </${ReportView.ReportView.ReportSection.litTagName}>
       `;
       // clang-format on
     }

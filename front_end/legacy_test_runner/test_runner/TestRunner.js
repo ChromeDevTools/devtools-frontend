@@ -260,8 +260,6 @@ export function selectTextInTextNode(textNode, start, end) {
 const mappingForLayoutTests = new Map([
   ['panels/animation', 'animation'],
   ['panels/browser_debugger', 'browser_debugger'],
-  ['panels/emulation', 'emulation'],
-  ['panels/mobile_throttling', 'mobile_throttling'],
   ['panels/network', 'network'],
   ['panels/search', 'search'],
   ['panels/sources', 'sources'],

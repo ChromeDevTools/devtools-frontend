@@ -1061,9 +1061,10 @@ export class ModelBreakpoint {
     }
     const hasBackendState = this.#breakpointIds.length;
 
-    // Case 1: State hasn't changed, and back-end is up to date and has information
-    // on some breakpoints.
-    if (hasBackendState && Breakpoint.State.equals(newState, this.#currentState)) {
+    // Case 1: Back-end has some breakpoints and the new state is a proper subset
+    // of the back-end state (in particular the new state contains at least a single
+    // position, meaning we're not removing the breakpoint completely).
+    if (hasBackendState && Breakpoint.State.subset(newState, this.#currentState)) {
       return DebuggerUpdateResult.OK;
     }
 
@@ -1249,33 +1250,22 @@ export namespace Breakpoint {
 
   export type State = Position[];
   export namespace State {
-
-    export function equals(stateA?: State|null, stateB?: State|null): boolean {
+    export function subset(stateA?: State|null, stateB?: State|null): boolean {
       if (stateA === stateB) {
         return true;
       }
       if (!stateA || !stateB) {
         return false;
       }
-      if (stateA.length !== stateB.length) {
+      if (stateA.length === 0) {
         return false;
       }
-      for (let i = 0; i < stateA.length; i++) {
-        const positionA = stateA[i];
-        const positionB = stateB[i];
-        if (positionA.url !== positionB.url) {
-          return false;
-        }
-        if (positionA.scriptHash !== positionB.scriptHash) {
-          return false;
-        }
-        if (positionA.lineNumber !== positionB.lineNumber) {
-          return false;
-        }
-        if (positionA.columnNumber !== positionB.columnNumber) {
-          return false;
-        }
-        if (positionA.condition !== positionB.condition) {
+      for (const positionA of stateA) {
+        if (stateB.find(
+                positionB => positionA.url === positionB.url && positionA.scriptHash === positionB.scriptHash &&
+                    positionA.lineNumber === positionB.lineNumber &&
+                    positionA.columnNumber === positionB.columnNumber &&
+                    positionA.condition === positionB.condition) === undefined) {
           return false;
         }
       }

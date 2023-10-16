@@ -566,6 +566,26 @@ describe('The Sources Tab', async function() {
       });
       await click(RESUME_BUTTON);
     });
+
+    it('hits breakpoints reliably after reload in case of code-splitting (crbug.com/1490369)', async () => {
+      const {target, frontend} = getBrowserAndPages();
+
+      // Set the breakpoint inside `shared()` in `shared.js`.
+      await openSourceCodeEditorForFile('shared.js', 'codesplitting-race.html');
+      await addBreakpointForLine(frontend, 2);
+      await waitForFunction(async () => await isBreakpointSet(2));
+
+      // Reload the page.
+      const reloadPromise = target.reload();
+
+      // Now the debugger should pause twice reliably.
+      await waitFor(PAUSE_INDICATOR_SELECTOR);
+      await click(RESUME_BUTTON);
+      await waitFor(PAUSE_INDICATOR_SELECTOR);
+      await click(RESUME_BUTTON);
+
+      await reloadPromise;
+    });
   });
 
   describe('can deal with hot module replacement', () => {

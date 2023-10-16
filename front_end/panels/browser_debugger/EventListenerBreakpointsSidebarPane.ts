@@ -28,10 +28,7 @@ export class EventListenerBreakpointsSidebarPane extends CategorizedBreakpointsS
 
   override getBreakpointFromPausedDetails(details: SDK.DebuggerModel.DebuggerPausedDetails):
       SDK.CategorizedBreakpoint.CategorizedBreakpoint|null {
-    const auxData = details.auxData as {
-      eventName: string,
-      targetName: string,
-    };
+    const auxData = details.auxData as SDK.DebuggerModel.EventListenerPausedDetailsAuxData;
     const domBreakpoint = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpoint(auxData);
     if (domBreakpoint) {
       return domBreakpoint;

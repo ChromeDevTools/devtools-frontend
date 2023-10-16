@@ -31,13 +31,21 @@ export const enum Category {
 }
 
 export class CategorizedBreakpoint {
-  readonly #category: Category;
-  titleInternal: string;
-  enabledInternal: boolean;
+  /**
+   * The name of this breakpoint as passed to 'setInstrumentationBreakpoint',
+   * 'setEventListenerBreakpoint' and 'setBreakOnCSPViolation'.
+   *
+   * Note that the backend adds a 'listener:' and 'instrumentation:' prefix
+   * to this name in the 'Debugger.paused' CDP event.
+   */
+  readonly name: string;
 
-  constructor(category: Category, title: string) {
+  readonly #category: Category;
+  private enabledInternal: boolean;
+
+  constructor(category: Category, name: string) {
     this.#category = category;
-    this.titleInternal = title;
+    this.name = name;
     this.enabledInternal = false;
   }
 
@@ -51,13 +59,5 @@ export class CategorizedBreakpoint {
 
   setEnabled(enabled: boolean): void {
     this.enabledInternal = enabled;
-  }
-
-  title(): string {
-    return this.titleInternal;
-  }
-
-  setTitle(title: string): void {
-    this.titleInternal = title;
   }
 }

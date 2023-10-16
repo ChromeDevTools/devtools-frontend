@@ -5,6 +5,7 @@
 import * as AddSourceMapURLDialog from './AddSourceMapURLDialog.js';
 import * as BreakpointEditDialog from './BreakpointEditDialog.js';
 import * as CallStackSidebarPane from './CallStackSidebarPane.js';
+import * as CategorizedBreakpointL10n from './CategorizedBreakpointL10n.js';
 import * as CoveragePlugin from './CoveragePlugin.js';
 import * as CSSPlugin from './CSSPlugin.js';
 import * as DebuggerPausedMessage from './DebuggerPausedMessage.js';
@@ -35,6 +36,7 @@ export {
   AddSourceMapURLDialog,
   BreakpointEditDialog,
   CallStackSidebarPane,
+  CategorizedBreakpointL10n,
   CoveragePlugin,
   CSSPlugin,
   DebuggerPausedMessage,

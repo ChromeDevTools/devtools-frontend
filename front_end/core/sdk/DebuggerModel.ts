@@ -1520,7 +1520,7 @@ interface PausedOnInstrumentationData {
 
 export interface EventListenerPausedDetailsAuxData {
   eventName: string;
-  eventTarget?: string;
+  targetName?: string;
   webglErrorName?: string;
   directiveText?: string;
 }

@@ -30,6 +30,7 @@ devtools_module("sources") {
     "BreakpointEditDialog.ts",
     "CSSPlugin.ts",
     "CallStackSidebarPane.ts",
+    "CategorizedBreakpointL10n.ts",
     "CoveragePlugin.ts",
     "DebuggerPausedMessage.ts",
     "DebuggerPlugin.ts",

@@ -6,14 +6,14 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
-
-import debuggerPausedMessageStyles from './debuggerPausedMessage.css.js';
-
 import * as Protocol from '../../generated/protocol.js';
 import type * as Bindings from '../../models/bindings/bindings.js';
 import type * as BreakpointManager from '../../models/breakpoints/breakpoints.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
+
+import {getLocalizedBreakpointName} from './CategorizedBreakpointL10n.js';
+import debuggerPausedMessageStyles from './debuggerPausedMessage.css.js';
 
 const UIStrings = {
   /**
@@ -193,7 +193,7 @@ export class DebuggerPausedMessage {
     if (!detailsAuxData) {
       return '';
     }
-    const {eventName, webglErrorName, directiveText} = detailsAuxData;
+    const {eventName, webglErrorName, directiveText, targetName} = detailsAuxData;
 
     if (eventName === 'instrumentation:webglErrorFired' && webglErrorName) {
       // If there is a hex code of the error, display only this.
@@ -204,22 +204,19 @@ export class DebuggerPausedMessage {
       return i18nString(UIStrings.scriptBlockedDueToContent, {PH1: directiveText});
     }
 
-    const maybeNonDomEventNameForUI =
-        SDK.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpointTitle(
-            (detailsAuxData as {
-              directiveText: string,
-              eventName: string,
-              webglErrorName: string,
-            }));
-    if (maybeNonDomEventNameForUI) {
-      return maybeNonDomEventNameForUI;
+    let breakpoint: SDK.CategorizedBreakpoint.CategorizedBreakpoint|null =
+        SDK.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpoint(detailsAuxData);
+    if (breakpoint) {
+      // EventBreakpointsManager breakpoints are the only ones with localized names.
+      return getLocalizedBreakpointName(breakpoint.name);
     }
-    return SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpointTitle((detailsAuxData as {
-      directiveText: string,
-      eventName: string,
-      targetName: string,
-      webglErrorName: string,
-    }));
+
+    breakpoint = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpoint(detailsAuxData);
+    if (breakpoint && targetName) {
+      // For standard DOM event listeners we prepend the target of the event.
+      return targetName + '.' + breakpoint.name;
+    }
+    return breakpoint?.name ?? '';
   }
 
   async render(

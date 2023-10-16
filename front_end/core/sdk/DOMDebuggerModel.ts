@@ -5,33 +5,16 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
-import * as i18n from '../i18n/i18n.js';
 import * as Platform from '../platform/platform.js';
 
 import {CategorizedBreakpoint, Category} from './CategorizedBreakpoint.js';
-import {type Location} from './DebuggerModel.js';
+import {type EventListenerPausedDetailsAuxData, type Location} from './DebuggerModel.js';
 import {DOMModel, type DOMNode, Events as DOMModelEvents} from './DOMModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {RuntimeModel} from './RuntimeModel.js';
 import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';
 import {type SDKModelObserver, TargetManager} from './TargetManager.js';
-
-const UIStrings = {
-  /**
-   * @description Noun. Title for a checkbox that turns on breakpoints on Trusted Type sink violations.
-   * "Trusted Types" is a Web API. A "Sink" (Noun, singular) is a special function, akin to a data sink, that expects
-   * to receive data in a specific format. Should the data be in the wrong format, or something else
-   * go wrong, its called a "sink violation".
-   */
-  sinkViolations: 'Sink Violations',
-  /**
-   *@description Title for a checkbox that turns on breakpoints on Trusted Type policy violations
-   */
-  policyViolations: 'Policy Violations',
-};
-const str_ = i18n.i18n.registerUIStrings('core/sdk/DOMDebuggerModel.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DOMDebuggerModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.DOMDebuggerApi;
@@ -502,8 +485,8 @@ export namespace EventListener {
 
 export class CSPViolationBreakpoint extends CategorizedBreakpoint {
   readonly #typeInternal: Protocol.DOMDebugger.CSPViolationType;
-  constructor(category: Category, title: string, type: Protocol.DOMDebugger.CSPViolationType) {
-    super(category, title);
+  constructor(category: Category, type: Protocol.DOMDebugger.CSPViolationType) {
+    super(category, type);
     this.#typeInternal = type;
   }
 
@@ -515,8 +498,8 @@ export class CSPViolationBreakpoint extends CategorizedBreakpoint {
 export class DOMEventListenerBreakpoint extends CategorizedBreakpoint {
   readonly eventName: string;
   readonly eventTargetNames: string[];
-  constructor(eventName: string, eventTargetNames: string[], category: Category, title: string) {
-    super(category, title);
+  constructor(eventName: string, eventTargetNames: string[], category: Category) {
+    super(category, eventName);
     this.eventName = eventName;
     this.eventTargetNames = eventTargetNames;
   }
@@ -561,11 +544,9 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
 
     this.#cspViolationsToBreakOn = [];
     this.#cspViolationsToBreakOn.push(new CSPViolationBreakpoint(
-        Category.TrustedTypeViolation, i18nString(UIStrings.sinkViolations),
-        Protocol.DOMDebugger.CSPViolationType.TrustedtypeSinkViolation));
+        Category.TrustedTypeViolation, Protocol.DOMDebugger.CSPViolationType.TrustedtypeSinkViolation));
     this.#cspViolationsToBreakOn.push(new CSPViolationBreakpoint(
-        Category.TrustedTypeViolation, i18nString(UIStrings.policyViolations),
-        Protocol.DOMDebugger.CSPViolationType.TrustedtypePolicyViolation));
+        Category.TrustedTypeViolation, Protocol.DOMDebugger.CSPViolationType.TrustedtypePolicyViolation));
 
     this.#eventListenerBreakpointsInternal = [];
     this.createEventListenerBreakpoints(
@@ -688,23 +669,22 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
   private createEventListenerBreakpoints(category: Category, eventNames: string[], eventTargetNames: string[]): void {
     for (const eventName of eventNames) {
       this.#eventListenerBreakpointsInternal.push(
-          new DOMEventListenerBreakpoint(eventName, eventTargetNames, category, eventName));
+          new DOMEventListenerBreakpoint(eventName, eventTargetNames, category));
     }
   }
 
-  private resolveEventListenerBreakpointInternal(eventName: string, eventTargetName?: string):
-      DOMEventListenerBreakpoint|null {
+  resolveEventListenerBreakpoint({eventName, targetName}: EventListenerPausedDetailsAuxData): DOMEventListenerBreakpoint
+      |null {
     const listenerPrefix = 'listener:';
     if (eventName.startsWith(listenerPrefix)) {
       eventName = eventName.substring(listenerPrefix.length);
     } else {
       return null;
     }
-    eventTargetName = (eventTargetName || '*').toLowerCase();
+    targetName = (targetName || '*').toLowerCase();
     let result: DOMEventListenerBreakpoint|null = null;
     for (const breakpoint of this.#eventListenerBreakpointsInternal) {
-      if (eventName && breakpoint.eventName === eventName &&
-          breakpoint.eventTargetNames.indexOf(eventTargetName) !== -1) {
+      if (eventName && breakpoint.eventName === eventName && breakpoint.eventTargetNames.indexOf(targetName) !== -1) {
         result = breakpoint;
       }
       if (!result && eventName && breakpoint.eventName === eventName &&
@@ -717,29 +697,6 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
 
   eventListenerBreakpoints(): DOMEventListenerBreakpoint[] {
     return this.#eventListenerBreakpointsInternal.slice();
-  }
-
-  resolveEventListenerBreakpointTitle(auxData: {
-    eventName: string,
-    webglErrorName: string,
-    directiveText: string,
-    targetName: string,
-  }): string {
-    const breakpoint = this.resolveEventListenerBreakpointInternal(auxData['eventName'], auxData['targetName']);
-    if (!breakpoint) {
-      return '';
-    }
-    if (auxData['targetName']) {
-      return auxData['targetName'] + '.' + breakpoint.title();
-    }
-    return breakpoint.title();
-  }
-
-  resolveEventListenerBreakpoint(auxData: {
-    eventName: string,
-    targetName: string,
-  }): DOMEventListenerBreakpoint|null {
-    return this.resolveEventListenerBreakpointInternal(auxData['eventName'], auxData['targetName']);
   }
 
   updateCSPViolationBreakpoints(): void {

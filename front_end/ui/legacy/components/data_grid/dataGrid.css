@@ -151,7 +151,6 @@
 }
 
 .data-grid th .sort-order-icon-container {
-  background-color: var(--sys-color-surface1);
   min-width: 0;
   position: absolute;
   top: 1px;
@@ -159,10 +158,6 @@
   bottom: 1px;
   display: flex;
   align-items: center;
-}
-
-.data-grid th:hover .sort-order-icon-container {
-  background-color: var(--sys-color-on-surface);
 }
 
 .data-grid th .sort-order-icon {
@@ -182,7 +177,7 @@
 }
 
 .data-grid th.sortable:hover {
-  background-color: var(--sys-color-on-surface);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .data-grid .top-filler-td {

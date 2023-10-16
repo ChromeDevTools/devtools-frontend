@@ -48,7 +48,6 @@ group("legacy_entrypoints") {
     "panels/security:legacy",
     "panels/settings:legacy",
     "panels/snippets:legacy",
-    "ui/legacy/components/source_frame:legacy",
     "ui/legacy/components/utils:legacy",
   ]
 }

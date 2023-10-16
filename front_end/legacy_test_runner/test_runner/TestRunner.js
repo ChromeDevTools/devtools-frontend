@@ -267,7 +267,6 @@ const mappingForLayoutTests = new Map([
   ['panels/settings', 'settings'],
   ['models/persistence', 'persistence'],
   ['entrypoints/main', 'main'],
-  ['ui/legacy/components/source_frame', 'source_frame'],
   ['ui/legacy/components/utils', 'components'],
 ]);
 

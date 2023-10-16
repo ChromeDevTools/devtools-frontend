@@ -73,14 +73,6 @@ devtools_entrypoint("bundle") {
   visibility += devtools_ui_legacy_visibility
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "source_frame-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [ "../../../..:legacy_entrypoints" ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "source_frame-meta.ts"
 

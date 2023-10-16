@@ -641,7 +641,6 @@ grd_files_release_sources = [
   "front_end/ui/legacy/components/perf_ui/perf_ui.js",
   "front_end/ui/legacy/components/quick_open/quick_open-meta.js",
   "front_end/ui/legacy/components/quick_open/quick_open.js",
-  "front_end/ui/legacy/components/source_frame/source_frame-legacy.js",
   "front_end/ui/legacy/components/source_frame/source_frame-meta.js",
   "front_end/ui/legacy/components/source_frame/source_frame.js",
   "front_end/ui/legacy/components/utils/utils-legacy.js",

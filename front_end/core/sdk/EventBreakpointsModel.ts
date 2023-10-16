@@ -92,20 +92,9 @@ const UIStrings = {
    *@description Name of a breakpoint type in the Sources Panel.
    */
   suspendAudiocontext: 'Suspend `AudioContext`',
-  /**
-   *@description Error message text
-   *@example {Snag Error} PH1
-   */
-  webglErrorFiredS: 'WebGL Error Fired ({PH1})',
-  /**
-   *@description Text in DOMDebugger Model
-   *@example {"script-src 'self'"} PH1
-   */
-  scriptBlockedDueToContent: 'Script blocked due to Content Security Policy directive: {PH1}',
 };
 
 const str_ = i18n.i18n.registerUIStrings('core/sdk/EventBreakpointsModel.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 const enum InstrumentationNames {
@@ -299,16 +288,6 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
     webglErrorName: string,
     directiveText: string,
   }): string {
-    const id = auxData['eventName'];
-    if (id === 'instrumentation:webglErrorFired' && auxData['webglErrorName']) {
-      let errorName: string = auxData['webglErrorName'];
-      // If there is a hex code of the error, display only this.
-      errorName = errorName.replace(/^.*(0x[0-9a-f]+).*$/i, '$1');
-      return i18nString(UIStrings.webglErrorFiredS, {PH1: errorName});
-    }
-    if (id === 'instrumentation:scriptBlockedByCSP' && auxData['directiveText']) {
-      return i18nString(UIStrings.scriptBlockedDueToContent, {PH1: auxData['directiveText']});
-    }
     const breakpoint = this.resolveEventListenerBreakpoint(auxData);
     return breakpoint?.title() ?? '';
   }

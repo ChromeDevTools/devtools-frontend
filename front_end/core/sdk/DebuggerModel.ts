@@ -1518,6 +1518,13 @@ interface PausedOnInstrumentationData {
   scriptId: Protocol.Runtime.ScriptId;
 }
 
+export interface EventListenerPausedDetailsAuxData {
+  eventName: string;
+  eventTarget?: string;
+  webglErrorName?: string;
+  directiveText?: string;
+}
+
 export const enum BreakpointType {
   LOGPOINT = 'LOGPOINT',
   CONDITIONAL_BREAKPOINT = 'CONDITIONAL_BREAKPOINT',

@@ -99,6 +99,16 @@ const UIStrings = {
    *@description Text in Debugger Paused Message of the Sources panel
    */
   nodeRemoval: 'node removal',
+  /**
+   *@description Error message text
+   *@example {Snag Error} PH1
+   */
+  webglErrorFiredS: 'WebGL Error Fired ({PH1})',
+  /**
+   *@description Text in DOMDebugger Model
+   *@example {"script-src 'self'"} PH1
+   */
+  scriptBlockedDueToContent: 'Script blocked due to Content Security Policy directive: {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/DebuggerPausedMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -179,6 +189,39 @@ export class DebuggerPausedMessage {
     return messageWrapper;
   }
 
+  static #findEventNameForUi(detailsAuxData?: SDK.DebuggerModel.EventListenerPausedDetailsAuxData): string {
+    if (!detailsAuxData) {
+      return '';
+    }
+    const {eventName, webglErrorName, directiveText} = detailsAuxData;
+
+    if (eventName === 'instrumentation:webglErrorFired' && webglErrorName) {
+      // If there is a hex code of the error, display only this.
+      const errorName = webglErrorName.replace(/^.*(0x[0-9a-f]+).*$/i, '$1');
+      return i18nString(UIStrings.webglErrorFiredS, {PH1: errorName});
+    }
+    if (eventName === 'instrumentation:scriptBlockedByCSP' && directiveText) {
+      return i18nString(UIStrings.scriptBlockedDueToContent, {PH1: directiveText});
+    }
+
+    const maybeNonDomEventNameForUI =
+        SDK.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpointTitle(
+            (detailsAuxData as {
+              directiveText: string,
+              eventName: string,
+              webglErrorName: string,
+            }));
+    if (maybeNonDomEventNameForUI) {
+      return maybeNonDomEventNameForUI;
+    }
+    return SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpointTitle((detailsAuxData as {
+      directiveText: string,
+      eventName: string,
+      targetName: string,
+      webglErrorName: string,
+    }));
+  }
+
   async render(
       details: SDK.DebuggerModel.DebuggerPausedDetails|null,
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding,
@@ -199,27 +242,8 @@ export class DebuggerPausedMessage {
     if (details.reason === Protocol.Debugger.PausedEventReason.DOM) {
       messageWrapper = await DebuggerPausedMessage.createDOMBreakpointHitMessage(details);
     } else if (details.reason === Protocol.Debugger.PausedEventReason.EventListener) {
-      let eventNameForUI = '';
-      if (details.auxData) {
-        const maybeNonDomEventNameForUI =
-            SDK.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpointTitle(
-                (details.auxData as {
-                  directiveText: string,
-                  eventName: string,
-                  webglErrorName: string,
-                }));
-        if (maybeNonDomEventNameForUI) {
-          eventNameForUI = maybeNonDomEventNameForUI;
-        } else {
-          eventNameForUI = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpointTitle(
-              (details.auxData as {
-                directiveText: string,
-                eventName: string,
-                targetName: string,
-                webglErrorName: string,
-              }));
-        }
-      }
+      const eventNameForUI = DebuggerPausedMessage.#findEventNameForUi(
+          details.auxData as SDK.DebuggerModel.EventListenerPausedDetailsAuxData);
       messageWrapper = buildWrapper(i18nString(UIStrings.pausedOnEventListener), eventNameForUI);
     } else if (details.reason === Protocol.Debugger.PausedEventReason.XHR) {
       const auxData = (details.auxData as PausedDetailsAuxData);

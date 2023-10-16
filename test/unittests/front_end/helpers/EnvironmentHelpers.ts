@@ -132,6 +132,7 @@ const REGISTERED_EXPERIMENTS = [
   'fontEditor',
   'networkPanelFilterBarRedesign',
   'breadcrumbsPerformancePanel',
+  'trackContextMenu',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {

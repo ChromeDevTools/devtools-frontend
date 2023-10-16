@@ -419,6 +419,10 @@ export class MainImpl {
         Root.Runtime.ExperimentName.BREADCRUMBS_PERFORMANCE_PANEL, 'Enable breadcrumbs in the Performance Panel',
         false);
 
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.TRACK_CONTEXT_MENU,
+        'Enable context menu that allows to modify trees in the Flame Chart', true);
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'sourceOrderViewer',
       'cssTypeComponentLength',

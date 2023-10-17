@@ -263,8 +263,6 @@ const mappingForLayoutTests = new Map([
   ['panels/network', 'network'],
   ['panels/search', 'search'],
   ['panels/sources', 'sources'],
-  ['panels/snippets', 'snippets'],
-  ['panels/settings', 'settings'],
   ['models/persistence', 'persistence'],
   ['entrypoints/main', 'main'],
   ['ui/legacy/components/utils', 'components'],

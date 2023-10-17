@@ -22,6 +22,9 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
 }
 
 describeWithEnvironment('TimelineFlameChartView', function() {
+  // TODO(crbug.com/1492405): Improve perf panel trace load speed to
+  // prevent timeout bump.
+  this.timeout(20_000);
   it('Can search for events by name in the timeline', async function() {
     const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'lcp-images.json.gz');
     // The timeline flamechart view will invoke the `select` method

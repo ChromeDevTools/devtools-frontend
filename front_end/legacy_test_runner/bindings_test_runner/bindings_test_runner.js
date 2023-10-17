@@ -5,7 +5,6 @@
 import '../test_runner/test_runner.js';
 import '../../models/workspace/workspace-legacy.js';
 import '../../models/breakpoints/breakpoints-legacy.js';
-import '../../models/persistence/persistence-legacy.js';
 import './BindingsTestRunner.js';
 import './IsolatedFilesystemTestRunner.js';
 import './AutomappingTestRunner.js';

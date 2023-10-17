@@ -444,7 +444,6 @@ grd_files_release_sources = [
   "front_end/models/javascript_metadata/javascript_metadata.js",
   "front_end/models/logs/logs-meta.js",
   "front_end/models/logs/logs.js",
-  "front_end/models/persistence/persistence-legacy.js",
   "front_end/models/persistence/persistence-meta.js",
   "front_end/models/persistence/persistence.js",
   "front_end/models/source_map_scopes/source_map_scopes.js",

@@ -93,7 +93,7 @@ describeWithMockConnection('StylesPropertySection', () => {
       },
       matchingSelectors: [0],
     };
-    const matchedStyles = new SDK.CSSMatchedStyles.CSSMatchedStyles({
+    const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
       cssModel,
       node: sinon.createStubInstance(SDK.DOMModel.DOMNode),
       inlinePayload: null,

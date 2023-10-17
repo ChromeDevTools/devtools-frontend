@@ -88,7 +88,7 @@ describe('CSSMatchedStyles', () => {
 });
 
 describeWithMockConnection('NodeCascade', () => {
-  it('correctly marks custom properties as Overloaded if they are registered as inherits: false', () => {
+  it('correctly marks custom properties as Overloaded if they are registered as inherits: false', async () => {
     const target = createTarget();
     const cssModel = new SDK.CSSModel.CSSModel(target);
     const parentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
@@ -123,7 +123,7 @@ describeWithMockConnection('NodeCascade', () => {
         syntax: '<color>',
       },
     ];
-    const matchedStyles = new SDK.CSSMatchedStyles.CSSMatchedStyles({
+    const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
       cssModel,
       node,
       inlinePayload: null,

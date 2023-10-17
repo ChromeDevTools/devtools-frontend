@@ -4,6 +4,7 @@
 
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as Platform from '../platform/platform.js';
 
 import {cssMetadata, VariableRegex} from './CSSMetadata.js';
 import {type CSSModel} from './CSSModel.js';
@@ -233,31 +234,31 @@ export class CSSRegisteredProperty {
 }
 
 export class CSSMatchedStyles {
-  readonly #cssModelInternal: CSSModel;
-  readonly #nodeInternal: DOMNode;
-  readonly #addedStyles: Map<CSSStyleDeclaration, DOMNode>;
-  readonly #matchingSelectors: Map<number, Map<string, boolean>>;
-  readonly #keyframesInternal: CSSKeyframesRule[];
-  readonly #registeredProperties: CSSRegisteredProperty[];
-  readonly #registeredPropertyMap = new Map<string, CSSRegisteredProperty>();
-  readonly #nodeForStyleInternal: Map<CSSStyleDeclaration, DOMNode|null>;
-  readonly #inheritedStyles: Set<CSSStyleDeclaration>;
-  readonly #mainDOMCascade: DOMInheritanceCascade;
-  readonly #pseudoDOMCascades: Map<Protocol.DOM.PseudoType, DOMInheritanceCascade>;
-  readonly #customHighlightPseudoDOMCascades: Map<string, DOMInheritanceCascade>;
-  readonly #styleToDOMCascade: Map<CSSStyleDeclaration, DOMInheritanceCascade>;
-  readonly #parentLayoutNodeId: Protocol.DOM.NodeId|undefined;
-  readonly #positionFallbackRules: CSSPositionFallbackRule[];
+  #cssModelInternal: CSSModel;
+  #nodeInternal: DOMNode;
+  #addedStyles: Map<CSSStyleDeclaration, DOMNode>;
+  #matchingSelectors: Map<number, Map<string, boolean>>;
+  #keyframesInternal: CSSKeyframesRule[];
+  #registeredProperties: CSSRegisteredProperty[];
+  #registeredPropertyMap = new Map<string, CSSRegisteredProperty>();
+  #nodeForStyleInternal: Map<CSSStyleDeclaration, DOMNode|null>;
+  #inheritedStyles: Set<CSSStyleDeclaration>;
+  #styleToDOMCascade: Map<CSSStyleDeclaration, DOMInheritanceCascade>;
+  #parentLayoutNodeId: Protocol.DOM.NodeId|undefined;
+  #positionFallbackRules: CSSPositionFallbackRule[];
+  #mainDOMCascade?: DOMInheritanceCascade;
+  #pseudoDOMCascades?: Map<Protocol.DOM.PseudoType, DOMInheritanceCascade>;
+  #customHighlightPseudoDOMCascades?: Map<string, DOMInheritanceCascade>;
 
-  constructor({
+  static async create(payload: CSSMatchedStylesPayload): Promise<CSSMatchedStyles> {
+    const cssMatchedStyles = new CSSMatchedStyles(payload);
+    await cssMatchedStyles.init(payload);
+    return cssMatchedStyles;
+  }
+
+  private constructor({
     cssModel,
     node,
-    inlinePayload,
-    attributesPayload,
-    matchedPayload,
-    pseudoPayload,
-    inheritedPayload,
-    inheritedPseudoPayload,
     animationsPayload,
     parentLayoutNodeId,
     positionFallbackRules,
@@ -281,17 +282,28 @@ export class CSSMatchedStyles {
 
     this.#nodeForStyleInternal = new Map();
     this.#inheritedStyles = new Set();
+    this.#styleToDOMCascade = new Map();
+    this.#registeredPropertyMap = new Map();
+  }
 
+  private async init({
+    matchedPayload,
+    inheritedPayload,
+    inlinePayload,
+    attributesPayload,
+    pseudoPayload,
+    inheritedPseudoPayload,
+  }: CSSMatchedStylesPayload): Promise<void> {
     matchedPayload = cleanUserAgentPayload(matchedPayload);
     for (const inheritedResult of inheritedPayload) {
       inheritedResult.matchedCSSRules = cleanUserAgentPayload(inheritedResult.matchedCSSRules);
     }
 
-    this.#mainDOMCascade = this.buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload);
+    this.#mainDOMCascade =
+        await this.buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload);
     [this.#pseudoDOMCascades, this.#customHighlightPseudoDOMCascades] =
         this.buildPseudoCascades(pseudoPayload, inheritedPseudoPayload);
 
-    this.#styleToDOMCascade = new Map();
     for (const domCascade of Array.from(this.#customHighlightPseudoDOMCascades.values())
              .concat(Array.from(this.#pseudoDOMCascades.values()))
              .concat(this.#mainDOMCascade)) {
@@ -305,10 +317,10 @@ export class CSSMatchedStyles {
     }
   }
 
-  private buildMainCascade(
+  private async buildMainCascade(
       inlinePayload: Protocol.CSS.CSSStyle|null, attributesPayload: Protocol.CSS.CSSStyle|null,
       matchedPayload: Protocol.CSS.RuleMatch[],
-      inheritedPayload: Protocol.CSS.InheritedStyleEntry[]): DOMInheritanceCascade {
+      inheritedPayload: Protocol.CSS.InheritedStyleEntry[]): Promise<DOMInheritanceCascade> {
     const nodeCascades: NodeCascade[] = [];
 
     const nodeStyles: CSSStyleDeclaration[] = [];
@@ -350,6 +362,14 @@ export class CSSMatchedStyles {
 
     // Walk the node structure and identify styles with inherited properties.
     let parentNode: (DOMNode|null) = this.#nodeInternal.parentNode;
+    const traverseParentInFlatTree = async(node: DOMNode): Promise<DOMNode|null> => {
+      if (node.hasAssignedSlot()) {
+        return await node.assignedSlot?.deferredNode.resolvePromise() ?? null;
+      }
+
+      return node.parentNode;
+    };
+
     for (let i = 0; parentNode && inheritedPayload && i < inheritedPayload.length; ++i) {
       const inheritedStyles = [];
       const entryPayload = inheritedPayload[i];
@@ -377,7 +397,7 @@ export class CSSMatchedStyles {
         inheritedStyles.push(inheritedRule.style);
         this.#inheritedStyles.add(inheritedRule.style);
       }
-      parentNode = parentNode.parentNode;
+      parentNode = await traverseParentInFlatTree(parentNode);
       nodeCascades.push(new NodeCascade(this, inheritedStyles, true /* #isInherited */));
     }
 
@@ -622,6 +642,7 @@ export class CSSMatchedStyles {
   }
 
   nodeStyles(): CSSStyleDeclaration[] {
+    Platform.assertNotNullOrUndefined(this.#mainDOMCascade);
     return this.#mainDOMCascade.styles();
   }
 
@@ -642,20 +663,24 @@ export class CSSMatchedStyles {
   }
 
   pseudoStyles(pseudoType: Protocol.DOM.PseudoType): CSSStyleDeclaration[] {
+    Platform.assertNotNullOrUndefined(this.#pseudoDOMCascades);
     const domCascade = this.#pseudoDOMCascades.get(pseudoType);
     return domCascade ? domCascade.styles() : [];
   }
 
   pseudoTypes(): Set<Protocol.DOM.PseudoType> {
+    Platform.assertNotNullOrUndefined(this.#pseudoDOMCascades);
     return new Set(this.#pseudoDOMCascades.keys());
   }
 
   customHighlightPseudoStyles(highlightName: string): CSSStyleDeclaration[] {
+    Platform.assertNotNullOrUndefined(this.#customHighlightPseudoDOMCascades);
     const domCascade = this.#customHighlightPseudoDOMCascades.get(highlightName);
     return domCascade ? domCascade.styles() : [];
   }
 
   customHighlightPseudoNames(): Set<string> {
+    Platform.assertNotNullOrUndefined(this.#customHighlightPseudoDOMCascades);
     return new Set(this.#customHighlightPseudoDOMCascades.keys());
   }
 
@@ -699,6 +724,9 @@ export class CSSMatchedStyles {
   }
 
   resetActiveProperties(): void {
+    Platform.assertNotNullOrUndefined(this.#mainDOMCascade);
+    Platform.assertNotNullOrUndefined(this.#pseudoDOMCascades);
+    Platform.assertNotNullOrUndefined(this.#customHighlightPseudoDOMCascades);
     this.#mainDOMCascade.reset();
     for (const domCascade of this.#pseudoDOMCascades.values()) {
       domCascade.reset();

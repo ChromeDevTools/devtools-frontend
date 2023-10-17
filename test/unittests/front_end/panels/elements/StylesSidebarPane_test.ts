@@ -50,7 +50,7 @@ describeWithRealConnection('StylesSidebarPane', async () => {
   describe('rebuildSectionsForMatchedStyleRulesForTest', () => {
     it('should add @position-fallback section to the end', async () => {
       const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
-      const matchedStyles = new SDK.CSSMatchedStyles.CSSMatchedStyles({
+      const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
         cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
         node: stylesSidebarPane.node() as SDK.DOMModel.DOMNode,
         inlinePayload: null,

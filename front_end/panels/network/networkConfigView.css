@@ -11,7 +11,7 @@
 
 .network-config-group {
   display: flex;
-  margin-bottom: 10px;
+  padding-bottom: 10px;
   flex-wrap: wrap;
   flex: 0 0 auto;
   min-height: 30px;

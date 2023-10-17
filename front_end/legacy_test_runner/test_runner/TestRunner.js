@@ -1322,20 +1322,21 @@ export function waitForUISourceCode(urlSuffix, projectType) {
     return true;
   }
 
-  for (const uiSourceCode of self.Workspace.workspace.uiSourceCodes()) {
+  for (const uiSourceCode of Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodes()) {
     if (urlSuffix && matches(uiSourceCode)) {
       return Promise.resolve(uiSourceCode);
     }
   }
 
-  return waitForEvent(Workspace.Workspace.Events.UISourceCodeAdded, self.Workspace.workspace, matches);
+  return waitForEvent(
+      Workspace.Workspace.Events.UISourceCodeAdded, Workspace.Workspace.WorkspaceImpl.instance(), matches);
 }
 
 /**
  * @param {!Function} callback
  */
 export function waitForUISourceCodeRemoved(callback) {
-  self.Workspace.workspace.once(Workspace.Workspace.Events.UISourceCodeRemoved).then(callback);
+  Workspace.Workspace.WorkspaceImpl.instance().once(Workspace.Workspace.Events.UISourceCodeRemoved).then(callback);
 }
 
 /**

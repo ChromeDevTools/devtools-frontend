@@ -10,6 +10,7 @@ self.SourcesTestRunner = self.SourcesTestRunner || {};
 import * as Common from '../../core/common/common.js';
 import * as Sources from '../../panels/sources/sources.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as SDKModule from '../../core/sdk/sdk.js';
@@ -290,7 +291,7 @@ SourcesTestRunner.captureStackTraceIntoString = async function(callFrames, async
       let url;
       let lineNumber;
 
-      if (uiLocation && uiLocation.uiSourceCode.project().type() !== Workspace.projectTypes.Debugger) {
+      if (uiLocation && uiLocation.uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.Debugger) {
         url = uiLocation.uiSourceCode.name();
         lineNumber = uiLocation.lineNumber + 1;
       } else {
@@ -425,7 +426,7 @@ SourcesTestRunner.waitForScriptSource = function(scriptName, callback, contentTy
   const uiSourceCodes = panel.workspace.uiSourceCodes();
 
   for (let i = 0; i < uiSourceCodes.length; ++i) {
-    if (uiSourceCodes[i].project().type() === Workspace.projectTypes.Service) {
+    if (uiSourceCodes[i].project().type() === Workspace.Workspace.projectTypes.Service) {
       continue;
     }
 

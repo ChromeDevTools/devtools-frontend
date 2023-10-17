@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
@@ -49,16 +50,16 @@ BindingsTestRunner.overrideNetworkModificationTime = function(urlToTime) {
       return null;
     }
 
-    return new Workspace.UISourceCodeMetadata(timeOverride, (metadata ? metadata.contentSize : null));
+    return new Workspace.UISourceCode.UISourceCodeMetadata(timeOverride, (metadata ? metadata.contentSize : null));
   }
 };
 
 BindingsTestRunner.AutomappingTest = function(workspace) {
   this.workspace = workspace;
   this.networkProject = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
-      this.workspace, 'AUTOMAPPING', Workspace.projectTypes.Network, 'simple website');
+      this.workspace, 'AUTOMAPPING', Workspace.Workspace.projectTypes.Network, 'simple website');
 
-  if (workspace !== self.Workspace.workspace) {
+  if (workspace !== Workspace.Workspace.WorkspaceImpl.instance()) {
     new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(
         Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance(), this.workspace);
   }
@@ -85,7 +86,7 @@ BindingsTestRunner.AutomappingTest.prototype = {
           TextUtils.StaticContentProvider.StaticContentProvider.fromString(url, contentType, asset.content);
       const metadata =
           (typeof asset.content === 'string' || asset.time ?
-               new Workspace.UISourceCodeMetadata(asset.time, asset.content.length) :
+               new Workspace.UISourceCode.UISourceCodeMetadata(asset.time, asset.content.length) :
                null);
       const uiSourceCode = this.networkProject.createUISourceCode(url, contentType);
       this.networkProject.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata);
@@ -125,7 +126,7 @@ BindingsTestRunner.AutomappingTest.prototype = {
       return;
     }
 
-    const networkUISourceCodes = this.workspace.uiSourceCodesForProjectType(Workspace.projectTypes.Network);
+    const networkUISourceCodes = this.workspace.uiSourceCodesForProjectType(Workspace.Workspace.projectTypes.Network);
     const stabilized = this.failedBindingsCount + this.automapping.statuses.size === networkUISourceCodes.length;
 
     if (stabilized) {

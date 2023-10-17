@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Workspace from '../../models/workspace/workspace.js';
+
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
@@ -19,7 +21,7 @@ BindingsTestRunner.cleanupURL = function(url) {
 };
 
 BindingsTestRunner.dumpWorkspace = function(previousSnapshot) {
-  const uiSourceCodes = self.Workspace.workspace.uiSourceCodes().slice();
+  const uiSourceCodes = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodes().slice();
   let urls = uiSourceCodes.map(code => code.url());
 
   urls = urls.map(BindingsTestRunner.cleanupURL);

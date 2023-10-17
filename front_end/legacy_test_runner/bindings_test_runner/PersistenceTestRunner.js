@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Persistence from '../../models/persistence/persistence.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
@@ -26,7 +27,7 @@ Persistence.Automapping.AutomappingStatus.prototype.toString = function() {
 };
 
 BindingsTestRunner.waitForBinding = async function(fileName) {
-  const uiSourceCodes = self.Workspace.workspace.uiSourceCodes();
+  const uiSourceCodes = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodes();
 
   for (const uiSourceCode of uiSourceCodes) {
     const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
@@ -70,8 +71,10 @@ class TestMapping {
       return;
     }
 
-    const networkUISourceCode = await TestRunner.waitForUISourceCode(urlSuffix, Workspace.projectTypes.Network);
-    const fileSystemUISourceCode = await TestRunner.waitForUISourceCode(urlSuffix, Workspace.projectTypes.FileSystem);
+    const networkUISourceCode =
+        await TestRunner.waitForUISourceCode(urlSuffix, Workspace.Workspace.projectTypes.Network);
+    const fileSystemUISourceCode =
+        await TestRunner.waitForUISourceCode(urlSuffix, Workspace.Workspace.projectTypes.FileSystem);
     const binding = new Persistence.Persistence.PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
     this.bindings.add(binding);
     await this.persistence.addBindingForTest(binding);

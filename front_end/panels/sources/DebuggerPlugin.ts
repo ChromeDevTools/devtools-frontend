@@ -2434,6 +2434,9 @@ const theme = CodeMirror.EditorView.baseTheme({
     '&.cm-highlightedLine': {
       animation: 'cm-fading-highlight-execution 2s 0s',
     },
+    '&.cm-line::selection, &.cm-line ::selection': {
+      backgroundColor: 'var(--sys-color-tonal-container) !important',
+    },
   },
   '.cm-executionToken': {
     backgroundColor: 'var(--sys-color-state-focus-select)',

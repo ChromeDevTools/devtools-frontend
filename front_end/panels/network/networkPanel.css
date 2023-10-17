@@ -30,32 +30,31 @@
 :root {
   --network-overview-total: var(--sys-color-surface-variant);
   --network-overview-blocking: var(--sys-color-neutral-bright);
-  --network-overview-connecting: var(--sys-color-orange-bright);
+  --network-overview-connecting: var(--ref-palette-yellow60);
   --network-overview-service-worker: var(--sys-color-orange-bright);
   --network-overview-service-worker-respond-with: var(--sys-color-cyan-bright);
-  --network-overview-push: var(--sys-color-blue-bright);
-  --override-network-overview-proxy: #a1887f;
+  --network-overview-push: var(--ref-palette-blue60);
+  --override-network-overview-proxy: var(--ref-palette-neutral60);
   --network-overview-dns: var(--sys-color-cyan);
-  --network-overview-ssl: var(--sys-color-purple-bright);
-  --override-network-overview-sending: #74979a;
-  --network-overview-waiting: var(--sys-color-green-bright);
-  --network-overview-receiving: var(--sys-color-blue);
+  --network-overview-ssl: var(--ref-palette-purple70);
+  --override-network-overview-sending: var(--ref-palette-cyan60);
+  --network-overview-waiting: var(--ref-palette-green70);
+  --network-overview-receiving: var(--ref-palette-blue60);
   --network-overview-queueing: var(--ref-palette-neutral100);
-  --network-grid-navigation-color: rgb(221 238 255 / 100%);
-  --network-grid-initiator-path-color: rgb(58 217 58 / 40%);
-  --network-grid-initiated-path-color: rgb(217 58 58 / 40%);
+  --network-grid-navigation-color: var(--ref-palette-blue90);
+  --network-grid-initiator-path-color: var(--ref-palette-green90);
+  --network-grid-initiated-path-color: var(--ref-palette-error80);
   --network-grid-focus-selected-color-has-error: var(--sys-color-error-container);
-  --network-grid-from-frame-color: rgb(224 247 250 / 40%);
-  --network-grid-is-product-color: rgb(255 252 225 / 60%);
-  --network-frame-divider-color: var(--sys-color-yellow-bright);
+  --network-grid-from-frame-color: var(--ref-palette-cyan95);
+  --network-grid-is-product-color: var(--ref-palette-yellow95);
+  --network-frame-divider-color: var(--ref-palette-yellow60);
 }
 
 .-theme-with-dark-background {
-  --network-grid-navigation-color: rgb(221 238 255 / 100%);
-  --network-grid-initiator-path-color: rgb(58 217 58 / 40%);
-  --network-grid-initiated-path-color: rgb(217 58 58 / 40%);
-  --network-grid-from-frame-color: rgb(224 247 250 / 40%);
-  --network-grid-is-product-color: rgb(255 252 225 / 60%);
+  --network-grid-initiator-path-color: var(--ref-palette-green40);
+  --network-grid-initiated-path-color: var(--ref-palette-error20);
+  --network-grid-from-frame-color: var(--ref-palette-neutral50);
+  --network-grid-is-product-color: var(--ref-palette-neutral70);
 }
 
 .network-details-view {

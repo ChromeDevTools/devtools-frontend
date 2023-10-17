@@ -11805,7 +11805,7 @@
     "message": "Tout enregistrer"
   },
   "panels/sources/sources-meta.ts | scope": {
-    "message": "NIveau d'accès"
+    "message": "Niveau d'accès"
   },
   "panels/sources/sources-meta.ts | search": {
     "message": "Rechercher"

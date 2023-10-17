@@ -7,6 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
 import layersWidgetStyles from './layersWidget.css.js';
@@ -36,6 +37,7 @@ export class LayersWidget extends UI.Widget.Widget {
     super(true);
 
     this.contentElement.className = 'styles-layers-pane';
+    this.contentElement.setAttribute('jslog', `${VisualLogging.cssLayersPane()}`);
     UI.UIUtils.createTextChild(this.contentElement.createChild('div'), i18nString(UIStrings.cssLayersTitle));
 
     this.contentElement.appendChild(this.layerTreeComponent);
@@ -136,6 +138,8 @@ export class ButtonProvider implements UI.Toolbar.Provider {
     this.button.setVisible(false);
     this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
     this.button.element.classList.add('monospace');
+    this.button.element.setAttribute(
+        'jslog', `${VisualLogging.toggleSubpane().track({click: true}).context('cssLayers')}`);
   }
 
   static instance(opts: {

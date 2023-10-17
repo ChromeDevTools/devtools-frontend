@@ -30,15 +30,15 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {Constraints} from './Geometry.js';
-
-import {Events as ResizerWidgetEvents, SimpleResizerWidget, type ResizeUpdatePositionEvent} from './ResizerWidget.js';
+import {Events as ResizerWidgetEvents, type ResizeUpdatePositionEvent, SimpleResizerWidget} from './ResizerWidget.js';
+import splitWidgetStyles from './splitWidget.css.legacy.js';
 import {ToolbarButton} from './Toolbar.js';
 import {Widget} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
-import splitWidgetStyles from './splitWidget.css.legacy.js';
 
 export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof Widget>(Widget) {
   private sidebarElementInternal: HTMLElement;
@@ -825,13 +825,18 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
   createShowHideSidebarButton(
       showTitle: Common.UIString.LocalizedString, hideTitle: Common.UIString.LocalizedString,
-      shownString: Common.UIString.LocalizedString, hiddenString: Common.UIString.LocalizedString): ToolbarButton {
+      shownString: Common.UIString.LocalizedString, hiddenString: Common.UIString.LocalizedString,
+      jslogContext?: string): ToolbarButton {
     this.showSidebarButtonTitle = showTitle;
     this.hideSidebarButtonTitle = hideTitle;
     this.shownSidebarString = shownString;
     this.hiddenSidebarString = hiddenString;
     this.showHideSidebarButton = new ToolbarButton('', '');
     this.showHideSidebarButton.addEventListener(ToolbarButton.Events.Click, buttonClicked, this);
+    if (jslogContext) {
+      this.showHideSidebarButton.element.setAttribute(
+          'jslog', `${VisualLogging.toggleSubpane().track({click: true}).context(jslogContext)}`);
+    }
     this.updateShowHideSidebarButton();
 
     function buttonClicked(this: SplitWidget): void {

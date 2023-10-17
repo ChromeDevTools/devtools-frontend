@@ -5,6 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ElementsPanel} from './ElementsPanel.js';
 import elementStatePaneWidgetStyles from './elementStatePaneWidget.css.js';
@@ -32,6 +33,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     super(true);
 
     this.contentElement.className = 'styles-element-state-pane';
+    this.contentElement.setAttribute('jslog', `${VisualLogging.elementStatesPane()}`);
     UI.UIUtils.createTextChild(this.contentElement.createChild('div'), i18nString(UIStrings.forceElementState));
     const table = document.createElement('table');
     table.classList.add('source-code');
@@ -60,6 +62,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
       const input = label.checkboxElement;
       this.inputStates.set(input, state);
       input.addEventListener('click', (clickListener as EventListener), false);
+      input.setAttribute('jslog', `${VisualLogging.toggle().track({click: true}).context(state)}`);
       inputs.push(input);
       td.appendChild(label);
       return td;
@@ -138,6 +141,8 @@ export class ButtonProvider implements UI.Toolbar.Provider {
     this.button.setToggleWithDot(true);
     this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
     this.button.element.classList.add('monospace');
+    this.button.element.setAttribute(
+        'jslog', `${VisualLogging.toggleSubpane().track({click: true}).context('elementStates')}`);
     this.view = new ElementStatePaneWidget();
   }
 

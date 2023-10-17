@@ -35,6 +35,12 @@ enum VisualElements {
   StylesPane = 12,
   StylesSelector = 13,
   TreeItemExpand = 14,
+  ToggleSubpane = 15,
+  ElementClassesPane = 16,
+  AddElementClassPrompt = 17,
+  ElementStatesPan = 18,
+  CssLayersPane = 19,
+  DropDownButton = 20,
 }
 
 function resolveVe(ve: string): number {

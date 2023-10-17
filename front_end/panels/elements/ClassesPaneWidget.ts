@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import classesPaneWidgetStyles from './classesPaneWidget.css.js';
 import {ElementsPanel} from './ElementsPanel.js';
@@ -47,6 +48,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
   constructor() {
     super(true);
     this.contentElement.className = 'styles-element-classes-pane';
+    this.contentElement.setAttribute('jslog', `${VisualLogging.elementClassesPane()}`);
     const container = this.contentElement.createChild('div', 'title-container');
     this.input = container.createChild('div', 'new-class-input monospace');
     this.setDefaultFocusedElement(this.input);
@@ -60,6 +62,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     this.prompt.setPlaceholder(i18nString(UIStrings.addNewClass));
     this.prompt.addEventListener(UI.TextPrompt.Events.TextChanged, this.onTextChanged, this);
     proxyElement.addEventListener('keydown', this.onKeyDown.bind(this), false);
+    proxyElement.setAttribute('jslog', `${VisualLogging.addElementClassPrompt().track({keydown: 'Enter'})}`);
 
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.DOMMutated, this.onDOMMutated, this, {scoped: true});
@@ -265,6 +268,8 @@ export class ButtonProvider implements UI.Toolbar.Provider {
     this.button = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.elementClasses), '');
     this.button.setText('.cls');
     this.button.element.classList.add('monospace');
+    this.button.element.setAttribute(
+        'jslog', `${VisualLogging.toggleSubpane().track({click: true}).context('elementClassesPane')}`);
     this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
     this.view = new ClassesPaneWidget();
   }

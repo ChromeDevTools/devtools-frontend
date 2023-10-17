@@ -173,8 +173,8 @@ export const editorTheme = CM.EditorView.theme({
       },
       '&::after': {
         content: '"tab"',
-        color: 'var(--sys-color-on-primary)',
-        border: '1px solid var(--color-selected-option-outline)',
+        color: 'var(--sys-color-primary-bright)',
+        border: '1px solid var(--sys-color-primary-bright)',
         borderRadius: '2px',
         marginLeft: '5px',
         padding: '1px 3px',

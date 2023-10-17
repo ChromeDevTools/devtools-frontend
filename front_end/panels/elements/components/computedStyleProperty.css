@@ -61,7 +61,7 @@
   margin: -1px 0 0 calc(-1 * var(--goto-size));
   -webkit-mask-image: var(--image-file-mediumIcons);
   -webkit-mask-position: -32px 48px;
-  background-color: var(--sys-color-surface-variant);
+  background-color: var(--sys-color-primary-bright);
 }
 
 .computed-style-property:hover .goto {

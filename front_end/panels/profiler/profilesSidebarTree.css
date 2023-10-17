@@ -111,7 +111,7 @@ li .titles {
   line-height: 12px;
   padding-bottom: 1px;
   text-overflow: ellipsis;
-  overflow: hidden;
+  overflow: visible;
   white-space: nowrap;
   flex: auto;
 }

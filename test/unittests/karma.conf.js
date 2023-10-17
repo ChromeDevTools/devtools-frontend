@@ -293,7 +293,7 @@ module.exports = function(config) {
 
     singleRun,
 
-    pingTimeout: KARMA_TIMEOUT,
+    pingTimeout: KARMA_TIMEOUT ?? 4000,
     browserNoActivityTimeout: KARMA_TIMEOUT,
     browserSocketTimeout: KARMA_TIMEOUT,
 

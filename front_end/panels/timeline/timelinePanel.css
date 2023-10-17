@@ -394,7 +394,7 @@
 .timeline-tree-view .data-grid .background-bar {
   float: right;
   height: 18px;
-  background-color: var(--sys-color-yellow-container);
+  background-color: var(--sys-color-surface-yellow);
   border-bottom: 1px solid var(--sys-color-yellow-outline);
 }
 

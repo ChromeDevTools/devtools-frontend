@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import '../test_runner/test_runner.js';
-import '../../models/workspace/workspace-legacy.js';
 import '../../panels/browser_debugger/browser_debugger-legacy.js';
 import './SourcesTestRunner.js';
 import './DebuggerTestRunner.js';

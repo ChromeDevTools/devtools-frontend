@@ -1277,22 +1277,22 @@ function markNonBreakableLines(disassembly: Common.WasmDisassembly.WasmDisassemb
 const sourceFrameTheme = CodeMirror.EditorView.theme({
   '&.cm-editor': {height: '100%'},
   '.cm-scroller': {overflow: 'auto'},
-  '.cm-lineNumbers .cm-gutterElement.cm-nonBreakableLine': {color: 'var(--color-non-breakable-line) !important'},
+  '.cm-lineNumbers .cm-gutterElement.cm-nonBreakableLine': {color: 'var(--sys-color-state-disabled) !important'},
   '.cm-searchMatch': {
-    border: '1px solid var(--color-search-match-border)',
+    border: '1px solid var(--sys-color-outline)',
     borderRadius: '3px',
     margin: '0 -1px',
     '&.cm-searchMatch-selected': {
       borderRadius: '1px',
-      backgroundColor: 'var(--color-selected-search-match-background)',
-      borderColor: 'var(--color-selected-search-match-background)',
+      backgroundColor: 'var(--sys-color-yellow-container)',
+      borderColor: 'var(--sys-color-yellow-outline)',
       '&, & *': {
-        color: 'var(--color-selected-search-match) !important',
+        color: 'var(--sys-color-on-surface) !important',
       },
     },
   },
   ':host-context(.pretty-printed) & .cm-lineNumbers .cm-gutterElement': {
-    color: 'var(--color-primary-old)',
+    color: 'var(--sys-color-primary)',
   },
 });
 

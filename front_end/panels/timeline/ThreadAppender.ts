@@ -268,7 +268,9 @@ export class ThreadAppender implements TrackAppender {
   #appendTrackHeaderAtLevel(currentLevel: number): void {
     const trackIsCollapsible = this.#entries.length > 0;
     const style = buildGroupStyle({shareHeaderLine: false, collapsible: trackIsCollapsible});
-    const group = buildTrackHeader(currentLevel, this.trackName(), style, /* selectable= */ true, this.#expanded);
+    const group = buildTrackHeader(
+        currentLevel, this.trackName(), style, /* selectable= */ true, this.#expanded, /* track= */ null,
+        /* showStackContextMenu= */ true);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
   /**

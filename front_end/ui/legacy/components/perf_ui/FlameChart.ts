@@ -31,6 +31,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import * as Root from '../../../../core/root/root.js';
 import type * as TimelineModel from '../../../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../models/trace/trace.js';
 import * as UI from '../../legacy.js';
@@ -188,7 +189,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.canvas.addEventListener('mouseout', this.onMouseOut.bind(this), false);
     this.canvas.addEventListener('click', this.onClick.bind(this), false);
     this.canvas.addEventListener('keydown', this.onKeyDown.bind(this), false);
-    this.canvas.addEventListener('contextmenu', this.#onContextMenu.bind(this), false);
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TRACK_CONTEXT_MENU)) {
+      this.canvas.addEventListener('contextmenu', this.#onContextMenu.bind(this), false);
+    }
 
     this.entryInfo = this.viewportElement.createChild('div', 'flame-chart-entry-info');
     this.markerHighlighElement = this.viewportElement.createChild('div', 'flame-chart-marker-highlight-element');
@@ -753,11 +756,25 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (!group || !group.expanded || !group.showStackContextMenu) {
       return;
     }
-    // TODO(crbug.com/1469887): implement a context menu that supports stack editing options. See bug for more details.
-    // At this point once a context menu is implemented we will also want to
-    // update the selected index to match the highlighted index, which
+    // TODO(crbug.com/1469887): implement context menu actions that allow to modify flame chart trees.
+
+    // Update the selected index to match the highlighted index, which
     // represents the entry under the cursor where the user has right clicked
     // to trigger a context menu.
+    this.dispatchEventToListeners(Events.EntryInvoked, this.highlightedEntryIndex);
+    const contextMenu = new UI.ContextMenu.ContextMenu(_event);
+
+    // TODO(crbug.com/1469887): Change text/ui to the final designs when they are complete.
+    contextMenu.headerSection().appendItem('Merge function', () => {});
+
+    contextMenu.headerSection().appendItem('Collapse function', () => {});
+
+    contextMenu.headerSection().appendItem('Collapse recursion', () => {});
+
+    contextMenu.defaultSection().appendAction('timeline.load-from-file');
+    contextMenu.defaultSection().appendAction('timeline.save-to-file');
+
+    void contextMenu.show();
   }
 
   private onKeyDown(e: KeyboardEvent): void {

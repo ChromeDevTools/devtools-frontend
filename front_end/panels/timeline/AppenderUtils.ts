@@ -52,8 +52,8 @@ export function buildGroupStyle(extra?: Object): PerfUI.FlameChart.GroupStyle {
  */
 export function buildTrackHeader(
     startLevel: number, name: string, style: PerfUI.FlameChart.GroupStyle, selectable: boolean, expanded?: boolean,
-    track?: TimelineModel.TimelineModel.Track|null): PerfUI.FlameChart.Group {
-  const group = ({startLevel, name, style, selectable, expanded} as PerfUI.FlameChart.Group);
+    track?: TimelineModel.TimelineModel.Track|null, showStackContextMenu?: boolean): PerfUI.FlameChart.Group {
+  const group = ({startLevel, name, style, selectable, expanded, showStackContextMenu} as PerfUI.FlameChart.Group);
   if (selectable && track) {
     group.track = track;
   }

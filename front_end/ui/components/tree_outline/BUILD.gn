@@ -21,6 +21,7 @@ devtools_module("tree_outline") {
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
     "../code_highlighter:bundle",
   ]
 

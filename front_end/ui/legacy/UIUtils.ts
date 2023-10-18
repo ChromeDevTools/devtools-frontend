@@ -38,25 +38,25 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
+import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
+import checkboxTextLabelStyles from './checkboxTextLabel.css.legacy.js';
+import closeButtonStyles from './closeButton.css.legacy.js';
+import confirmDialogStyles from './confirmDialog.css.legacy.js';
 import {Dialog} from './Dialog.js';
 import {Size} from './Geometry.js';
 import {GlassPane, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
 import {Icon} from './Icon.js';
-import {KeyboardShortcut} from './KeyboardShortcut.js';
-import * as Utils from './utils/utils.js';
-
-import {Toolbar, type ToolbarButton} from './Toolbar.js';
-import {Tooltip} from './Tooltip.js';
-import {type TreeOutline} from './Treeoutline.js';
-import checkboxTextLabelStyles from './checkboxTextLabel.css.legacy.js';
-import closeButtonStyles from './closeButton.css.legacy.js';
-import confirmDialogStyles from './confirmDialog.css.legacy.js';
 import inlineButtonStyles from './inlineButton.css.legacy.js';
+import {KeyboardShortcut} from './KeyboardShortcut.js';
 import radioButtonStyles from './radioButton.css.legacy.js';
 import sliderStyles from './slider.css.legacy.js';
 import smallBubbleStyles from './smallBubble.css.legacy.js';
+import {Toolbar, type ToolbarButton} from './Toolbar.js';
+import {Tooltip} from './Tooltip.js';
+import {type TreeOutline} from './Treeoutline.js';
+import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -522,15 +522,19 @@ export function createReplacementString(
   return replacementString;
 }
 
-export function handleElementValueModifications(
-    event: Event, element: Element, finishHandler?: ((arg0: string, arg1: string) => void),
-    suggestionHandler?: ((arg0: string) => boolean),
-    customNumberHandler?: ((arg0: string, arg1: number, arg2: string) => string)): boolean {
+export function isElementValueModification(event: Event): boolean {
   const arrowKeyOrWheelEvent =
       ((event as KeyboardEvent).key === 'ArrowUp' || (event as KeyboardEvent).key === 'ArrowDown' ||
        event.type === 'wheel');
   const pageKeyPressed = ((event as KeyboardEvent).key === 'PageUp' || (event as KeyboardEvent).key === 'PageDown');
-  if (!arrowKeyOrWheelEvent && !pageKeyPressed) {
+  return arrowKeyOrWheelEvent || pageKeyPressed;
+}
+
+export function handleElementValueModifications(
+    event: Event, element: Element, finishHandler?: ((arg0: string, arg1: string) => void),
+    suggestionHandler?: ((arg0: string) => boolean),
+    customNumberHandler?: ((arg0: string, arg1: number, arg2: string) => string)): boolean {
+  if (!isElementValueModification(event)) {
     return false;
   }
 
@@ -1730,3 +1734,6 @@ export interface ConfirmDialogOptions {
   okButtonLabel?: string;
   cancelButtonLabel?: string;
 }
+
+VisualLogging.registerContextProvider(
+    'elementValueModification', e => Promise.resolve(isElementValueModification(e as Event) ? 1 : 0));

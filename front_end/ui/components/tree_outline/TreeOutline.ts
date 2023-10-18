@@ -4,20 +4,20 @@
 
 import * as Platform from '../../../core/platform/platform.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
+import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import treeOutlineStyles from './treeOutline.css.js';
-
 import {
   findNextNodeForTreeOutlineKeyboardNavigation,
   getNodeChildren,
   getPathToTreeNode,
   isExpandableNode,
   trackDOMNodeToTreeNode,
-  type TreeNodeId,
   type TreeNode,
+  type TreeNodeId,
   type TreeNodeWithChildren,
 } from './TreeOutlineUtils.js';
 
@@ -474,6 +474,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
         aria-level=${depth + 1}
         aria-posinset=${positionInSet + 1}
         class=${listItemClasses}
+        jslog=${VisualLogging.treeItem()}
         @click=${this.#onNodeClick}
         track-dom-node-to-tree-node=${trackDOMNodeToTreeNode(this.#domNodeToTreeNodeMap, node)}
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(domNode => {
@@ -501,7 +502,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
             this.dispatchEvent(new ItemMouseOutEvent(node));
           }}
         >
-          <span class="arrow-icon" @click=${this.#onArrowClick(node)}>
+          <span class="arrow-icon" @click=${this.#onArrowClick(node)} jslog=${VisualLogging.treeItemExpand().track({click: true})}>
           </span>
           <span class="tree-node-key" data-node-key=${node.treeNodeData}>${renderedNodeKey}</span>
         </span>

@@ -20,10 +20,14 @@ const dropDownButton = LoggingConfig.makeConfigStringBuilder.bind(null, 'DropDow
 const elementClassesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementClassesPane');
 const elementStatesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementStatesPan');
 const filterTextField = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterTextField');
+const jumpToSource = LoggingConfig.makeConfigStringBuilder.bind(null, 'JumpToSource');
+const metricsBox = LoggingConfig.makeConfigStringBuilder.bind(null, 'MetricsBox');
+const metricsBoxPart = LoggingConfig.makeConfigStringBuilder.bind(null, 'MetricsBoxPart');
 const showAllStyleProperties = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowAllStyleProperties');
 const stylePropertiesSection = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylePropertiesSection');
 const stylePropertiesSectionSeparator =
     LoggingConfig.makeConfigStringBuilder.bind(null, 'StylePropertiesSectionSeparator');
+const stylesMetricsPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesMetricsPane');
 const stylesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesPane');
 const stylesSelector = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesSelector');
 const toggle = LoggingConfig.makeConfigStringBuilder.bind(null, 'Toggle');
@@ -48,9 +52,13 @@ export {
   elementClassesPane,
   elementStatesPane,
   filterTextField,
+  jumpToSource,
+  metricsBox,
+  metricsBoxPart,
   showAllStyleProperties,
   stylePropertiesSection,
   stylePropertiesSectionSeparator,
+  stylesMetricsPane,
   stylesPane,
   stylesSelector,
   toggle,

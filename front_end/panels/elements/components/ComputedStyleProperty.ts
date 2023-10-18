@@ -4,6 +4,7 @@
 
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import computedStylePropertyStyles from './computedStyleProperty.css.js';
 
@@ -57,7 +58,7 @@ export class ComputedStyleProperty extends HTMLElement {
         </div>
         <span class="hidden" aria-hidden="false">: </span>
         ${this.#traceable ?
-            html`<span class="goto" @click=${this.#onNavigateToSourceClick}></span>` :
+            html`<span class="goto" @click=${this.#onNavigateToSourceClick} jslog=${VisualLogging.jumpToSource().track({click:true})}></span>` :
             null}
         <div class="property-value">
           <slot name="value"></slot>

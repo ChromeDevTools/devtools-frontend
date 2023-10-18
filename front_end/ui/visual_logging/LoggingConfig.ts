@@ -41,6 +41,10 @@ enum VisualElements {
   ElementStatesPan = 18,
   CssLayersPane = 19,
   DropDownButton = 20,
+  StylesMetricsPane = 21,
+  JumpToSource = 22,
+  MetricsBox = 23,
+  MetricsBoxPart = 24,
 }
 
 function resolveVe(ve: string): number {

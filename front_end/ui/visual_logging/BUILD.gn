@@ -29,6 +29,7 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/ui/visual_logging/*",
     "../../entrypoints/main/*",
     "../../panels/*",
+    "../components/*",
     "../legacy/*",
   ]
 }

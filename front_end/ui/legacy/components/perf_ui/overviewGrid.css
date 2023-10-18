@@ -15,34 +15,31 @@
 
 .overview-grid-window-resizer {
   position: absolute;
-  top: -1px;
-  /* The height and width values have been chosen by debugging */
-  height: 25px;
-  width: 13px;
-  border-radius: 5px;
+  top: 0;
+  height: 19px;
+  width: 10px;
+  margin-left: -5px; /* half width (incl the border) */
   background-color: var(--sys-color-tonal-container);
+  border: 1px solid var(--sys-color-tonal-outline);
   z-index: 500;
-  display: flex;
-  border: 2px solid var(--sys-color-tonal-outline);
-  align-items: center;
-  justify-content: space-around;
-  padding-left: 1px;
-  padding-right: 1px;
+  border-radius: 3px;
 }
 
-.overview-grid-window-right-resizer {
-  margin-left: -5px;
-}
-
-.overview-grid-window-left-resizer {
-  margin-left: -7px;
-}
-
-.overview-grid-window-resizer-vertical-bar {
-  height: 8px;
-  background-color: var(--sys-color-primary);
+/* Grip lines within the handle */
+.overview-grid-window-resizer::before,
+.overview-grid-window-resizer::after {
+  content: "";
   width: 1px;
-  align-self: center;
+  background: var(--sys-color-primary);
+  height: 7px;
+  position: absolute;
+  left: 2px;
+  top: 5px;
+  border-radius: 1px;
+}
+
+.overview-grid-window-resizer::after {
+  left: 5px;
 }
 
 .overview-grid-window-resizer:focus-visible {

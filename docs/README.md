@@ -29,6 +29,7 @@ below.**
 *   [Chrome DevTools Protocol](devtools-protocol.md)
 *   [UMA metrics in DevTools](uma_metrics.md)
     *   [How to add UMA metrics in DevTools frontend](add_uma_metrics.md)
+*   [How to add experiments in DevTools frontend](add_experiments.md)
 
 ### Testing
 *   [Testing Chromium DevTools](testing.md)

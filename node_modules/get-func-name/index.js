@@ -21,6 +21,7 @@
 
 var toString = Function.prototype.toString;
 var functionNameMatch = /\s*function(?:\s|\s*\/\*[^(?:*\/)]+\*\/\s*)*([^\s\(\/]+)/;
+var maxFunctionSourceLength = 512;
 function getFuncName(aFunc) {
   if (typeof aFunc !== 'function') {
     return null;
@@ -28,8 +29,15 @@ function getFuncName(aFunc) {
 
   var name = '';
   if (typeof Function.prototype.name === 'undefined' && typeof aFunc.name === 'undefined') {
+    // eslint-disable-next-line prefer-reflect
+    var functionSource = toString.call(aFunc);
+    // To avoid unconstrained resource consumption due to pathalogically large function names,
+    // we limit the available return value to be less than 512 characters.
+    if (functionSource.indexOf('(') > maxFunctionSourceLength) {
+      return name;
+    }
     // Here we run a polyfill if Function does not support the `name` property and if aFunc.name is not defined
-    var match = toString.call(aFunc).match(functionNameMatch);
+    var match = functionSource.match(functionNameMatch);
     if (match) {
       name = match[1];
     }

@@ -169,7 +169,7 @@ describe('CXX Debugging Extension Test Suite', function() {
 });
 
 async function readScopeView(scope: string, variable: string[]) {
-  const scopeElement = (await waitFor(`[aria-label="${scope}"]`)).asElement();
+  const scopeElement = await waitFor(`[aria-label="${scope}"]`);
   if (scopeElement === null) {
     throw new Error(`Scope entry for ${scope} not found`);
   }
@@ -180,16 +180,12 @@ async function readScopeView(scope: string, variable: string[]) {
   const result = [];
   for (const node of variable) {
     const elementHandle: ElementHandle<Element> = await getMember(node, parentNode);
-    const element = elementHandle.asElement();
-    if (element === null) {
-      throw new Error('Element not found');
-    }
-    const isExpanded = await element.evaluate(node => {
+    const isExpanded = await elementHandle.evaluate((node: Element) => {
       node.scrollIntoView();
       return node.getAttribute('aria-expanded');
     });
 
-    const name = await element.$('.name-and-value');
+    const name = await elementHandle.$('.name-and-value');
     if (isExpanded === 'false') {
       // Clicking on an expandable element with the memory icon can result in
       // unintentional click on the icon. This opens the memory viewer but does
@@ -206,7 +202,7 @@ async function readScopeView(scope: string, variable: string[]) {
       result.push(await name.evaluate(node => node.textContent));
     }
 
-    parentNode = await element.evaluateHandle(n => n.nextElementSibling);
+    parentNode = await elementHandle.evaluateHandle(n => n.nextElementSibling);
     assert(parentNode, 'Element has no siblings');
   }
   return result;

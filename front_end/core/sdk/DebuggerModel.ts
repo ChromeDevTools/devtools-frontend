@@ -151,22 +151,6 @@ export enum StepMode {
   StepOver = 'StepOver',
 }
 
-export const PausedEventReasonForTest: Record<Protocol.Debugger.PausedEventReason, string> = {
-  [Protocol.Debugger.PausedEventReason.Ambiguous]: Protocol.Debugger.PausedEventReason.Ambiguous,
-  [Protocol.Debugger.PausedEventReason.Assert]: Protocol.Debugger.PausedEventReason.Assert,
-  [Protocol.Debugger.PausedEventReason.CSPViolation]: Protocol.Debugger.PausedEventReason.CSPViolation,
-  [Protocol.Debugger.PausedEventReason.DebugCommand]: Protocol.Debugger.PausedEventReason.DebugCommand,
-  [Protocol.Debugger.PausedEventReason.DOM]: Protocol.Debugger.PausedEventReason.DOM,
-  [Protocol.Debugger.PausedEventReason.EventListener]: Protocol.Debugger.PausedEventReason.EventListener,
-  [Protocol.Debugger.PausedEventReason.Exception]: Protocol.Debugger.PausedEventReason.Exception,
-  [Protocol.Debugger.PausedEventReason.Instrumentation]: Protocol.Debugger.PausedEventReason.Instrumentation,
-  [Protocol.Debugger.PausedEventReason.OOM]: Protocol.Debugger.PausedEventReason.OOM,
-  [Protocol.Debugger.PausedEventReason.Other]: Protocol.Debugger.PausedEventReason.Other,
-  [Protocol.Debugger.PausedEventReason.PromiseRejection]: Protocol.Debugger.PausedEventReason.PromiseRejection,
-  [Protocol.Debugger.PausedEventReason.XHR]: Protocol.Debugger.PausedEventReason.XHR,
-  [Protocol.Debugger.PausedEventReason.Step]: Protocol.Debugger.PausedEventReason.Step,
-};
-
 export class DebuggerModel extends SDKModel<EventTypes> {
   readonly agent: ProtocolProxyApi.DebuggerApi;
   runtimeModelInternal: RuntimeModel;

@@ -22,7 +22,7 @@ This will be determined on a case-by-case basis, taking into account the portion
     You can read the "Document the code's context" section [here](https://chromium.googlesource.com/chromium/src.git/+/main/docs/adding_to_third_party.md#document-the-code_s-context).
     1. You will be responsible for keeping the package up-to-date.
     As such, add yourself as OWNER.
-    1. Wait for approval from both the securty- and the third-party reviewer before landing the CL.
+    1. Wait for approval from both the security- and the third-party reviewer before landing the CL.
     Reviewers might not have +1 permission so approval could be an email or a comment on the CL.
     See below for more information on updating existing packages.
 1. After the first CL has been submitted, open a follow-up CL with the implementation/usage of the new third_party package.

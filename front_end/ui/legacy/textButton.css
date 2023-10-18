@@ -8,8 +8,8 @@
   margin: 2px;
   height: 24px;
   font-size: 12px;
-  border: 1px solid var(--color-background-elevation-2);
-  border-radius: 4px;
+  border: 1px solid var(--sys-color-tonal-outline);
+  border-radius: 12px;
   padding: 0 12px;
   font-weight: 500;
   color: var(--sys-color-primary);
@@ -20,10 +20,6 @@
 
 .text-button:disabled {
   opacity: 38%;
-}
-
-.text-button:not(:disabled):active {
-  background-color: var(--color-background-elevation-2);
 }
 
 .text-button:not(:disabled):focus,
@@ -76,26 +72,6 @@
   color: var(--sys-color-on-primary);
 }
 
-.-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):focus,
-.-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):hover,
-.-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):active {
-  --override-dark-background-color: #313131;
-  --override-dark-box-shadow-color: rgb(0 0 0 / 10%);
-
-  background-color: var(--override-dark-background-color);
-  box-shadow: 0 1px 2px var(--override-dark-box-shadow-color);
-}
-
-.-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):focus {
-  box-shadow: 0 1px 2px var(--override-dark-box-shadow-color), 0 0 0 2px var(--color-primary-variant);
-}
-
-.-theme-with-dark-background .text-button:not(.primary-button):not(:disabled):active {
-  --override-dark-mode-active-background-color: #3e3e3e;
-
-  background-color: var(--override-dark-mode-active-background-color);
-}
-
 @media (forced-colors: active) {
   .text-button {
     background-color: ButtonFace;
@@ -125,7 +101,7 @@
     forced-color-adjust: none;
     background-color: Highlight;
     color: HighlightText !important; /* stylelint-disable-line declaration-no-important */
-    box-shadow: var(--legacy-accent-color);
+    box-shadow: var(--sys-color-primary);
   }
 
   .text-button.primary-button {

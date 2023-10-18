@@ -100,11 +100,11 @@
   }
 
   [is="ui-icon"].icon-mask {
-    background-color: var(--color-link);
+    background-color: var(--sys-color-primary);
   }
 
   :focus .selected & [is="ui-icon"].icon-mask {
-    background-color: var(--legacy-item-selection-bg-color);
+    background-color: var(--sys-color-tonal-container);
   }
 
   &:focus-visible {

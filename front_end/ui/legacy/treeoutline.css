@@ -22,7 +22,7 @@
 }
 
 .tree-outline:focus-visible {
-  box-shadow: 0 0 0 2px var(--legacy-accent-color) inset;
+  box-shadow: 0 0 0 2px var(--sys-color-state-focus-ring) inset;
 }
 
 .tree-outline li .selection {
@@ -32,7 +32,7 @@
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.selected {
-  color: var(--legacy-selection-inactive-fg-color);
+  color: var(--sys-color-on-surface-subtle);
 }
 
 .tree-outline li:hover:not(.selected) .selection {
@@ -49,7 +49,7 @@
   display: block;
   margin-top: -2px;
   border-top: 2px solid;
-  border-top-color: var(--legacy-selection-bg-color);
+  border-top-color: var(--sys-color-tonal-container);
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.hovered:not(.selected) .selection {
@@ -61,7 +61,7 @@
 }
 
 .tree-outline:not(.hide-selection-when-blurred) li.in-clipboard .highlight {
-  outline: 1px dotted var(--color-details-hairline);
+  outline: 1px dotted var(--sys-color-neutral-outline);
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
@@ -154,7 +154,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
 }
 
 .tree-outline.hide-selection-when-blurred .selected:focus-visible {
-  background: var(--legacy-focus-bg-color);
+  background: var(--sys-color-state-focus-highlight);
   border-radius: 2px;
 }
 

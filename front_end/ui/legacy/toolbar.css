@@ -124,7 +124,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 
 .toolbar-render-as-links * {
   font-weight: initial;
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
 }
@@ -144,7 +144,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
   bottom: 2px;
   left: 2px;
   right: 2px;
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-state-focus-highlight);
   border-radius: 2px;
   content: "";
   /* This ::before rule serves as a background for an element.
@@ -189,10 +189,10 @@ it. */
   margin-top: calc(2 * var(--toolbar-height));
   padding: 3px 5px;
   color: var(--sys-color-token-subtle);
-  background: var(--color-background-elevation-1);
+  background: var(--sys-color-cdt-base-container);
   animation: 2s fade-out;
   font-weight: normal;
-  border: 1px solid var(--color-details-hairline);
+  border: 1px solid var(--sys-color-divider);
   border-radius: 3px;
 }
 
@@ -211,7 +211,7 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on .toolbar-icon {
-  --icon-color: var(--color-primary-old);
+  --icon-color: var(--sys-color-primary-bright);
 }
 
 .toolbar-state-on.toolbar-toggle-with-dot .toolbar-icon::after,
@@ -219,10 +219,10 @@ it. */
   content: "";
   position: absolute;
   bottom: 2px;
-  background-color: var(--color-primary-old);
+  background-color: var(--sys-color-primary-bright);
   width: 4.5px;
   height: 4.5px;
-  border: 2px solid var(--override-toolbar-background-color, --color-background);
+  border: 2px solid var(--override-toolbar-background-color, --sys-color-cdt-base-container);
   border-radius: 50%;
 }
 
@@ -247,15 +247,15 @@ it. */
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover:not(:active) {
-  background-color: var(--color-primary-old);
+  background-color: var(--sys-color-primary-bright);
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:active:hover {
-  background-color: var(--color-primary-old);
+  background-color: var(--sys-color-primary-bright);
 }
 
 .toolbar-toggled-gray:not(.toolbar-render-as-links) .toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.largeicon-menu):hover {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .toolbar-button.dark-text .toolbar-text {
@@ -263,7 +263,7 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on .toolbar-text {
-  color: var(--color-primary-old);
+  color: var(--sys-color-primary);
 }
 
 :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-glyph {
@@ -279,11 +279,11 @@ it. */
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover .toolbar-glyph {
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover .toolbar-icon {
-  --icon-color: var(--color-background);
+  --icon-color: var(--sys-color-cdt-base-container);
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover .toolbar-text {
@@ -291,11 +291,11 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-glyph {
-  background-color: var(--color-primary-old);
+  background-color: var(--sys-color-primary-bright);
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-icon {
-  --icon-color: var(--color-primary-old);
+  --icon-color: var(--sys-color-primary-bright);
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-text {
@@ -303,7 +303,7 @@ it. */
 }
 
 .toolbar-toggled-gray .toolbar-button.toolbar-state-on {
-  background-color: var(--color-background-elevation-1) !important; /* stylelint-disable-line declaration-no-important */
+  background-color: var(--sys-color-neutral-container) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 /* Checkbox */
@@ -428,7 +428,7 @@ select.toolbar-item:focus-visible > * {
 }
 
 .toolbar-button.emulate-active {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-surface-variant);
 }
 
 .toolbar-button [is="ui-icon"].chevron-down,
@@ -439,8 +439,8 @@ select.toolbar-item:focus-visible > * {
 .toolbar-shadow.floating {
   flex-direction: column;
   height: auto;
-  background-color: var(--color-background);
-  border: 1px solid var(--color-details-hairline);
+  background-color: var(--sys-color-cdt-base-container);
+  border: 1px solid var(--sys-color-divider);
   margin-top: -1px;
   width: 28px;
   left: -2px;

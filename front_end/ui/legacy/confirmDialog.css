@@ -29,5 +29,5 @@
 }
 
 .reason {
-  color: var(--color-accent-red);
+  color: var(--sys-color-error);
 }

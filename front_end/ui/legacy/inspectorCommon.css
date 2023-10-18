@@ -35,7 +35,7 @@
   --legacy-selection-bg-color: var(--legacy-accent-color);
   --legacy-selection-inactive-fg-color: #5a5a5a;
   --legacy-selection-inactive-bg-color: #dadada;
-  --legacy-divider-border: 1px solid var(--color-details-hairline);
+  --legacy-divider-border: 1px solid var(--sys-color-divider);
   --legacy-focus-ring-inactive-shadow: 0 0 0 1px var(--legacy-focus-ring-inactive-shadow-color);
   --legacy-focus-ring-active-shadow: 0 0 0 1px var(--legacy-accent-color);
   --legacy-item-selection-bg-color: #cfe8fc;
@@ -252,7 +252,7 @@ iframe.widget {
 .link {
   cursor: pointer;
   text-decoration: underline;
-  color: var(--color-link);
+  color: var(--sys-color-primary);
   outline-offset: 2px;
 }
 
@@ -327,7 +327,7 @@ input::placeholder {
 
 .editing {
   box-shadow: var(--drop-shadow);
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   text-overflow: clip !important; /* stylelint-disable-line declaration-no-important */
   padding-left: 2px;
   margin-left: -2px;
@@ -345,12 +345,10 @@ input::placeholder {
 }
 
 .chrome-select {
-  --override-chrome-select-border-color: rgb(0 0 0 / 20%);
-
   appearance: none;
   user-select: none;
-  border: 1px solid var(--override-chrome-select-border-color);
-  border-radius: 2px;
+  border: 1px solid var(--sys-color-neutral-outline);
+  border-radius: 4px;
   color: var(--sys-color-on-surface);
   font: inherit;
   margin: 0;
@@ -371,26 +369,23 @@ input::placeholder {
 
 .-theme-with-dark-background .chrome-select,
 :host-context(.-theme-with-dark-background) .chrome-select {
-  --override-chrome-select-border-color: rgb(230 230 230 / 20%);
-
   background-image: var(--image-file-arrow-drop-down-dark);
 }
 
-.chrome-select:enabled:active,
-.chrome-select:enabled:focus,
-.chrome-select:enabled:hover {
-  --override-select-box-shadow: 0 0 0 2px var(--color-button-outline-focus);
+/* stylelint-disable no-descending-specificity */
+.chrome-select:enabled {
+  &:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
 
-  background-color: var(--color-background-elevation-1);
-  box-shadow: var(--override-select-box-shadow);
-}
+  &:active {
+    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+  }
 
-.chrome-select:enabled:active {
-  background-color: var(--color-background-elevation-2);
-}
-
-.chrome-select:enabled:focus {
-  border-color: transparent;
+  &:focus {
+    outline: 2px solid var(--sys-color-state-focus-ring);
+    outline-offset: 2px;
+  }
 }
 
 @media (forced-colors: active) and (prefers-color-scheme: light) {
@@ -415,15 +410,6 @@ input::placeholder {
   }
 }
 
-.-theme-with-dark-background .chrome-select:enabled:active,
-.-theme-with-dark-background .chrome-select:enabled:focus,
-.-theme-with-dark-background .chrome-select:enabled:hover,
-:host-context(.-theme-with-dark-background) .chrome-select:enabled:active,
-:host-context(.-theme-with-dark-background) .chrome-select:enabled:focus,
-:host-context(.-theme-with-dark-background) .chrome-select:enabled:hover {
-  --override-select-box-shadow: 0 0 0 2px var(--color-button-outline-focus);
-}
-
 .chrome-select-label {
   margin: 0 22px;
   flex: none;
@@ -444,10 +430,6 @@ input::placeholder {
 .chrome-select option {
   background-color: var(--sys-color-cdt-base-container);
   color: var(--sys-color-on-surface);
-
-  &:hover {
-    background-color: var(--sys-color-state-hover-on-subtle);
-  }
 }
 
 .gray-info-message {
@@ -468,7 +450,7 @@ span[is="dt-icon-label"] {
 
 .full-widget-dimmed-banner {
   color: var(--sys-color-token-subtle);
-  background-color: var(--color-background);
+  background-color: var(--sys-color-cdt-base-container);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -949,15 +931,15 @@ span[is="dt-icon-label"] {
 }
 
 .green::before {
-  background-color: var(--color-tertiary-bright);
+  background-color: var(--sys-color-green-bright);
 }
 
 .purple::before {
-  background-color: var(--color-purple-bright);
+  background-color: var(--sys-color-purple-bright);
 }
 
 .expandable-inline-button {
-  background-color: var(--color-background-elevation-2);
+  background-color: var(--sys-color-cdt-base-container);
   color: var(--sys-color-on-surface);
   cursor: pointer;
   border-radius: 3px;
@@ -985,11 +967,11 @@ span[is="dt-icon-label"] {
 
 .expandable-inline-button:hover,
 .expandable-inline-button:focus-visible {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 .expandable-inline-button:focus-visible {
-  background-color: var(--color-background-elevation-1);
+  background-color: var(--sys-color-state-focus-highlight);
 }
 
 ::selection {
@@ -1094,9 +1076,9 @@ input.custom-search-input::-webkit-search-cancel-button {
 }
 
 :host-context(.-theme-with-dark-background) devtools-adorner {
-  --override-adorner-border-color: rgb(var(--color-syntax-2-rgb) / 50%);
-  --override-adorner-focus-border-color: var(--color-syntax-2);
-  --override-adorner-active-background-color: var(--color-syntax-8);
+  --override-adorner-border-color: var(--sys-color-tonal-outline);
+  --override-adorner-focus-border-color: var(--sys-color-state-focus-ring);
+  --override-adorner-active-background-color: var(--sys-color-state-riple-neutral-on-subtle);
 }
 
 /* General panel styles */

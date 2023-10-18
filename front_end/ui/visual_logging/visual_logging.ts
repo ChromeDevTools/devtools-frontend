@@ -5,7 +5,7 @@ import * as LoggingConfig from './LoggingConfig.js';
 import * as LoggingDriver from './LoggingDriver.js';
 import * as LoggingState from './LoggingState.js';
 
-const {startLogging} = LoggingDriver;
+const {startLogging, stopLogging} = LoggingDriver;
 const {registerContextProvider, registerParentProvider} = LoggingState;
 
 const accessibilityComputedProperties =
@@ -33,6 +33,7 @@ const treeItemExpand = LoggingConfig.makeConfigStringBuilder.bind(null, 'TreeIte
 
 export {
   startLogging,
+  stopLogging,
   registerContextProvider,
   registerParentProvider,
 

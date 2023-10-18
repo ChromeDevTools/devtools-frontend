@@ -47,6 +47,7 @@ import {
   Events,
   type EventTypes,
   type ExtensionDescriptor,
+  type HoverEvent,
   type ImpressionEvent,
   type InspectorFrontendHostAPI,
   type KeyDownEvent,
@@ -464,6 +465,8 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   recordImpression(event: ImpressionEvent): void {
   }
   recordClick(event: ClickEvent): void {
+  }
+  recordHover(event: HoverEvent): void {
   }
   recordChange(event: ChangeEvent): void {
   }

@@ -25,6 +25,7 @@ export function getLoggingState(element: Element, parent?: Element): LoggingStat
   if (config.parent && parentProviders.has(config.parent)) {
     parent = parentProviders.get(config.parent)?.(element);
   }
+
   const elementState = state.get(element) || {
     impressionLogged: false,
     processed: false,

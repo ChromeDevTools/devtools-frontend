@@ -155,6 +155,13 @@ export interface ClickEvent {
   veid: number;
   mouseButton: number;
   context?: number;
+  doubleClick: boolean;
+}
+
+export interface HoverEvent {
+  veid: number;
+  time?: number;
+  context?: number;
 }
 
 export interface ChangeEvent {
@@ -336,6 +343,7 @@ export interface InspectorFrontendHostAPI {
 
   recordImpression(event: ImpressionEvent): void;
   recordClick(event: ClickEvent): void;
+  recordHover(event: HoverEvent): void;
   recordChange(event: ChangeEvent): void;
   recordKeyDown(event: KeyDownEvent): void;
 }

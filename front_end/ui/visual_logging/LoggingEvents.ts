@@ -26,18 +26,32 @@ export async function logImpressions(elements: Element[]): Promise<void> {
   }
 }
 
-export async function logClick(event: Event): Promise<void> {
+export async function logClick(event: Event, options?: {doubleClick: boolean}): Promise<void> {
   if (!(event instanceof MouseEvent)) {
     return;
   }
   const loggingState = getLoggingState(event.currentTarget as Element);
-  const clickEvent: Host.InspectorFrontendHostAPI.ClickEvent = {veid: loggingState.veid, mouseButton: event.button};
+  const clickEvent: Host.InspectorFrontendHostAPI
+      .ClickEvent = {veid: loggingState.veid, mouseButton: event.button, doubleClick: Boolean(options?.doubleClick)};
   const context = await loggingState.context(event);
   if (context) {
     clickEvent.context = context;
   }
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordClick(clickEvent);
 }
+
+export const logHover = (hoverLogThrottler: Common.Throttler.Throttler) => async(event: Event): Promise<void> => {
+  const loggingState = getLoggingState(event.currentTarget as Element);
+  const hoverEvent: Host.InspectorFrontendHostAPI.HoverEvent = {veid: loggingState.veid};
+  const contextPromise = loggingState.context(event);
+  await hoverLogThrottler.schedule(async () => {
+    const context = await contextPromise;
+    if (context) {
+      hoverEvent.context = context;
+    }
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordHover(hoverEvent);
+  });
+};
 
 export async function logChange(event: Event): Promise<void> {
   const loggingState = getLoggingState(event.currentTarget as Element);

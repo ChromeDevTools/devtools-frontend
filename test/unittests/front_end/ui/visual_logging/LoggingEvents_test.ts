@@ -41,7 +41,19 @@ describe('LoggingEvents', () => {
     sinon.stub(event, 'currentTarget').value(element);
     await VisualLogging.LoggingEvents.logClick(event);
     assert.isTrue(recordClick.calledOnce);
-    assert.deepStrictEqual(recordClick.firstCall.firstArg, {veid: 1, context: 42, mouseButton: 1});
+    assert.deepStrictEqual(recordClick.firstCall.firstArg, {veid: 1, context: 42, mouseButton: 1, doubleClick: false});
+  });
+
+  it('calls UI binding to log a double click', async () => {
+    const recordClick = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordClick',
+    );
+    const event = new MouseEvent('dblclick', {button: 1});
+    sinon.stub(event, 'currentTarget').value(element);
+    await VisualLogging.LoggingEvents.logClick(event, {doubleClick: true});
+    assert.isTrue(recordClick.calledOnce);
+    assert.deepStrictEqual(recordClick.firstCall.firstArg, {veid: 1, context: 42, mouseButton: 1, doubleClick: true});
   });
 
   it('calls UI binding to log a change', async () => {
@@ -99,5 +111,21 @@ describe('LoggingEvents', () => {
     await VisualLogging.LoggingEvents.logKeyDown(['Enter', 'Escape'], throttler)(event);
     assert.isFalse(recordKeyDown.called);
     assert.notExists(throttler.process);
+  });
+
+  it('calls UI binding to log a hover event', async () => {
+    const recordHover = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordHover',
+    );
+    const event = new MouseEvent('click', {button: 1});
+    sinon.stub(event, 'currentTarget').value(element);
+    const throttler = new Common.Throttler.Throttler(1000000);
+    void VisualLogging.LoggingEvents.logHover(throttler)(event);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isFalse(recordHover.called);
+    await throttler.process?.();
+    assert.isTrue(recordHover.calledOnce);
+    assert.deepStrictEqual(recordHover.firstCall.firstArg, {veid: 1, context: 42});
   });
 });

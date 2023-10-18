@@ -38,7 +38,6 @@ group("legacy_entrypoints") {
     "core/sdk:legacy",
     "models/breakpoints:legacy",
     "models/trace:legacy",
-    "panels/animation:legacy",
     "panels/browser_debugger:legacy",
     "panels/coverage:legacy",
     "panels/lighthouse:legacy",

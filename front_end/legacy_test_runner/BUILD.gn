@@ -25,7 +25,6 @@ ts_library("legacy_test_runner-source") {
     "../entrypoints/devtools_app:entrypoint",
     "../models/breakpoints:legacy",
     "../models/trace:legacy",
-    "../panels/animation:legacy",
     "../panels/console_counters:bundle",
     "../panels/event_listeners:bundle",
     "../ui/legacy/components/utils:legacy",

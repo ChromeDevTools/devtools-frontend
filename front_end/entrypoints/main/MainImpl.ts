@@ -288,9 +288,6 @@ export class MainImpl {
         'sourceOrderViewer', 'Source order viewer', undefined,
         'https://developer.chrome.com/blog/new-in-devtools-92/#source-order');
     Root.Runtime.experiments.register('webauthnPane', 'WebAuthn Pane');
-    Root.Runtime.experiments.register(
-        'keyboardShortcutEditor', 'Enable keyboard shortcut editor', false,
-        'https://developer.chrome.com/blog/new-in-devtools-88/#keyboard-shortcuts');
 
     // Back/forward cache
     Root.Runtime.experiments.register(
@@ -423,7 +420,6 @@ export class MainImpl {
       'cssTypeComponentLength',
       Root.Runtime.ExperimentName.PRECISE_CHANGES,
       ...('EyeDropper' in window ? [Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER] : []),
-      'keyboardShortcutEditor',
       'sourcesPrettyPrint',
       'setAllBreakpointsEagerly',
       Root.Runtime.ExperimentName.TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL,

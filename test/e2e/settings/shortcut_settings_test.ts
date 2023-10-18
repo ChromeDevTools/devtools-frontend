@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {
-  enableExperiment,
   getBrowserAndPages,
   timeout,
   waitFor,
@@ -81,8 +80,6 @@ describe('Shortcuts Settings tab', async () => {
   });
 
   it('should allow users to open the shortcut editor and view the current shortcut', async () => {
-    await enableExperiment('keyboardShortcutEditor');
-
     await openSettingsTab('Shortcuts');
     await editShortcutListItem('Show Console');
 
@@ -92,7 +89,6 @@ describe('Shortcuts Settings tab', async () => {
 
   it('should allow users to open the shortcut editor and change and add shortcuts', async () => {
     const {frontend} = getBrowserAndPages();
-    await enableExperiment('keyboardShortcutEditor');
 
     await openSettingsTab('Shortcuts');
     await editShortcutListItem('Show Console');
@@ -118,7 +114,6 @@ describe('Shortcuts Settings tab', async () => {
 
   it('should allow users to open the shortcut editor and delete and reset shortcuts', async () => {
     const {frontend} = getBrowserAndPages();
-    await enableExperiment('keyboardShortcutEditor');
 
     await openSettingsTab('Shortcuts');
     await editShortcutListItem('Show Console');
@@ -157,7 +152,6 @@ describe('Shortcuts Settings tab', async () => {
 
   it('should allow users to cancel an edit and discard their changes to shortcuts', async () => {
     const {frontend} = getBrowserAndPages();
-    await enableExperiment('keyboardShortcutEditor');
 
     await openSettingsTab('Shortcuts');
     await editShortcutListItem('Show Console');
@@ -183,7 +177,6 @@ describe('Shortcuts Settings tab', async () => {
 
   it('should allow users to set a multi-keypress shortcut (chord)', async () => {
     const {frontend} = getBrowserAndPages();
-    await enableExperiment('keyboardShortcutEditor');
 
     await openSettingsTab('Shortcuts');
     await editShortcutListItem('Show Console');
@@ -206,7 +199,6 @@ describe('Shortcuts Settings tab', async () => {
 
   it('should display the physical key that is pressed rather than special characters', async () => {
     const {frontend} = getBrowserAndPages();
-    await enableExperiment('keyboardShortcutEditor');
 
     await openSettingsTab('Shortcuts');
     await editShortcutListItem('Show Console');
@@ -226,7 +218,6 @@ describe('Shortcuts Settings tab', async () => {
 
     it('should allow users to set a new shortcut after the chord timeout', async function() {
       const {frontend} = getBrowserAndPages();
-      await enableExperiment('keyboardShortcutEditor');
 
       await openSettingsTab('Shortcuts');
       await editShortcutListItem('Show Console');

@@ -904,7 +904,6 @@ export enum DevtoolsExperiments {
   'timelineShowAllEvents' = 27,
   'timelineV8RuntimeCallStats' = 28,
   'wasmDWARFDebugging' = 31,
-  'keyboardShortcutEditor' = 35,
   'APCA' = 39,
   'cspViolationsView' = 40,
   'fontEditor' = 41,

@@ -5,9 +5,8 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 
-import {getRegisteredActionExtensions, KeybindSet, type Action} from './ActionRegistration.js';
+import {type Action, getRegisteredActionExtensions, KeybindSet} from './ActionRegistration.js';
 import {type ActionRegistry} from './ActionRegistry.js';
 import {Context} from './Context.js';
 import {Dialog} from './Dialog.js';
@@ -342,19 +341,17 @@ export class ShortcutRegistry {
       keyCode: number,
       modifiers: number,
     }[] = [];
-    if (Root.Runtime.experiments.isEnabled('keyboardShortcutEditor')) {
-      const userShortcuts = this.userShortcutsSetting.get();
-      for (const userShortcut of userShortcuts) {
-        const shortcut = KeyboardShortcut.createShortcutFromSettingObject(userShortcut);
-        if (shortcut.type === Type.DisabledDefault) {
-          this.disabledDefaultShortcutsForAction.set(shortcut.action, shortcut);
-        } else {
-          if (ForwardedActions.has(shortcut.action)) {
-            forwardedKeys.push(
-                ...shortcut.descriptors.map(descriptor => KeyboardShortcut.keyCodeAndModifiersFromKey(descriptor.key)));
-          }
-          this.registerShortcut(shortcut);
+    const userShortcuts = this.userShortcutsSetting.get();
+    for (const userShortcut of userShortcuts) {
+      const shortcut = KeyboardShortcut.createShortcutFromSettingObject(userShortcut);
+      if (shortcut.type === Type.DisabledDefault) {
+        this.disabledDefaultShortcutsForAction.set(shortcut.action, shortcut);
+      } else {
+        if (ForwardedActions.has(shortcut.action)) {
+          forwardedKeys.push(
+              ...shortcut.descriptors.map(descriptor => KeyboardShortcut.keyCodeAndModifiersFromKey(descriptor.key)));
         }
+        this.registerShortcut(shortcut);
       }
     }
     for (const actionExtension of getRegisteredActionExtensions()) {

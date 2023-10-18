@@ -6,7 +6,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import keybindsSettingsTabStyles from './keybindsSettingsTab.css.js';
@@ -354,9 +353,7 @@ export class ShortcutListItem {
     if (!this.isEditing) {
       const emptyElement = this.element.createChild('div', 'keybinds-shortcut keybinds-list-text');
       UI.ARIAUtils.setLabel(emptyElement, i18nString(UIStrings.noShortcutForAction));
-      if (Root.Runtime.experiments.isEnabled('keyboardShortcutEditor')) {
-        this.element.appendChild(this.createEditButton());
-      }
+      this.element.appendChild(this.createEditButton());
     }
   }
 
@@ -448,7 +445,7 @@ export class ShortcutListItem {
       keys.forEach(key => {
         shortcutElement.createChild('span', 'keybinds-key').textContent = key;
       });
-      if (Root.Runtime.experiments.isEnabled('keyboardShortcutEditor') && index === 0) {
+      if (index === 0) {
         this.element.appendChild(this.createEditButton());
       }
     }

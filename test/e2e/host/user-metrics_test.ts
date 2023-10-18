@@ -184,10 +184,6 @@ describe('User Metrics', () => {
     await assertHistogramEventsInclude([
       {
         actionName: 'DevTools.PanelShown',
-        actionCode: 10,  // 'console-view'.
-      },
-      {
-        actionName: 'DevTools.PanelShown',
         actionCode: 11,  // 'animations'.
       },
     ]);
@@ -200,10 +196,6 @@ describe('User Metrics', () => {
       {
         actionName: 'DevTools.IssuesPanelOpenedFrom',
         actionCode: 3,  // 'HamburgerMenu'.
-      },
-      {
-        actionName: 'DevTools.PanelShown',
-        actionCode: 10,  // 'console-view'.
       },
       {
         actionName: 'DevTools.PanelShown',

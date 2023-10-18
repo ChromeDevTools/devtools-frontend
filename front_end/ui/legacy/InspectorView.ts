@@ -159,8 +159,12 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     this.tabDelegate = new InspectorViewTabDelegate();
 
     // Create drawer tabbed pane.
-    this.drawerTabbedLocation =
-        ViewManager.instance().createTabbedLocation(this.showDrawer.bind(this, false), 'drawer-view', true, true);
+    this.drawerTabbedLocation = ViewManager.instance().createTabbedLocation(
+        this.showDrawer.bind(this, {
+          focus: false,
+          hasTargetDrawer: true,
+        }),
+        'drawer-view', true, true);
     const moreTabsButton = this.drawerTabbedLocation.enableMoreTabsButton();
     moreTabsButton.setTitle(i18nString(UIStrings.moreTools));
     this.drawerTabbedPane = this.drawerTabbedLocation.tabbedPane();
@@ -338,10 +342,12 @@ export class InspectorView extends VBox implements ViewLocationResolver {
     return (ViewManager.instance().materializedWidget(this.tabbedPane.selectedTabId || '') as Widget | null);
   }
 
-  showDrawer(focus: boolean): void {
+  showDrawer({focus, hasTargetDrawer}: {focus: boolean, hasTargetDrawer: boolean}): void {
     if (this.drawerTabbedPane.isShowing()) {
       return;
     }
+    // Only auto-select the first drawer (console) when no drawer is chosen specifically.
+    this.drawerTabbedPane.setAutoSelectFirstItemOnShow(!hasTargetDrawer);
     this.drawerSplitWidget.showBoth();
     if (focus) {
       this.focusRestorer = new WidgetFocusRestorer(this.drawerTabbedPane);
@@ -585,7 +591,10 @@ export class ActionDelegate implements ActionDelegateInterface {
         if (InspectorView.instance().drawerVisible()) {
           InspectorView.instance().closeDrawer();
         } else {
-          InspectorView.instance().showDrawer(true);
+          InspectorView.instance().showDrawer({
+            focus: true,
+            hasTargetDrawer: false,
+          });
         }
         return true;
       case 'main.next-tab':

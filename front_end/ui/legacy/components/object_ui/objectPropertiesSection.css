@@ -10,7 +10,7 @@
 
 .object-properties-section {
   padding: 0;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   display: flex;
   flex-direction: column;
 }
@@ -44,11 +44,11 @@
 }
 
 .object-properties-section .synthetic-property {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .object-properties-section .private-property-hash {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .object-properties-section-root-element {
@@ -100,9 +100,8 @@
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .tree-element-title,
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .name-and-value,
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .gray-info-message {
-  background: var(--legacy-focus-bg-color);
+  background: var(--sys-color-state-focus-highlight);
   border-radius: 2px;
-  box-shadow: 0 0 0 2px var(--legacy-focus-bg-color);
 }
 
 @media (forced-colors: active) {

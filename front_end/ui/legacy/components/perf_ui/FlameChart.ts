@@ -1556,7 +1556,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.translate(0, -top);
     context.font = this.#font;
 
-    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background');
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
     this.forEachGroupInViewport((offset, index, group) => {
       const paddingHeight = group.style.padding;
       if (paddingHeight < 5) {
@@ -1568,7 +1568,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       context.fillRect(0, lastGroupOffset + 2, width, top + height - lastGroupOffset);
     }
 
-    context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-elevation-1');
+    context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-neutral-container');
     context.beginPath();
     this.forEachGroupInViewport((offset, index, group, isFirst) => {
       if (isFirst || group.style.padding < 4) {
@@ -1624,7 +1624,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     });
     context.restore();
 
-    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-secondary');
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-token-subtle');
     context.beginPath();
     this.forEachGroupInViewport((offset, index, group) => {
       if (this.isGroupCollapsible(index)) {
@@ -1635,7 +1635,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     });
     context.fill();
 
-    context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-details-hairline-light');
+    context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-neutral-outline');
     context.beginPath();
     context.stroke();
 

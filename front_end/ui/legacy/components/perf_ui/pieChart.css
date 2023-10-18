@@ -41,7 +41,7 @@
 }
 
 .chart-root .slice.selected {
-  stroke: var(--legacy-selection-bg-color);
+  stroke: var(--sys-color-primary);
   stroke-opacity: 1;
   stroke-width: 0.04;
   stroke-linecap: round;
@@ -62,7 +62,7 @@
 }
 
 .pie-chart-legend-row:focus-visible {
-  box-shadow: 0 0 0 2px var(--legacy-selection-bg-color) !important; /* stylelint-disable-line declaration-no-important */
+  box-shadow: 0 0 0 2px var(--sys-color-state-focus-ring) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .pie-chart-swatch {
@@ -72,8 +72,7 @@
   margin: 0 6px;
   top: 1px;
   position: relative;
-  border: 1px solid rgb(100 100 100 / 20%); /* stylelint-disable-line plugin/use_theme_colors */
-  /* See: crbug.com/1152736 for color variable migration. */
+  border: 1px solid var(--sys-color-neutral-outline);
 }
 
 .pie-chart-name {

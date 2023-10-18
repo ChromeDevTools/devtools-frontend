@@ -140,7 +140,7 @@ export class TimelineGrid {
     context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-background-opacity-50');
     context.fillRect(0, 0, width, headerHeight);
 
-    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface');
     context.textBaseline = 'hanging';
     context.font = `${DEFAULT_FONT_SIZE} ${getFontFamilyForCanvas()}`;
 

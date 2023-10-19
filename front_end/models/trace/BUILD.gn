@@ -34,6 +34,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../../test/unittests/front_end/*",
+    "../../legacy_test_runner/*",
     "../../panels/lighthouse/*",
     "../../panels/network/*",
     "../../panels/recorder/*",
@@ -45,16 +46,4 @@ devtools_entrypoint("bundle") {
   ]
 
   visibility += devtools_models_visibility
-}
-
-devtools_entrypoint("legacy") {
-  entrypoint = "trace-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../entrypoints/shell/*",
-    "../../legacy_test_runner/*",
-  ]
 }

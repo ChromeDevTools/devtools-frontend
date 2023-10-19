@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
+import * as Trace from '../../models/trace/trace.js';
 import * as Timeline from '../../panels/timeline/timeline.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -77,7 +78,7 @@ TestRunner.formatters.formatAsInvalidationCause = function(cause) {
 };
 
 PerformanceTestRunner.createTracingModel = function(events) {
-  const model = new Trace.TracingModel();
+  const model = new Trace.Legacy.TracingModel();
   model.addEvents(events);
   model.tracingComplete();
   return model;
@@ -89,7 +90,7 @@ PerformanceTestRunner.tracingModel = function() {
 
 PerformanceTestRunner.invokeWithTracing = function(functionName, callback, additionalCategories, enableJSSampling) {
   let categories = '-*,disabled-by-default-devtools.timeline*,devtools.timeline,blink.user_timing,' +
-      Trace.TracingModel.LegacyTopLevelEventCategory;
+      Trace.Legacy.LegacyTopLevelEventCategory;
 
   if (additionalCategories) {
     categories += ',' + additionalCategories;
@@ -123,7 +124,7 @@ PerformanceTestRunner.timelineFrameModel = function() {
 };
 
 PerformanceTestRunner.createPerformanceModelWithEvents = async function(events) {
-  const tracingModel = new Trace.TracingModel();
+  const tracingModel = new Trace.Legacy.TracingModel();
   tracingModel.addEvents(events);
   tracingModel.tracingComplete();
   const performanceModel = new Timeline.PerformanceModel.PerformanceModel();

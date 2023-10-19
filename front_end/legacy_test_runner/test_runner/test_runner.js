@@ -5,6 +5,7 @@
 // @ts-nocheck This file is not checked by TypeScript as it has a lot of legacy code.
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import * as Trace from '../../models/trace/trace.js';
 
 import * as TestRunner from './TestRunner.js';
 
@@ -44,7 +45,7 @@ function _setupTestHelpers(target) {
   self.TestRunner.cpuProfilerModel = target.model(SDK.CPUProfilerModel);
   self.TestRunner.overlayModel = target.model(SDK.OverlayModel);
   self.TestRunner.serviceWorkerManager = target.model(SDK.ServiceWorkerManager);
-  self.TestRunner.tracingManager = target.model(SDK.TracingManager);
+  self.TestRunner.tracingManager = target.model(Trace.TracingManager.TracingManager);
   self.TestRunner.mainTarget = target;
 }
 

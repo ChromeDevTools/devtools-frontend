@@ -452,7 +452,6 @@ grd_files_release_sources = [
   "front_end/models/trace/extras/extras.js",
   "front_end/models/trace/handlers/handlers.js",
   "front_end/models/trace/helpers/helpers.js",
-  "front_end/models/trace/trace-legacy.js",
   "front_end/models/trace/trace.js",
   "front_end/models/trace/types/types.js",
   "front_end/models/workspace/workspace.js",

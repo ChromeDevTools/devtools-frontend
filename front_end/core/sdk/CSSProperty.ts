@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as Common from '../common/common.js';
 import * as HostModule from '../host/host.js';
 import * as Platform from '../platform/platform.js';
-import type * as Protocol from '../../generated/protocol.js';
 
 import {cssMetadata, GridAreaRowRegex} from './CSSMetadata.js';
 import {type Edit} from './CSSModel.js';
+import {stripComments} from './CSSPropertyParser.js';
 import {type CSSStyleDeclaration} from './CSSStyleDeclaration.js';
 
 export class CSSProperty {
@@ -305,7 +306,11 @@ export class CSSProperty {
         propertyText + (propertyText.endsWith(';') ? '' : ';');
     let text: string;
     if (disabled) {
-      text = '/* ' + appendSemicolonIfMissing(propertyText) + ' */';
+      // We remove comments before wrapping comment tags around propertyText, because otherwise it will
+      // create an unmatched trailing `*/`, making the text invalid. This will result in disabled
+      // CSSProperty losing its original comments, but since escaping comments will result in the parser
+      // to completely ignore and then lose this declaration, this is the best compromise so far.
+      text = '/* ' + appendSemicolonIfMissing(stripComments(propertyText)) + ' */';
     } else {
       text = appendSemicolonIfMissing(this.text.substring(2, propertyText.length - 2).trim());
     }

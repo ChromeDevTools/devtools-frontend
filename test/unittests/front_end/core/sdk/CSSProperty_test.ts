@@ -96,4 +96,27 @@ describeWithEnvironment('CSSProperty', () => {
         ],
         'locally added longhand components should be parsed with empty values');
   });
+
+  it('should correctly disable CSS property', async () => {
+    const stubStyle = {} as SDK.CSSStyleDeclaration.CSSStyleDeclaration;
+    const setText = sinon.spy();
+
+    const property =
+        new SDK.CSSProperty.CSSProperty(stubStyle, 0, 'margin', '10px', false, false, true, false, 'margin: 10px');
+    property.setText = setText;
+    await property.setDisabled(true);
+    assert.strictEqual(setText.firstCall.firstArg, '/* margin: 10px; */');
+
+    const propertyWithComment = new SDK.CSSProperty.CSSProperty(
+        stubStyle, 0, 'margin', '/* comment */ 10px', false, false, true, false, 'margin: /* comment */ 10px');
+    propertyWithComment.setText = setText;
+    await propertyWithComment.setDisabled(true);
+    assert.strictEqual(setText.secondCall.firstArg, '/* margin:  10px; */');
+
+    const propertyWithMultilineComment = new SDK.CSSProperty.CSSProperty(
+        stubStyle, 0, 'margin', '/* com\nment */ 10px', false, false, true, false, 'margin: /* com\nment */ 10px');
+    propertyWithMultilineComment.setText = setText;
+    await propertyWithMultilineComment.setDisabled(true);
+    assert.strictEqual(setText.thirdCall.firstArg, '/* margin:  10px; */');
+  });
 });

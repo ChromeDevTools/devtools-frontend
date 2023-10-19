@@ -720,6 +720,7 @@ export namespace Audits {
     WarnAttributeValueExceedsMaxSize = 'WarnAttributeValueExceedsMaxSize',
     WarnDomainNonASCII = 'WarnDomainNonASCII',
     WarnThirdPartyPhaseout = 'WarnThirdPartyPhaseout',
+    WarnCrossSiteRedirectDowngradeChangesInclusion = 'WarnCrossSiteRedirectDowngradeChangesInclusion',
   }
 
   export const enum CookieOperation {
@@ -1044,6 +1045,17 @@ export namespace Audits {
     trackingSites: string[];
   }
 
+  /**
+   * This issue warns about third-party sites that are accessing cookies on the
+   * current page, and have been permitted due to having a global metadata grant.
+   * Note that in this context 'site' means eTLD+1. For example, if the URL
+   * `https://example.test:80/web_page` was accessing cookies, the site reported
+   * would be `example.test`.
+   */
+  export interface CookieDeprecationMetadataIssueDetails {
+    allowedSites: string[];
+  }
+
   export const enum ClientHintIssueReason {
     MetaTagAllowListInvalidOrigin = 'MetaTagAllowListInvalidOrigin',
     MetaTagModifiedHTML = 'MetaTagModifiedHTML',
@@ -1211,6 +1223,7 @@ export namespace Audits {
     ClientHintIssue = 'ClientHintIssue',
     FederatedAuthRequestIssue = 'FederatedAuthRequestIssue',
     BounceTrackingIssue = 'BounceTrackingIssue',
+    CookieDeprecationMetadataIssue = 'CookieDeprecationMetadataIssue',
     StylesheetLoadingIssue = 'StylesheetLoadingIssue',
     FederatedAuthUserInfoRequestIssue = 'FederatedAuthUserInfoRequestIssue',
     PropertyRuleIssue = 'PropertyRuleIssue',
@@ -1238,6 +1251,7 @@ export namespace Audits {
     clientHintIssueDetails?: ClientHintIssueDetails;
     federatedAuthRequestIssueDetails?: FederatedAuthRequestIssueDetails;
     bounceTrackingIssueDetails?: BounceTrackingIssueDetails;
+    cookieDeprecationMetadataIssueDetails?: CookieDeprecationMetadataIssueDetails;
     stylesheetLoadingIssueDetails?: StylesheetLoadingIssueDetails;
     propertyRuleIssueDetails?: PropertyRuleIssueDetails;
     federatedAuthUserInfoRequestIssueDetails?: FederatedAuthUserInfoRequestIssueDetails;
@@ -5650,6 +5664,51 @@ export namespace Emulation {
   }
 
   /**
+   * Used to specify sensor types to emulate.
+   * See https://w3c.github.io/sensors/#automation for more information.
+   */
+  export const enum SensorType {
+    AbsoluteOrientation = 'absolute-orientation',
+    Accelerometer = 'accelerometer',
+    AmbientLight = 'ambient-light',
+    Gravity = 'gravity',
+    Gyroscope = 'gyroscope',
+    LinearAcceleration = 'linear-acceleration',
+    Magnetometer = 'magnetometer',
+    Proximity = 'proximity',
+    RelativeOrientation = 'relative-orientation',
+  }
+
+  export interface SensorMetadata {
+    available?: boolean;
+    minimumFrequency?: number;
+    maximumFrequency?: number;
+  }
+
+  export interface SensorReadingSingle {
+    value: number;
+  }
+
+  export interface SensorReadingXYZ {
+    x: number;
+    y: number;
+    z: number;
+  }
+
+  export interface SensorReadingQuaternion {
+    x: number;
+    y: number;
+    z: number;
+    w: number;
+  }
+
+  export interface SensorReading {
+    single?: SensorReadingSingle;
+    xyz?: SensorReadingXYZ;
+    quaternion?: SensorReadingQuaternion;
+  }
+
+  /**
    * Enum of image types that can be disabled.
    */
   export const enum DisabledImageType {
@@ -5824,6 +5883,25 @@ export namespace Emulation {
      * Mock accuracy
      */
     accuracy?: number;
+  }
+
+  export interface GetOverriddenSensorInformationRequest {
+    type: SensorType;
+  }
+
+  export interface GetOverriddenSensorInformationResponse extends ProtocolResponseWithError {
+    requestedSamplingFrequency: number;
+  }
+
+  export interface SetSensorOverrideEnabledRequest {
+    enabled: boolean;
+    type: SensorType;
+    metadata?: SensorMetadata;
+  }
+
+  export interface SetSensorOverrideReadingsRequest {
+    type: SensorType;
+    reading: SensorReading;
   }
 
   export interface SetIdleOverrideRequest {
@@ -10344,7 +10422,7 @@ export namespace Overlay {
   }
 
   /**
-   * Configuration for Windows Control Overlay
+   * Configuration for Window Controls Overlay
    */
   export interface WindowControlsOverlayConfig {
     /**
@@ -10697,7 +10775,7 @@ export namespace Overlay {
 
   export interface SetShowWindowControlsOverlayRequest {
     /**
-     * Window Controls Overlay data, null means hide WCO
+     * Window Controls Overlay data, null means hide Window Controls Overlay
      */
     windowControlsOverlayConfig?: WindowControlsOverlayConfig;
   }
@@ -11610,6 +11688,25 @@ export namespace Page {
     Circumstantial = 'Circumstantial',
   }
 
+  export interface BackForwardCacheBlockingDetails {
+    /**
+     * Url of the file where blockage happened. Optional because of tests.
+     */
+    url?: string;
+    /**
+     * Function name where blockage happened. Optional because of anonymous functions and tests.
+     */
+    function?: string;
+    /**
+     * Line number in the script (0-based).
+     */
+    lineNumber: integer;
+    /**
+     * Column number in the script (0-based).
+     */
+    columnNumber: integer;
+  }
+
   export interface BackForwardCacheNotRestoredExplanation {
     /**
      * Type of the reason
@@ -11625,6 +11722,7 @@ export namespace Page {
      * - EmbedderExtensionSentMessageToCachedFrame: the extension ID.
      */
     context?: string;
+    details?: BackForwardCacheBlockingDetails[];
   }
 
   export interface BackForwardCacheNotRestoredExplanationTree {

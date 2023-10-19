@@ -1462,14 +1462,14 @@
       computable: false,
     },
     {
-      name: "form-sizing",
+      name: "field-sizing",
       field_group: "visual",
       field_template: "keyword",
       property_methods: ["CSSValueFromComputedStyleInternal"],
       keywords: ["fixed", "content"],
       default_value: "fixed",
       typedom_types: ["Keyword"],
-      runtime_flag: "CssFormSizing",
+      runtime_flag: "CssFieldSizing",
     },
     {
       name: "-webkit-locale",
@@ -1721,7 +1721,7 @@
     {
       name: "background-clip",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      keywords: ["border-box", "padding-box", "content-box"],
+      keywords: ["border-box", "padding-box", "content-box", "text"],
       typedom_types: ["Keyword"],
       separator: " ",
       style_builder_template: "background_layer",
@@ -4191,7 +4191,7 @@
       supports_incremental_style: true,
     },
     {
-      // TODO: This should be interpolable: true
+      interpolable: true,
       name: "scrollbar-color",
       property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
       inherited: true,
@@ -5091,6 +5091,12 @@
       converter: "ConvertTextSizeAdjust",
       keywords: ["none", "auto"],
       typedom_types: ["Keyword", "Percentage"],
+    },
+    {
+      name: "text-spacing",
+      longhands: ["text-autospace", "text-spacing-trim"],
+      property_methods: ["ParseShorthand", "CSSValueFromComputedStyleInternal"],
+      runtime_flag: "CSSTextSpacingTrim",
     },
     {
       name: "text-spacing-trim",
@@ -8144,8 +8150,6 @@
       name: "-webkit-backface-visibility",
       alias_for: "backface-visibility",
     },
-    // -webkit-background-clip accepts "content", "padding", and "border" values
-    // See crbug.com/604023
     {
       name: "-webkit-background-clip",
       alias_for: "background-clip",

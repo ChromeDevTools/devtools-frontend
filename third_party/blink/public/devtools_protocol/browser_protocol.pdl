@@ -498,6 +498,7 @@ experimental domain Audits
       WarnAttributeValueExceedsMaxSize
       WarnDomainNonASCII
       WarnThirdPartyPhaseout
+      WarnCrossSiteRedirectDowngradeChangesInclusion
 
   type CookieOperation extends string
     enum
@@ -770,6 +771,15 @@ experimental domain Audits
     properties
       array of string trackingSites
 
+  # This issue warns about third-party sites that are accessing cookies on the
+  # current page, and have been permitted due to having a global metadata grant.
+  # Note that in this context 'site' means eTLD+1. For example, if the URL
+  # `https://example.test:80/web_page` was accessing cookies, the site reported
+  # would be `example.test`.
+  type CookieDeprecationMetadataIssueDetails extends object
+    properties
+      array of string allowedSites
+
   type ClientHintIssueReason extends string
     enum
       # Items in the accept-ch meta tag allow list must be valid origins.
@@ -915,6 +925,7 @@ experimental domain Audits
       ClientHintIssue
       FederatedAuthRequestIssue
       BounceTrackingIssue
+      CookieDeprecationMetadataIssue
       StylesheetLoadingIssue
       FederatedAuthUserInfoRequestIssue
       PropertyRuleIssue
@@ -940,6 +951,7 @@ experimental domain Audits
       optional ClientHintIssueDetails clientHintIssueDetails
       optional FederatedAuthRequestIssueDetails federatedAuthRequestIssueDetails
       optional BounceTrackingIssueDetails bounceTrackingIssueDetails
+      optional CookieDeprecationMetadataIssueDetails cookieDeprecationMetadataIssueDetails
       optional StylesheetLoadingIssueDetails stylesheetLoadingIssueDetails
       optional PropertyRuleIssueDetails propertyRuleIssueDetails
       optional FederatedAuthUserInfoRequestIssueDetails federatedAuthUserInfoRequestIssueDetails
@@ -3923,6 +3935,49 @@ domain Emulation
       optional string bitness
       optional boolean wow64
 
+  # Used to specify sensor types to emulate.
+  # See https://w3c.github.io/sensors/#automation for more information.
+  experimental type SensorType extends string
+    enum
+      absolute-orientation
+      accelerometer
+      ambient-light
+      gravity
+      gyroscope
+      linear-acceleration
+      magnetometer
+      proximity
+      relative-orientation
+
+  experimental type SensorMetadata extends object
+    properties
+      optional boolean available
+      optional number minimumFrequency
+      optional number maximumFrequency
+
+  experimental type SensorReadingSingle extends object
+    properties
+      number value
+
+  experimental type SensorReadingXYZ extends object
+    properties
+      number x
+      number y
+      number z
+
+  experimental type SensorReadingQuaternion extends object
+    properties
+      number x
+      number y
+      number z
+      number w
+
+  experimental type SensorReading extends object
+    properties
+      optional SensorReadingSingle single
+      optional SensorReadingXYZ xyz
+      optional SensorReadingQuaternion quaternion
+
   # Tells whether emulation is supported.
   command canEmulate
     returns
@@ -4051,6 +4106,30 @@ domain Emulation
       optional number longitude
       # Mock accuracy
       optional number accuracy
+
+  experimental command getOverriddenSensorInformation
+    parameters
+      SensorType type
+    returns
+      number requestedSamplingFrequency
+
+  # Overrides a platform sensor of a given type. If |enabled| is true, calls to
+  # Sensor.start() will use a virtual sensor as backend rather than fetching
+  # data from a real hardware sensor. Otherwise, existing virtual
+  # sensor-backend Sensor objects will fire an error event and new calls to
+  # Sensor.start() will attempt to use a real sensor instead.
+  experimental command setSensorOverrideEnabled
+    parameters
+      boolean enabled
+      SensorType type
+      optional SensorMetadata metadata
+
+  # Updates the sensor readings reported by a sensor type previously overriden
+  # by setSensorOverrideEnabled.
+  experimental command setSensorOverrideReadings
+    parameters
+      SensorType type
+      SensorReading reading
 
   # Overrides the Idle state.
   experimental command setIdleOverride
@@ -7111,7 +7190,7 @@ experimental domain Overlay
       # The content box highlight outline color (default: transparent).
       optional DOM.RGBA outlineColor
 
-  # Configuration for Windows Control Overlay
+  # Configuration for Window Controls Overlay
   type WindowControlsOverlayConfig extends object
     properties
       # Whether the title bar CSS should be shown when emulating the Window Controls Overlay.
@@ -7374,7 +7453,7 @@ experimental domain Overlay
   # Show Window Controls Overlay for PWA
   command setShowWindowControlsOverlay
     parameters
-      # Window Controls Overlay data, null means hide WCO
+      # Window Controls Overlay data, null means hide Window Controls Overlay
       optional WindowControlsOverlayConfig windowControlsOverlayConfig
 
   # Fired when the node should be inspected. This happens after call to `setInspectMode` or when
@@ -8807,6 +8886,17 @@ domain Page
       PageSupportNeeded
       Circumstantial
 
+  experimental type BackForwardCacheBlockingDetails extends object
+    properties
+      # Url of the file where blockage happened. Optional because of tests.
+      optional string url
+      # Function name where blockage happened. Optional because of anonymous functions and tests.
+      optional string function
+      # Line number in the script (0-based).
+      integer lineNumber
+      # Column number in the script (0-based).
+      integer columnNumber
+
   experimental type BackForwardCacheNotRestoredExplanation extends object
     properties
       # Type of the reason
@@ -8818,6 +8908,7 @@ domain Page
       # - EmbedderExtensionSentMessageToCachedFrame: the extension ID.
       #
       optional string context
+      optional array of BackForwardCacheBlockingDetails details
 
   experimental type BackForwardCacheNotRestoredExplanationTree extends object
     properties

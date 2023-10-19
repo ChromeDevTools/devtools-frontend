@@ -597,7 +597,8 @@ export const generatedProperties = [
   "keywords": [
    "border-box",
    "padding-box",
-   "content-box"
+   "content-box",
+   "text"
   ],
   "name": "background-clip"
  },
@@ -1558,6 +1559,13 @@ export const generatedProperties = [
   "name": "fallback"
  },
  {
+  "keywords": [
+   "fixed",
+   "content"
+  ],
+  "name": "field-sizing"
+ },
+ {
   "inherited": true,
   "name": "fill"
  },
@@ -1908,13 +1916,6 @@ export const generatedProperties = [
    "preserve-parent-color"
   ],
   "name": "forced-color-adjust"
- },
- {
-  "keywords": [
-   "fixed",
-   "content"
-  ],
-  "name": "form-sizing"
  },
  {
   "longhands": [
@@ -3465,6 +3466,14 @@ export const generatedProperties = [
  },
  {
   "inherited": true,
+  "longhands": [
+   "text-autospace",
+   "text-spacing-trim"
+  ],
+  "name": "text-spacing"
+ },
+ {
+  "inherited": true,
   "keywords": [
    "space-first",
    "space-all"
@@ -4027,7 +4036,8 @@ export const generatedPropertyValues = {
   "values": [
    "border-box",
    "padding-box",
-   "content-box"
+   "content-box",
+   "text"
   ]
  },
  "background-color": {
@@ -4558,6 +4568,12 @@ export const generatedPropertyValues = {
    "hide"
   ]
  },
+ "field-sizing": {
+  "values": [
+   "fixed",
+   "content"
+  ]
+ },
  "fill-rule": {
   "values": [
    "nonzero",
@@ -4777,12 +4793,6 @@ export const generatedPropertyValues = {
    "auto",
    "none",
    "preserve-parent-color"
-  ]
- },
- "form-sizing": {
-  "values": [
-   "fixed",
-   "content"
   ]
  },
  "grid-auto-columns": {

@@ -2067,6 +2067,29 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.Emulation.SetGeolocationOverrideRequest?];
       returnType: void;
     };
+    'Emulation.getOverriddenSensorInformation': {
+      paramsType: [Protocol.Emulation.GetOverriddenSensorInformationRequest];
+      returnType: Protocol.Emulation.GetOverriddenSensorInformationResponse;
+    };
+    /**
+     * Overrides a platform sensor of a given type. If |enabled| is true, calls to
+     * Sensor.start() will use a virtual sensor as backend rather than fetching
+     * data from a real hardware sensor. Otherwise, existing virtual
+     * sensor-backend Sensor objects will fire an error event and new calls to
+     * Sensor.start() will attempt to use a real sensor instead.
+     */
+    'Emulation.setSensorOverrideEnabled': {
+      paramsType: [Protocol.Emulation.SetSensorOverrideEnabledRequest];
+      returnType: void;
+    };
+    /**
+     * Updates the sensor readings reported by a sensor type previously overriden
+     * by setSensorOverrideEnabled.
+     */
+    'Emulation.setSensorOverrideReadings': {
+      paramsType: [Protocol.Emulation.SetSensorOverrideReadingsRequest];
+      returnType: void;
+    };
     /**
      * Overrides the Idle state.
      */

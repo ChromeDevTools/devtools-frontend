@@ -140,7 +140,11 @@ circle.animation-keyframe-point:active {
 
 .animation-grid-header {
   flex: 1 0 auto;
-  cursor: text;
+  z-index: 2;
+}
+
+.animation-grid-header.has-selected-group {
+  cursor: pointer;
 }
 
 .animation-timeline-buffer,

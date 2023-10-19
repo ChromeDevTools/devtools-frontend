@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Console from '../../panels/console/console.js';
 import * as ConsoleCounters from '../../panels/console_counters/console_counters.js';
@@ -15,7 +16,7 @@ import {TestRunner} from '../test_runner/test_runner.js';
 
 export const ConsoleTestRunner = {};
 
-/** @typedef {function(!Element, !SDK.ConsoleMessage=):string} */
+/** @typedef {function(!Element, !SDK.ConsoleModel.ConsoleMessage=):string} */
 ConsoleTestRunner.Formatter;
 
 /**
@@ -199,7 +200,7 @@ ConsoleTestRunner.selectMainExecutionContext = function() {
   const executionContexts = TestRunner.runtimeModel.executionContexts();
   for (const context of executionContexts) {
     if (context.isDefault) {
-      UI.Context.Context.instance().setFlavor(SDK.ExecutionContext, context);
+      UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, context);
       return;
     }
   }
@@ -319,7 +320,7 @@ ConsoleTestRunner.formatterIgnoreStackFrameUrls = function(messageFormatter, nod
 
 /**
  * @param {!Element} element
- * @param {!SDK.ConsoleMessage} message
+ * @param {!SDK.ConsoleModel.ConsoleMessage} message
  * @return {string}
  */
 ConsoleTestRunner.simpleFormatter = function(element, message) {
@@ -546,7 +547,7 @@ ConsoleTestRunner.waitUntilConsoleEditorLoaded = function() {
  * @param {!Function} callback
  */
 ConsoleTestRunner.waitUntilMessageReceived = function(callback) {
-  TestRunner.addSniffer(SDK.ConsoleModel.prototype, 'addMessage', callback, false);
+  TestRunner.addSniffer(SDK.ConsoleModel.ConsoleModel.prototype, 'addMessage', callback, false);
 };
 
 /**
@@ -565,10 +566,10 @@ ConsoleTestRunner.waitUntilNthMessageReceived = function(count, callback) {
     if (--count === 0) {
       TestRunner.safeWrap(callback)();
     } else {
-      TestRunner.addSniffer(SDK.ConsoleModel.prototype, 'addMessage', override, false);
+      TestRunner.addSniffer(SDK.ConsoleModel.ConsoleModel.prototype, 'addMessage', override, false);
     }
   }
-  TestRunner.addSniffer(SDK.ConsoleModel.prototype, 'addMessage', override, false);
+  TestRunner.addSniffer(SDK.ConsoleModel.ConsoleModel.prototype, 'addMessage', override, false);
 };
 
 /**
@@ -586,7 +587,7 @@ ConsoleTestRunner.changeExecutionContext = function(namePrefix) {
   const selector = Console.ConsoleView.ConsoleView.instance().consoleContextSelector;
   for (const executionContext of selector.items) {
     if (selector.titleFor(executionContext).startsWith(namePrefix)) {
-      UI.Context.Context.instance().setFlavor(SDK.ExecutionContext, executionContext);
+      UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, executionContext);
       return;
     }
   }
@@ -666,7 +667,7 @@ ConsoleTestRunner.selectConsoleMessages = async function(fromMessage, fromTextOf
  * @param {boolean=} opt_sticky
  */
 ConsoleTestRunner.addConsoleSniffer = function(override, opt_sticky) {
-  TestRunner.addSniffer(SDK.ConsoleModel.prototype, 'addMessage', override, opt_sticky);
+  TestRunner.addSniffer(SDK.ConsoleModel.ConsoleModel.prototype, 'addMessage', override, opt_sticky);
 };
 
 /**

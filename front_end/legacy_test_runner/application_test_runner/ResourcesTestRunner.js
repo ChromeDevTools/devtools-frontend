@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Application from '../../panels/application/application.js';
 
 /**
@@ -15,7 +16,7 @@ self.ApplicationTestRunner = self.ApplicationTestRunner || {};
  * doesn't get reset between tests.
  */
 ApplicationTestRunner.resetState = async function() {
-  const targets = self.SDK.targetManager.targets();
+  const targets = SDK.TargetManager.TargetManager.instance().targets();
   for (const target of targets) {
     if (target.type() === 'tab') {
       continue;

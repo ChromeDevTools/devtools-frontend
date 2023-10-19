@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 
 /**
@@ -218,7 +219,7 @@ BindingsTestRunner.createDebuggerLiveLocation = function(
 
 BindingsTestRunner.createCSSLiveLocation = function(name, urlSuffix, lineNumber, columnNumber, dumpOnUpdate = true) {
   const header = TestRunner.cssModel.styleSheetHeaders().find(header => header.resourceURL().endsWith(urlSuffix));
-  const rawLocation = new SDK.CSSLocation(header, lineNumber || 0, columnNumber || 0);
+  const rawLocation = new SDK.CSSModel.CSSLocation(header, lineNumber || 0, columnNumber || 0);
   return Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().createLiveLocation(
       rawLocation, updateDelegate.bind(null, name, dumpOnUpdate), locationPool);
 };

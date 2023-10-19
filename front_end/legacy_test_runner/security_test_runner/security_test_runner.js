@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Security from '../../panels/security/security.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 

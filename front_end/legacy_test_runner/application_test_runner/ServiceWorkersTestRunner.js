@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Application from '../../panels/application/application.js';
 
 /**
@@ -26,7 +27,7 @@ ApplicationTestRunner.postToServiceWorker = function(scope, message) {
 };
 
 ApplicationTestRunner.waitForServiceWorker = function(callback) {
-  self.SDK.targetManager.observeTargets({
+  SDK.TargetManager.TargetManager.instance().observeTargets({
     targetAdded: function(target) {
       if (target.type() === SDK.Target.Type.ServiceWorker && callback) {
         setTimeout(callback.bind(null, target), 0);

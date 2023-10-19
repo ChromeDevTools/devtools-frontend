@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Timeline from '../../panels/timeline/timeline.js';
@@ -136,7 +137,7 @@ PerformanceTestRunner.createPerformanceModelWithEvents = async function(events) 
 
 PerformanceTestRunner.createTimelineController = function() {
   const controller = new Timeline.TimelineController.TimelineController(
-      self.SDK.targetManager.primaryPageTarget(), Timeline.TimelinePanel.TimelinePanel.instance());
+      SDK.TargetManager.TargetManager.instance().primaryPageTarget(), Timeline.TimelinePanel.TimelinePanel.instance());
   controller.tracingManager = TestRunner.tracingManager;
   return controller;
 };
@@ -290,7 +291,7 @@ PerformanceTestRunner.printTraceEventProperties = function(traceEvent) {
 PerformanceTestRunner.printTraceEventPropertiesWithDetails = async function(event) {
   PerformanceTestRunner.printTraceEventProperties(event);
   const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(
-      event, self.SDK.targetManager.primaryPageTarget(), new Components.Linkifier());
+      event, SDK.TargetManager.TargetManager.instance().primaryPageTarget(), new Components.Linkifier());
   TestRunner.waitForPendingLiveLocationUpdates();
   TestRunner.addResult(`Text details for ${event.name}: ${details}`);
 

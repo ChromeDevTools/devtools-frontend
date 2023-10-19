@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Application from '../../panels/application/application.js';
 import {ConsoleTestRunner} from '../console_test_runner/console_test_runner.js';
 
@@ -148,8 +149,8 @@ ApplicationTestRunner.addIDBValue = function(frameId, databaseName, objectStoreN
 };
 
 ApplicationTestRunner.createIndexedDBModel = function() {
-  const target = self.SDK.targetManager.primaryPageTarget();
-  const storageBucketModel = target.model(SDK.StorageBucketsModel);
+  const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+  const storageBucketModel = target.model(SDK.StorageBucketsModel.StorageBucketsModel);
   storageBucketModel.enable();
   const indexedDBModel = target.model(Application.IndexedDBModel.IndexedDBModel);
   indexedDBModel.enable();

@@ -105,18 +105,6 @@ devtools_entrypoint("bundle") {
   visibility = [ "*" ]
 }
 
-devtools_entrypoint("legacy") {
-  entrypoint = "sdk-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [
-    "../..:legacy_entrypoints",
-    "../../entrypoints/shell/*",
-    "../../legacy_test_runner/*",
-  ]
-}
-
 devtools_entrypoint("meta") {
   entrypoint = "sdk-meta.ts"
 

@@ -12,8 +12,7 @@ import * as Sources from '../../panels/sources/sources.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
-
-import * as SDKModule from '../../core/sdk/sdk.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
 SourcesTestRunner.startDebuggerTest = async function(callback, quiet) {
   console.assert(TestRunner.debuggerModel.debuggerEnabled(), 'Debugger has to be enabled');
@@ -23,8 +22,10 @@ SourcesTestRunner.startDebuggerTest = async function(callback, quiet) {
   }
 
   await TestRunner.showPanel('sources');
-  TestRunner.addSniffer(SDK.DebuggerModel.prototype, 'pausedScript', SourcesTestRunner.pausedScript, true);
-  TestRunner.addSniffer(SDK.DebuggerModel.prototype, 'resumedScript', SourcesTestRunner.resumedScript, true);
+  TestRunner.addSniffer(
+      SDK.DebuggerModel.DebuggerModel.prototype, 'pausedScript', SourcesTestRunner.pausedScript, true);
+  TestRunner.addSniffer(
+      SDK.DebuggerModel.DebuggerModel.prototype, 'resumedScript', SourcesTestRunner.resumedScript, true);
   TestRunner.safeWrap(callback)();
 };
 
@@ -361,7 +362,7 @@ SourcesTestRunner.pausedScript = function(callFrames, reason, auxData, breakpoin
     TestRunner.addResult('Script execution paused.');
   }
 
-  const debuggerModel = this.target().model(SDK.DebuggerModel);
+  const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
   SourcesTestRunner.pausedScriptArguments = [
     SDK.DebuggerModel.CallFrame.fromPayloadArray(debuggerModel, callFrames), reason, breakpointIds, asyncStackTrace,
     auxData
@@ -597,7 +598,7 @@ SourcesTestRunner.checkUILocation = function(uiSourceCode, lineNumber, columnNum
 };
 
 SourcesTestRunner.waitForExecutionContextInTarget = function(target, callback) {
-  const runtimeModel = target.model(SDK.RuntimeModel);
+  const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
 
   if (runtimeModel.executionContexts().length) {
     callback(runtimeModel.executionContexts()[0]);
@@ -613,7 +614,7 @@ SourcesTestRunner.waitForExecutionContextInTarget = function(target, callback) {
 };
 
 SourcesTestRunner.selectThread = function(target) {
-  UI.Context.Context.instance().setFlavor(SDK.Target, target);
+  UI.Context.Context.instance().setFlavor(SDK.Target.Target, target);
 };
 
 SourcesTestRunner.evaluateOnCurrentCallFrame = function(code) {
@@ -633,10 +634,9 @@ SourcesTestRunner.setEventListenerBreakpoint = function(id, enabled, targetName)
     auxData.targetName = targetName;
   }
 
-  let breakpoint = SDKModule.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpoint(auxData);
+  let breakpoint = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().resolveEventListenerBreakpoint(auxData);
   if (!breakpoint) {
-    breakpoint =
-        SDKModule.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpoint(auxData);
+    breakpoint = SDK.EventBreakpointsModel.EventBreakpointsManager.instance().resolveEventListenerBreakpoint(auxData);
   }
 
   if (breakpoint.enabled() !== enabled) {

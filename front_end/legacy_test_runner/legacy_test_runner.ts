@@ -5,7 +5,6 @@
 import '../ui/legacy/components/utils/utils-legacy.js';
 import '../entrypoints/devtools_app/devtools_app.js';
 import '../models/breakpoints/breakpoints-legacy.js';
-import '../core/sdk/sdk-legacy.js';
 import './test_runner/test_runner.js';
 
 // @ts-ignore

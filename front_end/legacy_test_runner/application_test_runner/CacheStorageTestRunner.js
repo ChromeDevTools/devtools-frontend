@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Application from '../../panels/application/application.js';
 
 /**
@@ -11,7 +12,8 @@ self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
 ApplicationTestRunner.dumpCacheTree = async function(pathFilter) {
   Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.expand();
-  const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
+  const promise =
+      TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
   Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
   await ApplicationTestRunner.dumpCacheTreeNoRefresh(pathFilter);
@@ -78,7 +80,8 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
 
 ApplicationTestRunner.dumpCachedEntryContent = async function(cacheName, requestUrl, withHeader) {
   Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.expand();
-  const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
+  const promise =
+      TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
   Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
   await ApplicationTestRunner.dumpCachedEntryContentNoRefresh(cacheName, requestUrl, withHeader);
@@ -139,7 +142,8 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
   }
 
   const cachesTreeElement = Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement;
-  let promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
+  let promise =
+      TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel.prototype, 'updateCacheNames');
   Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cacheStorageListTreeElement.refreshCaches();
   await promise;
 
@@ -157,7 +161,8 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
     }
 
     if (!optionalEntry) {
-      promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, 'cacheRemoved');
+      promise =
+          TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel.prototype, 'cacheRemoved');
       cacheTreeElement.clearCache();
       await promise;
       return;
@@ -189,7 +194,8 @@ ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optio
 };
 
 ApplicationTestRunner.waitForCacheRefresh = function(callback) {
-  TestRunner.addSniffer(SDK.ServiceWorkerCacheModel.prototype, 'updateCacheNames', callback, false);
+  TestRunner.addSniffer(
+      SDK.ServiceWorkerCacheModel.ServiceWorkerCacheModel.prototype, 'updateCacheNames', callback, false);
 };
 
 ApplicationTestRunner.createCache = function(cacheName) {

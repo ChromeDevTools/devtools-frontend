@@ -515,10 +515,8 @@ export class MainImpl {
     IssuesManager.ContrastCheckTrigger.ContrastCheckTrigger.instance();
 
     UI.DockController.DockController.instance({forceNew: true, canDock});
-    // @ts-ignore layout test global
-    self.SDK.multitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
-    // @ts-ignore layout test global
-    self.SDK.domDebuggerManager = SDK.DOMDebuggerModel.DOMDebuggerManager.instance({forceNew: true});
+    SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+    SDK.DOMDebuggerModel.DOMDebuggerManager.instance({forceNew: true});
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this.#onSuspendStateChanged.bind(this));
 

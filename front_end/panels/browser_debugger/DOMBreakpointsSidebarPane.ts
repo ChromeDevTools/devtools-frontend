@@ -33,6 +33,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Sources from '../sources/sources.js';
 
 import domBreakpointsSidebarPaneStyles from './domBreakpointsSidebarPane.css.js';
@@ -136,6 +137,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
 
     this.elementToCheckboxes = new WeakMap();
 
+    this.contentElement.setAttribute('jslog', `${VisualLogging.domBreakpointsPane()}`);
     this.#emptyElement = this.contentElement.createChild('div', 'gray-info-message');
     this.#emptyElement.textContent = i18nString(UIStrings.noBreakpoints);
     this.#breakpoints = new UI.ListModel.ListModel();
@@ -178,6 +180,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
   createElementForItem(item: SDK.DOMDebuggerModel.DOMBreakpoint): Element {
     const element = document.createElement('div');
     element.classList.add('breakpoint-entry');
+    element.setAttribute('jslog', `${VisualLogging.domBreakpoint().context(item.type)}`);
     element.addEventListener('contextmenu', this.contextMenu.bind(this, item), true);
     UI.ARIAUtils.markAsListitem(element);
     element.tabIndex = -1;
@@ -203,6 +206,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     description.textContent = breakpointTypeLabel ? breakpointTypeLabel() : null;
     const breakpointTypeText = breakpointTypeLabel ? breakpointTypeLabel() : '';
     UI.ARIAUtils.setLabel(checkboxElement, breakpointTypeText);
+    checkboxElement.setAttribute('jslog', `${VisualLogging.toggle().track({click: true})}`);
     const checkedStateText = item.enabled ? i18nString(UIStrings.checked) : i18nString(UIStrings.unchecked);
     const linkifiedNode = document.createElement('monospace');
     linkifiedNode.style.display = 'block';

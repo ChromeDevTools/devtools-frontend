@@ -16,13 +16,19 @@ const addElementClassPrompt = LoggingConfig.makeConfigStringBuilder.bind(null, '
 const addStylesRule = LoggingConfig.makeConfigStringBuilder.bind(null, 'AddStylesRule');
 const ariaAttributes = LoggingConfig.makeConfigStringBuilder.bind(null, 'AriaAttributes');
 const cssLayersPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssLayersPane');
+const domBreakpoint = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpoint');
+const domBreakpointsPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpointsPane');
 const dropDownButton = LoggingConfig.makeConfigStringBuilder.bind(null, 'DropDownButton');
 const elementClassesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementClassesPane');
+const elementPropertiesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementPropertiesPane');
 const elementStatesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementStatesPan');
+const eventListenersPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'EventListenersPane');
+const filterDropdown = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterDropdown');
 const filterTextField = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterTextField');
 const jumpToSource = LoggingConfig.makeConfigStringBuilder.bind(null, 'JumpToSource');
 const metricsBox = LoggingConfig.makeConfigStringBuilder.bind(null, 'MetricsBox');
 const metricsBoxPart = LoggingConfig.makeConfigStringBuilder.bind(null, 'MetricsBoxPart');
+const refresh = LoggingConfig.makeConfigStringBuilder.bind(null, 'Refresh');
 const showAllStyleProperties = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowAllStyleProperties');
 const stylePropertiesSection = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylePropertiesSection');
 const stylePropertiesSectionSeparator =
@@ -48,13 +54,19 @@ export {
   addStylesRule,
   ariaAttributes,
   cssLayersPane,
+  domBreakpoint,
+  domBreakpointsPane,
   dropDownButton,
   elementClassesPane,
+  elementPropertiesPane,
   elementStatesPane,
+  eventListenersPane,
+  filterDropdown,
   filterTextField,
   jumpToSource,
   metricsBox,
   metricsBoxPart,
+  refresh,
   showAllStyleProperties,
   stylePropertiesSection,
   stylePropertiesSectionSeparator,

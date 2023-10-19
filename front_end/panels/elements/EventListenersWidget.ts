@@ -35,6 +35,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as EventListeners from '../event_listeners/event_listeners.js';
 
 const UIStrings = {
@@ -105,15 +106,18 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
     this.showFrameworkListenersSetting.addChangeListener(this.showFrameworkListenersChanged.bind(this));
     this.eventListenersView = new EventListeners.EventListenersView.EventListenersView(this.update.bind(this));
     this.eventListenersView.show(this.element);
+    this.element.setAttribute('jslog', `${VisualLogging.eventListenersPane()}`);
 
     const refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'refresh');
     refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.update.bind(this));
+    refreshButton.element.setAttribute('jslog', `${VisualLogging.refresh().track({click: true})}`);
     this.toolbarItemsInternal.push(refreshButton);
     this.toolbarItemsInternal.push(new UI.Toolbar.ToolbarSettingCheckbox(
         this.showForAncestorsSetting, i18nString(UIStrings.showListenersOnTheAncestors),
         i18nString(UIStrings.ancestors)));
     const dispatchFilter = new UI.Toolbar.ToolbarComboBox(
         this.onDispatchFilterTypeChanged.bind(this), i18nString(UIStrings.eventListenersCategory));
+    dispatchFilter.element.setAttribute('jslog', `${VisualLogging.filterDropdown().track({change: true})}`);
 
     function addDispatchFilterOption(this: EventListenersWidget, name: string, value: string): void {
       const option = dispatchFilter.createOption(name, value);

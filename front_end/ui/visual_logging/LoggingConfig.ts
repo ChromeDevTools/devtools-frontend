@@ -45,6 +45,12 @@ enum VisualElements {
   JumpToSource = 22,
   MetricsBox = 23,
   MetricsBoxPart = 24,
+  DOMBreakpointsPane = 25,
+  DOMBreakpoint = 26,
+  ElementPropertiesPane = 27,
+  EventListenersPane = 28,
+  Refresh = 29,
+  FilterDropdown = 30,
 }
 
 function resolveVe(ve: string): number {

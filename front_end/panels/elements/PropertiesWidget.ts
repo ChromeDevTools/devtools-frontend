@@ -37,6 +37,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import propertiesWidgetStyles from './propertiesWidget.css.js';
 import {StylesSidebarPane} from './StylesSidebarPane.js';
@@ -113,6 +114,7 @@ export class PropertiesWidget extends UI.ThrottledWidget.ThrottledWidget {
     toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSettingCheckbox(
         this.showAllPropertiesSetting, i18nString(UIStrings.showAllTooltip), i18nString(UIStrings.showAll)));
 
+    this.contentElement.setAttribute('jslog', `${VisualLogging.elementPropertiesPane()}`);
     this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message hidden');
     this.noMatchesElement.textContent = i18nString(UIStrings.noMatchingProperty);
 

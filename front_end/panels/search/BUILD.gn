@@ -53,11 +53,3 @@ devtools_entrypoint("bundle") {
 
   visibility += devtools_panels_visibility
 }
-
-devtools_entrypoint("legacy") {
-  entrypoint = "search-legacy.ts"
-
-  deps = [ ":bundle" ]
-
-  visibility = [ "../..:legacy_entrypoints" ]
-}

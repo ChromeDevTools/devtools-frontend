@@ -13,7 +13,6 @@ group("front_end") {
     ":embedder-scripts",
     ":html_entrypoints",
     ":integration_test_runner",
-    ":legacy_entrypoints",
     "Images",
     "core/i18n/locales",
     "entrypoints/device_mode_emulation_frame",
@@ -31,10 +30,6 @@ group("front_end") {
     "legacy_test_runner",
     "third_party/vscode.web-custom-data:web_custom_data",
   ]
-}
-
-group("legacy_entrypoints") {
-  public_deps = [ "panels/search:legacy" ]
 }
 
 copy_to_gen("integration_test_runner-gen") {

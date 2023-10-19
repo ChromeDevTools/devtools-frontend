@@ -69,7 +69,7 @@
 .suggestion-subtitle {
   flex: auto;
   text-align: right;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   margin-right: 3px;
   overflow: hidden;
   text-overflow: ellipsis;

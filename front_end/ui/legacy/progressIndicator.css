@@ -23,7 +23,7 @@
   overflow: hidden;
   max-width: 150px;
   margin-right: 2px;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .progress-indicator-shadow-container progress {

@@ -12,7 +12,7 @@
 }
 
 .empty-view {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   padding: 30px;
   text-align: center;
   min-width: 70px;

@@ -15,10 +15,10 @@ describeWithEnvironment('AppenderUtils', () => {
     padding: 4,
     height: 17,
     collapsible: true,
-    // This color is same as --color-text-primary in themeColors.css
-    color: 'rgb(32 33 36)',
-    // This color is same as --color-background in themeColors.css
-    backgroundColor: 'rgb(255 255 255)',
+    // This color is same as --sys-color-on-surface in themeColors.css
+    color: 'rgb(31 31 31 / 100%)',
+    // This color is same as --sys-color-cdt-base-container in themeColors.css
+    backgroundColor: 'rgb(255 255 255 / 100%)',
     nestingLevel: 0,
     shareHeaderLine: true,
   };

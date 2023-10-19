@@ -86,7 +86,7 @@ body {
   font-size: 12px;
   tab-size: 4;
   user-select: none;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   background: var(--sys-color-cdt-base-container);
 }
 
@@ -340,7 +340,7 @@ input::placeholder {
 
 .editing,
 .editing * {
-  color: var(--color-text-primary) !important; /* stylelint-disable-line declaration-no-important */
+  color: var(--sys-color-on-surface) !important; /* stylelint-disable-line declaration-no-important */
   text-decoration: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
@@ -351,7 +351,7 @@ input::placeholder {
   user-select: none;
   border: 1px solid var(--override-chrome-select-border-color);
   border-radius: 2px;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   font: inherit;
   margin: 0;
   outline: none;
@@ -431,7 +431,7 @@ input::placeholder {
 
 .chrome-select-label p p {
   margin-top: 0;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 /* This class is used outside of the settings screen in the "Renderer" and
@@ -443,7 +443,7 @@ input::placeholder {
 .chrome-select optgroup,
 .chrome-select option {
   background-color: var(--sys-color-cdt-base-container);
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 
   &:hover {
     background-color: var(--sys-color-state-hover-on-subtle);
@@ -454,7 +454,7 @@ input::placeholder {
   text-align: center;
   font-style: italic;
   padding: 6px;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   white-space: nowrap;
 }
 
@@ -467,7 +467,7 @@ span[is="dt-icon-label"] {
 }
 
 .full-widget-dimmed-banner {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   background-color: var(--color-background);
   display: flex;
   justify-content: center;
@@ -958,7 +958,7 @@ span[is="dt-icon-label"] {
 
 .expandable-inline-button {
   background-color: var(--color-background-elevation-2);
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   cursor: pointer;
   border-radius: 3px;
 }
@@ -979,7 +979,7 @@ span[is="dt-icon-label"] {
 }
 
 .undisplayable-text {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
   font-style: italic;
 }
 
@@ -1067,7 +1067,7 @@ input.custom-search-input::-webkit-search-cancel-button {
   display: block;
   width: var(--dimension, 24px);
   height: var(--dimension, 24px);
-  border: var(--override-spinner-size, 3px) solid var(--override-spinner-color, var(--color-text-secondary));
+  border: var(--override-spinner-size, 3px) solid var(--override-spinner-color, var(--sys-color-token-subtle));
   border-radius: 12px;
   clip: rect(0, var(--clip-size, 15px), var(--clip-size, 15px), 0);
   content: "";

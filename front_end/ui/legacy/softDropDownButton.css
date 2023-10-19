@@ -24,7 +24,7 @@ button.soft-dropdown > .title {
 }
 
 button.soft-dropdown:hover:not(:active) > .title {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 @media (forced-colors: active) {

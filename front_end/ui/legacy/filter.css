@@ -56,7 +56,7 @@
 }
 
 .filter-bitset-filter span {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   outline: 1px solid var(--sys-color-tonal-outline);
   outline-offset: -1px;
   box-sizing: border-box;

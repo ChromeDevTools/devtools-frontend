@@ -139,7 +139,7 @@
   display: inline-block;
   text-align: right;
   padding: 0 4px;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   align-self: center;
 }
 

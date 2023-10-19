@@ -141,7 +141,7 @@
 
 .tabbed-pane-header-tab:hover,
 .tabbed-pane-shadow .tabbed-pane-header-tab:focus-visible {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   background-color: var(--sys-color-state-hover-on-subtle);
 }
 
@@ -250,7 +250,7 @@
   border: none transparent;
   font-weight: normal;
   text-shadow: none;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   height: 26px;
   padding-left: 10px;
   margin: 0;

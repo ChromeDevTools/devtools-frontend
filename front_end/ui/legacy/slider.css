@@ -41,7 +41,7 @@
 }
 
 .dt-range-input:disabled::-webkit-slider-thumb {
-  background-color: var(--color-text-disabled);
+  background-color: var(--sys-color-state-disabled);
 }
 
 @media (forced-colors: active) {

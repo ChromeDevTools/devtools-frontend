@@ -58,7 +58,7 @@
 }
 
 .soft-context-menu-disabled {
-  color: var(--color-text-disabled);
+  color: var(--sys-color-state-disabled);
   pointer-events: none;
 }
 
@@ -100,7 +100,7 @@
 }
 
 .soft-context-menu-shortcut {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   pointer-events: none;
   flex: 1 1 auto;
   text-align: right;

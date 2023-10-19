@@ -15,7 +15,7 @@
 }
 
 .lighthouse-view h2 {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   font-weight: bold;
   font-size: 14px;
   flex: none;
@@ -33,7 +33,7 @@
   width: 100%;
   flex: auto;
   align-items: center;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .lighthouse-status-text {

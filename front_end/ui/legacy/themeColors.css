@@ -177,7 +177,7 @@
   --color-highlighted-line: rgb(255 255 0 / 50%);
   --color-completion-hover: rgb(56 121 217 / 10%);
   --color-search-match-border: rgb(128 128 128);
-  --color-selected-search-match: var(--color-text-primary);
+  --color-selected-search-match: var(--sys-color-on-surface);
   --color-selected-search-match-background: rgb(241 234 0);
   --color-coverage-used: #63acbe;
   --color-continue-to-location: var(--ref-palette-blue90);

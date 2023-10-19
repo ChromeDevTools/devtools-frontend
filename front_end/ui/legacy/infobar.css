@@ -5,7 +5,7 @@
  */
 
 .infobar {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
   display: flex;
   flex: auto;
   flex-direction: column;
@@ -87,7 +87,7 @@
 }
 
 .infobar-button {
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   cursor: pointer;
   padding: 0 4px;
 }

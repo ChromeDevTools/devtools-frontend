@@ -28,18 +28,18 @@
 }
 
 .text-prompt-editing > .text-prompt {
-  color: var(--color-text-primary) !important; /* stylelint-disable-line declaration-no-important */
+  color: var(--sys-color-on-surface) !important; /* stylelint-disable-line declaration-no-important */
   text-decoration: none !important; /* stylelint-disable-line declaration-no-important */
   white-space: pre;
 }
 
 .text-prompt > .auto-complete-text {
-  color: var(--color-text-secondary) !important; /* stylelint-disable-line declaration-no-important */
+  color: var(--sys-color-token-subtle) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .text-prompt[data-placeholder]:empty::before {
   content: attr(data-placeholder);
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
 }
 
 .text-prompt:not([data-placeholder]):empty::after {

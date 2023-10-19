@@ -71,14 +71,14 @@ devtools-issue-counter.main-toolbar {
 }
 
 .toolbar-dropdown-arrow {
-  background-color: var(--color-text-secondary);
+  background-color: var(--sys-color-token-subtle);
   pointer-events: none;
   flex: none;
   margin-left: -4px;
 }
 
 .toolbar-button.dark-text .toolbar-dropdown-arrow {
-  background-color: var(--color-text-primary);
+  background-color: var(--sys-color-on-surface);
 }
 
 select.toolbar-item:disabled + .toolbar-dropdown-arrow {
@@ -153,13 +153,13 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 }
 
 .toolbar-icon {
-  --icon-color: var(--color-text-secondary);
+  --icon-color: var(--sys-color-token-subtle);
 
   flex: none;
 }
 
 .toolbar-glyph {
-  background-color: var(--color-text-secondary);
+  background-color: var(--sys-color-token-subtle);
   flex: none;
 }
 /* Button */
@@ -188,7 +188,7 @@ it. */
   position: fixed;
   margin-top: calc(2 * var(--toolbar-height));
   padding: 3px 5px;
-  color: var(--color-text-secondary);
+  color: var(--sys-color-token-subtle);
   background: var(--color-background-elevation-1);
   animation: 2s fade-out;
   font-weight: normal;
@@ -259,7 +259,7 @@ it. */
 }
 
 .toolbar-button.dark-text .toolbar-text {
-  color: var(--color-text-primary) !important;  /* stylelint-disable-line declaration-no-important */
+  color: var(--sys-color-on-surface) !important;  /* stylelint-disable-line declaration-no-important */
 }
 
 .toolbar-button.toolbar-state-on .toolbar-text {
@@ -267,15 +267,15 @@ it. */
 }
 
 :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-glyph {
-  background-color: var(--color-text-primary);
+  background-color: var(--sys-color-on-surface);
 }
 
 :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-icon {
-  --icon-color: var(--color-text-primary);
+  --icon-color: var(--sys-color-on-surface);
 }
 
 :not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-text {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover .toolbar-glyph {
@@ -287,7 +287,7 @@ it. */
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover .toolbar-text {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-glyph {
@@ -299,7 +299,7 @@ it. */
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-text {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 .toolbar-toggled-gray .toolbar-button.toolbar-state-on {
@@ -313,7 +313,7 @@ it. */
 }
 
 .toolbar-item.checkbox:hover {
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 /* Select */
 
@@ -404,7 +404,7 @@ select.toolbar-item:focus-visible > * {
   overflow: hidden;
   white-space: nowrap;
   cursor: auto;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 /* Separator */
 
@@ -457,7 +457,7 @@ input[is="history-input"] {
   border-radius: 4px;
   line-height: 16px;
   padding: 1px;
-  color: var(--color-text-primary);
+  color: var(--sys-color-on-surface);
 }
 
 input[is="history-input"]:focus,

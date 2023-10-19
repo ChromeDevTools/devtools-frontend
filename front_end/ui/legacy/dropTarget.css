@@ -18,7 +18,7 @@
 .drop-target-message {
   flex: auto;
   font-size: 30px;
-  color: var(--color-text-secondary); /* stylelint-disable-line plugin/use_theme_colors */
+  color: var(--sys-color-token-subtle); /* stylelint-disable-line plugin/use_theme_colors */
   /* See: crbug.com/1152736 for color variable migration. */
   display: flex;
   justify-content: center;

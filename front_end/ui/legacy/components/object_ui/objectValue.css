@@ -80,7 +80,7 @@
 }
 
 .object-properties-section .object-description {
-  color: var(--sys-color-on-surface-subtle);
+  color: var(--sys-color-token-subtle);
 }
 
 .value .object-properties-preview {
@@ -93,7 +93,7 @@
 }
 
 .object-properties-preview .name {
-  color: var(--sys-color-on-surface-subtle);
+  color: var(--sys-color-token-subtle);
 }
 
 @media (forced-colors: active) {

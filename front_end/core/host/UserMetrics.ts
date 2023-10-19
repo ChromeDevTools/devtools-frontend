@@ -588,7 +588,8 @@ export enum Action {
   OverrideContentContextMenuSourceMappedWarning = 109,
   OverrideContentContextMenuRedirectToDeployed = 110,
   NewStyleRuleAdded = 111,
-  MaxValue = 112,
+  TraceExpanded = 112,
+  MaxValue = 113,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

@@ -552,8 +552,7 @@ export class MainImpl {
       const outermostTarget = data?.outermostTarget();
       SDK.TargetManager.TargetManager.instance().setScopeTarget(outermostTarget);
     });
-    // @ts-ignore layout test global
-    self.Bindings.breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
+    Breakpoints.BreakpointManager.BreakpointManager.instance({
       forceNew: true,
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),
       targetManager: SDK.TargetManager.TargetManager.instance(),

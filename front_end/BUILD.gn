@@ -34,14 +34,7 @@ group("front_end") {
 }
 
 group("legacy_entrypoints") {
-  public_deps = [
-    "models/breakpoints:legacy",
-    "panels/browser_debugger:legacy",
-    "panels/coverage:legacy",
-    "panels/lighthouse:legacy",
-    "panels/search:legacy",
-    "ui/legacy/components/utils:legacy",
-  ]
+  public_deps = [ "panels/search:legacy" ]
 }
 
 copy_to_gen("integration_test_runner-gen") {

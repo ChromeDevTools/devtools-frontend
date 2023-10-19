@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../ui/legacy/components/utils/utils-legacy.js';
-
 import * as Elements from '../../panels/elements/elements.js';
 import * as LayerViewer from '../../panels/layer_viewer/layer_viewer.js';
 import * as Layers from '../../panels/layers/layers.js';

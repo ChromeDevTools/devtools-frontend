@@ -6,6 +6,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Timeline from '../../panels/timeline/timeline.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 /**
@@ -291,7 +292,7 @@ PerformanceTestRunner.printTraceEventProperties = function(traceEvent) {
 PerformanceTestRunner.printTraceEventPropertiesWithDetails = async function(event) {
   PerformanceTestRunner.printTraceEventProperties(event);
   const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsTextForTraceEvent(
-      event, SDK.TargetManager.TargetManager.instance().primaryPageTarget(), new Components.Linkifier());
+      event, SDK.TargetManager.TargetManager.instance().primaryPageTarget(), new Components.Linkifier.Linkifier());
   TestRunner.waitForPendingLiveLocationUpdates();
   TestRunner.addResult(`Text details for ${event.name}: ${details}`);
 

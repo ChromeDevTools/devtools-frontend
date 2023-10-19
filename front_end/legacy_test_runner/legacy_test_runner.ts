@@ -2,9 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../ui/legacy/components/utils/utils-legacy.js';
 import '../entrypoints/devtools_app/devtools_app.js';
-import '../models/breakpoints/breakpoints-legacy.js';
 import './test_runner/test_runner.js';
 
 // @ts-ignore

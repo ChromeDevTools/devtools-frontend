@@ -1008,6 +1008,14 @@ const InspectorFrontendHostImpl = class {
 
   /**
    * @override
+   * @param {InspectorFrontendHostAPI.DragEvent} dragEvent
+   */
+  recordDrag(DragEvent) {
+    DevToolsAPI.sendMessageToEmbedder('recordDrag', [dragEvent], null);
+  }
+
+  /**
+   * @override
    * @param {InspectorFrontendHostAPI.ChangeEvent} changeEvent
    */
   recordChange(changeEvent) {

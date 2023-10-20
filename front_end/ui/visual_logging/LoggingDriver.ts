@@ -7,16 +7,19 @@ import * as Host from '../../core/host/host.js';
 import * as Coordinator from '../components/render_coordinator/render_coordinator.js';
 
 import {getDomState, isVisible} from './DomState.js';
-import {logChange, logClick, logHover, logImpressions, logKeyDown} from './LoggingEvents.js';
+import {logChange, logClick, logDrag, logHover, logImpressions, logKeyDown} from './LoggingEvents.js';
 import {getLoggingState} from './LoggingState.js';
 
 const PROCESS_DOM_INTERVAL = 500;
 const KEYBOARD_LOG_INTERVAL = 3000;
 const HOVER_LOG_INTERVAL = 1000;
+const DRAG_LOG_INTERVAL = 500;
 
 let domProcessingThrottler: Common.Throttler.Throttler;
 let keyboardLogThrottler: Common.Throttler.Throttler;
 let hoverLogThrottler: Common.Throttler.Throttler;
+let dragLogThrottler: Common.Throttler.Throttler;
+
 let bodyMutationObserver: MutationObserver|null;
 
 function observeMutations(root: Node): MutationObserver {
@@ -29,10 +32,12 @@ export async function startLogging(options?: {
   domProcessingThrottler?: Common.Throttler.Throttler,
   keyboardLogThrottler?: Common.Throttler.Throttler,
   hoverLogThrottler?: Common.Throttler.Throttler,
+  dragLogThrottler?: Common.Throttler.Throttler,
 }): Promise<void> {
   domProcessingThrottler = options?.domProcessingThrottler || new Common.Throttler.Throttler(PROCESS_DOM_INTERVAL);
   keyboardLogThrottler = options?.keyboardLogThrottler || new Common.Throttler.Throttler(KEYBOARD_LOG_INTERVAL);
   hoverLogThrottler = options?.hoverLogThrottler || new Common.Throttler.Throttler(HOVER_LOG_INTERVAL);
+  dragLogThrottler = options?.dragLogThrottler || new Common.Throttler.Throttler(DRAG_LOG_INTERVAL);
   if (['interactive', 'complete'].includes(document.readyState)) {
     await processDom();
   }
@@ -97,6 +102,12 @@ async function processDom(): Promise<void> {
         element.addEventListener('mouseover', logHover(hoverLogThrottler), {capture: true});
         const cancelLogging = (): Promise<void> => Promise.resolve();
         element.addEventListener('mouseout', () => hoverLogThrottler.schedule(cancelLogging), {capture: true});
+      }
+      const trackDrag = loggingState.config.track?.has('drag');
+      if (trackDrag) {
+        element.addEventListener('pointerdown', logDrag(dragLogThrottler), {capture: true});
+        const cancelLogging = (): Promise<void> => Promise.resolve();
+        element.addEventListener('pointerup', () => dragLogThrottler.schedule(cancelLogging), {capture: true});
       }
       if (loggingState.config.track?.has('change')) {
         element.addEventListener('change', logChange, {capture: true});

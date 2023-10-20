@@ -87,9 +87,14 @@ function parseJsLog(jslog: string): LoggingConfig {
 export interface ConfigStringBuilder {
   context: (value: string|number) => ConfigStringBuilder;
   parent: (value: string) => ConfigStringBuilder;
-  track:
-      (options: {click?: boolean, dblclick?: boolean, hover?: boolean, change?: boolean, keydown?: boolean|string}) =>
-          ConfigStringBuilder;
+  track: (options: {
+    click?: boolean,
+    dblclick?: boolean,
+    hover?: boolean,
+    drag?: boolean,
+    change?: boolean,
+    keydown?: boolean|string,
+  }) => ConfigStringBuilder;
   toString: () => string;
 }
 
@@ -108,6 +113,7 @@ export function makeConfigStringBuilder(veName: string): ConfigStringBuilder {
       click?: boolean,
       dblclick?: boolean,
       hover?: boolean,
+      drag?: boolean,
       change?: boolean,
       keydown?: boolean|string,
     }): ConfigStringBuilder {

@@ -38,7 +38,7 @@ describe('LoggingDriver', () => {
     parent.style.height = '300px';
     const element = document.createElement('div') as HTMLElement;
     element.id = 'element';
-    element.setAttribute('jslog', 'TreeItem; context:42; track: click, keydown, hover');
+    element.setAttribute('jslog', 'TreeItem; context:42; track: click, keydown, hover, drag');
     element.style.width = '300px';
     element.style.height = '300px';
     parent.appendChild(element);
@@ -225,4 +225,43 @@ describe('LoggingDriver', () => {
     assert.isTrue(recordHover.called);
     assert.deepStrictEqual(recordHover.firstCall.firstArg, {veid: 2, context: 42});
   });
+
+  it('logs drag', async () => {
+    const dragLogThrottler = new Common.Throttler.Throttler(1000000000);
+    addLoggableElements();
+    await VisualLoggingTesting.LoggingDriver.startLogging({dragLogThrottler});
+    const recordDrag = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordDrag',
+    );
+
+    const element = document.getElementById('element') as HTMLElement;
+    element.dispatchEvent(new MouseEvent('pointerdown'));
+    assert.exists(dragLogThrottler.process);
+    assert.isFalse(recordDrag.called);
+
+    await dragLogThrottler.process?.();
+    assert.isTrue(recordDrag.calledOnce);
+  });
+
+  it('does not log drag if too short', async () => {
+    const dragLogThrottler = new Common.Throttler.Throttler(1000000000);
+    addLoggableElements();
+    await VisualLoggingTesting.LoggingDriver.startLogging({dragLogThrottler});
+    const recordDrag = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordDrag',
+    );
+
+    const element = document.getElementById('element') as HTMLElement;
+    element.dispatchEvent(new MouseEvent('pointerdown'));
+    assert.exists(dragLogThrottler.process);
+    assert.isFalse(recordDrag.called);
+
+    element.dispatchEvent(new MouseEvent('pointerup'));
+
+    await dragLogThrottler.process?.();
+    assert.isFalse(recordDrag.called);
+  });
+
 });

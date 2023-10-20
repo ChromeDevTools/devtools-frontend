@@ -53,6 +53,19 @@ export const logHover = (hoverLogThrottler: Common.Throttler.Throttler) => async
   });
 };
 
+export const logDrag = (dragLogThrottler: Common.Throttler.Throttler) => async(event: Event): Promise<void> => {
+  const loggingState = getLoggingState(event.currentTarget as Element);
+  const dragEvent: Host.InspectorFrontendHostAPI.DragEvent = {veid: loggingState.veid};
+  const contextPromise = loggingState.context(event);
+  await dragLogThrottler.schedule(async () => {
+    const context = await contextPromise;
+    if (context) {
+      dragEvent.context = context;
+    }
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordDrag(dragEvent);
+  });
+};
+
 export async function logChange(event: Event): Promise<void> {
   const loggingState = getLoggingState(event.currentTarget as Element);
   const changeEvent: Host.InspectorFrontendHostAPI.ChangeEvent = {veid: loggingState.veid};

@@ -128,4 +128,20 @@ describe('LoggingEvents', () => {
     assert.isTrue(recordHover.calledOnce);
     assert.deepStrictEqual(recordHover.firstCall.firstArg, {veid: 1, context: 42});
   });
+
+  it('calls UI binding to log a drag event', async () => {
+    const recordDrag = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordDrag',
+    );
+    const event = new MouseEvent('click', {button: 1});
+    sinon.stub(event, 'currentTarget').value(element);
+    const throttler = new Common.Throttler.Throttler(1000000);
+    void VisualLogging.LoggingEvents.logDrag(throttler)(event);
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isFalse(recordDrag.called);
+    await throttler.process?.();
+    assert.isTrue(recordDrag.calledOnce);
+    assert.deepStrictEqual(recordDrag.firstCall.firstArg, {veid: 1, context: 42});
+  });
 });

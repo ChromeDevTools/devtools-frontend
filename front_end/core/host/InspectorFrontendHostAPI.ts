@@ -164,6 +164,11 @@ export interface HoverEvent {
   context?: number;
 }
 
+export interface DragEvent {
+  veid: number;
+  context?: number;
+}
+
 export interface ChangeEvent {
   veid: number;
   context?: number;
@@ -344,6 +349,7 @@ export interface InspectorFrontendHostAPI {
   recordImpression(event: ImpressionEvent): void;
   recordClick(event: ClickEvent): void;
   recordHover(event: HoverEvent): void;
+  recordDrag(event: DragEvent): void;
   recordChange(event: ChangeEvent): void;
   recordKeyDown(event: KeyDownEvent): void;
 }

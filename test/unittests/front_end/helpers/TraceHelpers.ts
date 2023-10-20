@@ -357,8 +357,8 @@ export function makeEndEvent(name: string, ts: number, cat: string = '*', pid: n
 export function makeProfileCall(
     functionName: string, tsMs: number, durMs: number,
     pid: TraceEngine.Types.TraceEvents.ProcessID = TraceEngine.Types.TraceEvents.ProcessID(0),
-    tid: TraceEngine.Types.TraceEvents.ThreadID = TraceEngine.Types.TraceEvents.ThreadID(0),
-    nodeId: number = 0): TraceEngine.Types.TraceEvents.TraceEventSyntheticProfileCall {
+    tid: TraceEngine.Types.TraceEvents.ThreadID = TraceEngine.Types.TraceEvents.ThreadID(0), nodeId: number = 0,
+    url: string = ''): TraceEngine.Types.TraceEvents.TraceEventSyntheticProfileCall {
   return {
     cat: '',
     name: 'ProfileCall',
@@ -372,7 +372,7 @@ export function makeProfileCall(
     callFrame: {
       functionName,
       scriptId: '' as Protocol.Runtime.ScriptId,
-      url: '',
+      url: url,
       lineNumber: -1,
       columnNumber: -1,
     },

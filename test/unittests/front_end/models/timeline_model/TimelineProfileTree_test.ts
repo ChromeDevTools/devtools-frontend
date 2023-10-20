@@ -7,8 +7,9 @@ const {assert} = chai;
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
-import {getMainThread, makeCompleteEvent} from '../../helpers/TraceHelpers.js';
+import {getMainThread, makeCompleteEvent, makeProfileCall} from '../../helpers/TraceHelpers.js';
 import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 describeWithEnvironment('TimelineProfileTree', () => {
@@ -390,6 +391,15 @@ describeWithEnvironment('TimelineProfileTree', () => {
       }
       const eventId = TimelineModel.TimelineProfileTree.generateEventID(profileCallEntry);
       assert.strictEqual(eventId, 'f:Compile@0');
+    });
+  });
+
+  describe('eventStackFrame', () => {
+    it('extracts the stackFrame for ProfileCalls', async function() {
+      const event = makeProfileCall('somefunc', 100, 10, undefined, undefined, undefined, 'https://x.com/file.mjs');
+      const stackFrame = TimelineModel.TimelineProfileTree.eventStackFrame(event) as Protocol.Runtime.CallFrame;
+      assert.strictEqual(stackFrame.functionName, 'somefunc');
+      assert.strictEqual(stackFrame.url, 'https://x.com/file.mjs');
     });
   });
 });

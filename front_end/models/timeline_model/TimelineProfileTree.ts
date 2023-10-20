@@ -545,6 +545,9 @@ export function eventURL(event: TraceEngine.Legacy.Event|
 
 export function eventStackFrame(event: TraceEngine.Legacy.Event|
                                 TraceEngine.Types.TraceEvents.TraceEventData): Protocol.Runtime.CallFrame|null {
+  if (TraceEngine.Legacy.eventIsFromNewEngine(event) && TraceEngine.Types.TraceEvents.isProfileCall(event)) {
+    return event.callFrame;
+  }
   if (TimelineModelImpl.isJsFrameEvent(event)) {
     return event.args['data'] || null as Protocol.Runtime.CallFrame | null;
   }

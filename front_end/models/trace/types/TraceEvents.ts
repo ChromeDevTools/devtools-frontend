@@ -427,7 +427,7 @@ export interface TraceEventSnapshot extends TraceEventData {
   };
   name: 'Screenshot';
   cat: 'disabled-by-default-devtools.screenshot';
-  ph: Phase.OBJECT_SNAPSHOT;
+  ph: Phase.OBJECT_SNAPSHOT|Phase.INSTANT;  // In Oct 2023, the phase was changed to Instant. crbug.com/798755
 }
 
 // Animation events.

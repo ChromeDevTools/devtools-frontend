@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Helpers from '../helpers/helpers.js';
+import type * as Types from '../types/types.js';
+
 import {data as metaHandlerData} from './MetaHandler.js';
 import {type TraceEventHandlerName} from './types.js';
-
-import * as Helpers from '../helpers/helpers.js';
-import * as Types from '../types/types.js';
 
 // Each thread contains events. Events indicate the thread and process IDs, which are
 // used to store the event in the correct process thread entry below.
@@ -20,7 +20,7 @@ export function reset(): void {
 }
 
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
-  if (event.ph !== Types.TraceEvents.Phase.OBJECT_SNAPSHOT || event.name !== 'Screenshot') {
+  if (event.name !== 'Screenshot') {
     return;
   }
 

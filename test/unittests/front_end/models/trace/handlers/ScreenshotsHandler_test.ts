@@ -30,6 +30,8 @@ describe('ScreenshotHandler', function() {
       ...defaultTraceEvents,
       {...baseEvent, ts: TraceModel.Types.Timing.MicroSeconds(100)},
       {...baseEvent, ts: TraceModel.Types.Timing.MicroSeconds(200)},
+      // Phase O is the original. In Oct 2023, the trace event was converted to phase I. crbug.com/798755
+      {...baseEvent, ts: TraceModel.Types.Timing.MicroSeconds(300), ph: TraceModel.Types.TraceEvents.Phase.INSTANT},
     ];
 
     // The screenshot handler requires the meta handler because it needs
@@ -53,7 +55,7 @@ describe('ScreenshotHandler', function() {
       await TraceModel.Handlers.ModelHandlers.Screenshots.finalize();
 
       const data = TraceModel.Handlers.ModelHandlers.Screenshots.data();
-      assert.strictEqual(data.length, 2);
+      assert.strictEqual(data.length, 3);
     });
   });
 });

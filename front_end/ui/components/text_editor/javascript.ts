@@ -248,6 +248,7 @@ async function evaluateExpression(
         generatePreview: false,
         throwOnSideEffect: true,
         timeout: 500,
+        replMode: true,
       },
       false, false);
   if ('error' in result || result.exceptionDetails || !result.object) {

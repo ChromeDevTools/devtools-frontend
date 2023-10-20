@@ -408,6 +408,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
   }
 
   reattach(callback: () => void): void {
+    callback();
   }
 
   readyForTest(): void {

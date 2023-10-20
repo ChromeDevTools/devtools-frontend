@@ -21,7 +21,7 @@
   align-items: center;
   overflow: auto;
   font-size: 13px;
-  color: var(--sys-color-token-subtle);
+  color: var(--sys-color-on-surface-subtle);
 }
 
 .background-service-preview > div {
@@ -36,7 +36,7 @@
 }
 
 .background-service-shortcut {
-  color: var(--sys-color-token-subtle);
+  color: var(--sys-color-on-surface-subtle);
 }
 
 .background-service-metadata {
@@ -50,7 +50,7 @@
 }
 
 .background-service-metadata-name {
-  color: var(--sys-color-token-subtle);
+  color: var(--sys-color-on-surface-subtle);
   display: inline-block;
   margin-right: 0.25em;
   font-weight: bold;

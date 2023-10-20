@@ -163,14 +163,14 @@ button.secondary:disabled:hover {
 
 button.toolbar:hover,
 button.round:hover {
-  background-color: var(--color-iconbutton-hover);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 button.toolbar.active,
 button.toolbar:active,
 button.round.active,
 button.round:active {
-  background-color: var(--color-iconbutton-pressed);
+  background-color: var(--sys-color-state-ripple-neutral-on-subtle);
 }
 
 button.toolbar:focus-visible,

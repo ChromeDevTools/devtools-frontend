@@ -490,7 +490,7 @@ input[is="history-input"]:hover:not(:focus) {
 }
 
 .toolbar-item.highlight:hover:not(:active) > .title {
-  color: var(--color-button-primary-text-hover);
+  color: var(--sys-color-on-tonal-container);
 }
 
 devtools-icon.leading-issue-icon {

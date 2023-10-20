@@ -24,7 +24,7 @@
   flex-shrink: 0;
   /* overflown bezier visualization must be on top of the source text */
   z-index: 2;
-  background-image: radial-gradient(circle, var(--color-background-elevation-2) 1px, var(--color-background-inverted-opacity-0) 1px);
+  background-image: radial-gradient(circle, var(--sys-color-surface-variant) 1px, var(--color-background-inverted-opacity-0) 1px);
   background-size: 17px 17px;
   background-position: -5px -10px;
 }

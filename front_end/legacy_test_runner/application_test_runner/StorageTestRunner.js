@@ -8,8 +8,6 @@ import * as Application from '../../panels/application/application.js';
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
 
-self.ApplicationTestRunner = self.ApplicationTestRunner || {};
-
-ApplicationTestRunner.isStorageView = function(view) {
+export const isStorageView = function(view) {
   return view instanceof Application.StorageView.StorageView;
 };

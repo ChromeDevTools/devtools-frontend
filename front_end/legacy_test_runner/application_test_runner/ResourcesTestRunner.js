@@ -9,13 +9,12 @@ import * as Application from '../../panels/application/application.js';
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.ApplicationTestRunner = self.ApplicationTestRunner || {};
 
 /**
  * Many application panel tests are flaky because storage state (e.g. IndexedDB)
  * doesn't get reset between tests.
  */
-ApplicationTestRunner.resetState = async function() {
+export const resetState = async function() {
   const targets = SDK.TargetManager.TargetManager.instance().targets();
   for (const target of targets) {
     if (target.type() === 'tab') {
@@ -26,15 +25,15 @@ ApplicationTestRunner.resetState = async function() {
   }
 };
 
-ApplicationTestRunner.createWebSQLDatabase = function(name) {
+export const createWebSQLDatabase = function(name) {
   return TestRunner.evaluateInPageAsync(`_openWebSQLDatabase("${name}")`);
 };
 
-ApplicationTestRunner.requestURLComparer = function(r1, r2) {
+export const requestURLComparer = function(r1, r2) {
   return r1.request.url.localeCompare(r2.request.url);
 };
 
-ApplicationTestRunner.runAfterCachedResourcesProcessed = function(callback) {
+export const runAfterCachedResourcesProcessed = function(callback) {
   if (!TestRunner.resourceTreeModel.cachedResourcesProcessed) {
     TestRunner.resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, callback);
   } else {
@@ -42,12 +41,12 @@ ApplicationTestRunner.runAfterCachedResourcesProcessed = function(callback) {
   }
 };
 
-ApplicationTestRunner.runAfterResourcesAreFinished = function(resourceURLs, callback) {
+export const runAfterResourcesAreFinished = function(resourceURLs, callback) {
   const resourceURLsMap = new Set(resourceURLs);
 
   function checkResources() {
     for (const url of resourceURLsMap) {
-      const resource = ApplicationTestRunner.resourceMatchingURL(url);
+      const resource = resourceMatchingURL(url);
 
       if (resource) {
         resourceURLsMap.delete(url);
@@ -67,7 +66,7 @@ ApplicationTestRunner.runAfterResourcesAreFinished = function(resourceURLs, call
   }
 };
 
-ApplicationTestRunner.showResource = function(resourceURL, callback) {
+export const showResource = function(resourceURL, callback) {
   let reported = false;
 
   function callbackWrapper(sourceFrame) {
@@ -80,7 +79,7 @@ ApplicationTestRunner.showResource = function(resourceURL, callback) {
   }
 
   function showResourceCallback() {
-    const resource = ApplicationTestRunner.resourceMatchingURL(resourceURL);
+    const resource = resourceMatchingURL(resourceURL);
 
     if (!resource) {
       return;
@@ -96,10 +95,10 @@ ApplicationTestRunner.showResource = function(resourceURL, callback) {
     }
   }
 
-  ApplicationTestRunner.runAfterResourcesAreFinished([resourceURL], showResourceCallback);
+  runAfterResourcesAreFinished([resourceURL], showResourceCallback);
 };
 
-ApplicationTestRunner.resourceMatchingURL = function(resourceURL) {
+export const resourceMatchingURL = function(resourceURL) {
   let result = null;
   TestRunner.resourceTreeModel.forAllResources(visit);
 
@@ -113,7 +112,7 @@ ApplicationTestRunner.resourceMatchingURL = function(resourceURL) {
   return result;
 };
 
-ApplicationTestRunner.findTreeElement = function(parent, path) {
+export const findTreeElement = function(parent, path) {
   if (path.length === 0) {
     return parent;
   }
@@ -122,16 +121,16 @@ ApplicationTestRunner.findTreeElement = function(parent, path) {
     return null;
   }
   child.expand();
-  return ApplicationTestRunner.findTreeElement(child, path.slice(1));
+  return findTreeElement(child, path.slice(1));
 };
 
-ApplicationTestRunner.waitForCookies = function() {
+export const waitForCookies = function() {
   return new Promise(resolve => {
     TestRunner.addSniffer(CookieTable.CookiesTable.prototype, 'rebuildTable', resolve);
   });
 };
 
-ApplicationTestRunner.dumpCookieDomains = function() {
+export const dumpCookieDomains = function() {
   const cookieListChildren =
       Application.ResourcesPanel.ResourcesPanel.instance().sidebar.cookieListTreeElement.children();
   TestRunner.addResult('Available cookie domains:');
@@ -140,7 +139,7 @@ ApplicationTestRunner.dumpCookieDomains = function() {
   }
 };
 
-ApplicationTestRunner.dumpCookies = function() {
+export const dumpCookies = function() {
   if (!Application.ResourcesPanel.ResourcesPanel.instance().cookieView || !UI.panels.resources.cookieView.isShowing()) {
     TestRunner.addResult('No cookies visible');
     return;
@@ -155,15 +154,15 @@ ApplicationTestRunner.dumpCookies = function() {
   }
 };
 
-ApplicationTestRunner.databaseModel = function() {
+export const databaseModel = function() {
   return TestRunner.mainTarget.model(Application.DatabaseModel.DatabaseModel);
 };
 
-ApplicationTestRunner.domStorageModel = function() {
+export const domStorageModel = function() {
   return TestRunner.mainTarget.model(Application.DOMStorageModel.DOMStorageModel);
 };
 
-ApplicationTestRunner.indexedDBModel = function() {
+export const indexedDBModel = function() {
   return TestRunner.mainTarget.model(Application.IndexedDBModel.IndexedDBModel);
 };
 

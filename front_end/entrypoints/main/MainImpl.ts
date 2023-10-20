@@ -161,26 +161,18 @@ export class MainImpl {
   }
 
   #initializeGlobalsForLayoutTests(): void {
-    // @ts-ignore layout test global
-    self.SDK = self.SDK || {};
-    // @ts-ignore layout test global
-    self.Bindings = self.Bindings || {};
-    // @ts-ignore layout test global
-    self.Persistence = self.Persistence || {};
-    // @ts-ignore layout test global
-    self.Workspace = self.Workspace || {};
-    // @ts-ignore layout test global
-    self.Extensions = self.Extensions || {};
     // @ts-ignore e2e test global
-    self.Host = self.Host || {};
+    self.Extensions ||= {};
     // @ts-ignore e2e test global
-    self.Host.userMetrics = self.Host.userMetrics || Host.userMetrics;
+    self.Host ||= {};
     // @ts-ignore e2e test global
-    self.Host.UserMetrics = self.Host.UserMetrics || Host.UserMetrics;
+    self.Host.userMetrics ||= Host.userMetrics;
     // @ts-ignore e2e test global
-    self.ProtocolClient = self.ProtocolClient || {};
+    self.Host.UserMetrics ||= Host.UserMetrics;
     // @ts-ignore e2e test global
-    self.ProtocolClient.test = self.ProtocolClient.test || ProtocolClient.InspectorBackend.test;
+    self.ProtocolClient ||= {};
+    // @ts-ignore e2e test global
+    self.ProtocolClient.test ||= ProtocolClient.InspectorBackend.test;
   }
 
   async requestAndRegisterLocaleData(): Promise<void> {
@@ -464,9 +456,7 @@ export class MainImpl {
     MainImpl.time('Main._createAppUI');
 
     // Request filesystems early, we won't create connections until callback is fired. Things will happen in parallel.
-    // @ts-ignore layout test global
-    self.Persistence.isolatedFileSystemManager =
-        Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance();
+    Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance();
 
     const defaultThemeSetting = 'systemPreferred';
     const themeSetting = Common.Settings.Settings.instance().createSetting('uiTheme', defaultThemeSetting);
@@ -520,28 +510,21 @@ export class MainImpl {
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this.#onSuspendStateChanged.bind(this));
 
-    // @ts-ignore layout test global
-    self.Workspace.fileManager = Workspace.FileManager.FileManager.instance({forceNew: true});
-    // @ts-ignore layout test global
-    self.Workspace.workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    Workspace.FileManager.FileManager.instance({forceNew: true});
+    Workspace.Workspace.WorkspaceImpl.instance();
 
-    // @ts-ignore layout test global
-    self.Bindings.networkProjectManager = Bindings.NetworkProject.NetworkProjectManager.instance();
+    Bindings.NetworkProject.NetworkProjectManager.instance();
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(
         SDK.TargetManager.TargetManager.instance(),
         Workspace.Workspace.WorkspaceImpl.instance(),
     );
-    // @ts-ignore layout test global
-    self.Bindings.resourceMapping = resourceMapping;
     new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager();
-    // @ts-ignore layout test global
-    self.Bindings.cssWorkspaceBinding = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({
+    Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,
       targetManager: SDK.TargetManager.TargetManager.instance(),
     });
-    // @ts-ignore layout test global
-    self.Bindings.debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
       forceNew: true,
       resourceMapping,
       targetManager: SDK.TargetManager.TargetManager.instance(),
@@ -558,32 +541,25 @@ export class MainImpl {
       targetManager: SDK.TargetManager.TargetManager.instance(),
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
     });
-    // @ts-ignore layout test global
+    // @ts-ignore e2e test global
     self.Extensions.extensionServer = Extensions.ExtensionServer.ExtensionServer.instance({forceNew: true});
 
     new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(
         Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance(),
         Workspace.Workspace.WorkspaceImpl.instance());
     Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance().addPlatformFileSystem(
-        // @ts-ignore https://github.com/microsoft/TypeScript/issues/41397
-        'snippet://', new Snippets.ScriptSnippetFileSystem.SnippetFileSystem());
+        'snippet://' as Platform.DevToolsPath.UrlString, new Snippets.ScriptSnippetFileSystem.SnippetFileSystem());
 
-    // @ts-ignore layout test global
-    self.Persistence.persistence = Persistence.Persistence.PersistenceImpl.instance({
+    Persistence.Persistence.PersistenceImpl.instance({
       forceNew: true,
       workspace: Workspace.Workspace.WorkspaceImpl.instance(),
       breakpointManager: Breakpoints.BreakpointManager.BreakpointManager.instance(),
     });
-    // @ts-ignore layout test global
-    self.Persistence.networkPersistenceManager =
-        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(
-            {forceNew: true, workspace: Workspace.Workspace.WorkspaceImpl.instance()});
-    // @ts-ignore layout test global
-    self.Host.Platform = Host.Platform;
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance(
+        {forceNew: true, workspace: Workspace.Workspace.WorkspaceImpl.instance()});
 
     new ExecutionContextSelector(SDK.TargetManager.TargetManager.instance(), UI.Context.Context.instance());
-    // @ts-ignore layout test global
-    self.Bindings.ignoreListManager = Bindings.IgnoreListManager.IgnoreListManager.instance({
+    Bindings.IgnoreListManager.IgnoreListManager.instance({
       forceNew: true,
       debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
     });

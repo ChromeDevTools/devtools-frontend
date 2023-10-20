@@ -258,28 +258,6 @@ export function selectTextInTextNode(textNode, start, end) {
   return textNode;
 }
 
-const mappingForLayoutTests = new Map([
-  ['panels/network', 'network'],
-  ['panels/sources', 'sources'],
-  ['models/persistence', 'persistence'],
-  ['entrypoints/main', 'main'],
-]);
-
-/**
- * @param {string} module
- * @return {!Promise<void>}
- */
-export async function loadLegacyModule(module) {
-  let containingFolder = module;
-  for (const [remappedFolder, originalFolder] of mappingForLayoutTests.entries()) {
-    if (originalFolder === module) {
-      containingFolder = remappedFolder;
-    }
-  }
-
-  await import(`../../${containingFolder}/${containingFolder.split('/').reverse()[0]}-legacy.js`);
-}
-
 /**
  * @param {string} panel
  * @return {!Promise.<?UI.Panel.Panel>}
@@ -1491,7 +1469,6 @@ TestRunner.waitForUISourceCode = waitForUISourceCode;
 TestRunner.waitForUISourceCodeRemoved = waitForUISourceCodeRemoved;
 TestRunner.url = url;
 TestRunner.dumpSyntaxHighlight = dumpSyntaxHighlight;
-TestRunner.loadLegacyModule = loadLegacyModule;
 TestRunner.evaluateInPageRemoteObject = evaluateInPageRemoteObject;
 TestRunner.evaluateInPage = evaluateInPage;
 TestRunner.evaluateInPageAnonymously = evaluateInPageAnonymously;

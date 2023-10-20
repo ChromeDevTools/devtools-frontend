@@ -50,7 +50,8 @@ SDKTestRunner.PageMock = class {
 
   connectAsMainTarget(targetName) {
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().resetForTest(TestRunner.mainTarget);
-    self.Bindings.resourceMapping.resetForTest(TestRunner.mainTarget);
+    Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().resourceMapping.resetForTest(
+        TestRunner.mainTarget);
     this.enabledDomains.clear();
     SDK.TargetManager.TargetManager.instance().clearAllTargetsForTest();
 

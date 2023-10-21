@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as Console from '../../../../../front_end/panels/console/console.js';
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as Console from '../../../../../front_end/panels/console/console.js';
 
 const {assert} = chai;
 const {parseSourcePositionsFromErrorStack} = Console.ErrorStackParser;
@@ -140,12 +140,107 @@ describe('ErrorStackParser', () => {
     });
   });
 
+  it('detects URLs with parens', () => {
+    const url =
+        'http://localhost:5173/src/routes/(v2-routes)/project/+layout.ts?ts=12345' as Platform.DevToolsPath.UrlString;
+    const frames = parseErrorStack(`ZodError:
+        at load (${url}:33:5)
+        at ${url}:1:1`);
+
+    assertNotNullOrUndefined(frames);
+    assert.lengthOf(frames, 3);
+    assert.deepStrictEqual(frames[1].link, {
+      url,
+      prefix: '        at load (',
+      suffix: ')',
+      lineNumber: 32,   // 0-based.
+      columnNumber: 4,  // 0-based.
+      enclosedInBraces: true,
+    });
+    assert.deepStrictEqual(frames[2].link, {
+      url,
+      prefix: '        at ',
+      suffix: '',
+      lineNumber: 0,    // 0-based.
+      columnNumber: 0,  // 0-based.
+      enclosedInBraces: false,
+    });
+  });
+
+  it('correctly handles eval frames', () => {
+    const url = 'http://www.chromium.org/foo.js' as Platform.DevToolsPath.UrlString;
+    const frames = parseErrorStack(`Error: MyError
+    at eval (eval at <anonymous> (${url}:42:1), <anonymous>:1:1)`);
+
+    assertNotNullOrUndefined(frames);
+    assert.lengthOf(frames, 2);
+    assert.deepStrictEqual(frames[1].link, {
+      url,
+      prefix: '    at eval (eval at <anonymous> (',
+      suffix: '), <anonymous>:1:1)',
+      lineNumber: 41,   // 0-based.
+      columnNumber: 0,  // 0-based.
+      enclosedInBraces: true,
+    });
+  });
+
   it('uses the inspected target URL to complete relative URLs', () => {
     const frames = parseErrorStack(`Error: standard error
         at foo (testing.js:10:3)`);
 
     assertNotNullOrUndefined(frames);
     assert.strictEqual(frames[1].link?.url, 'http://www.example.org/testing.js' as Platform.DevToolsPath.UrlString);
+  });
+
+  it('uses the inspected target URL to complete relative URLs in eval frames', () => {
+    const frames = parseErrorStack(`Error: localObj.func
+    at Object.func (test.js:26:25)
+    at eval (eval at testFunction (inspected-page.html:29:11), <anonymous>:1:10)`);
+
+    assertNotNullOrUndefined(frames);
+    assert.lengthOf(frames, 3);
+    assert.deepStrictEqual(frames[2].link, {
+      url: 'http://www.example.org/inspected-page.html' as Platform.DevToolsPath.UrlString,
+      prefix: '    at eval (eval at testFunction (',
+      suffix: '), <anonymous>:1:10)',
+      lineNumber: 28,    // 0-based.
+      columnNumber: 10,  // 0-based.
+      enclosedInBraces: true,
+    });
+  });
+
+  it('uses the inspected target URL to complete relative URLs with parens', () => {
+    const frames = parseErrorStack(`Error: wat
+        at foo (/(abc)/foo.js:2:3)
+        at async bar (/(abc)/foo.js:1:2)
+        at /(abc)/foo.js:10:20`);
+
+    assertNotNullOrUndefined(frames);
+    assert.lengthOf(frames, 4);
+    assert.deepStrictEqual(frames[1].link, {
+      url: 'http://www.example.org/(abc)/foo.js' as Platform.DevToolsPath.UrlString,
+      prefix: '        at foo (',
+      suffix: ')',
+      lineNumber: 1,    // 0-based.
+      columnNumber: 2,  // 0-based.
+      enclosedInBraces: true,
+    });
+    assert.deepStrictEqual(frames[2].link, {
+      url: 'http://www.example.org/(abc)/foo.js' as Platform.DevToolsPath.UrlString,
+      prefix: '        at async bar (',
+      suffix: ')',
+      lineNumber: 0,    // 0-based.
+      columnNumber: 1,  // 0-based.
+      enclosedInBraces: true,
+    });
+    assert.deepStrictEqual(frames[3].link, {
+      url: 'http://www.example.org/(abc)/foo.js' as Platform.DevToolsPath.UrlString,
+      prefix: '        at ',
+      suffix: '',
+      lineNumber: 9,     // 0-based.
+      columnNumber: 19,  // 0-based.
+      enclosedInBraces: false,
+    });
   });
 
   describe('augmentErrorStackWithScriptIds', () => {

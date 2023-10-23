@@ -12,9 +12,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
 
-self.BindingsTestRunner = self.BindingsTestRunner || {};
-
-BindingsTestRunner.addFiles = function(testFileSystem, files) {
+export const addFiles = function(testFileSystem, files) {
   for (const filePath in files) {
     const file = files[filePath];
     testFileSystem.addFile(filePath, file.content, (file.time ? file.time.getTime() : 0));
@@ -24,7 +22,7 @@ BindingsTestRunner.addFiles = function(testFileSystem, files) {
 let timeOverrides;
 let originalRequestMetadata;
 
-BindingsTestRunner.overrideNetworkModificationTime = function(urlToTime) {
+export const overrideNetworkModificationTime = function(urlToTime) {
   if (!timeOverrides) {
     timeOverrides = new Map();
     originalRequestMetadata = TestRunner.override(
@@ -54,7 +52,7 @@ BindingsTestRunner.overrideNetworkModificationTime = function(urlToTime) {
   }
 };
 
-BindingsTestRunner.AutomappingTest = function(workspace) {
+export const AutomappingTest = function(workspace) {
   this.workspace = workspace;
   this.networkProject = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
       this.workspace, 'AUTOMAPPING', Workspace.Workspace.projectTypes.Network, 'simple website');
@@ -71,7 +69,7 @@ BindingsTestRunner.AutomappingTest = function(workspace) {
   TestRunner.addSniffer(this.automapping, 'onSweepHappenedForTest', this._onSweepHappened.bind(this), true);
 };
 
-BindingsTestRunner.AutomappingTest.prototype = {
+AutomappingTest.prototype = {
   removeResources: function(urls) {
     for (const url of urls) {
       this.networkProject.removeUISourceCode(url);

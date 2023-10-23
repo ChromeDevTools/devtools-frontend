@@ -2,19 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 
-self.BindingsTestRunner = self.BindingsTestRunner || {};
-
-import * as Common from '../../core/common/common.js';
+import {TestFileSystem} from './IsolatedFilesystemTestRunner.js';
 
 /**
  * @param {string} folderPath
  * @return {!Promise<!{isolatedFileSystem: !Persistence.IsolatedFileSystem.IsolatedFileSystem, project: !Workspace.Workspace.Project, testFileSystem: !BindingsTestRunner.TestFileSystem}>}
  */
-BindingsTestRunner.createOverrideProject = async function(folderPath) {
-  const testFileSystem = new BindingsTestRunner.TestFileSystem(folderPath);
+export const createOverrideProject = async function(folderPath) {
+  const testFileSystem = new TestFileSystem(folderPath);
   const isolatedFileSystem = await testFileSystem.reportCreatedPromise('overrides');
   isolatedFileSystem.typeInternal = 'overrides';
   const project = Workspace.Workspace.WorkspaceImpl.instance().project(
@@ -26,6 +25,6 @@ BindingsTestRunner.createOverrideProject = async function(folderPath) {
 /**
  * @param {boolean} enabled
  */
-BindingsTestRunner.setOverridesEnabled = function(enabled) {
+export const setOverridesEnabled = function(enabled) {
   Common.Settings.moduleSetting('persistenceNetworkOverridesEnabled').set(enabled);
 };

@@ -92,6 +92,7 @@ describeWithMockConnection('LayoutPane', async () => {
   function makeNode(id: Protocol.DOM.NodeId) {
     return {
       id,
+      path: () => 'body > div',
       ancestorUserAgentShadowRoot: () => false,
       localName: () => 'div',
       getAttribute: () => '',

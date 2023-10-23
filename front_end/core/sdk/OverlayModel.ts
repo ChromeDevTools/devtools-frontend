@@ -116,12 +116,35 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       void this.wireAgentToSettings();
     }
 
-    this.#persistentHighlighter = new OverlayPersistentHighlighter(this);
-    this.#domModel.addEventListener(DOMModelEvents.NodeRemoved, () => {
-      this.#persistentHighlighter && this.#persistentHighlighter.refreshHighlights();
+    this.#persistentHighlighter = new OverlayPersistentHighlighter(this, {
+      onGridOverlayStateChanged: ({nodeId, enabled}): void =>
+          this.dispatchEventToListeners(Events.PersistentGridOverlayStateChanged, {nodeId, enabled}),
+      onFlexOverlayStateChanged: ({nodeId, enabled}): void =>
+          this.dispatchEventToListeners(Events.PersistentFlexContainerOverlayStateChanged, {nodeId, enabled}),
+      onContainerQueryOverlayStateChanged: ({nodeId, enabled}): void =>
+          this.dispatchEventToListeners(Events.PersistentContainerQueryOverlayStateChanged, {nodeId, enabled}),
+      onScrollSnapOverlayStateChanged: ({nodeId, enabled}): void =>
+          this.dispatchEventToListeners(Events.PersistentScrollSnapOverlayStateChanged, {nodeId, enabled}),
     });
+    this.#domModel.addEventListener(DOMModelEvents.NodeRemoved, () => {
+      if (!this.#persistentHighlighter) {
+        return;
+      }
+
+      this.#persistentHighlighter.refreshHighlights();
+    });
+
     this.#domModel.addEventListener(DOMModelEvents.DocumentUpdated, () => {
-      this.#persistentHighlighter && this.#persistentHighlighter.hideAllInOverlay();
+      if (!this.#persistentHighlighter) {
+        return;
+      }
+
+      // Hide all the overlays initially after document update
+      this.#persistentHighlighter.hideAllInOverlayWithoutSave();
+
+      if (!target.suspended()) {
+        void this.#persistentHighlighter.restoreHighlightsForDocument();
+      }
     });
 
     this.#sourceOrderHighlighter = new SourceOrderHighlighter(this);
@@ -300,7 +323,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.highlightGridInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentGridOverlayStateChanged, {nodeId, enabled: true});
   }
 
   isHighlightedGridInPersistentOverlay(nodeId: Protocol.DOM.NodeId): boolean {
@@ -315,7 +337,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.hideGridInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentGridOverlayStateChanged, {nodeId, enabled: false});
   }
 
   highlightScrollSnapInPersistentOverlay(nodeId: Protocol.DOM.NodeId): void {
@@ -323,7 +344,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.highlightScrollSnapInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentScrollSnapOverlayStateChanged, {nodeId, enabled: true});
   }
 
   isHighlightedScrollSnapInPersistentOverlay(nodeId: Protocol.DOM.NodeId): boolean {
@@ -338,7 +358,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.hideScrollSnapInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentScrollSnapOverlayStateChanged, {nodeId, enabled: false});
   }
 
   highlightFlexContainerInPersistentOverlay(nodeId: Protocol.DOM.NodeId): void {
@@ -346,7 +365,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.highlightFlexInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentFlexContainerOverlayStateChanged, {nodeId, enabled: true});
   }
 
   isHighlightedFlexContainerInPersistentOverlay(nodeId: Protocol.DOM.NodeId): boolean {
@@ -361,7 +379,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.hideFlexInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentFlexContainerOverlayStateChanged, {nodeId, enabled: false});
   }
 
   highlightContainerQueryInPersistentOverlay(nodeId: Protocol.DOM.NodeId): void {
@@ -369,7 +386,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.highlightContainerQueryInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentContainerQueryOverlayStateChanged, {nodeId, enabled: true});
   }
 
   isHighlightedContainerQueryInPersistentOverlay(nodeId: Protocol.DOM.NodeId): boolean {
@@ -384,7 +400,6 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
       return;
     }
     this.#persistentHighlighter.hideContainerQueryInOverlay(nodeId);
-    this.dispatchEventToListeners(Events.PersistentContainerQueryOverlayStateChanged, {nodeId, enabled: false});
   }
 
   highlightSourceOrderInOverlay(node: DOMNode): void {

@@ -4,20 +4,43 @@
 
 import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
+import * as Platform from '../platform/platform.js';
 
+import {type DOMModel} from './DOMModel.js';
 import {OverlayColorGenerator} from './OverlayColorGenerator.js';
+
+export const enum HighlightType {
+  FLEX = 'FLEX',
+  GRID = 'GRID',
+  SCROLL_SNAP = 'SCROLL_SNAP',
+  CONTAINER_QUERY = 'CONTAINER_QUERY',
+  ISOLATED_ELEMENT = 'ISOLATED_ELEMENT',
+}
+
+export interface PersistentHighlightSettingItem {
+  url: Platform.DevToolsPath.UrlString;
+  path: string;
+  type: HighlightType;
+}
+
+export interface PersistentHighlighterCallbacks {
+  onGridOverlayStateChanged: ({nodeId, enabled}: {nodeId: Protocol.DOM.NodeId, enabled: boolean}) => void;
+  onFlexOverlayStateChanged: ({nodeId, enabled}: {nodeId: Protocol.DOM.NodeId, enabled: boolean}) => void;
+  onScrollSnapOverlayStateChanged: ({nodeId, enabled}: {nodeId: Protocol.DOM.NodeId, enabled: boolean}) => void;
+  onContainerQueryOverlayStateChanged: ({nodeId, enabled}: {nodeId: Protocol.DOM.NodeId, enabled: boolean}) => void;
+}
 
 export class OverlayPersistentHighlighter {
   readonly #model: OverlayModel;
-  readonly #gridHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.GridHighlightConfig>;
-  readonly #scrollSnapHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.ScrollSnapContainerHighlightConfig>;
-  readonly #flexHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.FlexContainerHighlightConfig>;
-  readonly #containerQueryHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.ContainerQueryContainerHighlightConfig>;
-  readonly #isolatedElementHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.IsolationModeHighlightConfig>;
   readonly #colors: Map<Protocol.DOM.NodeId, Common.Color.Color>;
+  readonly #persistentHighlightSetting: Common.Settings.Setting<PersistentHighlightSettingItem[]>;
+  #gridHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.GridHighlightConfig>;
+  #scrollSnapHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.ScrollSnapContainerHighlightConfig>;
+  #flexHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.FlexContainerHighlightConfig>;
+  #containerQueryHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.ContainerQueryContainerHighlightConfig>;
+  #isolatedElementHighlights: Map<Protocol.DOM.NodeId, Protocol.Overlay.IsolationModeHighlightConfig>;
   #gridColorGenerator: OverlayColorGenerator;
   #flexColorGenerator: OverlayColorGenerator;
-  #flexEnabled: boolean;
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly #showGridLineLabelsSetting: Common.Settings.Setting<any>;
@@ -30,8 +53,13 @@ export class OverlayPersistentHighlighter {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly #showGridTrackSizesSetting: Common.Settings.Setting<any>;
-  constructor(model: OverlayModel, flexEnabled: boolean = true) {
+  readonly #callbacks: PersistentHighlighterCallbacks;
+  constructor(model: OverlayModel, callbacks: PersistentHighlighterCallbacks) {
     this.#model = model;
+    this.#callbacks = callbacks;
+
+    this.#persistentHighlightSetting =
+        Common.Settings.Settings.instance().createLocalSetting('persistentHighlightSetting', []);
 
     this.#gridHighlights = new Map();
 
@@ -47,7 +75,6 @@ export class OverlayPersistentHighlighter {
 
     this.#gridColorGenerator = new OverlayColorGenerator();
     this.#flexColorGenerator = new OverlayColorGenerator();
-    this.#flexEnabled = flexEnabled;
 
     this.#showGridLineLabelsSetting = Common.Settings.Settings.instance().moduleSetting('showGridLineLabels');
     this.#showGridLineLabelsSetting.addChangeListener(this.onSettingChange, this);
@@ -123,6 +150,8 @@ export class OverlayPersistentHighlighter {
   highlightGridInOverlay(nodeId: Protocol.DOM.NodeId): void {
     this.#gridHighlights.set(nodeId, this.buildGridHighlightConfig(nodeId));
     this.updateHighlightsInOverlay();
+    this.savePersistentHighlightSetting();
+    this.#callbacks.onGridOverlayStateChanged({nodeId, enabled: true});
   }
 
   isGridHighlighted(nodeId: Protocol.DOM.NodeId): boolean {
@@ -147,12 +176,16 @@ export class OverlayPersistentHighlighter {
     if (this.#gridHighlights.has(nodeId)) {
       this.#gridHighlights.delete(nodeId);
       this.updateHighlightsInOverlay();
+      this.savePersistentHighlightSetting();
+      this.#callbacks.onGridOverlayStateChanged({nodeId, enabled: false});
     }
   }
 
   highlightScrollSnapInOverlay(nodeId: Protocol.DOM.NodeId): void {
     this.#scrollSnapHighlights.set(nodeId, this.buildScrollSnapContainerHighlightConfig(nodeId));
     this.updateHighlightsInOverlay();
+    this.#callbacks.onScrollSnapOverlayStateChanged({nodeId, enabled: true});
+    this.savePersistentHighlightSetting();
   }
 
   isScrollSnapHighlighted(nodeId: Protocol.DOM.NodeId): boolean {
@@ -163,12 +196,16 @@ export class OverlayPersistentHighlighter {
     if (this.#scrollSnapHighlights.has(nodeId)) {
       this.#scrollSnapHighlights.delete(nodeId);
       this.updateHighlightsInOverlay();
+      this.#callbacks.onScrollSnapOverlayStateChanged({nodeId, enabled: false});
+      this.savePersistentHighlightSetting();
     }
   }
 
   highlightFlexInOverlay(nodeId: Protocol.DOM.NodeId): void {
     this.#flexHighlights.set(nodeId, this.buildFlexContainerHighlightConfig(nodeId));
     this.updateHighlightsInOverlay();
+    this.savePersistentHighlightSetting();
+    this.#callbacks.onFlexOverlayStateChanged({nodeId, enabled: true});
   }
 
   isFlexHighlighted(nodeId: Protocol.DOM.NodeId): boolean {
@@ -193,18 +230,24 @@ export class OverlayPersistentHighlighter {
     if (this.#flexHighlights.has(nodeId)) {
       this.#flexHighlights.delete(nodeId);
       this.updateHighlightsInOverlay();
+      this.savePersistentHighlightSetting();
+      this.#callbacks.onFlexOverlayStateChanged({nodeId, enabled: false});
     }
   }
 
   highlightContainerQueryInOverlay(nodeId: Protocol.DOM.NodeId): void {
     this.#containerQueryHighlights.set(nodeId, this.buildContainerQueryContainerHighlightConfig());
     this.updateHighlightsInOverlay();
+    this.savePersistentHighlightSetting();
+    this.#callbacks.onContainerQueryOverlayStateChanged({nodeId, enabled: true});
   }
 
   hideContainerQueryInOverlay(nodeId: Protocol.DOM.NodeId): void {
     if (this.#containerQueryHighlights.has(nodeId)) {
       this.#containerQueryHighlights.delete(nodeId);
       this.updateHighlightsInOverlay();
+      this.savePersistentHighlightSetting();
+      this.#callbacks.onContainerQueryOverlayStateChanged({nodeId, enabled: false});
     }
   }
 
@@ -228,12 +271,14 @@ export class OverlayPersistentHighlighter {
   highlightIsolatedElementInOverlay(nodeId: Protocol.DOM.NodeId): void {
     this.#isolatedElementHighlights.set(nodeId, this.buildIsolationModeHighlightConfig());
     this.updateHighlightsInOverlay();
+    this.savePersistentHighlightSetting();
   }
 
   hideIsolatedElementInOverlay(nodeId: Protocol.DOM.NodeId): void {
     if (this.#isolatedElementHighlights.has(nodeId)) {
       this.#isolatedElementHighlights.delete(nodeId);
       this.updateHighlightsInOverlay();
+      this.savePersistentHighlightSetting();
     }
   }
 
@@ -249,7 +294,7 @@ export class OverlayPersistentHighlighter {
     };
   }
 
-  hideAllInOverlay(): void {
+  hideAllInOverlayWithoutSave(): void {
     this.#flexHighlights.clear();
     this.#gridHighlights.clear();
     this.#scrollSnapHighlights.clear();
@@ -267,6 +312,7 @@ export class OverlayPersistentHighlighter {
     if (flexboxesNeedUpdate || gridsNeedUpdate || scrollSnapsNeedUpdate || containerQueriesNeedUpdate ||
         isolatedElementsNeedUpdate) {
       this.updateHighlightsInOverlay();
+      this.savePersistentHighlightSetting();
     }
   }
 
@@ -321,9 +367,6 @@ export class OverlayPersistentHighlighter {
   }
 
   private updateFlexHighlightsInOverlay(): void {
-    if (!this.#flexEnabled) {
-      return;
-    }
     const overlayModel = this.#model;
     const flexNodeHighlightConfigs = [];
     for (const [nodeId, flexContainerHighlightConfig] of this.#flexHighlights.entries()) {
@@ -358,11 +401,97 @@ export class OverlayPersistentHighlighter {
     }
     overlayModel.target().overlayAgent().invoke_setShowIsolatedElements({isolatedElementHighlightConfigs});
   }
+
+  async restoreHighlightsForDocument(): Promise<void> {
+    this.#flexHighlights = new Map();
+    this.#gridHighlights = new Map();
+    this.#scrollSnapHighlights = new Map();
+    this.#containerQueryHighlights = new Map();
+    this.#isolatedElementHighlights = new Map();
+
+    // this.currentURL() is empty when the page is reloaded because the
+    // new document has not been requested yet and the old one has been
+    // removed. Therefore, we need to request the document and wait for it.
+    // Note that requestDocument() caches the document so that it is requested
+    // only once.
+    const document = await this.#model.getDOMModel().requestDocument();
+    const currentURL = document ? document.documentURL : Platform.DevToolsPath.EmptyUrlString;
+    await Promise.all(this.#persistentHighlightSetting.get().map(async persistentHighlight => {
+      if (persistentHighlight.url === currentURL) {
+        return this.#model.getDOMModel().pushNodeByPathToFrontend(persistentHighlight.path).then(nodeId => {
+          const node = this.#model.getDOMModel().nodeForId(nodeId);
+          if (!node) {
+            return;
+          }
+
+          switch (persistentHighlight.type) {
+            case HighlightType.GRID:
+              this.#gridHighlights.set(node.id, this.buildGridHighlightConfig(node.id));
+              this.#callbacks.onGridOverlayStateChanged({nodeId: node.id, enabled: true});
+              break;
+            case HighlightType.FLEX:
+              this.#flexHighlights.set(node.id, this.buildFlexContainerHighlightConfig(node.id));
+              this.#callbacks.onFlexOverlayStateChanged({nodeId: node.id, enabled: true});
+              break;
+            case HighlightType.CONTAINER_QUERY:
+              this.#containerQueryHighlights.set(node.id, this.buildContainerQueryContainerHighlightConfig());
+              this.#callbacks.onContainerQueryOverlayStateChanged({nodeId: node.id, enabled: true});
+              break;
+            case HighlightType.SCROLL_SNAP:
+              this.#scrollSnapHighlights.set(node.id, this.buildScrollSnapContainerHighlightConfig(node.id));
+              this.#callbacks.onScrollSnapOverlayStateChanged({nodeId: node.id, enabled: true});
+              break;
+            case HighlightType.ISOLATED_ELEMENT:
+              this.#isolatedElementHighlights.set(node.id, this.buildIsolationModeHighlightConfig());
+              break;
+          }
+        });
+      }
+    }));
+
+    this.updateHighlightsInOverlay();
+  }
+
+  private currentUrl(): Platform.DevToolsPath.UrlString {
+    const domDocument = this.#model.getDOMModel().existingDocument();
+    return domDocument ? domDocument.documentURL : Platform.DevToolsPath.EmptyUrlString;
+  }
+
+  private getPersistentHighlightSettingForOneType(highlights: Map<Protocol.DOM.NodeId, unknown>, type: HighlightType):
+      PersistentHighlightSettingItem[] {
+    const persistentHighlights: PersistentHighlightSettingItem[] = [];
+    for (const nodeId of highlights.keys()) {
+      const node = this.#model.getDOMModel().nodeForId(nodeId);
+      if (node) {
+        persistentHighlights.push({url: this.currentUrl(), path: node.path(), type});
+      }
+    }
+
+    return persistentHighlights;
+  }
+
+  private savePersistentHighlightSetting(): void {
+    const currentURL = this.currentUrl();
+
+    // Keep the highlights that are not related to this document.
+    const highlightsInOtherDocuments =
+        this.#persistentHighlightSetting.get().filter((persistentSetting: {
+                                                        url: Platform.DevToolsPath.UrlString,
+                                                      }) => persistentSetting.url !== currentURL);
+
+    const persistentHighlights = [
+      ...highlightsInOtherDocuments,
+      ...this.getPersistentHighlightSettingForOneType(this.#gridHighlights, HighlightType.GRID),
+      ...this.getPersistentHighlightSettingForOneType(this.#flexHighlights, HighlightType.FLEX),
+      ...this.getPersistentHighlightSettingForOneType(this.#containerQueryHighlights, HighlightType.CONTAINER_QUERY),
+      ...this.getPersistentHighlightSettingForOneType(this.#scrollSnapHighlights, HighlightType.SCROLL_SNAP),
+      ...this.getPersistentHighlightSettingForOneType(this.#isolatedElementHighlights, HighlightType.ISOLATED_ELEMENT),
+    ];
+
+    this.#persistentHighlightSetting.set(persistentHighlights);
+  }
 }
 
-export interface DOMModel {
-  nodeForId(nodeId: Protocol.DOM.NodeId): void;
-}
 export interface OverlayAgent {
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/naming-convention

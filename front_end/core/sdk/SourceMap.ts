@@ -53,6 +53,7 @@ export type SourceMapV3Object = {
   'sourcesContent'?: (string|null)[],
   'names'?: string[],
   'mappings': string,
+  'ignoreList'?: number[],
   // eslint-disable-next-line @typescript-eslint/naming-convention
   'x_google_linecount'?: number,
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -443,7 +444,7 @@ export class SourceMap {
   private parseSources(sourceMap: SourceMapV3Object): void {
     const sourcesList = [];
     const sourceRoot = sourceMap.sourceRoot ?? '';
-    const ignoreList = new Set(sourceMap.x_google_ignoreList);
+    const ignoreList = new Set(sourceMap.ignoreList ?? sourceMap.x_google_ignoreList);
     for (let i = 0; i < sourceMap.sources.length; ++i) {
       let href = sourceMap.sources[i];
       // The source map v3 proposal says to prepend the sourceRoot to the source URL

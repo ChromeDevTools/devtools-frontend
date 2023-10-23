@@ -457,7 +457,7 @@ describeWithEnvironment('SourceMap', () => {
       };
       const payload2 = {
         ...payload1,
-        'x_google_ignoreList': [0],
+        'ignoreList': [0],
       };
       const sourceMap1 = new SDK.SourceMap.SourceMap(compiledURL, sourceMappingURL, payload1);
       const sourceMap2 = new SDK.SourceMap.SourceMap(compiledURL, sourceMappingURL, payload2);
@@ -792,7 +792,7 @@ describeWithEnvironment('SourceMap', () => {
   });
 
   describe('automatic ignore-listing', () => {
-    it('parses the known third parties from the `x_google_ignoreList` section', () => {
+    it('parses the known third parties from the `ignoreList` section', () => {
       const mappingPayload = encodeSourceMap(
           [
             // clang-format off
@@ -804,7 +804,7 @@ describeWithEnvironment('SourceMap', () => {
           ],
           'wp:///' /* sourceRoot */);
 
-      mappingPayload.x_google_ignoreList = [0 /* vendor.js */, 3 /* other.js */];
+      mappingPayload.ignoreList = [0 /* vendor.js */, 3 /* other.js */];
 
       const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
       const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload);
@@ -814,6 +814,55 @@ describeWithEnvironment('SourceMap', () => {
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///example.js' as Platform.DevToolsPath.UrlString), false);
       assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///other.js' as Platform.DevToolsPath.UrlString), true);
     });
+
+    it('parses the known third parties from the deprecated `x_google_ignoreList` section if `ignoreList` is not present',
+       () => {
+         const mappingPayload = encodeSourceMap(
+             [
+               // clang-format off
+               '0:0 => vendor.js:1:0',
+               '1:0 => main.js:1:0',
+               '2:0 => example.js:1:0',
+               '3:0 => other.js:1:0',
+               // clang-format on
+             ],
+             'wp:///' /* sourceRoot */);
+
+         mappingPayload.x_google_ignoreList = [0 /* vendor.js */, 3 /* other.js */];
+
+         const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
+         const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload);
+
+         assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor.js' as Platform.DevToolsPath.UrlString), true);
+         assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///main.js' as Platform.DevToolsPath.UrlString), false);
+         assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///example.js' as Platform.DevToolsPath.UrlString), false);
+         assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///other.js' as Platform.DevToolsPath.UrlString), true);
+       });
+
+    it('parses the known third parties from the `ignoreList` section and ignores deprecated `x_google_ignoreList`',
+       () => {
+         const mappingPayload = encodeSourceMap(
+             [
+               // clang-format off
+               '0:0 => vendor.js:1:0',
+               '1:0 => main.js:1:0',
+               '2:0 => example.js:1:0',
+               '3:0 => other.js:1:0',
+               // clang-format on
+             ],
+             'wp:///' /* sourceRoot */);
+
+         mappingPayload.ignoreList = [0 /* vendor.js */, 3 /* other.js */];
+         mappingPayload.x_google_ignoreList = [1 /* main.js */, 2 /* example.js */];
+
+         const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
+         const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload);
+
+         assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///vendor.js' as Platform.DevToolsPath.UrlString), true);
+         assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///main.js' as Platform.DevToolsPath.UrlString), false);
+         assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///example.js' as Platform.DevToolsPath.UrlString), false);
+         assert.strictEqual(sourceMap.hasIgnoreListHint('wp:///other.js' as Platform.DevToolsPath.UrlString), true);
+       });
 
     it('computes ranges for third party code in a simple case', () => {
       const mappingPayload = encodeSourceMap(
@@ -827,7 +876,7 @@ describeWithEnvironment('SourceMap', () => {
           ],
           'wp:///' /* sourceRoot */);
 
-      mappingPayload.x_google_ignoreList = [0 /* vendor1.js */, 1 /* vendor2.js */, 2 /* vendor3.js */];
+      mappingPayload.ignoreList = [0 /* vendor1.js */, 1 /* vendor2.js */, 2 /* vendor3.js */];
 
       const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
       const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload);
@@ -865,7 +914,7 @@ describeWithEnvironment('SourceMap', () => {
           ],
           'wp:///' /* sourceRoot */);
 
-      mappingPayload.x_google_ignoreList = [1 /* vendor1.js */, 3 /* vendor2.js */, 5 /* vendor3.js */];
+      mappingPayload.ignoreList = [1 /* vendor1.js */, 3 /* vendor2.js */, 5 /* vendor3.js */];
 
       const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
       const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload);
@@ -911,7 +960,7 @@ describeWithEnvironment('SourceMap', () => {
           ],
           'wp:///' /* sourceRoot */);
 
-      mappingPayload.x_google_ignoreList = [0 /* vendor1.js */, 1 /* vendor2.js */, 2 /* vendor3.js */];
+      mappingPayload.ignoreList = [0 /* vendor1.js */, 1 /* vendor2.js */, 2 /* vendor3.js */];
 
       const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
       const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload);
@@ -953,7 +1002,7 @@ describeWithEnvironment('SourceMap', () => {
           ],
           'wp:///' /* sourceRoot */);
 
-      mappingPayload.x_google_ignoreList = [1 /* vendor1.js */, 2 /* vendor2.js */, 3 /* vendor3.js */];
+      mappingPayload.ignoreList = [1 /* vendor1.js */, 2 /* vendor2.js */, 3 /* vendor3.js */];
 
       const sourceMapJsonUrl = 'wp://test/source-map.json' as Platform.DevToolsPath.UrlString;
       const sourceMap = new SDK.SourceMap.SourceMap(compiledUrl, sourceMapJsonUrl, mappingPayload);

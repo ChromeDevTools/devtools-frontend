@@ -40,7 +40,7 @@ enum VisualElements {
   AddElementClassPrompt = 17,
   ElementStatesPan = 18,
   CssLayersPane = 19,
-  DropDownButton = 20,
+  DropDown = 20,
   StylesMetricsPane = 21,
   JumpToSource = 22,
   MetricsBox = 23,
@@ -74,6 +74,7 @@ enum VisualElements {
   Slider = 51,
   CssColorMix = 52,
   Value = 53,
+  Key = 54,
 }
 
 function resolveVe(ve: string): number {

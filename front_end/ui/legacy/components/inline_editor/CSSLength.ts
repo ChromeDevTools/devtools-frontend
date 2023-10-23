@@ -156,11 +156,10 @@ export class CSSLength extends HTMLElement {
     // clang-format off
       return html`
         <span class="value"
-          jslog=${VisualLogging.value().track({click:true, drag: true}).context('cssLength')}
           @mousedown=${this.onValueMousedown}
           @mouseup=${this.onValueMouseup}
         >${this.length.value}</span><span class="unit">${this.length.unit}</span>
-        <div class="unit-dropdown" jslog=${VisualLogging.dropDownButton().track({click: true}).context('unit')}>
+        <div class="unit-dropdown" jslog=${VisualLogging.dropDown().track({click: true}).context('unit')}>
           <span class="icon"></span>
           <select @mouseup=${this.onUnitMouseup} @change=${this.onUnitChange}>
             ${options}

@@ -1575,7 +1575,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     const button =
         new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.toggleRenderingEmulations), 'brush', 'brush-filled');
     button.element.setAttribute(
-        'jslog', `${VisualLogging.dropDownButton().track({click: true}).context('renderingEmulations')}`);
+        'jslog', `${VisualLogging.dropDown().track({click: true}).context('renderingEmulations')}`);
     button.element.addEventListener('click', event => {
       const boundingRect = button.element.getBoundingClientRect();
       const menu = new UI.ContextMenu.ContextMenu(event, {
@@ -2302,6 +2302,7 @@ export class StylesSidebarPropertyRenderer {
 
   renderName(): Element {
     const nameElement = document.createElement('span');
+    nameElement.setAttribute('jslog', `${VisualLogging.key().track({keydown: true, click: true})}`);
     UI.ARIAUtils.setLabel(nameElement, i18nString(UIStrings.cssPropertyName, {PH1: this.propertyName}));
     nameElement.className = 'webkit-css-property';
     nameElement.textContent = this.propertyName;
@@ -2311,6 +2312,7 @@ export class StylesSidebarPropertyRenderer {
 
   renderValue(): Element {
     const valueElement = document.createElement('span');
+    valueElement.setAttribute('jslog', `${VisualLogging.value().track({keydown: true, click: true})}`);
     UI.ARIAUtils.setLabel(valueElement, i18nString(UIStrings.cssPropertyValue, {PH1: this.propertyValue}));
     valueElement.className = 'value';
     if (!this.propertyValue) {

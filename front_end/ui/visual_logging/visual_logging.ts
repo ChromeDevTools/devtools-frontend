@@ -32,7 +32,7 @@ const cssLayersPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssLayer
 const cssShadowEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'cssShadowEditor');
 const domBreakpoint = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpoint');
 const domBreakpointsPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpointsPane');
-const dropDownButton = LoggingConfig.makeConfigStringBuilder.bind(null, 'DropDownButton');
+const dropDown = LoggingConfig.makeConfigStringBuilder.bind(null, 'DropDown');
 const elementClassesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementClassesPane');
 const elementPropertiesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementPropertiesPane');
 const elementStatesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementStatesPan');
@@ -40,6 +40,7 @@ const eventListenersPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'Eve
 const filterDropdown = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterDropdown');
 const filterTextField = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterTextField');
 const jumpToSource = LoggingConfig.makeConfigStringBuilder.bind(null, 'JumpToSource');
+const key = LoggingConfig.makeConfigStringBuilder.bind(null, 'Key');
 const link = LoggingConfig.makeConfigStringBuilder.bind(null, 'Link');
 const metricsBox = LoggingConfig.makeConfigStringBuilder.bind(null, 'MetricsBox');
 const next = LoggingConfig.makeConfigStringBuilder.bind(null, 'Next');
@@ -92,7 +93,7 @@ export {
   cssShadowEditor,
   domBreakpoint,
   domBreakpointsPane,
-  dropDownButton,
+  dropDown,
   elementClassesPane,
   elementPropertiesPane,
   elementStatesPane,
@@ -100,6 +101,7 @@ export {
   filterDropdown,
   filterTextField,
   jumpToSource,
+  key,
   link,
   metricsBox,
   next,

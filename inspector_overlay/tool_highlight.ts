@@ -433,7 +433,7 @@ function getElementLayoutType(elementInfo: ElementInfo): string|null {
     return 'grid';
   }
 
-  if (elementInfo.layoutObjectName && elementInfo.layoutObjectName === 'LayoutNGFlexibleBox') {
+  if (elementInfo.layoutObjectName && elementInfo.layoutObjectName.endsWith('FlexibleBox')) {
     return 'flex';
   }
 

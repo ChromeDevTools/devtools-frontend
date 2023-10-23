@@ -165,6 +165,23 @@ describeWithEnvironment('ThreadAppender', function() {
     assert.strictEqual(title, 'Task');
   });
 
+  it('adds the type for EventDispatch events to the title', async function() {
+    const {threadAppenders, traceParsedData} =
+        await renderThreadAppendersFromTrace(this, 'one-second-interaction.json.gz');
+    const events = traceParsedData.Renderer?.allRendererEvents;
+    if (!events) {
+      throw new Error('Could not find renderer events');
+    }
+    const clickEvent = events.find(event => {
+      return TraceModel.Types.TraceEvents.isTraceEventDispatch(event) && event.args.data.type === 'click';
+    });
+    if (!clickEvent) {
+      throw new Error('Could not find expected click event');
+    }
+    const title = threadAppenders[0].titleForEvent(clickEvent);
+    assert.strictEqual(title, 'Event: click');
+  });
+
   it('returns the correct title for a profile call', async function() {
     const {threadAppenders, traceParsedData} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
     const rendererHandler = traceParsedData.Renderer;

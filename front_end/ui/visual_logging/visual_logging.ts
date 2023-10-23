@@ -39,12 +39,16 @@ const elementStatesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'Elem
 const eventListenersPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'EventListenersPane');
 const filterDropdown = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterDropdown');
 const filterTextField = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterTextField');
+const flexboxOverlays = LoggingConfig.makeConfigStringBuilder.bind(null, 'FlexboxOverlays');
+const gridOverlays = LoggingConfig.makeConfigStringBuilder.bind(null, 'GridOverlays');
+const gridSettings = LoggingConfig.makeConfigStringBuilder.bind(null, 'GridSettings');
+const item = LoggingConfig.makeConfigStringBuilder.bind(null, 'Item');
+const jumpToElement = LoggingConfig.makeConfigStringBuilder.bind(null, 'JumpToElement');
 const jumpToSource = LoggingConfig.makeConfigStringBuilder.bind(null, 'JumpToSource');
 const key = LoggingConfig.makeConfigStringBuilder.bind(null, 'Key');
 const link = LoggingConfig.makeConfigStringBuilder.bind(null, 'Link');
 const metricsBox = LoggingConfig.makeConfigStringBuilder.bind(null, 'MetricsBox');
 const next = LoggingConfig.makeConfigStringBuilder.bind(null, 'Next');
-const option = LoggingConfig.makeConfigStringBuilder.bind(null, 'Option');
 const paletteColorShades = LoggingConfig.makeConfigStringBuilder.bind(null, 'PaletteColorShades');
 const palettePanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'PalettePanel');
 const previous = LoggingConfig.makeConfigStringBuilder.bind(null, 'Previous');
@@ -100,12 +104,16 @@ export {
   eventListenersPane,
   filterDropdown,
   filterTextField,
+  flexboxOverlays,
+  gridOverlays,
+  gridSettings,
+  item,
+  jumpToElement,
   jumpToSource,
   key,
   link,
   metricsBox,
   next,
-  option,
   paletteColorShades,
   palettePanel,
   previous,

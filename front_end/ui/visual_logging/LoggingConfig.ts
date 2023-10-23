@@ -66,7 +66,7 @@ enum VisualElements {
   CssShadowEditor = 43,
   Link = 44,
   Next = 45,
-  Option = 46,
+  Item = 46,
   PaletteColorShades = 47,
   PalettePanel = 48,
   Previous = 49,
@@ -75,6 +75,10 @@ enum VisualElements {
   CssColorMix = 52,
   Value = 53,
   Key = 54,
+  GridSettings = 55,
+  FlexboxOverlays = 56,
+  GridOverlays = 57,
+  JumpToElement = 58,
 }
 
 function resolveVe(ve: string): number {

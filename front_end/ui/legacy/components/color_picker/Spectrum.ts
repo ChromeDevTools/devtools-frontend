@@ -644,7 +644,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
   private createPaletteColor(colorText: string, colorName?: string, animationDelay?: number): HTMLElement {
     const element = document.createElement('div') as HTMLElement;
     element.classList.add('spectrum-palette-color');
-    element.setAttribute('jslog', `${VisualLogging.option().track({click: true, drag: true})}`);
+    element.setAttribute('jslog', `${VisualLogging.item().track({click: true, drag: true})}`);
     element.style.background =
         Platform.StringUtilities.sprintf('linear-gradient(%s, %s), var(--image-file-checker)', colorText, colorText);
     if (animationDelay) {

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Animation from '../../panels/animation/animation.js';
 import * as Elements from '../../panels/elements/elements.js';
@@ -458,7 +459,8 @@ ElementsTestRunner.dumpRenderedMatchedStyles = function() {
     for (let i = 0; i < property.childCount(); ++i) {
       const childProperty = property.childAt(i);
       let text = indent;
-      text += String.sprintf('%s: %s', childProperty.nameElement.textContent, childProperty.valueElement.textContent);
+      text += Platform.StringUtilities.sprintf(
+          '%s: %s', childProperty.nameElement.textContent, childProperty.valueElement.textContent);
 
       if (childProperty.listItemElement.classList.contains('filter-match')) {
         text = 'F' + text.substring(1);
@@ -528,7 +530,7 @@ async function printStyleSection(section, omitLonghands, includeSelectorGroupMar
 
   if (anchor) {
     const anchorText = await extractLinkText(anchor);
-    selectorText += String.sprintf(' (%s)', anchorText);
+    selectorText += Platform.StringUtilities.sprintf(' (%s)', anchorText);
   }
 
   TestRunner.addResult(selectorText);

@@ -2265,7 +2265,7 @@ export class TimelineUIUtils {
       case recordTypes.WebSocketSendHandshakeRequest:
       case recordTypes.WebSocketReceiveHandshakeResponse:
       case recordTypes.WebSocketDestroy: {
-        const initiatorData = initiator ? initiator.args['data'] : eventData;
+        const initiatorData = initiator ? initiator.args?.['data'] : eventData;
         if (typeof initiatorData['webSocketURL'] !== 'undefined') {
           contentHelper.appendTextRow(i18n.i18n.lockedString('URL'), initiatorData['webSocketURL']);
         }
@@ -2765,7 +2765,8 @@ export class TimelineUIUtils {
       contentHelper.addSection(i18nString(UIStrings.invalidations));
       TimelineUIUtils.generateInvalidations(event, target, relatedNodesMap, contentHelper);
     } else if (initiator) {  // Partial invalidation tracking.
-      const delay = startTime - initiator.startTime;
+      const {startTime: initiatorStartTime} = TraceEngine.Legacy.timesForEventInMilliseconds(initiator);
+      const delay = startTime - initiatorStartTime;
       contentHelper.appendTextRow(i18nString(UIStrings.pendingFor), i18n.TimeUtilities.preciseMillisToString(delay, 1));
 
       const link = document.createElement('span');
@@ -2774,11 +2775,11 @@ export class TimelineUIUtils {
       link.tabIndex = 0;
       link.textContent = i18nString(UIStrings.reveal);
       link.addEventListener('click', () => {
-        TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiator as TraceEngine.Legacy.Event)));
+        TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiator)));
       });
       link.addEventListener('keydown', event => {
         if (event.key === 'Enter') {
-          TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiator as TraceEngine.Legacy.Event)));
+          TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((initiator)));
           event.consume(true);
         }
       });

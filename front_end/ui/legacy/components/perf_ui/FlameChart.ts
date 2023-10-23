@@ -1118,6 +1118,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   /**
+   * Given an entry's index, retrns its title
+   */
+  entryTitle(entryIndex: number): string|null {
+    return this.dataProvider.entryTitle(entryIndex);
+  }
+
+  /**
    * Returns the offset of the canvas relative to the viewport.
    */
   getCanvasOffset(): {x: number, y: number} {

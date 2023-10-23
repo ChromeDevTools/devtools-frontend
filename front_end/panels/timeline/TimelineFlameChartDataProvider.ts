@@ -165,7 +165,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private lastSelection?: Selection;
   private colorForEvent?: ((arg0: TraceEngine.Legacy.Event) => string);
   #eventToDisallowRoot = new WeakMap<TraceEngine.Legacy.Event, boolean>();
-  #indexForEvent = new WeakMap<TraceEngine.Legacy.Event, number>();
+  #indexForEvent = new WeakMap<TraceEngine.Legacy.CompatibleTraceEvent, number>();
   #font: string;
   #threadTracksSource: ThreadTracksSource;
 
@@ -1302,16 +1302,20 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
       const eventIndex = (this.#indexForEvent.get(event) as number);
       const initiatorIndex = (this.#indexForEvent.get(initiator) as number);
-      td.flowStartTimes.push(initiator.endTime || initiator.startTime);
+      const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
+      const {endTime: initiatorEndTime, startTime: initiatorStartTime} =
+          TraceEngine.Legacy.timesForEventInMilliseconds(initiator);
+
+      td.flowStartTimes.push(initiatorEndTime || initiatorStartTime);
       td.flowStartLevels.push(td.entryLevels[initiatorIndex]);
-      td.flowEndTimes.push(event.startTime);
+      td.flowEndTimes.push(startTime);
       td.flowEndLevels.push(td.entryLevels[eventIndex]);
       event = initiator;
     }
     return true;
   }
 
-  private eventParent(event: TraceEngine.Legacy.Event): TraceEngine.Legacy.Event|null {
+  private eventParent(event: TraceEngine.Legacy.CompatibleTraceEvent): TraceEngine.Legacy.Event|null {
     const eventIndex = this.#indexForEvent.get(event);
     if (eventIndex === undefined) {
       return null;

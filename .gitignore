@@ -40,6 +40,7 @@ npm-debug.log
 test/screenshots/.generated
 test/perf/.generated
 test/unittests/fixtures/traces/*.json
+test/unittests/fixtures/traces/*.cpuprofile
 
 /.vscode/settings.json
 /.vscode/tasks.json

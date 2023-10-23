@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Protocol from '../../../../front_end/generated/protocol.js';
 import type * as TimelineModel from '../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
@@ -99,6 +100,17 @@ export class TraceLoader {
   }
 
   /**
+   * Load an array of raw events from the trace file.
+   * Will default to typing those events using the types from TraceEngine, but
+   * can be overriden by passing the legacy EventPayload type as the generic.
+   **/
+  static async rawCPUProfile(context: Mocha.Context|Mocha.Suite|null, name: string):
+      Promise<Protocol.Profiler.Profile> {
+    const contents = await TraceLoader.fixtureContents(context, name) as unknown as Protocol.Profiler.Profile;
+    return contents;
+  }
+
+  /**
    * Executes only the new trace engine on the fixture and returns the resulting parsed data.
    *
    * @param context The Mocha test context. |allModelsFromFile| function easily
@@ -124,7 +136,7 @@ export class TraceLoader {
     }
     const fileContents = await TraceLoader.fixtureContents(context, name);
     const traceEngineData =
-        await executeTraceEngineOnFileContents(fileContents, /* emulate fresh recording */ false, config);
+        await TraceLoader.executeTraceEngineOnFileContents(fileContents, /* emulate fresh recording */ false, config);
 
     const cacheByName = traceEngineCache.get(name) || new Map<string, TraceEngine.Handlers.Types.TraceParseData>();
     cacheByName.set(configCacheKey, traceEngineData.traceParsedData);
@@ -156,7 +168,7 @@ export class TraceLoader {
     const events = 'traceEvents' in fileContents ? fileContents.traceEvents : fileContents;
 
     // Execute the new trace engine
-    const traceEngineData = await executeTraceEngineOnFileContents(fileContents);
+    const traceEngineData = await TraceLoader.executeTraceEngineOnFileContents(fileContents);
 
     // Execute and populate the legacy models
     const tracingModel = new TraceEngine.Legacy.TracingModel();
@@ -179,6 +191,38 @@ export class TraceLoader {
     };
     allModelsCache.set(name, result);
     return result;
+  }
+
+  static async executeTraceEngineOnFileContents(
+      contents: TraceEngine.Types.File.Contents, emulateFreshRecording = false,
+      traceEngineConfig?: TraceEngine.Types.Configuration.Configuration): Promise<{
+    metadata: TraceEngine.Types.File.MetaData,
+    traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
+  }> {
+    const events = 'traceEvents' in contents ? contents.traceEvents : contents;
+    return new Promise((resolve, reject) => {
+      const model = TraceEngine.TraceModel.Model.createWithAllHandlers(traceEngineConfig);
+      model.addEventListener(TraceEngine.TraceModel.ModelUpdateEvent.eventName, (event: Event) => {
+        const {data} = event as TraceEngine.TraceModel.ModelUpdateEvent;
+
+        // When we receive the final update from the model, update the recording
+        // state back to waiting.
+        if (TraceEngine.TraceModel.isModelUpdateDataComplete(data)) {
+          const metadata = model.metadata(0);
+          const traceParsedData = model.traceParsedData(0);
+          if (metadata && traceParsedData) {
+            resolve({
+              metadata,
+              traceParsedData,
+            });
+          } else {
+            reject(new Error('Unable to load trace'));
+          }
+        }
+      });
+
+      void model.parse(events, {metadata: {}, isFreshRecording: emulateFreshRecording}).catch(e => console.error(e));
+    });
   }
 }
 
@@ -230,36 +274,4 @@ function codec(buffer: ArrayBuffer, codecStream: CompressionStream|Decompression
 
 function decodeGzipBuffer(buffer: ArrayBuffer): Promise<ArrayBuffer> {
   return codec(buffer, new DecompressionStream('gzip'));
-}
-
-async function executeTraceEngineOnFileContents(
-    contents: TraceEngine.Types.File.Contents, emulateFreshRecording = false,
-    traceEngineConfig?: TraceEngine.Types.Configuration.Configuration): Promise<{
-  metadata: TraceEngine.Types.File.MetaData,
-  traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
-}> {
-  const events = 'traceEvents' in contents ? contents.traceEvents : contents;
-  return new Promise((resolve, reject) => {
-    const model = TraceEngine.TraceModel.Model.createWithAllHandlers(traceEngineConfig);
-    model.addEventListener(TraceEngine.TraceModel.ModelUpdateEvent.eventName, (event: Event) => {
-      const {data} = event as TraceEngine.TraceModel.ModelUpdateEvent;
-
-      // When we receive the final update from the model, update the recording
-      // state back to waiting.
-      if (TraceEngine.TraceModel.isModelUpdateDataComplete(data)) {
-        const metadata = model.metadata(0);
-        const traceParsedData = model.traceParsedData(0);
-        if (metadata && traceParsedData) {
-          resolve({
-            metadata,
-            traceParsedData,
-          });
-        } else {
-          reject(new Error('Unable to load trace'));
-        }
-      }
-    });
-
-    void model.parse(events, {metadata: {}, isFreshRecording: emulateFreshRecording}).catch(e => console.error(e));
-  });
 }

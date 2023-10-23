@@ -23,6 +23,7 @@ devtools_module("handlers") {
     "RendererHandler.ts",
     "SamplesHandler.ts",
     "ScreenshotsHandler.ts",
+    "Threads.ts",
     "UserInteractionsHandler.ts",
     "UserTimingsHandler.ts",
     "WarningsHandler.ts",

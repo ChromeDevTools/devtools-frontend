@@ -70,6 +70,8 @@
     margin-inline: 20px;
 
     & button {
+      cursor: pointer;
+      color: var(--text-link);
       background: transparent;
       border: none;
       padding: 0;

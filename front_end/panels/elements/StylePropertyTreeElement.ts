@@ -313,6 +313,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.AnimationNameLink);
           this.parentPaneInternal.jumpToSectionBlock(`@keyframes ${animationName}`);
         },
+        jslogContext: 'cssAnimationName',
       };
       contentChild.appendChild(swatch);
 
@@ -373,6 +374,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.PositionFallbackLink);
         this.parentPaneInternal.jumpToSectionBlock(`@position-fallback ${propertyText}`);
       },
+      jslogContext: 'cssPositionFallback',
     };
     contentChild.appendChild(swatch);
 
@@ -599,6 +601,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       }  // Add back commas and spaces between each shadow.
       // TODO(flandy): editing the property value should use the original value with all spaces.
       const cssShadowSwatch = InlineEditor.Swatches.CSSShadowSwatch.create();
+      cssShadowSwatch.setAttribute(
+          'jslog', `${VisualLogging.showStyleEditor().context('cssShadow').track({click: true})}`);
       cssShadowSwatch.setCSSShadow(shadows[i]);
       cssShadowSwatch.iconElement().addEventListener('click', () => {
         Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.Shadow);
@@ -645,6 +649,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return document.createTextNode(angleText);
     }
     const cssAngle = new InlineEditor.CSSAngle.CSSAngle();
+    cssAngle.setAttribute('jslog', `${VisualLogging.showStyleEditor().track({click: true}).context('cssAngle')}`);
     const valueElement = document.createElement('span');
     valueElement.textContent = angleText;
     const computedPropertyValue =
@@ -1004,6 +1009,8 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         const button = StyleEditorWidget.createTriggerButton(
             this.parentPaneInternal, section, isFlex ? FlexboxEditor : GridEditor,
             isFlex ? i18nString(UIStrings.flexboxEditorButton) : i18nString(UIStrings.gridEditorButton), key);
+        button.setAttribute(
+            'jslog', `${VisualLogging.showStyleEditor().track({click: true}).context(isFlex ? 'flex' : 'grid')}`);
         section.nextEditorTriggerButtonIdx++;
         button.addEventListener('click', () => {
           Host.userMetrics.swatchActivated(

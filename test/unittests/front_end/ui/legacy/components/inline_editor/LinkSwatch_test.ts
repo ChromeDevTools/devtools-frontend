@@ -243,6 +243,7 @@ describeWithLocale('LinkSwatch', () => {
       text: 'test',
       isDefined: true,
       onLinkActivate: () => {},
+      jslogContext: 'test',
     };
     renderElementIntoDOM(component);
 
@@ -259,6 +260,7 @@ describeWithLocale('LinkSwatch', () => {
       text: 'test',
       isDefined: false,
       onLinkActivate: () => {},
+      jslogContext: 'test',
     };
     renderElementIntoDOM(component);
 
@@ -278,6 +280,7 @@ describeWithLocale('LinkSwatch', () => {
       onLinkActivate: () => {
         callbackCalled = true;
       },
+      jslogContext: 'test',
     };
 
     const element = renderElementIntoDOM(component)

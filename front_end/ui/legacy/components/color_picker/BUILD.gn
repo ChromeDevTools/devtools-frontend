@@ -31,6 +31,7 @@ devtools_module("color_picker") {
     "../../../../ui/components/icon_button:bundle",
     "../../../../ui/components/srgb_overlay:bundle",
     "../../../../ui/legacy:bundle",
+    "../../../../ui/visual_logging:bundle",
   ]
 }
 

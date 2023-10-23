@@ -6,9 +6,10 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import stylePropertyEditorStyles from './stylePropertyEditor.css.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {findFlexContainerIcon, findGridContainerIcon, type IconInfo} from './CSSPropertyIconResolver.js';
+import stylePropertyEditorStyles from './stylePropertyEditor.css.js';
 
 const UIStrings = {
   /**
@@ -72,6 +73,7 @@ export class StylePropertyEditor extends HTMLElement {
   #authoredProperties: Map<string, string> = new Map();
   #computedProperties: Map<string, string> = new Map();
   protected readonly editableProperties: EditableProperty[] = [];
+  protected readonly jslog: string = '';
 
   constructor() {
     super();
@@ -95,7 +97,7 @@ export class StylePropertyEditor extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     render(html`
-      <div class="container">
+      <div class="container" jslog=${this.jslog}>
         ${this.editableProperties.map(prop => this.#renderProperty(prop))}
       </div>
     `, this.#shadow, {
@@ -135,8 +137,9 @@ export class StylePropertyEditor extends HTMLElement {
     });
     const values = {propertyName, propertyValue};
     const title = selected ? i18nString(UIStrings.deselectButton, values) : i18nString(UIStrings.selectButton, values);
-    return html`<button title=${title} class=${classes} @click=${
-        (): void => this.#onButtonClick(propertyName, propertyValue, selected)}>
+    return html`<button title=${title} class=${classes}
+        jslog=${VisualLogging.option().track({click: true}).context(query)}
+        @click=${(): void => this.#onButtonClick(propertyName, propertyValue, selected)}>
        <${IconButton.Icon.Icon.litTagName} style=${transform} .data=${
         {iconName: iconInfo.iconName, color: 'var(--icon-color)', width: '20px', height: '20px'} as
         IconButton.Icon.IconWithName}></${IconButton.Icon.Icon.litTagName}>
@@ -157,6 +160,7 @@ export class StylePropertyEditor extends HTMLElement {
 }
 
 export class FlexboxEditor extends StylePropertyEditor {
+  protected override readonly jslog = `${VisualLogging.cssFlexboxEditor()}`;
   protected override readonly editableProperties: EditableProperty[] = FlexboxEditableProperties;
 
   protected override findIcon(query: string, computedProperties: Map<string, string>): IconInfo|null {
@@ -174,6 +178,7 @@ declare global {
 }
 
 export class GridEditor extends StylePropertyEditor {
+  protected override readonly jslog = `${VisualLogging.cssGridEditor()}`;
   protected override readonly editableProperties: EditableProperty[] = GridEditableProperties;
 
   protected override findIcon(query: string, computedProperties: Map<string, string>): IconInfo|null {

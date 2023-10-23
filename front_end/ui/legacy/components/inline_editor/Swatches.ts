@@ -4,12 +4,12 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import {ColorChangedEvent, ColorSwatch} from './ColorSwatch.js';
-
-import {type CSSShadowModel} from './CSSShadowModel.js';
 import bezierSwatchStyles from './bezierSwatch.css.js';
+import {ColorChangedEvent, ColorSwatch} from './ColorSwatch.js';
+import {type CSSShadowModel} from './CSSShadowModel.js';
 import cssShadowSwatchStyles from './cssShadowSwatch.css.js';
 
 export class BezierSwatch extends HTMLSpanElement {
@@ -23,6 +23,7 @@ export class BezierSwatch extends HTMLSpanElement {
       delegatesFocus: undefined,
     });
     this.iconElementInternal = UI.Icon.Icon.create('bezier-curve-filled', 'bezier-swatch-icon');
+    this.iconElementInternal.setAttribute('jslog', `${VisualLogging.showStyleEditor().context('bezier')}`);
     root.appendChild(this.iconElementInternal);
     this.textElement = this.createChild('span');
     root.createChild('slot');

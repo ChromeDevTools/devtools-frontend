@@ -1273,13 +1273,7 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   documentUpdated(): void {
-    // If we have this.#pendingDocumentRequestPromise in flight,
-    // it will contain most recent result.
-    const documentWasRequested = this.#pendingDocumentRequestPromise;
     this.setDocument(null);
-    if (this.parentModel() && !documentWasRequested) {
-      void this.requestDocument();
-    }
   }
 
   private setDocument(payload: Protocol.DOM.Node|null): void {

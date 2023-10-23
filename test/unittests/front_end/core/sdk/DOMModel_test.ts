@@ -14,7 +14,7 @@ describeWithMockConnection('DOMModel', () => {
   before(async () => {
     SDK = await import('../../../../../front_end/core/sdk/sdk.js');
   });
-  it('updates the document on an documentUpdate event', () => {
+  it('child model does not update the document on an documentUpdate event', () => {
     const parentTarget = createTarget();
     const target = createTarget({parentTarget});
     const domModel = target.model(SDK.DOMModel.DOMModel);
@@ -27,6 +27,6 @@ describeWithMockConnection('DOMModel', () => {
     assert.isNull(domModel.existingDocument());
 
     domModel.documentUpdated();
-    assert.isTrue(spy.calledOnce);
+    assert.isFalse(spy.calledOnce);
   });
 });

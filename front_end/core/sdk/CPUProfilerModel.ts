@@ -54,7 +54,7 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
   #anonymousConsoleProfileIdToTitle: Map<string, string>;
   readonly #profilerAgent: ProtocolProxyApi.ProfilerApi;
   #preciseCoverageDeltaUpdateCallback:
-      ((arg0: number, arg1: string, arg2: Array<Protocol.Profiler.ScriptCoverage>) => void)|null;
+      ((arg0: number, arg1: string, arg2: Array<Protocol.Profiler.ScriptCoverage>) => Promise<void>)|null;
   readonly #debuggerModelInternal: DebuggerModel;
   readonly registeredConsoleProfileMessages: ProfileFinishedData[] = [];
 
@@ -130,7 +130,7 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
   startPreciseCoverage(
       jsCoveragePerBlock: boolean,
       preciseCoverageDeltaUpdateCallback:
-          ((arg0: number, arg1: string, arg2: Array<Protocol.Profiler.ScriptCoverage>) => void)|
+          ((arg0: number, arg1: string, arg2: Array<Protocol.Profiler.ScriptCoverage>) => Promise<void>)|
       null): Promise<unknown> {
     const callCount = false;
     this.#preciseCoverageDeltaUpdateCallback = preciseCoverageDeltaUpdateCallback;
@@ -156,7 +156,7 @@ export class CPUProfilerModel extends SDKModel<EventTypes> implements ProtocolPr
 
   preciseCoverageDeltaUpdate({timestamp, occasion, result}: Protocol.Profiler.PreciseCoverageDeltaUpdateEvent): void {
     if (this.#preciseCoverageDeltaUpdateCallback) {
-      this.#preciseCoverageDeltaUpdateCallback(timestamp, occasion, result);
+      void this.#preciseCoverageDeltaUpdateCallback(timestamp, occasion, result);
     }
   }
 }

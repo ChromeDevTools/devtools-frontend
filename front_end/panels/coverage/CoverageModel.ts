@@ -100,10 +100,13 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     return Boolean(this.cssModel || this.cpuProfilerModel);
   }
 
-  preciseCoverageDeltaUpdate(timestamp: number, occasion: string, coverageData: Protocol.Profiler.ScriptCoverage[]):
-      void {
+  async preciseCoverageDeltaUpdate(
+      timestamp: number, occasion: string, coverageData: Protocol.Profiler.ScriptCoverage[]): Promise<void> {
     this.coverageUpdateTimes.add(timestamp);
-    void this.backlogOrProcessJSCoverage(coverageData, timestamp);
+    const result = await this.backlogOrProcessJSCoverage(coverageData, timestamp);
+    if (result.length) {
+      this.dispatchEventToListeners(Events.CoverageUpdated, result);
+    }
   }
 
   async stop(): Promise<void> {

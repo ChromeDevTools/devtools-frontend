@@ -33,6 +33,25 @@ describe('The Coverage Panel', async () => {
     await clearCoverageContent();
   });
 
+  it('Shows coverage data on page loads if the instrumentation has started', async () => {
+    await waitForTheCoveragePanelToLoad();
+    await startInstrumentingCoverage();
+    await navigateToCoverageTestSite();
+    const URL_PREFIX = `https://localhost:${getTestServerPort()}/test/e2e/resources/coverage`;
+    assert.deepEqual(await getCoverageData(2), [
+      {
+        'total': '193',
+        'unused': '35',
+        'url': `${URL_PREFIX}/default.html`,
+      },
+      {
+        'total': '43',
+        'unused': '31',
+        'url': `${URL_PREFIX}/script.js`,
+      },
+    ]);
+  });
+
   // Skip until flake is fixed
   it.skip('[crbug.com/1432922]: Shows completly uncovered css files', async () => {
     const {target} = getBrowserAndPages();

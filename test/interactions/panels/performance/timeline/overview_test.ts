@@ -42,4 +42,10 @@ describe('Performance panel overview/minimap', function() {
     const pane = await waitFor('.container-with-memory #timeline-overview-pane');
     await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview-memory.png', 3);
   });
+
+  itScreenshot('supports being drawn from the new engine trace data', async () => {
+    await loadComponentDocExample('performance_panel/overview.html?trace=web-dev');
+    const pane = await waitFor('.container-new-engine #timeline-overview-pane');
+    await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview-new-engine.png', 3);
+  });
 });

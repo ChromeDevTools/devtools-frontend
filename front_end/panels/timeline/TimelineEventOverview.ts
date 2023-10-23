@@ -164,11 +164,21 @@ const categoryToIndex = new WeakMap<TimelineCategory, number>();
 export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   private backgroundCanvas: HTMLCanvasElement;
   #performanceModel: PerformanceModel|null = null;
+  #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData|null;
+  #isCpuProfile: boolean;
 
-  constructor(model: PerformanceModel) {
+  constructor(
+      model: PerformanceModel|null, traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData|null,
+      isCpuProfile: boolean) {
+    // During the sync tracks migration this component can use either legacy
+    // Performance Model data or the new engine's data. Once the migration is
+    // complete this will be updated to only use the new engine and mentions of
+    // the PerformanceModel will be removed.
     super('cpu-activity', i18nString(UIStrings.cpu));
     this.#performanceModel = model;
+    this.#traceParsedData = traceParsedData;
     this.backgroundCanvas = (this.element.createChild('canvas', 'fill background') as HTMLCanvasElement);
+    this.#isCpuProfile = isCpuProfile;
   }
 
   override resetCanvas(): void {
@@ -177,8 +187,140 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     this.backgroundCanvas.height = this.element.clientHeight * window.devicePixelRatio;
   }
 
+  #drawWithNewEngine(
+      traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData,
+      customStart?: TraceEngine.Types.Timing.MilliSeconds, customEnd?: TraceEngine.Types.Timing.MilliSeconds): void {
+    const traceBoundsMilli = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceParsedData.Meta.traceBounds);
+    if (!traceParsedData.Renderer || !traceParsedData.Samples) {
+      return;
+    }
+
+    const quantSizePx = 4 * window.devicePixelRatio;
+    const width = this.width();
+    const height = this.height();
+    const baseLine = height;
+    const timeStart = customStart ?? traceBoundsMilli.min;
+    const timeRange = (customStart && customEnd) ? customEnd - customStart : traceBoundsMilli.max - timeStart;
+    const scale = width / timeRange;
+    const quantTime = quantSizePx / scale;
+    const categories = TimelineUIUtils.categories();
+    const categoryOrder = TimelineUIUtils.getTimelineMainEventCategories();
+    const otherIndex = categoryOrder.indexOf('other');
+    const idleIndex = 0;
+    console.assert(idleIndex === categoryOrder.indexOf('idle'));
+    for (let i = 0; i < categoryOrder.length; ++i) {
+      categoryToIndex.set(categories[categoryOrder[i]], i);
+    }
+
+    const backgroundContext = (this.backgroundCanvas.getContext('2d') as CanvasRenderingContext2D | null);
+    if (!backgroundContext) {
+      throw new Error('Could not find 2d canvas');
+    }
+    const mainThreadContext = this.context();
+    for (const [, process] of traceParsedData.Renderer.processes) {
+      for (const [, thread] of process.threads) {
+        if (thread.name === 'CrRendererMain') {
+          drawThreadEntries(mainThreadContext, traceParsedData.Renderer.entryToNode, thread);
+        } else {
+          drawThreadEntries(backgroundContext, traceParsedData.Renderer.entryToNode, thread);
+        }
+      }
+    }
+
+    function applyPattern(ctx: CanvasRenderingContext2D): void {
+      const step = 4 * window.devicePixelRatio;
+      ctx.save();
+      ctx.lineWidth = step / Math.sqrt(8);
+      for (let x = 0.5; x < width + height; x += step) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x - height, height);
+      }
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    applyPattern(backgroundContext);
+
+    function drawThreadEntries(
+        context: CanvasRenderingContext2D,
+        entryToNode: Map<TraceEngine.Types.TraceEvents.TraceEntry, TraceEngine.Helpers.TreeHelpers.TraceEntryNode>,
+        thread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread): void {
+      if (!thread.tree) {
+        return;
+      }
+
+      const quantizer = new Quantizer(timeStart, quantTime, drawSample);
+      let x = 0;
+      const categoryIndexStack: number[] = [];
+      const paths: Path2D[] = [];
+      const lastY: number[] = [];
+      for (let i = 0; i < categoryOrder.length; ++i) {
+        paths[i] = new Path2D();
+        paths[i].moveTo(0, height);
+        lastY[i] = height;
+      }
+
+      function drawSample(counters: number[]): void {
+        let y = baseLine;
+        for (let i = idleIndex + 1; i < categoryOrder.length; ++i) {
+          const h = (counters[i] || 0) / quantTime * height;
+          y -= h;
+          paths[i].bezierCurveTo(x, lastY[i], x, y, x + quantSizePx / 2, y);
+          lastY[i] = y;
+        }
+        x += quantSizePx;
+      }
+
+      function onEntryStart(entry: TraceEngine.Types.TraceEvents.TraceEntry): void {
+        const {startTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry);
+        const index = categoryIndexStack.length ? categoryIndexStack[categoryIndexStack.length - 1] : idleIndex;
+        quantizer.appendInterval(startTime, index);
+        const category = TimelineUIUtils.eventStyle(entry).category;
+        if (category.name === 'idle') {
+          // Idle event won't show in CPU activity, so just skip them.
+          return;
+        }
+        const categoryIndex = categoryOrder.indexOf(category.name);
+        categoryIndexStack.push(categoryIndex || otherIndex);
+      }
+
+      function onEntryEnd(entry: TraceEngine.Types.TraceEvents.TraceEntry): void {
+        const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry);
+        const lastCategoryIndex = categoryIndexStack.pop();
+        if (endTime !== undefined && lastCategoryIndex) {
+          quantizer.appendInterval(endTime, lastCategoryIndex);
+        }
+      }
+
+      TraceEngine.Helpers.TreeHelpers.walkEntireTree(entryToNode, thread.tree, onEntryStart, onEntryEnd);
+
+      quantizer.appendInterval(timeStart + timeRange + quantTime, idleIndex);  // Kick drawing the last bucket.
+      for (let i = categoryOrder.length - 1; i > 0; --i) {
+        paths[i].lineTo(width, height);
+        const computedColorValue = categories[categoryOrder[i]].getComputedValue();
+        context.fillStyle = computedColorValue;
+        context.fill(paths[i]);
+        context.strokeStyle = 'white';
+        context.lineWidth = 1;
+        context.stroke(paths[i]);
+      }
+    }
+  }
+
   override update(start?: TraceEngine.Types.Timing.MilliSeconds, end?: TraceEngine.Types.Timing.MilliSeconds): void {
     super.update();
+    // Whilst the sync tracks migration is in process, we only use the new
+    // engine if the Renderer data is present. Once that migratin is complete,
+    // the Renderer data will always be present and we can remove this check.
+    if (!this.#isCpuProfile && this.#traceParsedData && this.#traceParsedData.Renderer) {
+      // TODO(crbug.com/1464206): we are falling back to the old engine for CPU Profiles. We need to
+      // update this code to have the ability to find the Main Thread from the
+      // CPU Profile and use that if we are in CPU Profiling mode.
+      this.#drawWithNewEngine(this.#traceParsedData);
+      return;
+    }
+
     if (!this.#performanceModel) {
       return;
     }
@@ -211,6 +353,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
         drawThreadEvents(backgroundContext, track.events);
       }
     }
+
     applyPattern(backgroundContext);
 
     function drawThreadEvents(ctx: CanvasRenderingContext2D, events: TraceEngine.Legacy.Event[]): void {

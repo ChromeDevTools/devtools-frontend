@@ -17,7 +17,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
 
-    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
+    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap(Timeline.TimelinePanel.ThreadTracksSource.NEW_ENGINE);
     minimap.markAsRoot();
     minimap.show(container);
 
@@ -45,7 +45,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
 
-    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
+    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap(Timeline.TimelinePanel.ThreadTracksSource.NEW_ENGINE);
     minimap.markAsRoot();
     minimap.show(container);
 
@@ -74,7 +74,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
 
-    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
+    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap(Timeline.TimelinePanel.ThreadTracksSource.NEW_ENGINE);
     minimap.markAsRoot();
     minimap.show(container);
 
@@ -110,7 +110,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
     const container = document.createElement('div');
     renderElementIntoDOM(container);
 
-    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
+    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap(Timeline.TimelinePanel.ThreadTracksSource.NEW_ENGINE);
     minimap.markAsRoot();
     minimap.show(container);
 

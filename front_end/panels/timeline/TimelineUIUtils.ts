@@ -1409,6 +1409,11 @@ export class TimelineUIUtils {
     }
 
     if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
+      if (TraceEngine.Types.TraceEvents.isProfileCall(event)) {
+        if (event.callFrame.functionName === '(idle)') {
+          return new TimelineRecordStyle(event.name, getCategoryStyles().Idle);
+        }
+      }
       const defaultStyles = new TimelineRecordStyle(event.name, getCategoryStyles().Other);
       return getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName) || defaultStyles;
     }

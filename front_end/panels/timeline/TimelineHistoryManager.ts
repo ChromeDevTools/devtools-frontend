@@ -16,6 +16,7 @@ import {
   TimelineEventOverviewResponsiveness,
 } from './TimelineEventOverview.js';
 import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
+import {ThreadTracksSource} from './TimelinePanel.js';
 
 const UIStrings = {
   /**
@@ -91,7 +92,12 @@ export class TimelineHistoryManager {
   private totalHeight: number;
   private enabled: boolean;
   private lastActiveModel: PerformanceModel|null;
-  constructor() {
+  #threadTracksSource: ThreadTracksSource = ThreadTracksSource.OLD_ENGINE;
+  constructor(threadTracksSource?: ThreadTracksSource) {
+    if (threadTracksSource) {
+      this.#threadTracksSource = threadTracksSource;
+    }
+
     this.recordings = [];
     this.action =
         (UI.ActionRegistry.ActionRegistry.instance().action('timeline.show-history') as UI.ActionRegistration.Action);
@@ -109,15 +115,14 @@ export class TimelineHistoryManager {
         height: 3,
       },
       {
-        constructor: (_traceParsedData, performanceModel): TimelineEventOverviewCPUActivity =>
-            // TODO(crbug.com/1464206)
-        // We purposefully do not pass in the traceParsedData here yet so
-        // that the CPU Activity canvas is drawn using the old engine. To
-        // enable us to use the new engine here we need to also thread
-        // through the isCpuProfile flag, because in the new engine we need
-        // to distinguish this case to use the right data source when
-        // generating CPU Activity.
-        new TimelineEventOverviewCPUActivity(performanceModel, null, false),
+        constructor: (_traceParsedData, performanceModel): TimelineEventOverviewCPUActivity => {
+          // TODO(crbug.com/1464206): remove this conditional once ThreadTracksSource has been fully shipped and the flag removed.
+          if (this.#threadTracksSource === ThreadTracksSource.NEW_ENGINE) {
+            return new TimelineEventOverviewCPUActivity(null, _traceParsedData);
+          }
+
+          return new TimelineEventOverviewCPUActivity(performanceModel, null);
+        },
         height: 20,
       },
       {

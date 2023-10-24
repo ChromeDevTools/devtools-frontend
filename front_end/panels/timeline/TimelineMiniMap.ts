@@ -199,18 +199,17 @@ export class TimelineMiniMap extends
       this.#setMarkers(data.traceParsedData);
       this.#setNavigationStartEvents(data.traceParsedData);
       this.#controls.push(new TimelineEventOverviewResponsiveness(data.traceParsedData));
-      // TODO(crbug.com/1428024) we only use the new engine if we are not in
-      // CPU Profile mode right now. We need to do the work to teach the
-      // MiniMap how to parse CPU Profile data to build the activity graph.
-      if (this.#threadTracksSource === ThreadTracksSource.NEW_ENGINE && !Boolean(data.isCpuProfile)) {
-        this.#controls.push(new TimelineEventOverviewCPUActivity(null, data.traceParsedData, false));
+      // TODO: Once we commit to shipping sync tracks, we can remove this
+      // conditional and update the CPUActivity component to not be given the
+      // PerformanceModel instance.
+      if (this.#threadTracksSource === ThreadTracksSource.NEW_ENGINE) {
+        this.#controls.push(new TimelineEventOverviewCPUActivity(null, data.traceParsedData));
       }
     }
 
-    const useOldEngineForCpu = this.#threadTracksSource !== ThreadTracksSource.NEW_ENGINE || data.isCpuProfile === true;
+    const useOldEngineForCpu = this.#threadTracksSource !== ThreadTracksSource.NEW_ENGINE;
     if (data.performanceModel && useOldEngineForCpu) {
-      this.#controls.push(
-          new TimelineEventOverviewCPUActivity(data.performanceModel, null, Boolean(data.isCpuProfile)));
+      this.#controls.push(new TimelineEventOverviewCPUActivity(data.performanceModel, null));
     }
 
     if (data.traceParsedData) {

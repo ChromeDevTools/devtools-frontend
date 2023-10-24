@@ -53,7 +53,7 @@
 
 .toolbar-item,
 .toolbar-item .devtools-link {
-  color: var(--icon-default-hover);
+  color: var(--icon-default);
 }
 
 .toolbar-shadow.vertical .toolbar-item {
@@ -487,10 +487,6 @@ input[is="history-input"]:hover:not(:focus) {
   & > .title {
     color: var(--sys-color-on-tonal-container);
   }
-}
-
-.toolbar-item.highlight:hover:not(:active) > .title {
-  color: var(--sys-color-on-tonal-container);
 }
 
 devtools-icon.leading-issue-icon {

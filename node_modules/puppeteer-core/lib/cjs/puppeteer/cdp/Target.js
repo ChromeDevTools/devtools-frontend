@@ -130,7 +130,11 @@ class CdpTarget extends Target_js_1.Target {
         if (!openerId) {
             return;
         }
-        return this.browser()._targets.get(openerId);
+        return this.browser()
+            .targets()
+            .find(target => {
+            return target._targetId === openerId;
+        });
     }
     _targetInfoChanged(targetInfo) {
         this.#targetInfo = targetInfo;
@@ -138,6 +142,9 @@ class CdpTarget extends Target_js_1.Target {
     }
     _initialize() {
         this._initializedDeferred.resolve(InitializationStatus.SUCCESS);
+    }
+    _isTargetExposed() {
+        return this.type() !== Target_js_1.TargetType.TAB && !this._subtype();
     }
     _checkIfInitialized() {
         if (!this._initializedDeferred.resolved()) {

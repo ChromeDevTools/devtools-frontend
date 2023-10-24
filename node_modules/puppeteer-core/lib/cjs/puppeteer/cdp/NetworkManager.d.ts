@@ -16,9 +16,8 @@
 import type { Protocol } from 'devtools-protocol';
 import { type CDPSession } from '../api/CDPSession.js';
 import type { Frame } from '../api/Frame.js';
-import { EventEmitter, type EventType } from '../common/EventEmitter.js';
-import { CdpHTTPRequest } from './HTTPRequest.js';
-import { CdpHTTPResponse } from './HTTPResponse.js';
+import { EventEmitter } from '../common/EventEmitter.js';
+import { type NetworkManagerEvents } from '../common/NetworkManagerEvents.js';
 /**
  * @public
  */
@@ -41,29 +40,6 @@ export interface InternalNetworkConditions extends NetworkConditions {
     offline: boolean;
 }
 /**
- * We use symbols to prevent any external parties listening to these events.
- * They are internal to Puppeteer.
- *
- * @internal
- */
-export declare namespace NetworkManagerEvent {
-    const Request: unique symbol;
-    const RequestServedFromCache: unique symbol;
-    const Response: unique symbol;
-    const RequestFailed: unique symbol;
-    const RequestFinished: unique symbol;
-}
-/**
- * @internal
- */
-export interface CdpNetworkManagerEvents extends Record<EventType, unknown> {
-    [NetworkManagerEvent.Request]: CdpHTTPRequest;
-    [NetworkManagerEvent.RequestServedFromCache]: CdpHTTPRequest | undefined;
-    [NetworkManagerEvent.Response]: CdpHTTPResponse;
-    [NetworkManagerEvent.RequestFailed]: CdpHTTPRequest;
-    [NetworkManagerEvent.RequestFinished]: CdpHTTPRequest;
-}
-/**
  * @internal
  */
 export interface FrameProvider {
@@ -72,7 +48,7 @@ export interface FrameProvider {
 /**
  * @internal
  */
-export declare class NetworkManager extends EventEmitter<CdpNetworkManagerEvents> {
+export declare class NetworkManager extends EventEmitter<NetworkManagerEvents> {
     #private;
     constructor(ignoreHTTPSErrors: boolean, frameManager: FrameProvider);
     addClient(client: CDPSession): Promise<void>;

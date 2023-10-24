@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as BidiMapper from 'chromium-bidi/lib/cjs/bidiMapper/bidiMapper.js';
+import * as BidiMapper from 'chromium-bidi/lib/cjs/bidiMapper/BidiMapper.js';
+import { debug } from '../common/Debug.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { BidiConnection } from './Connection.js';
+const bidiServerLogger = (prefix, ...args) => {
+    debug(`bidi:${prefix}`)(args);
+};
 /**
  * @internal
  */
@@ -40,7 +44,7 @@ export async function connectBidiOverCdp(cdp) {
         pptrTransport.onmessage(JSON.stringify(message));
     });
     const pptrBiDiConnection = new BidiConnection(cdp.url(), pptrTransport);
-    const bidiServer = await BidiMapper.BidiServer.createAndStart(transportBiDi, cdpConnectionAdapter, '');
+    const bidiServer = await BidiMapper.BidiServer.createAndStart(transportBiDi, cdpConnectionAdapter, '', undefined, bidiServerLogger);
     return pptrBiDiConnection;
 }
 /**
@@ -61,7 +65,7 @@ class CdpConnectionAdapter {
     getCdpClient(id) {
         const session = this.#cdp.session(id);
         if (!session) {
-            throw new Error('Unknown CDP session with id' + id);
+            throw new Error(`Unknown CDP session with id ${id}`);
         }
         if (!this.#adapters.has(session)) {
             const adapter = new CDPClientAdapter(session, id, this.#browser);

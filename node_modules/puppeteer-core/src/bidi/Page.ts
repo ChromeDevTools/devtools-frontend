@@ -19,6 +19,7 @@ import type {Readable} from 'stream';
 import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import type Protocol from 'devtools-protocol';
 
+import {firstValueFrom, from, raceWith} from '../../third_party/rxjs/rxjs.js';
 import type {CDPSession} from '../api/CDPSession.js';
 import type {WaitForOptions} from '../api/Frame.js';
 import {
@@ -33,7 +34,6 @@ import {Accessibility} from '../cdp/Accessibility.js';
 import {Coverage} from '../cdp/Coverage.js';
 import {EmulationManager as CdpEmulationManager} from '../cdp/EmulationManager.js';
 import {FrameTree} from '../cdp/FrameTree.js';
-import {NetworkManagerEvent} from '../cdp/NetworkManager.js';
 import {Tracing} from '../cdp/Tracing.js';
 import {
   ConsoleMessage,
@@ -45,15 +45,15 @@ import {
   TimeoutError,
 } from '../common/Errors.js';
 import type {Handler} from '../common/EventEmitter.js';
+import {NetworkManagerEvent} from '../common/NetworkManagerEvents.js';
 import type {PDFOptions} from '../common/PDFOptions.js';
-import {TimeoutSettings} from '../common/TimeoutSettings.js';
 import type {Awaitable} from '../common/types.js';
 import {
   debugError,
   evaluationString,
-  isString,
+  timeout,
   validateDialogType,
-  waitForEvent,
+  waitForHTTP,
   waitWithTimeout,
 } from '../common/util.js';
 import type {Viewport} from '../common/Viewport.js';
@@ -70,6 +70,7 @@ import {
   type BrowsingContext,
 } from './BrowsingContext.js';
 import type {BidiConnection} from './Connection.js';
+import {BidiDeserializer} from './Deserializer.js';
 import {BidiDialog} from './Dialog.js';
 import {BidiElementHandle} from './ElementHandle.js';
 import {EmulationManager} from './EmulationManager.js';
@@ -80,19 +81,17 @@ import {BidiKeyboard, BidiMouse, BidiTouchscreen} from './Input.js';
 import type {BidiJSHandle} from './JSHandle.js';
 import {BidiNetworkManager} from './NetworkManager.js';
 import {createBidiHandle} from './Realm.js';
-import {BidiSerializer} from './Serializer.js';
 
 /**
  * @internal
  */
 export class BidiPage extends Page {
   #accessibility: Accessibility;
-  #timeoutSettings = new TimeoutSettings();
   #connection: BidiConnection;
   #frameTree = new FrameTree<BidiFrame>();
   #networkManager: BidiNetworkManager;
   #viewport: Viewport | null = null;
-  #closedDeferred = Deferred.create<TargetCloseError>();
+  #closedDeferred = Deferred.create<never, TargetCloseError>();
   #subscribedEvents = new Map<Bidi.Event['method'], Handler<any>>([
     ['log.entryAdded', this.#onLogEntryAdded.bind(this)],
     ['browsingContext.load', this.#onFrameLoaded.bind(this)],
@@ -184,7 +183,7 @@ export class BidiPage extends Page {
     const frame = new BidiFrame(
       this,
       this.#browsingContext,
-      this.#timeoutSettings,
+      this._timeoutSettings,
       this.#browsingContext.parent
     );
     this.#frameTree.addFrame(frame);
@@ -356,7 +355,7 @@ export class BidiPage extends Page {
       const frame = new BidiFrame(
         this,
         context,
-        this.#timeoutSettings,
+        this._timeoutSettings,
         context.parent
       );
       this.#frameTree.addFrame(frame);
@@ -400,7 +399,7 @@ export class BidiPage extends Page {
       const text = args
         .reduce((value, arg) => {
           const parsedValue = arg.isPrimitiveValue
-            ? BidiSerializer.deserialize(arg.remoteValue())
+            ? BidiDeserializer.deserialize(arg.remoteValue())
             : arg.toString();
           return `${value} ${parsedValue}`;
         }, '')
@@ -474,7 +473,7 @@ export class BidiPage extends Page {
       return;
     }
 
-    this.#closedDeferred.resolve(new TargetCloseError('Page closed!'));
+    this.#closedDeferred.reject(new TargetCloseError('Page closed!'));
     this.#networkManager.dispose();
 
     await this.#connection.send('browsingContext.close', {
@@ -490,7 +489,7 @@ export class BidiPage extends Page {
   ): Promise<BidiHTTPResponse | null> {
     const {
       waitUntil = 'load',
-      timeout = this.#timeoutSettings.navigationTimeout(),
+      timeout = this._timeoutSettings.navigationTimeout(),
     } = options;
 
     const readinessState = lifeCycleToReadinessState.get(
@@ -519,15 +518,15 @@ export class BidiPage extends Page {
   }
 
   override setDefaultNavigationTimeout(timeout: number): void {
-    this.#timeoutSettings.setDefaultNavigationTimeout(timeout);
+    this._timeoutSettings.setDefaultNavigationTimeout(timeout);
   }
 
   override setDefaultTimeout(timeout: number): void {
-    this.#timeoutSettings.setDefaultTimeout(timeout);
+    this._timeoutSettings.setDefaultTimeout(timeout);
   }
 
   override getDefaultTimeout(): number {
-    return this.#timeoutSettings.timeout();
+    return this._timeoutSettings.timeout();
   }
 
   override isJavaScriptEnabled(): boolean {
@@ -602,25 +601,25 @@ export class BidiPage extends Page {
       pageRanges: ranges,
       scale,
       preferCSSPageSize,
-      timeout,
+      timeout: ms,
     } = this._getPDFOptions(options, 'cm');
     const pageRanges = ranges ? ranges.split(', ') : [];
-    const {result} = await waitWithTimeout(
-      this.#connection.send('browsingContext.print', {
-        context: this.mainFrame()._id,
-        background,
-        margin,
-        orientation: landscape ? 'landscape' : 'portrait',
-        page: {
-          width,
-          height,
-        },
-        pageRanges,
-        scale,
-        shrinkToFit: !preferCSSPageSize,
-      }),
-      'browsingContext.print',
-      timeout
+    const {result} = await firstValueFrom(
+      from(
+        this.#connection.send('browsingContext.print', {
+          context: this.mainFrame()._id,
+          background,
+          margin,
+          orientation: landscape ? 'landscape' : 'portrait',
+          page: {
+            width,
+            height,
+          },
+          pageRanges,
+          scale,
+          shrinkToFit: !preferCSSPageSize,
+        })
+      ).pipe(raceWith(timeout(ms)))
     );
 
     const buffer = Buffer.from(result.data, 'base64');
@@ -650,7 +649,8 @@ export class BidiPage extends Page {
   override async _screenshot(
     options: Readonly<ScreenshotOptions>
   ): Promise<string> {
-    const {clip, type, captureBeyondViewport, allowViewportExpansion} = options;
+    const {clip, type, captureBeyondViewport, allowViewportExpansion, quality} =
+      options;
     if (captureBeyondViewport && !allowViewportExpansion) {
       throw new Error(
         `BiDi does not support 'captureBeyondViewport'. Use 'allowViewportExpansion'.`
@@ -665,12 +665,6 @@ export class BidiPage extends Page {
     if (options.fromSurface !== undefined && !options.fromSurface) {
       throw new Error(`BiDi does not support 'fromSurface'.`);
     }
-    if (options.quality !== undefined) {
-      throw new Error(`BiDi does not support 'quality'.`);
-    }
-    if (type === 'webp' || type === 'jpeg') {
-      throw new Error(`BiDi only supports 'png' type.`);
-    }
     if (clip !== undefined && clip.scale !== undefined && clip.scale !== 1) {
       throw new Error(`BiDi does not support 'scale' in 'clip'.`);
     }
@@ -678,8 +672,12 @@ export class BidiPage extends Page {
       result: {data},
     } = await this.#connection.send('browsingContext.captureScreenshot', {
       context: this.mainFrame()._id,
+      format: {
+        type: `image/${type}`,
+        ...(quality === undefined ? {} : {quality: quality / 100}),
+      },
       clip: clip && {
-        type: 'viewport',
+        type: 'box',
         ...clip,
       },
     });
@@ -692,21 +690,13 @@ export class BidiPage extends Page {
       | ((req: BidiHTTPRequest) => boolean | Promise<boolean>),
     options: {timeout?: number} = {}
   ): Promise<BidiHTTPRequest> {
-    const {timeout = this.#timeoutSettings.timeout()} = options;
-    return await waitForEvent(
+    const {timeout = this._timeoutSettings.timeout()} = options;
+    return await waitForHTTP(
       this.#networkManager,
       NetworkManagerEvent.Request,
-      async request => {
-        if (isString(urlOrPredicate)) {
-          return urlOrPredicate === request.url();
-        }
-        if (typeof urlOrPredicate === 'function') {
-          return !!(await urlOrPredicate(request));
-        }
-        return false;
-      },
+      urlOrPredicate,
       timeout,
-      this.#closedDeferred.valueOrThrow()
+      this.#closedDeferred
     );
   }
 
@@ -716,28 +706,20 @@ export class BidiPage extends Page {
       | ((res: BidiHTTPResponse) => boolean | Promise<boolean>),
     options: {timeout?: number} = {}
   ): Promise<BidiHTTPResponse> {
-    const {timeout = this.#timeoutSettings.timeout()} = options;
-    return await waitForEvent(
+    const {timeout = this._timeoutSettings.timeout()} = options;
+    return await waitForHTTP(
       this.#networkManager,
       NetworkManagerEvent.Response,
-      async response => {
-        if (isString(urlOrPredicate)) {
-          return urlOrPredicate === response.url();
-        }
-        if (typeof urlOrPredicate === 'function') {
-          return !!(await urlOrPredicate(response));
-        }
-        return false;
-      },
+      urlOrPredicate,
       timeout,
-      this.#closedDeferred.valueOrThrow()
+      this.#closedDeferred
     );
   }
 
   override async waitForNetworkIdle(
     options: {idleTime?: number; timeout?: number} = {}
   ): Promise<void> {
-    const {idleTime = 500, timeout = this.#timeoutSettings.timeout()} = options;
+    const {idleTime = 500, timeout = this._timeoutSettings.timeout()} = options;
 
     await this._waitForNetworkIdle(
       this.#networkManager,

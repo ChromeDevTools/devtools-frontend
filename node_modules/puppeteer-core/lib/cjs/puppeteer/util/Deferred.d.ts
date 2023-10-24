@@ -1,3 +1,4 @@
+import { TimeoutError } from '../common/Errors.js';
 /**
  * @internal
  */
@@ -14,16 +15,16 @@ export interface DeferredOptions {
  *
  * @internal
  */
-export declare class Deferred<T> {
+export declare class Deferred<T, V extends Error = Error> {
     #private;
     constructor(opts?: DeferredOptions);
     resolve(value: T): void;
-    reject(error: Error): void;
+    reject(error: V | TimeoutError): void;
     resolved(): boolean;
     finished(): boolean;
-    value(): T | Error | undefined;
+    value(): T | V | TimeoutError | undefined;
     valueOrThrow(): Promise<T>;
-    static create<R>(opts?: DeferredOptions): Deferred<R>;
+    static create<R, X extends Error = Error>(opts?: DeferredOptions): Deferred<R>;
     static race<R>(awaitables: Array<Promise<R> | Deferred<R>>): Promise<R>;
 }
 //# sourceMappingURL=Deferred.d.ts.map

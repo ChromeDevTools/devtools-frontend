@@ -19,7 +19,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventSubscription = exports.EventEmitter = void 0;
-const index_js_1 = __importDefault(require("../../third_party/mitt/index.js"));
+const mitt_js_1 = __importDefault(require("../../third_party/mitt/mitt.js"));
 const disposable_js_1 = require("../util/disposable.js");
 /**
  * The EventEmitter class that many Puppeteer classes extend.
@@ -40,7 +40,7 @@ class EventEmitter {
      * @internal
      */
     constructor() {
-        this.#emitter = (0, index_js_1.default)(this.#handlers);
+        this.#emitter = (0, mitt_js_1.default)(this.#handlers);
     }
     /**
      * Bind an event listener to fire when an event occurs.

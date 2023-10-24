@@ -127,8 +127,4 @@ export declare class ExecutionContext {
  * @internal
  */
 export declare function createCdpHandle(realm: IsolatedWorld, remoteObject: Protocol.Runtime.RemoteObject): JSHandle | ElementHandle<Node>;
-/**
- * @internal
- */
-export declare function releaseObject(client: CDPSession, remoteObject: Protocol.Runtime.RemoteObject): Promise<void>;
 //# sourceMappingURL=ExecutionContext.d.ts.map

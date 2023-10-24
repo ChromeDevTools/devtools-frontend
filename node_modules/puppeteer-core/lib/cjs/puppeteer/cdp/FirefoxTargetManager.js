@@ -151,6 +151,7 @@ class FirefoxTargetManager extends EventEmitter_js_1.EventEmitter {
         }
         const target = this.#availableTargetsByTargetId.get(targetInfo.targetId);
         (0, assert_js_1.assert)(target, `Target ${targetInfo.targetId} is missing`);
+        session._setTarget(target);
         this.setupAttachmentListeners(session);
         this.#availableTargetsBySessionId.set(session.id(), this.#availableTargetsByTargetId.get(targetInfo.targetId));
         parentSession.emit(CDPSession_js_1.CDPSessionEvent.Ready, session);

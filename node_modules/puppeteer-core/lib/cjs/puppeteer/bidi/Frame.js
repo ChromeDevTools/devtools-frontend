@@ -171,16 +171,12 @@ let BidiFrame = (() => {
             }
         }
         async setContent(html, options = {}) {
-            const { waitUntil = 'load', timeout = this.#timeoutSettings.navigationTimeout(), } = options;
+            const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
             const waitUntilEvent = BrowsingContext_js_1.lifeCycleToSubscribedEvent.get((0, BrowsingContext_js_1.getWaitUntilSingle)(waitUntil));
-            await Promise.all([
-                (0, util_js_1.setPageContent)(this, html),
-                (0, util_js_1.waitWithTimeout)(new Promise(resolve => {
-                    this.#context.once(waitUntilEvent, () => {
-                        resolve();
-                    });
-                }), waitUntilEvent, timeout),
-            ]);
+            await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.forkJoin)([
+                (0, rxjs_js_1.fromEvent)(this.#context, waitUntilEvent).pipe((0, rxjs_js_1.first)()),
+                (0, rxjs_js_1.from)((0, util_js_1.setPageContent)(this, html)),
+            ]).pipe((0, rxjs_js_1.raceWith)((0, util_js_2.timeout)(ms))));
         }
         context() {
             return this.#context;

@@ -30,6 +30,7 @@ const ScriptInjector_js_1 = require("../common/ScriptInjector.js");
 const util_js_1 = require("../common/util.js");
 const disposable_js_1 = require("../util/disposable.js");
 const Function_js_1 = require("../util/Function.js");
+const Deserializer_js_1 = require("./Deserializer.js");
 const ElementHandle_js_1 = require("./ElementHandle.js");
 const JSHandle_js_1 = require("./JSHandle.js");
 const Serializer_js_1 = require("./Serializer.js");
@@ -142,7 +143,7 @@ class BidiRealm extends EventEmitter_js_1.EventEmitter {
             throw (0, util_js_2.createEvaluationError)(result.exceptionDetails);
         }
         return returnByValue
-            ? Serializer_js_1.BidiSerializer.deserialize(result.result)
+            ? Deserializer_js_1.BidiDeserializer.deserialize(result.result)
             : createBidiHandle(sandbox, result.result);
     }
     [disposable_js_1.disposeSymbol]() {

@@ -18,6 +18,7 @@ import type { Protocol } from 'devtools-protocol';
 import type { Frame } from '../api/Frame.js';
 import type { ElementFor, EvaluateFuncWith, HandleFor, HandleOr, NodeFor } from '../common/types.js';
 import type { KeyInput } from '../common/USKeyboardLayout.js';
+import { _isElementHandle } from './ElementHandleSymbol.js';
 import type { KeyboardTypeOptions, KeyPressOptions, MouseClickOptions } from './Input.js';
 import { JSHandle } from './JSHandle.js';
 import type { ScreenshotOptions, WaitForSelectorOptions } from './Page.js';
@@ -122,6 +123,10 @@ export interface ElementScreenshotOptions extends ScreenshotOptions {
  */
 export declare abstract class ElementHandle<ElementType extends Node = Element> extends JSHandle<ElementType> {
     #private;
+    /**
+     * @internal
+     */
+    [_isElementHandle]: boolean;
     /**
      * A given method will have it's `this` replaced with an isolated version of
      * `this` when decorated with this decorator.

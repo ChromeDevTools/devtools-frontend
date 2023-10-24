@@ -35,4 +35,5 @@ __exportStar(require("./LaunchOptions.js"), exports);
 __exportStar(require("./PipeTransport.js"), exports);
 __exportStar(require("./ProductLauncher.js"), exports);
 __exportStar(require("./PuppeteerNode.js"), exports);
+__exportStar(require("./ScreenRecorder.js"), exports);
 //# sourceMappingURL=node.js.map

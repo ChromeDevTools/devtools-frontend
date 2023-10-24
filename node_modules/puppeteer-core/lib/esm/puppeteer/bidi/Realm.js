@@ -4,6 +4,7 @@ import { scriptInjector } from '../common/ScriptInjector.js';
 import { PuppeteerURL, SOURCE_URL_REGEX, getSourcePuppeteerURLIfAvailable, getSourceUrlComment, isString, } from '../common/util.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { stringifyFunction } from '../util/Function.js';
+import { BidiDeserializer } from './Deserializer.js';
 import { BidiElementHandle } from './ElementHandle.js';
 import { BidiJSHandle } from './JSHandle.js';
 import { BidiSerializer } from './Serializer.js';
@@ -116,7 +117,7 @@ export class BidiRealm extends EventEmitter {
             throw createEvaluationError(result.exceptionDetails);
         }
         return returnByValue
-            ? BidiSerializer.deserialize(result.result)
+            ? BidiDeserializer.deserialize(result.result)
             : createBidiHandle(sandbox, result.result);
     }
     [disposeSymbol]() {

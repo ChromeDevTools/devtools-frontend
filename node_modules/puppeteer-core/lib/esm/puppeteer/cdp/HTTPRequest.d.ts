@@ -17,13 +17,14 @@ import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { Frame } from '../api/Frame.js';
 import { type ContinueRequestOverrides, type ErrorCode, HTTPRequest, type InterceptResolutionState, type ResourceType, type ResponseForRequest } from '../api/HTTPRequest.js';
-import type { HTTPResponse } from '../api/HTTPResponse.js';
+import type { CdpHTTPResponse } from './HTTPResponse.js';
 /**
  * @internal
  */
 export declare class CdpHTTPRequest extends HTTPRequest {
     #private;
     _redirectChain: CdpHTTPRequest[];
+    _response: CdpHTTPResponse | null;
     get client(): CDPSession;
     constructor(client: CDPSession, frame: Frame | null, interceptionId: string | undefined, allowInterception: boolean, data: {
         /**
@@ -63,7 +64,7 @@ export declare class CdpHTTPRequest extends HTTPRequest {
     method(): string;
     postData(): string | undefined;
     headers(): Record<string, string>;
-    response(): HTTPResponse | null;
+    response(): CdpHTTPResponse | null;
     frame(): Frame | null;
     isNavigationRequest(): boolean;
     initiator(): Protocol.Network.Initiator | undefined;

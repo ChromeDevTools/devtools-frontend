@@ -18,6 +18,7 @@ import { debugError } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { interpolateFunction, stringifyFunction } from '../util/Function.js';
+import { BidiDeserializer } from './Deserializer.js';
 import { BidiSerializer } from './Serializer.js';
 /**
  * @internal
@@ -79,7 +80,7 @@ export class ExposeableFunction {
         const args = remoteValue.value?.[1];
         assert(args);
         try {
-            const result = await this.#apply(...BidiSerializer.deserialize(args));
+            const result = await this.#apply(...BidiDeserializer.deserialize(args));
             await connection.send('script.callFunction', {
                 functionDeclaration: stringifyFunction(([_, resolve], result) => {
                     resolve(result);

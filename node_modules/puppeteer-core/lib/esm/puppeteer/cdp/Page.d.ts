@@ -33,7 +33,7 @@ import { Coverage } from './Coverage.js';
 import type { DeviceRequestPrompt } from './DeviceRequestPrompt.js';
 import type { CdpFrame } from './Frame.js';
 import { CdpKeyboard, CdpMouse, CdpTouchscreen } from './Input.js';
-import { type Credentials, type NetworkConditions } from './NetworkManager.js';
+import type { Credentials, NetworkConditions } from './NetworkManager.js';
 import type { CdpTarget } from './Target.js';
 import { Tracing } from './Tracing.js';
 import { WebWorker } from './WebWorker.js';

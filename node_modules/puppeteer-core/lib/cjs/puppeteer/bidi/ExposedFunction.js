@@ -44,6 +44,7 @@ const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const Function_js_1 = require("../util/Function.js");
+const Deserializer_js_1 = require("./Deserializer.js");
 const Serializer_js_1 = require("./Serializer.js");
 /**
  * @internal
@@ -105,7 +106,7 @@ class ExposeableFunction {
         const args = remoteValue.value?.[1];
         (0, assert_js_1.assert)(args);
         try {
-            const result = await this.#apply(...Serializer_js_1.BidiSerializer.deserialize(args));
+            const result = await this.#apply(...Deserializer_js_1.BidiDeserializer.deserialize(args));
             await connection.send('script.callFunction', {
                 functionDeclaration: (0, Function_js_1.stringifyFunction)(([_, resolve], result) => {
                     resolve(result);

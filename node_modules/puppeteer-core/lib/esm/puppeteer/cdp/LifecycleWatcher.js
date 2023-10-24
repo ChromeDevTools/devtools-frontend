@@ -15,11 +15,11 @@
  */
 import { FrameEvent } from '../api/Frame.js';
 import { EventSubscription } from '../common/EventEmitter.js';
+import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { DisposableStack } from '../util/disposable.js';
-import { FrameManagerEvent } from './FrameManager.js';
-import { NetworkManagerEvent } from './NetworkManager.js';
+import { FrameManagerEvent } from './FrameManagerEvents.js';
 const puppeteerToProtocolLifecycle = new Map([
     ['load', 'load'],
     ['domcontentloaded', 'DOMContentLoaded'],

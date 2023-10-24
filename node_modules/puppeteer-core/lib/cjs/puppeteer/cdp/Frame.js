@@ -52,7 +52,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CdpFrame = void 0;
 const Frame_js_1 = require("../api/Frame.js");
 const util_js_1 = require("../common/util.js");
-const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
@@ -234,12 +233,13 @@ let CdpFrame = (() => {
             return this._frameManager._frameTree.childFrames(this._id);
         }
         #deviceRequestPromptManager() {
-            if (this.isOOPFrame()) {
+            const rootFrame = this.page().mainFrame();
+            if (this.isOOPFrame() || rootFrame === null) {
                 return this._frameManager._deviceRequestPromptManager(this.#client);
             }
-            const parentFrame = this.parentFrame();
-            (0, assert_js_1.assert)(parentFrame !== null);
-            return parentFrame.#deviceRequestPromptManager();
+            else {
+                return rootFrame._frameManager._deviceRequestPromptManager(this.#client);
+            }
         }
         async waitForDevicePrompt(options = {}) {
             return await this.#deviceRequestPromptManager().waitForDevicePrompt(options);

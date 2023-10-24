@@ -19,7 +19,6 @@ exports.CdpBrowserContext = exports.CdpBrowser = void 0;
 const Browser_js_1 = require("../api/Browser.js");
 const BrowserContext_js_1 = require("../api/BrowserContext.js");
 const CDPSession_js_1 = require("../api/CDPSession.js");
-const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
 const ChromeTargetManager_js_1 = require("./ChromeTargetManager.js");
 const FirefoxTargetManager_js_1 = require("./FirefoxTargetManager.js");
@@ -28,8 +27,8 @@ const Target_js_1 = require("./Target.js");
  * @internal
  */
 class CdpBrowser extends Browser_js_1.Browser {
-    static async _create(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, useTabTarget = environment_js_1.USE_TAB_TARGET) {
-        const browser = new CdpBrowser(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets, useTabTarget);
+    static async _create(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
+        const browser = new CdpBrowser(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets);
         await browser._attach();
         return browser;
     }
@@ -43,10 +42,7 @@ class CdpBrowser extends Browser_js_1.Browser {
     #defaultContext;
     #contexts = new Map();
     #targetManager;
-    get _targets() {
-        return this.#targetManager.getAvailableTargets();
-    }
-    constructor(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true, useTabTarget = environment_js_1.USE_TAB_TARGET) {
+    constructor(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
         super();
         product = product || 'chrome';
         this.#ignoreHTTPSErrors = ignoreHTTPSErrors;
@@ -64,7 +60,7 @@ class CdpBrowser extends Browser_js_1.Browser {
             this.#targetManager = new FirefoxTargetManager_js_1.FirefoxTargetManager(connection, this.#createTarget, this.#targetFilterCallback);
         }
         else {
-            this.#targetManager = new ChromeTargetManager_js_1.ChromeTargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets, useTabTarget);
+            this.#targetManager = new ChromeTargetManager_js_1.ChromeTargetManager(connection, this.#createTarget, this.#targetFilterCallback, waitForInitiallyDiscoveredTargets);
         }
         this.#defaultContext = new CdpBrowserContext(this.#connection, this);
         for (const contextId of contextIds) {
@@ -157,8 +153,9 @@ class CdpBrowser extends Browser_js_1.Browser {
         return otherTarget;
     };
     #onAttachedToTarget = async (target) => {
-        if ((await target._initializedDeferred.valueOrThrow()) ===
-            Target_js_1.InitializationStatus.SUCCESS) {
+        if (target._isTargetExposed() &&
+            (await target._initializedDeferred.valueOrThrow()) ===
+                Target_js_1.InitializationStatus.SUCCESS) {
             this.emit("targetcreated" /* BrowserEvent.TargetCreated */, target);
             target.browserContext().emit("targetcreated" /* BrowserContextEvent.TargetCreated */, target);
         }
@@ -166,8 +163,9 @@ class CdpBrowser extends Browser_js_1.Browser {
     #onDetachedFromTarget = async (target) => {
         target._initializedDeferred.resolve(Target_js_1.InitializationStatus.ABORTED);
         target._isClosedDeferred.resolve();
-        if ((await target._initializedDeferred.valueOrThrow()) ===
-            Target_js_1.InitializationStatus.SUCCESS) {
+        if (target._isTargetExposed() &&
+            (await target._initializedDeferred.valueOrThrow()) ===
+                Target_js_1.InitializationStatus.SUCCESS) {
             this.emit("targetdestroyed" /* BrowserEvent.TargetDestroyed */, target);
             target.browserContext().emit("targetdestroyed" /* BrowserContextEvent.TargetDestroyed */, target);
         }
@@ -209,7 +207,8 @@ class CdpBrowser extends Browser_js_1.Browser {
     }
     targets() {
         return Array.from(this.#targetManager.getAvailableTargets().values()).filter(target => {
-            return (target._initializedDeferred.value() === Target_js_1.InitializationStatus.SUCCESS);
+            return (target._isTargetExposed() &&
+                target._initializedDeferred.value() === Target_js_1.InitializationStatus.SUCCESS);
         });
     }
     target() {

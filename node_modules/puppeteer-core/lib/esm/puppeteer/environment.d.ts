@@ -21,10 +21,4 @@ export declare const isNode: boolean;
  * @internal
  */
 export declare const DEFERRED_PROMISE_DEBUG_TIMEOUT: number;
-/**
- * Only used for internal testing.
- *
- * @internal
- */
-export declare const USE_TAB_TARGET: boolean;
 //# sourceMappingURL=environment.d.ts.map

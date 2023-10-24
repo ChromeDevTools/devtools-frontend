@@ -185,7 +185,10 @@ class AXNode {
     }
     #isTextOnlyObject() {
         const role = this.#role;
-        return role === 'LineBreak' || role === 'text' || role === 'InlineTextBox';
+        return (role === 'LineBreak' ||
+            role === 'text' ||
+            role === 'InlineTextBox' ||
+            role === 'StaticText');
     }
     #hasFocusableChild() {
         if (this.#cachedHasFocusableChild === undefined) {

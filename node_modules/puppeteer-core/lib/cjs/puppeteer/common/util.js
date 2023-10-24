@@ -37,53 +37,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
-    if (value !== null && value !== void 0) {
-        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-        var dispose;
-        if (async) {
-            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
-            dispose = value[Symbol.asyncDispose];
-        }
-        if (dispose === void 0) {
-            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
-            dispose = value[Symbol.dispose];
-        }
-        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
-        env.stack.push({ value: value, dispose: dispose, async: async });
-    }
-    else if (async) {
-        env.stack.push({ async: true });
-    }
-    return value;
-};
-var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
-    return function (env) {
-        function fail(e) {
-            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
-            env.hasError = true;
-        }
-        function next() {
-            while (env.stack.length) {
-                var rec = env.stack.pop();
-                try {
-                    var result = rec.dispose && rec.dispose.call(rec.value);
-                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
-                }
-                catch (e) {
-                    fail(e);
-                }
-            }
-            if (env.hasError) throw env.error;
-        }
-        return next();
-    };
-})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
-    var e = new Error(message);
-    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
-});
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.validateDialogType = exports.getPageContent = exports.setPageContent = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.waitWithTimeout = exports.pageBindingInitString = exports.addPageBinding = exports.evaluationString = exports.waitForEvent = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.valueFromRemoteObject = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.createClientError = exports.createEvaluationError = exports.debugError = void 0;
+exports.waitForHTTP = exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.validateDialogType = exports.getPageContent = exports.setPageContent = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.waitWithTimeout = exports.pageBindingInitString = exports.addPageBinding = exports.evaluationString = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.valueFromRemoteObject = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.createClientError = exports.createEvaluationError = exports.debugError = void 0;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
@@ -91,7 +46,6 @@ const Deferred_js_1 = require("../util/Deferred.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Debug_js_1 = require("./Debug.js");
 const Errors_js_1 = require("./Errors.js");
-const EventEmitter_js_1 = require("./EventEmitter.js");
 /**
  * @internal
  */
@@ -330,44 +284,6 @@ const isDate = (obj) => {
     return typeof obj === 'object' && obj?.constructor === Date;
 };
 exports.isDate = isDate;
-/**
- * @internal
- */
-async function waitForEvent(
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-emitter, eventName, predicate, timeout, abortPromise) {
-    const env_1 = { stack: [], error: void 0, hasError: false };
-    try {
-        const deferred = Deferred_js_1.Deferred.create({
-            message: `Timeout exceeded while waiting for event ${String(eventName)}`,
-            timeout,
-        });
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const _ = __addDisposableResource(env_1, new EventEmitter_js_1.EventSubscription(emitter, eventName, async (event) => {
-            if (await predicate(event)) {
-                deferred.resolve(event);
-            }
-        }), false);
-        try {
-            const response = await Deferred_js_1.Deferred.race([deferred, abortPromise]);
-            if ((0, ErrorLike_js_1.isErrorLike)(response)) {
-                throw response;
-            }
-            return response;
-        }
-        catch (error) {
-            throw error;
-        }
-    }
-    catch (e_1) {
-        env_1.error = e_1;
-        env_1.hasError = true;
-    }
-    finally {
-        __disposeResources(env_1);
-    }
-}
-exports.waitForEvent = waitForEvent;
 /**
  * @internal
  */
@@ -610,4 +526,21 @@ function getSourceUrlComment(url) {
     return `//# sourceURL=${url}`;
 }
 exports.getSourceUrlComment = getSourceUrlComment;
+/**
+ * @internal
+ */
+async function waitForHTTP(networkManager, eventName, urlOrPredicate, 
+/** Time after the function will timeout */
+ms, cancelation) {
+    return await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.fromEvent)(networkManager, eventName).pipe((0, rxjs_js_1.filterAsync)(async (http) => {
+        if ((0, exports.isString)(urlOrPredicate)) {
+            return urlOrPredicate === http.url();
+        }
+        if (typeof urlOrPredicate === 'function') {
+            return !!(await urlOrPredicate(http));
+        }
+        return false;
+    }), (0, rxjs_js_1.raceWith)(timeout(ms), (0, rxjs_js_1.from)(cancelation.valueOrThrow()))));
+}
+exports.waitForHTTP = waitForHTTP;
 //# sourceMappingURL=util.js.map

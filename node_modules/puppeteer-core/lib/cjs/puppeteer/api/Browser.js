@@ -16,9 +16,10 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Browser = exports.WEB_PERMISSION_TO_PROTOCOL_PERMISSION = void 0;
+const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
-const Deferred_js_1 = require("../util/Deferred.js");
+const util_js_2 = require("../common/util.js");
 const disposable_js_1 = require("../util/disposable.js");
 /**
  * @internal
@@ -105,12 +106,6 @@ class Browser extends EventEmitter_js_1.EventEmitter {
         throw new Error('Not implemented');
     }
     /**
-     * @internal
-     */
-    get _targets() {
-        throw new Error('Not implemented');
-    }
-    /**
      * Gets the associated
      * {@link https://nodejs.org/api/child_process.html#class-childprocess | ChildProcess}.
      *
@@ -148,26 +143,8 @@ class Browser extends EventEmitter_js_1.EventEmitter {
      * ```
      */
     async waitForTarget(predicate, options = {}) {
-        const { timeout = 30000 } = options;
-        const targetDeferred = Deferred_js_1.Deferred.create();
-        this.on("targetcreated" /* BrowserEvent.TargetCreated */, check);
-        this.on("targetchanged" /* BrowserEvent.TargetChanged */, check);
-        try {
-            this.targets().forEach(check);
-            if (!timeout) {
-                return await targetDeferred.valueOrThrow();
-            }
-            return await (0, util_js_1.waitWithTimeout)(targetDeferred.valueOrThrow(), 'target', timeout);
-        }
-        finally {
-            this.off("targetcreated" /* BrowserEvent.TargetCreated */, check);
-            this.off("targetchanged" /* BrowserEvent.TargetChanged */, check);
-        }
-        async function check(target) {
-            if ((await predicate(target)) && !targetDeferred.resolved()) {
-                targetDeferred.resolve(target);
-            }
-        }
+        const { timeout: ms = 30000 } = options;
+        return await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.merge)((0, rxjs_js_1.fromEvent)(this, "targetcreated" /* BrowserEvent.TargetCreated */), (0, rxjs_js_1.fromEvent)(this, "targetchanged" /* BrowserEvent.TargetChanged */), (0, rxjs_js_1.from)(this.targets())).pipe((0, rxjs_js_1.filterAsync)(predicate), (0, rxjs_js_1.raceWith)((0, util_js_2.timeout)(ms))));
     }
     /**
      * Gets a list of all open {@link Page | pages} inside this {@link Browser}.

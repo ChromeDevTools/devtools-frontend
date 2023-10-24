@@ -120,6 +120,7 @@ const createTextContent = (root) => {
             textChangeObserver.observe(root, {
                 childList: true,
                 characterData: true,
+                subtree: true,
             });
             observedNodes.add(root);
         }

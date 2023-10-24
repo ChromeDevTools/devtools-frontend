@@ -17,7 +17,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createEvaluationError = exports.releaseReference = void 0;
 const util_js_1 = require("../common/util.js");
-const Serializer_js_1 = require("./Serializer.js");
+const Deserializer_js_1 = require("./Deserializer.js");
 /**
  * @internal
  */
@@ -42,7 +42,7 @@ exports.releaseReference = releaseReference;
  */
 function createEvaluationError(details) {
     if (details.exception.type !== 'error') {
-        return Serializer_js_1.BidiSerializer.deserialize(details.exception);
+        return Deserializer_js_1.BidiDeserializer.deserialize(details.exception);
     }
     const [name = '', ...parts] = details.text.split(': ');
     const message = parts.join(': ');

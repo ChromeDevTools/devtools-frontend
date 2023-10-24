@@ -183,10 +183,6 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      */
     _detach(): void;
     /**
-     * @internal
-     */
-    get _targets(): Map<string, Target>;
-    /**
      * Gets the associated
      * {@link https://nodejs.org/api/child_process.html#class-childprocess | ChildProcess}.
      *

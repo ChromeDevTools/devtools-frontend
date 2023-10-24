@@ -14,6 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
 var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
     var useValue = arguments.length > 2;
     for (var i = 0; i < initializers.length; i++) {
@@ -47,6 +63,13 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     }
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
 };
 var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
     if (value !== null && value !== void 0) {
@@ -96,10 +119,11 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.unitToPixels = exports.supportedMetrics = exports.Page = exports.setDefaultScreenshotOptions = void 0;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
-const NetworkManager_js_1 = require("../cdp/NetworkManager.js");
 const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
+const NetworkManagerEvents_js_1 = require("../common/NetworkManagerEvents.js");
 const PDFOptions_js_1 = require("../common/PDFOptions.js");
+const TimeoutSettings_js_1 = require("../common/TimeoutSettings.js");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const decorators_js_1 = require("../util/decorators.js");
@@ -182,6 +206,10 @@ let Page = (() => {
          * @internal
          */
         _isDragging = (__runInitializers(this, _instanceExtraInitializers), false);
+        /**
+         * @internal
+         */
+        _timeoutSettings = new TimeoutSettings_js_1.TimeoutSettings();
         #requestHandlers = new WeakMap();
         /**
          * @internal
@@ -729,7 +757,7 @@ let Page = (() => {
          * @internal
          */
         async _waitForNetworkIdle(networkManager, idleTime, ms, closedDeferred) {
-            await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.merge)((0, rxjs_js_1.fromEvent)(networkManager, NetworkManager_js_1.NetworkManagerEvent.Request), (0, rxjs_js_1.fromEvent)(networkManager, NetworkManager_js_1.NetworkManagerEvent.Response), (0, rxjs_js_1.fromEvent)(networkManager, NetworkManager_js_1.NetworkManagerEvent.RequestFailed)).pipe((0, rxjs_js_1.startWith)(null), (0, rxjs_js_1.filter)(() => {
+            await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.merge)((0, rxjs_js_1.fromEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Request), (0, rxjs_js_1.fromEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Response), (0, rxjs_js_1.fromEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFailed)).pipe((0, rxjs_js_1.startWith)(null), (0, rxjs_js_1.filter)(() => {
                 return networkManager.inFlightRequestsCount() === 0;
             }), (0, rxjs_js_1.switchMap)(v => {
                 return (0, rxjs_js_1.of)(v).pipe((0, rxjs_js_1.delay)(idleTime));
@@ -881,8 +909,168 @@ let Page = (() => {
             const fs = await (0, util_js_1.importFSPromises)();
             await fs.writeFile(path, buffer);
         }
-        async screenshot(userOptions = {}) {
+        /**
+         * Captures a screencast of this {@link Page | page}.
+         *
+         * @remarks
+         *
+         * All recordings will be {@link https://www.webmproject.org/ | WebM} format using
+         * the {@link https://www.webmproject.org/vp9/ | VP9} video codec. The FPS is 30.
+         *
+         * You must have {@link https://ffmpeg.org/ | ffmpeg} installed on your system.
+         *
+         * @example
+         * Recording a {@link Page | page}:
+         *
+         * ```
+         * import puppeteer from 'puppeteer';
+         *
+         * // Launch a browser
+         * const browser = await puppeteer.launch();
+         *
+         * // Create a new page
+         * const page = await browser.newPage();
+         *
+         * // Go to your site.
+         * await page.goto("https://www.example.com");
+         *
+         * // Start recording.
+         * const recorder = await page.screencast({path: 'recording.webm'});
+         *
+         * // Do something.
+         *
+         * // Stop recording.
+         * await recorder.stop();
+         *
+         * browser.close();
+         * ```
+         *
+         * @param options - Configures screencast behavior.
+         *
+         * @experimental
+         */
+        async screencast(options = {}) {
+            const [{ ScreenRecorder }, [width, height, devicePixelRatio]] = await Promise.all([
+                Promise.resolve().then(() => __importStar(require('../node/ScreenRecorder.js'))),
+                this.#getNativePixelDimensions(),
+            ]);
+            let crop;
+            if (options.crop) {
+                const { x, y, width: cropWidth, height: cropHeight, } = roundRectangle(normalizeRectangle(options.crop));
+                if (x < 0 || y < 0) {
+                    throw new Error(`\`crop.x\` and \`crop.y\` must be greater than or equal to 0.`);
+                }
+                if (cropWidth <= 0 || cropHeight <= 0) {
+                    throw new Error(`\`crop.height\` and \`crop.width\` must be greater than or equal to 0.`);
+                }
+                const viewportWidth = width / devicePixelRatio;
+                const viewportHeight = width / devicePixelRatio;
+                if (x + cropWidth > viewportWidth) {
+                    throw new Error(`\`crop.width\` cannot be larger than the viewport width (${viewportWidth}).`);
+                }
+                if (y + cropHeight > viewportHeight) {
+                    throw new Error(`\`crop.height\` cannot be larger than the viewport height (${viewportHeight}).`);
+                }
+                crop = {
+                    x: x * devicePixelRatio,
+                    y: y * devicePixelRatio,
+                    width: cropWidth * devicePixelRatio,
+                    height: cropHeight * devicePixelRatio,
+                };
+            }
+            if (options.speed !== undefined && options.speed <= 0) {
+                throw new Error(`\`speed\` must be greater than 0.`);
+            }
+            if (options.scale !== undefined && options.scale <= 0) {
+                throw new Error(`\`scale\` must be greater than 0.`);
+            }
+            const recorder = new ScreenRecorder(this, width, height, {
+                ...options,
+                path: options.ffmpegPath,
+                crop,
+            });
+            try {
+                await this._startScreencast();
+            }
+            catch (error) {
+                void recorder.stop();
+                throw error;
+            }
+            if (options.path) {
+                const { createWriteStream } = await Promise.resolve().then(() => __importStar(require('fs')));
+                const stream = createWriteStream(options.path, 'binary');
+                recorder.pipe(stream);
+            }
+            return recorder;
+        }
+        #screencastSessionCount = 0;
+        #startScreencastPromise;
+        /**
+         * @internal
+         */
+        async _startScreencast() {
+            ++this.#screencastSessionCount;
+            if (!this.#startScreencastPromise) {
+                this.#startScreencastPromise = this.mainFrame()
+                    .client.send('Page.startScreencast', { format: 'png' })
+                    .then(() => {
+                    // Wait for the first frame.
+                    return new Promise(resolve => {
+                        return this.mainFrame().client.once('Page.screencastFrame', () => {
+                            return resolve();
+                        });
+                    });
+                });
+            }
+            await this.#startScreencastPromise;
+        }
+        /**
+         * @internal
+         */
+        async _stopScreencast() {
+            --this.#screencastSessionCount;
+            if (!this.#startScreencastPromise) {
+                return;
+            }
+            this.#startScreencastPromise = undefined;
+            if (this.#screencastSessionCount === 0) {
+                await this.mainFrame().client.send('Page.stopScreencast');
+            }
+        }
+        /**
+         * Gets the native, non-emulated dimensions of the viewport.
+         */
+        async #getNativePixelDimensions() {
             const env_1 = { stack: [], error: void 0, hasError: false };
+            try {
+                const viewport = this.viewport();
+                const stack = __addDisposableResource(env_1, new disposable_js_1.DisposableStack(), false);
+                if (viewport && viewport.deviceScaleFactor !== 0) {
+                    await this.setViewport({ ...viewport, deviceScaleFactor: 0 });
+                    stack.defer(() => {
+                        void this.setViewport(viewport).catch(util_js_1.debugError);
+                    });
+                }
+                return await this.mainFrame()
+                    .isolatedRealm()
+                    .evaluate(() => {
+                    return [
+                        window.visualViewport.width * window.devicePixelRatio,
+                        window.visualViewport.height * window.devicePixelRatio,
+                        window.devicePixelRatio,
+                    ];
+                });
+            }
+            catch (e_1) {
+                env_1.error = e_1;
+                env_1.hasError = true;
+            }
+            finally {
+                __disposeResources(env_1);
+            }
+        }
+        async screenshot(userOptions = {}) {
+            const env_2 = { stack: [], error: void 0, hasError: false };
             try {
                 await this.bringToFront();
                 // TODO: use structuredClone after Node 16 support is dropped.«
@@ -913,28 +1101,28 @@ let Page = (() => {
                             break;
                     }
                 }
-                if (options.quality) {
-                    (0, assert_js_1.assert)(options.type === 'jpeg' || options.type === 'webp', `options.quality is unsupported for the ${options.type} screenshots`);
-                    (0, assert_js_1.assert)(typeof options.quality === 'number', `Expected options.quality to be a number but found ${typeof options.quality}`);
-                    (0, assert_js_1.assert)(Number.isInteger(options.quality), 'Expected options.quality to be an integer');
-                    (0, assert_js_1.assert)(options.quality >= 0 && options.quality <= 100, `Expected options.quality to be between 0 and 100 (inclusive), got ${options.quality}`);
+                if (options.quality !== undefined) {
+                    if (options.quality < 0 && options.quality > 100) {
+                        throw new Error(`Expected 'quality' (${options.quality}) to be between 0 and 100, inclusive.`);
+                    }
+                    if (options.type === undefined ||
+                        !['jpeg', 'webp'].includes(options.type)) {
+                        throw new Error(`${options.type ?? 'png'} screenshots do not support 'quality'.`);
+                    }
                 }
-                (0, assert_js_1.assert)(!options.clip || !options.fullPage, 'options.clip and options.fullPage are exclusive');
+                (0, assert_js_1.assert)(!options.clip || !options.fullPage, "'clip' and 'fullPage' are exclusive");
                 if (options.clip) {
-                    (0, assert_js_1.assert)(typeof options.clip.x === 'number', `Expected options.clip.x to be a number but found ${typeof options.clip
-                        .x}`);
-                    (0, assert_js_1.assert)(typeof options.clip.y === 'number', `Expected options.clip.y to be a number but found ${typeof options.clip
-                        .y}`);
-                    (0, assert_js_1.assert)(typeof options.clip.width === 'number', `Expected options.clip.width to be a number but found ${typeof options
-                        .clip.width}`);
-                    (0, assert_js_1.assert)(typeof options.clip.height === 'number', `Expected options.clip.height to be a number but found ${typeof options
-                        .clip.height}`);
-                    (0, assert_js_1.assert)(options.clip.width !== 0, 'Expected options.clip.width not to be 0.');
-                    (0, assert_js_1.assert)(options.clip.height !== 0, 'Expected options.clip.height not to be 0.');
+                    if (options.clip.width <= 0) {
+                        throw new Error("'width' in 'clip' must be positive.");
+                    }
+                    if (options.clip.height <= 0) {
+                        throw new Error("'height' in 'clip' must be positive.");
+                    }
                 }
                 setDefaultScreenshotOptions(options);
-                options.clip = options.clip && roundClip(normalizeClip(options.clip));
-                const stack = __addDisposableResource(env_1, new disposable_js_1.AsyncDisposableStack(), true);
+                options.clip =
+                    options.clip && roundRectangle(normalizeRectangle(options.clip));
+                const stack = __addDisposableResource(env_2, new disposable_js_1.AsyncDisposableStack(), true);
                 if (options.allowViewportExpansion || options.captureBeyondViewport) {
                     if (options.fullPage) {
                         const dimensions = await this.mainFrame()
@@ -966,12 +1154,12 @@ let Page = (() => {
                 await this._maybeWriteBufferToFile(options.path, buffer);
                 return buffer;
             }
-            catch (e_1) {
-                env_1.error = e_1;
-                env_1.hasError = true;
+            catch (e_2) {
+                env_2.error = e_2;
+                env_2.hasError = true;
             }
             finally {
-                const result_1 = __disposeResources(env_1);
+                const result_1 = __disposeResources(env_2);
                 if (result_1)
                     await result_1;
             }
@@ -980,7 +1168,7 @@ let Page = (() => {
          * @internal
          */
         async _createTemporaryViewportContainingBox(clip) {
-            const env_2 = { stack: [], error: void 0, hasError: false };
+            const env_3 = { stack: [], error: void 0, hasError: false };
             try {
                 const viewport = await this.mainFrame()
                     .isolatedRealm()
@@ -992,7 +1180,7 @@ let Page = (() => {
                         height: window.visualViewport.height,
                     };
                 });
-                const stack = __addDisposableResource(env_2, new disposable_js_1.AsyncDisposableStack(), true);
+                const stack = __addDisposableResource(env_3, new disposable_js_1.AsyncDisposableStack(), true);
                 if (clip.x < viewport.pageLeft || clip.y < viewport.pageTop) {
                     await this.evaluate((left, top) => {
                         window.scroll({ left, top, behavior: 'instant' });
@@ -1020,12 +1208,12 @@ let Page = (() => {
                 }
                 return stack.move();
             }
-            catch (e_2) {
-                env_2.error = e_2;
-                env_2.hasError = true;
+            catch (e_3) {
+                env_3.error = e_3;
+                env_3.hasError = true;
             }
             finally {
-                const result_2 = __disposeResources(env_2);
+                const result_2 = __disposeResources(env_3);
                 if (result_2)
                     await result_2;
             }
@@ -1045,6 +1233,7 @@ let Page = (() => {
                 preferCSSPageSize: false,
                 omitBackground: false,
                 timeout: 30000,
+                tagged: false,
             };
             let width = 8.5;
             let height = 11;
@@ -1065,14 +1254,13 @@ let Page = (() => {
                 bottom: convertPrintParameterToInches(options.margin?.bottom, lengthUnit) || 0,
                 right: convertPrintParameterToInches(options.margin?.right, lengthUnit) || 0,
             };
-            const output = {
+            return {
                 ...defaults,
                 ...options,
                 width,
                 height,
                 margin,
             };
-            return output;
         }
         async createPDFStream() {
             throw new Error('Not implemented');
@@ -1483,8 +1671,9 @@ function convertPrintParameterToInches(parameter, lengthUnit = 'in') {
     return pixels / exports.unitToPixels[lengthUnit];
 }
 /** @see https://w3c.github.io/webdriver-bidi/#normalize-rect */
-function normalizeClip(clip) {
+function normalizeRectangle(clip) {
     return {
+        ...clip,
         ...(clip.width < 0
             ? {
                 x: clip.x + clip.width,
@@ -1503,14 +1692,13 @@ function normalizeClip(clip) {
                 y: clip.y,
                 height: clip.height,
             }),
-        scale: clip.scale,
     };
 }
-function roundClip(clip) {
+function roundRectangle(clip) {
     const x = Math.round(clip.x);
     const y = Math.round(clip.y);
     const width = Math.round(clip.width + clip.x - x);
     const height = Math.round(clip.height + clip.y - y);
-    return { x, y, width, height, scale: clip.scale };
+    return { ...clip, x, y, width, height };
 }
 //# sourceMappingURL=Page.js.map

@@ -20,13 +20,14 @@ class Deferred {
         this.#resolver = resolve;
     });
     #timeoutId;
+    #timeoutError;
     constructor(opts) {
-        this.#timeoutId =
-            opts && opts.timeout > 0
-                ? setTimeout(() => {
-                    this.reject(new Errors_js_1.TimeoutError(opts.message));
-                }, opts.timeout)
-                : undefined;
+        if (opts && opts.timeout > 0) {
+            this.#timeoutError = new Errors_js_1.TimeoutError(opts.message);
+            this.#timeoutId = setTimeout(() => {
+                this.reject(this.#timeoutError);
+            }, opts.timeout);
+        }
     }
     #finish(value) {
         clearTimeout(this.#timeoutId);

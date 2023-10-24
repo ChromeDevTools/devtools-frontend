@@ -18,11 +18,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LifecycleWatcher = void 0;
 const Frame_js_1 = require("../api/Frame.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
+const NetworkManagerEvents_js_1 = require("../common/NetworkManagerEvents.js");
 const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
-const FrameManager_js_1 = require("./FrameManager.js");
-const NetworkManager_js_1 = require("./NetworkManager.js");
+const FrameManagerEvents_js_1 = require("./FrameManagerEvents.js");
 const puppeteerToProtocolLifecycle = new Map([
     ['load', 'load'],
     ['domcontentloaded', 'DOMContentLoaded'],
@@ -63,15 +63,15 @@ class LifecycleWatcher {
         this.#timeout = timeout;
         this.#subscriptions.use(
         // Revert if TODO #1 is done
-        new EventEmitter_js_1.EventSubscription(frame._frameManager, FrameManager_js_1.FrameManagerEvent.LifecycleEvent, this.#checkLifecycleComplete.bind(this)));
+        new EventEmitter_js_1.EventSubscription(frame._frameManager, FrameManagerEvents_js_1.FrameManagerEvent.LifecycleEvent, this.#checkLifecycleComplete.bind(this)));
         this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(frame, Frame_js_1.FrameEvent.FrameNavigatedWithinDocument, this.#navigatedWithinDocument.bind(this)));
         this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(frame, Frame_js_1.FrameEvent.FrameNavigated, this.#navigated.bind(this)));
         this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(frame, Frame_js_1.FrameEvent.FrameSwapped, this.#frameSwapped.bind(this)));
         this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(frame, Frame_js_1.FrameEvent.FrameSwappedByActivation, this.#frameSwapped.bind(this)));
         this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(frame, Frame_js_1.FrameEvent.FrameDetached, this.#onFrameDetached.bind(this)));
-        this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(networkManager, NetworkManager_js_1.NetworkManagerEvent.Request, this.#onRequest.bind(this)));
-        this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(networkManager, NetworkManager_js_1.NetworkManagerEvent.Response, this.#onResponse.bind(this)));
-        this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(networkManager, NetworkManager_js_1.NetworkManagerEvent.RequestFailed, this.#onRequestFailed.bind(this)));
+        this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Request, this.#onRequest.bind(this)));
+        this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Response, this.#onResponse.bind(this)));
+        this.#subscriptions.use(new EventEmitter_js_1.EventSubscription(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFailed, this.#onRequestFailed.bind(this)));
         this.#terminationDeferred = Deferred_js_1.Deferred.create({
             timeout: this.#timeout,
             message: `Navigation timeout of ${this.#timeout} ms exceeded`,

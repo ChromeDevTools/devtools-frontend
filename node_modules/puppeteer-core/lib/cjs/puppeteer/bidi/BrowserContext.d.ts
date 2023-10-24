@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import type { WaitForTargetOptions } from '../api/Browser.js';
 import { BrowserContext } from '../api/BrowserContext.js';
 import type { Page } from '../api/Page.js';
 import type { Target } from '../api/Target.js';
@@ -34,9 +35,7 @@ export declare class BidiBrowserContext extends BrowserContext {
     #private;
     constructor(browser: BidiBrowser, options: BidiBrowserContextOptions);
     targets(): Target[];
-    waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: {
-        timeout?: number;
-    }): Promise<Target>;
+    waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: WaitForTargetOptions): Promise<Target>;
     get connection(): BidiConnection;
     newPage(): Promise<Page>;
     close(): Promise<void>;

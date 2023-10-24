@@ -16,8 +16,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiNetworkManager = void 0;
-const NetworkManager_js_1 = require("../cdp/NetworkManager.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
+const NetworkManagerEvents_js_1 = require("../common/NetworkManagerEvents.js");
 const disposable_js_1 = require("../util/disposable.js");
 const HTTPRequest_js_1 = require("./HTTPRequest.js");
 const HTTPResponse_js_1 = require("./HTTPResponse.js");
@@ -55,7 +55,7 @@ class BidiNetworkManager extends EventEmitter_js_1.EventEmitter {
             upsertRequest = new HTTPRequest_js_1.BidiHTTPRequest(event, frame, []);
         }
         this.#requestMap.set(event.request.request, upsertRequest);
-        this.emit(NetworkManager_js_1.NetworkManagerEvent.Request, upsertRequest);
+        this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.Request, upsertRequest);
     }
     #onResponseStarted(_event) { }
     #onResponseCompleted(event) {
@@ -69,10 +69,10 @@ class BidiNetworkManager extends EventEmitter_js_1.EventEmitter {
             this.#navigationMap.set(event.navigation, response);
         }
         if (response.fromCache()) {
-            this.emit(NetworkManager_js_1.NetworkManagerEvent.RequestServedFromCache, request);
+            this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.RequestServedFromCache, request);
         }
-        this.emit(NetworkManager_js_1.NetworkManagerEvent.Response, response);
-        this.emit(NetworkManager_js_1.NetworkManagerEvent.RequestFinished, request);
+        this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.Response, response);
+        this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFinished, request);
     }
     #onFetchError(event) {
         const request = this.#requestMap.get(event.request.request);
@@ -80,7 +80,7 @@ class BidiNetworkManager extends EventEmitter_js_1.EventEmitter {
             return;
         }
         request._failureText = event.errorText;
-        this.emit(NetworkManager_js_1.NetworkManagerEvent.RequestFailed, request);
+        this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFailed, request);
         this.#requestMap.delete(event.request.request);
     }
     getNavigationResponse(navigationId) {

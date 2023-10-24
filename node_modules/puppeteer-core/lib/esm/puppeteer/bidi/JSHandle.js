@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { JSHandle } from '../api/JSHandle.js';
-import { BidiSerializer } from './Serializer.js';
+import { BidiDeserializer } from './Deserializer.js';
 import { releaseReference } from './util.js';
 /**
  * @internal
@@ -69,7 +69,7 @@ export class BidiJSHandle extends JSHandle {
     }
     toString() {
         if (this.isPrimitiveValue) {
-            return 'JSHandle:' + BidiSerializer.deserialize(this.#remoteValue);
+            return 'JSHandle:' + BidiDeserializer.deserialize(this.#remoteValue);
         }
         return 'JSHandle@' + this.#remoteValue.type;
     }

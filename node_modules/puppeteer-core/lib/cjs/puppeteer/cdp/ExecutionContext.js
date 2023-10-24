@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.releaseObject = exports.createCdpHandle = exports.ExecutionContext = void 0;
+exports.createCdpHandle = exports.ExecutionContext = void 0;
 const LazyArg_js_1 = require("../common/LazyArg.js");
 const ScriptInjector_js_1 = require("../common/ScriptInjector.js");
 const util_js_1 = require("../common/util.js");
@@ -299,20 +299,4 @@ function createCdpHandle(realm, remoteObject) {
     return new JSHandle_js_1.CdpJSHandle(realm, remoteObject);
 }
 exports.createCdpHandle = createCdpHandle;
-/**
- * @internal
- */
-async function releaseObject(client, remoteObject) {
-    if (!remoteObject.objectId) {
-        return;
-    }
-    await client
-        .send('Runtime.releaseObject', { objectId: remoteObject.objectId })
-        .catch(error => {
-        // Exceptions might happen in case of a page been navigated or closed.
-        // Swallow these since they are harmless and we don't leak anything in this case.
-        (0, util_js_1.debugError)(error);
-    });
-}
-exports.releaseObject = releaseObject;
 //# sourceMappingURL=ExecutionContext.js.map

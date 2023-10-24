@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { CallbackRegistry } from '../cdp/Connection.js';
+import { CallbackRegistry } from '../common/CallbackRegistry.js';
 import { debug } from '../common/Debug.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { debugError } from '../common/util.js';
@@ -138,8 +138,9 @@ export class BidiConnection extends EventEmitter {
             return;
         }
         this.#closed = true;
-        this.#transport.onmessage = undefined;
-        this.#transport.onclose = undefined;
+        // Both may still be invoked and produce errors
+        this.#transport.onmessage = () => { };
+        this.#transport.onclose = () => { };
         this.#callbacks.clear();
     }
     dispose() {

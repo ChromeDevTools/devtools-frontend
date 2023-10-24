@@ -14,28 +14,14 @@
  * limitations under the License.
  */
 import { CDPSessionEvent } from '../api/CDPSession.js';
-import { EventEmitter, EventSubscription, } from '../common/EventEmitter.js';
+import { EventEmitter, EventSubscription } from '../common/EventEmitter.js';
+import { NetworkManagerEvent, } from '../common/NetworkManagerEvents.js';
 import { debugError, isString } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { DisposableStack } from '../util/disposable.js';
 import { CdpHTTPRequest } from './HTTPRequest.js';
 import { CdpHTTPResponse } from './HTTPResponse.js';
 import { NetworkEventManager, } from './NetworkEventManager.js';
-/**
- * We use symbols to prevent any external parties listening to these events.
- * They are internal to Puppeteer.
- *
- * @internal
- */
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export var NetworkManagerEvent;
-(function (NetworkManagerEvent) {
-    NetworkManagerEvent.Request = Symbol('NetworkManager.Request');
-    NetworkManagerEvent.RequestServedFromCache = Symbol('NetworkManager.RequestServedFromCache');
-    NetworkManagerEvent.Response = Symbol('NetworkManager.Response');
-    NetworkManagerEvent.RequestFailed = Symbol('NetworkManager.RequestFailed');
-    NetworkManagerEvent.RequestFinished = Symbol('NetworkManager.RequestFinished');
-})(NetworkManagerEvent || (NetworkManagerEvent = {}));
 /**
  * @internal
  */

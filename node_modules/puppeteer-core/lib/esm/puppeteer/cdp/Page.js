@@ -58,13 +58,14 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
+import { firstValueFrom, from, raceWith } from '../../third_party/rxjs/rxjs.js';
 import { CDPSessionEvent } from '../api/CDPSession.js';
 import { Page, } from '../api/Page.js';
 import { ConsoleMessage, } from '../common/ConsoleMessage.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { FileChooser } from '../common/FileChooser.js';
-import { TimeoutSettings } from '../common/TimeoutSettings.js';
-import { createClientError, debugError, evaluationString, getReadableAsBuffer, getReadableFromProtocolStream, isString, pageBindingInitString, validateDialogType, valueFromRemoteObject, waitForEvent, waitWithTimeout, } from '../common/util.js';
+import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
+import { createClientError, debugError, evaluationString, getReadableAsBuffer, getReadableFromProtocolStream, pageBindingInitString, timeout, validateDialogType, valueFromRemoteObject, waitForHTTP, } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { AsyncDisposableStack } from '../util/disposable.js';
@@ -76,12 +77,13 @@ import { isTargetClosedError } from './Connection.js';
 import { Coverage } from './Coverage.js';
 import { CdpDialog } from './Dialog.js';
 import { EmulationManager } from './EmulationManager.js';
-import { createCdpHandle, releaseObject } from './ExecutionContext.js';
+import { createCdpHandle } from './ExecutionContext.js';
 import { FirefoxTargetManager } from './FirefoxTargetManager.js';
-import { FrameManager, FrameManagerEvent } from './FrameManager.js';
+import { FrameManager } from './FrameManager.js';
+import { FrameManagerEvent } from './FrameManagerEvents.js';
 import { CdpKeyboard, CdpMouse, CdpTouchscreen } from './Input.js';
 import { MAIN_WORLD } from './IsolatedWorlds.js';
-import { NetworkManagerEvent, } from './NetworkManager.js';
+import { releaseObject } from './JSHandle.js';
 import { Tracing } from './Tracing.js';
 import { WebWorker } from './WebWorker.js';
 /**
@@ -107,12 +109,13 @@ export class CdpPage extends Page {
         return page;
     }
     #closed = false;
-    #client;
-    #tabSession;
-    #target;
+    #targetManager;
+    #primaryTargetClient;
+    #primaryTarget;
+    #tabTargetClient;
+    #tabTarget;
     #keyboard;
     #mouse;
-    #timeoutSettings = new TimeoutSettings();
     #touchscreen;
     #accessibility;
     #frameManager;
@@ -183,7 +186,7 @@ export class CdpPage extends Page {
         [
             CDPSessionEvent.Disconnected,
             () => {
-                this.#sessionCloseDeferred.resolve(new TargetCloseError('Target closed'));
+                this.#sessionCloseDeferred.reject(new TargetCloseError('Target closed'));
             },
         ],
         [
@@ -209,14 +212,18 @@ export class CdpPage extends Page {
     ];
     constructor(client, target, ignoreHTTPSErrors) {
         super();
-        this.#client = client;
-        this.#tabSession = client.parentSession();
-        this.#target = target;
+        this.#primaryTargetClient = client;
+        this.#tabTargetClient = client.parentSession();
+        assert(this.#tabTargetClient, 'Tab target session is not defined.');
+        this.#tabTarget = this.#tabTargetClient._target();
+        assert(this.#tabTarget, 'Tab target is not defined.');
+        this.#primaryTarget = target;
+        this.#targetManager = target._targetManager();
         this.#keyboard = new CdpKeyboard(client);
         this.#mouse = new CdpMouse(client, this.#keyboard);
         this.#touchscreen = new CdpTouchscreen(client, this.#keyboard);
         this.#accessibility = new Accessibility(client);
-        this.#frameManager = new FrameManager(client, this, ignoreHTTPSErrors, this.#timeoutSettings);
+        this.#frameManager = new FrameManager(client, this, ignoreHTTPSErrors, this._timeoutSettings);
         this.#emulationManager = new EmulationManager(client);
         this.#tracing = new Tracing(client);
         this.#coverage = new Coverage(client);
@@ -228,57 +235,54 @@ export class CdpPage extends Page {
             // TODO: Remove any.
             this.#frameManager.networkManager.on(eventName, handler);
         }
+        this.#tabTargetClient.on(CDPSessionEvent.Swapped, this.#onActivation.bind(this));
+        this.#tabTargetClient.on(CDPSessionEvent.Ready, this.#onSecondaryTarget.bind(this));
+        this.#targetManager.on("targetGone" /* TargetManagerEvent.TargetGone */, this.#onDetachedFromTarget);
+        this.#tabTarget._isClosedDeferred
+            .valueOrThrow()
+            .then(() => {
+            this.#targetManager.off("targetGone" /* TargetManagerEvent.TargetGone */, this.#onDetachedFromTarget);
+            this.emit("close" /* PageEvent.Close */, undefined);
+            this.#closed = true;
+        })
+            .catch(debugError);
         this.#setupPrimaryTargetListeners();
-        this.#tabSession?.on(CDPSessionEvent.Swapped, async (newSession) => {
-            this.#client = newSession;
-            assert(this.#client instanceof CdpCDPSession, 'CDPSession is not instance of CDPSessionImpl');
-            this.#target = this.#client._target();
-            assert(this.#target, 'Missing target on swap');
-            this.#keyboard.updateClient(newSession);
-            this.#mouse.updateClient(newSession);
-            this.#touchscreen.updateClient(newSession);
-            this.#accessibility.updateClient(newSession);
-            this.#emulationManager.updateClient(newSession);
-            this.#tracing.updateClient(newSession);
-            this.#coverage.updateClient(newSession);
-            await this.#frameManager.swapFrameTree(newSession);
-            this.#setupPrimaryTargetListeners();
-        });
-        this.#tabSession?.on(CDPSessionEvent.Ready, session => {
-            assert(session instanceof CdpCDPSession);
-            if (session._target()._subtype() !== 'prerender') {
-                return;
-            }
-            this.#frameManager.registerSpeculativeSession(session).catch(debugError);
-            this.#emulationManager
-                .registerSpeculativeSession(session)
-                .catch(debugError);
-        });
+    }
+    async #onActivation(newSession) {
+        this.#primaryTargetClient = newSession;
+        assert(this.#primaryTargetClient instanceof CdpCDPSession, 'CDPSession is not instance of CDPSessionImpl');
+        this.#primaryTarget = this.#primaryTargetClient._target();
+        assert(this.#primaryTarget, 'Missing target on swap');
+        this.#keyboard.updateClient(newSession);
+        this.#mouse.updateClient(newSession);
+        this.#touchscreen.updateClient(newSession);
+        this.#accessibility.updateClient(newSession);
+        this.#emulationManager.updateClient(newSession);
+        this.#tracing.updateClient(newSession);
+        this.#coverage.updateClient(newSession);
+        await this.#frameManager.swapFrameTree(newSession);
+        this.#setupPrimaryTargetListeners();
+    }
+    async #onSecondaryTarget(session) {
+        assert(session instanceof CdpCDPSession);
+        if (session._target()._subtype() !== 'prerender') {
+            return;
+        }
+        this.#frameManager.registerSpeculativeSession(session).catch(debugError);
+        this.#emulationManager
+            .registerSpeculativeSession(session)
+            .catch(debugError);
     }
     /**
      * Sets up listeners for the primary target. The primary target can change
      * during a navigation to a prerended page.
      */
     #setupPrimaryTargetListeners() {
-        this.#client.on(CDPSessionEvent.Ready, this.#onAttachedToTarget);
+        this.#primaryTargetClient.on(CDPSessionEvent.Ready, this.#onAttachedToTarget);
         for (const [eventName, handler] of this.#sessionHandlers) {
             // TODO: Remove any.
-            this.#client.on(eventName, handler);
+            this.#primaryTargetClient.on(eventName, handler);
         }
-        this.#target
-            ._targetManager()
-            .on("targetGone" /* TargetManagerEvent.TargetGone */, this.#onDetachedFromTarget);
-        this.#target._isClosedDeferred
-            .valueOrThrow()
-            .then(() => {
-            this.#client.off(CDPSessionEvent.Ready, this.#onAttachedToTarget);
-            this.#target
-                ._targetManager()
-                .off("targetGone" /* TargetManagerEvent.TargetGone */, this.#onDetachedFromTarget);
-            this.emit("close" /* PageEvent.Close */, undefined);
-            this.#closed = true;
-        })
-            .catch(debugError);
     }
     #onDetachedFromTarget = (target) => {
         const sessionId = target._session()?.id();
@@ -302,9 +306,9 @@ export class CdpPage extends Page {
     async #initialize() {
         try {
             await Promise.all([
-                this.#frameManager.initialize(this.#client),
-                this.#client.send('Performance.enable'),
-                this.#client.send('Log.enable'),
+                this.#frameManager.initialize(this.#primaryTargetClient),
+                this.#primaryTargetClient.send('Performance.enable'),
+                this.#primaryTargetClient.send('Log.enable'),
             ]);
         }
         catch (err) {
@@ -341,7 +345,7 @@ export class CdpPage extends Page {
         }
     }
     _client() {
-        return this.#client;
+        return this.#primaryTargetClient;
     }
     isServiceWorkerBypassed() {
         return this.#serviceWorkerBypassed;
@@ -354,7 +358,7 @@ export class CdpPage extends Page {
     }
     async waitForFileChooser(options = {}) {
         const needsEnable = this.#fileChooserDeferreds.size === 0;
-        const { timeout = this.#timeoutSettings.timeout() } = options;
+        const { timeout = this._timeoutSettings.timeout() } = options;
         const deferred = Deferred.create({
             message: `Waiting for \`FileChooser\` failed: ${timeout}ms exceeded`,
             timeout,
@@ -362,7 +366,7 @@ export class CdpPage extends Page {
         this.#fileChooserDeferreds.add(deferred);
         let enablePromise;
         if (needsEnable) {
-            enablePromise = this.#client.send('Page.setInterceptFileChooserDialog', {
+            enablePromise = this.#primaryTargetClient.send('Page.setInterceptFileChooserDialog', {
                 enabled: true,
             });
         }
@@ -382,13 +386,13 @@ export class CdpPage extends Page {
         return await this.#emulationManager.setGeolocation(options);
     }
     target() {
-        return this.#target;
+        return this.#primaryTarget;
     }
     browser() {
-        return this.#target.browser();
+        return this.#primaryTarget.browser();
     }
     browserContext() {
-        return this.#target.browserContext();
+        return this.#primaryTarget.browserContext();
     }
     #onTargetCrashed() {
         this.emit("error" /* PageEvent.Error */, new Error('Page crashed!'));
@@ -397,7 +401,7 @@ export class CdpPage extends Page {
         const { level, text, args, source, url, lineNumber } = event.entry;
         if (args) {
             args.map(arg => {
-                return releaseObject(this.#client, arg);
+                return releaseObject(this.#primaryTargetClient, arg);
             });
         }
         if (source !== 'worker') {
@@ -433,11 +437,13 @@ export class CdpPage extends Page {
     }
     async setBypassServiceWorker(bypass) {
         this.#serviceWorkerBypassed = bypass;
-        return await this.#client.send('Network.setBypassServiceWorker', { bypass });
+        return await this.#primaryTargetClient.send('Network.setBypassServiceWorker', { bypass });
     }
     async setDragInterception(enabled) {
         this.#userDragInterceptionEnabled = enabled;
-        return await this.#client.send('Input.setInterceptDrags', { enabled });
+        return await this.#primaryTargetClient.send('Input.setInterceptDrags', {
+            enabled,
+        });
     }
     async setOfflineMode(enabled) {
         return await this.#frameManager.networkManager.setOfflineMode(enabled);
@@ -446,13 +452,13 @@ export class CdpPage extends Page {
         return await this.#frameManager.networkManager.emulateNetworkConditions(networkConditions);
     }
     setDefaultNavigationTimeout(timeout) {
-        this.#timeoutSettings.setDefaultNavigationTimeout(timeout);
+        this._timeoutSettings.setDefaultNavigationTimeout(timeout);
     }
     setDefaultTimeout(timeout) {
-        this.#timeoutSettings.setDefaultTimeout(timeout);
+        this._timeoutSettings.setDefaultTimeout(timeout);
     }
     getDefaultTimeout() {
-        return this.#timeoutSettings.timeout();
+        return this._timeoutSettings.timeout();
     }
     async queryObjects(prototypeHandle) {
         assert(!prototypeHandle.disposed, 'Prototype JSHandle is disposed!');
@@ -463,7 +469,7 @@ export class CdpPage extends Page {
         return createCdpHandle(this.mainFrame().mainRealm(), response.objects);
     }
     async cookies(...urls) {
-        const originalCookies = (await this.#client.send('Network.getCookies', {
+        const originalCookies = (await this.#primaryTargetClient.send('Network.getCookies', {
             urls: urls.length ? urls : [this.url()],
         })).cookies;
         const unsupportedCookieAttributes = ['priority'];
@@ -482,7 +488,7 @@ export class CdpPage extends Page {
             if (!cookie.url && pageURL.startsWith('http')) {
                 item.url = pageURL;
             }
-            await this.#client.send('Network.deleteCookies', item);
+            await this.#primaryTargetClient.send('Network.deleteCookies', item);
         }
     }
     async setCookie(...cookies) {
@@ -499,7 +505,9 @@ export class CdpPage extends Page {
         });
         await this.deleteCookie(...items);
         if (items.length) {
-            await this.#client.send('Network.setCookies', { cookies: items });
+            await this.#primaryTargetClient.send('Network.setCookies', {
+                cookies: items,
+            });
         }
     }
     async exposeFunction(name, pptrFunction) {
@@ -517,8 +525,8 @@ export class CdpPage extends Page {
         }
         this.#bindings.set(name, binding);
         const expression = pageBindingInitString('exposedFun', name);
-        await this.#client.send('Runtime.addBinding', { name });
-        const { identifier } = await this.#client.send('Page.addScriptToEvaluateOnNewDocument', {
+        await this.#primaryTargetClient.send('Runtime.addBinding', { name });
+        const { identifier } = await this.#primaryTargetClient.send('Page.addScriptToEvaluateOnNewDocument', {
             source: expression,
         });
         this.#exposedFunctions.set(name, identifier);
@@ -531,7 +539,7 @@ export class CdpPage extends Page {
         if (!exposedFun) {
             throw new Error(`Failed to remove page binding with name ${name}: window['${name}'] does not exists!`);
         }
-        await this.#client.send('Runtime.removeBinding', { name });
+        await this.#primaryTargetClient.send('Runtime.removeBinding', { name });
         await this.removeScriptToEvaluateOnNewDocument(exposedFun);
         await Promise.all(this.frames().map(frame => {
             return frame
@@ -555,7 +563,7 @@ export class CdpPage extends Page {
         return await this.#frameManager.networkManager.setUserAgent(userAgent, userAgentMetadata);
     }
     async metrics() {
-        const response = await this.#client.send('Performance.getMetrics');
+        const response = await this.#primaryTargetClient.send('Performance.getMetrics');
         return this.#buildMetricsObject(response.metrics);
     }
     #emitMetrics(event) {
@@ -593,7 +601,7 @@ export class CdpPage extends Page {
             // @see https://github.com/puppeteer/puppeteer/issues/3865
             return;
         }
-        const context = this.#frameManager.getExecutionContextById(event.executionContextId, this.#client);
+        const context = this.#frameManager.getExecutionContextById(event.executionContextId, this.#primaryTargetClient);
         if (!context) {
             debugError(new Error(`ExecutionContext not found for a console message: ${JSON.stringify(event)}`));
             return;
@@ -617,7 +625,7 @@ export class CdpPage extends Page {
         if (type !== 'exposedFun') {
             return;
         }
-        const context = this.#frameManager.executionContextById(event.executionContextId, this.#client);
+        const context = this.#frameManager.executionContextById(event.executionContextId, this.#primaryTargetClient);
         if (!context) {
             return;
         }
@@ -658,13 +666,13 @@ export class CdpPage extends Page {
     }
     #onDialog(event) {
         const type = validateDialogType(event.type);
-        const dialog = new CdpDialog(this.#client, type, event.message, event.defaultPrompt);
+        const dialog = new CdpDialog(this.#primaryTargetClient, type, event.message, event.defaultPrompt);
         this.emit("dialog" /* PageEvent.Dialog */, dialog);
     }
     async reload(options) {
         const [result] = await Promise.all([
             this.waitForNavigation(options),
-            this.#client.send('Page.reload'),
+            this.#primaryTargetClient.send('Page.reload'),
         ]);
         return result;
     }
@@ -672,31 +680,15 @@ export class CdpPage extends Page {
         return await this.target().createCDPSession();
     }
     async waitForRequest(urlOrPredicate, options = {}) {
-        const { timeout = this.#timeoutSettings.timeout() } = options;
-        return await waitForEvent(this.#frameManager.networkManager, NetworkManagerEvent.Request, async (request) => {
-            if (isString(urlOrPredicate)) {
-                return urlOrPredicate === request.url();
-            }
-            if (typeof urlOrPredicate === 'function') {
-                return !!(await urlOrPredicate(request));
-            }
-            return false;
-        }, timeout, this.#sessionCloseDeferred.valueOrThrow());
+        const { timeout = this._timeoutSettings.timeout() } = options;
+        return await waitForHTTP(this.#frameManager.networkManager, NetworkManagerEvent.Request, urlOrPredicate, timeout, this.#sessionCloseDeferred);
     }
     async waitForResponse(urlOrPredicate, options = {}) {
-        const { timeout = this.#timeoutSettings.timeout() } = options;
-        return await waitForEvent(this.#frameManager.networkManager, NetworkManagerEvent.Response, async (response) => {
-            if (isString(urlOrPredicate)) {
-                return urlOrPredicate === response.url();
-            }
-            if (typeof urlOrPredicate === 'function') {
-                return !!(await urlOrPredicate(response));
-            }
-            return false;
-        }, timeout, this.#sessionCloseDeferred.valueOrThrow());
+        const { timeout = this._timeoutSettings.timeout() } = options;
+        return await waitForHTTP(this.#frameManager.networkManager, NetworkManagerEvent.Response, urlOrPredicate, timeout, this.#sessionCloseDeferred);
     }
     async waitForNetworkIdle(options = {}) {
-        const { idleTime = 500, timeout = this.#timeoutSettings.timeout() } = options;
+        const { idleTime = 500, timeout = this._timeoutSettings.timeout() } = options;
         await this._waitForNetworkIdle(this.#frameManager.networkManager, idleTime, timeout, this.#sessionCloseDeferred);
     }
     async goBack(options = {}) {
@@ -706,25 +698,27 @@ export class CdpPage extends Page {
         return await this.#go(+1, options);
     }
     async #go(delta, options) {
-        const history = await this.#client.send('Page.getNavigationHistory');
+        const history = await this.#primaryTargetClient.send('Page.getNavigationHistory');
         const entry = history.entries[history.currentIndex + delta];
         if (!entry) {
             return null;
         }
         const result = await Promise.all([
             this.waitForNavigation(options),
-            this.#client.send('Page.navigateToHistoryEntry', { entryId: entry.id }),
+            this.#primaryTargetClient.send('Page.navigateToHistoryEntry', {
+                entryId: entry.id,
+            }),
         ]);
         return result[0];
     }
     async bringToFront() {
-        await this.#client.send('Page.bringToFront');
+        await this.#primaryTargetClient.send('Page.bringToFront');
     }
     async setJavaScriptEnabled(enabled) {
         return await this.#emulationManager.setJavaScriptEnabled(enabled);
     }
     async setBypassCSP(enabled) {
-        await this.#client.send('Page.setBypassCSP', { enabled });
+        await this.#primaryTargetClient.send('Page.setBypassCSP', { enabled });
     }
     async emulateMediaType(type) {
         return await this.#emulationManager.emulateMediaType(type);
@@ -756,13 +750,13 @@ export class CdpPage extends Page {
     }
     async evaluateOnNewDocument(pageFunction, ...args) {
         const source = evaluationString(pageFunction, ...args);
-        const { identifier } = await this.#client.send('Page.addScriptToEvaluateOnNewDocument', {
+        const { identifier } = await this.#primaryTargetClient.send('Page.addScriptToEvaluateOnNewDocument', {
             source,
         });
         return { identifier };
     }
     async removeScriptToEvaluateOnNewDocument(identifier) {
-        await this.#client.send('Page.removeScriptToEvaluateOnNewDocument', {
+        await this.#primaryTargetClient.send('Page.removeScriptToEvaluateOnNewDocument', {
             identifier,
         });
     }
@@ -795,10 +789,10 @@ export class CdpPage extends Page {
                 clip = getIntersectionRect(clip, viewport);
             }
             // We need to do these spreads because Firefox doesn't allow unknown options.
-            const { data } = await this.#client.send('Page.captureScreenshot', {
+            const { data } = await this.#primaryTargetClient.send('Page.captureScreenshot', {
                 format: type,
                 ...(optimizeForSpeed ? { optimizeForSpeed } : {}),
-                ...(quality !== undefined ? { quality } : {}),
+                ...(quality !== undefined ? { quality: Math.round(quality) } : {}),
                 clip: clip && {
                     ...clip,
                     scale: clip.scale ?? 1,
@@ -819,11 +813,11 @@ export class CdpPage extends Page {
         }
     }
     async createPDFStream(options = {}) {
-        const { landscape, displayHeaderFooter, headerTemplate, footerTemplate, printBackground, scale, width: paperWidth, height: paperHeight, margin, pageRanges, preferCSSPageSize, omitBackground, timeout, } = this._getPDFOptions(options);
+        const { landscape, displayHeaderFooter, headerTemplate, footerTemplate, printBackground, scale, width: paperWidth, height: paperHeight, margin, pageRanges, preferCSSPageSize, omitBackground, timeout: ms, tagged: generateTaggedPDF, } = this._getPDFOptions(options);
         if (omitBackground) {
             await this.#emulationManager.setTransparentBackgroundColor();
         }
-        const printCommandPromise = this.#client.send('Page.printToPDF', {
+        const printCommandPromise = this.#primaryTargetClient.send('Page.printToPDF', {
             transferMode: 'ReturnAsStream',
             landscape,
             displayHeaderFooter,
@@ -839,13 +833,14 @@ export class CdpPage extends Page {
             marginRight: margin.right,
             pageRanges,
             preferCSSPageSize,
+            generateTaggedPDF,
         });
-        const result = await waitWithTimeout(printCommandPromise, 'Page.printToPDF', timeout);
+        const result = await firstValueFrom(from(printCommandPromise).pipe(raceWith(timeout(ms))));
         if (omitBackground) {
             await this.#emulationManager.resetDefaultBackgroundColor();
         }
         assert(result.stream, '`stream` is missing from `Page.printToPDF');
-        return await getReadableFromProtocolStream(this.#client, result.stream);
+        return await getReadableFromProtocolStream(this.#primaryTargetClient, result.stream);
     }
     async pdf(options = {}) {
         const { path = undefined } = options;
@@ -855,17 +850,17 @@ export class CdpPage extends Page {
         return buffer;
     }
     async close(options = { runBeforeUnload: undefined }) {
-        const connection = this.#client.connection();
+        const connection = this.#primaryTargetClient.connection();
         assert(connection, 'Protocol error: Connection closed. Most likely the page has been closed.');
         const runBeforeUnload = !!options.runBeforeUnload;
         if (runBeforeUnload) {
-            await this.#client.send('Page.close');
+            await this.#primaryTargetClient.send('Page.close');
         }
         else {
             await connection.send('Target.closeTarget', {
-                targetId: this.#target._targetId,
+                targetId: this.#primaryTarget._targetId,
             });
-            await this.#target._isClosedDeferred.valueOrThrow();
+            await this.#tabTarget._isClosedDeferred.valueOrThrow();
         }
     }
     isClosed() {

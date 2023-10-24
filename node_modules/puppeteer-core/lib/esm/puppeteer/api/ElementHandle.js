@@ -98,6 +98,7 @@ import { isString, withSourcePuppeteerURLIfNone } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { throwIfDisposed } from '../util/decorators.js';
+import { _isElementHandle } from './ElementHandleSymbol.js';
 import { JSHandle } from './JSHandle.js';
 /**
  * ElementHandle represents an in-page DOM element.
@@ -301,6 +302,7 @@ let ElementHandle = (() => {
         constructor(handle) {
             super();
             this.handle = handle;
+            this[_isElementHandle] = true;
         }
         /**
          * @internal

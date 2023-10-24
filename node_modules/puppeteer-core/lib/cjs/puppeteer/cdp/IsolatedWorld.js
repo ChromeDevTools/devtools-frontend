@@ -67,7 +67,6 @@ const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
 const Mutex_js_1 = require("../util/Mutex.js");
 const ExecutionContext_js_1 = require("./ExecutionContext.js");
-const Frame_js_1 = require("./Frame.js");
 /**
  * @internal
  */
@@ -97,7 +96,7 @@ class IsolatedWorld extends Realm_js_1.Realm {
     }
     clearContext() {
         this.#context = Deferred_js_1.Deferred.create();
-        if (this.#frameOrWorker instanceof Frame_js_1.CdpFrame) {
+        if ('clearDocumentHandle' in this.#frameOrWorker) {
             this.#frameOrWorker.clearDocumentHandle();
         }
     }

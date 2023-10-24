@@ -16,7 +16,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiConnection = void 0;
-const Connection_js_1 = require("../cdp/Connection.js");
+const CallbackRegistry_js_1 = require("../common/CallbackRegistry.js");
 const Debug_js_1 = require("../common/Debug.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
@@ -32,7 +32,7 @@ class BidiConnection extends EventEmitter_js_1.EventEmitter {
     #delay;
     #timeout = 0;
     #closed = false;
-    #callbacks = new Connection_js_1.CallbackRegistry();
+    #callbacks = new CallbackRegistry_js_1.CallbackRegistry();
     #browsingContexts = new Map();
     constructor(url, transport, delay = 0, timeout) {
         super();
@@ -141,8 +141,9 @@ class BidiConnection extends EventEmitter_js_1.EventEmitter {
             return;
         }
         this.#closed = true;
-        this.#transport.onmessage = undefined;
-        this.#transport.onclose = undefined;
+        // Both may still be invoked and produce errors
+        this.#transport.onmessage = () => { };
+        this.#transport.onclose = () => { };
         this.#callbacks.clear();
     }
     dispose() {

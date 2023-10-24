@@ -16,7 +16,7 @@
 
 import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 
-import {CallbackRegistry} from '../cdp/Connection.js';
+import {CallbackRegistry} from '../common/CallbackRegistry.js';
 import type {ConnectionTransport} from '../common/ConnectionTransport.js';
 import {debug} from '../common/Debug.js';
 import {EventEmitter} from '../common/EventEmitter.js';
@@ -288,8 +288,9 @@ export class BidiConnection extends EventEmitter<BidiEvents> {
       return;
     }
     this.#closed = true;
-    this.#transport.onmessage = undefined;
-    this.#transport.onclose = undefined;
+    // Both may still be invoked and produce errors
+    this.#transport.onmessage = () => {};
+    this.#transport.onclose = () => {};
 
     this.#callbacks.clear();
   }

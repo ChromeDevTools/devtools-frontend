@@ -38,4 +38,8 @@ export declare class CdpJSHandle<T = unknown> extends JSHandle<T> {
     get id(): string | undefined;
     remoteObject(): Protocol.Runtime.RemoteObject;
 }
+/**
+ * @internal
+ */
+export declare function releaseObject(client: CDPSession, remoteObject: Protocol.Runtime.RemoteObject): Promise<void>;
 //# sourceMappingURL=JSHandle.d.ts.map

@@ -1,7 +1,23 @@
+/**
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import { CDPSession, CDPSessionEvent, } from '../api/CDPSession.js';
+import { CallbackRegistry } from '../common/CallbackRegistry.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { assert } from '../util/assert.js';
-import { CallbackRegistry, createProtocolErrorMessage, } from './Connection.js';
+import { createProtocolErrorMessage } from '../util/ErrorLike.js';
 /**
  * @internal
  */
@@ -44,7 +60,8 @@ export class CdpCDPSession extends CDPSession {
     }
     parentSession() {
         if (!this.#parentSessionId) {
-            return;
+            // To make it work in Firefox that does not have parent (tab) sessions.
+            return this;
         }
         const parent = this.#connection?.session(this.#parentSessionId);
         return parent ?? undefined;

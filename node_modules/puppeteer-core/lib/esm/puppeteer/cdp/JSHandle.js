@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 import { JSHandle } from '../api/JSHandle.js';
-import { valueFromRemoteObject } from '../common/util.js';
-import { releaseObject } from './ExecutionContext.js';
+import { debugError, valueFromRemoteObject } from '../common/util.js';
 /**
  * @internal
  */
@@ -76,5 +75,20 @@ export class CdpJSHandle extends JSHandle {
     remoteObject() {
         return this.#remoteObject;
     }
+}
+/**
+ * @internal
+ */
+export async function releaseObject(client, remoteObject) {
+    if (!remoteObject.objectId) {
+        return;
+    }
+    await client
+        .send('Runtime.releaseObject', { objectId: remoteObject.objectId })
+        .catch(error => {
+        // Exceptions might happen in case of a page been navigated or closed.
+        // Swallow these since they are harmless and we don't leak anything in this case.
+        debugError(error);
+    });
 }
 //# sourceMappingURL=JSHandle.js.map

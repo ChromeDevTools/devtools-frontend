@@ -17,13 +17,14 @@ export class Deferred {
         this.#resolver = resolve;
     });
     #timeoutId;
+    #timeoutError;
     constructor(opts) {
-        this.#timeoutId =
-            opts && opts.timeout > 0
-                ? setTimeout(() => {
-                    this.reject(new TimeoutError(opts.message));
-                }, opts.timeout)
-                : undefined;
+        if (opts && opts.timeout > 0) {
+            this.#timeoutError = new TimeoutError(opts.message);
+            this.#timeoutId = setTimeout(() => {
+                this.reject(this.#timeoutError);
+            }, opts.timeout);
+        }
     }
     #finish(value) {
         clearTimeout(this.#timeoutId);

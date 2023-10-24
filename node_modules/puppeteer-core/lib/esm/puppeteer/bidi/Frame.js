@@ -48,7 +48,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     done = true;
 };
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import { firstValueFrom, from, fromEvent, merge, raceWith, switchMap, } from '../../third_party/rxjs/rxjs.js';
+import { firstValueFrom, from, fromEvent, merge, raceWith, switchMap, forkJoin, first, } from '../../third_party/rxjs/rxjs.js';
 import { Frame, throwIfDetached, } from '../api/Frame.js';
 import { ProtocolError, TimeoutError } from '../common/Errors.js';
 import { UTILITY_WORLD_NAME, setPageContent, waitWithTimeout, } from '../common/util.js';
@@ -145,16 +145,12 @@ let BidiFrame = (() => {
             }
         }
         async setContent(html, options = {}) {
-            const { waitUntil = 'load', timeout = this.#timeoutSettings.navigationTimeout(), } = options;
+            const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
             const waitUntilEvent = lifeCycleToSubscribedEvent.get(getWaitUntilSingle(waitUntil));
-            await Promise.all([
-                setPageContent(this, html),
-                waitWithTimeout(new Promise(resolve => {
-                    this.#context.once(waitUntilEvent, () => {
-                        resolve();
-                    });
-                }), waitUntilEvent, timeout),
-            ]);
+            await firstValueFrom(forkJoin([
+                fromEvent(this.#context, waitUntilEvent).pipe(first()),
+                from(setPageContent(this, html)),
+            ]).pipe(raceWith(timeout(ms))));
         }
         context() {
             return this.#context;

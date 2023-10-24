@@ -199,6 +199,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       this.fireStyleSheetChanged(styleSheetId, edit);
       return true;
     } catch (e) {
+      console.error(e);
       return false;
     }
   }
@@ -219,6 +220,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       this.fireStyleSheetChanged(styleSheetId, edit);
       return true;
     } catch (e) {
+      console.error(e);
       return false;
     }
   }
@@ -240,6 +242,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       this.fireStyleSheetChanged(styleSheetId, edit);
       return true;
     } catch (e) {
+      console.error(e);
       return false;
     }
   }
@@ -260,6 +263,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       this.fireStyleSheetChanged(styleSheetId, edit);
       return true;
     } catch (e) {
+      console.error(e);
       return false;
     }
   }
@@ -451,6 +455,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       this.fireStyleSheetChanged(styleSheetId, edit);
       return true;
     } catch (e) {
+      console.error(e);
       return false;
     }
   }
@@ -473,6 +478,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       this.fireStyleSheetChanged(styleSheetId, edit);
       return true;
     } catch (e) {
+      console.error(e);
       return false;
     }
   }
@@ -494,6 +500,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       this.fireStyleSheetChanged(styleSheetId, edit);
       return true;
     } catch (e) {
+      console.error(e);
       return false;
     }
   }
@@ -534,6 +541,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       this.fireStyleSheetChanged(styleSheetId, edit);
       return new CSSStyleRule(this, rule);
     } catch (e) {
+      console.error(e);
       return null;
     }
   }
@@ -557,6 +565,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       }
       return this.#styleSheetIdToHeader.get(styleSheetId) || null;
     } catch (e) {
+      console.error(e);
       return null;
     }
   }

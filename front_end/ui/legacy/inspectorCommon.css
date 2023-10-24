@@ -76,13 +76,15 @@
 }
 
 body {
+  --default-font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
+
   height: 100%;
   width: 100%;
   position: relative;
   overflow: hidden;
   margin: 0;
   cursor: default;
-  font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
+  font-family: var(--default-font-family);
   font-size: 12px;
   tab-size: 4;
   user-select: none;
@@ -92,15 +94,15 @@ body {
 
 /* Default fonts */
 .platform-linux {
-  font-family: Roboto, Ubuntu, Arial, sans-serif;
+  --default-font-family: roboto, ubuntu, arial, sans-serif;
 }
 
 .platform-mac {
-  font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
+  --default-font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
 }
 
 .platform-windows {
-  font-family: "Segoe UI", Tahoma, sans-serif;
+  --default-font-family: "Segoe UI", tahoma, sans-serif;
 }
 
 :focus {

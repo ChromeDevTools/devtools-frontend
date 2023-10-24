@@ -172,6 +172,12 @@ export class CSSStyleRule extends CSSRule {
   }
 
   selectorRange(): TextUtils.TextRange.TextRange|null {
+    // Nested group rules might not contain a selector.
+    // https://www.w3.org/TR/css-nesting-1/#conditionals
+    if (this.selectors.length === 0) {
+      return null;
+    }
+
     const firstRange = this.selectors[0].range;
     const lastRange = this.selectors[this.selectors.length - 1].range;
     if (!firstRange || !lastRange) {

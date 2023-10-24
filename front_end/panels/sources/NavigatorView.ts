@@ -1105,6 +1105,7 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
       const options = {
         isContentScript: node.recursiveProperties.exclusivelyContentScripts || false,
         isKnownThirdParty: node.recursiveProperties.exclusivelyThirdParty || false,
+        isCurrentlyIgnoreListed: node.recursiveProperties.exclusivelyIgnored || false,
       };
       for (const {text, callback} of Bindings.IgnoreListManager.IgnoreListManager.instance()
                .getIgnoreListFolderContextMenuItems(url, options)) {

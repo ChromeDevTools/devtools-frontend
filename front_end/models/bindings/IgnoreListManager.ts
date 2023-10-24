@@ -41,6 +41,7 @@ let ignoreListManagerInstance: IgnoreListManager|undefined;
 export type IgnoreListGeneralRules = {
   isContentScript?: boolean,
   isKnownThirdParty?: boolean,
+  isCurrentlyIgnoreListed?: boolean,
 };
 
 export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
@@ -497,7 +498,9 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
         text: i18nString(UIStrings.removeFromIgnoreList),
         callback: this.unIgnoreListURL.bind(this, url, options),
       });
-    } else {
+    } else if (!options?.isCurrentlyIgnoreListed) {
+      // Provide options to add to ignore list, unless folder currently displays
+      // as entirely ignored.
       menuItems.push({
         text: i18nString(UIStrings.addDirectoryToIgnoreList),
         callback: this.ignoreListRegex.bind(this, regexValue),

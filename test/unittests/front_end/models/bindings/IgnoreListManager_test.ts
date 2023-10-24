@@ -83,7 +83,7 @@ describeWithMockConnection('IgnoreListManager', () => {
   //  </html>
   //
   const url = 'http://example.com/index.html' as Platform.DevToolsPath.UrlString;
-  const webpackUrl = 'webpack:///src/foo.js' as Platform.DevToolsPath.UrlString;
+  const webpackUrl = 'webpack:///src/subfolder/foo.js' as Platform.DevToolsPath.UrlString;
   const webpackFolderUrl = 'webpack:///src' as Platform.DevToolsPath.UrlString;
   const webpackSubfolderUrl = 'webpack:///src/subfolder' as Platform.DevToolsPath.UrlString;
   const contentScriptFolderUrl = 'chrome-extension://abc' as Platform.DevToolsPath.UrlString;
@@ -120,6 +120,7 @@ describeWithMockConnection('IgnoreListManager', () => {
       hasSourceURLComment: true,
     },
   ];
+  const ALL_URLS = [...sourceMap.sources, ...SCRIPTS.map(({sourceURL}) => sourceURL)];
 
   beforeEach(async () => {
     const forceNew = true;
@@ -186,11 +187,19 @@ describeWithMockConnection('IgnoreListManager', () => {
   }
 
   // Wrapper around getIgnoreListFolderContextMenuItems to make its result more convenient for testing
-  function getFolderContextMenu(
-      url: Platform.DevToolsPath.UrlString, options?: Bindings.IgnoreListManager.IgnoreListGeneralRules):
+  function getFolderContextMenu(url: Platform.DevToolsPath.UrlString):
       {items: Array<string>, callbacks: Map<string, () => void>} {
     const items: Array<string> = [];
     const callbacks: Map<string, () => void> = new Map();
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const options: Bindings.IgnoreListManager.IgnoreListGeneralRules = {
+      isContentScript: url === contentScriptFolderUrl,
+      isKnownThirdParty: url === sourceMapThirdPartyFolderUrl,
+      isCurrentlyIgnoreListed: ALL_URLS.every(
+          scriptUrl => !scriptUrl.startsWith(url) ||
+              ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(
+                  notNull(workspace.uiSourceCodeForURL(scriptUrl)))),
+    };
 
     for (const {text, callback} of ignoreListManager.getIgnoreListFolderContextMenuItems(url, options)) {
       items.push(text);
@@ -258,7 +267,7 @@ describeWithMockConnection('IgnoreListManager', () => {
     assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode));
     assert.isTrue(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(contentScriptUiSourceCode));
 
-    let {items, callbacks} = getFolderContextMenu(contentScriptFolderUrl, {isContentScript: true});
+    let {items, callbacks} = getFolderContextMenu(contentScriptFolderUrl);
 
     assert.sameMembers(items, [UIStrings.removeFromIgnoreList]);
 
@@ -267,7 +276,7 @@ describeWithMockConnection('IgnoreListManager', () => {
     assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode));
     assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(contentScriptUiSourceCode));
 
-    ({items, callbacks} = getFolderContextMenu(contentScriptFolderUrl, {isContentScript: true}));
+    ({items, callbacks} = getFolderContextMenu(contentScriptFolderUrl));
     assert.sameMembers(items, [UIStrings.addDirectoryToIgnoreList, UIStrings.addAllContentScriptsToIgnoreList]);
 
     notNull(callbacks.get(UIStrings.addAllContentScriptsToIgnoreList))();
@@ -297,7 +306,7 @@ describeWithMockConnection('IgnoreListManager', () => {
   });
 
   it('folder context menu enables and disables ignore listing for third party scripts', () => {
-    let {items, callbacks} = getFolderContextMenu(sourceMapThirdPartyFolderUrl, {isKnownThirdParty: true});
+    let {items, callbacks} = getFolderContextMenu(sourceMapThirdPartyFolderUrl);
 
     assert.sameMembers(items, [UIStrings.removeFromIgnoreList]);
 
@@ -306,7 +315,7 @@ describeWithMockConnection('IgnoreListManager', () => {
     assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode));
     assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(thirdPartyUiSourceCode));
 
-    ({items, callbacks} = getFolderContextMenu(sourceMapThirdPartyFolderUrl, {isKnownThirdParty: true}));
+    ({items, callbacks} = getFolderContextMenu(sourceMapThirdPartyFolderUrl));
 
     assert.sameMembers(items, [UIStrings.addDirectoryToIgnoreList, UIStrings.addAllThirdPartyScriptsToIgnoreList]);
 
@@ -529,6 +538,23 @@ describeWithMockConnection('IgnoreListManager', () => {
 
     assert.isTrue(ignoreListManager.enableIgnoreListing);
     assert.isTrue(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(thirdPartyUiSourceCode));
+  });
+
+  it('provides no context menu items when all contents in folder are individually ignored', () => {
+    let {items, callbacks} = getContextMenu(webpackUiSourceCode);
+
+    assert.sameMembers(items, [UIStrings.addScriptToIgnoreList]);
+
+    // Disable webpack script
+    notNull(callbacks.get(UIStrings.addScriptToIgnoreList))();
+
+    assert.isTrue(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(webpackUiSourceCode));
+
+    // Get context menu for folder only containing the script we disabled
+    ({items, callbacks} = getFolderContextMenu(webpackFolderUrl));
+
+    // Verify that no context menu items are provided
+    assert.sameMembers(items, []);
   });
 
   describe('isUserOrSourceMapIgnoreListedUISourceCode', () => {

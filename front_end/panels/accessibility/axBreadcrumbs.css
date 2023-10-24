@@ -87,7 +87,7 @@
 }
 
 .ax-breadcrumbs .ax-node.parent.inspected:focus::before {
-  background-color: var(--sys-color-cdt-base-container);
+  background-color: var(--sys-color-on-tonal-container);
 }
 
 .ax-breadcrumbs .ax-node.inspected:focus {

@@ -4,11 +4,13 @@
 
 import * as Platform from '../../core/platform/platform.js';
 import * as Elements from '../../panels/elements/elements.js';
+import {TestRunner} from '../test_runner/test_runner.js';
+
+import {selectNodeAndWaitForStyles} from './ElementsTestRunner.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.ElementsTestRunner = self.ElementsTestRunner || {};
 
 function flattenRuleRanges(rule) {
   const ranges = [];
@@ -91,15 +93,15 @@ function compareRuleRanges(lazyRule, originalRule) {
   return true;
 }
 
-ElementsTestRunner.validateRuleRanges = function(selector, rules, callback) {
-  ElementsTestRunner.selectNodeAndWaitForStyles('other', onOtherSelected);
+export const validateRuleRanges = function(selector, rules, callback) {
+  selectNodeAndWaitForStyles('other', onOtherSelected);
 
   function onOtherSelected() {
-    ElementsTestRunner.selectNodeAndWaitForStyles(selector, onContainerSelected);
+    selectNodeAndWaitForStyles(selector, onContainerSelected);
   }
 
   function onContainerSelected() {
-    const fetchedRules = ElementsTestRunner.getMatchedRules();
+    const fetchedRules = getMatchedRules();
 
     if (fetchedRules.length !== rules.length) {
       TestRunner.addResult(Platform.StringUtilities.sprintf(
@@ -119,7 +121,7 @@ ElementsTestRunner.validateRuleRanges = function(selector, rules, callback) {
   }
 };
 
-ElementsTestRunner.getMatchedRules = function() {
+export const getMatchedRules = function() {
   const rules = [];
 
   for (const block of Elements.ElementsPanel.ElementsPanel.instance().stylesWidget.sectionBlocks) {

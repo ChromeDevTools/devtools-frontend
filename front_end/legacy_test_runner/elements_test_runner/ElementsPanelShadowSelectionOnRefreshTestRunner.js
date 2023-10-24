@@ -5,15 +5,20 @@
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.ElementsTestRunner = self.ElementsTestRunner || {};
 
-ElementsTestRunner.selectReloadAndDump = function(next, node) {
-  ElementsTestRunner.selectNode(node).then(onSelected);
+import * as Elements from '../../panels/elements/elements.js';
+import {TestRunner} from '../test_runner/test_runner.js';
+
+import {firstElementsTreeOutline, selectNode} from './ElementsTestRunner';
+
+export const selectReloadAndDump = function(next, node) {
+  selectNode(node).then(onSelected);
   let reloaded = false;
   let selected = false;
 
   function onSelected() {
-    TestRunner.addSniffer(Elements.ElementsPanel.prototype, 'lastSelectedNodeSelectedForTest', onReSelected);
+    TestRunner.addSniffer(
+        Elements.ElementsPanel.ElementsPanel.prototype, 'lastSelectedNodeSelectedForTest', onReSelected);
     TestRunner.reloadPage(onReloaded);
   }
 
@@ -31,7 +36,7 @@ ElementsTestRunner.selectReloadAndDump = function(next, node) {
     if (!reloaded || !selected) {
       return;
     }
-    const selectedElement = ElementsTestRunner.firstElementsTreeOutline().selectedTreeElement;
+    const selectedElement = firstElementsTreeOutline().selectedTreeElement;
     const nodeName = (selectedElement ? selectedElement.node().nodeNameInCorrectCase() : 'null');
     TestRunner.addResult('Selected node: \'' + nodeName + '\'');
     next();

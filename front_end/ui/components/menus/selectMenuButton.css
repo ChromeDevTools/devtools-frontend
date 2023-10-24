@@ -21,7 +21,8 @@
 }
 
 .show:focus-visible {
-  outline: 1px auto var(--override-select-menu-show-button-outline, -webkit-focus-ring-color);
+  outline: 2px solid var(--sys-color-state-focus-ring);
+  outline-offset: 2px;
 }
 
 #button-label-wrapper {

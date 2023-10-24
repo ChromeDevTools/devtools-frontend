@@ -79,6 +79,13 @@ enum VisualElements {
   FlexboxOverlays = 56,
   GridOverlays = 57,
   JumpToElement = 58,
+  ElementsPanel = 59,
+  ElementsTreeOutline = 60,
+  Toolbar = 61,
+  ElementsBreadcrumbs = 62,
+  FullAccessibilityTree = 63,
+  ToggleDeviceMode = 64,
+  ToggleElementSearch = 65,
 }
 
 function resolveVe(ve: string): number {

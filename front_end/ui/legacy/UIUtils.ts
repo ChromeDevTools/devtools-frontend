@@ -1197,12 +1197,16 @@ export class CheckboxLabel extends HTMLSpanElement {
     this.shadowRootInternal.createChild('slot');
   }
 
-  static create(title?: string, checked?: boolean, subtitle?: string): CheckboxLabel {
+  static create(title?: string, checked?: boolean, subtitle?: string, jslogContext?: string): CheckboxLabel {
     if (!CheckboxLabel.constructorInternal) {
       CheckboxLabel.constructorInternal = Utils.registerCustomElement('span', 'dt-checkbox', CheckboxLabel);
     }
     const element = (CheckboxLabel.constructorInternal() as CheckboxLabel);
     element.checkboxElement.checked = Boolean(checked);
+    if (jslogContext) {
+      element.checkboxElement.setAttribute(
+          'jslog', `${VisualLogging.toggle().track({click: true}).context(jslogContext)}`);
+    }
     if (title !== undefined) {
       element.textElement.textContent = title;
       element.checkboxElement.title = title;

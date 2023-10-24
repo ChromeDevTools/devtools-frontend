@@ -44,6 +44,7 @@ import * as CodeHighlighter from '../../ui/components/code_highlighter/code_high
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as IssueCounter from '../../ui/components/issue_counter/issue_counter.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {IssuesPane} from '../issues/IssuesPane.js';
 
 import * as ElementsComponents from './components/components.js';
@@ -51,9 +52,8 @@ import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsTreeElement, InitialChildrenLimit} from './ElementsTreeElement.js';
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
-import {TopLayerContainer} from './TopLayerContainer.js';
-
 import {type MarkerDecoratorRegistration} from './MarkerDecorator.js';
+import {TopLayerContainer} from './TopLayerContainer.js';
 
 const UIStrings = {
   /**
@@ -160,6 +160,7 @@ export class ElementsTreeOutline extends
 
     outlineDisclosureElement.appendChild(this.elementInternal);
     this.element = shadowContainer;
+    this.element.setAttribute('jslog', `${VisualLogging.elementsTreeOutline()}`);
 
     this.includeRootDOMNode = !omitRootDOMNode;
     this.selectEnabled = selectEnabled;

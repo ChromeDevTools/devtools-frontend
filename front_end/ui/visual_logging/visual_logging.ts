@@ -33,13 +33,17 @@ const cssShadowEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'cssSha
 const domBreakpoint = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpoint');
 const domBreakpointsPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpointsPane');
 const dropDown = LoggingConfig.makeConfigStringBuilder.bind(null, 'DropDown');
+const elementsBreadcrumbs = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementsBreadcrumbs');
 const elementClassesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementClassesPane');
 const elementPropertiesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementPropertiesPane');
 const elementStatesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementStatesPan');
+const elementsPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementsPanel');
+const elementsTreeOutline = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementsTreeOutline');
 const eventListenersPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'EventListenersPane');
 const filterDropdown = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterDropdown');
 const filterTextField = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterTextField');
 const flexboxOverlays = LoggingConfig.makeConfigStringBuilder.bind(null, 'FlexboxOverlays');
+const fullAccessibilityTree = LoggingConfig.makeConfigStringBuilder.bind(null, 'FullAccessibilityTree');
 const gridOverlays = LoggingConfig.makeConfigStringBuilder.bind(null, 'GridOverlays');
 const gridSettings = LoggingConfig.makeConfigStringBuilder.bind(null, 'GridSettings');
 const item = LoggingConfig.makeConfigStringBuilder.bind(null, 'Item');
@@ -63,7 +67,10 @@ const stylesMetricsPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'Styl
 const stylesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesPane');
 const stylesSelector = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesSelector');
 const toggle = LoggingConfig.makeConfigStringBuilder.bind(null, 'Toggle');
+const toggleDeviceMode = LoggingConfig.makeConfigStringBuilder.bind(null, 'ToggleDeviceMode');
+const toggleElementSearch = LoggingConfig.makeConfigStringBuilder.bind(null, 'ToggleElementSearch');
 const toggleSubpane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ToggleSubpane');
+const toolbar = LoggingConfig.makeConfigStringBuilder.bind(null, 'Toolbar');
 const treeItem = LoggingConfig.makeConfigStringBuilder.bind(null, 'TreeItem');
 const treeItemExpand = LoggingConfig.makeConfigStringBuilder.bind(null, 'TreeItemExpand');
 const value = LoggingConfig.makeConfigStringBuilder.bind(null, 'Value');
@@ -98,13 +105,17 @@ export {
   domBreakpoint,
   domBreakpointsPane,
   dropDown,
+  elementsBreadcrumbs,
   elementClassesPane,
   elementPropertiesPane,
   elementStatesPane,
+  elementsPanel,
+  elementsTreeOutline,
   eventListenersPane,
   filterDropdown,
   filterTextField,
   flexboxOverlays,
+  fullAccessibilityTree,
   gridOverlays,
   gridSettings,
   item,
@@ -127,7 +138,10 @@ export {
   stylesPane,
   stylesSelector,
   toggle,
+  toggleDeviceMode,
+  toggleElementSearch,
   toggleSubpane,
+  toolbar,
   treeItem,
   treeItemExpand,
   value,

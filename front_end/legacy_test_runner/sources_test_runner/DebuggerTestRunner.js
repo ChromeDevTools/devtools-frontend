@@ -5,56 +5,56 @@
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.SourcesTestRunner = self.SourcesTestRunner || {};
 
 import * as Common from '../../core/common/common.js';
-import * as Sources from '../../panels/sources/sources.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as UI from '../../ui/legacy/legacy.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as BrowserDebugger from '../../panels/browser_debugger/browser_debugger.js';
+import * as Sources from '../../panels/sources/sources.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import {TestRunner} from '../test_runner/test_runner.js';
 
-SourcesTestRunner.startDebuggerTest = async function(callback, quiet) {
+let quiet;
+
+export const startDebuggerTest = async function(callback, q) {
   console.assert(TestRunner.debuggerModel.debuggerEnabled(), 'Debugger has to be enabled');
 
-  if (quiet !== undefined) {
-    SourcesTestRunner.quiet = quiet;
+  if (q !== undefined) {
+    quiet = q;
   }
 
   await TestRunner.showPanel('sources');
-  TestRunner.addSniffer(
-      SDK.DebuggerModel.DebuggerModel.prototype, 'pausedScript', SourcesTestRunner.pausedScript, true);
-  TestRunner.addSniffer(
-      SDK.DebuggerModel.DebuggerModel.prototype, 'resumedScript', SourcesTestRunner.resumedScript, true);
+  TestRunner.addSniffer(SDK.DebuggerModel.DebuggerModel.prototype, 'pausedScript', pausedScript, true);
+  TestRunner.addSniffer(SDK.DebuggerModel.DebuggerModel.prototype, 'resumedScript', resumedScript, true);
   TestRunner.safeWrap(callback)();
 };
 
-SourcesTestRunner.startDebuggerTestPromise = function(quiet) {
+export const startDebuggerTestPromise = function(quiet) {
   let cb;
   const p = new Promise(fullfill => {
     cb = fullfill;
   });
-  SourcesTestRunner.startDebuggerTest(cb, quiet);
+  startDebuggerTest(cb, quiet);
   return p;
 };
 
-SourcesTestRunner.completeDebuggerTest = function() {
+export const completeDebuggerTest = function() {
   Common.Settings.moduleSetting('breakpointsActive').set(true);
-  SourcesTestRunner.resumeExecution(TestRunner.completeTest.bind(TestRunner));
+  resumeExecution(TestRunner.completeTest.bind(TestRunner));
 };
 
 window.addEventListener('unhandledrejection', e => {
   TestRunner.addResult('FAIL: Uncaught exception in promise: ' + e + ' ' + e.stack);
-  SourcesTestRunner.completeDebuggerTest();
+  completeDebuggerTest();
 });
 
-SourcesTestRunner.runDebuggerTestSuite = function(testSuite) {
+export const runDebuggerTestSuite = function(testSuite) {
   const testSuiteTests = testSuite.slice();
 
   function runner() {
     if (!testSuiteTests.length) {
-      SourcesTestRunner.completeDebuggerTest();
+      completeDebuggerTest();
       return;
     }
 
@@ -66,31 +66,31 @@ SourcesTestRunner.runDebuggerTestSuite = function(testSuite) {
     TestRunner.safeWrap(nextTest)(runner, runner);
   }
 
-  SourcesTestRunner.startDebuggerTest(runner);
+  startDebuggerTest(runner);
 };
 
-SourcesTestRunner.runTestFunction = function() {
+export const runTestFunction = function() {
   TestRunner.evaluateInPageAnonymously('scheduleTestFunction()');
   TestRunner.addResult('Set timer for test function.');
 };
 
-SourcesTestRunner.runTestFunctionAndWaitUntilPaused = function(callback) {
-  SourcesTestRunner.runTestFunction();
-  SourcesTestRunner.waitUntilPaused(callback);
+export const runTestFunctionAndWaitUntilPaused = function(callback) {
+  runTestFunction();
+  waitUntilPaused(callback);
 };
 
-SourcesTestRunner.runTestFunctionAndWaitUntilPausedPromise = function() {
-  return new Promise(SourcesTestRunner.runTestFunctionAndWaitUntilPaused);
+export const runTestFunctionAndWaitUntilPausedPromise = function() {
+  return new Promise(runTestFunctionAndWaitUntilPaused);
 };
 
-SourcesTestRunner.runAsyncCallStacksTest = function(totalDebuggerStatements, maxAsyncCallStackDepth) {
+export const runAsyncCallStacksTest = function(totalDebuggerStatements, maxAsyncCallStackDepth) {
   const defaultMaxAsyncCallStackDepth = 32;
-  SourcesTestRunner.setQuiet(true);
-  SourcesTestRunner.startDebuggerTest(step1);
+  setQuiet(true);
+  startDebuggerTest(step1);
 
   async function step1() {
     await TestRunner.DebuggerAgent.setAsyncCallStackDepth(maxAsyncCallStackDepth || defaultMaxAsyncCallStackDepth);
-    SourcesTestRunner.runTestFunctionAndWaitUntilPaused(didPause);
+    runTestFunctionAndWaitUntilPaused(didPause);
   }
 
   let step = 0;
@@ -98,61 +98,65 @@ SourcesTestRunner.runAsyncCallStacksTest = function(totalDebuggerStatements, max
 
   async function didPause(callFrames, reason, breakpointIds, asyncStackTrace) {
     ++step;
-    callStacksOutput.push(await SourcesTestRunner.captureStackTraceIntoString(callFrames, asyncStackTrace) + '\n');
+    callStacksOutput.push(await captureStackTraceIntoString(callFrames, asyncStackTrace) + '\n');
 
     if (step < totalDebuggerStatements) {
-      SourcesTestRunner.resumeExecution(SourcesTestRunner.waitUntilPaused.bind(SourcesTestRunner, didPause));
+      resumeExecution(waitUntilPaused.bind(undefined, didPause));
     } else {
       TestRunner.addResult('Captured call stacks in no particular order:');
       callStacksOutput.sort();
       TestRunner.addResults(callStacksOutput);
-      SourcesTestRunner.completeDebuggerTest();
+      completeDebuggerTest();
     }
   }
 };
 
-SourcesTestRunner.waitUntilPausedNextTime = function(callback) {
-  SourcesTestRunner.waitUntilPausedCallback = TestRunner.safeWrap(callback);
+let waitUntilPausedCallback;
+let waitUntilResumedCallback;
+let pausedScriptArguments;
+
+export const waitUntilPausedNextTime = function(callback) {
+  waitUntilPausedCallback = TestRunner.safeWrap(callback);
 };
 
-SourcesTestRunner.waitUntilPaused = function(callback) {
+export const waitUntilPaused = function(callback) {
   callback = TestRunner.safeWrap(callback);
 
-  if (SourcesTestRunner.pausedScriptArguments) {
-    callback.apply(callback, SourcesTestRunner.pausedScriptArguments);
+  if (pausedScriptArguments) {
+    callback.apply(callback, pausedScriptArguments);
   } else {
-    SourcesTestRunner.waitUntilPausedCallback = callback;
+    waitUntilPausedCallback = callback;
   }
 };
 
-SourcesTestRunner.waitUntilPausedPromise = function() {
-  return new Promise(resolve => SourcesTestRunner.waitUntilPaused(resolve));
+export const waitUntilPausedPromise = function() {
+  return new Promise(resolve => waitUntilPaused(resolve));
 };
 
-SourcesTestRunner.waitUntilResumed = function(callback) {
+export const waitUntilResumed = function(callback) {
   callback = TestRunner.safeWrap(callback);
 
-  if (!SourcesTestRunner.pausedScriptArguments) {
+  if (!pausedScriptArguments) {
     callback();
   } else {
-    SourcesTestRunner.waitUntilResumedCallback = callback;
+    waitUntilResumedCallback = callback;
   }
 };
 
-SourcesTestRunner.waitUntilResumedPromise = function() {
-  return new Promise(resolve => SourcesTestRunner.waitUntilResumed(resolve));
+export const waitUntilResumedPromise = function() {
+  return new Promise(resolve => waitUntilResumed(resolve));
 };
 
-SourcesTestRunner.resumeExecution = function(callback) {
+export const resumeExecution = function(callback) {
   if (Sources.SourcesPanel.SourcesPanel.instance().paused()) {
     Sources.SourcesPanel.SourcesPanel.instance().togglePause();
   }
 
-  SourcesTestRunner.waitUntilResumed(callback);
+  waitUntilResumed(callback);
 };
 
-SourcesTestRunner.waitUntilPausedAndDumpStackAndResume = function(callback, options) {
-  SourcesTestRunner.waitUntilPaused(paused);
+export const waitUntilPausedAndDumpStackAndResume = function(callback, options) {
+  waitUntilPaused(paused);
   TestRunner.addSniffer(
       Sources.SourcesPanel.SourcesPanel.prototype, 'updateDebuggerButtonsAndStatusForTest', setStatus);
   let caption;
@@ -178,55 +182,55 @@ SourcesTestRunner.waitUntilPausedAndDumpStackAndResume = function(callback, opti
   }
 
   async function step1() {
-    await SourcesTestRunner.captureStackTrace(callFrames, asyncStackTrace, options);
+    await captureStackTrace(callFrames, asyncStackTrace, options);
     TestRunner.addResult(TestRunner.clearSpecificInfoFromStackFrames(caption));
     TestRunner.deprecatedRunAfterPendingDispatches(step2);
   }
 
   function step2() {
-    SourcesTestRunner.resumeExecution(TestRunner.safeWrap(callback));
+    resumeExecution(TestRunner.safeWrap(callback));
   }
 };
 
-SourcesTestRunner.stepOver = function() {
+export const stepOver = function() {
   queueMicrotask(function() {
     Sources.SourcesPanel.SourcesPanel.instance().stepOver();
   });
 };
 
-SourcesTestRunner.stepInto = function() {
+export const stepInto = function() {
   queueMicrotask(function() {
     Sources.SourcesPanel.SourcesPanel.instance().stepInto();
   });
 };
 
-SourcesTestRunner.stepIntoAsync = function() {
+export const stepIntoAsync = function() {
   queueMicrotask(function() {
     Sources.SourcesPanel.SourcesPanel.instance().stepIntoAsync();
   });
 };
 
-SourcesTestRunner.stepOut = function() {
+export const stepOut = function() {
   queueMicrotask(function() {
     Sources.SourcesPanel.SourcesPanel.instance().stepOut();
   });
 };
 
-SourcesTestRunner.togglePause = function() {
+export const togglePause = function() {
   queueMicrotask(function() {
     Sources.SourcesPanel.SourcesPanel.instance().togglePause();
   });
 };
 
-SourcesTestRunner.waitUntilPausedAndPerformSteppingActions = function(actions, callback) {
+export const waitUntilPausedAndPerformSteppingActions = function(actions, callback) {
   callback = TestRunner.safeWrap(callback);
-  SourcesTestRunner.waitUntilPaused(didPause);
+  waitUntilPaused(didPause);
 
   async function didPause(callFrames, reason, breakpointIds, asyncStackTrace) {
     let action = actions.shift();
 
     if (action === 'Print') {
-      await SourcesTestRunner.captureStackTrace(callFrames, asyncStackTrace);
+      await captureStackTrace(callFrames, asyncStackTrace);
       TestRunner.addResult('');
 
       while (action === 'Print') {
@@ -243,16 +247,16 @@ SourcesTestRunner.waitUntilPausedAndPerformSteppingActions = function(actions, c
 
     switch (action) {
       case 'StepInto':
-        SourcesTestRunner.stepInto();
+        stepInto();
         break;
       case 'StepOver':
-        SourcesTestRunner.stepOver();
+        stepOver();
         break;
       case 'StepOut':
-        SourcesTestRunner.stepOut();
+        stepOut();
         break;
       case 'Resume':
-        SourcesTestRunner.togglePause();
+        togglePause();
         break;
       default:
         TestRunner.addResult('FAIL: Unknown action: ' + action);
@@ -260,16 +264,15 @@ SourcesTestRunner.waitUntilPausedAndPerformSteppingActions = function(actions, c
         return;
     }
 
-    SourcesTestRunner.waitUntilResumed(
-        (actions.length ? SourcesTestRunner.waitUntilPaused.bind(SourcesTestRunner, didPause) : callback));
+    waitUntilResumed((actions.length ? waitUntilPaused.bind(undefined, didPause) : callback));
   }
 };
 
-SourcesTestRunner.captureStackTrace = async function(callFrames, asyncStackTrace, options) {
-  TestRunner.addResult(await SourcesTestRunner.captureStackTraceIntoString(callFrames, asyncStackTrace, options));
+export const captureStackTrace = async function(callFrames, asyncStackTrace, options) {
+  TestRunner.addResult(await captureStackTraceIntoString(callFrames, asyncStackTrace, options));
 };
 
-SourcesTestRunner.captureStackTraceIntoString = async function(callFrames, asyncStackTrace, options) {
+export const captureStackTraceIntoString = async function(callFrames, asyncStackTrace, options) {
   const results = [];
   options = options || {};
 
@@ -346,7 +349,7 @@ SourcesTestRunner.captureStackTraceIntoString = async function(callFrames, async
   return results.join('\n');
 };
 
-SourcesTestRunner.dumpSourceFrameContents = function(sourceFrame) {
+export const dumpSourceFrameContents = function(sourceFrame) {
   TestRunner.addResult('==Source frame contents start==');
   const {baseDoc} = sourceFrame;
 
@@ -358,39 +361,39 @@ SourcesTestRunner.dumpSourceFrameContents = function(sourceFrame) {
   TestRunner.addResult('==Source frame contents end==');
 };
 
-SourcesTestRunner.pausedScript = function(callFrames, reason, auxData, breakpointIds, asyncStackTrace) {
-  if (!SourcesTestRunner.quiet) {
+export const pausedScript = function(callFrames, reason, auxData, breakpointIds, asyncStackTrace) {
+  if (!quiet) {
     TestRunner.addResult('Script execution paused.');
   }
 
   const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
-  SourcesTestRunner.pausedScriptArguments = [
+  pausedScriptArguments = [
     SDK.DebuggerModel.CallFrame.fromPayloadArray(debuggerModel, callFrames), reason, breakpointIds, asyncStackTrace,
     auxData
   ];
 
-  if (SourcesTestRunner.waitUntilPausedCallback) {
-    const callback = SourcesTestRunner.waitUntilPausedCallback;
-    delete SourcesTestRunner.waitUntilPausedCallback;
-    setTimeout(() => callback.apply(callback, SourcesTestRunner.pausedScriptArguments));
+  if (waitUntilPausedCallback) {
+    const callback = waitUntilPausedCallback;
+    waitUntilPausedCallback = null;
+    setTimeout(() => callback.apply(callback, pausedScriptArguments));
   }
 };
 
-SourcesTestRunner.resumedScript = function() {
-  if (!SourcesTestRunner.quiet) {
+export const resumedScript = function() {
+  if (!quiet) {
     TestRunner.addResult('Script execution resumed.');
   }
 
-  delete SourcesTestRunner.pausedScriptArguments;
+  pausedScriptArguments = null;
 
-  if (SourcesTestRunner.waitUntilResumedCallback) {
-    const callback = SourcesTestRunner.waitUntilResumedCallback;
-    delete SourcesTestRunner.waitUntilResumedCallback;
+  if (waitUntilResumedCallback) {
+    const callback = waitUntilResumedCallback;
+    waitUntilResumedCallback = null;
     callback();
   }
 };
 
-SourcesTestRunner.showUISourceCode = function(uiSourceCode, callback) {
+export const showUISourceCode = function(uiSourceCode, callback) {
   const panel = Sources.SourcesPanel.SourcesPanel.instance();
   panel.showUISourceCode(uiSourceCode);
   const sourceFrame = panel.visibleView;
@@ -402,28 +405,28 @@ SourcesTestRunner.showUISourceCode = function(uiSourceCode, callback) {
   }
 };
 
-SourcesTestRunner.showUISourceCodePromise = function(uiSourceCode) {
+export const showUISourceCodePromise = function(uiSourceCode) {
   let fulfill;
   const promise = new Promise(x => {
     fulfill = x;
   });
-  SourcesTestRunner.showUISourceCode(uiSourceCode, fulfill);
+  showUISourceCode(uiSourceCode, fulfill);
   return promise;
 };
 
-SourcesTestRunner.showScriptSource = function(scriptName, callback) {
-  SourcesTestRunner.waitForScriptSource(scriptName, onScriptSource);
+export const showScriptSource = function(scriptName, callback) {
+  waitForScriptSource(scriptName, onScriptSource);
 
   function onScriptSource(uiSourceCode) {
-    SourcesTestRunner.showUISourceCode(uiSourceCode, callback);
+    showUISourceCode(uiSourceCode, callback);
   }
 };
 
-SourcesTestRunner.showScriptSourcePromise = function(scriptName) {
-  return new Promise(resolve => SourcesTestRunner.showScriptSource(scriptName, resolve));
+export const showScriptSourcePromise = function(scriptName) {
+  return new Promise(resolve => showScriptSource(scriptName, resolve));
 };
 
-SourcesTestRunner.waitForScriptSource = function(scriptName, callback, contentType) {
+export const waitForScriptSource = function(scriptName, callback, contentType) {
   const panel = Sources.SourcesPanel.SourcesPanel.instance();
   const uiSourceCodes = panel.workspace.uiSourceCodes();
 
@@ -441,49 +444,48 @@ SourcesTestRunner.waitForScriptSource = function(scriptName, callback, contentTy
 
   TestRunner.addSniffer(
       Sources.SourcesView.SourcesView.prototype, 'addUISourceCode',
-      SourcesTestRunner.waitForScriptSource.bind(SourcesTestRunner, scriptName, callback, contentType));
+      waitForScriptSource.bind(undefined, scriptName, callback, contentType));
 };
 
-SourcesTestRunner.setBreakpoint = async function(sourceFrame, lineNumber, condition, enabled) {
-  const debuggerPlugin = SourcesTestRunner.debuggerPlugin(sourceFrame);
-  if (!debuggerPlugin.muted) {
-    const bp = await debuggerPlugin.setBreakpoint(lineNumber, 0, condition, enabled);
+export const setBreakpoint = async function(sourceFrame, lineNumber, condition, enabled) {
+  const plugin = debuggerPlugin(sourceFrame);
+  if (!plugin.muted) {
+    const bp = await plugin.setBreakpoint(lineNumber, 0, condition, enabled);
     await bp.refreshInDebugger();  // Make sure the breakpoint is really set
   }
 };
 
-SourcesTestRunner.removeBreakpoint = function(sourceFrame, lineNumber) {
-  const debuggerPlugin = SourcesTestRunner.debuggerPlugin(sourceFrame);
-  const breakpointLocations = debuggerPlugin.breakpointManager.allBreakpointLocations();
+export const removeBreakpoint = function(sourceFrame, lineNumber) {
+  const plugin = debuggerPlugin(sourceFrame);
+  const breakpointLocations = plugin.breakpointManager.allBreakpointLocations();
   const breakpointLocation = breakpointLocations.find(
       breakpointLocation => breakpointLocation.uiLocation.uiSourceCode === sourceFrame.uiSourceCode() &&
           breakpointLocation.uiLocation.lineNumber === lineNumber);
   breakpointLocation.breakpoint.remove();
 };
 
-SourcesTestRunner.createNewBreakpoint = async function(sourceFrame, lineNumber, condition, enabled) {
-  const debuggerPlugin = SourcesTestRunner.debuggerPlugin(sourceFrame);
-  const promise =
-      new Promise(resolve => TestRunner.addSniffer(debuggerPlugin.__proto__, 'breakpointWasSetForTest', resolve));
-  await debuggerPlugin.createNewBreakpoint(lineNumber, condition, enabled);
+export const createNewBreakpoint = async function(sourceFrame, lineNumber, condition, enabled) {
+  const plugin = debuggerPlugin(sourceFrame);
+  const promise = new Promise(resolve => TestRunner.addSniffer(plugin.__proto__, 'breakpointWasSetForTest', resolve));
+  await plugin.createNewBreakpoint(lineNumber, condition, enabled);
   return promise;
 };
 
-SourcesTestRunner.toggleBreakpoint = async function(sourceFrame, lineNumber, disableOnly) {
-  const debuggerPlugin = SourcesTestRunner.debuggerPlugin(sourceFrame);
-  if (!debuggerPlugin.muted) {
-    await debuggerPlugin.toggleBreakpoint(lineNumber, disableOnly);
+export const toggleBreakpoint = async function(sourceFrame, lineNumber, disableOnly) {
+  const plugin = debuggerPlugin(sourceFrame);
+  if (!plugin.muted) {
+    await plugin.toggleBreakpoint(lineNumber, disableOnly);
   }
 };
 
-SourcesTestRunner.dumpScopeVariablesSidebarPane = function() {
+export const dumpScopeVariablesSidebarPane = function() {
   TestRunner.addResult('Scope variables sidebar pane:');
-  const sections = SourcesTestRunner.scopeChainSections();
+  const sections = scopeChainSections();
 
-  SourcesTestRunner.dumpSectionsWithIndent(sections, 0);
+  dumpSectionsWithIndent(sections, 0);
 };
 
-SourcesTestRunner.dumpSectionsWithIndent = function(treeElements, depth) {
+export const dumpSectionsWithIndent = function(treeElements, depth) {
   if (!treeElements || treeElements.length === 0) {
     return;
   }
@@ -497,16 +499,16 @@ SourcesTestRunner.dumpSectionsWithIndent = function(treeElements, depth) {
     if (!treeElement.expanded && depth === 0) {
       TestRunner.addResult('    <section collapsed>');
     }
-    SourcesTestRunner.dumpSectionsWithIndent(treeElement.children(), depth + 1);
+    dumpSectionsWithIndent(treeElement.children(), depth + 1);
   }
 };
 
-SourcesTestRunner.scopeChainSections = function() {
+export const scopeChainSections = function() {
   return Sources.ScopeChainSidebarPane.ScopeChainSidebarPane.instance().treeOutline.rootElement().children();
 };
 
-SourcesTestRunner.expandScopeVariablesSidebarPane = function(callback) {
-  const sections = SourcesTestRunner.scopeChainSections();
+export const expandScopeVariablesSidebarPane = function(callback) {
+  const sections = scopeChainSections();
 
   for (let i = 0; i < sections.length - 1; ++i) {
     sections[i].expand();
@@ -517,7 +519,7 @@ SourcesTestRunner.expandScopeVariablesSidebarPane = function(callback) {
   }, 1000);
 };
 
-SourcesTestRunner.expandProperties = function(properties, callback) {
+export const expandProperties = function(properties, callback) {
   let index = 0;
 
   function expandNextPath() {
@@ -528,13 +530,13 @@ SourcesTestRunner.expandProperties = function(properties, callback) {
 
     const parentTreeElement = properties[index++];
     const path = properties[index++];
-    SourcesTestRunner.expandProperty(parentTreeElement, path, 0, expandNextPath);
+    expandProperty(parentTreeElement, path, 0, expandNextPath);
   }
 
   TestRunner.deprecatedRunAfterPendingDispatches(expandNextPath);
 };
 
-SourcesTestRunner.expandProperty = function(parentTreeElement, path, pathIndex, callback) {
+export const expandProperty = function(parentTreeElement, path, pathIndex, callback) {
   if (pathIndex === path.length) {
     TestRunner.addResult('Expanded property: ' + path.join('.'));
     callback();
@@ -542,20 +544,20 @@ SourcesTestRunner.expandProperty = function(parentTreeElement, path, pathIndex, 
   }
 
   const name = path[pathIndex++];
-  const propertyTreeElement = SourcesTestRunner.findChildPropertyTreeElement(parentTreeElement, name);
+  const propertyTreeElement = findChildPropertyTreeElement(parentTreeElement, name);
 
   if (!propertyTreeElement) {
     TestRunner.addResult('Failed to expand property: ' + path.slice(0, pathIndex).join('.'));
-    SourcesTestRunner.completeDebuggerTest();
+    completeDebuggerTest();
     return;
   }
 
   propertyTreeElement.expand();
   TestRunner.deprecatedRunAfterPendingDispatches(
-      SourcesTestRunner.expandProperty.bind(SourcesTestRunner, propertyTreeElement, path, pathIndex, callback));
+      expandProperty.bind(undefined, propertyTreeElement, path, pathIndex, callback));
 };
 
-SourcesTestRunner.findChildPropertyTreeElement = function(parent, childName) {
+export const findChildPropertyTreeElement = function(parent, childName) {
   const children = parent.children();
 
   for (let i = 0; i < children.length; i++) {
@@ -568,22 +570,22 @@ SourcesTestRunner.findChildPropertyTreeElement = function(parent, childName) {
   }
 };
 
-SourcesTestRunner.setQuiet = function(quiet) {
-  SourcesTestRunner.quiet = quiet;
+export const setQuiet = function(q) {
+  quiet = q;
 };
 
-SourcesTestRunner.queryScripts = function(filter) {
+export const queryScripts = function(filter) {
   const scripts = TestRunner.debuggerModel.scripts();
   return (filter ? scripts.filter(filter) : scripts);
 };
 
-SourcesTestRunner.checkRawLocation = function(script, lineNumber, columnNumber, location) {
+export const checkRawLocation = function(script, lineNumber, columnNumber, location) {
   TestRunner.assertEquals(script.scriptId, location.scriptId, 'Incorrect scriptId');
   TestRunner.assertEquals(lineNumber, location.lineNumber, 'Incorrect lineNumber');
   TestRunner.assertEquals(columnNumber, location.columnNumber, 'Incorrect columnNumber');
 };
 
-SourcesTestRunner.checkUILocation = function(uiSourceCode, lineNumber, columnNumber, location) {
+export const checkUILocation = function(uiSourceCode, lineNumber, columnNumber, location) {
   TestRunner.assertEquals(
       uiSourceCode, location.uiSourceCode,
       'Incorrect uiSourceCode, expected \'' + ((uiSourceCode ? uiSourceCode.url() : null)) + '\',' +
@@ -598,7 +600,7 @@ SourcesTestRunner.checkUILocation = function(uiSourceCode, lineNumber, columnNum
       'Incorrect columnNumber, expected \'' + columnNumber + '\', but got \'' + location.columnNumber + '\'');
 };
 
-SourcesTestRunner.waitForExecutionContextInTarget = function(target, callback) {
+export const waitForExecutionContextInTarget = function(target, callback) {
   const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
 
   if (runtimeModel.executionContexts().length) {
@@ -614,19 +616,19 @@ SourcesTestRunner.waitForExecutionContextInTarget = function(target, callback) {
   }
 };
 
-SourcesTestRunner.selectThread = function(target) {
+export const selectThread = function(target) {
   UI.Context.Context.instance().setFlavor(SDK.Target.Target, target);
 };
 
-SourcesTestRunner.evaluateOnCurrentCallFrame = function(code) {
+export const evaluateOnCurrentCallFrame = function(code) {
   return TestRunner.debuggerModel.evaluateOnSelectedCallFrame({expression: code, objectGroup: 'console'});
 };
 
-SourcesTestRunner.debuggerPlugin = function(sourceFrame) {
+export const debuggerPlugin = function(sourceFrame) {
   return sourceFrame.plugins.find(plugin => plugin instanceof Sources.DebuggerPlugin.DebuggerPlugin);
 };
 
-SourcesTestRunner.setEventListenerBreakpoint = function(id, enabled, targetName) {
+export const setEventListenerBreakpoint = function(id, enabled, targetName) {
   const pane = BrowserDebugger.EventListenerBreakpointsSidebarPane.EventListenerBreakpointsSidebarPane.instance();
 
   const auxData = {'eventName': id};

@@ -4,13 +4,13 @@
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.SourcesTestRunner = self.SourcesTestRunner || {};
 
-SourcesTestRunner.createTestEditor = function(clientHeight, textEditorDelegate) {
+export const createTestEditor = function(clientHeight, textEditorDelegate) {
   const textEditor =
       new SourceFrame.SourcesTextEditor(textEditorDelegate || new SourceFrame.SourcesTextEditorDelegate());
   clientHeight = clientHeight || 100;
@@ -46,7 +46,7 @@ function textWithSelection(text, selections) {
   return lines.join('\n');
 }
 
-SourcesTestRunner.dumpTextWithSelection = function(textEditor, dumpWhiteSpaces) {
+export const dumpTextWithSelection = function(textEditor, dumpWhiteSpaces) {
   let text = textWithSelection(textEditor.text(), textEditor.selections());
 
   if (dumpWhiteSpaces) {
@@ -56,7 +56,7 @@ SourcesTestRunner.dumpTextWithSelection = function(textEditor, dumpWhiteSpaces) 
   TestRunner.addResult(text);
 };
 
-SourcesTestRunner.setLineSelections = function(editor, selections) {
+export const setLineSelections = function(editor, selections) {
   const coords = [];
 
   for (let i = 0; i < selections.length; ++i) {
@@ -73,7 +73,7 @@ SourcesTestRunner.setLineSelections = function(editor, selections) {
   editor.setSelections(coords);
 };
 
-SourcesTestRunner.typeIn = function(editor, typeText, callback) {
+export const typeIn = function(editor, typeText, callback) {
   callback = callback || new Function();
   const noop = new Function();
 
@@ -82,22 +82,22 @@ SourcesTestRunner.typeIn = function(editor, typeText, callback) {
 
     switch (typeText[charIndex]) {
       case '\n':
-        SourcesTestRunner.fakeKeyEvent(editor, 'Enter', null, iterationCallback);
+        fakeKeyEvent(editor, 'Enter', null, iterationCallback);
         break;
       case 'L':
-        SourcesTestRunner.fakeKeyEvent(editor, 'ArrowLeft', null, iterationCallback);
+        fakeKeyEvent(editor, 'ArrowLeft', null, iterationCallback);
         break;
       case 'R':
-        SourcesTestRunner.fakeKeyEvent(editor, 'ArrowRight', null, iterationCallback);
+        fakeKeyEvent(editor, 'ArrowRight', null, iterationCallback);
         break;
       case 'U':
-        SourcesTestRunner.fakeKeyEvent(editor, 'ArrowUp', null, iterationCallback);
+        fakeKeyEvent(editor, 'ArrowUp', null, iterationCallback);
         break;
       case 'D':
-        SourcesTestRunner.fakeKeyEvent(editor, 'ArrowDown', null, iterationCallback);
+        fakeKeyEvent(editor, 'ArrowDown', null, iterationCallback);
         break;
       default:
-        SourcesTestRunner.fakeKeyEvent(editor, typeText[charIndex], null, iterationCallback);
+        fakeKeyEvent(editor, typeText[charIndex], null, iterationCallback);
     }
   }
 };
@@ -169,7 +169,7 @@ function fakeCodeMirrorInputEvent(editor, character) {
   input.poll();
 }
 
-SourcesTestRunner.fakeKeyEvent = function(editor, originalCode, modifiers, callback) {
+export const fakeKeyEvent = function(editor, originalCode, modifiers, callback) {
   modifiers = modifiers || [];
   let code;
   let charCode;
@@ -209,7 +209,7 @@ SourcesTestRunner.fakeKeyEvent = function(editor, originalCode, modifiers, callb
   inputReadPromise.then(callback);
 };
 
-SourcesTestRunner.dumpSelectionStats = function(textEditor) {
+export const dumpSelectionStats = function(textEditor) {
   const listHashMap = {};
   const sortedKeys = [];
   const selections = textEditor.selections();

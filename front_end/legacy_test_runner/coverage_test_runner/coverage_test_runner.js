@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../sources_test_runner/sources_test_runner.js';
-
 import * as Coverage from '../../panels/coverage/coverage.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import {SourcesTestRunner} from '../sources_test_runner/sources_test_runner.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**

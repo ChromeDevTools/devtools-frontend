@@ -5,15 +5,15 @@
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.SourcesTestRunner = self.SourcesTestRunner || {};
 
 import * as Sources from '../../panels/sources/sources.js';
+import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
  * @param {!Sources.NavigatorView.NavigatorView} navigatorView
  * @param {boolean=} dumpIcons
  */
-SourcesTestRunner.dumpNavigatorView = function(navigatorView, dumpIcons) {
+export const dumpNavigatorView = function(navigatorView, dumpIcons) {
   dumpNavigatorTreeOutline(navigatorView.scriptsTree);
 
   /**
@@ -60,23 +60,23 @@ SourcesTestRunner.dumpNavigatorView = function(navigatorView, dumpIcons) {
 /**
  * @param {!Sources.NavigatorView.NavigatorView} view
  */
-SourcesTestRunner.dumpNavigatorViewInAllModes = function(view) {
+export const dumpNavigatorViewInAllModes = function(view) {
   ['frame', 'frame/domain', 'frame/domain/folder', 'domain', 'domain/folder'].forEach(
-      SourcesTestRunner.dumpNavigatorViewInMode.bind(TestRunner, view));
+      dumpNavigatorViewInMode.bind(TestRunner, view));
 };
 
 /**
  * @param {!Sources.NavigatorView.NavigatorView} view
  * @param {string} mode
  */
-SourcesTestRunner.dumpNavigatorViewInMode = function(view, mode) {
+export const dumpNavigatorViewInMode = function(view, mode) {
   TestRunner.addResult(view instanceof Sources.SourcesNavigator.NetworkNavigatorView ? 'Sources:' : 'Content Scripts:');
   view.groupByFrame = mode.includes('frame');
   view.groupByDomain = mode.includes('domain');
   view.groupByFolder = mode.includes('folder');
   view.resetForTest();
   TestRunner.addResult('-------- Setting mode: [' + mode + ']');
-  SourcesTestRunner.dumpNavigatorView(view);
+  dumpNavigatorView(view);
 };
 
 /**
@@ -86,7 +86,7 @@ SourcesTestRunner.dumpNavigatorViewInMode = function(view, mode) {
  * @param {number=} worldId
  * @return {!Promise}
  */
-SourcesTestRunner.addScriptUISourceCode = function(url, content, isContentScript, worldId) {
+export const addScriptUISourceCode = function(url, content, isContentScript, worldId) {
   content += '\n//# sourceURL=' + url;
   if (isContentScript) {
     content = `testRunner.evaluateScriptInIsolatedWorld(${worldId}, \`${content}\`)`;
@@ -95,7 +95,7 @@ SourcesTestRunner.addScriptUISourceCode = function(url, content, isContentScript
   return TestRunner.waitForUISourceCode(url);
 };
 
-SourcesTestRunner.dumpSwatchPositions = function(sourceFrame, bookmarkType) {
+export const dumpSwatchPositions = function(sourceFrame, bookmarkType) {
   const textEditor = sourceFrame.textEditor;
   const markers = textEditor.bookmarks(textEditor.fullRange(), bookmarkType);
 

@@ -2,13 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../test_runner/test_runner.js';
-import './SourcesTestRunner.js';
-import './DebuggerTestRunner.js';
-import './LiveEditTestRunner.js';
-import './SearchTestRunner.js';
-import './EditorTestRunner.js';
-import './AutocompleteTestRunner.js';
+import * as AutocompleteTestRunner from './AutocompleteTestRunner.js';
+import * as DebuggerTestRunner from './DebuggerTestRunner.js';
+import * as EditorTestRunner from './EditorTestRunner.js';
+import * as LiveEditTestRunner from './LiveEditTestRunner.js';
+import * as SearchTestRunner from './SearchTestRunner.js';
+import * as SourcesTestRunnerModule from './SourcesTestRunner.js';
 
-const {SourcesTestRunner} = self;
-export {SourcesTestRunner};
+export const SourcesTestRunner = {
+  ...SourcesTestRunnerModule,
+  ...DebuggerTestRunner,
+  ...LiveEditTestRunner,
+  ...SearchTestRunner,
+  ...EditorTestRunner,
+  ...AutocompleteTestRunner,
+};

@@ -3,13 +3,15 @@
 // found in the LICENSE file.
 
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import {TestRunner} from '../test_runner/test_runner.js';
+
+import {dumpTextWithSelection} from './EditorTestRunner.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
-self.SourcesTestRunner = self.SourcesTestRunner || {};
 
-SourcesTestRunner.dumpSuggestions = function(textEditor, lines) {
+export const dumpSuggestions = function(textEditor, lines) {
   let resolve;
   const promise = new Promise(fulfill => {
     resolve = fulfill;
@@ -38,7 +40,7 @@ SourcesTestRunner.dumpSuggestions = function(textEditor, lines) {
 
   function suggestionsShown(words) {
     TestRunner.addResult('========= Selection In Editor =========');
-    SourcesTestRunner.dumpTextWithSelection(textEditor);
+    dumpTextWithSelection(textEditor);
     TestRunner.addResult('======= Autocomplete Suggestions =======');
     TestRunner.addResult('[' + words.map(item => item.text).join(', ') + ']');
     resolve();

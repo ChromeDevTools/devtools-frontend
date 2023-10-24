@@ -82,6 +82,16 @@ export class SamplesIntegrator {
    * the sample data.
    */
   #profileModel: CPUProfile.CPUProfileDataModel.CPUProfileDataModel;
+  /**
+   * Because GC nodes don't have a stack, we artificially add a stack to
+   * them which corresponds to that of the previous sample. This map
+   * tracks which node is used for the stack of a GC call.
+   * Note that GC samples are not shown in the flamechart, however they
+   * are used during the construction of for profile calls, as we can
+   * infer information about the duration of the executed code when a
+   * GC node is sampled.
+   */
+  #nodeForGC = new Map<Types.TraceEvents.TraceEventSyntheticProfileCall, CPUProfile.ProfileTreeModel.ProfileNode>();
 
   #engineConfig: Types.Configuration.Configuration;
 
@@ -220,6 +230,7 @@ export class SamplesIntegrator {
       return [];
     }
     const calls: Types.TraceEvents.TraceEventSyntheticProfileCall[] = [];
+    let prevNode;
     for (let i = 0; i < samples.length; i++) {
       const node = this.#profileModel.nodeByIndex(i);
       const timestamp = millisecondsToMicroseconds(Types.Timing.MilliSeconds(timestamps[i]));
@@ -228,6 +239,14 @@ export class SamplesIntegrator {
       }
       const call = makeProfileCall(node, timestamp, this.#processId, this.#threadId);
       calls.push(call);
+      if (node.id === this.#profileModel.gcNode?.id && prevNode) {
+        // GC samples have no stack, so we just put GC node on top of the
+        // last recorded sample. Cache the previous sample for future
+        // reference.
+        this.#nodeForGC.set(call, prevNode);
+        continue;
+      }
+      prevNode = node;
     }
     return calls;
   }
@@ -235,14 +254,25 @@ export class SamplesIntegrator {
   #getStackTraceFromProfileCall(profileCall: Types.TraceEvents.TraceEventSyntheticProfileCall):
       Types.TraceEvents.TraceEventSyntheticProfileCall[] {
     let node = this.#profileModel.nodeById(profileCall.nodeId);
+    const isGarbageCollection = Boolean(node?.id === this.#profileModel.gcNode?.id);
+    if (isGarbageCollection) {
+      // Because GC don't have a stack, we use the stack of the previous
+      // sample.
+      node = this.#nodeForGC.get(profileCall) || null;
+    }
     if (!node) {
       return [];
     }
     // `node.depth` is 0 based, so to set the size of the array we need
     // to add 1 to its value.
-    const callFrames = new Array<Types.TraceEvents.TraceEventSyntheticProfileCall>(node.depth + 1);
+    const callFrames =
+        new Array<Types.TraceEvents.TraceEventSyntheticProfileCall>(node.depth + 1 + Number(isGarbageCollection));
     // Add the stack trace in reverse order (bottom first).
     let i = callFrames.length - 1;
+    if (isGarbageCollection) {
+      // Place the garbage collection call frame on top of the stack.
+      callFrames[i--] = profileCall;
+    }
     while (node) {
       callFrames[i--] = makeProfileCall(node, profileCall.ts, this.#processId, this.#threadId);
       node = node.parent;
@@ -309,7 +339,6 @@ export class SamplesIntegrator {
 
     for (; i < stackTrace.length; ++i) {
       const call = stackTrace[i];
-      this.#currentJSStack.push(call);
       if (call.nodeId === this.#profileModel.programNode?.id || call.nodeId === this.#profileModel.root?.id ||
           call.nodeId === this.#profileModel.idleNode?.id || call.nodeId === this.#profileModel.gcNode?.id) {
         // Skip (root), (program) and (idle) frames, since this are not
@@ -317,6 +346,7 @@ export class SamplesIntegrator {
         // the timeline.
         continue;
       }
+      this.#currentJSStack.push(call);
       this.#constructedProfileCalls.push(call);
     }
   }

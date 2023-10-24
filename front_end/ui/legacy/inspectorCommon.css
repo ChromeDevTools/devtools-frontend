@@ -99,13 +99,6 @@ body {
   font-family: ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande", sans-serif;
 }
 
-.platform-mac,
-.platform-linux {
-  --override-text-color: rgb(48 57 66);
-
-  color: var(--override-text-color);
-}
-
 .platform-windows {
   font-family: "Segoe UI", Tahoma, sans-serif;
 }
@@ -137,13 +130,6 @@ body {
   --monospace-font-family: dejavu sans mono, monospace;
   --source-code-font-size: 11px;
   --source-code-font-family: dejavu sans mono, monospace;
-}
-
-.-theme-with-dark-background .platform-linux,
-.-theme-with-dark-background .platform-mac,
-:host-context(.-theme-with-dark-background) .platform-linux,
-:host-context(.-theme-with-dark-background) .platform-mac {
-  --override-text-color: rgb(189 198 207);
 }
 
 .monospace {

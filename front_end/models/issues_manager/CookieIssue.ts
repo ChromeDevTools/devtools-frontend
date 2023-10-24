@@ -41,6 +41,10 @@ const UIStrings = {
    * @description Label for a link for third-party cookie Issues.
    */
   thirdPartyPhaseoutExplained: 'Prepare for phasing out third-party cookies',
+  /**
+   * @description Label for a link for cross-site redirect Issues.
+   */
+  fileCrosSiteRedirectBug: 'File a bug',
 
 };
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CookieIssue.ts', UIStrings);
@@ -140,6 +144,13 @@ export class CookieIssue extends Issue {
             secure,
           ].join('::');
         }
+      }
+
+      if (warningReasons.includes(Protocol.Audits.CookieWarningReason.WarnCrossSiteRedirectDowngradeChangesInclusion)) {
+        return [
+          Protocol.Audits.InspectorIssueCode.CookieIssue,
+          'CrossSiteRedirectDowngradeChangesInclusion',
+        ].join('::');
       }
 
       // If we have ExcludeSameSiteUnspecifiedTreatedAsLax but no corresponding warnings, then add just
@@ -467,6 +478,15 @@ const cookieExcludeThirdPartyPhaseoutRead: LazyMarkdownIssueDescription = {
   }],
 };
 
+const cookieCrossSiteRedirectDowngrade: LazyMarkdownIssueDescription = {
+  file: 'cookieCrossSiteRedirectDowngrade.md',
+  links: [{
+    link:
+        'https://bugs.chromium.org/p/chromium/issues/entry?template=Defect%20report%20from%20user&summary=[Cross-Site Redirect Chain] <INSERT BUG SUMMARY HERE>&comment=Chrome Version: (copy from chrome://version)%0AChannel: (e.g. Canary, Dev, Beta, Stable)%0A%0AAffected URLs:%0A%0AWhat is the expected result?%0A%0AWhat happens instead?%0A%0AWhat is the purpose of the cross-site redirect?:%0A%0AWhat steps will reproduce the problem?:%0A(1)%0A(2)%0A(3)%0A%0APlease provide any additional information below.&components=Internals%3ENetwork%3ECookies',
+    linkTitle: i18nLazyString(UIStrings.fileCrosSiteRedirectBug),
+  }],
+};
+
 const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   // These two don't have a deprecation date yet, but they need to be fixed eventually.
   ['CookieIssue::WarnSameSiteUnspecifiedLaxAllowUnsafe::ReadCookie', sameSiteUnspecifiedWarnRead],
@@ -512,4 +532,5 @@ const issueDescriptions: Map<string, LazyMarkdownIssueDescription> = new Map([
   ['CookieIssue::WarnThirdPartyPhaseout::SetCookie', cookieWarnThirdPartyPhaseoutSet],
   ['CookieIssue::ExcludeThirdPartyPhaseout::ReadCookie', cookieExcludeThirdPartyPhaseoutRead],
   ['CookieIssue::ExcludeThirdPartyPhaseout::SetCookie', cookieExcludeThirdPartyPhaseoutSet],
+  ['CookieIssue::CrossSiteRedirectDowngradeChangesInclusion', cookieCrossSiteRedirectDowngrade],
 ]);

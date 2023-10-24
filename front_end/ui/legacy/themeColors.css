@@ -643,7 +643,7 @@
   --sys-color-state-focus-ring: var(--ref-palette-primary80);
   --sys-color-state-focus-select: var(--ref-palette-secondary50);
   --sys-color-state-focus-highlight: rgb(253 252 251 / 10%);
-  --sys-color-state-disabled: rgb(227 227 227 / 100%);
+  --sys-color-state-disabled: rgb(227 227 227 / 38%);
   --sys-color-state-disabled-container: rgb(227 227 227 / 12%);
   --sys-color-state-header-hover: var(--ref-palette-secondary30);
   --sys-color-state-on-header-hover: var(--ref-palette-secondary90);

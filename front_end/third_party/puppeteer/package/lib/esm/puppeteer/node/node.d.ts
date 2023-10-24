@@ -19,4 +19,5 @@ export * from './LaunchOptions.js';
 export * from './PipeTransport.js';
 export * from './ProductLauncher.js';
 export * from './PuppeteerNode.js';
+export * from './ScreenRecorder.js';
 //# sourceMappingURL=node.d.ts.map

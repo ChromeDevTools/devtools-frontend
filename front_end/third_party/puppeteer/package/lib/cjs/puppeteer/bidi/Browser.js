@@ -42,6 +42,7 @@ class BidiBrowser extends Browser_js_1.Browser {
         // TODO: subscribe to all CDP events in the future.
         'cdp.Network.requestWillBeSent',
         'cdp.Debugger.scriptParsed',
+        'cdp.Page.screencastFrame',
     ];
     static async create(opts) {
         let browserName = '';

@@ -35,8 +35,8 @@ export declare enum InitializationStatus {
  */
 export declare class CdpTarget extends Target {
     #private;
-    _initializedDeferred: Deferred<InitializationStatus>;
-    _isClosedDeferred: Deferred<void>;
+    _initializedDeferred: Deferred<InitializationStatus, Error>;
+    _isClosedDeferred: Deferred<void, Error>;
     _targetId: string;
     /**
      * To initialize the target for use, call initialize.
@@ -57,6 +57,7 @@ export declare class CdpTarget extends Target {
     opener(): Target | undefined;
     _targetInfoChanged(targetInfo: Protocol.Target.TargetInfo): void;
     _initialize(): void;
+    _isTargetExposed(): boolean;
     protected _checkIfInitialized(): void;
 }
 /**

@@ -16,7 +16,7 @@
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { TimeoutError } from '../common/Errors.js';
 import type { CdpFrame } from './Frame.js';
-import { type NetworkManager } from './NetworkManager.js';
+import type { NetworkManager } from './NetworkManager.js';
 /**
  * @public
  */

@@ -64,7 +64,6 @@ import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { Mutex } from '../util/Mutex.js';
 import { createCdpHandle } from './ExecutionContext.js';
-import { CdpFrame } from './Frame.js';
 /**
  * @internal
  */
@@ -94,7 +93,7 @@ export class IsolatedWorld extends Realm {
     }
     clearContext() {
         this.#context = Deferred.create();
-        if (this.#frameOrWorker instanceof CdpFrame) {
+        if ('clearDocumentHandle' in this.#frameOrWorker) {
             this.#frameOrWorker.clearDocumentHandle();
         }
     }

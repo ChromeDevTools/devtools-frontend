@@ -15,30 +15,16 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NetworkManager = exports.NetworkManagerEvent = void 0;
+exports.NetworkManager = void 0;
 const CDPSession_js_1 = require("../api/CDPSession.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
+const NetworkManagerEvents_js_1 = require("../common/NetworkManagerEvents.js");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const disposable_js_1 = require("../util/disposable.js");
 const HTTPRequest_js_1 = require("./HTTPRequest.js");
 const HTTPResponse_js_1 = require("./HTTPResponse.js");
 const NetworkEventManager_js_1 = require("./NetworkEventManager.js");
-/**
- * We use symbols to prevent any external parties listening to these events.
- * They are internal to Puppeteer.
- *
- * @internal
- */
-// eslint-disable-next-line @typescript-eslint/no-namespace
-var NetworkManagerEvent;
-(function (NetworkManagerEvent) {
-    NetworkManagerEvent.Request = Symbol('NetworkManager.Request');
-    NetworkManagerEvent.RequestServedFromCache = Symbol('NetworkManager.RequestServedFromCache');
-    NetworkManagerEvent.Response = Symbol('NetworkManager.Response');
-    NetworkManagerEvent.RequestFailed = Symbol('NetworkManager.RequestFailed');
-    NetworkManagerEvent.RequestFinished = Symbol('NetworkManager.RequestFinished');
-})(NetworkManagerEvent || (exports.NetworkManagerEvent = NetworkManagerEvent = {}));
 /**
  * @internal
  */
@@ -332,7 +318,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             ? this.#frameManager.frame(event.frameId)
             : null;
         const request = new HTTPRequest_js_1.CdpHTTPRequest(client, frame, event.requestId, this.#userRequestInterceptionEnabled, event, []);
-        this.emit(NetworkManagerEvent.Request, request);
+        this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.Request, request);
         void request.finalizeInterceptions();
     }
     #onRequest(client, event, fetchRequestId) {
@@ -371,7 +357,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             : null;
         const request = new HTTPRequest_js_1.CdpHTTPRequest(client, frame, fetchRequestId, this.#userRequestInterceptionEnabled, event, redirectChain);
         this.#networkEventManager.storeRequest(event.requestId, request);
-        this.emit(NetworkManagerEvent.Request, request);
+        this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.Request, request);
         void request.finalizeInterceptions();
     }
     #onRequestServedFromCache(_client, event) {
@@ -379,7 +365,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         if (request) {
             request._fromMemoryCache = true;
         }
-        this.emit(NetworkManagerEvent.RequestServedFromCache, request);
+        this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.RequestServedFromCache, request);
     }
     #handleRequestRedirect(client, request, responsePayload, extraInfo) {
         const response = new HTTPResponse_js_1.CdpHTTPResponse(client, request, responsePayload, extraInfo);
@@ -387,8 +373,8 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         request._redirectChain.push(request);
         response._resolveBody(new Error('Response body is unavailable for redirect responses'));
         this.#forgetRequest(request, false);
-        this.emit(NetworkManagerEvent.Response, response);
-        this.emit(NetworkManagerEvent.RequestFinished, request);
+        this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.Response, response);
+        this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFinished, request);
     }
     #emitResponseEvent(client, responseReceived, extraInfo) {
         const request = this.#networkEventManager.getRequest(responseReceived.requestId);
@@ -409,7 +395,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         }
         const response = new HTTPResponse_js_1.CdpHTTPResponse(client, request, responseReceived.response, extraInfo);
         request._response = response;
-        this.emit(NetworkManagerEvent.Response, response);
+        this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.Response, response);
     }
     #onResponseReceived(client, event) {
         const request = this.#networkEventManager.getRequest(event.requestId);
@@ -489,7 +475,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             request.response()?._resolveBody(null);
         }
         this.#forgetRequest(request, true);
-        this.emit(NetworkManagerEvent.RequestFinished, request);
+        this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFinished, request);
     }
     #onLoadingFailed(_client, event) {
         // If the response event for this request is still waiting on a
@@ -515,7 +501,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             response._resolveBody(null);
         }
         this.#forgetRequest(request, true);
-        this.emit(NetworkManagerEvent.RequestFailed, request);
+        this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFailed, request);
     }
 }
 exports.NetworkManager = NetworkManager;

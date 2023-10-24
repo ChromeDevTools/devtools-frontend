@@ -17,15 +17,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChromeTargetManager = void 0;
 const CDPSession_js_1 = require("../api/CDPSession.js");
-const Target_js_1 = require("../api/Target.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
-const Target_js_2 = require("./Target.js");
-function isTargetExposed(target) {
-    return target.type() !== Target_js_1.TargetType.TAB && !target._subtype();
-}
+const Target_js_1 = require("./Target.js");
 function isPageTargetBecomingPrimary(target, newTargetInfo) {
     return Boolean(target._subtype()) && !newTargetInfo.subtype;
 }
@@ -70,15 +66,9 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
     #initializeDeferred = Deferred_js_1.Deferred.create();
     #targetsIdsForInit = new Set();
     #waitForInitiallyDiscoveredTargets = true;
-    // TODO: remove the flag once the testing/rollout is done.
-    #tabMode;
-    #discoveryFilter;
-    constructor(connection, targetFactory, targetFilterCallback, waitForInitiallyDiscoveredTargets = true, useTabTarget = false) {
+    #discoveryFilter = [{}];
+    constructor(connection, targetFactory, targetFilterCallback, waitForInitiallyDiscoveredTargets = true) {
         super();
-        this.#tabMode = useTabTarget;
-        this.#discoveryFilter = this.#tabMode
-            ? [{}]
-            : [{ type: 'tab', exclude: true }, {}];
         this.#connection = connection;
         this.#targetFilterCallback = targetFilterCallback;
         this.#targetFactory = targetFactory;
@@ -88,20 +78,13 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
         this.#connection.on('Target.targetInfoChanged', this.#onTargetInfoChanged);
         this.#connection.on(CDPSession_js_1.CDPSessionEvent.SessionDetached, this.#onSessionDetached);
         this.#setupAttachmentListeners(this.#connection);
-        this.#connection
-            .send('Target.setDiscoverTargets', {
-            discover: true,
-            filter: this.#discoveryFilter,
-        })
-            .then(this.#storeExistingTargetsForInit)
-            .catch(util_js_1.debugError);
     }
     #storeExistingTargetsForInit = () => {
         if (!this.#waitForInitiallyDiscoveredTargets) {
             return;
         }
         for (const [targetId, targetInfo,] of this.#discoveredTargetsByTargetId.entries()) {
-            const targetForFilter = new Target_js_2.CdpTarget(targetInfo, undefined, undefined, this, undefined);
+            const targetForFilter = new Target_js_1.CdpTarget(targetInfo, undefined, undefined, this, undefined);
             if ((!this.#targetFilterCallback ||
                 this.#targetFilterCallback(targetForFilter)) &&
                 targetInfo.type !== 'browser') {
@@ -110,19 +93,22 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
         }
     };
     async initialize() {
+        await this.#connection.send('Target.setDiscoverTargets', {
+            discover: true,
+            filter: this.#discoveryFilter,
+        });
+        this.#storeExistingTargetsForInit();
         await this.#connection.send('Target.setAutoAttach', {
             waitForDebuggerOnStart: true,
             flatten: true,
             autoAttach: true,
-            filter: this.#tabMode
-                ? [
-                    {
-                        type: 'page',
-                        exclude: true,
-                    },
-                    ...this.#discoveryFilter,
-                ]
-                : this.#discoveryFilter,
+            filter: [
+                {
+                    type: 'page',
+                    exclude: true,
+                },
+                ...this.#discoveryFilter,
+            ],
         });
         this.#finishInitializationIfReady();
         await this.#initializeDeferred.valueOrThrow();
@@ -135,13 +121,7 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
         this.#removeAttachmentListeners(this.#connection);
     }
     getAvailableTargets() {
-        const result = new Map();
-        for (const [id, target] of this.#attachedTargetsByTargetId.entries()) {
-            if (isTargetExposed(target)) {
-                result.set(id, target);
-            }
-        }
-        return result;
+        return this.#attachedTargetsByTargetId;
     }
     #setupAttachmentListeners(session) {
         const listener = (event) => {
@@ -213,7 +193,7 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
             return;
         }
         const previousURL = target.url();
-        const wasInitialized = target._initializedDeferred.value() === Target_js_2.InitializationStatus.SUCCESS;
+        const wasInitialized = target._initializedDeferred.value() === Target_js_1.InitializationStatus.SUCCESS;
         if (isPageTargetBecomingPrimary(target, event.targetInfo)) {
             const target = this.#attachedTargetsByTargetId.get(event.targetInfo.targetId);
             const session = target?._session();
@@ -294,7 +274,7 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
             parentSession.emit(CDPSession_js_1.CDPSessionEvent.Ready, session);
         }
         this.#targetsIdsForInit.delete(target._targetId);
-        if (!isExistingTarget && isTargetExposed(target)) {
+        if (!isExistingTarget) {
             this.emit("targetAvailable" /* TargetManagerEvent.TargetAvailable */, target);
         }
         this.#finishInitializationIfReady();
@@ -323,9 +303,7 @@ class ChromeTargetManager extends EventEmitter_js_1.EventEmitter {
             return;
         }
         this.#attachedTargetsByTargetId.delete(target._targetId);
-        if (isTargetExposed(target)) {
-            this.emit("targetGone" /* TargetManagerEvent.TargetGone */, target);
-        }
+        this.emit("targetGone" /* TargetManagerEvent.TargetGone */, target);
     };
 }
 exports.ChromeTargetManager = ChromeTargetManager;

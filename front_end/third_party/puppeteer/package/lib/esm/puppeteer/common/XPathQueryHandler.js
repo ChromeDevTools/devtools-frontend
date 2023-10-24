@@ -13,13 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { QueryHandler } from './QueryHandler.js';
+import { QueryHandler, } from './QueryHandler.js';
 /**
  * @internal
  */
 export class XPathQueryHandler extends QueryHandler {
     static querySelectorAll = (element, selector, { xpathQuerySelectorAll }) => {
         return xpathQuerySelectorAll(element, selector);
+    };
+    static querySelector = (element, selector, { xpathQuerySelectorAll }) => {
+        for (const result of xpathQuerySelectorAll(element, selector, 1)) {
+            return result;
+        }
+        return null;
     };
 }
 //# sourceMappingURL=XPathQueryHandler.js.map

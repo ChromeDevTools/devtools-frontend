@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { PuppeteerURL, debugError } from '../common/util.js';
-import { BidiSerializer } from './Serializer.js';
+import { BidiDeserializer } from './Deserializer.js';
 /**
  * @internal
  */
@@ -38,7 +38,7 @@ export async function releaseReference(client, remoteReference) {
  */
 export function createEvaluationError(details) {
     if (details.exception.type !== 'error') {
-        return BidiSerializer.deserialize(details.exception);
+        return BidiDeserializer.deserialize(details.exception);
     }
     const [name = '', ...parts] = details.text.split(': ');
     const message = parts.join(': ');

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FrameManager = exports.FrameManagerEvent = void 0;
+exports.FrameManager = void 0;
 const CDPSession_js_1 = require("../api/CDPSession.js");
 const Frame_js_1 = require("../api/Frame.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
@@ -29,25 +29,10 @@ const Connection_js_1 = require("./Connection.js");
 const DeviceRequestPrompt_js_1 = require("./DeviceRequestPrompt.js");
 const ExecutionContext_js_1 = require("./ExecutionContext.js");
 const Frame_js_2 = require("./Frame.js");
+const FrameManagerEvents_js_1 = require("./FrameManagerEvents.js");
 const FrameTree_js_1 = require("./FrameTree.js");
 const IsolatedWorlds_js_1 = require("./IsolatedWorlds.js");
 const NetworkManager_js_1 = require("./NetworkManager.js");
-/**
- * We use symbols to prevent external parties listening to these events.
- * They are internal to Puppeteer.
- *
- * @internal
- */
-// eslint-disable-next-line @typescript-eslint/no-namespace
-var FrameManagerEvent;
-(function (FrameManagerEvent) {
-    FrameManagerEvent.FrameAttached = Symbol('FrameManager.FrameAttached');
-    FrameManagerEvent.FrameNavigated = Symbol('FrameManager.FrameNavigated');
-    FrameManagerEvent.FrameDetached = Symbol('FrameManager.FrameDetached');
-    FrameManagerEvent.FrameSwapped = Symbol('FrameManager.FrameSwapped');
-    FrameManagerEvent.LifecycleEvent = Symbol('FrameManager.LifecycleEvent');
-    FrameManagerEvent.FrameNavigatedWithinDocument = Symbol('FrameManager.FrameNavigatedWithinDocument');
-})(FrameManagerEvent || (exports.FrameManagerEvent = FrameManagerEvent = {}));
 const TIME_FOR_WAITING_FOR_SWAP = 100; // ms.
 /**
  * A frame manager manages the frames for a given {@link Page | page}.
@@ -69,6 +54,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
      */
     #frameNavigatedReceived = new Set();
     #deviceRequestPromptManagerMap = new WeakMap();
+    #frameTreeHandled;
     get timeoutSettings() {
         return this.#timeoutSettings;
     }
@@ -149,45 +135,62 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         await this.#networkManager.addClient(client);
     }
     setupEventListeners(session) {
-        session.on('Page.frameAttached', event => {
+        session.on('Page.frameAttached', async (event) => {
+            await this.#frameTreeHandled?.valueOrThrow();
             this.#onFrameAttached(session, event.frameId, event.parentFrameId);
         });
-        session.on('Page.frameNavigated', event => {
+        session.on('Page.frameNavigated', async (event) => {
             this.#frameNavigatedReceived.add(event.frame.id);
+            await this.#frameTreeHandled?.valueOrThrow();
             void this.#onFrameNavigated(event.frame, event.type);
         });
-        session.on('Page.navigatedWithinDocument', event => {
+        session.on('Page.navigatedWithinDocument', async (event) => {
+            await this.#frameTreeHandled?.valueOrThrow();
             this.#onFrameNavigatedWithinDocument(event.frameId, event.url);
         });
-        session.on('Page.frameDetached', (event) => {
+        session.on('Page.frameDetached', async (event) => {
+            await this.#frameTreeHandled?.valueOrThrow();
             this.#onFrameDetached(event.frameId, event.reason);
         });
-        session.on('Page.frameStartedLoading', event => {
+        session.on('Page.frameStartedLoading', async (event) => {
+            await this.#frameTreeHandled?.valueOrThrow();
             this.#onFrameStartedLoading(event.frameId);
         });
-        session.on('Page.frameStoppedLoading', event => {
+        session.on('Page.frameStoppedLoading', async (event) => {
+            await this.#frameTreeHandled?.valueOrThrow();
             this.#onFrameStoppedLoading(event.frameId);
         });
-        session.on('Runtime.executionContextCreated', event => {
+        session.on('Runtime.executionContextCreated', async (event) => {
+            await this.#frameTreeHandled?.valueOrThrow();
             this.#onExecutionContextCreated(event.context, session);
         });
-        session.on('Runtime.executionContextDestroyed', event => {
+        session.on('Runtime.executionContextDestroyed', async (event) => {
+            await this.#frameTreeHandled?.valueOrThrow();
             this.#onExecutionContextDestroyed(event.executionContextId, session);
         });
-        session.on('Runtime.executionContextsCleared', () => {
+        session.on('Runtime.executionContextsCleared', async () => {
+            await this.#frameTreeHandled?.valueOrThrow();
             this.#onExecutionContextsCleared(session);
         });
-        session.on('Page.lifecycleEvent', event => {
+        session.on('Page.lifecycleEvent', async (event) => {
+            await this.#frameTreeHandled?.valueOrThrow();
             this.#onLifecycleEvent(event);
         });
     }
     async initialize(client) {
         try {
+            this.#frameTreeHandled?.resolve();
+            this.#frameTreeHandled = Deferred_js_1.Deferred.create();
+            // We need to schedule all these commands while the target is paused,
+            // therefore, it needs to happen synchroniously. At the same time we
+            // should not start processing execution context and frame events before
+            // we received the initial information about the frame tree.
             await Promise.all([
                 this.#networkManager.addClient(client),
                 client.send('Page.enable'),
                 client.send('Page.getFrameTree').then(({ frameTree }) => {
                     this.#handleFrameTree(client, frameTree);
+                    this.#frameTreeHandled?.resolve();
                 }),
                 client.send('Page.setLifecycleEventsEnabled', { enabled: true }),
                 client.send('Runtime.enable').then(() => {
@@ -196,6 +199,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             ]);
         }
         catch (error) {
+            this.#frameTreeHandled?.resolve();
             // The target might have been closed before the initialization finished.
             if ((0, ErrorLike_js_1.isErrorLike)(error) && (0, Connection_js_1.isTargetClosedError)(error)) {
                 return;
@@ -250,7 +254,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             return;
         }
         frame._onLifecycleEvent(event.loaderId, event.name);
-        this.emit(FrameManagerEvent.LifecycleEvent, frame);
+        this.emit(FrameManagerEvents_js_1.FrameManagerEvent.LifecycleEvent, frame);
         frame.emit(Frame_js_1.FrameEvent.LifecycleEvent, undefined);
     }
     #onFrameStartedLoading(frameId) {
@@ -266,7 +270,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             return;
         }
         frame._onLoadingStopped();
-        this.emit(FrameManagerEvent.LifecycleEvent, frame);
+        this.emit(FrameManagerEvents_js_1.FrameManagerEvent.LifecycleEvent, frame);
         frame.emit(Frame_js_1.FrameEvent.LifecycleEvent, undefined);
     }
     #handleFrameTree(session, frameTree) {
@@ -299,7 +303,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         }
         frame = new Frame_js_2.CdpFrame(this, frameId, parentFrameId, session);
         this._frameTree.addFrame(frame);
-        this.emit(FrameManagerEvent.FrameAttached, frame);
+        this.emit(FrameManagerEvents_js_1.FrameManagerEvent.FrameAttached, frame);
     }
     async #onFrameNavigated(framePayload, navigationType) {
         const frameId = framePayload.id;
@@ -326,7 +330,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         }
         frame = await this._frameTree.waitForFrame(frameId);
         frame._navigated(framePayload);
-        this.emit(FrameManagerEvent.FrameNavigated, frame);
+        this.emit(FrameManagerEvents_js_1.FrameManagerEvent.FrameNavigated, frame);
         frame.emit(Frame_js_1.FrameEvent.FrameNavigated, navigationType);
     }
     async #createIsolatedWorld(session, name) {
@@ -361,9 +365,9 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
             return;
         }
         frame._navigatedWithinDocument(url);
-        this.emit(FrameManagerEvent.FrameNavigatedWithinDocument, frame);
+        this.emit(FrameManagerEvents_js_1.FrameManagerEvent.FrameNavigatedWithinDocument, frame);
         frame.emit(Frame_js_1.FrameEvent.FrameNavigatedWithinDocument, undefined);
-        this.emit(FrameManagerEvent.FrameNavigated, frame);
+        this.emit(FrameManagerEvents_js_1.FrameManagerEvent.FrameNavigated, frame);
         frame.emit(Frame_js_1.FrameEvent.FrameNavigated, 'Navigation');
     }
     #onFrameDetached(frameId, reason) {
@@ -379,7 +383,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
                 this.#removeFramesRecursively(frame);
                 break;
             case 'swap':
-                this.emit(FrameManagerEvent.FrameSwapped, frame);
+                this.emit(FrameManagerEvents_js_1.FrameManagerEvent.FrameSwapped, frame);
                 frame.emit(Frame_js_1.FrameEvent.FrameSwapped, undefined);
                 break;
         }
@@ -446,7 +450,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         }
         frame[disposable_js_1.disposeSymbol]();
         this._frameTree.removeFrame(frame);
-        this.emit(FrameManagerEvent.FrameDetached, frame);
+        this.emit(FrameManagerEvents_js_1.FrameManagerEvent.FrameDetached, frame);
         frame.emit(Frame_js_1.FrameEvent.FrameDetached, frame);
     }
 }

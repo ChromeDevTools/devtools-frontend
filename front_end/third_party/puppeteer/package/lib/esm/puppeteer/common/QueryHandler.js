@@ -58,6 +58,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
+import { _isElementHandle } from '../api/ElementHandleSymbol.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { interpolateFunction, stringifyFunction } from '../util/Function.js';
 import { transposeIterableHandle } from './HandleIterator.js';
@@ -136,8 +137,7 @@ export class QueryHandler {
             const result = __addDisposableResource(env_2, await element.evaluateHandle(this._querySelector, selector, LazyArg.create(context => {
                 return context.puppeteerUtil;
             })), false);
-            const { ElementHandle } = await import('../api/ElementHandle.js');
-            if (!(result instanceof ElementHandle)) {
+            if (!(_isElementHandle in result)) {
                 return null;
             }
             return result.move();
@@ -160,10 +160,9 @@ export class QueryHandler {
     static async waitFor(elementOrFrame, selector, options) {
         const env_3 = { stack: [], error: void 0, hasError: false };
         try {
-            const { ElementHandle } = await import('../api/ElementHandle.js');
             let frame;
             const element = __addDisposableResource(env_3, await (async () => {
-                if (!(elementOrFrame instanceof ElementHandle)) {
+                if (!(_isElementHandle in elementOrFrame)) {
                     frame = elementOrFrame;
                     return;
                 }
@@ -190,7 +189,7 @@ export class QueryHandler {
                     if (signal?.aborted) {
                         throw signal.reason;
                     }
-                    if (!(handle instanceof ElementHandle)) {
+                    if (!(_isElementHandle in handle)) {
                         return null;
                     }
                     return await frame.mainRealm().transferHandle(handle);

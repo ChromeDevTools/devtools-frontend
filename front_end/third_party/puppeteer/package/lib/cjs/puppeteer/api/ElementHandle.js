@@ -101,6 +101,7 @@ const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
 const decorators_js_1 = require("../util/decorators.js");
+const ElementHandleSymbol_js_1 = require("./ElementHandleSymbol.js");
 const JSHandle_js_1 = require("./JSHandle.js");
 /**
  * ElementHandle represents an in-page DOM element.
@@ -304,6 +305,7 @@ let ElementHandle = (() => {
         constructor(handle) {
             super();
             this.handle = handle;
+            this[ElementHandleSymbol_js_1._isElementHandle] = true;
         }
         /**
          * @internal

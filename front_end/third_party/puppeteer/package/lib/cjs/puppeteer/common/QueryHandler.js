@@ -14,29 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
     if (value !== null && value !== void 0) {
         if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
@@ -84,6 +61,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 });
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QueryHandler = void 0;
+const ElementHandleSymbol_js_1 = require("../api/ElementHandleSymbol.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Function_js_1 = require("../util/Function.js");
 const HandleIterator_js_1 = require("./HandleIterator.js");
@@ -162,8 +140,7 @@ class QueryHandler {
             const result = __addDisposableResource(env_2, await element.evaluateHandle(this._querySelector, selector, LazyArg_js_1.LazyArg.create(context => {
                 return context.puppeteerUtil;
             })), false);
-            const { ElementHandle } = await Promise.resolve().then(() => __importStar(require('../api/ElementHandle.js')));
-            if (!(result instanceof ElementHandle)) {
+            if (!(ElementHandleSymbol_js_1._isElementHandle in result)) {
                 return null;
             }
             return result.move();
@@ -186,10 +163,9 @@ class QueryHandler {
     static async waitFor(elementOrFrame, selector, options) {
         const env_3 = { stack: [], error: void 0, hasError: false };
         try {
-            const { ElementHandle } = await Promise.resolve().then(() => __importStar(require('../api/ElementHandle.js')));
             let frame;
             const element = __addDisposableResource(env_3, await (async () => {
-                if (!(elementOrFrame instanceof ElementHandle)) {
+                if (!(ElementHandleSymbol_js_1._isElementHandle in elementOrFrame)) {
                     frame = elementOrFrame;
                     return;
                 }
@@ -216,7 +192,7 @@ class QueryHandler {
                     if (signal?.aborted) {
                         throw signal.reason;
                     }
-                    if (!(handle instanceof ElementHandle)) {
+                    if (!(ElementHandleSymbol_js_1._isElementHandle in handle)) {
                         return null;
                     }
                     return await frame.mainRealm().transferHandle(handle);

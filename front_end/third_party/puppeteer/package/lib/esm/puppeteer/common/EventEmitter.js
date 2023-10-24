@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import mitt from '../../third_party/mitt/index.js';
+import mitt from '../../third_party/mitt/mitt.js';
 import { disposeSymbol } from '../util/disposable.js';
 /**
  * The EventEmitter class that many Puppeteer classes extend.

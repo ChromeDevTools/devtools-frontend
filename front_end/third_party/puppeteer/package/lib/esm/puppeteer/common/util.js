@@ -13,59 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
-    if (value !== null && value !== void 0) {
-        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-        var dispose;
-        if (async) {
-            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
-            dispose = value[Symbol.asyncDispose];
-        }
-        if (dispose === void 0) {
-            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
-            dispose = value[Symbol.dispose];
-        }
-        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
-        env.stack.push({ value: value, dispose: dispose, async: async });
-    }
-    else if (async) {
-        env.stack.push({ async: true });
-    }
-    return value;
-};
-var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
-    return function (env) {
-        function fail(e) {
-            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
-            env.hasError = true;
-        }
-        function next() {
-            while (env.stack.length) {
-                var rec = env.stack.pop();
-                try {
-                    var result = rec.dispose && rec.dispose.call(rec.value);
-                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
-                }
-                catch (e) {
-                    fail(e);
-                }
-            }
-            if (env.hasError) throw env.error;
-        }
-        return next();
-    };
-})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
-    var e = new Error(message);
-    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
-});
-import { map, NEVER, timer, } from '../../third_party/rxjs/rxjs.js';
+import { map, NEVER, timer, firstValueFrom, fromEvent, filterAsync, from, raceWith, } from '../../third_party/rxjs/rxjs.js';
 import { isNode } from '../environment.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { debug } from './Debug.js';
 import { TimeoutError } from './Errors.js';
-import { EventSubscription } from './EventEmitter.js';
 /**
  * @internal
  */
@@ -296,43 +250,6 @@ export const isDate = (obj) => {
 /**
  * @internal
  */
-export async function waitForEvent(
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-emitter, eventName, predicate, timeout, abortPromise) {
-    const env_1 = { stack: [], error: void 0, hasError: false };
-    try {
-        const deferred = Deferred.create({
-            message: `Timeout exceeded while waiting for event ${String(eventName)}`,
-            timeout,
-        });
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const _ = __addDisposableResource(env_1, new EventSubscription(emitter, eventName, async (event) => {
-            if (await predicate(event)) {
-                deferred.resolve(event);
-            }
-        }), false);
-        try {
-            const response = await Deferred.race([deferred, abortPromise]);
-            if (isErrorLike(response)) {
-                throw response;
-            }
-            return response;
-        }
-        catch (error) {
-            throw error;
-        }
-    }
-    catch (e_1) {
-        env_1.error = e_1;
-        env_1.hasError = true;
-    }
-    finally {
-        __disposeResources(env_1);
-    }
-}
-/**
- * @internal
- */
 export function evaluationString(fun, ...args) {
     if (isString(fun)) {
         assert(args.length === 0, 'Cannot evaluate a string with arguments');
@@ -559,5 +476,21 @@ export const SOURCE_URL_REGEX = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
  */
 export function getSourceUrlComment(url) {
     return `//# sourceURL=${url}`;
+}
+/**
+ * @internal
+ */
+export async function waitForHTTP(networkManager, eventName, urlOrPredicate, 
+/** Time after the function will timeout */
+ms, cancelation) {
+    return await firstValueFrom(fromEvent(networkManager, eventName).pipe(filterAsync(async (http) => {
+        if (isString(urlOrPredicate)) {
+            return urlOrPredicate === http.url();
+        }
+        if (typeof urlOrPredicate === 'function') {
+            return !!(await urlOrPredicate(http));
+        }
+        return false;
+    }), raceWith(timeout(ms), from(cancelation.valueOrThrow()))));
 }
 //# sourceMappingURL=util.js.map

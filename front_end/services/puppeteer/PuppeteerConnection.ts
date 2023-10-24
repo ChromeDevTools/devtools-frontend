@@ -89,7 +89,6 @@ export class PuppeteerConnectionHelper {
         undefined,
         target => isPageTargetCallback((target as puppeteer.Target)._getTargetInfo()),
         false /* waitForInitiallyDiscoveredTargets */,
-        true /* useTabTarget */,
     );
 
     const [, browser] = await Promise.all([

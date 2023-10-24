@@ -2,6 +2,7 @@
 
 import type { ChildProcess } from 'child_process';
 import { EventType } from 'mitt';
+import { PassThrough } from 'stream';
 import { Protocol } from 'devtools-protocol';
 import type { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
 import type { Readable } from 'stream';
@@ -164,8 +165,6 @@ declare type BeginSubclassSelectorTokens = ['.', '#', '[', ':'];
 
 /* Excluded from this release type: BidiNetworkManager */
 
-/* Excluded from this release type: BidiNetworkManagerEvents */
-
 /* Excluded from this release type: BidiPage */
 
 /* Excluded from this release type: BidiRealm */
@@ -249,7 +248,6 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
     /* Excluded from this release type: __constructor */
     /* Excluded from this release type: _attach */
     /* Excluded from this release type: _detach */
-    /* Excluded from this release type: _targets */
     /**
      * Gets the associated
      * {@link https://nodejs.org/api/child_process.html#class-childprocess | ChildProcess}.
@@ -486,9 +484,7 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
      * );
      * ```
      */
-    abstract waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: {
-        timeout?: number;
-    }): Promise<Target>;
+    abstract waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: WaitForTargetOptions): Promise<Target>;
     /**
      * Gets a list of all open {@link Page | pages} inside this
      * {@link BrowserContext | browser context}.
@@ -753,8 +749,6 @@ export declare type CDPEvents = {
 /* Excluded from this release type: CdpKeyboard */
 
 /* Excluded from this release type: CdpMouse */
-
-/* Excluded from this release type: CdpNetworkManagerEvents */
 
 /* Excluded from this release type: CdpPage */
 
@@ -1295,6 +1289,7 @@ export declare interface CSSCoverageOptions {
  */
 export declare class CustomError extends Error {
     /* Excluded from this release type: __constructor */
+    /* Excluded from this release type: [Symbol.toStringTag] */
 }
 
 /**
@@ -1559,6 +1554,7 @@ export declare type ElementFor<TagName extends keyof HTMLElementTagNameMap | key
  */
 export declare abstract class ElementHandle<ElementType extends Node = Element> extends JSHandle<ElementType> {
     #private;
+    /* Excluded from this release type: [_isElementHandle] */
     /* Excluded from this release type: bindIsolatedHandle */
     /* Excluded from this release type: handle */
     /* Excluded from this release type: __constructor */
@@ -2902,6 +2898,8 @@ export declare interface GeolocationOptions {
 
 /* Excluded from this release type: getCapturedLogs */
 
+/* Excluded from this release type: getFeatures */
+
 /* Excluded from this release type: getFetch */
 
 /* Excluded from this release type: getPageContent */
@@ -3346,6 +3344,8 @@ export declare interface InternalNetworkConditions extends NetworkConditions {
 /* Excluded from this release type: IntervalPoller */
 
 /* Excluded from this release type: isDate */
+
+/* Excluded from this release type: _isElementHandle */
 
 /* Excluded from this release type: isErrnoException */
 
@@ -4294,6 +4294,8 @@ export declare const networkConditions: Readonly<{
 
 /* Excluded from this release type: NetworkManagerEvent */
 
+/* Excluded from this release type: NetworkManagerEvents */
+
 /* Excluded from this release type: NetworkRequestId */
 
 /**
@@ -4380,6 +4382,7 @@ export declare interface Offset {
 export declare abstract class Page extends EventEmitter<PageEvents> {
     #private;
     /* Excluded from this release type: _isDragging */
+    /* Excluded from this release type: _timeoutSettings */
     /* Excluded from this release type: __constructor */
     /**
      * `true` if the service worker are being bypassed, `false` otherwise.
@@ -5658,6 +5661,49 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     abstract setCacheEnabled(enabled?: boolean): Promise<void>;
     /* Excluded from this release type: _maybeWriteBufferToFile */
     /**
+     * Captures a screencast of this {@link Page | page}.
+     *
+     * @remarks
+     *
+     * All recordings will be {@link https://www.webmproject.org/ | WebM} format using
+     * the {@link https://www.webmproject.org/vp9/ | VP9} video codec. The FPS is 30.
+     *
+     * You must have {@link https://ffmpeg.org/ | ffmpeg} installed on your system.
+     *
+     * @example
+     * Recording a {@link Page | page}:
+     *
+     * ```
+     * import puppeteer from 'puppeteer';
+     *
+     * // Launch a browser
+     * const browser = await puppeteer.launch();
+     *
+     * // Create a new page
+     * const page = await browser.newPage();
+     *
+     * // Go to your site.
+     * await page.goto("https://www.example.com");
+     *
+     * // Start recording.
+     * const recorder = await page.screencast({path: 'recording.webm'});
+     *
+     * // Do something.
+     *
+     * // Stop recording.
+     * await recorder.stop();
+     *
+     * browser.close();
+     * ```
+     *
+     * @param options - Configures screencast behavior.
+     *
+     * @experimental
+     */
+    screencast(options?: Readonly<ScreencastOptions>): Promise<ScreenRecorder>;
+    /* Excluded from this release type: _startScreencast */
+    /* Excluded from this release type: _stopScreencast */
+    /**
      * Captures a screenshot of this {@link Page | page}.
      *
      * @param options - Configures screenshot behavior.
@@ -6390,6 +6436,12 @@ export declare interface PDFOptions {
      */
     omitBackground?: boolean;
     /**
+     * Generate tagged (accessible) PDF.
+     * @defaultValue `false`
+     * @experimental
+     */
+    tagged?: boolean;
+    /**
      * Timeout in milliseconds. Pass `0` to disable timeout.
      * @defaultValue `30_000`
      */
@@ -6825,6 +6877,8 @@ export declare interface RemoteAddress {
     port?: number;
 }
 
+/* Excluded from this release type: removeMatchingFlags */
+
 /* Excluded from this release type: ResolvedLaunchArgs */
 
 /**
@@ -6851,18 +6905,71 @@ export declare interface ResponseForRequest {
 
 /* Excluded from this release type: RETRY_DELAY */
 
+/* Excluded from this release type: rewriteError */
+
 /* Excluded from this release type: Sandbox */
 
 /* Excluded from this release type: SandboxChart */
 
 /**
+ * @experimental
+ */
+export declare interface ScreencastOptions {
+    /**
+     * File path to save the screencast to.
+     */
+    path?: `${string}.webm`;
+    /**
+     * Specifies the region of the viewport to crop.
+     */
+    crop?: BoundingBox;
+    /**
+     * Scales the output video.
+     *
+     * For example, `0.5` will shrink the width and height of the output video by
+     * half. `2` will double the width and height of the output video.
+     *
+     * @defaultValue `1`
+     */
+    scale?: number;
+    /**
+     * Specifies the speed to record at.
+     *
+     * For example, `0.5` will slowdown the output video by 50%. `2` will double the
+     * speed of the output video.
+     *
+     * @defaultValue `1`
+     */
+    speed?: number;
+    /**
+     * Path to the [ffmpeg](https://ffmpeg.org/).
+     *
+     * Required if `ffmpeg` is not in your PATH.
+     */
+    ffmpegPath?: string;
+}
+
+/**
  * @public
  */
-export declare interface ScreenshotClip {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
+export declare class ScreenRecorder extends PassThrough {
+    #private;
+    /* Excluded from this release type: __constructor */
+    /**
+     * Stops the recorder.
+     *
+     * @public
+     */
+    stop(): Promise<void>;
+    /* Excluded from this release type: [asyncDisposeSymbol] */
+}
+
+/* Excluded from this release type: ScreenRecorderOptions */
+
+/**
+ * @public
+ */
+export declare interface ScreenshotClip extends BoundingBox {
     /**
      * @defaultValue `1`
      */
@@ -7338,7 +7445,7 @@ export declare interface Viewport {
  */
 export declare type VisibilityOption = 'hidden' | 'visible' | null;
 
-/* Excluded from this release type: waitForEvent */
+/* Excluded from this release type: waitForHTTP */
 
 /**
  * @public

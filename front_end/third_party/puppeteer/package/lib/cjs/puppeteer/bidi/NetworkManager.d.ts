@@ -13,27 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { NetworkManagerEvent } from '../cdp/NetworkManager.js';
-import { EventEmitter, type EventType } from '../common/EventEmitter.js';
+import { EventEmitter } from '../common/EventEmitter.js';
+import { type NetworkManagerEvents } from '../common/NetworkManagerEvents.js';
 import type { BidiConnection } from './Connection.js';
 import type { BidiFrame } from './Frame.js';
-import { BidiHTTPRequest } from './HTTPRequest.js';
 import { BidiHTTPResponse } from './HTTPResponse.js';
 import type { BidiPage } from './Page.js';
 /**
  * @internal
  */
-export interface BidiNetworkManagerEvents extends Record<EventType, unknown> {
-    [NetworkManagerEvent.Request]: BidiHTTPRequest;
-    [NetworkManagerEvent.RequestServedFromCache]: BidiHTTPRequest;
-    [NetworkManagerEvent.Response]: BidiHTTPResponse;
-    [NetworkManagerEvent.RequestFailed]: BidiHTTPRequest;
-    [NetworkManagerEvent.RequestFinished]: BidiHTTPRequest;
-}
-/**
- * @internal
- */
-export declare class BidiNetworkManager extends EventEmitter<BidiNetworkManagerEvents> {
+export declare class BidiNetworkManager extends EventEmitter<NetworkManagerEvents> {
     #private;
     constructor(connection: BidiConnection, page: BidiPage);
     getNavigationResponse(navigationId: string | null): BidiHTTPResponse | null;

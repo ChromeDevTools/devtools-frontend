@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { LazyArg } from '../common/LazyArg.js';
-import { debugError, isDate, isPlainObject, isRegExp } from '../common/util.js';
+import { isDate, isPlainObject, isRegExp } from '../common/util.js';
 import { BidiElementHandle } from './ElementHandle.js';
 import { BidiJSHandle } from './JSHandle.js';
 /**
@@ -153,97 +153,6 @@ export class BidiSerializer {
             return objectHandle.remoteValue();
         }
         return BidiSerializer.serializeRemoteValue(arg);
-    }
-    static deserializeNumber(value) {
-        switch (value) {
-            case '-0':
-                return -0;
-            case 'NaN':
-                return NaN;
-            case 'Infinity':
-                return Infinity;
-            case '-Infinity':
-                return -Infinity;
-            default:
-                return value;
-        }
-    }
-    static deserializeLocalValue(result) {
-        switch (result.type) {
-            case 'array':
-                if (result.value) {
-                    return result.value.map(value => {
-                        return BidiSerializer.deserializeLocalValue(value);
-                    });
-                }
-                break;
-            case 'set':
-                if (result.value) {
-                    return result.value.reduce((acc, value) => {
-                        return acc.add(BidiSerializer.deserializeLocalValue(value));
-                    }, new Set());
-                }
-                break;
-            case 'object':
-                if (result.value) {
-                    return result.value.reduce((acc, tuple) => {
-                        const { key, value } = BidiSerializer.deserializeTuple(tuple);
-                        acc[key] = value;
-                        return acc;
-                    }, {});
-                }
-                break;
-            case 'map':
-                if (result.value) {
-                    return result.value?.reduce((acc, tuple) => {
-                        const { key, value } = BidiSerializer.deserializeTuple(tuple);
-                        return acc.set(key, value);
-                    }, new Map());
-                }
-                break;
-            case 'promise':
-                return {};
-            case 'regexp':
-                return new RegExp(result.value.pattern, result.value.flags);
-            case 'date':
-                return new Date(result.value);
-            case 'undefined':
-                return undefined;
-            case 'null':
-                return null;
-            case 'number':
-                return BidiSerializer.deserializeNumber(result.value);
-            case 'bigint':
-                return BigInt(result.value);
-            case 'boolean':
-                return Boolean(result.value);
-            case 'string':
-                return result.value;
-        }
-        throw new UnserializableError(`Deserialization of type ${result.type} not supported.`);
-    }
-    static deserializeTuple([serializedKey, serializedValue]) {
-        const key = typeof serializedKey === 'string'
-            ? serializedKey
-            : BidiSerializer.deserializeLocalValue(serializedKey);
-        const value = BidiSerializer.deserializeLocalValue(serializedValue);
-        return { key, value };
-    }
-    static deserialize(result) {
-        if (!result) {
-            debugError('Service did not produce a result.');
-            return undefined;
-        }
-        try {
-            return BidiSerializer.deserializeLocalValue(result);
-        }
-        catch (error) {
-            if (error instanceof UnserializableError) {
-                debugError(error.message);
-                return undefined;
-            }
-            throw error;
-        }
     }
 }
 //# sourceMappingURL=Serializer.js.map

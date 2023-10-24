@@ -15,7 +15,7 @@
  */
 /// <reference types="node" />
 import type { ChildProcess } from 'child_process';
-import { Browser as BrowserBase, type BrowserCloseCallback, type BrowserContextOptions, type IsPageTargetCallback, type Permission, type TargetFilterCallback } from '../api/Browser.js';
+import { Browser as BrowserBase, type BrowserCloseCallback, type BrowserContextOptions, type IsPageTargetCallback, type Permission, type TargetFilterCallback, type WaitForTargetOptions } from '../api/Browser.js';
 import { BrowserContext } from '../api/BrowserContext.js';
 import type { Page } from '../api/Page.js';
 import type { Target } from '../api/Target.js';
@@ -28,9 +28,8 @@ import { type TargetManager } from './TargetManager.js';
  */
 export declare class CdpBrowser extends BrowserBase {
     #private;
-    static _create(product: 'firefox' | 'chrome' | undefined, connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, useTabTarget?: boolean): Promise<CdpBrowser>;
-    get _targets(): Map<string, CdpTarget>;
-    constructor(product: 'chrome' | 'firefox' | undefined, connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean, useTabTarget?: boolean);
+    static _create(product: 'firefox' | 'chrome' | undefined, connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean): Promise<CdpBrowser>;
+    constructor(product: 'chrome' | 'firefox' | undefined, connection: Connection, contextIds: string[], ignoreHTTPSErrors: boolean, defaultViewport?: Viewport | null, process?: ChildProcess, closeCallback?: BrowserCloseCallback, targetFilterCallback?: TargetFilterCallback, isPageTargetCallback?: IsPageTargetCallback, waitForInitiallyDiscoveredTargets?: boolean);
     _attach(): Promise<void>;
     _detach(): void;
     process(): ChildProcess | null;
@@ -59,9 +58,7 @@ export declare class CdpBrowserContext extends BrowserContext {
     constructor(connection: Connection, browser: CdpBrowser, contextId?: string);
     get id(): string | undefined;
     targets(): CdpTarget[];
-    waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: {
-        timeout?: number;
-    }): Promise<Target>;
+    waitForTarget(predicate: (x: Target) => boolean | Promise<boolean>, options?: WaitForTargetOptions): Promise<Target>;
     pages(): Promise<Page[]>;
     isIncognito(): boolean;
     overridePermissions(origin: string, permissions: Permission[]): Promise<void>;

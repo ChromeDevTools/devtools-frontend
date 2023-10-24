@@ -27,9 +27,9 @@ import { type TargetFactory, type TargetManager, type TargetManagerEvents } from
  */
 export declare class ChromeTargetManager extends EventEmitter<TargetManagerEvents> implements TargetManager {
     #private;
-    constructor(connection: Connection, targetFactory: TargetFactory, targetFilterCallback?: TargetFilterCallback, waitForInitiallyDiscoveredTargets?: boolean, useTabTarget?: boolean);
+    constructor(connection: Connection, targetFactory: TargetFactory, targetFilterCallback?: TargetFilterCallback, waitForInitiallyDiscoveredTargets?: boolean);
     initialize(): Promise<void>;
     dispose(): void;
-    getAvailableTargets(): Map<string, CdpTarget>;
+    getAvailableTargets(): ReadonlyMap<string, CdpTarget>;
 }
 //# sourceMappingURL=ChromeTargetManager.d.ts.map

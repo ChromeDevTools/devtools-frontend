@@ -38,7 +38,7 @@ export declare class FirefoxTargetManager extends EventEmitter<TargetManagerEven
     constructor(connection: Connection, targetFactory: TargetFactory, targetFilterCallback?: TargetFilterCallback);
     setupAttachmentListeners(session: CDPSession | Connection): void;
     removeSessionListeners(session: CDPSession): void;
-    getAvailableTargets(): Map<string, CdpTarget>;
+    getAvailableTargets(): ReadonlyMap<string, CdpTarget>;
     dispose(): void;
     initialize(): Promise<void>;
 }

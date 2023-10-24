@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { NetworkManagerEvent } from '../cdp/NetworkManager.js';
-import { EventEmitter, EventSubscription, } from '../common/EventEmitter.js';
+import { EventEmitter, EventSubscription } from '../common/EventEmitter.js';
+import { NetworkManagerEvent, } from '../common/NetworkManagerEvents.js';
 import { DisposableStack } from '../util/disposable.js';
 import { BidiHTTPRequest } from './HTTPRequest.js';
 import { BidiHTTPResponse } from './HTTPResponse.js';

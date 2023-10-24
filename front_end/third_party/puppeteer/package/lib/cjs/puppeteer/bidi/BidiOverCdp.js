@@ -39,9 +39,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connectBidiOverCdp = void 0;
-const BidiMapper = __importStar(require("chromium-bidi/lib/cjs/bidiMapper/bidiMapper.js"));
+const BidiMapper = __importStar(require("chromium-bidi/lib/cjs/bidiMapper/BidiMapper.js"));
+const Debug_js_1 = require("../common/Debug.js");
 const Errors_js_1 = require("../common/Errors.js");
 const Connection_js_1 = require("./Connection.js");
+const bidiServerLogger = (prefix, ...args) => {
+    (0, Debug_js_1.debug)(`bidi:${prefix}`)(args);
+};
 /**
  * @internal
  */
@@ -66,7 +70,7 @@ async function connectBidiOverCdp(cdp) {
         pptrTransport.onmessage(JSON.stringify(message));
     });
     const pptrBiDiConnection = new Connection_js_1.BidiConnection(cdp.url(), pptrTransport);
-    const bidiServer = await BidiMapper.BidiServer.createAndStart(transportBiDi, cdpConnectionAdapter, '');
+    const bidiServer = await BidiMapper.BidiServer.createAndStart(transportBiDi, cdpConnectionAdapter, '', undefined, bidiServerLogger);
     return pptrBiDiConnection;
 }
 exports.connectBidiOverCdp = connectBidiOverCdp;
@@ -88,7 +92,7 @@ class CdpConnectionAdapter {
     getCdpClient(id) {
         const session = this.#cdp.session(id);
         if (!session) {
-            throw new Error('Unknown CDP session with id' + id);
+            throw new Error(`Unknown CDP session with id ${id}`);
         }
         if (!this.#adapters.has(session)) {
             const adapter = new CDPClientAdapter(session, id, this.#browser);

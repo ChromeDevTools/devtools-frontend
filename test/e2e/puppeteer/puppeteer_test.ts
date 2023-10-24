@@ -83,7 +83,7 @@ describe('Puppeteer', () => {
         undefined,
         undefined,
         undefined,
-        (target) => targetInfo.targetId === mainTargetId
+        (target) => target.targetId === mainTargetId
       );
       const [, browser] = await Promise.all([
         connection._createSession({ targetId: mainTargetId }, true),

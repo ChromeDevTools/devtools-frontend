@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { type EventType } from '../../third_party/mitt/index.js';
+import { type EventType } from '../../third_party/mitt/mitt.js';
 import { disposeSymbol } from '../util/disposable.js';
 export type { 
 /**
  * @public
  */
-EventType, } from '../../third_party/mitt/index.js';
+EventType, } from '../../third_party/mitt/mitt.js';
 /**
  * @public
  */

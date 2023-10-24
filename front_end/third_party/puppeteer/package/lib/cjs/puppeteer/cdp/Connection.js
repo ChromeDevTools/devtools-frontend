@@ -15,133 +15,16 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isTargetClosedError = exports.createProtocolErrorMessage = exports.Connection = exports.CallbackRegistry = exports.Callback = void 0;
+exports.isTargetClosedError = exports.Connection = void 0;
 const CDPSession_js_1 = require("../api/CDPSession.js");
+const CallbackRegistry_js_1 = require("../common/CallbackRegistry.js");
 const Debug_js_1 = require("../common/Debug.js");
 const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
-const util_js_1 = require("../common/util.js");
-const Deferred_js_1 = require("../util/Deferred.js");
+const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const CDPSession_js_2 = require("./CDPSession.js");
 const debugProtocolSend = (0, Debug_js_1.debug)('puppeteer:protocol:SEND ►');
 const debugProtocolReceive = (0, Debug_js_1.debug)('puppeteer:protocol:RECV ◀');
-/**
- * @internal
- */
-function createIncrementalIdGenerator() {
-    let id = 0;
-    return () => {
-        return ++id;
-    };
-}
-/**
- * @internal
- */
-class Callback {
-    #id;
-    #error = new Errors_js_1.ProtocolError();
-    #deferred = Deferred_js_1.Deferred.create();
-    #timer;
-    #label;
-    constructor(id, label, timeout) {
-        this.#id = id;
-        this.#label = label;
-        if (timeout) {
-            this.#timer = setTimeout(() => {
-                this.#deferred.reject(rewriteError(this.#error, `${label} timed out. Increase the 'protocolTimeout' setting in launch/connect calls for a higher timeout if needed.`));
-            }, timeout);
-        }
-    }
-    resolve(value) {
-        clearTimeout(this.#timer);
-        this.#deferred.resolve(value);
-    }
-    reject(error) {
-        clearTimeout(this.#timer);
-        this.#deferred.reject(error);
-    }
-    get id() {
-        return this.#id;
-    }
-    get promise() {
-        return this.#deferred;
-    }
-    get error() {
-        return this.#error;
-    }
-    get label() {
-        return this.#label;
-    }
-}
-exports.Callback = Callback;
-/**
- * Manages callbacks and their IDs for the protocol request/response communication.
- *
- * @internal
- */
-class CallbackRegistry {
-    #callbacks = new Map();
-    #idGenerator = createIncrementalIdGenerator();
-    create(label, timeout, request) {
-        const callback = new Callback(this.#idGenerator(), label, timeout);
-        this.#callbacks.set(callback.id, callback);
-        try {
-            request(callback.id);
-        }
-        catch (error) {
-            // We still throw sync errors synchronously and clean up the scheduled
-            // callback.
-            callback.promise
-                .valueOrThrow()
-                .catch(util_js_1.debugError)
-                .finally(() => {
-                this.#callbacks.delete(callback.id);
-            });
-            callback.reject(error);
-            throw error;
-        }
-        // Must only have sync code up until here.
-        return callback.promise.valueOrThrow().finally(() => {
-            this.#callbacks.delete(callback.id);
-        });
-    }
-    reject(id, message, originalMessage) {
-        const callback = this.#callbacks.get(id);
-        if (!callback) {
-            return;
-        }
-        this._reject(callback, message, originalMessage);
-    }
-    _reject(callback, errorMessage, originalMessage) {
-        let error;
-        let message;
-        if (errorMessage instanceof Errors_js_1.ProtocolError) {
-            error = errorMessage;
-            error.cause = callback.error;
-            message = errorMessage.message;
-        }
-        else {
-            error = callback.error;
-            message = errorMessage;
-        }
-        callback.reject(rewriteError(error, `Protocol error (${callback.label}): ${message}`, originalMessage));
-    }
-    resolve(id, value) {
-        const callback = this.#callbacks.get(id);
-        if (!callback) {
-            return;
-        }
-        callback.resolve(value);
-    }
-    clear() {
-        for (const callback of this.#callbacks.values()) {
-            // TODO: probably we can accept error messages as params.
-            this._reject(callback, new Errors_js_1.TargetCloseError('Target closed'));
-        }
-        this.#callbacks.clear();
-    }
-}
-exports.CallbackRegistry = CallbackRegistry;
 /**
  * @public
  */
@@ -153,7 +36,7 @@ class Connection extends EventEmitter_js_1.EventEmitter {
     #sessions = new Map();
     #closed = false;
     #manuallyAttached = new Set();
-    #callbacks = new CallbackRegistry();
+    #callbacks = new CallbackRegistry_js_1.CallbackRegistry();
     constructor(url, transport, delay = 0, timeout) {
         super();
         this.#url = url;
@@ -263,7 +146,7 @@ class Connection extends EventEmitter_js_1.EventEmitter {
         }
         else if (object.id) {
             if (object.error) {
-                this.#callbacks.reject(object.id, createProtocolErrorMessage(object), object.error.message);
+                this.#callbacks.reject(object.id, (0, ErrorLike_js_1.createProtocolErrorMessage)(object), object.error.message);
             }
             else {
                 this.#callbacks.resolve(object.id, object.result);
@@ -324,26 +207,6 @@ class Connection extends EventEmitter_js_1.EventEmitter {
     }
 }
 exports.Connection = Connection;
-/**
- * @internal
- */
-function createProtocolErrorMessage(object) {
-    let message = `${object.error.message}`;
-    // TODO: remove the type checks when we stop connecting to BiDi with a CDP
-    // client.
-    if (object.error &&
-        typeof object.error === 'object' &&
-        'data' in object.error) {
-        message += ` ${object.error.data}`;
-    }
-    return message;
-}
-exports.createProtocolErrorMessage = createProtocolErrorMessage;
-function rewriteError(error, message, originalMessage) {
-    error.message = message;
-    error.originalMessage = originalMessage ?? error.originalMessage;
-    return error;
-}
 /**
  * @internal
  */

@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CdpJSHandle = void 0;
+exports.releaseObject = exports.CdpJSHandle = void 0;
 const JSHandle_js_1 = require("../api/JSHandle.js");
 const util_js_1 = require("../common/util.js");
-const ExecutionContext_js_1 = require("./ExecutionContext.js");
 /**
  * @internal
  */
@@ -64,7 +63,7 @@ class CdpJSHandle extends JSHandle_js_1.JSHandle {
             return;
         }
         this.#disposed = true;
-        await (0, ExecutionContext_js_1.releaseObject)(this.client, this.#remoteObject);
+        await releaseObject(this.client, this.#remoteObject);
     }
     toString() {
         if (!this.#remoteObject.objectId) {
@@ -81,4 +80,20 @@ class CdpJSHandle extends JSHandle_js_1.JSHandle {
     }
 }
 exports.CdpJSHandle = CdpJSHandle;
+/**
+ * @internal
+ */
+async function releaseObject(client, remoteObject) {
+    if (!remoteObject.objectId) {
+        return;
+    }
+    await client
+        .send('Runtime.releaseObject', { objectId: remoteObject.objectId })
+        .catch(error => {
+        // Exceptions might happen in case of a page been navigated or closed.
+        // Swallow these since they are harmless and we don't leak anything in this case.
+        (0, util_js_1.debugError)(error);
+    });
+}
+exports.releaseObject = releaseObject;
 //# sourceMappingURL=JSHandle.js.map

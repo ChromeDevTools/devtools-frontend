@@ -24,6 +24,12 @@ class XPathQueryHandler extends QueryHandler_js_1.QueryHandler {
     static querySelectorAll = (element, selector, { xpathQuerySelectorAll }) => {
         return xpathQuerySelectorAll(element, selector);
     };
+    static querySelector = (element, selector, { xpathQuerySelectorAll }) => {
+        for (const result of xpathQuerySelectorAll(element, selector, 1)) {
+            return result;
+        }
+        return null;
+    };
 }
 exports.XPathQueryHandler = XPathQueryHandler;
 //# sourceMappingURL=XPathQueryHandler.js.map

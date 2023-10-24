@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { QueryHandler, type QuerySelectorAll } from './QueryHandler.js';
+import { QueryHandler, type QuerySelectorAll, type QuerySelector } from './QueryHandler.js';
 /**
  * @internal
  */
 export declare class XPathQueryHandler extends QueryHandler {
     static querySelectorAll: QuerySelectorAll;
+    static querySelector: QuerySelector;
 }
 //# sourceMappingURL=XPathQueryHandler.d.ts.map

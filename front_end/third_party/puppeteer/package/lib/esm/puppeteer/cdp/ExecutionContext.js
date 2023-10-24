@@ -15,7 +15,7 @@
  */
 import { LazyArg } from '../common/LazyArg.js';
 import { scriptInjector } from '../common/ScriptInjector.js';
-import { PuppeteerURL, SOURCE_URL_REGEX, createEvaluationError, debugError, getSourcePuppeteerURLIfAvailable, getSourceUrlComment, isString, valueFromRemoteObject, } from '../common/util.js';
+import { PuppeteerURL, SOURCE_URL_REGEX, createEvaluationError, getSourcePuppeteerURLIfAvailable, getSourceUrlComment, isString, valueFromRemoteObject, } from '../common/util.js';
 import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { stringifyFunction } from '../util/Function.js';
 import { ARIAQueryHandler } from './AriaQueryHandler.js';
@@ -293,20 +293,5 @@ export function createCdpHandle(realm, remoteObject) {
         return new CdpElementHandle(realm, remoteObject);
     }
     return new CdpJSHandle(realm, remoteObject);
-}
-/**
- * @internal
- */
-export async function releaseObject(client, remoteObject) {
-    if (!remoteObject.objectId) {
-        return;
-    }
-    await client
-        .send('Runtime.releaseObject', { objectId: remoteObject.objectId })
-        .catch(error => {
-        // Exceptions might happen in case of a page been navigated or closed.
-        // Swallow these since they are harmless and we don't leak anything in this case.
-        debugError(error);
-    });
 }
 //# sourceMappingURL=ExecutionContext.js.map

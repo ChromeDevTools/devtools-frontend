@@ -16,5 +16,5 @@
 /**
  * @internal
  */
-export declare const xpathQuerySelectorAll: (root: Node, selector: string) => Iterable<Node>;
+export declare const xpathQuerySelectorAll: (root: Node, selector: string, maxResults?: number) => Iterable<Node>;
 //# sourceMappingURL=XPathQuerySelector.d.ts.map

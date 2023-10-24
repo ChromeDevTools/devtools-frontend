@@ -93,6 +93,13 @@ function devtoolsPlugin(source, importer) {
   }
 
   if (importedFileDirectory.includes(path.join('front_end', 'third_party', 'puppeteer', 'package'))) {
+    // Ignore possible dynamic imports from the Node folder.
+    if (importedFileDirectory.includes(path.join('front_end', 'third_party', 'puppeteer', 'package', 'lib', 'esm', 'puppeteer', 'node'))) {
+      return {
+        id: importedFilelocation,
+        external: true,
+      };
+    }
     return {
       id: importedFilelocation,
       external: false,

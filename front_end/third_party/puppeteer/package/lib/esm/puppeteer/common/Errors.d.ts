@@ -23,6 +23,10 @@ export declare class CustomError extends Error {
      * @internal
      */
     constructor(message?: string);
+    /**
+     * @internal
+     */
+    get [Symbol.toStringTag](): string;
 }
 /**
  * TimeoutError is emitted whenever certain operations are terminated due to

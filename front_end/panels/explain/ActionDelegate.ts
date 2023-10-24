@@ -5,8 +5,9 @@
 import * as UI from '../../ui/legacy/legacy.js';
 import * as Console from '../console/console.js';
 
-import {ExplainPopover} from './ExplainPopover.js';
-import {ConsoleMessageSource} from './sources/ConsoleMessageSource.js';
+import {ConsoleInsight} from './components/ConsoleInsight.js';
+import {InsightProvider} from './InsightProvider.js';
+import {PromptBuilder} from './PromptBuilder.js';
 
 let actionDelegateInstance: ActionDelegate;
 
@@ -27,8 +28,9 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       case 'explain.consoleMessage': {
         const consoleViewMessage = UI.Context.Context.instance().flavor(Console.ConsoleViewMessage.ConsoleViewMessage);
         if (consoleViewMessage) {
-          const popover = new ExplainPopover(new ConsoleMessageSource(consoleViewMessage));
-          void popover.show();
+          const insight = new ConsoleInsight(new PromptBuilder(consoleViewMessage), new InsightProvider());
+          consoleViewMessage.setInsight(insight);
+          void insight.update();
           return true;
         }
         return false;

@@ -2,22 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
-import type * as Console from '../../console/console.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
+import type * as Console from '../console/console.js';
 
-export class ConsoleMessageSource {
+export class PromptBuilder {
   #consoleMessage: Console.ConsoleViewMessage.ConsoleViewMessage;
   constructor(consoleMessage: Console.ConsoleViewMessage.ConsoleViewMessage) {
     this.#consoleMessage = consoleMessage;
   }
 
-  getAnchor(): AnchorBox {
-    const rect = this.#consoleMessage.contentElement().getBoundingClientRect();
-    return new AnchorBox(rect.left, rect.top, rect.width, rect.height);
-  }
-
-  async getPrompt(): Promise<string> {
+  async buildPrompt(): Promise<string> {
     const callframe = this.#consoleMessage.consoleMessage().stackTrace?.callFrames[0];
     const runtimeModel = this.#consoleMessage.consoleMessage().runtimeModel();
     const debuggerModel = runtimeModel?.debuggerModel();

@@ -284,6 +284,12 @@ const UIStrings = {
    *@description Tooltip to explain the resource's overridden status
    */
   requestHeadersOverridden: 'Request headers are overridden',
+  /**
+   *@description Tooltip to explain the resource's initial priority
+   *@example {High} PH1
+   *@example {Low} PH2
+   */
+  initialPriorityToolTip: '{PH1}, Initial priority: {PH2}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -955,8 +961,22 @@ export class NetworkRequestNode extends NetworkNode {
       }
       case 'priority': {
         const priority = this.requestInternal.priority();
-        this.setTextAndTitle(cell, priority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority) : '');
         const initialPriority = this.requestInternal.initialPriority();
+        if (priority && initialPriority) {
+          this.setTextAndTitle(
+              cell,
+              PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority),
+              i18nString(
+                  UIStrings.initialPriorityToolTip,
+                  {
+                    PH1: PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority),
+                    PH2: PerfUI.NetworkPriorities.uiLabelForNetworkPriority(initialPriority),
+                  },
+                  ),
+          );
+        } else {
+          this.setTextAndTitle(cell, priority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority) : '');
+        }
         this.appendSubtitle(
             cell, initialPriority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(initialPriority) : '');
         break;

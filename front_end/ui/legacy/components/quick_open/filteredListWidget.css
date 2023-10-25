@@ -97,7 +97,7 @@ devtools-text-prompt {
 }
 
 .filtered-list-widget-item.two-rows span.highlight {
-  color: var(--sys-color-tonal-container);
+  color: var(--sys-color-primary);
 }
 
 .filtered-list-widget-item.one-row span.highlight {

@@ -800,18 +800,12 @@ describe('The Styles pane', async () => {
 
     const inspectedRules = await getDisplayedCSSDeclarations();
     assert.deepStrictEqual(inspectedRules, [
-      'background: black;',
-      'background-image: initial;',
-      'background-position-x: initial;',
-      'background-position-y: initial;',
-      'background-size: initial;',
-      'background-repeat-x: initial;',
-      'background-repeat-y: initial;',
-      'background-attachment: initial;',
-      'background-origin: initial;',
-      'background-clip: initial;',
-      'background-color: black;',
-      'background-color: yellow;',
+      'margin: 10px;',
+      'margin-top: 10px;',
+      'margin-right: 10px;',
+      'margin-bottom: 10px;',
+      'margin-left: 10px;',
+      'margin-left: 20px;',
       'display: block;',
     ]);
   });

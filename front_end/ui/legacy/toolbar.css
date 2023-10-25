@@ -448,7 +448,8 @@ select.toolbar-item:focus-visible > * {
 
 .toolbar-shadow:not(.floating) .toolbar-item:last-child:not(:first-child, .toolbar-select-container) {
   flex-shrink: 1;
-  justify-content: left;
+  justify-content: center;
+  margin-right: 2px;
 }
 
 input[is="history-input"] {

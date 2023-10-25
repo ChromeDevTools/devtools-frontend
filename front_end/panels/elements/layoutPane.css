@@ -115,9 +115,13 @@
   --icon-show-element: var(--icon-default);
 }
 
-.show-element:focus,
 .show-element:hover {
   --icon-show-element: var(--icon-default-hover);
+}
+
+.show-element:focus {
+  outline: 2px solid var(--sys-color-state-focus-ring);
+  border-radius: 2px;
 }
 
 .chrome-select {
@@ -138,6 +142,12 @@
   margin: 0 0 0 8px;
   width: 10px;
   position: relative;
+
+  &:focus-within {
+    outline: 2px solid var(--sys-color-state-focus-ring);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
 }
 /* We set dimensions for the invisible input to support quick highlight a11y feature
 that uses the dimensions to draw an outline around the element. */

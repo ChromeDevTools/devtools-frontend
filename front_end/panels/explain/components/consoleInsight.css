@@ -13,7 +13,54 @@
 :host {
   font-family: var(--default-font-family);
   font-size: inherit;
-  padding: 1em;
-  margin: 1em;
+  padding: 16px 20px;
   background-color: var(--sys-color-cdt-base-container);
+  border-radius: 16px;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  color: var(--sys-color-on-surface);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  height: 20px;
+}
+
+header > div:nth-child(2) {
+  flex: 1;
+}
+
+main {
+  --override-markdown-view-message-color: var(--sys-color-on-surface);
+
+  margin: 20px 0;
+  color: var(--sys-color-on-surface);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+footer {
+  display: flex;
+  flex-direction: row;
+  color: var(--sys-color-on-surface);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+footer > div:nth-child(1) {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+footer > div:nth-child(2) {
+  flex: 1;
 }

@@ -465,6 +465,10 @@
   height: 0;
 }
 
+devtools-console-insight {
+  margin: 9px 22px 11px 24px;
+}
+
 @media (forced-colors: active) {
   .console-message-expand-icon,
   .console-warning-level [is="ui-icon"].icon-mask.expand-group-icon {

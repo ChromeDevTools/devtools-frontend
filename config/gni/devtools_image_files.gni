@@ -208,6 +208,7 @@ devtools_svg_sources = [
   "small-status-dot.svg",
   "smallIcons.svg",
   "snippet.svg",
+  "spark.svg",
   "star.svg",
   "step-into.svg",
   "step-out.svg",

@@ -7,7 +7,7 @@
 .message {
   line-height: 20px;
   font-size: 14px;
-  color: var(--sys-color-token-subtle);
+  color: var(--override-markdown-view-message-color, --sys-color-token-subtle);
   margin-bottom: 4px;
   user-select: text;
 }

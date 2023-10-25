@@ -55,6 +55,7 @@ const metricsBox = LoggingConfig.makeConfigStringBuilder.bind(null, 'MetricsBox'
 const next = LoggingConfig.makeConfigStringBuilder.bind(null, 'Next');
 const paletteColorShades = LoggingConfig.makeConfigStringBuilder.bind(null, 'PaletteColorShades');
 const palettePanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'PalettePanel');
+const panelTabHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'PanelTabHeader');
 const previous = LoggingConfig.makeConfigStringBuilder.bind(null, 'Previous');
 const refresh = LoggingConfig.makeConfigStringBuilder.bind(null, 'Refresh');
 const showAllStyleProperties = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowAllStyleProperties');
@@ -127,6 +128,7 @@ export {
   next,
   paletteColorShades,
   palettePanel,
+  panelTabHeader,
   previous,
   refresh,
   showAllStyleProperties,

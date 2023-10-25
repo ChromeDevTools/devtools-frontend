@@ -31,19 +31,19 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {ContextMenu} from './ContextMenu.js';
 import {Constraints, Size} from './Geometry.js';
 import {Icon} from './Icon.js';
+import tabbedPaneStyles from './tabbedPane.css.legacy.js';
 import {Toolbar} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {installDragHandle, invokeOnceAfterBatchUpdate} from './UIUtils.js';
-
 import {VBox, type Widget} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
-import tabbedPaneStyles from './tabbedPane.css.legacy.js';
 
 const UIStrings = {
   /**
@@ -229,13 +229,16 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   appendTab(
       id: string, tabTitle: string, view: Widget, tabTooltip?: string, userGesture?: boolean, isCloseable?: boolean,
-      isPreviewFeature?: boolean, index?: number): void {
+      isPreviewFeature?: boolean, index?: number, jslog?: string): void {
     const closeable = typeof isCloseable === 'boolean' ? isCloseable : Boolean(this.closeableTabs);
     const tab = new TabbedPaneTab(this, id, tabTitle, closeable, Boolean(isPreviewFeature), view, tabTooltip);
     tab.setDelegate((this.delegate as TabbedPaneTabDelegate));
     console.assert(!this.tabsById.has(id), `Tabbed pane already contains a tab with id '${id}'`);
     this.tabsById.set(id, tab);
     tab.tabElement.tabIndex = -1;
+    if (jslog) {
+      tab.tabElement.setAttribute('jslog', jslog);
+    }
     if (index !== undefined) {
       this.tabs.splice(index, 0, tab);
     } else {
@@ -591,6 +594,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private createDropDownButton(): HTMLDivElement {
     const dropDownContainer = document.createElement('div');
     dropDownContainer.classList.add('tabbed-pane-header-tabs-drop-down-container');
+    dropDownContainer.setAttribute('jslog', `${VisualLogging.dropDown().track({click: true}).context('more')}`);
     const chevronIcon = Icon.create('chevron-double-right', 'chevron-icon');
     const moreTabsString = i18nString(UIStrings.moreTabs);
     dropDownContainer.title = moreTabsString;

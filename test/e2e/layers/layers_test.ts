@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import {expectError} from '../../conductor/events.js';
 import {
   getBrowserAndPages,
   getResourcesPath,
@@ -39,6 +40,10 @@ describe('The Layers Panel', async () => {
   });
 
   it('should update the layers view when going offline', async () => {
+    // neterror.js started serving sourcemaps and we're requesting it unnecessarily.
+    expectError('Request Network.loadNetworkResource failed. {"code":-32602,"message":"Unsupported URL scheme"}');
+    expectError(
+        'Fetch API cannot load chrome-error://chromewebdata/neterror.rollup.js.map. URL scheme "chrome-error" is not supported.');
     const {target, frontend} = getBrowserAndPages();
     await openPanelViaMoreTools('Layers');
 

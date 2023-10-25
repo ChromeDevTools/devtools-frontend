@@ -5,21 +5,19 @@
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
+self.ElementsTestRunner = self.ElementsTestRunner || {};
 
-import {TestRunner} from '../test_runner/test_runner.js';
-
-import {dumpElementsTree, expandedNodeWithId, firstElementsTreeOutline, selectNodeWithId} from './ElementsTestRunner';
-
-export const doAddAttribute = function(testName, dataNodeId, attributeText, next) {
-  domActionTestForNodeId(testName, dataNodeId, testBody, next);
+ElementsTestRunner.doAddAttribute = function(testName, dataNodeId, attributeText, next) {
+  ElementsTestRunner.domActionTestForNodeId(testName, dataNodeId, testBody, next);
 
   function testBody(node, done) {
-    editNodePart(node, 'webkit-html-attribute');
+    ElementsTestRunner.editNodePart(node, 'webkit-html-attribute');
     eventSender.keyDown('Tab');
     TestRunner.deprecatedRunAfterPendingDispatches(testContinuation);
 
     function testContinuation() {
-      const editorElement = firstElementsTreeOutline().shadowRoot.getSelection().anchorNode.parentElement;
+      const editorElement =
+          ElementsTestRunner.firstElementsTreeOutline().shadowRoot.getSelection().anchorNode.parentElement;
       editorElement.textContent = attributeText;
       editorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
       TestRunner.addSniffer(Elements.ElementsTreeOutline.prototype, 'updateModifiedNodes', done);
@@ -27,18 +25,18 @@ export const doAddAttribute = function(testName, dataNodeId, attributeText, next
   }
 };
 
-export const domActionTestForNodeId = function(testName, dataNodeId, testBody, next) {
+ElementsTestRunner.domActionTestForNodeId = function(testName, dataNodeId, testBody, next) {
   function callback(testNode, continuation) {
-    selectNodeWithId(dataNodeId, continuation);
+    ElementsTestRunner.selectNodeWithId(dataNodeId, continuation);
   }
 
-  domActionTest(testName, callback, testBody, next);
+  ElementsTestRunner.domActionTest(testName, callback, testBody, next);
 };
 
-export const domActionTest = function(testName, dataNodeSelectionCallback, testBody, next) {
-  const testNode = expandedNodeWithId(testName);
+ElementsTestRunner.domActionTest = function(testName, dataNodeSelectionCallback, testBody, next) {
+  const testNode = ElementsTestRunner.expandedNodeWithId(testName);
   TestRunner.addResult('==== before ====');
-  dumpElementsTree(testNode);
+  ElementsTestRunner.dumpElementsTree(testNode);
   dataNodeSelectionCallback(testNode, step0);
 
   function step0(node) {
@@ -51,13 +49,13 @@ export const domActionTest = function(testName, dataNodeSelectionCallback, testB
 
   function step2() {
     TestRunner.addResult('==== after ====');
-    dumpElementsTree(testNode);
+    ElementsTestRunner.dumpElementsTree(testNode);
     next();
   }
 };
 
-export const editNodePart = function(node, className) {
-  const treeElement = firstElementsTreeOutline().findTreeElement(node);
+ElementsTestRunner.editNodePart = function(node, className) {
+  const treeElement = ElementsTestRunner.firstElementsTreeOutline().findTreeElement(node);
   let textElement = treeElement.listItemElement.getElementsByClassName(className)[0];
 
   if (!textElement && treeElement.childrenListElement) {
@@ -68,8 +66,8 @@ export const editNodePart = function(node, className) {
   return textElement;
 };
 
-export const editNodePartAndRun = function(node, className, newValue, step2, useSniffer) {
-  const editorElement = editNodePart(node, className);
+ElementsTestRunner.editNodePartAndRun = function(node, className, newValue, step2, useSniffer) {
+  const editorElement = ElementsTestRunner.editNodePart(node, className);
   editorElement.textContent = newValue;
   editorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
 

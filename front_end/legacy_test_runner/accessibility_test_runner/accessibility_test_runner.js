@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../elements_test_runner/elements_test_runner.js';
 import '../../core/i18n/i18n.js';
 
 import * as Accessibility from '../../panels/accessibility/accessibility.js';
-import {ElementsTestRunner} from '../elements_test_runner/elements_test_runner.js';
 import {TestRunner} from '../test_runner/test_runner.js';
 
 /**

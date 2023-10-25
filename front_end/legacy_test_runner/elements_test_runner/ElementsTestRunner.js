@@ -10,29 +10,29 @@ import * as Elements from '../../panels/elements/elements.js';
 import * as EventListeners from '../../panels/event_listeners/event_listeners.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import {TestRunner} from '../test_runner/test_runner.js';
 
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
+self.ElementsTestRunner = self.ElementsTestRunner || {};
 
 /**
  * @param {string} idValue
  * @param {!Function} callback
  */
-export const selectNodeWithId = function(idValue, callback) {
+ElementsTestRunner.selectNodeWithId = function(idValue, callback) {
   callback = TestRunner.safeWrap(callback);
   function onNodeFound(node) {
-    selectNode(node).then(callback.bind(null, node));
+    ElementsTestRunner.selectNode(node).then(callback.bind(null, node));
   }
-  nodeWithId(idValue, onNodeFound);
+  ElementsTestRunner.nodeWithId(idValue, onNodeFound);
 };
 
 /**
  * @param {!Object} node
  * @return {!Promise.<undefined>}
  */
-export const selectNode = function(node) {
+ElementsTestRunner.selectNode = function(node) {
   return Common.Revealer.reveal(node);
 };
 
@@ -40,23 +40,23 @@ export const selectNode = function(node) {
  * @param {string} idValue
  * @param {!Function} callback
  */
-export const nodeWithId = function(idValue, callback) {
-  findNode(node => node.getAttribute('id') === idValue, callback);
+ElementsTestRunner.nodeWithId = function(idValue, callback) {
+  ElementsTestRunner.findNode(node => node.getAttribute('id') === idValue, callback);
 };
 
 /**
  * @param {string} idValue
  * @param {!Function} callback
  */
-export const nodeWithIdPromise = function(idValue) {
-  return new Promise(resolve => findNode(node => node.getAttribute('id') === idValue, resolve));
+ElementsTestRunner.nodeWithIdPromise = function(idValue) {
+  return new Promise(resolve => ElementsTestRunner.findNode(node => node.getAttribute('id') === idValue, resolve));
 };
 
 /**
  * @param {function(!Element): boolean} matchFunction
  * @param {!Function} callback
  */
-export const findNode = async function(matchFunction, callback) {
+ElementsTestRunner.findNode = async function(matchFunction, callback) {
   callback = TestRunner.safeWrap(callback);
   let result = null;
   let pendingRequests = 0;
@@ -107,8 +107,8 @@ export const findNode = async function(matchFunction, callback) {
  * @param {function(!Element): boolean} matchFunction
  * @param {!Promise}
  */
-export const findNodePromise = function(matchFunction) {
-  return new Promise(resolve => findNode(matchFunction, resolve));
+ElementsTestRunner.findNodePromise = function(matchFunction) {
+  return new Promise(resolve => ElementsTestRunner.findNode(matchFunction, resolve));
 };
 
 /**
@@ -131,7 +131,7 @@ function dumpObjectPropertyTreeElement(treeElement) {
  * @param {function():void} callback
  * @param {boolean=} force
  */
-export const expandAndDumpEventListeners = function(eventListenersView, callback, force) {
+ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, callback, force) {
   function listenersArrived() {
     const listenerTypes = eventListenersView.treeOutline.rootElement().children();
     for (let i = 0; i < listenerTypes.length; ++i) {
@@ -176,20 +176,20 @@ export const expandAndDumpEventListeners = function(eventListenersView, callback
  * @param {boolean=} force
  * @return {!Promise}
  */
-export const expandAndDumpEventListenersPromise = function(eventListenersView, force) {
-  return new Promise(resolve => expandAndDumpEventListeners(eventListenersView, resolve, force));
+ElementsTestRunner.expandAndDumpEventListenersPromise = function(eventListenersView, force) {
+  return new Promise(resolve => ElementsTestRunner.expandAndDumpEventListeners(eventListenersView, resolve, force));
 };
 
-export const inlineStyleSection = function() {
+ElementsTestRunner.inlineStyleSection = function() {
   return Elements.ElementsPanel.ElementsPanel.instance().stylesWidget.sectionBlocks[0].sections[0];
 };
 
-export const computedStyleWidget = function() {
+ElementsTestRunner.computedStyleWidget = function() {
   return Elements.ElementsPanel.ElementsPanel.instance().computedStyleWidget;
 };
 
-export const dumpComputedStyle = async function(doNotAutoExpand, printInnerText) {
-  const computed = computedStyleWidget();
+ElementsTestRunner.dumpComputedStyle = async function(doNotAutoExpand, printInnerText) {
+  const computed = ElementsTestRunner.computedStyleWidget();
   const treeOutline = computed.propertiesOutline.querySelector('devtools-tree-outline');
   const children = treeOutline.shadowRoot.querySelector('[role="treeitem"]');
 
@@ -233,8 +233,8 @@ export const dumpComputedStyle = async function(doNotAutoExpand, printInnerText)
   }
 };
 
-export const findComputedPropertyWithName = function(name) {
-  const computed = computedStyleWidget();
+ElementsTestRunner.findComputedPropertyWithName = function(name) {
+  const computed = ElementsTestRunner.computedStyleWidget();
   const treeOutline = computed.propertiesOutline;
   const children = treeOutline.rootElement().children();
 
@@ -251,41 +251,41 @@ export const findComputedPropertyWithName = function(name) {
   return null;
 };
 
-export const firstMatchedStyleSection = function() {
+ElementsTestRunner.firstMatchedStyleSection = function() {
   return Elements.ElementsPanel.ElementsPanel.instance().stylesWidget.sectionBlocks[0].sections[1];
 };
 
-export const firstMediaTextElementInSection = function(section) {
+ElementsTestRunner.firstMediaTextElementInSection = function(section) {
   const cssQueryElement = section.element.querySelector('devtools-css-query');
   return cssQueryElement.shadowRoot.querySelector('.query-text');
 };
 
-export const querySelector = async function(selector, callback) {
+ElementsTestRunner.querySelector = async function(selector, callback) {
   const doc = await TestRunner.domModel.requestDocument();
   const nodeId = await TestRunner.domModel.querySelector(doc.id, selector);
   callback(TestRunner.domModel.nodeForId(nodeId));
 };
 
-export const shadowRootByHostId = function(idValue, callback) {
+ElementsTestRunner.shadowRootByHostId = function(idValue, callback) {
   function shadowRootMatches(node) {
     return node.isShadowRoot() && node.parentNode.getAttribute('id') === idValue;
   }
 
-  findNode(shadowRootMatches, callback);
+  ElementsTestRunner.findNode(shadowRootMatches, callback);
 };
 
-export const nodeWithClass = function(classValue, callback) {
+ElementsTestRunner.nodeWithClass = function(classValue, callback) {
   function nodeClassMatches(node) {
     const classAttr = node.getAttribute('class');
     return classAttr && classAttr.indexOf(classValue) > -1;
   }
 
-  findNode(nodeClassMatches, callback);
+  ElementsTestRunner.findNode(nodeClassMatches, callback);
 };
 
-export const expandedNodeWithId = function(idValue) {
+ElementsTestRunner.expandedNodeWithId = function(idValue) {
   let result;
-  nodeWithId(idValue, node => {
+  ElementsTestRunner.nodeWithId(idValue, node => {
     result = node;
   });
   return result;
@@ -302,7 +302,7 @@ globalThis.waitForStylesRebuild = function(matchFunction, callback, requireRebui
   })(null);
 };
 
-export const waitForStyles = function(idValue, callback, requireRebuild) {
+ElementsTestRunner.waitForStyles = function(idValue, callback, requireRebuild) {
   callback = TestRunner.safeWrap(callback);
 
   function nodeWithId(node) {
@@ -312,14 +312,14 @@ export const waitForStyles = function(idValue, callback, requireRebuild) {
   globalThis.waitForStylesRebuild(nodeWithId, callback, requireRebuild);
 };
 
-export const waitForStyleCommitted = function(next) {
+ElementsTestRunner.waitForStyleCommitted = function(next) {
   TestRunner.addSniffer(
       Elements.StylePropertyTreeElement.StylePropertyTreeElement.prototype, 'editingCommitted', (...args) => {
         Promise.all(args).then(next);
       });
 };
 
-export const waitForStylesForClass = function(classValue, callback, requireRebuild) {
+ElementsTestRunner.waitForStylesForClass = function(classValue, callback, requireRebuild) {
   callback = TestRunner.safeWrap(callback);
 
   function nodeWithClass(node) {
@@ -330,30 +330,30 @@ export const waitForStylesForClass = function(classValue, callback, requireRebui
   globalThis.waitForStylesRebuild(nodeWithClass, callback, requireRebuild);
 };
 
-export const waitForSelectorCommitted = function(callback) {
+ElementsTestRunner.waitForSelectorCommitted = function(callback) {
   TestRunner.addSniffer(
       Elements.StylePropertiesSection.StylePropertiesSection.prototype, 'editingSelectorCommittedForTest', callback);
 };
 
-export const waitForMediaTextCommitted = function(callback) {
+ElementsTestRunner.waitForMediaTextCommitted = function(callback) {
   TestRunner.addSniffer(
       Elements.StylePropertiesSection.StylePropertiesSection.prototype, 'editingMediaTextCommittedForTest', callback);
 };
 
-export const waitForStyleApplied = function(callback) {
+ElementsTestRunner.waitForStyleApplied = function(callback) {
   TestRunner.addSniffer(
       Elements.StylePropertyTreeElement.StylePropertyTreeElement.prototype, 'styleTextAppliedForTest', callback);
 };
 
-export const waitForStyleAppliedPromise = function() {
-  return new Promise(resolve => waitForStyleApplied(resolve));
+ElementsTestRunner.waitForStyleAppliedPromise = function() {
+  return new Promise(resolve => ElementsTestRunner.waitForStyleApplied(resolve));
 };
 
-export const selectNodeAndWaitForStyles = function(idValue, callback) {
+ElementsTestRunner.selectNodeAndWaitForStyles = function(idValue, callback) {
   callback = TestRunner.safeWrap(callback);
   let targetNode;
-  waitForStyles(idValue, stylesUpdated, true);
-  selectNodeWithId(idValue, nodeSelected);
+  ElementsTestRunner.waitForStyles(idValue, stylesUpdated, true);
+  ElementsTestRunner.selectNodeWithId(idValue, nodeSelected);
 
   function nodeSelected(node) {
     targetNode = node;
@@ -364,15 +364,15 @@ export const selectNodeAndWaitForStyles = function(idValue, callback) {
   }
 };
 
-export const selectNodeAndWaitForStylesPromise = function(idValue) {
-  return new Promise(x => selectNodeAndWaitForStyles(idValue, x));
+ElementsTestRunner.selectNodeAndWaitForStylesPromise = function(idValue) {
+  return new Promise(x => ElementsTestRunner.selectNodeAndWaitForStyles(idValue, x));
 };
 
-export const selectPseudoElementAndWaitForStyles = function(parentId, pseudoType, callback) {
+ElementsTestRunner.selectPseudoElementAndWaitForStyles = function(parentId, pseudoType, callback) {
   callback = TestRunner.safeWrap(callback);
   let targetNode;
   globalThis.waitForStylesRebuild(isPseudoElement, stylesUpdated, true);
-  findNode(isPseudoElement, nodeFound);
+  ElementsTestRunner.findNode(isPseudoElement, nodeFound);
 
   function nodeFound(node) {
     targetNode = node;
@@ -388,26 +388,26 @@ export const selectPseudoElementAndWaitForStyles = function(parentId, pseudoType
   }
 };
 
-export const selectNodeAndWaitForStylesWithComputed = function(idValue, callback) {
+ElementsTestRunner.selectNodeAndWaitForStylesWithComputed = function(idValue, callback) {
   callback = TestRunner.safeWrap(callback);
-  selectNodeAndWaitForStyles(idValue, onSidebarRendered);
+  ElementsTestRunner.selectNodeAndWaitForStyles(idValue, onSidebarRendered);
 
   async function onSidebarRendered(node) {
-    await computedStyleWidget().doUpdate().then(callback.bind(null, node));
+    await ElementsTestRunner.computedStyleWidget().doUpdate().then(callback.bind(null, node));
   }
 };
 
-export const firstElementsTreeOutline = function() {
+ElementsTestRunner.firstElementsTreeOutline = function() {
   return Elements.ElementsPanel.ElementsPanel.instance().treeOutlines.values().next().value;
 };
 
-export const filterMatchedStyles = function(text) {
+ElementsTestRunner.filterMatchedStyles = function(text) {
   const regex = (text ? new RegExp(text, 'i') : null);
   TestRunner.addResult('Filtering styles by: ' + text);
   Elements.ElementsPanel.ElementsPanel.instance().stylesWidget.onFilterChanged(regex);
 };
 
-export const dumpRenderedMatchedStyles = function() {
+ElementsTestRunner.dumpRenderedMatchedStyles = function() {
   const sectionBlocks = Elements.ElementsPanel.ElementsPanel.instance().stylesWidget.sectionBlocks;
 
   for (const block of sectionBlocks) {
@@ -471,12 +471,12 @@ export const dumpRenderedMatchedStyles = function() {
   }
 };
 
-export const dumpSelectedElementStyles =
+ElementsTestRunner.dumpSelectedElementStyles =
     async function(excludeComputed, excludeMatched, omitLonghands, includeSelectorGroupMarks, printInnerText) {
   const sectionBlocks = Elements.ElementsPanel.ElementsPanel.instance().stylesWidget.sectionBlocks;
 
   if (!excludeComputed) {
-    await dumpComputedStyle(false /* doNotAutoExpand */, printInnerText);
+    await ElementsTestRunner.dumpComputedStyle(false /* doNotAutoExpand */, printInnerText);
   }
 
   for (const block of sectionBlocks) {
@@ -534,7 +534,7 @@ async function printStyleSection(section, omitLonghands, includeSelectorGroupMar
   }
 
   TestRunner.addResult(selectorText);
-  dumpStyleTreeOutline(section.propertiesTreeOutline, (omitLonghands ? 1 : 2), printInnerText);
+  ElementsTestRunner.dumpStyleTreeOutline(section.propertiesTreeOutline, (omitLonghands ? 1 : 2), printInnerText);
   if (!section.showAllButton.classList.contains('hidden')) {
     TestRunner.addResult(text(section.showAllButton));
   }
@@ -578,41 +578,42 @@ function buildMarkedSelectors(element) {
   return result;
 }
 
-export const toggleStyleProperty = function(propertyName, checked) {
-  const treeItem = getElementStylePropertyTreeItem(propertyName);
+ElementsTestRunner.toggleStyleProperty = function(propertyName, checked) {
+  const treeItem = ElementsTestRunner.getElementStylePropertyTreeItem(propertyName);
 
   treeItem.toggleDisabled(!checked);
 };
 
-export const toggleMatchedStyleProperty = function(propertyName, checked) {
-  const treeItem = getMatchedStylePropertyTreeItem(propertyName);
+ElementsTestRunner.toggleMatchedStyleProperty = function(propertyName, checked) {
+  const treeItem = ElementsTestRunner.getMatchedStylePropertyTreeItem(propertyName);
 
   treeItem.toggleDisabled(!checked);
 };
 
-export const eventListenersWidget = function() {
+ElementsTestRunner.eventListenersWidget = function() {
   UI.ViewManager.ViewManager.instance().showView('elements.eventListeners');
   return Elements.EventListenersWidget.EventListenersWidget.instance();
 };
 
-export const showEventListenersWidget = function() {
+ElementsTestRunner.showEventListenersWidget = function() {
   return UI.ViewManager.ViewManager.instance().showView('elements.eventListeners');
 };
 
 /**
  * @return {Promise}
  */
-export const showComputedStyles = function() {
+ElementsTestRunner.showComputedStyles = function() {
   Elements.ElementsPanel.ElementsPanel.instance().sidebarPaneView.tabbedPane().selectTab('Computed', true);
-  return computedStyleWidget().doUpdate();
+  return ElementsTestRunner.computedStyleWidget().doUpdate();
 };
 
-export const expandAndDumpSelectedElementEventListeners = function(callback, force) {
-  expandAndDumpEventListeners(eventListenersWidget().eventListenersView, callback, force);
+ElementsTestRunner.expandAndDumpSelectedElementEventListeners = function(callback, force) {
+  ElementsTestRunner.expandAndDumpEventListeners(
+      ElementsTestRunner.eventListenersWidget().eventListenersView, callback, force);
 };
 
-export const removeFirstEventListener = function() {
-  const treeOutline = eventListenersWidget().eventListenersView.treeOutline;
+ElementsTestRunner.removeFirstEventListener = function() {
+  const treeOutline = ElementsTestRunner.eventListenersWidget().eventListenersView.treeOutline;
   const listenerTypes = treeOutline.rootElement().children();
 
   for (let i = 0; i < listenerTypes.length; i++) {
@@ -626,7 +627,7 @@ export const removeFirstEventListener = function() {
   }
 };
 
-export const dumpObjectPropertySectionDeep = function(section) {
+ElementsTestRunner.dumpObjectPropertySectionDeep = function(section) {
   function domNodeToString(node) {
     if (node) {
       return '\'' + node.textContent + '\'';
@@ -654,16 +655,16 @@ export const dumpObjectPropertySectionDeep = function(section) {
   }
 };
 
-export const getElementStylePropertyTreeItem = function(propertyName) {
-  return getFirstPropertyTreeItemForSection(inlineStyleSection(), propertyName);
+ElementsTestRunner.getElementStylePropertyTreeItem = function(propertyName) {
+  return ElementsTestRunner.getFirstPropertyTreeItemForSection(ElementsTestRunner.inlineStyleSection(), propertyName);
 };
 
-export const getMatchedStylePropertyTreeItem = function(propertyName) {
+ElementsTestRunner.getMatchedStylePropertyTreeItem = function(propertyName) {
   const sectionBlocks = Elements.ElementsPanel.ElementsPanel.instance().stylesWidget.sectionBlocks;
 
   for (const block of sectionBlocks) {
     for (const section of block.sections) {
-      const treeItem = getFirstPropertyTreeItemForSection(section, propertyName);
+      const treeItem = ElementsTestRunner.getFirstPropertyTreeItemForSection(section, propertyName);
 
       if (treeItem) {
         return treeItem;
@@ -674,7 +675,7 @@ export const getMatchedStylePropertyTreeItem = function(propertyName) {
   return null;
 };
 
-export const getFirstPropertyTreeItemForSection = function(section, propertyName) {
+ElementsTestRunner.getFirstPropertyTreeItemForSection = function(section, propertyName) {
   const outline = section.propertiesTreeOutline.rootElement();
 
   for (let i = 0; i < outline.childCount(); ++i) {
@@ -688,15 +689,15 @@ export const getFirstPropertyTreeItemForSection = function(section, propertyName
   return null;
 };
 
-export const dumpStyleTreeOutline = function(treeItem, depth, printInnerText) {
+ElementsTestRunner.dumpStyleTreeOutline = function(treeItem, depth, printInnerText) {
   const children = treeItem.rootElement().children();
 
   for (let i = 0; i < children.length; ++i) {
-    dumpStyleTreeItem(children[i], '', depth || 2, printInnerText);
+    ElementsTestRunner.dumpStyleTreeItem(children[i], '', depth || 2, printInnerText);
   }
 };
 
-export const dumpStyleTreeItem = function(treeItem, prefix, depth, printInnerText) {
+ElementsTestRunner.dumpStyleTreeItem = function(treeItem, prefix, depth, printInnerText) {
   const textContent = printInnerText ? treeItem.listItemElement.innerText :
                                        TestRunner.textContentWithoutStyles(treeItem.listItemElement);
   if (textContent.indexOf(' width:') !== -1 || textContent.indexOf(' height:') !== -1) {
@@ -726,12 +727,12 @@ export const dumpStyleTreeItem = function(treeItem, prefix, depth, printInnerTex
     const children = treeItem.children();
 
     for (let i = 0; children && i < children.length; ++i) {
-      dumpStyleTreeItem(children[i], prefix + '    ', depth);
+      ElementsTestRunner.dumpStyleTreeItem(children[i], prefix + '    ', depth);
     }
   }
 };
 
-export const dumpElementsTree = function(rootNode, depth, resultsArray) {
+ElementsTestRunner.dumpElementsTree = function(rootNode, depth, resultsArray) {
   function beautify(element) {
     return element.innerText.replace(/\u200b/g, '').replace(/\n/g, '\\n').trim();
   }
@@ -829,17 +830,17 @@ export const dumpElementsTree = function(rootNode, depth, resultsArray) {
     }
   }
 
-  const treeOutline = firstElementsTreeOutline();
+  const treeOutline = ElementsTestRunner.firstElementsTreeOutline();
   treeOutline.runPendingUpdates();
   print((rootNode ? treeOutline.findTreeElement(rootNode) : treeOutline.rootElement()), '', depth || 10000);
 };
 
-export const dumpDOMUpdateHighlights = function(rootNode, callback, depth) {
+ElementsTestRunner.dumpDOMUpdateHighlights = function(rootNode, callback, depth) {
   let hasHighlights = false;
   TestRunner.addSniffer(Elements.ElementsTreeOutline.ElementsTreeOutline.prototype, 'updateModifiedNodes', didUpdate);
 
   function didUpdate() {
-    const treeOutline = firstElementsTreeOutline();
+    const treeOutline = ElementsTestRunner.firstElementsTreeOutline();
     print((rootNode ? treeOutline.findTreeElement(rootNode) : treeOutline.rootElement()), '', depth || 10000);
 
     if (!hasHighlights) {
@@ -890,7 +891,7 @@ export const dumpDOMUpdateHighlights = function(rootNode, callback, depth) {
   }
 };
 
-export const expandElementsTree = function(callback) {
+ElementsTestRunner.expandElementsTree = function(callback) {
   let expandedSomething = false;
   callback = TestRunner.safeWrap(callback);
 
@@ -910,30 +911,30 @@ export const expandElementsTree = function(callback) {
   }
 
   function onAllNodesAvailable() {
-    firstElementsTreeOutline().runPendingUpdates();
-    expand(firstElementsTreeOutline().rootElement());
+    ElementsTestRunner.firstElementsTreeOutline().runPendingUpdates();
+    expand(ElementsTestRunner.firstElementsTreeOutline().rootElement());
     setTimeout(callback.bind(null, expandedSomething));
   }
 
-  findNode(function() {
+  ElementsTestRunner.findNode(function() {
     return false;
   }, onAllNodesAvailable);
 };
 
-export const expandAndDump = function() {
+ElementsTestRunner.expandAndDump = function() {
   TestRunner.addResult('\nDump tree');
   let callback;
   const result = new Promise(f => {
     callback = f;
   });
-  expandElementsTree(() => {
-    dumpElementsTree();
+  ElementsTestRunner.expandElementsTree(() => {
+    ElementsTestRunner.dumpElementsTree();
     callback();
   });
   return result;
 };
 
-export const dumpDOMAgentTree = function(node) {
+ElementsTestRunner.dumpDOMAgentTree = function(node) {
   if (!TestRunner.domModel.document) {
     return;
   }
@@ -966,7 +967,7 @@ export const dumpDOMAgentTree = function(node) {
   dump(node, '');
 };
 
-export const rangeText = function(range) {
+ElementsTestRunner.rangeText = function(range) {
   if (!range) {
     return '[undefined-undefined]';
   }
@@ -974,22 +975,22 @@ export const rangeText = function(range) {
   return '[' + range.startLine + ':' + range.startColumn + '-' + range.endLine + ':' + range.endColumn + ']';
 };
 
-export const generateUndoTest = function(testBody) {
+ElementsTestRunner.generateUndoTest = function(testBody) {
   function result(next) {
-    const testNode = expandedNodeWithId(/function\s([^(]*)/.exec(testBody)[1]);
+    const testNode = ElementsTestRunner.expandedNodeWithId(/function\s([^(]*)/.exec(testBody)[1]);
     TestRunner.addResult('Initial:');
-    dumpElementsTree(testNode);
+    ElementsTestRunner.dumpElementsTree(testNode);
     testBody(undo);
 
     function undo() {
       TestRunner.addResult('Post-action:');
-      dumpElementsTree(testNode);
-      expandElementsTree(expandedCallback);
+      ElementsTestRunner.dumpElementsTree(testNode);
+      ElementsTestRunner.expandElementsTree(expandedCallback);
 
       function expandedCallback(expandedSomething) {
         if (expandedSomething) {
           TestRunner.addResult('== Expanded: ==');
-          dumpElementsTree(testNode);
+          ElementsTestRunner.dumpElementsTree(testNode);
         }
 
         SDK.DOMModel.DOMModelUndoStack.instance().undo().then(redo);
@@ -998,13 +999,13 @@ export const generateUndoTest = function(testBody) {
 
     function redo() {
       TestRunner.addResult('Post-undo (initial):');
-      dumpElementsTree(testNode);
-      expandElementsTree(expandedCallback);
+      ElementsTestRunner.dumpElementsTree(testNode);
+      ElementsTestRunner.expandElementsTree(expandedCallback);
 
       function expandedCallback(expandedSomething) {
         if (expandedSomething) {
           TestRunner.addResult('== Expanded: ==');
-          dumpElementsTree(testNode);
+          ElementsTestRunner.dumpElementsTree(testNode);
         }
 
         SDK.DOMModel.DOMModelUndoStack.instance().redo().then(done);
@@ -1013,13 +1014,13 @@ export const generateUndoTest = function(testBody) {
 
     function done() {
       TestRunner.addResult('Post-redo (action):');
-      dumpElementsTree(testNode);
-      expandElementsTree(expandedCallback);
+      ElementsTestRunner.dumpElementsTree(testNode);
+      ElementsTestRunner.expandElementsTree(expandedCallback);
 
       function expandedCallback(expandedSomething) {
         if (expandedSomething) {
           TestRunner.addResult('== Expanded: ==');
-          dumpElementsTree(testNode);
+          ElementsTestRunner.dumpElementsTree(testNode);
         }
 
         next();
@@ -1036,7 +1037,7 @@ export const generateUndoTest = function(testBody) {
 
 const indent = '    ';
 
-export const dumpRulesArray = function(rules, currentIndent) {
+ElementsTestRunner.dumpRulesArray = function(rules, currentIndent) {
   if (!rules) {
     return;
   }
@@ -1044,11 +1045,11 @@ export const dumpRulesArray = function(rules, currentIndent) {
   currentIndent = currentIndent || '';
 
   for (let i = 0; i < rules.length; ++i) {
-    dumpRule(rules[i], currentIndent);
+    ElementsTestRunner.dumpRule(rules[i], currentIndent);
   }
 };
 
-export const dumpRuleMatchesArray = function(matches, currentIndent) {
+ElementsTestRunner.dumpRuleMatchesArray = function(matches, currentIndent) {
   if (!matches) {
     return;
   }
@@ -1056,11 +1057,11 @@ export const dumpRuleMatchesArray = function(matches, currentIndent) {
   currentIndent = currentIndent || '';
 
   for (let i = 0; i < matches.length; ++i) {
-    dumpRule(matches[i].rule, currentIndent);
+    ElementsTestRunner.dumpRule(matches[i].rule, currentIndent);
   }
 };
 
-export const dumpRule = function(rule, currentIndent) {
+ElementsTestRunner.dumpRule = function(rule, currentIndent) {
   function selectorRange() {
     const selectors = rule.selectorList.selectors;
 
@@ -1082,21 +1083,22 @@ export const dumpRule = function(rule, currentIndent) {
 
   if (!rule.type || rule.type === 'style') {
     TestRunner.addResult(currentIndent + rule.selectorList.text + ': [' + rule.origin + selectorRange() + '] {');
-    dumpStyle(rule.style, currentIndent + indent);
+    ElementsTestRunner.dumpStyle(rule.style, currentIndent + indent);
     TestRunner.addResult(currentIndent + '}');
     return;
   }
 
   if (rule.type === 'media') {
     TestRunner.addResult(currentIndent + '@media ' + rule.mediaText + ' {');
-    dumpRulesArray(rule.childRules, currentIndent + indent);
+    ElementsTestRunner.dumpRulesArray(rule.childRules, currentIndent + indent);
     TestRunner.addResult(currentIndent + '}');
     return;
   }
 
   if (rule.type === 'import') {
     TestRunner.addResult(
-        currentIndent + '@import: header=' + rangeText(rule.headerRange) + ', body=' + rangeText(rule.bodyRange));
+        currentIndent + '@import: header=' + ElementsTestRunner.rangeText(rule.headerRange) +
+        ', body=' + ElementsTestRunner.rangeText(rule.bodyRange));
 
     return;
   }
@@ -1109,7 +1111,7 @@ export const dumpRule = function(rule, currentIndent) {
           currentIndent + '@' + rule.type + ' ' + ((rule.selectorList.text ? rule.selectorList.text + ' ' : '')) + '{');
     }
 
-    dumpStyle(rule.style, currentIndent + indent);
+    ElementsTestRunner.dumpStyle(rule.style, currentIndent + indent);
     TestRunner.addResult(currentIndent + '}');
     return;
   }
@@ -1120,10 +1122,11 @@ export const dumpRule = function(rule, currentIndent) {
   }
 
   TestRunner.addResult(
-      currentIndent + '[UNKNOWN RULE]: header=' + rangeText(rule.headerRange) + ', body=' + rangeText(rule.bodyRange));
+      currentIndent + '[UNKNOWN RULE]: header=' + ElementsTestRunner.rangeText(rule.headerRange) +
+      ', body=' + ElementsTestRunner.rangeText(rule.bodyRange));
 };
 
-export const dumpStyle = function(style, currentIndent) {
+ElementsTestRunner.dumpStyle = function(style, currentIndent) {
   currentIndent = currentIndent || '';
 
   if (!style) {
@@ -1138,14 +1141,14 @@ export const dumpStyle = function(style, currentIndent) {
       TestRunner.addResult(
           currentIndent + '[\'' + property.name + '\':\'' + property.value + '\'' +
           ((property.important ? ' is-important' : '')) + (('parsedOk' in property ? ' non-parsed' : '')) + '] @' +
-          rangeText(property.range) + ' ');
+          ElementsTestRunner.rangeText(property.range) + ' ');
     } else {
       TestRunner.addResult(currentIndent + '[text=\'' + property.text + '\'] disabled');
     }
   }
 };
 
-export const dumpCSSStyleDeclaration = function(style, currentIndent) {
+ElementsTestRunner.dumpCSSStyleDeclaration = function(style, currentIndent) {
   currentIndent = currentIndent || '';
 
   if (!style) {
@@ -1162,14 +1165,14 @@ export const dumpCSSStyleDeclaration = function(style, currentIndent) {
       TestRunner.addResult(
           currentIndent + '[\'' + property.name + '\':\'' + property.value + '\'' +
           ((property.important ? ' is-important' : '')) + ((!property['parsedOk'] ? ' non-parsed' : '')) + '] @' +
-          rangeText(property.range) + ' ');
+          ElementsTestRunner.rangeText(property.range) + ' ');
     } else {
       TestRunner.addResult(currentIndent + '[text=\'' + property.text + '\'] disabled');
     }
   }
 };
 
-export const dumpBreadcrumb = function(message) {
+ElementsTestRunner.dumpBreadcrumb = function(message) {
   if (message) {
     TestRunner.addResult(message + ':');
   }
@@ -1186,7 +1189,7 @@ export const dumpBreadcrumb = function(message) {
   TestRunner.addResult(result.join(' > '));
 };
 
-export const matchingSelectors = function(matchedStyles, rule) {
+ElementsTestRunner.matchingSelectors = function(matchedStyles, rule) {
   const selectors = [];
   const matchingSelectors = matchedStyles.getMatchingSelectors(rule);
 
@@ -1197,14 +1200,14 @@ export const matchingSelectors = function(matchedStyles, rule) {
   return '[' + selectors.join(', ') + ']';
 };
 
-export const addNewRuleInStyleSheet = function(styleSheetHeader, selector, callback) {
+ElementsTestRunner.addNewRuleInStyleSheet = function(styleSheetHeader, selector, callback) {
   TestRunner.addSniffer(
       Elements.StylesSidebarPane.StylesSidebarPane.prototype, 'addBlankSection',
       onBlankSection.bind(null, selector, callback));
   Elements.ElementsPanel.ElementsPanel.instance().stylesWidget.createNewRuleInStyleSheet(styleSheetHeader);
 };
 
-export const addNewRule = function(selector, callback) {
+ElementsTestRunner.addNewRule = function(selector, callback) {
   Elements.ElementsPanel.ElementsPanel.instance()
       .stylesWidget.contentElement.querySelector('.styles-pane-toolbar')
       .shadowRoot.querySelector('.plus')
@@ -1215,14 +1218,14 @@ export const addNewRule = function(selector, callback) {
 };
 
 function onBlankSection(selector, callback) {
-  const section = firstMatchedStyleSection();
+  const section = ElementsTestRunner.firstMatchedStyleSection();
 
   if (typeof selector === 'string') {
     section.selectorElement.textContent = selector;
   }
 
   section.selectorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
-  waitForSelectorCommitted(callback.bind(null, section));
+  ElementsTestRunner.waitForSelectorCommitted(callback.bind(null, section));
 }
 
 /**
@@ -1235,10 +1238,10 @@ function onBlankSection(selector, callback) {
  * @param {?Array<string>} attributes List of top-level property names to include in the result
  * @param {?Function=} maybeCallback
  */
-export const dumpInspectorHighlightJSON = function(idValue, attributes, maybeCallback) {
+ElementsTestRunner.dumpInspectorHighlightJSON = function(idValue, attributes, maybeCallback) {
   const callback = arguments.length === 3 ? maybeCallback : attributes;
   const attributeSet = arguments.length === 3 ? new Set(attributes) : new Set();
-  nodeWithId(idValue, nodeResolved);
+  ElementsTestRunner.nodeWithId(idValue, nodeResolved);
 
   async function nodeResolved(node) {
     const result = await TestRunner.OverlayAgent.getHighlightObjectForTest(node.id);
@@ -1251,10 +1254,10 @@ export const dumpInspectorHighlightJSON = function(idValue, attributes, maybeCal
   }
 };
 
-export const dumpInspectorGridHighlightsJSON = async function(idValues, callback) {
+ElementsTestRunner.dumpInspectorGridHighlightsJSON = async function(idValues, callback) {
   const nodeIds = [];
   for (const id of idValues) {
-    const node = await nodeWithIdPromise(id);
+    const node = await ElementsTestRunner.nodeWithIdPromise(id);
     nodeIds.push(node.id);
   }
 
@@ -1263,8 +1266,8 @@ export const dumpInspectorGridHighlightsJSON = async function(idValues, callback
   callback();
 };
 
-export const dumpInspectorDistanceJSON = function(idValue, callback) {
-  nodeWithId(idValue, nodeResolved);
+ElementsTestRunner.dumpInspectorDistanceJSON = function(idValue, callback) {
+  ElementsTestRunner.nodeWithId(idValue, nodeResolved);
 
   async function nodeResolved(node) {
     const result = await TestRunner.OverlayAgent.getHighlightObjectForTest(node.id, true);
@@ -1281,8 +1284,8 @@ export const dumpInspectorDistanceJSON = function(idValue, callback) {
   }
 };
 
-export const dumpInspectorHighlightStyleJSON = async function(idValue) {
-  const node = await nodeWithIdPromise(idValue);
+ElementsTestRunner.dumpInspectorHighlightStyleJSON = async function(idValue) {
+  const node = await ElementsTestRunner.nodeWithIdPromise(idValue);
   const result = await TestRunner.OverlayAgent.getHighlightObjectForTest(node.id, false, true /* includeStyle */);
   const info = result['elementInfo'] ? result['elementInfo']['style'] : null;
   if (!info) {
@@ -1295,11 +1298,11 @@ export const dumpInspectorHighlightStyleJSON = async function(idValue) {
   }
 };
 
-export const waitForAnimationAdded = function(callback) {
+ElementsTestRunner.waitForAnimationAdded = function(callback) {
   TestRunner.addSniffer(Animation.AnimationTimeline.AnimationTimeline.prototype, 'addAnimationGroup', callback);
 };
 
-export const dumpAnimationTimeline = function(timeline) {
+ElementsTestRunner.dumpAnimationTimeline = function(timeline) {
   for (const ui of timeline.uiAnimations) {
     TestRunner.addResult(ui.animation().type());
     TestRunner.addResult(ui.nameElement.innerHTML);
@@ -1309,22 +1312,22 @@ export const dumpAnimationTimeline = function(timeline) {
 
 // Saves time by ignoring sidebar updates, use in tests that don't interact
 // with these sidebars.
-export const ignoreSidebarUpdates = function() {
+ElementsTestRunner.ignoreSidebarUpdates = function() {
   Elements.StylesSidebarPane.StylesSidebarPane.prototype.update = function() {};
   Elements.MetricsSidebarPane.MetricsSidebarPane.prototype.update = function() {};
 };
 
-export const getDocumentElements = function() {
+ElementsTestRunner.getDocumentElements = function() {
   const map = TestRunner.domModel.idToDOMNode;
   const documents = Array.from(map.values()).filter(n => n instanceof SDK.DOMModel.DOMDocument);
   return documents;
 };
 
-export const getDocumentElement = function() {
-  const documents = getDocumentElements();
+ElementsTestRunner.getDocumentElement = function() {
+  const documents = ElementsTestRunner.getDocumentElements();
   return documents.length ? documents[0] : null;
 };
 
-export const mappedNodes = function() {
+ElementsTestRunner.mappedNodes = function() {
   return TestRunner.domModel.idToDOMNode.entries();
 };

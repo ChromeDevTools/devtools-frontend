@@ -3,32 +3,28 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
-import {TestRunner} from '../test_runner/test_runner.js';
-
-import {expandElementsTree, selectNodeWithId} from './ElementsTestRunner.js';
-
 /**
  * @fileoverview using private properties isn't a Closure violation in tests.
  */
+self.ElementsTestRunner = self.ElementsTestRunner || {};
 
-export let events = [];
-export let containerId;
-export let containerText;
+ElementsTestRunner.events = [];
+ElementsTestRunner.containerId;
 
-export const setUpTestSuite = function(next) {
-  expandElementsTree(step1);
+ElementsTestRunner.setUpTestSuite = function(next) {
+  ElementsTestRunner.expandElementsTree(step1);
 
   function step1() {
-    selectNodeWithId('container', step2);
+    ElementsTestRunner.selectNodeWithId('container', step2);
   }
 
   function step2(node) {
-    containerId = node.id;
-    TestRunner.DOMAgent.getOuterHTML(containerId).then(step3);
+    ElementsTestRunner.containerId = node.id;
+    TestRunner.DOMAgent.getOuterHTML(ElementsTestRunner.containerId).then(step3);
   }
 
   function step3(text) {
-    containerText = text;
+    ElementsTestRunner.containerText = text;
 
     for (const key in SDK.DOMModel.Events) {
       const eventName = SDK.DOMModel.Events[key];
@@ -37,14 +33,15 @@ export const setUpTestSuite = function(next) {
         continue;
       }
 
-      TestRunner.domModel.addEventListener(eventName, recordEvent.bind(null, eventName));
+      TestRunner.domModel.addEventListener(
+          eventName, ElementsTestRunner.recordEvent.bind(ElementsTestRunner, eventName));
     }
 
     next();
   }
 };
 
-export const recordEvent = function(eventName, event) {
+ElementsTestRunner.recordEvent = function(eventName, event) {
   if (!event.data) {
     return;
   }
@@ -58,55 +55,55 @@ export const recordEvent = function(eventName, event) {
     }
   }
 
-  events.push('Event ' + eventName.toString() + ': ' + node.nodeName());
+  ElementsTestRunner.events.push('Event ' + eventName.toString() + ': ' + node.nodeName());
 };
 
-export const patchOuterHTML = function(pattern, replacement, next) {
+ElementsTestRunner.patchOuterHTML = function(pattern, replacement, next) {
   TestRunner.addResult('Replacing \'' + pattern + '\' with \'' + replacement + '\'\n');
-  setOuterHTML(containerText.replace(pattern, replacement), next);
+  ElementsTestRunner.setOuterHTML(ElementsTestRunner.containerText.replace(pattern, replacement), next);
 };
 
-export const patchOuterHTMLUseUndo = function(pattern, replacement, next) {
+ElementsTestRunner.patchOuterHTMLUseUndo = function(pattern, replacement, next) {
   TestRunner.addResult('Replacing \'' + pattern + '\' with \'' + replacement + '\'\n');
-  setOuterHTMLUseUndo(containerText.replace(pattern, replacement), next);
+  ElementsTestRunner.setOuterHTMLUseUndo(ElementsTestRunner.containerText.replace(pattern, replacement), next);
 };
 
-export const setOuterHTML = function(newText, next) {
-  innerSetOuterHTML(newText, false, bringBack);
+ElementsTestRunner.setOuterHTML = function(newText, next) {
+  ElementsTestRunner.innerSetOuterHTML(newText, false, bringBack);
 
   function bringBack() {
     TestRunner.addResult('\nBringing things back\n');
-    innerSetOuterHTML(containerText, true, next);
+    ElementsTestRunner.innerSetOuterHTML(ElementsTestRunner.containerText, true, next);
   }
 };
 
-export const setOuterHTMLUseUndo = function(newText, next) {
-  innerSetOuterHTML(newText, false, bringBack);
+ElementsTestRunner.setOuterHTMLUseUndo = function(newText, next) {
+  ElementsTestRunner.innerSetOuterHTML(newText, false, bringBack);
 
   async function bringBack() {
     TestRunner.addResult('\nBringing things back\n');
     await SDK.DOMModel.DOMModelUndoStack.instance().undo();
-    _dumpOuterHTML(true, next);
+    ElementsTestRunner._dumpOuterHTML(true, next);
   }
 };
 
-export const innerSetOuterHTML = async function(newText, last, next) {
-  await TestRunner.DOMAgent.setOuterHTML(containerId, newText);
+ElementsTestRunner.innerSetOuterHTML = async function(newText, last, next) {
+  await TestRunner.DOMAgent.setOuterHTML(ElementsTestRunner.containerId, newText);
   TestRunner.domModel.markUndoableState();
-  _dumpOuterHTML(last, next);
+  ElementsTestRunner._dumpOuterHTML(last, next);
 };
 
-export const _dumpOuterHTML = async function(last, next) {
+ElementsTestRunner._dumpOuterHTML = async function(last, next) {
   const result = await TestRunner.RuntimeAgent.evaluate('document.getElementById("identity").wrapperIdentity');
   TestRunner.addResult('Wrapper identity: ' + result.value);
-  events.sort();
+  ElementsTestRunner.events.sort();
 
-  for (let i = 0; i < events.length; ++i) {
-    TestRunner.addResult(events[i]);
+  for (let i = 0; i < ElementsTestRunner.events.length; ++i) {
+    TestRunner.addResult(ElementsTestRunner.events[i]);
   }
 
-  events = [];
-  const text = await TestRunner.DOMAgent.getOuterHTML(containerId);
+  ElementsTestRunner.events = [];
+  const text = await TestRunner.DOMAgent.getOuterHTML(ElementsTestRunner.containerId);
   TestRunner.addResult('==========8<==========');
   TestRunner.addResult(text);
   TestRunner.addResult('==========>8==========');

@@ -16,6 +16,7 @@
   padding: 16px 20px;
   background-color: var(--sys-color-cdt-base-container);
   border-radius: 16px;
+  display: block;
 }
 
 header {

@@ -27,6 +27,7 @@ devtools_entrypoint("bundle") {
     "../../models/issues_manager/*",
     "../../panels/explain/*",
     "../../ui/components/docs/markdown_view/*",
+    "../../ui/components/docs/console_insight/*",
     "../../ui/components/markdown_view/*",
   ]
 

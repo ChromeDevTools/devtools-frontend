@@ -23,15 +23,18 @@ export class CloseEvent extends Event {
   }
 }
 
+type PublicPromptBuilder = Pick<PromptBuilder, 'buildPrompt'>;
+type PublicInsightProvider = Pick<InsightProvider, 'getInsights'>;
+
 export class ConsoleInsight extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-console-insight`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  #promptBuilder: PromptBuilder;
-  #insightProvider: InsightProvider;
+  #promptBuilder: PublicPromptBuilder;
+  #insightProvider: PublicInsightProvider;
   #tokens: MarkdownView.MarkdownView.MarkdownViewData['tokens'] = [];
 
-  constructor(promptBuilder: PromptBuilder, insightProvider: InsightProvider) {
+  constructor(promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider) {
     super();
     this.#promptBuilder = promptBuilder;
     this.#insightProvider = insightProvider;

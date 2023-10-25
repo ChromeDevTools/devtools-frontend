@@ -42,6 +42,7 @@ devtools_entrypoint("bundle") {
     "../../../test/unittests/front_end/panels/emulation/*",
     "../../entrypoints/*",
     "../../legacy_test_runner/*",
+    "../../ui/components/docs/console_insight/*",
   ]
 
   visibility += devtools_panels_visibility

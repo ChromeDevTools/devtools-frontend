@@ -26,6 +26,7 @@ group("docs") {
     "./icon_component",
     "./icon_dialog",
     "./input",
+    "./console_insight",
     "./issue_counter",
     "./issue_link_icon",
     "./legacy_color_invert",

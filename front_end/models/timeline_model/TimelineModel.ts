@@ -748,9 +748,12 @@ export class TimelineModelImpl {
 
     try {
       const profile = (cpuProfile as Protocol.Profiler.Profile);
-      const jsProfileModel = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(profile);
-      this.cpuProfilesInternal.push({cpuProfileData: jsProfileModel, target});
-      return jsProfileModel;
+      // Sometimes we see cpuProfiles without any nodes. As these are entirely empty, we early exit
+      if (profile.nodes.length) {
+        const jsProfileModel = new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(profile);
+        this.cpuProfilesInternal.push({cpuProfileData: jsProfileModel, target});
+        return jsProfileModel;
+      }
     } catch (e) {
       Common.Console.Console.instance().error('Failed to parse CPU profile.');
     }

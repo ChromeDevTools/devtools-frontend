@@ -5,6 +5,7 @@
 const {assert} = chai;
 
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
+import * as Common from '../../../../../front_end/core/common/common.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import type * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as TimelineModel from '../../../../../front_end/models/timeline_model/timeline_model.js';
@@ -1411,6 +1412,36 @@ describeWithEnvironment('TimelineModel', function() {
           nodeName: 'DIV id=\'testElementFive\'',
         },
       ]);
+    });
+  });
+
+  describe('extractCpuProfileDataModel', function() {
+    it('handles empty cpuprofile payloads', function() {
+      const {timelineModel} = traceWithEvents([
+        {
+          'args': {'data': {'startTime': 756917095363}},
+          'cat': 'disabled-by-default-v8.cpu_profiler',
+          'id': '0x1',
+          'name': 'Profile',
+          'ph': 'P',
+          'pid': 1537729,
+          'tid': 15,
+          'ts': 962632415206,
+        },
+        {
+          'args': {'data': {'startTime': 756917095363}},
+          'cat': 'disabled-by-default-v8.cpu_profiler',
+          'id': '0x1',
+          'name': 'Profile',
+          'ph': 'P',
+          'pid': 1537729,
+          'tid': 15,
+          'ts': 962632415207,
+        },
+      ] as unknown as TraceEngine.TracingManager.EventPayload[]);
+      assert.deepStrictEqual(timelineModel.cpuProfiles(), []);
+      // Ensure no "Failed to parse CPU profile." messages were posted
+      assert.deepStrictEqual(Common.Console.Console.instance().messages(), []);
     });
   });
 });

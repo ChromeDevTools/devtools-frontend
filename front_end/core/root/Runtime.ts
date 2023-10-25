@@ -311,7 +311,6 @@ export enum ExperimentName {
   SELF_XSS_WARNING = 'selfXssWarning',
   USE_SOURCE_MAP_SCOPES = 'useSourceMapScopes',
   STORAGE_BUCKETS_TREE = 'storageBucketsTree',
-  DELETE_OVERRIDES_TEMP_ENABLE = 'deleteOverridesTemporarilyEnable',
   NETWORK_PANEL_FILTER_BAR_REDESIGN = 'networkPanelFilterBarRedesign',
   BREADCRUMBS_PERFORMANCE_PANEL = 'breadcrumbsPerformancePanel',
   TRACK_CONTEXT_MENU = 'trackContextMenu',

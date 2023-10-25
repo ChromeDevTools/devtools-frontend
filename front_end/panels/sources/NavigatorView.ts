@@ -101,10 +101,6 @@ const UIStrings = {
   /**
    *@description Text in Navigator View of the Sources panel
    */
-  areYouSureYouWantToDeleteAllOverrides: 'Are you sure you want to delete all overrides in this folder?',
-  /**
-   *@description Text in Navigator View of the Sources panel
-   */
   areYouSureYouWantToDeleteFolder: 'Are you sure you want to delete this folder and its contents?',
   /**
    *@description Text in Navigator View of the Sources panel. A confirmation message on action to delete a folder.
@@ -135,10 +131,6 @@ const UIStrings = {
    *@description Text in Navigator View of the Sources panel. Warning message when user remove a folder.
    */
   workspaceStopSyncing: 'This will stop syncing changes from DevTools to your sources.',
-  /**
-   *@description A context menu item in the Navigator View of the Sources panel
-   */
-  deleteAllOverrides: 'Delete all overrides',
   /**
    *@description Name of an item from source map
    *@example {compile.html} PH1
@@ -1003,32 +995,6 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
     void contextMenu.show();
   }
 
-  private async handleDeleteOverrides(node: NavigatorTreeNode): Promise<void> {
-    const shouldRemove =
-        await UI.UIUtils.ConfirmDialog.show(i18nString(UIStrings.areYouSureYouWantToDeleteAllOverrides));
-    if (shouldRemove) {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideTabDeleteOverridesContextMenu);
-      this.handleDeleteOverridesHelper(node);
-    }
-  }
-
-  private handleDeleteOverridesHelper(node: NavigatorTreeNode): void {
-    node.children().forEach(child => {
-      this.handleDeleteOverridesHelper(child);
-    });
-
-    if (node instanceof NavigatorUISourceCodeTreeNode) {
-      // Only delete confirmed overrides and not just any file that happens to be in the folder.
-      const binding = Persistence.Persistence.PersistenceImpl.instance().binding(node.uiSourceCode());
-      const headerBinding =
-          Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(
-              node.uiSourceCode());
-      if (binding || headerBinding) {
-        node.uiSourceCode().project().deleteFile(node.uiSourceCode());
-      }
-    }
-  }
-
   private async handleDeleteFolder(node: NavigatorTreeNode): Promise<void> {
     const warningMsg =
         `${i18nString(UIStrings.areYouSureYouWantToDeleteFolder)}\n${i18nString(UIStrings.actionCannotBeUndone)}`;
@@ -1137,11 +1103,6 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
           });
         }
       } else {
-        if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.DELETE_OVERRIDES_TEMP_ENABLE)) {
-          contextMenu.defaultSection().appendItem(
-              i18nString(UIStrings.deleteAllOverrides), this.handleDeleteOverrides.bind(this, node));
-        }
-
         if (!(node instanceof NavigatorGroupTreeNode)) {
           contextMenu.defaultSection().appendItem(
               i18nString(UIStrings.delete), this.handleDeleteFolder.bind(this, node));

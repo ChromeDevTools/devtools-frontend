@@ -415,7 +415,6 @@ describe('Overrides panel > Delete context menus', () => {
   beforeEach(async () => {
     // set up 3 overriden files - .header, json, custom js
     await enableExperiment('headerOverrides');
-    await enableExperiment('deleteOverridesTemporarilyEnable');
     await goToResource('network/fetch-json.html');
     await openSourcesPanel();
     await enableLocalOverrides();
@@ -445,34 +444,6 @@ describe('Overrides panel > Delete context menus', () => {
   afterEach(async () => {
     await click('[aria-label="Clear configuration"]');
     await waitFor(ENABLE_OVERRIDES_SELECTOR);
-  });
-
-  // Flaky test
-  it.skipOnPlatforms(['mac'], '[crbug.com/1480951] delete only overridden files from sub folder', async () => {
-    await step('files exist in Sources panel', async () => {
-      await selectRequestByName('coffees.json', {button: 'right'});
-      await click('aria/Show all overrides');
-
-      await waitFor('[aria-label=".headers, file"]');
-      await waitFor('[aria-label="coffees.json, file"]');
-      await waitFor('[aria-label="foo.js, file"]');
-    });
-
-    await step('delete all overrides only', async () => {
-      const subfolderTab = await waitFor('[role="group"] > .navigator-folder-tree-item');
-      await subfolderTab.click({button: 'right'});
-
-      await click('aria/Delete all overrides');
-      await waitFor('[role="dialog"]');
-      await click('aria/OK');
-      await waitForNone('[role="dialog"]');
-
-      const treeItems = await $$('.navigator-file-tree-item');
-      assert.strictEqual(treeItems.length, 1);
-
-      const fileName = await treeItems[0].evaluate(x => x.textContent);
-      assert.strictEqual(fileName, 'foo.js');
-    });
   });
 
   it('delete all files from sub folder', async () => {

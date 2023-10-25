@@ -1,0 +1,105 @@
+/*
+ * Copyright 2023 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:root {
+  --wco-theme-color: #121212;
+  --wco-icon-color: #fff;
+}
+
+.image-group {
+  display: flex;
+  background-color: var(--wco-theme-color);
+  align-items: center;
+}
+
+.image-group-left {
+  float: left;
+  justify-content: flex-start;
+  gap: 4px;
+  padding-left: 12px;
+}
+
+.image-group-right {
+  float: right;
+  justify-content: flex-end;
+  gap: 2px;
+  padding-right: 17px;
+}
+
+.windows-right-image-group {
+  width: 238px;
+  height: 33px;
+}
+
+.linux-right-image-group {
+  width: 196px;
+  height: 34px;
+}
+
+.mac-left-image-group {
+  width: 74px;
+  height: 40px;
+}
+
+.mac-right-image-group {
+  width: 100px;
+  height: 40px;
+}
+
+.image {
+  width: 33px;
+  height: 33px;
+  background-color: var(--wco-icon-color);
+}
+
+#mac-chevron,
+#mac-ellipsis {
+  width: 40px;
+  height: 40px;
+  background-color: var(--wco-icon-color);
+}
+
+#close {
+  -webkit-mask-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAfCAYAAACPvW/2AAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TpSJVBytIcchQneyiIuJUqlgEC6Wt0KqDyaUfQpOGJMXFUXAtOPixWHVwcdbVwVUQBD9AXF2cFF2kxP8lhRYxHhz34929x907QGhUmGp2xQBVs4x0Ii7m8iti4BUBhDGEfsxKzNSTmYUsPMfXPXx8vYvyLO9zf44+pWAywCcSx5huWMTrxNObls55nzjEypJCfE48btAFiR+5Lrv8xrnksMAzQ0Y2PUccIhZLHSx3MCsbKvEUcURRNcoXci4rnLc4q5Uaa92TvzBY0JYzXKc5ggQWkUQKImTUsIEKLERp1Ugxkab9uIc/7PhT5JLJtQFGjnlUoUJy/OB/8Ltbszg54SYF40D3i21/jAKBXaBZt+3vY9tungD+Z+BKa/urDWDmk/R6W4scAQPbwMV1W5P3gMsdYPhJlwzJkfw0hWIReD+jb8oDg7dA76rbW2sfpw9AlrpaugEODoGxEmWveby7p7O3f8+0+vsB9f9y2zZ6P+8AAAAGYktHRAD/AP8A/6C9p5MAAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfnBxsWBAcQDgJxAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAAPlJREFUWMPtlTFOxDAQRd8k5gYb+i1W6Si4/ym22wpatJHogWQo+JaMlAjZgS3QPClSIk/s55mxDEEQBME3rPYHdzcgAbOZLRsxnWLezcxr5u8aNpGAR2Bw935FpgfuFZNqJ28RmoFnYAQOpZTeB409KbZ6t3U1NlvcfVK5R4lMGs4yF2DaKumvCklqdverPkdl2oCTZK5mNt+kqTf65UFznYGXVpnWHlrblAGuZxdpZ3YGleksmdPXkDeXLO2UyQ2c+2kpGr1JKjXIdMChlMkLF6dtLDK1/HWGeuC4dpp0+rLUEXgF3m5xddwBHz9cHb1inCAIguAf8QkteHDWohPAIAAAAABJRU5ErkJggg==");
+}
+
+#maximize {
+  -webkit-mask-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAfCAYAAACPvW/2AAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TpSJVBytIcchQneyiIuJUqlgEC6Wt0KqDyaUfQpOGJMXFUXAtOPixWHVwcdbVwVUQBD9AXF2cFF2kxP8lhRYxHhz34929x907QGhUmGp2xQBVs4x0Ii7m8iti4BUBhDGEfsxKzNSTmYUsPMfXPXx8vYvyLO9zf44+pWAywCcSx5huWMTrxNObls55nzjEypJCfE48btAFiR+5Lrv8xrnksMAzQ0Y2PUccIhZLHSx3MCsbKvEUcURRNcoXci4rnLc4q5Uaa92TvzBY0JYzXKc5ggQWkUQKImTUsIEKLERp1Ugxkab9uIc/7PhT5JLJtQFGjnlUoUJy/OB/8Ltbszg54SYF40D3i21/jAKBXaBZt+3vY9tungD+Z+BKa/urDWDmk/R6W4scAQPbwMV1W5P3gMsdYPhJlwzJkfw0hWIReD+jb8oDg7dA76rbW2sfpw9AlrpaugEODoGxEmWveby7p7O3f8+0+vsB9f9y2zZ6P+8AAAAGYktHRAD/AP8A/6C9p5MAAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfnBxsWBACOapfSAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAAGJJREFUWMPt07sNgDAMhOEzQhkHxqHK0GEcmp8NiGTJQHFf64culiKZmdm/RWYI2CVtk7YzIsYrrwA60B7qDeiZ3Uv6tBFXplYWqIoDOdBngWbfPrt3Tc4NSQcw6zEzM6t2A1K/HsQFSWEQAAAAAElFTkSuQmCC");
+}
+
+#minimize {
+  -webkit-mask-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAfCAYAAACPvW/2AAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TpSJVBytIcchQneyiIuJUqlgEC6Wt0KqDyaUfQpOGJMXFUXAtOPixWHVwcdbVwVUQBD9AXF2cFF2kxP8lhRYxHhz34929x907QGhUmGp2xQBVs4x0Ii7m8iti4BUBhDGEfsxKzNSTmYUsPMfXPXx8vYvyLO9zf44+pWAywCcSx5huWMTrxNObls55nzjEypJCfE48btAFiR+5Lrv8xrnksMAzQ0Y2PUccIhZLHSx3MCsbKvEUcURRNcoXci4rnLc4q5Uaa92TvzBY0JYzXKc5ggQWkUQKImTUsIEKLERp1Ugxkab9uIc/7PhT5JLJtQFGjnlUoUJy/OB/8Ltbszg54SYF40D3i21/jAKBXaBZt+3vY9tungD+Z+BKa/urDWDmk/R6W4scAQPbwMV1W5P3gMsdYPhJlwzJkfw0hWIReD+jb8oDg7dA76rbW2sfpw9AlrpaugEODoGxEmWveby7p7O3f8+0+vsB9f9y2zZ6P+8AAAAGYktHRAD/AP8A/6C9p5MAAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfnBxsWAzIJ/FCVAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAADNJREFUWMPt0LERACEMA0E5/+ZolO4+NiUwEDK78SlRAgC8rW5G3T2SfJvsr6rpYgCAMwvylgUCKbPyMgAAAABJRU5ErkJggg==");
+}
+
+#mac-ellipsis,
+#ellipsis {
+  -webkit-mask-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAfCAYAAACPvW/2AAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TpSJVBytIcchQneyiIuJUqlgEC6Wt0KqDyaUfQpOGJMXFUXAtOPixWHVwcdbVwVUQBD9AXF2cFF2kxP8lhRYxHhz34929x907QGhUmGp2xQBVs4x0Ii7m8iti4BUBhDGEfsxKzNSTmYUsPMfXPXx8vYvyLO9zf44+pWAywCcSx5huWMTrxNObls55nzjEypJCfE48btAFiR+5Lrv8xrnksMAzQ0Y2PUccIhZLHSx3MCsbKvEUcURRNcoXci4rnLc4q5Uaa92TvzBY0JYzXKc5ggQWkUQKImTUsIEKLERp1Ugxkab9uIc/7PhT5JLJtQFGjnlUoUJy/OB/8Ltbszg54SYF40D3i21/jAKBXaBZt+3vY9tungD+Z+BKa/urDWDmk/R6W4scAQPbwMV1W5P3gMsdYPhJlwzJkfw0hWIReD+jb8oDg7dA76rbW2sfpw9AlrpaugEODoGxEmWveby7p7O3f8+0+vsB9f9y2zZ6P+8AAAAGYktHRAD/AP8A/6C9p5MAAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfnBxsTEiHYUPCwAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAAEBJREFUWMPt0aENACAQBMENEnqj/24OjwISAmJHrrrPgyRJeitJS9JO2oqyOwboQE9Sd9qVQb++rM5XrzZJkiQY1Fw4YEmaUfMAAAAASUVORK5CYII=");
+}
+
+#mac-chevron,
+#chevron {
+  -webkit-mask-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAfCAYAAACPvW/2AAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9TpSJVBytIcchQneyiIuJUqlgEC6Wt0KqDyaUfQpOGJMXFUXAtOPixWHVwcdbVwVUQBD9AXF2cFF2kxP8lhRYxHhz34929x907QGhUmGp2xQBVs4x0Ii7m8iti4BUBhDGEfsxKzNSTmYUsPMfXPXx8vYvyLO9zf44+pWAywCcSx5huWMTrxNObls55nzjEypJCfE48btAFiR+5Lrv8xrnksMAzQ0Y2PUccIhZLHSx3MCsbKvEUcURRNcoXci4rnLc4q5Uaa92TvzBY0JYzXKc5ggQWkUQKImTUsIEKLERp1Ugxkab9uIc/7PhT5JLJtQFGjnlUoUJy/OB/8Ltbszg54SYF40D3i21/jAKBXaBZt+3vY9tungD+Z+BKa/urDWDmk/R6W4scAQPbwMV1W5P3gMsdYPhJlwzJkfw0hWIReD+jb8oDg7dA76rbW2sfpw9AlrpaugEODoGxEmWveby7p7O3f8+0+vsB9f9y2zZ6P+8AAAAGYktHRAD/AP8A/6C9p5MAAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfnBxsTEjCy4NBCAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAAKBJREFUWMPtk7sKAkEMRU/WRrtFv0hZ9J9VXD9psdFCiM0IFruYeZT3VDMh4R4yDAghhBBZWLTR3U9AB4xm9grOrIED8Dazc2Smy5BfATtgSEERmQHYpllaC92ACeiBo7tvAjI98ADuzZ9sIehiZs/cnmZC/wJrZYqEloIBr5UpFpqRmlL5e75Gf2IzoRkpajbTROhHap+uY+lmhBBCiEI+sBxN3vpZhO0AAAAASUVORK5CYII=");
+}
+
+#mac-close,
+#mac-minimize,
+#mac-maximize {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+#mac-close {
+  background-color: #ff5f57;
+}
+
+#mac-minimize {
+  background-color: #ffbd2e;
+}
+
+#mac-maximize {
+  background-color: #28c941;
+}

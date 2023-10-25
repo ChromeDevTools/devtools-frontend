@@ -13,6 +13,7 @@ ts_library("inspector_overlay") {
     "highlight_flex_common_test.ts",
     "source_order_impl_helpers_test.ts",
     "tool_highlight_test.ts",
+    "tool_window_controls_test.ts",
   ]
 
   deps = [

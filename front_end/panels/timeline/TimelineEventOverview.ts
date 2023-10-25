@@ -286,7 +286,17 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
         }
       }
 
-      TraceEngine.Helpers.TreeHelpers.walkEntireTree(threadData.entryToNode, threadData.tree, onEntryStart, onEntryEnd);
+      const bounds = {...traceParsedData.Meta.traceBounds};
+      if (customStart) {
+        bounds.min = TraceEngine.Helpers.Timing.millisecondsToMicroseconds(customStart);
+      }
+      if (customEnd) {
+        bounds.max = TraceEngine.Helpers.Timing.millisecondsToMicroseconds(customEnd);
+      }
+      bounds.range = TraceEngine.Types.Timing.MicroSeconds(bounds.max - bounds.min);
+
+      TraceEngine.Helpers.TreeHelpers.walkEntireTree(
+          threadData.entryToNode, threadData.tree, onEntryStart, onEntryEnd, bounds);
 
       quantizer.appendInterval(timeStart + timeRange + quantTime, idleIndex);  // Kick drawing the last bucket.
       for (let i = categoryOrder.length - 1; i > 0; --i) {
@@ -307,7 +317,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     // engine if the Renderer data is present. Once that migratin is complete,
     // the Renderer data will always be present and we can remove this check.
     if (this.#traceParsedData) {
-      this.#drawWithNewEngine(this.#traceParsedData);
+      this.#drawWithNewEngine(this.#traceParsedData, start, end);
       return;
     }
 

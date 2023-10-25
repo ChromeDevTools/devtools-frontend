@@ -8,7 +8,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  background-color: var(--sys-color-tonal-container);
+  background-color: var(--sys-color-state-ripple-primary);
   z-index: 250;
   pointer-events: none;
 }

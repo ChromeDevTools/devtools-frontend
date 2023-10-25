@@ -362,6 +362,7 @@ export class ScreenshotError extends Error {
     message = message ?? cause?.message ?? '';
     super(message);
     this.cause = cause;
+    this.stack = cause?.stack ?? '';
     this.screenshots = screenshots;
   }
 
@@ -419,8 +420,8 @@ export class ScreenshotError extends Error {
           '</pre><p>Screenshot generated (see below)</p>';
     } else {
       // TODO(liviurau): embed images once Milo supports it
-      summary = '<pre>' + this.message.slice(0, ScreenshotError.SUMMARY_LENGTH_CUTOFF) +
-          '</pre><p>Unexppected error. See target and frontend screenshots ' +
+      const message = (this.message + '\n\n' + this.stack).slice(0, ScreenshotError.SUMMARY_LENGTH_CUTOFF);
+      summary = '<pre>' + message + '</pre><p>Unexppected error. See target and frontend screenshots ' +
           'below.</p>';
     }
     return [this.screenshots, summary];

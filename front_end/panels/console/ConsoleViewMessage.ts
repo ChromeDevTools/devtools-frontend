@@ -226,7 +226,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     forceSelect: () => void,
   }[];
   private readonly messageResized: (arg0: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>) => void;
+  // The wrapper that contains consoleRowWrapper and other elements in a column.
   protected elementInternal: HTMLElement|null;
+  // The element that wraps console message elements in a row.
+  protected consoleRowWrapper: HTMLElement|null = null;
   private readonly previewFormatter: ObjectUI.RemoteObjectPreviewFormatter.RemoteObjectPreviewFormatter;
   private searchRegexInternal: RegExp|null;
   protected messageIcon: IconButton.Icon.Icon|null;
@@ -1035,7 +1038,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     } else if (this.elementInternal && !this.similarGroupMarker && inSimilarGroup) {
       this.similarGroupMarker = document.createElement('div');
       this.similarGroupMarker.classList.add('nesting-level-marker');
-      this.elementInternal.insertBefore(this.similarGroupMarker, this.elementInternal.firstChild);
+      this.consoleRowWrapper?.insertBefore(this.similarGroupMarker, this.consoleRowWrapper.firstChild);
       this.similarGroupMarker.classList.toggle('group-closed', this.lastInSimilarGroup);
     }
   }
@@ -1223,6 +1226,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     this.elementInternal.className = 'console-message-wrapper';
     this.elementInternal.removeChildren();
+    this.consoleRowWrapper = this.elementInternal.createChild('div');
+    this.consoleRowWrapper.classList.add('console-row-wrapper');
     if (this.message.isGroupStartMessage()) {
       this.elementInternal.classList.add('console-group-title');
     }
@@ -1230,7 +1235,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       this.elementInternal.classList.add('console-from-api');
     }
     if (this.inSimilarGroup) {
-      this.similarGroupMarker = (this.elementInternal.createChild('div', 'nesting-level-marker') as HTMLElement);
+      this.similarGroupMarker = (this.consoleRowWrapper.createChild('div', 'nesting-level-marker') as HTMLElement);
       this.similarGroupMarker.classList.toggle('group-closed', this.lastInSimilarGroup);
     }
 
@@ -1265,7 +1270,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       this.elementInternal.classList.add('console-warning-level');
     }
 
-    this.elementInternal.appendChild(this.contentElement());
+    this.consoleRowWrapper.appendChild(this.contentElement());
     if (this.repeatCountInternal > 1) {
       this.showRepeatCountElement();
     }
@@ -1382,7 +1387,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
         this.repeatCountElement.type = 'warning';
       }
 
-      this.elementInternal.insertBefore(this.repeatCountElement, this.contentElementInternal);
+      this.consoleRowWrapper?.insertBefore(this.repeatCountElement, this.contentElementInternal);
       this.contentElement().classList.add('repeated-message');
     }
     this.repeatCountElement.textContent = `${this.repeatCountInternal}`;
@@ -1780,7 +1785,7 @@ export class ConsoleGroupViewMessage extends ConsoleViewMessage {
       if (this.repeatCountElement) {
         this.repeatCountElement.insertBefore(this.expandGroupIcon, this.repeatCountElement.firstChild);
       } else {
-        element.insertBefore(this.expandGroupIcon, this.contentElementInternal);
+        this.consoleRowWrapper?.insertBefore(this.expandGroupIcon, this.contentElementInternal);
       }
       element.addEventListener('click', () => this.setCollapsed(!this.collapsedInternal));
     }

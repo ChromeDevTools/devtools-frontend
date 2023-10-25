@@ -189,7 +189,7 @@
 
 .console-message-wrapper {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin: 4px;
   border-radius: 5px;
 
@@ -218,6 +218,11 @@
       background-color: var(--sys-color-state-focus-select);
     }
   }
+}
+
+.console-row-wrapper {
+  display: flex;
+  flex-direction: row;
 }
 
 .-theme-with-dark-background .console-message-wrapper {

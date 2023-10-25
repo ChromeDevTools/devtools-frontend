@@ -101,14 +101,16 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('creates a flamechart groups for track headers and titles', async function() {
     const {flameChartData} = await renderThreadAppendersFromTrace(this, 'cls-single-frame.json.gz');
-    assert.strictEqual(flameChartData.groups.length, 7);
-    assert.strictEqual(flameChartData.groups[0].name, 'Main — https://output.jsbin.com/zajamil/quiet');
-    assert.strictEqual(flameChartData.groups[1].name, 'Raster');
-    assert.strictEqual(flameChartData.groups[2].name, 'Rasterizer Thread 1');
-    assert.strictEqual(flameChartData.groups[3].name, 'Rasterizer Thread 2');
-    assert.strictEqual(flameChartData.groups[4].name, 'Chrome_ChildIOThread');
-    assert.strictEqual(flameChartData.groups[5].name, 'Compositor');
-    assert.strictEqual(flameChartData.groups[6].name, 'ThreadPoolServiceThread');
+    const expectedTrackNames = [
+      'Main — https://output.jsbin.com/zajamil/quiet',
+      'Raster',
+      'Rasterizer Thread 1',
+      'Rasterizer Thread 2',
+      'Chrome_ChildIOThread',
+      'Compositor',
+      'ThreadPoolServiceThread',
+    ];
+    assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });
 
   it('builds flamechart groups for nested tracks correctly', async function() {
@@ -133,26 +135,28 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('assigns correct names to multiple types of threads', async function() {
     const {flameChartData} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
-    assert.strictEqual(flameChartData.groups[0].name, 'Main — https://www.google.com');
-    assert.strictEqual(flameChartData.groups[1].name, 'Compositor');
-    assert.strictEqual(flameChartData.groups[2].name, 'Chrome_ChildIOThread');
-    assert.strictEqual(flameChartData.groups[3].name, 'ThreadPoolForegroundWorker');
-    assert.strictEqual(flameChartData.groups[4].name, 'ThreadPoolServiceThread');
+    const expectedTrackNames = [
+      'Main — https://www.google.com',
+      'Compositor',
+      'Chrome_ChildIOThread',
+      'ThreadPoolForegroundWorker',
+      'ThreadPoolServiceThread',
+    ];
+    assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });
 
   it('assigns correct names to worker threads', async function() {
     const {flameChartData} = await renderThreadAppendersFromTrace(this, 'two-workers.json.gz');
-    assert.strictEqual(flameChartData.groups.length, 7);
-    assert.strictEqual(
-        flameChartData.groups[0].name,
-        'Main — https://chromedevtools.github.io/performance-stories/two-workers/index.html');
-    assert.strictEqual(
-        flameChartData.groups[1].name,
-        'Worker — https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js');
-    assert.strictEqual(
-        flameChartData.groups[2].name,
-        'Worker — https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js');
-    assert.strictEqual(flameChartData.groups[3].name, 'Compositor');
+    const expectedTrackNames = [
+      'Main — https://chromedevtools.github.io/performance-stories/two-workers/index.html',
+      'Worker — https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js',
+      'Worker — https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js',
+      'Compositor',
+      'Chrome_ChildIOThread',
+      'ThreadPoolForegroundWorker',
+      'ThreadPoolServiceThread',
+    ];
+    assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });
 
   it('returns the correct title for a renderer event', async function() {
@@ -411,18 +415,19 @@ describeWithEnvironment('ThreadAppender', function() {
 
   it('does not append a track if there are no visible events on it', async function() {
     const {flameChartData} = await renderThreadAppendersFromTrace(this, 'one-second-interaction.json.gz');
-    assert.strictEqual(flameChartData.groups.length, 5);
-    assert.strictEqual(
-        flameChartData.groups[0].name,
-        'Main — https://chromedevtools.github.io/performance-stories/long-interaction/index.html?x=40');
-    assert.strictEqual(flameChartData.groups[1].name, 'Compositor');
-    assert.strictEqual(flameChartData.groups[2].name, 'Chrome_ChildIOThread');
-    // There are multiple ThreadPoolForegroundWorker threads present in
-    // the trace, but only one of these has trace events we deem as
-    // "visible". Therefore, only one ThreadPoolForegroundWorker track
-    // should be drawn.
-    assert.strictEqual(flameChartData.groups[3].name, 'ThreadPoolForegroundWorker');
-    assert.strictEqual(flameChartData.groups[4].name, 'ThreadPoolServiceThread');
+    const expectedTrackNames = [
+      'Main — https://chromedevtools.github.io/performance-stories/long-interaction/index.html?x=40',
+      'Compositor',
+      'Chrome_ChildIOThread',
+      // There are multiple ThreadPoolForegroundWorker threads present in
+      // the trace, but only one of these has trace events we deem as
+      // "visible". Therefore, only one ThreadPoolForegroundWorker track
+      // should be drawn.
+      'ThreadPoolForegroundWorker',
+      'ThreadPoolServiceThread',
+    ];
+    assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
+
   });
 
   describe('ignore listing', () => {

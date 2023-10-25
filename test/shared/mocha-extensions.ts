@@ -7,7 +7,7 @@ import * as Mocha from 'mocha';
 import * as Path from 'path';
 
 import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
-import {ScreenshotError} from '../shared/screenshots.js';
+import {ScreenshotError} from '../shared/screenshot-error.js';
 
 import {AsyncScope} from './async-scope.js';
 import {getEnvVar} from './config.js';

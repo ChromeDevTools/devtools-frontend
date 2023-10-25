@@ -6,7 +6,7 @@ import * as Mocha from 'mocha';
 
 import {
   ScreenshotError,
-} from '../shared/screenshots.js';
+} from '../shared/screenshot-error.js';
 
 import * as ResultsDb from './resultsdb.js';
 

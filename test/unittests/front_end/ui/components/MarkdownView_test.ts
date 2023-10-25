@@ -6,6 +6,7 @@ import * as Marked from '../../../../../front_end/third_party/marked/marked.js';
 import * as MarkdownView from '../../../../../front_end/ui/components/markdown_view/markdown_view.js';
 import type * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 
 const {assert} = chai;
 
@@ -22,7 +23,7 @@ function getFakeToken(token: TestToken): Marked.Marked.Token {
   return token as unknown as Marked.Marked.Token;
 }
 
-describe('MarkdownView', async () => {
+describeWithEnvironment('MarkdownView', async () => {
   describe('renderToken', async () => {
     it('wraps paragraph tokens in <p> tags', () => {
       const renderResult = MarkdownView.MarkdownView.renderToken(getFakeToken({type: 'paragraph', tokens: []}));
@@ -142,6 +143,15 @@ ${paragraphText}
 * ${listItemTexts[1]}
 `;
 
+  const renderString = (string: string, selector: 'p'|'code'): HTMLElement => {
+    const component = new MarkdownView.MarkdownView.MarkdownView();
+    renderElementIntoDOM(component);
+    component.data = {tokens: Marked.Marked.lexer(string)};
+    assertShadowRoot(component.shadowRoot);
+    const element = component.shadowRoot.querySelector(selector);
+    return element ? element : document.createElement('span');
+  };
+
   describe('component', () => {
     it('renders basic markdown correctly', () => {
       const component = new MarkdownView.MarkdownView.MarkdownView();
@@ -159,16 +169,16 @@ ${paragraphText}
       assert.strictEqual(listItems.length, 2);
       assert.deepStrictEqual(listItems.map(item => item.textContent), listItemTexts);
     });
-  });
 
-  const renderString = (string: string, selector: 'p'|'code'): HTMLElement => {
-    const component = new MarkdownView.MarkdownView.MarkdownView();
-    renderElementIntoDOM(component);
-    component.data = {tokens: Marked.Marked.lexer(string)};
-    assertShadowRoot(component.shadowRoot);
-    const element = component.shadowRoot.querySelector(selector);
-    return element ? element : document.createElement('span');
-  };
+    it('renders a codeblock', () => {
+      const codeBlock = renderString(
+          `\`\`\`
+console.log('test')
+\`\`\``,
+          'code');
+      assert.strictEqual(codeBlock.innerText, 'console.log(\'test\')');
+    });
+  });
 
   describe('escaping', () => {
     it('renders basic escaped non-html tag', () => {

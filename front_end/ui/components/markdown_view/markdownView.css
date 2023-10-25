@@ -43,3 +43,41 @@
   cursor: text;
   background: var(--sys-color-surface1);
 }
+
+.codeblock {
+  margin-bottom: 8px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background-color: var(--sys-color-surface5);
+  color: var(--sys-color-on-surface);
+}
+
+.codeblock .toolbar {
+  box-sizing: border-box;
+  display: flex;
+  height: 28px;
+  flex-direction: row;
+  padding: 0 11px;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.codeblock code {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  display: block;
+  overflow: auto;
+  white-space: pre;
+}
+
+.codeblock .lang {
+  padding: 6px 0;
+  flex: 1;
+}
+
+.codeblock .copy {
+  padding: 4px 0;
+}

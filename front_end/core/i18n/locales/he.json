@@ -233,6 +233,9 @@
   "core/sdk/CSSStyleSheetHeader.ts | thereWasAnErrorRetrievingThe": {
     "message": "אירעה שגיאה באחזור סגנונות המקור."
   },
+  "core/sdk/ChildTargetManager.ts | main": {
+    "message": "ראשי"
+  },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "לא ניתן היה לטעון את התוכן עבור {PH1} ({PH2})"
   },
@@ -250,132 +253,6 @@
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
     "message": "הפרופיל '{PH1}' התחיל."
-  },
-  "core/sdk/DOMDebuggerModel.ts | animation": {
-    "message": "אנימציה"
-  },
-  "core/sdk/DOMDebuggerModel.ts | animationFrameFired": {
-    "message": "הופעל פריים אנימציה"
-  },
-  "core/sdk/DOMDebuggerModel.ts | cancelAnimationFrame": {
-    "message": "ביטול מסגרת האנימציה"
-  },
-  "core/sdk/DOMDebuggerModel.ts | canvas": {
-    "message": "לוח הציור"
-  },
-  "core/sdk/DOMDebuggerModel.ts | clipboard": {
-    "message": "לוח"
-  },
-  "core/sdk/DOMDebuggerModel.ts | closeAudiocontext": {
-    "message": "סגירת AudioContext"
-  },
-  "core/sdk/DOMDebuggerModel.ts | control": {
-    "message": "פקד"
-  },
-  "core/sdk/DOMDebuggerModel.ts | createAudiocontext": {
-    "message": "יצירת AudioContext"
-  },
-  "core/sdk/DOMDebuggerModel.ts | createCanvasContext": {
-    "message": "יצירת הקשר ללוח הציור"
-  },
-  "core/sdk/DOMDebuggerModel.ts | device": {
-    "message": "מכשיר"
-  },
-  "core/sdk/DOMDebuggerModel.ts | domMutation": {
-    "message": "מוטציה של DOM"
-  },
-  "core/sdk/DOMDebuggerModel.ts | dragDrop": {
-    "message": "גרירה / שחרור"
-  },
-  "core/sdk/DOMDebuggerModel.ts | geolocation": {
-    "message": "מיקום גאוגרפי"
-  },
-  "core/sdk/DOMDebuggerModel.ts | keyboard": {
-    "message": "מקלדת"
-  },
-  "core/sdk/DOMDebuggerModel.ts | load": {
-    "message": "טעינה"
-  },
-  "core/sdk/DOMDebuggerModel.ts | media": {
-    "message": "מדיה"
-  },
-  "core/sdk/DOMDebuggerModel.ts | mouse": {
-    "message": "עכבר"
-  },
-  "core/sdk/DOMDebuggerModel.ts | notification": {
-    "message": "הודעה"
-  },
-  "core/sdk/DOMDebuggerModel.ts | parse": {
-    "message": "ניתוח"
-  },
-  "core/sdk/DOMDebuggerModel.ts | pictureinpicture": {
-    "message": "תמונה בתוך תמונה"
-  },
-  "core/sdk/DOMDebuggerModel.ts | pointer": {
-    "message": "מצביע"
-  },
-  "core/sdk/DOMDebuggerModel.ts | policyViolations": {
-    "message": "הפרות מדיניות"
-  },
-  "core/sdk/DOMDebuggerModel.ts | requestAnimationFrame": {
-    "message": "בקשה לפריים אנימציה"
-  },
-  "core/sdk/DOMDebuggerModel.ts | resumeAudiocontext": {
-    "message": "חידוש הפעולה של AudioContext"
-  },
-  "core/sdk/DOMDebuggerModel.ts | script": {
-    "message": "סקריפט"
-  },
-  "core/sdk/DOMDebuggerModel.ts | scriptBlockedByContentSecurity": {
-    "message": "הסקריפט נחסם על ידי Content Security Policy"
-  },
-  "core/sdk/DOMDebuggerModel.ts | scriptBlockedDueToContent": {
-    "message": "הסקריפט נחסם בשל הוראה של Content Security Policy: {PH1}"
-  },
-  "core/sdk/DOMDebuggerModel.ts | scriptFirstStatement": {
-    "message": "הצהרה ראשונה של סקריפט"
-  },
-  "core/sdk/DOMDebuggerModel.ts | setInnerhtml": {
-    "message": "הגדרת innerHTML"
-  },
-  "core/sdk/DOMDebuggerModel.ts | setTimeoutOrIntervalFired": {
-    "message": "{PH1} הופעל"
-  },
-  "core/sdk/DOMDebuggerModel.ts | sinkViolations": {
-    "message": "הפרות Sink"
-  },
-  "core/sdk/DOMDebuggerModel.ts | suspendAudiocontext": {
-    "message": "השעיית AudioContext"
-  },
-  "core/sdk/DOMDebuggerModel.ts | timer": {
-    "message": "טיימר"
-  },
-  "core/sdk/DOMDebuggerModel.ts | touch": {
-    "message": "מגע"
-  },
-  "core/sdk/DOMDebuggerModel.ts | trustedTypeViolations": {
-    "message": "הפרות של סוגים מהימנים"
-  },
-  "core/sdk/DOMDebuggerModel.ts | webaudio": {
-    "message": "WebAudio"
-  },
-  "core/sdk/DOMDebuggerModel.ts | webglErrorFired": {
-    "message": "הופעלה שגיאת WebGL"
-  },
-  "core/sdk/DOMDebuggerModel.ts | webglErrorFiredS": {
-    "message": "הופעלה שגיאת WebGL ({PH1})"
-  },
-  "core/sdk/DOMDebuggerModel.ts | webglWarningFired": {
-    "message": "הופעלה אזהרת WebGL"
-  },
-  "core/sdk/DOMDebuggerModel.ts | window": {
-    "message": "חלון"
-  },
-  "core/sdk/DOMDebuggerModel.ts | worker": {
-    "message": "קובץ שירות"
-  },
-  "core/sdk/DOMDebuggerModel.ts | xhr": {
-    "message": "XHR"
   },
   "core/sdk/DebuggerModel.ts | block": {
     "message": "חסימה"
@@ -403,21 +280,6 @@
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "קטע קוד With"
-  },
-  "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
-    "message": "מכרז של מודעות Worklet"
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletBiddingStart": {
-    "message": "תחילת שלב הגשת הצעות המחיר של מגיש הצעות המחיר"
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletReportingStart": {
-    "message": "תחילת שלב הדיווחים של מגיש הצעות המחיר"
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletReportingStart": {
-    "message": "תחילת שלב הדיווח של בית העסק"
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
-    "message": "תחילת שלב הניקוד של בית העסק"
   },
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "3G מהיר"
@@ -520,6 +382,9 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieDidntSpecifyASamesite": {
     "message": "בכותרת Set-Cookie לא צוין המאפיין \"SameSite\". כברירת מחדל, הקובץ הוגדר בתור \"SameSite=Lax\"\" ונחסם כי הוא הגיע מתגובה בין אתרים ולא כתגובה לניווט ברמה העליונה. התגובה נחשבת כתגובה שנשלחה בין אתרים כי לכתובת ה-URL יש סכמה שונה מזו של האתר הנוכחי."
+  },
+  "core/sdk/NetworkRequest.ts | thisSetcookieHadADisallowedCharacter": {
+    "message": "כותרת Set-Cookie הזו הכילה תו אסור (תו בקרת ASCII אסור, או תו Tab אם הוא מופיע באמצע השם של קובץ ה-Cookie, הערך, שם המאפיין או ערך המאפיין)."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadInvalidSyntax": {
     "message": "הכותרת Set-Cookie מכילה תחביר לא חוקי."
@@ -1052,9 +917,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "ביטול ההצמדה ופתיחת חלון נפרד"
   },
-  "entrypoints/main/main-meta.ts | asAuthored": {
-    "message": "כפי שנוצר"
-  },
   "entrypoints/main/main-meta.ts | auto": {
     "message": "אוטומטי"
   },
@@ -1066,12 +928,6 @@
   },
   "entrypoints/main/main-meta.ts | cancelSearch": {
     "message": "ביטול החיפוש"
-  },
-  "entrypoints/main/main-meta.ts | colorFormat": {
-    "message": "פורמט הצבע:"
-  },
-  "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "ההגדרה הזו הוצאה משימוש כי היא לא תואמת לסביבות צבע מודרניות. כדי להפעיל אותה מחדש, צריך להשבית את הניסוי המתאים."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "כהה"
@@ -1156,18 +1012,6 @@
   },
   "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
     "message": "השבתת החיפוש בזמן ההקלדה (יש להקיש על Enter כדי לחפש)"
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
-    "message": "הגדרת פורמט הצבע כפי שנוצר במקור"
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatToHex": {
-    "message": "הגדרת פורמט הצבע בתור HEX"
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatToHsl": {
-    "message": "הגדרת פורמט צבע בתור HSL"
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatToRgb": {
-    "message": "הגדרת פורמט הצבע בתור RGB"
   },
   "entrypoints/main/main-meta.ts | switchToDarkTheme": {
     "message": "מעבר לעיצוב כהה"
@@ -1255,6 +1099,12 @@
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "יש להשתמש במאפיין disableRemotePlayback כדי להשבית את שילוב ההעברה (cast) המוגדר כברירת מחדל במקום להשתמש בבורר -internal-media-controls-overlay-cast-button."
+  },
+  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
+    "message": "הערכים של מראה ה-CSS‏ inner-spin-button,‏ media-slider,‏ media-sliderthumb,‏ media-volume-slider,‏ media-volume-sliderthumb,‏ push-button,‏ searchfield-cancel-button,‏ slider-horizontal,‏ sliderthumb-horizontal,‏ sliderthumb-vertical,‏ square-button אינם סטנדרטיים והם יוסרו."
+  },
+  "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
+    "message": "הערך של מראה ה-CSS‏ slider-vertical אינו סטנדרטי והוא יוסר."
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "בקשות למשאבים שכתובות ה-URL שלהן מכילות גם תווי \\(n|r|t) של רווח לבן מחוק וגם תווי 'פחות מ-' (<) חסומות. כדי לטעון את המשאבים האלה, יש להסיר תווי 'פחות מ-' מקודדים ושורות חדשות ממקומות כמו ערכי מאפיינים של רכיבים."
@@ -1703,6 +1553,12 @@
   "models/persistence/PersistenceActions.ts | overrideContent": {
     "message": "שינוי התוכן"
   },
+  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "'{PH1}' הוא קובץ שממופה למקור ולא ניתן לשנות אותו."
+  },
+  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "לשנות את '{PH1}' במקום זאת?"
+  },
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "שמירה בשם…"
   },
@@ -1761,7 +1617,7 @@
     "message": "שכתוב"
   },
   "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "הצגת סביבת עבודה"
+    "message": "הצגת ההגדרות של סביבת העבודה"
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "סביבת עבודה"
@@ -1794,10 +1650,10 @@
     "message": "worklet של מכרזים – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
-    "message": "Worker — {PH1}"
+    "message": "Worker‏ – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
-    "message": "Worker: {PH1} — {PH2}"
+    "message": "Worker:‏ {PH1}‏ – {PH2}"
   },
   "models/timeline_model/TimelineModel.ts | workletService": {
     "message": "שירות worklet של מכרזים"
@@ -2348,6 +2204,9 @@
   "panels/application/AppManifestView.ts | errorsAndWarnings": {
     "message": "שגיאות ואזהרות"
   },
+  "panels/application/AppManifestView.ts | formFactor": {
+    "message": "גורם צורה"
+  },
   "panels/application/AppManifestView.ts | icon": {
     "message": "סמל"
   },
@@ -2362,6 +2221,9 @@
   },
   "panels/application/AppManifestView.ts | installability": {
     "message": "יכולת התקנה"
+  },
+  "panels/application/AppManifestView.ts | label": {
+    "message": "תווית"
   },
   "panels/application/AppManifestView.ts | learnMore": {
     "message": "מידע נוסף"
@@ -2399,6 +2261,12 @@
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "לא סופק מזהה חנות Play"
   },
+  "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnDesktop": {
+    "message": "ממשק משתמש עשיר יותר של התקנת PWA לא יהיה זמין במחשבים. צריך להוסיף צילום מסך אחד לפחות שבו form_factor מוגדר כ-wide."
+  },
+  "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnMobile": {
+    "message": "ממשק משתמש עשיר יותר של התקנת PWA לא יהיה זמין בניידים. צריך להוסיף צילום מסך אחד לפחות שבו form_factor לא מוגדר או מוגדר כערך שאינו wide."
+  },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "לא סיפקת סמל ריבועי באורך/רוחב של {PH1} פיקסלים לפחות, בפורמט PNG, SVG או WebP עם מאפיין מטרה לא מוגדר או מוגדר לערך 'any'."
   },
@@ -2425,6 +2293,9 @@
   },
   "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
     "message": "הדף מוצג ממקור לא מאובטח"
+  },
+  "panels/application/AppManifestView.ts | platform": {
+    "message": "פלטפורמה"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
     "message": "התכונה 'prefer_related_applications' נתמכת רק בגרסת הבטא של Chrome ובערוצים יציבים ב-Android."
@@ -2474,6 +2345,9 @@
   "panels/application/AppManifestView.ts | screenshotS": {
     "message": "צילום מסך מס' {PH1}"
   },
+  "panels/application/AppManifestView.ts | screenshotsMustHaveSameAspectRatio": {
+    "message": "לכל צילומי המסך עם אותו form_factor צריך להיות אותו יחס גובה-רוחב כמו צילום המסך הראשון עם ה-form_factor הזה. המערכת תתעלם מחלק מצילומי המסך."
+  },
   "panels/application/AppManifestView.ts | shortName": {
     "message": "שם מקוצר"
   },
@@ -2482,6 +2356,9 @@
   },
   "panels/application/AppManifestView.ts | shortcutSShouldIncludeAXPixel": {
     "message": "קיצור דרך #{PH1} צריך להכיל סמל בגודל 96x96 פיקסלים"
+  },
+  "panels/application/AppManifestView.ts | shortcutsMayBeNotAvailable": {
+    "message": "המספר המקסימלי של מקשי הקיצור תלוי בפלטפורמה. יכול להיות שחלק ממקשי הקיצור לא יהיו זמינים."
   },
   "panels/application/AppManifestView.ts | showOnlyTheMinimumSafeAreaFor": {
     "message": "יש להציג רק את האזור הבטוח המינימלי לסמלים שניתנים למיסוך"
@@ -2500,6 +2377,15 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "צבע עיצוב"
+  },
+  "panels/application/AppManifestView.ts | tooManyScreenshotsForDesktop": {
+    "message": "במחשב לא יוצגו יותר מ-8 צילומי מסך. המערכת תתעלם מהשאר."
+  },
+  "panels/application/AppManifestView.ts | tooManyScreenshotsForMobile": {
+    "message": "בנייד לא יוצגו יותר מ-5 צילומי מסך. המערכת תתעלם מהשאר."
+  },
+  "panels/application/AppManifestView.ts | url": {
+    "message": "כתובת URL"
   },
   "panels/application/AppManifestView.ts | wcoFound": {
     "message": "Chrome מצא בהצלחה את הערך {PH1} עבור השדה {PH2} ב-{PH3}."
@@ -2908,6 +2794,9 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
+  },
+  "panels/application/ResourcesPanel.ts | webSqlDeprecation": {
+    "message": "Web SQL הוצא משימוש. אפשר להצטרף לתקופת הניסיון להוצאה משימוש כדי להמשיך להשתמש בו עד Chrome 123."
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "אחסון המטמון"
@@ -3794,12 +3683,6 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "המסגרת נחשבת כמסגרת מודעה כי מסגרת ההורה שלה היא מסגרת מודעה."
   },
-  "panels/application/components/FrameDetailsView.ts | prerendering": {
-    "message": "עיבוד מראש"
-  },
-  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
-    "message": "סטטוס העיבוד מראש"
-  },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "רענון"
   },
@@ -3931,144 +3814,6 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "הצגת הפרטים"
-  },
-  "panels/application/components/Prerender2.ts | Activated": {
-    "message": "מופעל."
-  },
-  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
-    "message": "הופעל לפני שהתחיל"
-  },
-  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
-    "message": "הדף עבר עיבוד מראש, אבל בסופו של דבר הניווט בוצע באופן שונה מהעיבוד המקורי מראש, ולכן לא ניתן היה להפעיל את הדף שעבר עיבוד מראש."
-  },
-  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
-    "message": "העיבוד מראש עדיין לא תומך ב-AudioContext API."
-  },
-  "panels/application/components/Prerender2.ts | BlockedByClient": {
-    "message": "טעינת המשאב חסומה על ידי הלקוח."
-  },
-  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
-    "message": "CancelAllHostsForTesting."
-  },
-  "panels/application/components/Prerender2.ts | ClientCertRequested": {
-    "message": "הדף מבקש אישור לקוח, שלא מתאים לדף מוסתר כמו במצב של עיבוד מראש."
-  },
-  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
-    "message": "הדף שעבר עיבוד מראש עבר לכתובת URL מאתרים שונים לאחר הטעינה. כרגע אין אפשרות לבצע עיבוד מראש לדפים מאתרים שונים."
-  },
-  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
-    "message": "נעשה ניסיון לבצע עיבוד מראש של כתובת URL שהפנתה לכתובת URL מאתר אחר. כרגע אין אפשרות לבצע עיבוד מראש לדפים מאתרים שונים."
-  },
-  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
-    "message": "חוסך הנתונים (Data Saver) מופעל"
-  },
-  "panels/application/components/Prerender2.ts | Destroyed": {
-    "message": "דף שעבר עיבוד מראש ננטש מסיבות לא ידועות."
-  },
-  "panels/application/components/Prerender2.ts | DidFailLoad": {
-    "message": "שגיאה מסוג DidFailLoadWithError אירעה במהלך העיבוד מראש."
-  },
-  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
-    "message": "שיטת API אסורה"
-  },
-  "panels/application/components/Prerender2.ts | Download": {
-    "message": "ההורדה אסורה במצב עיבוד מראש."
-  },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
-    "message": "עיבוד מראש שהופעל פנימית על ידי Chrome (למשל, עיבוד מראש של סרגל הכתובות) בוטל, כי הניווט מופנה לדף אחר ממקורות שונים."
-  },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
-    "message": "עיבוד מראש שהופעל פנימית על ידי Chrome (למשל, עיבוד מראש של סרגל הכתובות) בוטל, כי הניווט מופנה לדף אחר מאותו מקור."
-  },
-  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
-    "message": "לא ניתן היה להשתמש בזיכרון"
-  },
-  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
-    "message": "עם כתובת URL תקינה"
-  },
-  "panels/application/components/Prerender2.ts | InProgressNavigation": {
-    "message": "InProgressNavigation."
-  },
-  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
-    "message": "הגבלה על דפים לא פעילים"
-  },
-  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
-    "message": "רק ניווט ל-HTTP(S) מותר בעיבוד מראש."
-  },
-  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
-    "message": "נעשה ניסיון לבצע עיבוד מראש של כתובת URL שהפנתה לכתובת URL אחרת שאינה HTTP(S). ניתן לבצע עיבוד מראש רק בדפי HTTP(S)."
-  },
-  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
-    "message": "התכונה 'עיבוד מראש' לא תומכת בבקשות לאימות מממשק המשתמש."
-  },
-  "panels/application/components/Prerender2.ts | LowEndDevice": {
-    "message": "אין תמיכה בעיבוד מראש במכשירים עם נפח זיכרון נמוך."
-  },
-  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
-    "message": "ניווטים לאחר הניווט הראשוני של העיבוד מראש אסורים"
-  },
-  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
-    "message": "חלה חריגה מהמספר המקסימלי של תהליכי עיבוד מראש."
-  },
-  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
-    "message": "יש חריגה ממגבלת הזיכרון"
-  },
-  "panels/application/components/Prerender2.ts | MixedContent": {
-    "message": "העיבוד מראש מבוטל על ידי מסגרת של תוכן מעורב."
-  },
-  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
-    "message": "נעשה שימוש ב-API אסור על ידי הדף שעבר עיבוד מראש"
-  },
-  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
-    "message": "הניווט הראשוני של העיבוד מראש לא הצליח בגלל שהשרת החזיר קוד סטטוס שאינו 200/204/205."
-  },
-  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
-    "message": "דף העיבוד מראש לא מגיע לתוצאה."
-  },
-  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
-    "message": "בקשת הניווט חסומה על ידי CSP."
-  },
-  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
-    "message": "אירעה שגיאה בחיבור לרשת במהלך תהליך העיבוד מראש."
-  },
-  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
-    "message": "מתבצע עיבוד מראש"
-  },
-  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
-    "message": "הדף שעבר עיבוד מראש קרס."
-  },
-  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
-    "message": "תהליך העיבוד לדף שעובר עיבוד מראש הופסק."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
-    "message": "הדף שעבר עיבוד מראש עבר לכתובת URL ממקורות שונים באותו אתר לאחר הטעינה. כרגע אין אפשרות לבצע עיבוד מראש לדפים ממקורות שונים."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
-    "message": "הדף שעבר עיבוד מראש עבר לכתובת URL ממקורות שונים באותו אתר לאחר הטעינה. הפעולה הזו אסורה, אלא אם אתר היעד שולח את הכותרת Supports-Loading-Mode: credentialed-prerender."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
-    "message": "נעשה ניסיון לבצע עיבוד מראש של כתובת URL שהפנתה לכתובת URL ממקור שונה באותו אתר. כרגע אין אפשרות לבצע עיבוד מראש לדפים ממקורות שונים."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
-    "message": "נעשה ניסיון לבצע עיבוד מראש של כתובת URL שהפנתה לכתובת URL ממקור שונה באותו אתר. הפעולה הזו אסורה, אלא אם אתר היעד שולח את הכותרת Supports-Loading-Mode: credentialed-prerender."
-  },
-  "panels/application/components/Prerender2.ts | SslCertificateError": {
-    "message": "שגיאת אישור SSL."
-  },
-  "panels/application/components/Prerender2.ts | StartFailed": {
-    "message": "ההפעלה נכשלה"
-  },
-  "panels/application/components/Prerender2.ts | Stop": {
-    "message": "הכרטיסייה הופסקה."
-  },
-  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
-    "message": "הכרטיסייה פועלת ברקע"
-  },
-  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
-    "message": "העיבוד מראש לא מופעל ונכבה סופית באמצעות הטריגר."
-  },
-  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
-    "message": "צריך לטעון מחדש אחרי UserAgentOverride."
   },
   "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
     "message": "בחירת handler של פרוטוקול"
@@ -4275,7 +4020,7 @@
     "message": "חלק מהכללים לא תקינים"
   },
   "panels/application/preloading/PreloadingView.ts | validityValid": {
-    "message": "בתוקף"
+    "message": "תקינה"
   },
   "panels/application/preloading/components/MismatchedPreloadingGrid.ts | action": {
     "message": "פעולה"
@@ -4481,11 +4226,17 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
     "message": "הדף שעבר עיבוד מראש הופעל במהלך התחלת הניווט למסגרת הראשית של הדף."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedWithAuxiliaryBrowsingContexts": {
+    "message": "לא נעשה שימוש בעיבוד מראש כי במהלך ההפעלה היו חלונות אחרים עם הפניה פעילה לכלי פתיחה של הדף שמתחיל את התהליך, וכרגע אין בו תמיכה."
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
     "message": "לא נעשה שימוש בעיבוד מראש כי מדיניות הסימונים או ההרשאות של ההרצה בארגז החול של הדף שמתחיל את התהליך לא תואמת למדיניות של דף העיבוד מראש."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
     "message": "לא נעשה שימוש בעיבוד מראש כי במהלך ההפעלה, פרמטרים שונים של הניווט (למשל, כותרות HTTP) חושבו כבר במהלך בקשת המעבר המקורית לעיבוד מראש."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
+    "message": "לא נעשה שימוש בעיבוד מראש כי בזמן ההפעלה כתובת ה-URL בפועל של המעבר שונה מכתובת ה-URL הרגילה שלו. (לדוגמה, דף הכרטיסייה החדשה או האפליקציות המתארחות)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "הדף שעבר עיבוד מראש ביקש פלט אודיו, שלא נתמך בשלב הזה."
@@ -4517,9 +4268,6 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
     "message": "הדף שעבר עיבוד מראש ניסה להתחיל הורדה, שלא נתמכת בשלב הזה."
   },
-  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "העיבוד מראש לא בוצע כי הדפדפן נתקל בשגיאה פנימית בניסיון לקבוע את השימוש הנוכחי בזיכרון."
-  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusHasEffectiveUrl": {
     "message": "בדף שמתחיל את התהליך אי אפשר לבצע את העיבוד מראש כי כתובת ה-URL בפועל שלו שונה מכתובת ה-URL הרגילה שלו. (לדוגמה, דף הכרטיסייה החדשה או האפליקציות המתארחות)."
   },
@@ -4538,7 +4286,13 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMainFrameNavigation": {
     "message": "הדף שעבר עיבוד מראש עבר מעצמו לכתובת URL אחרת שאין בה תמיכה בשלב הזה."
   },
-  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
+    "message": "העיבוד מראש לא בוצע כי בדף שמתחיל את התהליך כבר יש פעילות מתמשכת של יותר מדי עיבודים מראש. צריך להסיר כללי ספקולציות אחרים כדי לאפשר עוד עיבודים מראש."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
+    "message": "העיבוד מראש לא בוצע כי בדף שמתחיל את התהליך כבר יש פעילות מתמשכת של יותר מדי עיבודים מראש."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
     "message": "העיבוד מראש לא בוצע כי בדף שמתחיל את התהליך כבר יש פעילות מתמשכת של יותר מדי עיבודים מראש. צריך להסיר כללי ספקולציות אחרים כדי לאפשר עוד עיבודים מראש."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
@@ -4571,11 +4325,17 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
     "message": "לא בוצע עיבוד מראש כי האפשרות לעיבוד מראש הושבתה באמצעות כלי הפיתוח."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingUrlHasEffectiveUrl": {
+    "message": "המעבר לעיבוד מראש נכשל כי כתובת ה-URL שלו בפועל שונה מכתובת ה-URL הרגילה שלו. (לדוגמה, דף הכרטיסייה החדשה או האפליקציות המתארחות)."
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
     "message": "הדף שמתחיל את התהליך קרס."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
     "message": "פעילות הדף שמתחיל את התהליך הופסקה."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRedirectedPrerenderingUrlHasEffectiveUrl": {
+    "message": "המעבר לעיבוד מראש נכשל כי ההפניה האוטומטית הייתה לכתובת URL בפועל ששונה מכתובת ה-URL הרגילה שלה. (לדוגמה, דף הכרטיסייה החדשה או האפליקציות המתארחות)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessCrashed": {
     "message": "הדף שעבר עיבוד מראש קרס."
@@ -4583,11 +4343,8 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessKilled": {
     "message": "פעילות הדף שעבר עיבוד מראש הופסקה."
   },
-  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusResourceLoadBlockedByClient": {
-    "message": "הטעינה של חלק מהמשאבים נחסמה."
-  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "הדף שעבר עיבוד מראש עבר מעצמו לכתובת URL ממקור אחר באותו אתר, אבל תגובת היעד לא הכילה את הכותרת Supports-Loading-Mode המתאימה."
+    "message": "המעבר אל העיבוד מראש נכשל כי הוא בוצע לכתובת URL ממקור שונה באותו אתר, אבל תגובת היעד לא הכילה את הכותרת Supports-Loading-Mode המתאימה."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
     "message": "הדף שעבר עיבוד מראש עבר לכתובת URL ממקור אחר באותו אתר, אבל תגובת היעד לא הכילה את הכותרת Supports-Loading-Mode המתאימה."
@@ -4599,7 +4356,7 @@
     "message": "הדף שעבר עיבוד מראש עבר לכתובת URL שהפנתה לכתובת URL ממקור אחר באותו אתר, אבל תגובת היעד לא הכילה את הכותרת Supports-Loading-Mode המתאימה."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSpeculationRuleRemoved": {
-    "message": "לא ידוע"
+    "message": "בדף שעבר עיבוד מראש הוסרו הנתונים שנטענו כי הדף שהתחיל את התהליך הסיר את כלל העיבוד מראש המתאים מ-<script type=\"speculationrules\"‎>."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSslCertificateError": {
     "message": "המעבר לעיבוד מראש נכשל בגלל אישור SSL לא תקין."
@@ -4659,7 +4416,7 @@
     "message": "נעשה ניסיון לבצע עיבוד מראש לכתובת ה-URL של הדף הזה על ידי הדף שמתחיל את התהליך. העיבוד מראש נכשל, אבל בגוף התגובה שהתקבל נעשה בכל זאת שימוש לשליפה מראש (prefetch)."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "מידע נוסף"
+    "message": "מידע נוסף: טעינה מראש ב-developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
     "message": "לא נעשה ניסיון על ידי הדף שמתחיל את התהליך לטעון מראש את כתובת ה-URL של הדף הזה."
@@ -4884,13 +4641,13 @@
     "message": "הסרת ביטוי: {PH1}"
   },
   "panels/console/ConsolePrompt.ts | allowPasting": {
-    "message": "אישור להדבקה"
+    "message": "יש אישור להדבקה"
   },
   "panels/console/ConsolePrompt.ts | consolePrompt": {
     "message": "הודעה במסוף"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "אזהרה: אין להדביק קוד שלא מובן לך או שלא בדקת בעצמך במסוף כלי הפיתוח. המצב הזה עלול לאפשר לתוקפים לגנוב את הזהות שלך או להשתלט על המחשב שלך. כדי לאפשר הדבקה, יש להקליד בהמשך '{PH1}'."
+    "message": "אזהרה: אין להדביק במסוף כלי הפיתוח קוד שלא מובן לך או שלא בדקת בעצמך. פעולה כזאת עלולה לאפשר לתוקפים לגנוב את הזהות שלך או להשתלט על המחשב שלך. כדי לאפשר הדבקה, יש להקליד בהמשך '{PH1}'."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{אין שגיאות}=1{שגיאה אחת}one{# שגיאות}two{# שגיאות}other{# שגיאות}}"
@@ -6050,6 +5807,12 @@
   "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "מידע נוסף"
   },
+  "panels/elements/components/CSSVariableValueView.ts | invalidPropertyValue": {
+    "message": "ערך המאפיין לא תקין. הסוג הנדרש הוא {type}"
+  },
+  "panels/elements/components/CSSVariableValueView.ts | registeredPropertyLinkTitle": {
+    "message": "הצגת המאפיין (property) הרשום"
+  },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "נתיבי ניווט של עץ DOM"
   },
@@ -6361,6 +6124,9 @@
   },
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "החלפת מצב אם הפונקציה event listener היא סבילה או חוסמת"
+  },
+  "panels/explain/explain-meta.ts | explainConsoleMessage": {
+    "message": "✨ הסבר על הודעה במסוף"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "משאב שנחסם"
@@ -7895,6 +7661,9 @@
   "panels/network/NetworkItemView.ts | websocketMessages": {
     "message": "הודעות WebSocket"
   },
+  "panels/network/NetworkLogView.ts | allStrings": {
+    "message": "הכול"
+  },
   "panels/network/NetworkLogView.ts | areYouSureYouWantToClearBrowser": {
     "message": "האם למחוק את הנתונים במטמון הדפדפן?"
   },
@@ -7986,13 +7755,13 @@
     "message": "קובצי cookie חסומים לתשובה"
   },
   "panels/network/NetworkLogView.ts | hideChromeExtension": {
-    "message": "הסתרת בקשות לכתובות URL מסוג '//:chrome-extension'"
+    "message": "הסתרת כתובות URL מסוג '//:chrome-extension'"
   },
   "panels/network/NetworkLogView.ts | hideDataUrls": {
     "message": "הסתרת כתובות URL של נתונים"
   },
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
-    "message": "מסתיר נתונים: ו-blob: כתובות URL"
+    "message": "הסתרת כתובות URL מסוג data:‎ ומסוג blob:‎"
   },
   "panels/network/NetworkLogView.ts | invertFilter": {
     "message": "היפוך"
@@ -8006,6 +7775,9 @@
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "טעינה: {PH1}"
   },
+  "panels/network/NetworkLogView.ts | moreFilters": {
+    "message": "עוד מסננים"
+  },
   "panels/network/NetworkLogView.ts | networkDataAvailable": {
     "message": "נתוני הרשת זמינים"
   },
@@ -8017,6 +7789,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "הצגת רק בקשות עם מקור השונה ממקור הדף"
+  },
+  "panels/network/NetworkLogView.ts | overTwoTypesSelected": {
+    "message": "{PH1},‏ {PH2}..."
   },
   "panels/network/NetworkLogView.ts | overrideHeaders": {
     "message": "שינוי כותרות"
@@ -8033,8 +7808,14 @@
   "panels/network/NetworkLogView.ts | replayXhr": {
     "message": "הפעלה מחדש של XHR"
   },
-  "panels/network/NetworkLogView.ts | resourceTypesToInclude": {
-    "message": "סוגי משאבים להכללה"
+  "panels/network/NetworkLogView.ts | requestTypes": {
+    "message": "סוגי בקשות"
+  },
+  "panels/network/NetworkLogView.ts | requestTypesToInclude": {
+    "message": "סוגי הבקשות להכללה"
+  },
+  "panels/network/NetworkLogView.ts | requestTypesTooltip": {
+    "message": "סינון הבקשות לפי סוג"
   },
   "panels/network/NetworkLogView.ts | sBResourcesLoadedByThePage": {
     "message": "משאבים של {PH1} בייט נטענו על ידי הדף"
@@ -8069,8 +7850,14 @@
   "panels/network/NetworkLogView.ts | saveAllAsHarWithContent": {
     "message": "שמירת הכל כ-HAR עם תוכן"
   },
+  "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
+    "message": "הצגה בלבד/הסתרה של בקשות"
+  },
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "בקשות של צד שלישי"
+  },
+  "panels/network/NetworkLogView.ts | twoTypesSelected": {
+    "message": "{PH1},‏ {PH2}"
   },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "ביטול החסימה של {PH1}"
@@ -8089,6 +7876,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | endTime": {
     "message": "שעת סיום"
+  },
+  "panels/network/NetworkLogViewColumns.ts | hasOverrides": {
+    "message": "כולל שינויים מברירת המחדל"
   },
   "panels/network/NetworkLogViewColumns.ts | initiator": {
     "message": "מאתחל"
@@ -9515,6 +9305,9 @@
   "panels/profiler/ProfileSidebarTreeElement.ts | delete": {
     "message": "מחיקה"
   },
+  "panels/profiler/ProfileSidebarTreeElement.ts | enterToSave": {
+    "message": "שמירה. צריך להקיש על Enter כדי לשמור את הקובץ"
+  },
   "panels/profiler/ProfileSidebarTreeElement.ts | load": {
     "message": "טעינה…"
   },
@@ -9626,9 +9419,6 @@
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "הצגת זיכרון"
   },
-  "panels/profiler/profiler-meta.ts | showNativeFunctions": {
-    "message": "הצגת פונקציות מקומיות בפרופיל JS"
-  },
   "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
     "message": "התחלת ההקלטה של הקצאות זיכרון בערימות (heap allocation)"
   },
@@ -9710,6 +9500,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | type": {
     "message": "סוג"
   },
+  "panels/protocol_monitor/components/JSONEditor.ts | addCustomProperty": {
+    "message": "הוספת מאפיין מותאם אישית"
+  },
   "panels/protocol_monitor/components/JSONEditor.ts | addParameter": {
     "message": "הוספת פרמטר"
   },
@@ -9721,6 +9514,12 @@
   },
   "panels/protocol_monitor/components/Toolbar.ts | copyCommand": {
     "message": "העתקת הפקודה"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | sendCommandCmdEnter": {
+    "message": "שליחת פקודה – ⌘+Enter"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | sendCommandCtrlEnter": {
+    "message": "שליחת הפקודה – Ctrl‏ + Enter"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "מוניטור הפרוטוקול"
@@ -10094,6 +9893,9 @@
   "panels/screencast/ScreencastView.ts | forward": {
     "message": "העברה"
   },
+  "panels/screencast/ScreencastView.ts | mouseInput": {
+    "message": "שימוש בעכבר"
+  },
   "panels/screencast/ScreencastView.ts | profilingInProgress": {
     "message": "יצירת הפרופילים פעילה"
   },
@@ -10105,6 +9907,9 @@
   },
   "panels/screencast/ScreencastView.ts | theTabIsInactive": {
     "message": "הכרטיסייה לא פעילה"
+  },
+  "panels/screencast/ScreencastView.ts | touchInput": {
+    "message": "שימוש במגע"
   },
   "panels/search/SearchResultsPane.ts | lineS": {
     "message": "קו {PH1}"
@@ -11060,6 +10865,9 @@
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "יש להשהות רק כשהתנאי הוא TRUE"
   },
+  "panels/sources/CSSPlugin.ts | addSourceMap": {
+    "message": "הוספת מפת מקור…"
+  },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "פתיחת בוחר הצבעים."
   },
@@ -11276,6 +11084,15 @@
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "פירמוט של {PH1}"
   },
+  "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
+    "message": "לא ניתן לבטל את הפעולה הזו."
+  },
+  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
+    "message": "בחרת למחוק את כל השינויים מברירת המחדל הנכללים בתיקייה הזו. להמשיך?"
+  },
+  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
+    "message": "בחרת למחוק את התיקייה הזו ואת התוכן שלה. להמשיך?"
+  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "בחרת למחוק את הקובץ הזה. האם להמשיך ולבצע את המחיקה?"
   },
@@ -11283,7 +11100,7 @@
     "message": "בחרת להחריג את התיקייה הזו. להמשיך?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
-    "message": "בחרת להסיר את התיקייה הזו. להמשיך?"
+    "message": "להסיר את '{PH1}' מסביבת העבודה?"
   },
   "panels/sources/NavigatorView.ts | authored": {
     "message": "כפי שנוצר"
@@ -11304,7 +11121,7 @@
     "message": "מכיל מקורות סופיים שהדפדפן רואה"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
-    "message": "אי-הכללה של תיקייה"
+    "message": "החרגה מסביבת העבודה"
   },
   "panels/sources/NavigatorView.ts | makeACopy": {
     "message": "יצירת עותק…"
@@ -11318,8 +11135,11 @@
   "panels/sources/NavigatorView.ts | openFolder": {
     "message": "פתיחת תיקייה"
   },
+  "panels/sources/NavigatorView.ts | remove": {
+    "message": "הסרה"
+  },
   "panels/sources/NavigatorView.ts | removeFolderFromWorkspace": {
-    "message": "הסרת תיקייה מסביבת העבודה"
+    "message": "הסרה מסביבת העבודה"
   },
   "panels/sources/NavigatorView.ts | rename": {
     "message": "שינוי שם…"
@@ -11335,6 +11155,9 @@
   },
   "panels/sources/NavigatorView.ts | searchInFolder": {
     "message": "חיפוש בתיקייה"
+  },
+  "panels/sources/NavigatorView.ts | workspaceStopSyncing": {
+    "message": "פעולה זו תפסיק את סנכרון השינויים מכלי הפיתוח למקורות שלך."
   },
   "panels/sources/OutlineQuickOpen.ts | noFileSelected": {
     "message": "לא נבחר קובץ."
@@ -11510,8 +11333,14 @@
   "panels/sources/SourcesView.ts | runCommand": {
     "message": "הרצת פקודה"
   },
+  "panels/sources/SourcesView.ts | selectFolder": {
+    "message": "בחירת התיקייה"
+  },
   "panels/sources/SourcesView.ts | sourceViewActions": {
     "message": "פעולות להצגת המקור"
+  },
+  "panels/sources/SourcesView.ts | workspaceDropInAFolderToSyncSources": {
+    "message": "כדי לסנכרן את העריכות בסביבת העבודה, משחררים תיקייה עם המקורות כאן או:"
   },
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "בחרת לסגור את הקובץ הלא שמור: {PH1}. להמשיך?"
@@ -11623,6 +11452,9 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "הפעלת נקודות עצירה (breakpoint)"
+  },
+  "panels/sources/sources-meta.ts | addFolder": {
+    "message": "הוספת תיקייה"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "הוספת תיקייה לסביבת העבודה"
@@ -11846,6 +11678,9 @@
   "panels/sources/sources-meta.ts | showWhitespaceCharacters": {
     "message": "הצגת תווי רווח לבנים:"
   },
+  "panels/sources/sources-meta.ts | showWorkspace": {
+    "message": "הצגת סביבת עבודה"
+  },
   "panels/sources/sources-meta.ts | snippets": {
     "message": "קטעי קוד"
   },
@@ -11897,6 +11732,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "צפייה"
   },
+  "panels/sources/sources-meta.ts | workspace": {
+    "message": "סביבת העבודה"
+  },
   "panels/timeline/AnimationsTrackAppender.ts | animations": {
     "message": "אנימציות"
   },
@@ -11920,6 +11758,324 @@
   },
   "panels/timeline/CountersGraph.ts | ss": {
     "message": "[{PH1} – {PH2}]"
+  },
+  "panels/timeline/EventUICategory.ts | animation": {
+    "message": "אנימציה"
+  },
+  "panels/timeline/EventUICategory.ts | animationFrameFired": {
+    "message": "הופעל פריים אנימציה"
+  },
+  "panels/timeline/EventUICategory.ts | async": {
+    "message": "אסינכרוני"
+  },
+  "panels/timeline/EventUICategory.ts | asyncTask": {
+    "message": "משימה אסינכרונית"
+  },
+  "panels/timeline/EventUICategory.ts | cacheModule": {
+    "message": "קוד המודול שבמטמון"
+  },
+  "panels/timeline/EventUICategory.ts | cacheScript": {
+    "message": "קוד סקריפט שבמטמון"
+  },
+  "panels/timeline/EventUICategory.ts | cachedWasmModule": {
+    "message": "מודול ה-Wasm שנשמר במטמון"
+  },
+  "panels/timeline/EventUICategory.ts | cancelAnimationFrame": {
+    "message": "ביטול מסגרת האנימציה"
+  },
+  "panels/timeline/EventUICategory.ts | cancelIdleCallback": {
+    "message": "ביטול קריאה חוזרת (callback) ללא פעילות"
+  },
+  "panels/timeline/EventUICategory.ts | commit": {
+    "message": "שמירה (commit)"
+  },
+  "panels/timeline/EventUICategory.ts | compileCode": {
+    "message": "הידור הקוד"
+  },
+  "panels/timeline/EventUICategory.ts | compileModule": {
+    "message": "הידור המודול"
+  },
+  "panels/timeline/EventUICategory.ts | compileScript": {
+    "message": "הידור של הסקריפט"
+  },
+  "panels/timeline/EventUICategory.ts | compiledWasmModule": {
+    "message": "בוצע הידור של מודול Wasm"
+  },
+  "panels/timeline/EventUICategory.ts | compositeLayers": {
+    "message": "שכבות משולבות"
+  },
+  "panels/timeline/EventUICategory.ts | computeIntersections": {
+    "message": "חישוב של צמתים"
+  },
+  "panels/timeline/EventUICategory.ts | consoleTime": {
+    "message": "זמן מסוף"
+  },
+  "panels/timeline/EventUICategory.ts | createWebsocket": {
+    "message": "יצירת WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | decrypt": {
+    "message": "פענוח"
+  },
+  "panels/timeline/EventUICategory.ts | decryptReply": {
+    "message": "פענוח התשובה"
+  },
+  "panels/timeline/EventUICategory.ts | deserializeCodeCache": {
+    "message": "פעולת deserialize לקוד המטמון"
+  },
+  "panels/timeline/EventUICategory.ts | destroyWebsocket": {
+    "message": "כיבוי סופי של WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | digest": {
+    "message": "תקציר (digest)"
+  },
+  "panels/timeline/EventUICategory.ts | digestReply": {
+    "message": "יצירת תקציר (digest) של התשובה"
+  },
+  "panels/timeline/EventUICategory.ts | domGc": {
+    "message": "איסוף זבל (GC) ב-DOM"
+  },
+  "panels/timeline/EventUICategory.ts | domcontentloadedEvent": {
+    "message": "אירוע DOMContentLoaded"
+  },
+  "panels/timeline/EventUICategory.ts | drawFrame": {
+    "message": "ציור מסגרת"
+  },
+  "panels/timeline/EventUICategory.ts | embedderCallback": {
+    "message": "קריאה חוזרת (callback) של כלי ההטמעה"
+  },
+  "panels/timeline/EventUICategory.ts | encrypt": {
+    "message": "הצפנה"
+  },
+  "panels/timeline/EventUICategory.ts | encryptReply": {
+    "message": "הצפנת התשובה"
+  },
+  "panels/timeline/EventUICategory.ts | evaluateModule": {
+    "message": "הערכה של המודול"
+  },
+  "panels/timeline/EventUICategory.ts | evaluateScript": {
+    "message": "הערכה של הסקריפט"
+  },
+  "panels/timeline/EventUICategory.ts | event": {
+    "message": "אירוע"
+  },
+  "panels/timeline/EventUICategory.ts | eventTiming": {
+    "message": "תזמון האירוע"
+  },
+  "panels/timeline/EventUICategory.ts | experience": {
+    "message": "ניסיון"
+  },
+  "panels/timeline/EventUICategory.ts | finishLoading": {
+    "message": "סיום הטעינה"
+  },
+  "panels/timeline/EventUICategory.ts | fireIdleCallback": {
+    "message": "הפעלת קריאה חוזרת (callback) ללא פעילות"
+  },
+  "panels/timeline/EventUICategory.ts | firstContentfulPaint": {
+    "message": "הצגת תוכן ראשוני (FCP)"
+  },
+  "panels/timeline/EventUICategory.ts | firstPaint": {
+    "message": "הצגת תמונה ראשונית במסך (FP)"
+  },
+  "panels/timeline/EventUICategory.ts | frameStart": {
+    "message": "התחלת המסגרת"
+  },
+  "panels/timeline/EventUICategory.ts | frameStartMainThread": {
+    "message": "התחלת מסגרת (thread ראשי)"
+  },
+  "panels/timeline/EventUICategory.ts | frameStartedLoading": {
+    "message": "טעינת המסגרת התחילה"
+  },
+  "panels/timeline/EventUICategory.ts | functionCall": {
+    "message": "בקשה להפעלת פונקציה"
+  },
+  "panels/timeline/EventUICategory.ts | gcEvent": {
+    "message": "אירוע של איסוף זבל (GC)"
+  },
+  "panels/timeline/EventUICategory.ts | gpu": {
+    "message": "GPU"
+  },
+  "panels/timeline/EventUICategory.ts | hitTest": {
+    "message": "בדיקה של מיקום המצביע"
+  },
+  "panels/timeline/EventUICategory.ts | idle": {
+    "message": "ללא פעילות"
+  },
+  "panels/timeline/EventUICategory.ts | imageDecode": {
+    "message": "פענוח הקוד של התמונה"
+  },
+  "panels/timeline/EventUICategory.ts | imageResize": {
+    "message": "שינוי גודל התמונה"
+  },
+  "panels/timeline/EventUICategory.ts | installTimer": {
+    "message": "התקנת טיימר"
+  },
+  "panels/timeline/EventUICategory.ts | invalidateLayout": {
+    "message": "ביטול תוקף הפריסה"
+  },
+  "panels/timeline/EventUICategory.ts | jsFrame": {
+    "message": "מסגרת JS"
+  },
+  "panels/timeline/EventUICategory.ts | largestContentfulPaint": {
+    "message": "Largest Contentful Paint ‏(LCP)"
+  },
+  "panels/timeline/EventUICategory.ts | layerize": {
+    "message": "יצירת שכבות"
+  },
+  "panels/timeline/EventUICategory.ts | layout": {
+    "message": "פריסה"
+  },
+  "panels/timeline/EventUICategory.ts | layoutShift": {
+    "message": "שינוי הפריסה"
+  },
+  "panels/timeline/EventUICategory.ts | loading": {
+    "message": "בטעינה"
+  },
+  "panels/timeline/EventUICategory.ts | majorGc": {
+    "message": "איסוף זבל (GC) מז'ורי"
+  },
+  "panels/timeline/EventUICategory.ts | minorGc": {
+    "message": "איסוף זבל (GC) מינורי"
+  },
+  "panels/timeline/EventUICategory.ts | onloadEvent": {
+    "message": "אירוע onload"
+  },
+  "panels/timeline/EventUICategory.ts | optimizeCode": {
+    "message": "אופטימיזציה של הקוד"
+  },
+  "panels/timeline/EventUICategory.ts | other": {
+    "message": "אחר"
+  },
+  "panels/timeline/EventUICategory.ts | paint": {
+    "message": "המרת תמונה וקטורית למפת סיביות (painting)"
+  },
+  "panels/timeline/EventUICategory.ts | paintImage": {
+    "message": "המרת תמונה וקטורית למפת סיביות (painting)"
+  },
+  "panels/timeline/EventUICategory.ts | paintSetup": {
+    "message": "הגדרה של המרת תמונה וקטורית למפת סיביות (painting)"
+  },
+  "panels/timeline/EventUICategory.ts | painting": {
+    "message": "צביעה"
+  },
+  "panels/timeline/EventUICategory.ts | parseAndCompile": {
+    "message": "ניתוח והידור"
+  },
+  "panels/timeline/EventUICategory.ts | parseHtml": {
+    "message": "ניתוח HTML"
+  },
+  "panels/timeline/EventUICategory.ts | parseStylesheet": {
+    "message": "ניתוח גיליון הסגנונות"
+  },
+  "panels/timeline/EventUICategory.ts | prePaint": {
+    "message": "שלב מקדים להמרת תמונה וקטורית למפת סיביות (painting)"
+  },
+  "panels/timeline/EventUICategory.ts | profilingOverhead": {
+    "message": "תקורה של יצירת פרופילים"
+  },
+  "panels/timeline/EventUICategory.ts | rasterizePaint": {
+    "message": "יצירת רסטר להמרת תמונה וקטורית למפת סיביות (painting)"
+  },
+  "panels/timeline/EventUICategory.ts | recalculateStyle": {
+    "message": "חישוב מחדש של הסגנון"
+  },
+  "panels/timeline/EventUICategory.ts | receiveData": {
+    "message": "קבלת נתונים"
+  },
+  "panels/timeline/EventUICategory.ts | receiveResponse": {
+    "message": "קבלת תגובה"
+  },
+  "panels/timeline/EventUICategory.ts | receiveWebsocketHandshake": {
+    "message": "קבלת לחיצת יד של WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | removeTimer": {
+    "message": "הסרה של הטיימר"
+  },
+  "panels/timeline/EventUICategory.ts | rendering": {
+    "message": "רינדור"
+  },
+  "panels/timeline/EventUICategory.ts | requestAnimationFrame": {
+    "message": "בקשה לפריים אנימציה"
+  },
+  "panels/timeline/EventUICategory.ts | requestIdleCallback": {
+    "message": "בקשה לקריאה חוזרת (callback) ללא פעילות"
+  },
+  "panels/timeline/EventUICategory.ts | requestMainThreadFrame": {
+    "message": "שליחת בקשה של מסגרת ל-thread הראשי"
+  },
+  "panels/timeline/EventUICategory.ts | runMicrotasks": {
+    "message": "הפעלת מיקרו-משימות"
+  },
+  "panels/timeline/EventUICategory.ts | scheduleStyleRecalculation": {
+    "message": "חישוב מחדש של סגנון לוח הזמנים"
+  },
+  "panels/timeline/EventUICategory.ts | scripting": {
+    "message": "ביצוע סקריפטים"
+  },
+  "panels/timeline/EventUICategory.ts | scroll": {
+    "message": "גלילה"
+  },
+  "panels/timeline/EventUICategory.ts | sendRequest": {
+    "message": "שליחת הבקשה"
+  },
+  "panels/timeline/EventUICategory.ts | sendWebsocketHandshake": {
+    "message": "שליחת לחיצת יד של WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | sign": {
+    "message": "חתימה"
+  },
+  "panels/timeline/EventUICategory.ts | signReply": {
+    "message": "חתימה על התשובה"
+  },
+  "panels/timeline/EventUICategory.ts | streamingCompileTask": {
+    "message": "משימת הידור מסוג סטרימינג"
+  },
+  "panels/timeline/EventUICategory.ts | streamingWasmResponse": {
+    "message": "סטרימינג של תגובת Wasm"
+  },
+  "panels/timeline/EventUICategory.ts | system": {
+    "message": "מערכת"
+  },
+  "panels/timeline/EventUICategory.ts | task": {
+    "message": "משימה"
+  },
+  "panels/timeline/EventUICategory.ts | timerFired": {
+    "message": "הופעל הטיימר"
+  },
+  "panels/timeline/EventUICategory.ts | timestamp": {
+    "message": "חותמת זמן"
+  },
+  "panels/timeline/EventUICategory.ts | updateLayer": {
+    "message": "עדכון שכבה"
+  },
+  "panels/timeline/EventUICategory.ts | updateLayerTree": {
+    "message": "עדכון עץ השכבות"
+  },
+  "panels/timeline/EventUICategory.ts | userTiming": {
+    "message": "תזמון משתמש"
+  },
+  "panels/timeline/EventUICategory.ts | verify": {
+    "message": "אימות"
+  },
+  "panels/timeline/EventUICategory.ts | verifyReply": {
+    "message": "אימות התשובה"
+  },
+  "panels/timeline/EventUICategory.ts | waitingForNetwork": {
+    "message": "בהמתנה לרשת"
+  },
+  "panels/timeline/EventUICategory.ts | wasmModuleCacheHit": {
+    "message": "מציאה במטמון (cache hit) של מודול Wasm"
+  },
+  "panels/timeline/EventUICategory.ts | wasmModuleCacheInvalid": {
+    "message": "שמירה לא חוקית של מודול Wasm במטמון"
+  },
+  "panels/timeline/EventUICategory.ts | willSendRequest": {
+    "message": "תישלח בקשה"
+  },
+  "panels/timeline/EventUICategory.ts | xhrLoad": {
+    "message": "טעינת XHR"
+  },
+  "panels/timeline/EventUICategory.ts | xhrReadyStateChange": {
+    "message": "שינוי במצב המוכנות לפעולה של XHR"
   },
   "panels/timeline/EventsTimelineTreeView.ts | Dms": {
     "message": "{PH1} ms"
@@ -11951,11 +12107,32 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(אנונימית)"
   },
-  "panels/timeline/ThreadAppender.ts | thread": {
-    "message": "פרוטוקול Thread ראשי לפי מנוע חדש"
+  "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
+    "message": "Worker ייעודי"
   },
-  "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
-    "message": "הכלי לניתוח ביצועי ה-CPU ליעד אינו זמין."
+  "panels/timeline/ThreadAppender.ts | frameS": {
+    "message": "מסגרת – {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | mainS": {
+    "message": "ראשי – {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | onIgnoreList": {
+    "message": "ברשימת קטעי הקוד להתעלמות"
+  },
+  "panels/timeline/ThreadAppender.ts | raster": {
+    "message": "רסטר"
+  },
+  "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
+    "message": "thread {PH1} ליצירת רסטר"
+  },
+  "panels/timeline/ThreadAppender.ts | threadS": {
+    "message": "Thread {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | workerS": {
+    "message": "Worker‏ – {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | workerSS": {
+    "message": "Worker:‏ {PH1}‏ – {PH2}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "אין תמיכה בתיעוד נתוני מעקב אחר ביצועים לסוג היעד הזה"
@@ -12012,19 +12189,19 @@
     "message": "ראשי"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | mainS": {
-    "message": "ראשי — {PH1}"
+    "message": "ראשי – {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
-    "message": "ברשימת הפריטים להתעלמות"
+    "message": "ברשימת קטעי הקוד להתעלמות"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "מסגרת שמוצגת באופן חלקי"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | raster": {
-    "message": "רשת נקודות"
+    "message": "רסטר"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | rasterizerThreadS": {
-    "message": "שרשור של יוצר רשת נקודות {PH1}"
+    "message": "thread {PH1} ליצירת רסטר"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | sSelfS": {
     "message": "{PH1} (עצמי {PH2})"
@@ -12336,7 +12513,7 @@
     "message": "קוד סקריפט שבמטמון"
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
-    "message": "מודול Wasm שנשמר במטמון"
+    "message": "מודול ה-Wasm שנשמר במטמון"
   },
   "panels/timeline/TimelineUIUtils.ts | callStacks": {
     "message": "מחסניות Call Stack"
@@ -12372,7 +12549,7 @@
     "message": "נאספו"
   },
   "panels/timeline/TimelineUIUtils.ts | commit": {
-    "message": "שמירה"
+    "message": "שמירה (commit)"
   },
   "panels/timeline/TimelineUIUtils.ts | compilationCacheKind": {
     "message": "סוג מטמון הידור"
@@ -12387,31 +12564,28 @@
     "message": "הידור"
   },
   "panels/timeline/TimelineUIUtils.ts | compileCode": {
-    "message": "קוד הידור"
+    "message": "הידור הקוד"
   },
   "panels/timeline/TimelineUIUtils.ts | compileModule": {
-    "message": "הידור של מודול"
+    "message": "הידור המודול"
   },
   "panels/timeline/TimelineUIUtils.ts | compileScript": {
-    "message": "הידור של סקריפט"
+    "message": "הידור של הסקריפט"
   },
   "panels/timeline/TimelineUIUtils.ts | compiledWasmModule": {
-    "message": "הידור של מודול Wasm"
+    "message": "בוצע הידור של מודול Wasm"
   },
   "panels/timeline/TimelineUIUtils.ts | compositeLayers": {
     "message": "שכבות משולבות"
   },
   "panels/timeline/TimelineUIUtils.ts | computeIntersections": {
-    "message": "צמתי חישוב"
+    "message": "חישוב של צמתים"
   },
   "panels/timeline/TimelineUIUtils.ts | consoleTime": {
     "message": "זמן מסוף"
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "גודל המטמון שנצרך"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cpuTime": {
-    "message": "זמן CPU (יחידת עיבוד מרכזית)"
   },
   "panels/timeline/TimelineUIUtils.ts | createWebsocket": {
     "message": "יצירת WebSocket"
@@ -12447,16 +12621,16 @@
     "message": "פרטים"
   },
   "panels/timeline/TimelineUIUtils.ts | digest": {
-    "message": "תקציר"
+    "message": "תקציר (digest)"
   },
   "panels/timeline/TimelineUIUtils.ts | digestReply": {
-    "message": "תקציר (digest) תשובה"
+    "message": "יצירת תקציר (digest) של התשובה"
   },
   "panels/timeline/TimelineUIUtils.ts | dimensions": {
     "message": "מידות"
   },
   "panels/timeline/TimelineUIUtils.ts | domGc": {
-    "message": "GC (איסוף זבל) ב-DOM"
+    "message": "איסוף זבל (GC) ב-DOM"
   },
   "panels/timeline/TimelineUIUtils.ts | domcontentloadedEvent": {
     "message": "אירוע DOMContentLoaded"
@@ -12474,7 +12648,7 @@
     "message": "רכיבים שהושפעו"
   },
   "panels/timeline/TimelineUIUtils.ts | embedderCallback": {
-    "message": "הטמעה של קריאה חוזרת (callback)"
+    "message": "קריאה חוזרת (callback) של כלי ההטמעה"
   },
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
@@ -12489,13 +12663,13 @@
     "message": "הצפנה"
   },
   "panels/timeline/TimelineUIUtils.ts | encryptReply": {
-    "message": "תשובת הצפנה"
+    "message": "הצפנת התשובה"
   },
   "panels/timeline/TimelineUIUtils.ts | evaluateModule": {
-    "message": "הערכה של מודול"
+    "message": "הערכה של המודול"
   },
   "panels/timeline/TimelineUIUtils.ts | evaluateScript": {
-    "message": "הערכה של סקריפט"
+    "message": "הערכה של הסקריפט"
   },
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "אירוע"
@@ -12531,7 +12705,7 @@
     "message": "הצגת תמונה ראשונית במסך (FP)"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
-    "message": "אילוץ של זרימה חוזרת"
+    "message": "אילוץ של הזרמה חוזרת"
   },
   "panels/timeline/TimelineUIUtils.ts | frame": {
     "message": "מסגרת"
@@ -12540,7 +12714,7 @@
     "message": "התחלת המסגרת"
   },
   "panels/timeline/TimelineUIUtils.ts | frameStartMainThread": {
-    "message": "התחלת מסגרת (תהליכון ראשי)"
+    "message": "התחלת מסגרת (thread ראשי)"
   },
   "panels/timeline/TimelineUIUtils.ts | frameStartedLoading": {
     "message": "טעינת המסגרת התחילה"
@@ -12552,7 +12726,7 @@
     "message": "בקשה להפעלת פונקציה"
   },
   "panels/timeline/TimelineUIUtils.ts | gcEvent": {
-    "message": "אירוע איסוף זבל (GC)"
+    "message": "אירוע של איסוף זבל (GC)"
   },
   "panels/timeline/TimelineUIUtils.ts | gpu": {
     "message": "GPU"
@@ -12564,7 +12738,7 @@
     "message": "משך הפעולה של ה-handler: {PH1}"
   },
   "panels/timeline/TimelineUIUtils.ts | hitTest": {
-    "message": "בדיקת כניסות"
+    "message": "בדיקה של מיקום המצביע"
   },
   "panels/timeline/TimelineUIUtils.ts | idle": {
     "message": "ללא פעילות"
@@ -12576,7 +12750,7 @@
     "message": "נשלחה בקשה לקריאה חוזרת (callback) ללא פעילות"
   },
   "panels/timeline/TimelineUIUtils.ts | imageDecode": {
-    "message": "פענוח קוד תמונה"
+    "message": "פענוח הקוד של התמונה"
   },
   "panels/timeline/TimelineUIUtils.ts | imageResize": {
     "message": "שינוי גודל התמונה"
@@ -12663,7 +12837,7 @@
     "message": "משימה ארוכה"
   },
   "panels/timeline/TimelineUIUtils.ts | majorGc": {
-    "message": "GC משמעותי"
+    "message": "איסוף זבל (GC) מז'ורי"
   },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "הודעה"
@@ -12708,7 +12882,7 @@
     "message": "לא בוצעה אופטימיזציה"
   },
   "panels/timeline/TimelineUIUtils.ts | onloadEvent": {
-    "message": "אירוע טעינה"
+    "message": "אירוע onload"
   },
   "panels/timeline/TimelineUIUtils.ts | optimizeCode": {
     "message": "אופטימיזציה של הקוד"
@@ -12723,16 +12897,16 @@
     "message": "רכיב של בעלים"
   },
   "panels/timeline/TimelineUIUtils.ts | paint": {
-    "message": "הצגת רכיב"
+    "message": "המרת תמונה וקטורית למפת סיביות (painting)"
   },
   "panels/timeline/TimelineUIUtils.ts | paintImage": {
-    "message": "הצגת תמונה"
+    "message": "המרת תמונה וקטורית למפת סיביות (painting)"
   },
   "panels/timeline/TimelineUIUtils.ts | paintProfiler": {
     "message": "הכלי לניתוח ביצועים (profiler) של הצגת תוכן"
   },
   "panels/timeline/TimelineUIUtils.ts | paintSetup": {
-    "message": "הגדרת צביעה"
+    "message": "הגדרה של המרת תמונה וקטורית למפת סיביות (painting)"
   },
   "panels/timeline/TimelineUIUtils.ts | painting": {
     "message": "צביעה"
@@ -12753,7 +12927,7 @@
     "message": "בהמתנה ל"
   },
   "panels/timeline/TimelineUIUtils.ts | prePaint": {
-    "message": "לפני ציור"
+    "message": "שלב מקדים להמרת תמונה וקטורית למפת סיביות (painting)"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "תצוגה מקדימה"
@@ -12765,16 +12939,16 @@
     "message": "גודל המטמון שנוצר"
   },
   "panels/timeline/TimelineUIUtils.ts | profilingOverhead": {
-    "message": "תקורה של ניתוח ביצועים"
+    "message": "תקורה של יצירת פרופילים"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "טווח"
   },
   "panels/timeline/TimelineUIUtils.ts | rasterizePaint": {
-    "message": "יצירת רשת נקודות של צבעים"
+    "message": "יצירת רסטר להמרת תמונה וקטורית למפת סיביות (painting)"
   },
   "panels/timeline/TimelineUIUtils.ts | recalculateStyle": {
-    "message": "חישוב מחדש של סגנון"
+    "message": "חישוב מחדש של הסגנון"
   },
   "panels/timeline/TimelineUIUtils.ts | recalculationForced": {
     "message": "אולץ חישוב מחודש"
@@ -12795,7 +12969,7 @@
     "message": "צומת קשור"
   },
   "panels/timeline/TimelineUIUtils.ts | removeTimer": {
-    "message": "הסרה של טיימר"
+    "message": "הסרה של הטיימר"
   },
   "panels/timeline/TimelineUIUtils.ts | rendering": {
     "message": "רינדור"
@@ -12852,7 +13026,7 @@
     "message": "{PH1} לגבי {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
-    "message": "{PH1} הוא ככל הנראה צוואר בקבוק בביצוע."
+    "message": "{PH1} הוא כנראה צוואר בקבוק בביצועים."
   },
   "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
     "message": "לפי {PH1} ניתן להסיק שמהירות התגובה בדף נמוכה."
@@ -12903,7 +13077,7 @@
     "message": "הסקריפט לא מתאים"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
-    "message": "כתיבת סקריפטים"
+    "message": "ביצוע סקריפטים"
   },
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "גלילה"
@@ -12912,7 +13086,7 @@
     "message": "זמן פעולה יחידה"
   },
   "panels/timeline/TimelineUIUtils.ts | sendRequest": {
-    "message": "שליחת בקשה"
+    "message": "שליחת הבקשה"
   },
   "panels/timeline/TimelineUIUtils.ts | sendWebsocketHandshake": {
     "message": "שליחת לחיצת יד של WebSocket"
@@ -12921,10 +13095,10 @@
     "message": "הצגה"
   },
   "panels/timeline/TimelineUIUtils.ts | sign": {
-    "message": "הוספת חתימה"
+    "message": "חתימה"
   },
   "panels/timeline/TimelineUIUtils.ts | signReply": {
-    "message": "מענה עם חתימה"
+    "message": "חתימה על התשובה"
   },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "גודל"
@@ -12945,7 +13119,7 @@
     "message": "בוצע שידור"
   },
   "panels/timeline/TimelineUIUtils.ts | streamingCompileTask": {
-    "message": "סטרימינג של מטלת הידור"
+    "message": "משימת הידור מסוג סטרימינג"
   },
   "panels/timeline/TimelineUIUtils.ts | streamingWasmResponse": {
     "message": "סטרימינג של תגובת Wasm"
@@ -13063,6 +13237,21 @@
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "מערכת"
+  },
+  "panels/timeline/components/DetailsView.ts | forcedReflow": {
+    "message": "אילוץ של הזרמה חוזרת"
+  },
+  "panels/timeline/components/DetailsView.ts | idleCallbackExecutionExtended": {
+    "message": "זמן הביצוע של הקריאה החוזרת (callback) ללא פעילות הוארך מעבר למועד הסיום ב-{PH1}"
+  },
+  "panels/timeline/components/DetailsView.ts | longTask": {
+    "message": "משימה ארוכה"
+  },
+  "panels/timeline/components/DetailsView.ts | sIsALikelyPerformanceBottleneck": {
+    "message": "{PH1} הוא כנראה צוואר בקבוק בביצועים."
+  },
+  "panels/timeline/components/DetailsView.ts | sTookS": {
+    "message": "משך הזמן של {PH1} היה {PH2}."
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "הסתרת מסגרת של chrome בתצוגת שכבות"
@@ -13899,7 +14088,7 @@
     "message": "מסומן"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | collapsed": {
-    "message": "מכווץ"
+    "message": "במצב מכווץ"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | delete": {
     "message": "מחיקה"
@@ -14243,8 +14432,17 @@
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "חיפוש"
   },
+  "ui/legacy/components/source_frame/SourceFrame.ts | allow": {
+    "message": "אישור"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | allowPasting": {
+    "message": "יש אישור להדבקה"
+  },
   "ui/legacy/components/source_frame/SourceFrame.ts | bytecodePositionXs": {
     "message": "מיקום בייטקוד 0x{PH1}"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | cancel": {
+    "message": "ביטול"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | dCharactersSelected": {
     "message": "נבחרו {PH1} תווים"
@@ -14254,6 +14452,12 @@
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | dSelectionRegions": {
     "message": "{PH1} אזורי בחירה"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
+    "message": "אין להדביק קוד שלא מובן לך או שלא בדקת בעצמך בכלי הפיתוח. פעולה כזאת עלולה לאפשר לתוקפים לגנוב את הזהות שלך או להשתלט על המחשב שלך. כדי לאפשר הדבקה, יש להקליד בהמשך '{PH1}'."
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
+    "message": "הקוד הזה מהימן?"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | lineSColumnS": {
     "message": "שורה {PH1}, עמודה {PH2}"
@@ -14266,6 +14470,9 @@
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | source": {
     "message": "מקור"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
+    "message": "עליך להקליד '{PH1}'"
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "חיפוש"

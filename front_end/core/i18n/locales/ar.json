@@ -233,6 +233,9 @@
   "core/sdk/CSSStyleSheetHeader.ts | thereWasAnErrorRetrievingThe": {
     "message": "حدث خطأ أثناء استرداد ملفات الأنماط المصدر."
   },
+  "core/sdk/ChildTargetManager.ts | main": {
+    "message": "الهدف الرئيسي"
+  },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "تعذَّر تحميل المحتوى في {PH1} ({PH2})."
   },
@@ -250,132 +253,6 @@
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
     "message": "تم بدء الملف التعريفي \"{PH1}\"."
-  },
-  "core/sdk/DOMDebuggerModel.ts | animation": {
-    "message": "صورة متحركة"
-  },
-  "core/sdk/DOMDebuggerModel.ts | animationFrameFired": {
-    "message": "تم تنشيط إطار الصورة المتحركة."
-  },
-  "core/sdk/DOMDebuggerModel.ts | cancelAnimationFrame": {
-    "message": "إلغاء إطار الصورة المتحركة"
-  },
-  "core/sdk/DOMDebuggerModel.ts | canvas": {
-    "message": "لوحة الرسم"
-  },
-  "core/sdk/DOMDebuggerModel.ts | clipboard": {
-    "message": "الحافظة"
-  },
-  "core/sdk/DOMDebuggerModel.ts | closeAudiocontext": {
-    "message": "إغلاق AudioContext"
-  },
-  "core/sdk/DOMDebuggerModel.ts | control": {
-    "message": "التحكّم"
-  },
-  "core/sdk/DOMDebuggerModel.ts | createAudiocontext": {
-    "message": "إنشاء AudioContext"
-  },
-  "core/sdk/DOMDebuggerModel.ts | createCanvasContext": {
-    "message": "إنشاء سياق للوحة الرسم"
-  },
-  "core/sdk/DOMDebuggerModel.ts | device": {
-    "message": "جهاز"
-  },
-  "core/sdk/DOMDebuggerModel.ts | domMutation": {
-    "message": "تغيُّر نموذج العناصر في المستند (DOM)"
-  },
-  "core/sdk/DOMDebuggerModel.ts | dragDrop": {
-    "message": "سحب أو إفلات"
-  },
-  "core/sdk/DOMDebuggerModel.ts | geolocation": {
-    "message": "رصد الموقع الجغرافي"
-  },
-  "core/sdk/DOMDebuggerModel.ts | keyboard": {
-    "message": "لوحة المفاتيح"
-  },
-  "core/sdk/DOMDebuggerModel.ts | load": {
-    "message": "تحميل"
-  },
-  "core/sdk/DOMDebuggerModel.ts | media": {
-    "message": "الوسائط"
-  },
-  "core/sdk/DOMDebuggerModel.ts | mouse": {
-    "message": "الماوس"
-  },
-  "core/sdk/DOMDebuggerModel.ts | notification": {
-    "message": "الإشعار"
-  },
-  "core/sdk/DOMDebuggerModel.ts | parse": {
-    "message": "تحليل"
-  },
-  "core/sdk/DOMDebuggerModel.ts | pictureinpicture": {
-    "message": "نافذة ضمن النافذة"
-  },
-  "core/sdk/DOMDebuggerModel.ts | pointer": {
-    "message": "مؤشر"
-  },
-  "core/sdk/DOMDebuggerModel.ts | policyViolations": {
-    "message": "انتهاكات السياسة"
-  },
-  "core/sdk/DOMDebuggerModel.ts | requestAnimationFrame": {
-    "message": "طلب إطار صورة متحركة"
-  },
-  "core/sdk/DOMDebuggerModel.ts | resumeAudiocontext": {
-    "message": "استئناف AudioContext"
-  },
-  "core/sdk/DOMDebuggerModel.ts | script": {
-    "message": "نص برمجي"
-  },
-  "core/sdk/DOMDebuggerModel.ts | scriptBlockedByContentSecurity": {
-    "message": "تم حظر النص البرمجي وفقًا لسياسة أمان المحتوى."
-  },
-  "core/sdk/DOMDebuggerModel.ts | scriptBlockedDueToContent": {
-    "message": "تم حظر النص البرمجي وفقًا لتوجيهات سياسة أمان المحتوى: {PH1}"
-  },
-  "core/sdk/DOMDebuggerModel.ts | scriptFirstStatement": {
-    "message": "العبارة الأولى بالنص البرمجي"
-  },
-  "core/sdk/DOMDebuggerModel.ts | setInnerhtml": {
-    "message": "ضبط innerHTML"
-  },
-  "core/sdk/DOMDebuggerModel.ts | setTimeoutOrIntervalFired": {
-    "message": "تم تنشيط {PH1}."
-  },
-  "core/sdk/DOMDebuggerModel.ts | sinkViolations": {
-    "message": "انتهاكات مخزن البيانات"
-  },
-  "core/sdk/DOMDebuggerModel.ts | suspendAudiocontext": {
-    "message": "تعليق AudioContext"
-  },
-  "core/sdk/DOMDebuggerModel.ts | timer": {
-    "message": "الموقِّت"
-  },
-  "core/sdk/DOMDebuggerModel.ts | touch": {
-    "message": "اللمس"
-  },
-  "core/sdk/DOMDebuggerModel.ts | trustedTypeViolations": {
-    "message": "انتهاكات السياسة في واجهة برمجة التطبيقات Trusted Type"
-  },
-  "core/sdk/DOMDebuggerModel.ts | webaudio": {
-    "message": "WebAudio"
-  },
-  "core/sdk/DOMDebuggerModel.ts | webglErrorFired": {
-    "message": "تم تنشيط خطأ WebGL."
-  },
-  "core/sdk/DOMDebuggerModel.ts | webglErrorFiredS": {
-    "message": "تم تنشيط خطأ WebGL ({PH1})."
-  },
-  "core/sdk/DOMDebuggerModel.ts | webglWarningFired": {
-    "message": "تم إطلاق تحذير WebGL."
-  },
-  "core/sdk/DOMDebuggerModel.ts | window": {
-    "message": "نافذة"
-  },
-  "core/sdk/DOMDebuggerModel.ts | worker": {
-    "message": "عامل"
-  },
-  "core/sdk/DOMDebuggerModel.ts | xhr": {
-    "message": "XHR"
   },
   "core/sdk/DebuggerModel.ts | block": {
     "message": "حظر"
@@ -403,21 +280,6 @@
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "مجموعة With"
-  },
-  "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
-    "message": "وظيفة صغيرة لمزاد إعلانات"
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletBiddingStart": {
-    "message": "بدء مرحلة عرض أسعار نظام عروض الأسعار"
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletReportingStart": {
-    "message": "بدء مرحلة إعداد تقارير نظام عروض الأسعار"
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletReportingStart": {
-    "message": "بدء مرحلة إعداد تقارير البائع"
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
-    "message": "بدء مرحلة نتيجة البائع"
   },
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "شبكة الجيل الثالث سريعة"
@@ -520,6 +382,9 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieDidntSpecifyASamesite": {
     "message": "لم يحدِّد عنوان Set-Cookie هذا السمة \"SameSite\" وتم ضبطه على السمة التلقائية \"SameSite=Lax\"\" وحظره لأنّ ملف تعريف الارتباط ورَد من استجابة على عدة مواقع إلكترونية، وليست استجابة للتنقّل على المستوى الأعلى. ويتم التعامل مع هذه الاستجابة باعتبارها واردة من عدة مواقع إلكترونية لأنّ مخطّط عنوان URL يختلف عن الموقع الإلكتروني الحالي."
+  },
+  "core/sdk/NetworkRequest.ts | thisSetcookieHadADisallowedCharacter": {
+    "message": "يحتوي عنوان Set-Cookie على حرف غير مسموح به (عند وجود حرف تحكّم ASCII محظور أو إذا ظهر حرف Tab في منتصف اسم ملف تعريف الارتباط أو القيمة أو اسم السمة أو قيمة السمة)."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadInvalidSyntax": {
     "message": "بنية عنوان Set-Cookie هذا غير صالحة."
@@ -1052,9 +917,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "إلغاء الإرساء في نافذة منفصلة"
   },
-  "entrypoints/main/main-meta.ts | asAuthored": {
-    "message": "على القيمة \"مكتوب من قِبل المستخدم\""
-  },
   "entrypoints/main/main-meta.ts | auto": {
     "message": "تلقائي"
   },
@@ -1066,12 +928,6 @@
   },
   "entrypoints/main/main-meta.ts | cancelSearch": {
     "message": "إلغاء البحث"
-  },
-  "entrypoints/main/main-meta.ts | colorFormat": {
-    "message": "تنسيق الألوان:"
-  },
-  "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "تم إيقاف هذا الخيار نهائيًا لأنّه غير متوافق مع مساحات الألوان الحديثة. لإعادة تفعيله، يجب إيقاف التجربة المناظرة."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "مظهر داكن"
@@ -1156,18 +1012,6 @@
   },
   "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
     "message": "إيقاف البحث أثناء الكتابة (اضغط على مفتاح Enter للبحث)"
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
-    "message": "ضبط تنسيق الألوان على الحالة \"مكتوب من قِبل المستخدم\""
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatToHex": {
-    "message": "ضبط تنسيق اللون على القيمة HEX"
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatToHsl": {
-    "message": "ضبط تنسيق اللون على نموذج HSL"
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatToRgb": {
-    "message": "ضبط تنسيق اللون على نموذج أحمر أخضر أزرق"
   },
   "entrypoints/main/main-meta.ts | switchToDarkTheme": {
     "message": "التبديل إلى المظهر الداكن"
@@ -1255,6 +1099,12 @@
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "يجب استخدام السمة disableRemotePlayback لإيقاف الدمج التلقائي لتقنية Google Cast بدلاً من استخدام أداة الاختيار -internal-media-controls-overlay-cast-button."
+  },
+  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
+    "message": "قيَم مظهر خدمة مقارنة الأسعار  inner-spin-button وmedia-slider وmedia-sliderthumb وmedia-volume-slider وmedia-volume-sliderthumb وpush-button وsearchfield-cancel-button وslider-horizontal وsliderthumb-horizontal وsliderthumb-vertical، وsquare-button غير موحدة وستتم إزالتها."
+  },
+  "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
+    "message": "لم يتم توحيد قيمة ظهور خدمة مقارنة الأسعار slider-vertical وستتم إزالتها."
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "يتم حظر طلبات المصادر التي تتضمّن عناوين URL الخاصة بها كلاً من أحرف المسافة البيضاء \\(n|r|t) ورمز \"الأقل من\" (<). لتحميل هذه المصادر، يُرجى إزالة السطور الجديدة وترميز رمز \"الأقل من\" من خلال مواضع مثل قيم سمات العناصر."
@@ -1703,6 +1553,12 @@
   "models/persistence/PersistenceActions.ts | overrideContent": {
     "message": "تجاهُل المحتوى"
   },
+  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "\"{PH1}\" هو ملف تم ربط مصدره ولا يمكن تجاوزه."
+  },
+  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "هل تريد إلغاء \"{PH1}\" بدلاً من ذلك؟"
+  },
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "حفظ بتنسيق..."
   },
@@ -1761,7 +1617,7 @@
     "message": "إعادة الكتابة"
   },
   "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "عرض مساحة العمل"
+    "message": "عرض إعدادات Workspace"
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Google Workspace"
@@ -2348,6 +2204,9 @@
   "panels/application/AppManifestView.ts | errorsAndWarnings": {
     "message": "الأخطاء والتحذيرات"
   },
+  "panels/application/AppManifestView.ts | formFactor": {
+    "message": "شكل الجهاز"
+  },
   "panels/application/AppManifestView.ts | icon": {
     "message": "الرمز"
   },
@@ -2362,6 +2221,9 @@
   },
   "panels/application/AppManifestView.ts | installability": {
     "message": "قابلية التثبيت"
+  },
+  "panels/application/AppManifestView.ts | label": {
+    "message": "تصنيف"
   },
   "panels/application/AppManifestView.ts | learnMore": {
     "message": "مزيد من المعلومات"
@@ -2399,6 +2261,12 @@
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "لم يتم توفير رقم تعريف \"متجر Play\"."
   },
+  "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnDesktop": {
+    "message": "لن تتوفّر واجهة PWA أفضل على أجهزة الكمبيوتر المكتبي. يُرجى إضافة لقطة شاشة واحدة على الأقل مع ضبط قيمة \"form_factor\" على \"واسع\"."
+  },
+  "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnMobile": {
+    "message": "لن تتوفّر واجهة PWA أفضل على الأجهزة الجوّالة. يُرجى إضافة لقطة شاشة واحدة على الأقل لم يتم ضبط قيمة \"form_factor\" لها أو تم ضبطها على قيمة أخرى غير \"واسع\"."
+  },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "لا يتوفّر رمز بحجم {PH1} بكسل مربّع على الأقل بتنسيق PNG أو SVG أو WebP، علمًا بأنّه لم يتم ضبط سمة \"purpose\" أو تم ضبطها على \"any\"."
   },
@@ -2425,6 +2293,9 @@
   },
   "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
     "message": "لا يتم عرض الصفحة من مصدر آمن."
+  },
+  "panels/application/AppManifestView.ts | platform": {
+    "message": "النظام الأساسي"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
     "message": "لا تتوافق قيمة سمة \"prefer_related_applications\" إلا مع الإصدار التجريبي من Chrome والقنوات الثابتة على Android."
@@ -2474,6 +2345,9 @@
   "panels/application/AppManifestView.ts | screenshotS": {
     "message": "لقطة الشاشة #{PH1}"
   },
+  "panels/application/AppManifestView.ts | screenshotsMustHaveSameAspectRatio": {
+    "message": "يجب أن تكون نسبة العرض إلى الارتفاع في جميع لقطات الشاشة التي تتضمّن قيمة \"form_factor\" نفسها مثل لقطة الشاشة الأولى التي تستخدم قيمة \"form_factor\" نفسها. وسيتم تجاهل بعض لقطات الشاشة."
+  },
   "panels/application/AppManifestView.ts | shortName": {
     "message": "اسم مختصر"
   },
@@ -2482,6 +2356,9 @@
   },
   "panels/application/AppManifestView.ts | shortcutSShouldIncludeAXPixel": {
     "message": "يجب أن يتضمن الاختصار #{PH1} رمزًا بدقة 96x96 بكسل."
+  },
+  "panels/application/AppManifestView.ts | shortcutsMayBeNotAvailable": {
+    "message": "يعتمد الحد الأقصى لعدد الاختصارات على النظام الأساسي. قد تكون بعض الاختصارات غير متاحة."
   },
   "panels/application/AppManifestView.ts | showOnlyTheMinimumSafeAreaFor": {
     "message": "عرض أقل منطقة آمنة للرموز القابلة للإخفاء"
@@ -2500,6 +2377,15 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "لون المظهر"
+  },
+  "panels/application/AppManifestView.ts | tooManyScreenshotsForDesktop": {
+    "message": "لا يُعرض أكثر من 8 لقطات شاشة على جهاز كمبيوتر مكتبي ويتم تجاهل الإعلانات المتبقية."
+  },
+  "panels/application/AppManifestView.ts | tooManyScreenshotsForMobile": {
+    "message": "لا يُعرض أكثر من 5 لقطات شاشة على الأجهزة الجوّالة. ويتم تجاهل الإعلانات المتبقية."
+  },
+  "panels/application/AppManifestView.ts | url": {
+    "message": "عنوان URL"
   },
   "panels/application/AppManifestView.ts | wcoFound": {
     "message": "عثَر Chrome بنجاح على القيمة {PH1} للحقل {PH2} في {PH3}."
@@ -2908,6 +2794,9 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "واجهة برمجة التطبيقات لإعداد التقارير"
+  },
+  "panels/application/ResourcesPanel.ts | webSqlDeprecation": {
+    "message": "تم إيقاف لغة الاستعلامات البنيوية (SQL) على الويب نهائيًا. يمكنك الانضمام إلى الفترة التجريبية للإيقاف النهائي لمواصلة استخدامها حتى توفّر إصدار Chrome 123."
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "مساحة ذاكرة التخزين المؤقت"
@@ -3794,12 +3683,6 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "يعدّ هذا إطارًا إعلانيًا تبعًا للرئيسي."
   },
-  "panels/application/components/FrameDetailsView.ts | prerendering": {
-    "message": "العرض المُسبَق"
-  },
-  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
-    "message": "حالة العرض المُسبق"
-  },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "إعادة تحميل"
   },
@@ -3931,144 +3814,6 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "عرض التفاصيل"
-  },
-  "panels/application/components/Prerender2.ts | Activated": {
-    "message": "تم التفعيل."
-  },
-  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
-    "message": "تم التفعيل قبل البدء."
-  },
-  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
-    "message": "تم عرض الصفحة مُسبقًا، ولكن عملية التنقّل أصبحت تتم بشكل مختلف عن العرض المُسبَق الأصلي، لذلك تعذَّر تفعيل الصفحة المعروضة مُسبقًا."
-  },
-  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
-    "message": "ميزة \"العرض المُسبق\" لا تتوافق مع AudioContext API في الوقت الحالي."
-  },
-  "panels/application/components/Prerender2.ts | BlockedByClient": {
-    "message": "تم حظر تحميل المورِد من قِبل العميل."
-  },
-  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
-    "message": "CancelAllHostsForTesting."
-  },
-  "panels/application/components/Prerender2.ts | ClientCertRequested": {
-    "message": "تطلب الصفحة شهادة العميل، وهذا الإجراء غير مناسب للصفحات المخفية مثل صفحات العرض المُسبق."
-  },
-  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
-    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL من مواقع إلكترونية متعددة بعد إكمال التحميل. لا يُسمح حاليًا بإجراء عرض مُسبَق للصفحات من مواقع إلكترونية متعددة."
-  },
-  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
-    "message": "تمّت محاولة إجراء عرض مُسبَق لعنوان URL أُعيد توجيهه إلى عنوان URL من مواقع إلكترونية متعددة. لا يُسمح حاليًا بإجراء عرض مُسبَق للصفحات من مواقع إلكترونية متعددة."
-  },
-  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
-    "message": "ميزة \"توفير البيانات\" مفعَّلة."
-  },
-  "panels/application/components/Prerender2.ts | Destroyed": {
-    "message": "تم التخلي عن الصفحة المعروضة مسبقًا لأسباب غير معروفة."
-  },
-  "panels/application/components/Prerender2.ts | DidFailLoad": {
-    "message": "حدث خطأ NotFailLoadWithError أثناء عملية العرض المُسبق."
-  },
-  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
-    "message": "طريقة واجهة برمجة التطبيقات غير مسموح بها"
-  },
-  "panels/application/components/Prerender2.ts | Download": {
-    "message": "لا يُسمح بالتنزيل في ميزة \"العرض المُسبق\"."
-  },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
-    "message": "تم إلغاء عملية العرض المُسبق التي أطلقها Chrome داخليًا (مثل العرض المُسبق للمربّع المتعدد الاستخدامات) بسبب أنّ عملية التنقُّل أُعيد توجيهها إلى صفحة أخرى تابعة لنطاق مشترك."
-  },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
-    "message": "تم إلغاء عملية العرض المُسبق التي أطلقها Chrome داخليًا (مثل العرض المُسبق للمربّع المتعدد الاستخدامات) بسبب أنّ عملية التنقُّل أُعيد توجيهها إلى صفحة أخرى تابعة للنطاق نفسه."
-  },
-  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
-    "message": "تعذَّر الحصول على معلومات استخدام الذاكرة."
-  },
-  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
-    "message": "يتوفّر عنوان URL فعّال."
-  },
-  "panels/application/components/Prerender2.ts | InProgressNavigation": {
-    "message": "InProgressNavigation."
-  },
-  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
-    "message": "قيود الصفحة غير مفعَّلة"
-  },
-  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
-    "message": "يُسمح فقط باستخدام التنقُّل بين الصفحات عبر بروتوكول HTTP(S) أثناء \"العرض المُسبق\"."
-  },
-  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
-    "message": "تمت محاولة العرض المُسبق لعنوان URL تمت إعادة توجيهه إلى عنوان URL غير متوفّر عبر بروتوكول HTTP(S). لا يمكن إجراء العرض المُسبق إلا للصفحات المتوفّرة عبر بروتوكول HTTP(S)."
-  },
-  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
-    "message": "لا تتوافق ميزة \"العرض المُسبق\" مع طلبات المصادقة من واجهة المستخدم."
-  },
-  "panels/application/components/Prerender2.ts | LowEndDevice": {
-    "message": "لا يتوفّر العرض المُسبق على الأجهزة ذات الذاكرة المنخفضة."
-  },
-  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
-    "message": "لا يُسمح بعمليات التنقُّل بعد عملية التنقُّل الأولي التي تم فيها إجراء العرض المُسبق للصفحة."
-  },
-  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
-    "message": "تم تجاوز الحد الأقصى لعدد عمليات العرض المُسبق."
-  },
-  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
-    "message": "تم تجاوز الحدّ الأقصى للذاكرة."
-  },
-  "panels/application/components/Prerender2.ts | MixedContent": {
-    "message": "يتم إلغاء العرض المُسبق من خلال إطار محتوى مختلَط."
-  },
-  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
-    "message": "تم استخدام واجهة برمجة تطبيقات غير مسموح بها من قِبل الصفحة المعروضة مسبقًا."
-  },
-  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
-    "message": "تعذَّر إجراء عملية التنقُّل الأولى التي تم فيها إجراء العرض المُسبق للصفحة بسبب عرض الخادم لرمز حالة مختلف عن 200/204/205."
-  },
-  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
-    "message": "لم يتم تنفيذ العرض المُسبق للصفحة في النهاية."
-  },
-  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
-    "message": "تم حظر طلب التنقُّل بواسطة سياسة أمان المحتوى (CSP)."
-  },
-  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
-    "message": "حدث خطأ في الشبكة أثناء عملية العرض المُسبق."
-  },
-  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
-    "message": "العرض المُسبَق مستمر"
-  },
-  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
-    "message": "تعطّلت الصفحة المعروضة مُسبقًا."
-  },
-  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
-    "message": "تم إنهاء عملية العرض لصفحة العرض المُسبق."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
-    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه بعد إكمال التحميل. لا يُسمح حاليًا بعرض الصفحات من مصادر متعددة مسبقًا."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
-    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه بعد إكمال التحميل. هذا الإجراء غير مسموح به ما لم يُرسِل موقع الوجهة عنوان الاستجابة Supports-Loading-Mode: credentialed-prerender."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
-    "message": "تمّت محاولة إجراء عرض مُسبَق لعنوان URL أُعيد توجيهه إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه. لا يُسمح حاليًا بعرض الصفحات من مصادر متعددة مسبقًا."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
-    "message": "تمّت محاولة إجراء عرض مُسبَق لعنوان URL أُعيد توجيهه إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه. هذا الإجراء غير مسموح به ما لم يُرسِل موقع الوجهة عنوان الاستجابة Supports-Loading-Mode: credentialed-prerender."
-  },
-  "panels/application/components/Prerender2.ts | SslCertificateError": {
-    "message": "خطأ في شهادة طبقة المقابس الآمنة (SSL)"
-  },
-  "panels/application/components/Prerender2.ts | StartFailed": {
-    "message": "تعذَّر البدء."
-  },
-  "panels/application/components/Prerender2.ts | Stop": {
-    "message": "تم إيقاف علامة التبويب."
-  },
-  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
-    "message": "علامة التبويب في الخلفية"
-  },
-  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
-    "message": "ميزة \"العرض المُسبق\" غير مفعّلة وتم محوها مع سبب تشغيلها."
-  },
-  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
-    "message": "يجب إعادة التحميل بعد تطبيق سياسة UserUserOverride."
   },
   "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
     "message": "اختيار معالج البروتوكول"
@@ -4481,11 +4226,17 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
     "message": "تم تفعيل الصفحة المعروضة مُسبقًا أثناء بدء التنقّل في الإطار الرئيسي للصفحة."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedWithAuxiliaryBrowsingContexts": {
+    "message": "لم يتم استخدام العرض المُسبَق، لوجود نوافذ أخرى تحتوي على مرجع فتح نشط يشير إلى صفحة البدء، وهو إجراء غير متاح حاليًا."
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
     "message": "لم يتم استخدام العرض المُسبَق لأنّ سياسة الأذونات أو الميزات التجريبية في وضع الحماية لصفحة البدء لم تكن متوافقة مع سياسة صفحة العرض المُسبَق."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
     "message": "لم يتم استخدام العرض المُسبَق، لأنّه تم حساب مَعلَمات تنقُّل مختلفة أثناء وقت التفعيل (مثل عناوين HTTP) مقارنةً بالمَعلَمات المحسوبة أثناء طلب التنقّل الأصلي للعرض المُسبَق."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
+    "message": "لم يتم استخدام العرض المُسبَق، لأنّ التنقّل أثناء وقت التفعيل يحتوي على عنوان URL فعّال يختلف عن عنوان URL العادي. (على سبيل المثال، صفحة \"علامة تبويب جديدة\" أو التطبيقات المستضافة)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "تطلّبت الصفحة المعروضة مُسبقًا مصادر لإخراج الصوت، وهي غير متاحة حاليًا."
@@ -4517,9 +4268,6 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
     "message": "حاولت الصفحة المعروضة مُسبقًا بدء عملية تنزيل، وهو إجراء غير متاح حاليًا."
   },
-  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "لم يتم تنفيذ العرض المُسبَق بسبب حدوث خطأ داخلي في المتصفِّح أثناء محاولة تحديد استخدام الذاكرة الحالي."
-  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusHasEffectiveUrl": {
     "message": "لا يمكن تنفيذ العرض المُسبَق في صفحة البدء، لأنّها تحتوي على عنوان URL فعّال يختلف عن عنوان URL العادي. (على سبيل المثال، صفحة \"علامة تبويب جديدة\" أو التطبيقات المستضافة)."
   },
@@ -4538,7 +4286,13 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMainFrameNavigation": {
     "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL آخر غير متاح حاليًا."
   },
-  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
+    "message": "لم يتم تنفيذ العرض المُسبَق بسبب إجراء عدد كبير جدًا من عمليات العرض المُسبَق في صفحة البدء حاليًا. عليك إزالة قواعد التوقُّع الأخرى لإتاحة المزيد من عمليات العرض المُسبَق."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
+    "message": "لم يتم تنفيذ العرض المُسبَق بسبب إجراء عدد كبير جدًا من عمليات العرض المُسبَق في صفحة البدء حاليًا."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
     "message": "لم يتم تنفيذ العرض المُسبَق بسبب إجراء عدد كبير جدًا من عمليات العرض المُسبَق في صفحة البدء حاليًا. عليك إزالة قواعد التوقُّع الأخرى لإتاحة المزيد من عمليات العرض المُسبَق."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
@@ -4571,23 +4325,26 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
     "message": "لم يتم تنفيذ العرض المُسبَق بسبب استخدام \"أدوات مطوّري البرامج\" لإيقاف العرض المُسبَق."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingUrlHasEffectiveUrl": {
+    "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب توفُّر عنوان URL فعّال يختلف عن عنوان URL العادي. (على سبيل المثال، صفحة \"علامة تبويب جديدة\" أو التطبيقات المستضافة)."
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
     "message": "تعطّلت صفحة البدء."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
     "message": "تم إنهاء صفحة البدء."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRedirectedPrerenderingUrlHasEffectiveUrl": {
+    "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب إعادة توجيهه إلى عنوان URL فعّال يختلف عن عنوان URL العادي. (على سبيل المثال، صفحة \"علامة تبويب جديدة\" أو التطبيقات المستضافة)."
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "تعطّلت الصفحة المعروضة مُسبقًا."
+    "message": "تعطّلت الصفحة المعروضة مسبقًا."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessKilled": {
     "message": "تم إنهاء الصفحة المعروضة مُسبقًا."
   },
-  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusResourceLoadBlockedByClient": {
-    "message": "تم حظر بعض عمليات تحميل الموارد."
-  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه، ولكن لم تتضمّن استجابة الوجهة عنوان Supports-Loading-Mode المناسب."
+    "message": "تعذَّر الانتقال إلى العرض المُسبَق لأنّه كان يؤدي إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه، ولكن لم تتضمّن استجابة الوجهة عنوان Supports-Loading-Mode المناسب."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
     "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه، ولكن لم تتضمّن استجابة الوجهة عنوان Supports-Loading-Mode المناسب."
@@ -4599,7 +4356,7 @@
     "message": "تم نقل الصفحة المعروضة مُسبقًا إلى عنوان URL أُعيد توجيهه إلى عنوان URL من مصادر متعددة للموقع الإلكتروني نفسه، ولكن لم تتضمّن استجابة الوجهة عنوان Supports-Loading-Mode المناسب."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSpeculationRuleRemoved": {
-    "message": "غير معروف"
+    "message": "تم إلغاء تحميل الصفحة المعروضة مُسبقًا لأنّ صفحة البدء أزالت قاعدة العرض المُسبَق المقابلة لها من <script type=\"speculationrules\">."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSslCertificateError": {
     "message": "تعذَّر الانتقال إلى العرض المُسبَق بسبب عدم توفُّر شهادة طبقة مقابس آمنة (SSL) صالحة."
@@ -4659,7 +4416,7 @@
     "message": "حاولت صفحة البدء عرض عنوان URL لهذه الصفحة مُسبقًا، ولكن تعذَّر ذلك، غير أنّه قد تم استخدام نص الاستجابة الناتج كعملية جلب مُسبق."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "مزيد من المعلومات"
+    "message": "مزيد من المعلومات: التحميل المُسبق على developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
     "message": "لم تحاول صفحة البدء تحميل عنوان URL لهذه الصفحة مُسبقًا."
@@ -4890,7 +4647,7 @@
     "message": "رسالة مطالبة وحدة التحكم"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "تحذير: لا تلصق رمزًا برمجيًا لا تفهمه أو لم تتحقّق منه بنفسك من خلال وحدة التحكّم في أدوات مطوّري البرامج. قد يسمح ذلك للمهاجمين بسرقة هويتك أو التحكّم في جهاز الكمبيوتر. يُرجى كتابة \"{PH1}\" أدناه للسماح باللصق."
+    "message": "تحذير: لا تلصق رمزًا برمجيًا لا تفهمه أو لم تراجعه بنفسك في وحدة تحكّم أدوات مطوّري البرامج فقد يسمح هذا للمهاجمين بسرقة هويتك أو التحكم في جهاز الكمبيوتر. يُرجى كتابة \"{PH1}\" أدناه للسماح باللصق."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{ما مِن أخطاء}=1{خطأ واحد}two{عدد الأخطاء: #}few{عدد الأخطاء: #}many{عدد الأخطاء: #}other{عدد الأخطاء: #}}"
@@ -6050,6 +5807,12 @@
   "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "مزيد من المعلومات"
   },
+  "panels/elements/components/CSSVariableValueView.ts | invalidPropertyValue": {
+    "message": "قيمة السمة غير صالحة، والنوع المتوقّع هو {type}."
+  },
+  "panels/elements/components/CSSVariableValueView.ts | registeredPropertyLinkTitle": {
+    "message": "عرض الموقع المسجَّل"
+  },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "أشرطة التنقّل الخاصة بشجرة نموذج العناصر في المستند"
   },
@@ -6361,6 +6124,9 @@
   },
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "التبديل بين ما إذا كانت أداة معالجة الحدث سلبية أو تحظر الأحداث"
+  },
+  "panels/explain/explain-meta.ts | explainConsoleMessage": {
+    "message": "✨ شرح رسالة وحدة التحكّم"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "الموارد المحظورة"
@@ -7895,6 +7661,9 @@
   "panels/network/NetworkItemView.ts | websocketMessages": {
     "message": "رسائل WebSocket"
   },
+  "panels/network/NetworkLogView.ts | allStrings": {
+    "message": "الكل"
+  },
   "panels/network/NetworkLogView.ts | areYouSureYouWantToClearBrowser": {
     "message": "هل أنت متأكّد أنّك تريد محو ذاكرة التخزين المؤقت للمتصفِّح؟"
   },
@@ -7986,13 +7755,13 @@
     "message": "ملفات تعريف الارتباط المحظورة الخاصة بالاستجابة"
   },
   "panels/network/NetworkLogView.ts | hideChromeExtension": {
-    "message": "إخفاء طلبات عناوين URL التي تبدأ بـ \"chrome-extension://‎\""
+    "message": "إخفاء عناوين URL \"chrome-extension://\""
   },
   "panels/network/NetworkLogView.ts | hideDataUrls": {
     "message": "إخفاء عناوين URL للبيانات"
   },
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
-    "message": "يخفي عناوين URL للبيانات: والكائنات الثنائية الكبيرة (blob):"
+    "message": "إخفاء عناوين URL لـ \"data:\" و\"blob:\""
   },
   "panels/network/NetworkLogView.ts | invertFilter": {
     "message": "عكس"
@@ -8006,6 +7775,9 @@
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "تحميل: {PH1}"
   },
+  "panels/network/NetworkLogView.ts | moreFilters": {
+    "message": "مزيد من الفلاتر"
+  },
   "panels/network/NetworkLogView.ts | networkDataAvailable": {
     "message": "بيانات الشبكة متاحة."
   },
@@ -8017,6 +7789,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "لا يعرض هذا الفلتر سوى الطلبات التي تتضمّن مصدرًا يختلف عن مصدر الصفحة."
+  },
+  "panels/network/NetworkLogView.ts | overTwoTypesSelected": {
+    "message": "{PH1}, {PH2}..."
   },
   "panels/network/NetworkLogView.ts | overrideHeaders": {
     "message": "تجاوز العناوين"
@@ -8033,8 +7808,14 @@
   "panels/network/NetworkLogView.ts | replayXhr": {
     "message": "إعادة تشغيل XHR"
   },
-  "panels/network/NetworkLogView.ts | resourceTypesToInclude": {
-    "message": "أنواع الموارد التي يمكن تضمينها"
+  "panels/network/NetworkLogView.ts | requestTypes": {
+    "message": "أنواع الطلبات"
+  },
+  "panels/network/NetworkLogView.ts | requestTypesToInclude": {
+    "message": "أنواع الطلبات التي يمكن تضمينها"
+  },
+  "panels/network/NetworkLogView.ts | requestTypesTooltip": {
+    "message": "فلترة الطلبات حسب النوع"
   },
   "panels/network/NetworkLogView.ts | sBResourcesLoadedByThePage": {
     "message": "تم تحميل موارد بحجم {PH1} بايت من خلال الصفحة."
@@ -8069,8 +7850,14 @@
   "panels/network/NetworkLogView.ts | saveAllAsHarWithContent": {
     "message": "نسخ كل العناصر على أنّها HAR مع المحتوى"
   },
+  "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
+    "message": "إظهار/إخفاء الطلبات فقط"
+  },
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "الطلبات التابعة لجهات خارجية"
+  },
+  "panels/network/NetworkLogView.ts | twoTypesSelected": {
+    "message": "\"{PH1}\" و\"{PH2}\""
   },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "إزالة حظر {PH1}"
@@ -8089,6 +7876,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | endTime": {
     "message": "وقت الانتهاء"
+  },
+  "panels/network/NetworkLogViewColumns.ts | hasOverrides": {
+    "message": "مع عمليات إلغاء"
   },
   "panels/network/NetworkLogViewColumns.ts | initiator": {
     "message": "بادئ التشغيل"
@@ -9515,6 +9305,9 @@
   "panels/profiler/ProfileSidebarTreeElement.ts | delete": {
     "message": "حذف"
   },
+  "panels/profiler/ProfileSidebarTreeElement.ts | enterToSave": {
+    "message": "حفظ. اضغط على مفتاح Enter لحفظ الملف."
+  },
   "panels/profiler/ProfileSidebarTreeElement.ts | load": {
     "message": "تحميل…"
   },
@@ -9626,9 +9419,6 @@
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "عرض الذاكرة"
   },
-  "panels/profiler/profiler-meta.ts | showNativeFunctions": {
-    "message": "عرض الوظائف الأصلية في الملف التعريفي لرموز JavaScript"
-  },
   "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
     "message": "بدء تسجيل عمليات التخصيص لعناصر متعددة"
   },
@@ -9710,6 +9500,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | type": {
     "message": "النوع"
   },
+  "panels/protocol_monitor/components/JSONEditor.ts | addCustomProperty": {
+    "message": "إضافة خاصية مخصصة"
+  },
   "panels/protocol_monitor/components/JSONEditor.ts | addParameter": {
     "message": "إضافة مَعلمة"
   },
@@ -9721,6 +9514,12 @@
   },
   "panels/protocol_monitor/components/Toolbar.ts | copyCommand": {
     "message": "نسخ الأمر"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | sendCommandCmdEnter": {
+    "message": "إرسال الطلب - ⌘+Enter"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | sendCommandCtrlEnter": {
+    "message": "إرسال الأمر: Ctrl + Enter"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "أداة رصد البروتوكول"
@@ -10094,6 +9893,9 @@
   "panels/screencast/ScreencastView.ts | forward": {
     "message": "للأمام"
   },
+  "panels/screencast/ScreencastView.ts | mouseInput": {
+    "message": "استخدام الماوس"
+  },
   "panels/screencast/ScreencastView.ts | profilingInProgress": {
     "message": "جارٍ إنشاء الملف التعريفي"
   },
@@ -10105,6 +9907,9 @@
   },
   "panels/screencast/ScreencastView.ts | theTabIsInactive": {
     "message": "علامة التبويب غير مفعّلة."
+  },
+  "panels/screencast/ScreencastView.ts | touchInput": {
+    "message": "استخدم اللمس"
   },
   "panels/search/SearchResultsPane.ts | lineS": {
     "message": "السطر {PH1}"
@@ -11060,6 +10865,9 @@
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "الإيقاف المؤقت فقط عندما تكون الحالة بالقيمة \"true\""
   },
+  "panels/sources/CSSPlugin.ts | addSourceMap": {
+    "message": "إضافة خريطة مصادر…"
+  },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "افتح علبة الألوان."
   },
@@ -11276,6 +11084,15 @@
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "تنسيق {PH1}"
   },
+  "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
+    "message": "ولا يمكن التراجع عن هذا الإجراء."
+  },
+  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
+    "message": "هل تريد فعلاً حذف جميع إجراءات التجاهُل ضِمن هذا المجلّد؟"
+  },
+  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
+    "message": "هل تريد فعلاً حذف هذا المجلّد ومحتواه؟"
+  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "هل تريد فعلاً حذف هذا الملف؟"
   },
@@ -11283,7 +11100,7 @@
     "message": "هل تريد فعلاً استبعاد هذا المجلّد؟"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
-    "message": "هل تريد فعلاً إزالة هذا المجلّد؟"
+    "message": "إزالة \"{PH1}\" من مساحة العمل"
   },
   "panels/sources/NavigatorView.ts | authored": {
     "message": "من تأليف مطوّر البرامج"
@@ -11304,7 +11121,7 @@
     "message": "تحتوى اللوحة على الموارد النهائية التي تظهر للمتصفِّح."
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
-    "message": "استبعاد المجلّد"
+    "message": "الاستثناء من مساحة العمل"
   },
   "panels/sources/NavigatorView.ts | makeACopy": {
     "message": "إنشاء نسخة…"
@@ -11318,8 +11135,11 @@
   "panels/sources/NavigatorView.ts | openFolder": {
     "message": "فتح المجلد"
   },
+  "panels/sources/NavigatorView.ts | remove": {
+    "message": "إزالة"
+  },
   "panels/sources/NavigatorView.ts | removeFolderFromWorkspace": {
-    "message": "إزالة المجلّد من مساحة العمل"
+    "message": "الإزالة من مساحة العمل"
   },
   "panels/sources/NavigatorView.ts | rename": {
     "message": "إعادة التسمية…"
@@ -11335,6 +11155,9 @@
   },
   "panels/sources/NavigatorView.ts | searchInFolder": {
     "message": "البحث في المجلّد"
+  },
+  "panels/sources/NavigatorView.ts | workspaceStopSyncing": {
+    "message": "سيؤدي هذا الإجراء إلى إيقاف مزامنة التغييرات من \"أدوات مطوري البرامج\" مع مصادرك."
   },
   "panels/sources/OutlineQuickOpen.ts | noFileSelected": {
     "message": "لم يتم اختيار ملف."
@@ -11510,8 +11333,14 @@
   "panels/sources/SourcesView.ts | runCommand": {
     "message": "تنفيذ الأمر"
   },
+  "panels/sources/SourcesView.ts | selectFolder": {
+    "message": "اختيار المجلد"
+  },
   "panels/sources/SourcesView.ts | sourceViewActions": {
     "message": "إجراءات عرض المصادر"
+  },
+  "panels/sources/SourcesView.ts | workspaceDropInAFolderToSyncSources": {
+    "message": "لمزامنة التعديلات التي تم إجراؤها على مساحة العمل، أفلِت مجلدًا يتضمّن مصادرك هنا أو:"
   },
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "هل تريد فعلاً إغلاق ملف {PH1} الذي لم يتم حفظه؟"
@@ -11623,6 +11452,9 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "تفعيل نقاط الإيقاف"
+  },
+  "panels/sources/sources-meta.ts | addFolder": {
+    "message": "إضافة مجلد"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "إضافة مجلّد إلى مساحة العمل"
@@ -11846,6 +11678,9 @@
   "panels/sources/sources-meta.ts | showWhitespaceCharacters": {
     "message": "إظهار أحرف المسافة البيضاء:"
   },
+  "panels/sources/sources-meta.ts | showWorkspace": {
+    "message": "عرض مساحة العمل"
+  },
   "panels/sources/sources-meta.ts | snippets": {
     "message": "مقتطفات"
   },
@@ -11897,6 +11732,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "مشاهدة"
   },
+  "panels/sources/sources-meta.ts | workspace": {
+    "message": "مساحة العمل"
+  },
   "panels/timeline/AnimationsTrackAppender.ts | animations": {
     "message": "الصور المتحركة"
   },
@@ -11920,6 +11758,324 @@
   },
   "panels/timeline/CountersGraph.ts | ss": {
     "message": "[{PH1} – {PH2}]"
+  },
+  "panels/timeline/EventUICategory.ts | animation": {
+    "message": "صورة متحركة"
+  },
+  "panels/timeline/EventUICategory.ts | animationFrameFired": {
+    "message": "تم تنشيط إطار الصورة المتحركة."
+  },
+  "panels/timeline/EventUICategory.ts | async": {
+    "message": "غير متزامن"
+  },
+  "panels/timeline/EventUICategory.ts | asyncTask": {
+    "message": "مهمّة غير متزامنة"
+  },
+  "panels/timeline/EventUICategory.ts | cacheModule": {
+    "message": "رمز وحدة ذاكرة التخزين المؤقت"
+  },
+  "panels/timeline/EventUICategory.ts | cacheScript": {
+    "message": "رمز النص البرمجي الخاص بذاكرة التخزين المؤقت"
+  },
+  "panels/timeline/EventUICategory.ts | cachedWasmModule": {
+    "message": "وحدة Wasm المخزّنة مؤقتًا"
+  },
+  "panels/timeline/EventUICategory.ts | cancelAnimationFrame": {
+    "message": "إلغاء إطار الصورة المتحركة"
+  },
+  "panels/timeline/EventUICategory.ts | cancelIdleCallback": {
+    "message": "إلغاء معاودة الاتصال غير المستخدَمة حاليًا"
+  },
+  "panels/timeline/EventUICategory.ts | commit": {
+    "message": "إرسال الطبقات"
+  },
+  "panels/timeline/EventUICategory.ts | compileCode": {
+    "message": "رمز التجميع"
+  },
+  "panels/timeline/EventUICategory.ts | compileModule": {
+    "message": "وحدة تجميع"
+  },
+  "panels/timeline/EventUICategory.ts | compileScript": {
+    "message": "تجميع النص البرمجي"
+  },
+  "panels/timeline/EventUICategory.ts | compiledWasmModule": {
+    "message": "وحدة Wasm المجمّعة"
+  },
+  "panels/timeline/EventUICategory.ts | compositeLayers": {
+    "message": "الطبقات المركّبة"
+  },
+  "panels/timeline/EventUICategory.ts | computeIntersections": {
+    "message": "حساب عمليات التقاطع"
+  },
+  "panels/timeline/EventUICategory.ts | consoleTime": {
+    "message": "الأحداث الزمنية في أداة \"وحدة التحكّم\""
+  },
+  "panels/timeline/EventUICategory.ts | createWebsocket": {
+    "message": "إنشاء WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | decrypt": {
+    "message": "فك التشفير"
+  },
+  "panels/timeline/EventUICategory.ts | decryptReply": {
+    "message": "فك تشفير الرد"
+  },
+  "panels/timeline/EventUICategory.ts | deserializeCodeCache": {
+    "message": "الاطّلاع على ذاكرة التخزين المؤقت لرمز بايت"
+  },
+  "panels/timeline/EventUICategory.ts | destroyWebsocket": {
+    "message": "محو WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | digest": {
+    "message": "ملخص"
+  },
+  "panels/timeline/EventUICategory.ts | digestReply": {
+    "message": "تلخيص الرد"
+  },
+  "panels/timeline/EventUICategory.ts | domGc": {
+    "message": "تجميع البيانات المهملة في DOM"
+  },
+  "panels/timeline/EventUICategory.ts | domcontentloadedEvent": {
+    "message": "الحدث DOMContentLoaded"
+  },
+  "panels/timeline/EventUICategory.ts | drawFrame": {
+    "message": "إطار الرسم"
+  },
+  "panels/timeline/EventUICategory.ts | embedderCallback": {
+    "message": "معاودة الاتصال بأداة التضمين"
+  },
+  "panels/timeline/EventUICategory.ts | encrypt": {
+    "message": "تشفير"
+  },
+  "panels/timeline/EventUICategory.ts | encryptReply": {
+    "message": "تشفير الرد"
+  },
+  "panels/timeline/EventUICategory.ts | evaluateModule": {
+    "message": "تقييم الوحدة"
+  },
+  "panels/timeline/EventUICategory.ts | evaluateScript": {
+    "message": "تقييم النص البرمجي"
+  },
+  "panels/timeline/EventUICategory.ts | event": {
+    "message": "الحدث"
+  },
+  "panels/timeline/EventUICategory.ts | eventTiming": {
+    "message": "توقيت الحدث"
+  },
+  "panels/timeline/EventUICategory.ts | experience": {
+    "message": "الخبرة"
+  },
+  "panels/timeline/EventUICategory.ts | finishLoading": {
+    "message": "إنهاء التحميل"
+  },
+  "panels/timeline/EventUICategory.ts | fireIdleCallback": {
+    "message": "تنشيط معاودة الاتصال غير المستخدَمة"
+  },
+  "panels/timeline/EventUICategory.ts | firstContentfulPaint": {
+    "message": "سرعة عرض المحتوى على الصفحة"
+  },
+  "panels/timeline/EventUICategory.ts | firstPaint": {
+    "message": "سرعة عرض الصفحة"
+  },
+  "panels/timeline/EventUICategory.ts | frameStart": {
+    "message": "بداية الإطار"
+  },
+  "panels/timeline/EventUICategory.ts | frameStartMainThread": {
+    "message": "بدء الإطار (سلسلة التعليمات الرئيسية)"
+  },
+  "panels/timeline/EventUICategory.ts | frameStartedLoading": {
+    "message": "بدأ تحميل الإطار."
+  },
+  "panels/timeline/EventUICategory.ts | functionCall": {
+    "message": "استدعاء الدالة"
+  },
+  "panels/timeline/EventUICategory.ts | gcEvent": {
+    "message": "حدث تجميع البيانات المهملة"
+  },
+  "panels/timeline/EventUICategory.ts | gpu": {
+    "message": "وحدة معالجة الرسومات"
+  },
+  "panels/timeline/EventUICategory.ts | hitTest": {
+    "message": "اختبار النتائج"
+  },
+  "panels/timeline/EventUICategory.ts | idle": {
+    "message": "غير نشِط لفترة قصيرة"
+  },
+  "panels/timeline/EventUICategory.ts | imageDecode": {
+    "message": "فك ترميز الصور"
+  },
+  "panels/timeline/EventUICategory.ts | imageResize": {
+    "message": "تغيير حجم الصورة"
+  },
+  "panels/timeline/EventUICategory.ts | installTimer": {
+    "message": "تثبيت موقِّت"
+  },
+  "panels/timeline/EventUICategory.ts | invalidateLayout": {
+    "message": "إلغاء صلاحية التصميم"
+  },
+  "panels/timeline/EventUICategory.ts | jsFrame": {
+    "message": "إطار JavaScript"
+  },
+  "panels/timeline/EventUICategory.ts | largestContentfulPaint": {
+    "message": "سرعة عرض أكبر جزء من المحتوى على الصفحة"
+  },
+  "panels/timeline/EventUICategory.ts | layerize": {
+    "message": "تحديد الطبقات"
+  },
+  "panels/timeline/EventUICategory.ts | layout": {
+    "message": "التصميم"
+  },
+  "panels/timeline/EventUICategory.ts | layoutShift": {
+    "message": "متغيّرات التصميم"
+  },
+  "panels/timeline/EventUICategory.ts | loading": {
+    "message": "جارٍ التحميل"
+  },
+  "panels/timeline/EventUICategory.ts | majorGc": {
+    "message": "تجميع كبير للبيانات المهملة"
+  },
+  "panels/timeline/EventUICategory.ts | minorGc": {
+    "message": "تجميع بسيط للبيانات المهملة"
+  },
+  "panels/timeline/EventUICategory.ts | onloadEvent": {
+    "message": "الحدث Onload"
+  },
+  "panels/timeline/EventUICategory.ts | optimizeCode": {
+    "message": "رمز التحسين"
+  },
+  "panels/timeline/EventUICategory.ts | other": {
+    "message": "عناصر أخرى"
+  },
+  "panels/timeline/EventUICategory.ts | paint": {
+    "message": "طلاء"
+  },
+  "panels/timeline/EventUICategory.ts | paintImage": {
+    "message": "عرض صورة"
+  },
+  "panels/timeline/EventUICategory.ts | paintSetup": {
+    "message": "إعدادات عرض محتوى الصفحة"
+  },
+  "panels/timeline/EventUICategory.ts | painting": {
+    "message": "تمثيل صفحة الويب بصريًا"
+  },
+  "panels/timeline/EventUICategory.ts | parseAndCompile": {
+    "message": "التحليل والتجميع"
+  },
+  "panels/timeline/EventUICategory.ts | parseHtml": {
+    "message": "تحليل نصوص HTML"
+  },
+  "panels/timeline/EventUICategory.ts | parseStylesheet": {
+    "message": "تحليل ورقة الأنماط"
+  },
+  "panels/timeline/EventUICategory.ts | prePaint": {
+    "message": "إعدادات ما قبل عرض محتوى الصفحة"
+  },
+  "panels/timeline/EventUICategory.ts | profilingOverhead": {
+    "message": "الوقت المستغرَق في إنشاء الملفات التعريفية"
+  },
+  "panels/timeline/EventUICategory.ts | rasterizePaint": {
+    "message": "تحويل العرض إلى صور نقطية"
+  },
+  "panels/timeline/EventUICategory.ts | recalculateStyle": {
+    "message": "إعادة احتساب النمط"
+  },
+  "panels/timeline/EventUICategory.ts | receiveData": {
+    "message": "تلقّي البيانات"
+  },
+  "panels/timeline/EventUICategory.ts | receiveResponse": {
+    "message": "تلقّي استجابة"
+  },
+  "panels/timeline/EventUICategory.ts | receiveWebsocketHandshake": {
+    "message": "تلقّي تأكيد الاتصال بخادم WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | removeTimer": {
+    "message": "إزالة الموقِّت"
+  },
+  "panels/timeline/EventUICategory.ts | rendering": {
+    "message": "عرض صفحة الويب"
+  },
+  "panels/timeline/EventUICategory.ts | requestAnimationFrame": {
+    "message": "طلب إطار صورة متحركة"
+  },
+  "panels/timeline/EventUICategory.ts | requestIdleCallback": {
+    "message": "طلب معاودة الاتصال غير المستخدَمة حاليًا"
+  },
+  "panels/timeline/EventUICategory.ts | requestMainThreadFrame": {
+    "message": "طلب إطار سلسلة التعليمات الرئيسي"
+  },
+  "panels/timeline/EventUICategory.ts | runMicrotasks": {
+    "message": "تنفيذ المهام الصغيرة"
+  },
+  "panels/timeline/EventUICategory.ts | scheduleStyleRecalculation": {
+    "message": "جدولة إعادة احتساب الأنماط"
+  },
+  "panels/timeline/EventUICategory.ts | scripting": {
+    "message": "برمجة نصية"
+  },
+  "panels/timeline/EventUICategory.ts | scroll": {
+    "message": "التمرير"
+  },
+  "panels/timeline/EventUICategory.ts | sendRequest": {
+    "message": "إرسال طلب"
+  },
+  "panels/timeline/EventUICategory.ts | sendWebsocketHandshake": {
+    "message": "إرسال تأكيد الاتصال بخادم WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | sign": {
+    "message": "توقيع"
+  },
+  "panels/timeline/EventUICategory.ts | signReply": {
+    "message": "توقيع الرد"
+  },
+  "panels/timeline/EventUICategory.ts | streamingCompileTask": {
+    "message": "جارٍ بث مهمة التجميع"
+  },
+  "panels/timeline/EventUICategory.ts | streamingWasmResponse": {
+    "message": "جارٍ بث استجابة Wasm"
+  },
+  "panels/timeline/EventUICategory.ts | system": {
+    "message": "النظام"
+  },
+  "panels/timeline/EventUICategory.ts | task": {
+    "message": "المَهمة"
+  },
+  "panels/timeline/EventUICategory.ts | timerFired": {
+    "message": "تم تنشيط الموقِّت."
+  },
+  "panels/timeline/EventUICategory.ts | timestamp": {
+    "message": "طابع زمني"
+  },
+  "panels/timeline/EventUICategory.ts | updateLayer": {
+    "message": "تعديل الطبقة"
+  },
+  "panels/timeline/EventUICategory.ts | updateLayerTree": {
+    "message": "تعديل شجرة الطبقات"
+  },
+  "panels/timeline/EventUICategory.ts | userTiming": {
+    "message": "وقت المستخدم"
+  },
+  "panels/timeline/EventUICategory.ts | verify": {
+    "message": "إثبات الملكية"
+  },
+  "panels/timeline/EventUICategory.ts | verifyReply": {
+    "message": "التحقّق من الرد"
+  },
+  "panels/timeline/EventUICategory.ts | waitingForNetwork": {
+    "message": "في انتظار الشبكة"
+  },
+  "panels/timeline/EventUICategory.ts | wasmModuleCacheHit": {
+    "message": "نتيجة ذاكرة التخزين المؤقت لوحدة Wasm"
+  },
+  "panels/timeline/EventUICategory.ts | wasmModuleCacheInvalid": {
+    "message": "ذاكرة التخزين المؤقت لوحدة Wasm غير صالحة"
+  },
+  "panels/timeline/EventUICategory.ts | willSendRequest": {
+    "message": "سيؤدي إلى إرسال طلب."
+  },
+  "panels/timeline/EventUICategory.ts | xhrLoad": {
+    "message": "تحميل XHR"
+  },
+  "panels/timeline/EventUICategory.ts | xhrReadyStateChange": {
+    "message": "تم تغيير خاصية readyState لطلب XHR."
   },
   "panels/timeline/EventsTimelineTreeView.ts | Dms": {
     "message": "{PH1} ملي ثانية"
@@ -11951,11 +12107,32 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(مجهولة)"
   },
-  "panels/timeline/ThreadAppender.ts | thread": {
-    "message": "سلسلة التعليمات الرئيسية حسب المحرّك الجديد"
+  "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
+    "message": "Worker مخصَّص"
   },
-  "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
-    "message": "لا يتوفّر تحليل وحدة المعالجة المركزية (CPU) لأحد الأهداف."
+  "panels/timeline/ThreadAppender.ts | frameS": {
+    "message": "الإطار: {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | mainS": {
+    "message": "الكائن الرئيسي: {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | onIgnoreList": {
+    "message": "في قائمة التجاهل"
+  },
+  "panels/timeline/ThreadAppender.ts | raster": {
+    "message": "صورة نقطية"
+  },
+  "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
+    "message": "سلسلة تعليمات أداة تحويل الصور الخطية إلى نقطية {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | threadS": {
+    "message": "سلسلة محادثات {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | workerS": {
+    "message": "Worker — {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | workerSS": {
+    "message": "Worker: {PH1} — {PH2}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "تسجيل تتبُّع الأداء غير متوافق مع نوع الهدف هذا."
@@ -12000,7 +12177,7 @@
     "message": "الإطار"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frameS": {
-    "message": "الإطار: {PH1}"
+    "message": "الإطار - {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
     "message": "الإطارات"
@@ -12410,9 +12587,6 @@
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "الحجم المستهلَك من ذاكرة التخزين المؤقت"
   },
-  "panels/timeline/TimelineUIUtils.ts | cpuTime": {
-    "message": "وقت وحدة المعالجة المركزية"
-  },
   "panels/timeline/TimelineUIUtils.ts | createWebsocket": {
     "message": "إنشاء WebSocket"
   },
@@ -12486,7 +12660,7 @@
     "message": "البيانات المُشفّرة"
   },
   "panels/timeline/TimelineUIUtils.ts | encrypt": {
-    "message": "ترميز"
+    "message": "تشفير"
   },
   "panels/timeline/TimelineUIUtils.ts | encryptReply": {
     "message": "تشفير الرد"
@@ -12507,7 +12681,7 @@
     "message": "الموقع الإلكتروني المطوَّر"
   },
   "panels/timeline/TimelineUIUtils.ts | experience": {
-    "message": "التجربة"
+    "message": "الخبرة"
   },
   "panels/timeline/TimelineUIUtils.ts | failedToLoadScriptFromCache": {
     "message": "تعذَّر تحميل النص البرمجي من ذاكرة التخزين المؤقت"
@@ -12651,7 +12825,7 @@
     "message": "تحميل من ذاكرة التخزين المؤقت"
   },
   "panels/timeline/TimelineUIUtils.ts | loading": {
-    "message": "التحميل"
+    "message": "جارٍ التحميل"
   },
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "الموقع الجغرافي"
@@ -12723,7 +12897,7 @@
     "message": "عنصر المالك"
   },
   "panels/timeline/TimelineUIUtils.ts | paint": {
-    "message": "عرض محتوى الصفحة"
+    "message": "طلاء"
   },
   "panels/timeline/TimelineUIUtils.ts | paintImage": {
     "message": "عرض صورة"
@@ -12852,7 +13026,7 @@
     "message": "{PH1} لمدة {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
-    "message": "{PH1} هو مؤثِّر سلبي محتمل على الأداء."
+    "message": "{PH1} هو مؤثِّر سلبي محتمَل على الأداء."
   },
   "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
     "message": "يتم توضيح السرعة المتدنية لاستجابة الصفحة من خلال {PH1}."
@@ -12960,7 +13134,7 @@
     "message": "النظام"
   },
   "panels/timeline/TimelineUIUtils.ts | task": {
-    "message": "المهمّة"
+    "message": "المَهمة"
   },
   "panels/timeline/TimelineUIUtils.ts | timeSpentInRendering": {
     "message": "الوقت المستغرق في العرض"
@@ -13005,7 +13179,7 @@
     "message": "وقت المستخدم"
   },
   "panels/timeline/TimelineUIUtils.ts | verify": {
-    "message": "تحقُّق"
+    "message": "إثبات الملكية"
   },
   "panels/timeline/TimelineUIUtils.ts | verifyReply": {
     "message": "التحقّق من الرد"
@@ -13063,6 +13237,21 @@
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "النظام"
+  },
+  "panels/timeline/components/DetailsView.ts | forcedReflow": {
+    "message": "إعادة التدفق الإلزامية"
+  },
+  "panels/timeline/components/DetailsView.ts | idleCallbackExecutionExtended": {
+    "message": "تم تمديد تنفيذ معاودة الاتصال غير المستخدَمة حاليًا إلى ما بعد الموعد النهائي في {PH1}."
+  },
+  "panels/timeline/components/DetailsView.ts | longTask": {
+    "message": "مهمة طويلة"
+  },
+  "panels/timeline/components/DetailsView.ts | sIsALikelyPerformanceBottleneck": {
+    "message": "{PH1} هو مؤثِّر سلبي محتمَل على الأداء."
+  },
+  "panels/timeline/components/DetailsView.ts | sTookS": {
+    "message": "استغرقت المهمة {PH1} {PH2}."
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "إخفاء إطار chrome في طريقة عرض \"الطبقات\""
@@ -13899,7 +14088,7 @@
     "message": "هناك علامة موضوعة في المربع."
   },
   "ui/legacy/components/data_grid/DataGrid.ts | collapsed": {
-    "message": "عُقَد تم تصغيرها"
+    "message": "تمّ التصغير"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | delete": {
     "message": "حذف"
@@ -14243,8 +14432,17 @@
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "بحث"
   },
+  "ui/legacy/components/source_frame/SourceFrame.ts | allow": {
+    "message": "السماح"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | allowPasting": {
+    "message": "السماح باللصق"
+  },
   "ui/legacy/components/source_frame/SourceFrame.ts | bytecodePositionXs": {
     "message": "موضع رمز البايت 0x{PH1}"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | cancel": {
+    "message": "إلغاء"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | dCharactersSelected": {
     "message": "تم اختيار {PH1} عنصر."
@@ -14254,6 +14452,12 @@
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | dSelectionRegions": {
     "message": "النصوص المُختارة في {PH1}"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
+    "message": "لا تلصق رمزًا برمجيًا لا تفهمه أو لم تراجعه بنفسك خلال وحدة التحكّم في أدوات مطوّري البرامج فقد يسمح هذا للمهاجمين بسرقة هويتك أو التحكم في جهاز الكمبيوتر. يُرجى كتابة \"{PH1}\" أدناه للسماح باللصق."
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
+    "message": "هل تثق بهذا الرمز؟"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | lineSColumnS": {
     "message": "السطر {PH1}، العمود {PH2}"
@@ -14266,6 +14470,9 @@
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | source": {
     "message": "المصدر"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
+    "message": "النوع \"{PH1}\""
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "بحث"

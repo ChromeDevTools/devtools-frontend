@@ -233,6 +233,9 @@
   "core/sdk/CSSStyleSheetHeader.ts | thereWasAnErrorRetrievingThe": {
     "message": "Ошибка при загрузке стилей исходника."
   },
+  "core/sdk/ChildTargetManager.ts | main": {
+    "message": "Основная"
+  },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "Не удалось загрузить контент для {PH1} ({PH2})."
   },
@@ -250,132 +253,6 @@
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
     "message": "Профиль \"{PH1}\" запущен."
-  },
-  "core/sdk/DOMDebuggerModel.ts | animation": {
-    "message": "Анимация"
-  },
-  "core/sdk/DOMDebuggerModel.ts | animationFrameFired": {
-    "message": "Запущен фрейм анимации."
-  },
-  "core/sdk/DOMDebuggerModel.ts | cancelAnimationFrame": {
-    "message": "Отключить фрейм анимации"
-  },
-  "core/sdk/DOMDebuggerModel.ts | canvas": {
-    "message": "Canvas"
-  },
-  "core/sdk/DOMDebuggerModel.ts | clipboard": {
-    "message": "Буфер обмена"
-  },
-  "core/sdk/DOMDebuggerModel.ts | closeAudiocontext": {
-    "message": "Закрыть AudioContext"
-  },
-  "core/sdk/DOMDebuggerModel.ts | control": {
-    "message": "Элемент управления"
-  },
-  "core/sdk/DOMDebuggerModel.ts | createAudiocontext": {
-    "message": "Создать AudioContext"
-  },
-  "core/sdk/DOMDebuggerModel.ts | createCanvasContext": {
-    "message": "Создать контекст элемента canvas"
-  },
-  "core/sdk/DOMDebuggerModel.ts | device": {
-    "message": "Устройство"
-  },
-  "core/sdk/DOMDebuggerModel.ts | domMutation": {
-    "message": "Мутации DOM"
-  },
-  "core/sdk/DOMDebuggerModel.ts | dragDrop": {
-    "message": "Перетаскивание"
-  },
-  "core/sdk/DOMDebuggerModel.ts | geolocation": {
-    "message": "Геопозиционирование"
-  },
-  "core/sdk/DOMDebuggerModel.ts | keyboard": {
-    "message": "Клавиатура"
-  },
-  "core/sdk/DOMDebuggerModel.ts | load": {
-    "message": "Загрузить"
-  },
-  "core/sdk/DOMDebuggerModel.ts | media": {
-    "message": "Носитель"
-  },
-  "core/sdk/DOMDebuggerModel.ts | mouse": {
-    "message": "Мышь"
-  },
-  "core/sdk/DOMDebuggerModel.ts | notification": {
-    "message": "Уведомление"
-  },
-  "core/sdk/DOMDebuggerModel.ts | parse": {
-    "message": "Синтаксический анализ"
-  },
-  "core/sdk/DOMDebuggerModel.ts | pictureinpicture": {
-    "message": "Картинка в картинке"
-  },
-  "core/sdk/DOMDebuggerModel.ts | pointer": {
-    "message": "Указатель"
-  },
-  "core/sdk/DOMDebuggerModel.ts | policyViolations": {
-    "message": "Нарушение правил"
-  },
-  "core/sdk/DOMDebuggerModel.ts | requestAnimationFrame": {
-    "message": "Запрос фрейма анимации"
-  },
-  "core/sdk/DOMDebuggerModel.ts | resumeAudiocontext": {
-    "message": "Возобновить AudioContext"
-  },
-  "core/sdk/DOMDebuggerModel.ts | script": {
-    "message": "Скрипт"
-  },
-  "core/sdk/DOMDebuggerModel.ts | scriptBlockedByContentSecurity": {
-    "message": "Скрипт заблокирован в соответствии с директивой Content Security Policy"
-  },
-  "core/sdk/DOMDebuggerModel.ts | scriptBlockedDueToContent": {
-    "message": "Скрипт заблокирован в соответствии с директивой Content Security Policy: {PH1}"
-  },
-  "core/sdk/DOMDebuggerModel.ts | scriptFirstStatement": {
-    "message": "Первый оператор скрипта"
-  },
-  "core/sdk/DOMDebuggerModel.ts | setInnerhtml": {
-    "message": "Установить innerHTML"
-  },
-  "core/sdk/DOMDebuggerModel.ts | setTimeoutOrIntervalFired": {
-    "message": "Запущено действие {PH1}"
-  },
-  "core/sdk/DOMDebuggerModel.ts | sinkViolations": {
-    "message": "Нарушения приемника"
-  },
-  "core/sdk/DOMDebuggerModel.ts | suspendAudiocontext": {
-    "message": "Приостановка AudioContext"
-  },
-  "core/sdk/DOMDebuggerModel.ts | timer": {
-    "message": "Таймер"
-  },
-  "core/sdk/DOMDebuggerModel.ts | touch": {
-    "message": "Касание"
-  },
-  "core/sdk/DOMDebuggerModel.ts | trustedTypeViolations": {
-    "message": "Нарушения Trusted Type"
-  },
-  "core/sdk/DOMDebuggerModel.ts | webaudio": {
-    "message": "WebAudio"
-  },
-  "core/sdk/DOMDebuggerModel.ts | webglErrorFired": {
-    "message": "Сработала ошибка WebGL"
-  },
-  "core/sdk/DOMDebuggerModel.ts | webglErrorFiredS": {
-    "message": "Сработала ошибка WebGL ({PH1})."
-  },
-  "core/sdk/DOMDebuggerModel.ts | webglWarningFired": {
-    "message": "Сработало предупреждение WebGL"
-  },
-  "core/sdk/DOMDebuggerModel.ts | window": {
-    "message": "Окно"
-  },
-  "core/sdk/DOMDebuggerModel.ts | worker": {
-    "message": "Worker"
-  },
-  "core/sdk/DOMDebuggerModel.ts | xhr": {
-    "message": "XHR"
   },
   "core/sdk/DebuggerModel.ts | block": {
     "message": "Блок"
@@ -403,21 +280,6 @@
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "Блок With"
-  },
-  "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
-    "message": "Аукцион объявлений Worklet"
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletBiddingStart": {
-    "message": "Начало фазы \"Назначение ставок участником аукциона\""
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletReportingStart": {
-    "message": "Начало фазы \"Отчет участника аукциона\""
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletReportingStart": {
-    "message": "Начало фазы \"Отчет продавца\""
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
-    "message": "Начало фазы \"Подсчет продавца\""
   },
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "3G (высокая скорость)"
@@ -520,6 +382,9 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieDidntSpecifyASamesite": {
     "message": "Заголовок Set-Cookie не указал атрибут SameSite, получил по умолчанию атрибут SameSite=Lax\" и был заблокирован, потому что поступил из межсайтового ответа, который не был ответом навигации верхнего уровня. Этот ответ считается межсайтовым, так как схема URL отличается от схемы URL текущего сайта."
+  },
+  "core/sdk/NetworkRequest.ts | thisSetcookieHadADisallowedCharacter": {
+    "message": "В заголовке Set-Cookie содержался недопустимый символ (запрещенный символ ASCII или символ табуляции в середине названия или значения файла cookie или атрибута)."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadInvalidSyntax": {
     "message": "Недействительный синтаксис заголовка Set-Cookie"
@@ -1052,9 +917,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Перенести в отдельное окно"
   },
-  "entrypoints/main/main-meta.ts | asAuthored": {
-    "message": "Авторский вариант"
-  },
   "entrypoints/main/main-meta.ts | auto": {
     "message": "авто"
   },
@@ -1066,12 +928,6 @@
   },
   "entrypoints/main/main-meta.ts | cancelSearch": {
     "message": "Отменить поиск"
-  },
-  "entrypoints/main/main-meta.ts | colorFormat": {
-    "message": "Цветовой формат:"
-  },
-  "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "Поддержка этого параметра прекращена, так как он несовместим с современными цветовыми пространствами. Чтобы снова его активировать, отключите соответствующий эксперимент."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Тёмная"
@@ -1156,18 +1012,6 @@
   },
   "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
     "message": "Отключить поиск при вводе запроса (для поиска нужно нажать Ввод)"
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
-    "message": "Установить формат цвета \"Авторский вариант\""
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatToHex": {
-    "message": "Установить формат цвета HEX"
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatToHsl": {
-    "message": "Установить цветовой формат HSL"
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatToRgb": {
-    "message": "Установить цветовой формат RGB"
   },
   "entrypoints/main/main-meta.ts | switchToDarkTheme": {
     "message": "Включить тёмную тему"
@@ -1255,6 +1099,12 @@
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Чтобы отключить интеграцию Google Cast по умолчанию, вместо селектора -internal-media-controls-overlay-cast-button используйте атрибут disableRemotePlayback."
+  },
+  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
+    "message": "Значения CSS inner-spin-button, media-slider, media-sliderthumb, media-volume-slider, media-volume-sliderthumb, push-button, searchfield-cancel-button, slider-horizontal, sliderthumb-horizontal, sliderthumb-vertical, square-button не стандартизированы и будут удалены."
+  },
+  "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
+    "message": "Значение CSS slider-vertical не стандартизировано и будет удалено."
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Запросы ресурсов, в URL которых содержатся и удаленные пробельные символы (\\(n|r|t)), и знаки \"меньше\" (<), блокируются. Чтобы загружать такие ресурсы, удалите символы новой строки и используйте коды для знаков \"меньше\" в таких местах URL, где, например, указываются значения атрибутов элементов."
@@ -1703,6 +1553,12 @@
   "models/persistence/PersistenceActions.ts | overrideContent": {
     "message": "Переопределить контент"
   },
+  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "Файл {PH1} включен в карту исходного кода и не может быть перезаписан."
+  },
+  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "Переопределить правила скрипта {PH1}?"
+  },
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Сохранить как…"
   },
@@ -1761,7 +1617,7 @@
     "message": "перезаписать"
   },
   "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Показать рабочую область"
+    "message": "Показать настройки рабочей области"
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Рабочая область"
@@ -2348,6 +2204,9 @@
   "panels/application/AppManifestView.ts | errorsAndWarnings": {
     "message": "Ошибки и предупреждения"
   },
+  "panels/application/AppManifestView.ts | formFactor": {
+    "message": "Тип устройства"
+  },
   "panels/application/AppManifestView.ts | icon": {
     "message": "Значок"
   },
@@ -2362,6 +2221,9 @@
   },
   "panels/application/AppManifestView.ts | installability": {
     "message": "Возможность установки"
+  },
+  "panels/application/AppManifestView.ts | label": {
+    "message": "Элемент label"
   },
   "panels/application/AppManifestView.ts | learnMore": {
     "message": "Подробнее"
@@ -2399,6 +2261,12 @@
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Не указан идентификатор Google Play."
   },
+  "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnDesktop": {
+    "message": "Расширенный интерфейс установки PWA будет недоступен на компьютере. Добавьте по крайней мере один скриншот, где для параметра form_factor установлено значение wide."
+  },
+  "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnMobile": {
+    "message": "Расширенный интерфейс установки PWA будет недоступен на мобильных устройствах. Добавьте хотя бы один скриншот, для которого значение параметра form_factor не установлено или задано любое значение, кроме wide."
+  },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "В файле манифеста нет значка в формате PNG, SVG или WebP с разрешением не менее {PH1} пкс, у которого атрибут purpose не задан или задан со значением any."
   },
@@ -2425,6 +2293,9 @@
   },
   "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
     "message": "Страница загружена из незащищенного источника."
+  },
+  "panels/application/AppManifestView.ts | platform": {
+    "message": "Платформа"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
     "message": "Атрибут prefer_related_applications поддерживается только в бета-версии и стабильной версии Chrome на устройствах Android."
@@ -2474,14 +2345,20 @@
   "panels/application/AppManifestView.ts | screenshotS": {
     "message": "Скриншот #{PH1}"
   },
+  "panels/application/AppManifestView.ts | screenshotsMustHaveSameAspectRatio": {
+    "message": "У всех скриншотов с одинаковым значением параметра form_factor соотношение сторон должно быть таким же, как у первого скриншота с таким значением. Некоторые скриншоты будут игнорироваться."
+  },
   "panels/application/AppManifestView.ts | shortName": {
     "message": "Краткое название"
   },
   "panels/application/AppManifestView.ts | shortcutS": {
-    "message": "Сочетание клавиш {PH1}"
+    "message": "Ярлык {PH1}"
   },
   "panels/application/AppManifestView.ts | shortcutSShouldIncludeAXPixel": {
-    "message": "Сочетание клавиш {PH1} должно включать значок 96 x 96 пикселей."
+    "message": "Ярлык {PH1} должен включать значок 96 x 96 пикселей."
+  },
+  "panels/application/AppManifestView.ts | shortcutsMayBeNotAvailable": {
+    "message": "Максимальное число сочетаний клавиш зависит от платформы. Некоторые из них могут быть недоступны."
   },
   "panels/application/AppManifestView.ts | showOnlyTheMinimumSafeAreaFor": {
     "message": "Показывает только минимальную безопасную зону для маскируемых значков."
@@ -2500,6 +2377,15 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Цвет темы"
+  },
+  "panels/application/AppManifestView.ts | tooManyScreenshotsForDesktop": {
+    "message": "На рабочем столе может быть не более восьми скриншотов. Не вошедшие в это число скриншоты не показываются."
+  },
+  "panels/application/AppManifestView.ts | tooManyScreenshotsForMobile": {
+    "message": "На экране мобильного телефона может быть не более пяти скриншотов. Не вошедшие в это число скриншоты не показываются."
+  },
+  "panels/application/AppManifestView.ts | url": {
+    "message": "URL"
   },
   "panels/application/AppManifestView.ts | wcoFound": {
     "message": "Chrome удалось обнаружить значение {PH1} для поля {PH2} в {PH3}."
@@ -2901,13 +2787,16 @@
     "message": "Правила прогнозирования"
   },
   "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "Эта страница"
+    "message": "Текущая страница"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Чтобы посмотреть отчет, нажмите на него."
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
+  },
+  "panels/application/ResourcesPanel.ts | webSqlDeprecation": {
+    "message": "Web SQL больше не поддерживается. Вы можете подать заявку, чтобы продолжить использовать эту технологию, пока не выйдет Chrome 123."
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "Хранилище кеша"
@@ -3794,12 +3683,6 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Считается, что это фрейм объявлений, так как его родительский фрейм относится к такому типу."
   },
-  "panels/application/components/FrameDetailsView.ts | prerendering": {
-    "message": "Предварительная отрисовка"
-  },
-  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
-    "message": "Статус предварительной отрисовки"
-  },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "Обновить"
   },
@@ -3931,144 +3814,6 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Показать сведения"
-  },
-  "panels/application/components/Prerender2.ts | Activated": {
-    "message": "Активировано."
-  },
-  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
-    "message": "Активировано до запуска."
-  },
-  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
-    "message": "Страница была предварительно отрисована, однако был осуществлен переход, отличающийся от изначально заданного для нее, и поэтому она не была использована."
-  },
-  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
-    "message": "Предварительная отрисовка пока не поддерживает AudioContext API."
-  },
-  "panels/application/components/Prerender2.ts | BlockedByClient": {
-    "message": "Загрузка ресурсов заблокирована клиентом."
-  },
-  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
-    "message": "CancelAllHostsForTesting."
-  },
-  "panels/application/components/Prerender2.ts | ClientCertRequested": {
-    "message": "Страница запрашивает сертификат клиента. Для скрытых страниц (например, предварительно отрисованных) эта процедура не применяется."
-  },
-  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
-    "message": "Предварительно отрисованная страница была загружена, после чего с нее был выполнен переход по междоменному URL. Сейчас предварительная отрисовка междоменных страниц запрещена."
-  },
-  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
-    "message": "Не удалось предварительно отрисовать страницу, перенаправляющую по междоменному URL. Сейчас предварительная отрисовка междоменных страниц запрещена."
-  },
-  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
-    "message": "Экономия трафика включена."
-  },
-  "panels/application/components/Prerender2.ts | Destroyed": {
-    "message": "По неизвестной причине предварительно отрисованная страница была покинута."
-  },
-  "panels/application/components/Prerender2.ts | DidFailLoad": {
-    "message": "Во время предварительной отрисовки произошла ошибка DidFailLoadWithError."
-  },
-  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
-    "message": "Запрещенный метод API."
-  },
-  "panels/application/components/Prerender2.ts | Download": {
-    "message": "Скачивание во время предварительной отрисовки запрещено."
-  },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
-    "message": "Предварительная отрисовка, запущенная внутренней страницей Chrome (например для омнибокса) отменена, поскольку при навигации происходит переход на другую страницу с иным источником."
-  },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
-    "message": "Предварительная отрисовка, запущенная внутренней страницей Chrome (например для омнибокса) отменена, поскольку при навигации происходит переход на другую страницу с тем же источником."
-  },
-  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
-    "message": "Не удалось определить использование памяти."
-  },
-  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
-    "message": "Имеется конечный URL."
-  },
-  "panels/application/components/Prerender2.ts | InProgressNavigation": {
-    "message": "InProgressNavigation."
-  },
-  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
-    "message": "Ограничение неактивной страницы."
-  },
-  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
-    "message": "Для предварительной отрисовки доступна только навигация по HTTP(S)."
-  },
-  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
-    "message": "Не удалось предварительно отрисовать страницу, переход с которой выполняется на другой URL-адрес с протоколом, отличным от HTTP(S). Предварительно отрисованы могут быть только страницы HTTP(S)."
-  },
-  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
-    "message": "Предварительная отрисовка не поддерживает запросы на авторизацию, направленные из интерфейса."
-  },
-  "panels/application/components/Prerender2.ts | LowEndDevice": {
-    "message": "Предварительная отрисовка не поддерживается на устройствах с малым объемом памяти."
-  },
-  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
-    "message": "Переход по страницам после начальной навигации с предварительной отрисовкой запрещен."
-  },
-  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
-    "message": "Превышено максимальное число предварительных отрисовок."
-  },
-  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
-    "message": "Превышен лимит памяти."
-  },
-  "panels/application/components/Prerender2.ts | MixedContent": {
-    "message": "Предварительная отрисовка отменена фреймом смешанного контента."
-  },
-  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
-    "message": "На предварительно отрисованной странице был использован запрещенный API."
-  },
-  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
-    "message": "Не удалось выполнить начальный переход с предварительной отрисовкой, поскольку сервер не возвратил один из следующих кодов статуса: 200, 204, 205."
-  },
-  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
-    "message": "Страница с предварительной отрисовкой не загрузится."
-  },
-  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
-    "message": "Запрос на переход заблокирован со стороны CSP."
-  },
-  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
-    "message": "Во время предварительной отрисовки произошла ошибка сети."
-  },
-  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
-    "message": "В процессе предварительной отрисовки"
-  },
-  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
-    "message": "Произошел сбой предварительно отрисованной страницы."
-  },
-  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
-    "message": "Отрисовка, которая должна была быть выполнена для этой страницы предварительно, остановлена."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
-    "message": "Предварительно отрисованная страница была загружена, после чего с нее был выполнен переход по междоменному URL этого же сайта. Сейчас предварительная отрисовка междоменных страниц запрещена."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
-    "message": "Предварительно отрисованная страница была загружена, после чего с нее был выполнен переход по междоменному URL этого же сайта. Такая отрисовка допустима, только если целевой сайт отправляет заголовок Supports-Loading-Mode со значением credentialed-prerender."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
-    "message": "Не удалось предварительно отрисовать страницу, перенаправляющую по междоменному URL этого же сайта. Сейчас предварительная отрисовка междоменных страниц запрещена."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
-    "message": "Не удалось предварительно отрисовать страницу, перенаправляющую по междоменному URL этого же сайта. Отрисовка допустима, только если целевой сайт отправляет заголовок Supports-Loading-Mode со значением credentialed-prerender."
-  },
-  "panels/application/components/Prerender2.ts | SslCertificateError": {
-    "message": "Ошибка сертификата SSL."
-  },
-  "panels/application/components/Prerender2.ts | StartFailed": {
-    "message": "Не удалось выполнить запуск."
-  },
-  "panels/application/components/Prerender2.ts | Stop": {
-    "message": "Работа вкладки остановлена."
-  },
-  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
-    "message": "Вкладка работает в фоновом режиме."
-  },
-  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
-    "message": "Предварительная отрисовка не активирована и уничтожена триггером."
-  },
-  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
-    "message": "После использования UserAgentOverride необходимо перезагрузить страницу."
   },
   "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
     "message": "Выберите обработчик протоколов"
@@ -4481,11 +4226,17 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
     "message": "Предварительно отрисованная страница выведена во время перехода в основном фрейме исходной страницы."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedWithAuxiliaryBrowsingContexts": {
+    "message": "Предварительная отрисовка не использована, так как во время вывода страницы были и другие окна с активной ссылкой на начальную страницу, что в настоящее время не поддерживается."
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
     "message": "Предварительная отрисовка не использована, так как экспериментальные параметры изолированной среды или правила для разрешений на исходной странице и на странице для предварительной отрисовки оказались несовместимы."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
     "message": "Предварительная отрисовка не использована, так как при получении исходного запроса на переход с предварительной отрисовкой и во время вывода страницы были рассчитаны разные параметры перехода (например, HTTP-заголовки)."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
+    "message": "Предварительная отрисовка не использована, так как во время вывода страницы конечный URL отличался от обычного URL (например, вел на страницу с новой вкладкой или к размещенным приложениям)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "На предварительно отрисованной странице запрошен вывод аудио, но эта функция сейчас не поддерживается."
@@ -4517,9 +4268,6 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
     "message": "На предварительно отрисованной странице предпринята попытка скачивания, но эта функция сейчас не поддерживается."
   },
-  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Предварительная отрисовка не выполнена, так как при попытке определить объем используемой памяти произошла внутренняя ошибка браузера."
-  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusHasEffectiveUrl": {
     "message": "Невозможно выполнить предварительную отрисовку исходной страницы, так как конечный URL отличается от ее обычного URL (например, ведет на страницу с новой вкладкой или к размещенным приложениям)."
   },
@@ -4538,8 +4286,14 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMainFrameNavigation": {
     "message": "После предварительной отрисовки на странице был выполнен переход по другому URL, который сейчас не поддерживается."
   },
-  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
-    "message": "Предварительная отрисовка не выполнена, так как на исходной странице уже выполняется слишком много предварительных отрисовок. Чтобы продолжить предварительную отрисовку, удалите другие правила прогнозирования."
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
+    "message": "Предварительная отрисовка не выполнена, так как на исходной странице уже выполняется слишком много таких процессов. Чтобы продолжить предварительную отрисовку, удалите другие правила прогнозирования."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
+    "message": "Предварительная отрисовка не выполнена, так как на исходной странице уже выполняется слишком много таких процессов."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
+    "message": "Предварительная отрисовка не выполнена, так как на исходной странице уже выполняется слишком много таких процессов. Чтобы продолжить предварительную отрисовку, удалите другие правила прогнозирования."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "Предварительная отрисовка не выполнена, так как в браузере превышено ограничение на использование памяти для предварительной отрисовки."
@@ -4571,11 +4325,17 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
     "message": "Предварительная отрисовка не выполнена, так как была отключена в инструментах разработчика."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingUrlHasEffectiveUrl": {
+    "message": "Не удалось выполнить переход с предварительной отрисовкой, так как конечный URL отличается от обычного URL страницы (например, ведет на страницу с новой вкладкой или к размещенным приложениям)."
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
     "message": "Произошел сбой исходной страницы."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
     "message": "Исходная страница закрыта."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRedirectedPrerenderingUrlHasEffectiveUrl": {
+    "message": "Не удалось выполнить переход с предварительной отрисовкой, так как была выполнена переадресация на конечный URL, который отличается от обычного URL страницы (например, ведет на страницу с новой вкладкой или к размещенным приложениям)."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessCrashed": {
     "message": "Произошел сбой предварительно отрисованной страницы."
@@ -4583,11 +4343,8 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessKilled": {
     "message": "Предварительно отрисованная страница закрыта."
   },
-  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusResourceLoadBlockedByClient": {
-    "message": "Загрузка некоторых ресурсов заблокирована."
-  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "После предварительной отрисовки на странице был выполнен переход по междоменному URL этого же сайта, но в ответе целевой страницы не было корректного заголовка Supports-Loading-Mode."
+    "message": "Не удалось выполнить переход с предварительной отрисовкой, так как была выполнена переадресация по междоменному URL этого же сайта, но в ответе целевой страницы не было корректного заголовка Supports-Loading-Mode."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
     "message": "С предварительно отрисованной страницы был выполнен переход по междоменному URL этого же сайта, но в ответе целевой страницы не было корректного заголовка Supports-Loading-Mode."
@@ -4599,7 +4356,7 @@
     "message": "С предварительно отрисованной страницы был выполнен переход по URL, перенаправляющему по междоменному URL этого же сайта, но в ответе целевой страницы не было корректного заголовка Supports-Loading-Mode."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSpeculationRuleRemoved": {
-    "message": "Неизвестно"
+    "message": "Данные предварительно отрисованной страницы были выгружены, так как на исходной странице удалено соответствующее правило предварительной отрисовки из блока <script type=\"speculationrules\">."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSslCertificateError": {
     "message": "Не удалось выполнить переход с предварительной отрисовкой из-за недопустимого SSL-сертификата."
@@ -4659,7 +4416,7 @@
     "message": "Исходная страница попыталась предварительно отрисовать страницу с этим URL, но процесс завершился сбоем. Однако полученное тело ответа все же использовалось в качестве предзагрузки."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "Подробнее"
+    "message": "Узнать больше о предзагрузке на странице developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
     "message": "Исходная страница не пыталась предзагрузить страницу с этим URL."
@@ -4890,7 +4647,7 @@
     "message": "Командная строка консоли"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Внимание! Не вставляйте в консоль инструментов разработчика код, который вы не понимаете или не проверяли. Так злоумышленники могут украсть ваши данные или получить контроль над вашим компьютером. Введите ''{PH1}'' ниже, чтобы разрешить вставку."
+    "message": "Внимание! Не вставляйте в консоль инструментов разработчика код, который вы не понимаете или не проверяли. Так злоумышленники могут украсть у вас данные или получить контроль над вашим компьютером. Чтобы разрешить вставку, введите ''{PH1}'' ниже."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{Нет ошибок}=1{# ошибка}one{# ошибка}few{# ошибки}many{# ошибок}other{# ошибки}}"
@@ -6050,6 +5807,12 @@
   "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "Подробнее"
   },
+  "panels/elements/components/CSSVariableValueView.ts | invalidPropertyValue": {
+    "message": "Недопустимое значение свойства. Нужный тип: {type}."
+  },
+  "panels/elements/components/CSSVariableValueView.ts | registeredPropertyLinkTitle": {
+    "message": "Посмотреть зарегистрированное свойство"
+  },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Строки навигации дерева DOM"
   },
@@ -6361,6 +6124,9 @@
   },
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Показать или скрыть, является ли прослушиватель событий пассивным или блокирующим"
+  },
+  "panels/explain/explain-meta.ts | explainConsoleMessage": {
+    "message": "✨ Объяснить сообщение из консоли"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Заблокированный ресурс"
@@ -7895,6 +7661,9 @@
   "panels/network/NetworkItemView.ts | websocketMessages": {
     "message": "Сообщения WebSocket"
   },
+  "panels/network/NetworkLogView.ts | allStrings": {
+    "message": "Все"
+  },
   "panels/network/NetworkLogView.ts | areYouSureYouWantToClearBrowser": {
     "message": "Очистить кеш браузера?"
   },
@@ -7986,13 +7755,13 @@
     "message": "Заблокированные файлы cookie ответов"
   },
   "panels/network/NetworkLogView.ts | hideChromeExtension": {
-    "message": "Скрыть запросы к URL расширений (chrome-extension://)"
+    "message": "Скрыть URL расширений (chrome-extension://)"
   },
   "panels/network/NetworkLogView.ts | hideDataUrls": {
     "message": "Скрыть URL данных"
   },
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
-    "message": "Скрыть URL data: и blob:"
+    "message": "Скрыть URL (data: и blob:)"
   },
   "panels/network/NetworkLogView.ts | invertFilter": {
     "message": "Инвертировать"
@@ -8006,6 +7775,9 @@
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "Загрузить: {PH1}"
   },
+  "panels/network/NetworkLogView.ts | moreFilters": {
+    "message": "Ещё фильтры"
+  },
   "panels/network/NetworkLogView.ts | networkDataAvailable": {
     "message": "Доступны данные сети"
   },
@@ -8017,6 +7789,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "Показывать только те запросы, источники которых отличаются от источника страницы"
+  },
+  "panels/network/NetworkLogView.ts | overTwoTypesSelected": {
+    "message": "{PH1}, {PH2}..."
   },
   "panels/network/NetworkLogView.ts | overrideHeaders": {
     "message": "Переопределить заголовки"
@@ -8033,8 +7808,14 @@
   "panels/network/NetworkLogView.ts | replayXhr": {
     "message": "Повторить запрос XHR"
   },
-  "panels/network/NetworkLogView.ts | resourceTypesToInclude": {
-    "message": "Типы ресурсов, которые нужно включить"
+  "panels/network/NetworkLogView.ts | requestTypes": {
+    "message": "Типы запросов"
+  },
+  "panels/network/NetworkLogView.ts | requestTypesToInclude": {
+    "message": "Типы запросов, которые нужно включить"
+  },
+  "panels/network/NetworkLogView.ts | requestTypesTooltip": {
+    "message": "Фильтровать запросы по типу"
   },
   "panels/network/NetworkLogView.ts | sBResourcesLoadedByThePage": {
     "message": "{PH1} Б ресурсов загружено на странице"
@@ -8069,8 +7850,14 @@
   "panels/network/NetworkLogView.ts | saveAllAsHarWithContent": {
     "message": "Сохранить все как HAR с контентом"
   },
+  "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
+    "message": "Показать только/скрыть запросы"
+  },
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Сторонние запросы"
+  },
+  "panels/network/NetworkLogView.ts | twoTypesSelected": {
+    "message": "{PH1}, {PH2}"
   },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Разблокировать {PH1}"
@@ -8089,6 +7876,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | endTime": {
     "message": "Время окончания"
+  },
+  "panels/network/NetworkLogViewColumns.ts | hasOverrides": {
+    "message": "С переопределением"
   },
   "panels/network/NetworkLogViewColumns.ts | initiator": {
     "message": "Инициатор"
@@ -9515,6 +9305,9 @@
   "panels/profiler/ProfileSidebarTreeElement.ts | delete": {
     "message": "Удалить"
   },
+  "panels/profiler/ProfileSidebarTreeElement.ts | enterToSave": {
+    "message": "Сохранить. Чтобы сохранить файл, нажмите Ввод."
+  },
   "panels/profiler/ProfileSidebarTreeElement.ts | load": {
     "message": "Загрузить…"
   },
@@ -9626,9 +9419,6 @@
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Показать \"Память\""
   },
-  "panels/profiler/profiler-meta.ts | showNativeFunctions": {
-    "message": "Показать нативные функции в профиле JavaScript"
-  },
   "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
     "message": "Начать запись памяти, выделенной для кучи"
   },
@@ -9654,7 +9444,7 @@
     "message": "Документация"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | editAndResend": {
-    "message": "Изменить и отправить"
+    "message": "Изменить и отправить повторно"
   },
   "panels/protocol_monitor/ProtocolMonitor.ts | elapsedTime": {
     "message": "Прошедшее время"
@@ -9710,6 +9500,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | type": {
     "message": "Тип"
   },
+  "panels/protocol_monitor/components/JSONEditor.ts | addCustomProperty": {
+    "message": "Добавить свое свойство"
+  },
   "panels/protocol_monitor/components/JSONEditor.ts | addParameter": {
     "message": "Добавить параметр"
   },
@@ -9721,6 +9514,12 @@
   },
   "panels/protocol_monitor/components/Toolbar.ts | copyCommand": {
     "message": "Копировать команду"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | sendCommandCmdEnter": {
+    "message": "Отправить команду (⌘ + Enter)"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | sendCommandCtrlEnter": {
+    "message": "Отправить команду (Ctrl + Ввод)"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Монитор протокола"
@@ -10094,6 +9893,9 @@
   "panels/screencast/ScreencastView.ts | forward": {
     "message": "вперед"
   },
+  "panels/screencast/ScreencastView.ts | mouseInput": {
+    "message": "Эмулировать мышь"
+  },
   "panels/screencast/ScreencastView.ts | profilingInProgress": {
     "message": "Выполняется профилирование"
   },
@@ -10105,6 +9907,9 @@
   },
   "panels/screencast/ScreencastView.ts | theTabIsInactive": {
     "message": "Вкладка неактивна"
+  },
+  "panels/screencast/ScreencastView.ts | touchInput": {
+    "message": "Эмулировать касание"
   },
   "panels/search/SearchResultsPane.ts | lineS": {
     "message": "Строка {PH1}"
@@ -11060,6 +10865,9 @@
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Приостанавливать, если условие имеет значение true"
   },
+  "panels/sources/CSSPlugin.ts | addSourceMap": {
+    "message": "Добавить карту исходного кода"
+  },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Открыть палитру"
   },
@@ -11172,7 +10980,7 @@
     "message": "Добавить точку записи…"
   },
   "panels/sources/DebuggerPlugin.ts | addSourceMap": {
-    "message": "Добавить карту исходного кода…"
+    "message": "Добавить карту исходного кода"
   },
   "panels/sources/DebuggerPlugin.ts | addWasmDebugInfo": {
     "message": "Добавить сведения для отладки DWARF…"
@@ -11276,6 +11084,15 @@
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "{PH1}: форматировать"
   },
+  "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
+    "message": "Это действие нельзя отменить."
+  },
+  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
+    "message": "Удалить все переопределения из этой папки?"
+  },
+  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
+    "message": "Удалить эту папку и ее содержимое?"
+  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "Удалить этот файл?"
   },
@@ -11283,7 +11100,7 @@
     "message": "Исключить эту папку?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
-    "message": "Удалить эту папку?"
+    "message": "Удалить папку \"{PH1}\" из рабочей области?"
   },
   "panels/sources/NavigatorView.ts | authored": {
     "message": "Авторские"
@@ -11304,7 +11121,7 @@
     "message": "Содержит итоговые источники, доступные браузеру"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
-    "message": "Исключить папку"
+    "message": "Исключить из рабочей области"
   },
   "panels/sources/NavigatorView.ts | makeACopy": {
     "message": "Создать копию…"
@@ -11318,8 +11135,11 @@
   "panels/sources/NavigatorView.ts | openFolder": {
     "message": "Открыть папку"
   },
+  "panels/sources/NavigatorView.ts | remove": {
+    "message": "Удалить"
+  },
   "panels/sources/NavigatorView.ts | removeFolderFromWorkspace": {
-    "message": "Удалить папку из рабочей области"
+    "message": "Удалить из рабочей области"
   },
   "panels/sources/NavigatorView.ts | rename": {
     "message": "Переименовать…"
@@ -11335,6 +11155,9 @@
   },
   "panels/sources/NavigatorView.ts | searchInFolder": {
     "message": "Поиск в папке"
+  },
+  "panels/sources/NavigatorView.ts | workspaceStopSyncing": {
+    "message": "Изменения в консоли инструментов разработчика перестанут синхронизироваться с вашим исходным кодом."
   },
   "panels/sources/OutlineQuickOpen.ts | noFileSelected": {
     "message": "Файл не выбран."
@@ -11510,8 +11333,14 @@
   "panels/sources/SourcesView.ts | runCommand": {
     "message": "Выполнить команду"
   },
+  "panels/sources/SourcesView.ts | selectFolder": {
+    "message": "выберите папку"
+  },
   "panels/sources/SourcesView.ts | sourceViewActions": {
     "message": "Просмотр исходного кода"
+  },
+  "panels/sources/SourcesView.ts | workspaceDropInAFolderToSyncSources": {
+    "message": "Чтобы синхронизировать изменения с рабочей областью, перетащите папку с исходным кодом сюда или:"
   },
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "Закрыть несохраненный файл {PH1}?"
@@ -11623,6 +11452,9 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Активировать точки останова"
+  },
+  "panels/sources/sources-meta.ts | addFolder": {
+    "message": "Добавление папки"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Добавить папку в рабочую область"
@@ -11846,6 +11678,9 @@
   "panels/sources/sources-meta.ts | showWhitespaceCharacters": {
     "message": "Показать пробелы:"
   },
+  "panels/sources/sources-meta.ts | showWorkspace": {
+    "message": "Показать рабочую область"
+  },
   "panels/sources/sources-meta.ts | snippets": {
     "message": "Фрагменты"
   },
@@ -11897,6 +11732,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Выражения контрольного значения"
   },
+  "panels/sources/sources-meta.ts | workspace": {
+    "message": "Рабочая область"
+  },
   "panels/timeline/AnimationsTrackAppender.ts | animations": {
     "message": "Анимации"
   },
@@ -11920,6 +11758,324 @@
   },
   "panels/timeline/CountersGraph.ts | ss": {
     "message": "[{PH1}–{PH2}]"
+  },
+  "panels/timeline/EventUICategory.ts | animation": {
+    "message": "Анимация"
+  },
+  "panels/timeline/EventUICategory.ts | animationFrameFired": {
+    "message": "Запущен фрейм анимации."
+  },
+  "panels/timeline/EventUICategory.ts | async": {
+    "message": "Асинхронный"
+  },
+  "panels/timeline/EventUICategory.ts | asyncTask": {
+    "message": "Асинхронная задача"
+  },
+  "panels/timeline/EventUICategory.ts | cacheModule": {
+    "message": "Код модуля кеша"
+  },
+  "panels/timeline/EventUICategory.ts | cacheScript": {
+    "message": "Код скрипта кеша"
+  },
+  "panels/timeline/EventUICategory.ts | cachedWasmModule": {
+    "message": "Кешированный модуль Wasm"
+  },
+  "panels/timeline/EventUICategory.ts | cancelAnimationFrame": {
+    "message": "Отключить фрейм анимации"
+  },
+  "panels/timeline/EventUICategory.ts | cancelIdleCallback": {
+    "message": "Отмена вызова функции в период простоя"
+  },
+  "panels/timeline/EventUICategory.ts | commit": {
+    "message": "Перенос"
+  },
+  "panels/timeline/EventUICategory.ts | compileCode": {
+    "message": "Компилировать код"
+  },
+  "panels/timeline/EventUICategory.ts | compileModule": {
+    "message": "Компилировать модуль"
+  },
+  "panels/timeline/EventUICategory.ts | compileScript": {
+    "message": "Компилировать скрипт"
+  },
+  "panels/timeline/EventUICategory.ts | compiledWasmModule": {
+    "message": "Скомпилированный модуль Wasm"
+  },
+  "panels/timeline/EventUICategory.ts | compositeLayers": {
+    "message": "Составные слои"
+  },
+  "panels/timeline/EventUICategory.ts | computeIntersections": {
+    "message": "Рассчитать пересечения"
+  },
+  "panels/timeline/EventUICategory.ts | consoleTime": {
+    "message": "Время консоли"
+  },
+  "panels/timeline/EventUICategory.ts | createWebsocket": {
+    "message": "Создать WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | decrypt": {
+    "message": "Расшифровка"
+  },
+  "panels/timeline/EventUICategory.ts | decryptReply": {
+    "message": "Расшифровать ответ"
+  },
+  "panels/timeline/EventUICategory.ts | deserializeCodeCache": {
+    "message": "Десериализовать кеш кода"
+  },
+  "panels/timeline/EventUICategory.ts | destroyWebsocket": {
+    "message": "Уничтожить WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | digest": {
+    "message": "Хеш-сумма"
+  },
+  "panels/timeline/EventUICategory.ts | digestReply": {
+    "message": "Ответ с хеш-суммой"
+  },
+  "panels/timeline/EventUICategory.ts | domGc": {
+    "message": "Сборка мусора DOM"
+  },
+  "panels/timeline/EventUICategory.ts | domcontentloadedEvent": {
+    "message": "Событие DOMContentLoaded"
+  },
+  "panels/timeline/EventUICategory.ts | drawFrame": {
+    "message": "Рисование фрейма"
+  },
+  "panels/timeline/EventUICategory.ts | embedderCallback": {
+    "message": "Обратный вызов встраивания"
+  },
+  "panels/timeline/EventUICategory.ts | encrypt": {
+    "message": "Шифрование"
+  },
+  "panels/timeline/EventUICategory.ts | encryptReply": {
+    "message": "Зашифровать ответ"
+  },
+  "panels/timeline/EventUICategory.ts | evaluateModule": {
+    "message": "Оценка модуля"
+  },
+  "panels/timeline/EventUICategory.ts | evaluateScript": {
+    "message": "Оценка скрипта"
+  },
+  "panels/timeline/EventUICategory.ts | event": {
+    "message": "Событие"
+  },
+  "panels/timeline/EventUICategory.ts | eventTiming": {
+    "message": "Временные метки событий"
+  },
+  "panels/timeline/EventUICategory.ts | experience": {
+    "message": "Взаимодействие"
+  },
+  "panels/timeline/EventUICategory.ts | finishLoading": {
+    "message": "Завершить загрузку"
+  },
+  "panels/timeline/EventUICategory.ts | fireIdleCallback": {
+    "message": "Запуск функции обратного вызова для простоя"
+  },
+  "panels/timeline/EventUICategory.ts | firstContentfulPaint": {
+    "message": "Первое существенное отображение"
+  },
+  "panels/timeline/EventUICategory.ts | firstPaint": {
+    "message": "Первая отрисовка"
+  },
+  "panels/timeline/EventUICategory.ts | frameStart": {
+    "message": "Запуск фрейма"
+  },
+  "panels/timeline/EventUICategory.ts | frameStartMainThread": {
+    "message": "Начало фрейма (основной поток)"
+  },
+  "panels/timeline/EventUICategory.ts | frameStartedLoading": {
+    "message": "Фрейм начал загружаться"
+  },
+  "panels/timeline/EventUICategory.ts | functionCall": {
+    "message": "Вызов функции"
+  },
+  "panels/timeline/EventUICategory.ts | gcEvent": {
+    "message": "Событие сборки мусора"
+  },
+  "panels/timeline/EventUICategory.ts | gpu": {
+    "message": "Графический процессор"
+  },
+  "panels/timeline/EventUICategory.ts | hitTest": {
+    "message": "Проверка нажатия"
+  },
+  "panels/timeline/EventUICategory.ts | idle": {
+    "message": "Бездействует"
+  },
+  "panels/timeline/EventUICategory.ts | imageDecode": {
+    "message": "Расшифровка изображения"
+  },
+  "panels/timeline/EventUICategory.ts | imageResize": {
+    "message": "Изменение размера изображения"
+  },
+  "panels/timeline/EventUICategory.ts | installTimer": {
+    "message": "Установить таймер"
+  },
+  "panels/timeline/EventUICategory.ts | invalidateLayout": {
+    "message": "Аннулировать макет"
+  },
+  "panels/timeline/EventUICategory.ts | jsFrame": {
+    "message": "Фрейм JS"
+  },
+  "panels/timeline/EventUICategory.ts | largestContentfulPaint": {
+    "message": "Самое крупное существенное отображение"
+  },
+  "panels/timeline/EventUICategory.ts | layerize": {
+    "message": "Создание слоев"
+  },
+  "panels/timeline/EventUICategory.ts | layout": {
+    "message": "Макет"
+  },
+  "panels/timeline/EventUICategory.ts | layoutShift": {
+    "message": "Смещение макета"
+  },
+  "panels/timeline/EventUICategory.ts | loading": {
+    "message": "Загрузка"
+  },
+  "panels/timeline/EventUICategory.ts | majorGc": {
+    "message": "Полная сборка мусора"
+  },
+  "panels/timeline/EventUICategory.ts | minorGc": {
+    "message": "Быстрая сборка мусора"
+  },
+  "panels/timeline/EventUICategory.ts | onloadEvent": {
+    "message": "Событие onload"
+  },
+  "panels/timeline/EventUICategory.ts | optimizeCode": {
+    "message": "Оптимизировать код"
+  },
+  "panels/timeline/EventUICategory.ts | other": {
+    "message": "Другое"
+  },
+  "panels/timeline/EventUICategory.ts | paint": {
+    "message": "Отрисовка"
+  },
+  "panels/timeline/EventUICategory.ts | paintImage": {
+    "message": "Отрисовка изображения"
+  },
+  "panels/timeline/EventUICategory.ts | paintSetup": {
+    "message": "Настройка отрисовки"
+  },
+  "panels/timeline/EventUICategory.ts | painting": {
+    "message": "Отображение"
+  },
+  "panels/timeline/EventUICategory.ts | parseAndCompile": {
+    "message": "Синтаксический анализ и компиляция"
+  },
+  "panels/timeline/EventUICategory.ts | parseHtml": {
+    "message": "Синтаксический анализ HTML"
+  },
+  "panels/timeline/EventUICategory.ts | parseStylesheet": {
+    "message": "Синтаксический анализ таблицы стилей"
+  },
+  "panels/timeline/EventUICategory.ts | prePaint": {
+    "message": "Предварительная отрисовка"
+  },
+  "panels/timeline/EventUICategory.ts | profilingOverhead": {
+    "message": "Ресурсопотребление профилирования"
+  },
+  "panels/timeline/EventUICategory.ts | rasterizePaint": {
+    "message": "Растрировать отрисовку"
+  },
+  "panels/timeline/EventUICategory.ts | recalculateStyle": {
+    "message": "Рассчитать стиль заново"
+  },
+  "panels/timeline/EventUICategory.ts | receiveData": {
+    "message": "Получить данные"
+  },
+  "panels/timeline/EventUICategory.ts | receiveResponse": {
+    "message": "Получить ответ"
+  },
+  "panels/timeline/EventUICategory.ts | receiveWebsocketHandshake": {
+    "message": "Получить рукопожатие WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | removeTimer": {
+    "message": "Удалить таймер"
+  },
+  "panels/timeline/EventUICategory.ts | rendering": {
+    "message": "Отрисовка"
+  },
+  "panels/timeline/EventUICategory.ts | requestAnimationFrame": {
+    "message": "Запрос фрейма анимации"
+  },
+  "panels/timeline/EventUICategory.ts | requestIdleCallback": {
+    "message": "Запрос функции обратного вызова для простоя"
+  },
+  "panels/timeline/EventUICategory.ts | requestMainThreadFrame": {
+    "message": "Запрос фрейма основного потока"
+  },
+  "panels/timeline/EventUICategory.ts | runMicrotasks": {
+    "message": "Запуск микрозадач"
+  },
+  "panels/timeline/EventUICategory.ts | scheduleStyleRecalculation": {
+    "message": "Планирование пересчета стилей"
+  },
+  "panels/timeline/EventUICategory.ts | scripting": {
+    "message": "Выполнение скриптов"
+  },
+  "panels/timeline/EventUICategory.ts | scroll": {
+    "message": "Прокрутка"
+  },
+  "panels/timeline/EventUICategory.ts | sendRequest": {
+    "message": "Отправить запрос"
+  },
+  "panels/timeline/EventUICategory.ts | sendWebsocketHandshake": {
+    "message": "Отправить рукопожатие WebSocket"
+  },
+  "panels/timeline/EventUICategory.ts | sign": {
+    "message": "Подписание"
+  },
+  "panels/timeline/EventUICategory.ts | signReply": {
+    "message": "Подпись ответа"
+  },
+  "panels/timeline/EventUICategory.ts | streamingCompileTask": {
+    "message": "Задача по компиляции для потоковой передачи"
+  },
+  "panels/timeline/EventUICategory.ts | streamingWasmResponse": {
+    "message": "Потоковая передача ответа Wasm"
+  },
+  "panels/timeline/EventUICategory.ts | system": {
+    "message": "Система"
+  },
+  "panels/timeline/EventUICategory.ts | task": {
+    "message": "Задача"
+  },
+  "panels/timeline/EventUICategory.ts | timerFired": {
+    "message": "Таймер запущен"
+  },
+  "panels/timeline/EventUICategory.ts | timestamp": {
+    "message": "Временная метка"
+  },
+  "panels/timeline/EventUICategory.ts | updateLayer": {
+    "message": "Обновить слой"
+  },
+  "panels/timeline/EventUICategory.ts | updateLayerTree": {
+    "message": "Обновить дерево слоев"
+  },
+  "panels/timeline/EventUICategory.ts | userTiming": {
+    "message": "Пользовательское время"
+  },
+  "panels/timeline/EventUICategory.ts | verify": {
+    "message": "Подтвердить"
+  },
+  "panels/timeline/EventUICategory.ts | verifyReply": {
+    "message": "Проверить ответ"
+  },
+  "panels/timeline/EventUICategory.ts | waitingForNetwork": {
+    "message": "Поиск сети"
+  },
+  "panels/timeline/EventUICategory.ts | wasmModuleCacheHit": {
+    "message": "Совпадение в кеше модуля Wasm"
+  },
+  "panels/timeline/EventUICategory.ts | wasmModuleCacheInvalid": {
+    "message": "Недействительный кеш модуля Wasm"
+  },
+  "panels/timeline/EventUICategory.ts | willSendRequest": {
+    "message": "Запрос будет отправлен"
+  },
+  "panels/timeline/EventUICategory.ts | xhrLoad": {
+    "message": "Загрузка XHR"
+  },
+  "panels/timeline/EventUICategory.ts | xhrReadyStateChange": {
+    "message": "Изменение состояния готовности: XHR"
   },
   "panels/timeline/EventsTimelineTreeView.ts | Dms": {
     "message": "{PH1} мс"
@@ -11951,11 +12107,32 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(анонимная)"
   },
-  "panels/timeline/ThreadAppender.ts | thread": {
-    "message": "Основной поток новой системы"
+  "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
+    "message": "Выделенное: Worker"
   },
-  "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
-    "message": "Профиль процессора для целевого объекта недоступен."
+  "panels/timeline/ThreadAppender.ts | frameS": {
+    "message": "Фрейм – {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | mainS": {
+    "message": "Основной – {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | onIgnoreList": {
+    "message": "В списке игнорирования"
+  },
+  "panels/timeline/ThreadAppender.ts | raster": {
+    "message": "Растр"
+  },
+  "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
+    "message": "Поток растеризатора {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | threadS": {
+    "message": "Поток {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | workerS": {
+    "message": "Worker – {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | workerSS": {
+    "message": "Worker: {PH1} – {PH2}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Запись отслеживания производительности для целевого объекта такого типа не поддерживается"
@@ -12015,7 +12192,7 @@
     "message": "Основной – {PH1}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | onIgnoreList": {
-    "message": "В списке игнорируемых"
+    "message": "В списке игнорирования"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "Частичный показ фрейма"
@@ -12324,10 +12501,10 @@
     "message": "Фрейм анимации запрошен"
   },
   "panels/timeline/TimelineUIUtils.ts | async": {
-    "message": "Асинхр."
+    "message": "Асинхронный"
   },
   "panels/timeline/TimelineUIUtils.ts | asyncTask": {
-    "message": "Задача по асинхронизации"
+    "message": "Асинхронная задача"
   },
   "panels/timeline/TimelineUIUtils.ts | cacheModule": {
     "message": "Код модуля кеша"
@@ -12387,10 +12564,10 @@
     "message": "Компиляция"
   },
   "panels/timeline/TimelineUIUtils.ts | compileCode": {
-    "message": "Скомпилировать код"
+    "message": "Компилировать код"
   },
   "panels/timeline/TimelineUIUtils.ts | compileModule": {
-    "message": "Компиляция модуля"
+    "message": "Компилировать модуль"
   },
   "panels/timeline/TimelineUIUtils.ts | compileScript": {
     "message": "Компилировать скрипт"
@@ -12410,11 +12587,8 @@
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Размер использованного кеша"
   },
-  "panels/timeline/TimelineUIUtils.ts | cpuTime": {
-    "message": "Процессорное время"
-  },
   "panels/timeline/TimelineUIUtils.ts | createWebsocket": {
-    "message": "Создать объект WebSocket"
+    "message": "Создать WebSocket"
   },
   "panels/timeline/TimelineUIUtils.ts | cumulativeLayoutShifts": {
     "message": "Совокупные смещения макета"
@@ -12435,7 +12609,7 @@
     "message": "Расшифровка"
   },
   "panels/timeline/TimelineUIUtils.ts | decryptReply": {
-    "message": "Расшифровка ответа"
+    "message": "Расшифровать ответ"
   },
   "panels/timeline/TimelineUIUtils.ts | deserializeCodeCache": {
     "message": "Десериализовать кеш кода"
@@ -12447,10 +12621,10 @@
     "message": "Сведения"
   },
   "panels/timeline/TimelineUIUtils.ts | digest": {
-    "message": "Сводка"
+    "message": "Хеш-сумма"
   },
   "panels/timeline/TimelineUIUtils.ts | digestReply": {
-    "message": "Краткий ответ"
+    "message": "Ответ с хеш-суммой"
   },
   "panels/timeline/TimelineUIUtils.ts | dimensions": {
     "message": "Размеры"
@@ -12474,7 +12648,7 @@
     "message": "Затронутые элементы"
   },
   "panels/timeline/TimelineUIUtils.ts | embedderCallback": {
-    "message": "Обратный вызов встраивателя"
+    "message": "Обратный вызов встраивания"
   },
   "panels/timeline/TimelineUIUtils.ts | emptyPlaceholder": {
     "message": "{PH1}"
@@ -12486,7 +12660,7 @@
     "message": "Данные в кодировке"
   },
   "panels/timeline/TimelineUIUtils.ts | encrypt": {
-    "message": "Зашифровать"
+    "message": "Шифрование"
   },
   "panels/timeline/TimelineUIUtils.ts | encryptReply": {
     "message": "Зашифровать ответ"
@@ -12495,7 +12669,7 @@
     "message": "Оценка модуля"
   },
   "panels/timeline/TimelineUIUtils.ts | evaluateScript": {
-    "message": "Оценить скрипт"
+    "message": "Оценка скрипта"
   },
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Событие"
@@ -12528,7 +12702,7 @@
     "message": "Первое аннулирование макета"
   },
   "panels/timeline/TimelineUIUtils.ts | firstPaint": {
-    "message": "Первое отображение"
+    "message": "Первая отрисовка"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
     "message": "Принудительная компоновка"
@@ -12591,7 +12765,7 @@
     "message": "Инициатор"
   },
   "panels/timeline/TimelineUIUtils.ts | installTimer": {
-    "message": "Таймер установки"
+    "message": "Установить таймер"
   },
   "panels/timeline/TimelineUIUtils.ts | interactionID": {
     "message": "Идентификатор"
@@ -12723,16 +12897,16 @@
     "message": "Элемент owner"
   },
   "panels/timeline/TimelineUIUtils.ts | paint": {
-    "message": "Отображение"
+    "message": "Отрисовка"
   },
   "panels/timeline/TimelineUIUtils.ts | paintImage": {
-    "message": "Отображение изображения"
+    "message": "Отрисовка изображения"
   },
   "panels/timeline/TimelineUIUtils.ts | paintProfiler": {
     "message": "Профилировщик отображения"
   },
   "panels/timeline/TimelineUIUtils.ts | paintSetup": {
-    "message": "Настройка отображения"
+    "message": "Настройка отрисовки"
   },
   "panels/timeline/TimelineUIUtils.ts | painting": {
     "message": "Отображение"
@@ -12771,7 +12945,7 @@
     "message": "Диапазон"
   },
   "panels/timeline/TimelineUIUtils.ts | rasterizePaint": {
-    "message": "Растрировать отображение"
+    "message": "Растрировать отрисовку"
   },
   "panels/timeline/TimelineUIUtils.ts | recalculateStyle": {
     "message": "Рассчитать стиль заново"
@@ -12780,13 +12954,13 @@
     "message": "Вычисление принудительно выполнено заново"
   },
   "panels/timeline/TimelineUIUtils.ts | receiveData": {
-    "message": "Прием данных"
+    "message": "Получить данные"
   },
   "panels/timeline/TimelineUIUtils.ts | receiveResponse": {
     "message": "Получить ответ"
   },
   "panels/timeline/TimelineUIUtils.ts | receiveWebsocketHandshake": {
-    "message": "Получить подтверждение WebSocket"
+    "message": "Получить рукопожатие WebSocket"
   },
   "panels/timeline/TimelineUIUtils.ts | recurringHandlerTookS": {
     "message": "Обработчику повторяющихся событий потребовалось {PH1}."
@@ -12888,7 +13062,7 @@
     "message": "{PH1}: потребовалось {PH2}."
   },
   "panels/timeline/TimelineUIUtils.ts | scheduleStyleRecalculation": {
-    "message": "Расписание пересчета стилей"
+    "message": "Планирование пересчета стилей"
   },
   "panels/timeline/TimelineUIUtils.ts | score": {
     "message": "Оценка"
@@ -12903,7 +13077,7 @@
     "message": "скрипт не поддерживается"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
-    "message": "Сценарии"
+    "message": "Выполнение скриптов"
   },
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "Прокрутка"
@@ -12915,7 +13089,7 @@
     "message": "Отправить запрос"
   },
   "panels/timeline/TimelineUIUtils.ts | sendWebsocketHandshake": {
-    "message": "Отправить подтверждение WebSocket"
+    "message": "Отправить рукопожатие WebSocket"
   },
   "panels/timeline/TimelineUIUtils.ts | show": {
     "message": "Показать"
@@ -12945,7 +13119,7 @@
     "message": "Завершено"
   },
   "panels/timeline/TimelineUIUtils.ts | streamingCompileTask": {
-    "message": "Потоковая передача задачи компиляции"
+    "message": "Задача по компиляции для потоковой передачи"
   },
   "panels/timeline/TimelineUIUtils.ts | streamingWasmResponse": {
     "message": "Потоковая передача ответа Wasm"
@@ -13032,7 +13206,7 @@
     "message": "Загрузка XHR"
   },
   "panels/timeline/TimelineUIUtils.ts | xhrReadyStateChange": {
-    "message": "Изменение состояния готовности XHR"
+    "message": "Изменение состояния готовности: XHR"
   },
   "panels/timeline/TimelineUIUtils.ts | yes": {
     "message": "Да"
@@ -13063,6 +13237,21 @@
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Система"
+  },
+  "panels/timeline/components/DetailsView.ts | forcedReflow": {
+    "message": "Принудительная компоновка"
+  },
+  "panels/timeline/components/DetailsView.ts | idleCallbackExecutionExtended": {
+    "message": "Выполнение вызова функции в период простоя продлено на {PH1}."
+  },
+  "panels/timeline/components/DetailsView.ts | longTask": {
+    "message": "Длительная задача"
+  },
+  "panels/timeline/components/DetailsView.ts | sIsALikelyPerformanceBottleneck": {
+    "message": "{PH1} может быть узким местом производительности."
+  },
+  "panels/timeline/components/DetailsView.ts | sTookS": {
+    "message": "{PH1}: потребовалось {PH2}."
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Скрыть фрейм chrome в виде слоев"
@@ -14243,8 +14432,17 @@
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Найти"
   },
+  "ui/legacy/components/source_frame/SourceFrame.ts | allow": {
+    "message": "Разрешить"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | allowPasting": {
+    "message": "разрешить вставку"
+  },
   "ui/legacy/components/source_frame/SourceFrame.ts | bytecodePositionXs": {
     "message": "Позиция байт-кода: 0x{PH1}"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | cancel": {
+    "message": "Отмена"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | dCharactersSelected": {
     "message": "Выбрано символов: {PH1}"
@@ -14254,6 +14452,12 @@
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | dSelectionRegions": {
     "message": "Области выбора: {PH1}"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
+    "message": "Не вставляйте в консоль инструментов разработчика код, который вы не понимаете или не проверяли. Так злоумышленники могут украсть у вас данные или получить контроль над вашим компьютером. Чтобы разрешить вставку, введите ''{PH1}'' ниже."
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
+    "message": "Вы доверяете этому коду?"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | lineSColumnS": {
     "message": "Строка {PH1}, столбец {PH2}"
@@ -14266,6 +14470,9 @@
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | source": {
     "message": "Источник"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
+    "message": "Введите \"{PH1}\""
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Найти"

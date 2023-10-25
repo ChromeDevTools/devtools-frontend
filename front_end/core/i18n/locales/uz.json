@@ -233,6 +233,9 @@
   "core/sdk/CSSStyleSheetHeader.ts | thereWasAnErrorRetrievingThe": {
     "message": "Manba uslublarini qabul qilishda xatolik yuz berdi."
   },
+  "core/sdk/ChildTargetManager.ts | main": {
+    "message": "Asosiy"
+  },
   "core/sdk/CompilerSourceMappingContentProvider.ts | couldNotLoadContentForSS": {
     "message": "{PH1} uchun kontent yuklanmadi ({PH2})"
   },
@@ -250,132 +253,6 @@
   },
   "core/sdk/ConsoleModel.ts | profileSStarted": {
     "message": "{PH1} profili ishga tushdi."
-  },
-  "core/sdk/DOMDebuggerModel.ts | animation": {
-    "message": "Animatsiya"
-  },
-  "core/sdk/DOMDebuggerModel.ts | animationFrameFired": {
-    "message": "Animatsiya freymi chiqdi"
-  },
-  "core/sdk/DOMDebuggerModel.ts | cancelAnimationFrame": {
-    "message": "Animatsiya freymini bekor qilish"
-  },
-  "core/sdk/DOMDebuggerModel.ts | canvas": {
-    "message": "Canvas"
-  },
-  "core/sdk/DOMDebuggerModel.ts | clipboard": {
-    "message": "Vaqtinchalik xotira"
-  },
-  "core/sdk/DOMDebuggerModel.ts | closeAudiocontext": {
-    "message": "Yopish: AudioContext"
-  },
-  "core/sdk/DOMDebuggerModel.ts | control": {
-    "message": "Control"
-  },
-  "core/sdk/DOMDebuggerModel.ts | createAudiocontext": {
-    "message": "AudioContext yaratish"
-  },
-  "core/sdk/DOMDebuggerModel.ts | createCanvasContext": {
-    "message": "Canvas kontekstini yaratish"
-  },
-  "core/sdk/DOMDebuggerModel.ts | device": {
-    "message": "Qurilma"
-  },
-  "core/sdk/DOMDebuggerModel.ts | domMutation": {
-    "message": "DOM mutatsiyasi"
-  },
-  "core/sdk/DOMDebuggerModel.ts | dragDrop": {
-    "message": "Tortib tashlash"
-  },
-  "core/sdk/DOMDebuggerModel.ts | geolocation": {
-    "message": "Geolokatsiya"
-  },
-  "core/sdk/DOMDebuggerModel.ts | keyboard": {
-    "message": "Klaviatura"
-  },
-  "core/sdk/DOMDebuggerModel.ts | load": {
-    "message": "Yuklash"
-  },
-  "core/sdk/DOMDebuggerModel.ts | media": {
-    "message": "Media"
-  },
-  "core/sdk/DOMDebuggerModel.ts | mouse": {
-    "message": "Sichqoncha"
-  },
-  "core/sdk/DOMDebuggerModel.ts | notification": {
-    "message": "Bildirishnoma"
-  },
-  "core/sdk/DOMDebuggerModel.ts | parse": {
-    "message": "Tahlil qilish"
-  },
-  "core/sdk/DOMDebuggerModel.ts | pictureinpicture": {
-    "message": "Tasvir ustida tasvir"
-  },
-  "core/sdk/DOMDebuggerModel.ts | pointer": {
-    "message": "Koʻrsatkich"
-  },
-  "core/sdk/DOMDebuggerModel.ts | policyViolations": {
-    "message": "Qoidabuzarliklar"
-  },
-  "core/sdk/DOMDebuggerModel.ts | requestAnimationFrame": {
-    "message": "Animatsiya freymini talab qilish"
-  },
-  "core/sdk/DOMDebuggerModel.ts | resumeAudiocontext": {
-    "message": "AudioContext davom ettirilmoqda"
-  },
-  "core/sdk/DOMDebuggerModel.ts | script": {
-    "message": "Skript"
-  },
-  "core/sdk/DOMDebuggerModel.ts | scriptBlockedByContentSecurity": {
-    "message": "Skript Kontent xavfsizligi siyosati asosida bloklandi"
-  },
-  "core/sdk/DOMDebuggerModel.ts | scriptBlockedDueToContent": {
-    "message": "Skript Kontent xavfsizligi siyosati asosida bloklandi: {PH1}"
-  },
-  "core/sdk/DOMDebuggerModel.ts | scriptFirstStatement": {
-    "message": "Skriptning ilk bayonoti"
-  },
-  "core/sdk/DOMDebuggerModel.ts | setInnerhtml": {
-    "message": "innerHTMLni belgilash"
-  },
-  "core/sdk/DOMDebuggerModel.ts | setTimeoutOrIntervalFired": {
-    "message": "{PH1} ishga tushirildi"
-  },
-  "core/sdk/DOMDebuggerModel.ts | sinkViolations": {
-    "message": "Sink qoidabuzarliklari"
-  },
-  "core/sdk/DOMDebuggerModel.ts | suspendAudiocontext": {
-    "message": "AudioContext muzlatilsin"
-  },
-  "core/sdk/DOMDebuggerModel.ts | timer": {
-    "message": "Taymer"
-  },
-  "core/sdk/DOMDebuggerModel.ts | touch": {
-    "message": "Teginish"
-  },
-  "core/sdk/DOMDebuggerModel.ts | trustedTypeViolations": {
-    "message": "Ishonchli tur qoidabuzarliklari"
-  },
-  "core/sdk/DOMDebuggerModel.ts | webaudio": {
-    "message": "WebAudio"
-  },
-  "core/sdk/DOMDebuggerModel.ts | webglErrorFired": {
-    "message": "WebGL xatosi chiqdi"
-  },
-  "core/sdk/DOMDebuggerModel.ts | webglErrorFiredS": {
-    "message": "WebGL xatosi chiqdi ({PH1})"
-  },
-  "core/sdk/DOMDebuggerModel.ts | webglWarningFired": {
-    "message": "WebGL Ogohlantiruvi chiqdi"
-  },
-  "core/sdk/DOMDebuggerModel.ts | window": {
-    "message": "Oyna"
-  },
-  "core/sdk/DOMDebuggerModel.ts | worker": {
-    "message": "Worker"
-  },
-  "core/sdk/DOMDebuggerModel.ts | xhr": {
-    "message": "XHR"
   },
   "core/sdk/DebuggerModel.ts | block": {
     "message": "Bloklash"
@@ -403,21 +280,6 @@
   },
   "core/sdk/DebuggerModel.ts | withBlock": {
     "message": "With boʻlagi"
-  },
-  "core/sdk/EventBreakpointsModel.ts | auctionWorklet": {
-    "message": "Worklet reklamalar auksioni"
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletBiddingStart": {
-    "message": "“Auksion ishtirokchisi stavkasini tayinlash” bosqichining boshlanishi"
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeBidderWorkletReportingStart": {
-    "message": "“Auksion ishtirokchisi hisoboti” bosqichining boshlanishi"
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletReportingStart": {
-    "message": "“Sotuvchi hisoboti” bosqichining boshlanishi"
-  },
-  "core/sdk/EventBreakpointsModel.ts | beforeSellerWorkletScoringStart": {
-    "message": "“Sotuvchi hisoboti” bosqichining boshlanishi"
   },
   "core/sdk/NetworkManager.ts | fastG": {
     "message": "Tez 3G"
@@ -520,6 +382,9 @@
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieDidntSpecifyASamesite": {
     "message": "Bu Set-Cookie sarlavhasi tarkibida “SameSite” atributi topilmadi va standart “SameSite=Lax\"” atributi belgilandi, lekin yuqori darajali navigatsiya soʻroviga javob boʻlmagan begona saytdan yuborilgani uchun bloklandi. Bu javob joriy sayt maketidan farq qiluvchi URL manzildan kelgani sababli begona saytdan kelgan deb hisoblandi."
+  },
+  "core/sdk/NetworkRequest.ts | thisSetcookieHadADisallowedCharacter": {
+    "message": "Set-Cookie sarlavhasida yaroqsiz belgi (noqonuniy ASCII belgisi, cookie fayli, atribut nomi yoki qiymati oʻrtasida joylashgan yorliq belgisi) mavjud edi."
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieHadInvalidSyntax": {
     "message": "Bu Set-Cookie sarlavhasida imloviy xato bor."
@@ -1052,9 +917,6 @@
   "entrypoints/main/MainImpl.ts | undockIntoSeparateWindow": {
     "message": "Alohida oynaga ajratish"
   },
-  "entrypoints/main/main-meta.ts | asAuthored": {
-    "message": "Muallifli"
-  },
   "entrypoints/main/main-meta.ts | auto": {
     "message": "avto"
   },
@@ -1066,12 +928,6 @@
   },
   "entrypoints/main/main-meta.ts | cancelSearch": {
     "message": "Qidiruvni bekor qilish"
-  },
-  "entrypoints/main/main-meta.ts | colorFormat": {
-    "message": "Rang formati:"
-  },
-  "entrypoints/main/main-meta.ts | colorFormatSettingDisabled": {
-    "message": "Bu sozlama eskirgan va yangi rang muhitlariga mos emas. Uni qayta faollashtirish uchun tegishli tajribani oʻchiring."
   },
   "entrypoints/main/main-meta.ts | darkCapital": {
     "message": "Tungi"
@@ -1156,18 +1012,6 @@
   },
   "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
     "message": "Yozayotganda qidirish funksiyasini oʻchirish (qidirish uchun Enter bosiladi)"
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatAsAuthored": {
-    "message": "Ranglarni muallif formatida sozlash"
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatToHex": {
-    "message": "Ranglarni HEX formatida sozlash"
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatToHsl": {
-    "message": "Ranglarni HSL formatida sozlash"
-  },
-  "entrypoints/main/main-meta.ts | setColorFormatToRgb": {
-    "message": "Ranglarni RGB formatida sozlash"
   },
   "entrypoints/main/main-meta.ts | switchToDarkTheme": {
     "message": "Tungi mavzuga almashtirish"
@@ -1255,6 +1099,12 @@
   },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Birlamchi translatsiya integratsiyasini faolsizlantirishda -internal-media-controls-overlay-cast-button tanlagichi oʻrniga disableRemotePlayback atributi ishlatilishi lozim."
+  },
+  "generated/Deprecation.ts | CSSValueAppearanceNonStandard": {
+    "message": "CSS koʻrinish qiymatlari  inner-spin-button, media-slider, media-sliderthumb, media-volume-slider, media-volume-sliderthumb, push-button, searchfield-cancel-button, slider-horizontal, sliderthumb-horizontal, sliderthumb-vertical, square-button standartlashtirilmagan va olib tashlanadi."
+  },
+  "generated/Deprecation.ts | CSSValueAppearanceSliderVertical": {
+    "message": "CSS koʻrinish qiymati slider-vertical standartlashtirilmagan va olib tashlanadi."
   },
   "generated/Deprecation.ts | CanRequestURLHTTPContainingNewline": {
     "message": "Boʻshliq va \\(n|r|t) belgilaridan iborat URL manzilli resurs soʻrovlari olib tashlandi va <dan kam belgidan iboratlari bloklandi. Bu resurslar yuklanishi uchun yangi qatorlarni olib tashlang va element atributi qiymatlaridan kam belgilarni shifrlang."
@@ -1575,7 +1425,7 @@
     "message": "Bu oʻzgartirish {milestone}-versiyasida kuchga kiradi."
   },
   "models/issues_manager/DeprecationIssue.ts | title": {
-    "message": "Tugatilgan funksiyadan foydalanildi"
+    "message": "Tugatilgan funksiyadan foydalanilmoqda"
   },
   "models/issues_manager/FederatedAuthRequestIssue.ts | fedCm": {
     "message": "Federated Credential Management API"
@@ -1703,6 +1553,12 @@
   "models/persistence/PersistenceActions.ts | overrideContent": {
     "message": "Kontentni almashtirish"
   },
+  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileExplanation": {
+    "message": "{PH1} fayli manba xaritasiga kiritilgan va uni qayta yozish mumkin emas."
+  },
+  "models/persistence/PersistenceActions.ts | overrideSourceMappedFileWarning": {
+    "message": "{PH1} skripti qoidalari almashtirilsinmi?"
+  },
   "models/persistence/PersistenceActions.ts | saveAs": {
     "message": "Saqlab olish..."
   },
@@ -1761,7 +1617,7 @@
     "message": "qayta yozish"
   },
   "models/persistence/persistence-meta.ts | showWorkspace": {
-    "message": "Ishchi maydonni ochish"
+    "message": "Ishchi maydon sozlamalarini koʻrsatish"
   },
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Ishchi maydon"
@@ -1776,7 +1632,7 @@
     "message": "Ishtirokchi Worklet — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
-    "message": "Dedicated Worker"
+    "message": "Tanlangan: Worker"
   },
   "models/timeline_model/TimelineModel.ts | sellerWorklet": {
     "message": "Sotuvchi Worklet"
@@ -2348,6 +2204,9 @@
   "panels/application/AppManifestView.ts | errorsAndWarnings": {
     "message": "Xatolar va ogohlantirishlar"
   },
+  "panels/application/AppManifestView.ts | formFactor": {
+    "message": "Form-faktor"
+  },
   "panels/application/AppManifestView.ts | icon": {
     "message": "Belgi"
   },
@@ -2362,6 +2221,9 @@
   },
   "panels/application/AppManifestView.ts | installability": {
     "message": "Oʻrnatiluvchanligi"
+  },
+  "panels/application/AppManifestView.ts | label": {
+    "message": "Yorliq"
   },
   "panels/application/AppManifestView.ts | learnMore": {
     "message": "Batafsil"
@@ -2388,7 +2250,7 @@
     "message": "start_URL manifesti yaroqsiz"
   },
   "panels/application/AppManifestView.ts | name": {
-    "message": "Nomi"
+    "message": "Ism"
   },
   "panels/application/AppManifestView.ts | needHelpReadOurS": {
     "message": "Yordam kerakmi? Buni oching: {PH1}."
@@ -2398,6 +2260,12 @@
   },
   "panels/application/AppManifestView.ts | noPlayStoreIdProvided": {
     "message": "Play Market idenfitikatori berilmadi"
+  },
+  "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnDesktop": {
+    "message": "Kengaytirilgan PWA oʻrnatish interfeysi kompyuterda ishlamaydi. “form_factor” “wide” qilib oʻrnatilgan kamida bitta skrinshot qoʻshing."
+  },
+  "panels/application/AppManifestView.ts | noScreenshotsForRicherPWAInstallOnMobile": {
+    "message": "Kengaytirilgan PWA oʻrnatish interfeysi mobil qurilmalarda ishlamaydi. “form_factor” parametri oʻrnatilmagan yoki “wide”dan boshqa har qanday qiymatga oʻrnatilgan kamida bitta skrinshot qoʻshing."
   },
   "panels/application/AppManifestView.ts | noSuppliedIconIsAtLeastSpxSquare": {
     "message": "Berilgan belgilarning hech qaysi biri talabga mos emas: PNG, SVG yoki WebP formatidagi kamida {PH1}px kvadrat, atributsiz yoki “any” atrubutli."
@@ -2425,6 +2293,9 @@
   },
   "panels/application/AppManifestView.ts | pageIsNotServedFromASecureOrigin": {
     "message": "Sahifa xavfsiz manbadan yuklanmadi"
+  },
+  "panels/application/AppManifestView.ts | platform": {
+    "message": "Platforma"
   },
   "panels/application/AppManifestView.ts | preferrelatedapplicationsIsOnly": {
     "message": "prefer_related_applications xususiyati faqat Chrome Beta va Android barqaror kanallarida ishlaydi."
@@ -2474,6 +2345,9 @@
   "panels/application/AppManifestView.ts | screenshotS": {
     "message": "Skrinshot #{PH1}"
   },
+  "panels/application/AppManifestView.ts | screenshotsMustHaveSameAspectRatio": {
+    "message": "Bir xil \"form_factor\" qiymatiga ega boʻlgan barcha skrinshotlar ushbu \"form_factor\" bilan birinchi skrinshot kabi bir xil tomonlar nisbatiga ega boʻlishi kerak. Ayrim skrinshotlar rad etiladi."
+  },
   "panels/application/AppManifestView.ts | shortName": {
     "message": "Qisqa nomi"
   },
@@ -2482,6 +2356,9 @@
   },
   "panels/application/AppManifestView.ts | shortcutSShouldIncludeAXPixel": {
     "message": "#{PH1} yorliqda 96x96 piksel hajmli belgi boʻlishi lozim"
+  },
+  "panels/application/AppManifestView.ts | shortcutsMayBeNotAvailable": {
+    "message": "Tugmalar birikmasining maksimal soni platformaga bogʻliq. Ayrimlari ishlamasligi mumkin."
   },
   "panels/application/AppManifestView.ts | showOnlyTheMinimumSafeAreaFor": {
     "message": "Belgilarni maskirovka qilish mumkin minimal xavfsiz maydonni chiqarish"
@@ -2500,6 +2377,15 @@
   },
   "panels/application/AppManifestView.ts | themeColor": {
     "message": "Mavzu rangi"
+  },
+  "panels/application/AppManifestView.ts | tooManyScreenshotsForDesktop": {
+    "message": "Ish stolida 8 tagacha skrinshot chiqadi. Qolganlari chiqmaydi."
+  },
+  "panels/application/AppManifestView.ts | tooManyScreenshotsForMobile": {
+    "message": "Mobil qurilmada 5 dan ortiq skrinshot koʻrsatilmaydi. Qolganlari chiqmaydi."
+  },
+  "panels/application/AppManifestView.ts | url": {
+    "message": "URL"
   },
   "panels/application/AppManifestView.ts | wcoFound": {
     "message": "Chrome {PH3} tarkibidagi {PH2} qatorida {PH1} qiymatini topdi."
@@ -2898,7 +2784,7 @@
     "message": "Oldindan yuklashlar"
   },
   "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "Xalaqit qiluvchi qoidalar"
+    "message": "Bashorat qoidalari"
   },
   "panels/application/PreloadingTreeElement.ts | thisPage": {
     "message": "Shu sahifa"
@@ -2908,6 +2794,9 @@
   },
   "panels/application/ReportingApiTreeElement.ts | reportingApi": {
     "message": "Reporting API"
+  },
+  "panels/application/ResourcesPanel.ts | webSqlDeprecation": {
+    "message": "Web SQL eskirdi. Chrome 123 chiqquniga qadar ushbu texnologiyadan foydalanishda davom ettirish uchun ariza topshirishingiz mumkin."
   },
   "panels/application/ServiceWorkerCacheTreeElement.ts | cacheStorage": {
     "message": "Kesh xotirasi"
@@ -3794,12 +3683,6 @@
   "panels/application/components/FrameDetailsView.ts | parentIsAdExplanation": {
     "message": "Yuqori freymi reklamali boʻlgani uchun bu freym reklama freymi deb aniqlandi."
   },
-  "panels/application/components/FrameDetailsView.ts | prerendering": {
-    "message": "Erta renderlash"
-  },
-  "panels/application/components/FrameDetailsView.ts | prerenderingStatus": {
-    "message": "Erta renderlash holati"
-  },
   "panels/application/components/FrameDetailsView.ts | refresh": {
     "message": "Yangilash"
   },
@@ -3931,144 +3814,6 @@
   },
   "panels/application/components/PermissionsPolicySection.ts | showDetails": {
     "message": "Tafsilotlarni ochish"
-  },
-  "panels/application/components/Prerender2.ts | Activated": {
-    "message": "Faollashtirildi."
-  },
-  "panels/application/components/Prerender2.ts | ActivatedBeforeStarted": {
-    "message": "Boshlanishidan avval ishga tushdi"
-  },
-  "panels/application/components/Prerender2.ts | ActivationNavigationParameterMismatch": {
-    "message": "Sahifa oldindan renderlandi, lekin navigatsiya asl oldindan renderlanganidan farqli bajarilgani uchun oldindan renderlangan sahifa faollashtirilmadi"
-  },
-  "panels/application/components/Prerender2.ts | AudioOutputDeviceRequested": {
-    "message": "AudioContext API orqali oldindan renderlash hozircha ishlamaydi."
-  },
-  "panels/application/components/Prerender2.ts | BlockedByClient": {
-    "message": "Resursni yuklash mijoz dastur tomonidan bloklandi."
-  },
-  "panels/application/components/Prerender2.ts | CancelAllHostsForTesting": {
-    "message": "CancelAllHostsForTesting."
-  },
-  "panels/application/components/Prerender2.ts | ClientCertRequested": {
-    "message": "Bu sahifa oldindan renderlanadigan yashirin sahifaga mos kelmaydigan mijoz sertifikatini talab qilmoqda."
-  },
-  "panels/application/components/Prerender2.ts | CrossSiteNavigation": {
-    "message": "Oldindan renderlash sahifasi yuklanganidan keyin begona URL manzildagi saytga yoʻnaltirildi. Hozir begona saytlar sahifalarini oldindan renderlashga ruxsat berilmagan."
-  },
-  "panels/application/components/Prerender2.ts | CrossSiteRedirect": {
-    "message": "Oldindan renderlash URL manzili begona URL manzildagi saytga yoʻnaltirishga urindi. Hozir begona saytlar sahifalarini oldindan renderlashga ruxsat berilmagan."
-  },
-  "panels/application/components/Prerender2.ts | DataSaverEnabled": {
-    "message": "Trafikni rejash funksiyasi yoqildi"
-  },
-  "panels/application/components/Prerender2.ts | Destroyed": {
-    "message": "Oldindan renderlash sahifasi noaniq sabablarga koʻra tashlab ketildi."
-  },
-  "panels/application/components/Prerender2.ts | DidFailLoad": {
-    "message": "Oldindan renderlashda DidFailLoadWithError xatosi yuz berdi."
-  },
-  "panels/application/components/Prerender2.ts | DisallowedApiMethod": {
-    "message": "Taqiqlangan API usuli"
-  },
-  "panels/application/components/Prerender2.ts | Download": {
-    "message": "Oldindan renderlashda yuklab olishga ruxsat berilmagan."
-  },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndCrossOriginRedirected": {
-    "message": "Chrome ichki vositalari tomonidan ishga tushirilgan oldindan renderlash (masalan, Omniboks oldindan renderlash) begona manbali boshqa sahifaga yoʻnaltirilgani uchun bekor qilindi."
-  },
-  "panels/application/components/Prerender2.ts | EmbedderTriggeredAndSameOriginRedirected": {
-    "message": "Chrome ichki vositalari tomonidan ishga tushirilgan oldindan renderlash (masalan, Omniboks oldindan renderlash) bir xil manbali boshqa sahifaga yoʻnaltirilgani uchun bekor qilindi."
-  },
-  "panels/application/components/Prerender2.ts | FailToGetMemoryUsage": {
-    "message": "Xotira sarfi olinmadi"
-  },
-  "panels/application/components/Prerender2.ts | HasEffectiveUrl": {
-    "message": "Unumli URL manzili bor"
-  },
-  "panels/application/components/Prerender2.ts | InProgressNavigation": {
-    "message": "InProgressNavigation."
-  },
-  "panels/application/components/Prerender2.ts | InactivePageRestriction": {
-    "message": "Nofaol sahifa cheklovi"
-  },
-  "panels/application/components/Prerender2.ts | InvalidSchemeNavigation": {
-    "message": "Oldindan renderlashda faqat himoyalangan (HTTP(S)) manzillarga yoʻnaltirish ruxsat etiladi."
-  },
-  "panels/application/components/Prerender2.ts | InvalidSchemeRedirect": {
-    "message": "Oldindan renderlash URL manzili himoyalanmagan (no HTTP(S)) URL manziliga yoʻnaltirishga urindi. Faqatgina himoyalangan (HTTP(S)) sahifalar erta renderlanishi mumkin."
-  },
-  "panels/application/components/Prerender2.ts | LoginAuthRequested": {
-    "message": "Oldindan renderlashga interfeys orqali ruxsat berish ishlamaydi."
-  },
-  "panels/application/components/Prerender2.ts | LowEndDevice": {
-    "message": "Xotirasi kam qurilmalarda oldindan renderlash ishlamaydi."
-  },
-  "panels/application/components/Prerender2.ts | MainFrameNavigation": {
-    "message": "Boshlangʻich oldindan renderlashdan keyingi yoʻnaltirishlarga ruxsat berilmagan"
-  },
-  "panels/application/components/Prerender2.ts | MaxNumOfRunningPrerendersExceeded": {
-    "message": "Oldindan renderlashlar soni maksimal limitga yetdi."
-  },
-  "panels/application/components/Prerender2.ts | MemoryLimitExceeded": {
-    "message": "Xotira chegarasidan oshib ketdi"
-  },
-  "panels/application/components/Prerender2.ts | MixedContent": {
-    "message": "Oldindan renderlash aralash kontent freymi tomondan bekor qilindi."
-  },
-  "panels/application/components/Prerender2.ts | MojoBinderPolicy": {
-    "message": "Oldindan renderlash sahifasida ruxsat etilmagan API ishlatildi"
-  },
-  "panels/application/components/Prerender2.ts | NavigationBadHttpStatus": {
-    "message": "Oldindan renderlash sahifasidan boshlangʻich yoʻnaltirish 200/204/205 holat kodlarini qaytarmagani uchun amalga oshmadi."
-  },
-  "panels/application/components/Prerender2.ts | NavigationNotCommitted": {
-    "message": "Oldindan renderlash sahifasi oxirida belgilanmadi."
-  },
-  "panels/application/components/Prerender2.ts | NavigationRequestBlockedByCsp": {
-    "message": "Yoʻnaltirish soʻrovi CSP tomonidan bloklandi."
-  },
-  "panels/application/components/Prerender2.ts | NavigationRequestNetworkError": {
-    "message": "Oldindan renderlash vaqtida tarmoq xatoligi yuz berdi."
-  },
-  "panels/application/components/Prerender2.ts | PrerenderingOngoing": {
-    "message": "Oldindan renderlash davom etmoqda"
-  },
-  "panels/application/components/Prerender2.ts | RendererProcessCrashed": {
-    "message": "Oldindan renderlangan sahifa ishdan chiqdi."
-  },
-  "panels/application/components/Prerender2.ts | RendererProcessKilled": {
-    "message": "Oldindan renderlash sahifasining renderlash jarayoni tugatildi."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigation": {
-    "message": "Oldindan renderlangan sahifa yuklanganidan keyin begona manbali URL manzildagi bir xil saytga yoʻnaltirildi. Hozir begona manba sahifalarini oldindan renderlashga ruxsat berilmagan."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginNavigationNotOptIn": {
-    "message": "Oldindan renderlangan sahifa yuklanganidan keyin begona manbali URL manzildagi bir xil saytga yoʻnaltirildi. Sayt Supports-Loading-Mode: credentialed-prerender sarlavhasini yubormaguncha bu urinish taqiqlanadi."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirect": {
-    "message": "Oldindan renderlash vositasi URL manzilni begona URL manzildagi bir xil saytga yoʻnaltirishga urindi. Hozir begona manba sahifalarini oldindan renderlashga ruxsat berilmagan."
-  },
-  "panels/application/components/Prerender2.ts | SameSiteCrossOriginRedirectNotOptIn": {
-    "message": "Oldindan renderlash vositasi URL manzilni begona URL manzildagi bir xil saytga yoʻnaltirishga urindi. Sayt Supports-Loading-Mode: credentialed-prerender sarlavhasini yubormaguncha bu urinish taqiqlanadi."
-  },
-  "panels/application/components/Prerender2.ts | SslCertificateError": {
-    "message": "SSL sertifikatida xatolik yuz berdi."
-  },
-  "panels/application/components/Prerender2.ts | StartFailed": {
-    "message": "Boshlanmadi"
-  },
-  "panels/application/components/Prerender2.ts | Stop": {
-    "message": "Varaq toʻxtatildi."
-  },
-  "panels/application/components/Prerender2.ts | TriggerBackgrounded": {
-    "message": "Varaq fonda ishga tushgan"
-  },
-  "panels/application/components/Prerender2.ts | TriggerDestroyed": {
-    "message": "Oldindan renderlash ishga tushirilmadi va trigger tomonidan yoʻq qilindi."
-  },
-  "panels/application/components/Prerender2.ts | UaChangeRequiresReload": {
-    "message": "UserAgentOverride dan keyin qayta yuklanishi zarur."
   },
   "panels/application/components/ProtocolHandlersView.ts | dropdownLabel": {
     "message": "Protokol ishlash vositasini tanlang"
@@ -4383,7 +4128,7 @@
     "message": "Oldindan renderlash faolsizlantirilgan, lekin hozir majburiy yoqildi"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | headerDisabledByPreference": {
-    "message": "Foydalanuvchi sozlamalari yoki kengaytma"
+    "message": "Foydalanuvchi sozlamalari yoki kengaytmalari"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
     "message": "Oldindan renderlash yoqilmagan"
@@ -4481,11 +4226,17 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedDuringMainFrameNavigation": {
     "message": "Ochilayotgan sahifadagi asosiy freym yoʻnaltirilishi vaqtida oldindan renderlangan sahifa ishga tushdi."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivatedWithAuxiliaryBrowsingContexts": {
+    "message": "Oldindan renderlash ishlatilmadi, chunki sahifa koʻrsatilganda boshlangʻich sahifaga faol havolasi boʻlgan boshqa oynalar mavjud edi, ular hozirda qoʻllab-quvvatlanmaydi."
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationFramePolicyNotCompatible": {
     "message": "Ochilayotgan sahifadagi sinov muhiti tajribaviy funksiyalari yoki ruxsatlar siyosati oldindan renderlanuvchi sahifanikidan farq qilgani uchun oldindan renderlash ishlatilmadi."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationNavigationParameterMismatch": {
     "message": "Asl navigatsiyani oldindan renderlash soʻrovida xato parametrlar (HTTP sarlavhalar kabi) hisoblangani uchun sahifa faollashtirish vaqtida oldindan renderlanmadi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusActivationUrlHasEffectiveUrl": {
+    "message": "Oldindan renderlanmadi, chunki sahifa koʻrsatilganda yakuniy URL oddiy URL manzilidan farq qildi (masalan, Yangi varaq sahifasi yoki ichki ilovalar)"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusAudioOutputDeviceRequested": {
     "message": "Oldindan renderlangan sahifa audio chiqarishni talab qildi, lekin bu amal hozir ishlamaydi."
@@ -4517,9 +4268,6 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusDownload": {
     "message": "Oldindan renderlangan sahifa yuklab olishga urindi, lekin bu amal hozir ishlamaydi."
   },
-  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusFailToGetMemoryUsage": {
-    "message": "Brauzer joriy xotira sarfini aniqlashida ichki xatolik yuz bergani sababli sahifa oldindan renderlanmadi."
-  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusHasEffectiveUrl": {
     "message": "Ochilayotgan sahifa oddiy URL manzildan farqli manzilda boʻlgani uchun uni oldindan renderlash bajarilmadi. (masalan, Yangi varaq sahifasi yoki ichki ilovalar)"
   },
@@ -4538,7 +4286,13 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMainFrameNavigation": {
     "message": "Oldindan renderlangan sahifa oʻzini boshqa URL manzilga yoʻnaltirdi, lekin bu amal hozir ishlamaydi."
   },
-  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningPrerendersExceeded": {
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
+    "message": "Ochilayotgan sahifada juda koʻp oldindan renderlash amallari ishga tushgani uchun sahifa oldindan renderlanmadi. Chuqurroq oldindan renderlashni yoqish uchun xalaqit qiluvchi qoidalarni olib tashlang."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
+    "message": "Ochilayotgan sahifada juda koʻp oldindan renderlash amallari ishga tushgani uchun sahifa oldindan renderlanmadi."
+  },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
     "message": "Ochilayotgan sahifada juda koʻp oldindan renderlash amallari ishga tushgani uchun sahifa oldindan renderlanmadi. Chuqurroq oldindan renderlashni yoqish uchun xalaqit qiluvchi qoidalarni olib tashlang."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
@@ -4571,23 +4325,26 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingDisabledByDevTools": {
     "message": "DevTools sozlamalarida oldindan yuklash faolsizlantirilgani uchun oldindan yuklash amalga oshmadi."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrerenderingUrlHasEffectiveUrl": {
+    "message": "Navigatsiya oldindan renderlanmadi, chunki tugash URL manzili oddiy sahifa URL manzilidan farq qiladi. (masalan, Yangi varaq sahifasi yoki ichki ilovalar)"
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessCrashed": {
     "message": "Ochilayotgan sahifa ishdan chiqdi."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusPrimaryMainFrameRendererProcessKilled": {
     "message": "Ochilayotgan sahifa tugatildi."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRedirectedPrerenderingUrlHasEffectiveUrl": {
+    "message": "Navigatsiya oldindan renderlanmadi, chunki u oddiy sahifa URL manzilidan farqli boʻlgan unumli URL manziliga yoʻnaltirildi. (masalan, Yangi varaq sahifasi yoki ichki ilovalar)"
+  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessCrashed": {
-    "message": "Oldindan renderlangan sahifa ishdan chiqdi."
+    "message": "Oldindan renderlash sahifasi ishdan chiqdi."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusRendererProcessKilled": {
     "message": "Oldindan renderlangan sahifa tugatildi."
   },
-  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusResourceLoadBlockedByClient": {
-    "message": "Ayrim resurslar yuklanishi bloklandi."
-  },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInInitialNavigation": {
-    "message": "Oldindan renderlangan sahifa oʻzini bir xil URL manzildagi begona sahifaga yoʻnaltirildi, lekin manzil tegishli Supports-Loading-Mode sarlavhasini qaytarmadi."
+    "message": "Sahifa bir xil URL manzildagi begona sahifaga yoʻnaltirilgani, lekin manzil tegishli Supports-Loading-Mode sarlavhasini qaytarmagani sababli navigatsiya oldindan renderlanmadi."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSameSiteCrossOriginNavigationNotOptInInMainFrameNavigation": {
     "message": "Oldindan renderlangan sahifa bir xil URL manzildagi begona sahifaga yoʻnaltirildi, lekin manzil tegishli Supports-Loading-Mode sarlavhasini qaytarmadi."
@@ -4599,7 +4356,7 @@
     "message": "Oldindan renderlangan sahifa bir xil URL manzildagi begona sahifaga yoʻnaltirildi, lekin manzil tegishli Supports-Loading-Mode sarlavhasini qaytarmadi."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSpeculationRuleRemoved": {
-    "message": "Noaniq"
+    "message": "Oldindan koʻrsatilgan sahifa maʼlumotlari oʻchirildi, chunki asl sahifada tegishli oldindan koʻrsatish qoidasi <script type=\"speculationrules\"> blokidan olib tashlangan."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusSslCertificateError": {
     "message": "SSL sertifikati yaroqsizligi sababli navigatsiya oldindan renderlanmadi."
@@ -4659,7 +4416,7 @@
     "message": "Ochilayotgan sahifa mazkur sahifa URL manzilini oldindan renderlashga urindi. Javob tarkibi hali ham oldindan yuklanayotgani uchun oldindan renderlash amalga oshmadi."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "Batafsil"
+    "message": "Oldindan yuklash haqida batafsil maʼlumotni developer.chrome.com sahifasidan olasiz"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
     "message": "Ochilayotgan sahifa bu sahifa URL manzilini oldindan yuklashga urinmadi."
@@ -4890,7 +4647,7 @@
     "message": "Terminal buyrugʻi"
   },
   "panels/console/ConsolePrompt.ts | selfXssWarning": {
-    "message": "Diqqat: DevTools terminalida mustaqil tekshirmagan yoki tushunmagan kodni joylamang. Bunda firibgarlar kompyuterdagi shaxsiy axborotingizni oʻgʻirlashi yoki qoʻlga kiritishi mumkin. Joylashga ruxsat berish uchun quyida “'{PH1}” deb yozing."
+    "message": "Diqqat! Tushunarsiz yoki sinab koʻrirmagan kodni DevTools konsoliga joylamang. Bunda firibgarlar kompyuterdagi shaxsiy axborotingizni oʻgʻirlashi yoki qoʻlga kiritishi mumkin. Joylashga ruxsat berish uchun quyida “'{PH1}” deb yozing."
   },
   "panels/console/ConsoleSidebar.ts | dErrors": {
     "message": "{n,plural, =0{0 ta xato}=1{# ta xato}other{# ta xato}}"
@@ -6050,6 +5807,12 @@
   "panels/elements/components/CSSPropertyDocsView.ts | learnMore": {
     "message": "Batafsil"
   },
+  "panels/elements/components/CSSVariableValueView.ts | invalidPropertyValue": {
+    "message": "Xususiyat qiymati xato. Kerakli tur: {type}"
+  },
+  "panels/elements/components/CSSVariableValueView.ts | registeredPropertyLinkTitle": {
+    "message": "Roʻyxatdan oʻtgan xususiyatni koʻrish"
+  },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "DOM daraxti sahifalari zanjiri"
   },
@@ -6361,6 +6124,9 @@
   },
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "Hodisa aniqlagichining faol emasligi yoki bloklanishi"
+  },
+  "panels/explain/explain-meta.ts | explainConsoleMessage": {
+    "message": "✨ Konsol xabarini tushuntirish"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Resurs bloklandi"
@@ -7895,6 +7661,9 @@
   "panels/network/NetworkItemView.ts | websocketMessages": {
     "message": "WebSocket xabarlari"
   },
+  "panels/network/NetworkLogView.ts | allStrings": {
+    "message": "Hammasi"
+  },
   "panels/network/NetworkLogView.ts | areYouSureYouWantToClearBrowser": {
     "message": "Brauzer keshi tozalansinmi?"
   },
@@ -7986,13 +7755,13 @@
     "message": "Bloklangan cookie javoblari"
   },
   "panels/network/NetworkLogView.ts | hideChromeExtension": {
-    "message": "“chrome-extension://” URL manzillarga soʻrovlarni yopish"
+    "message": "“chrome-extension://” URL manzillarini yashirish"
   },
   "panels/network/NetworkLogView.ts | hideDataUrls": {
     "message": "URL axborotlarni yashirish"
   },
   "panels/network/NetworkLogView.ts | hidesDataAndBlobUrls": {
-    "message": "data: va blob: URL manzillarini berkitadi"
+    "message": "URL manzillarni (“data:” va “blob:”) yashirish"
   },
   "panels/network/NetworkLogView.ts | invertFilter": {
     "message": "Teskarilash"
@@ -8006,6 +7775,9 @@
   "panels/network/NetworkLogView.ts | loadS": {
     "message": "Yuklandi: {PH1}"
   },
+  "panels/network/NetworkLogView.ts | moreFilters": {
+    "message": "Boshqa filtrlar"
+  },
   "panels/network/NetworkLogView.ts | networkDataAvailable": {
     "message": "Tarmoq axboroti mavjud"
   },
@@ -8017,6 +7789,9 @@
   },
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "Faqat sahifa manbasidan farqli manbaga ega soʻrovlarni chiqarish"
+  },
+  "panels/network/NetworkLogView.ts | overTwoTypesSelected": {
+    "message": "{PH1}, {PH2}..."
   },
   "panels/network/NetworkLogView.ts | overrideHeaders": {
     "message": "Sarlavhalarni almashtirish"
@@ -8033,8 +7808,14 @@
   "panels/network/NetworkLogView.ts | replayXhr": {
     "message": "Takroriy XHR"
   },
-  "panels/network/NetworkLogView.ts | resourceTypesToInclude": {
-    "message": "Biriktiriladigan resurs turlari"
+  "panels/network/NetworkLogView.ts | requestTypes": {
+    "message": "Soʻrov turlari"
+  },
+  "panels/network/NetworkLogView.ts | requestTypesToInclude": {
+    "message": "Qoʻshiladigan soʻrov turlari"
+  },
+  "panels/network/NetworkLogView.ts | requestTypesTooltip": {
+    "message": "Soʻrovlarni turi boʻyicha filtrlash"
   },
   "panels/network/NetworkLogView.ts | sBResourcesLoadedByThePage": {
     "message": "{PH1} B resurslar sahifa tomonidan yuklandi"
@@ -8069,8 +7850,14 @@
   "panels/network/NetworkLogView.ts | saveAllAsHarWithContent": {
     "message": "Hammasini kontenti bor HAR sifatida saqlash"
   },
+  "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
+    "message": "Faqat soʻrovlarni koʻrsatish/yashirish"
+  },
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "Tashqi soʻrovlar"
+  },
+  "panels/network/NetworkLogView.ts | twoTypesSelected": {
+    "message": "{PH1}, {PH2}"
   },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "Blokdan chiqarish: {PH1}"
@@ -8089,6 +7876,9 @@
   },
   "panels/network/NetworkLogViewColumns.ts | endTime": {
     "message": "Tugash vaqti"
+  },
+  "panels/network/NetworkLogViewColumns.ts | hasOverrides": {
+    "message": "Almashtirishlar bor"
   },
   "panels/network/NetworkLogViewColumns.ts | initiator": {
     "message": "Tashabbuskor"
@@ -9515,6 +9305,9 @@
   "panels/profiler/ProfileSidebarTreeElement.ts | delete": {
     "message": "Oʻchirish"
   },
+  "panels/profiler/ProfileSidebarTreeElement.ts | enterToSave": {
+    "message": "Saqlash. Faylni saqlash uchun Enter tugmasini bosing"
+  },
   "panels/profiler/ProfileSidebarTreeElement.ts | load": {
     "message": "Yuklash…"
   },
@@ -9626,9 +9419,6 @@
   "panels/profiler/profiler-meta.ts | showMemory": {
     "message": "Xotirani ochish"
   },
-  "panels/profiler/profiler-meta.ts | showNativeFunctions": {
-    "message": "Nativ funksiyalarni JS Profilda chiqarish"
-  },
   "panels/profiler/profiler-meta.ts | startRecordingHeapAllocations": {
     "message": "Uyma taqsimotini yozishni boshlash"
   },
@@ -9710,6 +9500,9 @@
   "panels/protocol_monitor/ProtocolMonitor.ts | type": {
     "message": "Turi"
   },
+  "panels/protocol_monitor/components/JSONEditor.ts | addCustomProperty": {
+    "message": "Maxsus xususiyat qoʻshish"
+  },
   "panels/protocol_monitor/components/JSONEditor.ts | addParameter": {
     "message": "Parametr kiritish"
   },
@@ -9721,6 +9514,12 @@
   },
   "panels/protocol_monitor/components/Toolbar.ts | copyCommand": {
     "message": "Buyruqni nusxalash"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | sendCommandCmdEnter": {
+    "message": "Buyruqni yuborish – ⌘+Enter"
+  },
+  "panels/protocol_monitor/components/Toolbar.ts | sendCommandCtrlEnter": {
+    "message": "Buyruq yuborish: Ctrl + Enter"
   },
   "panels/protocol_monitor/protocol_monitor-meta.ts | protocolMonitor": {
     "message": "Protokol monitori"
@@ -10094,6 +9893,9 @@
   "panels/screencast/ScreencastView.ts | forward": {
     "message": "oldinga"
   },
+  "panels/screencast/ScreencastView.ts | mouseInput": {
+    "message": "Sichqonchadan foydalanish"
+  },
   "panels/screencast/ScreencastView.ts | profilingInProgress": {
     "message": "Profayling bajarilmoqda"
   },
@@ -10105,6 +9907,9 @@
   },
   "panels/screencast/ScreencastView.ts | theTabIsInactive": {
     "message": "Varaq faol emas"
+  },
+  "panels/screencast/ScreencastView.ts | touchInput": {
+    "message": "Teginish emulyatsiyasi"
   },
   "panels/search/SearchResultsPane.ts | lineS": {
     "message": "Chiziq {PH1}"
@@ -11060,6 +10865,9 @@
   "panels/sources/BreakpointEditDialog.ts | pauseOnlyWhenTheConditionIsTrue": {
     "message": "Faqat shart faol boʻlsa, pauza qilish"
   },
+  "panels/sources/CSSPlugin.ts | addSourceMap": {
+    "message": "Manba xaritasini kiritish…"
+  },
   "panels/sources/CSSPlugin.ts | openColorPicker": {
     "message": "Ranglar palitrasini ochish."
   },
@@ -11276,6 +11084,15 @@
   "panels/sources/InplaceFormatterEditorAction.ts | formatS": {
     "message": "Formatlash: {PH1}"
   },
+  "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
+    "message": "Bu amal bekor qilinmaydi."
+  },
+  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
+    "message": "Bu jilddagi barcha almashtirishlar oʻchirilsinmi?"
+  },
+  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
+    "message": "Bu jild va uning tarkibi oʻchirilsinmi?"
+  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteThis": {
     "message": "Bu fayl aniq oʻchirilsinmi?"
   },
@@ -11283,7 +11100,7 @@
     "message": "Bu jild aniq istisno qilinsinmi?"
   },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToRemoveThis": {
-    "message": "Bu jild olib tashlansinmi?"
+    "message": "{PH1} ishchi maydondan olib tashlansinmi?"
   },
   "panels/sources/NavigatorView.ts | authored": {
     "message": "Yozilgan"
@@ -11304,7 +11121,7 @@
     "message": "Tarkibida brauzer koʻradigan yakuniy manba mavjud"
   },
   "panels/sources/NavigatorView.ts | excludeFolder": {
-    "message": "Istisno jild"
+    "message": "Ishchi maydondan chiqarish"
   },
   "panels/sources/NavigatorView.ts | makeACopy": {
     "message": "Nusxa olish…"
@@ -11318,8 +11135,11 @@
   "panels/sources/NavigatorView.ts | openFolder": {
     "message": "Jildni ochish"
   },
+  "panels/sources/NavigatorView.ts | remove": {
+    "message": "Olib tashlash"
+  },
   "panels/sources/NavigatorView.ts | removeFolderFromWorkspace": {
-    "message": "Jildni ish stolidan olib tashlash"
+    "message": "Ishchi maydondan olib tashlash"
   },
   "panels/sources/NavigatorView.ts | rename": {
     "message": "Qayta nomlash…"
@@ -11335,6 +11155,9 @@
   },
   "panels/sources/NavigatorView.ts | searchInFolder": {
     "message": "Jilddan qidirish"
+  },
+  "panels/sources/NavigatorView.ts | workspaceStopSyncing": {
+    "message": "Bu DevTools oʻzgarishlarini manbalaringizga sinxronlashni toʻxtatadi."
   },
   "panels/sources/OutlineQuickOpen.ts | noFileSelected": {
     "message": "Hech qanday fayl tanlanmadi."
@@ -11510,8 +11333,14 @@
   "panels/sources/SourcesView.ts | runCommand": {
     "message": "Buyruq bajarish"
   },
+  "panels/sources/SourcesView.ts | selectFolder": {
+    "message": "jildni tanlang"
+  },
   "panels/sources/SourcesView.ts | sourceViewActions": {
     "message": "Manba kodi amallari"
+  },
+  "panels/sources/SourcesView.ts | workspaceDropInAFolderToSyncSources": {
+    "message": "Oʻzgarishlarni ishchi maydonga sinxronlash uchun manbalar bor jildni bu yerga tashlang yoki:"
   },
   "panels/sources/TabbedEditorContainer.ts | areYouSureYouWantToCloseUnsaved": {
     "message": "Saqlanmagan {PH1} fayli aniq yopilsinmi?"
@@ -11623,6 +11452,9 @@
   },
   "panels/sources/sources-meta.ts | activateBreakpoints": {
     "message": "Uzilish nuqtalarini faollashtirish"
+  },
+  "panels/sources/sources-meta.ts | addFolder": {
+    "message": "Jild qoʻshish"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Ishchi maydonga jild kiritish"
@@ -11846,6 +11678,9 @@
   "panels/sources/sources-meta.ts | showWhitespaceCharacters": {
     "message": "Boʻshliq belgilarini chiqarish:"
   },
+  "panels/sources/sources-meta.ts | showWorkspace": {
+    "message": "Ishchi maydonni ochish"
+  },
   "panels/sources/sources-meta.ts | snippets": {
     "message": "Snippetlar"
   },
@@ -11897,6 +11732,9 @@
   "panels/sources/sources-meta.ts | watch": {
     "message": "Watch"
   },
+  "panels/sources/sources-meta.ts | workspace": {
+    "message": "Ishchi maydon"
+  },
   "panels/timeline/AnimationsTrackAppender.ts | animations": {
     "message": "Animatsiyalar"
   },
@@ -11920,6 +11758,324 @@
   },
   "panels/timeline/CountersGraph.ts | ss": {
     "message": "[{PH1} – {PH2}]"
+  },
+  "panels/timeline/EventUICategory.ts | animation": {
+    "message": "Animatsiya"
+  },
+  "panels/timeline/EventUICategory.ts | animationFrameFired": {
+    "message": "Animatsiya freymi chiqdi"
+  },
+  "panels/timeline/EventUICategory.ts | async": {
+    "message": "Asinxron"
+  },
+  "panels/timeline/EventUICategory.ts | asyncTask": {
+    "message": "Async vazifa"
+  },
+  "panels/timeline/EventUICategory.ts | cacheModule": {
+    "message": "Kesh moduli kodi"
+  },
+  "panels/timeline/EventUICategory.ts | cacheScript": {
+    "message": "Kesh skripti kodi"
+  },
+  "panels/timeline/EventUICategory.ts | cachedWasmModule": {
+    "message": "Keshlangan Wasm moduli"
+  },
+  "panels/timeline/EventUICategory.ts | cancelAnimationFrame": {
+    "message": "Animatsiya freymini bekor qilish"
+  },
+  "panels/timeline/EventUICategory.ts | cancelIdleCallback": {
+    "message": "Nofaol teskari chaqiruvni bekor qilish"
+  },
+  "panels/timeline/EventUICategory.ts | commit": {
+    "message": "Bajarish"
+  },
+  "panels/timeline/EventUICategory.ts | compileCode": {
+    "message": "Kod kompilyatsiyasi"
+  },
+  "panels/timeline/EventUICategory.ts | compileModule": {
+    "message": "Modulni kompilyatsiya qilish"
+  },
+  "panels/timeline/EventUICategory.ts | compileScript": {
+    "message": "Skriptni kompilyatsiya qilish"
+  },
+  "panels/timeline/EventUICategory.ts | compiledWasmModule": {
+    "message": "Wasm Moduli kompilyatsiya qilindi"
+  },
+  "panels/timeline/EventUICategory.ts | compositeLayers": {
+    "message": "Jamlangan qatlamlar"
+  },
+  "panels/timeline/EventUICategory.ts | computeIntersections": {
+    "message": "Kesishuvlarni hisoblash"
+  },
+  "panels/timeline/EventUICategory.ts | consoleTime": {
+    "message": "Konsol vaqti"
+  },
+  "panels/timeline/EventUICategory.ts | createWebsocket": {
+    "message": "WebSocket yaratish"
+  },
+  "panels/timeline/EventUICategory.ts | decrypt": {
+    "message": "Shifrdan chiqarish"
+  },
+  "panels/timeline/EventUICategory.ts | decryptReply": {
+    "message": "Javobni shifrdan chiqarish"
+  },
+  "panels/timeline/EventUICategory.ts | deserializeCodeCache": {
+    "message": "Seriyasizlashtirish kodi keshi"
+  },
+  "panels/timeline/EventUICategory.ts | destroyWebsocket": {
+    "message": "WebSocketni yoʻq qilish"
+  },
+  "panels/timeline/EventUICategory.ts | digest": {
+    "message": "Dayjest"
+  },
+  "panels/timeline/EventUICategory.ts | digestReply": {
+    "message": "Umumlashgan xabarli javob"
+  },
+  "panels/timeline/EventUICategory.ts | domGc": {
+    "message": "DOM GC"
+  },
+  "panels/timeline/EventUICategory.ts | domcontentloadedEvent": {
+    "message": "DOMContentLoaded hodisasi"
+  },
+  "panels/timeline/EventUICategory.ts | drawFrame": {
+    "message": "Freym chizish"
+  },
+  "panels/timeline/EventUICategory.ts | embedderCallback": {
+    "message": "Manba teskari chaqiruvi"
+  },
+  "panels/timeline/EventUICategory.ts | encrypt": {
+    "message": "Shifrlash"
+  },
+  "panels/timeline/EventUICategory.ts | encryptReply": {
+    "message": "Javobni shifrlash"
+  },
+  "panels/timeline/EventUICategory.ts | evaluateModule": {
+    "message": "Modulni baholash"
+  },
+  "panels/timeline/EventUICategory.ts | evaluateScript": {
+    "message": "Skriptni baholash"
+  },
+  "panels/timeline/EventUICategory.ts | event": {
+    "message": "Hodisa"
+  },
+  "panels/timeline/EventUICategory.ts | eventTiming": {
+    "message": "Hodisa vaqti"
+  },
+  "panels/timeline/EventUICategory.ts | experience": {
+    "message": "Tajriba"
+  },
+  "panels/timeline/EventUICategory.ts | finishLoading": {
+    "message": "Yuklashni toʻxtatish"
+  },
+  "panels/timeline/EventUICategory.ts | fireIdleCallback": {
+    "message": "Nofaol teskari chaqiruv chiqdi"
+  },
+  "panels/timeline/EventUICategory.ts | firstContentfulPaint": {
+    "message": "Ilk kontentli chizish"
+  },
+  "panels/timeline/EventUICategory.ts | firstPaint": {
+    "message": "Ilk chizish"
+  },
+  "panels/timeline/EventUICategory.ts | frameStart": {
+    "message": "Freym boshi"
+  },
+  "panels/timeline/EventUICategory.ts | frameStartMainThread": {
+    "message": "Freym boshi (asosiy zanjirda)"
+  },
+  "panels/timeline/EventUICategory.ts | frameStartedLoading": {
+    "message": "Frame yuklanishining boshi"
+  },
+  "panels/timeline/EventUICategory.ts | functionCall": {
+    "message": "Funksiya chaqiruvi"
+  },
+  "panels/timeline/EventUICategory.ts | gcEvent": {
+    "message": "GC hodisasi"
+  },
+  "panels/timeline/EventUICategory.ts | gpu": {
+    "message": "GPU"
+  },
+  "panels/timeline/EventUICategory.ts | hitTest": {
+    "message": "Hit Test"
+  },
+  "panels/timeline/EventUICategory.ts | idle": {
+    "message": "Nofaol"
+  },
+  "panels/timeline/EventUICategory.ts | imageDecode": {
+    "message": "Rasmni dekodlash"
+  },
+  "panels/timeline/EventUICategory.ts | imageResize": {
+    "message": "Rasm hajmi oʻzgarishi"
+  },
+  "panels/timeline/EventUICategory.ts | installTimer": {
+    "message": "Taymer oʻrnatish"
+  },
+  "panels/timeline/EventUICategory.ts | invalidateLayout": {
+    "message": "Maketni bekor qilish"
+  },
+  "panels/timeline/EventUICategory.ts | jsFrame": {
+    "message": "JS freymi"
+  },
+  "panels/timeline/EventUICategory.ts | largestContentfulPaint": {
+    "message": "Eng katta kontentli chizish"
+  },
+  "panels/timeline/EventUICategory.ts | layerize": {
+    "message": "Qatlamlash"
+  },
+  "panels/timeline/EventUICategory.ts | layout": {
+    "message": "Maket"
+  },
+  "panels/timeline/EventUICategory.ts | layoutShift": {
+    "message": "Interfeys oʻzgarishi"
+  },
+  "panels/timeline/EventUICategory.ts | loading": {
+    "message": "Yuklanmoqda"
+  },
+  "panels/timeline/EventUICategory.ts | majorGc": {
+    "message": "Asosiy GC"
+  },
+  "panels/timeline/EventUICategory.ts | minorGc": {
+    "message": "Tez chiqindilarni yigʻish"
+  },
+  "panels/timeline/EventUICategory.ts | onloadEvent": {
+    "message": "Onload hodisasi"
+  },
+  "panels/timeline/EventUICategory.ts | optimizeCode": {
+    "message": "Kodni optimallashtirish"
+  },
+  "panels/timeline/EventUICategory.ts | other": {
+    "message": "Boshqa"
+  },
+  "panels/timeline/EventUICategory.ts | paint": {
+    "message": "Boʻyoq"
+  },
+  "panels/timeline/EventUICategory.ts | paintImage": {
+    "message": "Paint rasmi"
+  },
+  "panels/timeline/EventUICategory.ts | paintSetup": {
+    "message": "Aks ettirishni sozlash"
+  },
+  "panels/timeline/EventUICategory.ts | painting": {
+    "message": "Rassomlik"
+  },
+  "panels/timeline/EventUICategory.ts | parseAndCompile": {
+    "message": "Tahlil va kompilyatsiya qilish"
+  },
+  "panels/timeline/EventUICategory.ts | parseHtml": {
+    "message": "HTML kodni tahlil qilish"
+  },
+  "panels/timeline/EventUICategory.ts | parseStylesheet": {
+    "message": "Uslublar jadvalini tahlil qilish"
+  },
+  "panels/timeline/EventUICategory.ts | prePaint": {
+    "message": "Oldindan boʻyash"
+  },
+  "panels/timeline/EventUICategory.ts | profilingOverhead": {
+    "message": "Resurs isteʼmolini profillarga ajratish"
+  },
+  "panels/timeline/EventUICategory.ts | rasterizePaint": {
+    "message": "Rasterlab chizish"
+  },
+  "panels/timeline/EventUICategory.ts | recalculateStyle": {
+    "message": "Uslubni qayta hisoblash"
+  },
+  "panels/timeline/EventUICategory.ts | receiveData": {
+    "message": "Maʼlumotlarni olish"
+  },
+  "panels/timeline/EventUICategory.ts | receiveResponse": {
+    "message": "Javob qabul qilish"
+  },
+  "panels/timeline/EventUICategory.ts | receiveWebsocketHandshake": {
+    "message": "WebSocket Handshake qabul qilish"
+  },
+  "panels/timeline/EventUICategory.ts | removeTimer": {
+    "message": "Taymerni olib tashlash"
+  },
+  "panels/timeline/EventUICategory.ts | rendering": {
+    "message": "Renderlash"
+  },
+  "panels/timeline/EventUICategory.ts | requestAnimationFrame": {
+    "message": "Animatsiya freymini talab qilish"
+  },
+  "panels/timeline/EventUICategory.ts | requestIdleCallback": {
+    "message": "Nofaol teskari chaqiruvni talab qilish"
+  },
+  "panels/timeline/EventUICategory.ts | requestMainThreadFrame": {
+    "message": "Asosiy zanjir freymini talab qilish"
+  },
+  "panels/timeline/EventUICategory.ts | runMicrotasks": {
+    "message": "Mikrovazifalarni bajarish"
+  },
+  "panels/timeline/EventUICategory.ts | scheduleStyleRecalculation": {
+    "message": "Stil jadvali qayta hisoblanishini rejalashtirish"
+  },
+  "panels/timeline/EventUICategory.ts | scripting": {
+    "message": "Skriptlarni bajarish"
+  },
+  "panels/timeline/EventUICategory.ts | scroll": {
+    "message": "Varaqlash"
+  },
+  "panels/timeline/EventUICategory.ts | sendRequest": {
+    "message": "Soʻrov yuborish"
+  },
+  "panels/timeline/EventUICategory.ts | sendWebsocketHandshake": {
+    "message": "WebSocket Handshake yuborish"
+  },
+  "panels/timeline/EventUICategory.ts | sign": {
+    "message": "Belgi"
+  },
+  "panels/timeline/EventUICategory.ts | signReply": {
+    "message": "Imzoli javob"
+  },
+  "panels/timeline/EventUICategory.ts | streamingCompileTask": {
+    "message": "Vazifa kompilyatsiyasi uzatilmoqda"
+  },
+  "panels/timeline/EventUICategory.ts | streamingWasmResponse": {
+    "message": "Wasm javobi uzatilmoqda"
+  },
+  "panels/timeline/EventUICategory.ts | system": {
+    "message": "Tizim"
+  },
+  "panels/timeline/EventUICategory.ts | task": {
+    "message": "Vazifa"
+  },
+  "panels/timeline/EventUICategory.ts | timerFired": {
+    "message": "Taymer chiqdi"
+  },
+  "panels/timeline/EventUICategory.ts | timestamp": {
+    "message": "Vaqt belgisi"
+  },
+  "panels/timeline/EventUICategory.ts | updateLayer": {
+    "message": "Qatlamni yangilash"
+  },
+  "panels/timeline/EventUICategory.ts | updateLayerTree": {
+    "message": "Qatlam daraxtini yangilash"
+  },
+  "panels/timeline/EventUICategory.ts | userTiming": {
+    "message": "Foydalanuvchi vaqti"
+  },
+  "panels/timeline/EventUICategory.ts | verify": {
+    "message": "Tasdiqlash"
+  },
+  "panels/timeline/EventUICategory.ts | verifyReply": {
+    "message": "Javobni tasdiqlash"
+  },
+  "panels/timeline/EventUICategory.ts | waitingForNetwork": {
+    "message": "Tarmoq kutilmoqda"
+  },
+  "panels/timeline/EventUICategory.ts | wasmModuleCacheHit": {
+    "message": "Wasm modul keshiga tegdi"
+  },
+  "panels/timeline/EventUICategory.ts | wasmModuleCacheInvalid": {
+    "message": "Wasm modul keshi yaroqsiz"
+  },
+  "panels/timeline/EventUICategory.ts | willSendRequest": {
+    "message": "Soʻrov yuboradi"
+  },
+  "panels/timeline/EventUICategory.ts | xhrLoad": {
+    "message": "XHR yuklash"
+  },
+  "panels/timeline/EventUICategory.ts | xhrReadyStateChange": {
+    "message": "XHR tayyor holatini oʻzgartirish"
   },
   "panels/timeline/EventsTimelineTreeView.ts | Dms": {
     "message": "{PH1} ms"
@@ -11951,11 +12107,32 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(anonim)"
   },
-  "panels/timeline/ThreadAppender.ts | thread": {
-    "message": "Yangi tizimdagi Asosiy zanjir"
+  "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
+    "message": "Tanlangan: Worker"
   },
-  "panels/timeline/TimelineController.ts | cpuProfileForATargetIsNot": {
-    "message": "Moʻljal qilingan CPU profil mavjud emas."
+  "panels/timeline/ThreadAppender.ts | frameS": {
+    "message": "Freym — {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | mainS": {
+    "message": "Asosiy — {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | onIgnoreList": {
+    "message": "Inkor etish roʻyxatida"
+  },
+  "panels/timeline/ThreadAppender.ts | raster": {
+    "message": "Raster"
+  },
+  "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
+    "message": "Rasterlash zanjiri #{PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | threadS": {
+    "message": "{PH1} zanjiri"
+  },
+  "panels/timeline/ThreadAppender.ts | workerS": {
+    "message": "Worker – {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | workerSS": {
+    "message": "Worker: {PH1} — {PH2}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Unumdorlik trassirovkasini yozib olish bu target turi bilan ishlamaydi"
@@ -12336,7 +12513,7 @@
     "message": "Kesh skripti kodi"
   },
   "panels/timeline/TimelineUIUtils.ts | cachedWasmModule": {
-    "message": "Keshlangan Wasm Moduli"
+    "message": "Keshlangan Wasm moduli"
   },
   "panels/timeline/TimelineUIUtils.ts | callStacks": {
     "message": "Chaqiruv steklari"
@@ -12405,13 +12582,10 @@
     "message": "Kesishuvlarni hisoblash"
   },
   "panels/timeline/TimelineUIUtils.ts | consoleTime": {
-    "message": "Terminal vaqti"
+    "message": "Konsol vaqti"
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Sarflangan kesh hajmi"
-  },
-  "panels/timeline/TimelineUIUtils.ts | cpuTime": {
-    "message": "CPU vaqti"
   },
   "panels/timeline/TimelineUIUtils.ts | createWebsocket": {
     "message": "WebSocket yaratish"
@@ -12450,7 +12624,7 @@
     "message": "Dayjest"
   },
   "panels/timeline/TimelineUIUtils.ts | digestReply": {
-    "message": "Javobni jamlash"
+    "message": "Umumlashgan xabarli javob"
   },
   "panels/timeline/TimelineUIUtils.ts | dimensions": {
     "message": "Oʻlchamlari"
@@ -12489,13 +12663,13 @@
     "message": "Shifrlash"
   },
   "panels/timeline/TimelineUIUtils.ts | encryptReply": {
-    "message": "Javobni shirflash"
+    "message": "Javobni shifrlash"
   },
   "panels/timeline/TimelineUIUtils.ts | evaluateModule": {
-    "message": "Modul tekshiruvi"
+    "message": "Modulni baholash"
   },
   "panels/timeline/TimelineUIUtils.ts | evaluateScript": {
-    "message": "Skript tekshiruvi"
+    "message": "Skriptni baholash"
   },
   "panels/timeline/TimelineUIUtils.ts | event": {
     "message": "Hodisa"
@@ -12513,7 +12687,7 @@
     "message": "keshdan skript yuklanmadi"
   },
   "panels/timeline/TimelineUIUtils.ts | finishLoading": {
-    "message": "Yuklash oxiri"
+    "message": "Yuklashni toʻxtatish"
   },
   "panels/timeline/TimelineUIUtils.ts | fireIdleCallback": {
     "message": "Nofaol teskari chaqiruv chiqdi"
@@ -12531,7 +12705,7 @@
     "message": "Ilk chizish"
   },
   "panels/timeline/TimelineUIUtils.ts | forcedReflow": {
-    "message": "Majburiy reflow"
+    "message": "Majburiy tuzish"
   },
   "panels/timeline/TimelineUIUtils.ts | frame": {
     "message": "Freym"
@@ -12597,7 +12771,7 @@
     "message": "ID"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidateLayout": {
-    "message": "Maket bekor qilinishi"
+    "message": "Maketni bekor qilish"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
     "message": "Bekor qilinganlar"
@@ -12675,7 +12849,7 @@
     "message": "MIME turi"
   },
   "panels/timeline/TimelineUIUtils.ts | minorGc": {
-    "message": "Ikkilamchi GC"
+    "message": "Tez chiqindilarni yigʻish"
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
     "message": "Modul"
@@ -12711,7 +12885,7 @@
     "message": "Onload hodisasi"
   },
   "panels/timeline/TimelineUIUtils.ts | optimizeCode": {
-    "message": "Kod optimizatsiyasi"
+    "message": "Kodni optimallashtirish"
   },
   "panels/timeline/TimelineUIUtils.ts | other": {
     "message": "Boshqa"
@@ -12723,7 +12897,7 @@
     "message": "Xususiy element"
   },
   "panels/timeline/TimelineUIUtils.ts | paint": {
-    "message": "Paint"
+    "message": "Boʻyoq"
   },
   "panels/timeline/TimelineUIUtils.ts | paintImage": {
     "message": "Paint rasmi"
@@ -12747,7 +12921,7 @@
     "message": "HTML kodni tahlil qilish"
   },
   "panels/timeline/TimelineUIUtils.ts | parseStylesheet": {
-    "message": "Stil jadvalini tahlil qilish"
+    "message": "Uslublar jadvalini tahlil qilish"
   },
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "Qayta ishlovi kutilmoqda"
@@ -12774,7 +12948,7 @@
     "message": "Rasterlab chizish"
   },
   "panels/timeline/TimelineUIUtils.ts | recalculateStyle": {
-    "message": "Stilni qayta hisoblash"
+    "message": "Uslubni qayta hisoblash"
   },
   "panels/timeline/TimelineUIUtils.ts | recalculationForced": {
     "message": "Majburiy qayta hisoblandi"
@@ -12903,7 +13077,7 @@
     "message": "skript ishlamaydi"
   },
   "panels/timeline/TimelineUIUtils.ts | scripting": {
-    "message": "Dasturlash"
+    "message": "Skriptlarni bajarish"
   },
   "panels/timeline/TimelineUIUtils.ts | scroll": {
     "message": "Varaqlash"
@@ -12921,7 +13095,7 @@
     "message": "Chiqarish"
   },
   "panels/timeline/TimelineUIUtils.ts | sign": {
-    "message": "Imzo"
+    "message": "Belgi"
   },
   "panels/timeline/TimelineUIUtils.ts | signReply": {
     "message": "Imzoli javob"
@@ -13063,6 +13237,21 @@
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "Tizim"
+  },
+  "panels/timeline/components/DetailsView.ts | forcedReflow": {
+    "message": "Majburiy tuzish"
+  },
+  "panels/timeline/components/DetailsView.ts | idleCallbackExecutionExtended": {
+    "message": "Nofaol teskari chaqiruv ishga tushirilishi muddati {PH1} tomonidan uzaytirildi"
+  },
+  "panels/timeline/components/DetailsView.ts | longTask": {
+    "message": "Uzun vazifa"
+  },
+  "panels/timeline/components/DetailsView.ts | sIsALikelyPerformanceBottleneck": {
+    "message": "{PH1} unumdorlik tirbandligi shekilli."
+  },
+  "panels/timeline/components/DetailsView.ts | sTookS": {
+    "message": "{PH1} amali {PH2} oldi."
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Qatlamlar panelida chrome freymini berkitish"
@@ -14243,8 +14432,17 @@
   "ui/legacy/components/source_frame/ResourceSourceFrame.ts | find": {
     "message": "Qidirish"
   },
+  "ui/legacy/components/source_frame/SourceFrame.ts | allow": {
+    "message": "Ruxsat"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | allowPasting": {
+    "message": "joylashga ruxsat berish"
+  },
   "ui/legacy/components/source_frame/SourceFrame.ts | bytecodePositionXs": {
     "message": "Baytkod joylashuvi: 0x{PH1}"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | cancel": {
+    "message": "Bekor qilish"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | dCharactersSelected": {
     "message": "{PH1} ta belgi tanlandi"
@@ -14254,6 +14452,12 @@
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | dSelectionRegions": {
     "message": "Tanlov hududlari: {PH1}"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
+    "message": "Tushunarsiz yoki sinalmagan kodni DevTools konsoliga joylashtirmang. Bunda firibgarlar kompyuterdagi shaxsiy axborotingizni oʻgʻirlashi yoki qoʻlga kiritishi mumkin. Joylashga ruxsat berish uchun quyida “'{PH1}” deb yozing."
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
+    "message": "Bu kodga ishonasizmi?"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | lineSColumnS": {
     "message": "Qator: {PH1}, Ustun: {PH2}"
@@ -14266,6 +14470,9 @@
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | source": {
     "message": "Manba"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | typeAllowPasting": {
+    "message": "Turi: '“{PH1}”"
   },
   "ui/legacy/components/source_frame/XMLView.ts | find": {
     "message": "Qidirish"

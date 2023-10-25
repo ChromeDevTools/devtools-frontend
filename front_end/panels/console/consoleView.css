@@ -115,7 +115,7 @@
 }
 
 .console-message-repeat-count {
-  margin: 2px 0 0 10px;
+  margin: 1.4px 0 0 10px;
   flex: none;
 }
 
@@ -189,7 +189,7 @@
 
 .console-message-wrapper {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   margin: 4px;
   border-radius: 5px;
 

@@ -179,13 +179,13 @@ export class CSSVarSwatch extends HTMLElement {
       onLinkActivate,
     };
     this.#link.classList.add('css-var-link');
-
+    // clang-format off
     render(
-        html`<span data-title=${data.computedValue || ''} jslog=${
-            VisualLogging.link().track({click: true, hover: true}).context('cssVar')}>
-            ${functionParts.pre}${this.#link}${fallbackIncludeComma}${functionParts.post}
-          </span>`,
+        html`<span data-title=${data.computedValue || ''}
+          jslog=${VisualLogging.link().track({click: true, hover: true}).context('cssVar')}
+        >${functionParts.pre}${this.#link}${fallbackIncludeComma}${functionParts.post}</span>`,
         this.shadow, {host: this});
+    // clang-format on
   }
 }
 

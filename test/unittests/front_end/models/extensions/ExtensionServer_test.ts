@@ -610,4 +610,49 @@ describe('ExtensionServer', () => {
         expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, '/foo'));
     assert.strictEqual(expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, 'foo'));
   });
+
+  it('cannot inspect chrome webstore URLs', () => {
+    const blockedUrls = [
+      'http://chrome.google.com/webstore',
+      'https://chrome.google.com./webstore',
+      'http://chrome.google.com/webstore',
+      'https://chrome.google.com./webstore',
+      'http://chrome.google.com/webstore/foo',
+      'https://chrome.google.com./webstore/foo',
+      'http://chrome.google.com/webstore/foo',
+      'https://chrome.google.com./webstore/foo',
+      'http://chromewebstore.google.com/',
+      'https://chromewebstore.google.com./',
+      'http://chromewebstore.google.com/',
+      'https://chromewebstore.google.com./',
+      'http://chromewebstore.google.com/foo',
+      'https://chromewebstore.google.com./foo',
+      'http://chromewebstore.google.com/foo',
+      'https://chromewebstore.google.com./foo',
+    ];
+    const allowedUrls = [
+      'http://chrome.google.com/webstor',
+      'https://chrome.google.com./webstor',
+      'http://chrome.google.com/webstor',
+      'https://chrome.google.com./webstor',
+      'http://chrome.google.com/',
+      'https://chrome.google.com./',
+      'http://chrome.google.com/',
+      'https://chrome.google.com./',
+      'http://google.com/webstore',
+      'https://google.com./webstore',
+      'http://google.com/webstore',
+      'https://google.com./webstore',
+      'http://chromewebstor.google.com/',
+      'https://chromewebstor.google.com./',
+      'http://chromewebstor.google.com/',
+      'https://chromewebstor.google.com./',
+    ];
+    for (const url of blockedUrls as Platform.DevToolsPath.UrlString[]) {
+      assert.isFalse(Extensions.ExtensionServer.ExtensionServer.canInspectURL(url), url);
+    }
+    for (const url of allowedUrls as Platform.DevToolsPath.UrlString[]) {
+      assert.isTrue(Extensions.ExtensionServer.ExtensionServer.canInspectURL(url), url);
+    }
+  });
 });

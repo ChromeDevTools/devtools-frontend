@@ -20460,6 +20460,15 @@
                     ]
                 },
                 {
+                    "id": "AttributionReportingTriggerDataMatching",
+                    "experimental": true,
+                    "type": "string",
+                    "enum": [
+                        "exact",
+                        "modulus"
+                    ]
+                },
+                {
                     "id": "AttributionReportingSourceRegistration",
                     "experimental": true,
                     "type": "object",
@@ -20527,6 +20536,10 @@
                             "name": "debugKey",
                             "optional": true,
                             "$ref": "UnsignedInt64AsBase10"
+                        },
+                        {
+                            "name": "triggerDataMatching",
+                            "$ref": "AttributionReportingTriggerDataMatching"
                         }
                     ]
                 },

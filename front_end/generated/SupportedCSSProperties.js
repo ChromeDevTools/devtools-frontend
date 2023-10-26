@@ -57,8 +57,7 @@ export const generatedProperties = [
    "-webkit-mask-position-x",
    "-webkit-mask-position-y",
    "mask-size",
-   "-webkit-mask-repeat-x",
-   "-webkit-mask-repeat-y",
+   "mask-repeat",
    "mask-origin",
    "mask-clip"
   ],
@@ -179,8 +178,7 @@ export const generatedProperties = [
    "-webkit-mask-position-x",
    "-webkit-mask-position-y",
    "-webkit-mask-size",
-   "-webkit-mask-repeat-x",
-   "-webkit-mask-repeat-y",
+   "-webkit-mask-repeat",
    "-webkit-mask-origin",
    "-webkit-mask-clip"
   ],
@@ -237,17 +235,7 @@ export const generatedProperties = [
   "name": "-webkit-mask-position-y"
  },
  {
-  "longhands": [
-   "-webkit-mask-repeat-x",
-   "-webkit-mask-repeat-y"
-  ],
   "name": "-webkit-mask-repeat"
- },
- {
-  "name": "-webkit-mask-repeat-x"
- },
- {
-  "name": "-webkit-mask-repeat-y"
  },
  {
   "name": "-webkit-mask-size"
@@ -555,8 +543,7 @@ export const generatedProperties = [
    "background-position-x",
    "background-position-y",
    "background-size",
-   "background-repeat-x",
-   "background-repeat-y",
+   "background-repeat",
    "background-attachment",
    "background-origin",
    "background-clip",
@@ -637,17 +624,7 @@ export const generatedProperties = [
   "name": "background-position-y"
  },
  {
-  "longhands": [
-   "background-repeat-x",
-   "background-repeat-y"
-  ],
   "name": "background-repeat"
- },
- {
-  "name": "background-repeat-x"
- },
- {
-  "name": "background-repeat-y"
  },
  {
   "keywords": [
@@ -2351,10 +2328,23 @@ export const generatedProperties = [
   "name": "mask-clip"
  },
  {
+  "name": "mask-composite"
+ },
+ {
   "name": "mask-image"
  },
  {
   "name": "mask-origin"
+ },
+ {
+  "longhands": [
+   "-webkit-mask-position-x",
+   "-webkit-mask-position-y"
+  ],
+  "name": "mask-position"
+ },
+ {
+  "name": "mask-repeat"
  },
  {
   "name": "mask-size"
@@ -5878,12 +5868,24 @@ export const generatedAliasesFor = new Map([
   "mask-clip"
  ],
  [
+  "-webkit-alternative-mask-composite",
+  "mask-composite"
+ ],
+ [
   "-webkit-alternative-mask-image",
   "mask-image"
  ],
  [
   "-webkit-alternative-mask-origin",
   "mask-origin"
+ ],
+ [
+  "-webkit-alternative-mask-position",
+  "mask-position"
+ ],
+ [
+  "-webkit-alternative-mask-repeat",
+  "mask-repeat"
  ],
  [
   "-webkit-alternative-mask-size",

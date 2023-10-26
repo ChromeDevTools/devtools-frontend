@@ -378,7 +378,7 @@ export class MainImpl {
         'Highlight important DOM properties in the Object Properties viewer');
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL, 'Enable Preloading Status Panel in Application panel',
+        Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL, 'Enable Speculative Loads Panel in Application panel',
         true);
 
     Root.Runtime.experiments.register(

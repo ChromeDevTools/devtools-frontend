@@ -17,11 +17,11 @@ const UIStrings = {
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
-  speculationRules: 'Speculation rules',
+  speculationRules: 'Rules',
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
-  preloads: 'Preloads',
+  preloads: 'Speculations',
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */

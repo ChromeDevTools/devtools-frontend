@@ -121,7 +121,7 @@ const UIStrings = {
   /**
    *@description Text in Application Panel Sidebar of the Application panel
    */
-  preloading: 'Preloading',
+  preloading: 'Speculative loads',
   /**
    *@description Text for rendering frames
    */

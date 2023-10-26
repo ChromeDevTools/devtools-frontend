@@ -51,27 +51,27 @@ const UIStrings = {
   /**
    *@description Description: status
    */
-  detailedStatusNotTriggered: 'Preloading attempt is not yet triggered.',
+  detailedStatusNotTriggered: 'Speculative load attempt is not yet triggered.',
   /**
    *@description Description: status
    */
-  detailedStatusPending: 'Preloading attempt is eligible but pending.',
+  detailedStatusPending: 'Speculative load attempt is eligible but pending.',
   /**
    *@description Description: status
    */
-  detailedStatusRunning: 'Preloading is running.',
+  detailedStatusRunning: 'Speculative load is running.',
   /**
    *@description Description: status
    */
-  detailedStatusReady: 'Preloading finished and the result is ready for the next navigation.',
+  detailedStatusReady: 'Speculative load finished and the result is ready for the next navigation.',
   /**
    *@description Description: status
    */
-  detailedStatusSuccess: 'Preloading finished and used for a navigation.',
+  detailedStatusSuccess: 'Speculative load finished and used for a navigation.',
   /**
    *@description Description: status
    */
-  detailedStatusFailure: 'Preloading failed.',
+  detailedStatusFailure: 'Speculative load failed.',
   /**
    *@description button: Contents of button to inspect prerendered page
    */
@@ -163,7 +163,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(LitHtml.html`
-        <${ReportView.ReportView.Report.litTagName} .data=${{reportTitle: 'Preloading Attempt'} as ReportView.ReportView.ReportData}>
+        <${ReportView.ReportView.Report.litTagName} .data=${{reportTitle: 'Speculative Loading Attempt'} as ReportView.ReportView.ReportData}>
           <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.detailsDetailedInformation)}</${
             ReportView.ReportView.ReportSectionHeader.litTagName}>
 

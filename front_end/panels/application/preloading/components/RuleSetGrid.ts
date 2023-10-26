@@ -45,7 +45,7 @@ const UIStrings = {
   /**
    *@description button: Title of button to reveal preloading attempts with filter by selected rule set
    */
-  buttonRevealPreloadsAssociatedWithRuleSet: 'Reveal preloads associated with this rule set',
+  buttonRevealPreloadsAssociatedWithRuleSet: 'Reveal speculative loads associated with this rule set',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/RuleSetGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

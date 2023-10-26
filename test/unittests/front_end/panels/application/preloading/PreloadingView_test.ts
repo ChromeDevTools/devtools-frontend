@@ -675,7 +675,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
     const preloadingGridComponent = view.getPreloadingGridForTest();
     assertShadowRoot(preloadingGridComponent.shadowRoot);
 
-    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All preloads');
+    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All speculative loads');
 
     assertGridContents(
         preloadingGridComponent,
@@ -721,7 +721,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
 
     await coordinator.done();
 
-    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All preloads');
+    assert.strictEqual(ruleSetSelectorToolbarItem.element.querySelector('span')?.textContent, 'All speculative loads');
 
     assertGridContents(
         preloadingGridComponent,
@@ -797,7 +797,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
       ['Action', 'PrerenderInspect'],
-      ['Status', 'Preloading is running.'],
+      ['Status', 'Speculative load is running.'],
     ]);
 
     const buttons = report.querySelectorAll('devtools-report-value:nth-of-type(2) devtools-button');
@@ -868,7 +868,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
       ['Action', 'PrerenderInspect'],
-      ['Status', 'Preloading finished and the result is ready for the next navigation.'],
+      ['Status', 'Speculative load finished and the result is ready for the next navigation.'],
     ]);
 
     const buttons = report.querySelectorAll('devtools-report-value:nth-of-type(2) devtools-button');
@@ -947,7 +947,7 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', 'https://example.com/prerendered.html'],
       ['Action', 'PrerenderInspect'],
-      ['Status', 'Preloading failed.'],
+      ['Status', 'Speculative load failed.'],
       [
         'Failure reason',
         'The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
@@ -1049,10 +1049,10 @@ describeWithMockConnection('PreloadingWarningsView', async () => {
           disabledByHoldbackPrefetchSpeculationRules: false,
           disabledByHoldbackPrerenderSpeculationRules: false,
         },
-        'Preloading is disabled', [
+        'Speculative loading is disabled', [
           [
             'User settings or extensions',
-            'Preloading is disabled because of user settings or an extension. Go to Preload pages settings to update your preference. Go to Extensions settings to disable any extension that blocks preloading.',
+            'Speculative loading is disabled because of user settings or an extension. Go to Preload pages settings to update your preference. Go to Extensions settings to disable any extension that blocks speculative loading.',
           ],
         ]);
   });
@@ -1066,8 +1066,8 @@ describeWithMockConnection('PreloadingWarningsView', async () => {
           disabledByHoldbackPrefetchSpeculationRules: false,
           disabledByHoldbackPrerenderSpeculationRules: false,
         },
-        'Preloading is disabled', [
-          ['Data Saver', 'Preloading is disabled because of the operating system\'s Data Saver mode.'],
+        'Speculative loading is disabled', [
+          ['Data Saver', 'Speculative loading is disabled because of the operating system\'s Data Saver mode.'],
         ]);
   });
 
@@ -1080,8 +1080,8 @@ describeWithMockConnection('PreloadingWarningsView', async () => {
           disabledByHoldbackPrefetchSpeculationRules: false,
           disabledByHoldbackPrerenderSpeculationRules: false,
         },
-        'Preloading is disabled', [
-          ['Battery Saver', 'Preloading is disabled because of the operating system\'s Battery Saver mode.'],
+        'Speculative loading is disabled', [
+          ['Battery Saver', 'Speculative loading is disabled because of the operating system\'s Battery Saver mode.'],
         ]);
   });
 
@@ -1094,7 +1094,7 @@ describeWithMockConnection('PreloadingWarningsView', async () => {
           disabledByHoldbackPrefetchSpeculationRules: true,
           disabledByHoldbackPrerenderSpeculationRules: false,
         },
-        'Preloading is force-enabled', [
+        'Speculative loading is force-enabled', [
           [
             'Prefetch was disabled, but is force-enabled now',
             'Prefetch is forced-enabled because DevTools is open. When DevTools is closed, prefetch will be disabled because this browser session is part of a holdback group used for performance comparisons.',
@@ -1111,7 +1111,7 @@ describeWithMockConnection('PreloadingWarningsView', async () => {
           disabledByHoldbackPrefetchSpeculationRules: false,
           disabledByHoldbackPrerenderSpeculationRules: true,
         },
-        'Preloading is force-enabled', [
+        'Speculative loading is force-enabled', [
           [
             'Prerendering was disabled, but is force-enabled now',
             'Prerendering is forced-enabled because DevTools is open. When DevTools is closed, prerendering will be disabled because this browser session is part of a holdback group used for performance comparisons.',
@@ -1128,13 +1128,13 @@ describeWithMockConnection('PreloadingWarningsView', async () => {
           disabledByHoldbackPrefetchSpeculationRules: true,
           disabledByHoldbackPrerenderSpeculationRules: true,
         },
-        'Preloading is disabled', [
+        'Speculative loading is disabled', [
           [
             'User settings or extensions',
-            'Preloading is disabled because of user settings or an extension. Go to Preload pages settings to update your preference. Go to Extensions settings to disable any extension that blocks preloading.',
+            'Speculative loading is disabled because of user settings or an extension. Go to Preload pages settings to update your preference. Go to Extensions settings to disable any extension that blocks speculative loading.',
           ],
-          ['Data Saver', 'Preloading is disabled because of the operating system\'s Data Saver mode.'],
-          ['Battery Saver', 'Preloading is disabled because of the operating system\'s Battery Saver mode.'],
+          ['Data Saver', 'Speculative loading is disabled because of the operating system\'s Data Saver mode.'],
+          ['Battery Saver', 'Speculative loading is disabled because of the operating system\'s Battery Saver mode.'],
           [
             'Prefetch was disabled, but is force-enabled now',
             'Prefetch is forced-enabled because DevTools is open. When DevTools is closed, prefetch will be disabled because this browser session is part of a holdback group used for performance comparisons.',

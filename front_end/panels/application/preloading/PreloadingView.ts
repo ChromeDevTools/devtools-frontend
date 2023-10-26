@@ -30,7 +30,7 @@ const UIStrings = {
   /**
    *@description DropDown text for filtering preloading attempts by rule set: No filter
    */
-  filterAllPreloads: 'All preloads',
+  filterAllPreloads: 'All speculative loads',
   /**
    *@description Text in grid: Rule set is valid
    */

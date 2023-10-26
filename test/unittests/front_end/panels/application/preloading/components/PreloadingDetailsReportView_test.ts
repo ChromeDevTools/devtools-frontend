@@ -96,7 +96,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
       ['Action', 'Prerender'],
-      ['Status', 'Preloading is running.'],
+      ['Status', 'Speculative load is running.'],
       ['Rule set', 'example.com/'],
     ]);
   });
@@ -147,7 +147,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
       ['Action', 'Prerender'],
-      ['Status', 'Preloading failed.'],
+      ['Status', 'Speculative load failed.'],
       [
         'Failure reason',
         'The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
@@ -210,7 +210,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
       ['Action', 'Prefetch'],
-      ['Status', 'Preloading failed.'],
+      ['Status', 'Speculative load failed.'],
       ['Failure reason', 'The prefetch failed because of a non-2xx HTTP response status code.'],
       ['Rule set', 'example.com/'],
     ]);
@@ -271,7 +271,7 @@ describeWithEnvironment('PreloadingDetailsReportView', async () => {
     assert.deepEqual(zip2(keys, values), [
       ['URL', url],
       ['Action', 'Prefetch'],
-      ['Status', 'Preloading finished and the result is ready for the next navigation.'],
+      ['Status', 'Speculative load finished and the result is ready for the next navigation.'],
       ['Rule set', 'example.com/speculation-rules.json'],
     ]);
   });

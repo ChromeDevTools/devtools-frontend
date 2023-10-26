@@ -20,15 +20,15 @@ const UIStrings = {
   /**
    *@description Infobar text for disabled case
    */
-  infobarPreloadingIsDisabled: 'Preloading is disabled',
+  infobarPreloadingIsDisabled: 'Speculative loading is disabled',
   /**
    *@description Infobar text for force-enabled case
    */
-  infobarPreloadingIsForceEnabled: 'Preloading is force-enabled',
+  infobarPreloadingIsForceEnabled: 'Speculative loading is force-enabled',
   /**
    *@description Title for dialog
    */
-  titleReasonsPreventingPreloading: 'Reasons preventing preloading',
+  titleReasonsPreventingPreloading: 'Reasons preventing speculative loading',
   /**
    *@description Header in dialog
    */
@@ -39,7 +39,7 @@ const UIStrings = {
    *@example {Extensions settings (linked to chrome://extensions)} PH2
    */
   descriptionDisabledByPreference:
-      'Preloading is disabled because of user settings or an extension. Go to {PH1} to update your preference. Go to {PH2} to disable any extension that blocks preloading.',
+      'Speculative loading is disabled because of user settings or an extension. Go to {PH1} to update your preference. Go to {PH2} to disable any extension that blocks speculative loading.',
   /**
    *@description Text of link
    */
@@ -55,7 +55,7 @@ const UIStrings = {
   /**
    *@description Description in dialog
    */
-  descriptionDisabledByDataSaver: 'Preloading is disabled because of the operating system\'s Data Saver mode.',
+  descriptionDisabledByDataSaver: 'Speculative loading is disabled because of the operating system\'s Data Saver mode.',
   /**
    *@description Header in dialog
    */
@@ -63,7 +63,8 @@ const UIStrings = {
   /**
    *@description Description in dialog
    */
-  descriptionDisabledByBatterySaver: 'Preloading is disabled because of the operating system\'s Battery Saver mode.',
+  descriptionDisabledByBatterySaver:
+      'Speculative loading is disabled because of the operating system\'s Battery Saver mode.',
   /**
    *@description Header in dialog
    */
@@ -218,7 +219,7 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
 
   #maybeDisalebByPreference(): LitHtml.LitTemplate {
     const preloadingSettingLink = new ChromeLink.ChromeLink.ChromeLink();
-    preloadingSettingLink.href = 'chrome://settings/cookies';
+    preloadingSettingLink.href = 'chrome://settings/performance';
     preloadingSettingLink.textContent = i18nString(UIStrings.preloadingPagesSettings);
     const extensionsSettingLink = new ChromeLink.ChromeLink.ChromeLink();
     extensionsSettingLink.href = 'chrome://extensions';

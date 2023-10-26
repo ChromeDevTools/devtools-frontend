@@ -120,7 +120,7 @@ const UIStrings = {
   /**
    *@description  Description text for Prefetch status PrefetchNotEligiblePreloadingDisabled.
    */
-  PrefetchNotEligiblePreloadingDisabled: 'The prefetch was not performed because preloading was disabled.',
+  PrefetchNotEligiblePreloadingDisabled: 'The prefetch was not performed because speculative loading was disabled.',
 
   /**
    *  Description text for PrerenderFinalStatus::kLowEndDevice.

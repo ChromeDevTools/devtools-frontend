@@ -11,21 +11,26 @@ await FrontendHelpers.initializeGlobalVars();
 
 const ConsoleInsight = Explain.ConsoleInsight;
 
-const component = new ConsoleInsight({
-  async buildPrompt() {
-    return '';
-  },
-}, {
-  async getInsights() {
-    return `## Result
+const component = new ConsoleInsight(
+    {
+      async buildPrompt() {
+        return '';
+      },
+    },
+    {
+      async getInsights() {
+        return `## Result
 
 Some text with \`code\`. Some code:
 \`\`\`ts
 console.log('test');
 document.querySelector('test').style = 'black';
 \`\`\`
+
+Links: [https://example.com](https://example.com)
+Images: [https://example.com](https://example.com)
 `;
-  },
-});
+      },
+    });
 void component.update();
 document.getElementById('container')?.appendChild(component);

@@ -123,7 +123,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   #controlState?: ControlState;
   #redrawing?: boolean;
   #cachedTimelineWidth?: number;
-  #cachedTimelineHeight?: number;
   #scrubberPlayer?: Animation;
   #gridOffsetLeft?: number;
   #originalScrubberTime?: number|null;
@@ -736,13 +735,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
   private renderGrid(): void {
     /** @const */ const gridSize = 250;
-    const gridWidth = (this.width() + 10).toString();
-    const gridHeight = ((this.#cachedTimelineHeight || 0) + 30).toString();
-
-    this.#gridWrapper.style.width = gridWidth + 'px';
-    this.#gridWrapper.style.height = gridHeight.toString() + 'px';
-    this.#grid.setAttribute('width', gridWidth);
-    this.#grid.setAttribute('height', gridHeight.toString());
     this.#grid.removeChildren();
     let lastDraw: number|undefined = undefined;
     for (let time = 0; time < this.duration(); time += gridSize) {
@@ -793,7 +785,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
   override onResize(): void {
     this.#cachedTimelineWidth = Math.max(0, this.#animationsContainer.offsetWidth - this.#timelineControlsWidth) || 0;
-    this.#cachedTimelineHeight = this.#animationsContainer.offsetHeight;
     this.scheduleRedraw();
     if (this.#scrubberPlayer) {
       this.syncScrubber();

@@ -13,10 +13,22 @@
 :host {
   font-family: var(--default-font-family);
   font-size: inherit;
+  display: block;
+}
+
+.wrapper {
   padding: 16px 20px;
   background-color: var(--sys-color-cdt-base-container);
   border-radius: 16px;
-  display: block;
+}
+
+.wrapper.top {
+  border-radius: 16px 16px 4px 4px;
+}
+
+.wrapper.bottom {
+  margin-top: 5px;
+  border-radius: 4px 4px 16px 16px;
 }
 
 header {
@@ -31,7 +43,7 @@ header {
   height: 20px;
 }
 
-header > div:nth-child(2) {
+header > .filler {
   flex: 1;
 }
 
@@ -62,6 +74,20 @@ footer > div:nth-child(1) {
   gap: 10px;
 }
 
-footer > div:nth-child(2) {
+footer > .filler {
   flex: 1;
+}
+
+textarea {
+  height: 84px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--sys-color-neutral-outline);
+  width: 100%;
+  font-family: var(--default-font-family);
+  font-size: inherit;
+}
+
+.buttons {
+  margin-bottom: 16px;
 }

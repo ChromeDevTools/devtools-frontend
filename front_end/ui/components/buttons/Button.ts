@@ -177,6 +177,10 @@ export class Button extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
+  get active(): boolean {
+    return this.#props.active;
+  }
+
   set spinner(spinner: boolean) {
     this.#props.spinner = spinner;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);

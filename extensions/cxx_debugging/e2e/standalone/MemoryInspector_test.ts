@@ -32,7 +32,7 @@ describe('LinearMemoryInspector', () => {
     await installEventListener(frontend, 'DevTools.DebuggerPaused');
 
     const file = 'scope-view-primitives.c';
-    const breakpoint = 12;
+    const breakpoint = 14;
     await openFileInEditor(file);
     await addBreakpointForLine(frontend, Number(breakpoint));
 

@@ -16,10 +16,10 @@ script:
     actions:
     - file: scope-view-non-primitives.c
       action: set_breakpoint
-      breakpoint: 23
+      breakpoint: 25
   - reason: breakpoint
     file: scope-view-non-primitives.c
-    line: 23
+    line: 25
     variables:
       - name: Local.a
         value: int[5]

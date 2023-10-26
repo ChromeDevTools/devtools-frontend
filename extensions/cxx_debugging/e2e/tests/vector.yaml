@@ -14,10 +14,10 @@ script:
     actions:
     - file: vector.cc
       action: set_breakpoint
-      breakpoint: 9
+      breakpoint: 13
   - reason: breakpoint
     file: vector.cc
-    line: 9
+    line: 13
     variables:
       - name: Local.v.4
       - name: Local.v.4.string

@@ -14,10 +14,10 @@ script:
     actions:
     - file: stepping-with-state.c
       action: set_breakpoint
-      breakpoint: 14
+      breakpoint: 16
   - reason: breakpoint
     file: stepping-with-state.c
-    line: 14
+    line: 16
     evaluations:
       - expression: n * 3
         value: 30

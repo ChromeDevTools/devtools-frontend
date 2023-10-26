@@ -14,10 +14,10 @@ script:
     actions:
     - file: string_view.cc
       action: set_breakpoint
-      breakpoint: 35
+      breakpoint: 37
   - reason: breakpoint
     file: string_view.cc
-    line: 35
+    line: 37
     variables:
       - name: Local.my_string
       - name: Local.my_string.size

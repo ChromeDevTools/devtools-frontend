@@ -14,10 +14,10 @@ script:
     actions:
     - file: stepping-with-state.c
       action: set_breakpoint
-      breakpoint: 14
+      breakpoint: 16
   - reason: breakpoint
     file: stepping-with-state.c
-    line: 14
+    line: 16
     variables:
       - name: Local.n
         value: 10
@@ -27,7 +27,7 @@ script:
       - action: step_over
   - reason: step
     file: stepping-with-state.c
-    line: 17
+    line: 19
     variables:
       - name: Local.n
         value: 10
@@ -35,13 +35,13 @@ script:
         value: 0
     actions:
       - action: remove_breakpoint
-        breakpoint: 14
+        breakpoint: 16
       - file: stepping-with-state.c
         action: set_breakpoint
-        breakpoint: 22
+        breakpoint: 24
   - reason: breakpoint
     file: stepping-with-state.c
-    line: 22
+    line: 24
     variables:
       - name: Local.n
         value: 10
@@ -51,7 +51,7 @@ script:
       - action: step_over
   - reason: step
     file: stepping-with-state.c
-    line: 25
+    line: 27
     variables:
       - name: Local.n
         value: 10
@@ -61,4 +61,4 @@ script:
         value: 0
     actions:
       - action: remove_breakpoint
-        breakpoint: 22
+        breakpoint: 24

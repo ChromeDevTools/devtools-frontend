@@ -161,7 +161,9 @@ describe('CXX Debugging Extension Test Suite', function() {
         }
       } catch (e) {
         console.error(e.toString());
-        await debuggerStatement(frontend);
+        if (process.env['DEBUG_TEST']) {
+          await timeout(100000);
+        }
         throw e;
       }
     });

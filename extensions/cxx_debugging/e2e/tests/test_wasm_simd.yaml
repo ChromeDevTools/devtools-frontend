@@ -14,13 +14,13 @@ script:
     actions:
     - file: test_wasm_simd.c
       action: set_breakpoint
-      breakpoint: 8
+      breakpoint: 10
     - file: test_wasm_simd.c
       action: set_breakpoint
-      breakpoint: 10
+      breakpoint: 12
   - reason: breakpoint
     file: test_wasm_simd.c
-    line: 8
+    line: 10
     variables:
       - name: Local.a
         value: 'v128_t'
@@ -32,7 +32,7 @@ script:
         value: '2'
   - reason: breakpoint
     file: test_wasm_simd.c
-    line: 10
+    line: 12
     variables:
       - name: Local.c
         value: 'v128_t'

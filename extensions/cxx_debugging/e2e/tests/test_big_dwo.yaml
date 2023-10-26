@@ -12,10 +12,10 @@ script:
     actions:
     - file: huge-source-file.cc
       action: set_breakpoint
-      breakpoint: 26
+      breakpoint: 28
   - reason: breakpoint
     file: huge-source-file.cc
-    line: 26
+    line: 28
     variables:
       - name: Local.value
         value: -2147483648

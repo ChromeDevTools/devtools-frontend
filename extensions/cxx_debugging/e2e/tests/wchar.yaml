@@ -14,10 +14,10 @@ script:
     actions:
     - file: wchar.cc
       action: set_breakpoint
-      breakpoint: 17
+      breakpoint: 21
   - reason: breakpoint
     file: wchar.cc
-    line: 17
+    line: 21
     variables:
       - name: Local.cxx_str
       - name: Local.cxx_str.size

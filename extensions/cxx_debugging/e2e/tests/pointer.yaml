@@ -14,14 +14,14 @@ script:
     actions:
     - file: pointers.cc
       action: set_breakpoint
-      breakpoint: 28
+      breakpoint: 32
     - file: pointers.cc
       action: set_breakpoint
-      breakpoint: 34
+      breakpoint: 38
 
   - reason: breakpoint
     file: pointers.cc
-    line: 28
+    line: 32
     variables:
       - name: Local.a1.value
         value: 1
@@ -36,7 +36,7 @@ script:
 
   - reason: breakpoint
     file: pointers.cc
-    line: 34
+    line: 38
     variables:
       - name: Local.cycle_a.b.$0.a.$0.b.$0.a.$0.b.$0.a.$0.b.$0.value
         value: 98

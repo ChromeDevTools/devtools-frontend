@@ -1106,7 +1106,11 @@ export enum IssueCreated {
   'CorsIssue::PreflightMissingPrivateNetworkAccessName' = 79,
   'CorsIssue::PrivateNetworkAccessPermissionUnavailable' = 80,
   'CorsIssue::PrivateNetworkAccessPermissionDenied' = 81,
-  MaxValue = 82,
+  'CookieIssue::WarnThirdPartyPhaseout::ReadCookie' = 82,
+  'CookieIssue::WarnThirdPartyPhaseout::SetCookie' = 83,
+  'CookieIssue::ExcludeThirdPartyPhaseout::ReadCookie' = 84,
+  'CookieIssue::ExcludeThirdPartyPhaseout::SetCookie' = 85,
+  MaxValue = 86,
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

@@ -348,6 +348,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.updateHighlight();
   }
 
+  forceReProcessTimelineData(): void {
+    this.rawTimelineData = null;
+    this.rawTimelineDataLength = 0;
+    this.#groupTreeRoot = null;
+  }
+
   timelineData(): FlameChartTimelineData|null {
     if (!this.dataProvider) {
       return null;
@@ -1176,6 +1182,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       // Skip the one whose index is -1, because we added to represent the top
       // level to be the parent of all groups.
       sortedGroupIndexes.shift();
+
+      // This shouldn't happen, because the tree should have the fake root and all groups. Add a sanity check to avoid
+      // error.
+      if (sortedGroupIndexes.length !== groups.length) {
+        console.warn('The data from the group tree doesn\'t match the data from DataProvider.');
+        return -1;
+      }
+
       // Add an extra index, which is equal to the length of the |groups|, this
       // will be used for the coordinates after the last group.
       // If the coordinates after the last group, it will return in later check
@@ -2208,6 +2222,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return currentOffset;
     }
 
+    // This shouldn't happen. If this happen, it means the group tree is outdated. Add a sanity check to avoid error.
+    if (groupNode.index >= groups.length) {
+      console.warn(
+          'The data from the group tree is outdated. ' +
+          'Please make sure the flamechart is reset after data change in the data provider');
+      return currentOffset;
+    }
+
     if (groupNode.index >= 0) {
       this.groupOffsets[groupNode.index] = currentOffset;
       // If |shareHeaderLine| is false, we add the height of one more level to
@@ -2231,6 +2253,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const thisGroupLevelsAreVisible = thisGroupIsVisible && parentGroupIsVisible;
 
     for (let level = groupNode.startLevel; level < groupNode.endLevel; level++) {
+      // This shouldn't happen. If this happen, it means the group tree is outdated. Add a sanity check to avoid error.
+      if (level >= this.dataProvider.maxStackDepth()) {
+        console.warn(
+            'The data from the group tree is outdated. ' +
+            'Please make sure the flamechart is reset after data change in the data provider');
+        return currentOffset;
+      }
+
       // Handle offset and visibility of each level inside this group.
       const isFirstOnLevel = level === groupNode.startLevel;
       // If this is the top level group, all the levels in this group are always shown.
@@ -2267,7 +2297,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
       if (thisLevelIsVisible ||
           (parentGroupIsVisible && groups[groupNode.index].style.shareHeaderLine && isFirstOnLevel)) {
-        currentOffset += this.visibleLevelHeights[level];
+        currentOffset += height;
       }
     }
 

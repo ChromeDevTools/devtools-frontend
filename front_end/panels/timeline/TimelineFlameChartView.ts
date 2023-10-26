@@ -186,8 +186,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
            this.#currentBreadcrumbTimeWindow.max < window.right));
     if (!this.#currentBreadcrumbTimeWindow || isWindowWithinBreadcrumb) {
       this.mainFlameChart.setWindowTimes(window.left, window.right, animate);
-      this.networkFlameChart.setWindowTimes(window.left, window.right, animate);
+
+      // In Network flame chart, we will filter out some network requests and re-render it. So it is a new flame chart.
+      // So we should reset its |groupTree| to force re-process the timeline data before redrawing.
+      this.networkFlameChart.forceReProcessTimelineData();
       this.networkDataProvider.setWindowTimes(window.left, window.right);
+      this.networkFlameChart.setWindowTimes(window.left, window.right, animate);
     }
 
     this.updateSearchResults(false, false);
@@ -242,8 +246,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       ];
       const window = this.model.window();
       this.mainFlameChart.setWindowTimes(window.left, window.right);
-      this.networkFlameChart.setWindowTimes(window.left, window.right);
       this.networkDataProvider.setWindowTimes(window.left, window.right);
+      this.networkFlameChart.setWindowTimes(window.left, window.right);
       this.updateSearchResults(false, false);
       this.updateColorMapper();
     }

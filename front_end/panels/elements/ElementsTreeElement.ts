@@ -1881,20 +1881,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         break;
       }
 
-      case Node.DOCUMENT_NODE: {
-        const documentElement = titleDOM.createChild('span');
-        UI.UIUtils.createTextChild(documentElement, '#document (');
-        const text = (node as SDK.DOMModel.DOMDocument).documentURL;
-        documentElement.appendChild(Components.Linkifier.Linkifier.linkifyURL(text, {
-          text,
-          preventClick: true,
-          showColumnNumber: false,
-          inlineFrameIndex: 0,
-        }));
-        UI.UIUtils.createTextChild(documentElement, ')');
-        break;
-      }
-
       case Node.DOCUMENT_FRAGMENT_NODE: {
         const fragmentElement = titleDOM.createChild('span', 'webkit-html-fragment');
         fragmentElement.textContent = Platform.StringUtilities.collapseWhitespace(node.nodeNameInCorrectCase());

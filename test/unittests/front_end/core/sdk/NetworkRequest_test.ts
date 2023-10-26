@@ -155,4 +155,16 @@ describe('NetworkRequest', () => {
     assert.deepEqual(
         request.nonBlockedResponseCookies().map(cookie => cookie.getCookieLine()), ['foo=duplicate; Path=/']);
   });
+
+  it('preserves order of headers in case of duplicates', () => {
+    const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+        'requestId', 'url' as Platform.DevToolsPath.UrlString, 'documentURL' as Platform.DevToolsPath.UrlString, null);
+    const responseHeaders = [{name: '1ab', value: 'middle'}, {name: '1aB', value: 'last'}];
+    request.addExtraResponseInfo({
+      blockedResponseCookies: [],
+      responseHeaders,
+      resourceIPAddressSpace: 'Public' as Protocol.Network.IPAddressSpace,
+    } as unknown as SDK.NetworkRequest.ExtraResponseInfo);
+    assert.deepEqual(request.sortedResponseHeaders, responseHeaders);
+  });
 });

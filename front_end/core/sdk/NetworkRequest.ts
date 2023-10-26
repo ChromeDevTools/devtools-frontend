@@ -1006,8 +1006,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
 
     this.#sortedResponseHeadersInternal = this.responseHeaders.slice();
     return this.#sortedResponseHeadersInternal.sort(function(a, b) {
-      return Platform.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase()) ||
-          Platform.StringUtilities.compare(a.value, b.value);
+      return Platform.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase());
     });
   }
 

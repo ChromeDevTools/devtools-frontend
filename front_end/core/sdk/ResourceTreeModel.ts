@@ -624,8 +624,6 @@ export enum Events {
   FrameDetached = 'FrameDetached',
   FrameResized = 'FrameResized',
   FrameWillNavigate = 'FrameWillNavigate',
-  // Primary page changes can be either main frame navigations or activations of a background frame.
-  // TODO(crbug.com/1393057): Let frame activations trigger this event.
   PrimaryPageChanged = 'PrimaryPageChanged',
   ResourceAdded = 'ResourceAdded',
   WillLoadCachedResources = 'WillLoadCachedResources',

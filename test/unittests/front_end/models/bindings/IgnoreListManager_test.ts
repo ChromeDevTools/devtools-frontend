@@ -27,6 +27,7 @@ const UIStrings = {
 
 const sourceMapThirdPartyFolderUrl = 'http://a.b.c/lib' as Platform.DevToolsPath.UrlString;
 const sourceMapThirdPartyUrl = 'http://a.b.c/lib/source1.ts' as Platform.DevToolsPath.UrlString;
+const sourceMapNodeModulesUrl = 'http://a.b.c/node_modules/library/source3.ts' as Platform.DevToolsPath.UrlString;
 const sourceMapFolderUrl = 'http://a.b.c/myapp' as Platform.DevToolsPath.UrlString;
 const sourceMapFile1Url = 'http://a.b.c/myapp/file1.ts' as Platform.DevToolsPath.UrlString;
 const sourceMapFile2Url = 'http://a.b.c/myapp/file2.ts' as Platform.DevToolsPath.UrlString;
@@ -35,7 +36,7 @@ const sourceMap = {
   version: 3,
   file: './foo.js',
   mappings: '',
-  sources: [sourceMapThirdPartyUrl, sourceMapFile1Url, sourceMapFile2Url],
+  sources: [sourceMapThirdPartyUrl, sourceMapFile1Url, sourceMapFile2Url, sourceMapNodeModulesUrl],
   sourcesContent: ['// File 1\n'],
   names: [],
   sourceRoot: '',
@@ -59,6 +60,7 @@ describeWithMockConnection('IgnoreListManager', () => {
   let uiSourceCode: Workspace.UISourceCode.UISourceCode;
   let webpackUiSourceCode: Workspace.UISourceCode.UISourceCode;
   let thirdPartyUiSourceCode: Workspace.UISourceCode.UISourceCode;
+  let nodeModulesUiSourceCode: Workspace.UISourceCode.UISourceCode;
   let sourceMapFile1UiSourceCode: Workspace.UISourceCode.UISourceCode;
   let sourceMapFile2UiSourceCode: Workspace.UISourceCode.UISourceCode;
   let contentScriptUiSourceCode: Workspace.UISourceCode.UISourceCode;
@@ -171,6 +173,7 @@ describeWithMockConnection('IgnoreListManager', () => {
     thirdPartyUiSourceCode = await debuggerWorkspaceBinding.waitForUISourceCodeAdded(sourceMapThirdPartyUrl, target);
     sourceMapFile1UiSourceCode = notNull(workspace.uiSourceCodeForURL(sourceMapFile1Url));
     sourceMapFile2UiSourceCode = notNull(workspace.uiSourceCodeForURL(sourceMapFile2Url));
+    nodeModulesUiSourceCode = notNull(workspace.uiSourceCodeForURL(sourceMapNodeModulesUrl));
   });
 
   // Wrapper around getIgnoreListURLContextMenuItems to make its result more convenient for testing
@@ -323,6 +326,18 @@ describeWithMockConnection('IgnoreListManager', () => {
 
     assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode));
     assert.isTrue(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(thirdPartyUiSourceCode));
+  });
+
+  it('folder context menu disables default node_modules ignore listing rule', () => {
+    assert.isTrue(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(nodeModulesUiSourceCode));
+
+    const {items, callbacks} = getFolderContextMenu(sourceMapNodeModulesUrl);
+
+    assert.sameMembers(items, [UIStrings.removeFromIgnoreList]);
+
+    notNull(callbacks.get(UIStrings.removeFromIgnoreList))();
+
+    assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(nodeModulesUiSourceCode));
   });
 
   it('folder context menu enables and disables ignore listing', () => {

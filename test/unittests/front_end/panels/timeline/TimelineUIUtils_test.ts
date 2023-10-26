@@ -405,9 +405,14 @@ describeWithMockConnection('TimelineUIUtils', function() {
   });
 
   describe('traceEventDetails', function() {
-    it('shows the interaction ID for EventTiming events that have an interaction ID', async function() {
-      const data = await TraceLoader.allModels(this, 'slow-interaction-button-click.json.gz');
-      const interactionEvent = data.traceParsedData.UserInteractions.interactionEventsWithNoNesting[0];
+    it('shows the interaction ID and INP breakdown metrics for a given interaction', async function() {
+      const data = await TraceLoader.allModels(this, 'one-second-interaction.json.gz');
+      const interactionEvent = data.traceParsedData.UserInteractions.interactionEventsWithNoNesting.find(entry => {
+        return entry.dur === 979974 && entry.type === 'click';
+      });
+      if (!interactionEvent) {
+        throw new Error('Could not find expected event');
+      }
       const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
           interactionEvent,
           data.timelineModel,
@@ -416,10 +421,28 @@ describeWithMockConnection('TimelineUIUtils', function() {
           data.traceParsedData,
       );
       const rowData = getRowDataForDetailsElement(details);
-      assert.deepEqual(rowData, [{
-                         title: 'ID',
-                         value: '1540',
-                       }]);
+      assert.deepEqual(rowData, [
+        {
+          title: 'Warning',
+          value: 'Long interaction is indicating poor page responsiveness.',
+        },
+        {
+          title: 'ID',
+          value: '4122',
+        },
+        {
+          title: 'Input delay',
+          value: '1ms',
+        },
+        {
+          title: 'Main thread processing',
+          value: '977ms',
+        },
+        {
+          title: 'Presentation delay',
+          value: '1.974ms',
+        },
+      ]);
     });
 
     it('renders the details for a layout shift properly', async function() {

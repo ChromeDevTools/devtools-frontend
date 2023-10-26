@@ -406,6 +406,18 @@ const UIStrings = {
    */
   interactionID: 'ID',
   /**
+   *@description Text shown next to the interaction event's input delay time in the detail view.
+   */
+  inputDelay: 'Input delay',
+  /**
+   *@description Text shown next to the interaction event's main thread processing time in the detail view.
+   */
+  mainThreadHandling: 'Main thread processing',
+  /**
+   *@description Text shown next to the interaction event's presentation delay time in the detail view.
+   */
+  presentationDelay: 'Presentation delay',
+  /**
    *@description Text to cancel the animation frame
    */
   cancelAnimationFrame: 'Cancel Animation Frame',
@@ -2371,7 +2383,13 @@ export class TimelineUIUtils {
         }
 
         if (payload && TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(payload)) {
+          const inputDelay = TraceEngine.Helpers.Timing.formatMicrosecondsTime(payload.inputDelay);
+          const mainThreadTime = TraceEngine.Helpers.Timing.formatMicrosecondsTime(payload.mainThreadHandling);
+          const presentationDelay = TraceEngine.Helpers.Timing.formatMicrosecondsTime(payload.presentationDelay);
           contentHelper.appendTextRow(i18nString(UIStrings.interactionID), payload.interactionId);
+          contentHelper.appendTextRow(i18nString(UIStrings.inputDelay), inputDelay);
+          contentHelper.appendTextRow(i18nString(UIStrings.mainThreadHandling), mainThreadTime);
+          contentHelper.appendTextRow(i18nString(UIStrings.presentationDelay), presentationDelay);
         }
         break;
       }

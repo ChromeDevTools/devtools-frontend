@@ -233,9 +233,9 @@ export interface TraceEventEventTiming extends TraceEventData {
     data?: TraceEventArgsData&{
       cancelable: boolean,
       duration: MilliSeconds,
-      processingEnd: MicroSeconds,
-      processingStart: MicroSeconds,
-      timeStamp: MicroSeconds,
+      processingEnd: MilliSeconds,
+      processingStart: MilliSeconds,
+      timeStamp: MilliSeconds,
       interactionId?: number, type: string,
     },
   };
@@ -1000,6 +1000,18 @@ export interface SyntheticInteractionEvent extends TraceEventSyntheticNestableAs
   // that and put it here to make it easier. This also makes these events
   // consistent with real events that have a dur field.
   dur: MicroSeconds;
+  // These values are provided in the startEvent's args.data field as
+  // millisecond values, but during the handler phase we parse these into
+  // microseconds and put them on the top level for easy access.
+  processingStart: MicroSeconds;
+  processingEnd: MicroSeconds;
+  // These 3 values represent the breakdown of the parts of an interaction:
+  // 1. inputDelay: time from the user clicking to the input being handled
+  inputDelay: MicroSeconds;
+  // 2. mainThreadHandling: time spent processing the event handler
+  mainThreadHandling: MicroSeconds;
+  // 3. presentationDelay: delay between the event being processed and the frame being rendered
+  presentationDelay: MicroSeconds;
   args: TraceEventArgs&{
     data: TraceEventArgsData & {
       beginEvent: TraceEventEventTimingBegin,

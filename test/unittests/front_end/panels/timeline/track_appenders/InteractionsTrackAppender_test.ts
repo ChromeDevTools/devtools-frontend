@@ -2,12 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as TimelineModel from '../../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../../front_end/panels/timeline/timeline.js';
 import * as PerfUI from '../../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
-
-import type * as TimelineModel from '../../../../../../front_end/models/timeline_model/timeline_model.js';
 import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 const {assert} = chai;
@@ -112,8 +111,11 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     }
     const entryIndex = entryData.indexOf(longInteraction);
     const decorationsForEntry = flameChartData.entryDecorations[entryIndex];
-    assert.deepEqual(
-        decorationsForEntry, [{type: 'CANDY', startAtTime: TraceEngine.Types.Timing.MicroSeconds(200_000)}]);
+    assert.deepEqual(decorationsForEntry, [{
+                       type: 'CANDY',
+                       startAtTime: TraceEngine.Types.Timing.MicroSeconds(200_000),
+                       endAtTime: longInteraction.processingEnd,
+                     }]);
   });
 
   it('does not candy-stripe interactions less than 200ms', async function() {

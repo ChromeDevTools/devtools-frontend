@@ -184,6 +184,29 @@ export function removeNestedInteractions(interactions: readonly Types.TraceEvent
     }
     if (interaction.ts < earliestCurrentEvent.ts) {
       mapToUse.set(endTime, interaction);
+    } else if (
+        interaction.ts === earliestCurrentEvent.ts &&
+        interaction.interactionId === earliestCurrentEvent.interactionId) {
+      // We have seen in traces that the same interaction can have multiple
+      // events (e.g. a 'click' and a 'pointerdown'). Often only one of these
+      // events will have an event handler bound to it which caused delay on
+      // the main thread, and the others will not. This leads to a situation
+      // where if we pick one of the events that had no event handler, its
+      // processing time (processingEnd - processingStart) will be 0, but if we
+      // had picked the event that had the slow event handler, we would show
+      // correctly the main thread delay due to the event handler.
+      // So, if we find events with the same interactionId and the same
+      // begin/end times, we pick the one with the largest (processingEnd -
+      // processingStart) time in order to make sure we find the event with the
+      // worst main thread delay, as that is the one the user should care
+      // about.
+      const currentEventProcessingTime = earliestCurrentEvent.processingEnd - earliestCurrentEvent.processingStart;
+      const newEventProcessingTime = interaction.processingEnd - interaction.processingStart;
+
+      // Use the new interaction if it has a longer processing time than the existing one.
+      if (newEventProcessingTime > currentEventProcessingTime) {
+        mapToUse.set(endTime, interaction);
+      }
     }
   }
 
@@ -219,6 +242,26 @@ export async function finalize(): Promise<void> {
       continue;
     }
 
+    // In the future we will add microsecond timestamps to the trace events,
+    // but until then we can use the millisecond precision values that are in
+    // the trace event. To adjust them to be relative to the event.ts and the
+    // trace timestamps, for both processingStart and processingEnd we subtract
+    // the event timestamp (NOT event.ts, but the timeStamp millisecond value
+    // emitted in args.data), and then add that value to the event.ts. This
+    // will give us a processingStart and processingEnd time in microseconds
+    // that is relative to event.ts, and can be used when drawing boxes.
+    // There is some inaccuracy here as we are converting milliseconds to microseconds, but it is good enough until the backend emits more accurate numbers.
+    const processingStartRelativeToTraceTime = Types.Timing.MicroSeconds(
+        Helpers.Timing.millisecondsToMicroseconds(interactionStartEvent.args.data.processingStart) -
+            Helpers.Timing.millisecondsToMicroseconds(interactionStartEvent.args.data.timeStamp) +
+            interactionStartEvent.ts,
+    );
+
+    const processingEndRelativeToTraceTime = Types.Timing.MicroSeconds(
+        (Helpers.Timing.millisecondsToMicroseconds(interactionStartEvent.args.data.processingEnd) -
+         Helpers.Timing.millisecondsToMicroseconds(interactionStartEvent.args.data.timeStamp)) +
+        interactionStartEvent.ts);
+
     const interactionEvent: Types.TraceEvents.SyntheticInteractionEvent = {
       // Use the start event to define the common fields.
       cat: interactionStartEvent.cat,
@@ -226,6 +269,12 @@ export async function finalize(): Promise<void> {
       pid: interactionStartEvent.pid,
       tid: interactionStartEvent.tid,
       ph: interactionStartEvent.ph,
+      processingStart: processingStartRelativeToTraceTime,
+      processingEnd: processingEndRelativeToTraceTime,
+      inputDelay: Types.Timing.MicroSeconds(processingStartRelativeToTraceTime - interactionStartEvent.ts),
+      mainThreadHandling:
+          Types.Timing.MicroSeconds(processingEndRelativeToTraceTime - processingStartRelativeToTraceTime),
+      presentationDelay: Types.Timing.MicroSeconds(endEvent.ts - processingEndRelativeToTraceTime),
       args: {
         data: {
           beginEvent: interactionStartEvent,
@@ -237,14 +286,19 @@ export async function finalize(): Promise<void> {
       type: interactionStartEvent.args.data.type,
       interactionId: interactionStartEvent.args.data.interactionId,
     };
-    if (!longestInteractionEvent || longestInteractionEvent.dur < interactionEvent.dur) {
-      longestInteractionEvent = interactionEvent;
-    }
     interactionEvents.push(interactionEvent);
   }
 
   handlerState = HandlerState.FINALIZED;
   interactionEventsWithNoNesting.push(...removeNestedInteractions(interactionEvents));
+
+  // Pick the longest interactions from the set that were not nested, as we
+  // know those are the set of the largest interactions.
+  for (const interactionEvent of interactionEventsWithNoNesting) {
+    if (!longestInteractionEvent || longestInteractionEvent.dur < interactionEvent.dur) {
+      longestInteractionEvent = interactionEvent;
+    }
+  }
 }
 
 export function data(): UserInteractionsData {

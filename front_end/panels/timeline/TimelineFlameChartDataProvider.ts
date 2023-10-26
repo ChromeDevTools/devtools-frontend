@@ -1147,7 +1147,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   decorateEntry(
       entryIndex: number, context: CanvasRenderingContext2D, text: string|null, barX: number, barY: number,
-      barWidth: number, barHeight: number, _unclippedBarX: number, _timeToPixels: number): boolean {
+      barWidth: number, barHeight: number, unclippedBarX: number, timeToPixelRatio: number): boolean {
     const entryType = this.entryType(entryIndex);
 
     if (entryType === EntryType.Frame) {
@@ -1160,7 +1160,119 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       return true;
     }
 
+    if (entryType === EntryType.TrackAppender) {
+      const entry = this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData;
+      if (TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(entry)) {
+        this.#drawInteractionEventWithWhiskers(
+            context, entryIndex, text, entry, barX, barY, unclippedBarX, barWidth, barHeight, timeToPixelRatio);
+        return true;
+      }
+    }
+
     return false;
+  }
+
+  /**
+   * Draws the left and right whiskers around an interaction in the timeline.
+   * @param context - the canvas that will be drawn onto
+   * @param entryIndex
+   * @param entryTitle - the title of the entry
+   * @param entry - the entry itself
+   * @param barX - the starting X pixel position of the bar representing this event. This is clipped: if the bar is off the left side of the screen, this value will be 0
+   * @param barY - the starting Y pixel position of the bar representing this event.
+   * @param unclippedBarXStartPixel - the starting X pixel position of the bar representing this event, not clipped. This means if the bar is off the left of the screen this will be a negative number.
+   * @param barWidth - the width of the full bar in pixels
+   * @param barHeight - the height of the full bar in pixels
+   * @param timeToPixelRatio - the ratio required to convert a millisecond time to a pixel value.
+   **/
+  #drawInteractionEventWithWhiskers(
+      context: CanvasRenderingContext2D, entryIndex: number, entryTitle: string|null,
+      entry: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent, barX: number, barY: number,
+      unclippedBarXStartPixel: number, barWidth: number, barHeight: number, timeToPixelRatio: number): void {
+    /**
+     * An interaction is drawn with whiskers as so:
+     * |----------[=======]-------------|
+     * => The left whisker is the event's start time (event.ts)
+     * => The box start is the event's processingStart time
+     * => The box end is the event's processingEnd time
+     * => The right whisker is the event's end time (event.ts + event.dur)
+     *
+     * When we draw the event in the InteractionsAppender, we draw a huge box
+     * that spans the entire of the above. So here we need to draw over the
+     * rectangle that is outside of {processingStart, processingEnd} and
+     * replace it with the whiskers.
+     * TODO(crbug.com/1495248): rework how we draw whiskers to avoid this inefficiency
+     */
+
+    const beginTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(entry.ts);
+    const entireBarEndXPixel = barX + barWidth;
+
+    function timeToPixel(time: TraceEngine.Types.Timing.MicroSeconds): number {
+      const timeMilli = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(time);
+      return Math.floor(unclippedBarXStartPixel + (timeMilli - beginTime) * timeToPixelRatio);
+    }
+
+    context.save();
+
+    // Clear portions of initial rect to prepare for the ticks.
+    context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
+    let desiredBoxStartX = timeToPixel(entry.processingStart);
+    const desiredBoxEndX = timeToPixel(entry.processingEnd);
+
+    // If the entry has no processing time, ensure the box is 1px wide so at least it is visible.
+    if (entry.processingEnd - entry.processingStart === 0) {
+      desiredBoxStartX -= 1;
+    }
+
+    context.fillRect(barX, barY - 0.5, desiredBoxStartX - barX, barHeight);
+    context.fillRect(desiredBoxEndX, barY - 0.5, entireBarEndXPixel - desiredBoxEndX, barHeight);
+    context.restore();
+
+    // Draws left and right whiskers
+    function drawTick(begin: number, end: number, y: number): void {
+      const tickHeightPx = 6;
+      context.moveTo(begin, y - tickHeightPx / 2);
+      context.lineTo(begin, y + tickHeightPx / 2);
+      context.moveTo(begin, y);
+      context.lineTo(end, y);
+    }
+
+    // The left whisker starts at the enty timestamp, and continues until the start of the box (processingStart).
+    const leftWhiskerX = timeToPixel(entry.ts);
+    // The right whisker ends at (entry.ts + entry.dur). We draw the line from the end of the box (processingEnd).
+    const rightWhiskerX = timeToPixel(TraceEngine.Types.Timing.MicroSeconds(entry.ts + entry.dur));
+    context.save();
+    context.beginPath();
+    context.lineWidth = 1;
+    context.strokeStyle = '#ccc';
+    const lineY = Math.floor(barY + barHeight / 2) + 0.5;
+    const leftTick = leftWhiskerX + 0.5;
+    const rightTick = rightWhiskerX - 0.5;
+    drawTick(leftTick, desiredBoxStartX, lineY);
+    drawTick(rightTick, desiredBoxEndX, lineY);
+    context.stroke();
+
+    if (entryTitle) {
+      // BarX will be set to 0 if the start of the box if off the screen to the
+      // left. If this happens, the desiredBoxStartX will be negative. In that
+      // case, we fallback to the BarX. This ensures that even if the box
+      // starts off-screen, we draw the text at the first visible on screen
+      // pixels, so the user can still see the event's title.
+      const textStartX = desiredBoxStartX > 0 ? desiredBoxStartX : barX;
+      const textWidth = UI.UIUtils.measureTextWidth(context, entryTitle);
+
+      // These numbers are duplicated from FlameChart.ts.
+      const textPadding = 5;
+      const textBaseline = 5;
+
+      // Only draw the text if it can fit in the amount of box that is visible.
+      if (textWidth > desiredBoxEndX - textStartX + textPadding) {
+        return;
+      }
+      context.fillStyle = this.textColor(entryIndex);
+      context.fillText(entryTitle, textStartX + textPadding, barY + barHeight - textBaseline);
+    }
+    context.restore();
   }
 
   forceDecoration(entryIndex: number): boolean {
@@ -1178,6 +1290,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       return Boolean(TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).warning);
     }
     const event = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData);
+
+    if (TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(event)) {
+      // We draw interactions with whiskers, which are done via the
+      // decorateEntry() method, hence we always want to force these to be
+      // decorated.
+      return true;
+    }
     return Boolean(this.traceEngineData?.Warnings.perEvent.get(event));
   }
 

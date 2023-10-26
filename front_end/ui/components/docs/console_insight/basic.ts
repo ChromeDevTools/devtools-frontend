@@ -28,7 +28,7 @@ document.querySelector('test').style = 'black';
 \`\`\`
 
 Links: [https://example.com](https://example.com)
-Images: [https://example.com](https://example.com)
+Images: ![https://example.com](https://example.com)
 `;
       },
     });

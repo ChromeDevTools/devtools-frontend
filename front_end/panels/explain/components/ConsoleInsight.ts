@@ -7,6 +7,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import {type InsightProvider} from '../InsightProvider.js';
 import {type PromptBuilder} from '../PromptBuilder.js';
@@ -33,6 +34,7 @@ export class ConsoleInsight extends HTMLElement {
   #promptBuilder: PublicPromptBuilder;
   #insightProvider: PublicInsightProvider;
   #tokens: MarkdownView.MarkdownView.MarkdownViewData['tokens'] = [];
+  #renderer = new MarkdownRenderer();
 
   constructor(promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider) {
     super();
@@ -98,7 +100,7 @@ export class ConsoleInsight extends HTMLElement {
       </header>
       <main>
       <${MarkdownView.MarkdownView.MarkdownView.litTagName}
-        .data=${{tokens: this.#tokens} as MarkdownView.MarkdownView.MarkdownViewData}>
+        .data=${{tokens: this.#tokens, renderer: this.#renderer} as MarkdownView.MarkdownView.MarkdownViewData}>
       </${MarkdownView.MarkdownView.MarkdownView.litTagName}>
       </main>
       <footer>
@@ -140,5 +142,27 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface HTMLElementTagNameMap {
     'devtools-console-insight': ConsoleInsight;
+  }
+}
+
+export class MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownLitRenderer {
+  override renderToken(token: Marked.Marked.Token): LitHtml.TemplateResult {
+    const template = this.templateForToken(token);
+    if (template === null) {
+      console.warn(`Markdown token type '${token.type}' not supported.`);
+      return LitHtml.html``;
+    }
+    return template;
+  }
+
+  override templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {
+    switch (token.type) {
+      case 'heading':
+        return html`<strong>${this.renderText(token)}</strong>`;
+      case 'link':
+      case 'image':
+        return LitHtml.html`${UI.XLink.XLink.create(token.href, token.text)}`;
+    }
+    return super.templateForToken(token);
   }
 }

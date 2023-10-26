@@ -81,3 +81,13 @@
 .codeblock .copy {
   padding: 4px 0;
 }
+
+.devtools-link {
+  color: var(--sys-color-primary);
+  outline-offset: 2px;
+  text-decoration: none;
+}
+
+.devtools-link:hover {
+  text-decoration: underline;
+}

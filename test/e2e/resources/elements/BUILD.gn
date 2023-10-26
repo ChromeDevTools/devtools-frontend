@@ -43,6 +43,7 @@ copy_to_gen("elements") {
     "grid-editor.html",
     "highlight-pseudo-inheritance.html",
     "hover.html",
+    "iframe-documenturl.html",
     "inactive-css-page.html",
     "inactive-css-with-invalid-value.html",
     "limited-quirks-mode.html",

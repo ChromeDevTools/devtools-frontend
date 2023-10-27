@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as TraceEngine from '../../../models/trace/trace.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
@@ -40,6 +41,16 @@ const UIStrings = {
    * https://developer.mozilla.org/en-US/docs/Glossary/Long_task
    */
   longTask: 'Long task',
+  /**
+   *@description Text used to highlight a long interaction and link to web.dev/inp
+   */
+  longInteractionINP: 'Long interaction',
+  /**
+   *@description Text in Timeline UIUtils of the Performance panel when the
+   *             user clicks on a long interaction.
+   *@example {Long interaction} PH1
+   */
+  sIsLikelyPoorPageResponsiveness: '{PH1} is indicating poor page responsiveness.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/DetailsView.ts', UIStrings);
@@ -85,8 +96,15 @@ export function buildWarningElementsForEvent(
             {PH1: longTaskLink, PH2: i18n.TimeUtilities.millisToString((duration || 0), true)}));
         break;
       }
+      case 'LONG_INTERACTION': {
+        const longInteractionINPLink =
+            UI.XLink.XLink.create('https://web.dev/inp', i18nString(UIStrings.longInteractionINP));
+        span.appendChild(i18n.i18n.getFormatLocalizedString(
+            str_, UIStrings.sIsLikelyPoorPageResponsiveness, {PH1: longInteractionINPLink}));
+        break;
+      }
       default: {
-        continue;
+        Platform.assertNever(warning, `Unhandled warning type ${warning}`);
       }
     }
     warningElements.push(span);

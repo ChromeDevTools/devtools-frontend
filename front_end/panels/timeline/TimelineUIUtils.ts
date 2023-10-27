@@ -1037,16 +1037,6 @@ const UIStrings = {
    */
   forcedReflow: 'Forced reflow',
   /**
-   *@description Text used to highlight a long interaction and link to web.dev/inp
-   */
-  longInteractionINP: 'Long interaction',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel when the
-   *             user clicks on a long interaction.
-   *@example {Long interaction} PH1
-   */
-  sIsLikelyPoorPageResponsiveness: '{PH1} is indicating poor page responsiveness.',
-  /**
    *@description Text in Timeline UIUtils of the Performance panel
    *@example {Forced reflow} PH1
    */
@@ -2033,12 +2023,6 @@ export class TimelineUIUtils {
     }
     if (event.name === recordTypes.JSFrame && eventData['deoptReason']) {
       contentHelper.appendWarningRow(event, TimelineModel.TimelineModel.TimelineModelImpl.WarningType.V8Deopt);
-    }
-
-    if (traceParseData && TraceEngine.Legacy.eventIsFromNewEngine(event) &&
-        TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(event) &&
-        traceParseData.UserInteractions.interactionsOverThreshold.has(event)) {
-      contentHelper.appendWarningRow(event, TimelineModel.TimelineModel.TimelineModelImpl.WarningType.LongInteraction);
     }
 
     if (detailed && !Number.isNaN(duration || 0)) {
@@ -3333,14 +3317,6 @@ export class TimelineUIUtils {
       case warnings.LongHandler: {
         span.textContent =
             i18nString(UIStrings.handlerTookS, {PH1: i18n.TimeUtilities.millisToString((duration || 0), true)});
-        break;
-      }
-
-      case warnings.LongInteraction: {
-        const longInteractionINPLink =
-            UI.XLink.XLink.create('https://web.dev/inp', i18nString(UIStrings.longInteractionINP));
-        span.appendChild(i18n.i18n.getFormatLocalizedString(
-            str_, UIStrings.sIsLikelyPoorPageResponsiveness, {PH1: longInteractionINPLink}));
         break;
       }
 

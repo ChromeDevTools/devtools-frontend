@@ -170,6 +170,15 @@ export class CompatibilityTracksAppender {
     });
   }
 
+  modifyTree(group: PerfUI.FlameChart.Group, node: TraceEngine.Types.TraceEvents.TraceEntry): void {
+    const threadTrackAppender = this.#trackForGroup.get(group);
+    if (threadTrackAppender instanceof ThreadAppender) {
+      threadTrackAppender.modifyTree(node);
+    } else {
+      console.warn('Could not modify tree in not thread track');
+    }
+  }
+
   #addThreadAppenders(): void {
     const weight = (appender: ThreadAppender): number => {
       switch (appender.threadType) {

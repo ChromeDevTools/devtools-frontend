@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../../front_end/core/common/common.js';
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
@@ -13,8 +14,6 @@ import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {assertElement, dispatchPasteEvent} from '../../helpers/DOMHelpers.js';
 import {createTarget, registerNoopActions} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
-
-import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 
 const {assert} = chai;
 
@@ -46,9 +45,11 @@ describeWithMockConnection('ConsoleView', () => {
     await consoleView.getScheduledRefreshPromiseForTest();
   });
 
-  function createConsoleMessage(target: SDK.Target.Target, message: string) {
+  function createConsoleMessage(
+      target: SDK.Target.Target, message: string,
+      type: SDK.ConsoleModel.MessageType = Protocol.Runtime.ConsoleAPICalledEventType.Log) {
     return new SDK.ConsoleModel.ConsoleMessage(
-        target.model(SDK.RuntimeModel.RuntimeModel), Protocol.Log.LogEntrySource.Javascript, null, message);
+        target.model(SDK.RuntimeModel.RuntimeModel), Protocol.Log.LogEntrySource.Javascript, null, message, {type});
   }
 
   async function canSaveToFile(targetFactory: () => SDK.Target.Target) {
@@ -208,12 +209,28 @@ describeWithMockConnection('ConsoleView', () => {
 
       for (let i = 0; i < 5; i++) {
         assert.isFalse(selfXssWarningDisabledSetting.get());
-        consoleModel.dispatchEventToListeners(SDK.ConsoleModel.Events.CommandEvaluated, {
-          result: new SDK.RemoteObject.RemoteObjectImpl(runtimeModel, undefined, 'number', undefined, 42),
-          commandMessage: createConsoleMessage(target, String(i)),
-        });
+        consoleModel.dispatchEventToListeners(
+            SDK.ConsoleModel.Events.MessageAdded,
+            createConsoleMessage(target, String(i), SDK.ConsoleModel.FrontendMessageType.Command));
       }
       assert.isTrue(selfXssWarningDisabledSetting.get());
     });
+  });
+
+  it('appends commands to the history right away', async () => {
+    const target = createTarget();
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+    consoleView.markAsRoot();
+    consoleView.show(document.body);
+
+    const consoleModel = target.model(SDK.ConsoleModel.ConsoleModel);
+    assertNotNullOrUndefined(consoleModel);
+    const consoleHistorySetting = Common.Settings.Settings.instance().createLocalSetting('consoleHistory', []);
+
+    consoleModel.dispatchEventToListeners(
+        SDK.ConsoleModel.Events.MessageAdded,
+        createConsoleMessage(target, 'await new Promise(() => ())', SDK.ConsoleModel.FrontendMessageType.Command));
+
+    assert.deepStrictEqual(consoleHistorySetting.get(), ['await new Promise(() => ())']);
   });
 });

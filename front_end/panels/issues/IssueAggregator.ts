@@ -40,6 +40,7 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
   #deprecationIssues = new Set<IssuesManager.DeprecationIssue.DeprecationIssue>();
   #issueKind = IssuesManager.Issue.IssueKind.Improvement;
   #lowContrastIssues = new Set<IssuesManager.LowTextContrastIssue.LowTextContrastIssue>();
+  #metadataAllowedSites = new Set<string>();
   #mixedContentIssues = new Set<IssuesManager.MixedContentIssue.MixedContentIssue>();
   #sharedArrayBufferIssues = new Set<IssuesManager.SharedArrayBufferIssue.SharedArrayBufferIssue>();
   #quirksModeIssues = new Set<IssuesManager.QuirksModeIssue.QuirksModeIssue>();
@@ -91,6 +92,10 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
 
   getHeavyAdIssues(): Iterable<IssuesManager.HeavyAdIssue.HeavyAdIssue> {
     return this.#heavyAdIssues;
+  }
+
+  getMetadataAllowedSites(): Iterable<string> {
+    return this.#metadataAllowedSites.values();
   }
 
   getMixedContentIssues(): Iterable<IssuesManager.MixedContentIssue.MixedContentIssue> {
@@ -193,6 +198,11 @@ export class AggregatedIssue extends IssuesManager.Issue.Issue {
       const key = JSON.stringify(location);
       if (!this.#affectedLocations.has(key)) {
         this.#affectedLocations.set(key, location);
+      }
+    }
+    for (const site of issue.metadataAllowedSites()) {
+      if (!this.#metadataAllowedSites.has(site)) {
+        this.#metadataAllowedSites.add(site);
       }
     }
     if (issue instanceof IssuesManager.MixedContentIssue.MixedContentIssue) {

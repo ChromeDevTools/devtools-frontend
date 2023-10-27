@@ -25,6 +25,7 @@ devtools_module("issues") {
     "AffectedElementsView.ts",
     "AffectedElementsWithLowContrastView.ts",
     "AffectedHeavyAdView.ts",
+    "AffectedMetadataAllowedSitesView.ts",
     "AffectedResourcesView.ts",
     "AffectedSharedArrayBufferIssueDetailsView.ts",
     "AffectedSourcesView.ts",

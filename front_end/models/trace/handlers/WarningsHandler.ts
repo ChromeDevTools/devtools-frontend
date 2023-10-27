@@ -6,6 +6,9 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
+import {type TraceEventHandlerName} from './types.js';
+import {data as userInteractionsHandlerData} from './UserInteractionsHandler.js';
+
 export interface WarningsData {
   // Tracks warnings keyed by the event.
   perEvent: Map<Types.TraceEvents.TraceEventData, Warning[]>;
@@ -14,7 +17,7 @@ export interface WarningsData {
   perWarning: Map<Warning, Types.TraceEvents.TraceEventData[]>;
 }
 
-export type Warning = 'LONG_TASK'|'IDLE_CALLBACK_OVER_TIME'|'FORCED_LAYOUT'|'FORCED_STYLE';
+export type Warning = 'LONG_TASK'|'IDLE_CALLBACK_OVER_TIME'|'FORCED_LAYOUT'|'FORCED_STYLE'|'LONG_INTERACTION';
 
 const warningsPerEvent: WarningsData['perEvent'] = new Map();
 const eventsPerWarning: WarningsData['perWarning'] = new Map();
@@ -69,6 +72,22 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
       storeWarning(event, 'FORCED_STYLE');
     }
     return;
+  }
+}
+
+export function deps(): TraceEventHandlerName[] {
+  return ['UserInteractions'];
+}
+
+export async function finalize(): Promise<void> {
+  // These events do exist on the UserInteractionsHandler, but we also put
+  // them into the WarningsHandler so that the warnings handler can be the
+  // source of truth and the way to look up all warnings for a given event.
+  // Otherwise, we would have to look up warnings across multiple handlers for
+  // a given event, which will start to get messy very quickly.
+  const longInteractions = userInteractionsHandlerData().interactionsOverThreshold;
+  for (const interaction of longInteractions) {
+    storeWarning(interaction, 'LONG_INTERACTION');
   }
 }
 

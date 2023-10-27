@@ -106,6 +106,10 @@ const UIStrings = {
    */
   editName: 'Edit name',
   /**
+   *@description Placeholder for the input box to customize name of authenticator.
+   */
+  enterNewName: 'Enter new name',
+  /**
    *@description Title for button that enables user to save name of authenticator after editing it.
    */
   saveName: 'Save name',
@@ -652,6 +656,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     saveName.setVisible(false);
 
     const nameField = (titleElement.createChild('input', 'authenticator-name-field') as HTMLInputElement);
+    nameField.placeholder = i18nString(UIStrings.enterNewName);
     nameField.disabled = true;
     const userFriendlyName = authenticatorId.slice(-5);  // User friendly name defaults to last 5 chars of UUID.
     nameField.value = i18nString(UIStrings.authenticatorS, {PH1: userFriendlyName});
@@ -774,11 +779,15 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   #handleSaveNameButton(
       titleElement: Element, nameField: HTMLInputElement, editName: UI.Toolbar.ToolbarItem,
       saveName: UI.Toolbar.ToolbarItem, activeLabel: UI.UIUtils.DevToolsRadioButton): void {
+    const name = nameField.value;
+    if (!name) {
+      return;
+    }
     nameField.disabled = true;
     titleElement.classList.remove('editing-name');
     editName.setVisible(true);
     saveName.setVisible(false);
-    this.#updateActiveLabelTitle(activeLabel, nameField.value);
+    this.#updateActiveLabelTitle(activeLabel, name);
   }
 
   #updateActiveLabelTitle(activeLabel: UI.UIUtils.DevToolsRadioButton, authenticatorName: string): void {

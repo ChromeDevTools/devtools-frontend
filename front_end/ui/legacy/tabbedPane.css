@@ -68,21 +68,21 @@
     margin-block-start: 20px;
     padding: 10px;
     margin-inline: 20px;
+  }
 
-    & button {
-      cursor: pointer;
-      color: var(--text-link);
-      background: transparent;
-      border: none;
-      padding: 0;
-      text-decoration: underline;
-      margin-inline: 4px;
+  & button {
+    cursor: pointer;
+    color: var(--text-link);
+    background: transparent;
+    border: none;
+    padding: 0;
+    text-decoration: underline;
+    margin-inline: 4px;
 
-      &:focus-visible {
-        outline: 2px solid var(--sys-color-state-focus-ring);
-        outline-offset: 2px;
-        border-radius: 2px;
-      }
+    &:focus-visible {
+      outline: 2px solid var(--sys-color-state-focus-ring);
+      outline-offset: 2px;
+      border-radius: 2px;
     }
   }
 }

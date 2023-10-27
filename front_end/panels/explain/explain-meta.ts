@@ -16,22 +16,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/explain/explain-meta.ts', UIStr
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
-  const Workspace = await import('../../models/workspace/workspace.js');
-  class ExplainCodeContextProvider implements UI.ContextMenu.Provider {
-    appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu, _target: Object): void {
-      contextMenu.debugSection().appendAction('explain.code');
-    }
-  }
-
-  UI.ContextMenu.registerProvider({
-    contextTypes() {
-      return [Workspace.UISourceCode.UISourceCode];
-    },
-    async loadProvider() {
-      return new ExplainCodeContextProvider();
-    },
-  });
-
   const Console = await import('../console/console.js');
 
   UI.ActionRegistration.registerActionExtension({
@@ -44,21 +28,6 @@ if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
     title: i18nLazyString(UIStrings.explainConsoleMessage),
     contextTypes() {
       return [Console.ConsoleViewMessage.ConsoleViewMessage];
-    },
-  });
-
-  class ExplainConsoleMessageContextProvider implements UI.ContextMenu.Provider {
-    appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu, _target: Object): void {
-      contextMenu.debugSection().appendAction('explain.consoleMessage');
-    }
-  }
-
-  UI.ContextMenu.registerProvider({
-    contextTypes() {
-      return [Console.ConsoleViewMessage.ConsoleViewMessage];
-    },
-    async loadProvider() {
-      return new ExplainConsoleMessageContextProvider();
     },
   });
 }

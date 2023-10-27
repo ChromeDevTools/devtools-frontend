@@ -63,6 +63,7 @@ copy_to_gen("copy_stylesheets_for_server") {
   sources = [
     "applicationColorTokens.css",
     "inspectorCommon.css",
+    "inspectorSyntaxHighlight.css",
     "themeColors.css",
     "tokens.css",
   ]

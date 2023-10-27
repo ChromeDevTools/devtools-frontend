@@ -89,11 +89,14 @@ server.once('error', error => {
   throw error;
 });
 
+// All paths that are injected globally into real DevTools, so we do the same
+// to avoid styles being broken in the component server.
 const styleSheetPaths = [
   'front_end/ui/legacy/themeColors.css',
   'front_end/ui/legacy/tokens.css',
   'front_end/ui/legacy/applicationColorTokens.css',
   'front_end/ui/legacy/inspectorCommon.css',
+  'front_end/ui/legacy/inspectorSyntaxHighlight.css',
   'front_end/ui/components/docs/component_docs_styles.css',
 ];
 

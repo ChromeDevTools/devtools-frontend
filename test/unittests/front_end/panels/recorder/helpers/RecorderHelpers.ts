@@ -23,7 +23,7 @@ export const installMocksForRecordingPlayer = (): void => {
         send: sinon.stub().resolves(),
       }),
       frames: () => [{
-        _client: () => ({send: sinon.stub().resolves()}),
+        client: {send: sinon.stub().resolves()},
       }],
       evaluate: () => '',
       url() {

@@ -23,6 +23,7 @@ export const enum InstrumentationNames {
   SetIntervalCallback = 'setInterval.callback',
   ScriptFirstStatement = 'scriptFirstStatement',
   ScriptBlockedByCSP = 'scriptBlockedByCSP',
+  SharedStorageWorkletScriptFirstStatement = 'sharedStorageWorkletScriptFirstStatement',
   RequestAnimationFrame = 'requestAnimationFrame',
   CancelAnimationFrame = 'cancelAnimationFrame',
   RequestAnimationFrameCallback = 'requestAnimationFrame.callback',
@@ -111,6 +112,9 @@ export class EventBreakpointsManager implements SDKModelObserver<EventBreakpoint
     this.createInstrumentationBreakpoints(Category.Script, [
       InstrumentationNames.ScriptFirstStatement,
       InstrumentationNames.ScriptBlockedByCSP,
+    ]);
+    this.createInstrumentationBreakpoints(Category.SharedStorageWorklet, [
+      InstrumentationNames.SharedStorageWorkletScriptFirstStatement,
     ]);
     this.createInstrumentationBreakpoints(Category.Timer, [
       InstrumentationNames.SetTimeout,

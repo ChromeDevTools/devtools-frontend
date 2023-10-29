@@ -89,6 +89,10 @@ const UIStrings = {
    */
   script: 'Script',
   /**
+   *@description Category of breakpoints
+   */
+  sharedStorageWorklet: 'Shared Storage Worklet',
+  /**
    *@description Text in DOMDebugger Model
    */
   timer: 'Timer',
@@ -362,6 +366,7 @@ const LOCALIZED_CATEGORIES: Record<SDK.CategorizedBreakpoint.Category, () => Pla
   [SDK.CategorizedBreakpoint.Category.PictureInPicture]: i18nLazyString(UIStrings.pictureinpicture),
   [SDK.CategorizedBreakpoint.Category.Pointer]: i18nLazyString(UIStrings.pointer),
   [SDK.CategorizedBreakpoint.Category.Script]: i18nLazyString(UIStrings.script),
+  [SDK.CategorizedBreakpoint.Category.SharedStorageWorklet]: i18nLazyString(UIStrings.sharedStorageWorklet),
   [SDK.CategorizedBreakpoint.Category.Timer]: i18nLazyString(UIStrings.timer),
   [SDK.CategorizedBreakpoint.Category.Touch]: i18nLazyString(UIStrings.touch),
   [SDK.CategorizedBreakpoint.Category.TrustedTypeViolation]: i18nLazyString(UIStrings.trustedTypeViolations),

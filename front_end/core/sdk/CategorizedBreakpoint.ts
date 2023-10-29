@@ -21,6 +21,7 @@ export const enum Category {
   PictureInPicture = 'PictureInPicture',
   Pointer = 'Pointer',
   Script = 'Script',
+  SharedStorageWorklet = 'SharedStorageWorklet',
   Timer = 'Timer',
   Touch = 'Touch',
   TrustedTypeViolation = 'TrustedTypeViolation',

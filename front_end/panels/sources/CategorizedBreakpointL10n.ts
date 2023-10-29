@@ -52,6 +52,10 @@ const UIStrings = {
    */
   scriptBlockedByContentSecurity: 'Script Blocked by Content Security Policy',
   /**
+   *@description Name of a breakpoint type in the Sources Panel.
+   */
+  sharedStorageWorkletScriptFirstStatement: 'Script First Statement',
+  /**
    *@description Text for the request animation frame event
    */
   requestAnimationFrame: 'Request Animation Frame',
@@ -137,6 +141,8 @@ const LOCALIZED_INSTRUMENTATION_NAMES:
           i18nLazyString(UIStrings.scriptFirstStatement),
       [SDK.EventBreakpointsModel.InstrumentationNames.ScriptBlockedByCSP]:
           i18nLazyString(UIStrings.scriptBlockedByContentSecurity),
+      [SDK.EventBreakpointsModel.InstrumentationNames.SharedStorageWorkletScriptFirstStatement]:
+          i18nLazyString(UIStrings.sharedStorageWorkletScriptFirstStatement),
       [SDK.EventBreakpointsModel.InstrumentationNames.RequestAnimationFrame]:
           i18nLazyString(UIStrings.requestAnimationFrame),
       [SDK.EventBreakpointsModel.InstrumentationNames.CancelAnimationFrame]:

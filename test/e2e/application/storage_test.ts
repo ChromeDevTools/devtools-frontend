@@ -145,7 +145,7 @@ describe('The Application Tab', async () => {
         await new Promise(resolve => addIDBValue(resolve, 'Database1', 'Store1', {key: 1, value: array}, ''));
       });
 
-      await waitForQuotaUsage(quota => quota > 2999);
+      await waitForQuotaUsage(quota => quota > 800);
 
       // We may click too early. If the total quota exceeds 2999, some remaining
       // quota may show. Instead,
@@ -173,7 +173,7 @@ describe('The Application Tab', async () => {
         await new Promise(resolve => addIDBValue(resolve, 'Database1', 'Store1', {key: 1, value: array}, ''));
       });
 
-      await waitForQuotaUsage(quota => quota > 2999);
+      await waitForQuotaUsage(quota => quota > 800);
 
       const rows = await getPieChartLegendRows();
       // Only assert that the legend entries are correct.

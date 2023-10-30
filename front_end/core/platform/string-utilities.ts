@@ -440,6 +440,18 @@ export const findUnclosedCssQuote = function(str: string): string {
   return unmatchedQuote;
 };
 
+export const countUnmatchedLeftParentheses = (str: string): number => {
+  let unmatchedCount = 0;
+  for (const c of str) {
+    if (c === '(') {
+      unmatchedCount++;
+    } else if (c === ')' && unmatchedCount > 0) {
+      unmatchedCount--;
+    }
+  }
+  return unmatchedCount;
+};
+
 export const createPlainTextSearchRegex = function(query: string, flags?: string): RegExp {
   // This should be kept the same as the one in StringUtil.cpp.
   let regex = '';

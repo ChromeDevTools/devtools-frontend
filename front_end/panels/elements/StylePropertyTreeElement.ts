@@ -1835,6 +1835,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.parentPaneInternal.setUserOperation(true);
 
     styleText += Platform.StringUtilities.findUnclosedCssQuote(styleText);
+    styleText += ')'.repeat(Platform.StringUtilities.countUnmatchedLeftParentheses(styleText));
 
     // Append a ";" if the new text does not end in ";".
     // FIXME: this does not handle trailing comments.

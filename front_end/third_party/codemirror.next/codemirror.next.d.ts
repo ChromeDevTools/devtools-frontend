@@ -1900,9 +1900,8 @@ declare class Facet<Input, Output = readonly Input[]> implements FacetReader<Out
     */
     from<T extends Input>(field: StateField<T>): Extension;
     from<T>(field: StateField<T>, get: (value: T) => Input): Extension;
-    tag: typeof FacetTag;
+    tag: Output;
 }
-declare const FacetTag: unique symbol;
 /**
 A facet reader can be used to fetch the value of a facet, though
 [`EditorState.facet`](https://codemirror.net/6/docs/ref/#state.EditorState.facet) or as a dependency
@@ -1912,9 +1911,10 @@ values for the facet.
 type FacetReader<Output> = {
     /**
     Dummy tag that makes sure TypeScript doesn't consider all object
-    types as conforming to this type.
+    types as conforming to this type. Not actually present on the
+    object.
     */
-    tag: typeof FacetTag;
+    tag: Output;
 };
 type Slot<T> = FacetReader<T> | StateField<T> | "doc" | "selection";
 type StateFieldSpec<Value> = {

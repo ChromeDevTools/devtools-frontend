@@ -95,6 +95,9 @@ export class JavaScriptFormatter {
     if (!node.parent) {
       return;
     }
+    if (node.type === 'TemplateLiteral') {
+      this.#builder.setEnforceSpaceBetweenWords(false);
+    }
     let token;
     while ((token = this.#tokenizer.peekToken()) && token.start < node.start) {
       const token = (this.#tokenizer.nextToken() as TokenOrComment);
@@ -102,7 +105,6 @@ export class JavaScriptFormatter {
       const format = this.#formatToken(node.parent, token);
       this.#push(token, format);
     }
-    return;
   }
 
   #afterVisit(node: Acorn.ESTree.Node): void {
@@ -113,6 +115,9 @@ export class JavaScriptFormatter {
       this.#push(token, format);
     }
     this.#push(null, this.#finishNode(node));
+    if (node.type === 'TemplateLiteral') {
+      this.#builder.setEnforceSpaceBetweenWords(true);
+    }
   }
 
   #inForLoopHeader(node: Acorn.ESTree.Node): boolean {

@@ -1343,6 +1343,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null = null,
       isCpuProfile: boolean): Promise<void> {
     this.#traceEngineModel.resetProcessor();
+    SourceMapsResolver.clearResolvedNodeNames();
+
     delete this.loader;
 
     // If the user just recorded this trace via the record UI, the state will

@@ -53,6 +53,7 @@ import * as TimelineComponents from './components/components.js';
 import {getCategoryStyles, getEventStyle, TimelineCategory, TimelineRecordStyle} from './EventUICategory.js';
 import {titleForInteractionEvent} from './InteractionsTrackAppender.js';
 import invalidationsTreeStyles from './invalidationsTree.css.js';
+import {SourceMapsResolver} from './SourceMapsResolver.js';
 import {TimelinePanel} from './TimelinePanel.js';
 import {TimelineSelection} from './TimelineSelection.js';
 
@@ -1457,7 +1458,9 @@ export class TimelineUIUtils {
     // need to check for profile calls in the beginning of this
     // function.
     if (TraceEngine.Legacy.eventIsFromNewEngine(event) && TraceEngine.Types.TraceEvents.isProfileCall(event)) {
-      return TimelineUIUtils.frameDisplayName(event.callFrame);
+      const maybeResolvedName = SourceMapsResolver.resolvedNodeNameForEntry(event);
+      const displayName = maybeResolvedName || TimelineUIUtils.frameDisplayName(event.callFrame);
+      return displayName;
     }
     const recordType = TimelineModel.TimelineModel.RecordType;
     const eventData = event.args['data'];

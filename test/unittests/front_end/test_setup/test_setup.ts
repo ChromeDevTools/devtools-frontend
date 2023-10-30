@@ -8,6 +8,7 @@
  */
 import type * as Common from '../../../../front_end/core/common/common.js';
 import * as TraceEngine from '../../../../front_end/models/trace/trace.js';
+import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
 import * as ThemeSupport from '../../../../front_end/ui/legacy/theme_support/theme_support.js';
 import {resetTestDOM} from '../helpers/DOMHelpers.js';
 import {markStaticTestsLoaded} from '../helpers/RealConnection.js';
@@ -30,6 +31,7 @@ beforeEach(() => {
   for (const handler of Object.values(TraceEngine.Handlers.ModelHandlers)) {
     handler.reset();
   }
+  Timeline.SourceMapsResolver.SourceMapsResolver.clearResolvedNodeNames();
 
   // Some unit tests exercise code that assumes a ThemeSupport instance is available.
   // Run this in a beforeEach in case an individual test overrides it.

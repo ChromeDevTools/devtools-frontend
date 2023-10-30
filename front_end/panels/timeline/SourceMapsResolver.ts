@@ -17,6 +17,14 @@ export class NodeNamesUpdated extends Event {
   }
 }
 
+// Track node function names resolved by sourcemaps.
+// Because NodeIDs could conflict, we key these based on:
+// ProcessID=>ThreadID=>NodeId=>resolved function name.
+// Keying it by the IDs rather than the Node itself means we can avoid passing around trace data in order to get or set values in this map.
+const resolvedNodeNames:
+    Map<TraceEngine.Types.TraceEvents.ProcessID,
+        Map<TraceEngine.Types.TraceEvents.ThreadID, Map<number, string|null>>> = new Map();
+
 export class SourceMapsResolver extends EventTarget {
   #traceData: TraceEngine.Handlers.Migration.PartialTraceData;
 
@@ -32,6 +40,25 @@ export class SourceMapsResolver extends EventTarget {
   constructor(traceData: TraceEngine.Handlers.Migration.PartialTraceData) {
     super();
     this.#traceData = traceData;
+  }
+
+  static clearResolvedNodeNames(): void {
+    resolvedNodeNames.clear();
+  }
+
+  static resolvedNodeNameForEntry(entry: TraceEngine.Types.TraceEvents.TraceEventSyntheticProfileCall): string|null {
+    return resolvedNodeNames.get(entry.pid)?.get(entry.tid)?.get(entry.nodeId) ?? null;
+  }
+
+  static storeResolvedNodeNameForEntry(
+      pid: TraceEngine.Types.TraceEvents.ProcessID, tid: TraceEngine.Types.TraceEvents.ThreadID, nodeId: number,
+      resolvedFunctionName: string|null): void {
+    const resolvedForPid =
+        resolvedNodeNames.get(pid) || new Map<TraceEngine.Types.TraceEvents.ThreadID, Map<number, string|null>>();
+    const resolvedForTid = resolvedForPid.get(tid) || new Map<number, string|null>();
+    resolvedForTid.set(nodeId, resolvedFunctionName);
+    resolvedForPid.set(tid, resolvedForTid);
+    resolvedNodeNames.set(pid, resolvedForPid);
   }
 
   async install(): Promise<void> {
@@ -94,9 +121,9 @@ export class SourceMapsResolver extends EventTarget {
       return;
     }
 
-    for (const threadToProfile of this.#traceData.Samples.profilesInProcess.values()) {
-      for (const [tid, profile] of threadToProfile) {
-        const nodes = profile.parsedProfile.nodes() ?? [];
+    for (const [pid, threadsInProcess] of this.#traceData.Samples.profilesInProcess) {
+      for (const [tid, threadProfile] of threadsInProcess) {
+        const nodes = threadProfile.parsedProfile.nodes() ?? [];
         const target = this.#targetForThread(tid);
         if (!target) {
           continue;
@@ -105,6 +132,8 @@ export class SourceMapsResolver extends EventTarget {
           const resolvedFunctionName =
               await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(node.callFrame, target);
           node.setFunctionName(resolvedFunctionName);
+
+          SourceMapsResolver.storeResolvedNodeNameForEntry(pid, tid, node.id, resolvedFunctionName);
         }
       }
     }

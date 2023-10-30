@@ -228,6 +228,17 @@ describeWithMockConnection('SourceMapsResolver', () => {
        // Now that the script and source map have loaded, test that the model has been automatically
        // reparsed to resolve function names.
        assert.strictEqual(bottomModelNode?.functionName, AUTHORED_FUNCTION_NAME);
+
+       const processsId = Array.from(cpuProfiles.keys())[0];
+       const fakeProfileCall = {
+         pid: processsId,
+         tid: 259 as TraceEngine.Types.TraceEvents.ThreadID,
+         nodeId: NODE_ID,
+       } as unknown as TraceEngine.Types.TraceEvents.TraceEventSyntheticProfileCall;
+       // Ensure we populate the cache
+       assert.strictEqual(
+           Timeline.SourceMapsResolver.SourceMapsResolver.resolvedNodeNameForEntry(fakeProfileCall),
+           AUTHORED_FUNCTION_NAME);
      });
 
   it('resolves function names using a plugin when available', async () => {

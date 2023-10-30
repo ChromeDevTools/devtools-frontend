@@ -605,7 +605,28 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const details = Timeline.TimelineUIUtils.TimelineUIUtils.eventTitle(interactionEvent);
       assert.deepEqual(details, 'Pointer');
     });
+
+    it('will use the resolved function name for a profile node that has a sourcemap', async function() {
+      // Timeline.SourceMapsResolver.SourceMapsResolver.
+      const traceParsedData = await TraceLoader.traceEngine(this, 'slow-interaction-button-click.json.gz');
+
+      const mainThread = getMainThread(traceParsedData.Renderer);
+      const profileEntry = mainThread.entries.find(entry => {
+        return TraceEngine.Types.TraceEvents.isProfileCall(entry);
+      });
+      if (!profileEntry || !TraceEngine.Types.TraceEvents.isProfileCall(profileEntry)) {
+        throw new Error('Could not find a profile entry');
+      }
+
+      // Fake that we resolved the entry's name from a sourcemap.
+      Timeline.SourceMapsResolver.SourceMapsResolver.storeResolvedNodeNameForEntry(
+          profileEntry.pid, profileEntry.tid, profileEntry.nodeId, 'resolved-function-test');
+
+      const title = Timeline.TimelineUIUtils.TimelineUIUtils.eventTitle(profileEntry);
+      assert.strictEqual(title, 'resolved-function-test');
+    });
   });
+
   describe('eventStyle', function() {
     it('returns the correct style for profile calls', async function() {
       const data = await TraceLoader.allModels(this, 'simple-js-program.json.gz');

@@ -389,8 +389,8 @@ export class AnimationUI {
 
     const viewManagerInstance = UI.ViewManager.ViewManager.instance();
 
-    const animationLocation = viewManagerInstance.locationNameForViewId('animations');
-    const elementsLocation = viewManagerInstance.locationNameForViewId('elements');
+    const animationLocation = viewManagerInstance.getLocationNameForViewId('animations');
+    const elementsLocation = viewManagerInstance.getLocationNameForViewId('elements');
 
     // Prevents revealing the node if the animations and elements view share the same view location.
     // If they share the same view location, the animations view will change to the elements view when editing an animation

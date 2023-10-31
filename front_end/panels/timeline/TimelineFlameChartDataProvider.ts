@@ -1226,7 +1226,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     context.fillRect(barX, barY - 0.5, desiredBoxStartX - barX, barHeight);
     context.fillRect(desiredBoxEndX, barY - 0.5, entireBarEndXPixel - desiredBoxEndX, barHeight);
-    context.restore();
 
     // Draws left and right whiskers
     function drawTick(begin: number, end: number, y: number): void {
@@ -1241,7 +1240,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const leftWhiskerX = timeToPixel(entry.ts);
     // The right whisker ends at (entry.ts + entry.dur). We draw the line from the end of the box (processingEnd).
     const rightWhiskerX = timeToPixel(TraceEngine.Types.Timing.MicroSeconds(entry.ts + entry.dur));
-    context.save();
     context.beginPath();
     context.lineWidth = 1;
     context.strokeStyle = '#ccc';
@@ -1259,6 +1257,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       // starts off-screen, we draw the text at the first visible on screen
       // pixels, so the user can still see the event's title.
       const textStartX = desiredBoxStartX > 0 ? desiredBoxStartX : barX;
+      context.font = this.#font;
       const textWidth = UI.UIUtils.measureTextWidth(context, entryTitle);
 
       // These numbers are duplicated from FlameChart.ts.
@@ -1266,11 +1265,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       const textBaseline = 5;
 
       // Only draw the text if it can fit in the amount of box that is visible.
-      if (textWidth > desiredBoxEndX - textStartX + textPadding) {
-        return;
+      if (textWidth <= desiredBoxEndX - textStartX + textPadding) {
+        context.fillStyle = this.textColor(entryIndex);
+        context.fillText(entryTitle, textStartX + textPadding, barY + barHeight - textBaseline);
       }
-      context.fillStyle = this.textColor(entryIndex);
-      context.fillText(entryTitle, textStartX + textPadding, barY + barHeight - textBaseline);
     }
     context.restore();
   }

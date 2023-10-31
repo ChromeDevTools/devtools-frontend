@@ -145,6 +145,10 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.update();
   }
 
+  set showingScreenshots(isShowing: boolean) {
+    this.overviewGrid.showingScreenshots = isShowing;
+  }
+
   setBounds(
       minimumBoundary: TraceEngine.Types.Timing.MilliSeconds,
       maximumBoundary: TraceEngine.Types.Timing.MilliSeconds): void {

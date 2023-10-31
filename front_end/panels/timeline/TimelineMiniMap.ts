@@ -225,6 +225,7 @@ export class TimelineMiniMap extends
       this.#controls.push(new TimelineEventOverviewMemory(data.traceParsedData));
     }
     this.#overviewComponent.setOverviewControls(this.#controls);
+    this.#overviewComponent.showingScreenshots = data.settings.showScreenshots;
   }
 
   addInitialBreadcrumb(): void {

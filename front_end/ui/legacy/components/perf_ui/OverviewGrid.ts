@@ -76,6 +76,10 @@ export class OverviewGrid {
     this.window.enableCreateBreadcrumbsButton();
   }
 
+  set showingScreenshots(isShowing: boolean) {
+    this.window.showingScreenshots = isShowing;
+  }
+
   clientWidth(): number {
     return this.element.clientWidth;
   }
@@ -227,6 +231,10 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.changeBreadcrumbButtonVisibilityOnInteraction(this.parentElement);
     this.changeBreadcrumbButtonVisibilityOnInteraction(this.rightResizeElement);
     this.changeBreadcrumbButtonVisibilityOnInteraction(this.leftResizeElement);
+  }
+
+  set showingScreenshots(isShowing: boolean) {
+    this.breadcrumbButtonContainerElement.classList.toggle('with-screenshots', isShowing);
   }
 
   changeBreadcrumbButtonVisibilityOnInteraction(element: Element): void {

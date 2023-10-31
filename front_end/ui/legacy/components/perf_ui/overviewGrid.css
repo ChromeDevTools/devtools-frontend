@@ -100,6 +100,12 @@
   right: 0;
 }
 
+.create-breadcrumb-button-container.with-screenshots {
+  /* We have more room when screenshots are enabled,
+   * so push the button down slightly */
+  top: 20px;
+}
+
 .create-breadcrumb-button {
   display: flex;
   flex-shrink: 0;

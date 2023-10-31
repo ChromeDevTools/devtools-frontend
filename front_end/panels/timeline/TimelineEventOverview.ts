@@ -520,7 +520,9 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     this.reset();
   }
 
-  override update(): void {
+  override update(
+      customStartTime?: TraceEngine.Types.Timing.MilliSeconds,
+      customEndTime?: TraceEngine.Types.Timing.MilliSeconds): void {
     super.update();
     const frames = this.#filmStrip ? this.#filmStrip.frames : [];
     if (!frames.length) {
@@ -548,7 +550,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
       const imageWidth = Math.ceil(imageHeight * image.naturalWidth / image.naturalHeight);
       const popoverScale = Math.min(200 / image.naturalWidth, 1);
       this.emptyImage = new Image(image.naturalWidth * popoverScale, image.naturalHeight * popoverScale);
-      this.drawFrames(imageWidth, imageHeight);
+      this.drawFrames(imageWidth, imageHeight, customStartTime, customEndTime);
     });
   }
 
@@ -562,7 +564,9 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     return imagePromise;
   }
 
-  private drawFrames(imageWidth: number, imageHeight: number): void {
+  private drawFrames(
+      imageWidth: number, imageHeight: number, customStartTime?: TraceEngine.Types.Timing.MilliSeconds,
+      customEndTime?: TraceEngine.Types.Timing.MilliSeconds): void {
     if (!imageWidth) {
       return;
     }
@@ -571,8 +575,10 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     }
     const padding = TimelineFilmStripOverview.Padding;
     const width = this.width();
-    const zeroTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(this.#filmStrip.zeroTime);
-    const spanTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(this.#filmStrip.spanTime);
+
+    const zeroTime = customStartTime ?? TraceEngine.Helpers.Timing.microSecondsToMilliseconds(this.#filmStrip.zeroTime);
+    const spanTime = customEndTime ? customEndTime - zeroTime :
+                                     TraceEngine.Helpers.Timing.microSecondsToMilliseconds(this.#filmStrip.spanTime);
     const scale = spanTime / width;
     const context = this.context();
     const drawGeneration = this.drawGeneration;

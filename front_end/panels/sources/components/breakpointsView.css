@@ -147,8 +147,8 @@ button:hover devtools-icon {
 }
 
 .type-indicator {
-  --override-color-conditional-breakpoint: #f29900;
-  --override-color-logpoint: #f439a0;
+  --override-color-conditional-breakpoint: var(--ref-palette-orange70);
+  --override-color-logpoint: var(--ref-palette-pink60);
 
   border-right: 4px solid;
   border-radius: 0 2px 2px 0;
@@ -179,8 +179,8 @@ button:hover devtools-icon {
 
 .-theme-with-dark-background .type-indicator,
 :host-context(.-theme-with-dark-background) .type-indicator {
-  --override-color-conditional-breakpoint: #e9a33a;
-  --override-color-logpoint: #e54d9b;
+  --override-color-conditional-breakpoint: var(--ref-palette-yellow60);
+  --override-color-logpoint: var(--ref-palette-pink70);
 }
 
 .breakpoint-item.logpoint > label > .type-indicator {

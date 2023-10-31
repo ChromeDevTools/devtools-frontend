@@ -174,16 +174,16 @@ export function removeNestedInteractions(interactions: readonly Types.TraceEvent
 
   function storeEventIfEarliestForCategoryAndEndTime(interaction: Types.TraceEvents.SyntheticInteractionEvent): void {
     const category = categoryOfInteraction(interaction);
-    const mapToUse = earliestEventForEndTimePerCategory[category];
+    const earliestEventForEndTime = earliestEventForEndTimePerCategory[category];
     const endTime = Types.Timing.MicroSeconds(interaction.ts + interaction.dur);
 
-    const earliestCurrentEvent = mapToUse.get(endTime);
+    const earliestCurrentEvent = earliestEventForEndTime.get(endTime);
     if (!earliestCurrentEvent) {
-      mapToUse.set(endTime, interaction);
+      earliestEventForEndTime.set(endTime, interaction);
       return;
     }
     if (interaction.ts < earliestCurrentEvent.ts) {
-      mapToUse.set(endTime, interaction);
+      earliestEventForEndTime.set(endTime, interaction);
     } else if (
         interaction.ts === earliestCurrentEvent.ts &&
         interaction.interactionId === earliestCurrentEvent.interactionId) {
@@ -205,8 +205,20 @@ export function removeNestedInteractions(interactions: readonly Types.TraceEvent
 
       // Use the new interaction if it has a longer processing time than the existing one.
       if (newEventProcessingTime > currentEventProcessingTime) {
-        mapToUse.set(endTime, interaction);
+        earliestEventForEndTime.set(endTime, interaction);
       }
+    }
+
+    // Maximize the processing time based on the "children" interactions.
+    // We pick the earliest start processing time, and the latest end
+    // processing time to avoid under-reporting.
+    if (interaction.processingStart < earliestCurrentEvent.processingStart) {
+      earliestCurrentEvent.processingStart = interaction.processingStart;
+      writeSyntheticTimespans(earliestCurrentEvent);
+    }
+    if (interaction.processingEnd > earliestCurrentEvent.processingEnd) {
+      earliestCurrentEvent.processingEnd = interaction.processingEnd;
+      writeSyntheticTimespans(earliestCurrentEvent);
     }
   }
 
@@ -222,6 +234,15 @@ export function removeNestedInteractions(interactions: readonly Types.TraceEvent
     return eventA.ts - eventB.ts;
   });
   return keptEvents;
+}
+
+function writeSyntheticTimespans(event: Types.TraceEvents.SyntheticInteractionEvent): void {
+  const startEvent = event.args.data.beginEvent;
+  const endEvent = event.args.data.endEvent;
+
+  event.inputDelay = Types.Timing.MicroSeconds(event.processingStart - startEvent.ts);
+  event.mainThreadHandling = Types.Timing.MicroSeconds(event.processingEnd - event.processingStart);
+  event.presentationDelay = Types.Timing.MicroSeconds(endEvent.ts - event.processingEnd);
 }
 
 export async function finalize(): Promise<void> {
@@ -271,10 +292,10 @@ export async function finalize(): Promise<void> {
       ph: interactionStartEvent.ph,
       processingStart: processingStartRelativeToTraceTime,
       processingEnd: processingEndRelativeToTraceTime,
-      inputDelay: Types.Timing.MicroSeconds(processingStartRelativeToTraceTime - interactionStartEvent.ts),
-      mainThreadHandling:
-          Types.Timing.MicroSeconds(processingEndRelativeToTraceTime - processingStartRelativeToTraceTime),
-      presentationDelay: Types.Timing.MicroSeconds(endEvent.ts - processingEndRelativeToTraceTime),
+      // These will be set in writeSyntheticTimespans()
+      inputDelay: Types.Timing.MicroSeconds(-1),
+      mainThreadHandling: Types.Timing.MicroSeconds(-1),
+      presentationDelay: Types.Timing.MicroSeconds(-1),
       args: {
         data: {
           beginEvent: interactionStartEvent,
@@ -286,6 +307,8 @@ export async function finalize(): Promise<void> {
       type: interactionStartEvent.args.data.type,
       interactionId: interactionStartEvent.args.data.interactionId,
     };
+    writeSyntheticTimespans(interactionEvent);
+
     interactionEvents.push(interactionEvent);
   }
 

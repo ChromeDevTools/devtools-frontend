@@ -93,7 +93,7 @@
   visibility: hidden;
   display: flex;
   position: absolute;
-  top: 20px;
+  top: 15px;
   justify-content: center;
   z-index: 600;
   left: 0;

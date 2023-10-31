@@ -342,11 +342,13 @@
 
   --sys-color-surface-yellow: rgb(254 246 213 / 100%);
   --sys-color-surface-error: rgb(252 235 235 / 100%);
+  --sys-color-surface-green: rgb(219 243 226 / 100%);
 
   /* Corresponding on colors */
 
   --sys-color-on-surface-yellow: var(--ref-palette-yellow20);
   --sys-color-on-surface-error: var(--ref-palette-error30);
+  --sys-color-on-surface-green: var(--ref-palette-green20);
 
   /* Syntax highlighting */
 
@@ -699,11 +701,13 @@
 
   --sys-color-surface-yellow: rgb(65 60 38 / 100%);
   --sys-color-surface-error: rgb(78 53 52 / 100%);
+  --sys-color-surface-green: rgb(43 70 51 / 100%);
 
   /* Corresponding on colors */
 
   --sys-color-on-surface-yellow: var(--ref-palette-yellow90);
   --sys-color-on-surface-error: var(--ref-palette-error90);
+  --sys-color-on-surface-green: var(--ref-palette-green90);
 
   /* Syntax highlighting */
 

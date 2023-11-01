@@ -45,23 +45,25 @@ export const generatedProperties = [
  },
  {
   "longhands": [
-   "view-timeline-name",
-   "view-timeline-axis",
-   "view-timeline-inset"
-  ],
-  "name": "-alternative-view-timeline-with-inset"
- },
- {
-  "longhands": [
    "mask-image",
    "-webkit-mask-position-x",
    "-webkit-mask-position-y",
    "mask-size",
    "mask-repeat",
    "mask-origin",
-   "mask-clip"
+   "mask-clip",
+   "mask-composite",
+   "mask-mode"
   ],
-  "name": "-webkit-alternative-mask"
+  "name": "-alternative-mask"
+ },
+ {
+  "longhands": [
+   "view-timeline-name",
+   "view-timeline-axis",
+   "view-timeline-inset"
+  ],
+  "name": "-alternative-view-timeline-with-inset"
  },
  {
   "inherited": true,
@@ -2334,6 +2336,9 @@ export const generatedProperties = [
   "name": "mask-image"
  },
  {
+  "name": "mask-mode"
+ },
+ {
   "name": "mask-origin"
  },
  {
@@ -3511,37 +3516,6 @@ export const generatedProperties = [
  },
  {
   "name": "timeline-scope"
- },
- {
-  "longhands": [
-   "toggle-root",
-   "toggle-trigger"
-  ],
-  "name": "toggle"
- },
- {
-  "keywords": [
-   "none"
-  ],
-  "name": "toggle-group"
- },
- {
-  "keywords": [
-   "none"
-  ],
-  "name": "toggle-root"
- },
- {
-  "keywords": [
-   "none"
-  ],
-  "name": "toggle-trigger"
- },
- {
-  "keywords": [
-   "normal"
-  ],
-  "name": "toggle-visibility"
  },
  {
   "keywords": [
@@ -5628,26 +5602,6 @@ export const generatedPropertyValues = {
    "pretty"
   ]
  },
- "toggle-group": {
-  "values": [
-   "none"
-  ]
- },
- "toggle-root": {
-  "values": [
-   "none"
-  ]
- },
- "toggle-trigger": {
-  "values": [
-   "none"
-  ]
- },
- "toggle-visibility": {
-  "values": [
-   "normal"
-  ]
- },
  "top": {
   "values": [
    "auto"
@@ -5862,6 +5816,10 @@ export const generatedAliasesFor = new Map([
  [
   "-webkit-alternative-animation-with-timeline",
   "-alternative-animation-with-timeline"
+ ],
+ [
+  "-webkit-alternative-mask",
+  "-alternative-mask"
  ],
  [
   "-webkit-alternative-mask-clip",

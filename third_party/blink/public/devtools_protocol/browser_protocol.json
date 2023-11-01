@@ -19816,6 +19816,11 @@
                             "name": "targetId",
                             "optional": true,
                             "$ref": "Target.TargetID"
+                        },
+                        {
+                            "name": "routerRules",
+                            "optional": true,
+                            "type": "string"
                         }
                     ]
                 },
@@ -24345,6 +24350,27 @@
                         "PrefetchSuccessfulButNotUsed",
                         "PrefetchNotUsedProbeFailed"
                     ]
+                },
+                {
+                    "id": "PrerenderMismatchedHeaders",
+                    "description": "Information of headers to be displayed when the header mismatch occurred.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "headerName",
+                            "type": "string"
+                        },
+                        {
+                            "name": "initialValue",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "activationValue",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
                 }
             ],
             "commands": [
@@ -24454,6 +24480,14 @@
                             "description": "This is used to give users more information about the name of Mojo interface\nthat is incompatible with prerender and has caused the cancellation of the attempt.",
                             "optional": true,
                             "type": "string"
+                        },
+                        {
+                            "name": "mismatchedHeaders",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "PrerenderMismatchedHeaders"
+                            }
                         }
                     ]
                 },

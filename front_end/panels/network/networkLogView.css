@@ -331,7 +331,7 @@
   z-index: 200;
 
   &:hover {
-    background-color: var(--sys-color-state-header-hover);
+    background-color: var(--sys-color-state-hover-on-subtle);
   }
 }
 

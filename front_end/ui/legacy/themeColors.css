@@ -341,6 +341,7 @@
   /* Tinted surfaces */
 
   --sys-color-surface-yellow: rgb(254 246 213 / 100%);
+  --sys-color-surface-yellow-high: rgb(253 240 185 / 100%);
   --sys-color-surface-error: rgb(252 235 235 / 100%);
   --sys-color-surface-green: rgb(219 243 226 / 100%);
 
@@ -700,6 +701,7 @@
   /* Tinted surfaces */
 
   --sys-color-surface-yellow: rgb(65 60 38 / 100%);
+  --sys-color-surface-yellow-high: rgb(76 68 37 / 100%);
   --sys-color-surface-error: rgb(78 53 52 / 100%);
   --sys-color-surface-green: rgb(43 70 51 / 100%);
 

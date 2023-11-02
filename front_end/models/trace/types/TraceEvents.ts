@@ -99,9 +99,9 @@ export interface TraceEventCallFrame {
   codeType?: string;
   functionName: string;
   scriptId: number;
-  columnNumber?: number;
-  lineNumber?: number;
-  url?: string;
+  columnNumber: number;
+  lineNumber: number;
+  url: string;
 }
 
 export interface TraceFrame {

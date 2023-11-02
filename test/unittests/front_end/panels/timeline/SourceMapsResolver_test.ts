@@ -62,16 +62,25 @@ const profileChunk: TraceEngine.Types.TraceEvents.TraceEventProfileChunk = {
       cpuProfile: {
         'nodes': [
           {
-            'callFrame': {'codeType': 'other', 'functionName': '(root)', 'scriptId': 0},
+            'callFrame':
+                {'codeType': 'other', 'functionName': '(root)', 'scriptId': 0, columnNumber: 0, lineNumber: 0, url: ''},
             'id': 1 as TraceEngine.Types.TraceEvents.CallFrameID,
           },
           {
-            'callFrame': {'codeType': 'other', 'functionName': '(program)', 'scriptId': 0},
+            'callFrame': {
+              'codeType': 'other',
+              'functionName': '(program)',
+              'scriptId': 0,
+              columnNumber: 0,
+              lineNumber: 0,
+              url: '',
+            },
             'id': 2 as TraceEngine.Types.TraceEvents.CallFrameID,
             'parent': 1 as TraceEngine.Types.TraceEvents.CallFrameID,
           },
           {
-            'callFrame': {'codeType': 'other', 'functionName': '(idle)', 'scriptId': 0},
+            'callFrame':
+                {'codeType': 'other', 'functionName': '(idle)', 'scriptId': 0, columnNumber: 0, lineNumber: 0, url: ''},
             'id': 8 as TraceEngine.Types.TraceEvents.CallFrameID,
             'parent': 1 as TraceEngine.Types.TraceEvents.CallFrameID,
           },
@@ -100,12 +109,20 @@ const profileChunk: TraceEngine.Types.TraceEvents.TraceEventProfileChunk = {
             'parent': 9 as TraceEngine.Types.TraceEvents.CallFrameID,
           },
           {
-            'callFrame': {'codeType': 'JS', 'functionName': 'now', 'scriptId': 0},
+            'callFrame':
+                {'codeType': 'JS', 'functionName': 'now', 'scriptId': 0, columnNumber: 0, lineNumber: 0, url: ''},
             'id': 11 as TraceEngine.Types.TraceEvents.CallFrameID,
             'parent': NODE_ID,
           },
           {
-            'callFrame': {'codeType': 'other', 'functionName': '(garbage collector)', 'scriptId': 0},
+            'callFrame': {
+              'codeType': 'other',
+              'functionName': '(garbage collector)',
+              'scriptId': 0,
+              columnNumber: 0,
+              lineNumber: 0,
+              url: '',
+            },
             'id': 12 as TraceEngine.Types.TraceEvents.CallFrameID,
             'parent': 1 as TraceEngine.Types.TraceEvents.CallFrameID,
           },

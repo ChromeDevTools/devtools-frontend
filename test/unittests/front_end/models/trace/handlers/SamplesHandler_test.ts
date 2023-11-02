@@ -88,7 +88,7 @@ describeWithEnvironment('SamplesHandler', function() {
               nodes: nodes.map(
                   node => ({
                     ...node,
-                    callFrame: {functionName: '', scriptId: 0},
+                    callFrame: {functionName: '', scriptId: 0, columnNumber: 0, lineNumber: 0, url: ''},
                     id: TraceModel.Types.TraceEvents.CallFrameID(node.id),
                   }),
                   ),

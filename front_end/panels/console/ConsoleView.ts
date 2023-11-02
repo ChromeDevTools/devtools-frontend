@@ -1792,7 +1792,11 @@ let actionDelegateInstance: ActionDelegate;
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
-      case 'console.show':
+      case 'console.toggle':
+        if (ConsoleView.instance().isShowing() && UI.InspectorView.InspectorView.instance().drawerVisible()) {
+          UI.InspectorView.InspectorView.instance().closeDrawer();
+          return true;
+        }
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
         Common.Console.Console.instance().show();
         ConsoleView.instance().focusPrompt();

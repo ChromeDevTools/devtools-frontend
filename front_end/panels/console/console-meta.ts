@@ -170,7 +170,7 @@ UI.ViewManager.registerViewExtension({
 });
 
 UI.ActionRegistration.registerActionExtension({
-  actionId: 'console.show',
+  actionId: 'console.toggle',
   category: UI.ActionRegistration.ActionCategory.CONSOLE,
   title: i18nLazyString(UIStrings.showConsole),
   async loadActionDelegate() {

@@ -756,7 +756,7 @@ export enum KeyboardShortcutAction {
   OtherShortcut = 0,
   'commandMenu.show' = 1,
   'console.clear' = 2,
-  'console.show' = 3,
+  'console.toggle' = 3,
   'debugger.step' = 4,
   'debugger.step-into' = 5,
   'debugger.step-out' = 6,

@@ -494,7 +494,7 @@ export const ForwardedActions = new Set<string>([
   'debugger.toggle-breakpoints-active',
   'debugger.toggle-pause',
   'commandMenu.show',
-  'console.show',
+  'console.toggle',
 ]);
 export const KeyTimeout = 1000;
 export const DefaultShortcutSetting = 'devToolsDefault';

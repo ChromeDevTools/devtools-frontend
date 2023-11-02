@@ -1813,7 +1813,9 @@ export class TimelineUIUtils {
         if (!TraceEngine.Legacy.eventIsFromNewEngine(event) || !TraceEngine.Types.TraceEvents.isProfileCall(event)) {
           break;
         }
-        UI.UIUtils.createTextChild(details, TimelineUIUtils.frameDisplayName(event.callFrame));
+        const maybeResolvedName = SourceMapsResolver.resolvedNodeNameForEntry(event);
+        const functionName = maybeResolvedName || TimelineUIUtils.frameDisplayName(event.callFrame);
+        UI.UIUtils.createTextChild(details, functionName);
         const location = this.linkifyLocation({
           scriptId: event.callFrame['scriptId'],
           url: event.callFrame['url'],

@@ -14,9 +14,16 @@ import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js'
 import * as Components from '../../../../../front_end/ui/legacy/components/utils/utils.js';
 import {doubleRaf, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
-import {describeWithMockConnection} from '../../helpers/MockConnection.js';
-import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
-import {getMainThread, makeCompleteEvent} from '../../helpers/TraceHelpers.js';
+import {
+  describeWithMockConnection,
+} from '../../helpers/MockConnection.js';
+import {loadBasicSourceMapExample, setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
+import {
+  getMainThread,
+  makeCompleteEvent,
+  makeMockSamplesHandlerData,
+  makeProfileCall,
+} from '../../helpers/TraceHelpers.js';
 import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 const {assert} = chai;
@@ -233,6 +240,47 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
          assert.strictEqual(node.textContent, 'original-script.ts:1:1');
        });
+  });
+
+  describe('mapping to authored function name when recording is fresh', function() {
+    it('maps to the authored name and script of a profile call', async function() {
+      const {script} = await loadBasicSourceMapExample(target);
+      // Ideally we would get a column number we can use from the source
+      // map however the current status of the source map helpers makes
+      // it difficult to do so.
+      const columnNumber = 51;
+      const profileCall = makeProfileCall(
+          'function', 10, 100, TraceEngine.Types.TraceEvents.ProcessID(1), TraceEngine.Types.TraceEvents.ThreadID(1));
+
+      profileCall.callFrame = {
+        'columnNumber': columnNumber,
+        'functionName': 'minified',
+        'lineNumber': 0,
+        'scriptId': script.scriptId,
+        'url': 'file://gen.js',
+      };
+      const workersData: TraceEngine.Handlers.ModelHandlers.Workers.WorkersData = {
+        workerSessionIdEvents: [],
+        workerIdByThread: new Map(),
+        workerURLById: new Map(),
+      };
+      // This only includes data used in the SourceMapsResolver
+      const traceParsedData = {
+        Samples: makeMockSamplesHandlerData([profileCall]),
+        Workers: workersData,
+      } as TraceEngine.Handlers.Types.TraceParseData;
+
+      const resolver = new Timeline.SourceMapsResolver.SourceMapsResolver(traceParsedData);
+      await resolver.install();
+
+      const linkifier = new Components.Linkifier.Linkifier();
+      const node = await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForTraceEvent(
+          profileCall, target, linkifier, true);
+      if (!node) {
+        throw new Error('Node was unexpectedly null');
+      }
+      assert.isTrue(node.textContent?.startsWith('someFunction @'));
+    });
   });
   describe('adjusting timestamps for events and navigations', function() {
     it('adjusts the time for a DCL event after a navigation', async function() {

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import type * as Protocol from '../../../../front_end/generated/protocol.js';
+import * as CPUProfile from '../../../../front_end/models/cpu_profile/cpu_profile.js';
 import type * as TimelineModel from '../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../front_end/panels/timeline/timeline.js';
@@ -377,6 +378,7 @@ export function makeProfileCall(
       lineNumber: -1,
       columnNumber: -1,
     },
+    args: {},
   };
 }
 /**
@@ -496,6 +498,51 @@ export function makeMockRendererHandlerData(entries: TraceEngine.Types.TraceEven
     compositorTileWorkers: new Map(),
     entryToNode,
     allTraceEntries: renderereEvents,
+  };
+}
+
+/**
+ * Mocks an object compatible with the return type of the
+ * SamplesHandler using only an array of ordered profile calls.
+ */
+export function makeMockSamplesHandlerData(
+    profileCalls: TraceEngine.Types.TraceEvents.TraceEventSyntheticProfileCall[]):
+    TraceEngine.Handlers.ModelHandlers.Samples.SamplesHandlerData {
+  const {tree, entryToNode} = TraceEngine.Helpers.TreeHelpers.treify(profileCalls, {filter: {has: () => true}});
+  const profile: Protocol.Profiler.Profile = {
+    nodes: [],
+    startTime: profileCalls.at(0)?.ts || TraceEngine.Types.Timing.MicroSeconds(0),
+    endTime: profileCalls.at(-1)?.ts || TraceEngine.Types.Timing.MicroSeconds(10e5),
+    samples: [],
+    timeDeltas: [],
+  };
+
+  const nodesIds = new Map<number, Protocol.Profiler.ProfileNode>();
+  const lastTimestamp = profile.startTime;
+  for (const profileCall of profileCalls) {
+    let node = nodesIds.get(profileCall.nodeId);
+    if (!node) {
+      node = {
+        id: profileCall.nodeId,
+        callFrame: profileCall.callFrame,
+      };
+      profile.nodes.push(node);
+      nodesIds.set(profileCall.nodeId, node);
+    }
+    profile.samples?.push(node.id);
+    const timeDelta = profileCall.ts - lastTimestamp;
+    profile.timeDeltas?.push(timeDelta);
+  }
+  const profileData = {
+    rawProfile: profile,
+    parsedProfile: new CPUProfile.CPUProfileDataModel.CPUProfileDataModel(profile),
+    profileCalls,
+    profileTree: tree,
+  };
+  const profilesInThread = new Map([[1 as TraceEngine.Types.TraceEvents.ThreadID, profileData]]);
+  return {
+    profilesInProcess: new Map([[1 as TraceEngine.Types.TraceEvents.ProcessID, profilesInThread]]),
+    entryToNode,
   };
 }
 

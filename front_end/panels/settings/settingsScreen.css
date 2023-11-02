@@ -183,7 +183,7 @@ label {
 
 .settings-experiment {
   display: grid;
-  grid-template-columns: auto min-content 1fr;
+  grid-template-columns: auto min-content auto 1fr;
 }
 
 .settings-experiment .devtools-link {

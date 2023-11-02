@@ -115,9 +115,13 @@ describeWithEnvironment('TimelineTreeView', function() {
       const tree = callTreeView.buildTree();
       const treeEntries = tree.children().entries();
       const groupEntry = treeEntries.next();
-      assert.strictEqual(groupEntry.value[0], 'scripting');
-      assert.isTrue(groupEntry.value[1].isGroupNode());
-      const children = groupEntry.value[1].children().values();
+      const nodeName = groupEntry.value[0];
+      const node = groupEntry.value[1];
+      assert.strictEqual(nodeName, 'scripting');
+      assert.strictEqual(callTreeView.displayInfoForGroupNode(node).color, 'rgb(250 204 21 / 100%)');
+
+      assert.isTrue(node.isGroupNode());
+      const children = node.children().values();
       assert.strictEqual(children.next().value.event.name, 'first console time');
       assert.strictEqual(children.next().value.event.name, 'third console time');
     });
@@ -134,9 +138,13 @@ describeWithEnvironment('TimelineTreeView', function() {
       const tree = callTreeView.buildTree();
       const treeEntries = tree.children().entries();
       const groupEntry = treeEntries.next();
-      assert.strictEqual(groupEntry.value[0], 'scripting');
-      assert.isTrue(groupEntry.value[1].isGroupNode());
-      const children = groupEntry.value[1].children().values();
+      const nodeName = groupEntry.value[0];
+      const node = groupEntry.value[1];
+      assert.strictEqual(nodeName, 'scripting');
+      assert.strictEqual(callTreeView.displayInfoForGroupNode(node).color, 'rgb(250 204 21 / 100%)');
+
+      assert.isTrue(node.isGroupNode());
+      const children = node.children().values();
       assert.strictEqual(children.next().value.event.name, 'second console time');
       assert.strictEqual(children.next().value.event.name, 'first console time');
       assert.strictEqual(children.next().value.event.name, 'third console time');

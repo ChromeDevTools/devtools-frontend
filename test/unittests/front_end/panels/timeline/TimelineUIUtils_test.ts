@@ -297,7 +297,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
 
     it('should return the correct rgb value for a corresponding CSS variable', function() {
-      const parsedColor = Timeline.TimelineUIUtils.TimelineUIUtils.categories().scripting.getComputedValue();
+      const parsedColor = Timeline.TimelineUIUtils.TimelineUIUtils.categories().scripting.getComputedColorValue();
       assert.strictEqual('rgb(2 2 2)', parsedColor);
     });
 
@@ -652,7 +652,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const profileCalls = thread.entries.filter(entry => TraceEngine.Types.TraceEvents.isProfileCall(entry));
       const style = Timeline.TimelineUIUtils.TimelineUIUtils.eventStyle(profileCalls[0]);
       assert.strictEqual(style.category.name, 'scripting');
-      assert.strictEqual(style.category.color, '--app-color-scripting');
+      assert.strictEqual(style.category.color, 'rgb(250 204 21 / 100%)');
     });
   });
 });

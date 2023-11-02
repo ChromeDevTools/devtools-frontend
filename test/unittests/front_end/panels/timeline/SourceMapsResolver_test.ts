@@ -198,9 +198,6 @@ describeWithMockConnection('SourceMapsResolver', () => {
        assert.strictEqual(nodes.length, profileChunk.args.data?.cpuProfile?.nodes?.length);
 
        const resolver = new Timeline.SourceMapsResolver.SourceMapsResolver(traceParsedData);
-       const namesUpdatedPromise = new Promise<void>(
-           resolve =>
-               resolver.addEventListener(Timeline.SourceMapsResolver.NodeNamesUpdated.eventName, () => resolve()));
 
        const bottomModelNode = nodes?.find(n => n.id === NODE_ID);
 
@@ -208,7 +205,9 @@ describeWithMockConnection('SourceMapsResolver', () => {
        assert.strictEqual(bottomModelNode?.functionName, MINIFIED_FUNCTION_NAME);
 
        await resolver.install();
-
+       const namesUpdatedPromise = new Promise<void>(
+           resolve =>
+               resolver.addEventListener(Timeline.SourceMapsResolver.NodeNamesUpdated.eventName, () => resolve()));
        // Load the script and source map into the frontend.
        dispatchEvent(target, 'Debugger.scriptParsed', {
          scriptId: SCRIPT_ID,
@@ -275,13 +274,12 @@ describeWithMockConnection('SourceMapsResolver', () => {
     pluginManager.addPlugin(new Plugin());
 
     const resolver = new Timeline.SourceMapsResolver.SourceMapsResolver(traceParsedData);
-    const namesUpdatedPromise = new Promise<void>(
-        resolve => resolver.addEventListener(Timeline.SourceMapsResolver.NodeNamesUpdated.eventName, () => resolve()));
 
     const bottomModelNode = nodes.find(n => n.id === NODE_ID);
 
     await resolver.install();
-
+    const namesUpdatedPromise = new Promise<void>(
+        resolve => resolver.addEventListener(Timeline.SourceMapsResolver.NodeNamesUpdated.eventName, () => resolve()));
     // Load the script into the frontend.
     dispatchEvent(target, 'Debugger.scriptParsed', {
       scriptId: SCRIPT_ID,

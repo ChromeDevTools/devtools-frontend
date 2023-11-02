@@ -630,7 +630,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       const eventStyle = TimelineUIUtils.eventStyle(event);
       const eventCategory = eventStyle.category;
       UI.ARIAUtils.setLabel(icon, eventCategory.title);
-      icon.style.backgroundColor = eventCategory.getComputedValue();
+      icon.style.backgroundColor = eventCategory.getComputedColorValue();
     }
     return cell;
   }

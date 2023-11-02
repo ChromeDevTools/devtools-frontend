@@ -137,6 +137,7 @@ export class SourceMapsResolver extends EventTarget {
         }
       }
     }
+    this.dispatchEvent(new NodeNamesUpdated());
   }
 
   #onAttachedSourceMap(): void {
@@ -155,7 +156,6 @@ export class SourceMapsResolver extends EventTarget {
     setTimeout(async () => {
       this.#isResolvingNames = false;
       await this.#resolveNamesForNodes();
-      this.dispatchEvent(new NodeNamesUpdated());
     }, 500);
   }
 

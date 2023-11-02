@@ -1018,7 +1018,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         return this.colorForEvent(event);
       }
       const category = TimelineUIUtils.eventStyle(event).category;
-      return patchColorAndCache(this.asyncColorByCategory, category, () => category.getComputedValue());
+      return patchColorAndCache(this.asyncColorByCategory, category, () => category.getComputedColorValue());
     }
     if (entryType === entryTypes.Frame) {
       return 'white';

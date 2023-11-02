@@ -301,7 +301,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
       quantizer.appendInterval(timeStart + timeRange + quantTime, idleIndex);  // Kick drawing the last bucket.
       for (let i = categoryOrder.length - 1; i > 0; --i) {
         paths[i].lineTo(width, height);
-        const computedColorValue = categories[categoryOrder[i]].getComputedValue();
+        const computedColorValue = categories[categoryOrder[i]].getComputedColorValue();
         context.fillStyle = computedColorValue;
         context.fill(paths[i]);
         context.strokeStyle = 'white';
@@ -404,7 +404,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
       quantizer.appendInterval(timeOffset + timeSpan + quantTime, idleIndex);  // Kick drawing the last bucket.
       for (let i = categoryOrder.length - 1; i > 0; --i) {
         paths[i].lineTo(width, height);
-        const computedColorValue = categories[categoryOrder[i]].getComputedValue();
+        const computedColorValue = categories[categoryOrder[i]].getComputedColorValue();
         ctx.fillStyle = computedColorValue;
         ctx.fill(paths[i]);
 

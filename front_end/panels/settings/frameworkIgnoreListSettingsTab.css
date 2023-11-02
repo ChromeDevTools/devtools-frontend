@@ -69,6 +69,10 @@
   min-width: 100px;
 }
 
+.ignore-list-item > [is="dt-checkbox"] {
+  width: 100%;
+}
+
 .ignore-list-item .ignore-list-pattern {
   white-space: nowrap;
   text-overflow: ellipsis;

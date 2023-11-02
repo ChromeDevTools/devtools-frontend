@@ -10,6 +10,8 @@
   display: inline-flex;
   flex-shrink: 0;
   align-items: center !important; /* stylelint-disable-line declaration-no-important */
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 input {

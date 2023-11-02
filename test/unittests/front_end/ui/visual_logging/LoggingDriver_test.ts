@@ -83,7 +83,8 @@ describe('LoggingDriver', () => {
     await assertImpressionRecordedDeferred();
   });
 
-  it('logs impressions on scroll', async () => {
+  // Skip this test to allow tree to reopen.
+  it.skip('[crbug.com/1498863] logs impressions on scroll', async () => {
     addLoggableElements();
     const parent = document.getElementById('parent') as HTMLElement;
     parent.style.marginTop = '2000px';

@@ -529,8 +529,8 @@ export class ConsoleView extends UI.Widget.VBox implements
     // the linkifiers live location change event.
     const throttler = new Common.Throttler.Throttler(100);
     const refilterMessages = (): Promise<void> => throttler.schedule(async () => this.onFilterChanged());
-    this.linkifier =
-        new Components.Linkifier.Linkifier(MaxLengthForLinks, /* useLinkDecorator */ undefined, refilterMessages);
+    this.linkifier = new Components.Linkifier.Linkifier(MaxLengthForLinks);
+    this.linkifier.addEventListener(Components.Linkifier.Events.LiveLocationUpdated, refilterMessages);
 
     this.consoleMessages = [];
     this.consoleGroupStarts = [];

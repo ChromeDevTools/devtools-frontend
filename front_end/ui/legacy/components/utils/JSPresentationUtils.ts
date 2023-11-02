@@ -36,12 +36,12 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
-import * as Bindings from '../../../../models/bindings/bindings.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as UI from '../../legacy.js';
 
-import {Linkifier} from './Linkifier.js';
 import jsUtilsStyles from './jsUtils.css.js';
+import {Events as LinkifierEvents, Linkifier} from './Linkifier.js';
 
 const UIStrings = {
   /**
@@ -101,8 +101,9 @@ export function buildStackTraceRows(
 
   if (updateCallback) {
     const throttler = new Common.Throttler.Throttler(100);
-    linkifier.setLiveLocationUpdateCallback(
-        () => throttler.schedule(async () => updateHiddenRows(updateCallback, stackTraceRows)));
+    linkifier.addEventListener(LinkifierEvents.LiveLocationUpdated, () => {
+      void throttler.schedule(async () => updateHiddenRows(updateCallback, stackTraceRows));
+    });
   }
 
   function buildStackTraceRowsHelper(

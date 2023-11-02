@@ -157,11 +157,6 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
     it('maps to the authored script when a call frame is provided', async function() {
       const linkifier = new Components.Linkifier.Linkifier();
-      let linkifierCallback: () => void = () => {};
-      const likifiedPromise = new Promise<void>(res => {
-        linkifierCallback = res;
-      });
-      linkifier.setLiveLocationUpdateCallback(linkifierCallback);
       const node = Timeline.TimelineUIUtils.TimelineUIUtils.linkifyLocation({
         scriptId: SCRIPT_ID,
         url: 'https://google.com/test.js',
@@ -175,7 +170,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
         throw new Error('Node was unexpectedly null');
       }
       // Wait for the location to be resolved using the registered source map.
-      await likifiedPromise;
+      await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pendingLiveLocationChangesPromise();
 
       assert.strictEqual(node.textContent, 'original-script.ts:1:1');
     });
@@ -197,18 +192,13 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const data = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(functionCallEvent);
       data.stackTrace = functionCallEvent.args.data.stackTrace;
       const linkifier = new Components.Linkifier.Linkifier();
-      let linkifierCallback: () => void = () => {};
-      const likifiedPromise = new Promise<void>(res => {
-        linkifierCallback = res;
-      });
-      linkifier.setLiveLocationUpdateCallback(linkifierCallback);
       const node =
           Timeline.TimelineUIUtils.TimelineUIUtils.linkifyTopCallFrame(functionCallEvent, target, linkifier, true);
       if (!node) {
         throw new Error('Node was unexpectedly null');
       }
       // Wait for the location to be resolved using the registered source map.
-      await likifiedPromise;
+      await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pendingLiveLocationChangesPromise();
       assert.strictEqual(node.textContent, 'original-script.ts:1:1');
     });
   });

@@ -24,7 +24,7 @@ describeWithMockConnection('JSPresentationUtils', async () => {
 
   function setUpEnvironment() {
     const target = createTarget();
-    const linkifier = new Components.Linkifier.Linkifier(100, false, () => {});
+    const linkifier = new Components.Linkifier.Linkifier(100, false);
     linkifier.targetAdded(target);
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const forceNew = true;

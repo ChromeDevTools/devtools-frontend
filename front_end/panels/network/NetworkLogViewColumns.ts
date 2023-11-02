@@ -808,7 +808,7 @@ export class NetworkLogViewColumns {
     return {
       box: anchor.boxInWindow(),
       show: async(popover: UI.GlassPane.GlassPane): Promise<boolean> => {
-        this.popupLinkifier.setLiveLocationUpdateCallback(() => {
+        this.popupLinkifier.addEventListener(Components.Linkifier.Events.LiveLocationUpdated, () => {
           popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
         });
         const content = RequestInitiatorView.createStackTracePreview(

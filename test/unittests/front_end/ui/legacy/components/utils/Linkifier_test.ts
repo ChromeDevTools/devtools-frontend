@@ -46,7 +46,7 @@ describeWithMockConnection('Linkifier', async () => {
 
   function setUpEnvironment() {
     const target = createTarget();
-    const linkifier = new Components.Linkifier.Linkifier(100, false, () => {});
+    const linkifier = new Components.Linkifier.Linkifier(100, false);
     linkifier.targetAdded(target);
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const forceNew = true;
@@ -338,6 +338,43 @@ describeWithMockConnection('Linkifier', async () => {
          assertNotNullOrUndefined(linkInfo);
          assert.propertyVal(linkInfo.revealable, 'breakpoint', breakpoint);
        });
+
+    it('fires the LiveLocationUpdate event for each LiveLocation update', async () => {
+      const {target, linkifier, backend} = setUpEnvironment();
+      const eventCallback = sinon.stub();
+      linkifier.addEventListener(Components.Linkifier.Events.LiveLocationUpdated, eventCallback);
+      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+      const lineNumber = 1;
+      const url = 'https://www.google.com/script.js' as Platform.DevToolsPath.UrlString;
+      const sourceMapContent = JSON.stringify({
+        'version': 3,
+        'names': ['adder', 'param1', 'param2', 'result'],
+        'sources': ['/original-script.js'],
+        'sourcesContent':
+            ['function adder(param1, param2) {\n  const result = param1 + param2;\n  return result;\n}\n\n'],
+        'mappings': 'AAAA,SAASA,MAAMC,EAAQC,GACrB,MAAMC,EAASF,EAASC,EACxB,OAAOC,CACT',
+      });
+
+      const script = await backend.addScript(target, {content: 'function adder(n,r){const t=n+r;return t}', url}, {
+        url: 'https://www.google.com/script.js.map',
+        content: sourceMapContent,
+      });
+
+      linkifier.maybeLinkifyScriptLocation(target, script.scriptId, url, lineNumber);
+
+      await debuggerWorkspaceBinding.pendingLiveLocationChangesPromise();
+      assert.isTrue(eventCallback.calledOnce);
+
+      // Detach the source map and check we get the update event.
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assertNotNullOrUndefined(debuggerModel);
+      debuggerModel.sourceMapManager().detachSourceMap(script);
+
+      await debuggerWorkspaceBinding.pendingLiveLocationChangesPromise();
+      // We currently receive more than one event after detaching the source map.
+      // This is also valid but might constitute unnecessary work.
+      assert.isTrue(eventCallback.callCount >= 2);
+    });
   });
 });
 

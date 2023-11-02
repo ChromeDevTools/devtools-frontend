@@ -534,6 +534,12 @@ class PreloadingAttemptRegistry {
     this.map.set(id, attempt);
   }
 
+  // Speculation rules emits a CDP event Preload.preloadingAttemptSourcesUpdated
+  // and an IPC SpeculationHost::UpdateSpeculationCandidates. The latter emits
+  // Preload.prefetch/prerenderAttemptUpdated for each preload attempt triggered.
+  // In general, "Not triggered to triggered" period is short (resp. long) for
+  // eager (resp. non-eager) preloads. For not yet emitted ones, we fill
+  // "Not triggered" preload attempts and show them.
   maybeRegisterNotTriggered(sources: SourceRegistry): void {
     for (const [id, {key}] of sources.entries()) {
       if (this.map.get(id) !== undefined) {

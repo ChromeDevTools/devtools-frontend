@@ -117,6 +117,10 @@
   gap: 2px;
 }
 
+.create-breadcrumb-button:hover {
+  background: var(--ref-palette-neutral95);
+}
+
 @media (forced-colors: active) {
   .overview-grid-cursor-position {
     forced-color-adjust: none;

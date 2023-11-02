@@ -168,6 +168,10 @@ const UIStrings = {
    */
   close: 'Close',
   /**
+   *@description Text to download the raw trace files after an error
+   */
+  downloadAfterError: 'Download raw trace events',
+  /**
    *@description Status text to indicate the recording has failed in the Performance panel
    */
   recordingFailed: 'Recording failed',
@@ -1025,7 +1029,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
   }
 
-  private async recordingFailed(error: string): Promise<void> {
+  private async recordingFailed(error: string, rawEvents?: TraceEngine.Types.TraceEvents.TraceEventData[]):
+      Promise<void> {
     if (this.statusPane) {
       this.statusPane.remove();
     }
@@ -1044,6 +1049,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         });
     this.statusPane.showPane(this.statusPaneContainer);
     this.statusPane.updateStatus(i18nString(UIStrings.recordingFailed));
+
+    if (rawEvents) {
+      this.statusPane.enableDownloadOfEvents(rawEvents);
+    }
 
     this.setState(State.RecordingFailed);
     this.performanceModel = null;
@@ -1378,6 +1387,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.#executeNewTraceEngine(
             tracingModel, recordingIsFresh, isCpuProfile, this.performanceModel.recordStartTime()),
       ]);
+
       // This code path is only executed when a new trace is recorded/imported,
       // so we know that the active index will be the size of the model because
       // the newest trace will be automatically set to active.
@@ -1425,7 +1435,18 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.#minimapComponent.addInitialBreadcrumb();
       }
     } catch (error) {
-      void this.recordingFailed(error.message);
+      // Try to get the raw events: if we errored during the parsing stage, it
+      // is useful to get access to the raw events to download the trace. This
+      // allows us to debug crashes!
+      // Because we don't know where the error came from, we wrap it in a
+      // try-catch to protect against the tracing model erroring.
+      let rawEvents: TraceEngine.Types.TraceEvents.TraceEventData[]|undefined = undefined;
+      try {
+        rawEvents = tracingModel.allRawEvents() as unknown as TraceEngine.Types.TraceEvents.TraceEventData[];
+      } catch {
+      }
+
+      void this.recordingFailed(error.message, rawEvents);
       console.error(error);
     } finally {
       this.recordTraceLoadMetric();
@@ -1659,8 +1680,10 @@ export class StatusPane extends UI.Widget.VBox {
   private progressBar!: Element;
   private readonly description: HTMLElement|undefined;
   private button: HTMLButtonElement;
+  private downloadTraceButton: HTMLButtonElement;
   private startTime!: number;
   private timeUpdateTimer?: number;
+  #rawEvents?: TraceEngine.Types.TraceEvents.TraceEventData[];
 
   constructor(
       options: {
@@ -1700,16 +1723,50 @@ export class StatusPane extends UI.Widget.VBox {
       this.description.innerText = options.description;
     }
 
+    const buttonContainer = this.contentElement.createChild('div', 'stop-button');
+    this.downloadTraceButton = UI.UIUtils.createTextButton(i18nString(UIStrings.downloadAfterError), async () => {
+      void this.#downloadRawTraceAfterError();
+    });
+
+    this.downloadTraceButton.disabled = true;
+    this.downloadTraceButton.style.visibility = 'hidden';
+
     const buttonText = options.buttonText || i18nString(UIStrings.stop);
     this.button = UI.UIUtils.createTextButton(buttonText, buttonCallback, '', true);
     // Profiling can't be stopped during initialization.
     this.button.disabled = !options.buttonDisabled === false;
-    this.contentElement.createChild('div', 'stop-button').appendChild(this.button);
+
+    buttonContainer.append(this.downloadTraceButton);
+    buttonContainer.append(this.button);
   }
 
   finish(): void {
     this.stopTimer();
     this.button.disabled = true;
+  }
+
+  async #downloadRawTraceAfterError(): Promise<void> {
+    if (!this.#rawEvents || this.#rawEvents.length === 0) {
+      return;
+    }
+    const traceStart = Platform.DateUtilities.toISO8601Compact(new Date());
+    const fileName = `Trace-Load-Error-${traceStart}.json` as Platform.DevToolsPath.RawPathString;
+    const handler = await window.showSaveFilePicker({
+      suggestedName: fileName,
+    });
+    const formattedTraceIter = traceJsonGenerator(this.#rawEvents, {});
+    const traceAsString = Array.from(formattedTraceIter).join('');
+    const encoder = new TextEncoder();
+    const buffer = encoder.encode(traceAsString);
+    const writable = await handler.createWritable();
+    await writable.write(buffer);
+    await writable.close();
+  }
+
+  enableDownloadOfEvents(rawEvents: TraceEngine.Types.TraceEvents.TraceEventData[]): void {
+    this.#rawEvents = rawEvents;
+    this.downloadTraceButton.disabled = false;
+    this.downloadTraceButton.style.visibility = 'visible';
   }
 
   remove(): void {

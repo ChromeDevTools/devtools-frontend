@@ -100,23 +100,28 @@ export class InteractionsTrackAppender implements TrackAppender {
       }
       const index = this.#compatibilityBuilder.indexForEvent(interaction);
       if (index !== undefined) {
-        this.#addCandyStripingForLongInteraction(interaction, index);
+        this.#addCandyStripeAndWarningForLongInteraction(interaction, index);
       }
     }
     return newLevel;
   }
 
-  #addCandyStripingForLongInteraction(
+  #addCandyStripeAndWarningForLongInteraction(
       entry: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent, eventIndex: number): void {
     const decorationsForEvent = this.#flameChartData.entryDecorations[eventIndex] || [];
-    decorationsForEvent.push({
-      type: 'CANDY',
-      startAtTime: TraceEngine.Handlers.ModelHandlers.UserInteractions.LONG_INTERACTION_THRESHOLD,
-      // Interaction events have whiskers, so we do not want to candy stripe
-      // the entire duration. The box represents processing time, so we only
-      // candystripe up to the end of processing.
-      endAtTime: entry.processingEnd,
-    });
+    decorationsForEvent.push(
+        {
+          type: 'CANDY',
+          startAtTime: TraceEngine.Handlers.ModelHandlers.UserInteractions.LONG_INTERACTION_THRESHOLD,
+          // Interaction events have whiskers, so we do not want to candy stripe
+          // the entire duration. The box represents processing time, so we only
+          // candystripe up to the end of processing.
+          endAtTime: entry.processingEnd,
+        },
+        {
+          type: 'WARNING_TRIANGLE',
+          customEndTime: entry.processingEnd,
+        });
     this.#flameChartData.entryDecorations[eventIndex] = decorationsForEvent;
   }
 

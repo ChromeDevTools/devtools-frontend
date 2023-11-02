@@ -6,8 +6,8 @@ import type * as Platform from '../../../../../front_end/core/platform/platform.
 import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
-import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
+import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
 import * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {TraceLoader} from '../../helpers/TraceLoader.js';
@@ -92,6 +92,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
       'Task',     // The same long task as above, but rendered by the new engine.
     ]);
     assert.deepEqual(triangleTitles, [
+      'Pointer',       // The interaction event in the Interactions track for the pointer event.
       'Task',          // The Long task that was caused by the pointer and contributed to the long time (old engine).
       'Task',          // The same long task as above, but rendered by the new engine.
       'Event: click',  // The click EventDispatch that's also marked with a triangle

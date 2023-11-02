@@ -102,7 +102,7 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     });
   });
 
-  it('candy-stripes long interactions', async function() {
+  it('candy-stripes and adds warning triangles to long interactions', async function() {
     const {traceParsedData, flameChartData, entryData} =
         await renderTrackAppender(this, 'one-second-interaction.json.gz');
     const longInteraction = traceParsedData.UserInteractions.longestInteractionEvent;
@@ -111,11 +111,17 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     }
     const entryIndex = entryData.indexOf(longInteraction);
     const decorationsForEntry = flameChartData.entryDecorations[entryIndex];
-    assert.deepEqual(decorationsForEntry, [{
-                       type: 'CANDY',
-                       startAtTime: TraceEngine.Types.Timing.MicroSeconds(200_000),
-                       endAtTime: longInteraction.processingEnd,
-                     }]);
+    assert.deepEqual(decorationsForEntry, [
+      {
+        type: 'CANDY',
+        startAtTime: TraceEngine.Types.Timing.MicroSeconds(200_000),
+        endAtTime: longInteraction.processingEnd,
+      },
+      {
+        type: 'WARNING_TRIANGLE',
+        customEndTime: longInteraction.processingEnd,
+      },
+    ]);
   });
 
   it('does not candy-stripe interactions less than 200ms', async function() {

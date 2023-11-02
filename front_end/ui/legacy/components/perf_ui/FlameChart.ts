@@ -1400,7 +1400,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           const barLevel = entryLevels[entryIndex];
           const barHeight = this.#eventBarHeight(timelineData, entryIndex);
           const barY = this.levelToOffset(barLevel);
-          const barWidth = this.#eventBarWidth(timelineData, entryIndex);
+          let barWidth = this.#eventBarWidth(timelineData, entryIndex);
+          if (typeof decoration.customEndTime !== 'undefined') {
+            // The user can pass a customEndTime to tell us where the event's box ends and therefore where we should draw the triangle. So therefore we calculate the width by taking the end time off the start time.
+            const endTimeMilli = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(decoration.customEndTime);
+            const endTimePixels = this.timeToPositionClipped(endTimeMilli);
+            barWidth = endTimePixels - barX;
+          }
           const triangleSize = 8;
           context.save();
           context.beginPath();
@@ -2572,6 +2578,7 @@ export type FlameChartDecoration = {
   endAtTime?: TraceEngine.Types.Timing.MicroSeconds,
 }|{
   type: 'WARNING_TRIANGLE',
+  customEndTime?: TraceEngine.Types.Timing.MicroSeconds,
 };
 
 // We have to ensure we draw the decorations in a particular order; warning

@@ -92,12 +92,12 @@ describe('Navigation', async function() {
     const {lhr, artifacts, reportEl} = await waitForResult();
 
     // 1 initial about:blank jump
-    // 1 about:blank jump + 1 navigation for the default pass
+    // 1 navigation for the actual page load
     // 2 navigations to go to chrome://terms and back testing bfcache
-    // 1 navigation after auditing to reset state
-    assert.strictEqual(numNavigations, 6);
+    // 1 refresh after auditing to reset state
+    assert.strictEqual(numNavigations, 5);
 
-    assert.strictEqual(lhr.lighthouseVersion, '11.2.0');
+    assert.strictEqual(lhr.lighthouseVersion, '11.3.0');
     assert.match(lhr.finalUrl, /^https:\/\/localhost:[0-9]+\/test\/e2e\/resources\/lighthouse\/hello.html/);
 
     assert.strictEqual(lhr.configSettings.throttlingMethod, 'simulate');

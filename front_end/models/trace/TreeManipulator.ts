@@ -174,13 +174,12 @@ export class TreeManipulator {
     const ancestors: Types.TraceEvents.TraceEntry[] = [];
 
     // Walk through all the ancestors, starting at the root node.
-    const children: Helpers.TreeHelpers.TraceEntryNode[] = Array.from(root.children);
+    const children: Helpers.TreeHelpers.TraceEntryNode[] = root.children;
     while (children.length > 0) {
       const childNode = children.shift();
       if (childNode) {
         ancestors.push(childNode.entry);
-        const newChildIds = Array.from(childNode.children);
-        children.push(...newChildIds);
+        children.push(...childNode.children);
       }
     }
 

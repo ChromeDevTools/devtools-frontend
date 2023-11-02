@@ -95,7 +95,7 @@ function buildProfileCalls(): void {
           return;
         }
         traceEntryNode.parentId = parentNode.id;
-        parentNode.children.add(traceEntryNode);
+        parentNode.children.push(traceEntryNode);
       }
     }
   }

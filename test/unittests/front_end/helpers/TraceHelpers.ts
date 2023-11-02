@@ -252,7 +252,8 @@ export function prettyPrint(
     out: string = ''): string {
   let skipped = false;
   return printNodes(tree.roots);
-  function printNodes(nodes: Set<TraceEngine.Helpers.TreeHelpers.TraceEntryNode>): string {
+  function printNodes(nodes: Set<TraceEngine.Helpers.TreeHelpers.TraceEntryNode>|
+                      TraceEngine.Helpers.TreeHelpers.TraceEntryNode[]): string {
     for (const node of nodes) {
       const event = node.entry;
       if (!predicate(node, event)) {

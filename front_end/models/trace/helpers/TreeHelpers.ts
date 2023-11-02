@@ -19,7 +19,7 @@ export const makeEmptyTraceEntryNode = (entry: Types.TraceEvents.TraceEntry, id:
   entry,
   id,
   parentId: null,
-  children: new Set(),
+  children: [],
   depth: 0,
 });
 
@@ -34,7 +34,7 @@ export interface TraceEntryNode {
   depth: number;
   id: TraceEntryNodeId;
   parentId?: TraceEntryNodeId|null;
-  children: Set<TraceEntryNode>;
+  children: TraceEntryNode[];
 }
 
 class TraceEntryNodeIdTag {
@@ -148,7 +148,7 @@ export function treify(entries: Types.TraceEvents.TraceEntry[], options?: {
     tree.nodes.set(nodeId, node);
     node.depth = stack.length;
     node.parentId = parentNode.id;
-    parentNode.children.add(node);
+    parentNode.children.push(node);
     event.selfTime = Types.Timing.MicroSeconds(duration);
     if (parentEvent.selfTime !== undefined) {
       parentEvent.selfTime = Types.Timing.MicroSeconds(parentEvent.selfTime - (event.dur || 0));

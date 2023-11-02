@@ -163,7 +163,7 @@ describeWithEnvironment('SamplesHandler', function() {
       const callsTestData = calls?.map(
           c => {
             const children =
-                tree?.nodes.get(c.nodeId as TraceModel.Helpers.TreeHelpers.TraceEntryNodeId)?.children || new Set();
+                tree?.nodes.get(c.nodeId as TraceModel.Helpers.TreeHelpers.TraceEntryNodeId)?.children || [];
             return ({
               id: c.nodeId,
               dur: Math.round(c.dur || 0),
@@ -192,8 +192,7 @@ describeWithEnvironment('SamplesHandler', function() {
         {'id': 6, 'dur': 175, 'ts': 643496963411, 'selfTime': 175, 'children': []},
       ];
       const callsTestData = calls?.map(c => {
-        const children =
-            tree?.nodes.get(c.nodeId as TraceModel.Helpers.TreeHelpers.TraceEntryNodeId)?.children || new Set();
+        const children = tree?.nodes.get(c.nodeId as TraceModel.Helpers.TreeHelpers.TraceEntryNodeId)?.children || [];
         return {
           id: c.nodeId,
           dur: Math.round(c.dur || 0),

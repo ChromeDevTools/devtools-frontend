@@ -16,7 +16,7 @@ import {doubleRaf, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
-import {getMainThread} from '../../helpers/TraceHelpers.js';
+import {getMainThread, makeCompleteEvent} from '../../helpers/TraceHelpers.js';
 import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 const {assert} = chai;
@@ -26,7 +26,12 @@ describeWithMockConnection('TimelineUIUtils', function() {
   let process: TraceEngine.Legacy.Process;
   let thread: TraceEngine.Legacy.Thread;
   let target: SDK.Target.Target;
-  const SCRIPT_ID = 'SCRIPT_ID' as Protocol.Runtime.ScriptId;
+  // Trace events contain script ids as strings. However, the linkifier
+  // utilities assume it is a number because that's how it's defined at
+  // the protocol level. For practicality, we declare these two
+  // variables so that we can satisfy type checking throughout the tests.
+  const SCRIPT_ID_NUMBER = 1;
+  const SCRIPT_ID_STRING = String(SCRIPT_ID_NUMBER) as Protocol.Runtime.ScriptId;
 
   beforeEach(() => {
     target = createTarget();
@@ -53,7 +58,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       data: {
         functionName: 'test',
         url: 'test.js',
-        scriptId: SCRIPT_ID,
+        scriptId: SCRIPT_ID_STRING,
         lineNumber: 0,
         columnNumber: 0,
       },
@@ -73,7 +78,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           {
             functionName: 'test',
             url: 'test.js',
-            scriptId: SCRIPT_ID,
+            scriptId: SCRIPT_ID_STRING,
             lineNumber: 0,
             columnNumber: 0,
           },
@@ -97,7 +102,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
         data: {
           functionName: 'test',
           url: 'https://google.com/test.js',
-          scriptId: SCRIPT_ID,
+          scriptId: SCRIPT_ID_STRING,
           lineNumber: 0,
           columnNumber: 0,
         },
@@ -126,7 +131,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
        });
   });
 
-  describe('mapping to autored script when recording is fresh', function() {
+  describe('mapping to authored script when recording is fresh', function() {
     beforeEach(async () => {
       // Register mock script and source map.
 
@@ -151,14 +156,14 @@ describeWithMockConnection('TimelineUIUtils', function() {
       }
       const sourceMapManager = debuggerModel.sourceMapManager();
       const script = debuggerModel.parsedScriptSource(
-          SCRIPT_ID, scriptUrl, 0, 0, 0, 0, 0, '', undefined, false, sourceMapUrl, true, false, length, false, null,
-          null, null, null, null);
+          SCRIPT_ID_STRING, scriptUrl, 0, 0, 0, 0, 0, '', undefined, false, sourceMapUrl, true, false, length, false,
+          null, null, null, null, null);
       await sourceMapManager.sourceMapForClientPromise(script);
     });
     it('maps to the authored script when a call frame is provided', async function() {
       const linkifier = new Components.Linkifier.Linkifier();
       const node = Timeline.TimelineUIUtils.TimelineUIUtils.linkifyLocation({
-        scriptId: SCRIPT_ID,
+        scriptId: SCRIPT_ID_STRING,
         url: 'https://google.com/test.js',
         lineNumber: 0,
         columnNumber: 0,
@@ -174,33 +179,60 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
       assert.strictEqual(node.textContent, 'original-script.ts:1:1');
     });
-    it('maps to the authored script when a trace event with a stack trace is provided', async function() {
-      const functionCallEvent = new TraceEngine.Legacy.ConstructedEvent(
-          'devtools.timeline', TimelineModel.TimelineModel.RecordType.FunctionCall,
-          TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
-      functionCallEvent.addArgs({
-        data: {
-          stackTrace: [{
-            functionName: 'test',
-            url: 'https://google.com/test.js',
-            scriptId: SCRIPT_ID,
-            lineNumber: 0,
-            columnNumber: 0,
-          }],
-        },
-      });
-      const data = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(functionCallEvent);
-      data.stackTrace = functionCallEvent.args.data.stackTrace;
-      const linkifier = new Components.Linkifier.Linkifier();
-      const node =
-          Timeline.TimelineUIUtils.TimelineUIUtils.linkifyTopCallFrame(functionCallEvent, target, linkifier, true);
-      if (!node) {
-        throw new Error('Node was unexpectedly null');
-      }
-      // Wait for the location to be resolved using the registered source map.
-      await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pendingLiveLocationChangesPromise();
-      assert.strictEqual(node.textContent, 'original-script.ts:1:1');
-    });
+    it('maps to the authored script when a trace event from the old engine with a stack trace is provided',
+       async function() {
+         const functionCallEvent = new TraceEngine.Legacy.ConstructedEvent(
+             'devtools.timeline', TimelineModel.TimelineModel.RecordType.FunctionCall,
+             TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
+         functionCallEvent.addArgs({
+           data: {
+             stackTrace: [{
+               functionName: 'test',
+               url: 'https://google.com/test.js',
+               scriptId: SCRIPT_ID_STRING,
+               lineNumber: 0,
+               columnNumber: 0,
+             }],
+           },
+         });
+         const data = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(functionCallEvent);
+         data.stackTrace = functionCallEvent.args.data.stackTrace;
+         const linkifier = new Components.Linkifier.Linkifier();
+         const node =
+             Timeline.TimelineUIUtils.TimelineUIUtils.linkifyTopCallFrame(functionCallEvent, target, linkifier, true);
+         if (!node) {
+           throw new Error('Node was unexpectedly null');
+         }
+         await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+             .pendingLiveLocationChangesPromise();
+         assert.strictEqual(node.textContent, 'original-script.ts:1:1');
+       });
+    it('maps to the authored script when a trace event from the new engine with a stack trace is provided',
+       async function() {
+         const functionCallEvent = makeCompleteEvent('FunctionCall', 10, 100);
+         functionCallEvent.args = ({
+           data: {
+             stackTrace: [{
+               functionName: 'test',
+               url: 'https://google.com/test.js',
+               scriptId: SCRIPT_ID_NUMBER,
+               lineNumber: 0,
+               columnNumber: 0,
+             }],
+           },
+         });
+         const linkifier = new Components.Linkifier.Linkifier();
+         const node =
+             Timeline.TimelineUIUtils.TimelineUIUtils.linkifyTopCallFrame(functionCallEvent, target, linkifier, true);
+         if (!node) {
+           throw new Error('Node was unexpectedly null');
+         }
+         // Wait for the location to be resolved using the registered source map.
+         await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+             .pendingLiveLocationChangesPromise();
+
+         assert.strictEqual(node.textContent, 'original-script.ts:1:1');
+       });
   });
   describe('adjusting timestamps for events and navigations', function() {
     it('adjusts the time for a DCL event after a navigation', async function() {

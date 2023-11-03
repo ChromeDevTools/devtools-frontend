@@ -548,6 +548,13 @@ export function eventStackFrame(event: TraceEngine.Legacy.Event|
   if (TraceEngine.Legacy.eventIsFromNewEngine(event) && TraceEngine.Types.TraceEvents.isProfileCall(event)) {
     return event.callFrame;
   }
+  if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
+    const topFrame = event.args?.data?.stackTrace?.[0];
+    if (!topFrame) {
+      return null;
+    }
+    return {...topFrame, scriptId: String(topFrame.scriptId) as Protocol.Runtime.ScriptId};
+  }
   if (TimelineModelImpl.isJsFrameEvent(event)) {
     return event.args['data'] || null as Protocol.Runtime.CallFrame | null;
   }

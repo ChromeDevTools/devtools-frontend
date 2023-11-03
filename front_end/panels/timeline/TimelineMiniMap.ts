@@ -49,6 +49,7 @@ export class TimelineMiniMap extends
   #minTime: TimingTypes.Timing.MilliSeconds = TimingTypes.Timing.MilliSeconds(0);
   // Once the sync tracks migration is completely shipped, this can be removed.
   #threadTracksSource: ThreadTracksSource;
+  #data: OverviewData|null = null;
 
   constructor(threadTracksSource: ThreadTracksSource) {
     super();
@@ -190,6 +191,10 @@ export class TimelineMiniMap extends
   }
 
   setData(data: OverviewData): void {
+    if (this.#data?.traceParsedData === data.traceParsedData) {
+      return;
+    }
+    this.#data = data;
     this.#controls = [];
     if (data.traceParsedData?.Meta.traceBounds.min !== undefined) {
       this.#minTime = Helpers.Timing.microSecondsToMilliseconds(data.traceParsedData?.Meta.traceBounds.min);

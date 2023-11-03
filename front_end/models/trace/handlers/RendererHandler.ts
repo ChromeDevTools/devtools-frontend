@@ -33,7 +33,7 @@ const compositorTileWorkers = Array<{
   tid: Types.TraceEvents.ThreadID,
 }>();
 const entryToNode: Map<Types.TraceEvents.TraceEntry, Helpers.TreeHelpers.TraceEntryNode> = new Map();
-const allTraceEntries: Types.TraceEvents.TraceEntry[] = [];
+let allTraceEntries: Types.TraceEvents.TraceEntry[] = [];
 
 const completeEventStack: (Types.TraceEvents.TraceEventSyntheticCompleteEvent)[] = [];
 
@@ -331,7 +331,7 @@ export function buildHierarchy(
           cpuProfile && new Helpers.SamplesIntegrator.SamplesIntegrator(cpuProfile, pid, tid, config);
       const profileCalls = samplesIntegrator?.buildProfileCalls(thread.entries);
       if (profileCalls) {
-        allTraceEntries.push(...profileCalls);
+        allTraceEntries = [...allTraceEntries, ...profileCalls];
         thread.entries = Helpers.Trace.mergeEventsInOrder(thread.entries, profileCalls);
       }
       // Step 3. Build the tree.

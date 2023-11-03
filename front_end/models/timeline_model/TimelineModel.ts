@@ -832,7 +832,7 @@ export class TimelineModelImpl {
     }
     this.tracksInternal.push(track);
     let events = thread.events();
-    if (true) {
+    if (this.renderLegacySyncTracks) {
       events = this.injectJSFrameEvents(tracingModel, thread);
     }
     this.eventStack = [];

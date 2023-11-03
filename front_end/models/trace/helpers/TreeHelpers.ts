@@ -10,7 +10,6 @@ let nodeIdCount = 0;
 export const makeTraceEntryNodeId = (): TraceEntryNodeId => (++nodeIdCount) as TraceEntryNodeId;
 
 export const makeEmptyTraceEntryTree = (): TraceEntryTree => ({
-  nodes: new Map(),
   roots: new Set(),
   maxDepth: 0,
 });
@@ -24,7 +23,6 @@ export const makeEmptyTraceEntryNode = (entry: Types.TraceEvents.TraceEntry, id:
 });
 
 export interface TraceEntryTree {
-  nodes: Map<TraceEntryNodeId, TraceEntryNode>;
   roots: Set<TraceEntryNode>;
   maxDepth: number;
 }
@@ -86,7 +84,6 @@ export function treify(entries: Types.TraceEvents.TraceEntry[], options?: {
     // If the parent stack is empty, then the current event is a root. Create a
     // node for it, mark it as a root, then proceed with the next event.
     if (stack.length === 0) {
-      tree.nodes.set(nodeId, node);
       tree.roots.add(node);
       event.selfTime = Types.Timing.MicroSeconds(duration);
       stack.push(node);
@@ -145,7 +142,6 @@ export function treify(entries: Types.TraceEvents.TraceEntry[], options?: {
     //    contained within the parent event. Create a node for the current
     //    event, establish the parent/child relationship, then proceed with the
     //    next event.
-    tree.nodes.set(nodeId, node);
     node.depth = stack.length;
     node.parentId = parentNode.id;
     parentNode.children.push(node);

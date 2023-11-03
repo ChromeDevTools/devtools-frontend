@@ -219,6 +219,24 @@ export function getRootAt(thread: TraceEngine.Handlers.ModelHandlers.Renderer.Re
 }
 
 /**
+ * Gets all nodes in a thread. To finish this task, we Walk through all the nodes, starting from the root node.
+ */
+export function getAllNodes(roots: Set<TraceEngine.Helpers.TreeHelpers.TraceEntryNode>):
+    TraceEngine.Helpers.TreeHelpers.TraceEntryNode[] {
+  const allNodes: TraceEngine.Helpers.TreeHelpers.TraceEntryNode[] = [];
+
+  const children: TraceEngine.Helpers.TreeHelpers.TraceEntryNode[] = Array.from(roots);
+  while (children.length > 0) {
+    const childNode = children.shift();
+    if (childNode) {
+      allNodes.push(childNode);
+      children.push(...childNode.children);
+    }
+  }
+  return allNodes;
+}
+
+/**
  * Gets the node with an id from a tree in a thread.
  * @see RendererHandler.ts
  */
@@ -226,7 +244,21 @@ export function getNodeFor(
     thread: TraceEngine.Handlers.ModelHandlers.Renderer.RendererThread,
     nodeId: TraceEngine.Helpers.TreeHelpers.TraceEntryNodeId): TraceEngine.Helpers.TreeHelpers.TraceEntryNode {
   const tree = getTree(thread);
-  const node = tree.nodes.get(nodeId);
+
+  function findNode(
+      nodes: Set<TraceEngine.Helpers.TreeHelpers.TraceEntryNode>|TraceEngine.Helpers.TreeHelpers.TraceEntryNode[],
+      nodeId: TraceEngine.Helpers.TreeHelpers.TraceEntryNodeId): TraceEngine.Helpers.TreeHelpers.TraceEntryNode|
+      undefined {
+    for (const node of nodes) {
+      const event = node.entry;
+      if (TraceEngine.Types.TraceEvents.isProfileCall(event) && event.nodeId === nodeId) {
+        return node;
+      }
+      return findNode(node.children, nodeId);
+    }
+    return undefined;
+  }
+  const node = findNode(tree.roots, nodeId);
   if (!node) {
     assert(false, `Couldn't get the node with id ${nodeId} in thread ${thread.name}`);
     return null as never;

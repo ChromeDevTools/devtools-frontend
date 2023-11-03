@@ -77,7 +77,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   #currentBreadcrumbTimeWindow?: TraceEngine.Types.Timing.TraceWindow;
   private selectedGroupName: string|null = null;
   constructor(
-      delegate: TimelineModeViewDelegate, threadTracksSource: ThreadTracksSource = ThreadTracksSource.BOTH_ENGINES) {
+      delegate: TimelineModeViewDelegate, threadTracksSource: ThreadTracksSource = ThreadTracksSource.NEW_ENGINE) {
     super();
     this.element.classList.add('timeline-flamechart');
     this.delegate = delegate;

@@ -256,7 +256,6 @@ let isNode: boolean;
 export enum ThreadTracksSource {
   NEW_ENGINE = 'NEW_ENGINE',
   OLD_ENGINE = 'OLD_ENGINE',
-  BOTH_ENGINES = 'BOTH_ENGINES',
 }
 
 // TODO(crbug.com/1428024): Use the new engine.
@@ -337,7 +336,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#threadTracksSource = threadTracksSource;
     this.#minimapComponent = new TimelineMiniMap(threadTracksSource);
     switch (threadTracksSource) {
-      case ThreadTracksSource.BOTH_ENGINES:
       case ThreadTracksSource.NEW_ENGINE:
         this.#traceEngineModel = TraceEngine.TraceModel.Model.createWithAllHandlers();
         break;

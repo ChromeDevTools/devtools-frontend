@@ -169,7 +169,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   #font: string;
   #threadTracksSource: ThreadTracksSource;
 
-  constructor(threadTracksSource: ThreadTracksSource = ThreadTracksSource.BOTH_ENGINES) {
+  constructor(threadTracksSource: ThreadTracksSource = ThreadTracksSource.NEW_ENGINE) {
     super();
     this.reset();
     this.#font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
@@ -501,9 +501,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     const newTracks = allTrackAppenders.filter(trackAppender => {
       if (trackAppender instanceof ThreadAppender) {
-        // We only include the ThreadAppender tracks if the source has been set to either NEW_ENGINE or BOTH_ENGINES.
-        // If the source is set to OLD_ENGINE, we explictly do not want these tracks to be rendered.
-        return this.#threadTracksSource !== ThreadTracksSource.OLD_ENGINE;
+        // We only include the ThreadAppender tracks if the source is NEW_ENGINE.
+        return this.#threadTracksSource === ThreadTracksSource.NEW_ENGINE;
       }
       // All other TrackAppenders are fully released and migrated, so we always include them.
       return true;

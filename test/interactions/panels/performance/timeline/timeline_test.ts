@@ -125,8 +125,7 @@ describe('Performance panel', function() {
 
   itScreenshot(
       'loads a cpuprofile and renders it in node mode with default track source set to new engine', async () => {
-        await loadComponentDocExample(
-            'performance_panel/basic.html?cpuprofile=node-fibonacci-website&isNode=true&threadTracksSource=new');
+        await loadComponentDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website&isNode=true');
         await waitFor('.timeline-flamechart');
         const panel = await waitFor('body');
         await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile-node-new-engine.png', 3);
@@ -134,8 +133,7 @@ describe('Performance panel', function() {
 
   itScreenshot(
       'loads a cpuprofile and renders it in node mode with default track source set to old engine', async () => {
-        await loadComponentDocExample(
-            'performance_panel/basic.html?cpuprofile=node-fibonacci-website&isNode=true&threadTracksSource=old');
+        await loadComponentDocExample('performance_panel/basic.html?cpuprofile=node-fibonacci-website&isNode=true');
         await waitFor('.timeline-flamechart');
         const panel = await waitFor('body');
         await assertElementScreenshotUnchanged(panel, 'performance/cpu-profile-node-old-engine.png', 3);
@@ -156,15 +154,8 @@ describe('Performance panel', function() {
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-screenshot-frames.png', 1);
   });
 
-  itScreenshot('renders correctly with the OLD_ENGINE ThreadTracksSource', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev&threadTracksSource=old');
-    await waitFor('.timeline-flamechart');
-    const panel = await waitFor('body');
-    await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-old-engine.png', 1);
-  });
-
   itScreenshot('renders correctly with the NEW_ENGINE ThreadTracksSource', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev&threadTracksSource=new');
+    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev');
     await waitFor('.timeline-flamechart');
     const panel = await waitFor('body');
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-new-engine.png', 1);

@@ -47,22 +47,6 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
           event => !TraceEngine.Types.TraceEvents.isAsyncPhase(TraceEngine.Legacy.phaseForEvent(event)));
       assert.isTrue(allEventsAreSync);
     });
-
-    it('returns data from the old engine if necessary', async function() {
-      const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
-      const {traceParsedData, performanceModel} = await TraceLoader.allModels(this, 'timings-track.json.gz');
-      dataProvider.setModel(performanceModel, traceParsedData);
-      const tracksAppender = dataProvider.compatibilityTracksAppenderInstance();
-      // Set the interactions track to be the only appender used so that
-      // the main thread track defaults to the old engine.
-      tracksAppender.setVisibleTracks(new Set(['Interactions']));
-      const mainTrack = dataProvider.timelineData().groups.find(g => g.name.startsWith('Main —'));
-      if (!mainTrack) {
-        assert.fail('Could not find Main track flame chart group');
-      }
-      const groupTreeEvents = dataProvider.groupTreeEvents(mainTrack);
-      assert.strictEqual(groupTreeEvents?.length, 28844);
-    });
   });
 
   it('adds candy stripe and triangle decorations to long tasks in the main thread', async function() {
@@ -88,16 +72,12 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
 
     assert.deepEqual(stripingTitles, [
       'Pointer',  // The interaction event in the Interactions track for the pointer event.
-      'Task',     // The Long task that was caused by the pointer and contributed to the long time (old engine).
       'Task',     // The same long task as above, but rendered by the new engine.
     ]);
     assert.deepEqual(triangleTitles, [
-      'Pointer',       // The interaction event in the Interactions track for the pointer event.
-      'Task',          // The Long task that was caused by the pointer and contributed to the long time (old engine).
-      'Task',          // The same long task as above, but rendered by the new engine.
-      'Event: click',  // The click EventDispatch that's also marked with a triangle
+      'Pointer',  // The interaction event in the Interactions track for the pointer event.
+      'Task',     // The same long task as above, but rendered by the new engine.
     ]);
-    assert.lengthOf(Object.keys(entryDecorations), 4);
   });
 
   it('populates the frames track with frames and screenshots', async function() {

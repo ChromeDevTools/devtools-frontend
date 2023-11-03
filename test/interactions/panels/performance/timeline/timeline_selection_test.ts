@@ -43,7 +43,7 @@ describe('FlameChart', function() {
   }
 
   it('shows the details of an entry when selected on the timeline', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=simple-js-program&threadTracksSource=new');
+    await loadComponentDocExample('performance_panel/basic.html?trace=simple-js-program');
     await waitFor('.timeline-flamechart');
     const {frontend} = getBrowserAndPages();
 
@@ -86,7 +86,7 @@ describe('FlameChart', function() {
   });
 
   it('reveals an event\'s initiator in the flamechart', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev&threadTracksSource=new');
+    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev');
     await waitFor('.timeline-flamechart');
     const {frontend} = getBrowserAndPages();
 

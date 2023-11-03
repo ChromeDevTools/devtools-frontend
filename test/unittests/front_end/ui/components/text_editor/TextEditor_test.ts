@@ -150,13 +150,6 @@ describeWithEnvironment('TextEditor', () => {
   });
 
   describe('configuration', () => {
-    it('can guess indentation', () => {
-      assert.strictEqual(
-          TextEditor.Config.guessIndent(CodeMirror.Text.of(['hello():', '    world();', '    return;'])), '    ');
-      assert.strictEqual(
-          TextEditor.Config.guessIndent(CodeMirror.Text.of(['hello():', '\tworld();', '\treturn;'])), '\t');
-    });
-
     it('can detect line separators', () => {
       assert.strictEqual(makeState('one\r\ntwo\r\nthree').lineBreak, '\r\n');
       assert.strictEqual(makeState('one\ntwo\nthree').lineBreak, '\n');

@@ -456,6 +456,243 @@ for(let e=0;e<l.lineCount();++e){const t=l.lineAt(e);s.lastIndex=0;const i=s.exe
     });
   });
 
+  describe('detectIndentation', () => {
+    const {detectIndentation} = TextUtils.TextUtils;
+
+    it('returns `null` when no lines are given', () => {
+      assert.isNull(detectIndentation([]));
+    });
+
+    it('returns `null` when all lines are empty', () => {
+      assert.isNull(detectIndentation([
+        '',
+        '        ',
+        '        ',
+        '  ',
+        '',
+      ]));
+    });
+
+    it('correctly detects tab indentation', () => {
+      assert.strictEqual(detectIndentation(['\ta', '\t\tb', 'c', 'd', '\t\t\tf']), '\t');
+      assert.strictEqual(detectIndentation(['hello():', '\tworld();', '\treturn;']), '\t');
+      assert.strictEqual(
+          detectIndentation(`/**
+ * Heuristic to check whether a given text was likely minified. Intended to
+ * be used for HTML, CSS, and JavaScript inputs.
+ *
+ * A text is considered to be the result of minification if the average
+ * line length for the whole text is 80 characters or more.
+ *
+ * @param text The input text to check.
+ * @returns
+ */
+function isMinified(text) {
+\tlet lineCount = 0;
+\tfor (let lastIndex = 0; lastIndex < text.length; ++lineCount) {
+\t\tlet eolIndex = text.indexOf('\n', lastIndex);
+\t\tif (eolIndex < 0) {
+\t\t\teolIndex = text.length;
+\t\t}
+\t\tlastIndex = eolIndex + 1;
+\t}
+\treturn (text.length - lineCount) / lineCount >= 80;
+}`.split('\n')),
+          '\t');
+    });
+
+    it('correctly detects 1-space indentation', () => {
+      assert.strictEqual(
+          detectIndentation(`/**
+ * Heuristic to check whether a given text was likely minified. Intended to
+ * be used for HTML, CSS, and JavaScript inputs.
+ *
+ * A text is considered to be the result of minification if the average
+ * line length for the whole text is 80 characters or more.
+ *
+ * @param text The input text to check.
+ * @returns
+ */
+function isMinified(text) {
+ let lineCount = 0;
+ for (let lastIndex = 0; lastIndex < text.length; ++lineCount) {
+  let eolIndex = text.indexOf('\n', lastIndex);
+  if (eolIndex < 0) {
+   eolIndex = text.length;
+  }
+  lastIndex = eolIndex + 1;
+ }
+ return (text.length - lineCount) / lineCount >= 80;
+}`.split('\n')),
+          ' ');
+    });
+
+    it('correctly detects 2-space indentation', () => {
+      assert.strictEqual(
+          detectIndentation(`/**
+ * Heuristic to check whether a given text was likely minified. Intended to
+ * be used for HTML, CSS, and JavaScript inputs.
+ *
+ * A text is considered to be the result of minification if the average
+ * line length for the whole text is 80 characters or more.
+ *
+ * @param text The input text to check.
+ * @returns
+ */
+function isMinified(text) {
+  let lineCount = 0;
+  for (let lastIndex = 0; lastIndex < text.length; ++lineCount) {
+    let eolIndex = text.indexOf('\n', lastIndex);
+    if (eolIndex < 0) {
+      eolIndex = text.length;
+    }
+    lastIndex = eolIndex + 1;
+  }
+  return (text.length - lineCount) / lineCount >= 80;
+}`.split('\n')),
+          '  ');
+    });
+
+    it('correctly detects 4-space indentation', () => {
+      assert.strictEqual(detectIndentation(['hello():', '    world();', '    return;']), '    ');
+      assert.strictEqual(
+          detectIndentation(`/**
+ * Heuristic to check whether a given text was likely minified. Intended to
+ * be used for HTML, CSS, and JavaScript inputs.
+ *
+ * A text is considered to be the result of minification if the average
+ * line length for the whole text is 80 characters or more.
+ *
+ * @param text The input text to check.
+ * @returns
+ */
+function isMinified(text) {
+    let lineCount = 0;
+    for (let lastIndex = 0; lastIndex < text.length; ++lineCount) {
+        let eolIndex = text.indexOf('\n', lastIndex);
+        if (eolIndex < 0) {
+            eolIndex = text.length;
+        }
+        lastIndex = eolIndex + 1;
+    }
+    return (text.length - lineCount) / lineCount >= 80;
+}`.split('\n')),
+          '    ');
+
+      // Below is the problematic example explicitly called out
+      // in go/chrome-devtools:indentation-markers-proposal
+      assert.strictEqual(
+          detectIndentation(`import { HOOK_PLUGIN_SETTINGS_SET } from './const.js';
+import { now } from './time.js';
+export class ApiProxy {
+    constructor(plugin, hook) {
+        this.target = null;
+        this.targetQueue = [];
+        this.onQueue = [];
+        this.plugin = plugin;
+        this.hook = hook;
+        const defaultSettings = {};
+        if (plugin.settings) {
+            for (const id in plugin.settings) {
+                const item = plugin.settings[id];
+                defaultSettings[id] = item.defaultValue;
+            }
+        }
+        const localSettingsSaveId = \`__vue-devtools-plugin-settings__\${plugin.id}\`;
+        let currentSettings = Object.assign({}, defaultSettings);
+        try {
+            const raw = localStorage.getItem(localSettingsSaveId);
+            const data = JSON.parse(raw);
+            Object.assign(currentSettings, data);
+        }
+        catch (e) {
+            // noop
+        }
+        this.fallbacks = {
+            getSettings() {
+                return currentSettings;
+            },
+            setSettings(value) {
+                try {
+                    localStorage.setItem(localSettingsSaveId, JSON.stringify(value));
+                }
+                catch (e) {
+                    // noop
+                }
+                currentSettings = value;
+            },
+            now() {
+                return now();
+            },
+        };
+        if (hook) {
+            hook.on(HOOK_PLUGIN_SETTINGS_SET, (pluginId, value) => {
+                if (pluginId === this.plugin.id) {
+                    this.fallbacks.setSettings(value);
+                }
+            });
+        }
+        this.proxiedOn = new Proxy({}, {
+            get: (_target, prop) => {
+                if (this.target) {
+                    return this.target.on[prop];
+                }
+                else {
+                    return (...args) => {
+                        this.onQueue.push({
+                            method: prop,
+                            args,
+                        });
+                    };
+                }
+            },
+        });
+        this.proxiedTarget = new Proxy({}, {
+            get: (_target, prop) => {
+                if (this.target) {
+                    return this.target[prop];
+                }
+                else if (prop === 'on') {
+                    return this.proxiedOn;
+                }
+                else if (Object.keys(this.fallbacks).includes(prop)) {
+                    return (...args) => {
+                        this.targetQueue.push({
+                            method: prop,
+                            args,
+                            resolve: () => { },
+                        });
+                        return this.fallbacks[prop](...args);
+                    };
+                }
+                else {
+                    return (...args) => {
+                        return new Promise(resolve => {
+                            this.targetQueue.push({
+                                method: prop,
+                                args,
+                                resolve,
+                            });
+                        });
+                    };
+                }
+            },
+        });
+    }
+    async setRealTarget(target) {
+        this.target = target;
+        for (const item of this.onQueue) {
+            this.target.on[item.method](...item.args);
+        }
+        for (const item of this.targetQueue) {
+            item.resolve(await this.target[item.method](...item.args));
+        }
+    }
+}`.split('\n')),
+          '    ');
+    });
+  });
+
   describe('performExtendedSearchInContent', () => {
     it('returns an entry for each match on the same line', () => {
       const lines = ['The first line with a second "the".', 'The second line.'];

@@ -313,21 +313,19 @@
 
 .section-toolbar {
   display: flex;
-  padding: 3px;
+  align-items: center;
+  padding: 3px 5px;
   justify-content: space-between;
   gap: 3px;
 }
 
 .section-toolbar > devtools-select-menu {
+  height: 24px;
   min-width: 50px;
 }
 
 .sections .section-toolbar {
   justify-content: flex-end;
-}
-
-.section-toolbar > * {
-  height: 24px;
 }
 
 devtools-split-view {

@@ -93,7 +93,6 @@ export class CompatibilityTracksAppender {
   #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData;
   #entryData: TimelineFlameChartEntry[];
   #colorGenerator: Common.Color.Generator;
-  #indexForEvent = new WeakMap<TraceEngine.Types.TraceEvents.TraceEventData, number>();
   #allTrackAppenders: TrackAppender[] = [];
   #visibleTrackNames: Set<TrackAppenderName> = new Set([...TrackNames]);
   #isCpuProfile = false;
@@ -273,15 +272,6 @@ export class CompatibilityTracksAppender {
     return this.#threadAppenders;
   }
 
-  /**
-   * Get the index of the event.
-   * This ${index}-th elements in entryData, flameChartData.entryLevels, flameChartData.entryTotalTimes,
-   * flameChartData.entryStartTimes are all related to this event.
-   */
-  indexForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): number|undefined {
-    return this.#indexForEvent.get(event);
-  }
-
   eventsInTrack(trackAppender: TrackAppender): TraceEngine.Types.TraceEvents.TraceEventData[] {
     const cachedData = this.#eventsForTrack.get(trackAppender);
     if (cachedData) {
@@ -453,7 +443,6 @@ export class CompatibilityTracksAppender {
     this.#trackForLevel.set(level, appender);
     const index = this.#entryData.length;
     this.#entryData.push(event);
-    this.#indexForEvent.set(event, index);
     this.#legacyEntryTypeByLevel[level] = EntryType.TrackAppender;
     this.#flameChartData.entryLevels[index] = level;
     this.#flameChartData.entryStartTimes[index] = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.ts);
@@ -473,12 +462,17 @@ export class CompatibilityTracksAppender {
    * @param trackStartLevel the flame chart level from which the events will
    * be appended.
    * @param appender the track that the trace events belong to.
+   * @param eventAppendedCallback an optional function called after the
+   * event has been added to the timeline data. This allows the caller
+   * to know f.e. the position of the event in the entry data. Use this
+   * hook to customize the data after it has been appended, f.e. to add
+   * decorations to a set of the entries.
    * @returns the next level after the last occupied by the appended these
    * trace events (the first available level to append next track).
    */
-  appendEventsAtLevel(
-      events: readonly TraceEngine.Types.TraceEvents.TraceEventData[], trackStartLevel: number,
-      appender: TrackAppender): number {
+  appendEventsAtLevel<T extends TraceEngine.Types.TraceEvents.TraceEventData>(
+      events: readonly T[], trackStartLevel: number, appender: TrackAppender,
+      eventAppendedCallback?: (event: T, index: number) => void): number {
     const lastUsedTimeByLevel: number[] = [];
     for (let i = 0; i < events.length; ++i) {
       const event = events[i];
@@ -487,7 +481,8 @@ export class CompatibilityTracksAppender {
       }
 
       const level = getEventLevel(event, lastUsedTimeByLevel);
-      this.appendEventAtLevel(event, trackStartLevel + level, appender);
+      const index = this.appendEventAtLevel(event, trackStartLevel + level, appender);
+      eventAppendedCallback?.(event, index);
     }
 
     this.#legacyEntryTypeByLevel.length = trackStartLevel + lastUsedTimeByLevel.length;

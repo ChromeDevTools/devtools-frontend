@@ -83,22 +83,20 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    */
   #appendLayoutShiftsAtLevel(currentLevel: number): number {
     const allLayoutShifts = this.#traceParsedData.LayoutShifts.clusters.flatMap(cluster => cluster.events);
-    const newLevel = this.#compatibilityBuilder.appendEventsAtLevel(allLayoutShifts, currentLevel, this);
-
-    // Bit of a hack: LayoutShifts are instant events, so have no duration. But
-    // OPP doesn't do well at making tiny events easy to spot and click. So we
-    // set it to a small duration so that the user is able to see and click
-    // them more easily. Long term we will explore a better UI solution to
-    // allow us to do this properly and not hack around it.
     const msDuration = TraceEngine.Types.Timing.MicroSeconds(5_000);
-    for (let i = 0; i < allLayoutShifts.length; ++i) {
-      const index = this.#compatibilityBuilder.indexForEvent(allLayoutShifts[i]);
-      if (index === undefined) {
-        continue;
-      }
-      this.#flameChartData.entryTotalTimes[index] = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(msDuration);
-    }
-    return newLevel;
+    const setFlameChartEntryTotalTime =
+        (_event: TraceEngine.Types.TraceEvents.SyntheticLayoutShift, index: number): void => {
+          // Bit of a hack: LayoutShifts are instant events, so have no duration. But
+          // OPP doesn't do well at making tiny events easy to spot and click. So we
+          // set it to a small duration so that the user is able to see and click
+          // them more easily. Long term we will explore a better UI solution to
+          // allow us to do this properly and not hack around it.
+          this.#flameChartData.entryTotalTimes[index] =
+              TraceEngine.Helpers.Timing.microSecondsToMilliseconds(msDuration);
+        };
+
+    return this.#compatibilityBuilder.appendEventsAtLevel(
+        allLayoutShifts, currentLevel, this, setFlameChartEntryTotalTime);
   }
 
   /*

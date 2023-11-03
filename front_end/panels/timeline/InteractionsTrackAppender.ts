@@ -87,22 +87,22 @@ export class InteractionsTrackAppender implements TrackAppender {
   #appendInteractionsAtLevel(trackStartLevel: number): number {
     const {interactionEventsWithNoNesting, interactionsOverThreshold} = this.#traceParsedData.UserInteractions;
 
+    const addCandyStripeToLongInteraction =
+        (event: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent, index: number): void => {
+          // Each interaction that we drew that is over the INP threshold needs to be
+          // candy-striped.
+          const overThreshold = interactionsOverThreshold.has(event);
+          if (!overThreshold) {
+            return;
+          }
+          if (index !== undefined) {
+            this.#addCandyStripeAndWarningForLongInteraction(event, index);
+          }
+        };
     // Render all top level interactions (see UserInteractionsHandler for an explanation on the nesting) onto the track.
-    const newLevel =
-        this.#compatibilityBuilder.appendEventsAtLevel(interactionEventsWithNoNesting, trackStartLevel, this);
+    const newLevel = this.#compatibilityBuilder.appendEventsAtLevel(
+        interactionEventsWithNoNesting, trackStartLevel, this, addCandyStripeToLongInteraction);
 
-    // Each interaction that we drew that is over the INP threshold needs to be
-    // candy-striped.
-    for (const interaction of interactionEventsWithNoNesting) {
-      const overThreshold = interactionsOverThreshold.has(interaction);
-      if (!overThreshold) {
-        continue;
-      }
-      const index = this.#compatibilityBuilder.indexForEvent(interaction);
-      if (index !== undefined) {
-        this.#addCandyStripeAndWarningForLongInteraction(interaction, index);
-      }
-    }
     return newLevel;
   }
 

@@ -224,7 +224,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
     this.selectedGroupName = group?.name || null;
     this.#selectedEvents = group ? this.mainDataProvider.groupTreeEvents(group) : null;
-    this.#updateTrack();
+    this.#updateDetailViews();
   }
 
   setModel(
@@ -251,7 +251,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       this.updateSearchResults(false, false);
       this.updateColorMapper();
     }
-    this.#updateTrack();
     this.#updateFlameCharts();
   }
 
@@ -269,7 +268,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.updateSearchResults(false, false);
   }
 
-  #updateTrack(): void {
+  #updateDetailViews(): void {
     this.countersView.setModel(this.model, this.#selectedEvents);
     // TODO(crbug.com/1459265):  Change to await after migration work.
     void this.detailsView.setModel(this.model, this.#traceEngineData, this.#selectedEvents);

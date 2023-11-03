@@ -165,7 +165,6 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   private backgroundCanvas: HTMLCanvasElement;
   #performanceModel: PerformanceModel|null = null;
   #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData|null;
-
   constructor(model: PerformanceModel|null, traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData|null) {
     // During the sync tracks migration this component can use either legacy
     // Performance Model data or the new engine's data. Once the migration is

@@ -206,7 +206,6 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     this.modelInternal = model;
     this.#traceParseData = traceParseData;
     this.#selectedEvents = selectedEvents;
-    this.refreshTree();
   }
 
   /**

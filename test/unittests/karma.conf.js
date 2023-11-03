@@ -239,7 +239,7 @@ module.exports = function(config) {
           '--use-mock-keychain',
           '--disable-features=DialMediaRouteProvider',
           '--password-store=basic',
-          ...(DEBUG_ENABLED ? [] : ['--headless=new']),
+          ...(DEBUG_ENABLED ? [] : ['--headless=old']),
         ],
       }
     },

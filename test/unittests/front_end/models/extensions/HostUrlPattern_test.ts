@@ -256,7 +256,8 @@ describe('HostUrlPattern', () => {
     assert.isTrue(pattern.matchesUrl('http://www.example.com:8080/foo' as Platform.DevToolsPath.UrlString));
   });
 
-  it('Matches chrome-extension://', () => {
+  // TODO(crbug.com/1499180): Enable once karma uses new headless for running unit tests.
+  it.skip('[crbug.com/1499180] Matches chrome-extension://', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('chrome-extension://ftw/*');
     Platform.assertNotNullOrUndefined(pattern);
     assert.strictEqual('chrome-extension', pattern.scheme);

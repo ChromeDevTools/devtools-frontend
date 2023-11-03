@@ -1382,6 +1382,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           // If we are using the new engine for everything, we do not need to
           // resolve sourcemaps within the old engine.
           resolveSourceMaps: this.#threadTracksSource !== ThreadTracksSource.NEW_ENGINE,
+          threadTracksSource: this.#threadTracksSource,
           isCpuProfile,
         }),
         this.#executeNewTraceEngine(

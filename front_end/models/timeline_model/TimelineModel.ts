@@ -149,6 +149,7 @@ export class TimelineModelImpl {
   private legacyCurrentPage!: any;
   private currentTaskLayoutAndRecalcEvents: TraceEngine.Legacy.Event[];
   private tracingModelInternal: TraceEngine.Legacy.TracingModel|null;
+  private renderLegacySyncTracks = true;
   private mainFrameLayerTreeId?: any;
   #isFreshRecording = false;
   #isCpuProfile = false;
@@ -335,13 +336,14 @@ export class TimelineModelImpl {
   }
 
   setEvents(
-      tracingModel: TraceEngine.Legacy.TracingModel, isFreshRecording: boolean = false,
-      isCpuProfile: boolean = false): void {
+      tracingModel: TraceEngine.Legacy.TracingModel, isFreshRecording: boolean = false, isCpuProfile: boolean = false,
+      renderLegacySyncTracks = true): void {
     this.#isFreshRecording = isFreshRecording;
     this.#isCpuProfile = isCpuProfile;
     this.reset();
     this.resetProcessingState();
     this.tracingModelInternal = tracingModel;
+    this.renderLegacySyncTracks = renderLegacySyncTracks;
 
     this.minimumRecordTimeInternal = tracingModel.minimumRecordTime();
     this.maximumRecordTimeInternal = tracingModel.maximumRecordTime();
@@ -829,8 +831,10 @@ export class TimelineModelImpl {
       track.name = url ? i18nString(UIStrings.workletServiceS, {PH1: url}) : i18nString(UIStrings.workletService);
     }
     this.tracksInternal.push(track);
-
-    const events = this.injectJSFrameEvents(tracingModel, thread);
+    let events = thread.events();
+    if (true) {
+      events = this.injectJSFrameEvents(tracingModel, thread);
+    }
     this.eventStack = [];
     const eventStack = this.eventStack;
 

@@ -33,7 +33,7 @@ const compositorTileWorkers = Array<{
   tid: Types.TraceEvents.ThreadID,
 }>();
 const entryToNode: Map<Types.TraceEvents.TraceEntry, Helpers.TreeHelpers.TraceEntryNode> = new Map();
-const allRendererEvents: Types.TraceEvents.TraceEventRendererEvent[] = [];
+const allTraceEntries: Types.TraceEvents.TraceEntry[] = [];
 
 const completeEventStack: (Types.TraceEvents.TraceEventSyntheticCompleteEvent)[] = [];
 
@@ -68,7 +68,7 @@ export function handleUserConfig(userConfig: Types.Configuration.Configuration):
 export function reset(): void {
   processes.clear();
   entryToNode.clear();
-  allRendererEvents.length = 0;
+  allTraceEntries.length = 0;
   completeEventStack.length = 0;
   compositorTileWorkers.length = 0;
   handlerState = HandlerState.UNINITIALIZED;
@@ -102,7 +102,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
       return;
     }
     thread.entries.push(completeEvent);
-    allRendererEvents.push(completeEvent);
+    allTraceEntries.push(completeEvent);
     return;
   }
 
@@ -110,7 +110,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     const process = getOrCreateRendererProcess(processes, event.pid);
     const thread = getOrCreateRendererThread(process, event.tid);
     thread.entries.push(event);
-    allRendererEvents.push(event);
+    allTraceEntries.push(event);
   }
 }
 
@@ -124,7 +124,7 @@ export async function finalize(): Promise<void> {
   sanitizeProcesses(processes);
   buildHierarchy(processes);
   sanitizeThreads(processes);
-
+  Helpers.Trace.sortTraceEventsInPlace(allTraceEntries);
   handlerState = HandlerState.FINALIZED;
 }
 
@@ -137,7 +137,7 @@ export function data(): RendererHandlerData {
     processes: new Map(processes),
     compositorTileWorkers: new Map(gatherCompositorThreads()),
     entryToNode: new Map(entryToNode),
-    allRendererEvents: [...allRendererEvents],
+    allTraceEntries: [...allTraceEntries],
   };
 }
 
@@ -331,6 +331,7 @@ export function buildHierarchy(
           cpuProfile && new Helpers.SamplesIntegrator.SamplesIntegrator(cpuProfile, pid, tid, config);
       const profileCalls = samplesIntegrator?.buildProfileCalls(thread.entries);
       if (profileCalls) {
+        allTraceEntries.push(...profileCalls);
         thread.entries = Helpers.Trace.mergeEventsInOrder(thread.entries, profileCalls);
       }
       // Step 3. Build the tree.
@@ -393,7 +394,7 @@ export interface RendererHandlerData {
    * All trace events and synthetic profile calls made from
    * samples.
    */
-  allRendererEvents: Types.TraceEvents.TraceEventRendererEvent[];
+  allTraceEntries: Types.TraceEvents.TraceEntry[];
 }
 
 export interface RendererProcess {

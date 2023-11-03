@@ -495,7 +495,7 @@ export function makeMockRendererHandlerData(entries: TraceEngine.Types.TraceEven
     processes: new Map([[1 as TraceEngine.Types.TraceEvents.ProcessID, mockProcess]]),
     compositorTileWorkers: new Map(),
     entryToNode,
-    allRendererEvents: renderereEvents,
+    allTraceEntries: renderereEvents,
   };
 }
 

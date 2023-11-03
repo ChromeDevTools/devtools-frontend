@@ -10,6 +10,7 @@ import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 
+import {ThreadTracksSource} from './TimelinePanel.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 const resolveNamesTimeout = 500;
@@ -70,10 +71,13 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
 
   async setTracingModel(model: TraceEngine.Legacy.TracingModel, isFreshRecording = false, options = {
     resolveSourceMaps: true,
+    threadTracksSource: ThreadTracksSource.OLD_ENGINE,
     isCpuProfile: false,
   }): Promise<void> {
     this.tracingModelInternal = model;
-    this.timelineModelInternal.setEvents(model, isFreshRecording, options.isCpuProfile);
+    this.timelineModelInternal.setEvents(
+        model, isFreshRecording, options.isCpuProfile,
+        /* renderLegacySyncTracks */ options.threadTracksSource !== ThreadTracksSource.NEW_ENGINE);
     if (options.resolveSourceMaps) {
       await this.addSourceMapListeners();
     }

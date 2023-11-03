@@ -862,7 +862,7 @@ describeWithEnvironment('RendererHandler', function() {
 
       const data = await handleEvents(traceEvents);
 
-      assert.strictEqual(data.allRendererEvents.length, 7);
+      assert.strictEqual(data.allTraceEntries.length, 7);
       assert.strictEqual(data.processes.size, 1);
       const [process] = data.processes.values();
       assert.strictEqual(process.threads.size, 1);
@@ -896,7 +896,7 @@ describeWithEnvironment('RendererHandler', function() {
 
       const data = await handleEvents(traceEvents);
 
-      assert.strictEqual(data.allRendererEvents.length, 6);
+      assert.strictEqual(data.allTraceEntries.length, 6);
       assert.strictEqual(data.processes.size, 1);
       const [process] = data.processes.values();
       assert.strictEqual(process.threads.size, 1);

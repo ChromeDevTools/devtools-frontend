@@ -2456,7 +2456,8 @@ export class TimelineUIUtils {
     const stats: {
       [x: string]: number,
     } = {};
-    const showPieChart = detailed && TimelineUIUtils.aggregatedStatsForTraceEvent(stats, model, event);
+    const showPieChart =
+        detailed && traceParseData && TimelineUIUtils.aggregatedStatsForTraceEvent(stats, traceParseData, event);
     if (showPieChart) {
       contentHelper.addSection(i18nString(UIStrings.aggregatedTime));
       const pieChart = TimelineUIUtils.generatePieChart(stats, TimelineUIUtils.eventStyle(event).category, selfTime);
@@ -2893,11 +2894,13 @@ export class TimelineUIUtils {
       total: {
         [x: string]: number,
       },
-      model: TimelineModel.TimelineModel.TimelineModelImpl, event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
-    const events = model.inspectedTargetEvents();
+      traceParseData: TraceEngine.Handlers.Migration.PartialTraceData,
+      event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
+    const events = traceParseData.Renderer?.allTraceEntries || [];
     const {startTime, endTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
-    function eventComparator(startTime: number, e: TraceEngine.Legacy.Event): number {
-      return startTime - e.startTime;
+    function eventComparator(startTime: number, e: TraceEngine.Types.TraceEvents.TraceEventData): number {
+      const {startTime: eventStartTime} = TraceEngine.Legacy.timesForEventInMilliseconds(e);
+      return startTime - eventStartTime;
     }
 
     const index = Platform.ArrayUtilities.binaryIndexOf(events, startTime, eventComparator);
@@ -2909,7 +2912,8 @@ export class TimelineUIUtils {
     if (endTime) {
       for (let i = index; i < events.length; i++) {
         const nextEvent = events[i];
-        if (nextEvent.startTime >= endTime) {
+        const {startTime: nextEventStartTime} = TraceEngine.Legacy.timesForEventInMilliseconds(nextEvent);
+        if (nextEventStartTime >= endTime) {
           break;
         }
         if (!nextEvent.selfTime) {

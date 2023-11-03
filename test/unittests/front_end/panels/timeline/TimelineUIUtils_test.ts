@@ -348,7 +348,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
     it('assigns the correct color to the swatch of an event\'s title', async function() {
       const data = await TraceLoader.allModels(this, 'lcp-web-font.json.gz');
-      const events = data.traceParsedData.Renderer.allRendererEvents;
+      const events = data.traceParsedData.Renderer.allTraceEntries;
       const task = events.find(event => {
         return event.name.includes('RunTask');
       });
@@ -554,7 +554,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
     it('renders the warning for a trace event in its details', async function() {
       const data = await TraceLoader.allModels(this, 'simple-js-program.json.gz');
 
-      const events = data.traceParsedData.Renderer?.allRendererEvents;
+      const events = data.traceParsedData.Renderer?.allTraceEntries;
       if (!events) {
         throw new Error('Could not find renderer events');
       }

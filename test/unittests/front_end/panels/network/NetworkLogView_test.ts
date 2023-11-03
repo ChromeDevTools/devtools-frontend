@@ -344,9 +344,7 @@ describeWithMockConnection('NetworkLogView', () => {
       assert.isTrue(getCountAdorner(filterBar)?.classList.contains('hidden'));
 
       const softMenu = getSoftMenu();
-      const hideExtensionURL = getDropdownItem(softMenu, 'Hide extension URLs');
-      dispatchMouseUpEvent(hideExtensionURL);
-      await raf();
+      await selectMoreFiltersOption(softMenu, 'Hide extension URLs');
 
       assert.strictEqual(getMoreFiltersActiveCount(filterBar), '1');
       assert.isFalse(getCountAdorner(filterBar)?.classList.contains('hidden'));
@@ -381,16 +379,14 @@ describeWithMockConnection('NetworkLogView', () => {
          assert.isTrue(window.getComputedStyle(optionAllCheckmark).getPropertyValue('opacity') === '1');
          assert.isTrue(window.getComputedStyle(optionImgCheckmark).getPropertyValue('opacity') === '0');
 
-         dispatchMouseUpEvent(optionImg, {bubbles: true, composed: true});
-         await raf();
+         await selectRequestTypesOption('Images');
 
          assert.isTrue(optionAll.ariaLabel === 'All, unchecked');
          assert.isTrue(optionImg.ariaLabel === 'Images, checked');
          assert.isTrue(window.getComputedStyle(optionAllCheckmark).getPropertyValue('opacity') === '0');
          assert.isTrue(window.getComputedStyle(optionImgCheckmark).getPropertyValue('opacity') === '1');
 
-         dispatchMouseUpEvent(optionImg, {bubbles: true, composed: true});
-         await raf();
+         await selectRequestTypesOption('Images');
 
          assert.isTrue(optionAll.ariaLabel === 'All, checked');
          assert.isTrue(optionImg.ariaLabel === 'Images, unchecked');
@@ -413,10 +409,7 @@ describeWithMockConnection('NetworkLogView', () => {
 
       dispatchClickEvent(button, {bubbles: true, composed: true});
       await raf();
-      const optionImg = getRequestTypeDropdownOption('Images');
-      assertElement(optionImg, HTMLElement);
-      dispatchMouseUpEvent(optionImg, {bubbles: true, composed: true});
-      await raf();
+      await selectRequestTypesOption('Images');
 
       countAdorner = button.querySelector('.active-filters-count');
       assert.isFalse(countAdorner?.classList.contains('hidden'));
@@ -438,25 +431,61 @@ describeWithMockConnection('NetworkLogView', () => {
 
       dispatchClickEvent(button, {bubbles: true, composed: true});
       await raf();
-      const optionImg = getRequestTypeDropdownOption('Images');
-      assertElement(optionImg, HTMLElement);
-      dispatchMouseUpEvent(optionImg, {bubbles: true, composed: true});
-      await raf();
-      const optionJS = getRequestTypeDropdownOption('Scripts');
-      assertElement(optionJS, HTMLElement);
-      dispatchMouseUpEvent(optionJS, {bubbles: true, composed: true});
-      await raf();
+      await selectRequestTypesOption('Images');
+      await selectRequestTypesOption('Scripts');
 
       toolbarText = button.querySelector('.toolbar-text')?.textContent;
       assert.strictEqual(toolbarText, 'JS, Img');
 
-      const optionCSS = getRequestTypeDropdownOption('Stylesheets');
-      assertElement(optionCSS, HTMLElement);
-      dispatchMouseUpEvent(optionCSS, {bubbles: true, composed: true});
-      await raf();
+      await selectRequestTypesOption('Stylesheets');
 
       toolbarText = button.querySelector('.toolbar-text')?.textContent;
       assert.strictEqual(toolbarText, 'CSS, JS...');
+
+      dropdown.discard();
+      await raf();
+    });
+
+    it('lists selected types in requests types tooltip', async () => {
+      Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
+
+      const dropdown = setupRequestTypesDropdown();
+      const button = dropdown.element().querySelector('.toolbar-button');
+      assertElement(button, HTMLElement);
+
+      let tooltipText = button.title;
+      assert.strictEqual(tooltipText, 'Filter requests by type');
+
+      dispatchClickEvent(button, {bubbles: true, composed: true});
+      await raf();
+      await selectRequestTypesOption('Images');
+      await selectRequestTypesOption('Scripts');
+
+      tooltipText = button.title;
+      assert.strictEqual(tooltipText, 'Show only Scripts, Images');
+
+      dropdown.discard();
+      await raf();
+    });
+
+    it('updates tooltip to default when request type deselected', async () => {
+      Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
+
+      const dropdown = setupRequestTypesDropdown();
+      const button = dropdown.element().querySelector('.toolbar-button');
+      assertElement(button, HTMLElement);
+
+      dispatchClickEvent(button, {bubbles: true, composed: true});
+      await raf();
+      await selectRequestTypesOption('Images');
+
+      let tooltipText = button.title;
+      assert.strictEqual(tooltipText, 'Show only Images');
+
+      await selectRequestTypesOption('Images');
+
+      tooltipText = button.title;
+      assert.strictEqual(tooltipText, 'Filter requests by type');
 
       dropdown.discard();
       await raf();
@@ -473,7 +502,7 @@ describeWithMockConnection('NetworkLogView', () => {
       let rootNode;
       let filterBar;
       ({rootNode, filterBar, networkLogView} = createEnvironment());
-      const blockedCookiesCheckbox = getCheckbox(filterBar, 'Show only the requests with blocked response cookies');
+      const blockedCookiesCheckbox = getCheckbox(filterBar, 'Show only requests with blocked response cookies');
       clickCheckbox(blockedCookiesCheckbox);
       assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
         'url1' as Platform.DevToolsPath.UrlString,
@@ -514,6 +543,53 @@ describeWithMockConnection('NetworkLogView', () => {
       assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
         'url1' as Platform.DevToolsPath.UrlString,
       ]);
+
+      dropdown.discard();
+      networkLogView.detach();
+    });
+
+    it('lists selected options in more filters tooltip', async () => {
+      Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
+      let filterBar;
+      ({filterBar, networkLogView} = createEnvironment());
+
+      const dropdown = await openMoreTypesDropdown(filterBar, networkLogView);
+      assertNotNullOrUndefined(dropdown);
+
+      const button = dropdown.element().querySelector('.toolbar-button');
+      assertElement(button, HTMLElement);
+      assert.strictEqual(button.title, 'Show only/hide requests');
+
+      const softMenu = getSoftMenu();
+      await selectMoreFiltersOption(softMenu, 'Blocked response cookies');
+      await selectMoreFiltersOption(softMenu, 'Hide extension URLs');
+
+      assert.strictEqual(button.title, 'Hide extension URLs, Blocked response cookies');
+
+      dropdown.discard();
+      networkLogView.detach();
+    });
+
+    it('updates tooltip to default when more filters option deselected', async () => {
+      Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
+      let filterBar;
+      ({filterBar, networkLogView} = createEnvironment());
+
+      const dropdown = await openMoreTypesDropdown(filterBar, networkLogView);
+      assertNotNullOrUndefined(dropdown);
+
+      const button = dropdown.element().querySelector('.toolbar-button');
+      assertElement(button, HTMLElement);
+      assert.strictEqual(button.title, 'Show only/hide requests');
+
+      const softMenu = getSoftMenu();
+      await selectMoreFiltersOption(softMenu, 'Blocked response cookies');
+
+      assert.strictEqual(button.title, 'Blocked response cookies');
+
+      await selectMoreFiltersOption(softMenu, 'Blocked response cookies');
+
+      assert.strictEqual(button.title, 'Show only/hide requests');
 
       dropdown.discard();
       networkLogView.detach();
@@ -679,6 +755,13 @@ function getRequestTypeDropdownOption(requestType: string): Element|null {
   return dropdownOptions.find(el => el.textContent?.includes(requestType)) || null;
 }
 
+async function selectRequestTypesOption(option: string) {
+  const item = getRequestTypeDropdownOption(option);
+  assertElement(item, HTMLElement);
+  dispatchMouseUpEvent(item, {bubbles: true, composed: true});
+  await raf();
+}
+
 async function openMoreTypesDropdown(
     filterBar: UI.FilterBar.FilterBar, networkLogView: Network.NetworkLogView.NetworkLogView):
     Promise<Network.NetworkLogView.MoreFiltersDropDownUI|undefined> {
@@ -728,4 +811,10 @@ function getDropdownItem(softMenu: HTMLElement, label: string) {
   const item = softMenu?.querySelector(`[aria-label^="${label}"]`);
   assertElement(item, HTMLElement);
   return item;
+}
+
+async function selectMoreFiltersOption(softMenu: HTMLElement, option: string) {
+  const item = getDropdownItem(softMenu, option);
+  dispatchMouseUpEvent(item);
+  await raf();
 }

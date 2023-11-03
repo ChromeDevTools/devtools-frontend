@@ -134,7 +134,7 @@ const UIStrings = {
    *             cookie (https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies). Such response cookies can
    *             be malformed or otherwise invalid and the browser may choose to ignore or not accept invalid cookies.
    */
-  onlyShowRequestsWithBlockedCookies: 'Show only the requests with blocked response cookies',
+  onlyShowRequestsWithBlockedCookies: 'Show only requests with blocked response cookies',
   /**
    *@description Label for a filter in the Network panel
    */
@@ -400,6 +400,11 @@ const UIStrings = {
    * @description Text for the Show only/Hide requests dropdown button of the filterbar
    */
   moreFilters: 'More filters',
+  /**
+   * @description Text for the Request types dropdown button tooltip
+   * @example {Media, Images} PH1
+   */
+  showOnly: 'Show only {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1011,6 +1016,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.filterRequests();
     this.textFilterSetting.set(this.textFilterUI.value());
     this.moreFiltersDropDownUI?.updateActiveFiltersCount();
+    this.moreFiltersDropDownUI?.updateTooltip();
   }
 
   async resetFilter(): Promise<void> {
@@ -2563,8 +2569,9 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
     };
     this.typesCountAdorner.classList.add('active-filters-count');
 
-    this.dropDownButton = new UI.Toolbar.ToolbarButton(UIStrings.requestTypesTooltip, this.typesCountAdorner);
-    this.dropDownButton.setText(UIStrings.requestTypes);
+    this.dropDownButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.requestTypesTooltip), this.typesCountAdorner);
+    this.dropDownButton.setText(i18nString(UIStrings.requestTypes));
     this.filterElement.appendChild(this.dropDownButton.element);
     this.dropDownButton.turnIntoSelect();
     this.dropDownButton.element.classList.add('dropdown-filterbar');
@@ -2664,6 +2671,7 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
     }
     this.updateSelectedTypesCount();
     this.updateLabel();
+    this.updateTooltip();
   }
 
   updateSelectedTypesCount(): void {
@@ -2687,7 +2695,7 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
       newLabel = Common.ResourceType.ResourceCategory.categoryByTitle(type)?.shortTitle() || '';
     } else {
       // show up to two last selected types
-      const twoLastSelected = Array.from(this.displayedTypes).slice(-2).reverse();
+      const twoLastSelected = [...this.displayedTypes].slice(-2).reverse();
       const shortNames =
           twoLastSelected.map(type => Common.ResourceType.ResourceCategory.categoryByTitle(type)?.shortTitle() || '');
       const valuesToDisplay = {PH1: shortNames[0], PH2: shortNames[1]};
@@ -2695,6 +2703,19 @@ export class DropDownTypesUI extends Common.ObjectWrapper.ObjectWrapper<UI.Filte
                                                   i18nString(UIStrings.overTwoTypesSelected, valuesToDisplay);
     }
     this.dropDownButton.setText(newLabel);
+  }
+
+  updateTooltip(): void {
+    let tooltipText = i18nString(UIStrings.requestTypesTooltip);
+    if (!this.displayedTypes.has(DropDownTypesUI.ALL_TYPES)) {
+      // reverse the order to match the button label
+      const selectedTypes = [...this.displayedTypes].reverse();
+      const localized =
+          selectedTypes.map(type => Common.ResourceType.ResourceCategory.categoryByTitle(type)?.title() || '')
+              .join(', ');
+      tooltipText = i18nString(UIStrings.showOnly, {PH1: localized});
+    }
+    this.dropDownButton.setTitle(tooltipText);
   }
 
   isActive(): boolean {
@@ -2764,6 +2785,7 @@ export class MoreFiltersDropDownUI extends
     this.dropDownButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, this.showMoreFiltersContextMenu.bind(this));
     UI.ARIAUtils.markAsMenuButton(this.dropDownButton.element);
+    this.updateTooltip();
   }
 
   showMoreFiltersContextMenu(event: Common.EventTarget.EventTargetEvent<Event>): void {
@@ -2811,18 +2833,30 @@ export class MoreFiltersDropDownUI extends
     void this.contextMenu.show();
   }
 
-  updateActiveFiltersCount(): void {
-    const settings = [
-      this.networkHideDataURLSetting.get(),
-      this.networkHideChromeExtensionsSetting.get(),
-      this.networkShowBlockedCookiesOnlySetting.get(),
-      this.networkOnlyBlockedRequestsSetting.get(),
-      this.networkOnlyThirdPartySetting.get(),
+  selectedFilters(): string[] {
+    const filters = [
+      ...this.networkHideDataURLSetting.get() ? [i18nString(UIStrings.hideDataUrls)] : [],
+      ...this.networkHideChromeExtensionsSetting.get() ? [i18nString(UIStrings.chromeExtensions)] : [],
+      ...this.networkShowBlockedCookiesOnlySetting.get() ? [i18nString(UIStrings.hasBlockedCookies)] : [],
+      ...this.networkOnlyBlockedRequestsSetting.get() ? [i18nString(UIStrings.blockedRequests)] : [],
+      ...this.networkOnlyThirdPartySetting.get() ? [i18nString(UIStrings.thirdParty)] : [],
     ];
-    const count = settings.filter(Boolean).length;
+    return filters;
+  }
+
+  updateActiveFiltersCount(): void {
+    const count = this.selectedFilters().length;
     this.activeFiltersCount.textContent = count.toString();
     count ? this.activeFiltersCountAdorner.classList.remove('hidden') :
             this.activeFiltersCountAdorner.classList.add('hidden');
+  }
+
+  updateTooltip(): void {
+    if (this.selectedFilters().length) {
+      this.dropDownButton.setTitle(this.selectedFilters().join(', '));
+    } else {
+      this.dropDownButton.setTitle(UIStrings.showOnlyHideRequests);
+    }
   }
 
   discard(): void {

@@ -88,6 +88,10 @@ ol.tree-outline,
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
   color: var(--sys-color-on-tonal-container);
+
+  & ::selection {
+    background-color: var(--sys-color-state-focus-select);
+  }
 }
 
 ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {

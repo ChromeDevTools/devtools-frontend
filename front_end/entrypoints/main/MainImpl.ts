@@ -155,7 +155,9 @@ export class MainImpl {
     await this.requestAndRegisterLocaleData();
 
     Host.userMetrics.syncSetting(Common.Settings.Settings.instance().moduleSetting<boolean>('sync_preferences').get());
-    void VisualLogging.startLogging();
+    if (Root.Runtime.Runtime.queryParam('veLogging')) {
+      void VisualLogging.startLogging();
+    }
 
     void this.#createAppUI();
   }

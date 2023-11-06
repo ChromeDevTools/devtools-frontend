@@ -660,7 +660,8 @@ export enum PanelCodes {
   'preloading' = 64,
   'bounce_tracking_mitigations' = 65,
   'resource-loading-pane' = 66,
-  MaxValue = 67,
+  'autofill-view' = 67,
+  MaxValue = 68,
 }
 
 /* eslint-enable @typescript-eslint/naming-convention */
@@ -934,9 +935,10 @@ export enum DevtoolsExperiments {
   'networkPanelFilterBarRedesign' = 79,
   'breadcrumbsPerformancePanel' = 80,
   'trackContextMenu' = 81,
+  'autofillView' = 82,
 
   // Increment this when new experiments are added.
-  'MaxValue' = 82,
+  'MaxValue' = 83,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

@@ -314,6 +314,7 @@ export enum ExperimentName {
   NETWORK_PANEL_FILTER_BAR_REDESIGN = 'networkPanelFilterBarRedesign',
   BREADCRUMBS_PERFORMANCE_PANEL = 'breadcrumbsPerformancePanel',
   TRACK_CONTEXT_MENU = 'trackContextMenu',
+  AUTOFILL_VIEW = 'autofillView',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

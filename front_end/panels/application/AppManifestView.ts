@@ -61,7 +61,7 @@ const UIStrings = {
   /**
    *@description Label in the App Manifest View for the Computed App Id
    */
-  computedAppId: 'Computed App Id',
+  computedAppId: 'Computed App ID',
   /**
    *@description Popup-text explaining what the App Id is used for.
    */
@@ -81,7 +81,7 @@ const UIStrings = {
    *@example {(button for copying suggested value into clipboard)} PH6
    */
   appIdNote:
-      '{PH1} {PH2} is not specified in the manifest, {PH3} is used instead. To specify an App Id that matches the current identity, set the {PH4} field to {PH5} {PH6}.',
+      '{PH1} {PH2} is not specified in the manifest, {PH3} is used instead. To specify an App ID that matches the current identity, set the {PH4} field to {PH5} {PH6}.',
   /**
    *@description Label for reminding the user of something important. Is shown in bold and followed by the actual note to show the user.
    */
@@ -155,7 +155,7 @@ const UIStrings = {
    *@description Text wrapping a link pointing to more information on maskable icons in App Manifest view of the Application panel
    *@example {https://web.dev/maskable-icon/} PH1
    */
-  needHelpReadOurS: 'Need help? Read {PH1}.',
+  needHelpReadOurS: 'Need help? Read the {PH1}.',
   /**
    *@description Text in App Manifest View of the Application panel
    *@example {1} PH1
@@ -165,7 +165,7 @@ const UIStrings = {
    *@description Text in App Manifest View of the Application panel
    *@example {1} PH1
    */
-  shortcutSShouldIncludeAXPixel: 'Shortcut #{PH1} should include a 96x96 pixel icon',
+  shortcutSShouldIncludeAXPixel: 'Shortcut #{PH1} should include a 96×96 pixel icon',
   /**
    *@description Text in App Manifest View of the Application panel
    *@example {1} PH1
@@ -190,7 +190,7 @@ const UIStrings = {
   /**
    *@description Manifest installability error in the Application panel
    */
-  manifestStartUrlIsNotValid: 'Manifest \'`start_URL`\' is not valid',
+  manifestStartUrlIsNotValid: 'Manifest \'`start_url`\' is not valid',
   /**
    *@description Manifest installability error in the Application panel
    */
@@ -205,18 +205,18 @@ const UIStrings = {
    *@example {100} PH1
    */
   manifestDoesNotContainASuitable:
-      'Manifest does not contain a suitable icon - PNG, SVG or WebP format of at least {PH1}px is required, the \'`sizes`\' attribute must be set, and the \'`purpose`\' attribute, if set, must include \'`any`\'.',
+      'Manifest does not contain a suitable icon—PNG, SVG, or WebP format of at least {PH1}px is required, the \'`sizes`\' attribute must be set, and the \'`purpose`\' attribute, if set, must include \'`any`\'.',
   /**
    *@description Manifest installability error in the Application panel
    */
   avoidPurposeAnyAndMaskable:
-      'Declaring an icon with \'`purpose: "any maskable"`\' is discouraged. It is likely to look incorrect on some platforms due to too much or too little padding.',
+      'Declaring an icon with \'`purpose`\' of \'`any maskable`\' is discouraged. It is likely to look incorrect on some platforms due to too much or too little padding.',
   /**
    *@description Manifest installability error in the Application panel
    *@example {100} PH1
    */
   noSuppliedIconIsAtLeastSpxSquare:
-      'No supplied icon is at least {PH1} pixels square in `PNG`, `SVG` or `WebP` format, with the purpose attribute unset or set to \'`any`\'.',
+      'No supplied icon is at least {PH1} pixels square in `PNG`, `SVG`, or `WebP` format, with the purpose attribute unset or set to \'`any`\'.',
   /**
    *@description Manifest installability error in the Application panel
    */
@@ -228,7 +228,7 @@ const UIStrings = {
   /**
    *@description Manifest installability error in the Application panel
    */
-  theSpecifiedApplicationPlatform: 'The specified application platform is not supported on `Android`',
+  theSpecifiedApplicationPlatform: 'The specified application platform is not supported on Android',
   /**
    *@description Manifest installability error in the Application panel
    */
@@ -394,17 +394,17 @@ const UIStrings = {
    *@example {https://example.com/image.png} url
    */
   screenshotPixelSize:
-      'Screenshot {url} should specify a pixel size `[width]x[height]` instead of `"any"` as first size.',
+      'Screenshot {url} should specify a pixel size `[width]x[height]` instead of `any` as first size.',
   /**
    *@description Warning text about screenshots for Richer PWA Install UI on desktop
    */
   noScreenshotsForRicherPWAInstallOnDesktop:
-      'Richer PWA Install UI won’t be available on desktop. Please add at least one screenshot with the "form_factor" set to "wide".',
+      'Richer PWA Install UI won’t be available on desktop. Please add at least one screenshot with the `form_factor` set to `wide`.',
   /**
    *@description Warning text about screenshots for Richer PWA Install UI on mobile
    */
   noScreenshotsForRicherPWAInstallOnMobile:
-      'Richer PWA Install UI won’t be available on mobile. Please add at least one screenshot for which "form_factor" is not set or set to a value other than "wide".',
+      'Richer PWA Install UI won’t be available on mobile. Please add at least one screenshot for which `form_factor` is not set or set to a value other than `wide`.',
   /**
    *@description Warning text about too many screenshots for desktop
    */
@@ -417,7 +417,7 @@ const UIStrings = {
    *@description Warning text about not all screenshots matching the appropriate form factor have the same aspect ratio
    */
   screenshotsMustHaveSameAspectRatio:
-      'All screenshots with the same "form_factor" must have the same aspect ratio as the first screenshot with that "form_factor". Some screenshots will be ignored.',
+      'All screenshots with the same `form_factor` must have the same aspect ratio as the first screenshot with that `form_factor`. Some screenshots will be ignored.',
   /**
    *@description Message for Window Controls Overlay value succsessfully found with links to documnetation
    *@example {window-controls-overlay} PH1

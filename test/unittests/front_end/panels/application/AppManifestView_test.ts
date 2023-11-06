@@ -167,8 +167,8 @@ describeWithMockConnection('AppManifestView', () => {
       }`);
       const expected = [
         'The maximum number of shortcuts is platform dependent. Some shortcuts may be not available.',
-        'Richer PWA Install UI won’t be available on desktop. Please add at least one screenshot with the "form_factor" set to "wide".',
-        'Richer PWA Install UI won’t be available on mobile. Please add at least one screenshot for which "form_factor" is not set or set to a value other than "wide".',
+        'Richer PWA Install UI won’t be available on desktop. Please add at least one screenshot with the form_factor set to wide.',
+        'Richer PWA Install UI won’t be available on mobile. Please add at least one screenshot for which form_factor is not set or set to a value other than wide.',
         'Most operating systems require square icons. Please include at least one square icon in the array.',
       ];
       assert.deepStrictEqual(actual, expected);
@@ -210,7 +210,7 @@ describeWithMockConnection('AppManifestView', () => {
         ]
       }`);
       const expected = [
-        'Richer PWA Install UI won’t be available on desktop. Please add at least one screenshot with the "form_factor" set to "wide".',
+        'Richer PWA Install UI won’t be available on desktop. Please add at least one screenshot with the form_factor set to wide.',
         'No more than 5 screenshots will be displayed on mobile. The rest will be ignored.',
         'Most operating systems require square icons. Please include at least one square icon in the array.',
       ];
@@ -277,8 +277,8 @@ describeWithMockConnection('AppManifestView', () => {
         ]
       }`);
       const expected = [
-        'All screenshots with the same "form_factor" must have the same aspect ratio as the first screenshot with that "form_factor". Some screenshots will be ignored.',
-        'Richer PWA Install UI won’t be available on mobile. Please add at least one screenshot for which "form_factor" is not set or set to a value other than "wide".',
+        'All screenshots with the same form_factor must have the same aspect ratio as the first screenshot with that form_factor. Some screenshots will be ignored.',
+        'Richer PWA Install UI won’t be available on mobile. Please add at least one screenshot for which form_factor is not set or set to a value other than wide.',
         'No more than 8 screenshots will be displayed on desktop. The rest will be ignored.',
         'Most operating systems require square icons. Please include at least one square icon in the array.',
       ];

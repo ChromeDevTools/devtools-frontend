@@ -127,6 +127,14 @@ const UIStrings = {
    *@description Text in Network Item View of the Network panel
    */
   requestAndResponseCookies: 'Request and response cookies',
+  /**
+   *@description Tooltip text explaining that DevTools has overridden the response's headers
+   */
+  containsOverriddenHeaders: 'This response contains headers which are overridden by DevTools',
+  /**
+   *@description Tooltip text explaining that DevTools has overridden the response
+   */
+  responseIsOverridden: 'This response is overridden by DevTools',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkItemView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -164,6 +172,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
         const icon = new IconButton.Icon.Icon();
         icon.data =
             {iconName: 'small-status-dot', color: 'var(--sys-color-purple-bright)', width: '16px', height: '16px'};
+        icon.title = i18nString(UIStrings.containsOverriddenHeaders);
         this.setTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent, icon);
       }
     } else {
@@ -203,6 +212,7 @@ export class NetworkItemView extends UI.TabbedPane.TabbedPane {
 
       if (this.requestInternal.hasOverriddenContent) {
         const icon = new IconButton.Icon.Icon();
+        icon.title = i18nString(UIStrings.responseIsOverridden);
         icon.data =
             {iconName: 'small-status-dot', color: 'var(--sys-color-purple-bright)', width: '16px', height: '16px'};
         this.setTabIcon(NetworkForward.UIRequestLocation.UIRequestTabs.Response, icon);

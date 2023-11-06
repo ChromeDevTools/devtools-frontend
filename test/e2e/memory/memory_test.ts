@@ -178,7 +178,8 @@ describe('The Memory Panel', async function() {
             ({propertyName, retainerClassName}) => propertyName === 'aUniqueName' && retainerClassName === 'Window'));
   });
 
-  it('Correctly shows multiple retainer paths for an object', async () => {
+  // Flaky on win and linux
+  it.skip('[crbug.com/1363150] Correctly shows multiple retainer paths for an object', async () => {
     await goToResource('memory/multiple-retainers.html');
     await navigateToMemoryTab();
     await takeHeapSnapshot();

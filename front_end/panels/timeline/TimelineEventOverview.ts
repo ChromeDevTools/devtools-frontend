@@ -105,7 +105,7 @@ export class TimelineEventOverviewNetwork extends TimelineEventOverview {
   }
 
   override update(start?: TraceEngine.Types.Timing.MilliSeconds, end?: TraceEngine.Types.Timing.MilliSeconds): void {
-    super.update();
+    this.resetCanvas();
     this.#renderWithTraceParsedData(start, end);
   }
 
@@ -165,6 +165,9 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   private backgroundCanvas: HTMLCanvasElement;
   #performanceModel: PerformanceModel|null = null;
   #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData|null;
+  #drawn = false;
+  #start?: TraceEngine.Types.Timing.MilliSeconds;
+  #end?: TraceEngine.Types.Timing.MilliSeconds;
   constructor(model: PerformanceModel|null, traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData|null) {
     // During the sync tracks migration this component can use either legacy
     // Performance Model data or the new engine's data. Once the migration is
@@ -178,6 +181,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
 
   override resetCanvas(): void {
     super.resetCanvas();
+    this.#drawn = false;
     this.backgroundCanvas.width = this.element.clientWidth * window.devicePixelRatio;
     this.backgroundCanvas.height = this.element.clientHeight * window.devicePixelRatio;
   }
@@ -311,7 +315,13 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   }
 
   override update(start?: TraceEngine.Types.Timing.MilliSeconds, end?: TraceEngine.Types.Timing.MilliSeconds): void {
-    super.update();
+    if (this.#start === start && this.#end === end && this.#drawn) {
+      return;
+    }
+    // Order matters here, resetCanvas will set this.#drawn to false.
+    this.resetCanvas();
+    this.#drawn = true;
+
     // Whilst the sync tracks migration is in process, we only use the new
     // engine if the Renderer data is present. Once that migratin is complete,
     // the Renderer data will always be present and we can remove this check.
@@ -354,7 +364,6 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     }
 
     applyPattern(backgroundContext);
-
     function drawThreadEvents(ctx: CanvasRenderingContext2D, events: TraceEngine.Legacy.Event[]): void {
       const quantizer = new Quantizer(timeOffset, quantTime, drawSample);
       let x = 0;
@@ -466,7 +475,7 @@ export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
   }
 
   override update(start?: TraceEngine.Types.Timing.MilliSeconds, end?: TraceEngine.Types.Timing.MilliSeconds): void {
-    super.update();
+    this.resetCanvas();
 
     const height = this.height();
     const visibleTimeWindow = !(start && end) ? this.#traceParsedData.Meta.traceBounds : {
@@ -522,7 +531,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
   override update(
       customStartTime?: TraceEngine.Types.Timing.MilliSeconds,
       customEndTime?: TraceEngine.Types.Timing.MilliSeconds): void {
-    super.update();
+    this.resetCanvas();
     const frames = this.#filmStrip ? this.#filmStrip.frames : [];
     if (!frames.length) {
       return;
@@ -658,7 +667,7 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
   }
 
   override update(start?: TraceEngine.Types.Timing.MilliSeconds, end?: TraceEngine.Types.Timing.MilliSeconds): void {
-    super.update();
+    this.resetCanvas();
     const ratio = window.devicePixelRatio;
 
     if (this.#traceParsedData.Memory.updateCountersByProcess.size === 0) {

@@ -189,7 +189,9 @@ export class TimelineMiniMap extends
   #setNavigationStartEvents(traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData): void {
     this.#overviewComponent.setNavStartTimes(traceParsedData.Meta.mainFrameNavigations);
   }
-
+  getControls(): TimelineEventOverview[] {
+    return this.#controls;
+  }
   setData(data: OverviewData): void {
     if (this.#data?.traceParsedData === data.traceParsedData) {
       return;

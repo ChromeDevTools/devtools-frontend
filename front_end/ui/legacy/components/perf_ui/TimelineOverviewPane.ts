@@ -338,7 +338,7 @@ export class TimelineOverviewBase extends UI.Widget.VBox implements TimelineOver
   }
 
   update(): void {
-    this.resetCanvas();
+    throw new Error('Not implemented');
   }
 
   dispose(): void {

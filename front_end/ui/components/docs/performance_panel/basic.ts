@@ -61,6 +61,9 @@ UI.ActionRegistration.registerActionExtension({
   contextTypes() {
     return [Timeline.TimelinePanel.TimelinePanel];
   },
+  async loadActionDelegate() {
+    return Timeline.TimelinePanel.ActionDelegate.instance();
+  },
 });
 UI.ActionRegistration.registerActionExtension({
   actionId: 'components.collect-garbage',

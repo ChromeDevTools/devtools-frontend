@@ -14,7 +14,7 @@ describe('CoverageInfo', () => {
           [{end: 10, count: 0, stamp: 100}, {end: 20, count: 2, stamp: 100}, {end: 30, count: 0, stamp: 100}];
       const info = new Coverage.CoverageModel.CoverageInfo(
           null as unknown as TextUtils.ContentProvider.ContentProvider, 100, 10, 20,
-          Coverage.CoverageModel.CoverageType.JavaScript);
+          Coverage.CoverageModel.CoverageType.JavaScript, {} as unknown as Coverage.CoverageModel.URLCoverageInfo);
       info.mergeCoverage(segments);
       const ranges = info.rangesForExport();
       assert.deepEqual(ranges, [{start: 10, end: 20}]);
@@ -25,7 +25,7 @@ describe('CoverageInfo', () => {
           [{end: 10, count: 0, stamp: 100}, {end: 20, count: 2, stamp: 100}, {end: 30, count: 1, stamp: 100}];
       const info = new Coverage.CoverageModel.CoverageInfo(
           null as unknown as TextUtils.ContentProvider.ContentProvider, 100, 10, 20,
-          Coverage.CoverageModel.CoverageType.JavaScript);
+          Coverage.CoverageModel.CoverageType.JavaScript, {} as unknown as Coverage.CoverageModel.URLCoverageInfo);
       info.mergeCoverage(segments);
       const ranges = info.rangesForExport();
       assert.deepEqual(ranges, [{start: 10, end: 30}]);
@@ -35,7 +35,7 @@ describe('CoverageInfo', () => {
       const segments = [{end: 10, count: 1, stamp: 100}, {end: 30, count: 0, stamp: 100}];
       const info = new Coverage.CoverageModel.CoverageInfo(
           null as unknown as TextUtils.ContentProvider.ContentProvider, 100, 10, 20,
-          Coverage.CoverageModel.CoverageType.JavaScript);
+          Coverage.CoverageModel.CoverageType.JavaScript, {} as unknown as Coverage.CoverageModel.URLCoverageInfo);
       info.mergeCoverage(segments);
       const ranges = info.rangesForExport();
       assert.deepEqual(ranges, [{start: 0, end: 10}]);

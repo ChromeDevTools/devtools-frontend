@@ -384,6 +384,7 @@ export class CoverageView extends UI.Widget.VBox {
     }
     this.selectCoverageType(Boolean(jsCoveragePerBlock));
     this.model.addEventListener(Events.CoverageUpdated, this.onCoverageDataReceived, this);
+    this.model.addEventListener(Events.SourceMapResolved, this.updateListView, this);
     const resourceTreeModel =
         mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel) as SDK.ResourceTreeModel.ResourceTreeModel | null;
     SDK.TargetManager.TargetManager.instance().addModelListener(
@@ -425,6 +426,10 @@ export class CoverageView extends UI.Widget.VBox {
   private onCoverageDataReceived(event: Common.EventTarget.EventTargetEvent<CoverageInfo[]>): void {
     const data = event.data;
     this.updateViews(data);
+  }
+
+  private updateListView(): void {
+    this.listView.update(this.model && this.model.entries() || []);
   }
 
   async stopRecording(): Promise<void> {
@@ -578,6 +583,14 @@ export class CoverageView extends UI.Widget.VBox {
     }
     if (this.typeFilterValue && !(coverageInfo.type() & this.typeFilterValue)) {
       return false;
+    }
+    // If it's a parent, check if any children are visible
+    if (coverageInfo.sourcesURLCoverageInfo.size > 0) {
+      for (const sourceURLCoverageInfo of coverageInfo.sourcesURLCoverageInfo.values()) {
+        if (this.isVisible(ignoreTextFilter, sourceURLCoverageInfo)) {
+          return true;
+        }
+      }
     }
 
     return ignoreTextFilter || !this.textFilterRegExp || this.textFilterRegExp.test(url);

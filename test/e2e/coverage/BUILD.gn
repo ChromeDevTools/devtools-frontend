@@ -5,7 +5,10 @@
 import("../../../third_party/typescript/typescript.gni")
 
 node_ts_library("coverage") {
-  sources = [ "coverage_test.ts" ]
+  sources = [
+    "coverage-with-source-map_test.ts",
+    "coverage_test.ts",
+  ]
 
   deps = [
     "../../shared",

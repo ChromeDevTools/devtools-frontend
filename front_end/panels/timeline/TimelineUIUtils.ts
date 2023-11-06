@@ -2543,14 +2543,7 @@ export class TimelineUIUtils {
       } = {};
       const categoryStack: string[] = [];
       let lastTime = 0;
-      TimelineModel.TimelineModel.TimelineModelImpl.forEachEvent(
-          events, onStartEvent, onEndEvent, undefined, undefined, undefined, filterForStats());
-
-      function filterForStats(): (arg0: TraceEngine.Legacy.CompatibleTraceEvent) => boolean {
-        const visibleEventsFilter = TimelineUIUtils.visibleEventsFilter();
-        return (event: TraceEngine.Legacy.CompatibleTraceEvent): boolean =>
-                   visibleEventsFilter.accept(event) || TraceEngine.Legacy.TracingModel.isTopLevelEvent(event);
-      }
+      TimelineModel.TimelineModel.TimelineModelImpl.forEachEvent(events, onStartEvent, onEndEvent);
 
       function updateCategory(category: string, time: number): void {
         let statsArrays: {
@@ -2581,7 +2574,8 @@ export class TimelineUIUtils {
 
       function onStartEvent(e: TraceEngine.Legacy.CompatibleTraceEvent): void {
         const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(e);
-        const category = TimelineUIUtils.eventStyle(e).category.name;
+        const category = getEventStyle(e.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category.name ||
+            getCategoryStyles().Other.name;
         const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
         if (category !== parentCategory) {
           categoryChange(parentCategory || null, category, startTime);

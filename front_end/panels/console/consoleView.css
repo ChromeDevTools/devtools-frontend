@@ -474,6 +474,40 @@ devtools-console-insight {
   margin: 9px 22px 11px 24px;
 }
 
+.hover-button {
+  align-items: center;
+  background-color: var(--sys-color-cdt-base-container);
+  border-radius: 50%;
+  border: none;
+  box-shadow: var(--drop-shadow-depth-3);
+  box-sizing: border-box;
+  display: inline-flex;
+  height: 20px;
+  justify-content: center;
+  margin: 0;
+  min-height: 20px;
+  min-width: 20px;
+  padding: 0;
+  visibility: hidden;
+  width: 20px;
+  position: absolute;
+  right: 6px;
+}
+
+.hover-button devtools-icon {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  height: 16px;
+  min-height: 16px;
+  min-width: 16px;
+  width: 16px;
+}
+
+.console-message-wrapper:hover .hover-button,
+.console-message-wrapper:focus .hover-button {
+  visibility: visible;
+}
+
 @media (forced-colors: active) {
   .console-message-expand-icon,
   .console-warning-level [is="ui-icon"].icon-mask.expand-group-icon {

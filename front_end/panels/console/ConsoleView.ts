@@ -1107,6 +1107,10 @@ export class ConsoleView extends UI.Widget.VBox implements
     const consoleViewMessage = sourceElement && getMessageForElement(sourceElement);
     const consoleMessage = consoleViewMessage ? consoleViewMessage.consoleMessage() : null;
 
+    if (consoleViewMessage) {
+      UI.Context.Context.instance().setFlavor(ConsoleViewMessage, consoleViewMessage);
+    }
+
     if (consoleMessage) {
       contextMenu.headerSection().appendAction('explain.consoleMessage', undefined, /* optional=*/ true);
     }

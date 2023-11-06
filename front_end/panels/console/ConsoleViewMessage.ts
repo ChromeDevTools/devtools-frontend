@@ -1271,9 +1271,38 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
 
     this.consoleRowWrapper.appendChild(this.contentElement());
+
+    const action = UI.ActionRegistry.ActionRegistry.instance().action('explain.consoleMessage');
+    if (action) {
+      this.consoleRowWrapper.append(this.#createHoverButton());
+    }
+
     if (this.repeatCountInternal > 1) {
       this.showRepeatCountElement();
     }
+  }
+
+  #createHoverButton(): HTMLButtonElement {
+    const icon = new IconButton.Icon.Icon();
+    icon.data = {
+      iconName: 'spark',
+      color: 'var(--sys-color-primary-bright)',
+      width: '16px',
+      height: '16px',
+    };
+    const button = document.createElement('button');
+    button.append(icon);
+    button.onclick = (event: Event): void => {
+      event.stopPropagation();
+      UI.Context.Context.instance().setFlavor(ConsoleViewMessage, this);
+      const action = UI.ActionRegistry.ActionRegistry.instance().action('explain.consoleMessage');
+      if (!action) {
+        return;
+      }
+      void action.execute();
+    };
+    button.classList.add('hover-button');
+    return button;
   }
 
   private shouldRenderAsWarning(): boolean {

@@ -159,7 +159,7 @@ function queryMatches(style: CSSStyleDeclaration): boolean {
   return true;
 }
 
-interface CSSMatchedStylesPayload {
+export interface CSSMatchedStylesPayload {
   cssModel: CSSModel;
   node: DOMNode;
   inlinePayload: Protocol.CSS.CSSStyle|null;

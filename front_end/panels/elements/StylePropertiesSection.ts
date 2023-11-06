@@ -365,7 +365,9 @@ export class StylePropertiesSection {
       if (!rule) {
         return null;
       }
-      if (ruleLocation && rule.styleSheetId && header && !header.isAnonymousInlineStyleSheet()) {
+      if (ruleLocation && rule.styleSheetId && header &&
+          (!header.isAnonymousInlineStyleSheet() ||
+           matchedStyles.cssModel().sourceMapManager().sourceMapForClient(header))) {
         return StylePropertiesSection.linkifyRuleLocation(
             matchedStyles.cssModel(), linkifier, rule.styleSheetId, ruleLocation);
       }
@@ -385,7 +387,7 @@ export class StylePropertiesSection {
     }
 
     if (header?.isMutable && !header.isViaInspector()) {
-      const location = header.isConstructedByNew() ? null : linkifyRuleLocation();
+      const location = header.isConstructedByNew() && !header.sourceMapURL ? null : linkifyRuleLocation();
       if (location) {
         return location;
       }

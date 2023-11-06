@@ -23,9 +23,9 @@ export class ComputedStyleProperty extends HTMLElement {
   #inherited = false;
   #traceable = false;
 
-  constructor() {
-    super();
+  connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [computedStylePropertyStyles];
+    this.#render();
   }
 
   set inherited(inherited: boolean) {

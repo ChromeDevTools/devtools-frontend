@@ -9,9 +9,6 @@ import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/
 
 describe('Performance panel', function() {
   preloadForCodeCoverage('performance_panel/basic.html');
-  // TODO(crbug.com/1492405): Improve perf panel trace load speed to
-  // prevent timeout bump.
-  this.timeout(20_000);
 
   itScreenshot('loads a trace file and renders it in the timeline', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=basic');

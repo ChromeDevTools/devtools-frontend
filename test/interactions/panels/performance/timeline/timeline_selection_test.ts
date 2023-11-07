@@ -11,9 +11,6 @@ import {describe} from '../../../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
 
 describe('FlameChart', function() {
-  // TODO(crbug.com/1492405): Improve perf panel trace load speed to
-  // prevent timeout bump.
-  this.timeout(20_000);
   preloadForCodeCoverage('performance_panel/basic.html');
 
   async function getCoordinatesForEntryWithTitleAndTs(

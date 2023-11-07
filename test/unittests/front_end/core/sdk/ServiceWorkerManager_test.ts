@@ -20,6 +20,7 @@ describe('ServiceWorkerVersion', () => {
     scriptResponseTime: 12345,
     controlledClients: ['client1', 'client2'],
     targetId: 'target1',
+    routerRules: '[{"condition":{"requestMethod":"POST"}, "source":["fetch","network"]}]',
   } as Protocol.ServiceWorker.ServiceWorkerVersion;
 
   function makeVersion(
@@ -32,6 +33,10 @@ describe('ServiceWorkerVersion', () => {
   it('initializes with a given payload', () => {
     const version = makeVersion(REGISTRATION_PAYLOAD, VERSION_PAYLOAD);
 
+    const expectedRouterRules =
+        [{condition: '{"requestMethod":"POST"}', source: '["fetch","network"]'} as
+         SDK.ServiceWorkerManager.ServiceWorkerRouterRule];
+
     assert.strictEqual(version.id, VERSION_PAYLOAD.versionId);
     assert.strictEqual(version.scriptURL, VERSION_PAYLOAD.scriptURL);
     assert.strictEqual(version.runningStatus, VERSION_PAYLOAD.runningStatus);
@@ -40,6 +45,7 @@ describe('ServiceWorkerVersion', () => {
     assert.strictEqual(version.scriptResponseTime, VERSION_PAYLOAD.scriptResponseTime);
     assert.deepStrictEqual(version.controlledClients, VERSION_PAYLOAD.controlledClients);
     assert.strictEqual(version.targetId, VERSION_PAYLOAD.targetId);
+    assert.deepStrictEqual(version.routerRules, expectedRouterRules);
   });
 
   it('should update the version with the given payload', () => {
@@ -261,5 +267,22 @@ describe('ServiceWorkerVersion', () => {
     const version = makeVersion(
         REGISTRATION_PAYLOAD, {...VERSION_PAYLOAD, status: 'redundant'} as Protocol.ServiceWorker.ServiceWorkerVersion);
     assert.strictEqual(version.mode(), SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Redundant);
+  });
+
+  it('routerRules should be null if not provided', () => {
+    const VERSION_PAYLOAD_WITHOUT_ROUTER_RULES = {
+      versionId: '12345',
+      scriptURL: 'http://example.com/script.js',
+      runningStatus: 'stopped',
+      status: 'new',
+      scriptLastModified: 1234567890,
+      scriptResponseTime: 12345,
+      controlledClients: ['client1', 'client2'],
+      targetId: 'target1',
+    } as Protocol.ServiceWorker.ServiceWorkerVersion;
+
+    const version = makeVersion(REGISTRATION_PAYLOAD, VERSION_PAYLOAD_WITHOUT_ROUTER_RULES);
+
+    assert.isNull(version.routerRules);
   });
 });

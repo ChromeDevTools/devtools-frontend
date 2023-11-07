@@ -448,6 +448,10 @@ select.toolbar-item:focus-visible > * {
 
 .toolbar-shadow:not(.floating) .toolbar-item:last-child:not(:first-child, .toolbar-select-container) {
   flex-shrink: 1;
+  justify-content: left;
+}
+
+.toolbar-shadow:not(.floating) .toolbar-button.toolbar-item:last-child:not(:first-child, .toolbar-select-container) {
   justify-content: center;
   margin-right: 2px;
 }

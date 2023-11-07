@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../../core/host/host.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -36,6 +38,14 @@ const negativeRatingReasons = [
   ['other', 'Other'],
 ];
 
+function buildLink(
+    rating: 'Good'|'Bad', reasonKeys: string[], comment: string, context: string): Platform.DevToolsPath.UrlString {
+  return `https://docs.google.com/forms/d/e/1FAIpQLSen1K-Uli0CSvlsNkI-L0Wq5iJ0FO9zFv0_mjM-3m5I8AKQGg/viewform?usp=pp_url&entry.1465663861=${
+             encodeURIComponent(rating)}&entry.166041694=${encodeURIComponent(reasonKeys.join(','))}&entry.109342357=${
+             encodeURIComponent(comment)}&entry.1805879004=${encodeURIComponent(context)}` as
+      Platform.DevToolsPath.UrlString;
+}
+
 export class ConsoleInsight extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-console-insight`;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -47,6 +57,10 @@ export class ConsoleInsight extends HTMLElement {
   #ratingFormOpened = false;
   #selectedRating?: boolean;
   #selectedRatingReasons = new Set<string>();
+  #context = {
+    prompt: '',
+    result: '',
+  };
 
   constructor(promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider) {
     super();
@@ -69,6 +83,10 @@ export class ConsoleInsight extends HTMLElement {
     try {
       const prompt = await this.#promptBuilder.buildPrompt();
       const result = await this.#insightProvider.getInsights(prompt);
+      this.#context = {
+        prompt,
+        result,
+      };
       this.#renderMarkdown(result);
     } catch (err) {
       this.#renderMarkdown(`loading failed: ${err.message}`);
@@ -84,6 +102,14 @@ export class ConsoleInsight extends HTMLElement {
     this.#selectedRating = undefined;
     this.#selectedRatingReasons.clear();
     this.#render();
+  }
+
+  #onSubmit(): void {
+    const link = buildLink(
+        this.#selectedRating ? 'Good' : 'Bad', Array.from(this.#selectedRatingReasons),
+        this.#shadow.querySelector('textarea')?.value || '', JSON.stringify(this.#context));
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(link);
+    this.#onCloseRating();
   }
 
   #onRating(event: Event): void {
@@ -233,7 +259,7 @@ export class ConsoleInsight extends HTMLElement {
                     size: Buttons.Button.Size.MEDIUM,
                   } as Buttons.Button.ButtonData
                 }
-                @click=${this.#onCloseRating}
+                @click=${this.#onSubmit}
               >
                 Submit
               </${Buttons.Button.Button.litTagName}>

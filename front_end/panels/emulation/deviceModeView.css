@@ -128,6 +128,17 @@
   background-color: var(--sys-color-inverse-surface);
 }
 
+.device-mode-content-clip:not(.device-mode-outline-visible) .device-mode-screen-area {
+  --override-screen-area-box-shadow: hsl(240deg 3% 84%) 0 0 0 0.5px, hsl(0deg 0% 80% / 40%) 0 0 20px;
+
+  box-shadow: var(--override-screen-area-box-shadow);
+}
+
+.-theme-with-dark-background .device-mode-content-clip:not(.device-mode-outline-visible) .device-mode-screen-area,
+:host-context(.-theme-with-dark-background) .device-mode-content-clip:not(.device-mode-outline-visible) .device-mode-screen-area {
+  --override-screen-area-box-shadow: rgb(40 40 42) 0 0 0 0.5px, rgb(51 51 51 / 40%) 0 0 20px;
+}
+
 .device-mode-screen-image {
   position: absolute;
   left: 0;

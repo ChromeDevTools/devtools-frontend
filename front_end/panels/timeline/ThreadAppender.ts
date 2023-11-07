@@ -8,7 +8,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import {
   addDecorationToEvent,
@@ -224,13 +224,14 @@ export class ThreadAppender implements TrackAppender {
     }
   }
 
-  modifyTree(traceEvent: TraceEngine.Types.TraceEvents.TraceEntry): void {
+  modifyTree(traceEvent: TraceEngine.Types.TraceEvents.TraceEntry, flameChartView: PerfUI.FlameChart.FlameChart): void {
     if (!this.#treeManipulator) {
       return;
     }
     // TODO(crbug.com/1469887): Change MERGE_FUNCTION to the user selected operation
     this.#treeManipulator.applyAction({type: 'MERGE_FUNCTION', entry: traceEvent});
     this.#entries = this.#treeManipulator.visibleEntries();
+    flameChartView.dispatchEventToListeners(PerfUI.FlameChart.Events.EntriesModified);
   }
 
   processId(): TraceEngine.Types.TraceEvents.ProcessID {

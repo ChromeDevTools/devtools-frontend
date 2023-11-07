@@ -170,10 +170,12 @@ export class CompatibilityTracksAppender {
     });
   }
 
-  modifyTree(group: PerfUI.FlameChart.Group, node: TraceEngine.Types.TraceEvents.TraceEntry): void {
+  modifyTree(
+      group: PerfUI.FlameChart.Group, node: TraceEngine.Types.TraceEvents.TraceEntry,
+      flameChartView: PerfUI.FlameChart.FlameChart): void {
     const threadTrackAppender = this.#trackForGroup.get(group);
     if (threadTrackAppender instanceof ThreadAppender) {
-      threadTrackAppender.modifyTree(node);
+      threadTrackAppender.modifyTree(node, flameChartView);
     } else {
       console.warn('Could not modify tree in not thread track');
     }

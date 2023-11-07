@@ -6,8 +6,8 @@
 
 .adorner-settings-pane {
   display: flex;
-  height: 2.67em;
-  padding: 0 12px;
+  height: auto;
+  padding: 6px 12px;
   color: var(--sys-color-on-surface);
   font-size: 12px;
   align-items: center;
@@ -15,6 +15,7 @@
 
 .settings-title {
   font-weight: 500;
+  margin-right: 6px;
 }
 
 .setting {

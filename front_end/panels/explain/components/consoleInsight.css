@@ -97,23 +97,18 @@ textarea {
   line-height: 12px;
 
   --bar-height: 1lh;
-  /* TODO use theme variables. */
-  --bar-color: #b7eaff;
-  --gradient-1: #fff0;
-  --gradient-2: #fff9;
-  --gradient-3: #fff0;
 
   min-block-size: 4lh;
   background:
-    linear-gradient(to right, var(--bar-color), var(--bar-color)),
-    linear-gradient(to right, var(--bar-color), var(--bar-color)),
-    linear-gradient(to right, var(--bar-color), var(--bar-color)),
-    radial-gradient(circle, var(--bar-color), 75%, transparent 0),
-    radial-gradient(circle, var(--bar-color), 75%, transparent 0),
-    radial-gradient(circle, var(--bar-color), 75%, transparent 0),
-    radial-gradient(circle, var(--bar-color), 75%, transparent 0),
-    radial-gradient(circle, var(--bar-color), 75%, transparent 0),
-    radial-gradient(circle, var(--bar-color), 75%, transparent 0);
+    linear-gradient(to right, var(--sys-color-gradient-primary), var(--sys-color-gradient-tertiary)),
+    linear-gradient(to right, var(--sys-color-gradient-primary), var(--sys-color-gradient-tertiary)),
+    linear-gradient(to right, var(--sys-color-gradient-primary), var(--sys-color-gradient-tertiary)),
+    radial-gradient(circle, var(--sys-color-gradient-primary), 75%, transparent 0),
+    radial-gradient(circle, var(--sys-color-gradient-tertiary), 75%, transparent 0),
+    radial-gradient(circle, var(--sys-color-gradient-primary), 75%, transparent 0),
+    radial-gradient(circle, var(--sys-color-gradient-tertiary), 75%, transparent 0),
+    radial-gradient(circle, var(--sys-color-gradient-primary), 75%, transparent 0),
+    radial-gradient(circle, var(--sys-color-gradient-tertiary), 75%, transparent 0);
   background-size:
     calc(100% - var(--bar-height)) 1lh,
     calc(100% - var(--bar-height)) 1lh,
@@ -142,7 +137,15 @@ textarea {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right, var(--gradient-1), 25%, var(--gradient-2), 75%, var(--gradient-3));
+    background:
+      linear-gradient(
+        to left,
+        #fff0,
+        25%,
+        color-mix(in srgb, transparent, var(--sys-color-cdt-base-container) 60%),
+        75%,
+        #fff0
+      );
     translate: 100% 0;
     animation: shine-across 1s ease infinite;
   }

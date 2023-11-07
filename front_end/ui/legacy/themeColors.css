@@ -408,6 +408,12 @@
    * Color for the active breadcrumb in the Performance Panel timeline.
    */
   --app-color-active-breadcrumb: var(--ref-palette-blue40);
+
+  /**
+  * Gradients
+  */
+  --sys-color-gradient-primary: var(--ref-palette-primary90);
+  --sys-color-gradient-tertiary: var(--ref-palette-tertiary95);
 }
 
 .-theme-with-dark-background {
@@ -768,4 +774,10 @@
    * Color for the active breadcrumb in the Performance Panel timeline.
    */
   --app-color-active-breadcrumb: var(--ref-palette-blue40);
+
+  /**
+  * Gradients
+  */
+  --sys-color-gradient-primary: var(--ref-palette-primary30);
+  --sys-color-gradient-tertiary: var(--ref-palette-tertiary30);
 }

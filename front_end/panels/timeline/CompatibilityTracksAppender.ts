@@ -170,6 +170,15 @@ export class CompatibilityTracksAppender {
     });
   }
 
+  setFlameChartDataAndEntryData(
+      flameChartData: PerfUI.FlameChart.FlameChartTimelineData, entryData: TimelineFlameChartEntry[],
+      legacyEntryTypeByLevel: EntryType[]): void {
+    this.#trackForGroup.clear();
+    this.#flameChartData = flameChartData;
+    this.#entryData = entryData;
+    this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
+  }
+
   modifyTree(
       group: PerfUI.FlameChart.Group, node: TraceEngine.Types.TraceEvents.TraceEntry,
       flameChartView: PerfUI.FlameChart.FlameChart): void {

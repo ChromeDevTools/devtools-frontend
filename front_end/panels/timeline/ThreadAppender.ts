@@ -230,7 +230,7 @@ export class ThreadAppender implements TrackAppender {
     }
     // TODO(crbug.com/1469887): Change MERGE_FUNCTION to the user selected operation
     this.#treeManipulator.applyAction({type: 'MERGE_FUNCTION', entry: traceEvent});
-    this.#entries = this.#treeManipulator.visibleEntries();
+    this.#entries = this.#treeManipulator.invisibleEntries();
     flameChartView.dispatchEventToListeners(PerfUI.FlameChart.Events.EntriesModified);
   }
 
@@ -252,6 +252,7 @@ export class ThreadAppender implements TrackAppender {
    * appended the track's events.
    */
   appendTrackAtLevel(trackStartLevel: number, expanded: boolean = false): number {
+    this.#headerAppended = false;
     if (this.#entries.length === 0) {
       return trackStartLevel;
     }
@@ -441,6 +442,7 @@ export class ThreadAppender implements TrackAppender {
   #appendNodesAtLevel(
       nodes: Iterable<TraceEngine.Helpers.TreeHelpers.TraceEntryNode>, startingLevel: number,
       parentIsIgnoredListed: boolean = false): number {
+    const invisibleEntries = this.#treeManipulator?.invisibleEntries() ?? [];
     let maxDepthInTree = startingLevel;
     for (const node of nodes) {
       let nextLevel = startingLevel;
@@ -454,7 +456,9 @@ export class ThreadAppender implements TrackAppender {
       // another traversal to the entries array (which could grow
       // large). To avoid the extra cost we  add the check in the
       // traversal we already need to append events.
-      const entryIsVisible = this.#compatibilityBuilder.entryIsVisibleInTimeline(entry) || this.#showAllEventsEnabled;
+      const entryIsVisible =
+          (!invisibleEntries.includes(entry) && this.#compatibilityBuilder.entryIsVisibleInTimeline(entry)) ||
+          this.#showAllEventsEnabled;
       // For ignore listing support, these two conditions need to be met
       // to not append a profile call to the flame chart:
       // 1. It is ignore listed

@@ -370,18 +370,24 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.#font;
   }
 
-  reset(): void {
+  // resetCompatibilityTracksAppender boolean set to false does not recreate the thread appenders
+  reset(resetCompatibilityTracksAppender: boolean = true): void {
     this.currentLevel = 0;
-    this.timelineDataInternal = null;
     this.entryData = [];
     this.entryParent = [];
     this.entryTypeByLevel = [];
     this.entryIndexToTitle = [];
     this.asyncColorByCategory = new Map();
     this.screenshotImageCache = new Map();
-    this.compatibilityTracksAppender = null;
     this.#eventToDisallowRoot = new WeakMap<TraceEngine.Legacy.Event, boolean>();
     this.#indexForEvent = new WeakMap<TraceEngine.Legacy.Event, number>();
+    if (resetCompatibilityTracksAppender) {
+      this.compatibilityTracksAppender = null;
+      this.timelineDataInternal = null;
+    } else if (!resetCompatibilityTracksAppender && this.timelineDataInternal) {
+      this.compatibilityTracksAppender?.setFlameChartDataAndEntryData(
+          this.timelineDataInternal, this.entryData, this.entryTypeByLevel);
+    }
   }
 
   maxStackDepth(): number {
@@ -393,8 +399,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * the new trace engine) and the legacy code paths present in this
    * file. The result built data is cached and returned.
    */
-  timelineData(): PerfUI.FlameChart.FlameChartTimelineData {
-    if (this.timelineDataInternal && this.timelineDataInternal.entryLevels.length !== 0) {
+  timelineData(rebuild: boolean = false): PerfUI.FlameChart.FlameChartTimelineData {
+    if (this.timelineDataInternal && this.timelineDataInternal.entryLevels.length !== 0 && !rebuild) {
       // The flame chart data is built already, so return the cached
       // data.
       return this.timelineDataInternal;
@@ -403,6 +409,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.timelineDataInternal = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
     if (!this.legacyTimelineModel) {
       return this.timelineDataInternal;
+    }
+
+    if (rebuild) {
+      this.reset(false);
     }
 
     this.flowEventIndexById.clear();

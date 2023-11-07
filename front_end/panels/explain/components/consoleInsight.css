@@ -91,3 +91,66 @@ textarea {
 .buttons {
   margin-bottom: 16px;
 }
+
+/* stylelint-disable plugin/use_theme_colors */
+.loader {
+  line-height: 12px;
+
+  --bar-height: 1lh;
+  /* TODO use theme variables. */
+  --bar-color: #b7eaff;
+  --gradient-1: #fff0;
+  --gradient-2: #fff9;
+  --gradient-3: #fff0;
+
+  min-block-size: 4lh;
+  background:
+    linear-gradient(to right, var(--bar-color), var(--bar-color)),
+    linear-gradient(to right, var(--bar-color), var(--bar-color)),
+    linear-gradient(to right, var(--bar-color), var(--bar-color)),
+    radial-gradient(circle, var(--bar-color), 75%, transparent 0),
+    radial-gradient(circle, var(--bar-color), 75%, transparent 0),
+    radial-gradient(circle, var(--bar-color), 75%, transparent 0),
+    radial-gradient(circle, var(--bar-color), 75%, transparent 0),
+    radial-gradient(circle, var(--bar-color), 75%, transparent 0),
+    radial-gradient(circle, var(--bar-color), 75%, transparent 0);
+  background-size:
+    calc(100% - var(--bar-height)) 1lh,
+    calc(100% - var(--bar-height)) 1lh,
+    75% 1lh,
+    1lh 1lh,
+    1lh 1lh,
+    1lh 1lh,
+    1lh 1lh,
+    1lh 1lh,
+    1lh 1lh;
+  background-position:
+    calc(var(--bar-height) / 2) 0%,
+    calc(var(--bar-height) / 2) calc(var(--bar-height) * 1.5),
+    calc(var(--bar-height) / 2) calc(var(--bar-height) * 3),
+    0% 0%,
+    100% 0%,
+    0% calc(var(--bar-height) * 1.5),
+    100% calc(var(--bar-height) * 1.5),
+    0% calc(var(--bar-height) * 3),
+    calc(75% + 0.5lh) calc(var(--bar-height) * 3);
+  background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, var(--gradient-1), 25%, var(--gradient-2), 75%, var(--gradient-3));
+    translate: 100% 0;
+    animation: shine-across 1s ease infinite;
+  }
+}
+/* stylelint-enable plugin/use_theme_colors */
+
+@keyframes shine-across {
+  to {
+    translate: -100% 0;
+  }
+}

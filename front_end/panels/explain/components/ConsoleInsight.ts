@@ -61,6 +61,7 @@ export class ConsoleInsight extends HTMLElement {
     prompt: '',
     result: '',
   };
+  #loading = true;
 
   constructor(promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider) {
     super();
@@ -78,8 +79,13 @@ export class ConsoleInsight extends HTMLElement {
     this.#render();
   }
 
+  #setLoading(loading: boolean): void {
+    this.#loading = loading;
+    this.#render();
+  }
+
   async update(): Promise<void> {
-    this.#renderMarkdown('loading...');
+    this.#setLoading(true);
     try {
       const prompt = await this.#promptBuilder.buildPrompt();
       const result = await this.#insightProvider.getInsights(prompt);
@@ -90,6 +96,8 @@ export class ConsoleInsight extends HTMLElement {
       this.#renderMarkdown(result);
     } catch (err) {
       this.#renderMarkdown(`loading failed: ${err.message}`);
+    } finally {
+      this.#setLoading(false);
     }
   }
 
@@ -153,7 +161,7 @@ export class ConsoleInsight extends HTMLElement {
               }>
             </${IconButton.Icon.Icon.litTagName}>
           </div>
-          <div class="filler">Insights</div>
+          <div class="filler">${this.#loading ? 'Loading…' : 'Insights'}</div>
           <div>
             <${Buttons.Button.Button.litTagName}
               title=${'Close'}
@@ -168,10 +176,14 @@ export class ConsoleInsight extends HTMLElement {
             ></${Buttons.Button.Button.litTagName}>
           </div>
         </header>
+        ${this.#loading ? html`
         <main>
-        <${MarkdownView.MarkdownView.MarkdownView.litTagName}
-          .data=${{tokens: this.#tokens, renderer: this.#renderer} as MarkdownView.MarkdownView.MarkdownViewData}>
-        </${MarkdownView.MarkdownView.MarkdownView.litTagName}>
+          <div class="loader"></div>
+        </main>` : html`
+        <main>
+          <${MarkdownView.MarkdownView.MarkdownView.litTagName}
+            .data=${{tokens: this.#tokens, renderer: this.#renderer} as MarkdownView.MarkdownView.MarkdownViewData}>
+          </${MarkdownView.MarkdownView.MarkdownView.litTagName}>
         </main>
         <footer>
           <div>
@@ -205,6 +217,7 @@ export class ConsoleInsight extends HTMLElement {
           <div class="filler"></div>
           <div>TODO</div>
         </footer>
+        `}
       </div>
       ${this.#ratingFormOpened ? html`
         <div class=${bottomWrapper}>

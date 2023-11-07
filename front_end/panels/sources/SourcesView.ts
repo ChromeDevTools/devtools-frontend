@@ -38,7 +38,7 @@ const UIStrings = {
   /**
    *@description Text in Sources View of the Sources panel. This sentence follows by a list of actions.
    */
-  workspaceDropInAFolderToSyncSources: 'To sync edits to the workspace, drop a folder with your sources here or:',
+  workspaceDropInAFolderToSyncSources: 'To sync edits to the workspace, drop a folder with your sources here or',
   /**
    *@description Text in Sources View of the Sources panel.
    */

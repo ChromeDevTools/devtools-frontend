@@ -39,12 +39,12 @@ export const editorTheme = CM.EditorView.theme({
     borderLeft: '1px solid var(--sys-color-neutral-outline)',
   },
 
-  '.cm-selectionBackground': {
+  '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground': {
     background: 'var(--sys-color-tonal-container)',
   },
 
-  '&.cm-focused .cm-selectionBackground': {
-    background: 'var(--sys-color-state-focus-select)',
+  '.cm-selectionBackground': {
+    background: 'var(--sys-color-neutral-container)',
   },
 
   '.cm-gutters': {

@@ -216,7 +216,7 @@ describe('The Styles pane', async () => {
         subtitles,
         [
           '',
-          'css-module.css:1',
+          'css-module.css:7',
           'constructed stylesheet',
           'stylesheets…ces.html:10',
           'stylesheets…rces.html:7',

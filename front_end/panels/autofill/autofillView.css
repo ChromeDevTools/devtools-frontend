@@ -4,6 +4,17 @@
  * found in the LICENSE file.
  */
 
-:host {
-  overflow: hidden;
+.container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.placeholder {
+  font-size: 15px;
+}
+
+.address {
+  padding: 15px;
 }

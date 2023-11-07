@@ -612,6 +612,10 @@ export class TargetBase {
     return this.getAgent('Audits');
   }
 
+  autofillAgent(): ProtocolProxyApi.AutofillApi {
+    return this.getAgent('Autofill');
+  }
+
   browserAgent(): ProtocolProxyApi.BrowserApi {
     return this.getAgent('Browser');
   }
@@ -794,6 +798,10 @@ export class TargetBase {
 
   registerAccessibilityDispatcher(dispatcher: ProtocolProxyApi.AccessibilityDispatcher): void {
     this.registerDispatcher('Accessibility', dispatcher);
+  }
+
+  registerAutofillDispatcher(dispatcher: ProtocolProxyApi.AutofillDispatcher): void {
+    this.registerDispatcher('Autofill', dispatcher);
   }
 
   registerAnimationDispatcher(dispatcher: ProtocolProxyApi.AnimationDispatcher): void {

@@ -711,6 +711,7 @@ grd_files_debug_sources = [
   "front_end/core/protocol_client/NodeURL.js",
   "front_end/core/root/Runtime.js",
   "front_end/core/sdk/AccessibilityModel.js",
+  "front_end/core/sdk/AutofillModel.js",
   "front_end/core/sdk/CPUProfileDataModel.js",
   "front_end/core/sdk/CPUProfilerModel.js",
   "front_end/core/sdk/CPUThrottlingManager.js",

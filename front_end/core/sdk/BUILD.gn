@@ -8,6 +8,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 devtools_module("sdk") {
   sources = [
     "AccessibilityModel.ts",
+    "AutofillModel.ts",
     "CPUProfileDataModel.ts",
     "CPUProfilerModel.ts",
     "CPUThrottlingManager.ts",

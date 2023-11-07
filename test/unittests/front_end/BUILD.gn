@@ -43,6 +43,7 @@ group("front_end") {
     "panels/accessibility",
     "panels/animation",
     "panels/application",
+    "panels/autofill",
     "panels/console",
     "panels/coverage",
     "panels/css_overview",

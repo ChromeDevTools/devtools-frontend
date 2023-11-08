@@ -22,4 +22,18 @@ describe('The Console Tab', () => {
     await frontend.keyboard.press('Enter');
     await editorUnfocusedPromise;
   });
+
+  it('removes blank live expressions with Escape', async () => {
+    const {frontend} = getBrowserAndPages();
+
+    await click(CONSOLE_TAB_SELECTOR);
+    await click(CONSOLE_CREATE_LIVE_EXPRESSION_SELECTOR);
+
+    const consolePin = await waitFor('.console-pin');
+    await waitFor('.cm-editor.cm-focused', consolePin);
+
+    const consolePinRemoved = waitForNone('.console-pin');
+    await frontend.keyboard.press('Escape');
+    await consolePinRemoved;
+  });
 });

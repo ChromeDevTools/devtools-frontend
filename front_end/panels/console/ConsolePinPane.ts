@@ -30,10 +30,6 @@ const UIStrings = {
    */
   removeExpressionS: 'Remove expression: {PH1}',
   /**
-   *@description Screen reader label for delete button on a blank live expression
-   */
-  removeBlankExpression: 'Remove blank expression',
-  /**
    *@description Text in Console Pin Pane of the Console panel
    */
   liveExpressionEditor: 'Live expression editor',
@@ -110,13 +106,16 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     }
   }
 
-  removePin(pin: ConsolePin): void {
+  removePin(pin: ConsolePin, focus = true): void {
     pin.element().remove();
     const newFocusedPin = this.focusedPinAfterDeletion(pin);
     this.pins.delete(pin);
     this.savePins();
+    if (!focus) {
+      return;
+    }
     if (newFocusedPin) {
-      void newFocusedPin.focus();
+      newFocusedPin.focus();
     } else {
       this.liveExpressionButton.focus();
     }
@@ -128,7 +127,7 @@ export class ConsolePinPane extends UI.ThrottledWidget.ThrottledWidget {
     this.pins.add(pin);
     this.savePins();
     if (userGesture) {
-      void pin.focus();
+      pin.focus();
     }
     this.update();
   }
@@ -180,11 +179,7 @@ export class ConsolePin {
     this.deletePinIcon = document.createElement('div', {is: 'dt-close-button'}) as UI.UIUtils.DevToolsCloseButton;
     this.deletePinIcon.classList.add('close-button');
     this.deletePinIcon.setTabbable(true);
-    if (expression.length) {
-      this.deletePinIcon.setAccessibleName(i18nString(UIStrings.removeExpressionS, {PH1: expression}));
-    } else {
-      this.deletePinIcon.setAccessibleName(i18nString(UIStrings.removeBlankExpression));
-    }
+    this.deletePinIcon.setAccessibleName(i18nString(UIStrings.removeExpressionS, {PH1: expression}));
     self.onInvokeElement(this.deletePinIcon, event => {
       pinPane.removePin(this);
       event.consume(true);
@@ -244,15 +239,19 @@ export class ConsolePin {
         },
         {
           key: 'Enter',
-          run: (): boolean => {
-            this.focusOut();
+          run: (view: CodeMirror.EditorView): boolean => {
+            if (view.state.doc.length !== 0) {
+              this.focusOut();
+            }
             return true;
           },
         },
         {
           key: 'Mod-Enter',
-          run: (): boolean => {
-            this.focusOut();
+          run: (view: CodeMirror.EditorView): boolean => {
+            if (view.state.doc.length !== 0) {
+              this.focusOut();
+            }
             return true;
           },
         },
@@ -273,13 +272,13 @@ export class ConsolePin {
   onBlur(editor: CodeMirror.EditorView): void {
     const text = editor.state.doc.toString();
     const trimmedText = text.trim();
+    if (trimmedText.length === 0) {
+      this.pinPane.removePin(this, false);
+      return;
+    }
     this.committedExpression = trimmedText;
     this.pinPane.savePins();
-    if (this.committedExpression.length) {
-      this.deletePinIcon.setAccessibleName(i18nString(UIStrings.removeExpressionS, {PH1: this.committedExpression}));
-    } else {
-      this.deletePinIcon.setAccessibleName(i18nString(UIStrings.removeBlankExpression));
-    }
+    this.deletePinIcon.setAccessibleName(i18nString(UIStrings.removeExpressionS, {PH1: this.committedExpression}));
     editor.dispatch({
       selection: {anchor: trimmedText.length},
       changes: trimmedText !== text ? {from: 0, to: text.length, insert: trimmedText} : undefined,
@@ -304,7 +303,7 @@ export class ConsolePin {
     return this.pinElement;
   }
 
-  async focus(): Promise<void> {
+  focus(): void {
     const editor = this.editor;
     editor.editor.focus();
     editor.dispatch({selection: {anchor: editor.state.doc.length}});

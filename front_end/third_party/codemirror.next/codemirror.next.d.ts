@@ -3334,6 +3334,17 @@ apply to the editor, and if it can, perform it as a side effect
 transaction) and return `true`.
 */
 type Command = (target: EditorView) => boolean;
+declare class ScrollTarget {
+    readonly range: SelectionRange;
+    readonly y: ScrollStrategy;
+    readonly x: ScrollStrategy;
+    readonly yMargin: number;
+    readonly xMargin: number;
+    readonly isSnapshot: boolean;
+    constructor(range: SelectionRange, y?: ScrollStrategy, x?: ScrollStrategy, yMargin?: number, xMargin?: number, isSnapshot?: boolean);
+    map(changes: ChangeDesc): ScrollTarget;
+    clip(state: EditorState): ScrollTarget;
+}
 /**
 This is the interface plugin objects conform to.
 */
@@ -3592,6 +3603,13 @@ interface EditorViewConfig extends EditorStateConfig {
     from the parent.
     */
     root?: Document | ShadowRoot;
+    /**
+    Pass an effect created with
+    [`EditorView.scrollIntoView`](https://codemirror.net/6/docs/ref/#view.EditorView^scrollIntoView) or
+    [`EditorView.scrollSnapshot`](https://codemirror.net/6/docs/ref/#view.EditorView.scrollSnapshot)
+    here to set an initial scroll position.
+    */
+    scrollTo?: StateEffect<any>;
     /**
     Override the way transactions are
     [dispatched](https://codemirror.net/6/docs/ref/#view.EditorView.dispatch) for this editor view.
@@ -3992,14 +4010,29 @@ declare class EditorView {
         /**
         Extra vertical distance to add when moving something into
         view. Not used with the `"center"` strategy. Defaults to 5.
+        Must be less than the height of the editor.
         */
         yMargin?: number;
         /**
         Extra horizontal distance to add. Not used with the `"center"`
-        strategy. Defaults to 5.
+        strategy. Defaults to 5. Must be less than the width of the
+        editor.
         */
         xMargin?: number;
     }): StateEffect<unknown>;
+    /**
+    Return an effect that resets the editor to its current (at the
+    time this method was called) scroll position. Note that this
+    only affects the editor's own scrollable element, not parents.
+    See also
+    [`EditorViewConfig.scrollTo`](https://codemirror.net/6/docs/ref/#view.EditorViewConfig.scrollTo).
+
+    The effect should be used with a document identical to the one
+    it was created for. Failing to do so is not an error, but may
+    not scroll to the expected position. You can
+    [map](https://codemirror.net/6/docs/ref/#state.StateEffect.map) the effect to account for changes.
+    */
+    scrollSnapshot(): StateEffect<ScrollTarget>;
     /**
     Facet to add a [style
     module](https://github.com/marijnh/style-mod#documentation) to

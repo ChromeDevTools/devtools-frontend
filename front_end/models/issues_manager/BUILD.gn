@@ -80,7 +80,7 @@ devtools_issue_description_files = [
   "CoepFrameResourceNeedsCoepHeader.md",
   "CompatibilityModeQuirks.md",
   "CookieAttributeValueExceedsMaxSize.md",
-  "cookieExcludeBlockedWithinFirstPartySet.md",
+  "cookieExcludeBlockedWithinRelatedWebsiteSet.md",
   "cookieExcludeDomainNonAscii.md",
   "cookieWarnDomainNonAscii.md",
   "corsAllowCredentialsRequired.md",

@@ -64,50 +64,6 @@ const UIStrings = {
    */
   workerSS: '`Worker`: {PH1} — {PH2}',
 
-  /**
-   *@description Title of a bidder auction worklet with known URL in the timeline flame chart of the Performance panel
-   *@example {https://google.com} PH1
-   */
-  bidderWorkletS: 'Bidder Worklet — {PH1}',
-
-  /**
-   *@description Title of a seller auction worklet with known URL in the timeline flame chart of the Performance panel
-   *@example {https://google.com} PH1
-   */
-  sellerWorkletS: 'Seller Worklet — {PH1}',
-
-  /**
-   *@description Title of an auction worklet with known URL in the timeline flame chart of the Performance panel
-   *@example {https://google.com} PH1
-   */
-  unknownWorkletS: 'Auction Worklet — {PH1}',
-
-  /**
-   *@description Title of a bidder auction worklet in the timeline flame chart of the Performance panel
-   */
-  bidderWorklet: 'Bidder Worklet',
-
-  /**
-   *@description Title of a seller auction worklet in the timeline flame chart of the Performance panel
-   */
-  sellerWorklet: 'Seller Worklet',
-
-  /**
-   *@description Title of an auction worklet in the timeline flame chart of the Performance panel
-   */
-  unknownWorklet: 'Auction Worklet',
-
-  /**
-   *@description Title of control thread of a service process for an auction worklet in the timeline flame chart of the Performance panel
-   */
-  workletService: 'Auction Worklet Service',
-
-  /**
-   *@description Title of control thread of a service process for an auction worklet with known URL in the timeline flame chart of the Performance panel
-   * @example {https://google.com} PH1
-   */
-  workletServiceS: 'Auction Worklet Service — {PH1}',
-
 };
 const str_ = i18n.i18n.registerUIStrings('models/timeline_model/TimelineModel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -119,7 +75,6 @@ export class TimelineModelImpl {
   private sessionId!: string|null;
   private mainFrameNodeId!: number|null;
   private pageFrames!: Map<Protocol.Page.FrameId, PageFrame>;
-  private auctionWorklets!: Map<string, AuctionWorklet>;
   private cpuProfilesInternal!:
       {cpuProfileData: CPUProfile.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null}[];
   private workerIdByThread!: WeakMap<TraceEngine.Legacy.Thread, string>;
@@ -388,8 +343,7 @@ export class TimelineModelImpl {
     }
     for (const process of tracingModel.sortedProcesses()) {
       for (const thread of process.sortedThreads()) {
-        this.processThreadEvents(
-            tracingModel, thread, thread === browserMainThread, false, true, WorkletType.NotWorklet, null);
+        this.processThreadEvents(tracingModel, thread, thread === browserMainThread, false, true, null);
       }
     }
   }
@@ -430,8 +384,7 @@ export class TimelineModelImpl {
           workerUrl = workerMetaEvent.args['data']['url'] || Platform.DevToolsPath.EmptyUrlString;
         }
         this.processThreadEvents(
-            tracingModel, thread, thread === metaEvent.thread, Boolean(workerUrl), true, WorkletType.NotWorklet,
-            workerUrl);
+            tracingModel, thread, thread === metaEvent.thread, Boolean(workerUrl), true, workerUrl);
       }
       startTime = endTime;
     }
@@ -442,7 +395,6 @@ export class TimelineModelImpl {
       from: number,
       to: number,
       main: boolean,
-      workletType: WorkletType,
       url: Platform.DevToolsPath.UrlString,
     }[]>();
     for (const frame of this.pageFrames.values()) {
@@ -459,26 +411,8 @@ export class TimelineModelImpl {
           to: to,
           main: !frame.parent,
           url: frame.processes[i].url,
-          workletType: WorkletType.NotWorklet,
         });
       }
-    }
-    for (const auctionWorklet of this.auctionWorklets.values()) {
-      const pid = auctionWorklet.processId;
-      let data = processDataByPid.get(pid);
-      if (!data) {
-        data = [];
-        processDataByPid.set(pid, data);
-      }
-      data.push({
-        from: auctionWorklet.startTime,
-        to: auctionWorklet.endTime,
-        main: false,
-        workletType: auctionWorklet.workletType,
-        url:
-            (auctionWorklet.host ? 'https://' + auctionWorklet.host as Platform.DevToolsPath.UrlString :
-                                   Platform.DevToolsPath.EmptyUrlString),
-      });
     }
     const allMetadataEvents = tracingModel.devToolsMetadataEvents();
     for (const process of tracingModel.sortedProcesses()) {
@@ -493,12 +427,6 @@ export class TimelineModelImpl {
       let lastMainUrl: Platform.DevToolsPath.UrlString|null = null;
       let hasMain = false;
 
-      let allWorklet = true;
-      // false: not set, true: inconsistent.
-      let workletUrl: Platform.DevToolsPath.UrlString|boolean = false;
-      // NotWorklet used for not set.
-      let workletType: WorkletType = WorkletType.NotWorklet;
-
       for (const item of processData) {
         if (item.main) {
           hasMain = true;
@@ -509,30 +437,12 @@ export class TimelineModelImpl {
           }
           lastUrl = item.url;
         }
-
-        // Worklet identification
-        if (item.workletType === WorkletType.NotWorklet) {
-          allWorklet = false;
-        } else {
-          // Update combined workletUrl, checking for inconsistencies.
-          if (workletUrl === false) {
-            workletUrl = item.url;
-          } else if (workletUrl !== item.url) {
-            workletUrl = true;  // Process used for different things.
-          }
-
-          if (workletType === WorkletType.NotWorklet) {
-            workletType = item.workletType;
-          } else if (workletType !== item.workletType) {
-            workletType = WorkletType.UnknownWorklet;
-          }
-        }
       }
 
       for (const thread of process.sortedThreads()) {
         if (thread.name() === TimelineModelImpl.RendererMainThreadName) {
           this.processThreadEvents(
-              tracingModel, thread, true /* isMainThread */, false /* isWorker */, hasMain, WorkletType.NotWorklet,
+              tracingModel, thread, true /* isMainThread */, false /* isWorker */, hasMain,
               hasMain ? lastMainUrl : lastUrl);
         } else if (
             thread.name() === TimelineModelImpl.WorkerThreadName ||
@@ -556,25 +466,10 @@ export class TimelineModelImpl {
           this.workerIdByThread.set(thread, workerMetaEvent.args['data']['workerId'] || '');
           this.processThreadEvents(
               tracingModel, thread, false /* isMainThread */, true /* isWorker */, false /* forMainFrame */,
-              WorkletType.NotWorklet, workerMetaEvent.args['data']['url'] || Platform.DevToolsPath.EmptyUrlString);
+              workerMetaEvent.args['data']['url'] || Platform.DevToolsPath.EmptyUrlString);
         } else {
-          let urlForOther: Platform.DevToolsPath.UrlString|null = null;
-          let workletTypeForOther: WorkletType = WorkletType.NotWorklet;
-          if (thread.name() === TimelineModelImpl.AuctionWorkletThreadName ||
-              thread.name().endsWith(TimelineModelImpl.UtilityMainThreadNameSuffix)) {
-            if (typeof workletUrl !== 'boolean') {
-              urlForOther = workletUrl;
-            }
-            workletTypeForOther = workletType;
-          } else {
-            // For processes that only do auction worklet things, skip other threads.
-            if (allWorklet) {
-              continue;
-            }
-          }
           this.processThreadEvents(
-              tracingModel, thread, false /* isMainThread */, false /* isWorker */, false /* forMainFrame */,
-              workletTypeForOther, urlForOther);
+              tracingModel, thread, false /* isMainThread */, false /* isWorker */, false /* forMainFrame */, null);
         }
       }
     }
@@ -790,23 +685,9 @@ export class TimelineModelImpl {
     return events;
   }
 
-  private static nameAuctionWorklet(workletType: WorkletType, url: Platform.DevToolsPath.UrlString|null): string {
-    switch (workletType) {
-      case WorkletType.BidderWorklet:
-        return url ? i18nString(UIStrings.bidderWorkletS, {PH1: url}) : i18nString(UIStrings.bidderWorklet);
-
-      case WorkletType.SellerWorklet:
-        return url ? i18nString(UIStrings.sellerWorkletS, {PH1: url}) : i18nString(UIStrings.sellerWorklet);
-
-      default:
-        return url ? i18nString(UIStrings.unknownWorkletS, {PH1: url}) : i18nString(UIStrings.unknownWorklet);
-    }
-  }
-
   private processThreadEvents(
       tracingModel: TraceEngine.Legacy.TracingModel, thread: TraceEngine.Legacy.Thread, isMainThread: boolean,
-      isWorker: boolean, forMainFrame: boolean, workletType: WorkletType,
-      url: Platform.DevToolsPath.UrlString|null): void {
+      isWorker: boolean, forMainFrame: boolean, url: Platform.DevToolsPath.UrlString|null): void {
     const track = new Track();
     track.name = thread.name() || i18nString(UIStrings.threadS, {PH1: thread.id()});
     track.type = TrackType.Other;
@@ -821,14 +702,6 @@ export class TimelineModelImpl {
       track.name = track.url ? i18nString(UIStrings.workerS, {PH1: track.url}) : i18nString(UIStrings.dedicatedWorker);
     } else if (thread.name().startsWith('CompositorTileWorker')) {
       track.type = TrackType.Raster;
-    } else if (thread.name() === TimelineModelImpl.AuctionWorkletThreadName) {
-      track.url = url || Platform.DevToolsPath.EmptyUrlString;
-      track.name = TimelineModelImpl.nameAuctionWorklet(workletType, url);
-    } else if (
-        workletType !== WorkletType.NotWorklet &&
-        thread.name().endsWith(TimelineModelImpl.UtilityMainThreadNameSuffix)) {
-      track.url = url || Platform.DevToolsPath.EmptyUrlString;
-      track.name = url ? i18nString(UIStrings.workletServiceS, {PH1: url}) : i18nString(UIStrings.workletService);
     }
     this.tracksInternal.push(track);
     let events = thread.events();
@@ -1329,18 +1202,6 @@ export class TimelineModelImpl {
         }
         return;
       }
-      if (event.name === TimelineModelImpl.DevToolsMetadataEvent.AuctionWorkletRunningInProcess &&
-          this.browserFrameTracking) {
-        const worklet = new AuctionWorklet(event, data);
-        this.auctionWorklets.set(data['target'], worklet);
-      }
-      if (event.name === TimelineModelImpl.DevToolsMetadataEvent.AuctionWorkletDoneWithProcess &&
-          this.browserFrameTracking) {
-        const worklet = this.auctionWorklets.get(data['target']);
-        if (worklet) {
-          worklet.endTime = event.startTime;
-        }
-      }
     }
   }
 
@@ -1391,7 +1252,6 @@ export class TimelineModelImpl {
     this.cpuProfilesInternal = [];
     this.workerIdByThread = new WeakMap();
     this.pageFrames = new Map();
-    this.auctionWorklets = new Map();
     this.requestsFromBrowser = new Map();
 
     this.minimumRecordTimeInternal = 0;
@@ -1641,7 +1501,6 @@ export namespace TimelineModelImpl {
   // The names of threads before M111 were exactly this, but afterwards have
   // it a suffix after the exact role.
   export const UtilityMainThreadNameSuffix = 'CrUtilityMain';
-  export const AuctionWorkletThreadName = 'AuctionV8HelperThread';
 
   export const DevToolsMetadataEvent = {
     TracingStartedInBrowser: 'TracingStartedInBrowser',
@@ -1650,8 +1509,6 @@ export namespace TimelineModelImpl {
     FrameCommittedInBrowser: 'FrameCommittedInBrowser',
     ProcessReadyInBrowser: 'ProcessReadyInBrowser',
     FrameDeletedInBrowser: 'FrameDeletedInBrowser',
-    AuctionWorkletRunningInProcess: 'AuctionWorkletRunningInProcess',
-    AuctionWorkletDoneWithProcess: 'AuctionWorkletDoneWithProcess',
   };
 
   export const Thresholds = {
@@ -1783,13 +1640,6 @@ export enum TrackType {
   Other = 'Other',
 }
 
-const enum WorkletType {
-  NotWorklet = 0,
-  BidderWorklet = 1,
-  SellerWorklet = 2,
-  UnknownWorklet = 3,  // new type, or thread used for multiple ones.
-}
-
 export class PageFrame {
   frameId: any;
   url: any;
@@ -1841,29 +1691,6 @@ export class PageFrame {
   addChild(child: PageFrame): void {
     this.children.push(child);
     child.parent = this;
-  }
-}
-
-export class AuctionWorklet {
-  targetId: string;
-  processId: number;
-  host?: string;
-  startTime: number;
-  endTime: number;
-  workletType: WorkletType;
-  constructor(event: TraceEngine.Legacy.Event, data: any) {
-    this.targetId = (typeof data['target'] === 'string') ? data['target'] : '';
-    this.processId = (typeof data['pid'] === 'number') ? data['pid'] : 0;
-    this.host = (typeof data['host'] === 'string') ? data['host'] : undefined;
-    this.startTime = event.startTime;
-    this.endTime = Infinity;
-    if (data['type'] === 'bidder') {
-      this.workletType = WorkletType.BidderWorklet;
-    } else if (data['type'] === 'seller') {
-      this.workletType = WorkletType.SellerWorklet;
-    } else {
-      this.workletType = WorkletType.UnknownWorklet;
-    }
   }
 }
 

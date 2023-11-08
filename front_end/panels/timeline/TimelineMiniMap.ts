@@ -26,7 +26,7 @@ import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export interface OverviewData {
   performanceModel: PerformanceModel|null;
-  traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData|null;
+  traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null;
   isCpuProfile?: boolean;
   settings: {
     showScreenshots: boolean,
@@ -163,7 +163,7 @@ export class TimelineMiniMap extends
     this.#overviewComponent.setWindowTimes(left, right);
   }
 
-  #setMarkers(traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData): void {
+  #setMarkers(traceParsedData: TraceEngine.Handlers.Types.TraceParseData): void {
     const markers = new Map<number, Element>();
 
     const {Meta, PageLoadMetrics} = traceParsedData;
@@ -186,7 +186,7 @@ export class TimelineMiniMap extends
     this.#overviewComponent.setMarkers(markers);
   }
 
-  #setNavigationStartEvents(traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData): void {
+  #setNavigationStartEvents(traceParsedData: TraceEngine.Handlers.Types.TraceParseData): void {
     this.#overviewComponent.setNavStartTimes(traceParsedData.Meta.mainFrameNavigations);
   }
   getControls(): TimelineEventOverview[] {

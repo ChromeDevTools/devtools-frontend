@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as TimelineModel from '../../../../../../front_end/models/timeline_model/timeline_model.js';
 import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 import * as Timeline from '../../../../../../front_end/panels/timeline/timeline.js';
 import * as PerfUI from '../../../../../../front_end/ui/legacy/components/perf_ui/perf_ui.js';
 import {describeWithEnvironment} from '../../../helpers/EnvironmentHelpers.js';
-import type * as TimelineModel from '../../../../../../front_end/models/timeline_model/timeline_model.js';
 import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 const {assert} = chai;
@@ -28,7 +28,7 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
     layoutShiftsTrackAppender: Timeline.LayoutShiftsTrackAppender.LayoutShiftsTrackAppender,
     entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
-    traceParsedData: Readonly<TraceModel.Handlers.Migration.PartialTraceData>,
+    traceParsedData: Readonly<TraceModel.Handlers.Types.TraceParseData>,
   }> {
     const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
     const entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];

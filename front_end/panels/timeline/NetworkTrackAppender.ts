@@ -4,13 +4,12 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
-
 import {type HighlightedEntryInfo, type TrackAppender, type TrackAppenderName} from './CompatibilityTracksAppender.js';
-import {TimelineUIUtils} from './TimelineUIUtils.js';
-import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import {InstantEventVisibleDurationMs} from './TimelineFlameChartDataProvider.js';
+import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**
@@ -25,14 +24,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class NetworkTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'Network';
 
-  #traceParsedData: Readonly<TraceEngine.Handlers.Migration.PartialTraceData>;
+  #traceParsedData: Readonly<TraceEngine.Handlers.Types.TraceParseData>;
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
 
   #font: string;
   #group?: PerfUI.FlameChart.Group;
 
   constructor(
-      traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData,
+      traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
       flameChartData: PerfUI.FlameChart.FlameChartTimelineData) {
     this.#traceParsedData = traceParsedData;
     this.#flameChartData = flameChartData;

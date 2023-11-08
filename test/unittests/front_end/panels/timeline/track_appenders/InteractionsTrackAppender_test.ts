@@ -29,7 +29,7 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
     interactionsTrackAppender: Timeline.InteractionsTrackAppender.InteractionsTrackAppender,
     entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
-    traceParsedData: Readonly<TraceEngine.Handlers.Migration.PartialTraceData>,
+    traceParsedData: Readonly<TraceEngine.Handlers.Types.TraceParseData>,
   }> {
     const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
     const entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];

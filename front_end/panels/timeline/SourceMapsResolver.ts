@@ -26,7 +26,7 @@ const resolvedNodeNames:
         Map<TraceEngine.Types.TraceEvents.ThreadID, Map<number, string|null>>> = new Map();
 
 export class SourceMapsResolver extends EventTarget {
-  #traceData: TraceEngine.Handlers.Migration.PartialTraceData;
+  #traceData: TraceEngine.Handlers.Types.TraceParseData;
 
   #isResolvingNames = false;
 
@@ -37,7 +37,7 @@ export class SourceMapsResolver extends EventTarget {
   // those workers too.
   #debuggerModelsToListen = new Set<SDK.DebuggerModel.DebuggerModel>();
 
-  constructor(traceData: TraceEngine.Handlers.Migration.PartialTraceData) {
+  constructor(traceData: TraceEngine.Handlers.Types.TraceParseData) {
     super();
     this.#traceData = traceData;
   }

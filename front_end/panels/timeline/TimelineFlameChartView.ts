@@ -73,7 +73,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private needsResizeToPreferredHeights?: boolean;
   private selectedSearchResult?: number;
   private searchRegex?: RegExp;
-  #traceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null;
+  #traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null;
   #currentBreadcrumbTimeWindow?: TraceEngine.Types.Timing.TraceWindow;
   private selectedGroupName: string|null = null;
   constructor(
@@ -245,7 +245,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   setModel(
-      model: PerformanceModel|null, newTraceEngineData: TraceEngine.Handlers.Migration.PartialTraceData|null,
+      model: PerformanceModel|null, newTraceEngineData: TraceEngine.Handlers.Types.TraceParseData|null,
       isCpuProfile = false): void {
     if (model === this.model) {
       return;

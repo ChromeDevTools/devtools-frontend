@@ -76,7 +76,7 @@ export interface NewHistoryRecordingData {
   // We do not store this, but need it to build the thumbnail preview.
   filmStripForPreview: TraceEngine.Extras.FilmStrip.Data|null;
   // Also not stored, but used to create the preview overview for a new trace.
-  traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData;
+  traceParsedData: TraceEngine.Handlers.Types.TraceParseData;
 }
 
 export class TimelineHistoryManager {
@@ -85,9 +85,8 @@ export class TimelineHistoryManager {
   private readonly nextNumberByDomain: Map<string, number>;
   private readonly buttonInternal: ToolbarButton;
   private readonly allOverviews: {
-    constructor:
-        (traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData, performanceModel: PerformanceModel) =>
-            TimelineEventOverview,
+    constructor: (traceParsedData: TraceEngine.Handlers.Types.TraceParseData, performanceModel: PerformanceModel) =>
+        TimelineEventOverview,
     height: number,
   }[];
   private totalHeight: number;
@@ -292,7 +291,7 @@ export class TimelineHistoryManager {
   }
 
   private buildPreview(
-      performanceModel: PerformanceModel, traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData,
+      performanceModel: PerformanceModel, traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
       filmStrip: TraceEngine.Extras.FilmStrip.Data|null): HTMLDivElement {
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(performanceModel.timelineModel().pageURL());
     const domain = parsedURL ? parsedURL.host : '';
@@ -353,8 +352,8 @@ export class TimelineHistoryManager {
     return container;
   }
 
-  private buildOverview(
-      performanceModel: PerformanceModel, traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData): Element {
+  private buildOverview(performanceModel: PerformanceModel, traceParsedData: TraceEngine.Handlers.Types.TraceParseData):
+      Element {
     const container = document.createElement('div');
     const dPR = window.devicePixelRatio;
     container.style.width = previewWidth + 'px';

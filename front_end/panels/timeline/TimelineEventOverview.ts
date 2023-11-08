@@ -98,8 +98,8 @@ const HIGH_NETWORK_PRIORITIES = new Set<TraceEngine.Types.TraceEvents.Priority>(
 ]);
 
 export class TimelineEventOverviewNetwork extends TimelineEventOverview {
-  #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData;
-  constructor(traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData) {
+  #traceParsedData: TraceEngine.Handlers.Types.TraceParseData;
+  constructor(traceParsedData: TraceEngine.Handlers.Types.TraceParseData) {
     super('network', i18nString(UIStrings.net));
     this.#traceParsedData = traceParsedData;
   }
@@ -164,11 +164,11 @@ const categoryToIndex = new WeakMap<TimelineCategory, number>();
 export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   private backgroundCanvas: HTMLCanvasElement;
   #performanceModel: PerformanceModel|null = null;
-  #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData|null;
+  #traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null;
   #drawn = false;
   #start?: TraceEngine.Types.Timing.MilliSeconds;
   #end?: TraceEngine.Types.Timing.MilliSeconds;
-  constructor(model: PerformanceModel|null, traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData|null) {
+  constructor(model: PerformanceModel|null, traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null) {
     // During the sync tracks migration this component can use either legacy
     // Performance Model data or the new engine's data. Once the migration is
     // complete this will be updated to only use the new engine and mentions of
@@ -187,8 +187,8 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   }
 
   #drawWithNewEngine(
-      traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData,
-      customStart?: TraceEngine.Types.Timing.MilliSeconds, customEnd?: TraceEngine.Types.Timing.MilliSeconds): void {
+      traceParsedData: TraceEngine.Handlers.Types.TraceParseData, customStart?: TraceEngine.Types.Timing.MilliSeconds,
+      customEnd?: TraceEngine.Types.Timing.MilliSeconds): void {
     const traceBoundsMilli = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceParsedData.Meta.traceBounds);
     if (!traceParsedData.Renderer || !traceParsedData.Samples) {
       return;
@@ -438,8 +438,8 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
 }
 
 export class TimelineEventOverviewResponsiveness extends TimelineEventOverview {
-  #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData;
-  constructor(traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData) {
+  #traceParsedData: TraceEngine.Handlers.Types.TraceParseData;
+  constructor(traceParsedData: TraceEngine.Handlers.Types.TraceParseData) {
     super('responsiveness', null);
     this.#traceParsedData = traceParsedData;
   }
@@ -654,9 +654,9 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
 
 export class TimelineEventOverviewMemory extends TimelineEventOverview {
   private heapSizeLabel: HTMLElement;
-  #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData;
+  #traceParsedData: TraceEngine.Handlers.Types.TraceParseData;
 
-  constructor(traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData) {
+  constructor(traceParsedData: TraceEngine.Handlers.Types.TraceParseData) {
     super('memory', i18nString(UIStrings.heap));
     this.heapSizeLabel = this.element.createChild('div', 'memory-graph-label');
     this.#traceParsedData = traceParsedData;

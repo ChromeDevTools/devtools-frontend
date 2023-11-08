@@ -58,7 +58,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function buildWarningElementsForEvent(
     event: TraceEngine.Types.TraceEvents.TraceEventData,
-    traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData): HTMLSpanElement[] {
+    traceParsedData: TraceEngine.Handlers.Types.TraceParseData): HTMLSpanElement[] {
   const warnings = traceParsedData.Warnings.perEvent.get(event);
   const warningElements: HTMLSpanElement[] = [];
   if (!warnings) {

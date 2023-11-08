@@ -150,7 +150,7 @@ export class ThreadAppender implements TrackAppender {
 
   #colorGenerator: Common.Color.Generator;
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData;
+  #traceParsedData: TraceEngine.Handlers.Types.TraceParseData;
 
   #entries: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
   #tree: TraceEngine.Helpers.TreeHelpers.TraceEntryTree;
@@ -175,9 +175,9 @@ export class ThreadAppender implements TrackAppender {
   // groups).
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-      traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData,
-      processId: TraceEngine.Types.TraceEvents.ProcessID, threadId: TraceEngine.Types.TraceEvents.ThreadID,
-      threadName: string|null, type: ThreadType, rasterCount: number = 0) {
+      traceParsedData: TraceEngine.Handlers.Types.TraceParseData, processId: TraceEngine.Types.TraceEvents.ProcessID,
+      threadId: TraceEngine.Types.TraceEvents.ThreadID, threadName: string|null, type: ThreadType,
+      rasterCount: number = 0) {
     this.#compatibilityBuilder = compatibilityBuilder;
     // TODO(crbug.com/1456706):
     // The values for this color generator have been taken from the old

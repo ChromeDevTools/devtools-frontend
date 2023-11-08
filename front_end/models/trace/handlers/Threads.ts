@@ -5,8 +5,8 @@
 import type * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
-import {type PartialTraceData} from './Migration.js';
 import type * as Renderer from './RendererHandler.js';
+import {type TraceParseData} from './types.js';
 
 export interface ThreadData {
   pid: Types.TraceEvents.ProcessID;
@@ -28,7 +28,7 @@ export const enum ThreadType {
 }
 
 function getThreadTypeForRendererThread(
-    traceParseData: PartialTraceData, pid: Types.TraceEvents.ProcessID, thread: Renderer.RendererThread): ThreadType {
+    traceParseData: TraceParseData, pid: Types.TraceEvents.ProcessID, thread: Renderer.RendererThread): ThreadType {
   let threadType = ThreadType.OTHER;
   if (thread.name === 'CrRendererMain') {
     threadType = ThreadType.MAIN_THREAD;
@@ -49,13 +49,13 @@ function getThreadTypeForRendererThread(
  * can use this helper to iterate over threads in confidence that it will work
  * for both trace types.
  */
-export function threadsInTrace(traceParseData: PartialTraceData): readonly ThreadData[] {
+export function threadsInTrace(traceParseData: TraceParseData): readonly ThreadData[] {
   const foundThreads: ThreadData[] = [];
   // If we have Renderer threads, we prefer to use those. In the event that a
   // trace is a CPU Profile trace, we will never have Renderer threads, so we
   // know if there are no Renderer threads that we can fallback to using the
   // data from the SamplesHandler.
-  if (traceParseData.Renderer && traceParseData.Renderer.processes.size) {
+  if (traceParseData.Renderer.processes.size) {
     for (const [pid, process] of traceParseData.Renderer.processes) {
       for (const [tid, thread] of process.threads) {
         const threadType = getThreadTypeForRendererThread(traceParseData, pid, thread);
@@ -76,7 +76,7 @@ export function threadsInTrace(traceParseData: PartialTraceData): readonly Threa
         });
       }
     }
-  } else if (traceParseData.Samples && traceParseData.Samples.profilesInProcess.size) {
+  } else if (traceParseData.Samples.profilesInProcess.size) {
     for (const [pid, process] of traceParseData.Samples.profilesInProcess) {
       for (const [tid, thread] of process) {
         if (!thread.profileTree) {

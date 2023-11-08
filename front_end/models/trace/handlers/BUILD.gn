@@ -16,7 +16,6 @@ devtools_module("handlers") {
     "LayoutShiftsHandler.ts",
     "MemoryHandler.ts",
     "MetaHandler.ts",
-    "Migration.ts",
     "ModelHandlers.ts",
     "NetworkRequestsHandler.ts",
     "PageLoadMetricsHandler.ts",

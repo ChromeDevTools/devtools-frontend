@@ -45,12 +45,6 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     return new Model(Handlers.ModelHandlers, config);
   }
 
-  static createWithRequiredHandlersForMigration(config?: Types.Configuration.Configuration): Model<{
-    [K in keyof typeof Handlers.Migration.ENABLED_TRACE_HANDLERS]: typeof Handlers.Migration.ENABLED_TRACE_HANDLERS[K];
-  }> {
-    return new Model(Handlers.Migration.ENABLED_TRACE_HANDLERS, config);
-  }
-
   constructor(handlers: EnabledModelHandlers, config?: Types.Configuration.Configuration) {
     super();
     if (config) {

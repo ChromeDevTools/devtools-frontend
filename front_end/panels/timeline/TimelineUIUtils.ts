@@ -1357,7 +1357,7 @@ export class TimelineUIUtils {
 
   static testContentMatching(
       traceEvent: TraceEngine.Legacy.CompatibleTraceEvent, regExp: RegExp,
-      traceParsedData?: TraceEngine.Handlers.Migration.PartialTraceData): boolean {
+      traceParsedData?: TraceEngine.Handlers.Types.TraceParseData): boolean {
     const title = TimelineUIUtils.eventStyle(traceEvent).title;
     const tokens = [title];
 
@@ -1944,7 +1944,7 @@ export class TimelineUIUtils {
       // awkward because to change them is to cause a lot of layout tests to be
       // updated. We should rewrite those tests as unit tests in this codebase,
       // and then we can more easily change this method.
-      traceParseData: TraceEngine.Handlers.Migration.PartialTraceData|null = null,
+      traceParseData: TraceEngine.Handlers.Types.TraceParseData|null = null,
       ): Promise<DocumentFragment> {
     const maybeTarget = model.targetByEvent(event);
     const {duration, selfTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
@@ -2890,7 +2890,7 @@ export class TimelineUIUtils {
       total: {
         [x: string]: number,
       },
-      traceParseData: TraceEngine.Handlers.Migration.PartialTraceData,
+      traceParseData: TraceEngine.Handlers.Types.TraceParseData,
       event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
     const events = traceParseData.Renderer?.allTraceEntries || [];
     const {startTime, endTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
@@ -3713,7 +3713,7 @@ export interface TimelineMarkerStyle {
  **/
 export function timeStampForEventAdjustedForClosestNavigationIfPossible(
     event: TraceEngine.Types.TraceEvents.TraceEventData,
-    traceParsedData: TraceEngine.Handlers.Migration.PartialTraceData|null): TraceEngine.Types.Timing.MilliSeconds {
+    traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null): TraceEngine.Types.Timing.MilliSeconds {
   if (!traceParsedData) {
     const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
     return startTime;

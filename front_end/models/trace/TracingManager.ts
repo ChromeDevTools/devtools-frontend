@@ -168,7 +168,7 @@ export interface EventPayload {
     data: Object|null,
   };
   dur: number;
-  id: string;
+  id?: string;
   id2?: {
     global: (string|undefined),
     local: (string|undefined),

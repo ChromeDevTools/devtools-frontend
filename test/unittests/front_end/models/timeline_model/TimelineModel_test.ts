@@ -521,11 +521,12 @@ describeWithEnvironment('TimelineModel', function() {
         TraceEngine.Legacy.AsyncEvent[] {
       const builtEvents = new Map<string, TraceEngine.Legacy.AsyncEvent>();
       for (const payload of asyncPayloads) {
-        let beginEvent = builtEvents.get(payload.id);
+        const id = TraceEngine.Legacy.TracingModel.extractId(payload) || '';
+        let beginEvent = builtEvents.get(id);
         const event = new TraceEngine.Legacy.AsyncEvent(TraceEngine.Legacy.PayloadEvent.fromPayload(payload, thread));
         if (!beginEvent) {
           beginEvent = new TraceEngine.Legacy.AsyncEvent(event);
-          builtEvents.set(payload.id, beginEvent);
+          builtEvents.set(id, beginEvent);
         } else {
           beginEvent.addStep(event);
         }

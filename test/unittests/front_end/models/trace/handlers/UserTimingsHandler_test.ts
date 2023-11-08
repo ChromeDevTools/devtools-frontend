@@ -26,11 +26,17 @@ describe('UserTimingsHandler', function() {
     describe('performance.measure events parsing', function() {
       it('parses the start and end events and returns a list of blocks', async () => {
         assert.lengthOf(timingsData.performanceMeasures, 3);
-        assert.strictEqual(timingsData.performanceMeasures[0].id, 'blink.user_timing:0x9072211:first measure');
+        assert.strictEqual(
+            TraceModel.Helpers.Trace.extractId(timingsData.performanceMeasures[0]),
+            'blink.user_timing:0x9072211:first measure');
         assert.strictEqual(timingsData.performanceMeasures[0].name, 'first measure');
-        assert.strictEqual(timingsData.performanceMeasures[1].id, 'blink.user_timing:0x6ece31c8:second measure');
+        assert.strictEqual(
+            TraceModel.Helpers.Trace.extractId(timingsData.performanceMeasures[1]),
+            'blink.user_timing:0x6ece31c8:second measure');
         assert.strictEqual(timingsData.performanceMeasures[1].name, 'second measure');
-        assert.strictEqual(timingsData.performanceMeasures[2].id, 'blink.user_timing:0x10c31982:third measure');
+        assert.strictEqual(
+            TraceModel.Helpers.Trace.extractId(timingsData.performanceMeasures[2]),
+            'blink.user_timing:0x10c31982:third measure');
         assert.strictEqual(timingsData.performanceMeasures[2].name, 'third measure');
 
         // Ensure we assign begin + end the right way round by making sure the
@@ -131,9 +137,13 @@ describe('UserTimingsHandler', function() {
     describe('console.time events parsing', function() {
       it('parses the start and end events and returns a list of blocks', async () => {
         assert.lengthOf(timingsData.consoleTimings, 3);
-        assert.strictEqual(timingsData.consoleTimings[0].id, 'blink.console:0x12c00282160:first console time');
+        assert.strictEqual(
+            TraceModel.Helpers.Trace.extractId(timingsData.consoleTimings[0]),
+            'blink.console:0x12c00282160:first console time');
         assert.strictEqual(timingsData.consoleTimings[0].name, 'first console time');
-        assert.strictEqual(timingsData.consoleTimings[1].id, 'blink.console:0x12c00282160:second console time');
+        assert.strictEqual(
+            TraceModel.Helpers.Trace.extractId(timingsData.consoleTimings[1]),
+            'blink.console:0x12c00282160:second console time');
         assert.strictEqual(timingsData.consoleTimings[1].name, 'second console time');
 
         // Ensure we assign begin + end the right way round by making sure the

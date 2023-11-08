@@ -211,9 +211,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.flowEventIndexById = new Map();
   }
 
-  modifyTree(group: PerfUI.FlameChart.Group, node: number, flameChartView: PerfUI.FlameChart.FlameChart): void {
+  modifyTree(
+      group: PerfUI.FlameChart.Group, node: number, action: TraceEngine.TreeManipulator.TreeAction,
+      flameChartView: PerfUI.FlameChart.FlameChart): void {
     const entry = this.entryData[node] as TraceEngine.Types.TraceEvents.TraceEntry;
-    this.compatibilityTracksAppender?.modifyTree(group, entry, flameChartView);
+    this.compatibilityTracksAppender?.modifyTree(group, entry, action, flameChartView);
   }
 
   private buildGroupStyle(extra: Object): PerfUI.FlameChart.GroupStyle {

@@ -181,10 +181,10 @@ export class CompatibilityTracksAppender {
 
   modifyTree(
       group: PerfUI.FlameChart.Group, node: TraceEngine.Types.TraceEvents.TraceEntry,
-      flameChartView: PerfUI.FlameChart.FlameChart): void {
+      action: TraceEngine.TreeManipulator.TreeAction, flameChartView: PerfUI.FlameChart.FlameChart): void {
     const threadTrackAppender = this.#trackForGroup.get(group);
     if (threadTrackAppender instanceof ThreadAppender) {
-      threadTrackAppender.modifyTree(node, flameChartView);
+      threadTrackAppender.modifyTree(node, action, flameChartView);
     } else {
       console.warn('Could not modify tree in not thread track');
     }

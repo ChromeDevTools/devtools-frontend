@@ -224,12 +224,14 @@ export class ThreadAppender implements TrackAppender {
     }
   }
 
-  modifyTree(traceEvent: TraceEngine.Types.TraceEvents.TraceEntry, flameChartView: PerfUI.FlameChart.FlameChart): void {
+  modifyTree(
+      traceEvent: TraceEngine.Types.TraceEvents.TraceEntry, action: TraceEngine.TreeManipulator.TreeAction,
+      flameChartView: PerfUI.FlameChart.FlameChart): void {
     if (!this.#treeManipulator) {
       return;
     }
     // TODO(crbug.com/1469887): Change MERGE_FUNCTION to the user selected operation
-    this.#treeManipulator.applyAction({type: 'MERGE_FUNCTION', entry: traceEvent});
+    this.#treeManipulator.applyAction({type: action, entry: traceEvent});
     this.#entries = this.#treeManipulator.invisibleEntries();
     flameChartView.dispatchEventToListeners(PerfUI.FlameChart.Events.EntriesModified);
   }

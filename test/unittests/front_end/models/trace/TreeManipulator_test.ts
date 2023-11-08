@@ -76,7 +76,7 @@ describe('TreeManipulator', function() {
           entry.dur === 827;
     });
     const stack = new TraceEngine.TreeManipulator.TreeManipulator(mainThread, data.Renderer.entryToNode);
-    stack.applyAction({type: 'MERGE_FUNCTION', entry: entryTwo});
+    stack.applyAction({type: TraceEngine.TreeManipulator.TreeAction.MERGE_FUNCTION, entry: entryTwo});
     assert.isTrue(stack.invisibleEntries().includes(entryTwo), 'entryTwo is invisble');
     // Only one entry - the one for the `basicTwo` function - should have been hidden.
     assert.strictEqual(stack.invisibleEntries().length, 1);
@@ -94,13 +94,13 @@ describe('TreeManipulator', function() {
           entry.dur === 827;
     });
     const stack = new TraceEngine.TreeManipulator.TreeManipulator(mainThread, data.Renderer.entryToNode);
-    stack.applyAction({type: 'MERGE_FUNCTION', entry: entryTwo});
+    stack.applyAction({type: TraceEngine.TreeManipulator.TreeAction.MERGE_FUNCTION, entry: entryTwo});
     assert.isTrue(stack.invisibleEntries().includes(entryTwo), 'entryTwo is invisible');
     // Only one entry - the one for the `basicTwo` function - should have been hidden.
     assert.strictEqual(stack.invisibleEntries().length, 1);
 
     // Now remove the action and ensure that all entries are now visible.
-    stack.removeActiveAction({type: 'MERGE_FUNCTION', entry: entryTwo});
+    stack.removeActiveAction({type: TraceEngine.TreeManipulator.TreeAction.MERGE_FUNCTION, entry: entryTwo});
     assert.strictEqual(stack.invisibleEntries().length, 0, 'All the entries should be visible.');
   });
 
@@ -144,7 +144,7 @@ describe('TreeManipulator', function() {
       return endTime <= basicTwoCallEndTime;
     });
     const stack = new TraceEngine.TreeManipulator.TreeManipulator(mainThread, data.Renderer.entryToNode);
-    stack.applyAction({type: 'COLLAPSE_FUNCTION', entry: basicTwoCallEntry});
+    stack.applyAction({type: TraceEngine.TreeManipulator.TreeAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
 
     // We collapsed at the `basicTwo` entry - so it should not be included in the invisible list itself.
     assert.isFalse(stack.invisibleEntries().includes(basicTwoCallEntry), 'entryTwo is not visible');

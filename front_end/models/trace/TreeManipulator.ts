@@ -9,8 +9,13 @@ import type * as Types from './types/types.js';
 
 type EntryToNodeMap = Map<Types.TraceEvents.TraceEntry, Helpers.TreeHelpers.TraceEntryNode>;
 
+export const enum TreeAction {
+  MERGE_FUNCTION = 'MERGE_FUNCTION',
+  COLLAPSE_FUNCTION = 'COLLAPSE_FUNCTION',
+}
+
 export interface UserTreeAction {
-  type: 'MERGE_FUNCTION'|'COLLAPSE_FUNCTION';
+  type: TreeAction;
   entry: Types.TraceEvents.TraceEntry;
 }
 
@@ -131,7 +136,7 @@ export class TreeManipulator {
 
     for (const action of this.#activeActions) {
       switch (action.type) {
-        case 'MERGE_FUNCTION': {
+        case TreeAction.MERGE_FUNCTION: {
           // The entry that was clicked on is merged into its parent. All its
           // children remain visible, so we just have to hide the entry that was
           // selected.
@@ -139,7 +144,7 @@ export class TreeManipulator {
           break;
         }
 
-        case 'COLLAPSE_FUNCTION': {
+        case TreeAction.COLLAPSE_FUNCTION: {
           // The entry itself remains visible, but all of its ancestors are hidden.
           const entryNode = this.#entryToNode.get(action.entry);
           if (!entryNode) {

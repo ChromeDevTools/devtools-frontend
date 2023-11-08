@@ -763,6 +763,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return;
     }
     // TODO(crbug.com/1469887): implement context menu actions that allow to modify flame chart trees.
+    // TODO(crbug.com/1469887): keep selectedTrack and Y scroll poisition when context menu action is applied.
 
     // Update the selected index to match the highlighted index, which
     // represents the entry under the cursor where the user has right clicked
@@ -770,16 +771,22 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.dispatchEventToListeners(Events.EntryInvoked, this.highlightedEntryIndex);
     const contextMenu = new UI.ContextMenu.ContextMenu(_event);
 
-    // TODO(crbug.com/1469887): Change text/ui to the final designs when they are complete.
-    contextMenu.headerSection().appendItem('Merge function', () => {
-      // TODO(crbug.com/1469887): Pass which flamechart modification (ex. merge, collapse recursion) needs to be applied in TreeModified event
+    const dispatchTreeModifiedEvent = (treeAction: TraceEngine.TreeManipulator.TreeAction): void => {
       this.dispatchEventToListeners(Events.TreeModified, {
         group: group,
         node: this.selectedEntryIndex,
+        action: treeAction,
       });
+    };
+
+    // TODO(crbug.com/1469887): Change text/ui to the final designs when they are complete.
+    contextMenu.headerSection().appendItem('Merge function', () => {
+      dispatchTreeModifiedEvent(TraceEngine.TreeManipulator.TreeAction.MERGE_FUNCTION);
     });
 
-    contextMenu.headerSection().appendItem('Collapse function', () => {});
+    contextMenu.headerSection().appendItem('Collapse function', () => {
+      dispatchTreeModifiedEvent(TraceEngine.TreeManipulator.TreeAction.COLLAPSE_FUNCTION);
+    });
 
     contextMenu.headerSection().appendItem('Collapse recursion', () => {});
 
@@ -2745,6 +2752,7 @@ export type EventTypes = {
   [Events.TreeModified]: {
     group: Group,
     node: number,
+    action: TraceEngine.TreeManipulator.TreeAction,
   },
   [Events.EntriesModified]: void,
 };

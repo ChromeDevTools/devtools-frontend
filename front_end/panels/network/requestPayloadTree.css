@@ -50,6 +50,8 @@
   margin-left: 30px;
   font-weight: normal;
   color: var(--sys-color-on-surface);
+  background: none;
+  border: none;
 }
 
 .tree-outline li.expanded .payload-toggle:focus-visible {

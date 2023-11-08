@@ -396,6 +396,9 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN,
         'Redesign of the filter bar in the Network Panel',
+        false,
+        'https://goo.gle/devtools-network-filter-redesign',
+        'https://crbug.com/1500573',
     );
 
     Root.Runtime.experiments.register(

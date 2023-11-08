@@ -15,16 +15,16 @@
   --icon-disabled: var(--sys-color-state-disabled);
   --icon-error: var(--sys-color-error-bright);
   --icon-file-authored: var(--sys-color-orange-bright);
-  --icon-file-default: var(--sys-color-on-surface-variant);
+  --icon-file-default: var(--sys-color-on-surface-subtle);
   --icon-file-document: var(--sys-color-primary-bright);
   --icon-file-font: var(--sys-color-cyan-bright);
   --icon-file-media: var(--sys-color-green-bright);
   --icon-file-image: var(--sys-color-green-bright);
   --icon-file-script: var(--sys-color-orange-bright);
   --icon-file-styles: var(--sys-color-purple-bright);
-  --icon-fold-marker: var(--sys-color-on-surface-variant);
+  --icon-fold-marker: var(--sys-color-on-surface-subtle);
   --icon-folder-authored: var(--sys-color-orange);
-  --icon-folder-primary: var(--sys-color-on-surface-variant);
+  --icon-folder-primary: var(--sys-color-on-surface-subtle);
   --icon-folder-deployed: var(--sys-color-primary-bright);
   --icon-folder-workspace: var(--sys-color-orange);
   --icon-force-white: var(--sys-color-on-tonal-container);
@@ -40,7 +40,7 @@
   --icon-primary: var(--sys-color-primary-bright);
   --icon-record: var(--sys-color-error-bright);
   --icon-request-response: var(--sys-color-primary-bright);
-  --icon-request: var(--sys-color-on-surface-variant);
+  --icon-request: var(--sys-color-on-surface-subtle);
   --icon-security-lock: var(--sys-color-green-bright);
   --icon-css: var(--sys-color-purple-bright);
   --icon-css-hover: var(--sys-color-purple);

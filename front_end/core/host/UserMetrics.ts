@@ -936,9 +936,10 @@ export enum DevtoolsExperiments {
   'breadcrumbsPerformancePanel' = 80,
   'trackContextMenu' = 81,
   'autofillView' = 82,
+  'sourcesFrameIndentationMarkersTemporarilyDisable' = 83,
 
   // Increment this when new experiments are added.
-  'MaxValue' = 83,
+  'MaxValue' = 84,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

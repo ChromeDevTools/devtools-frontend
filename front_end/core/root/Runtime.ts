@@ -315,6 +315,7 @@ export enum ExperimentName {
   BREADCRUMBS_PERFORMANCE_PANEL = 'breadcrumbsPerformancePanel',
   TRACK_CONTEXT_MENU = 'trackContextMenu',
   AUTOFILL_VIEW = 'autofillView',
+  INDENTATION_MARKERS_TEMP_DISABLE = 'sourcesFrameIndentationMarkersTemporarilyDisable',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

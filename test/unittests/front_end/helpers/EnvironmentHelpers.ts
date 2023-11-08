@@ -132,6 +132,7 @@ const REGISTERED_EXPERIMENTS = [
   'networkPanelFilterBarRedesign',
   'breadcrumbsPerformancePanel',
   'trackContextMenu',
+  'sourcesFrameIndentationMarkersTemporarilyDisable',
 ];
 
 export async function initializeGlobalVars({reset = true} = {}) {

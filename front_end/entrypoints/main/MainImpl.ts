@@ -303,6 +303,12 @@ export class MainImpl {
         'https://developer.chrome.com/blog/js-profiler-deprecation/',
         'https://bugs.chromium.org/p/chromium/issues/detail?id=1354548');
 
+    // Sources
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.INDENTATION_MARKERS_TEMP_DISABLE, 'Disable Indentation Markers temporarily',
+        /* unstable= */ false, 'https://developer.chrome.com/blog/new-in-devtools-121/#indentation',
+        'https://crbug.com/1479986');
+
     // Debugging
     Root.Runtime.experiments.register(
         'wasmDWARFDebugging', 'WebAssembly Debugging: Enable DWARF support', undefined,

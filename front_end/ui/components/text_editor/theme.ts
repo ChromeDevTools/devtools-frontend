@@ -48,7 +48,7 @@ export const editorTheme = CM.EditorView.theme({
   },
 
   '.cm-gutters': {
-    borderRight: '1px solid var(--sys-color-divider)',
+    borderRight: 'none',
     whiteSpace: 'nowrap',
     backgroundColor: 'var(--sys-color-cdt-base-container)',
   },

@@ -505,7 +505,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           value: '1ms',
         },
         {
-          title: 'Main thread processing',
+          title: 'Processing time',
           value: '977ms',
         },
         {

@@ -40,6 +40,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {CompatibilityTracksAppender, type TrackAppenderName} from './CompatibilityTracksAppender.js';
+import * as Components from './components/components.js';
 import {type TimelineCategory} from './EventUICategory.js';
 import {type PerformanceModel} from './PerformanceModel.js';
 import {ThreadAppender, ThreadType} from './ThreadAppender.js';
@@ -925,6 +926,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     let warningElements: Element[] = [];
     let nameSpanTimelineInfoTime = 'timeline-info-time';
 
+    const additionalContent: HTMLElement[] = [];
+
     const entryType = this.entryType(entryIndex);
     if (entryType === EntryType.TrackAppender) {
       if (!this.compatibilityTracksAppender) {
@@ -937,6 +940,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       title = highlightedEntryInfo.title;
       time = highlightedEntryInfo.formattedTime;
       warningElements = highlightedEntryInfo.warningElements || warningElements;
+      if (TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(event)) {
+        const breakdown = new Components.InteractionBreakdown.InteractionBreakdown();
+        breakdown.entry = event;
+        additionalContent.push(breakdown);
+      }
     } else if (entryType === EntryType.Event) {
       const event = (this.entryData[entryIndex] as TraceEngine.Legacy.Event);
       const totalTime = event.duration;
@@ -997,6 +1005,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         warningElement.classList.add('timeline-info-warning');
         contents.appendChild(warningElement);
       }
+    }
+    for (const elem of additionalContent) {
+      contents.appendChild(elem);
     }
     return element;
   }

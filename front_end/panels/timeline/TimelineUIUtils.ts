@@ -410,9 +410,9 @@ const UIStrings = {
    */
   inputDelay: 'Input delay',
   /**
-   *@description Text shown next to the interaction event's main thread processing time in the detail view.
+   *@description Text shown next to the interaction event's thread processing time in the detail view.
    */
-  mainThreadHandling: 'Main thread processing',
+  processingTime: 'Processing time',
   /**
    *@description Text shown next to the interaction event's presentation delay time in the detail view.
    */
@@ -2374,7 +2374,7 @@ export class TimelineUIUtils {
           const presentationDelay = TraceEngine.Helpers.Timing.formatMicrosecondsTime(payload.presentationDelay);
           contentHelper.appendTextRow(i18nString(UIStrings.interactionID), payload.interactionId);
           contentHelper.appendTextRow(i18nString(UIStrings.inputDelay), inputDelay);
-          contentHelper.appendTextRow(i18nString(UIStrings.mainThreadHandling), mainThreadTime);
+          contentHelper.appendTextRow(i18nString(UIStrings.processingTime), mainThreadTime);
           contentHelper.appendTextRow(i18nString(UIStrings.presentationDelay), presentationDelay);
         }
         break;

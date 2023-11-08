@@ -13,5 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { bufferCount, catchError, concatMap, defaultIfEmpty, defer, delay, EMPTY, filter, first, firstValueFrom, from, fromEvent, identity, ignoreElements, lastValueFrom, map, merge, mergeMap, NEVER, noop, Observable, of, OperatorFunction, pipe, race, raceWith, retry, startWith, switchMap, takeUntil, tap, throwIfEmpty, timer, forkJoin, } from 'rxjs';
+export { bufferCount, catchError, concatMap, defaultIfEmpty, defer, delay, EMPTY, filter, first, firstValueFrom, forkJoin, from, fromEvent, identity, ignoreElements, lastValueFrom, map, merge, mergeMap, NEVER, noop, of, pipe, race, raceWith, retry, startWith, switchMap, takeUntil, tap, throwIfEmpty, timer, } from 'rxjs';
+export type * from 'rxjs';
 export declare function filterAsync<T>(predicate: (value: T) => boolean | PromiseLike<boolean>): import("rxjs").OperatorFunction<T, T>;

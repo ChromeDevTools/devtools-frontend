@@ -691,8 +691,8 @@ class CdpPage extends Page_js_1.Page {
         return await (0, util_js_1.waitForHTTP)(this.#frameManager.networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Response, urlOrPredicate, timeout, this.#sessionCloseDeferred);
     }
     async waitForNetworkIdle(options = {}) {
-        const { idleTime = 500, timeout = this._timeoutSettings.timeout() } = options;
-        await this._waitForNetworkIdle(this.#frameManager.networkManager, idleTime, timeout, this.#sessionCloseDeferred);
+        const { idleTime = util_js_1.NETWORK_IDLE_TIME, timeout: ms = this._timeoutSettings.timeout(), } = options;
+        await (0, rxjs_js_1.firstValueFrom)(this._waitForNetworkIdle(this.#frameManager.networkManager, idleTime).pipe((0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, rxjs_js_1.from)(this.#sessionCloseDeferred.valueOrThrow()))));
     }
     async goBack(options = {}) {
         return await this.#go(-1, options);

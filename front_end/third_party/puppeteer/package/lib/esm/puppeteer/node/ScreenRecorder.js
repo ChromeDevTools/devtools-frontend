@@ -159,7 +159,7 @@ let ScreenRecorder = (() => {
                     timestamp: event.metadata.timestamp,
                 };
             }), bufferCount(2, 1), concatMap(([{ timestamp: previousTimestamp, buffer }, { timestamp }]) => {
-                return from(Array(Math.round(DEFAULT_FPS * (timestamp - previousTimestamp))).fill(buffer));
+                return from(Array(Math.round(DEFAULT_FPS * Math.max(timestamp - previousTimestamp, 0))).fill(buffer));
             }), map(buffer => {
                 void this.#writeFrame(buffer);
                 return [buffer, performance.now()];

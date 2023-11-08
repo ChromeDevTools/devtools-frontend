@@ -65,7 +65,7 @@ import { ConsoleMessage, } from '../common/ConsoleMessage.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { FileChooser } from '../common/FileChooser.js';
 import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
-import { createClientError, debugError, evaluationString, getReadableAsBuffer, getReadableFromProtocolStream, pageBindingInitString, timeout, validateDialogType, valueFromRemoteObject, waitForHTTP, } from '../common/util.js';
+import { createClientError, debugError, evaluationString, getReadableAsBuffer, getReadableFromProtocolStream, NETWORK_IDLE_TIME, pageBindingInitString, timeout, validateDialogType, valueFromRemoteObject, waitForHTTP, } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { AsyncDisposableStack } from '../util/disposable.js';
@@ -688,8 +688,8 @@ export class CdpPage extends Page {
         return await waitForHTTP(this.#frameManager.networkManager, NetworkManagerEvent.Response, urlOrPredicate, timeout, this.#sessionCloseDeferred);
     }
     async waitForNetworkIdle(options = {}) {
-        const { idleTime = 500, timeout = this._timeoutSettings.timeout() } = options;
-        await this._waitForNetworkIdle(this.#frameManager.networkManager, idleTime, timeout, this.#sessionCloseDeferred);
+        const { idleTime = NETWORK_IDLE_TIME, timeout: ms = this._timeoutSettings.timeout(), } = options;
+        await firstValueFrom(this._waitForNetworkIdle(this.#frameManager.networkManager, idleTime).pipe(raceWith(timeout(ms), from(this.#sessionCloseDeferred.valueOrThrow()))));
     }
     async goBack(options = {}) {
         return await this.#go(-1, options);

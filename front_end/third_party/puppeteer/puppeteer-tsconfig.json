@@ -42,6 +42,7 @@
     "package/lib/esm/puppeteer/bidi/Serializer.js",
     "package/lib/esm/puppeteer/bidi/Target.js",
     "package/lib/esm/puppeteer/bidi/bidi.js",
+    "package/lib/esm/puppeteer/bidi/lifecycle.js",
     "package/lib/esm/puppeteer/bidi/util.js",
     "package/lib/esm/puppeteer/cdp/Accessibility.js",
     "package/lib/esm/puppeteer/cdp/AriaQueryHandler.js",

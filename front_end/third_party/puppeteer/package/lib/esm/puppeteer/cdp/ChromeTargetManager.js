@@ -192,7 +192,6 @@ export class ChromeTargetManager extends EventEmitter {
         const previousURL = target.url();
         const wasInitialized = target._initializedDeferred.value() === InitializationStatus.SUCCESS;
         if (isPageTargetBecomingPrimary(target, event.targetInfo)) {
-            const target = this.#attachedTargetsByTargetId.get(event.targetInfo.targetId);
             const session = target?._session();
             assert(session, 'Target that is being activated is missing a CDPSession.');
             session.parentSession()?.emit(CDPSessionEvent.Swapped, session);

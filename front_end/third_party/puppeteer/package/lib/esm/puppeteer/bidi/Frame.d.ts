@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import type { ObservableInput } from '../../third_party/rxjs/rxjs.js';
+import { type Observable } from '../../third_party/rxjs/rxjs.js';
 import type { CDPSession } from '../api/CDPSession.js';
 import { Frame, type GoToOptions, type WaitForOptions } from '../api/Frame.js';
-import type { PuppeteerLifeCycleEvent } from '../cdp/LifecycleWatcher.js';
 import type { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { Awaitable } from '../common/types.js';
 import { disposeSymbol } from '../util/disposable.js';
-import { type BrowsingContext } from './BrowsingContext.js';
+import type { BrowsingContext } from './BrowsingContext.js';
 import type { BidiHTTPResponse } from './HTTPResponse.js';
+import type { BiDiNetworkIdle } from './lifecycle.js';
 import type { BidiPage } from './Page.js';
 import { Sandbox, type SandboxChart } from './Sandbox.js';
-/**
- * @internal
- */
-export declare const lifeCycleToReadinessState: Map<PuppeteerLifeCycleEvent, Bidi.BrowsingContext.ReadinessState>;
 /**
  * Puppeteer's Frame class could be viewed as a BiDi BrowsingContext implementation
  * @internal
@@ -51,5 +49,11 @@ export declare class BidiFrame extends Frame {
     get detached(): boolean;
     [disposeSymbol](): void;
     exposeFunction<Args extends unknown[], Ret>(name: string, apply: (...args: Args) => Awaitable<Ret>): Promise<void>;
+    /** @internal */
+    _waitWithNetworkIdle(observableInput: ObservableInput<{
+        result: Bidi.BrowsingContext.NavigateResult;
+    } | null>, networkIdle: BiDiNetworkIdle): Observable<{
+        result: Bidi.BrowsingContext.NavigateResult;
+    } | null>;
 }
 //# sourceMappingURL=Frame.d.ts.map

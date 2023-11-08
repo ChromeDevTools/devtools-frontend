@@ -70,7 +70,9 @@ async function connectBidiOverCdp(cdp) {
         pptrTransport.onmessage(JSON.stringify(message));
     });
     const pptrBiDiConnection = new Connection_js_1.BidiConnection(cdp.url(), pptrTransport);
-    const bidiServer = await BidiMapper.BidiServer.createAndStart(transportBiDi, cdpConnectionAdapter, '', undefined, bidiServerLogger);
+    const bidiServer = await BidiMapper.BidiServer.createAndStart(transportBiDi, cdpConnectionAdapter, 
+    // TODO: most likely need a little bit of refactoring
+    cdpConnectionAdapter.browserClient(), '', undefined, bidiServerLogger);
     return pptrBiDiConnection;
 }
 exports.connectBidiOverCdp = connectBidiOverCdp;

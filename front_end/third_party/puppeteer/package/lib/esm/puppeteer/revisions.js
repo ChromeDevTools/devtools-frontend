@@ -17,7 +17,7 @@
  * @internal
  */
 export const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '118.0.5993.70',
+    chrome: '119.0.6045.105',
     firefox: 'latest',
 });
 //# sourceMappingURL=revisions.js.map

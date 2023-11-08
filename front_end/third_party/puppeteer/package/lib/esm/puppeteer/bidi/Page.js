@@ -66,19 +66,20 @@ import { EmulationManager as CdpEmulationManager } from '../cdp/EmulationManager
 import { FrameTree } from '../cdp/FrameTree.js';
 import { Tracing } from '../cdp/Tracing.js';
 import { ConsoleMessage, } from '../common/ConsoleMessage.js';
-import { ProtocolError, TargetCloseError, TimeoutError, } from '../common/Errors.js';
+import { TargetCloseError } from '../common/Errors.js';
 import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
-import { debugError, evaluationString, timeout, validateDialogType, waitForHTTP, waitWithTimeout, } from '../common/util.js';
+import { debugError, evaluationString, NETWORK_IDLE_TIME, timeout, validateDialogType, waitForHTTP, } from '../common/util.js';
 import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
-import { BrowsingContextEvent, CdpSessionWrapper, getWaitUntilSingle, } from './BrowsingContext.js';
+import { BrowsingContextEvent, CdpSessionWrapper, } from './BrowsingContext.js';
 import { BidiDeserializer } from './Deserializer.js';
 import { BidiDialog } from './Dialog.js';
 import { BidiElementHandle } from './ElementHandle.js';
 import { EmulationManager } from './EmulationManager.js';
-import { BidiFrame, lifeCycleToReadinessState } from './Frame.js';
+import { BidiFrame } from './Frame.js';
 import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
+import { getBiDiReadinessState, rewriteNavigationError } from './lifecycle.js';
 import { BidiNetworkManager } from './NetworkManager.js';
 import { createBidiHandle } from './Realm.js';
 /**
@@ -88,7 +89,7 @@ export class BidiPage extends Page {
     #accessibility;
     #connection;
     #frameTree = new FrameTree();
-    #networkManager;
+    _networkManager;
     #viewport = null;
     #closedDeferred = Deferred.create();
     #subscribedEvents = new Map([
@@ -160,13 +161,13 @@ export class BidiPage extends Page {
         for (const [event, subscriber] of this.#browsingContextEvents) {
             this.#browsingContext.on(event, subscriber);
         }
-        this.#networkManager = new BidiNetworkManager(this.#connection, this);
+        this._networkManager = new BidiNetworkManager(this.#connection, this);
         for (const [event, subscriber] of this.#subscribedEvents) {
             this.#connection.on(event, subscriber);
         }
         for (const [event, subscriber] of this.#networkManagerEvents) {
             // TODO: remove any
-            this.#networkManager.on(event, subscriber);
+            this._networkManager.on(event, subscriber);
         }
         const frame = new BidiFrame(this, this.#browsingContext, this._timeoutSettings, this.#browsingContext.parent);
         this.#frameTree.addFrame(frame);
@@ -326,7 +327,7 @@ export class BidiPage extends Page {
             this.#removeFramesRecursively(child);
         }
         frame[disposeSymbol]();
-        this.#networkManager.clearMapAfterFrameDispose(frame);
+        this._networkManager.clearMapAfterFrameDispose(frame);
         this.#frameTree.removeFrame(frame);
         this.emit("framedetached" /* PageEvent.FrameDetached */, frame);
     }
@@ -380,7 +381,7 @@ export class BidiPage extends Page {
         this.emit("dialog" /* PageEvent.Dialog */, dialog);
     }
     getNavigationResponse(id) {
-        return this.#networkManager.getNavigationResponse(id);
+        return this._networkManager.getNavigationResponse(id);
     }
     isClosed() {
         return this.#closedDeferred.finished();
@@ -390,7 +391,7 @@ export class BidiPage extends Page {
             return;
         }
         this.#closedDeferred.reject(new TargetCloseError('Page closed!'));
-        this.#networkManager.dispose();
+        this._networkManager.dispose();
         await this.#connection.send('browsingContext.close', {
             context: this.mainFrame()._id,
         });
@@ -398,24 +399,16 @@ export class BidiPage extends Page {
         this.removeAllListeners();
     }
     async reload(options = {}) {
-        const { waitUntil = 'load', timeout = this._timeoutSettings.navigationTimeout(), } = options;
-        const readinessState = lifeCycleToReadinessState.get(getWaitUntilSingle(waitUntil));
-        try {
-            const { result } = await waitWithTimeout(this.#connection.send('browsingContext.reload', {
-                context: this.mainFrame()._id,
-                wait: readinessState,
-            }), 'Navigation', timeout);
-            return this.getNavigationResponse(result.navigation);
-        }
-        catch (error) {
-            if (error instanceof ProtocolError) {
-                error.message += ` at ${this.url}`;
-            }
-            else if (error instanceof TimeoutError) {
-                error.message = 'Navigation timeout of ' + timeout + ' ms exceeded';
-            }
-            throw error;
-        }
+        const { waitUntil = 'load', timeout: ms = this._timeoutSettings.navigationTimeout(), } = options;
+        const [readiness, networkIdle] = getBiDiReadinessState(waitUntil);
+        const response = await firstValueFrom(this.mainFrame()
+            ._waitWithNetworkIdle(this.#connection.send('browsingContext.reload', {
+            context: this.mainFrame()._id,
+            wait: readiness,
+        }), networkIdle)
+            .pipe(raceWith(timeout(ms), from(this.#closedDeferred.valueOrThrow())))
+            .pipe(rewriteNavigationError(this.url(), ms)));
+        return this.getNavigationResponse(response?.result.navigation);
     }
     setDefaultNavigationTimeout(timeout) {
         this._timeoutSettings.setDefaultNavigationTimeout(timeout);
@@ -534,15 +527,15 @@ export class BidiPage extends Page {
     }
     async waitForRequest(urlOrPredicate, options = {}) {
         const { timeout = this._timeoutSettings.timeout() } = options;
-        return await waitForHTTP(this.#networkManager, NetworkManagerEvent.Request, urlOrPredicate, timeout, this.#closedDeferred);
+        return await waitForHTTP(this._networkManager, NetworkManagerEvent.Request, urlOrPredicate, timeout, this.#closedDeferred);
     }
     async waitForResponse(urlOrPredicate, options = {}) {
         const { timeout = this._timeoutSettings.timeout() } = options;
-        return await waitForHTTP(this.#networkManager, NetworkManagerEvent.Response, urlOrPredicate, timeout, this.#closedDeferred);
+        return await waitForHTTP(this._networkManager, NetworkManagerEvent.Response, urlOrPredicate, timeout, this.#closedDeferred);
     }
     async waitForNetworkIdle(options = {}) {
-        const { idleTime = 500, timeout = this._timeoutSettings.timeout() } = options;
-        await this._waitForNetworkIdle(this.#networkManager, idleTime, timeout, this.#closedDeferred);
+        const { idleTime = NETWORK_IDLE_TIME, timeout: ms = this._timeoutSettings.timeout(), } = options;
+        await firstValueFrom(this._waitForNetworkIdle(this._networkManager, idleTime).pipe(raceWith(timeout(ms), from(this.#closedDeferred.valueOrThrow()))));
     }
     async createCDPSession() {
         const { sessionId } = await this.mainFrame()
@@ -562,7 +555,7 @@ export class BidiPage extends Page {
         const expression = evaluationExpression(pageFunction, ...args);
         const { result } = await this.#connection.send('script.addPreloadScript', {
             functionDeclaration: expression,
-            // TODO: should change spec to accept browsingContext
+            contexts: [this.mainFrame()._id],
         });
         return { identifier: result.script };
     }

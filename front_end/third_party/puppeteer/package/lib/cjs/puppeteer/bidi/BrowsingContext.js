@@ -1,19 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getWaitUntilSingle = exports.BrowsingContext = exports.BrowsingContextEvent = exports.CdpSessionWrapper = exports.cdpSessions = exports.lifeCycleToSubscribedEvent = void 0;
+exports.BrowsingContext = exports.BrowsingContextEvent = exports.CdpSessionWrapper = exports.cdpSessions = void 0;
 const CDPSession_js_1 = require("../api/CDPSession.js");
 const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
-const assert_js_1 = require("../util/assert.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const Realm_js_1 = require("./Realm.js");
-/**
- * @internal
- */
-exports.lifeCycleToSubscribedEvent = new Map([
-    ['load', 'browsingContext.load'],
-    ['domcontentloaded', 'browsingContext.domContentLoaded'],
-]);
 /**
  * @internal
  */
@@ -151,24 +143,4 @@ class BrowsingContext extends Realm_js_1.BidiRealm {
     }
 }
 exports.BrowsingContext = BrowsingContext;
-/**
- * @internal
- */
-function getWaitUntilSingle(event) {
-    if (Array.isArray(event) && event.length > 1) {
-        throw new Error('BiDi support only single `waitUntil` argument');
-    }
-    const waitUntilSingle = Array.isArray(event)
-        ? event.find(lifecycle => {
-            return lifecycle === 'domcontentloaded' || lifecycle === 'load';
-        })
-        : event;
-    if (waitUntilSingle === 'networkidle0' ||
-        waitUntilSingle === 'networkidle2') {
-        throw new Error(`BiDi does not support 'waitUntil' ${waitUntilSingle}`);
-    }
-    (0, assert_js_1.assert)(waitUntilSingle, `Invalid waitUntil option ${waitUntilSingle}`);
-    return waitUntilSingle;
-}
-exports.getWaitUntilSingle = getWaitUntilSingle;
 //# sourceMappingURL=BrowsingContext.js.map

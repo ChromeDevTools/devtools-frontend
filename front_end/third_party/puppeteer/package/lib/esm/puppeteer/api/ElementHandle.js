@@ -1186,11 +1186,6 @@ let ElementHandle = (() => {
             }
             return point;
         }
-        /**
-         * This method scrolls element into view if needed, and then uses
-         * {@link Page.(screenshot:2) } to take a screenshot of the element.
-         * If the element is detached from DOM, the method throws an error.
-         */
         async screenshot(options = {}) {
             const env_6 = { stack: [], error: void 0, hasError: false };
             try {

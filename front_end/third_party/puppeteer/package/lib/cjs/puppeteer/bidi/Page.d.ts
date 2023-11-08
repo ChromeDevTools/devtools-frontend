@@ -35,11 +35,13 @@ import type { BidiHTTPRequest } from './HTTPRequest.js';
 import type { BidiHTTPResponse } from './HTTPResponse.js';
 import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
 import type { BidiJSHandle } from './JSHandle.js';
+import { BidiNetworkManager } from './NetworkManager.js';
 /**
  * @internal
  */
 export declare class BidiPage extends Page {
     #private;
+    _networkManager: BidiNetworkManager;
     _client(): CDPSession;
     constructor(browsingContext: BrowsingContext, browserContext: BidiBrowserContext);
     /**
@@ -66,7 +68,7 @@ export declare class BidiPage extends Page {
     frames(): BidiFrame[];
     frame(frameId?: string): BidiFrame | null;
     childFrames(frameId: string): BidiFrame[];
-    getNavigationResponse(id: string | null): BidiHTTPResponse | null;
+    getNavigationResponse(id?: string | null): BidiHTTPResponse | null;
     isClosed(): boolean;
     close(): Promise<void>;
     reload(options?: WaitForOptions): Promise<BidiHTTPResponse | null>;

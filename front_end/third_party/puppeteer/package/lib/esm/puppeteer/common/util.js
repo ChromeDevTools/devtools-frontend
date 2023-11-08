@@ -16,7 +16,6 @@
 import { map, NEVER, timer, firstValueFrom, fromEvent, filterAsync, from, raceWith, } from '../../third_party/rxjs/rxjs.js';
 import { isNode } from '../environment.js';
 import { assert } from '../util/assert.js';
-import { Deferred } from '../util/Deferred.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { debug } from './Debug.js';
 import { TimeoutError } from './Errors.js';
@@ -314,16 +313,6 @@ export function pageBindingInitString(type, name) {
 /**
  * @internal
  */
-export async function waitWithTimeout(promise, taskName, timeout) {
-    const deferred = Deferred.create({
-        message: `waiting for ${taskName} failed: timeout ${timeout}ms exceeded`,
-        timeout,
-    });
-    return await Deferred.race([promise, deferred]);
-}
-/**
- * @internal
- */
 let fs = null;
 /**
  * @internal
@@ -493,4 +482,8 @@ ms, cancelation) {
         return false;
     }), raceWith(timeout(ms), from(cancelation.valueOrThrow()))));
 }
+/**
+ * @internal
+ */
+export const NETWORK_IDLE_TIME = 500;
 //# sourceMappingURL=util.js.map

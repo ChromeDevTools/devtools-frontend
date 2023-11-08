@@ -38,11 +38,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.waitForHTTP = exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.validateDialogType = exports.getPageContent = exports.setPageContent = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.waitWithTimeout = exports.pageBindingInitString = exports.addPageBinding = exports.evaluationString = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.valueFromRemoteObject = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.createClientError = exports.createEvaluationError = exports.debugError = void 0;
+exports.NETWORK_IDLE_TIME = exports.waitForHTTP = exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.validateDialogType = exports.getPageContent = exports.setPageContent = exports.getReadableFromProtocolStream = exports.getReadableAsBuffer = exports.importFSPromises = exports.pageBindingInitString = exports.addPageBinding = exports.evaluationString = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.valueFromRemoteObject = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.createClientError = exports.createEvaluationError = exports.debugError = void 0;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const environment_js_1 = require("../environment.js");
 const assert_js_1 = require("../util/assert.js");
-const Deferred_js_1 = require("../util/Deferred.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Debug_js_1 = require("./Debug.js");
 const Errors_js_1 = require("./Errors.js");
@@ -354,17 +353,6 @@ exports.pageBindingInitString = pageBindingInitString;
 /**
  * @internal
  */
-async function waitWithTimeout(promise, taskName, timeout) {
-    const deferred = Deferred_js_1.Deferred.create({
-        message: `waiting for ${taskName} failed: timeout ${timeout}ms exceeded`,
-        timeout,
-    });
-    return await Deferred_js_1.Deferred.race([promise, deferred]);
-}
-exports.waitWithTimeout = waitWithTimeout;
-/**
- * @internal
- */
 let fs = null;
 /**
  * @internal
@@ -543,4 +531,8 @@ ms, cancelation) {
     }), (0, rxjs_js_1.raceWith)(timeout(ms), (0, rxjs_js_1.from)(cancelation.valueOrThrow()))));
 }
 exports.waitForHTTP = waitForHTTP;
+/**
+ * @internal
+ */
+exports.NETWORK_IDLE_TIME = 500;
 //# sourceMappingURL=util.js.map

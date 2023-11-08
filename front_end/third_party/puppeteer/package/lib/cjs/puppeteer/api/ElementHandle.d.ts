@@ -569,7 +569,10 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * {@link Page.(screenshot:2) } to take a screenshot of the element.
      * If the element is detached from DOM, the method throws an error.
      */
-    screenshot(this: ElementHandle<Element>, options?: Readonly<ElementScreenshotOptions>): Promise<string | Buffer>;
+    screenshot(options: Readonly<ScreenshotOptions> & {
+        encoding: 'base64';
+    }): Promise<string>;
+    screenshot(options?: Readonly<ScreenshotOptions>): Promise<Buffer>;
     /**
      * @internal
      */

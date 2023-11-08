@@ -163,6 +163,8 @@ declare type BeginSubclassSelectorTokens = ['.', '#', '[', ':'];
 
 /* Excluded from this release type: BidiMouseMoveOptions */
 
+declare type BiDiNetworkIdle = Extract<PuppeteerLifeCycleEvent, 'networkidle0' | 'networkidle2'> | null;
+
 /* Excluded from this release type: BidiNetworkManager */
 
 /* Excluded from this release type: BidiPage */
@@ -1950,7 +1952,10 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * {@link Page.(screenshot:2) } to take a screenshot of the element.
      * If the element is detached from DOM, the method throws an error.
      */
-    screenshot(this: ElementHandle<Element>, options?: Readonly<ElementScreenshotOptions>): Promise<string | Buffer>;
+    screenshot(options: Readonly<ScreenshotOptions> & {
+        encoding: 'base64';
+    }): Promise<string>;
+    screenshot(options?: Readonly<ScreenshotOptions>): Promise<Buffer>;
     /* Excluded from this release type: assertConnectedElement */
     /* Excluded from this release type: scrollIntoViewIfNeeded */
     /**
@@ -4268,6 +4273,8 @@ export declare interface Moveable {
 }
 
 /* Excluded from this release type: MutationPoller */
+
+/* Excluded from this release type: NETWORK_IDLE_TIME */
 
 /**
  * @public
@@ -7532,8 +7539,6 @@ export declare interface WaitTimeoutOptions {
      */
     timeout?: number;
 }
-
-/* Excluded from this release type: waitWithTimeout */
 
 /* Excluded from this release type: WEB_PERMISSION_TO_PROTOCOL_PERMISSION */
 

@@ -1,16 +1,8 @@
 import { CDPSession } from '../api/CDPSession.js';
 import { TargetCloseError } from '../common/Errors.js';
 import { debugError } from '../common/util.js';
-import { assert } from '../util/assert.js';
 import { Deferred } from '../util/Deferred.js';
 import { BidiRealm } from './Realm.js';
-/**
- * @internal
- */
-export const lifeCycleToSubscribedEvent = new Map([
-    ['load', 'browsingContext.load'],
-    ['domcontentloaded', 'browsingContext.domContentLoaded'],
-]);
 /**
  * @internal
  */
@@ -145,24 +137,5 @@ export class BrowsingContext extends BidiRealm {
         this.connection.unregisterBrowsingContexts(this.#id);
         void this.#cdpSession.detach().catch(debugError);
     }
-}
-/**
- * @internal
- */
-export function getWaitUntilSingle(event) {
-    if (Array.isArray(event) && event.length > 1) {
-        throw new Error('BiDi support only single `waitUntil` argument');
-    }
-    const waitUntilSingle = Array.isArray(event)
-        ? event.find(lifecycle => {
-            return lifecycle === 'domcontentloaded' || lifecycle === 'load';
-        })
-        : event;
-    if (waitUntilSingle === 'networkidle0' ||
-        waitUntilSingle === 'networkidle2') {
-        throw new Error(`BiDi does not support 'waitUntil' ${waitUntilSingle}`);
-    }
-    assert(waitUntilSingle, `Invalid waitUntil option ${waitUntilSingle}`);
-    return waitUntilSingle;
 }
 //# sourceMappingURL=BrowsingContext.js.map

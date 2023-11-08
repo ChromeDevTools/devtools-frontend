@@ -756,12 +756,12 @@ let Page = (() => {
         /**
          * @internal
          */
-        async _waitForNetworkIdle(networkManager, idleTime, ms, closedDeferred) {
-            await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.merge)((0, rxjs_js_1.fromEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Request), (0, rxjs_js_1.fromEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Response), (0, rxjs_js_1.fromEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFailed)).pipe((0, rxjs_js_1.startWith)(null), (0, rxjs_js_1.filter)(() => {
-                return networkManager.inFlightRequestsCount() === 0;
+        _waitForNetworkIdle(networkManager, idleTime, requestsInFlight = 0) {
+            return (0, rxjs_js_1.merge)((0, rxjs_js_1.fromEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Request), (0, rxjs_js_1.fromEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Response), (0, rxjs_js_1.fromEvent)(networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFailed)).pipe((0, rxjs_js_1.startWith)(undefined), (0, rxjs_js_1.filter)(() => {
+                return networkManager.inFlightRequestsCount() <= requestsInFlight;
             }), (0, rxjs_js_1.switchMap)(v => {
                 return (0, rxjs_js_1.of)(v).pipe((0, rxjs_js_1.delay)(idleTime));
-            }), (0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, rxjs_js_1.from)(closedDeferred.valueOrThrow()))));
+            }));
         }
         /**
          * Waits for a frame matching the given conditions to appear.

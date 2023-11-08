@@ -165,7 +165,7 @@ let ScreenRecorder = (() => {
                     timestamp: event.metadata.timestamp,
                 };
             }), (0, rxjs_js_1.bufferCount)(2, 1), (0, rxjs_js_1.concatMap)(([{ timestamp: previousTimestamp, buffer }, { timestamp }]) => {
-                return (0, rxjs_js_1.from)(Array(Math.round(DEFAULT_FPS * (timestamp - previousTimestamp))).fill(buffer));
+                return (0, rxjs_js_1.from)(Array(Math.round(DEFAULT_FPS * Math.max(timestamp - previousTimestamp, 0))).fill(buffer));
             }), (0, rxjs_js_1.map)(buffer => {
                 void this.#writeFrame(buffer);
                 return [buffer, performance.now()];

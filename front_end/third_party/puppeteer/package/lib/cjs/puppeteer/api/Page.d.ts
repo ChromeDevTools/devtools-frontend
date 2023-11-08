@@ -17,6 +17,7 @@
 /// <reference types="node" />
 import type { Readable } from 'stream';
 import type { Protocol } from 'devtools-protocol';
+import { type Observable } from '../../third_party/rxjs/rxjs.js';
 import type { HTTPRequest } from '../api/HTTPRequest.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { BidiNetworkManager } from '../bidi/NetworkManager.js';
@@ -28,7 +29,6 @@ import type { Tracing } from '../cdp/Tracing.js';
 import type { WebWorker } from '../cdp/WebWorker.js';
 import type { ConsoleMessage } from '../common/ConsoleMessage.js';
 import type { Device } from '../common/Device.js';
-import { TargetCloseError } from '../common/Errors.js';
 import { EventEmitter, type EventsWithWildcard, type EventType } from '../common/EventEmitter.js';
 import type { FileChooser } from '../common/FileChooser.js';
 import { type ParsedPDFOptions, type PDFOptions } from '../common/PDFOptions.js';
@@ -36,7 +36,6 @@ import { TimeoutSettings } from '../common/TimeoutSettings.js';
 import type { Awaitable, EvaluateFunc, EvaluateFuncWith, HandleFor, NodeFor } from '../common/types.js';
 import type { Viewport } from '../common/Viewport.js';
 import type { ScreenRecorder } from '../node/ScreenRecorder.js';
-import type { Deferred } from '../util/Deferred.js';
 import { asyncDisposeSymbol, disposeSymbol } from '../util/disposable.js';
 import type { Browser } from './Browser.js';
 import type { BrowserContext } from './BrowserContext.js';
@@ -1384,7 +1383,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
     /**
      * @internal
      */
-    protected _waitForNetworkIdle(networkManager: BidiNetworkManager | CdpNetworkManager, idleTime: number, ms: number, closedDeferred: Deferred<TargetCloseError>): Promise<void>;
+    _waitForNetworkIdle(networkManager: BidiNetworkManager | CdpNetworkManager, idleTime: number, requestsInFlight?: number): Observable<void>;
     /**
      * Waits for a frame matching the given conditions to appear.
      *

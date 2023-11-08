@@ -23,7 +23,7 @@ import type { Protocol } from 'devtools-protocol';
 import { type Observable } from '../../third_party/rxjs/rxjs.js';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { Page } from '../api/Page.js';
-import { Deferred } from '../util/Deferred.js';
+import type { Deferred } from '../util/Deferred.js';
 import type { EventEmitter, EventType } from './EventEmitter.js';
 import type { NetworkManagerEvents } from './NetworkManagerEvents.js';
 /**
@@ -98,10 +98,6 @@ export declare function pageBindingInitString(type: string, name: string): strin
 /**
  * @internal
  */
-export declare function waitWithTimeout<T>(promise: Promise<T>, taskName: string, timeout: number): Promise<T>;
-/**
- * @internal
- */
 export declare function importFSPromises(): Promise<typeof FS>;
 /**
  * @internal
@@ -147,4 +143,8 @@ export declare function waitForHTTP<T extends {
 }>(networkManager: EventEmitter<NetworkManagerEvents>, eventName: EventType, urlOrPredicate: string | ((res: T) => boolean | Promise<boolean>), 
 /** Time after the function will timeout */
 ms: number, cancelation: Deferred<never>): Promise<T>;
+/**
+ * @internal
+ */
+export declare const NETWORK_IDLE_TIME = 500;
 //# sourceMappingURL=util.d.ts.map

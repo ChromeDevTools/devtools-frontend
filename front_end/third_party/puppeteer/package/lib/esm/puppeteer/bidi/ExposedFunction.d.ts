@@ -23,5 +23,7 @@ export declare class ExposeableFunction<Args extends unknown[], Ret> {
     readonly name: string;
     constructor(frame: BidiFrame, name: string, apply: (...args: Args) => Awaitable<Ret>);
     expose(): Promise<void>;
+    [Symbol.dispose](): void;
+    [Symbol.asyncDispose](): Promise<void>;
 }
 //# sourceMappingURL=ExposedFunction.d.ts.map

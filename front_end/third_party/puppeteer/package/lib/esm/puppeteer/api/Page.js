@@ -729,12 +729,12 @@ let Page = (() => {
         /**
          * @internal
          */
-        async _waitForNetworkIdle(networkManager, idleTime, ms, closedDeferred) {
-            await firstValueFrom(merge(fromEvent(networkManager, NetworkManagerEvent.Request), fromEvent(networkManager, NetworkManagerEvent.Response), fromEvent(networkManager, NetworkManagerEvent.RequestFailed)).pipe(startWith(null), filter(() => {
-                return networkManager.inFlightRequestsCount() === 0;
+        _waitForNetworkIdle(networkManager, idleTime, requestsInFlight = 0) {
+            return merge(fromEvent(networkManager, NetworkManagerEvent.Request), fromEvent(networkManager, NetworkManagerEvent.Response), fromEvent(networkManager, NetworkManagerEvent.RequestFailed)).pipe(startWith(undefined), filter(() => {
+                return networkManager.inFlightRequestsCount() <= requestsInFlight;
             }), switchMap(v => {
                 return of(v).pipe(delay(idleTime));
-            }), raceWith(timeout(ms), from(closedDeferred.valueOrThrow()))));
+            }));
         }
         /**
          * Waits for a frame matching the given conditions to appear.

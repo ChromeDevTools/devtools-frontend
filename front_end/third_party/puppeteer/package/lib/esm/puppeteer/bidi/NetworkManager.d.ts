@@ -25,7 +25,7 @@ import type { BidiPage } from './Page.js';
 export declare class BidiNetworkManager extends EventEmitter<NetworkManagerEvents> {
     #private;
     constructor(connection: BidiConnection, page: BidiPage);
-    getNavigationResponse(navigationId: string | null): BidiHTTPResponse | null;
+    getNavigationResponse(navigationId?: string | null): BidiHTTPResponse | null;
     inFlightRequestsCount(): number;
     clearMapAfterFrameDispose(frame: BidiFrame): void;
     dispose(): void;

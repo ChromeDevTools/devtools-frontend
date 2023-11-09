@@ -2,20 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../core/platform/platform.js';
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import * as Root from '../root/root.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import * as Protocol from '../../generated/protocol.js';
 
+import {type CSSModel} from './CSSModel.js';
 import {DebuggerModel, Events as DebuggerModelEvents} from './DebuggerModel.js';
-
-import {DeferredDOMNode, DOMModel, Events as DOMModelEvents, type DOMNode} from './DOMModel.js';
+import {DeferredDOMNode, DOMModel, type DOMNode, Events as DOMModelEvents} from './DOMModel.js';
 import {OverlayPersistentHighlighter} from './OverlayPersistentHighlighter.js';
 import {type RemoteObject} from './RemoteObject.js';
-
-import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 
 const UIStrings = {
@@ -51,6 +51,24 @@ export interface Hinge {
   outlineColor: HighlightColor;
 }
 
+export const enum EmulatedOSType {
+  WindowsOS = 'Windows',
+  MacOS = 'Mac',
+  LinuxOS = 'Linux',
+}
+
+interface PlatformOverlayDimensions {
+  mac: {x: number, y: number, width: number, height: number};
+  linux: {x: number, y: number, width: number, height: number};
+  windows: {x: number, y: number, width: number, height: number};
+}
+
+const platformOverlayDimensions: Readonly<PlatformOverlayDimensions> = {
+  mac: {x: 85, y: 0, width: 185, height: 40},
+  linux: {x: 0, y: 0, width: 196, height: 34},
+  windows: {x: 0, y: 0, width: 238, height: 33},
+};
+
 export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyApi.OverlayDispatcher {
   readonly #domModel: DOMModel;
   overlayAgent: ProtocolProxyApi.OverlayApi;
@@ -71,6 +89,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
   #persistentHighlighter: OverlayPersistentHighlighter|null;
   readonly #sourceOrderHighlighter: SourceOrderHighlighter;
   #sourceOrderModeActiveInternal: boolean;
+  #windowControls: WindowControls;
 
   constructor(target: Target) {
     super(target);
@@ -149,6 +168,7 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
 
     this.#sourceOrderHighlighter = new SourceOrderHighlighter(this);
     this.#sourceOrderModeActiveInternal = false;
+    this.#windowControls = new WindowControls(this.#domModel.cssModel());
   }
 
   static highlightObjectAsDOMNode(object: RemoteObject): void {
@@ -507,6 +527,29 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
     }
   }
 
+  setWindowControlsPlatform(selectedPlatform: EmulatedOSType): void {
+    this.#windowControls.selectedPlatform = selectedPlatform;
+  }
+
+  setWindowControlsThemeColor(themeColor: string): void {
+    this.#windowControls.themeColor = themeColor;
+  }
+
+  getWindowControlsConfig(): Protocol.Overlay.WindowControlsOverlayConfig {
+    return this.#windowControls.config;
+  }
+
+  async toggleWindowControlsToolbar(show: boolean): Promise<void> {
+    const wcoConfigObj = show ? {windowControlsOverlayConfig: this.#windowControls.config} : {};
+
+    const setWindowControlsOverlayOperation = this.overlayAgent.invoke_setShowWindowControlsOverlay(wcoConfigObj);
+    const toggleStylesheetOperation = this.#windowControls.toggleEmulatedOverlay(show);
+
+    await Promise.all([setWindowControlsOverlayOperation, toggleStylesheetOperation]);
+
+    this.setShowViewportSizeOnResize(!show);
+  }
+
   private buildHighlightConfig(mode: string|undefined = 'all', showDetailedToolip: boolean|undefined = false):
       Protocol.Overlay.HighlightConfig {
     const showRulers = Common.Settings.Settings.instance().moduleSetting('showMetricsRulers').get();
@@ -770,6 +813,132 @@ export class OverlayModel extends SDKModel<EventTypes> implements ProtocolProxyA
 
   getOverlayAgent(): ProtocolProxyApi.OverlayApi {
     return this.overlayAgent;
+  }
+
+  async hasStyleSheetText(url: Platform.DevToolsPath.UrlString): Promise<boolean> {
+    return this.#windowControls.initializeStyleSheetText(url);
+  }
+}
+
+export class WindowControls {
+  readonly #cssModel: CSSModel;
+  #originalStylesheetText: string|undefined;
+  #stylesheetId?: Protocol.CSS.StyleSheetId;
+  #currentUrl: Platform.DevToolsPath.UrlString|undefined;
+
+  #config: Protocol.Overlay.WindowControlsOverlayConfig = {
+    showCSS: false,
+    selectedPlatform: EmulatedOSType.WindowsOS,
+    themeColor: '#ffffff',
+  };
+
+  constructor(cssModel: CSSModel) {
+    this.#cssModel = cssModel;
+  }
+
+  get selectedPlatform(): string {
+    return this.#config.selectedPlatform;
+  }
+
+  set selectedPlatform(osType: EmulatedOSType) {
+    this.#config.selectedPlatform = osType;
+  }
+
+  get themeColor(): string {
+    return this.#config.themeColor;
+  }
+
+  set themeColor(color: string) {
+    this.#config.themeColor = color;
+  }
+
+  get config(): Protocol.Overlay.WindowControlsOverlayConfig {
+    return this.#config;
+  }
+
+  async initializeStyleSheetText(url: Platform.DevToolsPath.UrlString): Promise<boolean> {
+    if (this.#originalStylesheetText && url === this.#currentUrl) {
+      return true;
+    }
+
+    const cssSourceUrl = this.#fetchCssSourceUrl(url);
+    if (!cssSourceUrl) {
+      return false;
+    }
+
+    this.#stylesheetId = this.#fetchCurrentStyleSheet(cssSourceUrl);
+    if (!this.#stylesheetId) {
+      return false;
+    }
+
+    const stylesheetText = await this.#cssModel.getStyleSheetText(this.#stylesheetId);
+
+    if (!stylesheetText) {
+      return false;
+    }
+
+    this.#originalStylesheetText = stylesheetText;
+    this.#currentUrl = url;
+
+    return true;
+  }
+
+  async toggleEmulatedOverlay(showOverlay: boolean): Promise<void> {
+    if (!this.#stylesheetId || !this.#originalStylesheetText) {
+      return;
+    }
+    if (showOverlay) {
+      const styleSheetText = WindowControls.#getStyleSheetForPlatform(
+          this.#config.selectedPlatform.toLowerCase(), this.#originalStylesheetText);
+      if (styleSheetText) {
+        await this.#cssModel.setStyleSheetText(this.#stylesheetId, styleSheetText, false);
+      }
+    } else {
+      // Restore the original stylesheet
+      await this.#cssModel.setStyleSheetText(this.#stylesheetId, this.#originalStylesheetText, false);
+    }
+  }
+
+  static #getStyleSheetForPlatform(platform: string, originalStyleSheet: string|undefined): string|undefined {
+    const overlayDimensions = platformOverlayDimensions[platform as keyof PlatformOverlayDimensions];
+    return WindowControls.#transformStyleSheet(
+        overlayDimensions.x, overlayDimensions.y, overlayDimensions.width, overlayDimensions.height,
+        originalStyleSheet);
+  }
+
+  #fetchCssSourceUrl(url: Platform.DevToolsPath.UrlString): Platform.DevToolsPath.UrlString|undefined {
+    const parentURL = Common.ParsedURL.ParsedURL.extractOrigin(url);
+    const cssHeaders = this.#cssModel.styleSheetHeaders();
+    const header = cssHeaders.find(header => header.sourceURL && header.sourceURL.includes(parentURL));
+    return header?.sourceURL;
+  }
+
+  #fetchCurrentStyleSheet(cssSourceUrl: Platform.DevToolsPath.UrlString): Protocol.CSS.StyleSheetId|undefined {
+    const stylesheetIds = this.#cssModel.getStyleSheetIdsForURL(cssSourceUrl);
+    return stylesheetIds.length > 0 ? stylesheetIds[0] : undefined;
+  }
+
+  // Transform the titlebar-area-{x, y, width, and height} css variables to emulate the window controls overlay for a selected platform
+  static #transformStyleSheet(
+      x: number, y: number, width: number, height: number, originalStyleSheet: string|undefined): string|undefined {
+    if (!originalStyleSheet) {
+      return undefined;
+    }
+    const stylesheetText = originalStyleSheet;
+
+    const updatedStylesheet =
+        stylesheetText.replace(/: env\(titlebar-area-x(?:,[^)]*)?\);/g, `: env(titlebar-area-x, ${x}px);`)
+            .replace(/: env\(titlebar-area-y(?:,[^)]*)?\);/g, `: env(titlebar-area-y, ${y}px);`)
+            .replace(
+                /: env\(titlebar-area-width(?:,[^)]*)?\);/g, `: env(titlebar-area-width, calc(100% - ${width}px));`)
+            .replace(/: env\(titlebar-area-height(?:,[^)]*)?\);/g, `: env(titlebar-area-height, ${height}px);`);
+
+    return updatedStylesheet;
+  }
+
+  transformStyleSheetforTesting(
+      x: number, y: number, width: number, height: number, originalStyleSheet: string|undefined): string|undefined {
+    return WindowControls.#transformStyleSheet(x, y, width, height, originalStyleSheet);
   }
 }
 

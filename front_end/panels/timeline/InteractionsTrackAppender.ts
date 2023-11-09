@@ -4,7 +4,6 @@
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 import {
@@ -29,15 +28,13 @@ export class InteractionsTrackAppender implements TrackAppender {
 
   #colorGenerator: Common.Color.Generator;
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
   #traceParsedData: Readonly<TraceEngine.Handlers.Types.TraceParseData>;
 
   constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-      traceParsedData: TraceEngine.Handlers.Types.TraceParseData, colorGenerator: Common.Color.Generator) {
+      compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
+      colorGenerator: Common.Color.Generator) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#colorGenerator = colorGenerator;
-    this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
   }
 
@@ -108,7 +105,8 @@ export class InteractionsTrackAppender implements TrackAppender {
 
   #addCandyStripeAndWarningForLongInteraction(
       entry: TraceEngine.Types.TraceEvents.SyntheticInteractionEvent, eventIndex: number): void {
-    const decorationsForEvent = this.#flameChartData.entryDecorations[eventIndex] || [];
+    const decorationsForEvent =
+        this.#compatibilityBuilder.getFlameChartTimelineData().entryDecorations[eventIndex] || [];
     decorationsForEvent.push(
         {
           type: 'CANDY',
@@ -122,7 +120,7 @@ export class InteractionsTrackAppender implements TrackAppender {
           type: 'WARNING_TRIANGLE',
           customEndTime: entry.processingEnd,
         });
-    this.#flameChartData.entryDecorations[eventIndex] = decorationsForEvent;
+    this.#compatibilityBuilder.getFlameChartTimelineData().entryDecorations[eventIndex] = decorationsForEvent;
   }
 
   /*

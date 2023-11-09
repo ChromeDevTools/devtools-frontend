@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import * as TraceEngine from '../../models/trace/trace.js';
-import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
@@ -28,14 +27,11 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'LayoutShifts';
 
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
   #traceParsedData: Readonly<TraceEngine.Handlers.Types.TraceParseData>;
 
   constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-      traceParsedData: TraceEngine.Handlers.Types.TraceParseData) {
+      compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData) {
     this.#compatibilityBuilder = compatibilityBuilder;
-    this.#flameChartData = flameChartData;
     this.#traceParsedData = traceParsedData;
   }
 
@@ -91,7 +87,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
           // set it to a small duration so that the user is able to see and click
           // them more easily. Long term we will explore a better UI solution to
           // allow us to do this properly and not hack around it.
-          this.#flameChartData.entryTotalTimes[index] =
+          this.#compatibilityBuilder.getFlameChartTimelineData().entryTotalTimes[index] =
               TraceEngine.Helpers.Timing.microSecondsToMilliseconds(msDuration);
         };
 

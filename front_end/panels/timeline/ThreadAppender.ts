@@ -157,7 +157,6 @@ export class ThreadAppender implements TrackAppender {
   #processId: TraceEngine.Types.TraceEvents.ProcessID;
   #threadId: TraceEngine.Types.TraceEvents.ThreadID;
   #threadDefaultName: string;
-  #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
   #expanded = false;
   // Raster threads are rendered together under a singler header, so
   // the header is added for the first raster thread and skipped
@@ -174,10 +173,9 @@ export class ThreadAppender implements TrackAppender {
   // chart data in the appender or by passing data about the flamechart
   // groups).
   constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
-      traceParsedData: TraceEngine.Handlers.Types.TraceParseData, processId: TraceEngine.Types.TraceEvents.ProcessID,
-      threadId: TraceEngine.Types.TraceEvents.ThreadID, threadName: string|null, type: ThreadType,
-      rasterCount: number = 0) {
+      compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
+      processId: TraceEngine.Types.TraceEvents.ProcessID, threadId: TraceEngine.Types.TraceEvents.ThreadID,
+      threadName: string|null, type: ThreadType, rasterCount: number = 0) {
     this.#compatibilityBuilder = compatibilityBuilder;
     // TODO(crbug.com/1456706):
     // The values for this color generator have been taken from the old
@@ -193,7 +191,6 @@ export class ThreadAppender implements TrackAppender {
     this.#processId = processId;
     this.#threadId = threadId;
     this.#rasterIndex = rasterCount;
-    this.#flameChartData = flameChartData;
 
     // When loading a CPU profile, only CPU data will be available, thus
     // we get the data from the SamplesHandler.
@@ -308,7 +305,7 @@ export class ThreadAppender implements TrackAppender {
       const headerStyle = buildGroupStyle({shareHeaderLine: false, collapsible: trackIsCollapsible});
       const headerGroup =
           buildTrackHeader(trackStartLevel, this.trackName(), headerStyle, /* selectable= */ false, this.#expanded);
-      this.#flameChartData.groups.push(headerGroup);
+      this.#compatibilityBuilder.getFlameChartTimelineData().groups.push(headerGroup);
     }
     // Nesting is set to 1 because the track is appended inside the
     // header for all raster threads.
@@ -496,11 +493,12 @@ export class ThreadAppender implements TrackAppender {
     if (!warnings) {
       return;
     }
-    addDecorationToEvent(this.#flameChartData, index, {type: 'WARNING_TRIANGLE'});
+    const flameChartData = this.#compatibilityBuilder.getFlameChartTimelineData();
+    addDecorationToEvent(flameChartData, index, {type: 'WARNING_TRIANGLE'});
     if (!warnings.includes('LONG_TASK')) {
       return;
     }
-    addDecorationToEvent(this.#flameChartData, index, {
+    addDecorationToEvent(flameChartData, index, {
       type: 'CANDY',
       startAtTime: TraceEngine.Handlers.ModelHandlers.Warnings.LONG_MAIN_THREAD_TASK_THRESHOLD,
     });

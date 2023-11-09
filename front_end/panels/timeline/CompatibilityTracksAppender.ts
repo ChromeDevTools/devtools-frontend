@@ -140,12 +140,10 @@ export class CompatibilityTracksAppender {
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
     this.#legacyTimelineModel = legacyTimelineModel;
     this.#isCpuProfile = isCpuProfile;
-    this.#timingsTrackAppender =
-        new TimingsTrackAppender(this, this.#flameChartData, this.#traceParsedData, this.#colorGenerator);
+    this.#timingsTrackAppender = new TimingsTrackAppender(this, this.#traceParsedData, this.#colorGenerator);
     this.#allTrackAppenders.push(this.#timingsTrackAppender);
 
-    this.#interactionsTrackAppender =
-        new InteractionsTrackAppender(this, this.#flameChartData, this.#traceParsedData, this.#colorGenerator);
+    this.#interactionsTrackAppender = new InteractionsTrackAppender(this, this.#traceParsedData, this.#colorGenerator);
     this.#allTrackAppenders.push(this.#interactionsTrackAppender);
 
     this.#animationsTrackAppender = new AnimationsTrackAppender(this, this.#traceParsedData);
@@ -156,7 +154,7 @@ export class CompatibilityTracksAppender {
 
     // Layout Shifts track in OPP was called the "Experience" track even though
     // all it shows are layout shifts.
-    this.#layoutShiftsTrackAppender = new LayoutShiftsTrackAppender(this, this.#flameChartData, this.#traceParsedData);
+    this.#layoutShiftsTrackAppender = new LayoutShiftsTrackAppender(this, this.#traceParsedData);
     this.#allTrackAppenders.push(this.#layoutShiftsTrackAppender);
 
     this.#addThreadAppenders();
@@ -177,6 +175,10 @@ export class CompatibilityTracksAppender {
     this.#flameChartData = flameChartData;
     this.#entryData = entryData;
     this.#legacyEntryTypeByLevel = legacyEntryTypeByLevel;
+  }
+
+  getFlameChartTimelineData(): PerfUI.FlameChart.FlameChartTimelineData {
+    return this.#flameChartData;
   }
 
   modifyTree(
@@ -210,8 +212,8 @@ export class CompatibilityTracksAppender {
     if (this.#isCpuProfile && this.#traceParsedData.Samples) {
       for (const [pid, process] of this.#traceParsedData.Samples.profilesInProcess) {
         for (const tid of process.keys()) {
-          this.#threadAppenders.push(new ThreadAppender(
-              this, this.#flameChartData, this.#traceParsedData, pid, tid, null, ThreadType.CPU_PROFILE));
+          this.#threadAppenders.push(
+              new ThreadAppender(this, this.#traceParsedData, pid, tid, null, ThreadType.CPU_PROFILE));
         }
       }
     } else if (this.#traceParsedData.Renderer) {
@@ -228,11 +230,11 @@ export class CompatibilityTracksAppender {
           // 2. the V8 Helper Thread
           // Note that the names passed here are not used visually. TODO: remove this name?
           this.#threadAppenders.push(new ThreadAppender(
-              this, this.#flameChartData, this.#traceParsedData, pid, workletEvent.args.data.utilityThread.tid,
-              'auction-worket-utility', ThreadType.AUCTION_WORKLET));
+              this, this.#traceParsedData, pid, workletEvent.args.data.utilityThread.tid, 'auction-worket-utility',
+              ThreadType.AUCTION_WORKLET));
           this.#threadAppenders.push(new ThreadAppender(
-              this, this.#flameChartData, this.#traceParsedData, pid, workletEvent.args.data.v8HelperThread.tid,
-              'auction-worklet-v8helper', ThreadType.AUCTION_WORKLET));
+              this, this.#traceParsedData, pid, workletEvent.args.data.v8HelperThread.tid, 'auction-worklet-v8helper',
+              ThreadType.AUCTION_WORKLET));
           continue;
         }
 
@@ -246,8 +248,8 @@ export class CompatibilityTracksAppender {
             threadType = ThreadType.RASTERIZER;
             rasterCount++;
           }
-          this.#threadAppenders.push(new ThreadAppender(
-              this, this.#flameChartData, this.#traceParsedData, pid, tid, thread.name, threadType, rasterCount));
+          this.#threadAppenders.push(
+              new ThreadAppender(this, this.#traceParsedData, pid, tid, thread.name, threadType, rasterCount));
         }
       }
     }

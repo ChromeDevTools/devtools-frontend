@@ -2639,6 +2639,8 @@ export class FlameChartTimelineData {
     this.selectedGroup = null;
   }
 
+  // TODO(crbug.com/1501055) Thinking about refactor this class, so we can avoid create a new object when modifying the
+  // flame chart.
   static create(data: {
     entryLevels: FlameChartTimelineData['entryLevels'],
     entryTotalTimes: FlameChartTimelineData['entryTotalTimes'],
@@ -2650,6 +2652,8 @@ export class FlameChartTimelineData {
         data.entryLevels, data.entryTotalTimes, data.entryStartTimes, data.groups, data.entryDecorations || []);
   }
 
+  // TODO(crbug.com/1501055) Thinking about refactor this class, so we can avoid create a new object when modifying the
+  // flame chart.
   static createEmpty(): FlameChartTimelineData {
     return new FlameChartTimelineData(
         [],  // entry levels: what level on the timeline is an event on,

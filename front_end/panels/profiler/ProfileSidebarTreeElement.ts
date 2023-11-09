@@ -85,6 +85,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
 
   createSaveLink(): void {
     this.saveLinkElement = this.titleContainer.createChild('span', 'save-link');
+    this.saveLinkElement.role = 'link';
     this.saveLinkElement.textContent = i18nString(UIStrings.save);
     this.saveLinkElement.tabIndex = 0;
     UI.ARIAUtils.setLabel(this.saveLinkElement, i18nString(UIStrings.enterToSave));

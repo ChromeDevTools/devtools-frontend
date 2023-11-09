@@ -200,7 +200,7 @@ export class SearchView extends UI.Widget.VBox {
         this.search.value, !this.matchCaseButton.toggled(), this.regexButton.toggled());
   }
 
-  async toggle(queryCandidate: string, searchImmediately?: boolean): Promise<void> {
+  toggle(queryCandidate: string, searchImmediately?: boolean): void {
     if (queryCandidate) {
       this.search.value = queryCandidate;
     }
@@ -243,7 +243,7 @@ export class SearchView extends UI.Widget.VBox {
     this.progressIndicator.done();
     this.progressIndicator = null;
     this.isIndexing = false;
-    this.indexingFinished(finished);
+    this.searchMessageElement.textContent = finished ? '' : i18nString(UIStrings.indexingInterrupted);
     if (!finished) {
       this.pendingSearchConfig = null;
     }
@@ -313,16 +313,6 @@ export class SearchView extends UI.Widget.VBox {
     UI.ARIAUtils.alert(this.searchMessageElement.textContent + ' ' + this.searchResultsMessageElement.textContent);
   }
 
-  private async startSearch(searchConfig: Workspace.SearchConfig.SearchConfig): Promise<void> {
-    this.resetSearch();
-    ++this.searchId;
-    this.initScope();
-    if (!this.isIndexing) {
-      this.startIndexing();
-    }
-    this.pendingSearchConfig = searchConfig;
-  }
-
   private innerStartSearch(searchConfig: Workspace.SearchConfig.SearchConfig): void {
     this.searchConfig = searchConfig;
     if (this.progressIndicator) {
@@ -341,10 +331,6 @@ export class SearchView extends UI.Widget.VBox {
     this.stopSearch();
     this.showPane(null);
     this.searchResultsPane = null;
-    this.clearSearchMessage();
-  }
-
-  private clearSearchMessage(): void {
     this.searchMessageElement.textContent = '';
     this.searchResultsMessageElement.textContent = '';
   }
@@ -360,7 +346,9 @@ export class SearchView extends UI.Widget.VBox {
   }
 
   private searchStarted(progressIndicator: UI.ProgressIndicator.ProgressIndicator): void {
-    this.resetCounters();
+    this.searchMatchesCount = 0;
+    this.searchResultsCount = 0;
+    this.nonEmptySearchResultsCount = 0;
     if (!this.searchingView) {
       this.searchingView = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.searching));
     }
@@ -368,10 +356,6 @@ export class SearchView extends UI.Widget.VBox {
     this.searchMessageElement.textContent = i18nString(UIStrings.searching);
     progressIndicator.show(this.searchProgressPlaceholderElement);
     this.updateSearchResultsMessage();
-  }
-
-  private indexingFinished(finished: boolean): void {
-    this.searchMessageElement.textContent = finished ? '' : i18nString(UIStrings.indexingInterrupted);
   }
 
   private updateSearchResultsMessage(): void {
@@ -399,12 +383,6 @@ export class SearchView extends UI.Widget.VBox {
       panel.show(this.searchResultsElement);
     }
     this.visiblePane = panel;
-  }
-
-  private resetCounters(): void {
-    this.searchMatchesCount = 0;
-    this.searchResultsCount = 0;
-    this.nonEmptySearchResultsCount = 0;
   }
 
   private nothingFound(): void {
@@ -504,7 +482,13 @@ export class SearchView extends UI.Widget.VBox {
     if (!searchConfig.query() || !searchConfig.query().length) {
       return;
     }
-    void this.startSearch(searchConfig);
+    this.resetSearch();
+    ++this.searchId;
+    this.initScope();
+    if (!this.isIndexing) {
+      this.startIndexing();
+    }
+    this.pendingSearchConfig = searchConfig;
   }
 
   get throttlerForTest(): Common.Throttler.Throttler {

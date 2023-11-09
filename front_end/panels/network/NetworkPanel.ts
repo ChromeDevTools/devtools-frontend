@@ -1090,7 +1090,7 @@ export class SearchNetworkView extends Search.SearchView.SearchView {
   static async openSearch(query: string, searchImmediately?: boolean): Promise<Search.SearchView.SearchView> {
     await UI.ViewManager.ViewManager.instance().showView('network.search-network-tab');
     const searchView = SearchNetworkView.instance();
-    void searchView.toggle(query, Boolean(searchImmediately));
+    searchView.toggle(query, Boolean(searchImmediately));
     return searchView;
   }
 

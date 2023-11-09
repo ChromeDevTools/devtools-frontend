@@ -32,7 +32,7 @@ export class SearchSourcesView extends Search.SearchView.SearchView {
     location.appendView(view);
     await UI.ViewManager.ViewManager.instance().revealView(view);
     const widget = (await view.widget() as Search.SearchView.SearchView);
-    void widget.toggle(query, Boolean(searchImmediately));
+    widget.toggle(query, Boolean(searchImmediately));
     return widget;
   }
 

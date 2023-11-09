@@ -26,7 +26,7 @@ import type { CdpHTTPRequest } from './HTTPRequest.js';
 export declare class CdpHTTPResponse extends HTTPResponse {
     #private;
     constructor(client: CDPSession, request: CdpHTTPRequest, responsePayload: Protocol.Network.Response, extraInfo: Protocol.Network.ResponseReceivedExtraInfoEvent | null);
-    _resolveBody(err: Error | null): void;
+    _resolveBody(err?: Error): void;
     remoteAddress(): RemoteAddress;
     url(): string;
     status(): number;

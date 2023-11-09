@@ -94,7 +94,7 @@ export declare const DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = 0;
  *
  * @public
  */
-export declare class HTTPRequest {
+export declare abstract class HTTPRequest {
     /**
      * @internal
      */
@@ -124,7 +124,7 @@ export declare class HTTPRequest {
      *
      * @experimental
      */
-    get client(): CDPSession;
+    abstract get client(): CDPSession;
     /**
      * @internal
      */
@@ -132,22 +132,22 @@ export declare class HTTPRequest {
     /**
      * The URL of the request
      */
-    url(): string;
+    abstract url(): string;
     /**
      * The `ContinueRequestOverrides` that will be used
      * if the interception is allowed to continue (ie, `abort()` and
      * `respond()` aren't called).
      */
-    continueRequestOverrides(): ContinueRequestOverrides;
+    abstract continueRequestOverrides(): ContinueRequestOverrides;
     /**
      * The `ResponseForRequest` that gets used if the
      * interception is allowed to respond (ie, `abort()` is not called).
      */
-    responseForRequest(): Partial<ResponseForRequest> | null;
+    abstract responseForRequest(): Partial<ResponseForRequest> | null;
     /**
      * The most recent reason for aborting the request
      */
-    abortErrorReason(): Protocol.Network.ErrorReason | null;
+    abstract abortErrorReason(): Protocol.Network.ErrorReason | null;
     /**
      * An InterceptResolutionState object describing the current resolution
      * action and priority.
@@ -159,60 +159,60 @@ export declare class HTTPRequest {
      * InterceptResolutionAction is one of: `abort`, `respond`, `continue`,
      * `disabled`, `none`, or `already-handled`.
      */
-    interceptResolutionState(): InterceptResolutionState;
+    abstract interceptResolutionState(): InterceptResolutionState;
     /**
      * Is `true` if the intercept resolution has already been handled,
      * `false` otherwise.
      */
-    isInterceptResolutionHandled(): boolean;
+    abstract isInterceptResolutionHandled(): boolean;
     /**
      * Adds an async request handler to the processing queue.
      * Deferred handlers are not guaranteed to execute in any particular order,
      * but they are guaranteed to resolve before the request interception
      * is finalized.
      */
-    enqueueInterceptAction(pendingHandler: () => void | PromiseLike<unknown>): void;
+    abstract enqueueInterceptAction(pendingHandler: () => void | PromiseLike<unknown>): void;
     /**
      * Awaits pending interception handlers and then decides how to fulfill
      * the request interception.
      */
-    finalizeInterceptions(): Promise<void>;
+    abstract finalizeInterceptions(): Promise<void>;
     /**
      * Contains the request's resource type as it was perceived by the rendering
      * engine.
      */
-    resourceType(): ResourceType;
+    abstract resourceType(): ResourceType;
     /**
      * The method used (`GET`, `POST`, etc.)
      */
-    method(): string;
+    abstract method(): string;
     /**
      * The request's post body, if any.
      */
-    postData(): string | undefined;
+    abstract postData(): string | undefined;
     /**
      * An object with HTTP headers associated with the request. All
      * header names are lower-case.
      */
-    headers(): Record<string, string>;
+    abstract headers(): Record<string, string>;
     /**
      * A matching `HTTPResponse` object, or null if the response has not
      * been received yet.
      */
-    response(): HTTPResponse | null;
+    abstract response(): HTTPResponse | null;
     /**
      * The frame that initiated the request, or null if navigating to
      * error pages.
      */
-    frame(): Frame | null;
+    abstract frame(): Frame | null;
     /**
      * True if the request is the driver of the current frame's navigation.
      */
-    isNavigationRequest(): boolean;
+    abstract isNavigationRequest(): boolean;
     /**
      * The initiator of the request.
      */
-    initiator(): Protocol.Network.Initiator | undefined;
+    abstract initiator(): Protocol.Network.Initiator | undefined;
     /**
      * A `redirectChain` is a chain of requests initiated to fetch a resource.
      * @remarks
@@ -240,7 +240,7 @@ export declare class HTTPRequest {
      * @returns the chain of requests - if a server responds with at least a
      * single redirect, this chain will contain all requests that were redirected.
      */
-    redirectChain(): HTTPRequest[];
+    abstract redirectChain(): HTTPRequest[];
     /**
      * Access information about the request's failure.
      *
@@ -261,7 +261,7 @@ export declare class HTTPRequest {
      * message, e.g. `net::ERR_FAILED`. It is not guaranteed that there will be
      * failure text if the request fails.
      */
-    failure(): {
+    abstract failure(): {
         errorText: string;
     } | null;
     /**
@@ -293,7 +293,7 @@ export declare class HTTPRequest {
      * cooperative handling rules. Otherwise, intercept is resolved
      * immediately.
      */
-    continue(overrides?: ContinueRequestOverrides, priority?: number): Promise<void>;
+    abstract continue(overrides?: ContinueRequestOverrides, priority?: number): Promise<void>;
     /**
      * Fulfills a request with the given response.
      *
@@ -326,7 +326,7 @@ export declare class HTTPRequest {
      * cooperative handling rules. Otherwise, intercept is resolved
      * immediately.
      */
-    respond(response: Partial<ResponseForRequest>, priority?: number): Promise<void>;
+    abstract respond(response: Partial<ResponseForRequest>, priority?: number): Promise<void>;
     /**
      * Aborts a request.
      *
@@ -340,7 +340,7 @@ export declare class HTTPRequest {
      * cooperative handling rules. Otherwise, intercept is resolved
      * immediately.
      */
-    abort(errorCode?: ErrorCode, priority?: number): Promise<void>;
+    abstract abort(errorCode?: ErrorCode, priority?: number): Promise<void>;
 }
 /**
  * @public
@@ -381,5 +381,5 @@ export declare function headersArray(headers: Record<string, string | string[]>)
  * List taken from {@link https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml}
  * with extra 306 and 418 codes.
  */
-export declare const STATUS_TEXTS: Record<string, string | undefined>;
+export declare const STATUS_TEXTS: Record<string, string>;
 //# sourceMappingURL=HTTPRequest.d.ts.map

@@ -143,7 +143,8 @@ let BidiFrame = (() => {
         async goto(url, options = {}) {
             const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
             const [readiness, networkIdle] = (0, lifecycle_js_1.getBiDiReadinessState)(waitUntil);
-            const response = await (0, rxjs_js_1.firstValueFrom)(this._waitWithNetworkIdle(this.#context.connection.send('browsingContext.navigate', {
+            const response = await (0, rxjs_js_1.firstValueFrom)(this.#page
+                ._waitWithNetworkIdle(this.#context.connection.send('browsingContext.navigate', {
                 context: this.#context.id,
                 url,
                 wait: readiness,
@@ -155,7 +156,8 @@ let BidiFrame = (() => {
         async setContent(html, options = {}) {
             const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
             const [waitEvent, networkIdle] = (0, lifecycle_js_1.getBiDiLifecycleEvent)(waitUntil);
-            await (0, rxjs_js_1.firstValueFrom)(this._waitWithNetworkIdle((0, rxjs_js_1.forkJoin)([
+            await (0, rxjs_js_1.firstValueFrom)(this.#page
+                ._waitWithNetworkIdle((0, rxjs_js_1.forkJoin)([
                 (0, rxjs_js_1.fromEvent)(this.#context, waitEvent).pipe((0, rxjs_js_1.first)()),
                 (0, rxjs_js_1.from)((0, util_js_1.setPageContent)(this, html)),
             ]).pipe((0, rxjs_js_1.map)(() => {
@@ -179,7 +181,9 @@ let BidiFrame = (() => {
                 }
                 return { result };
             }));
-            const response = await (0, rxjs_js_1.firstValueFrom)(this._waitWithNetworkIdle(navigatedObservable, networkIdle).pipe((0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, rxjs_js_1.from)(this.#abortDeferred.valueOrThrow()))));
+            const response = await (0, rxjs_js_1.firstValueFrom)(this.#page
+                ._waitWithNetworkIdle(navigatedObservable, networkIdle)
+                .pipe((0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, rxjs_js_1.from)(this.#abortDeferred.valueOrThrow()))));
             return this.#page.getNavigationResponse(response?.result.navigation);
         }
         get detached() {
@@ -209,18 +213,6 @@ let BidiFrame = (() => {
                 this.#exposedFunctions.delete(name);
                 throw error;
             }
-        }
-        /** @internal */
-        _waitWithNetworkIdle(observableInput, networkIdle) {
-            const delay = networkIdle
-                ? this.#page._waitForNetworkIdle(this.#page._networkManager, util_js_1.NETWORK_IDLE_TIME, networkIdle === 'networkidle0' ? 0 : 2)
-                : (0, rxjs_js_1.from)(Promise.resolve());
-            return (0, rxjs_js_1.forkJoin)([
-                (0, rxjs_js_1.from)(observableInput).pipe((0, rxjs_js_1.first)()),
-                delay.pipe((0, rxjs_js_1.first)()),
-            ]).pipe((0, rxjs_js_1.map)(([response]) => {
-                return response;
-            }));
         }
     };
 })();

@@ -58,7 +58,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import { firstValueFrom, from, raceWith } from '../../third_party/rxjs/rxjs.js';
+import { first, firstValueFrom, forkJoin, from, map, raceWith, } from '../../third_party/rxjs/rxjs.js';
 import { Page, } from '../api/Page.js';
 import { Accessibility } from '../cdp/Accessibility.js';
 import { Coverage } from '../cdp/Coverage.js';
@@ -401,8 +401,7 @@ export class BidiPage extends Page {
     async reload(options = {}) {
         const { waitUntil = 'load', timeout: ms = this._timeoutSettings.navigationTimeout(), } = options;
         const [readiness, networkIdle] = getBiDiReadinessState(waitUntil);
-        const response = await firstValueFrom(this.mainFrame()
-            ._waitWithNetworkIdle(this.#connection.send('browsingContext.reload', {
+        const response = await firstValueFrom(this._waitWithNetworkIdle(this.#connection.send('browsingContext.reload', {
             context: this.mainFrame()._id,
             wait: readiness,
         }), networkIdle)
@@ -536,6 +535,18 @@ export class BidiPage extends Page {
     async waitForNetworkIdle(options = {}) {
         const { idleTime = NETWORK_IDLE_TIME, timeout: ms = this._timeoutSettings.timeout(), } = options;
         await firstValueFrom(this._waitForNetworkIdle(this._networkManager, idleTime).pipe(raceWith(timeout(ms), from(this.#closedDeferred.valueOrThrow()))));
+    }
+    /** @internal */
+    _waitWithNetworkIdle(observableInput, networkIdle) {
+        const delay = networkIdle
+            ? this._waitForNetworkIdle(this._networkManager, NETWORK_IDLE_TIME, networkIdle === 'networkidle0' ? 0 : 2)
+            : from(Promise.resolve());
+        return forkJoin([
+            from(observableInput).pipe(first()),
+            delay.pipe(first()),
+        ]).pipe(map(([response]) => {
+            return response;
+        }));
     }
     async createCDPSession() {
         const { sessionId } = await this.mainFrame()

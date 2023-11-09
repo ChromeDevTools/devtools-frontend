@@ -31,6 +31,7 @@ class WaitTask {
     #fn;
     #args;
     #timeout;
+    #timeoutError;
     #result = Deferred_js_1.Deferred.create();
     #poller;
     #signal;
@@ -56,8 +57,9 @@ class WaitTask {
         this.#args = args;
         this.#world.taskManager.add(this);
         if (options.timeout) {
+            this.#timeoutError = new Errors_js_1.TimeoutError(`Waiting failed: ${options.timeout}ms exceeded`);
             this.#timeout = setTimeout(() => {
-                void this.terminate(new Errors_js_1.TimeoutError(`Waiting failed: ${options.timeout}ms exceeded`));
+                void this.terminate(this.#timeoutError);
             }, options.timeout);
         }
         void this.rerun();
@@ -126,9 +128,7 @@ class WaitTask {
     }
     async terminate(error) {
         this.#world.taskManager.delete(this);
-        if (this.#timeout) {
-            clearTimeout(this.#timeout);
-        }
+        clearTimeout(this.#timeout);
         if (error && !this.#result.finished()) {
             this.#result.reject(error);
         }

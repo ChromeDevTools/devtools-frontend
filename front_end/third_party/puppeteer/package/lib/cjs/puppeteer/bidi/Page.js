@@ -427,8 +427,7 @@ class BidiPage extends Page_js_1.Page {
     async reload(options = {}) {
         const { waitUntil = 'load', timeout: ms = this._timeoutSettings.navigationTimeout(), } = options;
         const [readiness, networkIdle] = (0, lifecycle_js_1.getBiDiReadinessState)(waitUntil);
-        const response = await (0, rxjs_js_1.firstValueFrom)(this.mainFrame()
-            ._waitWithNetworkIdle(this.#connection.send('browsingContext.reload', {
+        const response = await (0, rxjs_js_1.firstValueFrom)(this._waitWithNetworkIdle(this.#connection.send('browsingContext.reload', {
             context: this.mainFrame()._id,
             wait: readiness,
         }), networkIdle)
@@ -562,6 +561,18 @@ class BidiPage extends Page_js_1.Page {
     async waitForNetworkIdle(options = {}) {
         const { idleTime = util_js_1.NETWORK_IDLE_TIME, timeout: ms = this._timeoutSettings.timeout(), } = options;
         await (0, rxjs_js_1.firstValueFrom)(this._waitForNetworkIdle(this._networkManager, idleTime).pipe((0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, rxjs_js_1.from)(this.#closedDeferred.valueOrThrow()))));
+    }
+    /** @internal */
+    _waitWithNetworkIdle(observableInput, networkIdle) {
+        const delay = networkIdle
+            ? this._waitForNetworkIdle(this._networkManager, util_js_1.NETWORK_IDLE_TIME, networkIdle === 'networkidle0' ? 0 : 2)
+            : (0, rxjs_js_1.from)(Promise.resolve());
+        return (0, rxjs_js_1.forkJoin)([
+            (0, rxjs_js_1.from)(observableInput).pipe((0, rxjs_js_1.first)()),
+            delay.pipe((0, rxjs_js_1.first)()),
+        ]).pipe((0, rxjs_js_1.map)(([response]) => {
+            return response;
+        }));
     }
     async createCDPSession() {
         const { sessionId } = await this.mainFrame()

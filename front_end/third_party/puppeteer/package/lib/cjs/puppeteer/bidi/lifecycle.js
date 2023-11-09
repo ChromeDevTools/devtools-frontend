@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rewriteNavigationError = exports.getBiDiLifecycleEvent = exports.lifeCycleToSubscribedEvent = exports.getBiDiReadinessState = exports.lifeCycleToReadinessState = exports.getBiDiLifeCycles = void 0;
-const rxjs_1 = require("../../third_party/rxjs/rxjs");
-const Errors_1 = require("../common/Errors");
+const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
+const Errors_js_1 = require("../common/Errors.js");
 /**
  * @internal
  */
@@ -57,11 +57,11 @@ function getBiDiLifecycleEvent(event) {
 }
 exports.getBiDiLifecycleEvent = getBiDiLifecycleEvent;
 function rewriteNavigationError(message, ms) {
-    return (0, rxjs_1.catchError)(error => {
-        if (error instanceof Errors_1.ProtocolError) {
+    return (0, rxjs_js_1.catchError)(error => {
+        if (error instanceof Errors_js_1.ProtocolError) {
             error.message += ` at ${message}`;
         }
-        else if (error instanceof Errors_1.TimeoutError) {
+        else if (error instanceof Errors_js_1.TimeoutError) {
             error.message = `Navigation timeout of ${ms} ms exceeded`;
         }
         throw error;

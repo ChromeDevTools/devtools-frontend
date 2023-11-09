@@ -472,7 +472,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         // Under certain conditions we never get the Network.responseReceived
         // event from protocol. @see https://crbug.com/883475
         if (request.response()) {
-            request.response()?._resolveBody(null);
+            request.response()?._resolveBody();
         }
         this.#forgetRequest(request, true);
         this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFinished, request);
@@ -498,7 +498,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         request._failureText = event.errorText;
         const response = request.response();
         if (response) {
-            response._resolveBody(null);
+            response._resolveBody();
         }
         this.#forgetRequest(request, true);
         this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.RequestFailed, request);

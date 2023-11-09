@@ -66,6 +66,12 @@ class BidiHTTPResponse extends HTTPResponse_js_1.HTTPResponse {
     fromServiceWorker() {
         return false;
     }
+    securityDetails() {
+        throw new Error('Not implemented');
+    }
+    buffer() {
+        throw new Error('Not implemented');
+    }
 }
 exports.BidiHTTPResponse = BidiHTTPResponse;
 //# sourceMappingURL=HTTPResponse.js.map

@@ -28,6 +28,7 @@ export class WaitTask {
     #fn;
     #args;
     #timeout;
+    #timeoutError;
     #result = Deferred.create();
     #poller;
     #signal;
@@ -53,8 +54,9 @@ export class WaitTask {
         this.#args = args;
         this.#world.taskManager.add(this);
         if (options.timeout) {
+            this.#timeoutError = new TimeoutError(`Waiting failed: ${options.timeout}ms exceeded`);
             this.#timeout = setTimeout(() => {
-                void this.terminate(new TimeoutError(`Waiting failed: ${options.timeout}ms exceeded`));
+                void this.terminate(this.#timeoutError);
             }, options.timeout);
         }
         void this.rerun();
@@ -123,9 +125,7 @@ export class WaitTask {
     }
     async terminate(error) {
         this.#world.taskManager.delete(this);
-        if (this.#timeout) {
-            clearTimeout(this.#timeout);
-        }
+        clearTimeout(this.#timeout);
         if (error && !this.#result.finished()) {
             this.#result.reject(error);
         }

@@ -129,12 +129,6 @@ export class ProductLauncher {
         }
         return browser;
     }
-    executablePath() {
-        throw new Error('Not implemented');
-    }
-    defaultArgs() {
-        throw new Error('Not implemented');
-    }
     /**
      * Set only for Firefox, after the launcher resolves the `latest` revision to
      * the actual revision.
@@ -142,12 +136,6 @@ export class ProductLauncher {
      */
     getActualBrowserRevision() {
         return this.actualBrowserRevision;
-    }
-    async computeLaunchArguments() {
-        throw new Error('Not implemented');
-    }
-    async cleanUserDataDir() {
-        throw new Error('Not implemented');
     }
     /**
      * @internal

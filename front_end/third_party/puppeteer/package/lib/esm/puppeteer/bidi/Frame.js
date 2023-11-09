@@ -50,7 +50,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { from, fromEvent, merge, map, forkJoin, first, firstValueFrom, raceWith, } from '../../third_party/rxjs/rxjs.js';
 import { Frame, throwIfDetached, } from '../api/Frame.js';
-import { NETWORK_IDLE_TIME, UTILITY_WORLD_NAME, setPageContent, timeout, } from '../common/util.js';
+import { UTILITY_WORLD_NAME, setPageContent, timeout } from '../common/util.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { ExposeableFunction } from './ExposedFunction.js';
@@ -117,7 +117,8 @@ let BidiFrame = (() => {
         async goto(url, options = {}) {
             const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
             const [readiness, networkIdle] = getBiDiReadinessState(waitUntil);
-            const response = await firstValueFrom(this._waitWithNetworkIdle(this.#context.connection.send('browsingContext.navigate', {
+            const response = await firstValueFrom(this.#page
+                ._waitWithNetworkIdle(this.#context.connection.send('browsingContext.navigate', {
                 context: this.#context.id,
                 url,
                 wait: readiness,
@@ -129,7 +130,8 @@ let BidiFrame = (() => {
         async setContent(html, options = {}) {
             const { waitUntil = 'load', timeout: ms = this.#timeoutSettings.navigationTimeout(), } = options;
             const [waitEvent, networkIdle] = getBiDiLifecycleEvent(waitUntil);
-            await firstValueFrom(this._waitWithNetworkIdle(forkJoin([
+            await firstValueFrom(this.#page
+                ._waitWithNetworkIdle(forkJoin([
                 fromEvent(this.#context, waitEvent).pipe(first()),
                 from(setPageContent(this, html)),
             ]).pipe(map(() => {
@@ -153,7 +155,9 @@ let BidiFrame = (() => {
                 }
                 return { result };
             }));
-            const response = await firstValueFrom(this._waitWithNetworkIdle(navigatedObservable, networkIdle).pipe(raceWith(timeout(ms), from(this.#abortDeferred.valueOrThrow()))));
+            const response = await firstValueFrom(this.#page
+                ._waitWithNetworkIdle(navigatedObservable, networkIdle)
+                .pipe(raceWith(timeout(ms), from(this.#abortDeferred.valueOrThrow()))));
             return this.#page.getNavigationResponse(response?.result.navigation);
         }
         get detached() {
@@ -183,18 +187,6 @@ let BidiFrame = (() => {
                 this.#exposedFunctions.delete(name);
                 throw error;
             }
-        }
-        /** @internal */
-        _waitWithNetworkIdle(observableInput, networkIdle) {
-            const delay = networkIdle
-                ? this.#page._waitForNetworkIdle(this.#page._networkManager, NETWORK_IDLE_TIME, networkIdle === 'networkidle0' ? 0 : 2)
-                : from(Promise.resolve());
-            return forkJoin([
-                from(observableInput).pipe(first()),
-                delay.pipe(first()),
-            ]).pipe(map(([response]) => {
-                return response;
-            }));
         }
     };
 })();

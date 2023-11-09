@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import type { ObservableInput, ObservedValueOf, OperatorFunction } from '../../third_party/rxjs/rxjs';
-import type { PuppeteerLifeCycleEvent } from '../cdp/LifecycleWatcher';
+import type { ObservableInput, ObservedValueOf, OperatorFunction } from '../../third_party/rxjs/rxjs.js';
+import type { PuppeteerLifeCycleEvent } from '../cdp/LifecycleWatcher.js';
 export type BiDiNetworkIdle = Extract<PuppeteerLifeCycleEvent, 'networkidle0' | 'networkidle2'> | null;
 /**
  * @internal

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+import type { Viewport } from '../common/Viewport.js';
 import type { BrowsingContext } from './BrowsingContext.js';
 /**
  * @internal
@@ -21,6 +21,6 @@ import type { BrowsingContext } from './BrowsingContext.js';
 export declare class EmulationManager {
     #private;
     constructor(browsingContext: BrowsingContext);
-    emulateViewport(viewport: Bidi.BrowsingContext.Viewport): Promise<void>;
+    emulateViewport(viewport: Viewport): Promise<void>;
 }
 //# sourceMappingURL=EmulationManager.d.ts.map

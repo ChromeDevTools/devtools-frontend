@@ -1,5 +1,5 @@
-import { catchError } from '../../third_party/rxjs/rxjs';
-import { ProtocolError, TimeoutError } from '../common/Errors';
+import { catchError } from '../../third_party/rxjs/rxjs.js';
+import { ProtocolError, TimeoutError } from '../common/Errors.js';
 /**
  * @internal
  */

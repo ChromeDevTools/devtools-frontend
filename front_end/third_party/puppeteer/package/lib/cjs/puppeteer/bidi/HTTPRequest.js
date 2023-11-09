@@ -35,6 +35,9 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
             }
         }
     }
+    get client() {
+        throw new Error('Not implemented');
+    }
     url() {
         return this.#url;
     }
@@ -68,6 +71,36 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     }
     frame() {
         return this.#frame;
+    }
+    continueRequestOverrides() {
+        throw new Error('Not implemented');
+    }
+    async continue(_overrides = {}) {
+        throw new Error('Not implemented');
+    }
+    responseForRequest() {
+        throw new Error('Not implemented');
+    }
+    abortErrorReason() {
+        throw new Error('Not implemented');
+    }
+    interceptResolutionState() {
+        throw new Error('Not implemented');
+    }
+    isInterceptResolutionHandled() {
+        throw new Error('Not implemented');
+    }
+    async finalizeInterceptions() {
+        throw new Error('Not implemented');
+    }
+    abort() {
+        throw new Error('Not implemented');
+    }
+    respond(_response, _priority) {
+        throw new Error('Not implemented');
+    }
+    failure() {
+        throw new Error('Not implemented');
     }
 }
 exports.BidiHTTPRequest = BidiHTTPRequest;

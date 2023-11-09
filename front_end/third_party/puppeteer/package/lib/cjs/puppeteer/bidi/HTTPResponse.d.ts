@@ -1,3 +1,4 @@
+/// <reference types="node" />
 /**
  * Copyright 2020 Google Inc. All rights reserved.
  *
@@ -17,6 +18,7 @@ import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import type Protocol from 'devtools-protocol';
 import type { Frame } from '../api/Frame.js';
 import { HTTPResponse as HTTPResponse, type RemoteAddress } from '../api/HTTPResponse.js';
+import type { SecurityDetails } from '../common/SecurityDetails.js';
 import type { BidiHTTPRequest } from './HTTPRequest.js';
 /**
  * @internal
@@ -34,5 +36,7 @@ export declare class BidiHTTPResponse extends HTTPResponse {
     timing(): Protocol.Network.ResourceTiming | null;
     frame(): Frame | null;
     fromServiceWorker(): boolean;
+    securityDetails(): SecurityDetails | null;
+    buffer(): Promise<Buffer>;
 }
 //# sourceMappingURL=HTTPResponse.d.ts.map

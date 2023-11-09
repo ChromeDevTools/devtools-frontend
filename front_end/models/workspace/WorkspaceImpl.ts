@@ -269,7 +269,9 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     const result: UISourceCode[] = [];
     for (const project of this.projectsInternal.values()) {
       if (project.type() === type) {
-        result.push(...project.uiSourceCodes());
+        for (const uiSourceCode of project.uiSourceCodes()) {
+          result.push(uiSourceCode);
+        }
       }
     }
     return result;
@@ -304,7 +306,9 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   uiSourceCodes(): UISourceCode[] {
     const result: UISourceCode[] = [];
     for (const project of this.projectsInternal.values()) {
-      result.push(...project.uiSourceCodes());
+      for (const uiSourceCode of project.uiSourceCodes()) {
+        result.push(uiSourceCode);
+      }
     }
     return result;
   }

@@ -1703,17 +1703,20 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       const disableIfBlob = request.isBlobRequest();
       if (Host.Platform.isWin()) {
         footerSection.appendItem(
-            i18nString(UIStrings.copyAsPowershell), this.copyPowerShellCommand.bind(this, request), disableIfBlob);
+            i18nString(UIStrings.copyAsPowershell), this.copyPowerShellCommand.bind(this, request),
+            {disabled: disableIfBlob});
         footerSection.appendItem(
             i18nString(UIStrings.copyAsFetch), this.copyFetchCall.bind(this, request, FetchStyle.Browser),
-            disableIfBlob);
+            {disabled: disableIfBlob});
         footerSection.appendItem(
             i18nString(UIStrings.copyAsNodejsFetch), this.copyFetchCall.bind(this, request, FetchStyle.NodeJs),
-            disableIfBlob);
+            {disabled: disableIfBlob});
         footerSection.appendItem(
-            i18nString(UIStrings.copyAsCurlCmd), this.copyCurlCommand.bind(this, request, 'win'), disableIfBlob);
+            i18nString(UIStrings.copyAsCurlCmd), this.copyCurlCommand.bind(this, request, 'win'),
+            {disabled: disableIfBlob});
         footerSection.appendItem(
-            i18nString(UIStrings.copyAsCurlBash), this.copyCurlCommand.bind(this, request, 'unix'), disableIfBlob);
+            i18nString(UIStrings.copyAsCurlBash), this.copyCurlCommand.bind(this, request, 'unix'),
+            {disabled: disableIfBlob});
         footerSection.appendItem(i18nString(UIStrings.copyAllAsPowershell), this.copyAllPowerShellCommand.bind(this));
         footerSection.appendItem(
             i18nString(UIStrings.copyAllAsFetch), this.copyAllFetchCall.bind(this, FetchStyle.Browser));
@@ -1723,15 +1726,17 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         footerSection.appendItem(i18nString(UIStrings.copyAllAsCurlBash), this.copyAllCurlCommand.bind(this, 'unix'));
       } else {
         footerSection.appendItem(
-            i18nString(UIStrings.copyAsPowershell), this.copyPowerShellCommand.bind(this, request), disableIfBlob);
+            i18nString(UIStrings.copyAsPowershell), this.copyPowerShellCommand.bind(this, request),
+            {disabled: disableIfBlob});
         footerSection.appendItem(
             i18nString(UIStrings.copyAsFetch), this.copyFetchCall.bind(this, request, FetchStyle.Browser),
-            disableIfBlob);
+            {disabled: disableIfBlob});
         footerSection.appendItem(
             i18nString(UIStrings.copyAsNodejsFetch), this.copyFetchCall.bind(this, request, FetchStyle.NodeJs),
-            disableIfBlob);
+            {disabled: disableIfBlob});
         footerSection.appendItem(
-            i18nString(UIStrings.copyAsCurl), this.copyCurlCommand.bind(this, request, 'unix'), disableIfBlob);
+            i18nString(UIStrings.copyAsCurl), this.copyCurlCommand.bind(this, request, 'unix'),
+            {disabled: disableIfBlob});
         footerSection.appendItem(i18nString(UIStrings.copyAllAsPowershell), this.copyAllPowerShellCommand.bind(this));
         footerSection.appendItem(
             i18nString(UIStrings.copyAllAsFetch), this.copyAllFetchCall.bind(this, FetchStyle.Browser));

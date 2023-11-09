@@ -767,7 +767,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     menu.defaultSection().appendItem(i18nString(UIStrings.removeOtherBreakpoints), () => {
       const breakpointItems = otherGroups.map(({breakpointItems}) => breakpointItems).flat();
       void this.#controller.breakpointsRemoved(breakpointItems);
-    }, otherGroups.length === 0);
+    }, {disabled: otherGroups.length === 0});
     menu.defaultSection().appendItem(i18nString(UIStrings.removeAllBreakpoints), () => {
       const breakpointItems = this.#breakpointGroups.map(({breakpointItems}) => breakpointItems).flat();
       void this.#controller.breakpointsRemoved(breakpointItems);
@@ -780,7 +780,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       for (const breakpointItem of notEnabledItems) {
         this.#controller.breakpointStateChanged(breakpointItem, true);
       }
-    }, notEnabledItems.length === 0);
+    }, {disabled: notEnabledItems.length === 0});
     const notDisabledItems =
         breakpointItems.filter(breakpointItem => breakpointItem.status !== BreakpointStatus.DISABLED);
     menu.debugSection().appendItem(i18nString(UIStrings.disableAllBreakpointsInFile), () => {
@@ -788,7 +788,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       for (const breakpointItem of notDisabledItems) {
         this.#controller.breakpointStateChanged(breakpointItem, false);
       }
-    }, notDisabledItems.length === 0);
+    }, {disabled: notDisabledItems.length === 0});
 
     void menu.show();
   }
@@ -882,7 +882,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       Host.userMetrics.breakpointEditDialogRevealedFrom(
           Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointSidebarContextMenu);
       void this.#controller.breakpointEdited(breakpointItem, false /* editButtonClicked */);
-    }, !editable);
+    }, {disabled: !editable});
 
     menu.defaultSection().appendItem(i18nString(UIStrings.removeBreakpoint), () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointRemovedFromContextMenu);
@@ -893,7 +893,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
                            .filter(item => item !== breakpointItem);
     menu.defaultSection().appendItem(i18nString(UIStrings.removeOtherBreakpoints), () => {
       void this.#controller.breakpointsRemoved(otherItems);
-    }, otherItems.length === 0);
+    }, {disabled: otherItems.length === 0});
     menu.defaultSection().appendItem(i18nString(UIStrings.removeAllBreakpoints), () => {
       const breakpointItems = this.#breakpointGroups.map(({breakpointItems}) => breakpointItems).flat();
       void this.#controller.breakpointsRemoved(breakpointItems);

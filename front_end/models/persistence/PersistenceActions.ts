@@ -130,7 +130,7 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
         }
       }
     } else {
-      contextMenu.overrideSection().appendItem(i18nString(UIStrings.overrideContent), () => {}, true);
+      contextMenu.overrideSection().appendItem(i18nString(UIStrings.overrideContent), () => {}, {disabled: true});
     }
 
     if (contentProvider instanceof SDK.NetworkRequest.NetworkRequest) {

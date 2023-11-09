@@ -399,7 +399,7 @@ export class DeviceModeToolbar {
     if (this.model.type() === EmulationModel.DeviceModeModel.Type.Device) {
       contextMenu.footerSection().appendItem(
           i18nString(UIStrings.fitToWindowF, {PH1: this.getPrettyFitZoomPercentage()}),
-          this.onScaleMenuChanged.bind(this, this.model.fitScale()), false);
+          this.onScaleMenuChanged.bind(this, this.model.fitScale()));
     }
     contextMenu.footerSection().appendCheckboxItem(
         i18nString(UIStrings.autoadjustZoom), this.onAutoAdjustScaleChanged.bind(this),
@@ -487,7 +487,7 @@ export class DeviceModeToolbar {
       if (typeof disabled === 'undefined') {
         disabled = model.type() === EmulationModel.DeviceModeModel.Type.None;
       }
-      section.appendItem(setting.get() ? title1 : title2, setting.set.bind(setting, !setting.get()), disabled);
+      section.appendItem(setting.get() ? title1 : title2, setting.set.bind(setting, !setting.get()), {disabled});
     }
   }
 
@@ -546,7 +546,7 @@ export class DeviceModeToolbar {
     appendGroup.call(this, this.standardDevices());
     appendGroup.call(this, this.customDevices());
     contextMenu.footerSection().appendItem(
-        i18nString(UIStrings.edit), this.emulatedDevicesList.revealCustomSetting.bind(this.emulatedDevicesList), false);
+        i18nString(UIStrings.edit), this.emulatedDevicesList.revealCustomSetting.bind(this.emulatedDevicesList));
 
     function appendGroup(this: DeviceModeToolbar, devices: EmulationModel.EmulatedDevices.EmulatedDevice[]): void {
       if (!devices.length) {

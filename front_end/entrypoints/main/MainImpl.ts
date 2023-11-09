@@ -923,7 +923,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
         buttons[index].element.focus();
         event.consume(true);
       });
-      contextMenu.headerSection().appendCustomItem(dockItemElement);
+      contextMenu.headerSection().appendCustomItem(dockItemElement, 'dockSide');
     }
 
     const button = (this.#itemInternal.element as HTMLButtonElement);
@@ -948,7 +948,8 @@ export class MainMenuItem implements UI.Toolbar.Provider {
         UI.InspectorView.InspectorView.instance().drawerVisible() ? i18nString(UIStrings.hideConsoleDrawer) :
                                                                     i18nString(UIStrings.showConsoleDrawer));
     contextMenu.appendItemsAtLocation('mainMenu');
-    const moreTools = contextMenu.defaultSection().appendSubMenuItem(i18nString(UIStrings.moreTools));
+    const moreTools =
+        contextMenu.defaultSection().appendSubMenuItem(i18nString(UIStrings.moreTools), false, 'moreTools');
     const viewExtensions = UI.ViewManager.getRegisteredViewExtensions();
     viewExtensions.sort((extension1, extension2) => {
       const title1 = extension1.title();
@@ -966,7 +967,7 @@ export class MainMenuItem implements UI.Toolbar.Provider {
         moreTools.defaultSection().appendItem(title, () => {
           Host.userMetrics.issuesPanelOpenedFrom(Host.UserMetrics.IssueOpener.HamburgerMenu);
           void UI.ViewManager.ViewManager.instance().showView('issues-pane', /* userGesture */ true);
-        });
+        }, {jslogContext: id});
         continue;
       }
 
@@ -982,16 +983,16 @@ export class MainMenuItem implements UI.Toolbar.Provider {
         previewIcon.data = {iconName: 'experiment', color: 'var(--icon-default)', width: '16px', height: '16px'};
         moreTools.defaultSection().appendItem(title, () => {
           void UI.ViewManager.ViewManager.instance().showView(id, true, false);
-        }, /* disabled=*/ false, previewIcon);
+        }, {disabled: false, additionalElement: previewIcon, jslogContext: id});
         continue;
       }
 
       moreTools.defaultSection().appendItem(title, () => {
         void UI.ViewManager.ViewManager.instance().showView(id, true, false);
-      });
+      }, {jslogContext: id});
     }
 
-    const helpSubMenu = contextMenu.footerSection().appendSubMenuItem(i18nString(UIStrings.help));
+    const helpSubMenu = contextMenu.footerSection().appendSubMenuItem(i18nString(UIStrings.help), false, 'help');
     helpSubMenu.appendItemsAtLocation('mainMenuHelp');
   }
 }

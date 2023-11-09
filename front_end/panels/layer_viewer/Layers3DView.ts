@@ -843,12 +843,12 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
   private onContextMenu(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
-        i18nString(UIStrings.resetView), () => this.transformController.resetAndNotify(), false);
+        i18nString(UIStrings.resetView), () => this.transformController.resetAndNotify());
     const selection = this.selectionFromEventPoint(event);
     if (selection && selection.type() === Type.Snapshot) {
       contextMenu.defaultSection().appendItem(
           i18nString(UIStrings.showPaintProfiler),
-          () => this.dispatchEventToListeners(Events.PaintProfilerRequested, selection), false);
+          () => this.dispatchEventToListeners(Events.PaintProfilerRequested, selection));
     }
     this.layerViewHost.showContextMenu(contextMenu, selection);
   }

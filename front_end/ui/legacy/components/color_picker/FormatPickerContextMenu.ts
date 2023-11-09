@@ -106,7 +106,7 @@ export class FormatPickerContextMenu {
       const section = legacyFormats.includes(format)     ? legacySection :
           newColor instanceof Common.Color.ColorFunction ? colorFunctionSection :
                                                            wideSection;
-      section.appendItem(label, handler, false, icon, tooltip);
+      section.appendItem(label, handler, {additionalElement: icon, tooltip});
     }
     await menu.show();
     await showPromise;

@@ -766,7 +766,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
     menuItem = contextMenu.clipboardSection().appendItem(
         i18nString(UIStrings.cut), treeOutline.performCopyOrCut.bind(treeOutline, true, this.nodeInternal),
-        !this.hasEditableNode());
+        {disabled: !this.hasEditableNode()});
     menuItem.setShortcut(createShortcut('X', modifier));
 
     // Place it here so that all "Copy"-ing items stick together.
@@ -781,7 +781,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (this.nodeInternal.nodeType() === Node.ELEMENT_NODE) {
       section.appendItem(i18nString(UIStrings.copySelector), this.copyCSSPath.bind(this));
       section.appendItem(
-          i18nString(UIStrings.copyJsPath), this.copyJSPath.bind(this), !canGetJSPath(this.nodeInternal));
+          i18nString(UIStrings.copyJsPath), this.copyJSPath.bind(this), {disabled: !canGetJSPath(this.nodeInternal)});
       section.appendItem(i18nString(UIStrings.copyStyles), this.copyStyles.bind(this));
     }
     if (!isShadowRoot) {
@@ -798,12 +798,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       const isRootElement = !this.nodeInternal.parentNode || this.nodeInternal.parentNode.nodeName() === '#document';
       menuItem = contextMenu.editSection().appendItem(
           i18nString(UIStrings.duplicateElement), treeOutline.duplicateNode.bind(treeOutline, this.nodeInternal),
-          (this.nodeInternal.isInShadowTree() || isRootElement));
+          {disabled: (this.nodeInternal.isInShadowTree() || isRootElement)});
     }
 
     menuItem = contextMenu.clipboardSection().appendItem(
         i18nString(UIStrings.paste), treeOutline.pasteNode.bind(treeOutline, this.nodeInternal),
-        !treeOutline.canPaste(this.nodeInternal));
+        {disabled: !treeOutline.canPaste(this.nodeInternal)});
     menuItem.setShortcut(createShortcut('V', modifier));
 
     menuItem = contextMenu.debugSection().appendCheckboxItem(

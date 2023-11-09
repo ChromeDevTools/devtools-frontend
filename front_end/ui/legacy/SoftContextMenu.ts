@@ -32,15 +32,16 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {AnchorBehavior, GlassPane, MarginBehavior, PointerEventsBehavior, SizeBehavior} from './GlassPane.js';
 import {Icon} from './Icon.js';
-import * as ThemeSupport from './theme_support/theme_support.js';
-import {createTextChild, ElementFocusRestorer} from './UIUtils.js';
-import softContextMenuStyles from './softContextMenu.css.legacy.js';
 import {InspectorView} from './InspectorView.js';
+import softContextMenuStyles from './softContextMenu.css.legacy.js';
+import * as ThemeSupport from './theme_support/theme_support.js';
 import {Tooltip} from './Tooltip.js';
+import {createTextChild, ElementFocusRestorer} from './UIUtils.js';
 
 const UIStrings = {
   /**
@@ -246,6 +247,15 @@ export class SoftContextMenu {
       subMenuTimer: undefined,
     };
 
+    if (item.jslogContext) {
+      if (item.type === 'checkbox') {
+        menuItemElement.setAttribute(
+            'jslog', `${VisualLogging.toggle().track({click: true}).context(item.jslogContext)}`);
+      } else {
+        menuItemElement.setAttribute(
+            'jslog', `${VisualLogging.item().track({click: true}).context(item.jslogContext)}`);
+      }
+    }
     if (item.element && !item.label) {
       const wrapper = menuItemElement.createChild('div', 'soft-context-menu-custom-item');
       wrapper.appendChild(item.element);
@@ -292,6 +302,7 @@ export class SoftContextMenu {
     ARIAUtils.setLabel(menuItemElement, accessibleName);
 
     this.detailsForElementMap.set(menuItemElement, detailsForElement);
+
     return menuItemElement;
   }
 
@@ -336,6 +347,9 @@ export class SoftContextMenu {
     menuItemElement.addEventListener('mouseover', this.menuItemMouseOver.bind(this), false);
     menuItemElement.addEventListener('mouseleave', (this.menuItemMouseLeave.bind(this) as EventListener), false);
 
+    if (item.jslogContext) {
+      menuItemElement.setAttribute('jslog', `${VisualLogging.item().context(item.jslogContext)}`);
+    }
     return menuItemElement;
   }
 
@@ -634,6 +648,7 @@ export interface SoftContextMenuDescriptor {
   element?: Element;
   shortcut?: string;
   tooltip?: Platform.UIString.LocalizedString;
+  jslogContext?: string;
 }
 interface ElementMenuDetails {
   customElement?: HTMLElement;

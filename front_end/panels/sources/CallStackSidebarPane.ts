@@ -444,7 +444,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
       contextMenu.defaultSection().appendItem(i18nString(UIStrings.restartFrame), () => {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.StackFrameRestarted);
         void debuggerCallFrame.restart();
-      }, !debuggerCallFrame.canBeRestarted);
+      }, {disabled: !debuggerCallFrame.canBeRestarted});
     }
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyStackTrace), this.copyStackTrace.bind(this));
     if (item.uiLocation) {

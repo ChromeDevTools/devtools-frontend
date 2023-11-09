@@ -69,7 +69,6 @@ describeWithEnvironment('TextEditor', () => {
 
     it('should restore scroll to the same position after reconnecting to DOM when it is scrollable', async () => {
       let resolveEventPromise: Function;
-      const dispatchSpy = sinon.spy(CodeMirror.EditorView.prototype, 'dispatch');
       const editor = new TextEditor.TextEditor.TextEditor(makeState(
           'line1\nline2\nline3\nline4\nline5\nline6andthisisalonglinesothatwehaveenoughspacetoscrollhorizontally',
           [CodeMirror.EditorView.theme(
@@ -91,61 +90,20 @@ describeWithEnvironment('TextEditor', () => {
         }),
       });
       await waitForFirstScrollPromise;
+      const scrollTopBeforeRemove = editor.editor.scrollDOM.scrollTop;
+      const scrollLeftBeforeRemove = editor.editor.scrollDOM.scrollLeft;
 
       const waitForSecondScrollPromise = new Promise(r => {
         resolveEventPromise = r;
       });
       editor.remove();
-      dispatchSpy.resetHistory();
       renderElementIntoDOM(editor);
       await waitForSecondScrollPromise;
 
-      assert.strictEqual(
-          dispatchSpy.calledWith({
-            effects: CodeMirror.EditorView.scrollIntoView(0, {
-              x: 'start',
-              xMargin: -20,
-              y: 'start',
-              yMargin: -20,
-            }),
-          }),
-          true, 'Scroll is not initiated in TextEditor');
-    });
-
-    it('shouldn\'t restore scroll when code editor is not scrollable', async () => {
-      const dispatchSpy = sinon.spy(CodeMirror.EditorView.prototype, 'dispatch');
-      const editor = new TextEditor.TextEditor.TextEditor(makeState(
-          'line1\nline2\nline3\nline4\nline5\line6',
-          [CodeMirror.EditorView.theme(
-              {'&.cm-editor': {height: '50px', width: '50px'}, '.cm-scroller': {overflow: 'hidden'}})]));
-      const scrollHandledForTestSpy = sinon.spy(editor, 'scrollEventHandledToSaveScrollPositionForTest');
-      renderElementIntoDOM(editor);
-      editor.editor.dispatch({
-        effects: CodeMirror.EditorView.scrollIntoView(0, {
-          x: 'start',
-          xMargin: -20,
-          y: 'start',
-          yMargin: -20,
-        }),
-      });
-
-      editor.remove();
-      dispatchSpy.resetHistory();
-      renderElementIntoDOM(editor);
-
-      assert.strictEqual(
-          dispatchSpy.calledWith({
-            effects: CodeMirror.EditorView.scrollIntoView(0, {
-              x: 'start',
-              xMargin: -20,
-              y: 'start',
-              yMargin: -20,
-            }),
-          }),
-          false, 'Scroll is initiated in TextEditor whereas it shouldn\'t have been');
-      assert.strictEqual(
-          scrollHandledForTestSpy.notCalled, true,
-          'Scroll event for restoring scroll position is handled whereas it shouldn\'t have been');
+      const scrollTopAfterReconnect = editor.editor.scrollDOM.scrollTop;
+      const scrollLeftAfterReconnect = editor.editor.scrollDOM.scrollLeft;
+      assert.strictEqual(scrollTopBeforeRemove, scrollTopAfterReconnect);
+      assert.strictEqual(scrollLeftBeforeRemove, scrollLeftAfterReconnect);
     });
   });
 

@@ -4,8 +4,6 @@
 
 import * as Types from '../types/types.js';
 
-import {eventTimingsMicroSeconds} from './Timing.js';
-
 let nodeIdCount = 0;
 export const makeTraceEntryNodeId = (): TraceEntryNodeId => (++nodeIdCount) as TraceEntryNodeId;
 
@@ -220,9 +218,10 @@ export function walkEntireTree(
     onEntryStart: (entry: Types.TraceEvents.TraceEntry) => void,
     onEntryEnd: (entry: Types.TraceEvents.TraceEntry) => void,
     traceWindowToInclude?: Types.Timing.TraceWindow,
+    minDuration?: Types.Timing.MicroSeconds,
     ): void {
   for (const rootNode of tree.roots) {
-    walkTreeByNode(entryToNode, rootNode, onEntryStart, onEntryEnd, traceWindowToInclude);
+    walkTreeByNode(entryToNode, rootNode, onEntryStart, onEntryEnd, traceWindowToInclude, minDuration);
   }
 }
 
@@ -232,6 +231,7 @@ function walkTreeByNode(
     onEntryStart: (entry: Types.TraceEvents.TraceEntry) => void,
     onEntryEnd: (entry: Types.TraceEvents.TraceEntry) => void,
     traceWindowToInclude?: Types.Timing.TraceWindow,
+    minDuration?: Types.Timing.MicroSeconds,
     ): void {
   if (traceWindowToInclude && !treeNodeIsInWindow(rootNode, traceWindowToInclude)) {
     // If this node is not within the provided window, we can skip it. We also
@@ -240,9 +240,18 @@ function walkTreeByNode(
     return;
   }
 
+  if (typeof minDuration !== 'undefined') {
+    const duration = Types.Timing.MicroSeconds(
+        rootNode.entry.ts + Types.Timing.MicroSeconds(rootNode.entry.dur || 0),
+    );
+    if (duration < minDuration) {
+      return;
+    }
+  }
+
   onEntryStart(rootNode.entry);
   for (const child of rootNode.children) {
-    walkTreeByNode(entryToNode, child, onEntryStart, onEntryEnd, traceWindowToInclude);
+    walkTreeByNode(entryToNode, child, onEntryStart, onEntryEnd, traceWindowToInclude, minDuration);
   }
   onEntryEnd(rootNode.entry);
 }
@@ -253,7 +262,8 @@ function walkTreeByNode(
  * have to partially intersect it.
  */
 function treeNodeIsInWindow(node: TraceEntryNode, traceWindow: Types.Timing.TraceWindow): boolean {
-  const {startTime, endTime} = eventTimingsMicroSeconds(node.entry);
+  const startTime = node.entry.ts;
+  const endTime = node.entry.ts + (node.entry.dur || 0);
 
   // Min ======= startTime ========= Max => node is within window
   if (startTime >= traceWindow.min && startTime < traceWindow.max) {

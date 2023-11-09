@@ -35,7 +35,7 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {type TimelineCategory} from './EventUICategory.js';
+import {getEventStyle, type TimelineCategory} from './EventUICategory.js';
 import {type PerformanceModel} from './PerformanceModel.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
@@ -168,6 +168,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
   #drawn = false;
   #start?: TraceEngine.Types.Timing.MilliSeconds;
   #end?: TraceEngine.Types.Timing.MilliSeconds;
+
   constructor(model: PerformanceModel|null, traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null) {
     // During the sync tracks migration this component can use either legacy
     // Performance Model data or the new engine's data. Once the migration is
@@ -177,6 +178,19 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     this.#performanceModel = model;
     this.#traceParsedData = traceParsedData;
     this.backgroundCanvas = (this.element.createChild('canvas', 'fill background') as HTMLCanvasElement);
+  }
+
+  #entryCategory(entry: TraceEngine.Types.TraceEvents.TraceEventData): string|undefined {
+    // Special case: in CPU Profiles we get a lot of ProfileCalls that
+    // represent Idle time. We typically represent ProfileCalls in the
+    // Scripting Category, but if they represent idle time, we do not want
+    // that.
+    if (TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === '(idle)') {
+      return 'idle';
+    }
+
+    const categoryName = getEventStyle(entry.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category.name;
+    return categoryName;
   }
 
   override resetCanvas(): void {
@@ -211,6 +225,83 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
       categoryToIndex.set(categories[categoryOrder[i]], i);
     }
 
+    const drawThreadEntries =
+        (context: CanvasRenderingContext2D, threadData: TraceEngine.Handlers.Threads.ThreadData): void => {
+          const quantizer = new Quantizer(timeStart, quantTime, drawSample);
+          let x = 0;
+          const categoryIndexStack: number[] = [];
+          const paths: Path2D[] = [];
+          const lastY: number[] = [];
+          for (let i = 0; i < categoryOrder.length; ++i) {
+            paths[i] = new Path2D();
+            paths[i].moveTo(0, height);
+            lastY[i] = height;
+          }
+
+          function drawSample(counters: number[]): void {
+            let y = baseLine;
+            for (let i = idleIndex + 1; i < categoryOrder.length; ++i) {
+              const h = (counters[i] || 0) / quantTime * height;
+              y -= h;
+              paths[i].bezierCurveTo(x, lastY[i], x, y, x + quantSizePx / 2, y);
+              lastY[i] = y;
+            }
+            x += quantSizePx;
+          }
+
+          const onEntryStart = (entry: TraceEngine.Types.TraceEvents.TraceEntry): void => {
+            const category = this.#entryCategory(entry);
+            if (!category || category === 'idle') {
+              // Idle event won't show in CPU activity, so just skip them.
+              return;
+            }
+            const startTimeMilli = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(entry.ts);
+            const index = categoryIndexStack.length ? categoryIndexStack[categoryIndexStack.length - 1] : idleIndex;
+            quantizer.appendInterval(startTimeMilli, index);
+            const categoryIndex = categoryOrder.indexOf(category);
+            categoryIndexStack.push(categoryIndex || otherIndex);
+          };
+
+          function onEntryEnd(entry: TraceEngine.Types.TraceEvents.TraceEntry): void {
+            const endTimeMilli = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(entry.ts) +
+                TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
+                    TraceEngine.Types.Timing.MicroSeconds(entry.dur || 0));
+            const lastCategoryIndex = categoryIndexStack.pop();
+            if (endTimeMilli !== undefined && lastCategoryIndex) {
+              quantizer.appendInterval(endTimeMilli, lastCategoryIndex);
+            }
+          }
+
+          const bounds = {...traceParsedData.Meta.traceBounds};
+          if (customStart) {
+            bounds.min = TraceEngine.Helpers.Timing.millisecondsToMicroseconds(customStart);
+          }
+          if (customEnd) {
+            bounds.max = TraceEngine.Helpers.Timing.millisecondsToMicroseconds(customEnd);
+          }
+          bounds.range = TraceEngine.Types.Timing.MicroSeconds(bounds.max - bounds.min);
+
+          // Filter out tiny events - they don't make a visual impact to the
+          // canvas as they are so small, but they do impact the time it takes
+          // to walk the tree and render the events.
+          // However, if the entire range we are showing is 200ms or less, then show all events.
+          const minDuration = TraceEngine.Types.Timing.MicroSeconds(
+              bounds.range > 200_000 ? 16_000 : 0,
+          );
+          TraceEngine.Helpers.TreeHelpers.walkEntireTree(
+              threadData.entryToNode, threadData.tree, onEntryStart, onEntryEnd, bounds, minDuration);
+
+          quantizer.appendInterval(timeStart + timeRange + quantTime, idleIndex);  // Kick drawing the last bucket.
+          for (let i = categoryOrder.length - 1; i > 0; --i) {
+            paths[i].lineTo(width, height);
+            const computedColorValue = categories[categoryOrder[i]].getComputedColorValue();
+            context.fillStyle = computedColorValue;
+            context.fill(paths[i]);
+            context.strokeStyle = 'white';
+            context.lineWidth = 1;
+            context.stroke(paths[i]);
+          }
+        };
     const backgroundContext = (this.backgroundCanvas.getContext('2d') as CanvasRenderingContext2D | null);
     if (!backgroundContext) {
       throw new Error('Could not find 2d canvas');
@@ -243,75 +334,6 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     }
 
     applyPattern(backgroundContext);
-
-    function drawThreadEntries(
-        context: CanvasRenderingContext2D, threadData: TraceEngine.Handlers.Threads.ThreadData): void {
-      const quantizer = new Quantizer(timeStart, quantTime, drawSample);
-      let x = 0;
-      const categoryIndexStack: number[] = [];
-      const paths: Path2D[] = [];
-      const lastY: number[] = [];
-      for (let i = 0; i < categoryOrder.length; ++i) {
-        paths[i] = new Path2D();
-        paths[i].moveTo(0, height);
-        lastY[i] = height;
-      }
-
-      function drawSample(counters: number[]): void {
-        let y = baseLine;
-        for (let i = idleIndex + 1; i < categoryOrder.length; ++i) {
-          const h = (counters[i] || 0) / quantTime * height;
-          y -= h;
-          paths[i].bezierCurveTo(x, lastY[i], x, y, x + quantSizePx / 2, y);
-          lastY[i] = y;
-        }
-        x += quantSizePx;
-      }
-
-      function onEntryStart(entry: TraceEngine.Types.TraceEvents.TraceEntry): void {
-        const {startTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry);
-        const index = categoryIndexStack.length ? categoryIndexStack[categoryIndexStack.length - 1] : idleIndex;
-        quantizer.appendInterval(startTime, index);
-        const category = TimelineUIUtils.eventStyle(entry).category;
-        if (category.name === 'idle') {
-          // Idle event won't show in CPU activity, so just skip them.
-          return;
-        }
-        const categoryIndex = categoryOrder.indexOf(category.name);
-        categoryIndexStack.push(categoryIndex || otherIndex);
-      }
-
-      function onEntryEnd(entry: TraceEngine.Types.TraceEvents.TraceEntry): void {
-        const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(entry);
-        const lastCategoryIndex = categoryIndexStack.pop();
-        if (endTime !== undefined && lastCategoryIndex) {
-          quantizer.appendInterval(endTime, lastCategoryIndex);
-        }
-      }
-
-      const bounds = {...traceParsedData.Meta.traceBounds};
-      if (customStart) {
-        bounds.min = TraceEngine.Helpers.Timing.millisecondsToMicroseconds(customStart);
-      }
-      if (customEnd) {
-        bounds.max = TraceEngine.Helpers.Timing.millisecondsToMicroseconds(customEnd);
-      }
-      bounds.range = TraceEngine.Types.Timing.MicroSeconds(bounds.max - bounds.min);
-
-      TraceEngine.Helpers.TreeHelpers.walkEntireTree(
-          threadData.entryToNode, threadData.tree, onEntryStart, onEntryEnd, bounds);
-
-      quantizer.appendInterval(timeStart + timeRange + quantTime, idleIndex);  // Kick drawing the last bucket.
-      for (let i = categoryOrder.length - 1; i > 0; --i) {
-        paths[i].lineTo(width, height);
-        const computedColorValue = categories[categoryOrder[i]].getComputedColorValue();
-        context.fillStyle = computedColorValue;
-        context.fill(paths[i]);
-        context.strokeStyle = 'white';
-        context.lineWidth = 1;
-        context.stroke(paths[i]);
-      }
-    }
   }
 
   override update(start?: TraceEngine.Types.Timing.MilliSeconds, end?: TraceEngine.Types.Timing.MilliSeconds): void {

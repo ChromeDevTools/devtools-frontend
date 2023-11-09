@@ -1358,14 +1358,21 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   private updateNetworkConditions(networkAgent: ProtocolProxyApi.NetworkApi): void {
     const conditions = this.#networkConditionsInternal;
     if (!this.isThrottling()) {
-      void networkAgent.invoke_emulateNetworkConditions(
-          {offline: false, latency: 0, downloadThroughput: 0, uploadThroughput: 0});
+      void networkAgent.invoke_emulateNetworkConditions({
+        offline: false,
+        latency: 0,
+        downloadThroughput: 0,
+        uploadThroughput: 0,
+      });
     } else {
       void networkAgent.invoke_emulateNetworkConditions({
         offline: this.isOffline(),
         latency: conditions.latency,
         downloadThroughput: conditions.download < 0 ? 0 : conditions.download,
         uploadThroughput: conditions.upload < 0 ? 0 : conditions.upload,
+        packetLoss: (conditions.packetLoss ?? 0) < 0 ? 0 : conditions.packetLoss,
+        packetQueueLength: conditions.packetQueueLength,
+        packetReordering: conditions.packetReordering,
         connectionType: NetworkManager.connectionType(conditions),
       });
     }
@@ -1911,13 +1918,17 @@ export function networkConditionsEqual(first: Conditions, second: Conditions): b
   const firstTitle = typeof first.title === 'function' ? first.title() : first.title;
   const secondTitle = typeof second.title === 'function' ? second.title() : second.title;
   return second.download === first.download && second.upload === first.upload && second.latency === first.latency &&
-      secondTitle === firstTitle;
+      first.packetLoss === second.packetLoss && first.packetQueueLength === second.packetQueueLength &&
+      first.packetReordering === second.packetReordering && secondTitle === firstTitle;
 }
 
 export interface Conditions {
   download: number;
   upload: number;
   latency: number;
+  packetLoss?: number;
+  packetQueueLength?: number;
+  packetReordering?: boolean;
   // TODO(crbug.com/1219425): In the future, it might be worthwhile to
   // consider avoiding mixing up presentation state (e.g.: displayed
   // titles) with behavioral state (e.g.: the throttling amounts). In

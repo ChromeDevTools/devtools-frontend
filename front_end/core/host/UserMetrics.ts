@@ -458,6 +458,21 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordPerformanceHistogram(
         'DevTools.VisualLogging.ProcessingTime', timeInMilliseconds);
   }
+
+  legacyResourceTypeFilterNumberOfSelectedChanged(itemCount: number): void {
+    const boundItemCount = Math.max(Math.min(itemCount, ResourceType.MaxValue - 1), 1);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.LegacyResourceTypeFilterNumberOfSelectedChanged, boundItemCount, ResourceType.MaxValue);
+  }
+
+  legacyResourceTypeFilterItemSelected(resourceTypeName: string): void {
+    const resourceType = ResourceType[resourceTypeName as keyof typeof ResourceType];
+    if (resourceType === undefined) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.LegacyResourceTypeFilterItemSelected, resourceType, ResourceType.MaxValue);
+  }
 }
 
 /**
@@ -1143,6 +1158,26 @@ export enum DeveloperResourceScheme {
   SchemeFile = 7,
   SchemeBlob = 8,
   MaxValue = 9,
+}
+
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum ResourceType {
+  /* eslint-disable @typescript-eslint/naming-convention */
+  all = 0,
+  /* eslint-enable @typescript-eslint/naming-convention */
+  Documents = 1,
+  Scripts = 2,
+  'XHR and Fetch' = 3,
+  Stylesheets = 4,
+  Fonts = 5,
+  Images = 6,
+  Media = 7,
+  Manifest = 8,
+  WebSockets = 9,
+  WebAssembly = 10,
+  Other = 11,
+  MaxValue = 12,
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

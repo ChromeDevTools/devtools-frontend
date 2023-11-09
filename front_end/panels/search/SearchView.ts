@@ -154,9 +154,10 @@ export class SearchView extends UI.Widget.VBox {
     });
     searchContainer.appendChild(this.search);
     this.search.placeholder = i18nString(UIStrings.search);
-    this.search.setAttribute('type', 'text');
+    this.search.setAttribute('type', 'search');
     this.search.setAttribute('results', '0');
     this.search.setAttribute('size', '100');
+    this.search.classList.add('custom-search-input');
     UI.ARIAUtils.setLabel(this.search, i18nString(UIStrings.searchQuery));
     const searchItem = new UI.Toolbar.ToolbarItem(searchContainer);
 

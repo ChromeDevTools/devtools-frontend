@@ -54,7 +54,7 @@ def presubmit_builder(name, dimensions, **kvargs):
             "solution_name": "devtools-frontend",
         },
         priority = 25,
-        execution_timeout = 5 * time.minute,
+        execution_timeout = 10 * time.minute,
         **kvargs
     )
 

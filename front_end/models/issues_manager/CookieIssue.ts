@@ -449,7 +449,7 @@ const excludeBlockedWithinFirstPartySet: LazyMarkdownIssueDescription = {
 const cookieWarnThirdPartyPhaseoutSet: LazyMarkdownIssueDescription = {
   file: 'cookieWarnThirdPartyPhaseoutSet.md',
   links: [{
-    link: 'https://developer.chrome.com/docs/privacy-sandbox/third-party-cookie-phase-out/',
+    link: 'https://goo.gle/3pcd-dev-issue',
     linkTitle: i18nLazyString(UIStrings.thirdPartyPhaseoutExplained),
   }],
 };
@@ -457,7 +457,7 @@ const cookieWarnThirdPartyPhaseoutSet: LazyMarkdownIssueDescription = {
 const cookieWarnThirdPartyPhaseoutRead: LazyMarkdownIssueDescription = {
   file: 'cookieWarnThirdPartyPhaseoutRead.md',
   links: [{
-    link: 'https://developer.chrome.com/docs/privacy-sandbox/third-party-cookie-phase-out/',
+    link: 'https://goo.gle/3pcd-dev-issue',
     linkTitle: i18nLazyString(UIStrings.thirdPartyPhaseoutExplained),
   }],
 };
@@ -465,7 +465,7 @@ const cookieWarnThirdPartyPhaseoutRead: LazyMarkdownIssueDescription = {
 const cookieExcludeThirdPartyPhaseoutSet: LazyMarkdownIssueDescription = {
   file: 'cookieExcludeThirdPartyPhaseoutSet.md',
   links: [{
-    link: 'https://developer.chrome.com/docs/privacy-sandbox/third-party-cookie-phase-out/',
+    link: 'https://goo.gle/3pcd-dev-issue',
     linkTitle: i18nLazyString(UIStrings.thirdPartyPhaseoutExplained),
   }],
 };
@@ -473,7 +473,7 @@ const cookieExcludeThirdPartyPhaseoutSet: LazyMarkdownIssueDescription = {
 const cookieExcludeThirdPartyPhaseoutRead: LazyMarkdownIssueDescription = {
   file: 'cookieExcludeThirdPartyPhaseoutRead.md',
   links: [{
-    link: 'https://developer.chrome.com/docs/privacy-sandbox/third-party-cookie-phase-out/',
+    link: 'https://goo.gle/3pcd-dev-issue',
     linkTitle: i18nLazyString(UIStrings.thirdPartyPhaseoutExplained),
   }],
 };

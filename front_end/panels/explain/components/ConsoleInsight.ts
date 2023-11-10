@@ -72,6 +72,7 @@ export class ConsoleInsight extends HTMLElement {
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [styles];
+    this.classList.add('opening');
   }
 
   #renderMarkdown(content: string): void {
@@ -102,6 +103,7 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #onClose(): void {
+    this.classList.add('closing');
     this.dispatchEvent(new CloseEvent());
   }
 

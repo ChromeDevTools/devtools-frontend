@@ -16,6 +16,41 @@
   display: block;
 }
 
+:host-context(.opening) {
+  animation: expand 0.3s ease;
+  animation-fill-mode: forwards;
+}
+
+:host-context(.closing) {
+  animation: collapse 0.3s ease;
+  animation-fill-mode: forwards;
+}
+
+@keyframes expand {
+  from {
+    max-height: 0;
+    opacity: 0%;
+  }
+
+  to {
+    max-height: 500px;
+    opacity: 100%;
+  }
+}
+
+@keyframes collapse {
+  from {
+    max-height: 500px;
+    opacity: 100%;
+  }
+
+  to {
+    max-height: 0;
+    opacity: 0%;
+    margin: 0;
+  }
+}
+
 .wrapper {
   padding: 16px 20px;
   background-color: var(--sys-color-cdt-base-container);

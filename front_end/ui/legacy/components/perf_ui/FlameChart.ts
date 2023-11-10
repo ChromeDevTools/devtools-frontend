@@ -138,7 +138,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     width: number,
   }>;
   private lastMouseOffsetX: number;
-  private selectedGroup: number;
+  private selectedGroupIndex: number;
   private keyboardFocusedGroup: number;
   private offsetWidth!: number;
   private offsetHeight!: number;
@@ -225,7 +225,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.markerPositions = new Map();
 
     this.lastMouseOffsetX = 0;
-    this.selectedGroup = -1;
+    this.selectedGroupIndex = -1;
 
     // Keyboard focused group is used to navigate groups irrespective of whether they are selectable or not
     this.keyboardFocusedGroup = -1;
@@ -505,7 +505,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private selectGroup(groupIndex: number): void {
-    if (groupIndex < 0 || this.selectedGroup === groupIndex) {
+    if (groupIndex < 0 || this.selectedGroupIndex === groupIndex) {
       return;
     }
     if (!this.rawTimelineData) {
@@ -524,7 +524,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.deselectAllGroups();
       UI.ARIAUtils.alert(i18nString(UIStrings.sHovered, {PH1: groupName}));
     } else {
-      this.selectedGroup = groupIndex;
+      this.selectedGroupIndex = groupIndex;
       this.flameChartDelegate.updateSelectedGroup(this, groups[groupIndex]);
       this.resetCanvas();
       this.draw();
@@ -533,7 +533,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private deselectAllGroups(): void {
-    this.selectedGroup = -1;
+    this.selectedGroupIndex = -1;
     this.flameChartDelegate.updateSelectedGroup(this, null);
     this.resetCanvas();
     this.draw();
@@ -546,7 +546,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private isGroupFocused(index: number): boolean {
-    return index === this.selectedGroup || index === this.keyboardFocusedGroup;
+    return index === this.selectedGroupIndex || index === this.keyboardFocusedGroup;
   }
 
   private scrollGroupIntoView(index: number): void {
@@ -753,7 +753,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (!data) {
       return;
     }
-    const group = data.groups.at(this.selectedGroup);
+    const group = data.groups.at(this.selectedGroupIndex);
     // Early exit here if there is no group or:
     // 1. The group is not expanded: it needs to be expanded to allow the
     //    context menu actions to occur.
@@ -2104,7 +2104,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.entryColorsCache = null;
       this.rawTimelineDataLength = 0;
       this.#groupTreeRoot = null;
-      this.selectedGroup = -1;
+      this.selectedGroupIndex = -1;
       this.keyboardFocusedGroup = -1;
       this.flameChartDelegate.updateSelectedGroup(this, null);
       return;
@@ -2148,8 +2148,15 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.updateLevelPositions();
     this.updateHeight();
 
-    this.selectedGroup = timelineData.selectedGroup ? groups.indexOf(timelineData.selectedGroup) : -1;
-    this.keyboardFocusedGroup = this.selectedGroup;
+    // If this is a new trace, we will call the reset()(See TimelineFlameChartView > setModel()), which will set the
+    // |selectedGroupIndex| to -1.
+    // So when |selectedGroupIndex| is not -1, it means it is the same trace file, but might have some modification
+    // (like reorder the track, merge an entry, etc).
+    if (this.selectedGroupIndex === -1) {
+      this.selectedGroupIndex = timelineData.selectedGroup ? groups.indexOf(timelineData.selectedGroup) : -1;
+    }
+
+    this.keyboardFocusedGroup = this.selectedGroupIndex;
     this.flameChartDelegate.updateSelectedGroup(this, timelineData.selectedGroup);
   }
 
@@ -2534,6 +2541,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.highlightedMarkerIndex = -1;
     this.highlightedEntryIndex = -1;
     this.selectedEntryIndex = -1;
+    this.selectedGroupIndex = -1;
   }
 
   scheduleUpdate(): void {

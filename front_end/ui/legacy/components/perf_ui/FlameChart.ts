@@ -348,12 +348,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.updateHighlight();
   }
 
-  forceReProcessTimelineData(): void {
-    this.rawTimelineData = null;
-    this.rawTimelineDataLength = 0;
-    this.#groupTreeRoot = null;
-  }
-
   timelineData(rebuid?: boolean): FlameChartTimelineData|null {
     if (!this.dataProvider) {
       return null;
@@ -2145,6 +2139,33 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         groups[i].hidden = hidden;
       }
     }
+
+    if (!this.#groupTreeRoot) {
+      this.#groupTreeRoot = this.buildGroupTree(groups);
+    } else {
+      // When the |groupTreeRoot| is already existing, and a "new" timeline data comes, this means the new timeline data
+      // is just a modification of original, so we should update the tree instead of rebuild it.
+      // For example,
+      // [
+      //   { name: 'Test Group 0', startLevel: 0, ...},
+      //   { name: 'Test Group 1', startLevel: 1, ...},
+      //   { name: 'Test Group 2', startLevel: 2, ...},
+      // ], and [
+      //   { name: 'Test Group 0', startLevel: 0, ...},
+      //   { name: 'Test Group 1', startLevel: 2, ...},
+      //   { name: 'Test Group 2', startLevel: 4, ...},
+      // ],
+      // are the same.
+      // But they and [
+      //   { name: 'Test Group 0', startLevel: 0, ...},
+      //   { name: 'Test Group 2', startLevel: 1, ...},
+      //   { name: 'Test Group 1', startLevel: 2, ...},
+      // ] are different.
+      // But if the |groups| is changed (this means the group order inside the |groups| is changed), it means the
+      // timeline data is a real new one, then please call |reset()| before rendering.
+      this.updateGroupTree(groups, this.#groupTreeRoot);
+    }
+
     this.updateLevelPositions();
     this.updateHeight();
 
@@ -2225,6 +2246,52 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       groupStack.push(currentGroupNode);
     }
     return treeRoot;
+  }
+
+  /**
+   * Updates the tree for the given group array.
+   * For a new timeline data, if the groups remains the same (the same here mean the group order inside the |groups|,
+   * the start level, style and other attribute can be changed), but other parts are different.
+   * For example the |entryLevels[]| or |maxStackDepth| is changed, then we should update the group tree instead of
+   * re-build it.
+   * So we can keep the order that user manually set.
+   * To do this, we go through the tree, and update the start and end level of each group.
+   * This function is public for test purpose.
+   * @param groups the array of all groups, it should be the one from FlameChartTimelineData
+   * @returns the root of the Group tree. The root is the fake one we added, which represent the parent for all groups
+   */
+  updateGroupTree(groups: Group[], root: GroupTreeNode): void {
+    const maxStackDepth = this.dataProvider.maxStackDepth();
+
+    function traverse(treeNode: GroupTreeNode): void {
+      const index = treeNode.index;
+      if (index < 0) {
+        // For the extra top level. This will be used as a parent for all
+        // groups, so it will start from level 0.
+        treeNode.startLevel = 0;
+        // If there is no |groups| (for example the JS Profiler), it means all the
+        // levels belong to the top level, so just use the max level as the end.
+        treeNode.endLevel = groups.length ? groups[0].startLevel : maxStackDepth;
+      } else {
+        // This shouldn't happen. If this happen, it means the |groups| from data provider is changed. Add a sanity
+        // check to avoid error.
+        if (!groups[index]) {
+          console.warn(
+              'The |groups| is changed. ' +
+              'Please make sure the flamechart is reset after data change in the data provider');
+          return;
+        }
+        treeNode.startLevel = groups[index].startLevel;
+        const nextGroup = groups[index + 1];
+        // If this group is the last one, it means all the remaining levels belong
+        // to this level, so just use the max level as the end.
+        treeNode.endLevel = nextGroup?.startLevel ?? maxStackDepth;
+      }
+      for (const child of treeNode.children) {
+        traverse(child);
+      }
+    }
+    traverse(root);
   }
 
   /**
@@ -2348,6 +2415,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private updateLevelPositions(): void {
+    if (!this.#groupTreeRoot) {
+      console.warn('Please make sure the new timeline data is processed before update the level positions.');
+      return;
+    }
     const levelCount = this.dataProvider.maxStackDepth();
     const groups = this.rawTimelineData?.groups || [];
     // Add an extra number in visibleLevelOffsets to store the end of last level
@@ -2356,10 +2427,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.visibleLevels = new Array(levelCount);
     // Add an extra number in groupOffsets to store the end of last group
     this.groupOffsets = new Uint32Array(groups.length + 1);
-
-    if (!this.#groupTreeRoot) {
-      this.#groupTreeRoot = this.buildGroupTree(groups);
-    }
     let currentOffset = this.rulerEnabled ? RulerHeight + 2 : 2;
     // The root is always visible, so just simply set the |parentGroupIsVisible| to visible.
     currentOffset = this.#traverseGroupTreeAndUpdateLevelPositionsForTheGroup(
@@ -2533,6 +2600,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
   }
 
+  // Reset the whole flame chart.
+  // It will reset the viewport, which will reset the scrollTop and scrollLeft. So should be careful when call this
+  // function. But when the data is "real" changed, especially when groups[] is changed, make sure call this before
+  // re-rendering.
+  // This will also clear all the selected entry, group, etc.
   reset(): void {
     this.chartViewport.reset();
     this.rawTimelineData = null;

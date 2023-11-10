@@ -178,8 +178,6 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
   private readonly filterParser: TextUtils.TextUtils.FilterParser;
   private readonly suggestionBuilder: UI.FilterSuggestionBuilder.FilterSuggestionBuilder;
   private readonly textFilterUI: UI.Toolbar.ToolbarInput;
-  private messages: LogMessage[] = [];
-  private isRecording: boolean = false;
   readonly selector: UI.Toolbar.ToolbarComboBox;
   #commandAutocompleteSuggestionProvider = new CommandAutocompleteSuggestionProvider();
   #selectedTargetId?: string;
@@ -203,7 +201,6 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
 
     const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearAll), 'clear');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
-      this.messages = [];
       this.dataGridIntegrator.update({...this.dataGridIntegrator.data(), rows: []});
       this.infoWidget.render(null);
     });
@@ -351,6 +348,9 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
         target: DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'target'),
         type:
             DataGrid.DataGridUtils.getRowEntryForColumnId(focusedRow, 'type').title as 'sent' | 'received' | undefined,
+        selectedTab: event.data.cell.columnId === 'request' ? 'request' as const:
+            event.data.cell.columnId === 'response'         ? 'response' as const:
+                                                              undefined,
       };
       this.infoWidget.render(infoWidgetData);
     });
@@ -486,7 +486,6 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
   }
 
   private setRecording(recording: boolean): void {
-    this.isRecording = recording;
     const test = ProtocolClient.InspectorBackend.test;
     if (recording) {
       // TODO: TS thinks that properties are read-only because
@@ -511,11 +510,7 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
         `${target.name()} ${target === SDK.TargetManager.TargetManager.instance().rootTarget() ? '' : target.id()}`);
   }
 
-  // eslint-disable
   private messageReceived(message: Message, target: ProtocolClient.InspectorBackend.TargetBase|null): void {
-    if (this.isRecording) {
-      this.messages.push({...message, type: 'recv', domain: '-'});
-    }
     if ('id' in message && message.id) {
       const existingRow = this.dataGridRowForId.get(message.id);
       if (!existingRow) {
@@ -595,10 +590,6 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
   private messageSent(
       message: {domain: string, method: string, params: Object, id: number, sessionId?: string},
       target: ProtocolClient.InspectorBackend.TargetBase|null): void {
-    if (this.isRecording) {
-      this.messages.push({...message, type: 'send'});
-    }
-
     const sdkTarget = target as SDK.Target.Target | null;
     const requestResponseIcon = new IconButton.Icon.Icon();
     requestResponseIcon
@@ -651,7 +642,13 @@ export class ProtocolMonitorDataGrid extends Common.ObjectWrapper.eventMixin<Eve
       return;
     }
 
-    void stream.write(JSON.stringify(this.messages, null, '  '));
+    const rowEntries = [];
+    for (const row of this.dataGridIntegrator.data().rows) {
+      const rowEntry = Object.fromEntries(row.cells.map(cell => ([cell.columnId, cell.value])));
+      rowEntries.push(rowEntry);
+    }
+
+    void stream.write(JSON.stringify(rowEntries, null, '  '));
     void stream.close();
   }
 }
@@ -747,6 +744,7 @@ export class InfoWidget extends UI.Widget.VBox {
     response: DataGrid.DataGridUtils.Cell|undefined,
     target: DataGrid.DataGridUtils.Cell|undefined,
     type: 'sent'|'received'|undefined,
+    selectedTab: 'request'|'response'|undefined,
   }|null): void {
     if (!data || !data.request || !data.response || !data.target) {
       this.tabbedPane.changeTabView('request', new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noMessageSelected)));
@@ -768,6 +766,9 @@ export class InfoWidget extends UI.Widget.VBox {
     const responseParsed =
         data.response.value === '(pending)' ? null : JSON.parse(String(data.response.value) || 'null');
     this.tabbedPane.changeTabView('response', SourceFrame.JSONView.JSONView.createViewSync(responseParsed));
+    if (data.selectedTab) {
+      this.tabbedPane.selectTab(data.selectedTab);
+    }
   }
 }
 

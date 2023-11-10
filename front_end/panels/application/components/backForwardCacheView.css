@@ -19,7 +19,7 @@
   overflow: hidden;
 }
 
-.explanation-frames {
+.details-list {
   margin-left: 56px;
   grid-column-start: span 2;
 }

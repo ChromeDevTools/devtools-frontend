@@ -229,6 +229,53 @@ describeWithMockConnection('BackForwardCacheView', () => {
       assert.deepStrictEqual(treeData, expected);
     });
 
+    it('renders blocking details if available', async () => {
+      resourceTreeModel.mainFrame = {
+        resourceForURL: () => null,
+        url: 'https://www.example.com/',
+        backForwardCacheDetails: {
+          restoredFromCache: false,
+          explanations: [
+            {
+              type: Protocol.Page.BackForwardCacheNotRestoredReasonType.SupportPending,
+              reason: Protocol.Page.BackForwardCacheNotRestoredReason.WebLocks,
+              details: [
+                {url: 'https://www.example.com/index.html', lineNumber: 10, columnNumber: 5},
+                {url: 'https://www.example.com/script.js', lineNumber: 15, columnNumber: 20},
+              ],
+            },
+          ],
+        },
+      } as unknown as SDK.ResourceTreeModel.ResourceTreeFrame;
+
+      const component = await renderBackForwardCacheView();
+      assertShadowRoot(component.shadowRoot);
+
+      const sectionHeaders = component.shadowRoot.querySelectorAll('devtools-report-section-header');
+      const sectionHeadersText = Array.from(sectionHeaders).map(sectionHeader => sectionHeader.textContent?.trim());
+      assert.deepStrictEqual(sectionHeadersText, ['Pending Support']);
+
+      const sections = component.shadowRoot.querySelectorAll('devtools-report-section');
+      const sectionsText = Array.from(sections).map(section => section.textContent?.trim());
+      const expected = [
+        'Not served from back/forward cache: to trigger back/forward cache, use Chrome\'s back/forward buttons, or use the test button below to automatically navigate away and back.',
+        'Test back/forward cache',
+        'Pages that use WebLocks are not currently eligible for back/forward cache.',
+        'Learn more: back/forward cache eligibility',
+      ];
+      assert.deepStrictEqual(sectionsText, expected);
+
+      const details = component.shadowRoot.querySelector('.details-list devtools-expandable-list');
+      assertNotNullOrUndefined(details);
+      assertShadowRoot(details.shadowRoot);
+      const button = details.shadowRoot.querySelector('button');
+      assertElement(button, HTMLButtonElement);
+      button.click();
+      const items = details?.shadowRoot.querySelectorAll('.expandable-list-items .devtools-link');
+      const detailsText = Array.from(items).map(detail => detail.textContent?.trim());
+      assert.deepStrictEqual(detailsText, ['www.example.com/index.html:11:6', 'www.example.com/script.js:16:21']);
+    });
+
     it('can handle delayed navigation history when testing for BFcache availability', async () => {
       const entries = [
         {

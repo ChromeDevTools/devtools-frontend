@@ -2,21 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../core/platform/platform.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
-import * as ReportView from '../../../ui/components/report_view/report_view.js';
-import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
-import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
 import * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
+import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
+import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
+import * as Components from '../../../ui/legacy/components/utils/utils.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import {NotRestoredReasonDescription} from './BackForwardCacheStrings.js';
 import backForwardCacheViewStyles from './backForwardCacheView.css.js';
@@ -133,6 +134,10 @@ const UIStrings = {
    *@example {3} PH1
    */
   blankURLTitle: 'Blank URL [{PH1}]',
+  /**
+   * @description Shows the number of files with a particular issue.
+   */
+  filesPerIssue: '{n, plural, =1 {# file} other {# files}}',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BackForwardCacheView.ts', UIStrings);
@@ -563,7 +568,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     const rows = [LitHtml.html`<div>${i18nString(UIStrings.framesPerIssue, {n: frames.length})}</div>`];
     rows.push(...frames.map(url => LitHtml.html`<div class="text-ellipsis" title=${url}>${url}</div>`));
     return LitHtml.html`
-      <div class="explanation-frames">
+      <div class="details-list">
         <${ExpandableList.ExpandableList.ExpandableList.litTagName} .data=${
         {rows} as
         ExpandableList.ExpandableList.ExpandableListData}></${ExpandableList.ExpandableList.ExpandableList.litTagName}>
@@ -580,6 +585,31 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
         </x-link>`;
     }
     return LitHtml.nothing;
+  }
+
+  #maybeRenderJavaScriptDetails(details: Protocol.Page.BackForwardCacheBlockingDetails[]|
+                                undefined): LitHtml.LitTemplate {
+    if (details === undefined || details.length === 0) {
+      return LitHtml.nothing;
+    }
+    const maxLengthForDisplayedURLs = 50;
+    const linkifier = new Components.Linkifier.Linkifier(maxLengthForDisplayedURLs);
+    const rows = [LitHtml.html`<div>${i18nString(UIStrings.filesPerIssue, {n: details.length})}</div>`];
+    rows.push(...details.map(
+        detail => LitHtml.html`${
+            linkifier.linkifyScriptLocation(
+                null, null, detail.url as Platform.DevToolsPath.UrlString, detail.lineNumber, {
+                  columnNumber: detail.columnNumber,
+                  showColumnNumber: true,
+                  inlineFrameIndex: 0,
+                })}`));
+    return LitHtml.html`
+      <div class="details-list">
+        <${ExpandableList.ExpandableList.ExpandableList.litTagName} .data=${
+        {rows} as
+        ExpandableList.ExpandableList.ExpandableListData}></${ExpandableList.ExpandableList.ExpandableList.litTagName}>
+      </div>
+    `;
   }
 
   #renderReason(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation, frames: string[]|undefined):
@@ -601,13 +631,14 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
             <div>
               ${NotRestoredReasonDescription[explanation.reason].name()}
               ${this.#maybeRenderDeepLinkToUnload(explanation)}
-             ${this.#maybeRenderReasonContext(explanation)}
+              ${this.#maybeRenderReasonContext(explanation)}
            </div>` :
             LitHtml.nothing}
       </${ReportView.ReportView.ReportSection.litTagName}>
       <div class="gray-text">
         ${explanation.reason}
       </div>
+      ${this.#maybeRenderJavaScriptDetails(explanation.details)}
       ${this.#renderFramesPerReason(frames)}
     `;
     // clang-format on

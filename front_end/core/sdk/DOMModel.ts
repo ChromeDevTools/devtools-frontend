@@ -1273,11 +1273,16 @@ export class DOMModel extends SDKModel<EventTypes> {
   }
 
   documentUpdated(): void {
+    // If this frame doesn't have a document now,
+    // it means that its document is not requested yet and
+    // it will be requested when needed. (ex: setChildNodes event is received for the frame owner node)
+    // So, we don't need to request the document if we don't
+    // already have a document.
+    const alreadyHasDocument = Boolean(this.#document);
+    this.setDocument(null);
     // If we have this.#pendingDocumentRequestPromise in flight,
     // it will contain most recent result.
-    const documentWasRequested = this.#pendingDocumentRequestPromise;
-    this.setDocument(null);
-    if (this.parentModel() && !documentWasRequested) {
+    if (this.parentModel() && alreadyHasDocument && !this.#pendingDocumentRequestPromise) {
       void this.requestDocument();
     }
   }
@@ -1294,6 +1299,10 @@ export class DOMModel extends SDKModel<EventTypes> {
     if (!this.parentModel()) {
       this.dispatchEventToListeners(Events.DocumentUpdated, this);
     }
+  }
+
+  setDocumentForTest(document: Protocol.DOM.Node|null): void {
+    this.setDocument(document);
   }
 
   private setDetachedRoot(payload: Protocol.DOM.Node): void {

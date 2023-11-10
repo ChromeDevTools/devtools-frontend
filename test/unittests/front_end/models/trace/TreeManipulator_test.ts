@@ -39,8 +39,7 @@ function findFirstEntry(
 describe('TreeManipulator', function() {
   it('parses a stack and returns an empty list of invisible entries', async function() {
     const data = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
-    const mainThread = getMainThread(data.Renderer);
-    const stack = new TraceEngine.TreeManipulator.TreeManipulator(mainThread, data.Renderer.entryToNode);
+    const stack = new TraceEngine.TreeManipulator.TreeManipulator(data.Renderer.entryToNode);
     assert.deepEqual([], stack.invisibleEntries());
   });
 
@@ -75,7 +74,7 @@ describe('TreeManipulator', function() {
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
           entry.dur === 827;
     });
-    const stack = new TraceEngine.TreeManipulator.TreeManipulator(mainThread, data.Renderer.entryToNode);
+    const stack = new TraceEngine.TreeManipulator.TreeManipulator(data.Renderer.entryToNode);
     stack.applyAction({type: TraceEngine.TreeManipulator.TreeAction.MERGE_FUNCTION, entry: entryTwo});
     assert.isTrue(stack.invisibleEntries().includes(entryTwo), 'entryTwo is invisble');
     // Only one entry - the one for the `basicTwo` function - should have been hidden.
@@ -93,7 +92,7 @@ describe('TreeManipulator', function() {
       return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'basicTwo' &&
           entry.dur === 827;
     });
-    const stack = new TraceEngine.TreeManipulator.TreeManipulator(mainThread, data.Renderer.entryToNode);
+    const stack = new TraceEngine.TreeManipulator.TreeManipulator(data.Renderer.entryToNode);
     stack.applyAction({type: TraceEngine.TreeManipulator.TreeAction.MERGE_FUNCTION, entry: entryTwo});
     assert.isTrue(stack.invisibleEntries().includes(entryTwo), 'entryTwo is invisible');
     // Only one entry - the one for the `basicTwo` function - should have been hidden.
@@ -143,7 +142,7 @@ describe('TreeManipulator', function() {
       const basicTwoCallEndTime = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(basicTwoCallEntry).endTime;
       return endTime <= basicTwoCallEndTime;
     });
-    const stack = new TraceEngine.TreeManipulator.TreeManipulator(mainThread, data.Renderer.entryToNode);
+    const stack = new TraceEngine.TreeManipulator.TreeManipulator(data.Renderer.entryToNode);
     stack.applyAction({type: TraceEngine.TreeManipulator.TreeAction.COLLAPSE_FUNCTION, entry: basicTwoCallEntry});
 
     // We collapsed at the `basicTwo` entry - so it should not be included in the invisible list itself.

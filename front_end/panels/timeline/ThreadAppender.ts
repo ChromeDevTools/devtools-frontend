@@ -215,10 +215,9 @@ export class ThreadAppender implements TrackAppender {
       this.appenderName = 'Thread_AuctionWorklet';
     }
 
-    if (traceParsedData.Renderer) {
-      this.#treeManipulator = new TraceEngine.TreeManipulator.TreeManipulator(
-          {name: this.#threadDefaultName, entries: entries, tree: tree}, traceParsedData.Renderer?.entryToNode);
-    }
+    this.#treeManipulator = new TraceEngine.TreeManipulator.TreeManipulator(
+        this.threadType === ThreadType.CPU_PROFILE ? traceParsedData.Samples.entryToNode :
+                                                     traceParsedData.Renderer.entryToNode);
   }
 
   modifyTree(

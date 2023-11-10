@@ -86,6 +86,10 @@ const UIStrings = {
    *@description Title of the keybind category 'Rendering' in Settings' Shortcuts pannel.
    */
   rendering: 'Rendering',
+  /**
+   *@description Title of the keybind category 'Recorder' in Settings' Shortcuts pannel.
+   */
+  recorder: 'Recorder',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/ActionRegistration.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -300,6 +304,7 @@ export enum ActionCategory {
   SOURCES = 'SOURCES',
   RENDERING = 'RENDERING',
   EXPLAIN = 'EXPLAIN',
+  RECORDER = 'RECORDER',
 }
 
 export function getLocalizedActionCategory(category: ActionCategory): Platform.UIString.LocalizedString {
@@ -342,6 +347,8 @@ export function getLocalizedActionCategory(category: ActionCategory): Platform.U
       return i18nString(UIStrings.sources);
     case ActionCategory.RENDERING:
       return i18nString(UIStrings.rendering);
+    case ActionCategory.RECORDER:
+      return i18nString(UIStrings.recorder);
     case ActionCategory.NONE:
       return i18n.i18n.lockedString('');
   }

@@ -5,9 +5,8 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-// eslint-disable-next-line rulesdir/es_modules_import
-import type * as Recorder from './recorder.js';
 import * as Actions from './recorder-actions.js';
+import type * as Recorder from './recorder.js';
 
 const UIStrings = {
   /**
@@ -35,9 +34,6 @@ const UIStrings = {
    */
   toggleCode: 'Toggle code view',
 };
-
-// TODO: (crbug.com/1181019)
-const RecorderCategory = 'Recorder';
 
 const str_ = i18n.i18n.registerUIStrings(
     'panels/recorder/recorder-meta.ts',
@@ -90,7 +86,7 @@ UI.ViewManager.registerViewExtension({
 });
 
 UI.ActionRegistration.registerActionExtension({
-  category: RecorderCategory as UI.ActionRegistration.ActionCategory,
+  category: UI.ActionRegistration.ActionCategory.RECORDER,
   actionId: Actions.RecorderActions.CreateRecording,
   title: i18nLazyString(UIStrings.createRecording),
   async loadActionDelegate() {
@@ -100,7 +96,7 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 UI.ActionRegistration.registerActionExtension({
-  category: RecorderCategory as UI.ActionRegistration.ActionCategory,
+  category: UI.ActionRegistration.ActionCategory.RECORDER,
   actionId: Actions.RecorderActions.StartRecording,
   title: i18nLazyString(UIStrings.startStopRecording),
   contextTypes() {
@@ -123,7 +119,7 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 UI.ActionRegistration.registerActionExtension({
-  category: RecorderCategory as UI.ActionRegistration.ActionCategory,
+  category: UI.ActionRegistration.ActionCategory.RECORDER,
   actionId: Actions.RecorderActions.ReplayRecording,
   title: i18nLazyString(UIStrings.replayRecording),
   contextTypes() {
@@ -146,7 +142,7 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 UI.ActionRegistration.registerActionExtension({
-  category: RecorderCategory as UI.ActionRegistration.ActionCategory,
+  category: UI.ActionRegistration.ActionCategory.RECORDER,
   actionId: Actions.RecorderActions.ToggleCodeView,
   title: i18nLazyString(UIStrings.toggleCode),
   contextTypes() {

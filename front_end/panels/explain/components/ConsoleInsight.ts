@@ -62,6 +62,7 @@ export class ConsoleInsight extends HTMLElement {
     result: '',
   };
   #loading = true;
+  #dogfood = true;
 
   constructor(promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider) {
     super();
@@ -115,16 +116,27 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #onSubmit(): void {
+    if (this.#dogfood) {
+      this.#openFeedbackFrom();
+    }
+    this.#onCloseRating();
+  }
+
+  #openFeedbackFrom(): void {
     const link = buildLink(
         this.#selectedRating ? 'Good' : 'Bad', Array.from(this.#selectedRatingReasons),
         this.#shadow.querySelector('textarea')?.value || '', JSON.stringify(this.#context));
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(link);
-    this.#onCloseRating();
   }
 
   #onRating(event: Event): void {
-    this.#ratingFormOpened = true;
     this.#selectedRating = (event.target as HTMLElement).dataset.rating === 'true';
+    if (this.#dogfood) {
+      this.#openFeedbackFrom();
+      return;
+    }
+    this.#ratingFormOpened = true;
+
     this.#render();
   }
 
@@ -163,7 +175,7 @@ export class ConsoleInsight extends HTMLElement {
               }>
             </${IconButton.Icon.Icon.litTagName}>
           </div>
-          <div class="filler">${this.#loading ? 'Loading…' : 'Insights'}</div>
+          <div class="filler">${this.#loading ? 'Generating…' : 'Insight'}</div>
           <div>
             <${Buttons.Button.Button.litTagName}
               title=${'Close'}

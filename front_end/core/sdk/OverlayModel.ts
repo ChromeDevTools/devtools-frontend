@@ -918,7 +918,8 @@ export class WindowControls {
     return stylesheetIds.length > 0 ? stylesheetIds[0] : undefined;
   }
 
-  // Transform the titlebar-area-{x, y, width, and height} css variables to emulate the window controls overlay for a selected platform
+  // The primary objective of this function is to adjust certain CSS environment variables within the existing stylesheet
+  // and provide it as the style sheet for the emulated overlay.
   static #transformStyleSheet(
       x: number, y: number, width: number, height: number, originalStyleSheet: string|undefined): string|undefined {
     if (!originalStyleSheet) {

@@ -525,7 +525,7 @@ export class StepEditor extends LitElement {
     this.disabled = false;
   }
 
-  protected override createRenderRoot(): Element|ShadowRoot {
+  protected override createRenderRoot(): HTMLElement|DocumentFragment {
     const root = super.createRenderRoot();
     root.addEventListener('keydown', this.#handleKeyDownEvent);
     return root;

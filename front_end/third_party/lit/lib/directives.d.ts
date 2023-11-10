@@ -16,11 +16,15 @@
  * @return The value to write to the DOM. Usually the same as the input value,
  *     unless sanitization is needed.
  */
-declare type ValueSanitizer = (value: unknown) => unknown;
+type ValueSanitizer = (value: unknown) => unknown;
 /** TemplateResult types */
 declare const HTML_RESULT = 1;
 declare const SVG_RESULT = 2;
-declare type ResultType = typeof HTML_RESULT | typeof SVG_RESULT;
+type ResultType = typeof HTML_RESULT | typeof SVG_RESULT;
+declare const ATTRIBUTE_PART = 1;
+declare const CHILD_PART = 2;
+declare const ELEMENT_PART = 6;
+declare const COMMENT_PART = 7;
 /**
  * The return type of the template tag functions, {@linkcode html} and
  * {@linkcode svg}.
@@ -34,7 +38,7 @@ declare type ResultType = typeof HTML_RESULT | typeof SVG_RESULT;
  * [Rendering](https://lit.dev/docs/components/rendering) for more information.
  *
  */
-declare type TemplateResult<T extends ResultType = ResultType> = {
+type TemplateResult<T extends ResultType = ResultType> = {
     ['_$litType$']: T;
     strings: TemplateStringsArray;
     values: unknown[];
@@ -107,6 +111,7 @@ interface DirectiveParent {
     __directives?: Array<Directive | undefined>;
 }
 declare class Template {
+    parts: Array<TemplatePart>;
     constructor({ strings, ['_$litType$']: type }: TemplateResult, options?: RenderOptions);
     /** @nocollapse */
     static createElement(html: TrustedHTML, _options?: RenderOptions): HTMLTemplateElement;
@@ -121,13 +126,40 @@ interface Disconnectable {
  * update the template instance.
  */
 declare class TemplateInstance implements Disconnectable {
+    _$template: Template;
+    _$parts: Array<Part | undefined>;
     constructor(template: Template, parent: ChildPart);
     get parentNode(): Node;
     get _$isConnected(): boolean;
     _clone(options: RenderOptions | undefined): Node;
     _update(values: Array<unknown>): void;
 }
-declare type Part = ChildPart | AttributePart | PropertyPart | BooleanAttributePart | ElementPart | EventPart;
+type AttributeTemplatePart = {
+    readonly type: typeof ATTRIBUTE_PART;
+    readonly index: number;
+    readonly name: string;
+    readonly ctor: typeof AttributePart;
+    readonly strings: ReadonlyArray<string>;
+};
+type ChildTemplatePart = {
+    readonly type: typeof CHILD_PART;
+    readonly index: number;
+};
+type ElementTemplatePart = {
+    readonly type: typeof ELEMENT_PART;
+    readonly index: number;
+};
+type CommentTemplatePart = {
+    readonly type: typeof COMMENT_PART;
+    readonly index: number;
+};
+/**
+ * A TemplatePart represents a dynamic part in a template, before the template
+ * is instantiated. When a template is instantiated Parts are created from
+ * TemplateParts.
+ */
+type TemplatePart = ChildTemplatePart | AttributeTemplatePart | ElementTemplatePart | CommentTemplatePart;
+type Part = ChildPart | AttributePart | PropertyPart | BooleanAttributePart | ElementPart | EventPart;
 
 declare class ChildPart implements Disconnectable {
     readonly type = 2;
@@ -226,7 +258,7 @@ interface DirectiveClass {
  * This utility type extracts the signature of a directive class's render()
  * method so we can use it for the type of the generated directive function.
  */
-declare type DirectiveParameters<C extends Directive> = Parameters<C['render']>;
+type DirectiveParameters<C extends Directive> = Parameters<C['render']>;
 /**
  * A generated directive function doesn't evaluate the directive, but just
  * returns a DirectiveResult object that captures the arguments.
@@ -241,7 +273,7 @@ declare const PartType: {
     readonly EVENT: 5;
     readonly ELEMENT: 6;
 };
-declare type PartType = typeof PartType[keyof typeof PartType];
+type PartType = (typeof PartType)[keyof typeof PartType];
 interface ChildPartInfo {
     readonly type: typeof PartType.CHILD;
 }
@@ -260,7 +292,7 @@ interface ElementPartInfo {
  * This is useful for checking that a directive is attached to a valid part,
  * such as with directive that can only be used on attribute bindings.
  */
-declare type PartInfo = ChildPartInfo | AttributePartInfo | ElementPartInfo;
+type PartInfo = ChildPartInfo | AttributePartInfo | ElementPartInfo;
 /**
  * Base class for creating custom directives. Users should extend this class,
  * implement `render` and/or `update`, and then pass their subclass to
@@ -357,8 +389,8 @@ declare const live: (value: unknown) => DirectiveResult<typeof LiveDirective>;
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-declare type KeyFn<T> = (item: T, index: number) => unknown;
-declare type ItemTemplate<T> = (item: T, index: number) => unknown;
+type KeyFn<T> = (item: T, index: number) => unknown;
+type ItemTemplate<T> = (item: T, index: number) => unknown;
 declare class RepeatDirective extends Directive {
     private _itemKeys?;
     constructor(partInfo: PartInfo);
@@ -417,10 +449,10 @@ declare const repeat: RepeatDirectiveFn;
  * for CSSStyleDeclaration like `backgroundColor`.
  */
 interface StyleInfo {
-    [name: string]: string | undefined | null;
+    [name: string]: string | number | undefined | null;
 }
 declare class StyleMapDirective extends Directive {
-    _previousStyleProperties?: Set<string>;
+    private _previousStyleProperties?;
     constructor(partInfo: PartInfo);
     render(styleInfo: Readonly<StyleInfo>): string;
     update(part: AttributePart, [styleInfo]: DirectiveParameters<this>): string | typeof noChange;
@@ -430,8 +462,10 @@ declare class StyleMapDirective extends Directive {
  *
  * `styleMap` can only be used in the `style` attribute and must be the only
  * expression in the attribute. It takes the property names in the
- * {@link StyleInfo styleInfo} object and adds the property values as CSS
- * properties. Property names with dashes (`-`) are assumed to be valid CSS
+ * {@link StyleInfo styleInfo} object and adds the properties to the inline
+ * style of the element.
+ *
+ * Property names with dashes (`-`) are assumed to be valid CSS
  * property names and set on the element's style object using `setProperty()`.
  * Names without dashes are assumed to be camelCased JavaScript property names
  * and set on the element's style object using property assignment, allowing the
@@ -451,7 +485,7 @@ declare class UnsafeHTMLDirective extends Directive {
     private _value;
     private _templateResult?;
     constructor(partInfo: PartInfo);
-    render(value: string | typeof nothing | typeof noChange | undefined | null): typeof noChange | typeof nothing | TemplateResult<1 | 2> | null | undefined;
+    render(value: string | typeof nothing | typeof noChange | undefined | null): typeof noChange | typeof nothing | TemplateResult | null | undefined;
 }
 /**
  * Renders the result as HTML, rather than text.
@@ -569,12 +603,12 @@ declare class Ref<T = Element> {
     readonly value?: T;
 }
 
-declare type RefOrCallback = Ref | ((el: Element | undefined) => void);
+type RefOrCallback<T = Element> = Ref<T> | ((el: T | undefined) => void);
 declare class RefDirective extends AsyncDirective {
     private _element?;
     private _ref?;
     private _context?;
-    render(_ref: RefOrCallback): symbol;
+    render(_ref?: RefOrCallback): symbol;
     update(part: ElementPart, [ref]: Parameters<this['render']>): symbol;
     private _updateRefValue;
     private get _lastElementForRef();
@@ -606,6 +640,6 @@ declare class RefDirective extends AsyncDirective {
  * render(html`<input ${ref(callback)}>`, container);
  * ```
  */
-declare const ref: (_ref: RefOrCallback) => DirectiveResult<typeof RefDirective>;
+declare const ref: (_ref?: RefOrCallback<Element> | undefined) => DirectiveResult<typeof RefDirective>;
 
 export { ClassInfo, ClassMapDirective, ItemTemplate, KeyFn, LiveDirective, Ref, RefDirective, RefOrCallback, RepeatDirective, RepeatDirectiveFn, StyleInfo, StyleMapDirective, UnsafeHTMLDirective, UntilDirective, classMap, createRef, ifDefined, live, ref, repeat, styleMap, unsafeHTML, until };

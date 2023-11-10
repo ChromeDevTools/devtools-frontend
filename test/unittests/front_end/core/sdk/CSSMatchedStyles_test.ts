@@ -85,6 +85,115 @@ describe('CSSMatchedStyles', () => {
           parseCSSVariableNameAndFallback('var(---three_hyphens)'), {variableName: '---three_hyphens', fallback: ''});
     });
   });
+
+  describe('computeCSSVariable', () => {
+    const testCssValueEquals = async (text: string, value: unknown) => {
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.id = 1 as Protocol.DOM.NodeId;
+
+      const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
+        cssModel: sinon.createStubInstance(SDK.CSSModel.CSSModel),
+        node,
+        inlinePayload: null,
+        attributesPayload: null,
+        matchedPayload: [{
+          rule: {
+            selectorList: {selectors: [{text: 'div'}], text: 'div'},
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {
+              cssProperties: [
+                {name: '--foo', value: 'active-foo'},
+                {name: '--baz', value: 'active-baz !important', important: true},
+                {name: '--baz', value: 'passive-baz'},
+                {name: '--dark', value: 'darkgrey'},
+                {name: '--light', value: 'lightgrey'},
+                {name: '--theme', value: 'var(--dark)'},
+                {name: '--shadow', value: '1px var(--theme)'},
+                {name: '--width', value: '1px'},
+              ],
+              shorthandEntries: [],
+            },
+          },
+          matchingSelectors: [0],
+        }],
+        pseudoPayload: [],
+        inheritedPayload: [],
+        inheritedPseudoPayload: [],
+        animationsPayload: [],
+        parentLayoutNodeId: undefined,
+        positionFallbackRules: [],
+        propertyRules: [],
+        cssPropertyRegistrations: [],
+      });
+
+      const val = matchedStyles.computeCSSVariable(matchedStyles.nodeStyles()[0], text);
+      assert.strictEqual(val, value);
+    };
+
+    it('should correctly compute the value of an expression that uses a variable', async () => {
+      await testCssValueEquals('--foo', 'active-foo');
+      await testCssValueEquals('--baz', 'active-baz !important');
+      await testCssValueEquals('--does-not-exist', null);
+      await testCssValueEquals('--dark', 'darkgrey');
+      await testCssValueEquals('--light', 'lightgrey');
+      await testCssValueEquals('--theme', 'darkgrey');
+      await testCssValueEquals('--shadow', '1px darkgrey');
+      await testCssValueEquals('--width', '1px');
+      await testCssValueEquals('--cycle-a', null);
+      await testCssValueEquals('--cycle-b', null);
+      await testCssValueEquals('--cycle-c', null);
+    });
+  });
+
+  describe('computeValue', () => {
+    const testComputedValueEquals = async (text: string, value: unknown) => {
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.id = 1 as Protocol.DOM.NodeId;
+
+      const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
+        cssModel: sinon.createStubInstance(SDK.CSSModel.CSSModel),
+        node,
+        inlinePayload: null,
+        attributesPayload: null,
+        matchedPayload: [{
+          rule: {
+            selectorList: {selectors: [{text: 'div'}], text: 'div'},
+            origin: Protocol.CSS.StyleSheetOrigin.Regular,
+            style: {
+              cssProperties: [
+                {name: '--width', value: '1px'},
+                {name: '--dark', value: 'darkgrey'},
+                {name: '--theme', value: 'var(--dark)'},
+              ],
+              shorthandEntries: [],
+            },
+          },
+          matchingSelectors: [0],
+        }],
+        pseudoPayload: [],
+        inheritedPayload: [],
+        inheritedPseudoPayload: [],
+        animationsPayload: [],
+        parentLayoutNodeId: undefined,
+        positionFallbackRules: [],
+        propertyRules: [],
+        cssPropertyRegistrations: [],
+      });
+
+      const val = matchedStyles.computeValue(matchedStyles.nodeStyles()[0], text);
+      assert.strictEqual(val, value);
+    };
+
+    it('should correctly compute the value of an expression that uses a variable', async () => {
+      await testComputedValueEquals('1px var(--dark) 2px var(--theme)', '1px darkgrey 2px darkgrey');
+      await testComputedValueEquals('1px var(--theme)', '1px darkgrey');
+      await testComputedValueEquals(
+          'rgb(100, 200, 300) var(--some-color, blue    ) 1px', 'rgb(100, 200, 300) blue 1px');
+      await testComputedValueEquals('var(--not-existing)', null);
+      await testComputedValueEquals('var(--not-existing-with-default, red)', 'red');
+      await testComputedValueEquals('var(--width)solid black', '1px solid black');
+    });
+  });
 });
 
 describeWithMockConnection('NodeCascade', () => {

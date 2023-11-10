@@ -503,26 +503,47 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private processVar(text: string): Node {
-    const computedSingleValue = this.matchedStylesInternal.computeSingleVariableValue(this.style, text);
-    if (!computedSingleValue) {
-      return document.createTextNode(text);
+    // The regex that matches to variables in `StylesSidebarPropertyRenderer`
+    // uses a lazy match. Because of this, when there are multiple right parantheses inside the
+    // var() function, it stops the match. So, for a match like `var(--a, var(--b))`, the text
+    // corresponds to `var(--a, var(--b)`; before processing it, we make sure that parantheses
+    // are matched.
+    const parenthesesBalancedText = text + ')'.repeat(Platform.StringUtilities.countUnmatchedLeftParentheses(text));
+    const computedSingleValue =
+        this.matchedStylesInternal.computeSingleVariableValue(this.style, parenthesesBalancedText);
+    const {variableName, fallback} = SDK.CSSMatchedStyles.parseCSSVariableNameAndFallback(parenthesesBalancedText);
+    if (!computedSingleValue || !variableName) {
+      return document.createTextNode(parenthesesBalancedText);
     }
 
     const {computedValue, fromFallback} = computedSingleValue;
+    let fallbackHtml: Node|null = null;
+    if (fromFallback && fallback?.startsWith('var(')) {
+      fallbackHtml = this.processVar(fallback);
+    } else if (fallback) {
+      fallbackHtml = document.createTextNode(fallback);
+    }
 
     const varSwatch = new InlineEditor.LinkSwatch.CSSVarSwatch();
-    UI.UIUtils.createTextChild(varSwatch, text);
+    UI.UIUtils.createTextChild(varSwatch, parenthesesBalancedText);
     varSwatch.data = {
-      text,
       computedValue,
+      variableName,
       fromFallback,
+      fallbackHtml,
       onLinkActivate: this.handleVarDefinitionActivate.bind(this),
     };
 
     if (varSwatch.link?.linkElement) {
       const {textContent} = varSwatch.link.linkElement;
-      this.parentPaneInternal.addPopover(
-          varSwatch.link, () => textContent ? this.#getVariablePopoverContents(textContent, computedValue) : undefined);
+      if (textContent) {
+        const computedValueOfLink = textContent ?
+            this.matchedStylesInternal.computeSingleVariableValue(this.style, `var(${textContent})`) :
+            null;
+        this.parentPaneInternal.addPopover(
+            varSwatch.link,
+            () => this.#getVariablePopoverContents(textContent, computedValueOfLink?.computedValue ?? null));
+      }
     }
 
     if (!computedValue || !Common.Color.parse(computedValue)) {
@@ -917,11 +938,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   #getVariablePopoverContents(variableName: string, computedValue: string|null): HTMLElement|undefined {
-    const registrationDetails = this.#getRegisteredPropertyDetails(variableName);
-    if (!registrationDetails && !computedValue) {
-      return undefined;
-    }
-    return new ElementsComponents.CSSVariableValueView.CSSVariableValueView(computedValue ?? '', registrationDetails);
+    return new ElementsComponents.CSSVariableValueView.CSSVariableValueView({
+      variableName,
+      value: computedValue ?? undefined,
+      details: this.#getRegisteredPropertyDetails(variableName),
+    });
   }
 
   updateTitleIfComputedValueChanged(): void {

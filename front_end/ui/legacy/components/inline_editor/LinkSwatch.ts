@@ -82,20 +82,12 @@ class BaseLinkSwatch extends HTMLElement {
   }
 }
 
-const VARIABLE_FUNCTION_REGEX = /(^var\()\s*(--(?:[\s\w\P{ASCII}-]|\\.)+)(,?\s*.*)\s*(\))$/u;
-
 interface CSSVarSwatchRenderData {
-  text: string;
+  variableName: string;
   computedValue: string|null;
   fromFallback: boolean;
+  fallbackHtml: Node|null;
   onLinkActivate: (linkText: string) => void;
-}
-
-interface ParsedVariableFunction {
-  pre: string;
-  variableName: string;
-  fallbackIncludeComma: string;
-  post: string;
 }
 
 export class CSSVarSwatch extends HTMLElement {
@@ -125,56 +117,17 @@ export class CSSVarSwatch extends HTMLElement {
     return this.#link;
   }
 
-  private parseVariableFunctionParts(text: string): ParsedVariableFunction|null {
-    // When the value of CSS var() is greater than two spaces, only one is
-    // always displayed, and the actual number of spaces is displayed when
-    // editing is clicked.
-    const result = text.replace(/\n/g, ' ').replace(/\s{2,}/g, ' ').match(VARIABLE_FUNCTION_REGEX);
-    if (!result) {
-      return null;
-    }
-
-    return {
-      // Returns `var(`
-      pre: result[1],
-
-      // Returns the CSS variable name, e.g. `--foo`
-      variableName: result[2].trim(),
-
-      // Returns the fallback value in the CSS variable, including a comma if
-      // one is present, e.g. `,50px`
-      fallbackIncludeComma: result[3],
-
-      // Returns `)`
-      post: result[4],
-    };
-  }
-
-  private variableName(text: string): string {
-    const match = text.match(VARIABLE_FUNCTION_REGEX);
-    if (match) {
-      return match[2];
-    }
-    return '';
-  }
-
   protected render(data: CSSVarSwatchRenderData): void {
-    const {text, fromFallback, computedValue, onLinkActivate} = data;
-    const functionParts = this.parseVariableFunctionParts(text);
-    if (!functionParts) {
-      render('', this.shadow, {host: this});
-      return;
-    }
+    const {variableName, fromFallback, computedValue, onLinkActivate} = data;
 
     const isDefined = Boolean(computedValue) && !fromFallback;
-    const title = isDefined ? computedValue ?? '' : i18nString(UIStrings.sIsNotDefined, {PH1: this.variableName(text)});
-    const fallbackIncludeComma = functionParts.fallbackIncludeComma ? functionParts.fallbackIncludeComma : '';
+    const title = isDefined ? computedValue ?? '' : i18nString(UIStrings.sIsNotDefined, {PH1: variableName});
 
     this.#link = new BaseLinkSwatch();
     this.#link.data = {
       title,
       showTitle: false,
-      text: functionParts.variableName,
+      text: variableName,
       isDefined,
       onLinkActivate,
     };
@@ -183,7 +136,7 @@ export class CSSVarSwatch extends HTMLElement {
     render(
         html`<span data-title=${data.computedValue || ''}
           jslog=${VisualLogging.link().track({click: true, hover: true}).context('cssVar')}
-        >${functionParts.pre}${this.#link}${fallbackIncludeComma}${functionParts.post}</span>`,
+        >var(${this.#link}${data.fallbackHtml ? ', ' : ''}${data.fallbackHtml})</span>`,
         this.shadow, {host: this});
     // clang-format on
   }

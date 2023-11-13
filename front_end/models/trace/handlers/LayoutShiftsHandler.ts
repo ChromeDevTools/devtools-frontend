@@ -2,17 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../core/platform/platform.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import * as Helpers from '../helpers/helpers.js';
-
-import {type TraceEventHandlerName, HandlerState} from './types.js';
-
-import {ScoreClassification} from './PageLoadMetricsHandler.js';
+import * as Types from '../types/types.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
+import {ScoreClassification} from './PageLoadMetricsHandler.js';
 import {data as screenshotsHandlerData} from './ScreenshotsHandler.js';
-import * as Platform from '../../../core/platform/platform.js';
-
-import * as Types from '../types/types.js';
+import {HandlerState, type TraceEventHandlerName} from './types.js';
 
 // We start with a score of zero and step through all Layout Shift records from
 // all renderers. Each record not only tells us which renderer it is, but also
@@ -49,6 +47,7 @@ interface LayoutShifts {
   layoutInvalidationEvents: Types.TraceEvents.TraceEventLayoutInvalidation[];
   styleRecalcInvalidationEvents: Types.TraceEvents.TraceEventStyleRecalcInvalidation[];
   scoreRecords: ScoreRecord[];
+  backendNodeIds: Protocol.DOM.BackendNodeId[];
 }
 
 // This represents the maximum #time we will allow a cluster to go before we
@@ -72,6 +71,8 @@ const layoutShiftEvents: Types.TraceEvents.TraceEventLayoutShift[] = [];
 // layout shifts to the resizing of unsized elements.
 const layoutInvalidationEvents: Types.TraceEvents.TraceEventLayoutInvalidation[] = [];
 const styleRecalcInvalidationEvents: Types.TraceEvents.TraceEventStyleRecalcInvalidation[] = [];
+
+const backendNodeIds = new Set<Protocol.DOM.BackendNodeId>();
 
 // Layout shifts happen during PrePaint as part of the rendering lifecycle.
 // We determine if a LayoutInvalidation event is a potential root cause of a layout
@@ -110,6 +111,7 @@ export function reset(): void {
   layoutShiftEvents.length = 0;
   layoutInvalidationEvents.length = 0;
   prePaintEvents.length = 0;
+  backendNodeIds.clear();
   clusters.length = 0;
   sessionMaxScore = 0;
   scoreRecords.length = 0;
@@ -186,6 +188,32 @@ function buildScoreRecords(): void {
   }
 }
 
+/**
+ * Collects backend node ids coming from LayoutShift and LayoutInvalidation
+ * events.
+ */
+function collectNodes(): void {
+  backendNodeIds.clear();
+
+  // Collect the node ids present in the shifts.
+  for (const layoutShift of layoutShiftEvents) {
+    if (!layoutShift.args.data?.impacted_nodes) {
+      continue;
+    }
+    for (const node of layoutShift.args.data.impacted_nodes) {
+      backendNodeIds.add(node.node_id);
+    }
+  }
+
+  // Collect the node ids present in LayoutInvalidation events.
+  for (const layoutInvalidation of layoutInvalidationEvents) {
+    if (!layoutInvalidation.args.data?.nodeId) {
+      continue;
+    }
+    backendNodeIds.add(layoutInvalidation.args.data.nodeId);
+  }
+}
+
 export async function finalize(): Promise<void> {
   // Ensure the events are sorted by #time ascending.
   layoutShiftEvents.sort((a, b) => a.ts - b.ts);
@@ -196,6 +224,7 @@ export async function finalize(): Promise<void> {
   // is important.
   await buildLayoutShiftsClusters();
   buildScoreRecords();
+  collectNodes();
   handlerState = HandlerState.FINALIZED;
 }
 async function buildLayoutShiftsClusters(): Promise<void> {
@@ -392,6 +421,7 @@ export function data(): LayoutShifts {
     layoutInvalidationEvents: [...layoutInvalidationEvents],
     styleRecalcInvalidationEvents: [],
     scoreRecords: [...scoreRecords],
+    backendNodeIds: [...backendNodeIds],
   };
 }
 

@@ -61,6 +61,11 @@ export type HandlersWithMeta<T extends {[key: string]: TraceEventHandler}> = {
 // represents the final parsed data for only the enabled handlers.
 export type TraceParseData = Readonly<EnabledHandlerDataWithMeta<typeof ModelHandlers>>;
 
+type DeepWriteable<T> = {
+  -readonly[P in keyof T]: DeepWriteable<T[P]>
+};
+export type TraceParseDataMutable = DeepWriteable<TraceParseData>;
+
 export type Handlers = typeof ModelHandlers;
 
 export const enum HandlerState {

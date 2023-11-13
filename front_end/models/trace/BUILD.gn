@@ -22,6 +22,7 @@ devtools_module("trace") {
     "extras:bundle",
     "handlers:bundle",
     "helpers:bundle",
+    "root-causes:bundle",
     "types:bundle",
   ]
 }

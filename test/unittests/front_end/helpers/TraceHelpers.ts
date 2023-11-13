@@ -657,3 +657,68 @@ export function getMainThread(data: TraceEngine.Handlers.ModelHandlers.Renderer.
   }
   return mainThread;
 }
+
+type TraceParseData = TraceEngine.Handlers.Types.TraceParseData;
+
+export function getBaseTraceParseModelData(overrides: Partial<TraceParseData> = {}): TraceParseData {
+  return {
+    Animations: [],
+    LayoutShifts: {
+      clusters: [],
+      sessionMaxScore: 0,
+      clsWindowID: 0,
+      prePaintEvents: [],
+      layoutInvalidationEvents: [],
+      styleRecalcInvalidationEvents: [],
+      backendNodeIds: [],
+      scoreRecords: [],
+    },
+    Meta: {
+      traceBounds: {
+        min: TraceEngine.Types.Timing.MicroSeconds(0),
+        max: TraceEngine.Types.Timing.MicroSeconds(100),
+        range: TraceEngine.Types.Timing.MicroSeconds(100),
+      },
+      browserProcessId: TraceEngine.Types.TraceEvents.ProcessID(-1),
+      browserThreadId: TraceEngine.Types.TraceEvents.ThreadID(-1),
+      gpuProcessId: TraceEngine.Types.TraceEvents.ProcessID(-1),
+      gpuThreadId: TraceEngine.Types.TraceEvents.ThreadID(-1),
+      threadsInProcess: new Map(),
+      navigationsByFrameId: new Map(),
+      navigationsByNavigationId: new Map(),
+      mainFrameId: '',
+      mainFrameURL: '',
+      rendererProcessesByFrame: new Map(),
+      topLevelRendererIds: new Set(),
+      frameByProcessId: new Map(),
+      mainFrameNavigations: [],
+    },
+    Renderer: {
+      processes: new Map(),
+      compositorTileWorkers: new Map(),
+      entryToNode: new Map(),
+      allTraceEntries: [],
+    },
+    Screenshots: [],
+    Samples: {
+      profiles: new Map(),
+      processes: new Map(),
+    },
+    PageLoadMetrics: {metricScoresByFrameId: new Map(), lcpEventNodeIdToDOMNodeMap: new Map()},
+    UserInteractions: {allEvents: [], interactionEvents: []},
+    NetworkRequests: {
+      byOrigin: new Map(),
+      byTime: [],
+    },
+    GPU: {
+      mainGPUThreadTasks: [],
+      errorsByUseCase: new Map(),
+    },
+    UserTimings: {
+      timings: [],
+    },
+    LargestImagePaint: new Map(),
+    LargestTextPaint: new Map(),
+    ...overrides,
+  } as Partial<TraceParseData>as TraceParseData;
+}

@@ -33,11 +33,11 @@ import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../../generated/protocol.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as Breakpoints from '../../../../models/breakpoints/breakpoints.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
-import type * as Protocol from '../../../../generated/protocol.js';
 import type * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as UI from '../../legacy.js';
 
@@ -258,6 +258,7 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
 
     const createLinkOptions: _CreateLinkOptions = {
       tabStop: options?.tabStop,
+      preventClick: true,
     };
     const {link, linkInfo} = Linkifier.createLink(
         fallbackAnchor && fallbackAnchor.textContent ? fallbackAnchor.textContent : '', className, createLinkOptions);
@@ -481,6 +482,20 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       }
     }
     UI.Tooltip.Tooltip.install(anchor, titleText);
+    if (anchor.classList.contains('devtools-link-prevent-click')) {
+      anchor.classList.remove('devtools-link-prevent-click');
+      anchor.addEventListener('click', event => {
+        if (Linkifier.handleClick(event)) {
+          event.consume(true);
+        }
+      }, false);
+      anchor.addEventListener('keydown', event => {
+        if (event.key === 'Enter' && Linkifier.handleClick(event)) {
+          event.consume(true);
+        }
+      }, false);
+      UI.ARIAUtils.markAsLink(anchor);
+    }
     anchor.classList.toggle('ignore-list-link', await liveLocation.isIgnoreListed());
     Linkifier.updateLinkDecorations(anchor);
   }
@@ -612,10 +627,10 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
           event.consume(true);
         }
       }, false);
+      UI.ARIAUtils.markAsLink(link);
     } else {
       link.classList.add('devtools-link-prevent-click');
     }
-    UI.ARIAUtils.markAsLink(link);
     link.tabIndex = tabStop ? 0 : -1;
     return {link, linkInfo};
   }

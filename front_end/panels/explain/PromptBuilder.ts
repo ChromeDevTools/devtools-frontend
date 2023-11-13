@@ -4,59 +4,68 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Logs from '../../models/logs/logs.js';
 import type * as Console from '../console/console.js';
+
+const MAX_CODE_SIZE = 1000;
 
 export class PromptBuilder {
   #consoleMessage: Console.ConsoleViewMessage.ConsoleViewMessage;
+
   constructor(consoleMessage: Console.ConsoleViewMessage.ConsoleViewMessage) {
     this.#consoleMessage = consoleMessage;
   }
 
-  async buildPrompt(): Promise<string> {
+  async getNetworkRequest(): Promise<SDK.NetworkRequest.NetworkRequest|undefined> {
+    const requestId = this.#consoleMessage.consoleMessage().getAffectedResources()?.requestId;
+    if (!requestId) {
+      return;
+    }
+    const log = Logs.NetworkLog.NetworkLog.instance();
+    // TODO: we might try handling redirect requests too later.
+    return log.requestsForId(requestId)[0];
+  }
+
+  /**
+   * Gets the source file associated with the top of the message's stacktrace.
+   * Returns an empty string if the source is not available for any reasons.
+   */
+  async getMessageSourceCode(): Promise<{text: string, columnNumber: number, lineNumber: number}> {
     const callframe = this.#consoleMessage.consoleMessage().stackTrace?.callFrames[0];
     const runtimeModel = this.#consoleMessage.consoleMessage().runtimeModel();
     const debuggerModel = runtimeModel?.debuggerModel();
-
-    const relatedCode: string[] = [];
-    let relatedCodeSize = 0;
-    const MAX_CODE_SIZE = 1000;
-
-    if (callframe && debuggerModel) {
-      const rawLocation = new SDK.DebuggerModel.Location(
-          debuggerModel, callframe.scriptId, callframe.lineNumber, callframe.columnNumber);
-      const mappedLocation =
-          await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
-              rawLocation);
-      const content = await mappedLocation?.uiSourceCode.requestContent();
-      const text = !content?.isEncoded && content?.content ? content.content : '';
-      if (text) {
-        const lines = text.split('\n');
-        let currentLineNumber = mappedLocation?.lineNumber as number;
-        const columnNumber = mappedLocation?.columnNumber as number;
-        if (lines[currentLineNumber].length >= MAX_CODE_SIZE / 2) {
-          const start = Math.max(columnNumber - MAX_CODE_SIZE / 2, 0);
-          const end = Math.min(columnNumber + MAX_CODE_SIZE / 2, lines[currentLineNumber].length);
-          relatedCode.push(lines[currentLineNumber].substring(start, end));
-          relatedCodeSize += end - start;
-        } else {
-          while (lines[currentLineNumber] !== undefined &&
-                 (relatedCodeSize + lines[currentLineNumber].length < MAX_CODE_SIZE / 2)) {
-            relatedCode.push(lines[currentLineNumber]);
-            relatedCodeSize += lines[currentLineNumber].length;
-            currentLineNumber--;
-          }
-        }
-        relatedCode.reverse();
-        currentLineNumber = (mappedLocation?.lineNumber as number) + 1;
-        while (lines[currentLineNumber] !== undefined &&
-               (relatedCodeSize + lines[currentLineNumber].length < MAX_CODE_SIZE)) {
-          relatedCode.push(lines[currentLineNumber]);
-          relatedCodeSize += lines[currentLineNumber].length;
-          currentLineNumber++;
-        }
-      }
+    if (!debuggerModel || !runtimeModel || !callframe) {
+      return {text: '', columnNumber: 0, lineNumber: 0};
     }
+    const rawLocation =
+        new SDK.DebuggerModel.Location(debuggerModel, callframe.scriptId, callframe.lineNumber, callframe.columnNumber);
+    const mappedLocation =
+        await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
+            rawLocation);
+    const content = await mappedLocation?.uiSourceCode.requestContent();
+    const text = !content?.isEncoded && content?.content ? content.content : '';
+    return {text, columnNumber: mappedLocation?.columnNumber ?? 0, lineNumber: mappedLocation?.lineNumber ?? 0};
+  }
 
+  async buildPrompt(): Promise<string> {
+    const [sourceCode, request] = await Promise.all([
+      this.getMessageSourceCode(),
+      this.getNetworkRequest(),
+    ]);
+
+    const relatedCode = sourceCode.text ? formatRelatedCode(sourceCode) : '';
+    const relatedRequest = request ? formatNetworkRequest(request) : '';
+    const message = this.#consoleMessage.toExportString();
+
+    return this.formatPrompt({
+      message,
+      relatedCode,
+      relatedRequest,
+    });
+  }
+
+  formatPrompt({message, relatedCode, relatedRequest}: {message: string, relatedCode: string, relatedRequest: string}):
+      string {
     const consoleMessageHeader = '### Console message:';
     const relatedCodeHeader = '### Code that generated the error:';
     const explanationHeader = '### Summary:';
@@ -70,6 +79,12 @@ You will follow these rules strictly:
   elsewhere
 - Start with the explanation immediately without repeating the given console message.
 - Always wrap code with three backticks (\`\`\`)
+
+${
+        relatedRequest ? `### Related network request
+
+${relatedRequest}` :
+                         ''}
 
 ${consoleMessageHeader}
 Uncaught TypeError: Cannot read properties of undefined (reading 'setState') at home.jsx:15
@@ -163,13 +178,76 @@ There is an extra closing \`)\`. Remove it to fix the issue.`;
     return `${preamble}
 
 ${consoleMessageHeader}
-${this.#consoleMessage.toExportString()}
+${message}
 
 ${relatedCodeHeader}
 \`\`\`
-${relatedCode.join('\n')}
+${relatedCode}
 \`\`\`
 
 ${explanationHeader}`;
   }
+}
+
+export function allowHeader(header: SDK.NetworkRequest.NameValue): boolean {
+  const normalizedName = header.name.toLowerCase().trim();
+  // Skip custom headers.
+  if (normalizedName.startsWith('x-')) {
+    return false;
+  }
+  // Skip cookies as they might contain auth.
+  if (normalizedName === 'cookie' || normalizedName === 'set-cookie') {
+    return false;
+  }
+  if (normalizedName === 'authorization') {
+    return false;
+  }
+  return true;
+}
+
+export function formatRelatedCode(
+    {text, columnNumber, lineNumber}: {text: string, columnNumber: number, lineNumber: number},
+    maxCodeSize = MAX_CODE_SIZE): string {
+  const relatedCode: string[] = [];
+  let relatedCodeSize = 0;
+  const lines = text.split('\n');
+  let currentLineNumber = lineNumber;
+  if (lines[currentLineNumber].length >= maxCodeSize / 2) {
+    const start = Math.max(columnNumber - maxCodeSize / 2, 0);
+    const end = Math.min(columnNumber + maxCodeSize / 2, lines[currentLineNumber].length);
+    relatedCode.push(lines[currentLineNumber].substring(start, end));
+    relatedCodeSize += end - start;
+  } else {
+    while (lines[currentLineNumber] !== undefined &&
+           (relatedCodeSize + lines[currentLineNumber].length <= maxCodeSize / 2)) {
+      relatedCode.push(lines[currentLineNumber]);
+      relatedCodeSize += lines[currentLineNumber].length;
+      currentLineNumber--;
+    }
+  }
+  relatedCode.reverse();
+  currentLineNumber = lineNumber + 1;
+  while (lines[currentLineNumber] !== undefined && (relatedCodeSize + lines[currentLineNumber].length <= maxCodeSize)) {
+    relatedCode.push(lines[currentLineNumber]);
+    relatedCodeSize += lines[currentLineNumber].length;
+    currentLineNumber++;
+  }
+  return relatedCode.join('\n');
+}
+
+export function formatNetworkRequest(
+    request:
+        Pick<SDK.NetworkRequest.NetworkRequest, 'url'|'requestHeaders'|'responseHeaders'|'statusCode'|'statusText'>):
+    string {
+  // TODO: anything else that might be relavant?
+  // TODO: handle missing headers
+  return `Request: ${request.url()}
+
+Request headers:
+${request.requestHeaders().filter(allowHeader).map(header => `${header.name}: ${header.value}`).join('\n')}
+
+Response headers:
+${request.responseHeaders.filter(allowHeader).map(header => `${header.name}: ${header.value}`).join('\n')}
+
+Response status: ${request.statusCode} ${request.statusText}`;
 }

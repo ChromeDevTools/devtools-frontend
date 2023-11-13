@@ -35,6 +35,7 @@ devtools_entrypoint("bundle") {
     "../../entrypoints/main/*",
     "../../panels/application/*",
     "../../panels/console/*",
+    "../../panels/explain/*",
     "../../panels/issues/*",
     "../../panels/network/*",
     "../../ui/components/request_link_icon/*",

@@ -49,6 +49,7 @@ group("front_end") {
     "panels/css_overview",
     "panels/elements",
     "panels/emulation",
+    "panels/explain",
     "panels/explain/components",
     "panels/issues",
     "panels/layers",

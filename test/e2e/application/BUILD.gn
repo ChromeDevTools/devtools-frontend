@@ -16,6 +16,7 @@ node_ts_library("application") {
     "shared-storage_test.ts",
     "storage_test.ts",
     "websql-database_test.ts",
+    "window-controls_test.ts",
   ]
 
   deps = [

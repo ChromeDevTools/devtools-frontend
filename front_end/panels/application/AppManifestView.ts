@@ -434,12 +434,16 @@ const UIStrings = {
   /**
    *@description Link text for more information on customizing Window Controls Overlay title bar in the Application panel
    */
-  customizePwaTitleBar: 'Customize the window controls overlay of your PWA\'s title bar.',
+  customizePwaTitleBar: 'Customize the window controls overlay of your PWA\'s title bar',
   /**
    *@description Text wrapping link to documentation on how to customize WCO title bar
    *@example {https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay} PH1
    */
   wcoNeedHelpReadMore: 'Need help? Read {PH1}.',
+  /**
+   *@description Text for emulation OS selection dropdown
+   */
+  selectWindowControlsOverlayEmulationOs: 'Emulate the Window Controls Overlay on',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/AppManifestView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -471,7 +475,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   private readonly identitySection: UI.ReportView.Section;
   private readonly presentationSection: UI.ReportView.Section;
   private readonly iconsSection: UI.ReportView.Section;
-  private readonly windowsControlsOverlaySection: UI.ReportView.Section;
+  private readonly windowControlsSection: UI.ReportView.Section;
   private readonly protocolHandlersSection: UI.ReportView.Section;
   private readonly shortcutSections: UI.ReportView.Section[];
   private readonly screenshotsSections: UI.ReportView.Section[];
@@ -493,8 +497,9 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
   private target?: SDK.Target.Target;
   private resourceTreeModel?: SDK.ResourceTreeModel.ResourceTreeModel|null;
   private serviceWorkerManager?: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
+  private overlayModel?: SDK.OverlayModel.OverlayModel|null;
   private protocolHandlersView: ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView;
-  private manifestLink?: HTMLElement;
+
   constructor(
       emptyView: UI.EmptyWidget.EmptyWidget, reportView: UI.ReportView.ReportView,
       throttler: Common.Throttler.Throttler) {
@@ -522,7 +527,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.protocolHandlersView = new ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView();
     this.protocolHandlersSection.appendFieldWithCustomView(this.protocolHandlersView);
     this.iconsSection = this.reportView.appendSection(i18nString(UIStrings.icons), 'report-section-icons');
-    this.windowsControlsOverlaySection = this.reportView.appendSection(UIStrings.windowControlsOverlay);
+    this.windowControlsSection = this.reportView.appendSection(UIStrings.windowControlsOverlay);
     this.shortcutSections = [];
     this.screenshotsSections = [];
 
@@ -565,7 +570,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.presentationSection,
       this.protocolHandlersSection,
       this.iconsSection,
-      this.windowsControlsOverlaySection,
+      this.windowControlsSection,
     ];
   }
 
@@ -580,7 +585,8 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.target = target;
     this.resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     this.serviceWorkerManager = target.model(SDK.ServiceWorkerManager.ServiceWorkerManager);
-    if (!this.resourceTreeModel || !this.serviceWorkerManager) {
+    this.overlayModel = target.model(SDK.OverlayModel.OverlayModel);
+    if (!this.resourceTreeModel || !this.serviceWorkerManager || !this.overlayModel) {
       return;
     }
 
@@ -604,11 +610,12 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     if (this.target !== target) {
       return;
     }
-    if (!this.resourceTreeModel || !this.serviceWorkerManager) {
+    if (!this.resourceTreeModel || !this.serviceWorkerManager || !this.overlayModel) {
       return;
     }
     delete this.resourceTreeModel;
     delete this.serviceWorkerManager;
+    delete this.overlayModel;
     Common.EventTarget.removeEventListeners(this.registeredListeners);
   }
 
@@ -643,7 +650,6 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.dispatchEventToListeners(Events.ManifestDetected, true);
 
     const link = Components.Linkifier.Linkifier.linkifyURL(url);
-    this.manifestLink = link;
     link.tabIndex = 0;
     this.reportView.setURL(link);
     this.errorsSection.clearContent();
@@ -959,17 +965,16 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       return value;
     }
 
-    this.windowsControlsOverlaySection.clearContent();
+    this.windowControlsSection.clearContent();
     const displayOverride = parsedManifest['display_override'] || [];
     const hasWco = displayOverride.includes('window-controls-overlay');
 
     const displayOverrideLink = UI.XLink.XLink.create(
-        'https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override',
-        i18n.i18n.lockedString('display-override'));
+        'https://developer.mozilla.org/en-US/docs/Web/Manifest/display_override', 'display-override');
     const displayOverrideText = document.createElement('code');
     displayOverrideText.appendChild(displayOverrideLink);
 
-    const wcoStatusMessage = this.windowsControlsOverlaySection.appendRow();
+    const wcoStatusMessage = this.windowControlsSection.appendRow();
 
     if (hasWco) {
       const checkmarkIcon = new IconButton.Icon.Icon();
@@ -983,7 +988,11 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       wco.classList.add('wco');
       wco.textContent = 'window-controls-overlay';
       wcoStatusMessage.appendChild(i18n.i18n.getFormatLocalizedString(
-          str_, UIStrings.wcoFound, {PH1: wco, PH2: displayOverrideText, PH3: this.manifestLink}));
+          str_, UIStrings.wcoFound, {PH1: wco, PH2: displayOverrideText, PH3: link}));
+
+      if (this.overlayModel) {
+        await this.appendWindowControlsToSection(this.overlayModel, url, stringProperty('theme_color'));
+      }
     } else {
       const infoIcon = new IconButton.Icon.Icon();
       infoIcon.data = {iconName: 'info', color: 'var(--icon-default)', width: '16px', height: '16px'};
@@ -999,7 +1008,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     const wcoDocumentationLink = UI.XLink.XLink.create(
         'https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/how-to/window-controls-overlay',
         i18nString(UIStrings.customizePwaTitleBar));
-    this.windowsControlsOverlaySection.appendRow().appendChild(
+    this.windowControlsSection.appendRow().appendChild(
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.wcoNeedHelpReadMore, {PH1: wcoDocumentationLink}));
 
     this.dispatchEventToListeners(Events.ManifestRendered);
@@ -1269,6 +1278,48 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     super.wasShown();
     this.reportView.registerCSSFiles([appManifestViewStyles]);
     this.registerCSSFiles([appManifestViewStyles]);
+  }
+
+  private async appendWindowControlsToSection(
+      overlayModel: SDK.OverlayModel.OverlayModel, url: Platform.DevToolsPath.UrlString,
+      themeColor: string): Promise<void> {
+    const wcoStyleSheetText = await overlayModel.hasStyleSheetText(url);
+
+    if (!wcoStyleSheetText) {
+      return;
+    }
+
+    await overlayModel.toggleWindowControlsToolbar(false);
+
+    const wcoOsCheckbox =
+        UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.selectWindowControlsOverlayEmulationOs), false);
+
+    wcoOsCheckbox.checkboxElement.addEventListener('click', async () => {
+      await this.overlayModel?.toggleWindowControlsToolbar(wcoOsCheckbox.checkboxElement.checked);
+    });
+
+    const osSelectElement = (wcoOsCheckbox.createChild('select', 'chrome-select') as HTMLSelectElement);
+    osSelectElement.appendChild(new Option('Windows', SDK.OverlayModel.EmulatedOSType.WindowsOS));
+    osSelectElement.appendChild(new Option('macOS', SDK.OverlayModel.EmulatedOSType.MacOS));
+    osSelectElement.appendChild(new Option('Linux', SDK.OverlayModel.EmulatedOSType.LinuxOS));
+    osSelectElement.selectedIndex = 0;
+
+    if (this.overlayModel) {
+      osSelectElement.value = this.overlayModel?.getWindowControlsConfig().selectedPlatform;
+    }
+
+    osSelectElement.addEventListener('change', async () => {
+      const selectedOS =
+          osSelectElement.options[osSelectElement.selectedIndex].value as SDK.OverlayModel.EmulatedOSType;
+      if (this.overlayModel) {
+        this.overlayModel.setWindowControlsPlatform(selectedOS);
+        await this.overlayModel.toggleWindowControlsToolbar(wcoOsCheckbox.checkboxElement.checked);
+      }
+    });
+
+    this.windowControlsSection.appendRow().appendChild(wcoOsCheckbox);
+
+    overlayModel.setWindowControlsThemeColor(themeColor);
   }
 }
 

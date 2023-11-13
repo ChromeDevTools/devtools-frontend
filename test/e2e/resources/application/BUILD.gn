@@ -27,5 +27,7 @@ copy_to_gen("application") {
     "shared-storage.html",
     "storage-quota.html",
     "websql-database.html",
+    "window-controls-manifest.webmanifest",
+    "window-controls.html",
   ]
 }

@@ -30,3 +30,7 @@
 .inline-icon:focus-visible {
   outline-width: unset;
 }
+
+.chrome-select {
+  margin: 4px;
+}

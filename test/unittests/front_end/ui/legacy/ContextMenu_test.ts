@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../../../../front_end/core/host/host.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {assertElement, assertShadowRoot, dispatchMouseUpEvent} from '../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
@@ -74,5 +75,50 @@ describeWithEnvironment('ContextMenu', () => {
     assert.isTrue(contextMenuDiscardSpy.called);
 
     softMenu.discard();
+  });
+
+  it('uses hosted menu when possible', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
+    const showContextMenuAtPoint =
+        sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showContextMenuAtPoint');
+
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    await contextMenu.show();
+    assert.isTrue(showContextMenuAtPoint.called);
+  });
+
+  it('logs impressions and clicks for hosted menu', async () => {
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'isHostedMode').returns(false);
+    sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'showContextMenuAtPoint');
+    const recordImpression = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordImpression',
+    );
+
+    const recordClick = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordClick',
+    );
+
+    const event = new Event('contextmenu');
+    sinon.stub(event, 'target').value(document);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    contextMenu.defaultSection().appendItem('item 1', () => {}, {jslogContext: '42'});
+    contextMenu.defaultSection().appendItem('item 2', () => {}, {jslogContext: '44'});
+    await contextMenu.show();
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isTrue(recordImpression.calledOnce);
+    assert.sameDeepMembers(
+        recordImpression.firstCall.firstArg.impressions,
+        [{id: 3, type: 46, parent: 2, context: 42}, {id: 4, type: 46, parent: 2, context: 44}]);
+
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
+        Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, 1);
+
+    await new Promise(resolve => setTimeout(resolve, 0));
+    assert.isTrue(recordClick.calledOnce);
+    assert.deepStrictEqual(recordClick.firstCall.firstArg, {veid: 4, mouseButton: 0, doubleClick: false, context: 44});
   });
 });

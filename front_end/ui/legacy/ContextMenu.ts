@@ -32,6 +32,7 @@ import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import {ActionRegistry} from './ActionRegistry.js';
 import {ShortcutRegistry} from './ShortcutRegistry.js';
@@ -381,7 +382,7 @@ export class ContextMenu extends SubMenu {
   override idInternal: number;
   private softMenu?: SoftContextMenu;
   private contextMenuLabel?: string;
-  private hostedMenuOpened: boolean;
+  private openHostedMenu: Host.InspectorFrontendHostAPI.ContextMenuDescriptor[]|null;
   private eventTarget: EventTarget|null;
 
   constructor(event: Event, options: ContextMenuOptions = {}) {
@@ -401,7 +402,7 @@ export class ContextMenu extends SubMenu {
     this.onSoftMenuClosed = options.onSoftMenuClosed;
     this.handlers = new Map();
     this.idInternal = 0;
-    this.hostedMenuOpened = false;
+    this.openHostedMenu = null;
 
     const target = deepElementFromEvent(event);
     if (target) {
@@ -431,7 +432,7 @@ export class ContextMenu extends SubMenu {
   }
 
   isHostedMenuOpen(): boolean {
-    return this.hostedMenuOpened;
+    return Boolean(this.openHostedMenu);
   }
 
   getItems(): SoftContextMenuDescriptor[] {
@@ -474,6 +475,34 @@ export class ContextMenu extends SubMenu {
     }
   }
 
+  private registerLoggablesWithin(
+      descriptors: Host.InspectorFrontendHostAPI.ContextMenuDescriptor[],
+      parent?: Host.InspectorFrontendHostAPI.ContextMenuDescriptor):
+      Host.InspectorFrontendHostAPI.ContextMenuDescriptor[] {
+    const loggables = [];
+    for (const descriptor of descriptors) {
+      if (descriptor.jslogContext) {
+        if (descriptor.type === 'checkbox') {
+          VisualLogging.registerLoggable(
+              descriptor, `${VisualLogging.toggle().track({click: true}).context(descriptor.jslogContext)}`,
+              parent || descriptors);
+        } else if (descriptor.type === 'item') {
+          VisualLogging.registerLoggable(
+              descriptor, `${VisualLogging.item().track({click: true}).context(descriptor.jslogContext)}`,
+              parent || descriptors);
+        } else if (descriptor.type !== 'subMenu') {
+          VisualLogging.registerLoggable(
+              descriptor, `${VisualLogging.item().context(descriptor.jslogContext)}`, parent || descriptors);
+        }
+        loggables.push(descriptor);
+        if (descriptor.subItems) {
+          loggables.push(...this.registerLoggablesWithin(descriptor.subItems, descriptor));
+        }
+      }
+    }
+    return loggables;
+  }
+
   private innerShow(): void {
     const menuObject = this.buildMenuDescriptors();
 
@@ -505,7 +534,12 @@ export class ContextMenu extends SubMenu {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
             Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
       }
-      this.hostedMenuOpened = true;
+      VisualLogging.registerLoggable(menuObject, `${VisualLogging.menu()}`, null);
+      const loggables = this.registerLoggablesWithin(menuObject);
+      if (loggables.length) {
+        void VisualLogging.logImpressions(loggables);
+      }
+      this.openHostedMenu = menuObject;
       // showContextMenuAtPoint call above synchronously issues a clear event for previous context menu (if any),
       // so we skip it before subscribing to the clear event.
       queueMicrotask(listenToEvents.bind(this));
@@ -544,6 +578,26 @@ export class ContextMenu extends SubMenu {
     if (handler) {
       handler.call(this);
     }
+    if (this.openHostedMenu) {
+      const itemWithId = (items: Host.InspectorFrontendHostAPI.ContextMenuDescriptor[],
+                          id: number): Host.InspectorFrontendHostAPI.ContextMenuDescriptor|null => {
+        for (const item of items) {
+          if (item.id === id) {
+            return item;
+          }
+          const subitem = item.subItems && itemWithId(item.subItems, id);
+          if (subitem) {
+            return subitem;
+          }
+        }
+        return null;
+      };
+      const item = itemWithId(this.openHostedMenu, id);
+      if (item && item.jslogContext) {
+        void VisualLogging.logClick(item, new MouseEvent('click'));
+      }
+    }
+
     this.menuCleared();
   }
 
@@ -552,7 +606,7 @@ export class ContextMenu extends SubMenu {
         Host.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
         Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
-    this.hostedMenuOpened = false;
+    this.openHostedMenu = null;
     this.onSoftMenuClosed?.();
   }
 

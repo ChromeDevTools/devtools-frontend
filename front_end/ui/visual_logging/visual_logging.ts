@@ -58,6 +58,7 @@ const jumpToElement = LoggingConfig.makeConfigStringBuilder.bind(null, 'JumpToEl
 const jumpToSource = LoggingConfig.makeConfigStringBuilder.bind(null, 'JumpToSource');
 const key = LoggingConfig.makeConfigStringBuilder.bind(null, 'Key');
 const link = LoggingConfig.makeConfigStringBuilder.bind(null, 'Link');
+const menu = LoggingConfig.makeConfigStringBuilder.bind(null, 'Menu');
 const metricsBox = LoggingConfig.makeConfigStringBuilder.bind(null, 'MetricsBox');
 const next = LoggingConfig.makeConfigStringBuilder.bind(null, 'Next');
 const paletteColorShades = LoggingConfig.makeConfigStringBuilder.bind(null, 'PaletteColorShades');
@@ -136,6 +137,7 @@ export {
   jumpToSource,
   key,
   link,
+  menu,
   metricsBox,
   next,
   paletteColorShades,

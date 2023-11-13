@@ -18,7 +18,8 @@ import {
   waitForTheCoveragePanelToLoad,
 } from '../helpers/coverage-helpers.js';
 
-describe('The Coverage Panel', async () => {
+// Flaky; most likely expanding the coverage items doesn't work reliably.
+describe.skip('[crbug.com/1501829] Coverage Panel', async () => {
   beforeEach(async () => {
     await waitForTheCoveragePanelToLoad();
     await startInstrumentingCoverage();

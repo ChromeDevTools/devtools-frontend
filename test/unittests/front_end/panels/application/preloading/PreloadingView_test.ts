@@ -292,10 +292,10 @@ function createAttemptView(target: SDK.Target.Target): Resources.PreloadingView.
   return view;
 }
 
-function createResultView(target: SDK.Target.Target): Resources.PreloadingView.PreloadingResultView {
+function createSummaryView(target: SDK.Target.Target): Resources.PreloadingView.PreloadingSummaryView {
   const model = target.model(SDK.PreloadingModel.PreloadingModel);
   assertNotNullOrUndefined(model);
-  const view = new Resources.PreloadingView.PreloadingResultView(model);
+  const view = new Resources.PreloadingView.PreloadingSummaryView(model);
   const container = new UI.Widget.VBox();
   const div = document.createElement('div');
   renderElementIntoDOM(div);
@@ -960,11 +960,11 @@ describeWithMockConnection('PreloadingAttemptView', async () => {
   });
 });
 
-describeWithMockConnection('PreloadingResultView', async () => {
+describeWithMockConnection('PreloadingSummaryView', async () => {
   it('shows information of preloading of the last page', async () => {
     const emulator = new NavigationEmulator();
     await emulator.openDevTools();
-    const view = createResultView(emulator.primaryTarget);
+    const view = createSummaryView(emulator.primaryTarget);
 
     await emulator.navigateAndDispatchEvents('');
     await emulator.addSpecRules(`

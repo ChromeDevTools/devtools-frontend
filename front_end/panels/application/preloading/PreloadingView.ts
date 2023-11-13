@@ -369,8 +369,12 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
   }
 
   setFilter(filter: PreloadingHelper.PreloadingForward.AttemptViewWithFilter): void {
-    const id = filter.ruleSetId;
-    this.model.getRuleSetById(id) && this.ruleSetSelector.select(id);
+    let id: Protocol.Preload.RuleSetId|null = filter.ruleSetId;
+    if (id !== null && this.model.getRuleSetById(id) === undefined) {
+      id = null;
+    }
+
+    this.ruleSetSelector.select(id);
   }
 
   private updatePreloadingDetails(): void {
@@ -433,7 +437,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
   }
 }
 
-export class PreloadingResultView extends UI.Widget.VBox {
+export class PreloadingSummaryView extends UI.Widget.VBox {
   private model: SDK.PreloadingModel.PreloadingModel;
 
   private readonly warningsContainer: HTMLDivElement;
@@ -483,7 +487,8 @@ export class PreloadingResultView extends UI.Widget.VBox {
     this.usedPreloading.data = {
       pageURL: SDK.TargetManager.TargetManager.instance().scopeTarget()?.inspectedURL() ||
           ('' as Platform.DevToolsPath.UrlString),
-      attempts: this.model.getPreloadingAttemptsOfPreviousPage().map(({value}) => value),
+      previousAttempts: this.model.getPreloadingAttemptsOfPreviousPage().map(({value}) => value),
+      currentAttempts: this.model.getPreloadingAttempts(null).map(({value}) => value),
     };
   }
 

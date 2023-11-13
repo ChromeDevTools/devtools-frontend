@@ -13,9 +13,9 @@ export class RuleSetView {
 }
 
 export class AttemptViewWithFilter {
-  readonly ruleSetId: Protocol.Preload.RuleSetId;
+  readonly ruleSetId: Protocol.Preload.RuleSetId|null;
 
-  constructor(ruleSetId: Protocol.Preload.RuleSetId) {
+  constructor(ruleSetId: Protocol.Preload.RuleSetId|null) {
     this.ruleSetId = ruleSetId;
   }
 }

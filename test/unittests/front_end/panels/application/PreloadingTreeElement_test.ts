@@ -21,8 +21,7 @@ describeWithMockConnection('PreloadingTreeElement', () => {
     const panel = {
       showView: spy,
     } as unknown as Resources.ResourcesPanel.ResourcesPanel;
-    const preloadingRuleSetTreeElement =
-        Application.PreloadingTreeElement.PreloadingTreeElement.newForPreloadingRuleSetView(panel);
+    const preloadingRuleSetTreeElement = new Application.PreloadingTreeElement.PreloadingRuleSetTreeElement(panel);
 
     preloadingRuleSetTreeElement.onselect(false);
     assert.isTrue(spy.notCalled);

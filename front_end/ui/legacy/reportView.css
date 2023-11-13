@@ -61,7 +61,7 @@
   text-overflow: ellipsis;
   overflow: hidden;
   font-weight: bold;
-  color: var(--sys-color-token-subtle);
+  color: var(--sys-color-on-surface);
 }
 
 .report-field {
@@ -75,7 +75,7 @@
 }
 
 .report-field-name {
-  color: var(--sys-color-state-disabled);
+  color: var(--sys-color-on-surface-subtle);
   flex: 0 0 128px;
   text-align: right;
   padding: 0 6px;

@@ -10,7 +10,7 @@
 }
 
 .key {
-  color: var(--sys-color-token-subtle);
+  color: var(--sys-color-on-surface-subtle);
   padding: 0 6px;
   text-align: right;
   white-space: pre;

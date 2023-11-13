@@ -1289,8 +1289,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   #createHoverButton(): HTMLButtonElement {
     const icon = new IconButton.Icon.Icon();
     icon.data = {
-      iconName: 'spark',
-      color: 'var(--sys-color-primary-bright)',
+      iconName: 'spark-info',
+      color: 'var(--sys-color-primary)',
       width: '16px',
       height: '16px',
     };
@@ -1305,6 +1305,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       }
       void action.execute();
     };
+    const text = document.createElement('span');
+    // TODO: localize.
+    text.innerText = 'Explain this error';
+    button.append(text);
     button.classList.add('hover-button');
     return button;
   }

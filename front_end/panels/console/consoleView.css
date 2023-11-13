@@ -475,23 +475,43 @@ devtools-console-insight {
 }
 
 .hover-button {
+  --width: 24px;
+
   align-items: center;
   background-color: var(--sys-color-cdt-base-container);
   border-radius: 50%;
   border: none;
   box-shadow: var(--drop-shadow-depth-3);
   box-sizing: border-box;
-  display: inline-flex;
-  height: 20px;
+  color: var(--sys-color-primary);
+  font-family: var(--default-font-family);
+  height: var(--width);
   justify-content: center;
   margin: 0;
-  min-height: 20px;
-  min-width: 20px;
-  padding: 0;
-  visibility: hidden;
-  width: 20px;
+  max-height: var(--width);
+  max-width: var(--width);
+  min-height: var(--width);
+  min-width: var(--width);
+  overflow: hidden;
+  padding: 4px;
   position: absolute;
   right: 6px;
+  visibility: hidden;
+  width: var(--width);
+}
+
+.hover-button span {
+  display: none;
+  white-space: nowrap;
+}
+
+.hover-button:hover {
+  border-radius: 100px;
+  max-width: 200px;
+  transition: max-width 0.3s ease;
+  width: fit-content;
+  display: inline-flex;
+  gap: 3px;
 }
 
 .hover-button devtools-icon {
@@ -501,6 +521,10 @@ devtools-console-insight {
   min-height: 16px;
   min-width: 16px;
   width: 16px;
+}
+
+.hover-button:hover span {
+  display: block;
 }
 
 .console-message-wrapper:hover .hover-button,

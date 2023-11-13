@@ -14,7 +14,8 @@ import {
 } from '../helpers/media-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
-describe('Media Tab', () => {
+// These tests are causing emulation tests to fail
+describe.skip('[crbug.com/1501768] Media Tab', () => {
   // Skip until flake is fixed
   it.skip('[crbug.com/1368558]: ensures video playback adds entry', async () => {
     await openPanelViaMoreTools('Media');

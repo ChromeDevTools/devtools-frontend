@@ -9,8 +9,7 @@ import {describe, it} from '../../shared/mocha-extensions.js';
 import {getOrientationInputs, getOrientationValues, setCustomOrientation} from '../helpers/sensors-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
-// Fails fairly reliably with `Request DeviceOrientation.setDeviceOrientationOverride failed.`
-describe.skip('[crbug.com/1501768] Orientation emulation on Sensors panel', () => {
+describe('Orientation emulation on Sensors panel', () => {
   beforeEach(async () => {
     await openPanelViaMoreTools('Sensors');
   });

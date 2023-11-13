@@ -1138,6 +1138,20 @@ const extraPropertyValues = {
   'contain-intrinsic-size': {values: ['auto none', 'auto 100px']},
   'contain-intrinsic-inline-size': {values: ['auto none', 'auto 100px']},
   'contain-intrinsic-block-size': {values: ['auto none', 'auto 100px']},
+  // Due to some compatibility issues[1] with Chrome's implementation[2],
+  // only a few legacy values are added here.
+  // [1]: https://github.com/w3c/csswg-drafts/issues/9102#issuecomment-1807453214
+  // [2]: https://chromium-review.googlesource.com/c/chromium/src/+/4232738
+  'white-space': {
+    values: [
+      'normal',        // equal to: `collapse wrap`
+      'pre',           // equal to: `preserve nowrap`
+      'pre-wrap',      // equal to: `preserve wrap`
+      'pre-line',      // equal to: `preserve-breaks wrap`
+      'nowrap',        // equal to: `collapse nowrap`
+      'break-spaces',  // equal to: `break-spaces wrap`, Chrome 76, crbug.com/767634#c28
+    ],
+  },
 };
 
 // Weight of CSS properties based on their usage from https://www.chromestatus.com/metrics/css/popularity

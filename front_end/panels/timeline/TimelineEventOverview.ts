@@ -35,7 +35,7 @@ import * as TraceEngine from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {getEventStyle, type TimelineCategory} from './EventUICategory.js';
+import {getCategoryStyles, getEventStyle, type TimelineCategory} from './EventUICategory.js';
 import {type PerformanceModel} from './PerformanceModel.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
@@ -188,8 +188,9 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     if (TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === '(idle)') {
       return 'idle';
     }
-
-    const categoryName = getEventStyle(entry.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category.name;
+    const eventStyle = getEventStyle(entry.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category ||
+        getCategoryStyles().Other;
+    const categoryName = eventStyle.name;
     return categoryName;
   }
 

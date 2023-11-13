@@ -152,6 +152,7 @@ export class TimelineMiniMap extends
   }
 
   reset(): void {
+    this.#data = null;
     this.#overviewComponent.reset();
   }
 

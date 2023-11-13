@@ -271,7 +271,6 @@ async function execImageDiffCommand(cmd: string) {
 
 async function compare(golden: string, generated: string, maximumDiffThreshold: number) {
   const isOnBot = process.env.LUCI_CONTEXT !== undefined;
-
   if (!isOnBot && process.env.SKIP_SCREENSHOT_COMPARISONS_FOR_FAST_COVERAGE) {
     // When checking test coverage locally the tests get sped up significantly
     // if we do not do the actual image comparison. Obviously this makes the

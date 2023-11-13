@@ -1116,7 +1116,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private reset(): void {
     PerfUI.LineLevelProfile.Performance.instance().reset();
     if (this.performanceModel) {
-      this.performanceModel.removeEventListener(Events.NamesResolved, this.updateModelAndFlameChart, this);
+      this.performanceModel.removeEventListener(Events.NamesResolved, this.#onSourceMapsNodeNamesResolved, this);
     }
     if (this.#sourceMapsResolver) {
       this.#sourceMapsResolver.removeEventListener(
@@ -1161,7 +1161,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     this.flameChart.setModel(model, traceParsedData, isCpuProfile);
 
-    this.updateOverviewControls();
     this.#minimapComponent.reset();
     if (model) {
       model.addEventListener(Events.WindowChanged, this.onModelWindowChanged, this);
@@ -1328,14 +1327,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   #onSourceMapsNodeNamesResolved(): void {
-    this.updateModelAndFlameChart();
-  }
-
-  updateModelAndFlameChart(): void {
-    if (!this.performanceModel) {
-      return;
-    }
-    this.setModel(this.performanceModel, null, this.#traceEngineActiveTraceIndex);
     this.flameChart.updateColorMapper();
   }
 
@@ -1402,7 +1393,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       // and update the flamechart on any sourcemap resolution.
       if (this.#threadTracksSource !== ThreadTracksSource.NEW_ENGINE &&
           !this.performanceModel.hasEventListeners(Events.NamesResolved)) {
-        this.performanceModel.addEventListener(Events.NamesResolved, this.updateModelAndFlameChart, this);
+        this.performanceModel.addEventListener(Events.NamesResolved, this.#onSourceMapsNodeNamesResolved, this);
       }
 
       // Otherwise if we are running the new engine, instantiate it with the

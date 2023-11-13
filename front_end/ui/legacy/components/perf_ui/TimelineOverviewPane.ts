@@ -184,6 +184,10 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.markers = markers;
   }
 
+  getMarkers(): Map<number, Element> {
+    return this.markers;
+  }
+
   private updateMarkers(): void {
     const filteredMarkers = new Map<number, Element>();
     for (const time of this.markers.keys()) {

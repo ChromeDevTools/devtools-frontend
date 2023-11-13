@@ -1,14 +1,17 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import {assert} from 'chai';
 
-import {waitFor} from '../../../../shared/helper.js';
+import {waitFor, waitForMany} from '../../../../shared/helper.js';
 import {describe, itScreenshot} from '../../../../shared/mocha-extensions.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
 
 describe('Performance panel overview/minimap', function() {
   preloadForCodeCoverage('performance_panel/overview.html');
+  preloadForCodeCoverage('performance_panel/basic.html');
+
   itScreenshot('renders the overview', async () => {
     await loadComponentDocExample('performance_panel/overview.html?trace=web-dev');
     const pane = await waitFor('.container #timeline-overview-pane');
@@ -44,5 +47,19 @@ describe('Performance panel overview/minimap', function() {
     await loadComponentDocExample('performance_panel/overview.html?trace=web-dev');
     const pane = await waitFor('.container-new-engine #timeline-overview-pane');
     await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview-new-engine.png', 3);
+  });
+  it('renders markers in the minimap correctly', async () => {
+    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev');
+    const minimapMarkers = await waitForMany('.resources-event-divider', 4);
+    const promises = minimapMarkers.map(handle => {
+      return handle.evaluate(marker => {
+        const markerElement = marker as HTMLElement;
+        return markerElement.style.left;
+      });
+    });
+    const offsets = await Promise.all(promises);
+    offsets.forEach(offset => {
+      assert.isTrue(Boolean(offset));
+    });
   });
 });

@@ -279,6 +279,7 @@ describeWithEnvironment('PreloadingGrid', async () => {
               status: SDK.PreloadingModel.PreloadingStatus.Failure,
               prerenderStatus: Protocol.Preload.PrerenderFinalStatus.MojoBinderPolicy,
               disallowedMojoInterface: 'device.mojom.GamepadMonitor',
+              mismatchedHeaders: null,
               requestId: 'requestId:1' as Protocol.Network.RequestId,
               ruleSetIds: ['ruleSetId:0.1'] as Protocol.Preload.RuleSetId[],
               nodeIds: [1] as Protocol.DOM.BackendNodeId[],

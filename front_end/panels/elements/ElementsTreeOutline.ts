@@ -878,13 +878,14 @@ export class ElementsTreeOutline extends
     if (treeElement.isClosingTag()) {
       // Drop onto closing tag -> insert as last child.
       parentNode = treeElement.node();
+      anchorNode = null;
     } else {
       const dragTargetNode = treeElement.node();
       parentNode = dragTargetNode.parentNode;
       anchorNode = dragTargetNode;
     }
 
-    if (!parentNode || !anchorNode) {
+    if (!parentNode) {
       return;
     }
     const wasExpanded = this.treeElementBeingDragged.expanded;

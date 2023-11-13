@@ -36,12 +36,11 @@ import * as Platform from '../../core/platform/platform.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
-import * as ThemeSupport from './theme_support/theme_support.js';
-
 import {SuggestBox, type SuggestBoxDelegate, type Suggestion} from './SuggestBox.js';
+import textPromptStyles from './textPrompt.css.legacy.js';
+import * as ThemeSupport from './theme_support/theme_support.js';
 import {Tooltip} from './Tooltip.js';
 import {ElementFocusRestorer} from './UIUtils.js';
-import textPromptStyles from './textPrompt.css.legacy.js';
 
 export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SuggestBoxDelegate {
   private proxyElement!: HTMLElement|undefined;
@@ -271,6 +270,10 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
       this.element().removeAttribute('contenteditable');
     }
     this.element().classList.toggle('disabled', !enabled);
+  }
+
+  setJsLog(jslog: string): void {
+    this.element().setAttribute('jslog', jslog);
   }
 
   private removeFromElement(): void {

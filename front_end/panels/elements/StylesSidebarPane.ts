@@ -504,33 +504,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     return false;
   }
 
-  static createPropertyFilterElement(
-      placeholder: string, container: Element, filterCallback: (arg0: RegExp|null) => void): Element {
-    const input = document.createElement('input');
-    input.type = 'search';
-    input.classList.add('custom-search-input');
-    input.placeholder = placeholder;
-    input.setAttribute('jslog', `${VisualLogging.filterTextField().track({keydown: true})}`);
-
-    function searchHandler(): void {
-      const regex = input.value ? new RegExp(Platform.StringUtilities.escapeForRegExp(input.value), 'i') : null;
-      filterCallback(regex);
-    }
-    input.addEventListener('input', searchHandler, false);
-
-    function keydownHandler(event: Event): void {
-      const keyboardEvent = (event as KeyboardEvent);
-      if (keyboardEvent.key !== Platform.KeyboardUtilities.ESCAPE_KEY || !input.value) {
-        return;
-      }
-      keyboardEvent.consume(true);
-      input.value = '';
-      searchHandler();
-    }
-    input.addEventListener('keydown', keydownHandler, false);
-    return input;
-  }
-
   static formatLeadingProperties(section: StylePropertiesSection): {
     allDeclarationText: string,
     ruleText: string,
@@ -695,7 +668,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
   }
 
-  private onFilterChanged(regex: RegExp|null): void {
+  private onFilterChanged(event: Common.EventTarget.EventTargetEvent<string>): void {
+    const regex = event.data ? new RegExp(Platform.StringUtilities.escapeForRegExp(event.data), 'i') : null;
     this.lastFilterChange = Date.now();
     this.filterRegexInternal = regex;
     this.updateFilter();
@@ -1479,12 +1453,11 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   private createStylesSidebarToolbar(): HTMLElement {
     const container = this.contentElement.createChild('div', 'styles-sidebar-pane-toolbar-container');
     const hbox = container.createChild('div', 'hbox styles-sidebar-pane-toolbar');
-    const filterContainerElement = hbox.createChild('div', 'styles-sidebar-pane-filter-box');
-    const filterInput = StylesSidebarPane.createPropertyFilterElement(
-        i18nString(UIStrings.filter), hbox, this.onFilterChanged.bind(this));
-    UI.ARIAUtils.setLabel(filterInput, i18nString(UIStrings.filterStyles));
-    filterContainerElement.appendChild(filterInput);
     const toolbar = new UI.Toolbar.Toolbar('styles-pane-toolbar', hbox);
+    const filterInput = new UI.Toolbar.ToolbarInput(
+        i18nString(UIStrings.filter), i18nString(UIStrings.filterStyles), 1, 1, undefined, undefined, false);
+    filterInput.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.onFilterChanged, this);
+    toolbar.appendToolbarItem(filterInput);
     toolbar.makeToggledGray();
     void toolbar.appendItemsAtLocation('styles-sidebarpane-toolbar');
     this.toolbar = toolbar;

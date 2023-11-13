@@ -697,7 +697,7 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
     super(element);
 
     const internalPromptElement = this.element.createChild('div', 'toolbar-input-prompt');
-    ARIAUtils.setLabel(internalPromptElement, placeholder);
+    ARIAUtils.setLabel(internalPromptElement, accessiblePlaceholder || placeholder);
     internalPromptElement.addEventListener('focus', () => this.element.classList.add('focused'));
     internalPromptElement.addEventListener('blur', () => this.element.classList.remove('focused'));
 
@@ -710,6 +710,7 @@ export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {
       this.prompt.setTitle(tooltip);
     }
     this.prompt.setPlaceholder(placeholder, accessiblePlaceholder);
+    this.prompt.setJsLog(`${VisualLogging.textField().track({keydown: true})}`);
     this.prompt.addEventListener(TextPromptEvents.TextChanged, this.onChangeCallback.bind(this));
 
     if (growFactor) {

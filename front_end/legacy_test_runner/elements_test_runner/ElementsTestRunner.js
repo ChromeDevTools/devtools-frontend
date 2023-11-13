@@ -402,9 +402,8 @@ ElementsTestRunner.firstElementsTreeOutline = function() {
 };
 
 ElementsTestRunner.filterMatchedStyles = function(text) {
-  const regex = (text ? new RegExp(text, 'i') : null);
   TestRunner.addResult('Filtering styles by: ' + text);
-  Elements.ElementsPanel.ElementsPanel.instance().stylesWidget.onFilterChanged(regex);
+  Elements.ElementsPanel.ElementsPanel.instance().stylesWidget.onFilterChanged({data: text});
 };
 
 ElementsTestRunner.dumpRenderedMatchedStyles = function() {

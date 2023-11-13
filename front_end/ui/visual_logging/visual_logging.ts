@@ -41,7 +41,6 @@ const elementsPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'Elements
 const elementsTreeOutline = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementsTreeOutline');
 const eventListenersPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'EventListenersPane');
 const filterDropdown = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterDropdown');
-const filterTextField = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterTextField');
 const flexboxOverlays = LoggingConfig.makeConfigStringBuilder.bind(null, 'FlexboxOverlays');
 const fullAccessibilityTree = LoggingConfig.makeConfigStringBuilder.bind(null, 'FullAccessibilityTree');
 const gridOverlays = LoggingConfig.makeConfigStringBuilder.bind(null, 'GridOverlays');
@@ -61,12 +60,14 @@ const refresh = LoggingConfig.makeConfigStringBuilder.bind(null, 'Refresh');
 const showAllStyleProperties = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowAllStyleProperties');
 const showStyleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowStyleEditor');
 const slider = LoggingConfig.makeConfigStringBuilder.bind(null, 'Slider');
+const stylesComputedPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesComputedPane');
 const stylePropertiesSection = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylePropertiesSection');
 const stylePropertiesSectionSeparator =
     LoggingConfig.makeConfigStringBuilder.bind(null, 'StylePropertiesSectionSeparator');
 const stylesMetricsPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesMetricsPane');
 const stylesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesPane');
 const stylesSelector = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesSelector');
+const textField = LoggingConfig.makeConfigStringBuilder.bind(null, 'TextField');
 const toggle = LoggingConfig.makeConfigStringBuilder.bind(null, 'Toggle');
 const toggleDeviceMode = LoggingConfig.makeConfigStringBuilder.bind(null, 'ToggleDeviceMode');
 const toggleElementSearch = LoggingConfig.makeConfigStringBuilder.bind(null, 'ToggleElementSearch');
@@ -114,7 +115,6 @@ export {
   elementsTreeOutline,
   eventListenersPane,
   filterDropdown,
-  filterTextField,
   flexboxOverlays,
   fullAccessibilityTree,
   gridOverlays,
@@ -134,11 +134,13 @@ export {
   showAllStyleProperties,
   showStyleEditor,
   slider,
+  stylesComputedPane,
   stylePropertiesSection,
   stylePropertiesSectionSeparator,
   stylesMetricsPane,
   stylesPane,
   stylesSelector,
+  textField,
   toggle,
   toggleDeviceMode,
   toggleElementSearch,

@@ -114,9 +114,9 @@ describe('CSP Violations Tab', async () => {
   });
 
   it('should not display matching violations', async () => {
-    await click('.toolbar-input-prompt');
-    await typeText('Sink');
     const cspViolationsPane = await waitFor('.csp-violations-pane');
+    await click('.toolbar-input-prompt', {root: cspViolationsPane});
+    await typeText('Sink');
     const rows = await getDataGridText(await getDataGridRows(1, cspViolationsPane));
     const expectedRows = [
       [

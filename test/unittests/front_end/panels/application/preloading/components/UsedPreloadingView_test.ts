@@ -11,6 +11,7 @@ import * as DataGrid from '../../../../../../../front_end/ui/components/data_gri
 import * as Coordinator from '../../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../../../../front_end/ui/components/report_view/report_view.js';
 import {
+  assertElement,
   assertShadowRoot,
   getElementsWithinComponent,
   getElementWithinComponent,
@@ -471,6 +472,107 @@ describeWithEnvironment('UsedPreloadingView', async () => {
     assert.strictEqual(badges[0]?.textContent?.trim(), 'No speculative loads');
 
     assert.include(sections[2]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
+  });
+
+  it('ignores hash part of URL for prefetch', async () => {
+    const data: PreloadingComponents.UsedPreloadingView.UsedPreloadingViewData = {
+      pageURL: 'https://example.com/prefetched.html#alpha' as Platform.DevToolsPath.UrlString,
+      previousAttempts: [
+        {
+          action: Protocol.Preload.SpeculationAction.Prefetch,
+          key: {
+            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+            action: Protocol.Preload.SpeculationAction.Prefetch,
+            url: 'https://example.com/prefetched.html#beta' as Platform.DevToolsPath.UrlString,
+          },
+          status: SDK.PreloadingModel.PreloadingStatus.Success,
+          prefetchStatus: null,
+          requestId: 'requestId:1' as Protocol.Network.RequestId,
+          ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
+          nodeIds: [1] as Protocol.DOM.BackendNodeId[],
+        },
+      ],
+      currentAttempts: [],
+    };
+
+    const component = await renderUsedPreloadingView(data);
+    assertShadowRoot(component.shadowRoot);
+    const headers = getElementsWithinComponent(
+        component, 'devtools-report devtools-report-section-header', ReportView.ReportView.ReportSectionHeader);
+    const sections = getElementsWithinComponent(
+        component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
+
+    assert.strictEqual(headers.length, 2);
+    assert.strictEqual(sections.length, 3);
+
+    assert.include(headers[0]?.textContent, 'Speculative loading status');
+    assert.strictEqual(sections[0]?.querySelector('.status-badge span')?.textContent?.trim(), 'Success');
+    assert.include(sections[0]?.textContent, 'This page was successfully prefetched.');
+
+    assert.include(headers[1]?.textContent, 'Speculations initiated by this page');
+    const badges = sections[1]?.querySelectorAll('.status-badge span') || [];
+    assert.strictEqual(badges.length, 1);
+    assert.strictEqual(badges[0]?.textContent?.trim(), 'No speculative loads');
+
+    assert.include(sections[2]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
+  });
+
+  it('doesn\'t ignore hash part of URL for prerender', async () => {
+    // Prerender uses more strict URL matcher and distinguish URLs by fragments.
+    const data: PreloadingComponents.UsedPreloadingView.UsedPreloadingViewData = {
+      pageURL: 'https://example.com/prerendered.html#alpha' as Platform.DevToolsPath.UrlString,
+      previousAttempts: [
+        {
+          action: Protocol.Preload.SpeculationAction.Prerender,
+          key: {
+            loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+            action: Protocol.Preload.SpeculationAction.Prerender,
+            url: 'https://example.com/prerendered.html#beta' as Platform.DevToolsPath.UrlString,
+          },
+          status: SDK.PreloadingModel.PreloadingStatus.Ready,
+          prerenderStatus: null,
+          disallowedMojoInterface: null,
+          mismatchedHeaders: null,
+          ruleSetIds: ['ruleSetId:1'] as Protocol.Preload.RuleSetId[],
+          nodeIds: [1] as Protocol.DOM.BackendNodeId[],
+        },
+      ],
+      currentAttempts: [],
+    };
+
+    const component = await renderUsedPreloadingView(data);
+    assertShadowRoot(component.shadowRoot);
+    const headers = getElementsWithinComponent(
+        component, 'devtools-report devtools-report-section-header', ReportView.ReportView.ReportSectionHeader);
+    const sections = getElementsWithinComponent(
+        component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
+
+    assert.strictEqual(headers.length, 4);
+    assert.strictEqual(sections.length, 5);
+
+    assert.include(headers[0]?.textContent, 'Speculative loading status');
+    assert.strictEqual(sections[0]?.querySelector('.status-badge span')?.textContent?.trim(), 'No speculative loads');
+    assert.include(
+        sections[0]?.textContent, 'The initiating page did not attempt to speculatively load this page\'s URL.');
+    assert.include(headers[1]?.textContent, 'Current URL');
+    assert.include(sections[1]?.textContent, 'https://example.com/prerendered.html#alpha');
+    assert.include(headers[2]?.textContent, 'URLs being speculatively loaded by the initiating page');
+    const grid = sections[2].querySelector('devtools-resources-mismatched-preloading-grid');
+    assertElement(grid, PreloadingComponents.MismatchedPreloadingGrid.MismatchedPreloadingGrid);
+    assertGridContents(
+        grid,
+        ['URL', 'Action', 'Status'],
+        [
+          ['https://example.com/prerendered.html#betalpha', 'Prerender', 'Ready'],
+        ],
+    );
+
+    assert.include(headers[3]?.textContent, 'Speculations initiated by this page');
+    const badges = sections[3]?.querySelectorAll('.status-badge span') || [];
+    assert.strictEqual(badges.length, 1);
+    assert.strictEqual(badges[0]?.textContent?.trim(), 'No speculative loads');
+
+    assert.include(sections[4]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
   });
 
   it('renders no preloading attempts used with mismatch', async () => {

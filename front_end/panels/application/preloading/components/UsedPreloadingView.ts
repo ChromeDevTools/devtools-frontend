@@ -188,7 +188,9 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
   }
 
   #speculativeLoadingStatusForThisPageSections(): LitHtml.LitTemplate {
-    const forThisPage = this.#data.previousAttempts.filter(attempt => attempt.key.url === this.#data.pageURL);
+    const pageURL = Common.ParsedURL.ParsedURL.urlWithoutHash(this.#data.pageURL);
+    const forThisPage = this.#data.previousAttempts.filter(
+        attempt => Common.ParsedURL.ParsedURL.urlWithoutHash(attempt.key.url) === pageURL);
     const prefetch =
         forThisPage.filter(attempt => attempt.key.action === Protocol.Preload.SpeculationAction.Prefetch)[0];
     const prerender =

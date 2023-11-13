@@ -19,4 +19,5 @@
   overflow: hidden;
   font-weight: bold;
   color: var(--sys-color-on-surface);
+  user-select: none;
 }

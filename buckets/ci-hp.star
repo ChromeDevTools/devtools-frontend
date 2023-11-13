@@ -59,7 +59,6 @@ highly_privileged_builder(
             "scripted_rolls": [
                 "puppeteer-core",
                 "puppeteer-replay",
-                "browser-protocol",
             ],
             # "Bug: none" is required to pass presubmit tests
             "bugs": "none",

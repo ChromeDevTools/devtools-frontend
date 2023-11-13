@@ -86,6 +86,7 @@ group("front_end") {
     "ui/components/adorners",
     "ui/components/diff_view",
     "ui/components/helpers",
+    "ui/components/highlighting",
     "ui/components/issue_counter",
     "ui/components/linear_memory_inspector",
     "ui/components/render_coordinator",

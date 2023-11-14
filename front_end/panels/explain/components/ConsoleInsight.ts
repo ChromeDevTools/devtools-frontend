@@ -57,6 +57,8 @@ function localizeType(sourceType: SourceType): string {
       return 'Network request';
     case SourceType.RELATED_CODE:
       return 'Related code';
+    case SourceType.SEARCH_ANSWERS:
+      return 'Google Search results';
   }
 }
 

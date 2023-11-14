@@ -9,6 +9,20 @@ import type * as Console from '../console/console.js';
 
 const MAX_CODE_SIZE = 1000;
 
+// TODO(crbug.com/1167717): Make this a const enum again
+// eslint-disable-next-line rulesdir/const_enum
+export enum SourceType {
+  MESSAGE = 'message',
+  STACKTRACE = 'stacktrace',
+  NETWORK_REQUEST = 'networkRequest',
+  RELATED_CODE = 'relatedCode',
+}
+
+export interface Source {
+  type: SourceType;
+  value: string;
+}
+
 export class PromptBuilder {
   #consoleMessage: Console.ConsoleViewMessage.ConsoleViewMessage;
 
@@ -47,7 +61,7 @@ export class PromptBuilder {
     return {text, columnNumber: mappedLocation?.columnNumber ?? 0, lineNumber: mappedLocation?.lineNumber ?? 0};
   }
 
-  async buildPrompt(): Promise<string> {
+  async buildPrompt(): Promise<{prompt: string, sources: Source[]}> {
     const [sourceCode, request] = await Promise.all([
       this.getMessageSourceCode(),
       this.getNetworkRequest(),
@@ -57,11 +71,38 @@ export class PromptBuilder {
     const relatedRequest = request ? formatNetworkRequest(request) : '';
     const message = this.#consoleMessage.toExportString();
 
-    return this.formatPrompt({
+    const prompt = this.formatPrompt({
       message,
       relatedCode,
       relatedRequest,
     });
+
+    // TODO: separate the stack trace from message.
+    const sources = [
+      {
+        type: SourceType.MESSAGE,
+        value: message,
+      },
+    ];
+
+    if (relatedCode) {
+      sources.push({
+        type: SourceType.RELATED_CODE,
+        value: relatedCode,
+      });
+    }
+
+    if (relatedRequest) {
+      sources.push({
+        type: SourceType.NETWORK_REQUEST,
+        value: relatedRequest,
+      });
+    }
+
+    return {
+      prompt,
+      sources,
+    };
   }
 
   formatPrompt({message, relatedCode, relatedRequest}: {message: string, relatedCode: string, relatedRequest: string}):

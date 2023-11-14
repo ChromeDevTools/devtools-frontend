@@ -12,7 +12,7 @@ import * as MarkdownView from '../../../ui/components/markdown_view/markdown_vie
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import {type InsightProvider} from '../InsightProvider.js';
-import {type PromptBuilder} from '../PromptBuilder.js';
+import {type PromptBuilder, type Source, SourceType} from '../PromptBuilder.js';
 
 import styles from './consoleInsight.css.js';
 
@@ -46,6 +46,20 @@ function buildLink(
       Platform.DevToolsPath.UrlString;
 }
 
+function localizeType(sourceType: SourceType): string {
+  // TODO: localize.
+  switch (sourceType) {
+    case SourceType.MESSAGE:
+      return 'Console message';
+    case SourceType.STACKTRACE:
+      return 'Stacktrace';
+    case SourceType.NETWORK_REQUEST:
+      return 'Network request';
+    case SourceType.RELATED_CODE:
+      return 'Related code';
+  }
+}
+
 export class ConsoleInsight extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-console-insight`;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -63,6 +77,7 @@ export class ConsoleInsight extends HTMLElement {
   };
   #loading = true;
   #dogfood = true;
+  #sources: Source[] = [];
 
   constructor(promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider) {
     super();
@@ -87,14 +102,16 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   async update(): Promise<void> {
+    this.#sources = [];
     this.#setLoading(true);
     try {
-      const prompt = await this.#promptBuilder.buildPrompt();
+      const {prompt, sources} = await this.#promptBuilder.buildPrompt();
       const result = await this.#insightProvider.getInsights(prompt);
       this.#context = {
         prompt,
         result,
       };
+      this.#sources = sources;
       this.#renderMarkdown(result);
     } catch (err) {
       this.#renderMarkdown(`loading failed: ${err.message}`);
@@ -198,6 +215,16 @@ export class ConsoleInsight extends HTMLElement {
           <${MarkdownView.MarkdownView.MarkdownView.litTagName}
             .data=${{tokens: this.#tokens, renderer: this.#renderer} as MarkdownView.MarkdownView.MarkdownViewData}>
           </${MarkdownView.MarkdownView.MarkdownView.litTagName}>
+          <details>
+            <summary>Sources</summary>
+            <ul>
+              ${Directives.repeat(this.#sources, item => item.value, item => {
+                const icon = new IconButton.Icon.Icon();
+                icon.data = {iconName: 'open-externally', color: 'var(--sys-color-primary)', width: '14px', height: '14px'};
+                return html`<li><x-link class="link" href=${`data:text/plain,${encodeURIComponent(item.value)}`}>${localizeType(item.type)}${icon}</x-link></li>`;
+              })}
+            </ul>
+          </details>
         </main>
         <footer>
           <div>

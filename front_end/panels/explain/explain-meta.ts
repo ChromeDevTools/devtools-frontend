@@ -10,7 +10,7 @@ const UIStrings = {
   /**
    *@description Title of an action to explain a console message.
    */
-  explainConsoleMessage: 'Help me fix this error',
+  explainConsoleMessage: 'Explain this error',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/explain-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);

@@ -40,7 +40,7 @@
 
 @keyframes collapse {
   from {
-    max-height: 500px;
+    max-height: 2000px;
     opacity: 100%;
   }
 
@@ -191,4 +191,29 @@ textarea {
   to {
     translate: -100% 0;
   }
+}
+
+ul {
+  padding-left: 1em;
+  color: var(--sys-color-primary);
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 153.846% */
+}
+
+ul .link {
+  color: var(--sys-color-primary);
+  display: inline-flex !important; /* stylelint-disable-line declaration-no-important */
+  align-items: center;
+  gap: 4px;
+  text-decoration-line: underline;
+}
+
+summary {
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  padding-bottom: 8px;
 }

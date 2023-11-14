@@ -14,7 +14,7 @@ const ConsoleInsight = Explain.ConsoleInsight;
 const component = new ConsoleInsight(
     {
       async buildPrompt() {
-        return '';
+        return {prompt: '', sources: []};
       },
     },
     {

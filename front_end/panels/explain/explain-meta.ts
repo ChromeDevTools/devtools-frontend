@@ -19,7 +19,20 @@ if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
   const Console = await import('../console/console.js');
 
   UI.ActionRegistration.registerActionExtension({
-    actionId: 'explain.consoleMessage',
+    actionId: 'explain.consoleMessage:hover',
+    category: UI.ActionRegistration.ActionCategory.EXPLAIN,
+    async loadActionDelegate() {
+      const Explain = await import('./explain.js');
+      return Explain.ActionDelegate.instance();
+    },
+    title: i18nLazyString(UIStrings.explainConsoleMessage),
+    contextTypes() {
+      return [Console.ConsoleViewMessage.ConsoleViewMessage];
+    },
+  });
+
+  UI.ActionRegistration.registerActionExtension({
+    actionId: 'explain.consoleMessage:context',
     category: UI.ActionRegistration.ActionCategory.EXPLAIN,
     async loadActionDelegate() {
       const Explain = await import('./explain.js');

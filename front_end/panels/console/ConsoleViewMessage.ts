@@ -215,6 +215,16 @@ const parameterToRemoteObject = (runtimeModel: SDK.RuntimeModel.RuntimeModel|nul
       return runtimeModel.createRemoteObjectFromPrimitiveValue(parameter);
     };
 
+const EXPLAIN_HOVER_ACTION_ID = 'explain.consoleMessage:hover';
+
+const hoverButtonObserver = new IntersectionObserver(results => {
+  for (const result of results) {
+    if (result.intersectionRatio > 0) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightHoverButtonShown);
+    }
+  }
+});
+
 export class ConsoleViewMessage implements ConsoleViewportElement {
   protected message: SDK.ConsoleModel.ConsoleMessage;
   private readonly linkifier: Components.Linkifier.Linkifier;
@@ -296,6 +306,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.elementInternal?.querySelector('devtools-console-insight')?.remove();
     this.elementInternal?.append(insight);
     insight.addEventListener('close', () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightClosed);
       insight.addEventListener('animationend', () => {
         this.elementInternal?.removeChild(insight);
       }, {
@@ -1276,8 +1287,9 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     this.consoleRowWrapper.appendChild(this.contentElement());
 
-    const action = UI.ActionRegistry.ActionRegistry.instance().action('explain.consoleMessage');
+    const action = UI.ActionRegistry.ActionRegistry.instance().action(EXPLAIN_HOVER_ACTION_ID);
     if (action) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsoleMessageShown);
       this.consoleRowWrapper.append(this.#createHoverButton());
     }
 
@@ -1299,7 +1311,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     button.onclick = (event: Event): void => {
       event.stopPropagation();
       UI.Context.Context.instance().setFlavor(ConsoleViewMessage, this);
-      const action = UI.ActionRegistry.ActionRegistry.instance().action('explain.consoleMessage');
+      const action = UI.ActionRegistry.ActionRegistry.instance().action(EXPLAIN_HOVER_ACTION_ID);
       if (!action) {
         return;
       }
@@ -1310,6 +1322,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     text.innerText = 'Explain this error';
     button.append(text);
     button.classList.add('hover-button');
+    hoverButtonObserver.observe(button);
     return button;
   }
 

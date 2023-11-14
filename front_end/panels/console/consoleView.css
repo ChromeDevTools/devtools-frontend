@@ -496,7 +496,7 @@ devtools-console-insight {
   padding: 4px;
   position: absolute;
   right: 6px;
-  visibility: hidden;
+  display: none;
   width: var(--width);
 }
 
@@ -510,7 +510,6 @@ devtools-console-insight {
   max-width: 200px;
   transition: max-width 0.3s ease;
   width: fit-content;
-  display: inline-flex;
   gap: 3px;
 }
 
@@ -529,7 +528,12 @@ devtools-console-insight {
 
 .console-message-wrapper:hover .hover-button,
 .console-message-wrapper:focus .hover-button {
-  visibility: visible;
+  display: block;
+}
+
+.console-message-wrapper:hover .hover-button:hover,
+.console-message-wrapper:focus .hover-button:hover {
+  display: inline-flex;
 }
 
 @media (forced-colors: active) {

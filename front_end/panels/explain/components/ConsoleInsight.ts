@@ -126,6 +126,7 @@ export class ConsoleInsight extends HTMLElement {
       this.#sources = sources;
       this.#renderMarkdown(result);
     } catch (err) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErrored);
       this.#renderMarkdown(`loading failed: ${err.message}`);
     } finally {
       this.#setLoading(false);
@@ -160,6 +161,11 @@ export class ConsoleInsight extends HTMLElement {
 
   #onRating(event: Event): void {
     this.#selectedRating = (event.target as HTMLElement).dataset.rating === 'true';
+    if (this.#selectedRating) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRatedPositive);
+    } else {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRatedNegative);
+    }
     if (this.#dogfood) {
       this.#openFeedbackFrom();
       return;

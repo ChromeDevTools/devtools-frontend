@@ -603,7 +603,16 @@ export enum Action {
   OverrideContentContextMenuRedirectToDeployed = 110,
   NewStyleRuleAdded = 111,
   TraceExpanded = 112,
-  MaxValue = 113,
+  InsightConsoleMessageShown = 113,
+  InsightRequestedViaContextMenu = 114,
+  InsightRequestedViaHoverButton = 115,
+  InsightRefined = 116,
+  InsightRatedPositive = 117,
+  InsightRatedNegative = 118,
+  InsightClosed = 119,
+  InsightErrored = 120,
+  InsightHoverButtonShown = 121,
+  MaxValue = 122,
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */

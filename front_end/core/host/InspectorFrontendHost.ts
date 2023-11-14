@@ -527,6 +527,12 @@ function initializeInspectorFrontendHost(): void {
     // Instantiate stub for web-hosted mode if necessary.
     // @ts-ignore Global injected by devtools-compatibility.js
     globalThis.InspectorFrontendHost = InspectorFrontendHostInstance = new InspectorFrontendHostStub();
+    if ('doAidaConversationForTesting' in globalThis) {
+      InspectorFrontendHostInstance['doAidaConversation'] =
+          (globalThis as unknown as {
+            doAidaConversationForTesting: typeof InspectorFrontendHostInstance['doAidaConversation'],
+          }).doAidaConversationForTesting;
+    }
   } else {
     // Otherwise add stubs for missing methods that are declared in the interface.
     proto = InspectorFrontendHostStub.prototype;

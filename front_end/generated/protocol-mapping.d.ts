@@ -4267,12 +4267,8 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.FedCm.SelectAccountRequest];
       returnType: void;
     };
-    /**
-     * Only valid if the dialog type is ConfirmIdpLogin. Acts as if the user had
-     * clicked the continue button.
-     */
-    'FedCm.confirmIdpLogin': {
-      paramsType: [Protocol.FedCm.ConfirmIdpLoginRequest];
+    'FedCm.clickDialogButton': {
+      paramsType: [Protocol.FedCm.ClickDialogButtonRequest];
       returnType: void;
     };
     'FedCm.dismissDialog': {

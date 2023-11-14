@@ -3791,11 +3791,7 @@ declare namespace ProtocolProxyApi {
 
     invoke_selectAccount(params: Protocol.FedCm.SelectAccountRequest): Promise<Protocol.ProtocolResponseWithError>;
 
-    /**
-     * Only valid if the dialog type is ConfirmIdpLogin. Acts as if the user had
-     * clicked the continue button.
-     */
-    invoke_confirmIdpLogin(params: Protocol.FedCm.ConfirmIdpLoginRequest): Promise<Protocol.ProtocolResponseWithError>;
+    invoke_clickDialogButton(params: Protocol.FedCm.ClickDialogButtonRequest): Promise<Protocol.ProtocolResponseWithError>;
 
     invoke_dismissDialog(params: Protocol.FedCm.DismissDialogRequest): Promise<Protocol.ProtocolResponseWithError>;
 

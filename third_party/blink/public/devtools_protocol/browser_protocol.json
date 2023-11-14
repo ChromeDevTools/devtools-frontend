@@ -1647,6 +1647,8 @@
                         "IdTokenHttpNotFound",
                         "IdTokenNoResponse",
                         "IdTokenInvalidResponse",
+                        "IdTokenIdpErrorResponse",
+                        "IdTokenCrossSiteIdpErrorResponse",
                         "IdTokenInvalidRequest",
                         "IdTokenInvalidContentType",
                         "ErrorIdToken",
@@ -2517,7 +2519,7 @@
                 },
                 {
                     "id": "PermissionDescriptor",
-                    "description": "Definition of PermissionDescriptor defined in the Permissions API:\nhttps://w3c.github.io/permissions/#dictdef-permissiondescriptor.",
+                    "description": "Definition of PermissionDescriptor defined in the Permissions API:\nhttps://w3c.github.io/permissions/#dom-permissiondescriptor.",
                     "experimental": true,
                     "type": "object",
                     "properties": [
@@ -4056,6 +4058,34 @@
                     ]
                 },
                 {
+                    "id": "CSSFontPaletteValuesRule",
+                    "description": "CSS font-palette-values rule representation.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "styleSheetId",
+                            "description": "The css style sheet identifier (absent for user agent stylesheet and user-specified\nstylesheet rules) this rule came from.",
+                            "optional": true,
+                            "$ref": "StyleSheetId"
+                        },
+                        {
+                            "name": "origin",
+                            "description": "Parent stylesheet's origin.",
+                            "$ref": "StyleSheetOrigin"
+                        },
+                        {
+                            "name": "fontPaletteName",
+                            "description": "Associated font palette name.",
+                            "$ref": "Value"
+                        },
+                        {
+                            "name": "style",
+                            "description": "Associated style declaration.",
+                            "$ref": "CSSStyle"
+                        }
+                    ]
+                },
+                {
                     "id": "CSSPropertyRule",
                     "description": "CSS property at-rule representation.",
                     "type": "object",
@@ -4398,6 +4428,12 @@
                             "items": {
                                 "$ref": "CSSPropertyRegistration"
                             }
+                        },
+                        {
+                            "name": "cssFontPaletteValuesRule",
+                            "description": "A font-palette-values rule matching this node.",
+                            "optional": true,
+                            "$ref": "CSSFontPaletteValuesRule"
                         },
                         {
                             "name": "parentLayoutNodeId",
@@ -16263,6 +16299,7 @@
                         "unload",
                         "usb",
                         "vertical-scroll",
+                        "web-printing",
                         "web-share",
                         "window-management",
                         "window-placement",
@@ -20465,6 +20502,25 @@
                     ]
                 },
                 {
+                    "id": "AttributionReportingTriggerSpec",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "triggerData",
+                            "description": "number instead of integer because not all uint32 can be represented by\nint",
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            }
+                        },
+                        {
+                            "name": "eventReportWindows",
+                            "$ref": "AttributionReportingEventReportWindows"
+                        }
+                    ]
+                },
+                {
                     "id": "AttributionReportingTriggerDataMatching",
                     "experimental": true,
                     "type": "string",
@@ -20488,8 +20544,11 @@
                             "type": "integer"
                         },
                         {
-                            "name": "eventReportWindows",
-                            "$ref": "AttributionReportingEventReportWindows"
+                            "name": "triggerSpecs",
+                            "type": "array",
+                            "items": {
+                                "$ref": "AttributionReportingTriggerSpec"
+                            }
                         },
                         {
                             "name": "aggregatableReportWindow",
@@ -24526,12 +24585,20 @@
                 },
                 {
                     "id": "DialogType",
-                    "description": "Whether the dialog shown is an account chooser or an auto re-authentication dialog.",
+                    "description": "The types of FedCM dialogs.",
                     "type": "string",
                     "enum": [
                         "AccountChooser",
                         "AutoReauthn",
                         "ConfirmIdpLogin"
+                    ]
+                },
+                {
+                    "id": "DialogButton",
+                    "description": "The buttons on the FedCM dialog.",
+                    "type": "string",
+                    "enum": [
+                        "ConfirmIdpLoginContinue"
                     ]
                 },
                 {
@@ -24646,12 +24713,15 @@
                     ]
                 },
                 {
-                    "name": "confirmIdpLogin",
-                    "description": "Only valid if the dialog type is ConfirmIdpLogin. Acts as if the user had\nclicked the continue button.",
+                    "name": "clickDialogButton",
                     "parameters": [
                         {
                             "name": "dialogId",
                             "type": "string"
+                        },
+                        {
+                            "name": "dialogButton",
+                            "$ref": "DialogButton"
                         }
                     ]
                 },

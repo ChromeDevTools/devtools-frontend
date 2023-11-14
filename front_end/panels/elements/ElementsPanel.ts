@@ -225,6 +225,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
     this.splitWidget.show(this.element);
 
     this.searchableViewInternal = new UI.SearchableView.SearchableView(this, null);
+    this.searchableViewInternal.setMinimalSearchQuerySize(0);
     this.searchableViewInternal.setMinimumSize(25, 28);
     this.searchableViewInternal.setPlaceholder(i18nString(UIStrings.findByStringSelectorOrXpath));
     const stackElement = this.searchableViewInternal.element;

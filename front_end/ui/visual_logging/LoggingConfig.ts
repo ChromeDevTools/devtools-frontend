@@ -28,7 +28,7 @@ enum VisualElements {
   AccessibilitySourceOrder = 5,
   Toggle = 6,
   AddStylesRule = 7,
-  FilterTextField = 8,
+  TextField = 8,
   ShowAllStyleProperties = 9,
   StylePropertiesSection = 10,
   StylePropertiesSectionSeparator = 11,

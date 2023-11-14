@@ -22,8 +22,12 @@ describe('LoggingConfig', () => {
 
   it('reads simple logging config', () => {
     element.setAttribute('jslog', 'TreeItem');
-    const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+    let config = VisualLogging.LoggingConfig.getLoggingConfig(element);
     assert.strictEqual(config.ve, 1);
+
+    element.setAttribute('jslog', 'TextField');
+    config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+    assert.strictEqual(config.ve, 8);
   });
 
   it('throws on unknown visual element', () => {

@@ -2,20 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Host from '../../../../../front_end/core/host/host.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../../front_end/models/bindings/bindings.js';
 import * as Breakpoints from '../../../../../front_end/models/breakpoints/breakpoints.js';
+import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as TextUtils from '../../../../../front_end/models/text_utils/text_utils.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
-
-import {type Chrome} from '../../../../../extension-api/ExtensionAPI.js';
-import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {TestPlugin} from '../../helpers/LanguagePluginHelpers.js';
 import {
@@ -26,10 +25,10 @@ import {
   setMockConnectionResponseHandler,
 } from '../../helpers/MockConnection.js';
 import {MockProtocolBackend} from '../../helpers/MockScopeChain.js';
-import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
-import {createContentProviderUISourceCode} from '../../helpers/UISourceCodeHelpers.js';
 import {createFileSystemFileForPersistenceTests} from '../../helpers/PersistenceHelpers.js';
 import {encodeSourceMap} from '../../helpers/SourceMapEncoder.js';
+import {setupPageResourceLoaderForSourceMap} from '../../helpers/SourceMapHelpers.js';
+import {createContentProviderUISourceCode, createFakeScriptMapping} from '../../helpers/UISourceCodeHelpers.js';
 import {recordedMetricsContain, resetRecordedMetrics} from '../../helpers/UserMetricsHelpers.js';
 
 const {assert} = chai;
@@ -2013,22 +2012,3 @@ describeWithMockConnection('BreakpointManager storage', () => {
         Host.UserMetrics.BreakpointsRestoredFromStorageCount.LessThan1000));
   });
 });
-
-function createFakeScriptMapping(
-    debuggerModel: SDK.DebuggerModel.DebuggerModel, uiSourceCode: Workspace.UISourceCode.UISourceCode,
-    uiLineNumber: number,
-    scriptId: Protocol.Runtime.ScriptId): Bindings.DebuggerWorkspaceBinding.DebuggerSourceMapping {
-  const sdkLocation = new SDK.DebuggerModel.Location(debuggerModel, scriptId, 13);
-  const uiLocation = new Workspace.UISourceCode.UILocation(uiSourceCode, uiLineNumber);
-  const mapping: Bindings.DebuggerWorkspaceBinding.DebuggerSourceMapping = {
-    rawLocationToUILocation: (_: SDK.DebuggerModel.Location) => uiLocation,
-    uiLocationToRawLocations:
-        (_uiSourceCode: Workspace.UISourceCode.UISourceCode, _lineNumber: number,
-         _columnNumber?: number) => [sdkLocation],
-    uiLocationRangeToRawLocationRanges:
-        (_uiSourceCode: Workspace.UISourceCode.UISourceCode, _textRange: TextUtils.TextRange.TextRange) => {
-          throw new Error('Not implemented');
-        },
-  };
-  return mapping;
-}

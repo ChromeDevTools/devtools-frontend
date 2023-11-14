@@ -3,12 +3,13 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../front_end/core/common/common.js';
-import type * as SDK from '../../../../front_end/core/sdk/sdk.js';
 import type * as Platform from '../../../../front_end/core/platform/platform.js';
-import * as TextUtils from '../../../../front_end/models/text_utils/text_utils.js';
+import * as SDK from '../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../front_end/generated/protocol.js';
 import * as Bindings from '../../../../front_end/models/bindings/bindings.js';
-import * as Workspace from '../../../../front_end/models/workspace/workspace.js';
 import * as Persistence from '../../../../front_end/models/persistence/persistence.js';
+import * as TextUtils from '../../../../front_end/models/text_utils/text_utils.js';
+import * as Workspace from '../../../../front_end/models/workspace/workspace.js';
 
 export function createContentProviderUISourceCodes(options: {
   items: {
@@ -144,4 +145,23 @@ export function setupMockedUISourceCode(url: string = 'https://example.com/') {
   const uiSourceCode = new Workspace.UISourceCode.UISourceCode(projectStub, urlStringTagExample, contentTypeStub);
 
   return {sut: uiSourceCode, projectStub: projectStub, contentTypeStub: contentTypeStub};
+}
+
+export function createFakeScriptMapping(
+    debuggerModel: SDK.DebuggerModel.DebuggerModel, uiSourceCode: Workspace.UISourceCode.UISourceCode,
+    uiLineNumber: number,
+    scriptId: Protocol.Runtime.ScriptId): Bindings.DebuggerWorkspaceBinding.DebuggerSourceMapping {
+  const sdkLocation = new SDK.DebuggerModel.Location(debuggerModel, scriptId, 13);
+  const uiLocation = new Workspace.UISourceCode.UILocation(uiSourceCode, uiLineNumber);
+  const mapping: Bindings.DebuggerWorkspaceBinding.DebuggerSourceMapping = {
+    rawLocationToUILocation: (_: SDK.DebuggerModel.Location) => uiLocation,
+    uiLocationToRawLocations:
+        (_uiSourceCode: Workspace.UISourceCode.UISourceCode, _lineNumber: number,
+         _columnNumber?: number) => [sdkLocation],
+    uiLocationRangeToRawLocationRanges:
+        (_uiSourceCode: Workspace.UISourceCode.UISourceCode, _textRange: TextUtils.TextRange.TextRange) => {
+          throw new Error('Not implemented');
+        },
+  };
+  return mapping;
 }

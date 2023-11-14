@@ -107,8 +107,9 @@ export class PromptBuilder {
 
   formatPrompt({message, relatedCode, relatedRequest}: {message: string, relatedCode: string, relatedRequest: string}):
       string {
-    const consoleMessageHeader = '### Console message:';
+    const messageHeader = '### Console message:';
     const relatedCodeHeader = '### Code that generated the error:';
+    const relatedRequestHeader = '### Related network request:';
     const explanationHeader = '### Summary:';
 
     const preamble = `
@@ -119,16 +120,11 @@ You will follow these rules strictly:
 - if you don't have the answer, say "I don't know" and suggest looking for this information
   elsewhere
 - Start with the explanation immediately without repeating the given console message.
-- Always wrap code with three backticks (\`\`\`)
+- Always wrap code with three backticks (\`\`\`)`;
 
-${
-        relatedRequest ? `### Related network request
-
-${relatedRequest}` :
-                         ''}
-
-${consoleMessageHeader}
-Uncaught TypeError: Cannot read properties of undefined (reading 'setState') at home.jsx:15
+    const fewShotExamples = [
+      {
+        message: `Uncaught TypeError: Cannot read properties of undefined (reading 'setState') at home.jsx:15
     at delta (home.jsx:15:14)
     at Object.Dc (react-dom.production.min.js:54:317)
     at Fc (react-dom.production.min.js:54:471)
@@ -152,11 +148,9 @@ Pu @ react-dom.production.min.js:274
 vs @ react-dom.production.min.js:52
 Dl @ react-dom.production.min.js:109
 eu @ react-dom.production.min.js:74
-bc @ react-dom.production.min.js:73
+bc @ react-dom.production.min.js:73`,
 
-${relatedCodeHeader}
-\`\`\`
-  class Counter extends React.Component {
+        relatedCode: `class Counter extends React.Component {
     constructor(props) {
         super(props);
 
@@ -181,52 +175,57 @@ ${relatedCodeHeader}
             </div>
         );
     }
-}
-\`\`\`
+}`,
+        explanation:
+            'The error occurs because this.delta is not bound to the instance of the Counter component. The fix is it to change the code to be ` this.delta = this.delta.bind(this);`',
 
-${explanationHeader}
-The error occurs because this.delta is not bound to the instance of the Counter component. The fix is it to change the code to be \` this.delta = this.delta.bind(this);\`
+      },
+      {
+        message: `Uncaught TypeError: Cannot set properties of null(setting 'innerHTML')
+        at(index): 57: 49(anonymous) @(index): 57 `,
 
-${consoleMessageHeader}
-Uncaught TypeError: Cannot set properties of null (setting 'innerHTML')
-    at (index):57:49
-(anonymous) @ (index):57
-
-${relatedCodeHeader}
-\`\`\`
-    <script>
+        relatedCode: `<script>
       document.getElementById("test").innerHTML = "Element does not exist";
     </script>
-    <div id="test"></div>
-\`\`\`
+    <div id="test"></div>`,
 
-${explanationHeader}
-The error means that getElementById returns null instead of the div element. This happens because the script runs before the element is added to the DOM.
+        explanation:
+            'The error means that getElementById returns null instead of the div element. This happens because the script runs before the element is added to the DOM.',
+      },
+      {
+        message: 'Uncaught SyntaxError: Unexpected token \')\' (at script.js:39:14)',
 
-${consoleMessageHeader}
-Uncaught SyntaxError: Unexpected token ')' (at script.js:39:14)
-
-${relatedCodeHeader}
-\`\`\`
-if (10 < 120)) {
+        relatedCode: `if (10 < 120)) {
   console.log('test')
-}
-\`\`\`
+}`,
 
-${explanationHeader}
-There is an extra closing \`)\`. Remove it to fix the issue.`;
+        explanation: 'There is an extra closing `)`. Remove it to fix the issue.',
+      },
+    ];
+
+    const formatExample = (example: {
+      message: string,
+      relatedCode?: string,
+      relatedRequest?: string,
+      searchAnswers?: string, explanation: string,
+    }): string => {
+      const result = [];
+      result.push(messageHeader, example.message);
+      if (relatedCode) {
+        result.push(relatedCodeHeader, '```', example.relatedCode, '```');
+      }
+      if (relatedRequest && example.relatedRequest) {
+        result.push(relatedRequestHeader, example.relatedRequest);
+      }
+      result.push(explanationHeader, example.explanation);
+      return result.join('\n');
+    };
 
     return `${preamble}
 
-${consoleMessageHeader}
-${message}
+${fewShotExamples.map(formatExample).join('\n\n')}
 
-${relatedCodeHeader}
-\`\`\`
-${relatedCode}
-\`\`\`
-
-${explanationHeader}`;
+${formatExample({message, relatedCode, relatedRequest, explanation: ''})}`;
   }
 }
 

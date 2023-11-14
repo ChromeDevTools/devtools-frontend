@@ -526,13 +526,13 @@ devtools-console-insight {
   display: block;
 }
 
-.console-message-wrapper:hover .hover-button,
-.console-message-wrapper:focus .hover-button {
+.aida-available .console-message-wrapper:hover .hover-button,
+.aida-available .console-message-wrapper:focus .hover-button {
   display: block;
 }
 
-.console-message-wrapper:hover .hover-button:hover,
-.console-message-wrapper:focus .hover-button:hover {
+.aida-available .console-message-wrapper:hover .hover-button:hover,
+.aida-available .console-message-wrapper:focus .hover-button:hover {
   display: inline-flex;
 }
 

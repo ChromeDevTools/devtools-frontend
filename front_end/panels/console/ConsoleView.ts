@@ -1112,7 +1112,7 @@ export class ConsoleView extends UI.Widget.VBox implements
       UI.Context.Context.instance().setFlavor(ConsoleViewMessage, consoleViewMessage);
     }
 
-    if (consoleMessage) {
+    if (consoleMessage && document.documentElement.matches('.aida-available')) {
       contextMenu.headerSection().appendAction(EXPLAIN_CONTEXT_ACTION_ID, undefined, /* optional=*/ true);
     }
 

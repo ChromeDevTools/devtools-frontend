@@ -8,6 +8,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 devtools_module("visual_logging") {
   sources = [
     "DomState.ts",
+    "Loggable.ts",
     "LoggingConfig.ts",
     "LoggingDriver.ts",
     "LoggingEvents.ts",

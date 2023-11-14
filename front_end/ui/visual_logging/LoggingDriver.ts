@@ -7,8 +7,9 @@ import * as Host from '../../core/host/host.js';
 import * as Coordinator from '../components/render_coordinator/render_coordinator.js';
 
 import {getDomState, isVisible} from './DomState.js';
+import {getLoggingConfig} from './LoggingConfig.js';
 import {logChange, logClick, logDrag, logHover, logImpressions, logKeyDown} from './LoggingEvents.js';
-import {getLoggingState} from './LoggingState.js';
+import {getOrCreateLoggingState} from './LoggingState.js';
 
 const PROCESS_DOM_INTERVAL = 500;
 const KEYBOARD_LOG_INTERVAL = 3000;
@@ -83,7 +84,7 @@ async function processDom(): Promise<void> {
   const viewportRect = new DOMRect(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight);
   observeMutationsInShadowRoots(shadowRoots);
   for (const {element, parent} of loggables) {
-    const loggingState = getLoggingState(element, parent);
+    const loggingState = getOrCreateLoggingState(element, getLoggingConfig(element), parent);
     if (!loggingState.impressionLogged) {
       if (isVisible(element, viewportRect)) {
         visibleElements.push(element);
@@ -92,10 +93,11 @@ async function processDom(): Promise<void> {
     }
     if (!loggingState.processed) {
       if (loggingState.config.track?.has('click')) {
-        element.addEventListener('click', logClick, {capture: true});
+        element.addEventListener('click', e => logClick(e.currentTarget as Element, e), {capture: true});
       }
       if (loggingState.config.track?.has('dblclick')) {
-        element.addEventListener('dblclick', e => logClick(e, {doubleClick: true}), {capture: true});
+        element.addEventListener(
+            'dblclick', e => logClick(e.currentTarget as Element, e, {doubleClick: true}), {capture: true});
       }
       const trackHover = loggingState.config.track?.has('hover');
       if (trackHover) {

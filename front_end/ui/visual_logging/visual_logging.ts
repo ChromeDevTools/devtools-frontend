@@ -1,12 +1,20 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import type * as LoggableModule from './Loggable.js';
 import * as LoggingConfig from './LoggingConfig.js';
 import * as LoggingDriver from './LoggingDriver.js';
+import * as LoggingEvents from './LoggingEvents.js';
 import * as LoggingState from './LoggingState.js';
 
+type Loggable = LoggableModule.Loggable;
 const {startLogging, stopLogging} = LoggingDriver;
 const {registerContextProvider, registerParentProvider} = LoggingState;
+const {logImpressions, logClick} = LoggingEvents;
+
+function registerLoggable(loggable: Loggable, config: string, parent: Loggable|null): void {
+  void LoggingState.getOrCreateLoggingState(loggable, LoggingConfig.parseJsLog(config), parent || undefined);
+}
 
 const accessibilityComputedProperties =
     LoggingConfig.makeConfigStringBuilder.bind(null, 'AccessibilityComputedProperties');
@@ -78,10 +86,14 @@ const treeItemExpand = LoggingConfig.makeConfigStringBuilder.bind(null, 'TreeIte
 const value = LoggingConfig.makeConfigStringBuilder.bind(null, 'Value');
 
 export {
+  Loggable,
+  logClick,
+  logImpressions,
   startLogging,
   stopLogging,
   registerContextProvider,
   registerParentProvider,
+  registerLoggable,
 
   accessibilityComputedProperties,
   accessibilityPane,

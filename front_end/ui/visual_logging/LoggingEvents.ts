@@ -4,18 +4,21 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
+import {type Loggable} from './Loggable.js';
 import {getLoggingState} from './LoggingState.js';
 
-export async function logImpressions(elements: Element[]): Promise<void> {
-  const impressions = await Promise.all(elements.map(async element => {
-    const loggingState = getLoggingState(element);
+export async function logImpressions(loggables: Loggable[]): Promise<void> {
+  const impressions = await Promise.all(loggables.map(async loggable => {
+    const loggingState = getLoggingState(loggable);
+    assertNotNullOrUndefined(loggingState);
     const impression:
         Host.InspectorFrontendHostAPI.VisualElementImpression = {id: loggingState.veid, type: loggingState.config.ve};
     if (loggingState.parent) {
       impression.parent = loggingState.parent.veid;
     }
-    const context = await loggingState.context(element);
+    const context = await loggingState.context(loggable);
     if (context) {
       impression.context = context;
     }
@@ -26,11 +29,12 @@ export async function logImpressions(elements: Element[]): Promise<void> {
   }
 }
 
-export async function logClick(event: Event, options?: {doubleClick: boolean}): Promise<void> {
+export async function logClick(loggable: Loggable, event: Event, options?: {doubleClick?: boolean}): Promise<void> {
   if (!(event instanceof MouseEvent)) {
     return;
   }
-  const loggingState = getLoggingState(event.currentTarget as Element);
+  const loggingState = getLoggingState(loggable);
+  assertNotNullOrUndefined(loggingState);
   const clickEvent: Host.InspectorFrontendHostAPI
       .ClickEvent = {veid: loggingState.veid, mouseButton: event.button, doubleClick: Boolean(options?.doubleClick)};
   const context = await loggingState.context(event);
@@ -42,6 +46,7 @@ export async function logClick(event: Event, options?: {doubleClick: boolean}): 
 
 export const logHover = (hoverLogThrottler: Common.Throttler.Throttler) => async(event: Event): Promise<void> => {
   const loggingState = getLoggingState(event.currentTarget as Element);
+  assertNotNullOrUndefined(loggingState);
   const hoverEvent: Host.InspectorFrontendHostAPI.HoverEvent = {veid: loggingState.veid};
   const contextPromise = loggingState.context(event);
   await hoverLogThrottler.schedule(async () => {
@@ -55,6 +60,7 @@ export const logHover = (hoverLogThrottler: Common.Throttler.Throttler) => async
 
 export const logDrag = (dragLogThrottler: Common.Throttler.Throttler) => async(event: Event): Promise<void> => {
   const loggingState = getLoggingState(event.currentTarget as Element);
+  assertNotNullOrUndefined(loggingState);
   const dragEvent: Host.InspectorFrontendHostAPI.DragEvent = {veid: loggingState.veid};
   const contextPromise = loggingState.context(event);
   await dragLogThrottler.schedule(async () => {
@@ -68,6 +74,7 @@ export const logDrag = (dragLogThrottler: Common.Throttler.Throttler) => async(e
 
 export async function logChange(event: Event): Promise<void> {
   const loggingState = getLoggingState(event.currentTarget as Element);
+  assertNotNullOrUndefined(loggingState);
   const changeEvent: Host.InspectorFrontendHostAPI.ChangeEvent = {veid: loggingState.veid};
   const context = await loggingState.context(event);
   if (context) {
@@ -85,6 +92,7 @@ export const logKeyDown = (codes: string[], keyboardLogThrottler: Common.Throttl
     return;
   }
   const loggingState = getLoggingState(event.currentTarget as Element);
+  assertNotNullOrUndefined(loggingState);
   const keyDownEvent: Host.InspectorFrontendHostAPI.KeyDownEvent = {veid: loggingState.veid};
   const context = await loggingState.context(event);
   if (context) {

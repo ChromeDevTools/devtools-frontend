@@ -1,7 +1,8 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import {getLoggingConfig, type LoggingConfig} from './LoggingConfig.js';
+import {type Loggable} from './Loggable.js';
+import {type LoggingConfig} from './LoggingConfig.js';
 
 export interface LoggingState {
   impressionLogged: boolean;
@@ -12,7 +13,7 @@ export interface LoggingState {
   parent: LoggingState|null;
 }
 
-const state = new WeakMap<Element, LoggingState>();
+const state = new WeakMap<Loggable, LoggingState>();
 
 let nextVeId = 0;
 
@@ -20,13 +21,15 @@ export function resetStateForTesting(): void {
   nextVeId = 0;
 }
 
-export function getLoggingState(element: Element, parent?: Element): LoggingState {
-  const config = getLoggingConfig(element);
-  if (config.parent && parentProviders.has(config.parent)) {
-    parent = parentProviders.get(config.parent)?.(element);
+export function getOrCreateLoggingState(loggable: Loggable, config: LoggingConfig, parent?: Loggable): LoggingState {
+  if (state.has(loggable)) {
+    return state.get(loggable) as LoggingState;
+  }
+  if (config.parent && parentProviders.has(config.parent) && loggable instanceof Element) {
+    parent = parentProviders.get(config.parent)?.(loggable);
   }
 
-  const elementState = state.get(element) || {
+  const loggableState = {
     impressionLogged: false,
     processed: false,
     config,
@@ -34,11 +37,15 @@ export function getLoggingState(element: Element, parent?: Element): LoggingStat
     veid: ++nextVeId,
     parent: parent ? getLoggingState(parent) : null,
   };
-  state.set(element, elementState);
-  return elementState;
+  state.set(loggable, loggableState);
+  return loggableState;
 }
 
-export type ContextProvider = (e: Element|Event) => Promise<number|undefined>;
+export function getLoggingState(loggable: Loggable): LoggingState|null {
+  return state.get(loggable) || null;
+}
+
+export type ContextProvider = (e: Loggable|Event) => Promise<number|undefined>;
 const contextProviders = new Map<string, ContextProvider>();
 
 export function registerContextProvider(name: string, provider: ContextProvider): void {

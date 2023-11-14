@@ -1394,7 +1394,7 @@ export class TreeElement {
   }
 }
 
-function disclosureTriangleLoggingContextProvider(e: Element|Event): Promise<number|undefined> {
+function disclosureTriangleLoggingContextProvider(e: VisualLogging.Loggable|Event): Promise<number|undefined> {
   if (e instanceof Element) {
     return Promise.resolve(e.classList.contains('parent') ? 1 : 0);
   }

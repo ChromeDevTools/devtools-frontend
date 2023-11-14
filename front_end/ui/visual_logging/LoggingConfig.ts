@@ -93,7 +93,7 @@ function resolveVe(ve: string): number {
   return VisualElements[ve as keyof typeof VisualElements] || 0;
 }
 
-function parseJsLog(jslog: string): LoggingConfig {
+export function parseJsLog(jslog: string): LoggingConfig {
   const components = jslog.replace(/ /g, '').split(';');
   const getComponent = (name: string): string|undefined =>
       components.find(c => c.startsWith(name))?.substr(name.length);

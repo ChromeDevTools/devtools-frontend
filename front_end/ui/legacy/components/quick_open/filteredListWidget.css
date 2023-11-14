@@ -9,13 +9,6 @@
   flex-direction: column;
   flex: auto;
   border: 1px solid transparent;
-
-  --override-filtered-list-widget-highlight-text-background-color: rgb(255 255 255 / 25%);
-}
-
-.-theme-with-dark-background .filtered-list-widget,
-:host-context(.-theme-with-dark-background) .filtered-list-widget {
-  --override-filtered-list-widget-highlight-text-background-color: rgb(255 255 255 / 75%);
 }
 
 .hbox {
@@ -145,7 +138,7 @@ devtools-text-prompt {
 
 .filtered-list-widget-item-wrapper.selected .filtered-list-widget-item span.highlight {
   color: var(--sys-color-on-tonal-container);
-  background-color: var(--override-filtered-list-widget-highlight-text-background-color);
+  background-color: var(--sys-color-state-focus-select);
 }
 
 .filtered-list-widget-item-wrapper.selected .filtered-list-widget-title,

@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Jenis Dipercayai - Pelanggaran dasar"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Bersedia untuk menghentikan kuki pihak ketiga"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "selamat"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "tidak selamat"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "Failkan pepijat"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets dan atribut SameParty"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Urutan {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "Worklet Pembida"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "Worklet Pembida — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Worker khusus"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "Penarafan Worklet"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "Worklet Penjual — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Urutan {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "Worklet Lelongan"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "Worklet Lelongan — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "Perkhidmatan Worklet Lelongan"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "Perkhidmatan Worklet Lelongan — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(indeks)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Tetingkap Dibuka"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "Prapemuatan"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Muat semula IndexedDB"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ya"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "Pramuat"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "Peraturan spekulasi"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "Halaman ini"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Klik pada mana-mana laporan untuk memaparkan isi laporan tersebut"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Klik untuk mendedahkan nod dalam panel Sumber"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Dasar Keselamatan Kandungan (CSP)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "Terdapat skrip iklan dalam (async) stack semasa bingkai ini dibuat. Tindakan meneliti pembuatan stack trace bingkai ini mungkin memberikan lebih banyak cerapan."
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "Tidak"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "Tiada"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Asalan"
@@ -3990,7 +3966,7 @@
     "message": "Token keadaan sulit"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "Semua pramuat"
+    "message": "Semua pemuatan spekulatif"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "Tapis mengikut set peraturan"
@@ -4059,22 +4035,22 @@
     "message": "Semak"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "Prapemuatan gagal."
+    "message": "Pemuatan spekulatif gagal."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "Percubaan prapemuatan belum dicetuskan."
+    "message": "Percubaan pemuatan spekulatif belum dicetuskan."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "Percubaan prapemuatan ini layak tetapi belum selesai."
+    "message": "Percubaan pemuatan spekulatif layak tetapi belum selesai."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "Prapemuatan selesai dan hasil sudah bersedia untuk navigasi seterusnya."
+    "message": "Pemuatan spekulatif selesai dan hasil sudah bersedia untuk navigasi seterusnya."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "Prapemuatan sedang dijalankan."
+    "message": "Pemuatan spekulatif sedang dijalankan."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "Prapemuatan selesai dan digunakan untuk navigasi."
+    "message": "Pemuatan spekulatif selesai dan digunakan untuk navigasi."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "Tindakan"
@@ -4095,10 +4071,10 @@
     "message": "Pilih elemen untuk mendapatkan butiran lanjut"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "Prapemuatan dilumpuhkan kerana mod Penjimat Bateri sistem operasi."
+    "message": "Pemuatan spekulatif dilumpuhkan disebabkan oleh mod Penjimat Bateri sistem pengendalian."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "Prapemuatan dilumpuhkan kerana mod Penjimat Data sistem operasi."
+    "message": "Pemuatan spekulatif dilumpuhkan disebabkan oleh mod Penjimat Data sistem pengendalian."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "Prapengambilan didayakan secara paksa kerana Alatan Pembangun dibuka. Apabila Alatan Pembangun ditutup, prapengambilan akan dilumpuhkan kerana sesi penyemak imbas ini adalah sebahagian daripada kumpulan penahanan yang digunakan untuk perbandingan prestasi."
@@ -4107,7 +4083,7 @@
     "message": "Prapemaparan didayakan secara paksa kerana Alatan Pembangun dibuka. Apabila Alatan Pembangun ditutup, prapemaparan akan dilumpuhkan kerana sesi penyemak imbas ini adalah sebahagian daripada kumpulan penahanan yang digunakan untuk perbandingan prestasi."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "Prapemuatan dilumpuhkan kerana tetapan pengguna atau sambungan. Akses {PH1} untuk mengemaskinikan pilihan anda. Akses {PH2} untuk melumpuhkan sebarang sambungan yang menyekat prapemuatan."
+    "message": "Pemuatan spekulatif dilumpuhkan disebabkan oleh tetapan pengguna atau sambungan. Akses {PH1} untuk mengemaskinikan pilihan anda. Akses {PH2} untuk melumpuhkan sebarang sambungan yang menyekat pemuatan spekulatif."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "Tetapan sambungan"
@@ -4131,16 +4107,16 @@
     "message": "Tetapan atau sambungan pengguna"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "Prapemuatan dilumpuhkan"
+    "message": "Pemuatan spekulatif dilumpuhkan"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "Prapemuatan didayakan secara paksa"
+    "message": "Pemuatan spekulatif didayakan secara paksa"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "Pramuat tetapan halaman"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "Sebab prapemuatan terhalang"
+    "message": "Sebab pemuatan spekulatif terhalang"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Tindakan"
@@ -4200,7 +4176,7 @@
     "message": "URL tidak layak untuk dipraambil kerana URL tersebut menggunakan pemetakan storan bukan lalai."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "Prapengambilan tidak dijalankan kerana prapemuatan telah dilumpuhkan."
+    "message": "Prapengambilan tidak dijalankan kerana pemuatan spekulatif telah dilumpuhkan."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "URL tidak layak untuk dipraambil kerana konteks rangkaian lalai tidak dapat dikonfigurasikan untuk menggunakan proksi prapengambilan untuk permintaan prapengambilan rentas asalan bagi laman yang sama."
@@ -4245,7 +4221,7 @@
     "message": "Prapemaparan tidak dijalankan kerana pengguna meminta pengurangan penggunaan bateri pada penyemak imbas."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "Sesetengah pemuatan sumber telah disekat."
+    "message": "Beberapa pemuatan sumber disekat."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "Navigasi prapemaparan memerlukan sijil klien HTTP."
@@ -4287,13 +4263,13 @@
     "message": "Halaman prapemaparan menavigasi ke URL lain yang tidak disokong pada masa ini."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "Prapemaparan tidak dijalankan kerana halaman permulaan telah menjalankan terlalu banyak prapemaparan. Alih keluar peraturan spekulasi lain untuk mendayakan prapemaparan lanjut."
+    "message": "Prapemaparan dengan kesungguhan \"bersungguh\" tidak dilaksanakan kerana halaman permulaan sudah mengandungi terlalu banyak prapemaparan yang dijalankan. Alih keluar peraturan spekulasi dengan \"bersungguh\" yang lain untuk mendayakan prapemaparan lanjut."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "Prapemaparan tidak dijalankan kerana halaman permulaan telah menjalankan terlalu banyak prapemaparan."
+    "message": "Prapemaparan dicetuskan penyemak imbas tidak dijalankan kerana halaman permulaan telah menjalankan terlalu banyak prapemaparan."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "Prapemaparan tidak dijalankan kerana halaman permulaan telah menjalankan terlalu banyak prapemaparan. Alih keluar peraturan spekulasi lain untuk mendayakan prapemaparan lanjut."
+    "message": "Prapemaparan tidak bersungguh lama (dengan kesungguhan \"sederhana\" atau \"konservatif\" dan dicetuskan dengan menuding atau mengklik pautan) dibatalkan secara automatik disebabkan oleh permulaan prapemaparan tidak bersungguh baharu. Perkara ini boleh dicetuskan semula oleh berinteraksi dengan pautan semula."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "Prapemaparan tidak dijalankan kerana penyemak imbas telah melebihi had memori prapemaparan."
@@ -4395,7 +4371,7 @@
     "message": "Klik untuk didedahkan dalam panel Rangkaian"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "Dedahkan pramuat yang berkaitan dengan set peraturan ini"
+    "message": "Dedahkan pemuatan spekulatif yang dikaitkan dengan set peraturan ini"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# ralat}other{# ralat}}"
@@ -4416,10 +4392,10 @@
     "message": "Halaman permulaan cuba prapaparkan URL halaman ini. Prapemaparan gagal tetapi isi respons yang terhasil masih digunakan sebagai prapengambilan."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "Ketahui lebih lanjut: Prapemuatan pada developer.chrome.com"
+    "message": "Ketahui lebih lanjut: Pemuatan spekulatif pada developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "Halaman permulaan ini tidak mencuba untuk pramuat URL halaman ini."
+    "message": "Halaman permulaan tidak mencuba untuk mempramuat secara spekulatif URL halaman ini."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "Halaman permulaan mencuba untuk praambil URL halaman ini tetapi prapengambilan tersebut gagal, maka navigasi penuh dilaksanakan."
@@ -4428,10 +4404,7 @@
     "message": "Halaman ini berjaya dipraambil."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "URL sedang dipramuat oleh halaman permulaan"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "Status prapemuatan"
+    "message": "URL sedang dimuatkan secara spekulatif oleh halaman permulaan"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "Halaman permulaan mencuba untuk prapaparkan URL halaman ini tetapi prapemaparan tersebut gagal, maka navigasi penuh dilakukan."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Halaman ini berjaya diprapaparkan."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "Animasi"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "Worklet Lelongan Iklan"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "titik putus yang dicapai"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "Kanvas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "Papan keratan"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "Kawalan"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "Peranti"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "Mutasi DOM"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "Seret / lepas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "Geolokasi"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "Papan kekunci"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "Muatkan"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "Media"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "Tetikus"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "Pemberitahuan"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "Hurai"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "Gambar dalam Gambar"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "Penuding"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "Skrip"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "Worklet Storan Kongsi"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "Pemasa"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "Sentuhan"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "Pelanggaran Jenis Dipercayai"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "Tetingkap"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "Pekerja"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "Atribut diubah suai"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Alih keluar semua ungkapan"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "Alih keluar ungkapan kosong"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "Alih keluar ungkapan"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Sembunyikan unsur"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "Langkau kepada Panel media"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "Tampal"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "Diberikan amaran"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{1 laman web dibenarkan untuk mengakses kuki}other{# laman web dibenarkan untuk mengakses kuki}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Klik untuk mendedahkan nod DOM bingkai dalam panel Unsur"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Selesai"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, Keutamaan awal: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "tahap 1"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Paparkan lagi"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "Bingkai Animasi Dicetuskan"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Bidder Bidding Phase Start"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "Bidder Reporting Phase Start"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "Seller Reporting Phase Start"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "Seller Scoring Phase Start"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "Batalkan Bingkai Animasi"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "Tutup AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "Buat AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "Buat konteks kanvas"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "Pelanggaran Dasar"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "Minta Bingkai Animasi"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "Sambung semula AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "Skrip Disekat oleh Dasar Keselamatan Kandungan"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "Penyataan Pertama Skrip"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "Tetapkan innerHTML"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} dicetuskan"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "Pelanggaran Sinki"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "Gantung AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "Ralat WebGL Dicetuskan"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "Amaran WebGL Dicetuskan"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Klik untuk memaparkan Panel Liputan"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "Dijeda pada XHR atau pengambilan"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "Skrip disekat disebabkan oleh arahan Dasar Keselamatan Kandungan: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "pengubahsuaian subpepohon"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Pelanggaran Sinki Trusted Type"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "Ralat WebGL Dicetuskan ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "Tambah titik putus"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Tindakan ini tidak boleh dibuat asal."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "Adakah anda pasti mahu memadamkan semua penggantian dalam folder ini?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "Adakah anda pasti mahu memadamkan folder dan kandungan ini?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Padam"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "Padamkan semua penggantian"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Digunakan"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(awanama)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "Worklet Pembida"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "Worklet Pembida — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Worker khusus"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "Peristiwa: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "Bingkai — {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "Utama"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "Utama — {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "Urutan Rasterizer {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "Worklet Penjual"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "Worklet Penjual — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Urutan {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "Worklet Lelongan"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "Worklet Lelongan — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "Perkhidmatan Worklet Lelongan"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "Perkhidmatan Worklet Lelongan — {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Rakaman surih prestasi tidak disokong untuk jenis sasaran ini"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Lokasi"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "Interaksi jangka masa panjang"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Tugas panjang"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} mungkin cerutan prestasi."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} menunjukkan responsif halaman yang lemah."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} daripada {PH2}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "Dayakan persekitaran pengesah maya"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "Masukkan nama baharu"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "Eksport"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Paparkan Pemeriksa Memori"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "Salin"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Maklum balas"

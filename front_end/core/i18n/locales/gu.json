@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "વિશ્વસનીય પ્રકારો - પૉલિસીનું ઉલ્લંઘન"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "ત્રીજા પક્ષની કુકીને તબક્કાવાર હટાવવાની તૈયારી કરો"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "સુરક્ષિત"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "અસુરક્ષિત"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "કોઈ ખામીની જાણ કરો"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets અને SameParty વિશેષતા"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "થ્રેડ {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "બિડરનું વર્કલેટ"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "બિડરનું વર્કલેટ — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "સમર્પિત Worker"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "વિક્રેતાનું વર્કલેટ"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "વિક્રેતાનું વર્કલેટ — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "થ્રેડ {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "હરાજીનું વર્કલેટ"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "હરાજીનું વર્કલેટ — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "હરાજી માટે વર્કલેટની સેવા"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "હરાજી માટે વર્કલેટની સેવા — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(અનુક્રમણિકા)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "વિન્ડો ખોલી"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "પહેલેથી લોડ કરવું"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "IndexedDB રિફ્રેશ કરો"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "હા"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "પહેલેથી લોડ કરવામાં આવેલા"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "અનુમાન કરવા સંબંધિત નિયમો"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "આ પેજ"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "કોઈપણ રિપોર્ટનો મુખ્ય ભાગ બતાવવા માટે તેના પર ક્લિક કરો"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "સૉર્સની પૅનલમાં બતાવવા માટે ક્લિક કરો"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "કન્ટેન્ટની સુરક્ષા પૉલિસી (CSP)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "જ્યારે આ ફ્રેમ બનાવવામાં આવી હતી, ત્યારે (async) stackમાં જાહેરાતની સ્ક્રિપ્ટ હતી. આ ફ્રેમની રચનાના stack traceનું પરીક્ષણ કરીને કદાચ વધુ જાણકારી મેળવી શકાશે."
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "ના"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "એકપણ નહીં"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "મૂળ"
@@ -3990,7 +3966,7 @@
     "message": "ખાનગી સ્ટેટસ દર્શાવતા ટોકન"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "પહેલેથી લોડ કરવામાં આવેલા બધા"
+    "message": "પૂર્વધારણા મુજબના તમામ લોડ"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "નિયમ સેટ મુજબ ફિલ્ટર કરો"
@@ -4059,22 +4035,22 @@
     "message": "તપાસો"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "પહેલેથી લોડ કરવાનું નિષ્ફળ થયું."
+    "message": "પૂર્વધારણા મુજબ લોડ કરવાની સુવિધા નિષ્ફળ રહી."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "પહેલેથી લોડ કરવાનો પ્રયાસ હજુ સુધી ટ્રિગર થયો નથી."
+    "message": "પૂર્વધારણા મુજબ લોડ કરવાનો પ્રયાસ હજી સુધી ટ્રિગર થયો નથી."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "પહેલેથી લોડ કરવાનો પ્રયાસ યોગ્ય છે પરંતુ બાકી છે."
+    "message": "પૂર્વધારણા મુજબ લોડ કરવાનો પ્રયાસ યોગ્ય તો છે, પરંતુ બાકી છે."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "પહેલેથી લોડ કરવાનું સમાપ્ત થયું અને પરિણામ આગામી નૅવિગેશન માટે તૈયાર છે."
+    "message": "પૂર્વધારણા મુજબ લોડ કરવાનું પૂર્ણ થયું અને આગલા નૅવિગેશન માટે પરિણામ તૈયાર છે."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "પહેલેથી લોડ કરવાનું ચાલી રહ્યું છે."
+    "message": "પૂર્વધારણા મુજબ લોડ થવાની સુવિધા ચાલુ છે."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "પહેલેથી લોડ કરવાનું સમાપ્ત થયું અને તેનો ઉપયોગ નૅવિગેશન માટે કર્યો."
+    "message": "પૂર્વધારણા મુજબ લોડ થવાનું સમાપ્ત થયું અને કોઈ નૅવિગેશન માટે તેનો ઉપયોગ કરવામાં આવ્યો."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "ક્રિયા"
@@ -4095,10 +4071,10 @@
     "message": "વધુ વિગતો માટે કોઈ એલિમેન્ટ પસંદ કરો"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "ઑપરેટિંગ સિસ્ટમના બૅટરી સેવર મોડને કારણે પ્રીલોડિંગ બંધ કરવામાં આવ્યું છે."
+    "message": "ઑપરેટિંગ સિસ્ટમના બૅટરી સેવર મોડને કારણે પૂર્વધારણા મુજબ લોડ કરવાની સુવિધા બંધ કરવામાં આવી છે."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "ઑપરેટિંગ સિસ્ટમના ડેટા સેવર મોડને કારણે પહેલેથી લોડ કરવાની સુવિધા બંધ કરવામાં આવી છે."
+    "message": "ઑપરેટિંગ સિસ્ટમના ડેટા સેવર મોડને કારણે પૂર્વધારણા મુજબ લોડ કરવાની સુવિધા બંધ કરવામાં આવી છે."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "DevTools ખુલ્લા હોવાને કારણે પ્રીફેચની પ્રક્રિયા ફરજિયાત ચાલુ કરી છે. જ્યારે DevTools બંધ હોય ત્યારે પ્રીફેચની પ્રક્રિયા બંધ કરવામાં આવશે, કારણ કે બ્રાઉઝરનું આ સત્ર પર્ફોર્મન્સની તુલનાઓ કરવા માટે વપરાતા હોલ્ડબૅક ગ્રૂપનો ભાગ છે."
@@ -4107,7 +4083,7 @@
     "message": "DevTools ખુલ્લા હોવાને કારણે પ્રીરેંડરિંગની પ્રક્રિયા ફરજિયાત ચાલુ કરી છે. જ્યારે DevTools બંધ હોય ત્યારે પ્રીરેંડરિંગ બંધ કરવામાં આવશે, કારણ કે બ્રાઉઝરનું આ સત્ર કાર્યપ્રદર્શનની તુલનાઓ કરવા માટે વપરાતા હોલ્ડબૅક ગ્રૂપનો ભાગ છે."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "વપરાશકર્તાના સેટિંગ અથવા કોઈ એક્સ્ટેન્શનને કારણે, પહેલેથી લોડ કરવાની પ્રક્રિયા બંધ કરવામાં આવી છે. તમારી પસંદગીને અપડેટ કરવા માટે {PH1} પર જાઓ. પહેલેથી લોડ કરવાની પ્રક્રિયાને બ્લૉક કરે તેવા કોઈપણ એક્સ્ટેન્શનને બંધ કરવા માટે {PH2} પર જાઓ."
+    "message": "વપરાશકર્તા સેટિંગ કે કોઈ એક્સ્ટેન્શનને કારણે પૂર્વધારણા મુજબ લોડ કરવાની સુવિધા બંધ કરવામાં આવી છે. તમારી પસંદગીને અપડેટ કરવા માટે, {PH1} પર જાઓ. પૂર્વધારણા મુજબ લોડ કરવાની સુવિધા બ્લૉક કરી શકતા કોઈપણ એક્સ્ટેન્શનને બંધ કરવા માટે, {PH2} પર જાઓ."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "એક્સ્ટેન્શનના સેટિંગ"
@@ -4131,16 +4107,16 @@
     "message": "વપરાશકર્તાના સેટિંગ કે એક્સ્ટેન્શન"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "પહેલેથી લોડ કરવાની સુવિધા બંધ છે"
+    "message": "પૂર્વધારણા મુજબ લોડ કરવાની સુવિધા બંધ કરવામાં આવી છે"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "પહેલેથી લોડ કરવાનું ફરજિયાત રીતે ચાલુ કરેલું છે"
+    "message": "પૂર્વધારણા મુજબ લોડ થવાની સુવિધા ફરજિયાત રીતે ચાલુ કરી"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "પેજના સેટિંગ પહેલેથી લોડ કરો"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "પહેલેથી લોડ કરવાનું અટકાવવાના કારણો"
+    "message": "પૂર્વધારણા મુજબ લોડ કરવાની સુવિધાને અટકાવતા કારણો"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "ક્રિયા"
@@ -4200,7 +4176,7 @@
     "message": "URL પ્રીફેચ થવા માટે યોગ્ય નહોતું કારણ કે તે નૉન-ડિફૉલ્ટ સ્ટોરેજ પાર્ટિશનનો ઉપયોગ કરે છે."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "પ્રીફેચ પરફોર્મ કરવામાં આવ્યું નહોતું કારણ કે પહેલેથી લોડ કરવાની સુવિધા બંધ કરેલી હતી."
+    "message": "પૂર્વધારણા મુજબ લોડ થવાની સુવિધા બંધ કરી હોવાને કારણે પ્રીફેચ કરી શકાયું નથી."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "આ URL પ્રીફેચ થવા માટે યોગ્ય નહોતું કારણ કે ડિફૉલ્ટ નેટવર્ક સંદર્ભ, સમાન-સાઇટ ક્રોસ-ઑરિજિન પ્રીફેચ વિનંતી માટે પ્રીફેચ પ્રૉક્સીનો ઉપયોગ કરવા માટે ગોઠવી શકાતો નથી."
@@ -4245,7 +4221,7 @@
     "message": "પ્રીરેંડર કરવામાં આવ્યું નહોતું કારણ કે વપરાશકર્તાએ વિનંતી કરી કે બ્રાઉઝર ઓછી બૅટરીનો ઉપયોગ કરે."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "કેટલાક સંસાધનના લોડને બ્લૉક કર્યા હતાં."
+    "message": "કેટલાક સંસાધનના લોડને અવરોધિત કર્યા હતાં."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "પ્રીરેંડરિંગ નૅવિગેશનને HTTP ક્લાયન્ટ સર્ટિફિકેટની જરૂર છે."
@@ -4287,13 +4263,13 @@
     "message": "પ્રીરેંડર કરેલું પેજ જાતે જ બીજા URL પર નૅવિગેટ થયું, જે હાલમાં સપોર્ટેડ નથી."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "પ્રીરેંડર કરવામાં આવ્યું ન હતું કારણ કે પ્રારંભિક પેજમાં પહેલેથી જ ઘણા બધા પ્રીરેંડર ચાલી રહ્યાં છે. આગળ પ્રીરેંડર કરવાનું ચાલુ કરવા માટે અનુમાન કરવા સંબંધિત અન્ય નિયમો કાઢી નાખો."
+    "message": "પ્રારંભિક પેજમાં પહેલેથી જ ઘણા બધા પ્રીરેંડર ચાલી રહ્યાં હોવાને કારણે જેની eagerness 'eager' હોય તેને પ્રીરેંડર કરવામાં આવ્યું ન હતું. આગળ પ્રીરેંડરિંગ શરૂ રાખવા માટે, \"eager\"વાળા અન્ય પૂર્વધારણા સંબંધી નિયમો કાઢી નાખો."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "પ્રીરેંડર કરવામાં આવ્યું ન હતું કારણ કે પ્રારંભિક પેજમાં પહેલેથી જ ઘણા બધા પ્રીરેંડર ચાલી રહ્યાં છે."
+    "message": "પ્રારંભિક પેજમાં પહેલેથી જ ઘણા બધા પ્રીરેંડર ચાલી રહ્યાં હોવાને કારણે બ્રાઉઝર દ્વારા ટ્રિગર થયેલું પ્રીરેંડર કરવામાં આવ્યું ન હતું."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "પ્રીરેંડર કરવામાં આવ્યું ન હતું કારણ કે પ્રારંભિક પેજમાં પહેલેથી જ ઘણા બધા પ્રીરેંડર ચાલી રહ્યાં છે. આગળ પ્રીરેંડર કરવાનું ચાલુ કરવા માટે અનુમાન કરવા સંબંધિત અન્ય નિયમો કાઢી નાખો."
+    "message": "કોઈ નવા નૉન-eager પ્રીરેંડર શરૂ થવાને કારણે જૂના નૉન-eager પ્રીરેંડર (કોઈ \"moderate\" કે \"conservative\" eagerness ધરાવતા તેમજ લિંક પર કર્સર લઈ જઈને કે ક્લિક કરીને ટ્રિગર કરેલા) ઑટોમૅટિક રીતે રદ કરવામાં આવ્યા. લિંક સાથે ફરીથી ક્રિયાપ્રતિક્રિયા કરવાથી તે ફરીથી ટ્રિગર થઈ શકે છે."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "પ્રીરેંડર કરવામાં આવ્યું નહોતું કારણ કે બ્રાઉઝરે પ્રીરેંડરિંગ મેમરીની સીમાને વટાવી દીધી."
@@ -4395,7 +4371,7 @@
     "message": "નેટવર્ક પૅનલમાં બતાવવા માટે ક્લિક કરો"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "નિયમના આ સેટ સાથે સંકળાયેલા પહેલેથી લોડ કરવાના પ્રયાસો બતાવો"
+    "message": "નિયમોના આ સેટ સાથે સંકળાયેલા હોય એવા, પૂર્વધારણા મુજબ લોડ કરવાના પ્રયાસો બતાવો"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# ભૂલ}one{# ભૂલ}other{# ભૂલ}}"
@@ -4416,10 +4392,10 @@
     "message": "પ્રારંભિક પેજ દ્વારા આ પેજના URLને પ્રીરેંડર કરવાનો પ્રયાસ કરવામાં આવ્યો. પ્રીરેંડર કરવામાં નિષ્ફળ રહ્યાં, પરંતુ તેમાં પરિણામ તરીકે મળેલા જવાબના મુખ્ય ભાગનો ઉપયોગ હજી પણ પ્રીફેચ તરીકે કરવામાં આવે છે."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "વધુ જાણો: developer.chrome.com પર પહેલેથી લોડ કરવું"
+    "message": "વધુ જાણો: developer.chrome.com પર પૂર્વધારણા મુજબ લોડ કરવું"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "પ્રારંભિક પેજ દ્વારા આ પેજના URLને પહેલેથી લોડ કરવાનો પ્રયાસ કરવામાં આવ્યો નથી."
+    "message": "પ્રારંભિક પેજ દ્વારા આ પેજના URLને પૂર્વધારણા મુજબ લોડ કરવાનો પ્રયાસ કરવામાં આવ્યો નથી."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "પ્રારંભિક પેજ દ્વારા આ પેજના URLને પ્રીફેચ કરવાનો પ્રયાસ કરવામાં આવ્યો, પરંતુ પ્રીફેચ કરવાનું નિષ્ફળ રહ્યું, તેથી તેના બદલે સંપૂર્ણ નૅવિગેશન કરવામાં આવ્યું."
@@ -4428,10 +4404,7 @@
     "message": "આ પેજ સફળતાપૂર્વક પ્રીફેચ કરવામાં આવ્યું હતું."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "પ્રારંભિક પેજ દ્વારા પહેલેથી લોડ કરાયેલા URLs"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "પહેલેથી લોડ કરવાનું સ્ટેટસ"
+    "message": "પ્રારંભિક પેજ દ્વારા પૂર્વધારણા મુજબ URLs લોડ થઈ રહ્યાં છે"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "પ્રારંભિક પેજ દ્વારા આ પેજના URLને પ્રીરેંડર કરવાનો પ્રયાસ કરવામાં આવ્યો, પરંતુ પ્રીરેંડર કરવાનું નિષ્ફળ રહ્યું, તેથી તેના બદલે સંપૂર્ણ નૅવિગેશન કરવામાં આવ્યું."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "આ પેજ સફળતાપૂર્વક પ્રીરેંડર થયું હતું."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "ઍનિમેશન"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "જાહેરાતની હરાજીનું વર્કલેટ"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "બ્રેકપૉઇન્ટ હિટ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "કૅન્વાસ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "ક્લિપબોર્ડ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "Control કી"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "ડિવાઇસ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "DOM લૉક કરી શકાય છે"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "ખેંચો / છોડો"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "ભૌગોલિક સ્થાન"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "કીબોર્ડ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "લોડ કરો"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "મીડિયા"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "માઉસ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "નોટિફિકેશન"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "વિશ્લેષણ કરો"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "ચિત્રમાં-ચિત્ર"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "પૉઇન્ટર"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "સ્ક્રિપ્ટ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "શેર કરેલા સ્ટોરેજનું વર્કલેટ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "ટાઇમર"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "ટચ કરો"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "વિશ્વસનીય પ્રકારના ઉલ્લંઘનો"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "વિન્ડો"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "વર્કર"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "વિશેષતામાં ફેરફાર કરવામાં આવ્યો"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "તમામ એક્સપ્રેશન કાઢી નાખો"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "ભાવશૂન્ય એક્સપ્રેશન કાઢી નાખો"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "એક્સપ્રેશન કાઢી નાખો"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "ઘટક છુપાવો"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "સીધા મીડિયા પૅનલ પર આવો"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "પેસ્ટ કરો"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "ચેતવણી આપવામાં આવી"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{કુકી ઍક્સેસ કરવાની મંજૂરી 1 વેબસાઇટને આપવામાં આવી}one{કુકી ઍક્સેસ કરવાની મંજૂરી # વેબસાઇટને આપવામાં આવી}other{કુકી ઍક્સેસ કરવાની મંજૂરી # વેબસાઇટને આપવામાં આવી}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "ફ્રેમની DOM નોડને ઘટકોની પૅનલમાં બતાવવા માટે ક્લિક કરો"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "સમાપ્ત"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, પ્રારંભિક પ્રાધાન્યતા: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "લેવલ 1"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "વધુ બતાવો"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "ઍનિમેશન ફ્રેમ જારી કરવામાં આવી"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "બિડરના બિડિંગ તબક્કાની શરૂઆત"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "બિડરના રિપોર્ટિંગ તબક્કાની શરૂઆત"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "વિક્રેતાના રિપોર્ટિંગ તબક્કાની શરૂઆત"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "વિક્રેતાના સ્કોરિંગ તબક્કાની શરૂઆત"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "ઍનિમેશન ફ્રેમ રદ કરો"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "AudioContext બંધ કરો"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "AudioContext બનાવો"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "કૅન્વાસ માટે સંદર્ભ બનાવો"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "પૉલિસીના ઉલ્લંઘનો"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "ઍનિમેશન ફ્રેમની વિનંતી કરો"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "AudioContext ફરી શરૂ કરો"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "કન્ટેન્ટની સુરક્ષા પૉલિસી અનુસાર સ્ક્રિપ્ટ બ્લૉક કરવામાં આવી"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "પહેલા સ્ટેટમેન્ટની સ્ક્રિપ્ટ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "innerHTML સેટ કરો"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} કાઢી નાખી"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "ઉલ્લંઘનોનો ડેટા સિંક કરો"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "AudioContextને સસ્પેન્ડ કરો"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "WebGLમાં ભૂલ આવી"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "WebGL ચેતવણી જારી કરવામાં આવી"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "કવરેજ પૅનલ બતાવવા માટે ક્લિક કરો"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "XHR અથવા ફેચ પર થોભાવ્યું"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "કન્ટેન્ટની સુરક્ષા પૉલિસી સંબંધિત નિર્દેશને કારણે સ્ક્રિપ્ટ બ્લૉક કરવામાં આવી: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "સબટ્રીમાં ફેરફારો"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Trusted Typeના ઉલ્લંઘન સિંક કરો"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "WebGLમાં ભૂલ આવી ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "બ્રેકપૉઇન્ટ ઉમેરો"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "આ ક્રિયાનો છેલ્લો ફેરફાર રદ કરી શકાતો નથી."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "શું તમે ખરેખર આ ફોલ્ડરમાંના બધા ઓવરરાઇડ ડિલીટ કરવા માગો છો?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "શું તમે ખરેખર આ ફોલ્ડર અને તેમાંનું કન્ટેન્ટ ડિલીટ કરવા માગો છો?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "ડિલીટ કરો"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "બધા ઓવરરાઇડ ડિલીટ કરો"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "ઉપયોગમાં લેવાયેલા"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(અનામી)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "બિડરનું વર્કલેટ"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "બિડરનું વર્કલેટ — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "સમર્પિત Worker"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "ઇવેન્ટ: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "ફ્રેમ — {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "મુખ્ય"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "મુખ્ય — {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "રાસ્ટરાઇઝર થ્રેડ {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "વિક્રેતાનું વર્કલેટ"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "વિક્રેતાનું વર્કલેટ — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "થ્રેડ {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "હરાજીનું વર્કલેટ"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "હરાજીનું વર્કલેટ — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "હરાજી માટે વર્કલેટની સેવા"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "હરાજી માટે વર્કલેટની સેવા — {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "આ પ્રકારના લક્ષ્ય માટે પર્ફોર્મન્સ ટ્રેસ રેકોર્ડિંગને સપોર્ટ આપવામાં આવતો નથી"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "સ્થાન"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "લાંબી ક્રિયાપ્રતિક્રિયા"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "લાંબા સમય સુધી ચાલતું કાર્ય"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1}, પર્ફોર્મન્સ બૉટલનેક હોવાની શક્યતા છે."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} પેજની પ્રતિસાદ આપવાની નબળી ઝડપ સૂચિત કરી રહ્યું છે."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2}માંથી {PH1}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "વર્ચ્યુઅલ પ્રમાણકર્તા સાથે ક્રિયાપ્રતિક્રિયા કરવાની સુવિધા ચાલુ કરો"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "નવું નામ દાખલ કરો"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "નિકાસ કરો"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "'મેમરી ઇન્સપેક્ટર' બતાવો"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "કૉપિ કરો"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "પ્રતિસાદ આપો"

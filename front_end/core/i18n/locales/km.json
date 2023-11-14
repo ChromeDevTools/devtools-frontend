@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "ប្រភេទ​ដែលទុកចិត្តបាន - ការបំពាន​គោលការណ៍"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "ត្រៀម​សម្រាប់​ការបញ្ឈប់​ខូគី​ភាគីទីបី​បន្តិចម្ដងៗ"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "មានសុវត្ថិភាព"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "គ្មាន​សុវត្ថិភាព"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "ដាក់បញ្ជូន​បញ្ហា"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets និងលក្ខណៈ SameParty"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "កម្រងសារ {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "សំណុំការងារ​អ្នកដេញថ្លៃ"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "សំណុំ​ការងារ​អ្នក​ដេញថ្លៃ — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Workerដាច់ដោយឡែក"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "សំណុំ​ការងារ​អ្នកលក់"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "សំណុំ​ការងារ​អ្នក​លក់ — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "កម្រងសារ {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "សំណុំ​ការងារ​ដេញថ្លៃ"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "សំណុំ​ការងារ​ដេញថ្លៃ — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker៖ {PH1} — {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "សេវាកម្ម​សំណុំ​ការងារ​ដេញថ្លៃ"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "សេវាកម្ម​សំណុំ​ការងារដេញថ្លៃ — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(សន្ទស្សន៍)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "វិនដូដែលបានបើក"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "ការផ្ទុកជាមុន"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "ផ្ទុក IndexedDB ឡើងវិញ"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "បាទ/ចាស"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "ការផ្ទុក​ជាមុន"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "វិធាន​នៃការប៉ាន់ស្មាន"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "ទំព័រ​នេះ"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "ចុចនៅលើ​របាយការណ៍ណាមួយ ដើម្បីបង្ហាញតួរបស់វា"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "ចុចដើម្បីបង្ហាញនៅក្នុងផ្ទាំងប្រភព"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "គោលការណ៍​ស្ដីពី​សុវត្ថិភាព​ខ្លឹមសារ (CSP)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "មានស្គ្រីប​នៃការផ្សាយពាណិជ្ជកម្ម​នៅក្នុង (async) stack នៅពេលដែល​បង្កើត​ស៊ុមនេះ។ ការពិនិត្យមើល​ការបង្កើត stack trace នៃ​ស៊ុមនេះ​អាចនឹងផ្ដល់​ស្ថិតិបន្ថែម។"
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "ទេ"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "គ្មាន"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "ប្រភពដើម"
@@ -3990,7 +3966,7 @@
     "message": "ថូខិន​ស្ថានភាព​ឯកជន"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "ការផ្ទុក​ជាមុន​ទាំងអស់"
+    "message": "ការផ្ទុក​បែបប៉ាន់ស្មាន​ទាំងអស់"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "ត្រងតាម​សំណុំ​វិធាន"
@@ -4059,22 +4035,22 @@
     "message": "ត្រួតពិនិត្យ"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "មិន​អាច​ផ្ទុក​ជា​មុន​បាន​ទេ។"
+    "message": "ការផ្ទុក​បែបប៉ាន់ស្មាន​មិនបាន​សម្រេចទេ។"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "មិនទាន់​បើកដំណើរការ​ការព្យាយាម​ផ្ទុកជាមុន​នៅឡើយទេ។"
+    "message": "មិនទាន់​បើកដំណើរការ​ការព្យាយាម​ផ្ទុកបែបប៉ាន់ស្មាន​នៅឡើយទេ។"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "អាច​ឱ្យព្យាយាម​ផ្ទុក​ជា​មុនបាន ប៉ុន្តែ​កំពុង​រង់ចាំ។"
+    "message": "អាចឱ្យ​ព្យាយាម​ផ្ទុក​បែបប៉ាន់ស្មាន​បាន ប៉ុន្តែ​កំពុង​រង់ចាំ។"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "ការ​ផ្ទុក​ជា​មុន​បានចប់​ ហើយ​លទ្ធផល​រួចរាល់​សម្រាប់​ការ​រុករក​បន្ទាប់។"
+    "message": "ការផ្ទុក​បែបប៉ាន់ស្មាន​បានចប់ ហើយ​លទ្ធផលគឺ​រួចរាល់​សម្រាប់​ការរុករក​បន្ទាប់។"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "ការផ្ទុកជាមុន​កំពុង​ដំណើរការ។"
+    "message": "ការផ្ទុក​បែបប៉ាន់ស្មាន​កំពុង​ដំណើរការ។"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "ការ​ផ្ទុក​ជា​មុន​បានចប់​ និងត្រូវបានប្រើ​សម្រាប់​​​ការ​រុករក​។"
+    "message": "ការផ្ទុក​បែបប៉ាន់ស្មាន​បានចប់ និង​ត្រូវបានប្រើ​សម្រាប់​ការរុករក។"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "សកម្មភាព"
@@ -4095,10 +4071,10 @@
     "message": "ជ្រើសរើស​ធាតុ ដើម្បីទទួលបានព័ត៌មានលម្អិត​បន្ថែម"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "ការផ្ទុក​ជាមុន​ត្រូវបានបិទ ដោយសារតែ​មុខងារ​សន្សំថ្ម​របស់​ប្រព័ន្ធ​ប្រតិបត្តិការ។"
+    "message": "ការផ្ទុក​បែបប៉ាន់ស្មាន​ត្រូវបានបិទ ដោយសារតែ​មុខងារ​សន្សំថ្ម​របស់​ប្រព័ន្ធ​ប្រតិបត្តិការ។"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "ការផ្ទុក​ជាមុន​ត្រូវបានបិទ ដោយសារតែ​មុខងារ​សន្សំសំចៃទិន្នន័យ​របស់​ប្រព័ន្ធ​ប្រតិបត្តិការ។"
+    "message": "ការផ្ទុក​បែបប៉ាន់ស្មាន​ត្រូវបានបិទ ដោយសារតែ​មុខងារ​សន្សំសំចៃទិន្នន័យ​របស់​ប្រព័ន្ធ​ប្រតិបត្តិការ។"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "ការទាញយក​ជាមុន​ត្រូវបាន​បង្ខំឱ្យបើក ដោយសារ​ឧបករណ៍អ្នកអភិវឌ្ឍន៍​បើក។ នៅពេល​ឧបករណ៍អ្នកអភិវឌ្ឍន៍​ត្រូវបានបិទ ការទាញយក​ជាមុន​នឹងត្រូវ​បានបិទ ដោយសារ​វគ្គកម្មវិធីរុករកតាមអ៊ីនធឺណិតនេះ​គឺជា​ផ្នែកមួយរបស់​ក្រុម​ដែលរងការរឹតត្បិតលើការវិវឌ្ឍ ដែលត្រូវ​បាន​ប្រើសម្រាប់​ការប្រៀបធៀប​ប្រតិបត្តិការ។"
@@ -4107,7 +4083,7 @@
     "message": "ការបំប្លែង​ជា​មុនត្រូវ​បានបើក​ដោយ​បង្ខំ ដោយសារឧបករណ៍អ្នកអភិវឌ្ឍន៍បើក។ នៅ​ពេល​ឧបករណ៍អ្នកអភិវឌ្ឍន៍​ត្រូវ​បានបិទ ការបំប្លែង​ជា​មុន​នឹង​ត្រូវ​បានបិទ ដោយសារ​វគ្គកម្មវិធីរុករកតាមអ៊ីនធឺណិត​នេះ​គឺ​ជា​ផ្នែក​មួយរបស់​ក្រុម​ដែលស្ថិតក្រោមការដាក់កំហិត​ ដែលត្រូវ​បាន​ប្រើសម្រាប់​ការ​ប្រៀបធៀប​ប្រតិបត្តិការ។"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "ការផ្ទុក​ជាមុន​ត្រូវបានបិទ ដោយសារតែ​ការកំណត់​របស់​អ្នកប្រើប្រាស់ ឬ​កម្មវិធីបន្ថែម។ ចូល​ទៅកាន់ {PH1} ដើម្បី​ធ្វើបច្ចុប្បន្នភាព​ចំណូលចិត្ត​របស់អ្នក។ ចូល​ទៅកាន់ {PH2} ដើម្បីបិទ​កម្មវិធីបន្ថែម​ដែល​ទប់ស្កាត់​ការផ្ទុកជាមុន។"
+    "message": "ការផ្ទុក​បែបប៉ាន់ស្មាន​ត្រូវបានបិទ ដោយសារតែ​ការកំណត់​របស់​អ្នកប្រើប្រាស់ ឬ​កម្មវិធីបន្ថែម។ ចូល​ទៅកាន់ {PH1} ដើម្បី​ធ្វើបច្ចុប្បន្នភាព​ចំណូលចិត្ត​របស់អ្នក។ ចូល​ទៅកាន់ {PH2} ដើម្បីបិទ​កម្មវិធីបន្ថែម​ដែល​ទប់ស្កាត់​ការផ្ទុក​បែបប៉ាន់ស្មាន។"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "ការកំណត់​កម្មវិធីបន្ថែម"
@@ -4131,16 +4107,16 @@
     "message": "កម្មវិធី​បន្ថែម ឬ​ការកំណត់​អ្នកប្រើប្រាស់"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "ការផ្ទុក​ជាមុន​ត្រូវបានបិទ"
+    "message": "ការផ្ទុក​បែបប៉ាន់ស្មាន​ត្រូវបានបិទ"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "ការផ្ទុក​ជាមុន​ត្រូវបាន​បង្ខំឱ្យបើក"
+    "message": "ការផ្ទុក​បែបប៉ាន់ស្មាន​ត្រូវបាន​បង្ខំឱ្យបើក"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "ការកំណត់​ការផ្ទុកទំព័រ​ជាមុន"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "មូលហេតុនៃ​ការទប់ស្កាត់​ការផ្ទុកជាមុន"
+    "message": "មូលហេតុនៃ​ការទប់ស្កាត់​ការផ្ទុក​បែបប៉ាន់ស្មាន"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "សកម្មភាព"
@@ -4200,7 +4176,7 @@
     "message": "URL មិនមានសិទ្ធិ​សម្រាប់ឱ្យទាញយក​ជាមុនទេ ដោយសារ​វាប្រើ​ផ្នែកទំហំផ្ទុក​ដែលមិនមែនជា​លំនាំដើម។"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "មិនបាន​ទាញយកជាមុន​ទេ ដោយសារ​ការផ្ទុកជាមុន​ត្រូវបាន​បិទ។"
+    "message": "មិនបាន​ទាញយក​ជាមុនទេ ដោយសារ​ការផ្ទុក​បែបប៉ាន់ស្មាន​ត្រូវបានបិទ។"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "URL មិនមានសិទ្ធិ​សម្រាប់ឱ្យ​ទាញយកជាមុនទេ ដោយសារ​មិនអាច​កំណត់​រចនាសម្ព័ន្ធ​បរិបទ​បណ្ដាញ​លំនាំដើម ដើម្បីប្រើ​ប្រូកស៊ី​នៃការទាញយក​ជាមុន​សម្រាប់​សំណើ​ទាញយកជាមុន​ពីប្រភពដើម​ផ្សេង​នៃគេហទំព័រតែមួយ។"
@@ -4245,7 +4221,7 @@
     "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​អ្នកប្រើប្រាស់​បានស្នើឱ្យ​កម្មវិធីរុករក​តាមអ៊ីនធឺណិត​ប្រើថ្មតិចជាងនេះ។"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "ការផ្ទុក​ធនធាន​ជាក់លាក់​ត្រូវបាន​ទប់ស្កាត់។"
+    "message": "ការផ្ទុក​ធនធាន​មួយចំនួន​ត្រូវបាន​ទប់ស្កាត់។"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "ការរុករក​ដែលបំប្លែង​ជាមុន​បានតម្រូវឱ្យមាន​វិញ្ញាបនបត្រ​កុំព្យូទ័រភ្ញៀវ HTTP។"
@@ -4287,13 +4263,13 @@
     "message": "ទំព័រ​ដែលបាន​បំប្លែង​ជាមុន​បានទៅកាន់ URL ផ្សេងទៀត​ដោយខ្លួនវា ដែលបច្ចុប្បន្ននេះ​មិនអាចប្រើបានទេ។"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​ទំព័រចាប់ផ្ដើម​មានការបំប្លែង​ជាមុន​ច្រើនពេកដែលកំពុងធ្វើឡើង​ស្រាប់ហើយ។ សូមដក​វិធាន​នៃការប៉ាន់ស្មាន​ផ្សេងទៀត​ចេញ ដើម្បី​បើកការបំប្លែង​ជាមុន​បន្ថែម។"
+    "message": "មិនបាន​ធ្វើការបំប្លែង​ជាមុន​ដែលមានកម្រិតចំណង់ \"ចង់​ខ្លាំង\" ទេ ដោយសារ​ទំព័រចាប់ផ្ដើម​មានការបំប្លែង​ជាមុន​ច្រើនពេក​ដែលកំពុង​ធ្វើឡើង​ស្រាប់ហើយ។ សូមដក​វិធាន​ប៉ាន់ស្មាន​ផ្សេងទៀត​ដែលមាន \"ចង់ខ្លាំង\" ចេញ ដើម្បី​បើកការបំប្លែង​ជាមុន​បន្ថែម។"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​ទំព័រចាប់ផ្ដើម​មានការបំប្លែង​ជាមុន​ច្រើនពេកដែលកំពុងធ្វើឡើង​ស្រាប់ហើយ។"
+    "message": "មិនបាន​ធ្វើការបំប្លែង​ជាមុន​ដែលបើកដំណើរការ​ដោយកម្មវិធីរុករក​តាមអ៊ីនធឺណិត​ទេ ដោយសារ​ទំព័រចាប់ផ្ដើម​មានការបំប្លែង​ជាមុន​ច្រើនពេកដែលកំពុងធ្វើឡើង​ស្រាប់ហើយ។"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​ទំព័រចាប់ផ្ដើម​មានការបំប្លែង​ជាមុន​ច្រើនពេកដែលកំពុងធ្វើឡើង​ស្រាប់ហើយ។ សូមដក​វិធាន​នៃការប៉ាន់ស្មាន​ផ្សេងទៀត​ចេញ ដើម្បី​បើកការបំប្លែង​ជាមុន​បន្ថែម។"
+    "message": "ការបំប្លែង​ជាមុនចាស់​ដែលមិនមែនចង់ខ្លាំង (ដែលមាន​កម្រិតចំណង់ \"មធ្យម\" ឬ \"ធម្មតា\" និង​បើកដំណើរការ​ដោយដាក់ព្រួញពីលើ ឬ​ចុចតំណ) ត្រូវបាន​បោះបង់​ដោយស្វ័យប្រវត្តិ ដោយសារតែ​មានការចាប់ផ្ដើម​ការបំប្លែង​ជាមុនថ្មី​ដែលមិនមែនចង់ខ្លាំង។ អាចបើក​ដំណើរការវា​ឡើងវិញ​បានដោយ​ធ្វើអន្តរកម្ម​ជាមួយ​តំណនោះ​ម្ដងទៀត។"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "មិនបានធ្វើការបំប្លែង​ជាមុនទេ ដោយសារ​កម្មវិធីរុករកតាម​អ៊ីនធឺណិត​បានប្រើលើស​ដែនកំណត់​អង្គចងចាំ​សម្រាប់ការបំប្លែង​ជាមុន។"
@@ -4395,7 +4371,7 @@
     "message": "ចុចដើម្បីបង្ហាញផ្ទាំងបណ្ដាញ"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "បង្ហាញ​ការផ្ទុកជាមុន​ដែលពាក់ព័ន្ធនឹង​សំណុំ​វិធាននេះ"
+    "message": "បង្ហាញ​ការផ្ទុកបែប​ប៉ាន់ស្មាន​ដែលពាក់ព័ន្ធនឹង​សំណុំ​វិធាននេះ"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{បញ្ហា #}other{បញ្ហា #}}"
@@ -4416,10 +4392,10 @@
     "message": "ទំព័រ​ចាប់ផ្ដើម​បានព្យាយាម​បំប្លែង URL របស់ទំព័រនេះ​ជាមុន។ ការបំប្លែង​ជាមុន​មិនបានសម្រេចទេ ប៉ុន្តែ​តួសេចក្ដីនៃការឆ្លើយតប​ដែលទទួលបាន​នៅតែត្រូវបានប្រើ​ជាការទាញយកជាមុនដដែល។"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "ស្វែងយល់​បន្ថែម៖ ការផ្ទុក​ជាមុន​នៅលើ developer.chrome.com"
+    "message": "ស្វែងយល់​បន្ថែម៖ ការផ្ទុក​បែបប៉ាន់ស្មាន​នៅលើ developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "ទំព័រចាប់ផ្ដើម​មិនបានព្យាយាម​ផ្ទុក URL របស់​ទំព័រនេះ​ជាមុនទេ។"
+    "message": "ទំព័រចាប់ផ្ដើម​មិនបានព្យាយាម​ផ្ទុក URL របស់​ទំព័រនេះ​តាមបែបប៉ាន់ស្មានទេ។"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "ទំព័រ​ចាប់ផ្ដើម​បានព្យាយាម​ទាញយក URL របស់ទំព័រនេះ​ជាមុន ប៉ុន្តែ​ការទាញយក​ជាមុននោះ​មិនបានសម្រេចទេ ដូច្នេះ​ការរុករក​ពេញលេញ​ត្រូវបានធ្វើឡើង​ជំនួសវិញ។"
@@ -4428,10 +4404,7 @@
     "message": "ទំព័រនេះ​ត្រូវបាន​ទាញយកជាមុន​ដោយជោគជ័យ។"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "ទំព័រ​ចាប់ផ្ដើម​កំពុងផ្ទុក URL ជាមុន"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "ស្ថានភាព​នៃការផ្ទុកជាមុន"
+    "message": "ទំព័រ​ចាប់ផ្ដើម​កំពុងផ្ទុក URL បែបប៉ាន់ស្មាន"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "ទំព័រ​ចាប់ផ្ដើម​បានព្យាយាម​បំប្លែង URL របស់ទំព័រនេះ​ជាមុន ប៉ុន្តែ​ការបំប្លែង​ជាមុននោះ​មិនបានសម្រេចទេ ដូច្នេះ​ការរុករក​ពេញលេញ​ត្រូវបានធ្វើឡើង​ជំនួសវិញ។"
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "ទំព័រនេះ​ត្រូវបាន​បំប្លែង​ជាមុន​ដោយជោគជ័យហើយ។"
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "រូបមានចលនា"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "Ad Auction Worklet"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ការឈានដល់ចំណុចឈប់ដំណើរការ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "Canvas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "ឃ្លីបបត"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "ការគ្រប់គ្រង"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "ឧបករណ៍"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "ការប្រែប្រួល DOM"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "អូស / ទម្លាក់"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "ទីតាំងភូមិសាស្ត្រ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "ក្ដារចុច"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "ផ្ទុក"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "មេឌៀ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "កណ្ដុរ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "ការ​ជូន​ដំណឹង"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "ញែក"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "រូបក្នុងរូប"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "ព្រួញ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "ស្គ្រីប"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "កូនស្គ្រីបជំនួយទំហំផ្ទុករួមនៅផ្ទៃខាងក្រោយ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "កម្មវិធីកំណត់ម៉ោង"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "ប៉ះ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "ការបំពាន​ប្រភេទ​ដែលទុកចិត្តបាន"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "វិនដូ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "បុគ្គលិក"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "បានកែសម្រួលលក្ខណៈ"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "លុបកន្សោមទាំងអស់"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "លុបចោលកន្សោមទទេ"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "លុប​កន្សោម"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "លាក់​ធាតុ"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "រំលងទៅ​ផ្ទាំងមេឌៀ"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "ដាក់ចូល"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "បានព្រមាន"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{អនុញ្ញាតឱ្យ​គេហទំព័រ 1 ចូលប្រើ​ខូគី}other{អនុញ្ញាតឱ្យ​គេហទំព័រ # ចូលប្រើ​ខូគី}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "ចុចដើម្បី​បង្ហាញណូត DOM របស់​ស៊ុមនៅក្នុង​ផ្ទាំងធាតុ"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "បានបញ្ចប់"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1} អាទិភាព​ដំបូង៖ {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "កម្រិត 1"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "បង្ហាញ​ច្រើនទៀត"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "បានបើកដំណើរការ​ស៊ុម​នៃរូបមានចលនា"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "ការចាប់ផ្ដើមដំណាក់កាលអ្នកដេញថ្លៃធ្វើការដេញថ្លៃ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "ការចាប់ផ្ដើមដំណាក់កាលអ្នកដេញថ្លៃធ្វើការរាយការណ៍"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "Seller Reporting Phase Start"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "ចាប់ផ្ដើមដំណាក់កាលអ្នកលក់ធ្វើការដាក់ពិន្ទុលើការដេញថ្លៃ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "បោះបង់​ស៊ុម​នៃរូបមានចលនា"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "បិទ AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "បង្កើត AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "បង្កើត​បរិបទ​ផ្ទាំង"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "ការបំពាន​គោលការណ៍"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "ស្នើសុំ​ស៊ុមនៃ​រូបមានចលនា"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "បន្ត AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "ស្គ្រីបត្រូវបាន​ទប់ស្កាត់​ដោយគោលការណ៍​ស្ដីពីសុវត្ថិភាព​ខ្លឹមសារ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "របាយការណ៍​ដំបូង​នៃស្គ្រីប"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "កំណត់ innerHTML"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} បាន​ឱ្យ​សញ្ញា"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "ការបំពាន Sink"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "ផ្អាក AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "មានបញ្ហា WebGL បានកើតឡើង"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "បានបើកដំណើរការ​ការព្រមាន WebGL"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "ចុច​ដើម្បីបង្ហាញ​ផ្ទាំង​សេចក្ដីរាយការណ៍"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "បានផ្អាក​នៅលើ XHR ឬ fetch"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "ស្គ្រីបត្រូវបាន​ទប់ស្កាត់ ដោយសារមាន​ការណែនាំ​អំពីគោលការណ៍​ស្ដីពីសុវត្ថិភាព​ខ្លឹមសារ៖ {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "ការកែសម្រួល​មែកធាងរង"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "ការបំពាន Sink នៃ Trusted Type"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "មានបញ្ហា WebGL បានកើតឡើង ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "បញ្ចូល​ចំណុចផ្អាក"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "មិន​អាច​ត្រឡប់សកម្មភាព​នេះវិញ​បានទេ។"
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "តើអ្នក​ពិតជា​ចង់លុប​ការលុបពីលើ​ទាំងអស់​នៅក្នុង​ថតនេះ​មែនឬ?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "តើអ្នក​ពិតជា​ចង់លុប​ថតនេះ និង​ខ្លឹមសារ​របស់វា​មែនឬ?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "លុប"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "លុប​ការលុបពីលើ​ទាំងអស់"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "បានដាក់ឱ្យប្រើ"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(អនាមិក)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "កូនស្គ្រីបជំនួយអ្នកដេញថ្លៃនៅផ្ទៃខាងក្រោយ"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "កូនស្គ្រីបជំនួយអ្នកដេញថ្លៃនៅផ្ទៃខាងក្រោយ — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Workerដាច់ដោយឡែក"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "ព្រឹត្តិការណ៍៖ {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "ស៊ុម — {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "ចម្បង"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "ចម្បង — {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "Thread កម្មវិធីបំប្លែង​ទៅជាភីកសែល {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "កូនស្គ្រីបជំនួយអ្នកលក់នៅផ្ទៃខាងក្រោយ"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "កូនស្គ្រីបជំនួយអ្នកលក់នៅផ្ទៃខាងក្រោយ — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Thread {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "កូនស្គ្រីបជំនួយការដេញថ្លៃនៅផ្ទៃខាងក្រោយ"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "កូនស្គ្រីបជំនួយការដេញថ្លៃនៅផ្ទៃខាងក្រោយ — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker៖ {PH1} — {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "សេវាកម្ម​កូនស្គ្រីបជំនួយការដេញថ្លៃនៅផ្ទៃខាងក្រោយ"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "សេវាកម្ម​កូនស្គ្រីបជំនួយការដេញថ្លៃនៅផ្ទៃខាងក្រោយ — {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "មិនអាចថត​ដានប្រតិបត្តិការ​សម្រាប់​គោលដៅ​ប្រភេទនេះ​បានទេ"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "ទីតាំង"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "អន្តរកម្ម​រយៈពេលយូរ"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "កិច្ចការ​រយៈពេលវែង"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1}ទំនងជា​ភាពរអាក់រអួល​នៃប្រតិបត្តិការ។"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} កំពុងបង្ហាញ​ការឆ្លើយតប​ទំព័រ​ខ្សោយ។"
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} នៃ {PH2}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "បើក​មជ្ឈដ្ឋាន​កម្មវិធីផ្ទៀងផ្ទាត់​និម្មិត"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "បញ្ចូលឈ្មោះថ្មី"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "នាំ​ចេញ"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "បង្ហាញ​កម្មវិធី​ត្រួតពិនិត្យ​អង្គចងចាំ"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "ចម្លង"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "មតិកែលម្អ"

@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Aina Zinazoaminika - Ukiukaji wa sera"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Andaa kuondoa vidakuzi vya washirika wengine"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "salama"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "usio salama"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "Ripoti hitilafu"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets na sifa ya SameParty"
@@ -1404,7 +1410,7 @@
     "message": "Ufafanuzi kuhusu vidakuzi vya 'SameSite'"
   },
   "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "Andaa kuondoa vidakuzi vya mshirika mwingine"
+    "message": "Andaa kuondoa vidakuzi vya washirika wengine"
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "Kushiriki Nyenzo kutoka Asili Mbalimbali (CORS)"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Mchakato wa {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "Kitendakazi Kidogo cha Mzabuni"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "Kitendakazi Kidogo cha Mzabuni — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Worker maalum"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "Kitendakazi Kidogo cha Muuzaji"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "Kitendakazi Kidogo cha Muuzaji — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Mchakato wa {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "Kitendakazi Kidogo cha Mnada"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "Kitendakazi kidogo cha Mnada — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "Huduma ya Kitendakazi Kidogo cha Mnada"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "Huduma ya Kitendakazi Kidogo cha Mnada — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(faharasa)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Madirisha Yaliyofunguliwa"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "Upakiaji mapema"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Onyesha IndexedDB upya"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ndiyo"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "Upakiaji wa mapema"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "Amri za kukisia"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "Ukurasa huu"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Bofya ripoti yoyote ili uonyeshe kiini chake"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Bofya ili uonyeshe katika kidirisha cha Vyanzo"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Sera ya Usalama wa Maudhui (CSP)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "Kulikuwa na hati ya tangazo katika (async) stack fremu hii ilipoundwa. Huenda hatua ya kutathmini stack trace wa fremu hii iliyoundwa ikatoa maarifa zaidi."
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "Hapana"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "Hamna"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Chanzo"
@@ -3990,7 +3966,7 @@
     "message": "Tokeni za hali ya faragha"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "Upakiaji wote wa mapema"
+    "message": "Upakiaji wote wa kubahatisha"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "Chuja kulingana na kanuni zinazotumika"
@@ -4059,22 +4035,22 @@
     "message": "Kagua"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "Imeshindwa kupakia mapema."
+    "message": "Upakiaji wa kubahatisha haujafanikiwa."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "Jaribio la kupakia mapema bado halijatekelezwa."
+    "message": "Jaribio la upakiaji wa kubahatisha bado halijaanzishwa."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "Jaribio la kupakia mapema linastahiki lakini linasubiri."
+    "message": "Jaribio la upakiaji wa kubahatisha linastahiki lakini linasubiri."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "Mchakato wa kupakia mapema umekamilika na matokeo yako tayari kwa ajili ya usogezaji unaofuata."
+    "message": "Upakiaji wa kubahatisha umekamilika na tokeo liko tayari kwa ajili ya usogezaji unaofuata."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "Mchakato wa kupakia mapema unatekelezwa."
+    "message": "Upakiaji wa kubahatisha unatekelezwa."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "Mchakato wa kupakia mapema umekamilika na kutumiwa kwa ajili ya kusogeza."
+    "message": "Upakiaji wa kubahatisha umekamilika na kutumiwa kwa ajili ya kusogeza."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "Kitendo"
@@ -4095,10 +4071,10 @@
     "message": "Chagua kipengele kwa maelezo zaidi"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "Mchakato wa kupakia mapema umezimwa kwa sababu ya hali ya Kiokoa Betri ya mfumo wa uendeshaji."
+    "message": "Upakiaji wa kubahatisha umezimwa kwa sababu ya hali ya Kiokoa Betri ya mfumo wa uendeshaji."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "Upakiaji mapema umezimwa kwa sababu ya hali ya Kiokoa Data ya mfumo wa uendeshaji."
+    "message": "Upakiaji wa kubahatisha umezimwa kwa sababu ya hali ya Kiokoa Data ya mfumo wa uendeshaji."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "Kipengele cha uletaji mapema kimewashwa kwa lazima kwa sababu Zana za Wasanidi Programu zimefunguliwa. Zana za Wasanidi Programu zinapofungwa, mchakato wa uletaji wa mapema utazimwa kwa sababu kipindi cha kivinjari hiki ni sehemu ya kikundi cha kuzuia kinachotumika kulinganisha utendaji."
@@ -4107,7 +4083,7 @@
     "message": "Kipengele cha kutekeleza mapema kimelazimishwa kuwashwa kwa sababu Zana za Wasanidi Programu zimefunguliwa. Zana za Wasanidi Programu zinapofungwa, mchakato wa utekelezaji wa mapema utazimwa kwa sababu kipindi cha kivinjari hiki ni sehemu ya kikundi cha kuzuia kinachotumika kulinganisha utendaji."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "Mchakato wa kupakia mapema umezimwa kwa sasabu ya mipangilio au kiendelezi cha mtumiaji. Nenda kwenye {PH1} ili usasishe mapendeleo yako. Nenda kwenye {PH2} ili uzime kiendelezi chochote kinachozuia upakiaji mapema."
+    "message": "Upakiaji wa kubahatisha umezimwa kwa sababu mipangilio au kiendelezi cha mtumiaji. Nenda kwenye {PH1} ili usasishe mapendeleo yako. Nenda kwenye {PH2} ili uzime kiendelezi chochote kinachozuia upakiaji wa kubahatisha."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "Mipangilio ya viendelezi"
@@ -4131,16 +4107,16 @@
     "message": "Viendelezi au mipangilio ya mtumiaji"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "Mchakato wa kupakia mapema umezimwa"
+    "message": "Upakiaji wa kubahatisha umezimwa"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "Upakiaji mapema umewashwa kwa lazima"
+    "message": "Upakiaji wa kubahatisha umewashwa kwa lazima"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "Mipangilio ya kurasa za kupakia mapema"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "Sababu zinazozuia upakiaji mapema"
+    "message": "Sababu za kuzuia upakiaji wa kubahatisha"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Kitendo"
@@ -4200,7 +4176,7 @@
     "message": "URL haikutimiza masharti ya kuletwa mapema kwa sababu inatumia ugawanishaji ambao si chaguomsingi katika nafasi ya hifadhi."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "Imeshindwa kutekeleza uletaji mapema kwa sababu ulikuwa umezima upakiaji mapema."
+    "message": "Imeshindwa kutekeleza uletaji mapema kwa sababu ulikuwa umezima upakiaji wa kubahatisha."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "URL haikustahiki kuletwa mapema kwa sababu muktadha chaguomsingi wa mtandao hauwezi kuwekewa mipangilio ili utumie seva mbadala ya uletaji mapema kwenye ombi la kuleta mapema vyanzo mbalimbali katika tovuti hiyo hiyo."
@@ -4287,13 +4263,13 @@
     "message": "Ukurasa uliotekelezwa mapema umejisogeza wenyewe kwenye URL nyingine, ambayo haitumiki kwa sasa."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "Utekelezaji wa mapema haukufanyika kwa sababu ukurasa unaoanzisha tayari una matukio mengi ya utekelezaji wa mapema yanayoendelea. Ondoa amri zingine za kukisia ili uruhusu utekelezaji zaidi wa mapema."
+    "message": "Utekelezaji wa mapema ambao shauku yake ni \"shauku\" haukufanyika kwa sababu ukurasa unaoanzisha tayari una matukio mengi ya utekelezaji wa mapema yanayoendelea. Ondoa amri nyingine za kubahatisha zenye \"shauku\" ili uruhusu utekelezaji zaidi wa mapema."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "Utekelezaji wa mapema haukufanyika kwa sababu ukurasa unaoanzisha tayari una matukio mengi ya utekelezaji wa mapema yanayoendelea."
+    "message": "Utekelezaji wa mapema ulioanzishwa na kivinjari haukufanyika kwa sababu ukurasa unaoanzisha tayari una matukio mengi ya utekelezaji wa mapema yanayoendelea."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "Utekelezaji wa mapema haukufanyika kwa sababu ukurasa unaoanzisha tayari una matukio mengi ya utekelezaji wa mapema yanayoendelea. Ondoa amri zingine za kukisia ili uruhusu utekelezaji zaidi wa mapema."
+    "message": "Utekelezaji wa mapema wa zamani usio wa shauku (wenye shauku ya \"wastani\" au \"isiyobadilika\" na unaoanzishwa na viungo vya kuwekelea kiashiria au kubofya) ulighairiwa kiotomatiki kwa sababu ya kuanzisha tukio jipya la utekelezaji wa mapema lisilo la shauku. Unaweza kuanzishwa tena kwa kutumia kiungo chako tena."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "Utekelezaji wa mapema haukufanyika kwa sababu kivinjari kilizidi kikomo cha hifadhi ya utekelezaji wa mapema."
@@ -4395,7 +4371,7 @@
     "message": "Bofya ili uonyeshe katika Dashibodi ya mtandao"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "Onyesha upakiaji mapema unaohusiana na kanuni hizi zinazotumika"
+    "message": "Onyesha upakiaji wa kubahatisha unaohusiana na kanuni hizi zinazotumika"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{Hitilafu #}other{Hitilafu #}}"
@@ -4416,10 +4392,10 @@
     "message": "Ukurasa unaoanzisha ulijaribu kutekeleza mapema URL ya ukurasa huu. Utekelezaji wa mapema haujakamilika, lakini majibu ya matokeo yalitumiwa kama uletaji wa mapema."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "Pata maelezo zaidi: Kupakia mapema kwenye developer.chrome.com"
+    "message": "Pata maelezo zaidi: Upakiaji wa kubahatisha kwenye developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "Ukurasa unaoanzisha haukujaribu kupakia mapema URL ya ukurasa huu."
+    "message": "Ukurasa unaoanzisha haukujaribu kupakia kwa kubahatisha URL ya ukurasa huu."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "Ukurasa unaoanzisha ulijaribu kuleta mapema URL ya ukurasa huu, lakini mchakato umeshindwa, hivyo badala yake usogezwaji kamili umefanyika."
@@ -4428,10 +4404,7 @@
     "message": "Ukurasa huu umeletwa mapema."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "URL zinapakiwa mapema na ukurasa unaoanzisha"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "Hali ya upakiaji mapema"
+    "message": "URL zinazopakiwa kwa kubahatisha na ukurasa unaoanzisha"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "Ukurasa unaoanzisha ulijaribu kutekeleza mapema URL ya ukurasa huu, lakini mchakato umeshindwa, hivyo badala yake usogezwaji kamili umefanyika."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Utekelezaji wa mapema umefanyika katika ukurasa huu."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "Uhuishaji"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "Kitendakazi kidogo cha Mnada wa Matangazo"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "sehemu ya kudhibiti imefikiwa"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "Turubai"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "Ubao wa kunakili"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "Dhibiti"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "Kifaa"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "Ubadilikaji wa DOM"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "Kuburuta au kudondosha"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "Kutambulisha mahali"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "Kibodi"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "Pakia"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "Maudhui"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "Kipanya"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "Arifa"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "Changanua"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "Pachika Picha Ndani ya Picha Nyingine"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "Kielekezi"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "Hati"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "Kitendakazi Kidogo cha Hifadhi Inayoshirikiwa"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "Kipima muda"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "Kugusa"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "Ukiukaji wa Aina Zinazoaminika"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "Dirisha"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "Kitoa huduma"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "Sifa imerekebishwa"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Ondoa vilinganishi vyote"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "Ondoa kilinganishi tupu"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "Ondoa kilinganishi"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Ficha kipengee"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "Ruka uende kwenye kidirisha cha Maudhui"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "Bandika"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "Limeonywa"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{Tovuti 1 imeruhusiwa kufikia vidakuzi}other{Tovuti # zimeruhusiwa kufikia vidakuzi}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Bofya ili uonyeshe kipengele cha DOM cha fremu katika kidirisha cha Vipengee"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Imemaliza"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, Kipaumbele cha awali: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "kiwango cha kwanza"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Onyesha zaidi"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "Fremu ya Uhuishaji Imetumwa"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Mwanzo wa Awamu ya Kuzabuni"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "Mwanzo wa Awamu ya Kuripoti Kuhusu Wazabuni"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "Mwanzo wa Awamu ya Kuripoti Kuhusu Muuzaji"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "Mwanzo wa Awamu ya Alama za Muuzaji"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "Ghairi Fremu ya Uhuishaji"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "Funga AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "Unda AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "Unda muktadha wa turubai"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "Ukiukaji wa Sera"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "Tuma Ombi la Fremu ya Uhuishaji"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "Endeleza AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "Hati Imezuiwa na Sera ya Usalama wa Maudhui"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "Taarifa ya Kwanza ya Hati"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "Seti ya innerHTML"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} imetumwa"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "Ukiukaji wa Sinki"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "Simamisha AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "Hitilafu ya WebGL Imetumwa"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "Onyo la WebGL Limetumwa"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Bofya ili uonyeshe Kidirisha cha Utekelezaji"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "Imesitishwa kwa kutumia mbinu ya XHR au fetch"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "Hati imezuiwa kwa sababu ya agizo la Sera ya Usalama wa Maudhui: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "marekebisho ya kipera"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Ukiukaji wa Sinki wa Trusted Type"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "Hitilafu ya WebGL Imetumwa ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "Weka sehemu ya kusitisha utekelezaji wa msimbo kwa ajili ya utatuzi"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Kitendo hiki hakiwezi kutenduliwa."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "Je, una uhakika ungependa kufuta mipangilio yote ya kubatilisha kwenye folda hii?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "Je, una uhakika ungependa kufuta folda hii na maudhui yake?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Futa"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "Futa mipangilio yote ya ubatilishaji"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Imesambazwa"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(hazijulikani)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "Kitendakazi Kidogo cha Mweka Zabuni"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "Kitendakazi Kidogo cha Mweka Zabuni — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Worker maalum"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "Tukio: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "Fremu — {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "Makuu"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "Kuu — {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "Mchakato wa Kufanya Maudhui yawe Rasta {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "Kitendakazi Kidogo cha Muuzaji"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "Kitendakazi Kidogo cha Muuzaji — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Mchakato wa {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "Kitendakazi Kidogo cha Mnada"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "Kitendakazi Kidogo cha Mnada — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "Huduma ya Kitendakazi Kidogo cha Mnada"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "Huduma ya Kitendakazi Kidogo cha Mnada — {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Kipengele cha kurekodi ufuatiliaji wa utendaji hakiwezi kutumika kwenye programu ya aina hii"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Eneo"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "Mtagusano unaochukua muda mrefu"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Jukumu refu"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "Inawezekana {PH1} ni kikwazo cha utendaji."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} inaonyesha utendaji dhaifu wa ukurasa."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} kati ya {PH2}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "Washa mazingira ya vithibitishaji pepe"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "Weka jina jipya"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "Pakua"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Onyesha Kikaguzi cha Hifadhi"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "Nakili"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Maoni"

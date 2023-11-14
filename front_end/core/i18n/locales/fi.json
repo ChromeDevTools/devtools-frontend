@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types – käytäntörikkomus"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Valmistaudu poistamaan kolmannen osapuolen evästeet käytöstä"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "suojattu"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "epävarma"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "Ilmoita virheestä"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "Määritteet First-Party Sets ja SameParty"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Otsikko {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "Tarjoaja-worklet"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "Tarjoaja-worklet — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Erillinen Worker"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "Myyjä-worklet"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "Myyjä-worklet – {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Otsikko {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "Huutokauppa-worklet"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "Huutokauppa-worklet – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "Huutokauppa-workletpalvelu"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "Huutokauppa-worklet ‑palvelu – {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(hakemisto)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Avatut ikkunat"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "Esiladataan"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Päivitä IndexedDB"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Kyllä"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "Esilataukset"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "Spekulaatiosäännöt"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "Tämä sivu"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Näytä raportin runko klikkaamalla"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Näytä Lähde-paneeli klikkaamalla"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Content Security Policy (CSP) ‑käytäntö"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "(async) stack sisälsi mainosskriptin, kun tämä kehys luotiin. Saatat saada lisätietoja, jos tutkit tämän kehyksen luomista (stack trace)."
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "Ei"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "Ei mitään"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Alkuperä"
@@ -3990,7 +3966,7 @@
     "message": "Yksityiset tilamerkit"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "Kaikki esilataukset"
+    "message": "Kaikki ennakoivat lataukset"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "Suodata sääntöjoukon mukaan"
@@ -4059,22 +4035,22 @@
     "message": "Tarkista"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "Esilataus epäonnistui."
+    "message": "Ennakoiva lataus epäonnistui."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "Esilatausyritys ei ole vielä käynnistynyt."
+    "message": "Ennakoiva latausyritys ei ole vielä käynnistynyt."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "Esilatausyritys on kelvollinen, mutta se odottaa."
+    "message": "Ennakoiva latausyritys on kelvollinen, mutta se odottaa."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "Esilataus on valmis ja tulos on valmis seuraavaan siirtymiseen."
+    "message": "Ennakoiva lataus on valmis ja tulos on valmis seuraavaan siirtymiseen."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "Esilataus on käynnissä."
+    "message": "Ennakoiva lataus on käynnissä."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "Esilataus on valmis ja sitä käytetään siirtymiseen."
+    "message": "Ennakoiva lataus on valmis ja sitä käytetään siirtymiseen."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "Toiminto"
@@ -4095,10 +4071,10 @@
     "message": "Valitse elementti, niin näet lisätietoja"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "Esilataus on poistettu käytöstä käyttöjärjestelmän virransäästötilan takia."
+    "message": "Ennakoiva lataus on poistettu käytöstä käyttöjärjestelmän virransäästötilan takia."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "Esilataus on poistettu käytöstä käyttöjärjestelmän Data Saver ‑tilan takia."
+    "message": "Ennakoiva lataus on poistettu käytöstä käyttöjärjestelmän Data Saver ‑tilan takia."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "Esihaku on pakotettu käyttöön, koska DevTools on auki. Kun DevTools on suljettu, esihaku poistetaan käytöstä, koska selainistunto on osa holdback-ryhmää, jota käytetään suorituskyvyn vertailuissa."
@@ -4107,7 +4083,7 @@
     "message": "Esirenderöinti on pakotettu käyttöön, koska DevTools on auki. Kun DevTools on suljettu, esirenderöinti poistetaan käytöstä, koska selainistunto on osa holdback-ryhmää, jota käytetään suorituskyvyn vertailuissa."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "Esilataus on poistettu käytöstä käyttäjän asetusten tai laajennuksen vuoksi. Avaa {PH1} ja muuta asetusta. Avaa {PH2}, jos haluat poistaa käytöstä esilatauksen estävän laajennuksen."
+    "message": "Ennakoiva lataus on poistettu käytöstä käyttäjän asetusten tai laajennuksen vuoksi. Avaa {PH1} ja muuta asetusta. Avaa {PH2}, jos haluat poistaa käytöstä ennakoivan latauksen estävän laajennuksen."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "Laajennusasetukset"
@@ -4131,16 +4107,16 @@
     "message": "Käyttäjäasetukset tai laajennukset"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "Esilataus on pois käytöstä"
+    "message": "Ennakoiva lataus on poistettu käytöstä"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "Esilataus on pakotettu käyttöön"
+    "message": "Ennakoiva lataus on pakotettu käyttöön"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "Sivujen esilatausasetukset"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "Miksi esilataus ei onnistu"
+    "message": "Syitä ennakoivan lataamisen epäonnistumiseen"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Toiminto"
@@ -4200,7 +4176,7 @@
     "message": "URL-osoitetta ei voitu esihakea, koska se käyttää muuta kuin tallennustilan oletusosiointia."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "Esihakua ei suoritettu, koska esilataus ei ollut käytössä."
+    "message": "Esihakua ei suoritettu, koska ennakoiva lataus ei ollut käytössä."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "URL-osoitetta ei voitu esihakea, koska verkon oletuskontekstia ei voi määrittää käyttämään esihaun välityspalvelinta saman sivuston eri lähteistä peräisin olevalle esihakupyynnölle."
@@ -4287,13 +4263,13 @@
     "message": "Esirenderöity sivu siirtyi itse toiseen URL-osoitteeseen, jota ei tällä hetkellä tueta."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "Esirenderöintiä ei suoritettu, koska sen aloittavalla sivulla on jo liikaa esirenderöintejä käynnissä. Poista muut spekulaatiosäännöt, jotta esirenderöintiin voidaan käyttää enemmän resursseja."
+    "message": "Esirenderöintiä, jonka \"eagerness\"-arvo on \"eager\", ei suoritettu, koska sen aloittavalla sivulla on jo liikaa esirenderöintejä käynnissä. Poista muut ennakoimissäännöt, joiden arvo on \"eager\", jotta uusia esirenderöintejä voidaan aloittaa."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "Esirenderöintiä ei suoritettu, koska sen aloittavalla sivulla on jo liikaa esirenderöintejä käynnissä."
+    "message": "Selaimen aloittamaa esirenderöintiä ei suoritettu, koska sen aloittavalla sivulla on jo liikaa esirenderöintejä käynnissä."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "Esirenderöintiä ei suoritettu, koska sen aloittavalla sivulla on jo liikaa esirenderöintejä käynnissä. Poista muut spekulaatiosäännöt, jotta esirenderöintiin voidaan käyttää enemmän resursseja."
+    "message": "Vanha esirenderöijä, jonka \"eagerness\"-arvo ei ole \"eager\" (vaan \"moderate\" tai \"conservative\" ja joka alkaa, kun kohdistin viedään linkin päälle tai linkkiä klikataan), peruttiin automaattisesti, koska uusi esirenderöijä, jonka arvo ei ole \"eager\", käynnistettiin. Voit aktivoida sen uudelleen viemällä kohdistimen linkin päälle tai klikkaamalla linkkiä."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "Esirenderöintiä ei suoritettu, koska selain ylitti esirenderöinnin muistirajan."
@@ -4395,7 +4371,7 @@
     "message": "Näytä Verkko-paneelissa klikkaamalla"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "Näytä tähän sääntöjoukkoon liittyvät esilataukset"
+    "message": "Näytä tähän sääntöjoukkoon liittyvät ennakoivat lataukset"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# virhe}other{# virhettä}}"
@@ -4416,10 +4392,10 @@
     "message": "Aloitussivu yritti esirenderöidä tämän sivun URL-osoitteen. Esirenderöinti epäonnistui, mutta tuloksena olevaa vastauksen leipätekstiä käytettiin kuitenkin esihakuna."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "Lue lisää esilataamisesta osoitteessa developers.chrome.com"
+    "message": "Lue lisää ennakoivasta lataamisesta osoitteessa developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "Aloitussivu ei yrittänyt esiladata sivun URL-osoitetta."
+    "message": "Aloitussivu ei yrittänyt ladata sivun URL-osoitetta ennakoivasti."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "Aloitussivu yritti esihakea tämän sivun URL-osoitteen, mutta esihaku epäonnistui, joten navigointi tehtiin kokonaan."
@@ -4428,10 +4404,7 @@
     "message": "Sivun esihaku onnistui."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "Aloittavan sivun esilataamat URL-osoitteet"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "Esilatauksen tila"
+    "message": "Aloittavan sivun ennakoivasti lataamat URL-osoitteet"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "Aloitussivu yritti esirenderöidä tämän sivun URL-osoitteen, mutta esirenderöinti epäonnistui, joten navigointi tehtiin kokonaan."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Sivun esirenderöinti onnistui."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "Animaatio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "Mainoshuutokauppa-worklet"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "raja-arvo saavutettu"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "Kanvas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "Leikepöytä"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "Hallinta"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "Laite"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "DOM-mutaatio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "Vedä/pudota"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "Maantieteellinen sijainti"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "Näppäimistö"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "Lataa"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "Media"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "Hiiri"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "Ilmoitus"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "Jäsennä"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "Kuva kuvassa"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "Osoitin"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "Skripti"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "Shared Storage ‐worklet"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "Ajastin"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "Kosketus"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "Trusted Type ‑rikkomukset"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "Ikkuna"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "Worker"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "Määritettä muokattu"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Poista kaikki lausekkeet"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "Poista tyhjä ilmaus"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "Poista lauseke"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Piilota elementti"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "Siirry mediapaneeliin"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "Liitä"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "Varoitettu"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{1 verkkosivusto saa pääsyn evästeisiin}other{# verkkosivustoa saa pääsyn evästeisiin}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Näytä kehyksen DOM-noodi Elementit-paneelissa klikkaamalla"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Valmis"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, alkuperäinen prioriteetti: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "taso 1"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Näytä lisää"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "Animaatiokehys laukaistu"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Tarjoajan tarjousvaiheen alku"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "Tarjoajan raportointivaiheen alku"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "Myyjän raportointivaiheen alku"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "Myyjän pisteytysvaiheen alku"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "Peru animaatiokehys"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "Sulje AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "Luo AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "Luo kanvaskonteksti"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "Käytäntörikkomukset"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "Pyynnön animaatiokehys"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "Jatka: AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "Content Security Policy ‑käytäntö esti komentosarjan"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "Komentosarjan ensimmäinen lause"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "Aseta innerHTML"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} laukaistu"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "Nielun rikkomukset"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "Keskeytä AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "WebGL-virhe laukaistu"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "WebGL-varoitus laukaistu"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Näytä kattavuuspaneeli klikkaamalla"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "Keskeytetty XHR:n tai hakutoiminnon kohdalla"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "Komentosarja estetty Content Security Policy ‑käytännön ohjeen vuoksi: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "alapuun muokkaukset"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Trusted Type, nielun rikkomus"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "WebGL-virhe laukaistu ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "Lisää pysäytyspiste"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Tätä toimintoa ei voi kumota."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "Haluatko varmasti poistaa kaikki tässä kansiossa olevat ohitukset?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "Haluatko varmasti poistaa tämän kansion ja sen sisällön?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Poista"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "Poista kaikki ohitukset"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Otettu käyttöön"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(nimettömät)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "Tarjoaja-worklet"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "Tarjoaja-worklet — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Erillinen Worker"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "Tapahtuma: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "Kehys — {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "Ensisijainen"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "Ensisijainen — {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "Rasteroijasäie {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "Myyjä-worklet"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "Myyjä-worklet – {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Otsikko {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "Huutokauppa-worklet"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "Huutokauppa-worklet – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "Huutokauppa-workletpalvelu"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "Huutokauppa-worklet-palvelu – {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Suorituskyvyn jäljityksen tallennusta ei tueta tällä kohdetyypillä"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Sijainti"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "Pitkä interaktio"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Pitkä tehtävä"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} on todennäköisesti suorituskyvyn pullonkaula."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} tarkoittaa, että sivun responsiivisuus on huono."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1}/{PH2}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "Ota käyttöön virtuaalinen todentajaympäristö"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "Kirjoita uusi nimi"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "Vie"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Näytä muistin tarkastaja"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "Kopioi"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Palaute"

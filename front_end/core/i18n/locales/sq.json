@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Tipat e besuar - Shkelje e politikës"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Përgatitu për heqjen e kukive të palëve të treta nga funksionimi"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "një i sigurt"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "an insecure"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "Dërgo informacione për defektin në kod"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "Atributet First-Party Sets dhe SameParty"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Nënprocesi {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "Worklet-i i ofruesit"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "Worklet-i i ofruesit - {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Worker i dedikuar"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "Worklet-i i shitësit"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "Worklet-i i shitësit - {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Nënprocesi {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "Worklet-i i ankandit"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "Worklet-i i ankandit - {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker - {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} - {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "Shërbimi i worklet-it të ankandit"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "Shërbimi i worklet-it të ankandit - {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(indeksi)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Dritaret e hapura"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "Ngarkimi paraprak"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Rifresko IndexedDB"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Po"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "Ngarkimet paraprake"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "Rregullat e spekulimit"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "Kjo faqe"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Kliko në çfarëdo raporti për të shfaqur tekstin"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Kliko për të zbuluar në panelin e \"Burimeve\""
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Politika e sigurisë së përmbajtjes"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "Kishte një skript reklame në (async) stack kur ky u krijua ky kuadër. Shqyrtimi i stack trace të krijimit të këtij kuadri mund të ofrojë më shumë njohuri."
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "Jo"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "Asnjë"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Origjina"
@@ -3990,7 +3966,7 @@
     "message": "Kodet e gjendjes private"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "Të gjitha ngarkimet paraprake"
+    "message": "Të gjitha ngarkimet spekulative"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "Filtro sipas paketës së rregullave"
@@ -4059,22 +4035,22 @@
     "message": "Inspekto"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "Ngarkimi paraprak dështoi."
+    "message": "Ngarkimi spekulativ dështoi."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "Përpjekja për ngarkimin paraprak nuk është aktivizuar ende."
+    "message": "Përpjekja për ngarkimin spekulativ nuk është aktivizuar ende."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "Përpjekja për ngarkimin paraprak është e përshtatshme, por në pritje."
+    "message": "Përpjekja për ngarkimin spekulativ është e përshtatshme, por në pritje."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "Ngarkimi paraprak përfundoi dhe rezultati është gati për navigimin e radhës."
+    "message": "Ngarkimi spekulativ përfundoi dhe rezultati është gati për navigimin e radhës."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "Ngarkimi paraprak është në ekzekutim."
+    "message": "Ngarkimi spekulativ është në ekzekutim."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "Ngarkimi paraprak përfundoi dhe u përdor për një navigim."
+    "message": "Ngarkimi spekulativ përfundoi dhe u përdor për një navigim."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "Veprimi"
@@ -4095,10 +4071,10 @@
     "message": "Zgjidh një element për më shumë detaje"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "Ngarkimi paraprak është çaktivizuar për shkak të modalitetit të \"Kursyesit të baterisë\" të sistemit operativ."
+    "message": "Ngarkimi spekulativ është çaktivizuar për shkak të modalitetit të \"Kursyesit të baterisë\" të sistemit operativ."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "Ngarkimi paraprak është çaktivizuar për shkak të modalitetit të \"Kursyesit të të dhënave\" të sistemit operativ."
+    "message": "Ngarkimi spekulativ është çaktivizuar për shkak të modalitetit të \"Kursyesit të të dhënave\" të sistemit operativ."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "Marrja paraprake është aktivizuar me detyrim sepse DevTools është hapur. Kur DevTools është i mbyllur, marrja paraprake do të çaktivizohet sepse kjo seancë shfletuesi është pjesë e një grupi kontrolli që përdoret për krahasimet e performancës."
@@ -4107,7 +4083,7 @@
     "message": "Paraqitja paraprake është aktivizuar me detyrim sepse DevTools është hapur. Kur DevTools është i mbyllur, paraqitja paraprake do të çaktivizohet sepse kjo seancë shfletuesi është pjesë e një grupi kontrolli që përdoret për krahasimet e performancës."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "Ngarkimi paraprak është çaktivizuar për shkak të cilësimeve të përdoruesit ose një shtese. Shko te {PH1} për të përditësuar preferencën tënde. Shko te {PH2} për të çaktivizuar çdo shtesë që bllokon ngarkimin paraprak."
+    "message": "Ngarkimi spekulativ është çaktivizuar për shkak të cilësimeve të përdoruesit ose një shtese. Shko te {PH1} për të përditësuar preferencën tënde. Shko te {PH2} për të çaktivizuar çdo shtesë që bllokon ngarkimin spekulativ."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "Cilësimet e shtesave"
@@ -4131,16 +4107,16 @@
     "message": "Cilësimet ose shtesat e përdoruesit"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "Ngarkimi paraprak është çaktivizuar"
+    "message": "Ngarkimi spekulativ është çaktivizuar"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "Ngarkimi paraprak është aktivizuar me detyrim"
+    "message": "Ngarkimi spekulativ është aktivizuar me detyrim"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "Cilësimet për ngarkimin paraprak të faqeve"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "Arsyet që parandalojnë ngarkimin paraprak"
+    "message": "Arsyet që parandalojnë ngarkimin spekulativ"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Veprimi"
@@ -4200,7 +4176,7 @@
     "message": "URL-ja nuk kualifikohej për t'u marrë paraprakisht sepse ajo përdor një ndarje të hapësirës ruajtëse që nuk është e parazgjedhur."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "Marrja paraprake nuk u krye sepse ngarkimi paraprak ishte çaktivizuar."
+    "message": "Marrja paraprake nuk u krye sepse ngarkimi spekulativ ishte çaktivizuar."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "URL-ja nuk kualifikohej për t'u marrë paraprakisht sepse konteksti i rrjetit të parazgjedhur nuk mund të konfigurohet për të përdorur serverin proxy të marrjes paraprake për një kërkesë të marrjes paraprake me origjinë të kryqëzuar të të njëjtit sajt."
@@ -4287,13 +4263,13 @@
     "message": "Faqja e paraqitur paraprakisht u drejtua vetë te një URL tjetër, e cila nuk mbështetet aktualisht."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "Paraqitja paraprake nuk u krye sepse faqja e nisjes ka tashmë shumë paraqitje paraprake në vazhdim. Hiq rregullat e tjera të spekulimit për të aktivizuar paraqitjen e mëtejshme paraprake."
+    "message": "Paraqitja paraprake, për të cilën \"eagerness\" është caktuar në \"eager\", nuk u krye sepse faqja e nisjes ka tashmë shumë paraqitje paraprake në vazhdim. Hiq rregullat e tjera të spekulimit me \"eager\" për të mundësuar paraqitjen paraprake të mëtejshme."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "Paraqitja paraprake nuk u krye sepse faqja e nisjes ka tashmë shumë paraqitje paraprake në vazhdim."
+    "message": "Paraqitja paraprake e aktivizuar nga shfletuesi nuk u krye sepse faqja e nisjes ka tashmë shumë paraqitje paraprake në vazhdim."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "Paraqitja paraprake nuk u krye sepse faqja e nisjes ka tashmë shumë paraqitje paraprake në vazhdim. Hiq rregullat e tjera të spekulimit për të aktivizuar paraqitjen e mëtejshme paraprake."
+    "message": "Paraqitja paraprake e vjetër jo \"eager\" (me \"eagerness\" të caktuar në \"mesatare\" ose \"konservatore\" duke qëndruar pezull mbi lidhjet ose duke klikuar tek ato) është anuluar automatikisht për shkak të nisjes së një paraqitjeje paraprake të re jo \"eager\". Ajo mund të aktivizohet përsëri duke ndërvepruar përsëri me lidhjen."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "Paraqitja paraprake nuk u krye sepse shfletuesi e kaloi kufirin e memories për paraqitjen paraprake."
@@ -4395,7 +4371,7 @@
     "message": "Kliko për të zbuluar në panelin \"Rrjeti\""
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "Shfaq ngarkimet paraprake të lidhura me këtë grup rregullash"
+    "message": "Shfaq ngarkimet spekulative të lidhura me këtë grup rregullash"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# gabim}other{# gabime}}"
@@ -4416,10 +4392,10 @@
     "message": "Faqja e nisjes u përpoq të paraqiste paraprakisht URL-në e kësaj faqeje. Paraqitësi paraprak dështoi, por trupi pasues i përgjigjes u përdor përsëri si marrje paraprake."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "Mëso më shumë: Ngarkimi paraprak në developer.chrome.com"
+    "message": "Mëso më shumë: Ngarkimi spekulativ në developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "Faqja e nisjes nuk u përpoq të ngarkonte paraprakisht URL-në e kësaj faqeje"
+    "message": "Faqja e nisjes nuk u përpoq të ngarkonte në mënyrë spekulative URL-në e kësaj faqeje"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "Faqja e nisjes u përpoq të merrte paraprakisht URL-në e kësaj faqeje, por marrja paraprake dështoi, prandaj u krye një navigim i plotë në vend të saj."
@@ -4428,10 +4404,7 @@
     "message": "Kjo faqe është marrë paraprakisht me sukses."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "URL-të që po ngarkohen paraprakisht nga faqja e nisjes"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "Statusi i ngarkimit paraprak"
+    "message": "URL-të që po ngarkohen në mënyrë spekulative nga faqja e nisjes"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "Faqja e nisjes u përpoq të paraqiste paraprakisht URL-në e kësaj faqeje, por paraqitja paraprake dështoi, prandaj u krye një navigim i plotë në vend të saj."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Kjo faqe është paraqitur paraprakisht me sukses."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "Animacion"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "Worklet e ankandit të reklamave"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ndeshja e pikës së ndërprerjes"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "Kanavaca"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "Kujtesa e fragmenteve"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "Kontroll"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "Pajisja"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "Shndërrimi i DOM"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "Zvarrit / lësho"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "Vendndodhja gjeografike"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "Tastiera"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "Ngarko"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "Media"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "Miu"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "Njoftimi"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "Analizo"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "Figurë brenda figurës"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "Kursori"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "Skript"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "Worklet-i i Shared Storage"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "Kohëmatësi"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "Prek"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "Shkeljet e llojeve të besuara"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "Dritare"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "Punonjës"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "Atributi i modifikuar"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Hiq të gjitha shprehjet"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "Hiq shprehjen bosh"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "Hiq shprehjen"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Fshih elementin"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "Kalo te \"Paneli i medias\""
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "Ngjit"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "Paralajmëruar"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{1 uebsajt lejohet të ketë qasje te kukit}other{# uebsajte lejohen të kenë qasje te kukit}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Kliko për të zbuluar nyjën DOM të kuadrit në panelin \"Elementet\""
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Përfunduar!"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, Përparësia fillestare: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "niveli 1"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Shfaq më shumë"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "U aktivizua kuadri i animacionit"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Nisja e fazës së ofertimit të ofertuesit"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "Nisja e fazës së raportimit të ofertuesit"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "Nisja e fazës së raportimit të shitësit"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "Nisja e fazës së pikëve të shitësit"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "Anulo kornizën e animacionit"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "Mbyll AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "Krijo AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "Krijo kontekstin e kanavacës"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "Shkelje të politikave"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "Kërko kuadrin e animacionit"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "Vazhdoje AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "Skripti u bllokua nga \"Politika e sigurisë së përmbajtjes\""
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "Deklarata e parë e skriptit"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "Cakto innerHTML"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} u aktivizua"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "Shkelje të Sink"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "Pezullo AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "U shfaq gabim i WebGL"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "U aktivizua paralajmërimi i WebGL"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Kliko për të shfaqur \"Panelin e mbulimit\""
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "Vendosur në pauzë në XHR ose nxjerrje"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "Skripti u bllokua për shkak të direktivës së \"Politikës së sigurisë së përmbajtjes\": {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "Modifikimet e nënpemës"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Shkelje e Trusted Type Sink"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "U aktivizua gabim i WebGL ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "Shto pikën e ndërprerjes"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Ky veprim nuk mund të zhbëhet."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "E konfirmon që dëshiron të fshish të gjitha anulimet në këtë dosje?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "E konfirmon që dëshiron ta fshish këtë dosje dhe përmbajtjet e saj?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Fshi"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "Fshi të gjitha anulimet"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Shpërndarë"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(anonim)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "Worklet-i i ofruesit"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "Worklet-i i ofruesit - {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Worker i dedikuar"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "Ngjarja: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "Kuadri - {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "Kryesor"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "Kryesore - {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "Nënprocesi i rasterizuesit {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "Worklet-i i shitësit"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "Worklet-i i shitësit - {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Nënprocesi {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "Worklet-i i ankandit"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "Worklet-i i ankandit - {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker - {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} - {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "Shërbimi i worklet-it të ankandit"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "Shërbimi i worklet-it të ankandit - {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Regjistrimi i gjurmimit të cilësisë së funksionimit nuk mbështetet për këtë lloj objektivi"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Vendndodhja"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "Ndërveprimi i gjatë"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Detyrë e gjatë"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} ka gjasë të jetë pengesë performance."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} po tregon reagueshmëri të dobët të faqes."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} nga {PH2}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "Aktivizo mjedisin e vërtetuesit virtual"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "Fut emër të ri"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "Eksporto"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Shfaq \"Inspektuesin e memories\""
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "Kopjo"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Komentet"

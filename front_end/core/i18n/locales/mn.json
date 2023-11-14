@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Итгэмжлэгдсэн төрөл - Бодлого зөрчигдсөн"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Гуравдагч талын күүкиг үе шаттайгаар гаргахад бэлтгэх"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "аюулгүй"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "аюултай"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "Алдааг мэдээлэх"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets болон SameParty атрибут"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Thread {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "Bidder Worklet"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "Bidder Worklet — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Зориулалтын Worker"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "Seller Worklet"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "Seller Worklet — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Thread {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "Auction Worklet"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "Auction Worklet — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "Auction Worklet Service"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "Auction Worklet Service — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(индекс)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Нээсэн цонхнууд"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "Урьдчилан ачаалах"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "IndexedDB-г сэргээх"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Тийм"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "Урьдчилан ачаалал"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "Таамаглалын дүрмүүд"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "Энэ хуудас"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Дурын тайлан дээр товшиж, үндсэн хэсгийг нь үзүүлнэ үү"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Эх сурвалжийн түр зуурын самбарт харуулахын тулд товших"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Контентын аюулгүй байдлын бодлого (CSP)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "Энэ фреймийг үүсгэх үед (async) stack-д зарын скрипт байсан. Энэ фреймийн үүсгэлийн stack trace-г шалгаснаар илүү их статистикийг өгч магадгүй."
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "Үгүй"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "Байхгүй"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Эх"
@@ -3990,7 +3966,7 @@
     "message": "Хувийн төлөвийн токенууд"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "Бүх урьдчилан ачаалал"
+    "message": "Бүх таамаглан ачаалах"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "Дүрмийн багцаар шүүх"
@@ -4059,22 +4035,22 @@
     "message": "Шалгах"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "Урьдчилан ачаалж чадсангүй."
+    "message": "Таамаглан ачаалах амжилтгүй болсон."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "Урьдчилан ачаалах оролдлогыг одоогоор идэвхжүүлээгүй байна."
+    "message": "Таамаглан ачаалах оролдлогыг одоогоор идэвхжүүлээгүй байна."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "Урьдчилан ачаалах оролдлого зохих эрхтэй ч хүлээгдэж байна."
+    "message": "Таамаглан ачаалах оролдлого зохих эрхтэй ч хүлээгдэж байна."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "Урьдчилан ачаалж дууссан бөгөөд үр дүн нь дараагийн шилжилтэд бэлэн байна."
+    "message": "Таамаглан ачаалж дууссан бөгөөд үр дүн нь дараагийн шилжилтэд бэлэн байна."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "Урьдчилан ачаалж байна."
+    "message": "Таамаглан ачаалж байна."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "Урьдчилан ачаалж дууссан бөгөөд навигацад ашигласан."
+    "message": "Таамаглан ачаалж дууссан бөгөөд навигацад ашигласан."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "Үйлдэл"
@@ -4095,10 +4071,10 @@
     "message": "Дэлгэрэнгүй мэдээлэл авахын тулд нэг элемент сонгоно уу"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "Үйлдлийн системийн Батарей хэмнэгч горимын улмаас урьдчилан ачаалахыг идэвхгүй болгосон."
+    "message": "Үйлдлийн системийн Батарей хэмнэгч горимын улмаас таамаглан ачаалахыг идэвхгүй болгосон."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "Үйлдлийн системийн Дата хэмнэгч горимын улмаас урьдчилан ачаалахыг идэвхгүй болгосон."
+    "message": "Үйлдлийн системийн Дата хэмнэгч горимын улмаас таамаглан ачаалахыг идэвхгүй болгосон."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "DevTools нээлттэй тул урьдчилан дуудалтыг хүчээр идэвхжүүлсэн. DevTools хаалттай үед энэ хөтчийн харилцан үйлдэл нь гүйцэтгэлийн харьцуулалт хийхэд ашигладаг хүлээлгэх бүлгийн нэг хэсэг тул урьдчилан дуудахыг идэвхгүй болгоно."
@@ -4107,7 +4083,7 @@
     "message": "DevTools нээлттэй байгаа тул урьдчилан рэндэрлэхийг албадан идэвхжүүлсэн. DevTools хаалттай үед энэ хөтчийн харилцан үйлдэл нь гүйцэтгэлийн харьцуулалт хийхэд ашигладаг саатуулах бүлгийн нэг хэсэг тул урьдчилан рэндэрлэхийг идэвхгүй болгоно."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "Хэрэглэгчийн тохиргоо эсвэл өргөтгөлийн улмаас урьдчилан ачаалахыг идэвхгүй болгосон. Сонголтоо шинэчлэхийн тулд {PH1} руу очно уу. Урьдчилан ачааллыг блоклох аливаа өргөтгөлийг идэвхгүй болгохын тулд {PH2} руу очно уу."
+    "message": "Хэрэглэгчийн тохиргоо эсвэл өргөтгөлийн улмаас таамаглан ачаалахыг идэвхгүй болгосон. Сонголтоо шинэчлэхийн тулд {PH1} руу очно уу. Таамаглан ачаалахыг блоклох аливаа өргөтгөлийг идэвхгүй болгохын тулд {PH2} руу очно уу."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "Өргөтгөлүүдийн тохиргоо"
@@ -4131,16 +4107,16 @@
     "message": "Хэрэглэгчийн тохиргоо эсвэл өргөтгөл"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "Урьдчилан ачаалахыг идэвхгүй болгосон"
+    "message": "Таамаглан ачаалахыг идэвхгүй болгосон"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "Урьдчилан ачаалахыг хүчээр идэвхжүүлсэн"
+    "message": "Таамаглан ачаалахыг хүчээр идэвхжүүлсэн"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "Хуудаснуудыг урьдчилан ачаалах тохиргоо"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "Урьдчилан ачаалахаас сэргийлж буй шалтгаанууд"
+    "message": "Таамаглан ачаалахаас сэргийлж буй шалтгаанууд"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Үйлдэл"
@@ -4200,7 +4176,7 @@
     "message": "URL нь өгөгдмөл бус хадгалах сангийн хуваалт ашигладаг тул энэ нь урьдчилан дуудуулах зохих эрхгүй байсан."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "Урьдчилан ачаалахыг идэвхгүй болгосон тул урьдчилан дуудахыг гүйцэтгээгүй."
+    "message": "Таамаглан ачаалахыг идэвхгүй болгосон тул урьдчилан дуудахыг гүйцэтгээгүй."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "Өгөгдмөл сүлжээний хам сэдвийг ижил сайтын эх хоорондын урьдчилан дуудах хүсэлтэд урьдчилан дуудах проксиг ашиглахаар тохируулах боломжгүй тул URL нь урьдчилан дуудуулах зохих эрхгүй байсан."
@@ -4287,13 +4263,13 @@
     "message": "Урьдчилан рэндэрлэсэн хуудас өөрийгөө өөр URL руу шилжүүлсэн бөгөөд үүнийг одоогоор дэмждэггүй."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "Эхлүүлэх хуудсанд аль хэдийн хэт олон урьдчилсан рэндэр хийгдэж байсан тул урьдчилсан рэндэрийг гүйцэтгээгүй. Цаашид урьдчилан рэндэрлэхийг идэвхжүүлэхийн тулд бусад таамаглалын дүрмийг хасна уу."
+    "message": "Эхлүүлэх хуудсанд аль хэдийн хэт олон урьдчилан рэндэр хийгдэж байсан тул eagerness нь \"eager\" болох урьдчилан рэндэрийг гүйцэтгээгүй. Цааш нь урьдчилан рэндэрлэхийг идэвхжүүлэхийн тулд \"eager\"-тэй таамаглалын бусад дүрмийг хасна уу."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "Эхлүүлэх хуудсанд аль хэдийн хэт олон урьдчилсан рэндэр хийгдэж байсан тул урьдчилсан рэндэрийг гүйцэтгээгүй."
+    "message": "Эхлүүлэх хуудсанд аль хэдийн хэт олон урьдчилсан рэндэр хийгдэж байсан тул хөтчийн идэвхжүүлсэн урьдчилсан рэндэрийг гүйцэтгээгүй."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "Эхлүүлэх хуудсанд аль хэдийн хэт олон урьдчилсан рэндэр хийгдэж байсан тул урьдчилсан рэндэрийг гүйцэтгээгүй. Цаашид урьдчилан рэндэрлэхийг идэвхжүүлэхийн тулд бусад таамаглалын дүрмийг хасна уу."
+    "message": "Шинэ eager бус урьдчилан рэндэр эхлүүлсний улмаас хуучин eager бус урьдчилан рэндэрийг (\"дундаж\" эсвэл \"бага\" eagerness-тэй, холбоосны дээгүүр хулганыг зөөх эсвэл товшсоноор идэвхжүүлсэн) автоматаар цуцалсан. Үүнийг холбоостой дахин харилцан үйлдэл хийснээр дахин идэвхжүүлэх боломжтой."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "Хөтөч урьдчилан рэндэрлэх санах ойн хязгаараас хэтэрсэн тул урьдчилсан рэндэрийг гүйцэтгээгүй."
@@ -4395,7 +4371,7 @@
     "message": "Сүлжээний самбарт харуулахын тулд товшино уу"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "Энэ дүрмийн багцтай холбоотой урьдчилан ачааллуудыг харуулах"
+    "message": "Энэ дүрмийн багцтай холбоотой таамаглан ачаалахыг харуулах"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# алдаа}other{# алдаа}}"
@@ -4416,10 +4392,10 @@
     "message": "Эхлүүлэх хуудас нь энэ хуудасны URL-г урьдчилан рэндэрлэхээр оролдсон. Урьдчилан рэндэрлэх амжилтгүй болсон ч үр дүнд нь гарсан хариуны хэсгийг урьдчилан дуудалтаар үргэлжлүүлэн ашигласан."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "Нэмэлт мэдээлэл авах: Developer.chrome.com-д урьдчилан ачаалах"
+    "message": "Нэмэлт мэдээлэл авах: Developer.chrome.com-д таамаглан ачаалж байна"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "Эхлүүлэх хуудас нь энэ хуудасны URL-г урьдчилан ачаалах оролдлого хийгээгүй."
+    "message": "Эхлүүлэх хуудас нь энэ хуудасны URL-г таамаглан ачаалах оролдлого хийгээгүй."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "Эхлүүлэх хуудас нь энэ хуудасны URL-г урьдчилан дуудахаар оролдсон ч урьдчилан дуудаж чадаагүй тул оронд нь бүтэн навигацыг гүйцэтгэсэн."
@@ -4428,10 +4404,7 @@
     "message": "Энэ хуудсыг амжилттай урьдчилан дуудсан."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "URL-уудыг эхлүүлэх хуудас урьдчилан ачаалж байна"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "Урьдчилан ачаалах төлөв"
+    "message": "URL-уудыг эхлүүлэх хуудас таамаглан ачаалж байна"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "Эхлүүлэх хуудас нь энэ хуудасны URL-г урьдчилан рэндэрлэхээр оролдсон ч урьдчилан рэндэрлэж чадаагүй тул оронд нь бүтэн навигацыг гүйцэтгэсэн."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Энэ хуудсыг амжилттай урьдчилан рэндэрлэсэн."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "Анимаци"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "Ad Auction Worklet"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "хугарлын цэгт хүрэх"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "Канвас"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "Түр санах ой"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "Хяналт"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "Төхөөрөмж"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "DOM Mutation"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "Чирэх / буулгах"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "Геолокаци"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "Гар"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "Ачаалах"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "Медиа"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "Хулгана"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "Мэдэгдэл"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "Шинжлэх"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "Дэлгэц доторх дэлгэц"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "Заагч"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "Скрипт"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "Shared Storage Worklet"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "Цаг хэмжигч"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "Хүрэх"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "Итгэмжлэгдсэн төрлийн зөрчил"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "Цонх"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "Ажилтан"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "Атрибутыг өөрчилсөн"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Бүх илэрхийллийг хасах"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "Хоосон илэрхийллийг хасах"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "Илэрхийллийг хасах"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Элементийг нуух"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "Медиагийн түр зуурын самбар луу очих"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "Буулгах"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "Сануулсан"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{1 вебсайтыг күүкинүүдэд хандахыг зөвшөөрсөн}other{# вебсайтыг күүкинүүдэд хандахыг зөвшөөрсөн}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Элементийн түр зуурын самбарт фреймийн DOM-н зангилааг харуулахын тулд товшино уу"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Дууссан"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, Анхны чухалчлал: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "1-р түвшин"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Дэлгэрэнгүй харуулах"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "Анимацийн фреймийг идэвхжүүлсэн"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Bidder Bidding Phase Start"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "Bidder Reporting Phase Start"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "Seller Reporting Phase Start"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "Seller Scoring Phase Start"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "Анимацийн фреймийг цуцлах"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "AudioContext-г хаах"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "AudioContext үүсгэх"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "Канвасын хам сэдэв үүсгэх"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "Бодлого зөрчигдсөн"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "Анимацийн фреймийг хүсэх"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "AudioContext-г үргэлжлүүлэх"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "Контентын аюулгүй байдлын бодлогоор блоклосон скрипт"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "Скриптийн эхний мэдэгдэл"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "innerHTML-г тохируулах"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1}-г идэвхжүүлсэн"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "Тосгуурын зөрчил"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "AudioContext-г түр хаах"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "WebGL-н алдааг идэвхжүүлсэн"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "WebGL-н сануулгыг идэвхжүүлсэн"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Хамрах хүрээний түр зуурын самбарыг харуулахын тулд товшино уу"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "XHR эсвэл дуудалтад түр зогсоосон"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "Контентын аюулгүй байдлын бодлогын удирдамжийн улмаас скриптийг блоклосон: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "дэд модны өөрчлөлт"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Trusted Type-н тосгуурын зөрчил"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "WebGL-н алдааг идэвхжүүлсэн ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "Хугарлын цэг нэмэх"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Энэ үйлдлийг буцаах боломжгүй."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "Та энэ фолдерын бүх дарах механизмыг устгахдаа итгэлтэй байна уу?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "Та энэ фолдер болон үүний контентуудыг устгахдаа итгэлтэй байна уу?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Устгах"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "Бүх дарах механизмыг устгах"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Түгээн байрлуулсан"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(нэргүй)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "Bidder Worklet"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "Bidder Worklet — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Зориулалтын Worker"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "Үйл явдал: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "Фрейм — {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "Үндсэн"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "Үндсэн — {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "Растер хийгчийн уялдаат {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "Seller Worklet"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "Seller Worklet — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Дэд процесс {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "Auction Worklet"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "Auction Worklet — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "Auction Worklet Service"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "Auction Worklet Service — {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Энэ төрлийн зорилтын хувьд гүйцэтгэлийн ул мөрийг бичихийг дэмждэггүй"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Байршил"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "Удаан харилцан үйлдэл"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Урт хугацаатай ажил"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} нь гүйцэтгэлийн гацаа байж магадгүй."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} нь хуудасны муу хариу үйлдэлт байдлыг зааж байна."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2}-н {PH1}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "Виртуал authenticator орчныг идэвхжүүлэх"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "Шинэ нэр оруулах"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "Экспорт хийх"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Санах ой шалгагчийг харуулах"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "Хуулах"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Санал хүсэлт"

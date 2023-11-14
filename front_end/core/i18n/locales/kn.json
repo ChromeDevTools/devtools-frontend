@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "ವಿಶ್ವಾಸಾರ್ಹ ಪ್ರಕಾರಗಳು - ನೀತಿ ಉಲ್ಲಂಘನೆ"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "ಥರ್ಡ್-ಪಾರ್ಟಿ ಕುಕೀಗಳನ್ನು ಹಂತಹಂತವಾಗಿ ತೆಗೆದುಹಾಕಲು ಸಿದ್ಧರಾಗಿ"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "ಸುರಕ್ಷಿತ"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "ಅಸುರಕ್ಷಿತ"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "ಬಗ್ ಅನ್ನು ವರದಿ ಮಾಡಿ"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets ಮತ್ತು SameParty ಗುಣಲಕ್ಷಣಗಳು"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "ಥ್ರೆಡ್ {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "ಬಿಡ್ಡರ್ ವರ್ಕ್‌ಲೆಟ್"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "ಬಿಡ್ಡರ್ ವರ್ಕ್‌ಲೆಟ್ — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "ಮೀಸಲು ಕೆಲಸಗಾರ Worker"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "ಮಾರಾಟಗಾರರ ವರ್ಕ್‌ಲೆಟ್"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "ಮಾರಾಟಗಾರರ ವರ್ಕ್‌ಲೆಟ್ — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "ಥ್ರೆಡ್ {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "ಆಕ್ಷನ್ ವರ್ಕ್‌ಲೆಟ್"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "ಆಕ್ಷನ್ ವರ್ಕ್‌ಲೆಟ್ — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "ಆಕ್ಷನ್ ವರ್ಕ್‌ಲೆಟ್ ಸೇವೆ"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "ಆಕ್ಷನ್ ವರ್ಕ್‌ಲೆಟ್ ಸೇವೆ — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(ಸೂಚಿಕೆ)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "ತೆರೆದಿರುವ Windows"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "ಪ್ರಿಲೋಡಿಂಗ್"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "IndexedDB ಅನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಿ"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "ಹೌದು"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "ಪ್ರಿಲೋಡ್‌ಗಳು"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "ಊಹೆಗೆ ಸಂಬಂಧಿಸಿದ ನಿಯಮಗಳು"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "ಈ ಪುಟ"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "ಅದರ ಮುಖ್ಯ ಭಾಗವನ್ನು ಡಿಸ್‌ಪ್ಲೇ ಮಾಡಲು ಯಾವುದಾದರೂ ವರದಿಯ ಮೇಲೆ ಕ್ಲಿಕ್ ಮಾಡಿ"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "ಮೂಲಗಳ ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ ಬಹಿರಂಗಪಡಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "ಕಂಟೆಂಟ್ ಸುರಕ್ಷತಾ ನೀತಿ (CSP)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "ಈ ಫ್ರೇಮ್ ಅನ್ನು ರಚಿಸಿದಾಗ (async) stack ನಲ್ಲಿ ಜಾಹೀರಾತು ಸ್ಕ್ರಿಪ್ಟ್ ಇತ್ತು. ಈ ಫ್ರೇಮ್ ಅನ್ನು ರಚಿಸುವಾಗ ನೀವು ಹೆಚ್ಚು ವಿವರವಾದ ಮಾಹಿತಿಯನ್ನು stack trace ನಲ್ಲಿ ನೋಡಲು ಸಾಧ್ಯವಾಗುತ್ತದೆ."
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "ಇಲ್ಲ"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "ಯಾವುದೂ ಅಲ್ಲ"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "ಮೂಲ"
@@ -3990,7 +3966,7 @@
     "message": "ಖಾಸಗಿ ಸ್ಥಿತಿಯ ಟೋಕನ್‌ಗಳು"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "ಎಲ್ಲಾ ಪ್ರಿಲೋಡ್‌ಗಳು"
+    "message": "ಎಲ್ಲಾ ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡ್‌ಗಳು"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "ರೂಲ್ ಸೆಟ್‌ ಪ್ರಕಾರ ಫಿಲ್ಟರ್ ಮಾಡಿ"
@@ -4059,22 +4035,22 @@
     "message": "ಪರಿಶೀಲಿಸಿ"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "ಪ್ರಿಲೋಡಿಂಗ್ ವಿಫಲವಾಗಿದೆ."
+    "message": "ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡ್ ವಿಫಲವಾಗಿದೆ."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "ಪ್ರಿಲೋಡಿಂಗ್ ಪ್ರಯತ್ನವನ್ನು ಇನ್ನೂ ಟ್ರಿಗರ್ ಮಾಡಲಾಗಿಲ್ಲ."
+    "message": "ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡ್ ಪ್ರಯತ್ನವನ್ನು ಇನ್ನೂ ಟ್ರಿಗರ್ ಮಾಡಲಾಗಿಲ್ಲ."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "ಪ್ರಿಲೋಡಿಂಗ್ ಪ್ರಯತ್ನ ಅರ್ಹವಾಗಿದೆ ಆದರೆ ಬಾಕಿ ಉಳಿದಿದೆ."
+    "message": "ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡ್ ಪ್ರಯತ್ನ ಅರ್ಹವಾಗಿದೆ ಆದರೆ ಬಾಕಿ ಉಳಿದಿದೆ."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "ಪ್ರಿಲೋಡಿಂಗ್ ಮುಗಿದಿದೆ ಮತ್ತು ಫಲಿತಾಂಶವು ಮುಂದಿನ ನ್ಯಾವಿಗೇಶನ್‌ಗೆ ಸಿದ್ಧವಾಗಿದೆ."
+    "message": "ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡ್ ಪೂರ್ಣಗೊಂಡಿದೆ ಮತ್ತು ಫಲಿತಾಂಶವು ಮುಂದಿನ ನ್ಯಾವಿಗೇಶನ್‌ಗೆ ಸಿದ್ಧವಾಗಿದೆ."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "ಪ್ರಿಲೋಡಿಂಗ್ ರನ್ ಆಗುತ್ತಿದೆ."
+    "message": "ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡ್ ರನ್ ಆಗುತ್ತಿದೆ."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "ಪ್ರಿಲೋಡಿಂಗ್ ಮುಗಿದಿದೆ ಮತ್ತು ನ್ಯಾವಿಗೇಷನ್‌ಗಾಗಿ ಬಳಸಲಾಗಿದೆ."
+    "message": "ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡ್ ಪೂರ್ಣಗೊಂಡಿದೆ ಮತ್ತು ನ್ಯಾವಿಗೇಷನ್‌ಗಾಗಿ ಬಳಸಲಾಗಿದೆ."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "ಕ್ರಿಯೆ"
@@ -4095,10 +4071,10 @@
     "message": "ಹೆಚ್ಚಿನ ವಿವರಗಳಿಗಾಗಿ ಘಟಕವೊಂದನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "ಆಪರೇಟಿಂಗ್ ಸಿಸ್ಟಮ್‌ನ ಬ್ಯಾಟರಿ ಸೇವರ್ ಮೋಡ್‌ನಿಂದಾಗಿ ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
+    "message": "ಆಪರೇಟಿಂಗ್ ಸಿಸ್ಟಮ್‌ನ ಬ್ಯಾಟರಿ ಸೇವರ್ ಮೋಡ್‌ನ ಕಾರಣದಿಂದ ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "ಆಪರೇಟಿಂಗ್ ಸಿಸ್ಟಮ್‌ನ ಡೇಟಾ ಉಳಿಸುವಿಕೆ ಮೋಡ್‌ನಿಂದಾಗಿ ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
+    "message": "ಆಪರೇಟಿಂಗ್ ಸಿಸ್ಟಮ್‌ನ ಡೇಟಾ ಉಳಿಸುವಿಕೆ ಮೋಡ್‌ನ ಕಾರಣದಿಂದ ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "DevTools ತೆರೆದಿರುವ ಕಾರಣ ಪ್ರಿಫೆಚ್ ಅನ್ನು ಬಲವಂತವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. DevTools ಅನ್ನು ಮುಚ್ಚಿದಾಗ, ಈ ಬ್ರೌಸರ್ ಸೆಶನ್ ಕಾರ್ಯಕ್ಷಮತೆಯನ್ನು ಹೋಲಿಸಲು ಬಳಸಲಾಗುವ ಹೋಲ್ಡ್‌ಬ್ಯಾಕ್ ಗುಂಪಿನ ಭಾಗವಾಗಿರುವುದರಿಂದ ಪ್ರಿಫೆಚ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತದೆ."
@@ -4107,7 +4083,7 @@
     "message": "DevTools ತೆರೆದಿರುವ ಕಾರಣ ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ಒತ್ತಾಯವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. DevTools ಅನ್ನು ಮುಚ್ಚಿದಾಗ, ಈ ಬ್ರೌಸರ್ ಸೆಶನ್ ಕಾರ್ಯಕ್ಷಮತೆಯನ್ನು ಹೋಲಿಸಲು ಬಳಸಲಾಗುವ ಹೋಲ್ಡ್‌ಬ್ಯಾಕ್ ಗುಂಪಿನ ಭಾಗವಾಗಿರುವುದರಿಂದ ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗುತ್ತದೆ."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "ಬಳಕೆದಾರರ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಅಥವಾ ವಿಸ್ತರಣೆಯೊಂದರ ಕಾರಣ ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. ನಿಮ್ಮ ಆದ್ಯತೆಯನ್ನು ಅಪ್‌ಡೇಟ್‌ ಮಾಡಲು {PH1} ಗೆ ಹೋಗಿ. ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ನಿರ್ಬಂಧಿಸುವ ಯಾವುದೇ ವಿಸ್ತರಣೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು {PH2} ಗೆ ಹೋಗಿ."
+    "message": "ಬಳಕೆದಾರರ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಅಥವಾ ಎಕ್ಸ್‌ಟೆನ್ಶನ್ ಒಂದರ ಕಾರಣ ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. ನಿಮ್ಮ ಆದ್ಯತೆಯನ್ನು ಅಪ್‌ಡೇಟ್‌ ಮಾಡಲು {PH1} ಗೆ ಹೋಗಿ. ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡಿಂಗ್ ಅನ್ನು ನಿರ್ಬಂಧಿಸುವ ಯಾವುದೇ ವಿಸ್ತರಣೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು {PH2} ಗೆ ಹೋಗಿ."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "ವಿಸ್ತರಣೆಗಳ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
@@ -4131,16 +4107,16 @@
     "message": "ಬಳಕೆದಾರರ ಸೆಟ್ಟಿಂಗ್‌ಗಳು ಅಥವಾ ಎಕ್ಸ್‌ಟೆನ್ಶನ್‌ಗಳು"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
+    "message": "ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "ಪ್ರಿಲೋಡಿಂಗ್ ಅನ್ನು ಬಲವಂತವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
+    "message": "ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡಿಂಗ್ ಅನ್ನು ಬಲವಂತವಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "ಪುಟಗಳ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಪ್ರಿಲೋಡ್ ಮಾಡಿ"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "ಪೂರ್ವ ಪ್ರಿಲೋಡ್ ಮಾಡುವುದನ್ನು ತಡೆಯುವ ಕಾರಣಗಳು"
+    "message": "ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡಿಂಗ್ ಅನ್ನು ತಡೆಗಟ್ಟುವ ಕಾರಣಗಳು"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "ಕ್ರಿಯೆ"
@@ -4200,7 +4176,7 @@
     "message": "ಡೀಫಾಲ್ಟ್ ಅಲ್ಲದ ಸಂಗ್ರಹಣೆ ಪಾರ್ಟಿಶನ್ ಬಳಸುವುದರಿಂದ URL ಅನ್ನು ಪ್ರಿಫೆಚ್ ಮಾಡಲು ಅರ್ಹವಾಗಿಲ್ಲ."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "ಪ್ರಿಲೋಡಿಂಗ್ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿರುವ ಕಾರಣ ಪ್ರಿಫೆಚ್ ಮಾಡುವಿಕೆ ವಿಫಲವಾಗಿದೆ."
+    "message": "ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡಿಂಗ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿದ ಕಾರಣ ಪ್ರಿಫೆಚ್ ಅನ್ನು ಕೈಗೊಳ್ಳಲಾಗಿಲ್ಲ."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "ಅದೇ ಸೈಟ್‌ನಲ್ಲಿ ಕ್ರಾಸ್-ಒರಿಜಿನ್ ಪ್ರಿಫೆಚ್ ವಿನಂತಿಗಾಗಿ ಪ್ರಿಫೆಚ್ ಪ್ರಾಕ್ಸಿಯನ್ನು ಬಳಸಲು ಡಿಫಾಲ್ಟ್ ನೆಟ್‌ವರ್ಕ್ ಸಂದರ್ಭವನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಲಾಗದ ಕಾರಣ URL ಅನ್ನು ಪ್ರಿಫೆಚ್ ಮಾಡಲು ಅರ್ಹತೆ ಹೊಂದಿಲ್ಲ."
@@ -4287,13 +4263,13 @@
     "message": "ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾದ ಪುಟವು ಸ್ವತಃ ಮತ್ತೊಂದು URL ಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಿದೆ, ಇದು ಪ್ರಸ್ತುತ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಪ್ರಾರಂಭಿಕ ಪುಟವು ಈಗಾಗಲೇ ಹಲವಾರು ಚಾಲ್ತಿಯಲ್ಲಿರುವ ಪ್ರೀರೆಂಡರ್‌ಗಳನ್ನು ಹೊಂದಿದೆ. ಮತ್ತಷ್ಟು ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು ಇತರ ಊಹೆಗೆ ಸಂಬಂಧಿಸಿದ ನಿಯಮಗಳನ್ನು ತೆಗೆದುಹಾಕಿ."
+    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟದಲ್ಲಿ ಈಗಾಗಲೇ ಹಲವಾರು ಪ್ರೀರೆಂಡರ್‌ಗಳು ಚಾಲ್ತಿಯಲ್ಲಿರುವ ಕಾರಣ \"ಈಗರ್\" ಎಂಬ ಈಗರ್‌ನೆಸ್ ಹೊಂದಿರುವ ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ಕೈಗೊಳ್ಳಲಾಗಿಲ್ಲ. ಮುಂದಿನ ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು \"ಈಗರ್\" ಎಂಬುದನ್ನು ಹೊಂದಿರುವ ಇತರ ಸ್ಪೆಕ್ಯುಲೇಶನ್ ನಿಯಮಗಳನ್ನು ತೆಗೆದುಹಾಕಿ."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಪ್ರಾರಂಭಿಕ ಪುಟವು ಈಗಾಗಲೇ ಹಲವಾರು ಚಾಲ್ತಿಯಲ್ಲಿರುವ ಪ್ರೀರೆಂಡರ್‌ಗಳನ್ನು ಹೊಂದಿದೆ."
+    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟದಲ್ಲಿ ಈಗಾಗಲೇ ಹಲವಾರು ಪ್ರೀರೆಂಡರ್‌ಗಳು ಚಾಲ್ತಿಯಲ್ಲಿರುವ ಕಾರಣ ಬ್ರೌಸರ್‌ನಿಂದ-ಟ್ರಿಗರ್ ಆದ ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ಕೈಗೊಳ್ಳಲಾಗಿಲ್ಲ."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಪ್ರಾರಂಭಿಕ ಪುಟವು ಈಗಾಗಲೇ ಹಲವಾರು ಚಾಲ್ತಿಯಲ್ಲಿರುವ ಪ್ರೀರೆಂಡರ್‌ಗಳನ್ನು ಹೊಂದಿದೆ. ಮತ್ತಷ್ಟು ಪ್ರೀರೆಂಡರಿಂಗ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು ಇತರ ಊಹೆಗೆ ಸಂಬಂಧಿಸಿದ ನಿಯಮಗಳನ್ನು ತೆಗೆದುಹಾಕಿ."
+    "message": "ಹೊಸ ನಾನ್-ಈಗರ್ ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ಪ್ರಾರಂಭಿಸಿದ ಕಾರಣ ಹಳೆಯ ನಾನ್ ಈಗರ್ ಪ್ರೀರೆಂಡರ್ (\"ಮಧ್ಯಮ\" ಅಥವಾ \"ಸಾಂಪ್ರದಾಯಿಕ\" ಈಗರ್‌ನೆಸ್ ಹೊಂದಿರುವ ಮತ್ತು ಲಿಂಕ್‌ಗಳ ಮೇಲೆ ಹೋವರ್ ಅಥವಾ ಕ್ಲಿಕ್ ಮಾಡುವ ಮೂಲಕ ಟ್ರಿಗರ್ ಆಗುವ) ಅನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ. ಲಿಂಕ್‌ನೊಂದಿಗೆ ಮತ್ತೊಮ್ಮೆ ಸಂವಹನ ನಡೆಸುವ ಮೂಲಕ ಇದನ್ನು ಟ್ರಿಗರ್ ಮಾಡಬಹುದು."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "ಪ್ರೀರೆಂಡರ್ ಅನ್ನು ನಿರ್ವಹಿಸಲಾಗಿಲ್ಲ ಏಕೆಂದರೆ ಪ್ರೀರೆಂಡರಿಂಗ್ ಮೆಮೊರಿ ಮಿತಿಯನ್ನು ಬ್ರೌಸರ್ ಮೀರಿದೆ."
@@ -4395,7 +4371,7 @@
     "message": "ನೆಟ್‌ವರ್ಕ್ ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ ಪ್ರದರ್ಶಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "ಈ ರೂಲ್ ಸೆಟ್‌ಗೆ ಸಂಬಂಧಿಸಿದ ಪ್ರಿಲೋಡ್‌ಗಳನ್ನು ಬಹಿರಂಗಪಡಿಸಿ"
+    "message": "ಈ ರೂಲ್ ಸೆಟ್‌ಗೆ ಸಂಬಂಧಿಸಿದ ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡ್‌ಗಳನ್ನು ಬಹಿರಂಗಪಡಿಸಿ"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# ದೋಷ}one{# ದೋಷಗಳು}other{# ದೋಷಗಳು}}"
@@ -4416,10 +4392,10 @@
     "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವು ಈ ಪುಟದ URL ಅನ್ನು ಪ್ರೀರೆಂಡರ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿದೆ. ಪ್ರೀರೆಂಡರ್ ವಿಫಲವಾಗಿದೆ, ಆದರೆ ಪರಿಣಾಮವಾಗಿ ಪ್ರತಿಕ್ರಿಯೆ ಬಾಡಿಯನ್ನು ಇನ್ನೂ ಪ್ರಿಫೆಚ್ ಆಗಿ ಬಳಸಲಾಗಿದೆ."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ: developer.chrome.com ನಲ್ಲಿ ಪ್ರಿಲೋಡಿಂಗ್ ಕುರಿತು"
+    "message": "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ: developer.chrome.com ನಲ್ಲಿ ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಲೋಡಿಂಗ್ ಕುರಿತು"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವು ಈ ಪುಟದ URL ಅನ್ನು ಪ್ರಿಲೋಡ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಲಿಲ್ಲ."
+    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವು ಈ ಪುಟದ URL ಅನ್ನು ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಆಗಿ ಲೋಡ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಲಿಲ್ಲ."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವು ಮೊದಲು ಈ ಪುಟದ URL ಅನ್ನು ಪ್ರಿಫೆಚ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿದೆ, ಆದರೆ ಪ್ರಿಫೆಚ್ ವಿಫಲವಾಗಿದೆ, ಆದ್ದರಿಂದ ಬದಲಿಗೆ ಪೂರ್ಣ ಹುಡುಕಾಟವನ್ನು ನಡೆಸಲಾಯಿತು."
@@ -4428,10 +4404,7 @@
     "message": "ಈ ಪುಟವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಪ್ರಿಫೆಚ್ ಮಾಡಲಾಗಿದೆ."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟದಿಂದ URL ಗಳನ್ನು ಪ್ರಿಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "ಪ್ರಿಲೋಡಿಂಗ್ ಸ್ಥಿತಿ"
+    "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವು URL ಗಳನ್ನು ಸ್ಪೆಕ್ಯುಲೇಟಿವ್ ಆಗಿ ಲೋಡ್ ಮಾಡುತ್ತಿದೆ"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "ಪ್ರಾರಂಭಿಕ ಪುಟವು ಮೊದಲು ಈ ಪುಟದ URL ಅನ್ನು ಪ್ರೀರೆಂಡರ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸಿದೆ, ಆದರೆ ಪ್ರೀರೆಂಡರ್ ವಿಫಲವಾಗಿದೆ, ಆದ್ದರಿಂದ ಬದಲಿಗೆ ಪೂರ್ಣ ಹುಡುಕಾಟವನ್ನು ನಡೆಸಲಾಯಿತು."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "ಈ ಪುಟವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಪ್ರೀರೆಂಡರ್ ಮಾಡಲಾಗಿದೆ."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "ಆ್ಯನಿಮೇಶನ್"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "ಜಾಹೀರಾತು ಹರಾಜು ವರ್ಕ್‌ಲೇಟ್‌"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್ ಹಿಟ್"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "ಕ್ಯಾನ್ವಸ್"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "ಕ್ಲಿಪ್‌ಬೋರ್ಡ್"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "ನಿಯಂತ್ರಣ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "ಸಾಧನ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "DOM ಮ್ಯುಟೇಶನ್"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "ಡ್ರ್ಯಾಗ್ / ಡ್ರಾಪ್"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "ಜಿಯೋಲೊಕೇಶನ್"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "ಕೀಬೋರ್ಡ್"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "ಲೋಡ್ ಮಾಡಿ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "ಮಾಧ್ಯಮ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "ಮೌಸ್"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "ನೋಟಿಫಿಕೇಶನ್"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "ವಿಶ್ಲೇಷಿಸಿ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "ಚಿತ್ರದಲ್ಲಿ ಚಿತ್ರ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "ಪಾಯಿಂಟರ್‌"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "ಸ್ಕ್ರಿಪ್ಟ್"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "ಹಂಚಿಕೊಂಡ ಸಂಗ್ರಹಣೆ ವರ್ಕ್‌ಲೆಟ್"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "ಟೈಮರ್"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "ಸ್ಪರ್ಶ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "ವಿಶ್ವಾಸಾರ್ಹ ಪ್ರಕಾರದ ಉಲ್ಲಂಘನೆಗಳು"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "ವಿಂಡೋ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "ಕಾರ್ಮಿಕರು"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "ಗುಣಲಕ್ಷಣವನ್ನು ಮಾರ್ಪಡಿಸಲಾಗಿದೆ"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "ಎಲ್ಲಾ ಎಕ್ಸ್‌ಪ್ರೆಶನ್‌ಗಳನ್ನು ತೆಗೆದುಹಾಕಿ"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "ಬ್ಲ್ಯಾಂಕ್ ಎಕ್ಸ್‌ಪ್ರೆಶನ್ ಅನ್ನು ತೆಗೆದುಹಾಕಿ"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "ಎಕ್ಸ್‌ಪ್ರೆಶನ್ ತೆಗೆದುಹಾಕಿ"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "ಘಟಕವನ್ನು ಮರೆಮಾಡಿ"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "ಮೀಡಿಯಾ ಪ್ಯಾನೆಲ್‌ಗೆ ಹೋಗಿ"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "ಅಂಟಿಸಿ"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "ಎಚ್ಚರಿಸಲಾಗಿದೆ"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{1 ವೆಬ್‌ಸೈಟ್‌ಗೆ ಕುಕೀಗಳನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು ಅನುಮತಿಯಿದೆ}one{# ವೆಬ್‌ಸೈಟ್‌ಗಳಿಗೆ ಕುಕೀಗಳನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು ಅನುಮತಿಯಿದೆ}other{# ವೆಬ್‌ಸೈಟ್‌ಗಳಿಗೆ ಕುಕೀಗಳನ್ನು ಆ್ಯಕ್ಸೆಸ್ ಮಾಡಲು ಅನುಮತಿಯಿದೆ}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "ಘಟಕಗಳ ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ ಫ್ರೇಮ್‌ನ DOM ನೋಡ್ ಅನ್ನು ಬಹಿರಂಗಪಡಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "ಮುಕ್ತಾಯಗೊಂಡಿದೆ"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, ಆರಂಭಿಕ ಆದ್ಯತೆ: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "ಹಂತ 1"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "ಇನ್ನಷ್ಟು ತೋರಿಸಿ"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "ಆ್ಯನಿಮೇಶನ್ ಫ್ರೇಮ್ ಜಾರಿಗೊಳಿಸಲಾಗಿದೆ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "ಬಿಡ್ಡರ್ ಬಿಡ್ಡಿಂಗ್ ಹಂತದ ಪ್ರಾರಂಭ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "ಬಿಡ್ಡರ್ ವರದಿಯ ಹಂತದ ಪ್ರಾರಂಭ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "ಮಾರಾಟಗಾರರ ವರದಿಯ ಹಂತದ ಪ್ರಾರಂಭ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "ಮಾರಾಟಗಾರರ ಅಂಕ ಗಳಿಕೆ ಹಂತದ ಪ್ರಾರಂಭ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "ಆ್ಯನಿಮೇಶನ್ ಫ್ರೇಮ್ ರದ್ದುಪಡಿಸಿ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "AudioContext ಅನ್ನು ಮುಚ್ಚಿ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "AudioContext ಅನ್ನು ರಚಿಸಿ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "ಕ್ಯಾನ್ವಸ್ ಸಂದರ್ಭವನ್ನು ರಚಿಸಿ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "ನೀತಿಯ ಉಲ್ಲಂಘನೆಗಳು"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "ಆ್ಯನಿಮೇಶನ್ ಫ್ರೇಮ್ ವಿನಂತಿಸಿ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "AudioContext ಪುನರಾರಂಭಿಸಿ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "ಕಂಟೆಂಟ್‌ ಸುರಕ್ಷತೆಯ ನೀತಿಯಿಂದಾಗಿ ಸ್ಕ್ರಿಪ್ಟ್ ಅನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "ಸ್ಕ್ರಿಪ್ಟ್ ಮೊದಲ ಹೇಳಿಕೆ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "innerHTML ಸೆಟ್ ಮಾಡಿ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} ರಂದು ಫಯರ್ ಮಾಡಲಾಗಿದೆ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "ಸಿಂಕ್ ಉಲ್ಲಂಘನೆಗಳು"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "AudioContext ಅಮಾನತುಗೊಳಿಸಿ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "WebGL ದೋಷ ಜಾರಿಗೊಳಿಸಲಾಗಿದೆ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "WebGL ಎಚ್ಚರಿಕೆಯನ್ನು ಜಾರಿಗೊಳಿಸಲಾಗಿದೆ"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "ಕವರೇಜ್ ಪ್ಯಾನೆಲ್ ತೋರಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "XHR ಅಥವಾ ಫೆಚ್ ಎದುರಾದಾಗ ವಿರಾಮಗೊಳಿಸಲಾಗಿದೆ"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "ಕಂಟೆಂಟ್‌ ಸುರಕ್ಷತೆಯ ನೀತಿ ನಿರ್ದೇಶನದಿಂದಾಗಿ ಸ್ಕ್ರಿಪ್ಟ್ ಅನ್ನು ನಿರ್ಬಂಧಿಸಲಾಗಿದೆ: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "ಸಬ್-ಟ್ರೀ ಮಾರ್ಪಾಡುಗಳು"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Trusted Type ಸಿಂಕ್ ಉಲ್ಲಂಘನೆ"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "WebGL ದೋಷವನ್ನು ಫಯರ್ ಮಾಡಲಾಗಿದೆ ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "ಬ್ರೇಕ್‌ಪಾಯಿಂಟ್ ಸೇರಿಸಿ"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "ಈ ಕ್ರಿಯೆಯನ್ನು ರದ್ದುಮಾಡಲಾಗುವುದಿಲ್ಲ."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "ಈ ಫೋಲ್ಡರ್‌ನಲ್ಲಿರುವ ಎಲ್ಲಾ ಓವರ್‌ರೈಡ್‌ಗಳನ್ನು ಅಳಿಸಲು ನೀವು ಖಚಿತವಾಗಿ ಬಯಸುತ್ತೀರಾ?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "ಈ ಫೋಲ್ಡರ್ ಮತ್ತು ಅದರ ಕಂಟೆಂಟ್‌ಗಳನ್ನು ಅಳಿಸಲು ನೀವು ಖಚಿತವಾಗಿ ಬಯಸುತ್ತೀರಾ?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "ಅಳಿಸಿ"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "ಎಲ್ಲಾ ಓವರ್‌ರೈಡ್‌ಗಳನ್ನು ಅಳಿಸಿ"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "ನಿಯೋಜಿತ"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(ಅನಾಮಧೇಯ)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "ಬಿಡ್ಡರ್ ವರ್ಕ್‌ಲೆಟ್"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "ಬಿಡ್ಡರ್ ವರ್ಕ್‌ಲೆಟ್ — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "ಮೀಸಲು ಕೆಲಸಗಾರ Worker"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "ಈವೆಂಟ್: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "ಫ್ರೇಮ್ — {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "ಪ್ರಧಾನ"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "ಪ್ರಧಾನ — {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "ರೇಸ್ಟರೈಸರ್ ಥ್ರೆಡ್ {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "ಮಾರಾಟಗಾರರ ವರ್ಕ್‌ಲೆಟ್"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "ಮಾರಾಟಗಾರರ ವರ್ಕ್‌ಲೆಟ್ — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "ಥ್ರೆಡ್ {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "ಆಕ್ಷನ್ ವರ್ಕ್‌ಲೆಟ್"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "ಆಕ್ಷನ್ ವರ್ಕ್‌ಲೆಟ್ — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "ಆಕ್ಷನ್ ವರ್ಕ್‌ಲೆಟ್ ಸೇವೆ"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "ಆಕ್ಷನ್ ವರ್ಕ್‌ಲೆಟ್ ಸೇವೆ — {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "ಈ ರೀತಿಯ ಟಾರ್ಗೆಟ್‌ಗಾಗಿ ಕಾರ್ಯಕ್ಷಮತೆ ಟ್ರೇಸ್ ರೆಕಾರ್ಡಿಂಗ್ ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "ಸ್ಥಳ"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "ದೀರ್ಘ ಸಂವಾದ"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "ದೀರ್ಘ ಕಾರ್ಯ"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1}, ಕಾರ್ಯಕ್ಷಮತೆಗೆ ಅಡಚಣೆ ಉಂಟುಮಾಡುವ ಸಾಧ್ಯತೆಯಿದೆ."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1}, ಪುಟದ ಕಳಪೆ ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು ಸೂಚಿಸುತ್ತಿದೆ."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2} ರಲ್ಲಿ {PH1}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "ವರ್ಚುವಲ್ ಪ್ರಮಾಣೀಕರಣ ಪರಿಸರವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "ಹೊಸ ಹೆಸರನ್ನು ನಮೂದಿಸಿ"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "ರಫ್ತು ಮಾಡಿ"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Show Memory Inspector"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "ಕಾಪಿ ಮಾಡಿ"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "ಪ್ರತಿಕ್ರಿಯೆ"

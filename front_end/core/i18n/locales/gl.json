@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Tipos de confianza: incumprimento da política"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Preparación para a eliminación gradual das cookies de terceiros"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "seguro"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "an insecure"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "Informar dun erro"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets e o atributo SameParty"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Proceso {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "Worklet de ofertante"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "Worklet de ofertante: {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Worker dedicado"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "Worklet de vendedor"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "Worklet de vendedor: {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Proceso {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "Worklet de poxa"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "Worklet de poxa: {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} ({PH2})"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "Servizo de worklet de poxa"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "Servizo de worklet de poxa: {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(índice)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Ventás abertas"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "Precarga"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Actualizar IndexedDB"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Si"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "Precargas"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "Normas de especulación"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "Esta páxina"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Fai clic nun informe para mostrar o seu contido"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Facer clic para mostrar no panel Fontes"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Política de seguranza de contido (PSC)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "Había un script de anuncio na (async) stack ao crear este marco. Examinar o stack trace de creación deste marco pode ofrecer máis estatísticas."
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "Non"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "Ningún"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Orixe"
@@ -3990,7 +3966,7 @@
     "message": "Tokens de estado privado"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "Todas as precargas"
+    "message": "Todas as cargas especulativas"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "Filtrar por conxunto de normas"
@@ -4059,22 +4035,22 @@
     "message": "Inspeccionar"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "Produciuse un erro na precarga."
+    "message": "Produciuse un erro na carga especulativa."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "O intento de precarga aínda non se activou."
+    "message": "O intento de carga especulativa aínda non se activou."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "O intento de precarga cumpre os requisitos, pero está pendente."
+    "message": "O intento de carga especulativa cumpre os requisitos, pero está pendente."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "Rematou a precarga. O resultado está listo para a próxima navegación."
+    "message": "A carga especulativa rematou. O resultado está listo para a próxima navegación."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "Precarga en curso."
+    "message": "A carga especulativa está en curso."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "Precarga rematada e utilizada para unha navegación."
+    "message": "A carga especulativa rematou e usouse para unha navegación."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "Acción"
@@ -4095,10 +4071,10 @@
     "message": "Selecciona un elemento para obter máis información"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "A precarga está desactivada debido ao modo de aforro de batería do sistema operativo."
+    "message": "A carga especulativa está desactivada debido ao modo de aforro de batería do sistema operativo."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "A precarga está desactivada debido ao modo de forro de datos do sistema operativo."
+    "message": "A carga especulativa está desactivada debido ao modo de forro de datos do sistema operativo."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "Forzouse a activación da carga adiantada porque DevTools está aberto. Desactivarase cando se peche DevTools, xa que esta sesión do navegador forma parte dun grupo de control que se usa para comparar o rendemento."
@@ -4107,7 +4083,7 @@
     "message": "Activouse a renderización previa de xeito forzado porque DevTools está aberto. Cando se peche DevTools, desactivarase a renderización previa, xa que esta sesión do navegador forma parte dun grupo de control que se usa para comparar o rendemento."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "A precarga está desactivada debido á configuración do usuario ou a unha extensión. Podes actualizar a preferencia en {PH1}. Se queres desactivar as extensións que bloquean a precarga, vai a {PH2}."
+    "message": "A carga especulativa está desactivada debido á configuración do usuario ou a unha extensión Podes actualizar a preferencia en {PH1}. Se queres desactivar as extensións que bloquean a carga especulativa, vai a {PH2}."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "Configuración de extensións"
@@ -4131,16 +4107,16 @@
     "message": "Extensión ou configuración do usuario"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "A precarga está desactivada"
+    "message": "A carga especulativa está desactivada"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "Forzouse a activación da precarga"
+    "message": "Forzouse a activación da carga especulativa"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "Configuración das páxinas de precarga"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "Motivos que impiden a precarga"
+    "message": "Motivos para evitar a carga especulativa"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Acción"
@@ -4200,7 +4176,7 @@
     "message": "O URL non cumpría os requisitos para a precarga porque usa unha partición de almacenamento non predeterminada."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "Non se levou a cabo a precarga porque se desactivou a carga previa."
+    "message": "Non se levou a cabo a carga por adiantado porque se desactivou a carga especulativa."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "O URL non cumpría os requisitos para a precarga porque o contexto de rede predeterminado non se pode configurar para usar o proxy de precarga nunha solicitude de precarga doutra orixe do mesmo sitio."
@@ -4287,13 +4263,13 @@
     "message": "A páxina renderizada previamente redirixíase a outro URL, algo que actualmente non se admite."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "Non se levou a cabo a renderización previa porque a páxina iniciadora xa ten demasiadas renderizacións previas en curso. Quita outras normas de especulación para permitir máis renderizacións previas."
+    "message": "A renderización previa cuxo valor do campo \"eagerness\" é \"eager\" non se levou a cabo porque a páxina iniciadora xa ten demasiadas renderizacións previas en curso. Quita outras normas de especulación co valor \"eager\" para permitir outras renderizacións previas."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "Non se levou a cabo a renderización previa porque a páxina iniciadora xa ten demasiadas renderizacións previas en curso."
+    "message": "Non se levou a cabo a renderización previa activada polo navegador porque a páxina iniciadora xa ten demasiadas renderizacións previas en curso."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "Non se levou a cabo a renderización previa porque a páxina iniciadora xa ten demasiadas renderizacións previas en curso. Quita outras normas de especulación para permitir máis renderizacións previas."
+    "message": "A antiga renderización previa cuxo valor non era \"eager\" (o campo \"eagerness\" tiña o valor \"moderate\" ou \"conservative\" e activouse pasando por enriba das ligazóns ou facendo clic nelas) cancelouse automaticamente porque se iniciou outra renderización sen ese mesmo valor. Pode activarse de novo interactuando coa ligazón."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "Non se levou a cabo a renderización previa porque o navegador superou o límite de memoria destinado a esa operación."
@@ -4395,7 +4371,7 @@
     "message": "Facer clic para mostrar no panel Rede"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "Mostrar precargas asociadas a este conxunto de normas"
+    "message": "Mostrar cargas especulativas asociadas a este conxunto de normas"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# erro}other{# erros}}"
@@ -4416,10 +4392,10 @@
     "message": "A páxina iniciadora tentou facer a renderización previa do URL desta páxina. Aínda que se produciu un erro durante a renderización, usouse o corpo da resposta resultante como carga adiantada."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "Máis información: Precarga en developer.chrome.com"
+    "message": "Máis información sobre a carga especulativa en developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "A páxina iniciadora non tentou precargar o URL desta páxina."
+    "message": "A páxina iniciadora non tentou cargar de maneira especulativa o URL desta páxina."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "A páxina iniciadora tentou cargar por adiantado o URL desta páxina, pero produciuse un erro, así que se levou a cabo unha navegación completa no seu lugar."
@@ -4428,10 +4404,7 @@
     "message": "Cargouse a páxina por adiantado."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "A páxina iniciadora está precargando os URL"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "Estado da precarga"
+    "message": "URL que está cargando de maneira especulativa a páxina iniciadora"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "A páxina iniciadora tentou renderizar previamente o URL desta páxina, pero produciuse un erro, así que se levou a cabo unha navegación completa no seu lugar."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Fíxose a renderización previa da páxina."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "Animación"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "Worklet de poxa de anuncios"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "petición do punto de interrupción"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "Canvas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "Portapapeis"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "Control"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "Dispositivo"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "Mutación do DOM"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "Arrastrar/soltar"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "Xeolocalización"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "Teclado"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "Cargar"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "Multimedia"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "Rato"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "Notificación"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "Analizar"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "Pantalla superposta"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "Punteiro"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "Script"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "Worklet de Shared Storage"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "Temporizador"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "Tocar"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "Infraccións de tipos de confianza"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "Ventá"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "Worker"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "Modificouse o atributo"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Quitar todas as expresións"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "Quitar expresión baleira"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "Quitar expresión"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Ocultar elemento"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "Ir ao panel multimedia"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "Pegar"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "Advertiuse do anuncio"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{1 sitio web con permiso para acceder ás cookies}other{# sitios web con permiso para acceder ás cookies}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Facer clic para mostrar o nó DOM do marco no panel Elementos"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Finalizado"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, prioridade inicial: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "nivel 1"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Mostrar máis"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "Activouse un marco de animación"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Inicio da fase de poxa por parte do ofertante"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "Inicio da fase de presentación de información por parte do ofertante"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "Inicio da fase de presentación de información por parte do vendedor"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "Inicio da fase de puntuación por parte do vendedor"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "Cancelar marco de animación"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "Pechar AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "Crear AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "Crear contexto para o lenzo"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "Incumprimentos das políticas"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "Solicitar marco de animación"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "Retomar AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "A Política de seguranza do contido bloqueou o script"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "Primeira instrución do script"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "Definir innerHTML"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} activado"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "Infraccións do receptor"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "Suspender AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "Activouse un erro de WebGL"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "Activouse unha advertencia de WebGL"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Fai clic para mostrar o panel de cobertura"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "En pausa en XHR ou busca"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "Bloqueouse o script debido a unha directiva da Política de seguranza do contido: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "modificacións de subárbore"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Infracción do receptor Trusted Type"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "Activouse un erro de WebGL ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "Engadir punto de interrupción"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Esta acción non se pode desfacer."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "Seguro que queres eliminar todas as omisións deste cartafol?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "Seguro que queres eliminar este cartafol e o seu contido?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Eliminar"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "Eliminar todas as anulacións"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Implementación"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(anónima)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "Worklet de ofertante"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "Worklet de ofertante: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Worker dedicado"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "Evento: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "Marco: {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "Principal"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "Principal: {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "Proceso {PH1} do rasterizador"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "Worklet de vendedor"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "Worklet de vendedor: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Conversa {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "Worklet de poxa"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "Worklet de poxa: {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} ({PH2})"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "Servizo de worklet de poxa"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "Servizo de worklet de poxa: {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Non se admite o rexistro de rastros de rendemento para este tipo de elemento"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Localización"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "Interacción longa"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Tarefa longa"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "É probable que {PH1} sexa un colo de botella do rendemento."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} indica a baixa adaptabilidade da páxina."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} de {PH2}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "Activar contorno de autenticador virtual"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "Indica un novo nome"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "Exportar"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Mostrar inspector de memoria"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "Copiar"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Comentarios"

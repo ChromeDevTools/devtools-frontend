@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "סוגים מהימנים – הפרת מדיניות"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "מתכוננים להוצאה משימוש בהדרגה של קובצי Cookie של צד שלישי"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "מאובטח"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "הקשר לא מאובטח"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "דיווח על באג"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets והמאפיין SameParty"
@@ -1404,7 +1410,7 @@
     "message": "הסבר על קובצי cookie מסוג SameSite"
   },
   "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "מתכוננים להוצאה משירות בהדרגה של קובצי cookie של צד שלישי"
+    "message": "מתכוננים להוצאה משימוש בהדרגה של קובצי Cookie של צד שלישי"
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "שיתוף משאבים בין מקורות (CORS)"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "פרוטוקול Thread {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "worklet של מגיש הצעות המחיר"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "worklet של מגיש הצעות המחיר – {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Worker ייעודי"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "worklet של בית העסק"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "worklet של בית העסק — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "פרוטוקול Thread {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "worklet של מכרזים"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "worklet של מכרזים – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker‏ – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker:‏ {PH1}‏ – {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "שירות worklet של מכרזים"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "שירות worklet של מכרזים – {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(אינדקס)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "חלונות פתוחים"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "טעינה מראש"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "רענון IndexedDB"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "כן"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "טעינות מראש"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "כללי ספקולציות"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "הדף הזה"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "כדי לראות תוכן של דוח, צריך ללחוץ עליו"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "ניתן ללחוץ כדי לראות את חלונית המקורות"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Content Security Policy‏ (CSP)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "היה סקריפט של מודעה ב-(async) stack כשהמסגרת הזו נוצרה. בדיקה של stack trace על יצירת המסגרת הזו עשוי לספק תובנות נוספות."
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "לא"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "אין ערך"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "מקור"
@@ -3990,7 +3966,7 @@
     "message": "אסימוני מצב פרטי"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "כל הטעינות מראש"
+    "message": "כל הטעינות הספקולטיביות"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "סינון לפי קבוצת כללים"
@@ -4059,22 +4035,22 @@
     "message": "בדיקה"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "הטעינה מראש נכשלה."
+    "message": "הטעינה הספקולטיבית נכשלה."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "הניסיון לטעינה מראש עוד לא הופעל."
+    "message": "הניסיון לטעינה ספקולטיבית עוד לא הופעל."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "הניסיון לטעינה מראש עומד בדרישות אבל נמצא בהמתנה."
+    "message": "הניסיון לטעינה ספקולטיבית עומד בדרישות אבל נמצא בהמתנה."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "הטעינה מראש הסתיימה והתוצאה מוכנה לפעולת הניווט הבאה."
+    "message": "הטעינה הספקולטיבית הסתיימה והתוצאה מוכנה לפעולת הניווט הבאה."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "הטעינה מראש פועלת."
+    "message": "הטעינה הספקולטיבית פועלת."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "הטעינה מראש הסתיימה והתוצאה משמשת לפעולת ניווט."
+    "message": "הטעינה הספקולטיבית הסתיימה והתוצאה משמשת לפעולת ניווט."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "פעולה"
@@ -4095,10 +4071,10 @@
     "message": "לפרטים נוספים, יש לבחור רכיב"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "הטעינה מראש מושבתת בגלל מצב החיסכון בסוללה של מערכת ההפעלה."
+    "message": "הטעינה הספקולטיבית מושבתת בגלל מצב החיסכון בסוללה של מערכת ההפעלה."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "הטעינה מראש מושבתת בגלל מצב Data Saver של מערכת ההפעלה."
+    "message": "הטעינה הספקולטיבית מושבתת בגלל מצב Data Saver של מערכת ההפעלה."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "השליפה מראש (prefetch) הופעלה באילוץ כי כלי הפיתוח פתוחים. אחרי הסגירה של כלי הפיתוח, השליפה מראש תושבת כי הסשן בדפדפן שייך לקבוצת ניסוי להשוואות ביצועים."
@@ -4107,7 +4083,7 @@
     "message": "העיבוד מראש הופעל באילוץ כי כלי הפיתוח פתוחים. אחרי הסגירה של כלי הפיתוח, העיבוד מראש יושבת כי הסשן בדפדפן שייך לקבוצת ניסוי להשוואות ביצועים."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "הטעינה מראש מושבתת בגלל הגדרות המשתמש או בגלל תוסף. צריך לעבור אל {PH1} כדי לעדכן את ההעדפה שלך. יש להיכנס אל {PH2} כדי להשבית כל תוסף שחוסם את הטעינה מראש."
+    "message": "הטעינה הספקולטיבית מושבתת בגלל הגדרות המשתמש או בגלל תוסף. צריך לעבור אל {PH1} כדי לעדכן את ההעדפה, או אל {PH2} כדי להשבית כל תוסף שחוסם את הטעינה הספקולטיבית."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "הגדרות של תוספים"
@@ -4131,16 +4107,16 @@
     "message": "ההגדרות או התוספים של המשתמש"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "הטעינה מראש מושבתת"
+    "message": "הטעינה הספקולטיבית מושבתת"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "הטעינה מראש מופעלת באילוץ"
+    "message": "המערכת מחייבת הפעלה של הטעינה הספקולטיבית"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "הגדרות לטעינה מראש של דפים"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "סיבות למניעת טעינה מראש"
+    "message": "סיבות למניעת טעינה ספקולטיבית"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "פעולה"
@@ -4200,7 +4176,7 @@
     "message": "כתובת ה-URL לא התאימה לשליפה מראש (prefetch) כי מחיצת האחסון שלה שונה מזו המוגדרת כברירת מחדל."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "לא בוצעה שליפה מראש (prefetch) כי הטעינה מראש הושבתה."
+    "message": "לא בוצעה שליפה מראש (prefetch) כי הטעינה הספקולטיבית הושבתה."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "כתובת ה-URL לא התאימה לשליפה מראש (prefetch) כי בהקשר הרשת שבברירת המחדל, לא ניתן להגדיר שימוש בשרת proxy לשליפה מראש בבקשת שליפה מראש באתרים שונים לאותו אתר."
@@ -4287,13 +4263,13 @@
     "message": "הדף שעבר עיבוד מראש עבר מעצמו לכתובת URL אחרת שאין בה תמיכה בשלב הזה."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "העיבוד מראש לא בוצע כי בדף שמתחיל את התהליך כבר יש פעילות מתמשכת של יותר מדי עיבודים מראש. צריך להסיר כללי ספקולציות אחרים כדי לאפשר עוד עיבודים מראש."
+    "message": "העיבוד מראש שהערך של eagerness שמוגדר בו הוא eager לא בוצע, כי בדף שמתחיל את התהליך כבר יש פעילות מתמשכת של יותר מדי עיבודים מראש. צריך להסיר כללי ספקולציות אחרים עם הערך eager כדי לאפשר עוד עיבודים מראש."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "העיבוד מראש לא בוצע כי בדף שמתחיל את התהליך כבר יש פעילות מתמשכת של יותר מדי עיבודים מראש."
+    "message": "העיבוד מראש שהופעל על ידי הדפדפן לא בוצע כי בדף שמתחיל את התהליך כבר יש פעילות מתמשכת של יותר מדי עיבודים מראש."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "העיבוד מראש לא בוצע כי בדף שמתחיל את התהליך כבר יש פעילות מתמשכת של יותר מדי עיבודים מראש. צריך להסיר כללי ספקולציות אחרים כדי לאפשר עוד עיבודים מראש."
+    "message": "העיבוד מראש הישן מסוג non-eager (שהערך של eagerness שמוגדר בו הוא moderate או conservative, ושהופעל על ידי העברת העכבר מעל קישורים או לחיצה עליהם) בוטל באופן אוטומטי, כי התחיל עיבוד מראש חדש מסוג non-eager. אפשר להפעיל אותו מחדש על ידי אינטראקציה חוזרת עם הקישור."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "העיבוד מראש לא בוצע כי הדפדפן חרג ממגבלת הזיכרון לעיבוד מראש."
@@ -4395,7 +4371,7 @@
     "message": "יש ללחוץ כדי להציג בחלונית 'רשת'"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "הצגת טעינות מראש שמשויכות לקבוצת הכללים הזו"
+    "message": "הצגת טעינות ספקולטיביות שמשויכות לקבוצת הכללים הזו"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{שגיאה אחת}one{# שגיאות}two{# שגיאות}other{# שגיאות}}"
@@ -4416,10 +4392,10 @@
     "message": "נעשה ניסיון לבצע עיבוד מראש לכתובת ה-URL של הדף הזה על ידי הדף שמתחיל את התהליך. העיבוד מראש נכשל, אבל בגוף התגובה שהתקבל נעשה בכל זאת שימוש לשליפה מראש (prefetch)."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "מידע נוסף: טעינה מראש ב-developer.chrome.com"
+    "message": "מידע נוסף: טעינה ספקולטיבית ב-developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "לא נעשה ניסיון על ידי הדף שמתחיל את התהליך לטעון מראש את כתובת ה-URL של הדף הזה."
+    "message": "לא נעשה ניסיון על ידי הדף שמתחיל את התהליך לטעון באופן ספקולטיבי את כתובת ה-URL של הדף הזה."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "נעשה ניסיון לשלוף מראש את כתובת ה-URL של הדף הזה על ידי הדף שמתחיל את התהליך, אבל השליפה מראש נכשלה. לכן בוצע במקום זאת ניווט מלא."
@@ -4428,10 +4404,7 @@
     "message": "השליפה מראש (prefetch) של הדף הזה בוצעה בהצלחה."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "כתובות ה-URL נטענות מראש על ידי הדף שמתחיל את התהליך"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "סטטוס הטעינה מראש"
+    "message": "כתובות ה-URL נטענות באופן ספקולטיבי על ידי הדף שמתחיל את התהליך"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "נעשה ניסיון לעבד מראש את כתובת ה-URL של הדף הזה על ידי הדף שמתחיל את התהליך, אבל העיבוד מראש נכשל. לכן בוצע במקום זאת ניווט מלא."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "הדף הזה עבר בהצלחה עיבוד מראש."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "אנימציה"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "מכרז של מודעות Worklet"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "הגעה לנקודת עצירה"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "לוח הציור"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "לוח"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "פקד"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "מכשיר"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "מוטציה של DOM"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "גרירה / שחרור"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "מיקום גאוגרפי"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "מקלדת"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "טעינה"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "מדיה"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "עכבר"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "הודעה"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "ניתוח"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "תמונה בתוך תמונה"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "מצביע"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "סקריפט"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "worklet של Shared Storage"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "טיימר"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "מגע"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "הפרות של סוגים מהימנים"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "חלון"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "קובץ שירות"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "המאפיין השתנה"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "הסרת כל הביטויים"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "הסרת ביטוי ריק"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "הסרת ביטויים"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "הסתרת אלמנט"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "מעבר לחלונית המדיה"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "הדבקה"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "קיבלה אזהרה"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{אתר אחד מורשה לגשת לקובצי Cookie}one{# אתרים מורשים לגשת לקובצי Cookie}two{# אתרים מורשים לגשת לקובצי Cookie}other{# אתרים מורשים לגשת לקובצי Cookie}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "יש ללחוץ כדי לחשוף את צומת ה-DOM של המסגרת בחלונית 'רכיבים'"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "הסתיים"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, עדיפות ראשונית: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "רמה 1"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "הצגת פרטים נוספים"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "הופעל פריים אנימציה"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "תחילת שלב הגשת הצעות המחיר של מגיש הצעות המחיר"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "תחילת שלב הדיווחים של מגיש הצעות המחיר"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "תחילת שלב הדיווח של בית העסק"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "תחילת שלב הניקוד של בית העסק"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "ביטול מסגרת האנימציה"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "סגירת AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "יצירת AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "יצירת הקשר ללוח הציור"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "הפרות מדיניות"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "בקשה לפריים אנימציה"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "חידוש הפעולה של AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "הסקריפט נחסם על ידי Content Security Policy"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "הצהרה ראשונה של סקריפט"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "הגדרת innerHTML"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} הופעל"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "הפרות Sink"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "השעיית AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "הופעלה שגיאת WebGL"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "הופעלה אזהרת WebGL"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "יש ללחוץ כדי להציג חלונית כיסוי"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "בהשהיה ב-XHR או אחזור"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "הסקריפט נחסם בשל הוראה של Content Security Policy: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "שינויים בעץ המשנה"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Trusted Type הפרת Sink"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "הופעלה שגיאת WebGL ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "הוספה של נקודת עצירה (breakpoint)"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "לא ניתן לבטל את הפעולה הזו."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "בחרת למחוק את כל השינויים מברירת המחדל הנכללים בתיקייה הזו. להמשיך?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "בחרת למחוק את התיקייה הזו ואת התוכן שלה. להמשיך?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "מחיקה"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "מחיקת כל השינויים"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "פרוס"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(אנונימית)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "worklet של מגיש הצעות המחיר"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "worklet של מגיש הצעות המחיר – {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Worker ייעודי"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "אירוע: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "מסגרת – {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "ראשי"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "ראשי – {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "thread {PH1} ליצירת רסטר"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "worklet של בית העסק"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "worklet של בית העסק — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Thread {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "worklet של המכרז"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "worklet של המכרז – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker‏ – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker:‏ {PH1}‏ – {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "שירות worklet של מכרז"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "שירות worklet של מכרז – {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "אין תמיכה בתיעוד נתוני מעקב אחר ביצועים לסוג היעד הזה"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "מיקום"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "אינטראקציה ארוכה"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "משימה ארוכה"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} הוא כנראה צוואר בקבוק בביצועים."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "לפי {PH1} ניתן להסיק שמהירות התגובה בדף נמוכה."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} מתוך {PH2}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "הפעלת סביבה של רכיב אימות וירטואלי"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "יש להזין שם חדש"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "ייצוא"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "הצגת בודק זיכרון"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "העתקה"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "משוב"

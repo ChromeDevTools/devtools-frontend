@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types – нарушение правил"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Подготовка к отказу от сторонних файлов cookie"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "безопасно"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "небезопасно"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "Сообщить об ошибке"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets и атрибут SameParty"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Поток {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "Worklet покупателя"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "Worklet покупателя — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Выделенное: Worker"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "Worklet продавца"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "Worklet продавца — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Поток {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "Аукцион Worklet"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "Аукцион Worklet — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} – {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "Сервис аукциона Worklet"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "Сервис аукциона Worklet — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(индекс)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Открытые окна"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "Предзагрузка (preload)"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Обновить IndexedDB"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Да"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "Предзагрузки"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "Правила прогнозирования"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "Текущая страница"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Чтобы посмотреть отчет, нажмите на него."
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Нажмите, чтобы открыть панель \"Источники\""
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Content Security Policy (CSP)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "При создании этого фрейма в (async) stack находился скрипт объявления. Чтобы узнать больше, изучите stack trace при создании фрейма."
   },
@@ -3672,6 +3645,9 @@
     "message": "Измерение памяти"
   },
   "panels/application/components/FrameDetailsView.ts | no": {
+    "message": "Нет"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
     "message": "Нет"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
@@ -3990,7 +3966,7 @@
     "message": "Личные токены состояния"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "Все предзагрузки"
+    "message": "Все спекулятивные загрузки"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "Фильтр по набору правил"
@@ -4059,22 +4035,22 @@
     "message": "Посмотреть"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "Не удалось выполнить предзагрузку."
+    "message": "Не удалось выполнить спекулятивную загрузку."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "Предзагрузка ещё не запускалась."
+    "message": "Спекулятивная загрузка ещё не запускалась."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "Предзагрузка одобрена, но ожидается."
+    "message": "Спекулятивная загрузка возможна и ожидается."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "Предзагрузка окончена. Результаты готовы к использованию."
+    "message": "Спекулятивная загрузка окончена. Результат готов к использованию."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "Выполняется предзагрузка."
+    "message": "Спекулятивная загрузка выполняется."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "Предзагрузка окончена и использована для перехода."
+    "message": "Спекулятивная загрузка окончена и использована для перехода."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "Действие"
@@ -4095,10 +4071,10 @@
     "message": "Выберите элемент, чтобы посмотреть дополнительные сведения о нем"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "Предзагрузка отключена, так как в операционной системе включен режим энергосбережения."
+    "message": "Спекулятивная загрузка отключена, так как в операционной системе включен режим энергосбережения."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "Предзагрузка отключена, так как в операционной системе включен режим экономии трафика."
+    "message": "Спекулятивная загрузка отключена, так как в операционной системе включен режим экономии трафика."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "Предзагрузка включена принудительно, поскольку открыты инструменты разработчика. После их закрытия она будет отключена, так как этот сеанс браузера входит в группу, на основании данных о которой сравнивается производительность."
@@ -4107,7 +4083,7 @@
     "message": "Предварительная отрисовка включена принудительно, поскольку открыты инструменты разработчика. После их закрытия она будет отключена, так как этот сеанс в браузере входит в группу, на основании данных о которой сравнивается производительность."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "Предзагрузка отключена пользователем или расширением. Перейдите в {PH1}, чтобы изменить параметры. Откройте {PH2}, чтобы отключить расширение, которое блокирует предзагрузку."
+    "message": "Спекулятивная загрузка отключена пользователем или расширением. Вы можете изменить {PH1}. Чтобы отключить расширение, которое блокирует спекулятивную загрузку, откройте {PH2}."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "Настройки расширений"
@@ -4131,16 +4107,16 @@
     "message": "Расширения и настройки пользователя"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "Предзагрузка отключена"
+    "message": "Спекулятивная загрузка отключена."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "Предзагрузка включена принудительно"
+    "message": "Спекулятивная загрузка включена принудительно."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "Настройки предзагрузки страниц"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "Почему предзагрузка не начинается"
+    "message": "Почему спекулятивная загрузка не начинается"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Действие"
@@ -4200,7 +4176,7 @@
     "message": "Предзагрузка ресурсов по этому URL не допускается, так как он ссылается на раздел хранилища, не заданный по умолчанию."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "Упреждающий запрос не был отправлен, так как предзагрузка отключена."
+    "message": "Упреждающий запрос не был выполнен, так как спекулятивная загрузка отключена."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "Предзагрузка ресурсов по этому URL не допускается, так как в сетевом контексте по умолчанию невозможно настроить использование прокси-сервера предзагрузки для междоменных запросов предзагрузки к этому же сайту."
@@ -4287,13 +4263,13 @@
     "message": "После предварительной отрисовки на странице был выполнен переход по другому URL, который сейчас не поддерживается."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "Предварительная отрисовка не выполнена, так как на исходной странице уже выполняется слишком много таких процессов. Чтобы продолжить предварительную отрисовку, удалите другие правила прогнозирования."
+    "message": "Предварительная отрисовка со значением eager в параметре eagerness не выполнена, так как на исходной странице уже запущено слишком много таких процессов. Чтобы продолжить, удалите другие правила спекуляции с этим значением."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "Предварительная отрисовка не выполнена, так как на исходной странице уже выполняется слишком много таких процессов."
+    "message": "Начатая браузером предварительная отрисовка не выполнена, так как на исходной странице уже запущено слишком много таких процессов."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "Предварительная отрисовка не выполнена, так как на исходной странице уже выполняется слишком много таких процессов. Чтобы продолжить предварительную отрисовку, удалите другие правила прогнозирования."
+    "message": "Предыдущая предварительная отрисовка (имеющая значение moderate или conservative в параметре eagerness и запускаемая наведением указателя или нажатием на ссылку) была автоматически отменена, так как начал выполняться другой такой процесс. Предварительная отрисовка запустится заново при взаимодействии со ссылкой."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "Предварительная отрисовка не выполнена, так как в браузере превышено ограничение на использование памяти для предварительной отрисовки."
@@ -4395,7 +4371,7 @@
     "message": "Нажмите, чтобы открыть на панели \"Сеть\""
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "Показать предзагрузки, связанные с этим набором правил"
+    "message": "Показать спекулятивные загрузки, связанные с этим набором правил"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# ошибка}one{# ошибка}few{# ошибки}many{# ошибок}other{# ошибки}}"
@@ -4416,10 +4392,10 @@
     "message": "Исходная страница попыталась предварительно отрисовать страницу с этим URL, но процесс завершился сбоем. Однако полученное тело ответа все же использовалось в качестве предзагрузки."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "Узнать больше о предзагрузке на странице developer.chrome.com"
+    "message": "Подробнее о спекулятивной загрузке: developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "Исходная страница не пыталась предзагрузить страницу с этим URL."
+    "message": "Исходная страница не пыталась выполнить спекулятивную загрузку страницы с этим URL."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "Исходная страница попыталась предзагрузить страницу по этому URL, однако процесс завершился ошибкой. Вместо этого был выполнен полный переход."
@@ -4428,10 +4404,7 @@
     "message": "Предзагрузка страницы завершена."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "URL, которые предзагружает исходная страница"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "Статус предзагрузки"
+    "message": "URL, которые спекулятивно загружает исходная страница"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "Исходная страница попыталась предварительно отрисовать страницу по этому URL, однако процесс завершился ошибкой. Вместо этого был выполнен полный переход."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Предварительная отрисовка страницы завершена."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "Анимация"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "Аукцион объявлений Worklet"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "достигнута точка останова"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "Canvas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "Буфер обмена"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "Элемент управления"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "Устройство"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "Мутации DOM"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "Перетаскивание"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "Геопозиционирование"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "Клавиатура"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "Загрузить"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "Носитель"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "Мышь"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "Уведомление"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "Синтаксический анализ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "Картинка в картинке"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "Указатель"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "Скрипт"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "Shared Storage Worklet"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "Таймер"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "Касание"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "Нарушения Trusted Type"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "Окно"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "Worker"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "Атрибут изменен"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Удалить все выражения"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "Удалить пустое выражение"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "Удалить выражение"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Скрыть элемент"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "Перейти к Media Panel"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "Вставить"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "Получено предупреждение."
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{1 сайту разрешен доступ к файлам cookie}one{# сайту разрешен доступ к файлам cookie}few{# сайтам разрешен доступ к файлам cookie}many{# сайтам разрешен доступ к файлам cookie}other{# сайта разрешен доступ к файлам cookie}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Нажмите, чтобы открыть DOM-узел фрейма на панели \"Элементы\""
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Завершено"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, начальный приоритет: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "уровень 1"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Показать больше"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "Запущен фрейм анимации."
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Начало фазы \"Назначение ставок участником аукциона\""
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "Начало фазы \"Отчет участника аукциона\""
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "Начало фазы \"Отчет продавца\""
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "Начало фазы \"Подсчет продавца\""
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "Отключить фрейм анимации"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "Закрыть AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "Создать AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "Создать контекст элемента canvas"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "Нарушение правил"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "Запрос фрейма анимации"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "Возобновить AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "Скрипт заблокирован в соответствии с директивой Content Security Policy"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "Первый оператор скрипта"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "Установить innerHTML"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "Запущено действие {PH1}"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "Нарушения приемника"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "Приостановка AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "Сработала ошибка WebGL"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "Сработало предупреждение WebGL"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Нажмите, чтобы показать панель \"Область действия\""
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "Приостановлено на XHR или fetch"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "Скрипт заблокирован в соответствии с директивой Content Security Policy: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "модификации поддерева"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Нарушение приемника: Trusted Type"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "Сработала ошибка WebGL ({PH1})."
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "Добавить точку останова"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Это действие нельзя отменить."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "Удалить все переопределения из этой папки?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "Удалить эту папку и ее содержимое?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Удалить"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "Удалить все переопределения"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Развернутые"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(анонимная)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "Worklet покупателя"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "Worklet покупателя – {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Выделенное: Worker"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "Событие: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "Фрейм – {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "Основной поток"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "Основной – {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "Поток растеризатора {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "Worklet продавца"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "Worklet продавца – {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Поток {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "Аукцион Worklet"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "Аукцион Worklet – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} – {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "Сервис аукциона Worklet"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "Сервис аукциона Worklet – {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Запись отслеживания производительности для целевого объекта такого типа не поддерживается"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Расположение"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "Длительное взаимодействие"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Длительная задача"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} может быть узким местом производительности."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "Статус \"{PH1}\" указывает на низкую скорость отклика страницы."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} из {PH2}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "Включить программу для аутентификации в виртуальной среде"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "Введите новое название"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "Экспортировать"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Показать инспектор памяти"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "Копировать"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Отправить отзыв"

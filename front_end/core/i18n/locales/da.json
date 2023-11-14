@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Typer, der er tillid til –politikovertrædelse"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Gør klar til at udfase tredjepartscookies"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "sikker"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "an insecure"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "Rapportér en fejl"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets og attributten SameParty"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Tråden {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "Worklet for auktionsbyder"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "Worklet for auktionsbyder – {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Dedikeret Worker"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "Worklet for sælger"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "Worklet for sælger – {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Tråden {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "Worklet for auktion"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "Worklet for auktion – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} – {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "Worklet for auktion"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "Worklet for auktion – {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(indeks)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Åbnede vinduer"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "Forudindlæsning"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Opdater IndexedDB"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ja"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "Forudindlæsninger"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "Spekulationsregler"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "Denne side"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Klik på en rapport for at se indholdet"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Klik for at vise i panelet Kilder"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Sikkerhedspolitik for indhold (CSP, Content Security Policy)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "Der var et annoncescript i (async) stack, da denne ramme blev oprettet. Du kan muligvis få mere indsigt ved at undersøge stack trace for oprettelsen af denne ramme."
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "Nej"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "Ingen"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Oprindelse"
@@ -3990,7 +3966,7 @@
     "message": "Private state tokens"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "Alle forudindlæsninger"
+    "message": "Alle spekulative indlæsninger"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "Filtrér efter regelsæt"
@@ -4059,22 +4035,22 @@
     "message": "Undersøg"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "Forudindlæsningen mislykkedes."
+    "message": "Spekulativ indlæsning mislykkedes."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "Forsøget på forudindlæsning er endnu ikke aktiveret."
+    "message": "Det spekulative indlæsningsforsøg er endnu ikke aktiveret."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "Forsøget på forudindlæsning er kvalificeret, men afventer."
+    "message": "Forsøget på spekulativ indlæsning er kvalificeret, men afventer."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "Forudindlæsningen er afsluttet, og resultatet er klar til næste navigation."
+    "message": "Den spekulative indlæsning er afsluttet, og resultatet er klar til næste navigation."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "Forudindlæsningen kører."
+    "message": "Spekulativ indlæsning kører"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "Forudindlæsningen er afsluttet og blev brugt til navigation."
+    "message": "Den spekulative indlæsning er afsluttet og blev anvendt til navigation."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "Handling"
@@ -4095,10 +4071,10 @@
     "message": "Vælg et element for at få flere oplysninger"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "Forudindlæsning er deaktiveret på grund af operativsystemets batterisparefunktion."
+    "message": "Spekulativ indlæsning er deaktiveret på grund af operativsystemets batterisparefunktion."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "Forudindlæsning er deaktiveret på grund af operativsystemets datasparefunktion."
+    "message": "Spekulativ indlæsning er deaktiveret på grund af operativsystemets datasparefunktion."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "Forudhentning er aktiveret ved tvang, fordi Udviklerværktøjer er åben. Når Udviklerværktøjer er lukket, deaktiveres forudhentning, da denne browsersession er en del af en tilbageholdelsesgruppe, som bruges til at sammenligne effektivitet."
@@ -4107,7 +4083,7 @@
     "message": "Forhåndsgengivelse er aktiveret ved tvang, fordi Udviklerværktøjer er åben. Når Udviklerværktøjer er lukket, deaktiveres forhåndsgengivelse, da denne browsersession er en del af en tilbageholdelsesgruppe, som bruges til at sammenligne effektivitet."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "Forudindlæsning er deaktiveret på grund af brugerindstillingerne eller en udvidelse. Gå til {PH1} for at opdatere din præference. Gå til {PH2} for at deaktivere eventuelle udvidelser, der blokerer forudindlæsning."
+    "message": "Spekulativ indlæsning er deaktiveret på grund af brugerindstillingerne eller en udvidelse. Gå til {PH1} for at opdatere din præference. Gå til {PH2} for at deaktivere de udvidelser, der blokerer spekulativ indlæsning."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "Indstillinger for udvidelser"
@@ -4131,16 +4107,16 @@
     "message": "Brugerindstillinger eller udvidelser"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "Forudindlæsning er deaktiveret"
+    "message": "Spekulativ indlæsning er deaktiveret"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "Forudindlæsning er aktiveret ved tvang"
+    "message": "Spekulativ indlæsning er aktiveret ved tvang"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "Indstillinger for forudindlæsning af sider"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "Årsager, der forhindrer forudindlæsning"
+    "message": "Årsager, der forhindrer spekulativ indlæsning"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Handling"
@@ -4200,7 +4176,7 @@
     "message": "Webadressen kunne ikke forhåndshentes, fordi den anvender en lagerpartition, der ikke er en standardpartition."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "Forhåndshentningen blev ikke udført, fordi forudindlæsning var deaktiveret."
+    "message": "Forhåndshentningen blev ikke udført, fordi spekulativ indlæsning var deaktiveret."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "Webadressen kunne ikke forhåndshentes, da standardnetværkskonteksten ikke kan konfigureres til at anvende proxyen til forhåndshentning til en anmodning om forhåndshentning af forskellige oprindelser på samme website."
@@ -4287,13 +4263,13 @@
     "message": "Den forhåndsgengivne side navigerede selv til en anden webadresse, som i øjeblikket ikke understøttes."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "Forhåndsgengivelsen blev ikke udført, fordi den indledende side allerede har for mange igangværende forhåndsgengivelser. Fjern andre regler for spekulation for at muliggøre yderligere forhåndsgengivelse."
+    "message": "Den forhåndsgengivelse, hvis \"eagerness\" er af typen \"eager\", blev ikke udført, fordi den indledende side allerede har for mange igangværende forhåndsgengivelser. Fjern andre spekulationsregler af typen \"eager\" for at muliggøre yderligere forhåndsgengivelse."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "Forhåndsgengivelsen blev ikke udført, fordi den indledende side allerede har for mange igangværende forhåndsgengivelser."
+    "message": "Den browseraktiverede forhåndsgengivelse blev ikke udført, fordi den indledende side allerede har for mange igangværende forhåndsgengivelser."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "Forhåndsgengivelsen blev ikke udført, fordi den indledende side allerede har for mange igangværende forhåndsgengivelser. Fjern andre regler for spekulation for at muliggøre yderligere forhåndsgengivelse."
+    "message": "Den gamle \"non-eager\"-forhåndsgengivelse (med en \"eagerness\" af typen \"moderate\" eller \"conservative\", og som blev aktiveret ved at holde markøren over eller klikke på links) blev automatisk annulleret, fordi der blev startet en ny \"non-eager\"-forhåndsgengivelse. Den kan genaktiveres ved at interagere med linket igen."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "Forhåndsgengivelsen blev ikke udført, fordi browseren har overskredet hukommelsesgrænsen for forhåndsgengivelse."
@@ -4395,7 +4371,7 @@
     "message": "Klik for at vise i Netværkspanel"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "Vis forudindlæsninger, der er knyttet til dette regelsæt"
+    "message": "Vis de spekulative indlæsninger, der er knyttet til dette regelsæt"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# fejl}one{# fejl}other{# fejl}}"
@@ -4416,10 +4392,10 @@
     "message": "Startsiden forsøgte at gengive denne sides webadresse på forhånd. Forudgengivelsen mislykkedes, men den resulterende svartekst blev stadig brugt som en forudhentning."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "Få flere oplysninger om forudindlæsning på developer.chrome.com"
+    "message": "Få flere oplysninger om spekulativ indlæsning på developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "Startsiden forsøgte ikke at forudindlæse denne sides webadresse."
+    "message": "Startsiden forsøgte ikke spekulativt at indlæse webadressen for denne side."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "Startsiden forsøgte at hente denne sides webadresse på forhånd, men forudhentningen mislykkedes, så der blev udført en fuld navigation i stedet."
@@ -4428,10 +4404,7 @@
     "message": "Denne side blev hentet på forhånd."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "Webadresser, der forudindlæses af startsiden"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "Status for forudindlæsning"
+    "message": "Webadresser, der indlæses spekulativt af den indledende side"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "Startsiden forsøgte at gengive denne sides webadresse på forhånd, men forudgengivelsen mislykkedes, så der blev udført en fuld navigation i stedet."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Denne side blev gengivet på forhånd."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "Animation"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "Worklet til annonceauktion"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ramt skillepunkt"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "Canvas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "Udklipsholder"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "Styring"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "Enhed"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "DOM-mutation"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "Træk/slip"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "Geoplacering"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "Tastatur"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "Indlæs"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "Medier"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "Mus"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "Notifikation"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "Parse"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "Integreret billede"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "Markør"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "Script"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "Worklet for Shared Storage"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "Timer"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "Berøring på touchskærm"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "Troværdig type overtrædelser"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "Vindue"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "Scripttjeneste"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "Attributten er ændret"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Fjern alle udtryk"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "Fjern tomt udtryk"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "Fjern udtryk"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Skjul element"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "Gå til mediepanelet"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "Indsæt"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "Advaret"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{1 website har adgang til cookies}one{# website har adgang til cookies}other{# websites har adgang til cookies}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Klik for at vise rammens DOM-node i panelet Elementer"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Udført"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, indledende prioritet: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "niveau 1"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Se mere"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "Animationsramme er aktiveret"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Start på fase med budgivning fra budgivere"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "Start på fase med budgiverrapportering"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "Start på fase med sælgerrapportering"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "Start på fase med sælgerbedømmelse"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "Annuller animationsramme"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "Luk AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "Opret AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "Opret en kontekst for lærred"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "Politikovertrædelser"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "Anmod om en animationsramme"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "Genoptag AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "Script er blokeret af Content Security Policy"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "Første sætning i script"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "Konfigurer innerHTML"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} blev aktiveret"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "Overtrædelser i forbindelse med datamodtager"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "Suspender AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "WebGL-fejl er aktiveret"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "WebGL-advarsel er aktiveret"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Klik for at vise dækningspanelet"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "Sat på pause på XHR eller Fetch"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "Script er blokeret på grund af Content Security Policy-direktiv: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "ændringer af undertræ"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Trusted Type – overtrædelser i forbindelse med datamodtager"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "WebGL-fejl er aktiveret ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "Tilføj stoppunkt"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Denne handling kan ikke fortrydes."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "Er du sikker på, at du vil slette alle tilsidesættelser i denne mappe?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "Er du sikker på, at du vil slette denne mappe og dens indhold?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Slet"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "Slet alle tilsidesættelser"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Implementeret"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(anonym)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "Worklet for auktionsbyder"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "Worklet for auktionsbyder – {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Dedikeret Worker"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "Hændelse: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "Ramme – {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "Primær"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "Primær – {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "Rasteriser tråd {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "Worklet for sælger"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "Worklet for sælger – {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Tråden {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "Worklet for auktion"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "Worklet for auktion – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} – {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "Worklet for auktion"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "Worklet for auktion – {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Registrering af effektivitetssporing understøttes ikke for denne måltype"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Sted"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "Lang interaktion"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Lang opgave"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} er sandsynligvis en effektivitetsflaskehals."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} indikerer, at siden har en lang svartid."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} af {PH2}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "Aktivér virtuelt authenticatormiljø"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "Angiv nyt navn"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "Eksportér"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Vis Memory Inspector"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "Kopiér"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Feedback"

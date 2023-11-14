@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "বিশ্বস্ত ধৰণ - নীতিৰ উলংঘন"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "তৃতীয়-পক্ষৰ কুকি ব্যৱহাৰ কৰাটো বন্ধ কৰাৰ বাবে সাজু হওক"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "এটা সুৰক্ষিত"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "এটা অসুৰক্ষিত"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "বাগ ফাইল কৰক"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets আৰু SameParty এট্ৰিবিউট"
@@ -1404,7 +1410,7 @@
     "message": "SameSite কুকিৰ বিষয়ে বৰ্ণনা কৰা হৈছে"
   },
   "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "তৃতীয়-পক্ষৰ কুকি ব্যৱহাৰ কৰা বন্ধ কৰাৰ বাবে প্ৰস্তুত কৰক"
+    "message": "তৃতীয়-পক্ষৰ কুকি ব্যৱহাৰ কৰাটো বন্ধ কৰাৰ বাবে সাজু হওক"
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "ক্ৰছ-অৰিজিন উৎস শ্বেয়াৰ কৰা (CORS)"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "থ্ৰেড {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "বিডাৰৰ ৱর্কলেট"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "বিডাৰৰ ৱর্কলেট — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "সমৰ্পিত Worker"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "বিক্ৰেতাৰ ৱর্কলেট"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "বিক্ৰেতাৰ ৱর্কলেট — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "থ্ৰেড {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "নিলাম কৰাৰ ৱৰ্কলেট"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "নিলাম কৰাৰ ৱৰ্কলেট — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "নিলাম কৰাৰ ৱৰ্কলেটৰ সেৱা"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "নিলাম কৰাৰ ৱৰ্কলেটৰ সেৱা — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(সূচক)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "খুলি ৰখা ৱিণ্ড'"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "আগতীয়াকৈ ল’ড কৰা"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "IndexedDB ৰিফ্ৰেশ্ব কৰক"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "হয়"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "আগতীয়াকৈ ল’ড কৰা"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "অনুমানৰ নিয়ম"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "এই পৃষ্ঠা"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "যিকোনো ৰিপ’ৰ্টৰ মূল অংশ প্ৰদৰ্শন কৰিবলৈ সেই ৰিপ’ৰ্টটোত ক্লিক কৰক"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "উৎসৰ পেনেলত প্ৰকাশ কৰিবলৈ ক্লিক কৰক"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "সমলৰ সুৰক্ষা সম্পৰ্কীয় নীতি (CSP)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "এই ফ্ৰে’মটো সৃষ্টি কৰাৰ সময়ত(async) stackত এটা বিজ্ঞাপনৰ স্ক্ৰিপ্ট আছিল। এই ফ্ৰে’মটোৰ সৃষ্টিৰ সময়ৰ stack trace পৰীক্ষা কৰিলে অধিক অন্তৰ্দৃষ্টি পোৱা যাব পাৰে।"
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "নহয়"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "একো নাই"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "উৎস"
@@ -3990,7 +3966,7 @@
     "message": "প্ৰাইভেট ষ্টে’ট ট’কেন"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "আটাইবোৰ আগতীয়াকৈ কৰা ল’ড"
+    "message": "অনুমানৰ ভিত্তিত কৰা আটাইবোৰ ল’ড"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "নিয়মৰ ছেট অনুসৰি ফিল্টাৰ কৰক"
@@ -4059,22 +4035,22 @@
     "message": "পৰীক্ষা কৰক"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "আগতীয়াকৈ ল’ড কৰিব পৰা নগ’ল।"
+    "message": "অনুমানৰ ভিত্তিত ল’ড কৰিব পৰা নগ’ল।"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "আগতীয়াকৈ ল’ড কৰা প্ৰয়াসটো এতিয়ালৈকে আৰম্ভ কৰা হোৱা নাই।"
+    "message": "অনুমানৰ ভিত্তিত ল’ড কৰা প্ৰয়াসটো এতিয়ালৈকে আৰম্ভ কৰা হোৱা নাই।"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "আগতীয়াকৈ ল’ড কৰাৰ প্ৰয়াসটো যোগ্য কিন্তু বিবেচনাধীন হৈ আছে।"
+    "message": "অনুমানৰ ভিত্তিত ল’ড কৰাৰ প্ৰয়াসটো যোগ্য কিন্তু বিবেচনাধীন হৈ আছে।"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "আগতীয়াকৈ ল’ড কৰাটো সম্পূৰ্ণ হৈছে আৰু ফলাফলটো পৰৱৰ্তী নেভিগেশ্বনৰ বাবে সাজু আছে।"
+    "message": "অনুমানৰ ভিত্তিত ল’ড কৰাটো সম্পূৰ্ণ হৈছে আৰু ফলাফলটো পৰৱৰ্তী নেভিগেশ্বনৰ বাবে সাজু আছে।"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "আগতীয়াকৈ ল’ড কৰাৰ সুবিধাটো চলি আছে।"
+    "message": "অনুমানৰ ভিত্তিত ল’ড কৰাটো চলি আছে।"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "আগতীয়াকৈ ল’ড কৰাটো সম্পূৰ্ণ হৈছে আৰু এটা নেভিগেশ্বনৰ বাবে ব্যৱহাৰ কৰা হৈছে।"
+    "message": "অনুমানৰ ভিত্তিত ল’ড কৰাটো সম্পূৰ্ণ হৈছে আৰু এটা নেভিগেশ্বনৰ বাবে ব্যৱহাৰ কৰা হৈছে।"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "কাৰ্য"
@@ -4095,10 +4071,10 @@
     "message": "অধিক সবিশেষৰ বাবে এটা উপাদান বাছনি কৰক"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "অপাৰেটিং ছিষ্টেমৰ বেটাৰী সঞ্চয়কাৰী ম’ডটোৰ বাবে আগতীয়াকৈ ল’ড কৰাটো অক্ষম কৰা হৈছে।"
+    "message": "অপাৰেটিং ছিষ্টেমৰ বেটাৰী সঞ্চয়কাৰী ম’ডটোৰ বাবে অনুমানৰ ভিত্তিত ল’ড কৰাটো অক্ষম কৰা হৈছে।"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "অপাৰেটিং ছিষ্টেমৰ ডেটা সঞ্চয়কাৰী ম’ডটোৰ বাবে আগতীয়াকৈ ল’ড কৰাটো অক্ষম কৰা হৈছে।"
+    "message": "অপাৰেটিং ছিষ্টেমৰ ডেটা সঞ্চয়কাৰী ম’ডটোৰ বাবে অনুমানৰ ভিত্তিত ল’ড কৰাটো অক্ষম কৰা হৈছে।"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "বিকাশকৰ্তাৰ সঁজুলি খোলা থকাৰ বাবে প্ৰিৰেণ্ডাৰিং বলপূৰ্বকভাৱে সক্ষম কৰা হৈছে। বিকাশকৰ্তাৰ সঁজুলি বন্ধ থাকিলে, প্ৰিফেচ্চ নিষ্ক্ৰিয় কৰা হ’ব কাৰণ এই ব্ৰাউজাৰ ছেশ্বন কাৰ্যক্ষমতা তুলনাৰ বাবে ব্যৱহাৰ কৰা এটা হ’ল্ডবেক গোটৰ অংশ।"
@@ -4107,7 +4083,7 @@
     "message": "DevTools খোলা থকাৰ বাবে প্ৰিৰেণ্ডাৰিং বলপূৰ্বকভাৱে সক্ষম কৰা হৈছে। DevTools বন্ধ থাকিলে, প্ৰিৰেণ্ডাৰিং নিষ্ক্ৰিয় কৰা হ’ব কাৰণ এই ব্ৰাউজাৰ ছেশ্বন কাৰ্যক্ষমতা তুলনাৰ বাবে ব্যৱহাৰ কৰা এটা হ’ল্ডবেক গোটৰ অংশ।"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "ব্যৱহাৰকাৰীৰ ছেটিং অথবা এটা এক্সটেনশ্বনৰ বাবে আগতীয়াকৈ ল’ড কৰাটো অক্ষম কৰা হৈছে। আপোনাৰ অগ্ৰাধিকাৰ আপডে’ট কৰিবলৈ {PH1}লৈ যাওক। আগতীয়াকৈ ল’ড কৰাটো অৱৰোধ কৰা যিকোনো এক্সটেনশ্বন অক্ষম কৰিবলৈ {PH2}লৈ যাওক।"
+    "message": "ব্যৱহাৰকাৰীৰ ছেটিং অথবা এটা এক্সটেনশ্বনৰ বাবে অনুমানৰ ভিত্তিত ল’ড কৰাটো অক্ষম কৰা হৈছে। আপোনাৰ অগ্ৰাধিকাৰ আপডে’ট কৰিবলৈ {PH1}লৈ যাওক। অনুমানৰ ভিত্তিত ল’ড কৰাটো অৱৰোধ কৰা যিকোনো এক্সটেনশ্বন অক্ষম কৰিবলৈ {PH2}লৈ যাওক।"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "এক্সটেনশ্বনৰ ছেটিং"
@@ -4131,16 +4107,16 @@
     "message": "ব্যৱহাৰকাৰীৰ ছেটিং অথবা এক্সটেনশ্বন"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "আগতীয়াকৈ ল’ড কৰাটো অক্ষম কৰা হৈছে"
+    "message": "অনুমানৰ ভিত্তিত কৰা ল’ড অক্ষম কৰা হৈছে"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "আগতীয়াকৈ ল’ড কৰা জোৰকৈ সক্ষম কৰা হয়"
+    "message": "অনুমানৰ ভিত্তিত ল’ড কৰা জোৰকৈ সক্ষম কৰা হয়"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "পৃষ্ঠাৰ ছেটিং আগতীয়াকৈ ল’ড কৰক"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "আগতীয়াকৈ ল’ড কৰা প্ৰতিৰোধ কৰাৰ কাৰণ"
+    "message": "অনুমানৰ ভিত্তিত ল’ড কৰাটো প্ৰতিৰোধ কৰাৰ কাৰণসমূহ"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "কাৰ্য"
@@ -4200,7 +4176,7 @@
     "message": "URLটো প্ৰিফেচ্চৰ বাবে যোগ্য নহয় কাৰণ ই এটা ডিফ’ল্ট নোহোৱা ষ্ট’ৰেজৰ বিভাজন ব্যৱহাৰ কৰে।"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "প্ৰিফেচ্চ কৰা হোৱা নাই কাৰণ আগতীয়াকৈ ল’ড কৰাটো অক্ষম কৰা হৈছে।"
+    "message": "প্ৰিফেচ্চ কৰা হোৱা নাই কাৰণ অনুমানৰ ভিত্তিত ল’ড কৰাটো অক্ষম কৰা হৈছে।"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "URLটো প্ৰিফেচ্চ কৰাৰ যোগ্য নহয় কাৰণ ডিফ’ল্ট নেটৱৰ্ক প্ৰসংগটো এটা একে-ছাইট ক্ৰছ-উৎস প্ৰিফেচ্চ অনুৰোধৰ বাবে প্ৰিফেচ্চ প্ৰক্সি ব্যৱহাৰ কৰিবলৈ কনফিগাৰ কৰিব নোৱাৰি।"
@@ -4245,7 +4221,7 @@
     "message": "ব্যৱহাৰকাৰীয়ে ব্ৰাউজাৰটোৱে কম বেটাৰী ব্যৱহাৰ কৰে বুলি অনুৰোধ কৰাৰ বাবে প্ৰিৰেণ্ডাৰ কৰা হোৱা নাছিল।"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "কিছুমান সম্পদৰ ল’ড অৱৰোধ কৰা হৈছে।"
+    "message": "কিছুমান সম্পদৰ ল’ড অৱৰোধ কৰা হৈছিল।"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "প্ৰিৰেণ্ডাৰিঙৰ নেভিগেশ্বনৰ বাবে এখন HTTP ক্লায়েণ্টৰ প্ৰমাণপত্ৰৰ আৱশ্যক।"
@@ -4287,13 +4263,13 @@
     "message": "প্ৰিৰেণ্ডাৰ কৰা পৃষ্ঠাখনে নিজকে অন্য এটা URLলৈ নেভিগে’ট কৰিছে, যিটো বৰ্তমান সমৰ্থিত নহয়।"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "আৰম্ভ কৰা পৃষ্ঠাখনত ইতিমধ্যে অতি বেছিসংখ্যক প্ৰিৰেণ্ডাৰিং চলি থকাৰ বাবে প্ৰিৰেণ্ডাৰ কৰা হোৱা নাছিল। অধিক প্ৰিৰেণ্ডাৰিং সক্ষম কৰিবলৈ অনুমানৰ অন্য নিয়মসমূহ আঁতৰাওক।"
+    "message": "যিটো প্ৰিৰেণ্ডাৰৰ আকাংক্ষা \"আকাংক্ষিত\" সেইটো সম্পাদন কৰা হোৱা নাই কাৰণ প্ৰাৰম্ভিক পৃষ্ঠাখনত ইতিমধ্যে অতি বেছিসংখ্যক প্ৰিৰেণ্ডাৰ চলি আছে। অধিক প্ৰিৰেণ্ডাৰ সক্ষম কৰিবলৈ \"আকাংক্ষিত\" থকা আন অনুমান-ভিত্তিক নিয়মসমূহ আঁতৰাওক।"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "আৰম্ভ কৰা পৃষ্ঠাখনত ইতিমধ্যে অতি বেছিসংখ্যক প্ৰিৰেণ্ডাৰিং চলি থকাৰ বাবে প্ৰিৰেণ্ডাৰ কৰা হোৱা নাছিল।"
+    "message": "ব্ৰাউজাৰে ট্ৰিগাৰ কৰা প্ৰিৰেণ্ডাৰ সম্পাদন কৰা হোৱা নাই কাৰণ প্ৰাৰম্ভিক পৃষ্ঠাখনত ইতিমধ্যে অতি বেছিসংখ্যক প্ৰিৰেণ্ডাৰ চলি আছে।"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "আৰম্ভ কৰা পৃষ্ঠাখনত ইতিমধ্যে অতি বেছিসংখ্যক প্ৰিৰেণ্ডাৰিং চলি থকাৰ বাবে প্ৰিৰেণ্ডাৰ কৰা হোৱা নাছিল। অধিক প্ৰিৰেণ্ডাৰিং সক্ষম কৰিবলৈ অনুমানৰ অন্য নিয়মসমূহ আঁতৰাওক।"
+    "message": "পুৰণি অ-আকাংক্ষিত প্ৰিৰেণ্ডাৰ (এটা \"মধ্যমীয়া\" বা \"ৰক্ষণশীল\" আকাংক্ষাৰ সৈতে আৰু লৰচৰ কৰি বা লিংকত ক্লিক কৰি ট্ৰিগাৰ কৰা) এটা নতুন অ-আকাংক্ষিত প্ৰিৰেণ্ডাৰ আৰম্ভ কৰাৰ বাবে স্বয়ংক্ৰিয়ভাৱে বাতিল কৰা হৈছে। পুনৰ লিংকটোৰ সৈতে ভাব-বিনিময় কৰি ইয়াক পুনৰ ট্ৰিগাৰ কৰিব পাৰি।"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "ব্ৰাউজাৰটোৱে প্ৰিৰেণ্ডাৰিঙৰ মেম’ৰীৰ সীমা অতিক্ৰম কৰাৰ বাবে প্ৰিৰেণ্ডাৰ কৰা হোৱা নাছিল।"
@@ -4395,7 +4371,7 @@
     "message": "নেটৱৰ্ক পেনেলত প্ৰকাশ কৰিবলৈ ক্লিক কৰক"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "এই নিয়মৰ ছেটৰ সৈতে সম্পৰ্কিত আগতীয়াকৈ কৰা ল’ডবোৰ ফাদিল কৰক"
+    "message": "এই নিয়মৰ ছেটৰ সৈতে সম্পৰ্কিত অনুমানৰ ভিত্তিত কৰা ল’ডবোৰ ফাদিল কৰক"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# টা আসোঁৱাহ}one{# টা আসোঁৱাহ}other{# টা আসোঁৱাহ}}"
@@ -4416,10 +4392,10 @@
     "message": "প্ৰাৰম্ভিক পৃষ্ঠাখনে এই পৃষ্ঠাখনৰ URL প্ৰিৰেণ্ডাৰ কৰিবলৈ প্ৰয়াস কৰিছিল। প্ৰিৰেণ্ডাৰটো বিফল হৈছিল, কিন্তু ইয়াৰ ফলত হোৱা ৰেছপন্স বডীটো তথাপিও প্ৰিফেচ্চ হিচাপে ব্যৱহাৰ কৰা হৈছিল।"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "অধিক জানক: developer.chrome.comত আগতীয়াকৈ ল’ড কৰা"
+    "message": "অধিক জানক: developer.chrome.comত অনুমানৰ ভিত্তিত ল’ড কৰা"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "প্ৰাৰম্ভিক পৃষ্ঠাই এই পৃষ্ঠাৰ URL আগতীয়াকৈ ল’ড কৰাৰ প্ৰয়াস কৰা নাছিল।"
+    "message": "প্ৰাৰম্ভিক পৃষ্ঠাই এই পৃষ্ঠাৰ URL অনুমানৰ ভিত্তিত ল’ড কৰাৰ প্ৰয়াস কৰা নাছিল।"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "প্ৰাৰম্ভিক পৃষ্ঠাখনে এই পৃষ্ঠাখনৰ URL প্ৰিফেচ্চ কৰিবলৈ প্ৰয়াস কৰিছিল, কিন্তু প্ৰিৰেণ্ডাৰ বিফল হৈছিল, সেয়েহে এটা সম্পূৰ্ণ নেভিগেশ্বন কৰা হৈছিল।"
@@ -4428,10 +4404,7 @@
     "message": "এই পৃষ্ঠাখন সফলতাৰে প্ৰিফেচ্চ কৰা হৈছে।"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "প্ৰাৰম্ভিক পৃষ্ঠাৰ দ্বাৰা URL আগতীয়াকৈ ল’ড কৰা হৈছে"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "আগতীয়াকৈ ল’ড কৰাৰ স্থিতি"
+    "message": "প্ৰাৰম্ভিক পৃষ্ঠাই অনুমানৰ ভিত্তিত URLসমূহ ল’ড কৰিছে"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "প্ৰাৰম্ভিক পৃষ্ঠাখনে এই পৃষ্ঠাখনৰ URL প্ৰিৰেণ্ডাৰ কৰিবলৈ প্ৰয়াস কৰিছিল, কিন্তু প্ৰিৰেণ্ডাৰ বিফল হৈছিল, সেয়েহে এটা সম্পূৰ্ণ নেভিগেশ্বন কৰা হৈছিল।"
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "এই পৃষ্ঠাখন সফলতাৰে প্ৰিৰেণ্ডাৰ কৰা হৈছিল।"
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "এনিমেশ্বন"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "বিজ্ঞাপন নিলাম কৰাৰ ৱৰ্কলেট"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ব্ৰেইকপইণ্ট হিট"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "কেনভাছ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "ক্লিপব’ৰ্ড"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "কণ্ট্ৰ’ল"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "ডিভাইচ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "DOM মিউটেশ্বন"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "টানক / এৰক"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "জিঅ’লোকেশ্বন"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "কীব’ৰ্ড"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "ল’ড কৰক"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "মিডিয়া"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "মাউছ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "জাননী"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "পার্ছ কৰক"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "Picture-in-Picture"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "পইণ্টাৰ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "স্ক্ৰিপ্ট"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "Shared Storage ৱৰ্কলেট"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "টাইমাৰ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "স্পর্শ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "বিশ্বাসী ধৰণৰ উলংঘন"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "ৱেবঅডিঅ’"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "ৱিণ্ড’"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "কৰ্মী"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "বিশেষত্ব সংশোধন কৰা হৈছে"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "আটাইবোৰ অভিব্যক্তি আঁতৰাওক"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "খালী অভিব্যক্তি আঁতৰাওক"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "বিন্যাস আঁতৰাওক"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "উপাদান লুকুৱাওক"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "মিডিয়া পেনেললৈ পোনপটীয়াকৈ যাওক"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "পেষ্ট কৰক"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "সকীয়নি দিয়া হৈছে"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{১ টা ৱেবছাইটক কুকি এক্সেছ কৰাৰ অনুমতি দিয়া হৈছে}one{# টা ৱেবছাইটক কুকি এক্সেছ কৰাৰ অনুমতি দিয়া হৈছে}other{# টা ৱেবছাইটক কুকি এক্সেছ কৰাৰ অনুমতি দিয়া হৈছে}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "উপাদানৰ পেনেলত ফ্ৰে’মৰ DOM ন’ড প্ৰকাশ কৰিবলৈ ক্লিক কৰক"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "সম্পূৰ্ণ হৈছে"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, প্ৰাৰম্ভিক অগ্ৰাধিকাৰ: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "স্তৰ ১"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "অধিক দেখুৱাওক"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "এনিমেশ্বন ফ্ৰে’ম সক্ৰিয় হৈছে"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "বিডাৰৰ বিড কৰাৰ পৰ্যায়ৰ আৰম্ভণি"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "বিডাৰৰ ৰিপ’ৰ্টিঙৰ পৰ্যায়ৰ আৰম্ভণি"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "বিক্ৰেতাৰ ৰিপ’ৰ্টিঙৰ পৰ্যায়ৰ আৰম্ভণি"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "বিক্ৰেতাৰ স্ক’ৰিঙৰ পৰ্যায়ৰ আৰম্ভণি"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "এনিমেশ্বন ফ্ৰে’ম বাতিল কৰক"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "AudioContext বন্ধ কৰক"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "AudioContext সৃষ্টি কৰক"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "কেনভাছ প্ৰসংগ সৃষ্টি কৰক"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "নীতি উলংঘন"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "এনিমেশ্বন ফ্ৰে’ম অনুৰোধ কৰক"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "AudioContext পুনৰ আৰম্ভ কৰক"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "সমল সুৰক্ষা নীতিৰ দ্বাৰা স্ক্ৰিপ্ট অৱৰোধ কৰা হৈছে"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "প্ৰথম বিবৃতিৰ স্ক্ৰিপ্ট"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "innerHTML ছেট কৰক"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} সক্ৰিয় হৈছে"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "ছিংক উলংঘন"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "AudioContext নিলম্বন কৰক"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "WebGL আসোঁৱাহ সক্ৰিয় হৈছে"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "WebGLৰ সকীয়নি দিয়া হৈছে"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "ক’ভাৰেজ পেনেল দেখুৱাবলৈ ক্লিক কৰক"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "XHR অথবা আহৰণত পজ কৰা হৈছে"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "সমল সুৰক্ষা নীতি সম্পৰ্কীয় নিৰ্দেশনাৰ বাবে স্ক্ৰিপ্ট অৱৰোধ কৰা হৈছে: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "ছাবট্ৰী সংশোধন"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Trusted Type ছিংক উলংঘন"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "WebGL আসোঁৱাহ হৈছে ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "ব্ৰেকপইণ্ট যোগ দিয়ক"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "এই কাৰ্যটো আনডু কৰিব নোৱাৰি।"
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "আপুনি এই ফ’ল্ডাৰটোত থকা আটাইবোৰ অ’ভাৰৰাইড মচিবলৈ বিচাৰে বুলি নিশ্চিতনে?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "আপুনি এই ফ'ল্ডাৰটো আৰু ইয়াৰ সমলখিনি মচিব বিচাৰে বুলি নিশ্চিতনে?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "মচক"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "আটাইবোৰ অ’ভাৰৰাইড মচক"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "বলৱৎ কৰা হৈছে"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(বেনামী)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "বিডাৰৰ ৱৰ্কলেট"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "বিডাৰৰ ৱৰ্কলেট — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "সমৰ্পিত Worker"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "ঘটনা: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "ফ্ৰে’ম — {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "মুখ্য"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "মুখ্য — {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "ৰাষ্টেৰাইজাৰ থ্ৰেড {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "বিক্ৰেতাৰ ৱৰ্কলেট"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "বিক্ৰেতাৰ ৱৰ্কলেট — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "থ্ৰেড {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "নিলাম কৰাৰ ৱৰ্কলেট"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "নিলাম কৰাৰ ৱৰ্কলেট — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "নিলাম কৰাৰ ৱৰ্কলেটৰ সেৱা"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "নিলাম কৰাৰ ৱৰ্কলেটৰ সেৱা — {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "এই প্ৰকাৰৰ লক্ষ্যৰ বাবে কার্যদক্ষতাৰ ট্ৰে’চ ৰেকর্ডিং সমর্থন নকৰে"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "অৱস্থান"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "দীঘলীয়া ভাব-বিনিময়"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "দীঘলীয়া কাৰ্য"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} হৈছে এটা কাৰ্যক্ষমতা হ্ৰাস কৰা সম্ভাব্য প্ৰতিবন্ধকতা।"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1}এ পৃষ্ঠাৰ সঁহাৰি বেয়া বুলি সূচাইছে।"
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2}ৰ {PH1}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "ভাৰ্চুৱেল বিশ্বাসযোগ্যতা প্ৰমাণীকৰণৰ পৰিৱেশ সক্ষম কৰক"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "নতুন নাম দিয়ক"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "ৰপ্তানি কৰক"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "মেম'ৰি নিৰীক্ষক দেখুৱাওক"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "প্ৰতিলিপি কৰক"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "মতামত"

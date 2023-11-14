@@ -324,7 +324,7 @@
     "message": "این تلاش برای تنظیم کوکی ازطریق سرصفحه Set-Cookie مسدود شده است زیرا از پیشوند «__Secure-» یا «__Host-» در نام آن استفاده شده است که قوانین تکمیلی تعریف‌شده در https://tools.ietf.org/html/draft-west-cookie-prefixes-05 برای کوکی‌های دارای این پیشوندها را نقض می‌کند."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonOverwriteSecure": {
-    "message": "این تلاش برای تنظیم کوکی ازطریق سرصفحه Set-Cookie مسدود شده است زیرا ازطریق اتصالی ایمن ارسال نشده است و کوکی‌های دارای مشخصه Secure را رونویسی می‌کند."
+    "message": "این تلاش برای تنظیم کوکی ازطریق سرصفحه Set-Cookie مسدود شده است زیرا ازطریق اتصال ایمن ارسال نشده است و کوکی‌های دارای مشخصه Secure را رونویسی می‌کند."
   },
   "core/sdk/NetworkRequest.ts | blockedReasonSameSiteNoneInsecure": {
     "message": "این تلاش برای تنظیم کوکی ازطریق سرصفحه Set-Cookie مسدود شده است زیرا مشخصه «SameSite=None» داشت اما مشخصه «Secure» را که برای استفاده از «SameSite=None» الزامی است نداشت."
@@ -354,7 +354,7 @@
     "message": "این کوکی مسدود شده است زیرا مشخصه «SameSite=Lax» داشت و درخواست از سایت دیگری ایجاد شده بود و از پیمایش سطح بالا آغاز نشده بود."
   },
   "core/sdk/NetworkRequest.ts | sameSiteNoneInsecure": {
-    "message": "این کوکی مسدود شده است زیرا مشخصه «SameSite=None» داشت، اما به‌عنوان «Secure» علامت‌گذاری نشده بود. کوکی‌های بدون محدودیت SameSite باید به‌عنوان «Secure» علامت‌گذاری شوند و ازطریق اتصال امن ارسال شوند."
+    "message": "این کوکی مسدود شده است زیرا مشخصه «SameSite=None» داشت، اما به‌عنوان «Secure» علامت‌گذاری نشده بود. کوکی‌های بدون محدودیت SameSite باید به‌عنوان «Secure» علامت‌گذاری شوند و ازطریق اتصال ایمن ارسال شوند."
   },
   "core/sdk/NetworkRequest.ts | sameSiteStrict": {
     "message": "این کوکی مسدود شده است زیرا مشخصه «SameSite=Strict» داشت و درخواست از سایت دیگری ایجاد شده بود. این شامل درخواست‌های پیمایش سطح بالا می‌شود که از سایت‌های دیگر آغاز شده است."
@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "انواع معتمد - نقض خط‌مشی"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "آماده‌سازی برای متوقف کردن کوکی‌های شخص ثالث"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "امن"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "غیرایمن"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "گزارش کردن اشکال"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "مشخصه First-Party Sets و SameParty"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "رشته {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "وُرکلت پیشنهادکننده"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "وُرکلت پیشنهادکننده — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Worker اختصاصی"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "وُرکلت فروشنده"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "وُرکلت فروشنده — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "رشته {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "وُرکلت حراج"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "وُرکلت حراج — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "خدمات وُرکلت حراج"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "خدمات وُرکلت حراج — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(نمایه)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "پنجره‌های بازشده"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "پیش‌بارگیری"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "بازآوری IndexedDB"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "بله"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "پیش‌بارگیری‌ها"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "قوانین گمانه‌زنی"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "این صفحه"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "برای مشاهده محتوای هر گزارش روی آن کلیک کنید"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "برای نمایش در پانل «منابع»، کلیک کنید"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "خط‌مشی امنیتی محتوا (CSP)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "هنگام ایجاد شدن این قاب، یک متن آگهی در (async) stack وجود داشت. ممکن است با بررسی stack trace ایجاد این قاب بتوانید اطلاعات آماری بیشتری کسب کنید."
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "موردی وجود ندارد"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "هیچ‌کدام"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "مبدأ"
@@ -3990,7 +3966,7 @@
     "message": "کدهای حالت خصوصی"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "همه پیش‌بارگیری‌ها"
+    "message": "همه بارگذاری‌های فرضی"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "فیلتر کردن براساس مجموعه قوانین"
@@ -4059,22 +4035,22 @@
     "message": "بازرسی"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "پیش‌بارگذاری انجام نشد."
+    "message": "بارگذاری فرضی انجام نشد."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "تلاش برای پیش‌بارگذاری هنوز راه‌اندازی نشده است."
+    "message": "تلاش برای بارگذاری فرضی هنوز راه‌اندازی نشده است."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "تلاش برای پیش‌بارگذاری واجدشرایط است اما دردست انجام است."
+    "message": "تلاش برای بارگذاری فرضی واجدشرایط است اما معلق است."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "پیش‌بارگذاری به‌پایان رسید و نتیجه برای پیمایش بعدی آماده است."
+    "message": "بارگذاری فرضی به‌پایان رسید و نتیجه برای پیمایش بعدی آماده است."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "پیش‌بارگذاری درحال اجرا است."
+    "message": "بارگذاری فرضی درحال اجرا است."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "پیش‌بارگذاری به‌پایان رسید و برای پیمایش استفاده شد."
+    "message": "بارگذاری فرضی به‌پایان رسید و برای پیمایش استفاده شد."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "کنش"
@@ -4095,10 +4071,10 @@
     "message": "برای جزئیات بیشتر، عنصری انتخاب کنید"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "پیش‌بارگذاری به‌دلیل حالت «بهینه‌سازی باتری» سیستم‌عامل غیرفعال است."
+    "message": "بارگذاری فرضی به‌دلیل حالت «بهینه‌سازی باتری» سیستم‌عامل غیرفعال شد."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "پیش‌بارگذاری به‌دلیل حالت «صرفه‌جویی داده» سیستم‌عامل غیرفعال شد."
+    "message": "بارگذاری فرضی به‌دلیل حالت «صرفه‌جویی داده» سیستم‌عامل غیرفعال شد."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "پیش‌واکشی اجباراً فعال شده است زیرا DevTools باز است. وقتی DevTools بسته شود، واکشی اولیه غیرفعال خواهد شد زیرا این جلسه مرورگر بخشی از گروه بازدارنده مورداستفاده برای مقایسه عملکرد است."
@@ -4107,7 +4083,7 @@
     "message": "پیش‌پرداززنی به‌اجبار فعال شد چون DevTools باز است. وقتی DevTools بسته شود، پیش‌پرداززنی غیرفعال خواهد شد چون این جلسه مرورگر بخشی از گروه بازدارنده مورداستفاده برای مقایسه عملکرد است."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "پیش‌بارگذاری به‌دلیل تنظیمات کاربر یا وجود افزونه‌ای خاص غیرفعال است. به {PH1} بروید تا اولویت خود را به‌روزرسانی کنید. به {PH2} بروید تا هر افزونه‌ای را که پیش‌بارگیری را مسدود می‌کند غیرفعال کنید."
+    "message": "بارگذاری فرضی به‌دلیل تنظیمات کاربر یا وجود افزونه‌ای خاص غیرفعال شد. برای به‌روزرسانی اولویت‌ها، به {PH1} بروید. برای غیرفعال کردن هر افزونه‌ای که بارگذاری فرضی را مسدود می‌کند، به {PH2} بروید."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "تنظیمات افزونه‌ها"
@@ -4131,16 +4107,16 @@
     "message": "تنظیمات یا افزونه‌های کاربر"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "پیش‌بارگذاری غیرفعال است"
+    "message": "بارگذاری فرضی غیرفعال است"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "پیش‌بارگیری اجباراً فعال شده است"
+    "message": "بارگذاری فرضی اجباراً فعال شده است"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "پیش‌بارگیری تنظیمات صفحه‌ها"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "دلایلی که از پیش‌بارگیری جلوگیری می‌کند"
+    "message": "دلایل جلوگیری از بارگذاری فرضی"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "کنش"
@@ -4200,7 +4176,7 @@
     "message": "نشانی وب واجدشرایط واکشی اولیه نبود زیرا از افراز فضای ذخیره‌سازی غیرپیش‌فرض استفاده می‌کند."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "واکشی اولیه انجام نشد زیرا پیش‌بارگذاری غیرفعال بود."
+    "message": "واکشی اولیه انجام نشد زیرا بارگذاری فرضی غیرفعال شده است."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "نشانی وب واجدشرایط واکشی اولیه نبود زیرا بافت شبکه پیش‌فرض نمی‌تواند طوری پیکربندی شود که از پراکسی واکشی اولیه برای درخواست واکشی اولیه بین‌مبدائی هم‌سایت استفاده کند."
@@ -4245,7 +4221,7 @@
     "message": "پیش‌پرداز اجرا نشد زیرا کاربر درخواست کرده بود مروگر از باتری کمتری استفاده کند."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusBlockedByClient": {
-    "message": "بخشی‌از بارگیری منبع مسدود شد."
+    "message": "بخشی از بارگیری منبع مسدود شد."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusClientCertRequested": {
     "message": "پیمایش پیش‌پرداززنی به گواهینامه کارخواه HTTP نیاز داشت."
@@ -4287,13 +4263,13 @@
     "message": "صفحه پیش‌پردازشده خود را به نشانی وب دیگری هدایت کرد که درحال‌حاضر پشتیبانی نمی‌شود."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "پیش‌پرداز اجرا نشد زیرا صفحه آغازگر ازقبل پیش‌پردازهای بسیار زیادی درحال اجرا دارد. برای فعال کردن پیش‌پرداززنی‌های بیشتر، دیگر قوانین گمانه‌زنی را حذف کنید."
+    "message": "پیش‌پردازی که میزان اشتیاق آن روی «مشتاق» تنظیم شده است اجرا نشد چون صفحه آغازگر درحال‌حاضر پیش‌پردازهای بسیار زیادی درحال اجرا دارد. بقیه قوانین فرضیه «مشتاق» را حذف کنید تا پیش‌پرداززنی بیشتر فعال شود."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "پیش‌پرداز اجرا نشد زیرا صفحه آغازگر ازقبل پیش‌پردازهای بسیار زیادی درحال اجرا دارد."
+    "message": "پیش‌پرداز راه‌اندازی‌شده ازسوی مرورگر اجرا نشد زیرا صفحه آغازگر درحال‌حاضر پیش‌پردازهای بسیار زیادی درحال اجرا دارد."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "پیش‌پرداز اجرا نشد زیرا صفحه آغازگر ازقبل پیش‌پردازهای بسیار زیادی درحال اجرا دارد. برای فعال کردن پیش‌پرداززنی‌های بیشتر، دیگر قوانین گمانه‌زنی را حذف کنید."
+    "message": "پیش‌پرداز قدیمی غیرمشتاق (با میزان اشتیاق «متوسط» یا «محافظه‌کارانه» و راه‌اندازی‌شده با نگه داشتن نشانگر یا کلیک روی پیوندها) به‌طور خودکار لغو شد چون پیش‌پرداز غیرمشتاق جدیدی شروع شد. این پیش‌پرداز را می‌توان ازطریق تعامل داشتن مجدد با پیوند دوباره راه‌اندازی کرد."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "پیش‌پرداز اجرا نشد زیرا مرورگر از حد حافظه پیش‌پرداززنی فراتر رفت."
@@ -4395,7 +4371,7 @@
     "message": "برای نمایش در پانل «شبکه»، کلیک کنید"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "آشکار کردن پیش‌بارگیری‌های مرتبط با این مجموعه قوانین"
+    "message": "آشکار کردن بارگذاری‌های فرضی مرتبط با این مجموعه قوانین"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# خطا}one{# خطا}other{# خطا}}"
@@ -4416,10 +4392,10 @@
     "message": "صفحه آغازگر تلاش کرد نشانی وب این صفحه را پیش‌پرداز کند. پیش‌پرداز انجام نشد اما متن پاسخ حاصل همچنان به‌عنوان واکشی اولیه استفاده می‌شد."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "بیشتر بدانید: پیش‌بارگذاری در developer.chrome.com"
+    "message": "بیشتر بدانید: بارگذاری فرضی در developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "صفحه آغازگر تلاشی برای پیش‌بارگیری نشانی وب این صفحه نکرد."
+    "message": "صفحه آغازگر تلاشی برای بارگذاری فرضی نشانی وب این صفحه نکرد."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "صفحه آغازگر تلاش کرد نشانی وب این صفحه را پیش‌واکشی کند اما پیش‌واکشی انجام نشد، بنابراین پیمایش کامل به‌جای آن انجام شد."
@@ -4428,10 +4404,7 @@
     "message": "این صفحه باموفقیت پیش‌واکشی شد."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "نشانی‌های وبی که توسط صفحه آغازگر پیش‌بارگیری می‌شوند"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "وضعیت پیش‌بارگیری"
+    "message": "نشانی‌های وبی که توسط صفحه آغازگر به‌صورت فرضی بارگذاری می‌شود"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "صفحه آغازگر تلاش کرد نشانی وب این صفحه را پیش‌پرداز کند اما پیش‌پردازی انجام نشد، بنابراین پیمایش کامل به‌جای آن انجام شد."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "این صفحه باموفقیت پیش‌پرداز شد."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "پویانمایی"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "بسته کاری مربوط به مزایده آگهی"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "رسیدن به نقطه توقف"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "بوم نقاشی"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "بریده‌دان"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "کنترل"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "دستگاه"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "تغییرات DOM"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "کشیدن / رها کردن"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "موقعیت جغرافیایی"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "صفحه‌کلید"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "بارگیری"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "رسانه"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "موشواره"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "اعلان"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "تجزیه"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "‏تصویر در تصویر"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "اشاره‌گر"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "متن"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "بسته کاری فضای ذخیره‌سازی مشترک"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "تایمر"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "لمس"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "نقض‌های نوع معتمد"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "پنجره"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "عامل"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "مشخصه تغییر کرده است"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "برداشتن همه عبارات"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "برداشتن عبارت خالی"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "برداشتن عبارت"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "پنهان کردن عنصر"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "رفتن به پانل «رسانه»"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "جای‌گذاری کردن"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "هشدار داده شد"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{۱ وب‌سایت اجازه دارد به کوکی‌ها دسترسی داشته باشد}one{# وب‌سایت اجازه دارد به کوکی‌ها دسترسی داشته باشد}other{# وب‌سایت اجازه دارد به کوکی‌ها دسترسی داشته باشد}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "برای آشکار کردن گره DOM قاب در پانل «عناصر» کلیک کنید"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "تمام شد"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}، اولویت اولیه: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "سطح ۱"
@@ -10146,7 +10203,7 @@
     "message": "ایمن"
   },
   "panels/security/SecurityPanel.ts | secureConnectionSettings": {
-    "message": "تنظیمات اتصال امن"
+    "message": "تنظیمات اتصال ایمن"
   },
   "panels/security/SecurityPanel.ts | secureOrigins": {
     "message": "ایمن‌سازی مبدأ"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "نمایش موارد بیشتر"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "قاب پویانمایی فعال شد"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "شروع مرحله تعیین قیمت پیشنهادکننده"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "شروع مرحله گزارش‌دهی پیشنهادکننده"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "شروع مرحله گزارش‌دهی فروشنده"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "شروع مرحله امتیازدهی فروشنده"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "لغو قاب پویانمایی"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "بستن AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "ایجاد کردن AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "ایجاد بافت بوم نقاشی"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "نقض‌های خط‌مشی"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "درخواست قاب پویانمایی"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "ازسرگیری AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "متن به‌دلیل «خط‌مشی امنیتی محتوا» مسدود شده است"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "اولین عبارت دستورگان"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "مجموعه innerHTML"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} فعال شد"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "نقض‌های ستانه"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "تعلیق AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "خطای WebGL روی داد"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "هشدار WebGL فعال شد"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "برای مشاهده پانل «پوشش» کلیک کنید"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "در XHR یا واکشی موقتاً متوقف شد"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "متن به‌دلیل دستورالعمل «خط‌مشی امنیتی محتوا» مسدود شد: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "تغییرات زیرشاخه"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "نقض ستانه Trusted Type"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "خطای WebGL روی داد ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "افزودن نقطه توقف"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "این کنش واگردشدنی نیست."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "مطمئنید می‌خواهید همه موارد ملغی‌سازی موجود در این پوشه را حذف کنید؟"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "مطمئنید می‌خواهید این پوشه و محتوای آن را حذف کنید؟"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "حذف"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "حذف همه موارد ملغی‌سازی"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "مستقرشده"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(ناشناس)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "بسته کاری پیشنهادکننده"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "بسته کاری پیشنهادکننده — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Worker اختصاصی"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "رویداد: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "قاب — {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "اصلی"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "اصلی — {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "رشته شطرنجی‌کننده {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "بسته کاری فروشنده"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "بسته کاری فروشنده — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "رشته {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "بسته کاری مزایده"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "بسته کاری مزایده — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "خدمات بسته کاری مزایده"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "خدمات بسته کاری مزایده — {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "از ضبط ردیابی عملکرد برای این نوع هدف پشتیبانی نمی‌شود"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "مکان"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "تعامل طولانی"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "تکلیف طولانی"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} احتمالاً یک گلوگاه عملکرد است."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} نشان‌دهنده پاسخگویی ضعیف صفحه است."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} از {PH2}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "فعال کردن محیط برنامه اصالت‌سنجی مجازی"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "نام جدید را وارد کنید"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "بیرون‌بُرد"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "نمایش بازرس حافظه"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "کپی کردن"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "بازخورد"

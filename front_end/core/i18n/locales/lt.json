@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Patikimi tipai – politikos pažeidimas"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Pasiruošimas palaipsniui atsisakyti trečiųjų šalių slapukų"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "saugus"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "nesaugus"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "Pranešti apie riktą"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets ir SameParty atributas"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "{PH1} grupė"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "Kainų siūlytojo darbų blokas"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "Kainos siūlytojo darbų blokas – {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Skirtasis Worker"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "Pardavėjo darbų blokas"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "Pardavėjo darbų blokas – {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "{PH1} grupė"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "Aukciono darbų blokas"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "Aukciono darbų blokas – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "„Worker“ – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "Aukciono darbų bloko paslauga"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "Aukciono darbų bloko paslauga – {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(indeksas)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Atidaryti langai"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "Įkeliama iš anksto"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Atnaujinti „IndexedDB“"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Taip"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "Išankstiniai įkėlimai"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "Spekuliavimo taisyklės"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "Šis puslapis"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Spustelėkite bet kurią ataskaitą, jei norite peržiūrėti jos turinį"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Spustelėkite, kad būtų rodoma šaltinių skydelyje"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Turinio apsaugos politika (angl. „Content Security Policy“, CSP)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "Kai šis rėmelis buvo sukurtas, (async) stack buvo skelbimo scenarijus. Daugiau įžvalgų galima gauti atlikus šio rėmelio kūrimo stack trace analizę."
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "Ne"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "Nėra"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Šaltinis"
@@ -3990,7 +3966,7 @@
     "message": "Privatūs prieigos raktai"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "Visi išankstiniai įkėlimai"
+    "message": "Visi spekuliatyvieji įkėlimai"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "Filtruoti pagal taisyklių rinkinį"
@@ -4059,22 +4035,22 @@
     "message": "Tikrinti"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "Nepavyko įkelti iš anksto."
+    "message": "Spekuliatyvusis įkėlimas nepavyko."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "Išankstinio įkėlimo bandymas dar nesuaktyvintas."
+    "message": "Spekuliatyviojo įkėlimo bandymas dar nesuaktyvintas."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "Išankstinis įkėlimas tinkamas, bet laukiama."
+    "message": "Spekuliatyviojo įkėlimo bandymas tinkamas, bet laukiantis"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "Išankstinis įkėlimas baigtas ir rezultatas paruoštas kitai navigacijai."
+    "message": "Spekuliatyvusis įkėlimas baigtas ir rezultatas paruoštas kitai navigacijai."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "Vykdomas išankstinis įkėlimas."
+    "message": "Vykdomas spekuliatyvusis įkėlimas."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "Išankstinis įkėlimas baigtas ir naudojamas navigacijai."
+    "message": "Spekuliatyvusis įkėlimas baigtas ir naudojamas navigacijai."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "Veiksmas"
@@ -4095,10 +4071,10 @@
     "message": "Pasirinkite elementą, apie kurį norite gauti išsamios informacijos"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "Išankstinis įkėlimas išjungtas dėl operacinės sistemos Akumuliatoriaus tausojimo priemonės režimo."
+    "message": "Spekuliatyvusis įkėlimas išjungtas dėl operacinės sistemos Akumuliatoriaus tausojimo priemonės režimo."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "Išankstinis įkėlimas išjungtas dėl operacinės sistemos Duomenų taupymo priemonės režimo."
+    "message": "Spekuliatyvusis įkėlimas išjungtas dėl operacinės sistemos Duomenų taupymo priemonės režimo."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "Gavimas iš anksto priverstinai įgalintas, nes kūrėjo įrankiai atidaryti. Kai kūrėjo įrankiai uždaryti, gavimas iš anksto išjungiamas, nes šis naršyklės seansas priklauso sulaikymo grupei, naudojamai našumui palyginti."
@@ -4107,7 +4083,7 @@
     "message": "Pateikimas iš anksto priverstinai įgalintas, nes kūrėjo įrankiai atidaryti. Kai kūrėjo įrankiai uždaryti, pateikimas iš anksto išjungiamas, nes šis naršyklės seansas priklauso sulaikymo grupei, naudojamai našumui palyginti."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "Išankstinis įkėlimas išjungtas dėl naudotojo nustatymų arba plėtinio. Eikite į „{PH1}“ ir atnaujinkite savo nuostatą. Eikite į „{PH2}“, kad išjungtumėte bet kokį plėtinį, kuris blokuoja išankstinį įkėlimą."
+    "message": "Spekuliatyvusis įkėlimas išjungtas dėl naudotojo nustatymų arba plėtinio. Eikite į „{PH1}“ ir atnaujinkite savo nuostatą. Eikite į „{PH2}“ ir išjunkite bet kokį plėtinį, blokuojantį spekuliatyvųjį įkėlimą."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "Plėtinių nustatymai"
@@ -4131,16 +4107,16 @@
     "message": "Naudotojo nustatymai arba plėtiniai"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "Išankstinis įkėlimas išjungtas"
+    "message": "Spekuliatyvusis įkėlimas išjungtas"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "Išankstinis įkėlimas priverstinai įgalintas"
+    "message": "Spekuliatyvusis įkėlimas priverstinai įgalintas"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "Išankstinio įkėlimo puslapių nustatymai"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "Priežastys, kodėl neleidžiama įkelti iš anksto"
+    "message": "Priežastys, neleidžiančios spekuliatyviojo įkėlimo"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Veiksmas"
@@ -4200,7 +4176,7 @@
     "message": "URL buvo netinkamas gauti iš anksto, nes jame naudojamas ne numatytasis saugyklos skaidinys."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "Išankstinis gavimas nebuvo atliktas, nes buvo išjungtas išankstinis įkėlimas."
+    "message": "Išankstinis gavimas nebuvo atliktas, nes spekuliatyvusis įkėlimas buvo išjungtas."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "URL nebuvo galima gauti iš anksto, nes numatytojo tinklo konteksto negalima sukonfigūruoti naudoti išankstinio gavimo tarpinį serverį pagal tos pačios svetainės kelių šaltinių išankstinio gavimo užklausą."
@@ -4287,13 +4263,13 @@
     "message": "Iš anksto pateiktas puslapis automatiškai nukreipiamas kitu URL adresu, kuris šiuo metu nepalaikomas."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "Išankstinis pateikimas nebuvo atliktas, nes inicijuojamame puslapyje jau vykdoma per daug išankstinių pateikimų. Pašalinkite kitas spekuliavimo taisykles, kad įgalintumėte tolesnį išankstinį pateikimą."
+    "message": "Išankstinis pateikimas, kurio laukimas yra „intensyvus“, nebuvo atliktas, nes inicijuojamame puslapyje jau vykdoma per daug išankstinių pateikimų. Pašalinkite kitas spekuliavimo taisykles su „intensyvus“, kad įgalintumėte tolesnį išankstinį pateikimą."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "Išankstinis pateikimas nebuvo atliktas, nes inicijuojamame puslapyje jau vykdoma per daug išankstinių pateikimų."
+    "message": "Naršyklės suaktyvintas išankstinis pateikimas nebuvo atliktas, nes inicijuojamame puslapyje jau vykdoma per daug išankstinių pateikimų."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "Išankstinis pateikimas nebuvo atliktas, nes inicijuojamame puslapyje jau vykdoma per daug išankstinių pateikimų. Pašalinkite kitas spekuliavimo taisykles, kad įgalintumėte tolesnį išankstinį pateikimą."
+    "message": "Senas neintensyvus išankstinis pateikimas (su vidutiniu arba konservatyviu laukimu ir suaktyvintas užvedant pelės žymeklį ar spustelėjant nuorodas) buvo automatiškai atšauktas dėl naujo neintensyvaus išankstinio pateikimo. Jį galima iš naujo suaktyvinti dar kartą sąveikaujant su nuoroda."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "Išankstinis pateikimas nebuvo atliktas, nes naršyklė viršijo išankstinio pateikimo atminties apribojimą."
@@ -4395,7 +4371,7 @@
     "message": "Spustelėkite, kad būtų rodoma tinklo skydelyje"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "Rodyti su šiuo taisyklių rinkiniu susijusius išankstinius įkėlimus"
+    "message": "Atskleisti spekuliatyviuosius įkėlimus, susijusius su šiuo taisyklių rinkiniu"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# klaida}one{# klaida}few{# klaidos}many{# klaidos}other{# klaidų}}"
@@ -4416,10 +4392,10 @@
     "message": "Inicijuojantis puslapis bandė iš anksto pateikti šio puslapio URL. Nepavyko iš anksto pateikti, bet gautas atsako turinys vis tiek buvo naudojamas kaip išankstinis gavimas."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "Sužinokite daugiau: išankstinis įkėlimas adresu developer.chrome.com"
+    "message": "Sužinokite daugiau: spekuliatyvusis įkėlimas adresu developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "Inicijuojantis puslapis nebandė iš anksto įkelti šio puslapio URL."
+    "message": "Inicijuojantis puslapis nebandė spekuliatyviai įkelti šio puslapio URL."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "Inicijuojantis puslapis bandė iš anksto gauti šio puslapio URL, bet išankstinis gavimas nepavyko, todėl vietoje jo buvo atliktas visas naršymas."
@@ -4428,10 +4404,7 @@
     "message": "Šis puslapis sėkmingai gautas iš anksto."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "URL, kuriuos iš anksto įkelia inicijuojantis puslapis"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "Išankstinio įkėlimo būsena"
+    "message": "URL, kurie spekuliatyviai įkeliami inicijuojančiame puslapyje"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "Inicijuojantis puslapis bandė iš anksto pateikti šio puslapio URL, bet išankstinis pateikimas nepavyko, todėl vietoje jo buvo atliktas visas naršymas."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Šis puslapis sėkmingai pateiktas iš anksto."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "Animacija"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "Skelbimų aukciono funkcijos fragmentas"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "atskaitos taško įvykis"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "Canvas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "Iškarpinė"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "Valdymas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "Įrenginys"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "DOM kitimas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "Nuvilkti"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "Geografinės vietovės nustatymas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "Klaviatūra"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "Įkelti"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "Medija"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "Pelė"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "Pranešimas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "Analizuoti"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "Vaizdas vaizde"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "Rodyklė"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "Scenarijus"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "Bendrinamos saugyklos darbų blokas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "Laikmatis"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "Jutiklinis"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "Patikimo tipo pažeidimai"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "Langas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "Pagalbinis „JavaScript“ failas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "Atributas pakeistas"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Pašalinti visas išraiškas"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "Pašalinti tuščią išraišką"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "Pašalinti išraišką"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Slėpti elementą"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "Pereiti į medijos skydelį"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "Įklijuoti"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "Įspėta"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{Vienoje svetainėje leidžiama pasiekti slapukus}one{# svetainėje leidžiama pasiekti slapukus}few{# svetainėse leidžiama pasiekti slapukus}many{# svetainės leidžiama pasiekti slapukus}other{# svetainių leidžiama pasiekti slapukus}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Spustelėjus elementų skydelyje bus parodomas kadro DOM mazgas"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Baigta"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, pradinis prioritetas: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "1 lygis"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Rodyti daugiau"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "Animacijos rėmelis suaktyvintas"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Kainų siūlytojų kainų siūlymo etapo pradžia"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "Kainų siūlytojų ataskaitų teikimo etapo pradžia"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "Pardavėjų ataskaitų teikimo etapo pradžia"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "Pardavėjų rezultatų skaičiavimo etapo pradžia"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "Atšaukti animacijos rėmelį"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "Uždaryti „AudioContext“"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "Sukurti AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "Kurti matomosios tinklalapio srities kontekstą"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "Politikos pažeidimai"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "Animacijos rėmelio užklausa"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "Tęsti AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "Scenarijus užblokuotas vadovaujantis Turinio apsaugos politika"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "Pirmas scenarijaus teiginys"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "Nustatyti innerHTML"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "Suaktyvinta {PH1}"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "Rinktuvo pažeidimai"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "Laikinai sustabdyti AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "Suaktyvinta „WebGL“ klaida"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "„WebGL“ įspėjimas suaktyvintas"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Spustelėkite, kad būtų rodomas aprėpties skydelis"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "Pristabdyta XHR arba gaunant"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "Scenarijus užblokuotas dėl Turinio apsaugos politikos direktyvos: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "papildomo medžio keitimai"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Trusted Type rinktuvo pažeidimas"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "Suaktyvinta „WebGL“ klaida ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "Pridėti stabdos tašką"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Šio veiksmo anuliuoti negalima."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "Ar tikrai norite ištrinti visus nepaisomus elementus šiame aplanke?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "Ar tikrai norite ištrinti šį aplanką ir jo turinį?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Ištrinti"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "Ištrinti visus nepaisomus elementus"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Pritaikytas"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(anoniminė)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "Kainų siūlytojo darbų blokas"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "Kainos siūlytojo darbų blokas – {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Skirtasis Worker"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "Įvykis: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "Rėmelis – {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "Pagrindinis"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "Pagrindinis – {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "Rastrinio vaizdo grupė {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "Pardavėjo darbų blokas"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "Pardavėjo darbų blokas – {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "{PH1} grupė"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "Aukciono darbų blokas"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "Aukciono darbų blokas – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "„Worker“ – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "Aukciono darbų bloko paslauga"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "Aukciono darbų bloko paslauga – {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Šio tipo taikymo našumo pėdsakų įrašymas nepalaikomas"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Vieta"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "Ilga sąveika"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Ilga užduotis"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} gali būti našumo silpnoji vieta."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} nurodo prastą puslapio atsaką."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} iš {PH2}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "Įgalinti virtualią tapatumo nustatytojo aplinką"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "Įveskite naują pavadinimą"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "Eksportuoti"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Rodyti atminties tikrinimo priemonę"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "Kopijuoti"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Atsiliepimai"

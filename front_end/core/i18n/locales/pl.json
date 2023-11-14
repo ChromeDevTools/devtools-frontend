@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Trusted Types – naruszenie zasad"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Przygotuj się do wycofania plików cookie innych firm"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "bezpiecznego"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "niezabezpieczonego"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "Zgłoś błąd"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets i atrybut SameParty"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Wątek {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "Worklet licytującego"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "Worklet licytującego – {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Wydzielony Worker"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "Worklet sprzedawcy"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "Worklet sprzedawcy – {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Wątek {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "Worklet aukcji"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "Worklet aukcji – {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "Usługa Worklet aukcji"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "Usługa Worklet aukcji – {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(indeks)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Otwarte okna"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "Wstępne ładowanie"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "Odśwież IndexedDB"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Tak"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "Wstępne wczytanie"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "Reguły spekulacyjne"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "Ta strona"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Kliknij dowolny raport, aby wyświetlić jego treść"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Kliknij, aby pokazać panel Źródła"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Content Security Policy (CSP)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "Gdy utworzono tę ramkę, w tym elemencie: (async) stack znajdował się skrypt reklamy. Aby uzyskać dokładniejsze informacje, przeanalizuj stack trace tworzenia tej ramki."
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "Nie"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "Brak"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Pochodzenie"
@@ -3990,7 +3966,7 @@
     "message": "Tokeny prywatności"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "Wszystkie wczytywania wstępne"
+    "message": "Wszystkie ładowania spekulacyjne"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "Filtruj według zbioru reguł"
@@ -4059,22 +4035,22 @@
     "message": "Sprawdź"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "Nie udało się wstępnie wczytać."
+    "message": "Niepowodzenie ładowania spekulacyjnego."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "Próba wstępnego wczytywania nie została jeszcze uruchomiona."
+    "message": "Próba ładowania spekulacyjnego nie została jeszcze uruchomiona."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "Próba wstępnego wczytywania jest odpowiednia, ale oczekuje."
+    "message": "Próba ładowania spekulacyjnego jest odpowiednia, ale oczekuje."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "Wstępne wczytywanie zostało zakończone, a wynik jest gotowy do użycia w następnej nawigacji."
+    "message": "Ładowanie spekulacyjne zostało zakończone, a wynik jest gotowy do użycia w następnej nawigacji."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "Trwa wstępne wczytywanie."
+    "message": "Trwa ładowanie spekulacyjne."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "Wstępne wczytywanie zostało zakończone i użyte do nawigacji."
+    "message": "Zakończono ładowanie spekulacyjne i użyto go do nawigacji."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "Działanie"
@@ -4095,10 +4071,10 @@
     "message": "Wybierz element, aby zobaczyć więcej szczegółów"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "Wstępne wczytywanie jest wyłączone ze względu na tryb oszczędzania baterii systemu operacyjnego."
+    "message": "Ładowanie spekulacyjne jest wyłączone ze względu na tryb oszczędzania baterii systemu operacyjnego."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "Wstępne wczytywanie jest wyłączone ze względu na tryb oszczędzania danych systemu operacyjnego."
+    "message": "Ładowanie spekulacyjne jest wyłączone ze względu na tryb oszczędzania danych systemu operacyjnego."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "Pobieranie z wyprzedzeniem jest wymuszane, ponieważ są otwarte Narzędzia deweloperskie. Po ich zamknięciu pobieranie z wyprzedzeniem zostanie wyłączone, ponieważ ta sesja przeglądarki należy do grupy odizolowanej, która służy do porównań wydajności."
@@ -4107,7 +4083,7 @@
     "message": "Renderowanie wstępne jest wymuszane, ponieważ Narzędzia deweloperskie są otwarte. Po zamknięciu Narzędzi deweloperskich renderowanie wstępne zostanie wyłączone, ponieważ ta sesja przeglądarki należy do grupy odizolowanej, która służy do porównań wydajności."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "Wstępne wczytywanie jest wyłączone ze względu na ustawienia użytkownika lub rozszerzenie. Aby zmienić ustawienia, otwórz {PH1}. Aby wyłączyć rozszerzenia blokujące wstępne wczytywanie, otwórz {PH2}."
+    "message": "Ładowanie spekulacyjne jest wyłączone z powodu ustawień użytkownika lub rozszerzenia. Aby zmienić ustawienia, otwórz {PH1}. Aby wyłączyć rozszerzenia blokujące ładowanie spekulacyjne, otwórz {PH2}."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "Ustawienia rozszerzeń"
@@ -4131,16 +4107,16 @@
     "message": "Rozszerzenia lub ustawienia użytkownika"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "Wstępne wczytywanie jest wyłączone"
+    "message": "Ładowanie spekulacyjne jest wyłączone"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "Wstępne wczytywanie jest wymuszane"
+    "message": "Ładowanie spekulacyjne jest wymuszane"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "Ustawienia wstępnego wczytywania stron"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "Powody blokowania wstępnego wczytywania"
+    "message": "Przyczyny uniemożliwiające ładowanie spekulacyjne"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Działanie"
@@ -4200,7 +4176,7 @@
     "message": "Nie można wstępnie pobrać adresu URL, ponieważ używa on innej partycji pamięci niż domyślna."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "Pobieranie z wyprzedzeniem nie zostało wykonane, ponieważ było wyłączone wstępne wczytywanie."
+    "message": "Pobieranie z wyprzedzeniem nie zostało wykonane, ponieważ ładowanie spekulacyjne było wyłączone."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "Adres URL nie kwalifikował się do pobrania z wyprzedzeniem, ponieważ domyślny kontekst sieci nie może zostać skonfigurowany tak, aby korzystać z serwera proxy pobierania z wyprzedzeniem, gdy żądanie tego typu pobierania dotyczy tej samej witryny i innego źródła."
@@ -4287,13 +4263,13 @@
     "message": "Wstępnie renderowana strona przekierowywała się do innego adresu URL, który obecnie nie jest obsługiwany."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "Renderowanie wstępne nie zostało wykonane, ponieważ strona inicjująca ma już za dużo uruchomionych takich procesów. Aby umożliwić dalsze renderowanie wstępne, usuń inne reguły spekulacyjne."
+    "message": "Renderowanie wstępne, którego poziom zainteresowania to „zainteresowanie”, nie zostało wykonane, ponieważ na stronie inicjującej jest już uruchomionych za dużo takich procesów. Aby umożliwić dalsze renderowanie wstępne, usuń inne reguły spekulacyjne z wartością „zainteresowanie”."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "Renderowanie wstępne nie zostało wykonane, ponieważ strona inicjująca ma już za dużo uruchomionych takich procesów."
+    "message": "Renderowanie wstępne wywoływane przez przeglądarkę nie zostało wykonane, ponieważ strona inicjująca ma już za dużo uruchomionych takich procesów."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "Renderowanie wstępne nie zostało wykonane, ponieważ strona inicjująca ma już za dużo uruchomionych takich procesów. Aby umożliwić dalsze renderowanie wstępne, usuń inne reguły spekulacyjne."
+    "message": "Dotychczasowe wstępne renderowanie (z zainteresowaniem „umiarkowanym” lub „ostrożnym”, wywołane przez najechanie kursorem lub kliknięcie linku) zostało automatycznie anulowane, ponieważ rozpoczęło się nowe renderowanie wstępne bez zainteresowania. Można je wywołać ponownie przez powtórną interakcję z linkiem."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "Renderowanie wstępne nie zostało wykonane, ponieważ przeglądarka przekroczyła limit pamięci dla tego procesu."
@@ -4395,7 +4371,7 @@
     "message": "Kliknij, aby pokazać w panelu Sieć"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "Pokaż wstępne załadowania powiązane z tym zestawem reguł"
+    "message": "Pokaż ładowania spekulacyjne powiązane z tym zbiorem reguł"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# błąd}few{# błędy}many{# błędów}other{# błędu}}"
@@ -4416,10 +4392,10 @@
     "message": "Strona inicjująca próbowała wstępnie wyrenderować adres URL tej strony. Renderowanie wstępne się nie udało, ale mimo to treść odpowiedzi została użyta jako pobieranie z wyprzedzeniem."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "Więcej informacji: wstępne wczytywanie na stronie developer.chrome.com"
+    "message": "Więcej informacji: ładowanie spekulacyjne na stronie developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "Strona inicjująca nie próbowała wstępnie wczytać adresu URL tej strony."
+    "message": "Strona inicjująca nie próbowała spekulacyjnie załadować adresu URL tej strony."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "Strona inicjująca próbowała pobrać z wyprzedzeniem adres URL tej strony, ale pobieranie z wyprzedzeniem się nie udało, dlatego przeprowadzono pełną nawigację."
@@ -4428,10 +4404,7 @@
     "message": "Ta strona została pobrana z wyprzedzeniem."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "Adresy URL wstępnie wczytywane przez stronę inicjującą"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "Stan wstępnego wczytywania"
+    "message": "Adresy URL ładowane spekulacyjnie przez stronę inicjującą"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "Strona inicjująca próbowała wstępnie wyrenderować adres URL tej strony, ale renderowanie wstępne się nie udało, dlatego przeprowadzono pełną nawigację."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Ta strona została wyrenderowana wstępnie."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "Animacja"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "Worklet aukcji reklam"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "trafienie punktu przerwania"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "Canvas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "Schowek"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "Sterowanie"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "Urządzenie"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "Mutacja DOM"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "Przeciągnij/upuść"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "Geolokalizacja"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "Klawiatura"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "Załaduj"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "Multimedia"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "Mysz"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "Powiadomienie"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "Analizuj"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "Obraz w obrazie"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "Wskaźnik"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "Skrypt"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "Worklet Shared Storage"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "Licznik czasu"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "Dotyk"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "Naruszenia dotyczące zaufanych typów"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "Okno"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "Worker"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "Atrybut został zmodyfikowany"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Usuń wszystkie wyrażenia"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "Usuń puste wyrażenie"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "Usuń wyrażenie"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Ukryj element"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "Przejdź do panelu multimediów"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "Wklej"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "Z ostrzeżeniem"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{1 witryna ma dostęp do plików cookie}few{# witryny mają dostęp do plików cookie}many{# witryn ma dostęp do plików cookie}other{# witryny ma dostęp do plików cookie}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Kliknij, aby pokazać węzeł DOM ramki w panelu Elementy"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Zakończone"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, początkowy priorytet: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "poziom 1"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Pokaż więcej"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "Uruchomiono ramkę animacji"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Początek fazy licytowania przez licytującego"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "Początek fazy raportowania dotyczącego licytującego"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "Początek fazy raportowania dotyczącego sprzedawcy"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "Początek fazy oceniania sprzedawcy"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "Anuluj ramkę animacji"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "Zamknij: AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "Utwórz: AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "Utwórz kontekst obiektu canvas"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "Naruszenia zasad"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "Żądanie ramki animacji"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "Wznów: AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "Skrypt zablokowany przez Content Security Policy"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "Pierwsza instrukcja skryptu"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "Ustaw: innerHTML"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "Uruchomiono {PH1}"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "Naruszenia ujścia"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "Zawieś: AudioContext"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "Uruchomiono błąd WebGL"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "Uruchomiono ostrzeżenie WebGL"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Kliknij, aby pokazać panel Pokrycie"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "Wstrzymano przy żądaniu XHR lub pobraniu"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "Skrypt został zablokowany z powodu dyrektywy Content Security Policy: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "modyfikacje drzewa podrzędnego"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Naruszenie ujścia Trusted Type"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "Uruchomiono błąd WebGL ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "Dodaj punkt przerwania"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Tej czynności nie będzie można cofnąć."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "Czy na pewno chcesz usunąć wszystkie zastąpienia w tym folderze?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "Czy na pewno chcesz usunąć ten folder i jego zawartość?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Usuń"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "Usuń wszystkie zastąpienia"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Wdrożone"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(anonimowa)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "Worklet licytującego"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "Worklet licytującego – {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Wydzielony Worker"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "Zdarzenie: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "Ramka – {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "Główny"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "Główny – {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "Wątek rastrowania {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "Worklet sprzedawcy"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "Worklet sprzedawcy – {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Wątek {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "Worklet aukcji"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "Worklet aukcji – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "Usługa Worklet aukcji"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "Usługa Worklet aukcji – {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Rejestrowanie zrzutu wydajności nie jest obsługiwane w przypadku tego typu elementu docelowego"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Lokalizacja"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "Długa interakcja"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Długie zadanie"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} jest prawdopodobnym wąskim gardłem wydajności."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} oznacza słabe reagowanie stron."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1}/{PH2}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "Włącz środowisko wirtualnego mechanizmu uwierzytelniającego"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "Wpisz nową nazwę"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "Eksportuj"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Pokaż narzędzie do inspekcji pamięci"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "Kopiuj"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Opinia"

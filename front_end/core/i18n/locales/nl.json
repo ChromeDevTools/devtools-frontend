@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "Vertrouwde typen: beleidsschending"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "Voorbereiden op de uitfasering van cookies van derden"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "een beveiligde"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "onveilig"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "Een bug melden"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets en het kenmerk SameParty"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "Thread {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "Bidder Worklet"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "Bidder Worklet - {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "Specifieke Worker"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "Seller Worklet"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "Seller Worklet - {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "Thread {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "Auction Worklet"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "Auction Worklet - {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker - {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "Auction Worklet-service"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "Auction Worklet-service - {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(index)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "Geopende vensters"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "Vooraf laden"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "IndexedDB vernieuwen"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Ja"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "Vooraf geladen items"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "Speculatieregels"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "Deze pagina"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "Klik op een rapport om de content te bekijken"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "Klik om te tonen in het deelvenster Bronnen"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "Content Security Policy (CSP)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "Er was een advertentiescript in de (async) stack toen dit frame werd gemaakt. Je krijgt misschien meer inzicht als je de stack trace voor het maken van dit frame onderzoekt."
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "Nee"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "Geen"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "Oorsprong"
@@ -3990,7 +3966,7 @@
     "message": "Privéstatustokens"
   },
   "panels/application/preloading/PreloadingView.ts | filterAllPreloads": {
-    "message": "Alle vooraf geladen items"
+    "message": "Alle speculatief geladen items"
   },
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "Filteren op regelset"
@@ -4059,22 +4035,22 @@
     "message": "Inspecteren"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "Vooraf laden mislukt."
+    "message": "Speculatief laden mislukt."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
-    "message": "De poging voor vooraf laden is nog niet geactiveerd."
+    "message": "De poging voor speculatief laden is nog niet geactiveerd."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusPending": {
-    "message": "Poging voor vooraf laden komt in aanmerking, maar is in behandeling."
+    "message": "Poging voor speculatief laden komt in aanmerking, maar is in behandeling."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusReady": {
-    "message": "Vooraf laden is afgerond en het resultaat is klaar voor de volgende navigatie."
+    "message": "Speculatief laden is afgerond en het resultaat is klaar voor de volgende navigatie."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusRunning": {
-    "message": "Vooraf laden is bezig."
+    "message": "Speculatief laden is bezig."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusSuccess": {
-    "message": "Vooraf laden is afgerond en wordt gebruikt voor een navigatie."
+    "message": "Speculatief laden is afgerond en wordt gebruikt voor een navigatie."
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailsAction": {
     "message": "Actie"
@@ -4095,10 +4071,10 @@
     "message": "Selecteer een element voor meer informatie"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByBatterySaver": {
-    "message": "Vooraf laden is uitgezet vanwege de modus Batterijbesparing van het besturingssysteem."
+    "message": "Speculatief laden is uitgezet vanwege de modus Batterijbesparing van het besturingssysteem."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByDataSaver": {
-    "message": "Vooraf laden is uitgezet vanwege de modus Databesparing van het besturingssysteem."
+    "message": "Speculatief laden is uitgezet vanwege de modus Databesparing van het besturingssysteem."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByHoldbackPrefetchSpeculationRules": {
     "message": "Prefetchen is geforceerd aangezet omdat DevTools is geopend. Als DevTools wordt gesloten, wordt prefetchen uitgezet omdat deze browsersessie deel uitmaakt van een controlegroep die wordt gebruikt voor prestatievergelijkingen."
@@ -4107,7 +4083,7 @@
     "message": "Pre-rendering is geforceerd aangezet omdat DevTools is geopend. Als DevTools wordt gesloten, wordt pre-rendering uitgezet omdat deze browsersessie deel uitmaakt van een controlegroep die wordt gebruikt voor prestatievergelijkingen."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | descriptionDisabledByPreference": {
-    "message": "Vooraf laden is uitgezet vanwege gebruikersinstellingen of een extensie. Ga naar {PH1} om je voorkeur aan te passen. Ga naar {PH2} om extensies uit te zetten die vooraf laden blokkeren."
+    "message": "Speculatief laden is uitgezet vanwege gebruikersinstellingen of een extensie. Ga naar {PH1} om je voorkeur aan te passen. Ga naar {PH2} om extensies uit te zetten die speculatief laden blokkeren."
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | extensionsSettings": {
     "message": "Extensie-instellingen"
@@ -4131,16 +4107,16 @@
     "message": "Gebruikersinstellingen of extensies"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsDisabled": {
-    "message": "Vooraf laden staat uit"
+    "message": "Speculatief laden staat uit"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | infobarPreloadingIsForceEnabled": {
-    "message": "Vooraf laden staat geforceerd aan"
+    "message": "Speculatief laden staat geforceerd aan"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | preloadingPagesSettings": {
     "message": "Instellingen voor pagina's vooraf laden"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "Redenen die vooraf laden tegenhouden"
+    "message": "Redenen die speculatief laden voorkomen"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "Actie"
@@ -4200,7 +4176,7 @@
     "message": "De URL kwam niet in aanmerking voor prefetching, omdat deze een niet-standaard opslagpartitie gebruikt."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "Het prefetchen is niet uitgevoerd, omdat vooraf laden is uitgezet."
+    "message": "Het prefetchen is niet uitgevoerd, omdat speculatief laden is uitgezet."
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "De URL kwam niet in aanmerking voor prefetching, omdat de standaardnetwerkcontext niet kan worden ingesteld om de prefetch-proxy te gebruiken voor een cross-origin-prefetchingverzoek op dezelfde site."
@@ -4287,13 +4263,13 @@
     "message": "De vooraf gerenderde pagina is uit zichzelf naar een andere URL genavigeerd maar dat wordt op dit moment niet ondersteund."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "De pre-rendering is niet uitgevoerd omdat de initiërende pagina al te veel pre-rendering bevat. Verwijder andere speculatieregels om verdere pre-rendering aan te zetten."
+    "message": "De pre-rendering waarvan de eagerness 'eager' is, is niet uitgevoerd omdat de initiërende pagina al te veel pre-rendering bevat. Verwijder andere speculatieregels met 'eager' om verdere pre-rendering aan te zetten."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
-    "message": "De pre-rendering is niet uitgevoerd omdat de initiërende pagina al te veel pre-rendering bevat."
+    "message": "De door de browser geactiveerde pre-rendering is niet uitgevoerd omdat de initiërende pagina al te veel pre-rendering bevat."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "De pre-rendering is niet uitgevoerd omdat de initiërende pagina al te veel pre-rendering bevat. Verwijder andere speculatieregels om verdere pre-rendering aan te zetten."
+    "message": "De oude pre-rendering zonder 'eager' (met een eagerness van 'moderate' of 'conservative' en die wordt geactiveerd door de cursor te plaatsen of op links te klikken) is automatisch geannuleerd omdat er een nieuwe pre-rendering zonder 'eager' is gestart. Deze kan opnieuw worden geactiveerd door weer interactie met de link te hebben."
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "De pre-rendering is niet uitgevoerd omdat de browser de geheugenlimiet voor pre-rendering heeft overschreden."
@@ -4395,7 +4371,7 @@
     "message": "Klik om te tonen in het deelvenster Netwerk"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
-    "message": "De vooraf geladen items zichtbaar maken die aan deze regelset zijn gekoppeld"
+    "message": "De speculatief geladen items zichtbaar maken die aan deze regelset zijn gekoppeld"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# fout}other{# fouten}}"
@@ -4416,10 +4392,10 @@
     "message": "De initialisatiepagina heeft geprobeerd de URL van deze pagina vooraf te renderen. De pre-rendering is mislukt, maar het resulterende reactiegedeelte werd nog steeds gebruikt voor prefetching."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | learnMore": {
-    "message": "Meer informatie: Vooraf laden op developer.chrome.com"
+    "message": "Meer informatie: Speculatief laden op developer.chrome.com"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "De initiërende pagina heeft niet geprobeerd de URL van deze pagina vooraf te laden."
+    "message": "De initiërende pagina heeft niet geprobeerd de URL van deze pagina speculatief te laden."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "De initiërende pagina heeft geprobeerd de URL van deze pagina te prefetchen, maar het prefetchen is mislukt. In plaats daarvan is een volledige navigatie uitgevoerd."
@@ -4428,10 +4404,7 @@
     "message": "Deze pagina is geprefetcht."
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
-    "message": "URL's worden vooraf geladen door de initiërende pagina"
-  },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "Status vooraf laden"
+    "message": "URL's worden speculatief geladen door de initiërende pagina"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "De initiërende pagina heeft geprobeerd de URL van deze pagina vooraf te renderen, maar de pre-rendering is mislukt. In plaats daarvan is een volledige navigatie uitgevoerd."
@@ -4439,8 +4412,86 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "Deze pagina is vooraf gerenderd."
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "Animatie"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "Ad Auction Worklet"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "breakpoint-hit"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "Canvas"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "Klembord"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "Bediening"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "Apparaat"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "DOM-mutatie"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "Slepen en neerzetten"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "Geolocatie"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "Toetsenbord"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "Laden"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "Media"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "Muis"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "Melding"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "Parseren"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "Scherm-in-scherm"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "Pointer"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "Script"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "Shared Storage Worklet"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "Timer"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "Tikken"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "Vertrouwde schendingen van type"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "Venster"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "Worker"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "Kenmerk aangepast"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "Alle expressies verwijderen"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "Lege expressie verwijderen"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "Expressie verwijderen"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "Element verbergen"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "Naar deelvenster Media gaan"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "Plakken"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "Gewaarschuwd"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{1 website mag toegang tot cookies hebben}other{# websites mogen toegang tot cookies hebben}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "Klik om de DOM-node van het frame weer te geven in het deelvenster Elementen"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "Afgerond"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}, oorspronkelijke prioriteit: {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "niveau 1"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "Meer tonen"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "Animatieframe geactiveerd"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Bidder Bidding Phase Start"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "Bidder Reporting Phase Start"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "Seller Reporting Phase Start"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "Seller Scoring Phase Start"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "Animatieframe annuleren"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "AudioContext sluiten"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "AudioContext maken"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "Canvascontext maken"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "Beleidsschendingen"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "Animatieframe vragen"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "AudioContext hervatten"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "Script is geblokkeerd door Content Security Policy"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "Eerste instructie van script"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "innerHTML ingesteld"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} geactiveerd"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "Data sink-schendingen"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "AudioContext opschorten"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "WebGL-fout geactiveerd"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "WebGL-waarschuwing geactiveerd"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "Klik om het deelvenster Dekking te bekijken"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "Onderbroken bij XHR of ophalen"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "Script is geblokkeerd wegens Content Security Policy-richtlijn: {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "aanpassingen van substructuur"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Data sink-schending voor Trusted Type"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "WebGL-fout geactiveerd ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "Breakpoint toevoegen"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "Je kunt deze actie niet ongedaan maken."
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "Weet je zeker dat je alle overschreven items in deze map wilt verwijderen?"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "Weet je zeker dat je deze map en de inhoud ervan wilt verwijderen?"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "Verwijderen"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "Alle overschrijvingen verwijderen"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "Geïmplementeerd"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(anoniem)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "Bidder Worklet"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "Bidder Worklet - {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Specifieke Worker"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "Gebeurtenis: {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "Frame: {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "Algemeen"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "Hoofd: {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "Rasterthread {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "Seller Worklet"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "Seller Worklet - {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Thread {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "Auction Worklet"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "Auction Worklet - {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker - {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker: {PH1} — {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "Auction Worklet-service"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "Auction Worklet-service - {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Prestatietracering opnemen wordt niet ondersteund voor dit type doel"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "Locatie"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "Lange interactie"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "Lange taak"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} is waarschijnlijk een knelpunt."
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} geeft aan dat de pagina niet goed reageert."
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH1} van {PH2}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "Virtuele authenticatoromgeving aanzetten"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "Nieuwe naam invoeren"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "Exporteren"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "Geheugeninspector tonen"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "Kopiëren"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "Feedback"

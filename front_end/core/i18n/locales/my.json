@@ -1388,11 +1388,17 @@
   "models/issues_manager/ContentSecurityPolicyIssue.ts | trustedTypesPolicyViolation": {
     "message": "ယုံကြည်ရသော အမျိုးအစားများ - မူဝါဒ ချိုးဖောက်ခြင်း"
   },
+  "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
+    "message": "ပြင်ပကုမ္ပဏီ၏ကွတ်ကီးများ ရပ်ဆိုင်းခြင်းအတွက် ပြင်ဆင်ရန်"
+  },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "လုံခြုံသော"
   },
   "models/issues_manager/CookieIssue.ts | anInsecure": {
     "message": "မလုံခြုံမှု"
+  },
+  "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
+    "message": "ချွတ်ယွင်းမှုကို သတင်းပို့ရန်"
   },
   "models/issues_manager/CookieIssue.ts | firstPartySetsExplained": {
     "message": "First-Party Sets နှင့် SameParty ရည်ညွှန်းချက်"
@@ -1625,41 +1631,17 @@
   "models/timeline_model/TimelineJSProfile.ts | threadS": {
     "message": "စာတွဲ {PH1}"
   },
-  "models/timeline_model/TimelineModel.ts | bidderWorklet": {
-    "message": "လေလံတင်သူ၏ ကြားခံစနစ်"
-  },
-  "models/timeline_model/TimelineModel.ts | bidderWorkletS": {
-    "message": "လေလံတင်သူ၏ ကြားခံစနစ် — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | dedicatedWorker": {
     "message": "သီးသန့်သတ်မှတ်ထားသော Worker"
   },
-  "models/timeline_model/TimelineModel.ts | sellerWorklet": {
-    "message": "ရောင်းသူ၏ ကြားခံစနစ်"
-  },
-  "models/timeline_model/TimelineModel.ts | sellerWorkletS": {
-    "message": "ရောင်းသူ၏ ကြားခံစနစ် — {PH1}"
-  },
   "models/timeline_model/TimelineModel.ts | threadS": {
     "message": "စာတွဲ {PH1}"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorklet": {
-    "message": "လေလံတင်သည့် ကြားခံစနစ်"
-  },
-  "models/timeline_model/TimelineModel.ts | unknownWorkletS": {
-    "message": "လေလံတင်သည့် ကြားခံစနစ် — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "models/timeline_model/TimelineModel.ts | workerSS": {
     "message": "Worker- {PH1} — {PH2}"
-  },
-  "models/timeline_model/TimelineModel.ts | workletService": {
-    "message": "လေလံတင်သည့် ကြားခံစနစ် ဝန်ဆောင်မှု"
-  },
-  "models/timeline_model/TimelineModel.ts | workletServiceS": {
-    "message": "လေလံတင်သည့် ကြားခံစနစ် ဝန်ဆောင်မှု — {PH1}"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(အညွှန်း)"
@@ -2456,9 +2438,6 @@
   "panels/application/ApplicationPanelSidebar.ts | openedWindows": {
     "message": "ဖွင့်ထားသော ဝင်းဒိုးများ"
   },
-  "panels/application/ApplicationPanelSidebar.ts | preloading": {
-    "message": "ကြိုဖွင့်ခြင်း"
-  },
   "panels/application/ApplicationPanelSidebar.ts | refreshIndexeddb": {
     "message": "IndexedDB ပြန်လည် စတင်ရန်"
   },
@@ -2779,15 +2758,6 @@
   },
   "panels/application/OpenedWindowDetailsView.ts | yes": {
     "message": "Yes"
-  },
-  "panels/application/PreloadingTreeElement.ts | preloads": {
-    "message": "ကြိုဖွင့်ခြင်းများ"
-  },
-  "panels/application/PreloadingTreeElement.ts | speculationRules": {
-    "message": "ခန့်မှန်းတွက်ချက်မှု စည်းကမ်းများ"
-  },
-  "panels/application/PreloadingTreeElement.ts | thisPage": {
-    "message": "ဤစာမျက်နှာ"
   },
   "panels/application/ReportingApiReportsView.ts | clickToDisplayBody": {
     "message": "အစီရင်ခံစာ စာကိုယ်ကို ပြသရန် ၎င်းကို နှိပ်ပါ"
@@ -3638,6 +3608,9 @@
   "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
     "message": "‘ရင်းမြစ်များ’ အကန့်တွင် ဖော်ထုတ်ရန် နှိပ်ပါ"
   },
+  "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
+    "message": "အကြောင်းအရာ လုံခြုံရေးမူဝါဒ (CSP)"
+  },
   "panels/application/components/FrameDetailsView.ts | createdByAdScriptExplanation": {
     "message": "ဤဖရိမ်ကို ပြုလုပ်ချိန်တွင် (async) stack ၌ ကြော်ငြာ Script ရှိနေသည်။ ဤဖရိမ် ပြုလုပ်မှု stack trace ကို လေ့လာခြင်းဖြင့် သိကောင်းစရာများ ပိုမိုရရှိနိုင်သည်။"
   },
@@ -3673,6 +3646,9 @@
   },
   "panels/application/components/FrameDetailsView.ts | no": {
     "message": "No"
+  },
+  "panels/application/components/FrameDetailsView.ts | none": {
+    "message": "မရှိ"
   },
   "panels/application/components/FrameDetailsView.ts | origin": {
     "message": "ဇာစ်မြစ်"
@@ -4059,7 +4035,7 @@
     "message": "စုံစမ်းရန်"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusFailure": {
-    "message": "ကြိုတင်ဖွင့်၍မရပါ။"
+    "message": "ကြိုဖွင့်၍မရပါ။"
   },
   "panels/application/preloading/components/PreloadingDetailsReportView.ts | detailedStatusNotTriggered": {
     "message": "ကြိုဖွင့်ခြင်း ကြိုးပမ်းမှုကို မစတင်ရသေးပါ။"
@@ -4140,7 +4116,7 @@
     "message": "ကြိုဖွင့်သည့် စာမျက်နှာ ဆက်တင်များ"
   },
   "panels/application/preloading/components/PreloadingDisabledInfobar.ts | titleReasonsPreventingPreloading": {
-    "message": "ကြိုဖွင့်ခြင်းကို တားမြစ်သော အကြောင်းရင်းများ"
+    "message": "ကြိုဖွင့်ခြင်းကို တားမြစ်ထားသော အကြောင်းရင်းများ"
   },
   "panels/application/preloading/components/PreloadingGrid.ts | action": {
     "message": "လုပ်ဆောင်ချက်"
@@ -4200,7 +4176,7 @@
     "message": "URL သည် မူရင်းမဟုတ်သော သိုလှောင်ခန်းအကန့် သုံးထားသောကြောင့် ၎င်းသည် ကြိုတင်ရယူရန် သတ်မှတ်ချက်မပြည့်မီပါ။"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligiblePreloadingDisabled": {
-    "message": "ကြိုဖွင့်ခြင်းကို ပိတ်ထားသောကြောင့် ကြိုတင်ရယူမထားပါ။"
+    "message": "ကြိုဖွင့်ခြင်း ပိတ်ထားသောကြောင့် ကြိုတင်ရယူခြင်း လုပ်ဆောင်၍မရပါ။"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy": {
     "message": "ဝဘ်ဆိုက်တစ်ခုတည်း၏ ရင်းမြစ်များအကြား ကြိုတင်ရယူရန်တောင်းဆိုချက်အတွက် ကြိုတင်ရယူမှုပရောက်စီသုံးရန် မူရင်းကွန်ရက် အကြောင်းအရာကို စီစဉ်သတ်မှတ်၍မရသောကြောင့် URL သည် ကြိုတင်ရယူရန် သတ်မှတ်ချက်မပြည့်မီပါ။"
@@ -4287,13 +4263,13 @@
     "message": "ကြိုတင်ပုံဖော်ထားသော စာမျက်နှာသည် လောလောဆယ် ပံ့ပိုးမထားသည့် အခြား URL သို့ ၎င်းကိုယ်တိုင် လမ်းညွှန်သွားသည်။"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEagerPrerendersExceeded": {
-    "message": "စတင်နေသော စာမျက်နှာတွင် များလွန်းသော လုပ်လက်စ ကြိုတင်ပုံဖော်မှုများ ရှိပြီးသားဖြစ်သောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို လုပ်ဆောင်၍မရပါ။ နောက်ထပ် ကြိုတင်ပုံဖော်ခြင်း ဖွင့်ရန် အခြား ခန့်မှန်းတွက်ချက်မှု စည်းကမ်းများကို ဖယ်ရှားပါ။"
+    "message": "စတင်နေသော စာမျက်နှာတွင် အလွန်များသည့် ကြိုတင်ပုံဖော်ခြင်းများ လုပ်ဆောင်နေသောကြောင့် “စိတ်အားထက်သန်မှု” အဖြစ် သတ်မှတ်ထားသော ကြိုတင်ပုံဖော်ခြင်းကို မလုပ်ဆောင်ထားပါ။ နောက်ထပ် ကြိုတင်ပုံဖော်ခြင်းဖွင့်ရန် “စိတ်အားထက်သန်မှု” ပါသည့် အခြားသော ကြိုတင်လုပ်ဆောင်ခြင်း စည်းမျဉ်းများကို ဖယ်ရှားပါ။"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningEmbedderPrerendersExceeded": {
     "message": "စတင်နေသော စာမျက်နှာတွင် များလွန်းသော လုပ်လက်စ ကြိုတင်ပုံဖော်မှုများ ရှိပြီးသားဖြစ်သောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို လုပ်ဆောင်၍မရပါ။"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMaxNumOfRunningNonEagerPrerendersExceeded": {
-    "message": "စတင်နေသော စာမျက်နှာတွင် များလွန်းသော လုပ်လက်စ ကြိုတင်ပုံဖော်မှုများ ရှိပြီးသားဖြစ်သောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို လုပ်ဆောင်၍မရပါ။ နောက်ထပ် ကြိုတင်ပုံဖော်ခြင်း ဖွင့်ရန် အခြား ခန့်မှန်းတွက်ချက်မှု စည်းကမ်းများကို ဖယ်ရှားပါ။"
+    "message": "စိတ်အားထက်သန်မှုမဟုတ်သော ကြိုတင်ပုံဖော်ခြင်း စတင်ထားသောကြောင့် စိတ်အားထက်သန်မှု မဟုတ်သော ကြိုတင်ပုံဖော်ခြင်းအဟောင်း (လင့်ခ်များအပေါ် မောက်စ်တင်ခြင်း/နှိပ်ခြင်းဖြင့် စတင်သော “အလယ်အလတ်” သို့မဟုတ် “သမားရိုးကျ” စိတ်အားထက်သန်မှု အပါအဝင်) ကို အလိုအလျောက် ပယ်ဖျက်ထားသည်။ ၎င်းကို လင့်ခ်ဖြင့် ထပ်မံပြန်လှန်တုံ့ပြန်ခြင်းဖြင့် ပြန်လည်စတင်နိုင်သည်။"
   },
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusMemoryLimitExceeded": {
     "message": "ဘရောင်ဇာသည် ကြိုတင်ပုံဖော်ခြင်း မှတ်ဉာဏ်အကန့်အသတ် ကျော်သွားသောကြောင့် ကြိုတင်ပုံဖော်ခြင်းကို လုပ်ဆောင်မထားပါ။"
@@ -4419,7 +4395,7 @@
     "message": "ပိုမိုလေ့လာရန်- developer.chrome.com တွင်ကြိုဖွင့်ခြင်း"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | noPreloads": {
-    "message": "စတင်နေသော စာမျက်နှာသည် ဤစာမျက်နှာ၏ URL ကို ကြိုဖွင့်မထားပါ"
+    "message": "စတင်နေသော စာမျက်နှာသည် ဤစာမျက်နှာ၏ URL ကို ကြိုဖွင့်မထားပါ။"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prefetchFailed": {
     "message": "စတင်နေသော စာမျက်နှာက ဤစာမျက်နှာ၏ URL ကို ကြိုတင်ရယူရန် ကြိုးပမ်းထားသော်လည်း ကြိုတင်ရယူမှု မအောင်မြင်သောကြောင့် ၎င်းအစား အပြည့်အစုံရွှေ့ကြည့်ခြင်းကို လုပ်ဆောင်ထားသည်။"
@@ -4430,17 +4406,92 @@
   "panels/application/preloading/components/UsedPreloadingView.ts | preloadedURLs": {
     "message": "စတင်နေသော စာမျက်နှာက ကြိုဖွင့်ထားသော URL များ"
   },
-  "panels/application/preloading/components/UsedPreloadingView.ts | preloadingStatus": {
-    "message": "အခြေအနေကို ကြိုဖွင့်ခြင်း"
-  },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderFailed": {
     "message": "စတင်နေသော စာမျက်နှာသည် ဤစာမျက်နှာ၏ URL ကို ကြိုတင်ပုံဖော်ကြည့်သော်လည်း မအောင်မြင်သောကြောင့် ၎င်းအစား အပြည့်အစုံရွှေ့ကြည့်ခြင်းကို လုပ်ဆောင်ထားသည်။"
   },
   "panels/application/preloading/components/UsedPreloadingView.ts | prerenderUsed": {
     "message": "ဤစာမျက်နှာကို ကြိုတင်ပုံဖော်ထားပြီးပြီ။"
   },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | animation": {
+    "message": "လှုပ်ရှားသက်ဝင်ပုံ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | auctionWorklet": {
+    "message": "ကြော်ငြာ လေလံတင်သည့်နေရာ"
+  },
   "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | breakpointHit": {
     "message": "ဖြတ်တောက်မှတ် ထိသည်"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | canvas": {
+    "message": "ကင်းဗတ်စ်"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | clipboard": {
+    "message": "ကလစ်ဘုတ်"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | control": {
+    "message": "အထိန်းအချုပ်"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | device": {
+    "message": "စက်ပစ္စည်း"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | domMutation": {
+    "message": "DOM အသွင်ပြောင်းခြင်း"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | dragDrop": {
+    "message": "ဖိဆွဲရန် / လွှတ်ချရန်"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | geolocation": {
+    "message": "ပထဝီတည်နေရာ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | keyboard": {
+    "message": "ကီးဘုတ်"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | load": {
+    "message": "ဖွင့်ရန်"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | media": {
+    "message": "မီဒီယာ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | mouse": {
+    "message": "မောက်စ်"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | notification": {
+    "message": "အကြောင်းကြားချက်"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | parse": {
+    "message": "ခွဲခြမ်းစိတ်ဖြာရန်"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pictureinpicture": {
+    "message": "နှစ်ခုထပ်၍ကြည့်ခြင်း"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | pointer": {
+    "message": "ညွှန်းမြား"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | script": {
+    "message": "Script"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | sharedStorageWorklet": {
+    "message": "မျှသုံးသိုလှောင်ခန်း ကြားခံစနစ်"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | timer": {
+    "message": "အချိန်တိုင်းစက်"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | touch": {
+    "message": "တို့ထိမှု"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | trustedTypeViolations": {
+    "message": "ယုံကြည်ရသော အမျိုးအစား ချိုးဖောက်မှုများ"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | webaudio": {
+    "message": "WebAudio"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | window": {
+    "message": "ဝင်းဒိုး"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | worker": {
+    "message": "လုပ်သား"
+  },
+  "panels/browser_debugger/CategorizedBreakpointsSidebarPane.ts | xhr": {
+    "message": "XHR"
   },
   "panels/browser_debugger/DOMBreakpointsSidebarPane.ts | attributeModified": {
     "message": "ရည်ညွှန်းချက်ကို ပြင်ဆင်ထားသည်"
@@ -4630,9 +4681,6 @@
   },
   "panels/console/ConsolePinPane.ts | removeAllExpressions": {
     "message": "ဖော်ပြချက်အားလုံး ဖယ်ရှားရန်"
-  },
-  "panels/console/ConsolePinPane.ts | removeBlankExpression": {
-    "message": "ဖော်ပြချက်အလွတ်ကို ဖယ်ရှားရန်"
   },
   "panels/console/ConsolePinPane.ts | removeExpression": {
     "message": "ဖော်ပြချက် ဖယ်ရှားရန်"
@@ -5534,6 +5582,9 @@
   "panels/elements/ElementsTreeElement.ts | hideElement": {
     "message": "အစိတ်အပိုင်းကို ဖျောက်ထားရန်"
   },
+  "panels/elements/ElementsTreeElement.ts | openMediaPanel": {
+    "message": "မီဒီယာအကန့်သို့ တိုက်ရိုက်သွားရန်"
+  },
   "panels/elements/ElementsTreeElement.ts | paste": {
     "message": "ကူးထည့်ရန်"
   },
@@ -6244,6 +6295,9 @@
   },
   "panels/issues/AffectedHeavyAdView.ts | warned": {
     "message": "သတိပေးထားသည်"
+  },
+  "panels/issues/AffectedMetadataAllowedSitesView.ts | nAllowedSites": {
+    "message": "{n,plural, =1{ဝဘ်ဆိုက် ၁ ခုကို ကွတ်ကီးများ သုံးခွင့်ပြုထားသည်}other{ဝဘ်ဆိုက် # ခုကို ကွတ်ကီးများ သုံးခွင့်ပြုထားသည်}}"
   },
   "panels/issues/AffectedResourcesView.ts | clickToRevealTheFramesDomNodeIn": {
     "message": "'အစိတ်အပိုင်းများ' အကန့်တွင် ဤဖရိမ်၏ DOM နုတ်ကို ဖော်ထုတ်ရန်အတွက် နှိပ်ရန်"
@@ -7498,6 +7552,9 @@
   },
   "panels/network/NetworkDataGridNode.ts | finished": {
     "message": "ပြီးပြီ"
+  },
+  "panels/network/NetworkDataGridNode.ts | initialPriorityToolTip": {
+    "message": "{PH1}၊ ကနဦး ဦးစားပေး- {PH2}"
   },
   "panels/network/NetworkDataGridNode.ts | level": {
     "message": "အဆင့် ၁"
@@ -10901,6 +10958,66 @@
   "panels/sources/CallStackSidebarPane.ts | showMore": {
     "message": "ပိုပြပါ"
   },
+  "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
+    "message": "လှုပ်ရှားသက်ဝင်ပုံ ဖရိမ်ကို စတင်သည်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
+    "message": "Bidder Bidding အဆင့် စတင်သည်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletReportingStart": {
+    "message": "Bidder Reporting အဆင့် စတင်သည်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletReportingStart": {
+    "message": "Seller Reporting အဆင့် စတင်သည်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | beforeSellerWorkletScoringStart": {
+    "message": "Seller Scoring အဆင့် စတင်သည်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | cancelAnimationFrame": {
+    "message": "လှုပ်ရှားသက်ဝင်ပုံ ဖရိမ် ပယ်ဖျက်ရန်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | closeAudiocontext": {
+    "message": "AudioContext ကို ပိတ်ရန်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createAudiocontext": {
+    "message": "AudioContext ပြုလုပ်ရန်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | createCanvasContext": {
+    "message": "ကင်းဗတ်စ်အကြောင်းအရာ ပြုလုပ်ရန်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | policyViolations": {
+    "message": "မူဝါဒ ချိုးဖောက်မှုများ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | requestAnimationFrame": {
+    "message": "လှုပ်ရှားသက်ဝင်ပုံ ဖရိမ် တောင်းဆိုရန်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | resumeAudiocontext": {
+    "message": "AudioContext ကို ပြန်စရန်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptBlockedByContentSecurity": {
+    "message": "‘အကြောင်းအရာ လုံခြုံရေးမူဝါဒ’ ဖြင့် script ကို ပိတ်ထားသည်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | scriptFirstStatement": {
+    "message": "Script ပထမဆုံး ကြေညာချက်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setInnerhtml": {
+    "message": "innerHTML သတ်မှတ်ရန်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | setTimeoutOrIntervalFired": {
+    "message": "{PH1} စတင်သည်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | sinkViolations": {
+    "message": "ဒေတာဆောင်ရွက်မှုနေရာ ချိုးဖောက်မှုများ"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | suspendAudiocontext": {
+    "message": "AudioContext ဆိုင်းငံ့ရန်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglErrorFired": {
+    "message": "WebGL အမှား စတင်သည်"
+  },
+  "panels/sources/CategorizedBreakpointL10n.ts | webglWarningFired": {
+    "message": "WebGL သတိပေးချက် စတင်သည်"
+  },
   "panels/sources/CoveragePlugin.ts | clickToShowCoveragePanel": {
     "message": "‘ပါဝင်မှု အကန့်’ ပြရန် နှိပ်ပါ"
   },
@@ -10961,6 +11078,9 @@
   "panels/sources/DebuggerPausedMessage.ts | pausedOnXhrOrFetch": {
     "message": "XHR သို့မဟုတ် ရယူမှုတွင် ခဏရပ်ထားသည်"
   },
+  "panels/sources/DebuggerPausedMessage.ts | scriptBlockedDueToContent": {
+    "message": "‘အကြောင်းအရာ လုံခြုံရေးမူဝါဒ’ လမ်းညွှန်ချက်ကြောင့် Script ကို ပိတ်ထားသည်- {PH1}"
+  },
   "panels/sources/DebuggerPausedMessage.ts | subtreeModifications": {
     "message": "အပိုင်းခွဲ ပြင်ဆင်မှုများ"
   },
@@ -10969,6 +11089,9 @@
   },
   "panels/sources/DebuggerPausedMessage.ts | trustedTypeSinkViolation": {
     "message": "Trusted Type ဒေတာဆောင်ရွက်မှုနေရာ ချိုးဖောက်မှု"
+  },
+  "panels/sources/DebuggerPausedMessage.ts | webglErrorFiredS": {
+    "message": "WebGL အမှား စတင်သည် ({PH1})"
   },
   "panels/sources/DebuggerPlugin.ts | addBreakpoint": {
     "message": "ဖြတ်တောက်မှတ် ထည့်ရန်"
@@ -11087,9 +11210,6 @@
   "panels/sources/NavigatorView.ts | actionCannotBeUndone": {
     "message": "ဤလုပ်ဆောင်ချက်ကို ပြန်ပြင်၍မရပါ။"
   },
-  "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteAllOverrides": {
-    "message": "ဤဖိုင်တွဲရှိ အစားထိုးခြင်းအားလုံးကို ဖျက်လိုသည်မှာ သေချာသလား။"
-  },
   "panels/sources/NavigatorView.ts | areYouSureYouWantToDeleteFolder": {
     "message": "ဤဖိုင်တွဲနှင့် ၎င်း၏အကြောင်းအရာများကို ဖျက်လိုသည်မှာ သေချာပါသလား။"
   },
@@ -11110,9 +11230,6 @@
   },
   "panels/sources/NavigatorView.ts | delete": {
     "message": "ဖျက်ရန်"
-  },
-  "panels/sources/NavigatorView.ts | deleteAllOverrides": {
-    "message": "အစားထိုးခြင်းအားလုံးကို ဖျက်ရန်"
   },
   "panels/sources/NavigatorView.ts | deployed": {
     "message": "ထည့်သုံးထားသည်"
@@ -12107,11 +12224,23 @@
   "panels/timeline/ThreadAppender.ts | anonymous": {
     "message": "(အမည်မသိ)"
   },
+  "panels/timeline/ThreadAppender.ts | bidderWorklet": {
+    "message": "လေလံတင်သူ၏ ကြားခံစနစ်"
+  },
+  "panels/timeline/ThreadAppender.ts | bidderWorkletS": {
+    "message": "လေလံတင်သူ၏ ကြားခံစနစ် — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "သီးသန့်သတ်မှတ်ထားသော Worker"
   },
+  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
+    "message": "ဖြစ်ရပ်- {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "ဖရိမ် — {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | main": {
+    "message": "ပင်မ"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "ပင်မ — {PH1}"
@@ -12125,14 +12254,32 @@
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
     "message": "ရက်စတာပုံပြောင်းစနစ် Thread {PH1}"
   },
+  "panels/timeline/ThreadAppender.ts | sellerWorklet": {
+    "message": "ရောင်းသူ၏ ကြားခံစနစ်"
+  },
+  "panels/timeline/ThreadAppender.ts | sellerWorkletS": {
+    "message": "ရောင်းသူ၏ ကြားခံစနစ် — {PH1}"
+  },
   "panels/timeline/ThreadAppender.ts | threadS": {
     "message": "Thread {PH1}"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorklet": {
+    "message": "လေလံတင်သည့် ကြားခံစနစ်"
+  },
+  "panels/timeline/ThreadAppender.ts | unknownWorkletS": {
+    "message": "လေလံတင်သည့် ကြားခံစနစ် — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerS": {
     "message": "Worker — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | workerSS": {
     "message": "Worker- {PH1} — {PH2}"
+  },
+  "panels/timeline/ThreadAppender.ts | workletService": {
+    "message": "လေလံတင်သည့် ကြားခံစနစ် ဝန်ဆောင်မှု"
+  },
+  "panels/timeline/ThreadAppender.ts | workletServiceS": {
+    "message": "လေလံတင်သည့် ကြားခံစနစ် ဝန်ဆောင်မှု — {PH1}"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "ဤပစ်မှတ်အမျိုးအစားအတွက် စွမ်းဆောင်ရည် လုပ်ဆောင်ချက်မှတ်တမ်း ယူခြင်းကို မပံ့ပိုးပါ"
@@ -12830,9 +12977,6 @@
   "panels/timeline/TimelineUIUtils.ts | location": {
     "message": "တည်နေရာ"
   },
-  "panels/timeline/TimelineUIUtils.ts | longInteractionINP": {
-    "message": "ကြာရှည်သော ပြန်လှန်တုံ့ပြန်မှု"
-  },
   "panels/timeline/TimelineUIUtils.ts | longTask": {
     "message": "ရှည်လျားသော လုပ်ဆောင်စရာ"
   },
@@ -13027,9 +13171,6 @@
   },
   "panels/timeline/TimelineUIUtils.ts | sIsALikelyPerformanceBottleneck": {
     "message": "{PH1} သည် စွမ်းဆောင်ရည်နှေးကွေးမှု ဖြစ်နိုင်သည်။"
-  },
-  "panels/timeline/TimelineUIUtils.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} သည် ဆိုးရွားသော စာမျက်နှာ အလိုက်သင့်တုံ့ပြန်မှုကို ညွှန်ပြနေသည်။"
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
     "message": "{PH2} အနက် {PH1}"
@@ -13364,6 +13505,9 @@
   "panels/webauthn/WebauthnPane.ts | enableVirtualAuthenticator": {
     "message": "ပကတိအသွင် အထောက်အထားစိစစ်စနစ် ပတ်ဝန်းကျင်ကို ဖွင့်ရန်"
   },
+  "panels/webauthn/WebauthnPane.ts | enterNewName": {
+    "message": "အမည်အသစ် ရိုက်ထည့်ပါ"
+  },
   "panels/webauthn/WebauthnPane.ts | export": {
     "message": "ထုတ်ယူရန်"
   },
@@ -13573,6 +13717,9 @@
   },
   "ui/components/linear_memory_inspector/linear_memory_inspector-meta.ts | showMemoryInspector": {
     "message": "မှတ်ဉာဏ် စစ်ဆေးစနစ်ကို ပြရန်"
+  },
+  "ui/components/markdown_view/MarkdownView.ts | copy": {
+    "message": "မိတ္တူကူးရန်"
   },
   "ui/components/panel_feedback/FeedbackButton.ts | feedback": {
     "message": "အကြံပြုချက်"

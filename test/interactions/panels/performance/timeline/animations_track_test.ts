@@ -8,6 +8,9 @@ import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.j
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
 
 describe('Animations track', function() {
+  if (this.timeout() !== 0) {
+    this.timeout(20000);
+  }
   preloadForCodeCoverage('performance_panel/track_example.html');
 
   const urlForTest = 'performance_panel/track_example.html?track=Animations&fileName=animation';

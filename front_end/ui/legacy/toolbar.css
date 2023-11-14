@@ -64,10 +64,13 @@
 
 devtools-issue-counter.toolbar-item {
   margin-top: -4px;
+  padding-left: 1px;
 }
 
 devtools-issue-counter.main-toolbar {
   margin-top: 1px;
+  margin-left: 1px;
+  margin-right: 1px;
 }
 
 .toolbar-dropdown-arrow {

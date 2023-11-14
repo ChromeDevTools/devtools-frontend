@@ -135,6 +135,12 @@ th.firstVisibleColumn {
   padding: 1px;
 }
 
+/* Leave space for the sort indicator */
+[aria-sort="ascending"],
+[aria-sort="descending"] {
+  padding-right: 20px;
+}
+
 [aria-sort="descending"]::after {
   content: "";
   width: 0;

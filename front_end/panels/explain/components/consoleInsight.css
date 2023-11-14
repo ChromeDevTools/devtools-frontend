@@ -33,7 +33,7 @@
   }
 
   to {
-    max-height: 500px;
+    max-height: 2000px;
     opacity: 100%;
   }
 }
@@ -125,6 +125,17 @@ textarea {
 
 .buttons {
   margin-bottom: 16px;
+}
+
+.dogfood-feedback {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.link {
+  color: var(--sys-color-primary);
+  text-decoration-line: underline;
 }
 
 /* stylelint-disable plugin/use_theme_colors */

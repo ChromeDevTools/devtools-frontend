@@ -60,6 +60,9 @@ function localizeType(sourceType: SourceType): string {
   }
 }
 
+const DOGFOODFEEDBACK_URL =
+    'https://docs.google.com/forms/d/e/1FAIpQLSePjpPA0BUSbyG_xrsLR_HtrVixLqu5gAKOxgV-YfztVTf8Vg/viewform?usp=published_options';
+
 export class ConsoleInsight extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-console-insight`;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -89,6 +92,15 @@ export class ConsoleInsight extends HTMLElement {
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [styles];
     this.classList.add('opening');
+  }
+
+  set dogfood(value: boolean) {
+    this.#dogfood = value;
+    this.#render();
+  }
+
+  get dogfood(): boolean {
+    return this.#dogfood;
   }
 
   #renderMarkdown(content: string): void {
@@ -256,7 +268,20 @@ export class ConsoleInsight extends HTMLElement {
             ></${Buttons.Button.Button.litTagName}>
           </div>
           <div class="filler"></div>
-          <div>TODO</div>
+          ${this.#dogfood ? html`<div class="dogfood-feedback">
+              <${IconButton.Icon.Icon.litTagName}
+                .data=${
+                  {
+                    iconName: 'dog-paw',
+                    color: 'var(--icon-default)',
+                    width: '16px',
+                    height: '16px',
+                  } as IconButton.Icon.IconData
+                }>
+              </${IconButton.Icon.Icon.litTagName}>
+              <span>Dogfood - </span>
+              <x-link href=${DOGFOODFEEDBACK_URL} class="link">Submit feedback</x-link>
+          </div>`: ''}
         </footer>
         `}
       </div>

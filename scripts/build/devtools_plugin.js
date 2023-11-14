@@ -93,8 +93,13 @@ function devtoolsPlugin(source, importer) {
   }
 
   if (importedFileDirectory.includes(path.join('front_end', 'third_party', 'puppeteer', 'package'))) {
-    // Ignore possible dynamic imports from the Node folder.
-    if (importedFileDirectory.includes(path.join('front_end', 'third_party', 'puppeteer', 'package', 'lib', 'esm', 'puppeteer', 'node'))) {
+    if (
+        // Ignore possible dynamic imports from the Node folder.
+        importedFileDirectory.includes(
+            path.join('front_end', 'third_party', 'puppeteer', 'package', 'lib', 'esm', 'puppeteer', 'node')) ||
+        // Ignore possible dynamic imports from the Bidi folder.
+        importedFileDirectory.includes(
+            path.join('front_end', 'third_party', 'puppeteer', 'package', 'lib', 'esm', 'puppeteer', 'bidi'))) {
       return {
         id: importedFilelocation,
         external: true,

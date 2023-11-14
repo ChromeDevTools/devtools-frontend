@@ -34,6 +34,7 @@ require('esbuild')
       format: 'esm',
       platform: 'browser',
       plugins: [plugin],
+      allowOverwrite: true,
       sourcemap: useSourceMaps,
     })
     .catch(err => {

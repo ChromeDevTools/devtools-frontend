@@ -13,6 +13,7 @@ devtools_module("handlers") {
     "GPUHandler.ts",
     "LargestImagePaintHandler.ts",
     "LargestTextPaintHandler.ts",
+    "LayerTreeHandler.ts",
     "LayoutShiftsHandler.ts",
     "MemoryHandler.ts",
     "MetaHandler.ts",

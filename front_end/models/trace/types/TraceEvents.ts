@@ -1396,6 +1396,66 @@ export function isProfileCall(event: TraceEventData): event is TraceEventSynthet
   return 'callFrame' in event;
 }
 
+export interface TraceEventPaint extends TraceEventComplete {
+  name: KnownEventName.Paint;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      clip: number[],
+      frame: string,
+      layerId: number,
+      nodeId: number,
+    },
+  };
+}
+
+export function isTraceEventPaint(event: TraceEventData): event is TraceEventPaint {
+  return event.name === KnownEventName.Paint;
+}
+
+export interface TraceEventSetLayerTreeId extends TraceEventInstant {
+  name: KnownEventName.SetLayerTreeId;
+  args: TraceEventArgs&{
+    data: TraceEventArgsData & {
+      frame: string,
+      layerTreeId: number,
+    },
+  };
+}
+export function isTraceEventSetLayerId(event: TraceEventData): event is TraceEventSetLayerTreeId {
+  return event.name === KnownEventName.SetLayerTreeId;
+}
+export interface TraceEventUpdateLayer extends TraceEventComplete {
+  name: KnownEventName.UpdateLayer;
+  args: TraceEventArgs&{
+    layerId: number,
+    layerTreeId: number,
+  };
+}
+export function isTraceEventUpdateLayer(event: TraceEventData): event is TraceEventUpdateLayer {
+  return event.name === KnownEventName.UpdateLayer;
+}
+
+export interface TraceEventDisplayItemListSnapshot extends TraceEventData {
+  name: KnownEventName.DisplayItemListSnapshot;
+  ph: Phase.OBJECT_SNAPSHOT;
+  id2: {
+    local?: string,
+  };
+  args: TraceEventArgs&{
+    snapshot: {
+      params: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        layer_rect: [number, number, number, number],
+      },
+      skp64: string,
+    },
+  };
+}
+export function isTraceEventDisplayListItemListSnapshot(event: TraceEventData):
+    event is TraceEventDisplayItemListSnapshot {
+  return event.name === KnownEventName.DisplayItemListSnapshot;
+}
+
 /**
  * This is an exhaustive list of events we track in the Performance
  * panel. Note not all of them are necessarliry shown in the flame

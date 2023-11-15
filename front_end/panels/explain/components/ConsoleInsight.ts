@@ -38,8 +38,8 @@ const negativeRatingReasons = [
   ['other', 'Other'],
 ];
 
-function buildLink(
-    rating: 'Good'|'Bad', reasonKeys: string[], comment: string, context: string): Platform.DevToolsPath.UrlString {
+function buildLink(rating: 'Positive'|'Negative', reasonKeys: string[], comment: string, context: string):
+    Platform.DevToolsPath.UrlString {
   return `https://docs.google.com/forms/d/e/1FAIpQLSen1K-Uli0CSvlsNkI-L0Wq5iJ0FO9zFv0_mjM-3m5I8AKQGg/viewform?usp=pp_url&entry.1465663861=${
              encodeURIComponent(rating)}&entry.166041694=${encodeURIComponent(reasonKeys.join(','))}&entry.109342357=${
              encodeURIComponent(comment)}&entry.1805879004=${encodeURIComponent(context)}` as
@@ -165,7 +165,7 @@ export class ConsoleInsight extends HTMLElement {
 
   #openFeedbackFrom(): void {
     const link = buildLink(
-        this.#selectedRating ? 'Good' : 'Bad', Array.from(this.#selectedRatingReasons),
+        this.#selectedRating ? 'Positive' : 'Negative', Array.from(this.#selectedRatingReasons),
         this.#shadow.querySelector('textarea')?.value || '', JSON.stringify(this.#context));
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(link);
   }

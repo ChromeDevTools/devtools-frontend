@@ -100,12 +100,16 @@ header > .filler {
 main {
   --override-markdown-view-message-color: var(--sys-color-on-surface);
 
-  margin: 20px 0;
+  margin: 20px 0 0;
   color: var(--sys-color-on-surface);
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
+}
+
+devtools-markdown-view {
+  margin-bottom: 12px;
 }
 
 footer {
@@ -116,6 +120,7 @@ footer {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  margin-top: 8px;
 }
 
 footer > div:nth-child(1) {
@@ -226,6 +231,7 @@ ul {
   font-style: normal;
   font-weight: 400;
   line-height: 20px; /* 153.846% */
+  margin-top: 8px;
 }
 
 ul .link {
@@ -241,17 +247,16 @@ summary {
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  padding-bottom: 8px;
 }
 
 details {
-  --collapsed-height: 28px;
+  --collapsed-height: 20px;
 
   overflow: hidden;
   height: var(--collapsed-height);
 }
 
 details[open] {
-  height: calc(var(--list-height) + var(--collapsed-height));
+  height: calc(var(--list-height) + var(--collapsed-height) + /* margin */ 8px);
   transition: height var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
 }

@@ -475,13 +475,14 @@ devtools-console-insight {
 }
 
 .hover-button {
-  --width: 24px;
+  --width: 22px;
 
   align-items: center;
   background-color: var(--sys-color-cdt-base-container);
   border-radius: 50%;
   border: none;
-  box-shadow: var(--drop-shadow-depth-3);
+  /* todo: extract to global styles and make it work with dark mode. */
+  box-shadow: 0 1px 3px 1px rgb(0 0 0 / 15%), 0 1px 2px 0 rgb(0 0 0 / 30%); /* stylelint-disable-line plugin/use_theme_colors */
   box-sizing: border-box;
   color: var(--sys-color-primary);
   font-family: var(--default-font-family);
@@ -493,7 +494,7 @@ devtools-console-insight {
   min-height: var(--width);
   min-width: var(--width);
   overflow: hidden;
-  padding: 4px;
+  padding: 3px;
   position: absolute;
   right: 6px;
   display: none;
@@ -503,6 +504,7 @@ devtools-console-insight {
 .hover-button span {
   display: none;
   white-space: nowrap;
+  padding-right: 3px;
 }
 
 .hover-button:hover {

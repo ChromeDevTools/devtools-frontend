@@ -245,11 +245,13 @@ summary {
 }
 
 details {
+  --collapsed-height: 28px;
+
   overflow: hidden;
-  max-height: 28px;
+  height: var(--collapsed-height);
 }
 
 details[open] {
-  transition: max-height var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
-  max-height: 500px;
+  height: calc(var(--list-height) + var(--collapsed-height));
+  transition: height var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
 }

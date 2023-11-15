@@ -244,7 +244,7 @@ export class ConsoleInsight extends HTMLElement {
           <${MarkdownView.MarkdownView.MarkdownView.litTagName}
             .data=${{tokens: this.#tokens, renderer: this.#renderer} as MarkdownView.MarkdownView.MarkdownViewData}>
           </${MarkdownView.MarkdownView.MarkdownView.litTagName}>
-          <details>
+          <details style="--list-height: ${this.#sources.length * 20}px;">
             <summary>Sources</summary>
             <ul>
               ${Directives.repeat(this.#sources, item => item.value, item => {

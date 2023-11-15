@@ -40,7 +40,7 @@ export class InsightProvider {
                                      throw new Error('Unknown chunk result');
                                    },
                                    )
-                               .join(' ');
+                               .join('');
               resolve(text);
             } catch (err) {
               reject(err);

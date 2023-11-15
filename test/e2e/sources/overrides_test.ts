@@ -120,7 +120,8 @@ describe('Overrides panel', async function() {
     });
   });
 
-  it('can always override content via the Network panel', async () => {
+  // Flaky
+  it.skip('[crbug.com/1502463] can always override content via the Network panel', async () => {
     await step('can override without local overrides folder set up', async () => {
       await goToResource('network/fetch-json.html');
       await openNetworkTab();
@@ -175,7 +176,8 @@ describe('Overrides panel', async function() {
     });
   });
 
-  it('overrides indicator on the Network panel title', async () => {
+  // Flaky
+  it.skip('[crbug.com/1502463] overrides indicator on the Network panel title', async () => {
     await step('no indicator when overrides setting is disabled', async () => {
       await goToResource('network/fetch-json.html');
 
@@ -290,7 +292,8 @@ describe('Overrides panel', async function() {
     assert.strictEqual(assertOpenInElements.length, 1);
   });
 
-  it('has correct context menu for main overrides folder', async () => {
+  // Flaky
+  it.skip('[crbug.com/1502463] has correct context menu for main overrides folder', async () => {
     await goToResource('network/fetch-json.html');
     await openNetworkTab();
     await selectRequestByName('coffees.json', {button: 'right'});
@@ -314,7 +317,8 @@ describe('Overrides panel', async function() {
     assert.strictEqual(assertDeleteElements.length, 0);
   });
 
-  it('has correct context menu for sub overrides folder', async () => {
+  // Flaky
+  it.skip('[crbug.com/1502463] has correct context menu for sub overrides folder', async () => {
     await goToResource('network/fetch-json.html');
     await openNetworkTab();
     await selectRequestByName('coffees.json', {button: 'right'});

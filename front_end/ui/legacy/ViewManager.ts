@@ -208,32 +208,12 @@ export class ViewManager {
     return toolbar.element;
   }
 
-  getLocationNameForViewId(viewId: string): string {
+  locationNameForViewId(viewId: string): string {
     const locationName = this.locationNameByViewId.get(viewId);
     if (!locationName) {
       throw new Error(`No location name for view with id ${viewId}`);
     }
     return locationName;
-  }
-
-  setLocationNameForViewId(viewId: string, locationName: string): void {
-    if (!locationName || !viewId) {
-      throw new Error('A location name and view id should be provided');
-    }
-
-    this.locationNameByViewId.set(viewId, locationName);
-  }
-
-  deleteLocationNameForViewId(viewId?: string): void {
-    if (!viewId) {
-      throw new Error('A location view id should be provided');
-    }
-
-    const location = this.getLocationNameForViewId(viewId);
-
-    if (location) {
-      this.locationNameByViewId.delete(viewId);
-    }
   }
 
   /**
@@ -555,17 +535,11 @@ class Location {
   protected readonly manager: ViewManager;
   private readonly revealCallback: (() => void)|undefined;
   private readonly widgetInternal: Widget;
-  private readonly nameInternal?: string;
 
-  constructor(manager: ViewManager, widget: Widget, revealCallback?: (() => void), name?: string) {
+  constructor(manager: ViewManager, widget: Widget, revealCallback?: (() => void)) {
     this.manager = manager;
     this.revealCallback = revealCallback;
     this.widgetInternal = widget;
-    this.nameInternal = name;
-  }
-
-  name(): string|undefined {
-    return this.nameInternal;
   }
 
   widget(): Widget {
@@ -616,7 +590,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
       tabbedPane.setAllowTabReorder(true);
     }
 
-    super(manager, tabbedPane, revealCallback, location);
+    super(manager, tabbedPane, revealCallback);
     this.tabbedPaneInternal = tabbedPane;
     this.allowReorder = allowReorder;
 
@@ -746,12 +720,6 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     if (oldLocation && oldLocation !== this) {
       oldLocation.removeView(view);
     }
-
-    const locationName = this.name();
-    if (locationName) {
-      this.manager.setLocationNameForViewId(view.viewId(), locationName);
-    }
-
     locationForView.set(view, this);
     this.manager.views.set(view.viewId(), view);
     this.views.set(view.viewId(), view);
@@ -807,8 +775,6 @@ class TabbedLocation extends Location implements TabbedViewLocation {
     }
 
     locationForView.delete(view);
-    this.manager.deleteLocationNameForViewId(view.viewId());
-
     this.manager.views.delete(view.viewId());
     this.tabbedPaneInternal.closeTab(view.viewId());
     this.views.delete(view.viewId());
@@ -870,7 +836,7 @@ class StackLocation extends Location implements ViewLocation {
 
   constructor(manager: ViewManager, revealCallback?: (() => void), location?: string) {
     const vbox = new VBox();
-    super(manager, vbox, revealCallback, location);
+    super(manager, vbox, revealCallback);
     this.vbox = vbox;
     ARIAUtils.markAsTree(vbox.element);
 

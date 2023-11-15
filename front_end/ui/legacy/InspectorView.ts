@@ -630,12 +630,12 @@ export class InspectorViewTabDelegate implements TabbedPaneTabDelegate {
   }
 
   onContextMenu(tabId: string, contextMenu: ContextMenu): void {
-    // Don’t show the movable context panel for console or extension tabs.
-    if (tabId === 'console' || tabId === 'console-view' || tabId.startsWith('chrome-extension')) {
+    // Special case for console, we don't show the movable context panel for this two tabs
+    if (tabId === 'console' || tabId === 'console-view') {
       return;
     }
 
-    const locationName = ViewManager.instance().getLocationNameForViewId(tabId);
+    const locationName = ViewManager.instance().locationNameForViewId(tabId);
     if (locationName === 'drawer-view') {
       contextMenu.defaultSection().appendItem(i18nString(UIStrings.moveToTop), this.moveToMainPanel.bind(this, tabId));
     } else {

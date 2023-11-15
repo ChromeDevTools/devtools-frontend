@@ -257,7 +257,8 @@ export class ServiceWorkersView extends UI.Widget.VBox implements
       if (this.manager && !isDrawerOpen) {
         const {serviceWorkerNetworkRequestsPanelStatus: {isOpen, openedAt}} = this.manager;
         if (isOpen) {
-          UI.ViewManager.ViewManager.instance().showViewInLocation('network', 'panel', false);
+          const networkLocation = UI.ViewManager.ViewManager.instance().locationNameForViewId('network');
+          UI.ViewManager.ViewManager.instance().showViewInLocation('network', networkLocation, false);
           void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([]));
 
           const currentTime = Date.now();
@@ -738,7 +739,7 @@ export class Section {
   }
 
   private networkRequestsClicked(): void {
-    const applicationTabLocation = UI.ViewManager.ViewManager.instance().getLocationNameForViewId('resources');
+    const applicationTabLocation = UI.ViewManager.ViewManager.instance().locationNameForViewId('resources');
     const networkTabLocation = applicationTabLocation === 'drawer-view' ? 'panel' : 'drawer-view';
     UI.ViewManager.ViewManager.instance().showViewInLocation('network', networkTabLocation);
 

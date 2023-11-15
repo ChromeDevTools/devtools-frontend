@@ -113,6 +113,10 @@ export class ConsoleInsight extends HTMLElement {
   #setLoading(loading: boolean): void {
     this.#loading = loading;
     this.#render();
+    if (loading) {
+      this.style.setProperty('--actual-height', 'var(--loading-max-height)');
+    }
+    this.classList.toggle('loaded', !loading);
   }
 
   async update(): Promise<void> {
@@ -127,6 +131,9 @@ export class ConsoleInsight extends HTMLElement {
       };
       this.#sources = sources;
       this.#renderMarkdown(result);
+      this.addEventListener('animationend', () => {
+        this.style.setProperty('--actual-height', `${this.offsetHeight}px`);
+      });
     } catch (err) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErrored);
       this.#renderMarkdown(`loading failed: ${err.message}`);
@@ -136,8 +143,10 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #onClose(): void {
-    this.classList.add('closing');
     this.dispatchEvent(new CloseEvent());
+    this.classList.add('closing');
+    this.classList.remove('opening');
+    this.classList.remove('loaded');
   }
 
   #onCloseRating(): void {

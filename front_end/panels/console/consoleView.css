@@ -508,7 +508,7 @@ devtools-console-insight {
 .hover-button:hover {
   border-radius: 100px;
   max-width: 200px;
-  transition: max-width 0.3s ease;
+  transition: max-width var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized);
   width: fit-content;
   gap: 3px;
 }

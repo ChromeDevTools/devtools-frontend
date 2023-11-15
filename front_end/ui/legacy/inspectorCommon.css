@@ -45,6 +45,12 @@
   --monospace-font-family: monospace;
   --source-code-font-size: 11px;
   --source-code-font-family: monospace;
+  --sys-motion-duration-short4: 200ms;
+  --sys-motion-duration-medium2: 300ms;
+  --sys-motion-duration-long2: 500ms;
+  --sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --sys-motion-easing-emphasized-accelerate: cubic-bezier(0.2, 0, 0, 1);
 }
 
 .-theme-with-dark-background {

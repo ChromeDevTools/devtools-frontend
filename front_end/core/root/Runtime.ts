@@ -103,8 +103,7 @@ export class Runtime {
   }
 
   loadLegacyModule(modulePath: string): Promise<void> {
-    const path = `../../${modulePath}`;
-    return import(path);
+    return import(`../../${modulePath}`);
   }
 }
 

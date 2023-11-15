@@ -33,7 +33,8 @@ describe('The Coverage Panel', async () => {
     await clearCoverageContent();
   });
 
-  it('Shows coverage data on page loads if the instrumentation has started', async () => {
+  // Flaky
+  it.skip('[crbug.com/1502476] Shows coverage data on page loads if the instrumentation has started', async () => {
     await waitForTheCoveragePanelToLoad();
     await startInstrumentingCoverage();
     await navigateToCoverageTestSite();

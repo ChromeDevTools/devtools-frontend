@@ -88,6 +88,9 @@ enum VisualElements {
   ToggleElementSearch = 65,
   PanelTabHeader = 66,
   Menu = 67,
+  DeveloperResourcesPanel = 68,
+  TableHeader = 69,
+  TableCell = 70,
 }
 
 function resolveVe(ve: string): number {

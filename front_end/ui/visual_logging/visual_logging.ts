@@ -38,6 +38,7 @@ const cssFlexboxEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssFl
 const cssGridEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssGridEditor');
 const cssLayersPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssLayersPane');
 const cssShadowEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'cssShadowEditor');
+const developerResourcesPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'DeveloperResourcesPanel');
 const domBreakpoint = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpoint');
 const domBreakpointsPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpointsPane');
 const dropDown = LoggingConfig.makeConfigStringBuilder.bind(null, 'DropDown');
@@ -76,6 +77,8 @@ const stylePropertiesSectionSeparator =
 const stylesMetricsPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesMetricsPane');
 const stylesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesPane');
 const stylesSelector = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesSelector');
+const tableCell = LoggingConfig.makeConfigStringBuilder.bind(null, 'TableCell');
+const tableHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'TableHeader');
 const textField = LoggingConfig.makeConfigStringBuilder.bind(null, 'TextField');
 const toggle = LoggingConfig.makeConfigStringBuilder.bind(null, 'Toggle');
 const toggleDeviceMode = LoggingConfig.makeConfigStringBuilder.bind(null, 'ToggleDeviceMode');
@@ -117,6 +120,7 @@ export {
   cssGridEditor,
   cssLayersPane,
   cssShadowEditor,
+  developerResourcesPanel,
   domBreakpoint,
   domBreakpointsPane,
   dropDown,
@@ -154,6 +158,8 @@ export {
   stylesMetricsPane,
   stylesPane,
   stylesSelector,
+  tableCell,
+  tableHeader,
   textField,
   toggle,
   toggleDeviceMode,

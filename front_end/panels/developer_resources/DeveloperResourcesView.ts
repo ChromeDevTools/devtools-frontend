@@ -6,6 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {DeveloperResourcesListView} from './DeveloperResourcesListView.js';
 import developerResourcesViewStyles from './developerResourcesView.css.js';
@@ -54,6 +55,8 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
 
   constructor() {
     super(true);
+
+    this.element.setAttribute('jslog', `${VisualLogging.developerResourcesPanel()}`);
 
     const toolbarContainer = this.contentElement.createChild('div', 'developer-resource-view-toolbar-container');
     const toolbar = new UI.Toolbar.Toolbar('developer-resource-view-toolbar', toolbarContainer);

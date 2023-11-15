@@ -683,7 +683,7 @@ export enum PanelCodes {
   'performance_insights' = 63,
   'preloading' = 64,
   'bounce_tracking_mitigations' = 65,
-  'resource-loading-pane' = 66,
+  'developer-resources' = 66,
   'autofill-view' = 67,
   MaxValue = 68,
 }

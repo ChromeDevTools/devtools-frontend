@@ -20,14 +20,36 @@ describe('LoggingConfig', () => {
     assert.isTrue(VisualLogging.LoggingConfig.needsLogging(element));
   });
 
-  it('reads simple logging config', () => {
-    element.setAttribute('jslog', 'TreeItem');
-    let config = VisualLogging.LoggingConfig.getLoggingConfig(element);
-    assert.strictEqual(config.ve, 1);
+  describe('reads simple logging config', () => {
+    it('for TreeItem', () => {
+      element.setAttribute('jslog', 'TreeItem');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.ve, 1);
+    });
 
-    element.setAttribute('jslog', 'TextField');
-    config = VisualLogging.LoggingConfig.getLoggingConfig(element);
-    assert.strictEqual(config.ve, 8);
+    it('for TextField', () => {
+      element.setAttribute('jslog', 'TextField');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.ve, 8);
+    });
+
+    it('for DeveloperResourcesPanel', () => {
+      element.setAttribute('jslog', 'DeveloperResourcesPanel');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.ve, 68);
+    });
+
+    it('for TableHeader', () => {
+      element.setAttribute('jslog', 'TableHeader');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.ve, 69);
+    });
+
+    it('for TableCell', () => {
+      element.setAttribute('jslog', 'TableCell');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.ve, 70);
+    });
   });
 
   it('throws on unknown visual element', () => {

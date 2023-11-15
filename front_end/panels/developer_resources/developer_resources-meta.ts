@@ -32,7 +32,7 @@ async function loadDeveloperResourcesModule(): Promise<typeof DeveloperResources
 
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
-  id: 'resource-loading-pane',
+  id: 'developer-resources',
   title: i18nLazyString(UIStrings.developerResources),
   commandPrompt: i18nLazyString(UIStrings.showDeveloperResources),
   order: 100,

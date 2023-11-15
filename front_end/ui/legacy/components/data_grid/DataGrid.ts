@@ -29,6 +29,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
 import dataGridStyles from './dataGrid.css.js';
@@ -411,6 +412,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     const cell = document.createElement('th');
+    cell.setAttribute('jslog', `${VisualLogging.tableHeader().track({click: column.sortable}).context(columnId)}`);
     cell.className = columnId + '-column';
     nodeToColumnIdMap.set(cell, columnId);
     this.dataTableHeaders[columnId] = cell;
@@ -1344,7 +1346,9 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       for (const column of sortableColumns) {
         const headerCell = this.dataTableHeaders[column.id];
         sortMenu.defaultSection().appendItem(
-            (column.title as string), this.sortByColumnHeaderCell.bind(this, headerCell));
+            (column.title as string), this.sortByColumnHeaderCell.bind(this, headerCell), {
+              jslogContext: column.id,
+            });
       }
     }
 
@@ -1936,6 +1940,12 @@ export class DataGridNode<T> {
 
   createTD(columnId: string): HTMLElement {
     const cell = this.createTDWithClass(columnId + '-column');
+    cell.setAttribute(
+        'jslog',
+        `${
+            VisualLogging.tableCell()
+                .track({click: true, keydown: Boolean(this.dataGrid?.columns[columnId].editable)})
+                .context(columnId)}`);
     nodeToColumnIdMap.set(cell, columnId);
 
     if (this.dataGrid) {

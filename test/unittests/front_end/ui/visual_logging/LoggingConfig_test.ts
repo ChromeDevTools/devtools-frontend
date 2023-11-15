@@ -33,6 +33,12 @@ describe('LoggingConfig', () => {
       assert.strictEqual(config.ve, 8);
     });
 
+    it('for RenderingPanel', () => {
+      element.setAttribute('jslog', 'RenderingPanel');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.ve, 61);
+    });
+
     it('for DeveloperResourcesPanel', () => {
       element.setAttribute('jslog', 'DeveloperResourcesPanel');
       const config = VisualLogging.LoggingConfig.getLoggingConfig(element);

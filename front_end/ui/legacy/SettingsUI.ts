@@ -31,6 +31,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Settings from '../components/settings/settings.js';
+import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {InspectorView} from './InspectorView.js';
@@ -83,6 +84,7 @@ const createSettingSelect = function(
     container.classList.add('chrome-select-label');
     label.createChild('p').textContent = subtitle;
   }
+  select.setAttribute('jslog', `${VisualLogging.dropDown().track({change: true}).context(setting.name)}`);
   ARIAUtils.bindLabelToControl(label, select);
 
   for (const option of options) {

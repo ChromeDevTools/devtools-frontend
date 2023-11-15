@@ -66,6 +66,7 @@ const paletteColorShades = LoggingConfig.makeConfigStringBuilder.bind(null, 'Pal
 const palettePanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'PalettePanel');
 const panelTabHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'PanelTabHeader');
 const previous = LoggingConfig.makeConfigStringBuilder.bind(null, 'Previous');
+const renderingPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'RenderingPanel');
 const refresh = LoggingConfig.makeConfigStringBuilder.bind(null, 'Refresh');
 const showAllStyleProperties = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowAllStyleProperties');
 const showStyleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowStyleEditor');
@@ -147,6 +148,7 @@ export {
   palettePanel,
   panelTabHeader,
   previous,
+  renderingPanel,
   refresh,
   showAllStyleProperties,
   showStyleEditor,

@@ -81,7 +81,7 @@ enum VisualElements {
   JumpToElement = 58,
   ElementsPanel = 59,
   ElementsTreeOutline = 60,
-  /* 61 used to be Toolbar, free to grab now */
+  RenderingPanel = 61,
   ElementsBreadcrumbs = 62,
   FullAccessibilityTree = 63,
   ToggleDeviceMode = 64,

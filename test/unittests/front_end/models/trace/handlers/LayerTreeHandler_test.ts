@@ -7,6 +7,12 @@ import * as TraceModel from '../../../../../../front_end/models/trace/trace.js';
 import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 describe('LayerTreeHandler', function() {
+  // The trace file used here is large because it has all the
+  // AdvancedPaintInstrumentation enabled in order to test this handler.
+  // Therefore the timeout here is larger to allow for the time required to
+  // load the file on the bots.
+  this.timeout(20_000);
+
   beforeEach(() => {
     TraceModel.Handlers.ModelHandlers.Meta.reset();
     TraceModel.Handlers.ModelHandlers.LayerTreeHandler.reset();

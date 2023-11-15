@@ -12,13 +12,13 @@ vars = {
   'build_with_chromium': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '02912baf87bfa3b0baca028265592b50c80dff2a',
+  'build_revision': '33f6a1bed4d1314d4060bd6daa21dd157177569c',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
-  'buildtools_revision': '18624e2e9c0c8c4947aa0ca60b412d80464ad741',
+  'buildtools_revision': 'a0c5cf9a56784e5f207bcb65f0dbbbc27c4b0886',
 
   'depot_tools_url': 'https://chromium.googlesource.com/chromium/tools/depot_tools.git',
-  'depot_tools_revision': '7a9b709a6c649b3900f4eed0e855ef1541dbd642',
+  'depot_tools_revision': 'fba0ae4a3815f379514572b04e9cd215eaf54849',
 
   'inspector_protocol_url': 'https://chromium.googlesource.com/deps/inspector_protocol',
   'inspector_protocol_revision': '916f43c554c65ebf4ccd896b0f4e2ac99a67c434',
@@ -29,7 +29,7 @@ vars = {
   'emscripten_tag': 'ade9d780ff17c88d81aa13860361743e3c1e1396',
 
   # GN CIPD package version.
-  'gn_version': 'git_revision:85bd0a62938bc84e1b8db0ef92be0e2bb634378d',
+  'gn_version': 'git_revision:9a45b61238317b09b778c47555527c9926700e0c',
 
   'cmake_version': 'version:3.16.1',
 

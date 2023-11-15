@@ -1847,6 +1847,8 @@ experimental domain CSS
     properties
       # Font's family name reported by platform.
       string familyName
+      # Font's PostScript name reported by platform.
+      string postScriptName
       # Indicates if the font was downloaded or resolved locally.
       boolean isCustomFont
       # Amount of glyphs that were rendered with this font.
@@ -4250,7 +4252,7 @@ domain Emulation
     parameters
       # User agent to use.
       string userAgent
-      # Browser langugage to emulate.
+      # Browser language to emulate.
       optional string acceptLanguage
       # The platform navigator.platform should return.
       optional string platform
@@ -6427,7 +6429,7 @@ domain Network
     parameters
       # User agent to use.
       string userAgent
-      # Browser langugage to emulate.
+      # Browser language to emulate.
       optional string acceptLanguage
       # The platform navigator.platform should return.
       optional string platform

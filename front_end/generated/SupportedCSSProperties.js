@@ -94,19 +94,11 @@ export const generatedProperties = [
   "name": "-webkit-box-decoration-break"
  },
  {
-  "inherited": true,
   "keywords": [
    "normal",
    "reverse"
   ],
   "name": "-webkit-box-direction"
- },
- {
-  "keywords": [
-   "normal",
-   "reverse"
-  ],
-  "name": "-webkit-box-direction-alternative"
  },
  {
   "name": "-webkit-box-flex"
@@ -1495,7 +1487,9 @@ export const generatedProperties = [
    "flow-root",
    "none",
    "flow",
-   "math"
+   "math",
+   "ruby",
+   "ruby-text"
   ],
   "name": "display"
  },
@@ -3784,12 +3778,6 @@ export const generatedPropertyValues = {
    "reverse"
   ]
  },
- "-webkit-box-direction-alternative": {
-  "values": [
-   "normal",
-   "reverse"
-  ]
- },
  "-webkit-box-orient": {
   "values": [
    "horizontal",
@@ -4500,7 +4488,9 @@ export const generatedPropertyValues = {
    "flow-root",
    "none",
    "flow",
-   "math"
+   "math",
+   "ruby",
+   "ruby-text"
   ]
  },
  "dominant-baseline": {

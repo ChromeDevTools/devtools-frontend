@@ -2614,6 +2614,10 @@ export namespace CSS {
      */
     familyName: string;
     /**
+     * Font's PostScript name reported by platform.
+     */
+    postScriptName: string;
+    /**
      * Indicates if the font was downloaded or resolved locally.
      */
     isCustomFont: boolean;
@@ -6048,7 +6052,7 @@ export namespace Emulation {
      */
     userAgent: string;
     /**
-     * Browser langugage to emulate.
+     * Browser language to emulate.
      */
     acceptLanguage?: string;
     /**
@@ -9346,7 +9350,7 @@ export namespace Network {
      */
     userAgent: string;
     /**
-     * Browser langugage to emulate.
+     * Browser language to emulate.
      */
     acceptLanguage?: string;
     /**

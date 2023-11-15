@@ -3867,6 +3867,11 @@
                             "type": "string"
                         },
                         {
+                            "name": "postScriptName",
+                            "description": "Font's PostScript name reported by platform.",
+                            "type": "string"
+                        },
+                        {
                             "name": "isCustomFont",
                             "description": "Indicates if the font was downloaded or resolved locally.",
                             "type": "boolean"
@@ -9306,7 +9311,7 @@
                         },
                         {
                             "name": "acceptLanguage",
-                            "description": "Browser langugage to emulate.",
+                            "description": "Browser language to emulate.",
                             "optional": true,
                             "type": "string"
                         },
@@ -14054,7 +14059,7 @@
                         },
                         {
                             "name": "acceptLanguage",
-                            "description": "Browser langugage to emulate.",
+                            "description": "Browser language to emulate.",
                             "optional": true,
                             "type": "string"
                         },

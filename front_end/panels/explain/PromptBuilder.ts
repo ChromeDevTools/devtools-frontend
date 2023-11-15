@@ -6,6 +6,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as Components from '../../ui/legacy/components/utils/utils.js';
 import type * as Console from '../console/console.js';
 
 const MAX_CODE_SIZE = 1000;
@@ -96,10 +97,11 @@ export class PromptBuilder {
 
     const relatedCode = sourceCode.text ? formatRelatedCode(sourceCode) : '';
     const relatedRequest = request ? formatNetworkRequest(request) : '';
-    const message = this.#consoleMessage.toExportString();
+    const message = formatConsoleMessage(this.#consoleMessage);
+    const stacktrace = formatStackTrace(this.#consoleMessage);
 
     const prompt = this.formatPrompt({
-      message,
+      message: [message, stacktrace].join('\n').trim(),
       relatedCode,
       relatedRequest,
       searchAnswers,
@@ -112,6 +114,13 @@ export class PromptBuilder {
         value: message,
       },
     ];
+
+    if (stacktrace) {
+      sources.push({
+        type: SourceType.STACKTRACE,
+        value: stacktrace,
+      });
+    }
 
     if (relatedCode) {
       sources.push({
@@ -347,4 +356,30 @@ Response headers:
 ${request.responseHeaders.filter(allowHeader).map(header => `${header.name}: ${header.value}`).join('\n')}
 
 Response status: ${request.statusCode} ${request.statusText}`;
+}
+
+export function formatConsoleMessage(message: Console.ConsoleViewMessage.ConsoleViewMessage): string {
+  return message.consoleMessage().messageText;
+}
+
+export function formatStackTrace(message: Console.ConsoleViewMessage.ConsoleViewMessage): string {
+  let preview = message.contentElement().querySelector('.stack-preview-container');
+
+  if (!preview) {
+    // If there is no preview, we grab the entire raw message replacing the message text.
+    return message.toExportString().replace(message.consoleMessage().messageText, '').trim();
+  }
+
+  preview = preview.shadowRoot?.querySelector('.stack-preview-container') as HTMLElement;
+
+  const nodes = preview.childTextNodes();
+  // Gets application-level source mapped stack trace taking the ignore list
+  // into account.
+  const messageContent = nodes
+                             .filter(n => {
+                               return !n.parentElement?.closest('.show-all-link,.show-less-link,.hidden-row');
+                             })
+                             .map(Components.Linkifier.Linkifier.untruncatedNodeText)
+                             .join('');
+  return messageContent.trim();
 }

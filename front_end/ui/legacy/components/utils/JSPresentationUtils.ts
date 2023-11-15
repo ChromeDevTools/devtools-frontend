@@ -217,6 +217,7 @@ export function buildStackTracePreviewContents(
   const {stackTrace, tabStops} = options;
   const element = document.createElement('span');
   element.classList.add('monospace');
+  element.classList.add('stack-preview-container');
   element.style.display = 'inline-block';
   const shadowRoot =
       UI.Utils.createShadowRootWithCoreStyles(element, {cssFile: [jsUtilsStyles], delegatesFocus: undefined});

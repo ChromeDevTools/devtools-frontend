@@ -209,6 +209,21 @@ template("ts_library") {
     }
 
     outputs = output_files
+
+    _data = outputs
+    if (defined(invoker.data)) {
+      _data += invoker.data
+    }
+    _javascript_implementation_files = filter_include(_data, [ "*.js" ])
+    _javascript_map_files = filter_include(_data, [ "*.map" ])
+
+    data = _javascript_implementation_files + _javascript_map_files
+
+    if (is_debug) {
+      metadata = {
+        grd_files = _javascript_implementation_files
+      }
+    }
   }
 }
 

@@ -2,31 +2,43 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("./copy.gni")
+import("./node.gni")
 
 template("devtools_pre_built") {
-  _copy_to_gen_target_name = target_name + "-copy-gen-javascript"
-  _copy_gen_target_dep = ":$_copy_to_gen_target_name"
+  node_action(target_name) {
+    forward_variables_from(invoker,
+                           [
+                             "sources",
+                             "deps",
+                           ])
 
-  copy_to_gen(_copy_to_gen_target_name) {
-    sources = invoker.sources
+    script = "scripts/build/ninja/copy-files.js"
 
-    deps = invoker.deps
-  }
+    public_deps = invoker.deps
 
-  _target_outputs = get_target_outputs(_copy_gen_target_dep)
-  _javascript_implementation_files =
-      invoker.data + filter_include(_target_outputs,
-                                    [
-                                      "*.js",
-                                      "*.mjs",
-                                    ])
+    _copy_src = rebase_path(get_path_info(target_name, "dir"), root_build_dir)
+    _copy_dest = rebase_path(target_gen_dir, root_build_dir)
 
-  group(target_name) {
-    public_deps = [ _copy_gen_target_dep ] + invoker.deps
+    args = [
+      _copy_src,
+      _copy_dest,
+      string_join(",", sources),
+    ]
 
-    data = _javascript_implementation_files +
-           filter_include(_target_outputs, [ "*.map" ])
+    outputs = []
+    foreach(_source, sources) {
+      outputs += [ "$target_gen_dir/$_source" ]
+    }
+
+    _javascript_implementation_files = invoker.data + filter_include(outputs,
+                                                                     [
+                                                                       "*.js",
+                                                                       "*.mjs",
+                                                                     ])
+    _javascript_map_files = filter_include(outputs, [ "*.map" ])
+
+    data = _javascript_implementation_files + _javascript_map_files
+
     if (invoker.sources_are_release || is_debug) {
       metadata = {
         grd_files = _javascript_implementation_files

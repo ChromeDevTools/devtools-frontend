@@ -52,7 +52,7 @@
 
 .text-cell {
   min-width: 14px;
-  color: var(--sys-color-on-surface-secondary);
+  color: var(--sys-color-on-surface-subtle);
 }
 
 .address {

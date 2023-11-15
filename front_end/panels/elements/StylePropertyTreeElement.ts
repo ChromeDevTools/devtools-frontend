@@ -266,6 +266,14 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       const {data} = event;
       swatch.firstElementChild && swatch.firstElementChild.remove();
       swatch.createChild('span').textContent = data.text;
+      // This is a terrible hack to make sure that color swatch works for CSS variable usages with
+      // variable fallbacks. The issue is `StylesSidebarPropertyRenderer` renders CSS variables with var() fallbacks
+      // with two additions to the value element: CSS var swatch that renders `var(--red, var(--blue)` part -- without the last parens
+      // and a text node with a closing parenthesis. If the color is changed through color swatch, the value becomes invalid with an
+      // additional parenthesis like `#000)`; so in here, we explicitly remove the last parenthesis.
+      if (swatch.nextSibling?.textContent === ')') {
+        swatch.nextSibling.textContent = '';
+      }
       void this.applyStyleText(this.renderedPropertyText(), false);
     };
 
@@ -520,7 +528,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return swatch;
   }
 
-  private processVar(text: string): Node {
+  private processVar(text: string, {shouldShowColorSwatch = true}: {shouldShowColorSwatch?: boolean} = {}): Node {
     // The regex that matches to variables in `StylesSidebarPropertyRenderer`
     // uses a lazy match. Because of this, when there are multiple right parantheses inside the
     // var() function, it stops the match. So, for a match like `var(--a, var(--b))`, the text
@@ -537,13 +545,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     const {computedValue, fromFallback} = computedSingleValue;
     let fallbackHtml: Node|null = null;
     if (fromFallback && fallback?.startsWith('var(')) {
-      fallbackHtml = this.processVar(fallback);
+      fallbackHtml = this.processVar(fallback, {shouldShowColorSwatch: false});
     } else if (fallback) {
       fallbackHtml = document.createTextNode(fallback);
     }
 
     const varSwatch = new InlineEditor.LinkSwatch.CSSVarSwatch();
-    UI.UIUtils.createTextChild(varSwatch, parenthesesBalancedText);
+    UI.UIUtils.createTextChild(varSwatch, text);
     varSwatch.data = {
       computedValue,
       variableName,
@@ -564,7 +572,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       }
     }
 
-    if (!computedValue || !Common.Color.parse(computedValue)) {
+    if (!computedValue || !Common.Color.parse(computedValue) || !shouldShowColorSwatch) {
       return varSwatch;
     }
 

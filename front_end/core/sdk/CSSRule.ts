@@ -260,6 +260,18 @@ export class CSSPropertyRule extends CSSRule {
   }
 }
 
+export class CSSFontPaletteValuesRule extends CSSRule {
+  readonly #paletteName: CSSValue;
+  constructor(cssModel: CSSModel, payload: Protocol.CSS.CSSFontPaletteValuesRule) {
+    super(cssModel, {origin: payload.origin, style: payload.style, styleSheetId: payload.styleSheetId});
+    this.#paletteName = new CSSValue(payload.fontPaletteName);
+  }
+
+  name(): CSSValue {
+    return this.#paletteName;
+  }
+}
+
 export class CSSKeyframesRule {
   readonly #animationName: CSSValue;
   readonly #keyframesInternal: CSSKeyframeRule[];

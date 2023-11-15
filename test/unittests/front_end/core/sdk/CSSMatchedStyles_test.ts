@@ -124,6 +124,7 @@ describe('CSSMatchedStyles', () => {
         positionFallbackRules: [],
         propertyRules: [],
         cssPropertyRegistrations: [],
+        fontPaletteValuesRule: undefined,
       });
 
       const val = matchedStyles.computeCSSVariable(matchedStyles.nodeStyles()[0], text);
@@ -178,6 +179,7 @@ describe('CSSMatchedStyles', () => {
         positionFallbackRules: [],
         propertyRules: [],
         cssPropertyRegistrations: [],
+        fontPaletteValuesRule: undefined,
       });
 
       const val = matchedStyles.computeValue(matchedStyles.nodeStyles()[0], text);
@@ -256,6 +258,7 @@ describeWithMockConnection('NodeCascade', () => {
       positionFallbackRules: [],
       propertyRules: [],
       cssPropertyRegistrations,
+      fontPaletteValuesRule: undefined,
     });
 
     const style = matchedStyles.nodeStyles()[1];

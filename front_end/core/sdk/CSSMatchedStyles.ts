@@ -9,7 +9,13 @@ import * as Platform from '../platform/platform.js';
 import {cssMetadata, VariableRegex} from './CSSMetadata.js';
 import {type CSSModel} from './CSSModel.js';
 import {type CSSProperty} from './CSSProperty.js';
-import {CSSKeyframesRule, CSSPositionFallbackRule, CSSPropertyRule, CSSStyleRule} from './CSSRule.js';
+import {
+  CSSFontPaletteValuesRule,
+  CSSKeyframesRule,
+  CSSPositionFallbackRule,
+  CSSPropertyRule,
+  CSSStyleRule,
+} from './CSSRule.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
 import {type DOMNode} from './DOMModel.js';
 
@@ -173,6 +179,7 @@ export interface CSSMatchedStylesPayload {
   positionFallbackRules: Protocol.CSS.CSSPositionFallbackRule[];
   propertyRules: Protocol.CSS.CSSPropertyRule[];
   cssPropertyRegistrations: Protocol.CSS.CSSPropertyRegistration[];
+  fontPaletteValuesRule: Protocol.CSS.CSSFontPaletteValuesRule|undefined;
 }
 
 export class CSSRegisteredProperty {
@@ -249,6 +256,7 @@ export class CSSMatchedStyles {
   #mainDOMCascade?: DOMInheritanceCascade;
   #pseudoDOMCascades?: Map<Protocol.DOM.PseudoType, DOMInheritanceCascade>;
   #customHighlightPseudoDOMCascades?: Map<string, DOMInheritanceCascade>;
+  readonly #fontPaletteValuesRule: CSSFontPaletteValuesRule|undefined;
 
   static async create(payload: CSSMatchedStylesPayload): Promise<CSSMatchedStyles> {
     const cssMatchedStyles = new CSSMatchedStyles(payload);
@@ -264,6 +272,7 @@ export class CSSMatchedStyles {
     positionFallbackRules,
     propertyRules,
     cssPropertyRegistrations,
+    fontPaletteValuesRule,
   }: CSSMatchedStylesPayload) {
     this.#cssModelInternal = cssModel;
     this.#nodeInternal = node;
@@ -279,6 +288,8 @@ export class CSSMatchedStyles {
     }
     this.#positionFallbackRules = positionFallbackRules.map(rule => new CSSPositionFallbackRule(cssModel, rule));
     this.#parentLayoutNodeId = parentLayoutNodeId;
+    this.#fontPaletteValuesRule =
+        fontPaletteValuesRule ? new CSSFontPaletteValuesRule(cssModel, fontPaletteValuesRule) : undefined;
 
     this.#nodeForStyleInternal = new Map();
     this.#inheritedStyles = new Set();
@@ -652,6 +663,10 @@ export class CSSMatchedStyles {
 
   getRegisteredProperty(name: string): CSSRegisteredProperty|undefined {
     return this.#registeredPropertyMap.get(name);
+  }
+
+  fontPaletteValuesRule(): CSSFontPaletteValuesRule|undefined {
+    return this.#fontPaletteValuesRule;
   }
 
   keyframes(): CSSKeyframesRule[] {

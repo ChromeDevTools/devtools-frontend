@@ -40,6 +40,7 @@ describeWithRealConnection('StylePropertyHighlighter', () => {
       positionFallbackRules: [],
       propertyRules: [],
       cssPropertyRegistrations: [],
+      fontPaletteValuesRule: undefined,
     });
     return {
       stylesSidebarPane,

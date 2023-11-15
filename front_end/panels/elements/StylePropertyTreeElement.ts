@@ -381,6 +381,24 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     return contentChild;
   }
 
+  private processFontPalette(propertyText: string): Node {
+    const contentChild = document.createElement('span');
+    const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
+    UI.UIUtils.createTextChild(swatch, propertyText);
+    const isDefined = this.matchedStylesInternal.fontPaletteValuesRule()?.name().text === propertyText;
+    swatch.data = {
+      text: propertyText,
+      isDefined,
+      onLinkActivate: (): void => {
+        this.parentPaneInternal.jumpToSectionBlock(`@font-palette-values ${propertyText}`);
+      },
+      jslogContext: 'cssFontPalette',
+    };
+    contentChild.appendChild(swatch);
+
+    return contentChild;
+  }
+
   private processColor(text: string, valueChild?: Node|null): Node {
     return this.renderColorSwatch(text, valueChild);
   }
@@ -981,6 +999,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       propertyRenderer.setAngleHandler(this.processAngle.bind(this));
       propertyRenderer.setLengthHandler(this.processLength.bind(this));
       propertyRenderer.setPositionFallbackHandler(this.processPositionFallback.bind(this));
+      propertyRenderer.setFontPaletteHandler(this.processFontPalette.bind(this));
     }
 
     this.listItemElement.removeChildren();

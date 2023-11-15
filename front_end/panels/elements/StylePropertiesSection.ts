@@ -1665,6 +1665,15 @@ export class RegisteredPropertiesSection extends StylePropertiesSection {
   }
 }
 
+export class FontPaletteValuesRuleSection extends StylePropertiesSection {
+  constructor(
+      stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+      style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, sectionIdx: number) {
+    super(stylesPane, matchedStyles, style, sectionIdx, null, null);
+    this.selectorElement.className = 'font-palette-values-key';
+  }
+}
+
 export class KeyframePropertiesSection extends StylePropertiesSection {
   constructor(
       stylesPane: StylesSidebarPane, matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,

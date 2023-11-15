@@ -81,6 +81,7 @@ function setUpStyles(
     positionFallbackRules: [],
     propertyRules: [],
     cssPropertyRegistrations: [],
+    fontPaletteValuesRule: undefined,
     ...payload,
   });
 }

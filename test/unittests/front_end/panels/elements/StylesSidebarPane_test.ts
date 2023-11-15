@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
+import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {describeWithRealConnection} from '../../helpers/RealConnection.js';
 
 const {assert} = chai;
 
@@ -73,6 +73,7 @@ describeWithRealConnection('StylesSidebarPane', async () => {
         }],
         propertyRules: [],
         cssPropertyRegistrations: [],
+        fontPaletteValuesRule: undefined,
       });
 
       const sectionBlocks =
@@ -83,6 +84,42 @@ describeWithRealConnection('StylesSidebarPane', async () => {
       assert.strictEqual(sectionBlocks[1].sections.length, 1);
       assert.instanceOf(sectionBlocks[1].sections[0], Elements.StylePropertiesSection.TryRuleSection);
     });
+  });
+
+  it('should add @font-palette-values section to the end', async () => {
+    const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
+    const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
+      cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
+      node: stylesSidebarPane.node() as SDK.DOMModel.DOMNode,
+      inlinePayload: null,
+      attributesPayload: null,
+      matchedPayload: [],
+      pseudoPayload: [],
+      inheritedPayload: [],
+      inheritedPseudoPayload: [],
+      animationsPayload: [],
+      parentLayoutNodeId: undefined,
+      positionFallbackRules: [],
+      propertyRules: [],
+      cssPropertyRegistrations: [],
+      fontPaletteValuesRule: {
+        fontPaletteName: {text: '--palette'},
+        origin: Protocol.CSS.StyleSheetOrigin.Regular,
+        style: {
+          cssProperties: [{name: 'font-family', value: 'Bixa'}, {'name': 'override-colors', value: '0 red'}],
+          shorthandEntries: [],
+
+        },
+      },
+    });
+
+    const sectionBlocks =
+        await stylesSidebarPane.rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, new Map(), new Map());
+
+    assert.strictEqual(sectionBlocks.length, 2);
+    assert.strictEqual(sectionBlocks[1].titleElement()?.textContent, '@font-palette-values --palette');
+    assert.strictEqual(sectionBlocks[1].sections.length, 1);
+    assert.instanceOf(sectionBlocks[1].sections[0], Elements.StylePropertiesSection.FontPaletteValuesRuleSection);
   });
 });
 

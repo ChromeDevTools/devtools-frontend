@@ -29,6 +29,7 @@ devtools_module("formatter_worker") {
     "../../models/text_utils:bundle",
     "../../third_party/acorn:bundle",
     "../../third_party/codemirror",
+    "../../third_party/codemirror:codemirror-legacy-types",
   ]
 }
 

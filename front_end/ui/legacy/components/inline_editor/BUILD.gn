@@ -62,6 +62,7 @@ devtools_module("inline_editor") {
     "../../../../models/bindings:bundle",
     "../../../../models/text_utils:bundle",
     "../../../../panels/css_overview:bundle",
+    "../../../../third_party/codemirror.next:bundle",
     "../../../../ui/components/helpers:bundle",
     "../../../../ui/legacy:bundle",
     "../../../../ui/legacy/components/utils:bundle",

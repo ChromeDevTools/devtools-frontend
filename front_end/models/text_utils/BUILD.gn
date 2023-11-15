@@ -22,6 +22,7 @@ devtools_module("text_utils") {
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../third_party/codemirror",
+    "../../third_party/codemirror.next:bundle",
   ]
 
   visibility =

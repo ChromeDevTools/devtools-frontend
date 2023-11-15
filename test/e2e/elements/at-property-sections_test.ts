@@ -108,14 +108,15 @@ describe('The styles pane', () => {
     {
       const section = await waitForElementWithTextContent('@property', stylesPane);
       assert.deepStrictEqual(await section.evaluate(e => e.ariaExpanded), 'false');
-      const rule = await getStyleRule('--my-color');
+      // Pick the style rule added last to ensure the sections are fully drawn
+      const rule = await getStyleRule('--custom-prop-4');
       assert.isTrue(await rule.evaluate(e => e.classList.contains('hidden')));
     }
 
     {
       const section = await click('pierceShadowText/@property', {root: stylesPane});
       await waitForFunction(async () => 'true' === await section.evaluate(e => e.ariaExpanded));
-      const rule = await getStyleRule('--my-color');
+      const rule = await getStyleRule('--custom-prop-4');
       await waitForFunction(() => rule.evaluate(e => !e.classList.contains('hidden')));
     }
   });

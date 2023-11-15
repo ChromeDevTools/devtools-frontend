@@ -54,7 +54,8 @@ describe('Rasterizer', () => {
   });
 });
 
-describe('Workers', () => {
+// Flaky
+describe.skip('[crbug.com/1502494] Workers', () => {
   preloadForCodeCoverage('performance_panel/track_example.html');
   itScreenshot('correctly renders the Worker track', async () => {
     const urlForTest =

@@ -7,7 +7,7 @@ import {assert} from 'chai';
 import type * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import type * as LegacyUI from '../../../../../front_end/ui/legacy/legacy.js';
 import {getBrowserAndPages, waitFor, waitForMany} from '../../../../shared/helper.js';
-import {describe} from '../../../../shared/mocha-extensions.js';
+import {describe, it} from '../../../../shared/mocha-extensions.js';
 import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
 
 describe('FlameChart', function() {

@@ -101,6 +101,7 @@ try_builder(
         "builder_config": "Debug",
         "devtools_skip_typecheck": True,
         "parallel": True,
+        "coverage": False,
     },
     description_html = """
 This is the same with <a href="https://ci.chromium.org/p/devtools-frontend/builders/try/devtools_frontend_linux_dbg">

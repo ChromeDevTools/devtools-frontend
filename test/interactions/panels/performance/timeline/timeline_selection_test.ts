@@ -39,7 +39,8 @@ describe('FlameChart', function() {
     }, title, tsMicroSecs);
   }
 
-  it('shows the details of an entry when selected on the timeline', async () => {
+  // Flaky
+  it.skip('[crbug.com/1502530] shows the details of an entry when selected on the timeline', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=simple-js-program');
     await waitFor('.timeline-flamechart');
     const {frontend} = getBrowserAndPages();

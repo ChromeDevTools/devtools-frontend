@@ -48,6 +48,7 @@ export {
 export {highlightTree, Tag, tags} from '@lezer/highlight';
 export {LRParser} from '@lezer/lr';
 export {StyleModule} from 'style-mod';
+export {indentationMarkers} from '@replit/codemirror-indentation-markers';
 
 export function angular() {
   return import('@codemirror/lang-angular');

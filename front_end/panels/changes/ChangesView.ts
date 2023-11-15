@@ -13,6 +13,7 @@ import {PanelUtils} from '../../panels/utils/utils.js';
 import * as Diff from '../../third_party/diff/diff.js';
 import * as DiffView from '../../ui/components/diff_view/diff_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {ChangesSidebar, Events} from './ChangesSidebar.js';
 import changesViewStyles from './changesView.css.js';
@@ -82,6 +83,8 @@ export class ChangesView extends UI.Widget.VBox {
   private constructor() {
     super(true);
 
+    this.element.setAttribute('jslog', `${VisualLogging.changesPanel()}`);
+
     const splitWidget = new UI.SplitWidget.SplitWidget(true /* vertical */, false /* sidebar on left */);
     const mainWidget = new UI.Widget.Widget();
     splitWidget.setMainWidget(mainWidget);
@@ -105,6 +108,7 @@ export class ChangesView extends UI.Widget.VBox {
 
     this.toolbar = new UI.Toolbar.Toolbar('changes-toolbar', mainWidget.element);
     const revertButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.revertAllChangesToCurrentFile), 'undo');
+    revertButton.element.setAttribute('jslog', `${VisualLogging.revert().track({click: true})}`);
     revertButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.revert.bind(this));
     this.toolbar.appendToolbarItem(revertButton);
     this.diffStats = new UI.Toolbar.ToolbarText('');

@@ -93,6 +93,8 @@ enum VisualElements {
   TableCell = 70,
   SearchPanel = 71,
   Clear = 72,
+  Revert = 73,
+  ChangesPanel = 74,
 }
 
 function resolveVe(ve: string): number {

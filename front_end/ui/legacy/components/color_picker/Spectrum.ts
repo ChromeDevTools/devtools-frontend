@@ -299,8 +299,8 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
         toggleEyeDropperShortcut[0]?.descriptors.flatMap(descriptor => descriptor.name.split(' + '))[0];
 
     this.colorPickerButton = new UI.Toolbar.ToolbarToggle(
-        i18nString(UIStrings.toggleColorPicker, {PH1: definedShortcutKey || ''}), 'color-picker',
-        'color-picker-filled');
+        i18nString(UIStrings.toggleColorPicker, {PH1: definedShortcutKey || ''}), 'color-picker', 'color-picker-filled',
+        'color-eye-dropper');
     this.colorPickerButton.setToggled(true);
     this.colorPickerButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.Click, this.toggleColorPicker.bind(this, undefined));
@@ -425,10 +425,9 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     overlay.addEventListener('click', this.togglePalettePanel.bind(this, false));
 
     this.addColorToolbar = new UI.Toolbar.Toolbar('add-color-toolbar');
-    const addColorButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addToPalette), 'plus');
+    const addColorButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addToPalette), 'plus', 'add-color');
     addColorButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.onAddColorMousedown.bind(this));
     addColorButton.element.addEventListener('keydown', this.onAddColorKeydown.bind(this));
-    addColorButton.element.setAttribute('jslog', `${VisualLogging.addColor().track({click: true})}`);
     this.addColorToolbar.appendToolbarItem(addColorButton);
 
     this.colorPickedBound = this.colorPicked.bind(this);

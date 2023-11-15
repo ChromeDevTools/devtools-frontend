@@ -108,9 +108,8 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
     this.eventListenersView.show(this.element);
     this.element.setAttribute('jslog', `${VisualLogging.eventListenersPane()}`);
 
-    const refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'refresh');
+    const refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'refresh', undefined, 'refresh');
     refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.update.bind(this));
-    refreshButton.element.setAttribute('jslog', `${VisualLogging.refresh().track({click: true})}`);
     this.toolbarItemsInternal.push(refreshButton);
     this.toolbarItemsInternal.push(new UI.Toolbar.ToolbarSettingCheckbox(
         this.showForAncestorsSetting, i18nString(UIStrings.showListenersOnTheAncestors),

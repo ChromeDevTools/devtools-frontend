@@ -216,10 +216,10 @@ export class StylePropertiesSection {
     closeBrace.textContent = '}';
 
     if (this.styleInternal.parentRule) {
-      const newRuleButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.insertStyleRuleBelow), 'plus');
+      const newRuleButton = new UI.Toolbar.ToolbarButton(
+          i18nString(UIStrings.insertStyleRuleBelow), 'plus', undefined, 'add-styles-rule');
       newRuleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.onNewRuleClick, this);
       newRuleButton.element.tabIndex = -1;
-      newRuleButton.element.setAttribute('jslog', `${VisualLogging.addStylesRule().track({click: true})}`);
       if (!this.newStyleRuleToolbar) {
         this.newStyleRuleToolbar =
             new UI.Toolbar.Toolbar('sidebar-pane-section-toolbar new-rule-toolbar', this.innerElement);

@@ -20,16 +20,14 @@ const accessibilityComputedProperties =
     LoggingConfig.makeConfigStringBuilder.bind(null, 'AccessibilityComputedProperties');
 const accessibilityPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'AccessibilityPane');
 const accessibilitySourceOrder = LoggingConfig.makeConfigStringBuilder.bind(null, 'AccessibilitySourceOrder');
-const addColor = LoggingConfig.makeConfigStringBuilder.bind(null, 'AddColor');
+const action = LoggingConfig.makeConfigStringBuilder.bind(null, 'Action');
 const addElementClassPrompt = LoggingConfig.makeConfigStringBuilder.bind(null, 'AddElementClassPrompt');
-const addStylesRule = LoggingConfig.makeConfigStringBuilder.bind(null, 'AddStylesRule');
 const ariaAttributes = LoggingConfig.makeConfigStringBuilder.bind(null, 'AriaAttributes');
 const bezierCurveEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierCurveEditor');
 const bezierEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierEditor');
 const bezierPresetCategory = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierPresetCategory');
 const bezierPreview = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierPreview');
 const changesPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'ChangesPanel');
-const clear = LoggingConfig.makeConfigStringBuilder.bind(null, 'Clear');
 const colorCanvas = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorCanvas');
 const colorEyeDropper = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorEyeDropper');
 const colorPicker = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorPicker');
@@ -69,8 +67,6 @@ const palettePanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'PalettePa
 const panelTabHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'PanelTabHeader');
 const previous = LoggingConfig.makeConfigStringBuilder.bind(null, 'Previous');
 const renderingPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'RenderingPanel');
-const refresh = LoggingConfig.makeConfigStringBuilder.bind(null, 'Refresh');
-const revert = LoggingConfig.makeConfigStringBuilder.bind(null, 'Revert');
 const searchPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'SearchPanel');
 const showAllStyleProperties = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowAllStyleProperties');
 const showStyleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowStyleEditor');
@@ -106,16 +102,14 @@ export {
   accessibilityComputedProperties,
   accessibilityPane,
   accessibilitySourceOrder,
-  addColor,
+  action,
   addElementClassPrompt,
-  addStylesRule,
   ariaAttributes,
   bezierCurveEditor,
   bezierEditor,
   bezierPresetCategory,
   bezierPreview,
   changesPanel,
-  clear,
   colorCanvas,
   colorEyeDropper,
   colorPicker,
@@ -155,8 +149,6 @@ export {
   panelTabHeader,
   previous,
   renderingPanel,
-  refresh,
-  revert,
   searchPanel,
   showAllStyleProperties,
   showStyleEditor,

@@ -107,8 +107,8 @@ export class ChangesView extends UI.Widget.VBox {
     this.diffView = this.diffContainer.appendChild(new DiffView.DiffView.DiffView());
 
     this.toolbar = new UI.Toolbar.Toolbar('changes-toolbar', mainWidget.element);
-    const revertButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.revertAllChangesToCurrentFile), 'undo');
-    revertButton.element.setAttribute('jslog', `${VisualLogging.revert().track({click: true})}`);
+    const revertButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.revertAllChangesToCurrentFile), 'undo', undefined, 'revert');
     revertButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.revert.bind(this));
     this.toolbar.appendToolbarItem(revertButton);
     this.diffStats = new UI.Toolbar.ToolbarText('');

@@ -569,7 +569,7 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
   /**
    * TODO(crbug.com/1126026): remove glyph parameter in favor of icon.
    */
-  constructor(title: string, glyphOrIcon?: string|HTMLElement, text?: string) {
+  constructor(title: string, glyphOrIcon?: string|HTMLElement, text?: string, jslogContext?: string) {
     const element = document.createElement('button');
     element.classList.add('toolbar-button');
     super(element);
@@ -585,6 +585,9 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
       this.setGlyphOrIcon(glyphOrIcon);
     }
     this.setText(text || '');
+    if (jslogContext) {
+      this.element.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context(jslogContext)}`);
+    }
     this.title = '';
   }
 

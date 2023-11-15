@@ -169,10 +169,8 @@ export class SearchView extends UI.Widget.VBox {
     this.regexButton =
         SearchView.appendToolbarToggle(toolbar, '.*', i18nString(UIStrings.useRegularExpression), 'use-regex');
     toolbar.appendToolbarItem(searchItem);
-    const refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'refresh');
-    refreshButton.element.setAttribute('jslog', `${VisualLogging.refresh().track({click: true})}`);
-    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear');
-    clearButton.element.setAttribute('jslog', `${VisualLogging.clear().track({click: true})}`);
+    const refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'refresh', undefined, 'refresh');
+    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear', undefined, 'refresh');
     toolbar.appendToolbarItem(refreshButton);
     toolbar.appendToolbarItem(clearButton);
     refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this.onAction());

@@ -33,6 +33,12 @@ describe('LoggingConfig', () => {
       assert.strictEqual(config.ve, 8);
     });
 
+    it('for Action', () => {
+      element.setAttribute('jslog', 'Action');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.ve, 29);
+    });
+
     it('for RenderingPanel', () => {
       element.setAttribute('jslog', 'RenderingPanel');
       const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
@@ -61,18 +67,6 @@ describe('LoggingConfig', () => {
       element.setAttribute('jslog', 'SearchPanel');
       const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
       assert.strictEqual(config.ve, 71);
-    });
-
-    it('for Clear', () => {
-      element.setAttribute('jslog', 'Clear');
-      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
-      assert.strictEqual(config.ve, 72);
-    });
-
-    it('for Revert', () => {
-      element.setAttribute('jslog', 'Revert');
-      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
-      assert.strictEqual(config.ve, 73);
     });
 
     it('for ChangesPanel', () => {
@@ -105,7 +99,7 @@ describe('LoggingConfig', () => {
     assert.strictEqual(config.parent, 'customProvider');
   });
 
-  it('ignores whitespaces while parsnng', () => {
+  it('ignores whitespaces while parsing', () => {
     element.setAttribute('jslog', 'TreeItem;     context:   42');
     const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
     assert.strictEqual(config.context, '42');

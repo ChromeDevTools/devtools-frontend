@@ -2456,11 +2456,11 @@ let buttonProviderInstance: ButtonProvider;
 export class ButtonProvider implements UI.Toolbar.Provider {
   private readonly button: UI.Toolbar.ToolbarButton;
   private constructor() {
-    this.button = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.newStyleRule), 'plus');
+    this.button =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.newStyleRule), 'plus', undefined, 'add-styles-rule');
     this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
     const longclickTriangle = UI.Icon.Icon.create('triangle-bottom-right', 'long-click-glyph');
     this.button.element.appendChild(longclickTriangle);
-    this.button.element.setAttribute('jslog', `${VisualLogging.addStylesRule().track({click: true})}`);
 
     new UI.UIUtils.LongClickController(this.button.element, this.longClicked.bind(this));
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, onNodeChanged.bind(this));

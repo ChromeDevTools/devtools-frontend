@@ -27,7 +27,7 @@ enum VisualElements {
   AccessibilityPane = 4,
   AccessibilitySourceOrder = 5,
   Toggle = 6,
-  AddStylesRule = 7,
+  /* 7 used to be AddStylesRule, but free to grab now */
   TextField = 8,
   ShowAllStyleProperties = 9,
   StylePropertiesSection = 10,
@@ -49,9 +49,9 @@ enum VisualElements {
   DOMBreakpoint = 26,
   ElementPropertiesPane = 27,
   EventListenersPane = 28,
-  Refresh = 29,
+  Action = 29,
   FilterDropdown = 30,
-  AddColor = 31,
+  /* 31 used to be AddColor, but free to grab now */
   BezierCurveEditor = 32,
   BezierEditor = 33,
   BezierPresetCategory = 34,
@@ -92,8 +92,8 @@ enum VisualElements {
   TableHeader = 69,
   TableCell = 70,
   SearchPanel = 71,
-  Clear = 72,
-  Revert = 73,
+  /* 72 used to be Clear, but free to grab now */
+  /* 73 used to be Revert, but free to grab now */
   ChangesPanel = 74,
 }
 

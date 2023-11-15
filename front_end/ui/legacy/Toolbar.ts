@@ -81,7 +81,6 @@ export class Toolbar {
     this.element = (parentElement ? parentElement.createChild('div') : document.createElement('div')) as HTMLElement;
     this.element.className = className;
     this.element.classList.add('toolbar');
-    this.element.setAttribute('jslog', `${VisualLogging.toolbar()}`);
     this.enabled = true;
     this.shadowRoot =
         Utils.createShadowRootWithCoreStyles(this.element, {cssFile: toolbarStyles, delegatesFocus: undefined});

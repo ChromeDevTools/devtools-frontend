@@ -113,10 +113,13 @@
   user-select: text;
 }
 
-.data-grid th {
-  text-align: left;
+.data-grid tr:has(th) {
   background-color: var(--sys-color-surface1);
+}
+
+.data-grid th {
   border-bottom: 1px solid var(--sys-color-divider);
+  text-align: left;
   font-weight: normal;
   vertical-align: middle;
 }

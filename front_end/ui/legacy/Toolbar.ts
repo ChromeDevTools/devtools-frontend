@@ -792,13 +792,17 @@ export class ToolbarToggle extends ToolbarButton {
   private readonly untoggledGlyphOrIcon: string|HTMLElement|undefined;
   private readonly toggledGlyphOrIcon: string|HTMLElement|undefined;
 
-  constructor(title: string, glyphOrIcon?: string|HTMLElement, toggledGlyphOrIcon?: string|HTMLElement) {
+  constructor(
+      title: string, glyphOrIcon?: string|HTMLElement, toggledGlyphOrIcon?: string|HTMLElement, jslogContext?: string) {
     super(title, glyphOrIcon, '');
     this.toggledInternal = false;
     this.untoggledGlyphOrIcon = glyphOrIcon;
     this.toggledGlyphOrIcon = toggledGlyphOrIcon;
     this.element.classList.add('toolbar-state-off');
     ARIAUtils.setPressed(this.element, false);
+    if (jslogContext) {
+      this.element.setAttribute('jslog', `${VisualLogging.toggle().track({click: true}).context(jslogContext)}`);
+    }
   }
 
   toggled(): boolean {

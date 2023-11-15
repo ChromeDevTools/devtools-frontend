@@ -7,11 +7,11 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import searchViewStyles from './searchView.css.js';
-
-import {type SearchResult, type SearchScope} from './SearchScope.js';
 import {SearchResultsPane} from './SearchResultsPane.js';
+import {type SearchResult, type SearchScope} from './SearchScope.js';
+import searchViewStyles from './searchView.css.js';
 
 const UIStrings = {
   /**
@@ -134,6 +134,8 @@ export class SearchView extends UI.Widget.VBox {
     this.visiblePane = null;
     this.#throttler = throttler;
 
+    this.element.setAttribute('jslog', `${VisualLogging.searchPanel()}`);
+
     this.contentElement.classList.add('search-view');
     this.contentElement.addEventListener('keydown', event => {
       this.onKeyDownOnPanel((event as KeyboardEvent));
@@ -152,6 +154,7 @@ export class SearchView extends UI.Widget.VBox {
     this.search.addEventListener('keydown', event => {
       this.onKeyDown((event as KeyboardEvent));
     });
+    this.search.setAttribute('jslog', `${VisualLogging.textField().track({keydown: true})}`);
     searchContainer.appendChild(this.search);
     this.search.placeholder = i18nString(UIStrings.search);
     this.search.setAttribute('type', 'search');
@@ -162,11 +165,14 @@ export class SearchView extends UI.Widget.VBox {
     const searchItem = new UI.Toolbar.ToolbarItem(searchContainer);
 
     const toolbar = new UI.Toolbar.Toolbar('search-toolbar', this.searchPanelElement);
-    this.matchCaseButton = SearchView.appendToolbarToggle(toolbar, 'Aa', i18nString(UIStrings.matchCase));
-    this.regexButton = SearchView.appendToolbarToggle(toolbar, '.*', i18nString(UIStrings.useRegularExpression));
+    this.matchCaseButton = SearchView.appendToolbarToggle(toolbar, 'Aa', i18nString(UIStrings.matchCase), 'match-case');
+    this.regexButton =
+        SearchView.appendToolbarToggle(toolbar, '.*', i18nString(UIStrings.useRegularExpression), 'use-regex');
     toolbar.appendToolbarItem(searchItem);
     const refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'refresh');
+    refreshButton.element.setAttribute('jslog', `${VisualLogging.refresh().track({click: true})}`);
     const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clear), 'clear');
+    clearButton.element.setAttribute('jslog', `${VisualLogging.clear().track({click: true})}`);
     toolbar.appendToolbarItem(refreshButton);
     toolbar.appendToolbarItem(clearButton);
     refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => this.onAction());
@@ -187,9 +193,9 @@ export class SearchView extends UI.Widget.VBox {
     this.searchScope = null;
   }
 
-  private static appendToolbarToggle(toolbar: UI.Toolbar.Toolbar, text: string, tooltip: string):
+  private static appendToolbarToggle(toolbar: UI.Toolbar.Toolbar, text: string, tooltip: string, jslogContext: string):
       UI.Toolbar.ToolbarToggle {
-    const toggle = new UI.Toolbar.ToolbarToggle(tooltip);
+    const toggle = new UI.Toolbar.ToolbarToggle(tooltip, undefined, undefined, jslogContext);
     toggle.setText(text);
     toggle.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => toggle.setToggled(!toggle.toggled()));
     toolbar.appendToolbarItem(toggle);

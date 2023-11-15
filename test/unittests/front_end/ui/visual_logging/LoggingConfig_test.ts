@@ -56,6 +56,18 @@ describe('LoggingConfig', () => {
       const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
       assert.strictEqual(config.ve, 70);
     });
+
+    it('for SearchPanel', () => {
+      element.setAttribute('jslog', 'SearchPanel');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.ve, 71);
+    });
+
+    it('for Clear', () => {
+      element.setAttribute('jslog', 'Clear');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.ve, 72);
+    });
   });
 
   it('throws on unknown visual element', () => {

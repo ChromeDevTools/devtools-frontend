@@ -28,6 +28,7 @@ const bezierCurveEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'Bezi
 const bezierEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierEditor');
 const bezierPresetCategory = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierPresetCategory');
 const bezierPreview = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierPreview');
+const clear = LoggingConfig.makeConfigStringBuilder.bind(null, 'Clear');
 const colorCanvas = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorCanvas');
 const colorEyeDropper = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorEyeDropper');
 const colorPicker = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorPicker');
@@ -68,6 +69,7 @@ const panelTabHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'PanelTa
 const previous = LoggingConfig.makeConfigStringBuilder.bind(null, 'Previous');
 const renderingPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'RenderingPanel');
 const refresh = LoggingConfig.makeConfigStringBuilder.bind(null, 'Refresh');
+const searchPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'SearchPanel');
 const showAllStyleProperties = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowAllStyleProperties');
 const showStyleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowStyleEditor');
 const slider = LoggingConfig.makeConfigStringBuilder.bind(null, 'Slider');
@@ -110,6 +112,7 @@ export {
   bezierEditor,
   bezierPresetCategory,
   bezierPreview,
+  clear,
   colorCanvas,
   colorEyeDropper,
   colorPicker,
@@ -150,6 +153,7 @@ export {
   previous,
   renderingPanel,
   refresh,
+  searchPanel,
   showAllStyleProperties,
   showStyleEditor,
   slider,

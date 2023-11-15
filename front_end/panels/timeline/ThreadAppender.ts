@@ -75,10 +75,19 @@ const UIStrings = {
    */
   raster: 'Raster',
   /**
+   *@description Threads used for background tasks.
+   */
+  threadPool: 'Thread Pool',
+  /**
    *@description Name for a thread that rasterizes graphics in a website.
    *@example {2} PH1
    */
   rasterizerThreadS: 'Rasterizer Thread {PH1}',
+  /**
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   *@example {2} PH1
+   */
+  threadPoolThreadS: 'Thread Pool Worker {PH1}',
   /**
    *@description Title of a bidder auction worklet with known URL in the timeline flame chart of the Performance panel
    *@example {https://google.com} PH1
@@ -135,6 +144,7 @@ export const enum ThreadType {
   MAIN_THREAD = 'MAIN_THREAD',
   WORKER = 'WORKER',
   RASTERIZER = 'RASTERIZER',
+  THREAD_POOL = 'THREAD_POOL',
   AUCTION_WORKLET = 'AUCTION_WORKLET',
   OTHER = 'OTHER',
   CPU_PROFILE = 'CPU_PROFILE',
@@ -158,24 +168,16 @@ export class ThreadAppender implements TrackAppender {
   #threadId: TraceEngine.Types.TraceEvents.ThreadID;
   #threadDefaultName: string;
   #expanded = false;
-  // Raster threads are rendered together under a singler header, so
-  // the header is added for the first raster thread and skipped
-  // thereafter.
-  #rasterIndex: number;
   #headerAppended: boolean = false;
   readonly threadType: ThreadType = ThreadType.MAIN_THREAD;
   readonly isOnMainFrame: boolean;
   #ignoreListingEnabled = Root.Runtime.experiments.isEnabled('ignoreListJSFramesOnTimeline');
   #showAllEventsEnabled = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
   #treeManipulator?: TraceEngine.TreeManipulator.TreeManipulator;
-  // TODO(crbug.com/1428024) Clean up API so that we don't have to pass
-  // a raster index to the appender (for instance, by querying the flame
-  // chart data in the appender or by passing data about the flamechart
-  // groups).
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
       processId: TraceEngine.Types.TraceEvents.ProcessID, threadId: TraceEngine.Types.TraceEvents.ThreadID,
-      threadName: string|null, type: ThreadType, rasterCount: number = 0) {
+      threadName: string|null, type: ThreadType) {
     this.#compatibilityBuilder = compatibilityBuilder;
     // TODO(crbug.com/1456706):
     // The values for this color generator have been taken from the old
@@ -190,7 +192,6 @@ export class ThreadAppender implements TrackAppender {
     this.#traceParsedData = traceParsedData;
     this.#processId = processId;
     this.#threadId = threadId;
-    this.#rasterIndex = rasterCount;
 
     // When loading a CPU profile, only CPU data will be available, thus
     // we get the data from the SamplesHandler.
@@ -268,12 +269,16 @@ export class ThreadAppender implements TrackAppender {
     if (this.#headerAppended) {
       return;
     }
-    this.#headerAppended = true;
-    if (this.threadType === ThreadType.RASTERIZER) {
-      this.#appendRasterHeaderAndTitle(trackStartLevel);
+    if (this.threadType === ThreadType.RASTERIZER || this.threadType === ThreadType.THREAD_POOL) {
+      this.#appendGroupedTrackHeaderAndTitle(trackStartLevel, this.threadType);
     } else {
       this.#appendTrackHeaderAtLevel(trackStartLevel);
     }
+    this.#headerAppended = true;
+  }
+
+  headerAppended(): boolean {
+    return this.#headerAppended;
   }
 
   /**
@@ -298,18 +303,23 @@ export class ThreadAppender implements TrackAppender {
    * flamechart. However, each thread has a unique title which needs to
    * be added to the flamechart data.
    */
-  #appendRasterHeaderAndTitle(trackStartLevel: number): void {
-    if (this.#rasterIndex === 1) {
+  #appendGroupedTrackHeaderAndTitle(trackStartLevel: number, threadType: ThreadType.RASTERIZER|ThreadType.THREAD_POOL):
+      void {
+    const currentTrackCount = this.#compatibilityBuilder.getCurrentTrackCountForThreadType(threadType);
+    if (currentTrackCount === 0) {
       const trackIsCollapsible = this.#entries.length > 0;
       const headerStyle = buildGroupStyle({shareHeaderLine: false, collapsible: trackIsCollapsible});
       const headerGroup =
           buildTrackHeader(trackStartLevel, this.trackName(), headerStyle, /* selectable= */ false, this.#expanded);
       this.#compatibilityBuilder.getFlameChartTimelineData().groups.push(headerGroup);
     }
+
     // Nesting is set to 1 because the track is appended inside the
     // header for all raster threads.
     const titleStyle = buildGroupStyle({padding: 2, nestingLevel: 1, collapsible: false});
-    const rasterizerTitle = i18nString(UIStrings.rasterizerThreadS, {PH1: this.#rasterIndex});
+    const rasterizerTitle = this.threadType === ThreadType.RASTERIZER ?
+        i18nString(UIStrings.rasterizerThreadS, {PH1: currentTrackCount + 1}) :
+        i18nString(UIStrings.threadPoolThreadS, {PH1: currentTrackCount + 1});
     const titleGroup =
         buildTrackHeader(trackStartLevel, rasterizerTitle, titleStyle, /* selectable= */ true, this.#expanded);
     this.#compatibilityBuilder.registerTrackForGroup(titleGroup, this);
@@ -334,6 +344,9 @@ export class ThreadAppender implements TrackAppender {
         break;
       case ThreadType.RASTERIZER:
         threadTypeLabel = i18nString(UIStrings.raster);
+        break;
+      case ThreadType.THREAD_POOL:
+        threadTypeLabel = i18nString(UIStrings.threadPool);
         break;
       case ThreadType.OTHER:
         break;

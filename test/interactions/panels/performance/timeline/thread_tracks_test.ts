@@ -67,11 +67,22 @@ describe('Workers', () => {
   });
 });
 
+describe('ThreadPool', () => {
+  preloadForCodeCoverage('performance_panel/track_example.html');
+  itScreenshot('correctly renders the threadpool track', async () => {
+    const urlForTest =
+        'performance_panel/track_example.html?track=Thread&fileName=web-dev&trackFilter=Thread&windowStart=1020034891.352&windowEnd=1020035181.509';
+    await loadComponentDocExample(`${urlForTest}&expanded=true`);
+    const flameChart = await waitFor('.flame-chart-main-pane');
+    await assertElementScreenshotUnchanged(flameChart, 'performance/threadpool-track.png');
+  });
+});
+
 describe('Other', () => {
   preloadForCodeCoverage('performance_panel/track_example.html');
   itScreenshot('correctly renders tracks for generic threads with no specific type', async () => {
     const urlForTest =
-        'performance_panel/track_example.html?track=Thread&fileName=web-dev&trackFilter=ForegroundWorker&windowStart=1020035010.258&windowEnd=1020035076.320';
+        'performance_panel/track_example.html?track=Thread&fileName=web-dev&trackFilter=IOThread&windowStart=1020035010.258&windowEnd=1020035076.320';
     await loadComponentDocExample(`${urlForTest}&expanded=true`);
     const flameChart = await waitFor('.flame-chart-main-pane');
     await assertElementScreenshotUnchanged(flameChart, 'performance/other-thread.png');

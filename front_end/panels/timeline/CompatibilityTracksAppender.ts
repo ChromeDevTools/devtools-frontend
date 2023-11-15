@@ -201,6 +201,8 @@ export class CompatibilityTracksAppender {
           return 2;
         case ThreadType.RASTERIZER:
           return 3;
+        case ThreadType.THREAD_POOL:
+          return 4;
         case ThreadType.AUCTION_WORKLET:
           return 4;
         case ThreadType.OTHER:
@@ -217,7 +219,6 @@ export class CompatibilityTracksAppender {
         }
       }
     } else if (this.#traceParsedData.Renderer) {
-      let rasterCount = 0;
       for (const [pid, process] of this.#traceParsedData.Renderer.processes) {
         if (this.#traceParsedData.AuctionWorklets.worklets.has(pid)) {
           const workletEvent = this.#traceParsedData.AuctionWorklets.worklets.get(pid);
@@ -246,10 +247,12 @@ export class CompatibilityTracksAppender {
             threadType = ThreadType.WORKER;
           } else if (thread.name?.startsWith('CompositorTileWorker')) {
             threadType = ThreadType.RASTERIZER;
-            rasterCount++;
+          } else if (thread.name?.startsWith('ThreadPool')) {
+            // TODO(paulirish): perhaps exclude ThreadPoolServiceThread entirely
+            threadType = ThreadType.THREAD_POOL;
           }
           this.#threadAppenders.push(
-              new ThreadAppender(this, this.#traceParsedData, pid, tid, thread.name, threadType, rasterCount));
+              new ThreadAppender(this, this.#traceParsedData, pid, tid, thread.name, threadType));
         }
       }
     }
@@ -412,6 +415,15 @@ export class CompatibilityTracksAppender {
   registerTrackForGroup(group: PerfUI.FlameChart.Group, appender: TrackAppender): void {
     this.#flameChartData.groups.push(group);
     this.#trackForGroup.set(group, appender);
+  }
+
+  /**
+   * Returns number of tracks of given type already appended.
+   * Used to name the "Raster Thread 6" tracks, etc
+   */
+  getCurrentTrackCountForThreadType(threadType: ThreadType.RASTERIZER|ThreadType.THREAD_POOL): number {
+    return this.#threadAppenders.filter(appender => appender.threadType === threadType && appender.headerAppended())
+        .length;
   }
 
   /**

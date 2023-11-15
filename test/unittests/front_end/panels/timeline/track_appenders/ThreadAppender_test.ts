@@ -79,6 +79,7 @@ function renderThreadAppendersFromParsedData(traceParseData: TraceModel.Handlers
     entryData,
   };
 }
+
 describeWithEnvironment('ThreadAppender', function() {
   it('creates a thread appender for each thread in a trace', async function() {
     const {threadAppenders} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
@@ -106,9 +107,10 @@ describeWithEnvironment('ThreadAppender', function() {
       'Raster',
       'Rasterizer Thread 1',
       'Rasterizer Thread 2',
+      'Thread Pool',
+      'Thread Pool Worker 1',
       'Chrome_ChildIOThread',
       'Compositor',
-      'ThreadPoolServiceThread',
     ];
     assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });
@@ -137,10 +139,11 @@ describeWithEnvironment('ThreadAppender', function() {
     const {flameChartData} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
     const expectedTrackNames = [
       'Main — https://www.google.com',
+      'Thread Pool',
+      'Thread Pool Worker 1',
+      'Thread Pool Worker 2',
       'Compositor',
       'Chrome_ChildIOThread',
-      'ThreadPoolForegroundWorker',
-      'ThreadPoolServiceThread',
     ];
     assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });
@@ -151,10 +154,11 @@ describeWithEnvironment('ThreadAppender', function() {
       'Main — https://chromedevtools.github.io/performance-stories/two-workers/index.html',
       'Worker — https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js',
       'Worker — https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js',
+      'Thread Pool',
+      'Thread Pool Worker 1',
+      'Thread Pool Worker 2',
       'Compositor',
       'Chrome_ChildIOThread',
-      'ThreadPoolForegroundWorker',
-      'ThreadPoolServiceThread',
     ];
     assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });
@@ -419,14 +423,15 @@ describeWithEnvironment('ThreadAppender', function() {
     const {flameChartData} = await renderThreadAppendersFromTrace(this, 'one-second-interaction.json.gz');
     const expectedTrackNames = [
       'Main — https://chromedevtools.github.io/performance-stories/long-interaction/index.html?x=40',
-      'Compositor',
-      'Chrome_ChildIOThread',
+      'Thread Pool',
       // There are multiple ThreadPoolForegroundWorker threads present in
       // the trace, but only one of these has trace events we deem as
-      // "visible". Therefore, only one ThreadPoolForegroundWorker track
-      // should be drawn.
-      'ThreadPoolForegroundWorker',
-      'ThreadPoolServiceThread',
+      // "visible".
+      'Thread Pool Worker 1',
+      // This second "worker" is the ThreadPoolServiceThread. TODO: perhaps hide ThreadPoolServiceThread completely?
+      'Thread Pool Worker 2',
+      'Compositor',
+      'Chrome_ChildIOThread',
     ];
     assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });

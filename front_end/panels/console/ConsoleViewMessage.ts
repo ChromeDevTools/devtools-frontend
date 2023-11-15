@@ -305,8 +305,10 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
   setInsight(insight: HTMLElement): void {
     this.elementInternal?.querySelector('devtools-console-insight')?.remove();
     this.elementInternal?.append(insight);
+    this.elementInternal?.classList.toggle('has-insight', true);
     insight.addEventListener('close', () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightClosed);
+      this.elementInternal?.classList.toggle('has-insight', false);
       insight.addEventListener('animationend', () => {
         this.elementInternal?.removeChild(insight);
       }, {

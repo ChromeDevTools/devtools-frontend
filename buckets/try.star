@@ -136,16 +136,6 @@ builder_coverage(
 )
 
 builder_coverage(
-    covered_oss = ["linux", "mac"],
-    builder_factory = try_builder,
-    builder_name_pattern = "devtools_frontend_sequential_%s_rel",
-    recipe_name = "devtools/devtools-frontend",
-    execution_timeout = default_timeout + 15 * time.minute,
-    priority = 50,
-    properties = {"parallel": False},
-)
-
-builder_coverage(
     covered_oss = ["linux", "win64", "mac"],
     builder_factory = try_builder,
     builder_name_pattern = "devtools_frontend_shuffled_parallel_%s_rel",
@@ -153,16 +143,6 @@ builder_coverage(
     execution_timeout = default_timeout + 15 * time.minute,
     priority = 50,
     properties = {"parallel": True},
-)
-
-builder_coverage(
-    covered_oss = ["win64"],
-    builder_factory = try_builder,
-    builder_name_pattern = "devtools_frontend_sequential_%s_rel",
-    recipe_name = "devtools/devtools-frontend",
-    execution_timeout = default_timeout + 15 * time.minute,
-    priority = 50,
-    properties = {"parallel": False},
 )
 
 builder_coverage(
@@ -182,16 +162,6 @@ builder_coverage(
     execution_timeout = default_timeout,
     priority = 50,
     properties = {"parallel": True},
-)
-
-builder_coverage(
-    covered_oss = ["linux", "win64", "mac"],
-    builder_factory = try_builder,
-    builder_name_pattern = "e2e_stressor_sequential_%s",
-    recipe_name = "devtools/dtf-e2e-stress",
-    execution_timeout = default_timeout,
-    priority = 50,
-    properties = {"parallel": False},
 )
 
 builder_coverage(
@@ -216,9 +186,6 @@ cq_main = struct(
         "devtools_frontend_linux_dbg",
         "devtools_frontend_linux_dbg_fastbuild",
         "devtools_frontend_linux_rel",
-        "devtools_frontend_sequential_linux_rel",
-        "devtools_frontend_sequential_mac_rel",
-        "devtools_frontend_sequential_win64_rel",
         "devtools_frontend_mac_rel",
         "devtools_frontend_win64_rel",
         "dtf_presubmit_linux",
@@ -234,9 +201,6 @@ cq_main = struct(
         "devtools_screenshot_linux_rel",
         "devtools_screenshot_mac_rel",
         "devtools_screenshot_win64_rel",
-        "devtools_frontend_sequential_linux_rel",
-        "devtools_frontend_sequential_mac_rel",
-        "devtools_frontend_sequential_win64_rel",
         "devtools_frontend_shuffled_parallel_linux_rel",
         "devtools_frontend_shuffled_parallel_mac_rel",
         "devtools_frontend_shuffled_parallel_win64_rel",

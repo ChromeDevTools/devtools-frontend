@@ -27,10 +27,13 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
       case 'explain.consoleMessage:context':
+      case 'explain.consoleMessage:context:error':
+      case 'explain.consoleMessage:context:warning':
+      case 'explain.consoleMessage:context:other':
       case 'explain.consoleMessage:hover': {
         const consoleViewMessage = context.flavor(Console.ConsoleViewMessage.ConsoleViewMessage);
         if (consoleViewMessage) {
-          if (actionId === 'explain.consoleMessage:context') {
+          if (actionId.startsWith('explain.consoleMessage:context')) {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRequestedViaContextMenu);
           } else if (actionId === 'explain.consoleMessage:hover') {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRequestedViaHoverButton);

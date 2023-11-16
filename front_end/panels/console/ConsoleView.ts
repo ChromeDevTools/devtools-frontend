@@ -265,7 +265,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let consoleViewInstance: ConsoleView;
 
 const MIN_HISTORY_LENGTH_FOR_DISABLING_SELF_XSS_WARNING = 5;
-const EXPLAIN_CONTEXT_ACTION_ID = 'explain.consoleMessage:context';
 
 export class ConsoleView extends UI.Widget.VBox implements
     UI.SearchableView.Searchable, ConsoleViewportProvider,
@@ -1111,8 +1110,9 @@ export class ConsoleView extends UI.Widget.VBox implements
     }
 
     if (consoleMessage && document.documentElement.matches('.aida-available') &&
-        !consoleViewMessage?.element()?.matches('.has-insight')) {
-      contextMenu.headerSection().appendAction(EXPLAIN_CONTEXT_ACTION_ID, undefined, /* optional=*/ true);
+        !consoleViewMessage?.element()?.matches('.has-insight') && consoleViewMessage?.shouldShowInsights()) {
+      contextMenu.headerSection().appendAction(
+          consoleViewMessage?.getExplainActionId(), undefined, /* optional=*/ true);
     }
 
     if (consoleMessage && consoleMessage.url) {

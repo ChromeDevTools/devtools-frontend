@@ -228,6 +228,9 @@ const parameterToRemoteObject = (runtimeModel: SDK.RuntimeModel.RuntimeModel|nul
     };
 
 const EXPLAIN_HOVER_ACTION_ID = 'explain.consoleMessage:hover';
+const EXPLAIN_CONTEXT_ERROR_ACTION_ID = 'explain.consoleMessage:context:error';
+const EXPLAIN_CONTEXT_WARNING_ACTION_ID = 'explain.consoleMessage:context:warning';
+const EXPLAIN_CONTEXT_OTHER_ACTION_ID = 'explain.consoleMessage:context:other';
 
 const hoverButtonObserver = new IntersectionObserver(results => {
   for (const result of results) {
@@ -1301,19 +1304,41 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     this.consoleRowWrapper.appendChild(this.contentElement());
 
-    if (this.message.level === Protocol.Log.LogEntryLevel.Error ||
-        this.message.level === Protocol.Log.LogEntryLevel.Warning) {
-      if (UI.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_HOVER_ACTION_ID)) {
-        if (document.documentElement.matches('.aida-available')) {
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsoleMessageShown);
-        }
-        this.consoleRowWrapper.append(this.#createHoverButton());
+    if (UI.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_HOVER_ACTION_ID) && this.shouldShowInsights()) {
+      if (document.documentElement.matches('.aida-available')) {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsoleMessageShown);
       }
+      this.consoleRowWrapper.append(this.#createHoverButton());
     }
 
     if (this.repeatCountInternal > 1) {
       this.showRepeatCountElement();
     }
+  }
+
+  shouldShowInsights(): boolean {
+    return this.message.level === Protocol.Log.LogEntryLevel.Error ||
+        this.message.level === Protocol.Log.LogEntryLevel.Warning;
+  }
+
+  getExplainLabel(): string {
+    if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
+      return i18nString(UIStrings.explainThisError);
+    }
+    if (this.message.level === Protocol.Log.LogEntryLevel.Warning) {
+      return i18nString(UIStrings.explainThisWarning);
+    }
+    return i18nString(UIStrings.explainThisMessage);
+  }
+
+  getExplainActionId(): string {
+    if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
+      return EXPLAIN_CONTEXT_ERROR_ACTION_ID;
+    }
+    if (this.message.level === Protocol.Log.LogEntryLevel.Warning) {
+      return EXPLAIN_CONTEXT_WARNING_ACTION_ID;
+    }
+    return EXPLAIN_CONTEXT_OTHER_ACTION_ID;
   }
 
   #createHoverButton(): HTMLButtonElement {
@@ -1333,13 +1358,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       void action.execute();
     };
     const text = document.createElement('span');
-    if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
-      text.innerText = i18nString(UIStrings.explainThisError);
-    } else if (this.message.level === Protocol.Log.LogEntryLevel.Warning) {
-      text.innerText = i18nString(UIStrings.explainThisWarning);
-    } else {
-      text.innerText = i18nString(UIStrings.explainThisMessage);
-    }
+    text.innerText = this.getExplainLabel();
     button.append(text);
     button.classList.add('hover-button');
     hoverButtonObserver.observe(button);

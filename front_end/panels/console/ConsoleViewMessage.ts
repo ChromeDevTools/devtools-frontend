@@ -187,6 +187,18 @@ const UIStrings = {
    *@description Message to indicate a console message with a stack table is collapsed
    */
   stackMessageCollapsed: 'Stack table collapsed',
+  /**
+   *@description Message to offer insights for a console error message
+   */
+  explainThisError: 'Explain this error',
+  /**
+   *@description Message to offer insights for a console warning message
+   */
+  explainThisWarning: 'Explain this warning',
+  /**
+   *@description Message to offer insights for a console message
+   */
+  explainThisMessage: 'Explain this message',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleViewMessage.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1289,12 +1301,15 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     this.consoleRowWrapper.appendChild(this.contentElement());
 
-    const action = UI.ActionRegistry.ActionRegistry.instance().action(EXPLAIN_HOVER_ACTION_ID);
-    if (action) {
-      if (document.documentElement.matches('.aida-available')) {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsoleMessageShown);
+    if (this.message.level === Protocol.Log.LogEntryLevel.Error ||
+        this.message.level === Protocol.Log.LogEntryLevel.Warning) {
+      const action = UI.ActionRegistry.ActionRegistry.instance().action(EXPLAIN_HOVER_ACTION_ID);
+      if (action) {
+        if (document.documentElement.matches('.aida-available')) {
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsoleMessageShown);
+        }
+        this.consoleRowWrapper.append(this.#createHoverButton());
       }
-      this.consoleRowWrapper.append(this.#createHoverButton());
     }
 
     if (this.repeatCountInternal > 1) {
@@ -1322,8 +1337,13 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       void action.execute();
     };
     const text = document.createElement('span');
-    // TODO: localize.
-    text.innerText = 'Explain this error';
+    if (this.message.level === Protocol.Log.LogEntryLevel.Error) {
+      text.innerText = i18nString(UIStrings.explainThisError);
+    } else if (this.message.level === Protocol.Log.LogEntryLevel.Warning) {
+      text.innerText = i18nString(UIStrings.explainThisWarning);
+    } else {
+      text.innerText = i18nString(UIStrings.explainThisMessage);
+    }
     button.append(text);
     button.classList.add('hover-button');
     hoverButtonObserver.observe(button);

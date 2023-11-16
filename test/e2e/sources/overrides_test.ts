@@ -267,7 +267,8 @@ describe('Overrides panel', async function() {
     });
   });
 
-  it('has correct context menu for overrides files', async () => {
+  // Flaky
+  it.skip('[crbug.com/1502463] has correct context menu for overrides files', async () => {
     await goToResource('network/fetch-json.html');
     await openNetworkTab();
     await selectRequestByName('coffees.json', {button: 'right'});

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { Browser as SupportedBrowser, resolveBuildId, detectBrowserPlatform, getInstalledBrowsers, uninstall, } from '@puppeteer/browsers';
-import { Puppeteer, } from '../cdp/Puppeteer.js';
+import { Puppeteer } from '../common/Puppeteer.js';
 import { PUPPETEER_REVISIONS } from '../revisions.js';
 import { ChromeLauncher } from './ChromeLauncher.js';
 import { FirefoxLauncher } from './FirefoxLauncher.js';

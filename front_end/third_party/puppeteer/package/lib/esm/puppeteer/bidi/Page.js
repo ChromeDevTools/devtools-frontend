@@ -66,7 +66,7 @@ import { EmulationManager as CdpEmulationManager } from '../cdp/EmulationManager
 import { FrameTree } from '../cdp/FrameTree.js';
 import { Tracing } from '../cdp/Tracing.js';
 import { ConsoleMessage, } from '../common/ConsoleMessage.js';
-import { TargetCloseError } from '../common/Errors.js';
+import { TargetCloseError, UnsupportedOperation } from '../common/Errors.js';
 import { NetworkManagerEvent } from '../common/NetworkManagerEvents.js';
 import { debugError, evaluationString, NETWORK_IDLE_TIME, timeout, validateDialogType, waitForHTTP, } from '../common/util.js';
 import { assert } from '../util/assert.js';
@@ -89,7 +89,7 @@ export class BidiPage extends Page {
     #accessibility;
     #connection;
     #frameTree = new FrameTree();
-    _networkManager;
+    #networkManager;
     #viewport = null;
     #closedDeferred = Deferred.create();
     #subscribedEvents = new Map([
@@ -161,13 +161,13 @@ export class BidiPage extends Page {
         for (const [event, subscriber] of this.#browsingContextEvents) {
             this.#browsingContext.on(event, subscriber);
         }
-        this._networkManager = new BidiNetworkManager(this.#connection, this);
+        this.#networkManager = new BidiNetworkManager(this.#connection, this);
         for (const [event, subscriber] of this.#subscribedEvents) {
             this.#connection.on(event, subscriber);
         }
         for (const [event, subscriber] of this.#networkManagerEvents) {
             // TODO: remove any
-            this._networkManager.on(event, subscriber);
+            this.#networkManager.on(event, subscriber);
         }
         const frame = new BidiFrame(this, this.#browsingContext, this._timeoutSettings, this.#browsingContext.parent);
         this.#frameTree.addFrame(frame);
@@ -327,7 +327,7 @@ export class BidiPage extends Page {
             this.#removeFramesRecursively(child);
         }
         frame[disposeSymbol]();
-        this._networkManager.clearMapAfterFrameDispose(frame);
+        this.#networkManager.clearMapAfterFrameDispose(frame);
         this.#frameTree.removeFrame(frame);
         this.emit("framedetached" /* PageEvent.FrameDetached */, frame);
     }
@@ -381,7 +381,7 @@ export class BidiPage extends Page {
         this.emit("dialog" /* PageEvent.Dialog */, dialog);
     }
     getNavigationResponse(id) {
-        return this._networkManager.getNavigationResponse(id);
+        return this.#networkManager.getNavigationResponse(id);
     }
     isClosed() {
         return this.#closedDeferred.finished();
@@ -391,7 +391,7 @@ export class BidiPage extends Page {
             return;
         }
         this.#closedDeferred.reject(new TargetCloseError('Page closed!'));
-        this._networkManager.dispose();
+        this.#networkManager.dispose();
         await this.#connection.send('browsingContext.close', {
             context: this.mainFrame()._id,
         });
@@ -497,25 +497,25 @@ export class BidiPage extends Page {
     async _screenshot(options) {
         const { clip, type, captureBeyondViewport, allowViewportExpansion, quality } = options;
         if (captureBeyondViewport && !allowViewportExpansion) {
-            throw new Error(`BiDi does not support 'captureBeyondViewport'. Use 'allowViewportExpansion'.`);
+            throw new UnsupportedOperation(`BiDi does not support 'captureBeyondViewport'. Use 'allowViewportExpansion'.`);
         }
         if (options.omitBackground !== undefined && options.omitBackground) {
-            throw new Error(`BiDi does not support 'omitBackground'.`);
+            throw new UnsupportedOperation(`BiDi does not support 'omitBackground'.`);
         }
         if (options.optimizeForSpeed !== undefined && options.optimizeForSpeed) {
-            throw new Error(`BiDi does not support 'optimizeForSpeed'.`);
+            throw new UnsupportedOperation(`BiDi does not support 'optimizeForSpeed'.`);
         }
         if (options.fromSurface !== undefined && !options.fromSurface) {
-            throw new Error(`BiDi does not support 'fromSurface'.`);
+            throw new UnsupportedOperation(`BiDi does not support 'fromSurface'.`);
         }
         if (clip !== undefined && clip.scale !== undefined && clip.scale !== 1) {
-            throw new Error(`BiDi does not support 'scale' in 'clip'.`);
+            throw new UnsupportedOperation(`BiDi does not support 'scale' in 'clip'.`);
         }
         const { result: { data }, } = await this.#connection.send('browsingContext.captureScreenshot', {
             context: this.mainFrame()._id,
             format: {
                 type: `image/${type}`,
-                ...(quality === undefined ? {} : { quality: quality / 100 }),
+                quality: quality ? quality / 100 : undefined,
             },
             clip: clip && {
                 type: 'box',
@@ -526,20 +526,20 @@ export class BidiPage extends Page {
     }
     async waitForRequest(urlOrPredicate, options = {}) {
         const { timeout = this._timeoutSettings.timeout() } = options;
-        return await waitForHTTP(this._networkManager, NetworkManagerEvent.Request, urlOrPredicate, timeout, this.#closedDeferred);
+        return await waitForHTTP(this.#networkManager, NetworkManagerEvent.Request, urlOrPredicate, timeout, this.#closedDeferred);
     }
     async waitForResponse(urlOrPredicate, options = {}) {
         const { timeout = this._timeoutSettings.timeout() } = options;
-        return await waitForHTTP(this._networkManager, NetworkManagerEvent.Response, urlOrPredicate, timeout, this.#closedDeferred);
+        return await waitForHTTP(this.#networkManager, NetworkManagerEvent.Response, urlOrPredicate, timeout, this.#closedDeferred);
     }
     async waitForNetworkIdle(options = {}) {
         const { idleTime = NETWORK_IDLE_TIME, timeout: ms = this._timeoutSettings.timeout(), } = options;
-        await firstValueFrom(this._waitForNetworkIdle(this._networkManager, idleTime).pipe(raceWith(timeout(ms), from(this.#closedDeferred.valueOrThrow()))));
+        await firstValueFrom(this._waitForNetworkIdle(this.#networkManager, idleTime).pipe(raceWith(timeout(ms), from(this.#closedDeferred.valueOrThrow()))));
     }
     /** @internal */
     _waitWithNetworkIdle(observableInput, networkIdle) {
         const delay = networkIdle
-            ? this._waitForNetworkIdle(this._networkManager, NETWORK_IDLE_TIME, networkIdle === 'networkidle0' ? 0 : 2)
+            ? this._waitForNetworkIdle(this.#networkManager, NETWORK_IDLE_TIME, networkIdle === 'networkidle0' ? 0 : 2)
             : from(Promise.resolve());
         return forkJoin([
             from(observableInput).pipe(first()),
@@ -586,6 +586,64 @@ export class BidiPage extends Page {
         await this._client().send('Network.setCacheDisabled', {
             cacheDisabled: !enabled,
         });
+    }
+    isServiceWorkerBypassed() {
+        throw new UnsupportedOperation();
+    }
+    target() {
+        throw new UnsupportedOperation();
+    }
+    waitForFileChooser() {
+        throw new UnsupportedOperation();
+    }
+    workers() {
+        throw new UnsupportedOperation();
+    }
+    setRequestInterception() {
+        throw new UnsupportedOperation();
+    }
+    setDragInterception() {
+        throw new UnsupportedOperation();
+    }
+    setBypassServiceWorker() {
+        throw new UnsupportedOperation();
+    }
+    setOfflineMode() {
+        throw new UnsupportedOperation();
+    }
+    emulateNetworkConditions() {
+        throw new UnsupportedOperation();
+    }
+    cookies() {
+        throw new UnsupportedOperation();
+    }
+    setCookie() {
+        throw new UnsupportedOperation();
+    }
+    deleteCookie() {
+        throw new UnsupportedOperation();
+    }
+    removeExposedFunction() {
+        // TODO: Quick win?
+        throw new UnsupportedOperation();
+    }
+    authenticate() {
+        throw new UnsupportedOperation();
+    }
+    setExtraHTTPHeaders() {
+        throw new UnsupportedOperation();
+    }
+    metrics() {
+        throw new UnsupportedOperation();
+    }
+    goBack() {
+        throw new UnsupportedOperation();
+    }
+    goForward() {
+        throw new UnsupportedOperation();
+    }
+    waitForDevicePrompt() {
+        throw new UnsupportedOperation();
     }
 }
 function isConsoleLogEntry(event) {

@@ -27,6 +27,7 @@ const Target_js_1 = require("./Target.js");
  * @internal
  */
 class CdpBrowser extends Browser_js_1.Browser {
+    protocol = 'cdp';
     static async _create(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
         const browser = new CdpBrowser(product, connection, contextIds, ignoreHTTPSErrors, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets);
         await browser._attach();

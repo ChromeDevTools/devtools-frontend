@@ -1,5 +1,5 @@
 import { CDPSession } from '../api/CDPSession.js';
-import { TargetCloseError } from '../common/Errors.js';
+import { TargetCloseError, UnsupportedOperation } from '../common/Errors.js';
 import { debugError } from '../common/util.js';
 import { Deferred } from '../util/Deferred.js';
 import { BidiRealm } from './Realm.js';
@@ -43,7 +43,7 @@ export class CdpSessionWrapper extends CDPSession {
     }
     async send(method, ...paramArgs) {
         if (!this.#context.supportsCdp()) {
-            throw new Error('CDP support is required for this feature. The current browser does not support CDP.');
+            throw new UnsupportedOperation('CDP support is required for this feature. The current browser does not support CDP.');
         }
         if (this.#detached) {
             throw new TargetCloseError(`Protocol error (${method}): Session closed. Most likely the page has been closed.`);

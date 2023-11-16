@@ -460,7 +460,7 @@ let ElementHandle = (() => {
          *
          * JavaScript:
          *
-         * ```js
+         * ```ts
          * const feedHandle = await page.$('.feed');
          * expect(
          *   await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText))
@@ -851,9 +851,6 @@ let ElementHandle = (() => {
                 return [...selectedValues.values()];
             }, values);
         }
-        async uploadFile() {
-            throw new Error('Not implemented');
-        }
         /**
          * This method scrolls element into view if needed, and then uses
          * {@link Touchscreen.tap} to tap in the center of the element.
@@ -1020,7 +1017,8 @@ let ElementHandle = (() => {
         }
         /**
          * This method returns the bounding box of the element (relative to the main frame),
-         * or `null` if the element is not visible.
+         * or `null` if the element is {@link https://drafts.csswg.org/css-display-4/#box-generation | not part of the layout}
+         * (example: `display: none`).
          */
         async boundingBox() {
             const box = await this.evaluate(element => {
@@ -1049,7 +1047,9 @@ let ElementHandle = (() => {
             };
         }
         /**
-         * This method returns boxes of the element, or `null` if the element is not visible.
+         * This method returns boxes of the element,
+         * or `null` if the element is {@link https://drafts.csswg.org/css-display-4/#box-generation | not part of the layout}
+         * (example: `display: none`).
          *
          * @remarks
          *

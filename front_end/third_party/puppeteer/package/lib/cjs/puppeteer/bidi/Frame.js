@@ -76,6 +76,7 @@ exports.BidiFrame = void 0;
 const Bidi = __importStar(require("chromium-bidi/lib/cjs/protocol/protocol.js"));
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const Frame_js_1 = require("../api/Frame.js");
+const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
@@ -131,6 +132,9 @@ let BidiFrame = (() => {
         page() {
             return this.#page;
         }
+        isOOPFrame() {
+            throw new Errors_js_1.UnsupportedOperation();
+        }
         url() {
             return this.#context.url;
         }
@@ -185,6 +189,9 @@ let BidiFrame = (() => {
                 ._waitWithNetworkIdle(navigatedObservable, networkIdle)
                 .pipe((0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, rxjs_js_1.from)(this.#abortDeferred.valueOrThrow()))));
             return this.#page.getNavigationResponse(response?.result.navigation);
+        }
+        waitForDevicePrompt() {
+            throw new Errors_js_1.UnsupportedOperation();
         }
         get detached() {
             return this.#disposed;

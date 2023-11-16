@@ -47,7 +47,7 @@ import {
   ConsoleMessage,
   type ConsoleMessageLocation,
 } from '../common/ConsoleMessage.js';
-import {TargetCloseError} from '../common/Errors.js';
+import {TargetCloseError, UnsupportedOperation} from '../common/Errors.js';
 import type {Handler} from '../common/EventEmitter.js';
 import {NetworkManagerEvent} from '../common/NetworkManagerEvents.js';
 import type {PDFOptions} from '../common/PDFOptions.js';
@@ -94,7 +94,7 @@ export class BidiPage extends Page {
   #accessibility: Accessibility;
   #connection: BidiConnection;
   #frameTree = new FrameTree<BidiFrame>();
-  _networkManager: BidiNetworkManager;
+  #networkManager: BidiNetworkManager;
   #viewport: Viewport | null = null;
   #closedDeferred = Deferred.create<never, TargetCloseError>();
   #subscribedEvents = new Map<Bidi.Event['method'], Handler<any>>([
@@ -174,7 +174,7 @@ export class BidiPage extends Page {
       this.#browsingContext.on(event, subscriber);
     }
 
-    this._networkManager = new BidiNetworkManager(this.#connection, this);
+    this.#networkManager = new BidiNetworkManager(this.#connection, this);
 
     for (const [event, subscriber] of this.#subscribedEvents) {
       this.#connection.on(event, subscriber);
@@ -182,7 +182,7 @@ export class BidiPage extends Page {
 
     for (const [event, subscriber] of this.#networkManagerEvents) {
       // TODO: remove any
-      this._networkManager.on(event, subscriber as any);
+      this.#networkManager.on(event, subscriber as any);
     }
 
     const frame = new BidiFrame(
@@ -386,7 +386,7 @@ export class BidiPage extends Page {
       this.#removeFramesRecursively(child);
     }
     frame[disposeSymbol]();
-    this._networkManager.clearMapAfterFrameDispose(frame);
+    this.#networkManager.clearMapAfterFrameDispose(frame);
     this.#frameTree.removeFrame(frame);
     this.emit(PageEvent.FrameDetached, frame);
   }
@@ -466,7 +466,7 @@ export class BidiPage extends Page {
   }
 
   getNavigationResponse(id?: string | null): BidiHTTPResponse | null {
-    return this._networkManager.getNavigationResponse(id);
+    return this.#networkManager.getNavigationResponse(id);
   }
 
   override isClosed(): boolean {
@@ -479,7 +479,7 @@ export class BidiPage extends Page {
     }
 
     this.#closedDeferred.reject(new TargetCloseError('Page closed!'));
-    this._networkManager.dispose();
+    this.#networkManager.dispose();
 
     await this.#connection.send('browsingContext.close', {
       context: this.mainFrame()._id,
@@ -649,29 +649,34 @@ export class BidiPage extends Page {
     const {clip, type, captureBeyondViewport, allowViewportExpansion, quality} =
       options;
     if (captureBeyondViewport && !allowViewportExpansion) {
-      throw new Error(
+      throw new UnsupportedOperation(
         `BiDi does not support 'captureBeyondViewport'. Use 'allowViewportExpansion'.`
       );
     }
     if (options.omitBackground !== undefined && options.omitBackground) {
-      throw new Error(`BiDi does not support 'omitBackground'.`);
+      throw new UnsupportedOperation(`BiDi does not support 'omitBackground'.`);
     }
     if (options.optimizeForSpeed !== undefined && options.optimizeForSpeed) {
-      throw new Error(`BiDi does not support 'optimizeForSpeed'.`);
+      throw new UnsupportedOperation(
+        `BiDi does not support 'optimizeForSpeed'.`
+      );
     }
     if (options.fromSurface !== undefined && !options.fromSurface) {
-      throw new Error(`BiDi does not support 'fromSurface'.`);
+      throw new UnsupportedOperation(`BiDi does not support 'fromSurface'.`);
     }
     if (clip !== undefined && clip.scale !== undefined && clip.scale !== 1) {
-      throw new Error(`BiDi does not support 'scale' in 'clip'.`);
+      throw new UnsupportedOperation(
+        `BiDi does not support 'scale' in 'clip'.`
+      );
     }
+
     const {
       result: {data},
     } = await this.#connection.send('browsingContext.captureScreenshot', {
       context: this.mainFrame()._id,
       format: {
         type: `image/${type}`,
-        ...(quality === undefined ? {} : {quality: quality / 100}),
+        quality: quality ? quality / 100 : undefined,
       },
       clip: clip && {
         type: 'box',
@@ -689,7 +694,7 @@ export class BidiPage extends Page {
   ): Promise<BidiHTTPRequest> {
     const {timeout = this._timeoutSettings.timeout()} = options;
     return await waitForHTTP(
-      this._networkManager,
+      this.#networkManager,
       NetworkManagerEvent.Request,
       urlOrPredicate,
       timeout,
@@ -705,7 +710,7 @@ export class BidiPage extends Page {
   ): Promise<BidiHTTPResponse> {
     const {timeout = this._timeoutSettings.timeout()} = options;
     return await waitForHTTP(
-      this._networkManager,
+      this.#networkManager,
       NetworkManagerEvent.Response,
       urlOrPredicate,
       timeout,
@@ -722,7 +727,7 @@ export class BidiPage extends Page {
     } = options;
 
     await firstValueFrom(
-      this._waitForNetworkIdle(this._networkManager, idleTime).pipe(
+      this._waitForNetworkIdle(this.#networkManager, idleTime).pipe(
         raceWith(timeout(ms), from(this.#closedDeferred.valueOrThrow()))
       )
     );
@@ -739,7 +744,7 @@ export class BidiPage extends Page {
   } | null> {
     const delay = networkIdle
       ? this._waitForNetworkIdle(
-          this._networkManager,
+          this.#networkManager,
           NETWORK_IDLE_TIME,
           networkIdle === 'networkidle0' ? 0 : 2
         )
@@ -816,6 +821,83 @@ export class BidiPage extends Page {
     await this._client().send('Network.setCacheDisabled', {
       cacheDisabled: !enabled,
     });
+  }
+
+  override isServiceWorkerBypassed(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override target(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override waitForFileChooser(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override workers(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override setRequestInterception(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override setDragInterception(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override setBypassServiceWorker(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override setOfflineMode(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override emulateNetworkConditions(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override cookies(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override setCookie(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override deleteCookie(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override removeExposedFunction(): never {
+    // TODO: Quick win?
+    throw new UnsupportedOperation();
+  }
+
+  override authenticate(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override setExtraHTTPHeaders(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override metrics(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override goBack(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override goForward(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override waitForDevicePrompt(): never {
+    throw new UnsupportedOperation();
   }
 }
 

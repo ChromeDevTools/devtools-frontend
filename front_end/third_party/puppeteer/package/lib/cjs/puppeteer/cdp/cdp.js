@@ -58,7 +58,6 @@ __exportStar(require("./NetworkEventManager.js"), exports);
 __exportStar(require("./NetworkManager.js"), exports);
 __exportStar(require("./Page.js"), exports);
 __exportStar(require("./PredefinedNetworkConditions.js"), exports);
-__exportStar(require("./Puppeteer.js"), exports);
 __exportStar(require("./Target.js"), exports);
 __exportStar(require("./TargetManager.js"), exports);
 __exportStar(require("./Tracing.js"), exports);

@@ -38,13 +38,11 @@ import type { BidiHTTPResponse } from './HTTPResponse.js';
 import { BidiKeyboard, BidiMouse, BidiTouchscreen } from './Input.js';
 import type { BidiJSHandle } from './JSHandle.js';
 import type { BiDiNetworkIdle } from './lifecycle.js';
-import { BidiNetworkManager } from './NetworkManager.js';
 /**
  * @internal
  */
 export declare class BidiPage extends Page {
     #private;
-    _networkManager: BidiNetworkManager;
     _client(): CDPSession;
     constructor(browsingContext: BrowsingContext, browserContext: BidiBrowserContext);
     /**
@@ -120,5 +118,24 @@ export declare class BidiPage extends Page {
     }): Promise<void>;
     isDragInterceptionEnabled(): boolean;
     setCacheEnabled(enabled?: boolean): Promise<void>;
+    isServiceWorkerBypassed(): never;
+    target(): never;
+    waitForFileChooser(): never;
+    workers(): never;
+    setRequestInterception(): never;
+    setDragInterception(): never;
+    setBypassServiceWorker(): never;
+    setOfflineMode(): never;
+    emulateNetworkConditions(): never;
+    cookies(): never;
+    setCookie(): never;
+    deleteCookie(): never;
+    removeExposedFunction(): never;
+    authenticate(): never;
+    setExtraHTTPHeaders(): never;
+    metrics(): never;
+    goBack(): never;
+    goForward(): never;
+    waitForDevicePrompt(): never;
 }
 //# sourceMappingURL=Page.d.ts.map

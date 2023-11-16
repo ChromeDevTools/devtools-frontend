@@ -148,43 +148,6 @@ export class Mouse {
      * @internal
      */
     constructor() { }
-    /**
-     * Resets the mouse to the default state: No buttons pressed; position at
-     * (0,0).
-     */
-    async reset() {
-        throw new Error('Not implemented');
-    }
-    async move() {
-        throw new Error('Not implemented');
-    }
-    async down() {
-        throw new Error('Not implemented');
-    }
-    async up() {
-        throw new Error('Not implemented');
-    }
-    async click() {
-        throw new Error('Not implemented');
-    }
-    async wheel() {
-        throw new Error('Not implemented');
-    }
-    async drag() {
-        throw new Error('Not implemented');
-    }
-    async dragEnter() {
-        throw new Error('Not implemented');
-    }
-    async dragOver() {
-        throw new Error('Not implemented');
-    }
-    async drop() {
-        throw new Error('Not implemented');
-    }
-    async dragAndDrop() {
-        throw new Error('Not implemented');
-    }
 }
 /**
  * The Touchscreen class exposes touchscreen events.

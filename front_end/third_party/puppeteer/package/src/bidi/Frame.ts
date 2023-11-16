@@ -34,6 +34,7 @@ import {
   type WaitForOptions,
   throwIfDetached,
 } from '../api/Frame.js';
+import {UnsupportedOperation} from '../common/Errors.js';
 import type {TimeoutSettings} from '../common/TimeoutSettings.js';
 import type {Awaitable} from '../common/types.js';
 import {UTILITY_WORLD_NAME, setPageContent, timeout} from '../common/util.js';
@@ -107,6 +108,10 @@ export class BidiFrame extends Frame {
 
   override page(): BidiPage {
     return this.#page;
+  }
+
+  override isOOPFrame(): never {
+    throw new UnsupportedOperation();
   }
 
   override url(): string {
@@ -227,6 +232,10 @@ export class BidiFrame extends Frame {
     return this.#page.getNavigationResponse(response?.result.navigation);
   }
 
+  override waitForDevicePrompt(): never {
+    throw new UnsupportedOperation();
+  }
+
   override get detached(): boolean {
     return this.#disposed;
   }
@@ -243,7 +252,7 @@ export class BidiFrame extends Frame {
   }
 
   #exposedFunctions = new Map<string, ExposeableFunction<never[], unknown>>();
-  override async exposeFunction<Args extends unknown[], Ret>(
+  async exposeFunction<Args extends unknown[], Ret>(
     name: string,
     apply: (...args: Args) => Awaitable<Ret>
   ): Promise<void> {

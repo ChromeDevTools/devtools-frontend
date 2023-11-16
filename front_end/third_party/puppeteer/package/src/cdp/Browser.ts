@@ -53,6 +53,8 @@ import {TargetManagerEvent, type TargetManager} from './TargetManager.js';
  * @internal
  */
 export class CdpBrowser extends BrowserBase {
+  readonly protocol = 'cdp';
+
   static async _create(
     product: 'firefox' | 'chrome' | undefined,
     connection: Connection,
@@ -143,7 +145,7 @@ export class CdpBrowser extends BrowserBase {
     this.emit(BrowserEvent.Disconnected, undefined);
   };
 
-  override async _attach(): Promise<void> {
+  async _attach(): Promise<void> {
     this.#connection.on(CDPSessionEvent.Disconnected, this.#emitDisconnected);
     this.#targetManager.on(
       TargetManagerEvent.TargetAvailable,
@@ -164,7 +166,7 @@ export class CdpBrowser extends BrowserBase {
     await this.#targetManager.initialize();
   }
 
-  override _detach(): void {
+  _detach(): void {
     this.#connection.off(CDPSessionEvent.Disconnected, this.#emitDisconnected);
     this.#targetManager.off(
       TargetManagerEvent.TargetAvailable,
@@ -204,7 +206,7 @@ export class CdpBrowser extends BrowserBase {
       });
   }
 
-  override _getIsPageTargetCallback(): IsPageTargetCallback | undefined {
+  _getIsPageTargetCallback(): IsPageTargetCallback | undefined {
     return this.#isPageTargetCallback;
   }
 
@@ -237,7 +239,7 @@ export class CdpBrowser extends BrowserBase {
     return this.#defaultContext;
   }
 
-  override async _disposeContext(contextId?: string): Promise<void> {
+  async _disposeContext(contextId?: string): Promise<void> {
     if (!contextId) {
       return;
     }
@@ -349,7 +351,7 @@ export class CdpBrowser extends BrowserBase {
     return await this.#defaultContext.newPage();
   }
 
-  override async _createPageInContext(contextId?: string): Promise<Page> {
+  async _createPageInContext(contextId?: string): Promise<Page> {
     const {targetId} = await this.#connection.send('Target.createTarget', {
       url: 'about:blank',
       browserContextId: contextId || undefined,

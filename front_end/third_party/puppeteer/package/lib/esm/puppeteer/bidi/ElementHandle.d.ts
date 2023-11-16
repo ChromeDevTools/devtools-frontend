@@ -32,5 +32,6 @@ export declare class BidiElementHandle<ElementType extends Node = Element> exten
     remoteValue(): Bidi.Script.RemoteValue;
     autofill(data: AutofillData): Promise<void>;
     contentFrame(this: BidiElementHandle<HTMLIFrameElement>): Promise<BidiFrame>;
+    uploadFile(this: ElementHandle<HTMLInputElement>): never;
 }
 //# sourceMappingURL=ElementHandle.d.ts.map

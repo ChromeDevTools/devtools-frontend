@@ -33,7 +33,7 @@ export declare const
 /**
  * @public
  */
-connect: (options: import("./cdp/Puppeteer.js").ConnectOptions) => Promise<import("./api/Browser.js").Browser>, 
+connect: (options: import("./common/ConnectOptions.js").ConnectOptions) => Promise<import("./api/Browser.js").Browser>, 
 /**
  * @public
  */

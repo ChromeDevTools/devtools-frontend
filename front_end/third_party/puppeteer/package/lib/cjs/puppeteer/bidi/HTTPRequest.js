@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiHTTPRequest = void 0;
 const HTTPRequest_js_1 = require("../api/HTTPRequest.js");
+const Errors_js_1 = require("../common/Errors.js");
 /**
  * @internal
  */
@@ -36,7 +37,7 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         }
     }
     get client() {
-        throw new Error('Not implemented');
+        throw new Errors_js_1.UnsupportedOperation();
     }
     url() {
         return this.#url;
@@ -73,34 +74,34 @@ class BidiHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
         return this.#frame;
     }
     continueRequestOverrides() {
-        throw new Error('Not implemented');
+        throw new Errors_js_1.UnsupportedOperation();
     }
-    async continue(_overrides = {}) {
-        throw new Error('Not implemented');
+    continue(_overrides = {}) {
+        throw new Errors_js_1.UnsupportedOperation();
     }
     responseForRequest() {
-        throw new Error('Not implemented');
+        throw new Errors_js_1.UnsupportedOperation();
     }
     abortErrorReason() {
-        throw new Error('Not implemented');
+        throw new Errors_js_1.UnsupportedOperation();
     }
     interceptResolutionState() {
-        throw new Error('Not implemented');
+        throw new Errors_js_1.UnsupportedOperation();
     }
     isInterceptResolutionHandled() {
-        throw new Error('Not implemented');
+        throw new Errors_js_1.UnsupportedOperation();
     }
-    async finalizeInterceptions() {
-        throw new Error('Not implemented');
+    finalizeInterceptions() {
+        throw new Errors_js_1.UnsupportedOperation();
     }
     abort() {
-        throw new Error('Not implemented');
+        throw new Errors_js_1.UnsupportedOperation();
     }
     respond(_response, _priority) {
-        throw new Error('Not implemented');
+        throw new Errors_js_1.UnsupportedOperation();
     }
     failure() {
-        throw new Error('Not implemented');
+        throw new Errors_js_1.UnsupportedOperation();
     }
 }
 exports.BidiHTTPRequest = BidiHTTPRequest;

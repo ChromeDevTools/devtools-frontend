@@ -51,6 +51,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CdpFrame = void 0;
 const Frame_js_1 = require("../api/Frame.js");
+const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
 const Deferred_js_1 = require("../util/Deferred.js");
 const disposable_js_1 = require("../util/disposable.js");
@@ -275,6 +276,9 @@ let CdpFrame = (() => {
             this.#detached = true;
             this.worlds[IsolatedWorlds_js_1.MAIN_WORLD][disposable_js_1.disposeSymbol]();
             this.worlds[IsolatedWorlds_js_1.PUPPETEER_WORLD][disposable_js_1.disposeSymbol]();
+        }
+        exposeFunction() {
+            throw new Errors_js_1.UnsupportedOperation();
         }
     };
 })();

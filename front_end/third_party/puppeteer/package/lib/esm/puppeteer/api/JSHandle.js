@@ -142,12 +142,6 @@ let JSHandle = (() => {
             __runInitializers(this, _instanceExtraInitializers);
         }
         /**
-         * @internal
-         */
-        get disposed() {
-            throw new Error('Not implemented');
-        }
-        /**
          * Evaluates the given function with the current handle as its first argument.
          */
         async evaluate(pageFunction, ...args) {

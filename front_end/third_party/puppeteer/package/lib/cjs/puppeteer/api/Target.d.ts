@@ -41,7 +41,7 @@ export declare enum TargetType {
  * worker.
  * @public
  */
-export declare class Target {
+export declare abstract class Target {
     /**
      * @internal
      */
@@ -55,11 +55,11 @@ export declare class Target {
      * returns `null`.
      */
     page(): Promise<Page | null>;
-    url(): string;
+    abstract url(): string;
     /**
      * Creates a Chrome Devtools Protocol session attached to the target.
      */
-    createCDPSession(): Promise<CDPSession>;
+    abstract createCDPSession(): Promise<CDPSession>;
     /**
      * Identifies what kind of target this is.
      *
@@ -67,18 +67,18 @@ export declare class Target {
      *
      * See {@link https://developer.chrome.com/extensions/background_pages | docs} for more info about background pages.
      */
-    type(): TargetType;
+    abstract type(): TargetType;
     /**
      * Get the browser the target belongs to.
      */
-    browser(): Browser;
+    abstract browser(): Browser;
     /**
      * Get the browser context the target belongs to.
      */
-    browserContext(): BrowserContext;
+    abstract browserContext(): BrowserContext;
     /**
      * Get the target that opened this target. Top-level targets return `null`.
      */
-    opener(): Target | undefined;
+    abstract opener(): Target | undefined;
 }
 //# sourceMappingURL=Target.d.ts.map

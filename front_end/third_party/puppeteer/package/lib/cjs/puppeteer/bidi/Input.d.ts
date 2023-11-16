@@ -60,6 +60,11 @@ export declare class BidiMouse extends Mouse {
     up(options?: Readonly<MouseOptions>): Promise<void>;
     click(x: number, y: number, options?: Readonly<BidiMouseClickOptions>): Promise<void>;
     wheel(options?: Readonly<MouseWheelOptions>): Promise<void>;
+    drag(): never;
+    dragOver(): never;
+    dragEnter(): never;
+    drop(): never;
+    dragAndDrop(): never;
 }
 /**
  * @internal

@@ -43,7 +43,6 @@ export * from './NetworkEventManager.js';
 export * from './NetworkManager.js';
 export * from './Page.js';
 export * from './PredefinedNetworkConditions.js';
-export * from './Puppeteer.js';
 export * from './Target.js';
 export * from './TargetManager.js';
 export * from './Tracing.js';

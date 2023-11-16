@@ -218,28 +218,6 @@ let Page = (() => {
             super();
         }
         /**
-         * `true` if the service worker are being bypassed, `false` otherwise.
-         */
-        isServiceWorkerBypassed() {
-            throw new Error('Not implemented');
-        }
-        /**
-         * `true` if drag events are being intercepted, `false` otherwise.
-         *
-         * @deprecated We no longer support intercepting drag payloads. Use the new
-         * drag APIs found on {@link ElementHandle} to drag (or just use the
-         * {@link Page.mouse}).
-         */
-        isDragInterceptionEnabled() {
-            throw new Error('Not implemented');
-        }
-        /**
-         * `true` if the page has JavaScript enabled, `false` otherwise.
-         */
-        isJavaScriptEnabled() {
-            throw new Error('Not implemented');
-        }
-        /**
          * Listen to page events.
          *
          * @remarks
@@ -273,56 +251,6 @@ let Page = (() => {
                     this.#requestHandlers.get(handler) || handler;
             }
             return super.off(type, handler);
-        }
-        waitForFileChooser() {
-            throw new Error('Not implemented');
-        }
-        async setGeolocation() {
-            throw new Error('Not implemented');
-        }
-        /**
-         * A target this page was created from.
-         */
-        target() {
-            throw new Error('Not implemented');
-        }
-        /**
-         * Creates a Chrome Devtools Protocol session attached to the page.
-         */
-        createCDPSession() {
-            throw new Error('Not implemented');
-        }
-        /**
-         * {@inheritDoc Touchscreen}
-         */
-        get touchscreen() {
-            throw new Error('Not implemented');
-        }
-        /**
-         * All of the dedicated {@link
-         * https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API |
-         * WebWorkers} associated with the page.
-         *
-         * @remarks
-         * This does not contain ServiceWorkers
-         */
-        workers() {
-            throw new Error('Not implemented');
-        }
-        async setRequestInterception() {
-            throw new Error('Not implemented');
-        }
-        async setBypassServiceWorker() {
-            throw new Error('Not implemented');
-        }
-        async setDragInterception() {
-            throw new Error('Not implemented');
-        }
-        setOfflineMode() {
-            throw new Error('Not implemented');
-        }
-        emulateNetworkConditions() {
-            throw new Error('Not implemented');
         }
         locator(selectorOrFunc) {
             if (typeof selectorOrFunc === 'string') {
@@ -567,15 +495,6 @@ let Page = (() => {
         async $x(expression) {
             return await this.mainFrame().$x(expression);
         }
-        async cookies() {
-            throw new Error('Not implemented');
-        }
-        async deleteCookie() {
-            throw new Error('Not implemented');
-        }
-        async setCookie() {
-            throw new Error('Not implemented');
-        }
         /**
          * Adds a `<script>` tag into the page with the desired URL or content.
          *
@@ -592,54 +511,6 @@ let Page = (() => {
         }
         async addStyleTag(options) {
             return await this.mainFrame().addStyleTag(options);
-        }
-        async removeExposedFunction() {
-            throw new Error('Not implemented');
-        }
-        async authenticate() {
-            throw new Error('Not implemented');
-        }
-        async setExtraHTTPHeaders() {
-            throw new Error('Not implemented');
-        }
-        /**
-         * Object containing metrics as key/value pairs.
-         *
-         * @returns
-         *
-         * - `Timestamp` : The timestamp when the metrics sample was taken.
-         *
-         * - `Documents` : Number of documents in the page.
-         *
-         * - `Frames` : Number of frames in the page.
-         *
-         * - `JSEventListeners` : Number of events in the page.
-         *
-         * - `Nodes` : Number of DOM nodes in the page.
-         *
-         * - `LayoutCount` : Total number of full or partial page layout.
-         *
-         * - `RecalcStyleCount` : Total number of page style recalculations.
-         *
-         * - `LayoutDuration` : Combined durations of all page layouts.
-         *
-         * - `RecalcStyleDuration` : Combined duration of all page style
-         *   recalculations.
-         *
-         * - `ScriptDuration` : Combined duration of JavaScript execution.
-         *
-         * - `TaskDuration` : Combined duration of all tasks performed by the browser.
-         *
-         * - `JSHeapUsedSize` : Used JavaScript heap size.
-         *
-         * - `JSHeapTotalSize` : Total JavaScript heap size.
-         *
-         * @remarks
-         * All timestamps are in monotonic time: monotonically increasing time
-         * in seconds since an arbitrary point in the past.
-         */
-        async metrics() {
-            throw new Error('Not implemented');
         }
         /**
          * The page's URL.
@@ -785,12 +656,6 @@ let Page = (() => {
                 throw new Errors_js_1.TargetCloseError('Page closed.');
             })))));
         }
-        async goBack() {
-            throw new Error('Not implemented');
-        }
-        async goForward() {
-            throw new Error('Not implemented');
-        }
         /**
          * Emulates a given device's metrics and user agent.
          *
@@ -826,27 +691,6 @@ let Page = (() => {
                 this.setUserAgent(device.userAgent),
                 this.setViewport(device.viewport),
             ]);
-        }
-        async setJavaScriptEnabled() {
-            throw new Error('Not implemented');
-        }
-        async emulateMediaType() {
-            throw new Error('Not implemented');
-        }
-        async emulateCPUThrottling() {
-            throw new Error('Not implemented');
-        }
-        async emulateMediaFeatures() {
-            throw new Error('Not implemented');
-        }
-        async emulateTimezone() {
-            throw new Error('Not implemented');
-        }
-        async emulateIdleState() {
-            throw new Error('Not implemented');
-        }
-        async emulateVisionDeficiency() {
-            throw new Error('Not implemented');
         }
         /**
          * Evaluates a function in the page's context and returns the result.
@@ -1262,9 +1106,6 @@ let Page = (() => {
                 margin,
             };
         }
-        async createPDFStream() {
-            throw new Error('Not implemented');
-        }
         /**
          * The page's title
          *
@@ -1595,9 +1436,6 @@ let Page = (() => {
          */
         waitForFunction(pageFunction, options, ...args) {
             return this.mainFrame().waitForFunction(pageFunction, options, ...args);
-        }
-        waitForDevicePrompt() {
-            throw new Error('Not implemented');
         }
         /** @internal */
         [(_screenshot_decorators = [(0, decorators_js_1.guarded)(function () {

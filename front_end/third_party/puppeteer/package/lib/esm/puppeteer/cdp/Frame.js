@@ -48,6 +48,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     done = true;
 };
 import { Frame, FrameEvent, throwIfDetached } from '../api/Frame.js';
+import { UnsupportedOperation } from '../common/Errors.js';
 import { setPageContent } from '../common/util.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
@@ -272,6 +273,9 @@ let CdpFrame = (() => {
             this.#detached = true;
             this.worlds[MAIN_WORLD][disposeSymbol]();
             this.worlds[PUPPETEER_WORLD][disposeSymbol]();
+        }
+        exposeFunction() {
+            throw new UnsupportedOperation();
         }
     };
 })();

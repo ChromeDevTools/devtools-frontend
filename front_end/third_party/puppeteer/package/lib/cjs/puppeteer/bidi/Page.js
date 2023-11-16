@@ -115,7 +115,7 @@ class BidiPage extends Page_js_1.Page {
     #accessibility;
     #connection;
     #frameTree = new FrameTree_js_1.FrameTree();
-    _networkManager;
+    #networkManager;
     #viewport = null;
     #closedDeferred = Deferred_js_1.Deferred.create();
     #subscribedEvents = new Map([
@@ -187,13 +187,13 @@ class BidiPage extends Page_js_1.Page {
         for (const [event, subscriber] of this.#browsingContextEvents) {
             this.#browsingContext.on(event, subscriber);
         }
-        this._networkManager = new NetworkManager_js_1.BidiNetworkManager(this.#connection, this);
+        this.#networkManager = new NetworkManager_js_1.BidiNetworkManager(this.#connection, this);
         for (const [event, subscriber] of this.#subscribedEvents) {
             this.#connection.on(event, subscriber);
         }
         for (const [event, subscriber] of this.#networkManagerEvents) {
             // TODO: remove any
-            this._networkManager.on(event, subscriber);
+            this.#networkManager.on(event, subscriber);
         }
         const frame = new Frame_js_1.BidiFrame(this, this.#browsingContext, this._timeoutSettings, this.#browsingContext.parent);
         this.#frameTree.addFrame(frame);
@@ -353,7 +353,7 @@ class BidiPage extends Page_js_1.Page {
             this.#removeFramesRecursively(child);
         }
         frame[disposable_js_1.disposeSymbol]();
-        this._networkManager.clearMapAfterFrameDispose(frame);
+        this.#networkManager.clearMapAfterFrameDispose(frame);
         this.#frameTree.removeFrame(frame);
         this.emit("framedetached" /* PageEvent.FrameDetached */, frame);
     }
@@ -407,7 +407,7 @@ class BidiPage extends Page_js_1.Page {
         this.emit("dialog" /* PageEvent.Dialog */, dialog);
     }
     getNavigationResponse(id) {
-        return this._networkManager.getNavigationResponse(id);
+        return this.#networkManager.getNavigationResponse(id);
     }
     isClosed() {
         return this.#closedDeferred.finished();
@@ -417,7 +417,7 @@ class BidiPage extends Page_js_1.Page {
             return;
         }
         this.#closedDeferred.reject(new Errors_js_1.TargetCloseError('Page closed!'));
-        this._networkManager.dispose();
+        this.#networkManager.dispose();
         await this.#connection.send('browsingContext.close', {
             context: this.mainFrame()._id,
         });
@@ -523,25 +523,25 @@ class BidiPage extends Page_js_1.Page {
     async _screenshot(options) {
         const { clip, type, captureBeyondViewport, allowViewportExpansion, quality } = options;
         if (captureBeyondViewport && !allowViewportExpansion) {
-            throw new Error(`BiDi does not support 'captureBeyondViewport'. Use 'allowViewportExpansion'.`);
+            throw new Errors_js_1.UnsupportedOperation(`BiDi does not support 'captureBeyondViewport'. Use 'allowViewportExpansion'.`);
         }
         if (options.omitBackground !== undefined && options.omitBackground) {
-            throw new Error(`BiDi does not support 'omitBackground'.`);
+            throw new Errors_js_1.UnsupportedOperation(`BiDi does not support 'omitBackground'.`);
         }
         if (options.optimizeForSpeed !== undefined && options.optimizeForSpeed) {
-            throw new Error(`BiDi does not support 'optimizeForSpeed'.`);
+            throw new Errors_js_1.UnsupportedOperation(`BiDi does not support 'optimizeForSpeed'.`);
         }
         if (options.fromSurface !== undefined && !options.fromSurface) {
-            throw new Error(`BiDi does not support 'fromSurface'.`);
+            throw new Errors_js_1.UnsupportedOperation(`BiDi does not support 'fromSurface'.`);
         }
         if (clip !== undefined && clip.scale !== undefined && clip.scale !== 1) {
-            throw new Error(`BiDi does not support 'scale' in 'clip'.`);
+            throw new Errors_js_1.UnsupportedOperation(`BiDi does not support 'scale' in 'clip'.`);
         }
         const { result: { data }, } = await this.#connection.send('browsingContext.captureScreenshot', {
             context: this.mainFrame()._id,
             format: {
                 type: `image/${type}`,
-                ...(quality === undefined ? {} : { quality: quality / 100 }),
+                quality: quality ? quality / 100 : undefined,
             },
             clip: clip && {
                 type: 'box',
@@ -552,20 +552,20 @@ class BidiPage extends Page_js_1.Page {
     }
     async waitForRequest(urlOrPredicate, options = {}) {
         const { timeout = this._timeoutSettings.timeout() } = options;
-        return await (0, util_js_1.waitForHTTP)(this._networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Request, urlOrPredicate, timeout, this.#closedDeferred);
+        return await (0, util_js_1.waitForHTTP)(this.#networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Request, urlOrPredicate, timeout, this.#closedDeferred);
     }
     async waitForResponse(urlOrPredicate, options = {}) {
         const { timeout = this._timeoutSettings.timeout() } = options;
-        return await (0, util_js_1.waitForHTTP)(this._networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Response, urlOrPredicate, timeout, this.#closedDeferred);
+        return await (0, util_js_1.waitForHTTP)(this.#networkManager, NetworkManagerEvents_js_1.NetworkManagerEvent.Response, urlOrPredicate, timeout, this.#closedDeferred);
     }
     async waitForNetworkIdle(options = {}) {
         const { idleTime = util_js_1.NETWORK_IDLE_TIME, timeout: ms = this._timeoutSettings.timeout(), } = options;
-        await (0, rxjs_js_1.firstValueFrom)(this._waitForNetworkIdle(this._networkManager, idleTime).pipe((0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, rxjs_js_1.from)(this.#closedDeferred.valueOrThrow()))));
+        await (0, rxjs_js_1.firstValueFrom)(this._waitForNetworkIdle(this.#networkManager, idleTime).pipe((0, rxjs_js_1.raceWith)((0, util_js_1.timeout)(ms), (0, rxjs_js_1.from)(this.#closedDeferred.valueOrThrow()))));
     }
     /** @internal */
     _waitWithNetworkIdle(observableInput, networkIdle) {
         const delay = networkIdle
-            ? this._waitForNetworkIdle(this._networkManager, util_js_1.NETWORK_IDLE_TIME, networkIdle === 'networkidle0' ? 0 : 2)
+            ? this._waitForNetworkIdle(this.#networkManager, util_js_1.NETWORK_IDLE_TIME, networkIdle === 'networkidle0' ? 0 : 2)
             : (0, rxjs_js_1.from)(Promise.resolve());
         return (0, rxjs_js_1.forkJoin)([
             (0, rxjs_js_1.from)(observableInput).pipe((0, rxjs_js_1.first)()),
@@ -612,6 +612,64 @@ class BidiPage extends Page_js_1.Page {
         await this._client().send('Network.setCacheDisabled', {
             cacheDisabled: !enabled,
         });
+    }
+    isServiceWorkerBypassed() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    target() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    waitForFileChooser() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    workers() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    setRequestInterception() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    setDragInterception() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    setBypassServiceWorker() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    setOfflineMode() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    emulateNetworkConditions() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    cookies() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    setCookie() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    deleteCookie() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    removeExposedFunction() {
+        // TODO: Quick win?
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    authenticate() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    setExtraHTTPHeaders() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    metrics() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    goBack() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    goForward() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    waitForDevicePrompt() {
+        throw new Errors_js_1.UnsupportedOperation();
     }
 }
 exports.BidiPage = BidiPage;

@@ -58,43 +58,6 @@ class Target {
     async page() {
         return null;
     }
-    url() {
-        throw new Error('not implemented');
-    }
-    /**
-     * Creates a Chrome Devtools Protocol session attached to the target.
-     */
-    createCDPSession() {
-        throw new Error('not implemented');
-    }
-    /**
-     * Identifies what kind of target this is.
-     *
-     * @remarks
-     *
-     * See {@link https://developer.chrome.com/extensions/background_pages | docs} for more info about background pages.
-     */
-    type() {
-        throw new Error('not implemented');
-    }
-    /**
-     * Get the browser the target belongs to.
-     */
-    browser() {
-        throw new Error('not implemented');
-    }
-    /**
-     * Get the browser context the target belongs to.
-     */
-    browserContext() {
-        throw new Error('not implemented');
-    }
-    /**
-     * Get the target that opened this target. Top-level targets return `null`.
-     */
-    opener() {
-        throw new Error('not implemented');
-    }
 }
 exports.Target = Target;
 //# sourceMappingURL=Target.js.map

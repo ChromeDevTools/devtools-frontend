@@ -13,55 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { IsPageTargetCallback, TargetFilterCallback } from '../api/Browser.js';
-import type { Viewport } from '../common/Viewport.js';
+import type { BidiBrowser } from '../bidi/Browser.js';
+import type { BrowserConnectOptions, ConnectOptions } from '../common/ConnectOptions.js';
 import { CdpBrowser } from './Browser.js';
-import type { ConnectOptions } from './Puppeteer.js';
-/**
- * Generic browser options that can be passed when launching any browser or when
- * connecting to an existing browser instance.
- * @public
- */
-export interface BrowserConnectOptions {
-    /**
-     * Whether to ignore HTTPS errors during navigation.
-     * @defaultValue `false`
-     */
-    ignoreHTTPSErrors?: boolean;
-    /**
-     * Sets the viewport for each page.
-     */
-    defaultViewport?: Viewport | null;
-    /**
-     * Slows down Puppeteer operations by the specified amount of milliseconds to
-     * aid debugging.
-     */
-    slowMo?: number;
-    /**
-     * Callback to decide if Puppeteer should connect to a given target or not.
-     */
-    targetFilter?: TargetFilterCallback;
-    /**
-     * @internal
-     */
-    _isPageTarget?: IsPageTargetCallback;
-    /**
-     * @defaultValue 'cdp'
-     * @internal
-     */
-    protocol?: 'cdp' | 'webDriverBiDi';
-    /**
-     * Timeout setting for individual protocol (CDP) calls.
-     *
-     * @defaultValue `180_000`
-     */
-    protocolTimeout?: number;
-}
 /**
  * Users should never call this directly; it's called when calling
- * `puppeteer.connect`.
+ * `puppeteer.connect` with `protocol: 'cdp'`.
  *
  * @internal
  */
 export declare function _connectToCdpBrowser(options: BrowserConnectOptions & ConnectOptions): Promise<CdpBrowser>;
+/**
+ * Users should never call this directly; it's called when calling
+ * `puppeteer.connect` with `protocol: 'webDriverBiDi'`.
+ *
+ * @internal
+ */
+export declare function _connectToBiDiOverCdpBrowser(options: BrowserConnectOptions & ConnectOptions): Promise<BidiBrowser>;
 //# sourceMappingURL=BrowserConnector.d.ts.map

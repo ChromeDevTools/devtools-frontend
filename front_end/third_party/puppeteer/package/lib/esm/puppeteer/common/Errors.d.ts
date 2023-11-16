@@ -61,6 +61,14 @@ export declare class ProtocolError extends CustomError {
     get originalMessage(): string;
 }
 /**
+ * Puppeteer will throw this error if a method is not
+ * supported by the currently used protocol
+ *
+ * @public
+ */
+export declare class UnsupportedOperation extends CustomError {
+}
+/**
  * @internal
  */
 export declare class TargetCloseError extends ProtocolError {

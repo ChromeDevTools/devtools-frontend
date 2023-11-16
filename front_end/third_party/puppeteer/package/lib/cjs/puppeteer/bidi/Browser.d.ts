@@ -38,6 +38,7 @@ export interface BidiBrowserOptions {
  */
 export declare class BidiBrowser extends Browser {
     #private;
+    readonly protocol = "webDriverBiDi";
     static readonly subscribeModules: string[];
     static readonly subscribeCdpEvents: Bidi.Cdp.EventNames[];
     static create(opts: BidiBrowserOptions): Promise<BidiBrowser>;
@@ -45,6 +46,7 @@ export declare class BidiBrowser extends Browser {
         browserName: string;
         browserVersion: string;
     });
+    userAgent(): never;
     get connection(): BidiConnection;
     wsEndpoint(): string;
     close(): Promise<void>;
@@ -59,5 +61,6 @@ export declare class BidiBrowser extends Browser {
     targets(): Target[];
     _getTargetById(id: string): BidiTarget;
     target(): Target;
+    disconnect(): void;
 }
 //# sourceMappingURL=Browser.d.ts.map

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { Browser, } from '../api/Browser.js';
+import { UnsupportedOperation } from '../common/Errors.js';
 import { debugError } from '../common/util.js';
 import { BidiBrowserContext } from './BrowserContext.js';
 import { BrowsingContext, BrowsingContextEvent } from './BrowsingContext.js';
@@ -22,6 +23,7 @@ import { BiDiBrowserTarget, BiDiBrowsingContextTarget, BiDiPageTarget, } from '.
  * @internal
  */
 export class BidiBrowser extends Browser {
+    protocol = 'webDriverBiDi';
     // TODO: Update generator to include fully module
     static subscribeModules = [
         'browsingContext',
@@ -111,6 +113,9 @@ export class BidiBrowser extends Browser {
         for (const [eventName, handler] of this.#connectionEventHandlers) {
             this.#connection.on(eventName, handler);
         }
+    }
+    userAgent() {
+        throw new UnsupportedOperation();
     }
     #onContextDomLoaded(event) {
         const target = this.#targets.get(event.context);
@@ -233,6 +238,9 @@ export class BidiBrowser extends Browser {
     }
     target() {
         return this.#browserTarget;
+    }
+    disconnect() {
+        this;
     }
 }
 //# sourceMappingURL=Browser.js.map

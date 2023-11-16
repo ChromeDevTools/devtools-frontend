@@ -30,6 +30,7 @@ import {
   type MouseOptions,
   type MouseWheelOptions,
 } from '../api/Input.js';
+import {UnsupportedOperation} from '../common/Errors.js';
 import type {KeyInput} from '../common/USKeyboardLayout.js';
 
 import type {BrowsingContext} from './BrowsingContext.js';
@@ -626,6 +627,26 @@ export class BidiMouse extends Mouse {
         },
       ],
     });
+  }
+
+  override drag(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override dragOver(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override dragEnter(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override drop(): never {
+    throw new UnsupportedOperation();
+  }
+
+  override dragAndDrop(): never {
+    throw new UnsupportedOperation();
   }
 }
 

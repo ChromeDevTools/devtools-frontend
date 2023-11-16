@@ -94,40 +94,6 @@ class Browser extends EventEmitter_js_1.EventEmitter {
         super();
     }
     /**
-     * @internal
-     */
-    _attach() {
-        throw new Error('Not implemented');
-    }
-    /**
-     * @internal
-     */
-    _detach() {
-        throw new Error('Not implemented');
-    }
-    /**
-     * Gets the associated
-     * {@link https://nodejs.org/api/child_process.html#class-childprocess | ChildProcess}.
-     *
-     * @returns `null` if this instance was connected to via
-     * {@link Puppeteer.connect}.
-     */
-    process() {
-        throw new Error('Not implemented');
-    }
-    /**
-     * @internal
-     */
-    _getIsPageTargetCallback() {
-        throw new Error('Not implemented');
-    }
-    _disposeContext() {
-        throw new Error('Not implemented');
-    }
-    _createPageInContext() {
-        throw new Error('Not implemented');
-    }
-    /**
      * Waits until a {@link Target | target} matching the given `predicate`
      * appears and returns it.
      *
@@ -164,22 +130,6 @@ class Browser extends EventEmitter_js_1.EventEmitter {
         return contextPages.reduce((acc, x) => {
             return acc.concat(x);
         }, []);
-    }
-    /**
-     * Gets this {@link Browser | browser's} original user agent.
-     *
-     * {@link Page | Pages} can override the user agent with
-     * {@link Page.setUserAgent}.
-     */
-    userAgent() {
-        throw new Error('Not implemented');
-    }
-    /**
-     * Disconnects Puppeteer from this {@link Browser | browser}, but leaves the
-     * process running.
-     */
-    disconnect() {
-        throw new Error('Not implemented');
     }
     /**
      * Whether Puppeteer is connected to this {@link Browser | browser}.

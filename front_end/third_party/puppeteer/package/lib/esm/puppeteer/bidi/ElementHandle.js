@@ -93,6 +93,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 import { ElementHandle } from '../api/ElementHandle.js';
+import { UnsupportedOperation } from '../common/Errors.js';
 import { throwIfDisposed } from '../util/decorators.js';
 import { BidiJSHandle } from './JSHandle.js';
 /**
@@ -167,6 +168,9 @@ let BidiElementHandle = (() => {
             finally {
                 __disposeResources(env_1);
             }
+        }
+        uploadFile() {
+            throw new UnsupportedOperation();
         }
     };
 })();

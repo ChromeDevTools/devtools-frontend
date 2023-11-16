@@ -22,14 +22,15 @@ import { BidiPage } from './Page.js';
 /**
  * @internal
  */
-export declare class BidiTarget extends Target {
+export declare abstract class BidiTarget extends Target {
     protected _browserContext: BidiBrowserContext;
     constructor(browserContext: BidiBrowserContext);
+    _setBrowserContext(browserContext: BidiBrowserContext): void;
     worker(): Promise<null>;
     browser(): BidiBrowser;
     browserContext(): BidiBrowserContext;
-    opener(): Target | undefined;
-    _setBrowserContext(browserContext: BidiBrowserContext): void;
+    opener(): never;
+    createCDPSession(): Promise<CDPSession>;
 }
 /**
  * @internal
@@ -54,7 +55,7 @@ export declare class BiDiBrowsingContextTarget extends BidiTarget {
 export declare class BiDiPageTarget extends BiDiBrowsingContextTarget {
     #private;
     constructor(browserContext: BidiBrowserContext, browsingContext: BrowsingContext);
-    page(): Promise<BidiPage | null>;
+    page(): Promise<BidiPage>;
     _setBrowserContext(browserContext: BidiBrowserContext): void;
 }
 //# sourceMappingURL=Target.d.ts.map

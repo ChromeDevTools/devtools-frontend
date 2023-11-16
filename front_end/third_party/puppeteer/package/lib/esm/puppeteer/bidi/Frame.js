@@ -50,6 +50,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { from, fromEvent, merge, map, forkJoin, first, firstValueFrom, raceWith, } from '../../third_party/rxjs/rxjs.js';
 import { Frame, throwIfDetached, } from '../api/Frame.js';
+import { UnsupportedOperation } from '../common/Errors.js';
 import { UTILITY_WORLD_NAME, setPageContent, timeout } from '../common/util.js';
 import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
@@ -105,6 +106,9 @@ let BidiFrame = (() => {
         page() {
             return this.#page;
         }
+        isOOPFrame() {
+            throw new UnsupportedOperation();
+        }
         url() {
             return this.#context.url;
         }
@@ -159,6 +163,9 @@ let BidiFrame = (() => {
                 ._waitWithNetworkIdle(navigatedObservable, networkIdle)
                 .pipe(raceWith(timeout(ms), from(this.#abortDeferred.valueOrThrow()))));
             return this.#page.getNavigationResponse(response?.result.navigation);
+        }
+        waitForDevicePrompt() {
+            throw new UnsupportedOperation();
         }
         get detached() {
             return this.#disposed;

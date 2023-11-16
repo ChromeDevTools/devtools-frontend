@@ -30,9 +30,9 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./BrowserWebSocketTransport.js"), exports);
-__exportStar(require("./common.js"), exports);
 __exportStar(require("./Configuration.js"), exports);
 __exportStar(require("./ConnectionTransport.js"), exports);
+__exportStar(require("./ConnectOptions.js"), exports);
 __exportStar(require("./ConsoleMessage.js"), exports);
 __exportStar(require("./CustomQueryHandler.js"), exports);
 __exportStar(require("./Debug.js"), exports);
@@ -49,6 +49,7 @@ __exportStar(require("./PDFOptions.js"), exports);
 __exportStar(require("./PierceQueryHandler.js"), exports);
 __exportStar(require("./PQueryHandler.js"), exports);
 __exportStar(require("./Product.js"), exports);
+__exportStar(require("./Puppeteer.js"), exports);
 __exportStar(require("./QueryHandler.js"), exports);
 __exportStar(require("./ScriptInjector.js"), exports);
 __exportStar(require("./SecurityDetails.js"), exports);

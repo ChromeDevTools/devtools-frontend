@@ -1,4 +1,5 @@
 import { HTTPRequest } from '../api/HTTPRequest.js';
+import { UnsupportedOperation } from '../common/Errors.js';
 /**
  * @internal
  */
@@ -33,7 +34,7 @@ export class BidiHTTPRequest extends HTTPRequest {
         }
     }
     get client() {
-        throw new Error('Not implemented');
+        throw new UnsupportedOperation();
     }
     url() {
         return this.#url;
@@ -70,34 +71,34 @@ export class BidiHTTPRequest extends HTTPRequest {
         return this.#frame;
     }
     continueRequestOverrides() {
-        throw new Error('Not implemented');
+        throw new UnsupportedOperation();
     }
-    async continue(_overrides = {}) {
-        throw new Error('Not implemented');
+    continue(_overrides = {}) {
+        throw new UnsupportedOperation();
     }
     responseForRequest() {
-        throw new Error('Not implemented');
+        throw new UnsupportedOperation();
     }
     abortErrorReason() {
-        throw new Error('Not implemented');
+        throw new UnsupportedOperation();
     }
     interceptResolutionState() {
-        throw new Error('Not implemented');
+        throw new UnsupportedOperation();
     }
     isInterceptResolutionHandled() {
-        throw new Error('Not implemented');
+        throw new UnsupportedOperation();
     }
-    async finalizeInterceptions() {
-        throw new Error('Not implemented');
+    finalizeInterceptions() {
+        throw new UnsupportedOperation();
     }
     abort() {
-        throw new Error('Not implemented');
+        throw new UnsupportedOperation();
     }
     respond(_response, _priority) {
-        throw new Error('Not implemented');
+        throw new UnsupportedOperation();
     }
     failure() {
-        throw new Error('Not implemented');
+        throw new UnsupportedOperation();
     }
 }
 //# sourceMappingURL=HTTPRequest.js.map

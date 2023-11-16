@@ -17,6 +17,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiBrowser = void 0;
 const Browser_js_1 = require("../api/Browser.js");
+const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
 const BrowserContext_js_1 = require("./BrowserContext.js");
 const BrowsingContext_js_1 = require("./BrowsingContext.js");
@@ -25,6 +26,7 @@ const Target_js_1 = require("./Target.js");
  * @internal
  */
 class BidiBrowser extends Browser_js_1.Browser {
+    protocol = 'webDriverBiDi';
     // TODO: Update generator to include fully module
     static subscribeModules = [
         'browsingContext',
@@ -114,6 +116,9 @@ class BidiBrowser extends Browser_js_1.Browser {
         for (const [eventName, handler] of this.#connectionEventHandlers) {
             this.#connection.on(eventName, handler);
         }
+    }
+    userAgent() {
+        throw new Errors_js_1.UnsupportedOperation();
     }
     #onContextDomLoaded(event) {
         const target = this.#targets.get(event.context);
@@ -236,6 +241,9 @@ class BidiBrowser extends Browser_js_1.Browser {
     }
     target() {
         return this.#browserTarget;
+    }
+    disconnect() {
+        this;
     }
 }
 exports.BidiBrowser = BidiBrowser;

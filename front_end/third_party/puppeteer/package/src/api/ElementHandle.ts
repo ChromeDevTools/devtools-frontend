@@ -443,7 +443,7 @@ export abstract class ElementHandle<
    *
    * JavaScript:
    *
-   * ```js
+   * ```ts
    * const feedHandle = await page.$('.feed');
    * expect(
    *   await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText))
@@ -962,14 +962,12 @@ export abstract class ElementHandle<
    * {@link https://nodejs.org/api/process.html#process_process_cwd | current working directory}.
    * For locals script connecting to remote chrome environments, paths must be
    * absolute.
+   *
    */
-  async uploadFile(
+  abstract uploadFile(
     this: ElementHandle<HTMLInputElement>,
     ...paths: string[]
   ): Promise<void>;
-  async uploadFile(this: ElementHandle<HTMLInputElement>): Promise<void> {
-    throw new Error('Not implemented');
-  }
 
   /**
    * This method scrolls element into view if needed, and then uses
@@ -1158,7 +1156,8 @@ export abstract class ElementHandle<
 
   /**
    * This method returns the bounding box of the element (relative to the main frame),
-   * or `null` if the element is not visible.
+   * or `null` if the element is {@link https://drafts.csswg.org/css-display-4/#box-generation | not part of the layout}
+   * (example: `display: none`).
    */
   @throwIfDisposed()
   @ElementHandle.bindIsolatedHandle
@@ -1190,7 +1189,9 @@ export abstract class ElementHandle<
   }
 
   /**
-   * This method returns boxes of the element, or `null` if the element is not visible.
+   * This method returns boxes of the element,
+   * or `null` if the element is {@link https://drafts.csswg.org/css-display-4/#box-generation | not part of the layout}
+   * (example: `display: none`).
    *
    * @remarks
    *

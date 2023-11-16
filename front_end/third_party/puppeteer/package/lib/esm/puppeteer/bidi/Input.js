@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { Keyboard, Mouse, MouseButton, Touchscreen, } from '../api/Input.js';
+import { UnsupportedOperation } from '../common/Errors.js';
 var SourceActionsType;
 (function (SourceActionsType) {
     SourceActionsType["None"] = "none";
@@ -536,6 +537,21 @@ export class BidiMouse extends Mouse {
                 },
             ],
         });
+    }
+    drag() {
+        throw new UnsupportedOperation();
+    }
+    dragOver() {
+        throw new UnsupportedOperation();
+    }
+    dragEnter() {
+        throw new UnsupportedOperation();
+    }
+    drop() {
+        throw new UnsupportedOperation();
+    }
+    dragAndDrop() {
+        throw new UnsupportedOperation();
     }
 }
 /**

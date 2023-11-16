@@ -17,6 +17,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiBrowserContext = void 0;
 const BrowserContext_js_1 = require("../api/BrowserContext.js");
+const Errors_js_1 = require("../common/Errors.js");
 /**
  * @internal
  */
@@ -89,6 +90,12 @@ class BidiBrowserContext extends BrowserContext_js_1.BrowserContext {
     }
     isIncognito() {
         return !this.#isDefault;
+    }
+    overridePermissions() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    clearPermissionOverrides() {
+        throw new Errors_js_1.UnsupportedOperation();
     }
 }
 exports.BidiBrowserContext = BidiBrowserContext;

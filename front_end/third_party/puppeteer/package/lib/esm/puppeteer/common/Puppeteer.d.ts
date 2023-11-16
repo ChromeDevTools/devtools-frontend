@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 import type { Browser } from '../api/Browser.js';
-import type { ConnectionTransport } from '../common/ConnectionTransport.js';
-import { type CustomQueryHandler } from '../common/CustomQueryHandler.js';
-import { type BrowserConnectOptions } from './BrowserConnector.js';
+import type { ConnectOptions } from './ConnectOptions.js';
+import { type CustomQueryHandler } from './CustomQueryHandler.js';
 /**
  * Settings that are common to the Puppeteer class, regardless of environment.
  *
@@ -24,20 +23,6 @@ import { type BrowserConnectOptions } from './BrowserConnector.js';
  */
 export interface CommonPuppeteerSettings {
     isPuppeteerCore: boolean;
-}
-/**
- * @public
- */
-export interface ConnectOptions extends BrowserConnectOptions {
-    browserWSEndpoint?: string;
-    browserURL?: string;
-    transport?: ConnectionTransport;
-    /**
-     * Headers to use for the web socket connection.
-     * @remarks
-     * Only works in the Node.js environment.
-     */
-    headers?: Record<string, string>;
 }
 /**
  * The main Puppeteer class.
@@ -56,7 +41,7 @@ export declare class Puppeteer {
      *
      * @internal
      */
-    static customQueryHandlers: import("../common/CustomQueryHandler.js").CustomQueryHandlerRegistry;
+    static customQueryHandlers: import("./CustomQueryHandler.js").CustomQueryHandlerRegistry;
     /**
      * Registers a {@link CustomQueryHandler | custom query handler}.
      *

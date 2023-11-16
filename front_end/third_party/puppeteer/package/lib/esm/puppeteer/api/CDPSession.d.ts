@@ -73,22 +73,22 @@ export declare abstract class CDPSession extends EventEmitter<CDPSessionEvents> 
      * @internal
      */
     constructor();
-    connection(): Connection | undefined;
+    abstract connection(): Connection | undefined;
     /**
      * Parent session in terms of CDP's auto-attach mechanism.
      *
      * @internal
      */
     parentSession(): CDPSession | undefined;
-    send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
+    abstract send<T extends keyof ProtocolMapping.Commands>(method: T, ...paramArgs: ProtocolMapping.Commands[T]['paramsType']): Promise<ProtocolMapping.Commands[T]['returnType']>;
     /**
      * Detaches the cdpSession from the target. Once detached, the cdpSession object
      * won't emit any events and can't be used to send messages.
      */
-    detach(): Promise<void>;
+    abstract detach(): Promise<void>;
     /**
      * Returns the session's id.
      */
-    id(): string;
+    abstract id(): string;
 }
 //# sourceMappingURL=CDPSession.d.ts.map

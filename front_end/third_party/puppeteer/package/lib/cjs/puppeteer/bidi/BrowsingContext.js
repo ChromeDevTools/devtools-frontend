@@ -46,7 +46,7 @@ class CdpSessionWrapper extends CDPSession_js_1.CDPSession {
     }
     async send(method, ...paramArgs) {
         if (!this.#context.supportsCdp()) {
-            throw new Error('CDP support is required for this feature. The current browser does not support CDP.');
+            throw new Errors_js_1.UnsupportedOperation('CDP support is required for this feature. The current browser does not support CDP.');
         }
         if (this.#detached) {
             throw new Errors_js_1.TargetCloseError(`Protocol error (${method}): Session closed. Most likely the page has been closed.`);

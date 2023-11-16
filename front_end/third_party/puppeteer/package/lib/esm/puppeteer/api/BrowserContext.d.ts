@@ -94,7 +94,7 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
      * Gets all active {@link Target | targets} inside this
      * {@link BrowserContext | browser context}.
      */
-    targets(): Target[];
+    abstract targets(): Target[];
     /**
      * Waits until a {@link Target | target} matching the given `predicate`
      * appears and returns it.
@@ -145,7 +145,7 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
      * @param permissions - An array of permissions to grant. All permissions that
      * are not listed here will be automatically denied.
      */
-    overridePermissions(origin: string, permissions: Permission[]): Promise<void>;
+    abstract overridePermissions(origin: string, permissions: Permission[]): Promise<void>;
     /**
      * Clears all permission overrides for this
      * {@link BrowserContext | browser context}.
@@ -160,7 +160,7 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
      * context.clearPermissionOverrides();
      * ```
      */
-    clearPermissionOverrides(): Promise<void>;
+    abstract clearPermissionOverrides(): Promise<void>;
     /**
      * Creates a new {@link Page | page} in this
      * {@link BrowserContext | browser context}.

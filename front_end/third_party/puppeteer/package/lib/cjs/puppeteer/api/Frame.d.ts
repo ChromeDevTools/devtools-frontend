@@ -262,7 +262,7 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      * Is `true` if the frame is an out-of-process (OOP) frame. Otherwise,
      * `false`.
      */
-    isOOPFrame(): boolean;
+    abstract isOOPFrame(): boolean;
     /**
      * Navigates the frame to the given `url`.
      *
@@ -426,7 +426,7 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      *
      * @example
      *
-     * ```js
+     * ```ts
      * const divsCounts = await frame.$$eval('div', divs => divs.length);
      * ```
      *
@@ -745,11 +745,9 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device'))
      * );
      * ```
-     */
-    waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
-    /**
+     *
      * @internal
      */
-    exposeFunction<Args extends unknown[], Ret>(name: string, fn: (...args: Args) => Awaitable<Ret>): Promise<void>;
+    abstract waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
 }
 //# sourceMappingURL=Frame.d.ts.map

@@ -38,7 +38,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._connectToCdpBrowser = void 0;
+exports._connectToBiDiOverCdpBrowser = exports._connectToCdpBrowser = void 0;
+const Errors_js_1 = require("../common/Errors.js");
 const fetch_js_1 = require("../common/fetch.js");
 const util_js_1 = require("../common/util.js");
 const environment_js_1 = require("../environment.js");
@@ -46,6 +47,7 @@ const assert_js_1 = require("../util/assert.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Browser_js_1 = require("./Browser.js");
 const Connection_js_1 = require("./Connection.js");
+const DEFAULT_VIEWPORT = Object.freeze({ width: 800, height: 600 });
 const getWebSocketTransportClass = async () => {
     return environment_js_1.isNode
         ? (await Promise.resolve().then(() => __importStar(require('../node/NodeWebSocketTransport.js')))).NodeWebSocketTransport
@@ -54,29 +56,13 @@ const getWebSocketTransportClass = async () => {
 };
 /**
  * Users should never call this directly; it's called when calling
- * `puppeteer.connect`.
+ * `puppeteer.connect` with `protocol: 'cdp'`.
  *
  * @internal
  */
 async function _connectToCdpBrowser(options) {
-    const { browserWSEndpoint, browserURL, ignoreHTTPSErrors = false, defaultViewport = { width: 800, height: 600 }, transport, headers = {}, slowMo = 0, targetFilter, _isPageTarget: isPageTarget, protocolTimeout, } = options;
-    (0, assert_js_1.assert)(Number(!!browserWSEndpoint) + Number(!!browserURL) + Number(!!transport) ===
-        1, 'Exactly one of browserWSEndpoint, browserURL or transport must be passed to puppeteer.connect');
-    let connection;
-    if (transport) {
-        connection = new Connection_js_1.Connection('', transport, slowMo, protocolTimeout);
-    }
-    else if (browserWSEndpoint) {
-        const WebSocketClass = await getWebSocketTransportClass();
-        const connectionTransport = await WebSocketClass.create(browserWSEndpoint, headers);
-        connection = new Connection_js_1.Connection(browserWSEndpoint, connectionTransport, slowMo, protocolTimeout);
-    }
-    else if (browserURL) {
-        const connectionURL = await getWSEndpoint(browserURL);
-        const WebSocketClass = await getWebSocketTransportClass();
-        const connectionTransport = await WebSocketClass.create(connectionURL);
-        connection = new Connection_js_1.Connection(connectionURL, connectionTransport, slowMo, protocolTimeout);
-    }
+    const { ignoreHTTPSErrors = false, defaultViewport = DEFAULT_VIEWPORT, targetFilter, _isPageTarget: isPageTarget, } = options;
+    const connection = await getCdpConnection(options);
     const version = await connection.send('Browser.getVersion');
     const product = version.product.toLowerCase().includes('firefox')
         ? 'firefox'
@@ -88,6 +74,34 @@ async function _connectToCdpBrowser(options) {
     return browser;
 }
 exports._connectToCdpBrowser = _connectToCdpBrowser;
+/**
+ * Users should never call this directly; it's called when calling
+ * `puppeteer.connect` with `protocol: 'webDriverBiDi'`.
+ *
+ * @internal
+ */
+async function _connectToBiDiOverCdpBrowser(options) {
+    const { ignoreHTTPSErrors = false, defaultViewport = DEFAULT_VIEWPORT } = options;
+    const connection = await getCdpConnection(options);
+    const version = await connection.send('Browser.getVersion');
+    if (version.product.toLowerCase().includes('firefox')) {
+        throw new Errors_js_1.UnsupportedOperation('Firefox is not supported in BiDi over CDP mode.');
+    }
+    // TODO: use other options too.
+    const BiDi = await Promise.resolve().then(() => __importStar(require(/* webpackIgnore: true */ '../bidi/bidi.js')));
+    const bidiConnection = await BiDi.connectBidiOverCdp(connection);
+    const bidiBrowser = await BiDi.BidiBrowser.create({
+        connection: bidiConnection,
+        closeCallback: () => {
+            return connection.send('Browser.close').catch(util_js_1.debugError);
+        },
+        process: undefined,
+        defaultViewport: defaultViewport,
+        ignoreHTTPSErrors: ignoreHTTPSErrors,
+    });
+    return bidiBrowser;
+}
+exports._connectToBiDiOverCdpBrowser = _connectToBiDiOverCdpBrowser;
 async function getWSEndpoint(browserURL) {
     const endpointURL = new URL('/json/version', browserURL);
     const fetch = await (0, fetch_js_1.getFetch)();
@@ -109,5 +123,28 @@ async function getWSEndpoint(browserURL) {
         }
         throw error;
     }
+}
+/**
+ * Returns a CDP connection for the given options.
+ */
+async function getCdpConnection(options) {
+    const { browserWSEndpoint, browserURL, transport, headers = {}, slowMo = 0, protocolTimeout, } = options;
+    (0, assert_js_1.assert)(Number(!!browserWSEndpoint) + Number(!!browserURL) + Number(!!transport) ===
+        1, 'Exactly one of browserWSEndpoint, browserURL or transport must be passed to puppeteer.connect');
+    if (transport) {
+        return new Connection_js_1.Connection('', transport, slowMo, protocolTimeout);
+    }
+    else if (browserWSEndpoint) {
+        const WebSocketClass = await getWebSocketTransportClass();
+        const connectionTransport = await WebSocketClass.create(browserWSEndpoint, headers);
+        return new Connection_js_1.Connection(browserWSEndpoint, connectionTransport, slowMo, protocolTimeout);
+    }
+    else if (browserURL) {
+        const connectionURL = await getWSEndpoint(browserURL);
+        const WebSocketClass = await getWebSocketTransportClass();
+        const connectionTransport = await WebSocketClass.create(connectionURL);
+        return new Connection_js_1.Connection(connectionURL, connectionTransport, slowMo, protocolTimeout);
+    }
+    throw new Error('Invalid connection options');
 }
 //# sourceMappingURL=BrowserConnector.js.map

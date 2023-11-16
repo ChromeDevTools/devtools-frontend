@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiHTTPResponse = void 0;
 const HTTPResponse_js_1 = require("../api/HTTPResponse.js");
+const Errors_js_1 = require("../common/Errors.js");
 /**
  * @internal
  */
@@ -67,10 +68,10 @@ class BidiHTTPResponse extends HTTPResponse_js_1.HTTPResponse {
         return false;
     }
     securityDetails() {
-        throw new Error('Not implemented');
+        throw new Errors_js_1.UnsupportedOperation();
     }
     buffer() {
-        throw new Error('Not implemented');
+        throw new Errors_js_1.UnsupportedOperation();
     }
 }
 exports.BidiHTTPResponse = BidiHTTPResponse;

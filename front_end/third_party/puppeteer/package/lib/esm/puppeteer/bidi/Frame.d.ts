@@ -35,6 +35,7 @@ export declare class BidiFrame extends Frame {
     mainRealm(): Sandbox;
     isolatedRealm(): Sandbox;
     page(): BidiPage;
+    isOOPFrame(): never;
     url(): string;
     parentFrame(): BidiFrame | null;
     childFrames(): BidiFrame[];
@@ -42,6 +43,7 @@ export declare class BidiFrame extends Frame {
     setContent(html: string, options?: WaitForOptions): Promise<void>;
     context(): BrowsingContext;
     waitForNavigation(options?: WaitForOptions): Promise<BidiHTTPResponse | null>;
+    waitForDevicePrompt(): never;
     get detached(): boolean;
     [disposeSymbol](): void;
     exposeFunction<Args extends unknown[], Ret>(name: string, apply: (...args: Args) => Awaitable<Ret>): Promise<void>;

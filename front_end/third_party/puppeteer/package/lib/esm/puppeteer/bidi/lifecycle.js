@@ -45,11 +45,17 @@ export const lifeCycleToSubscribedEvent = new Map([
     ['load', 'browsingContext.load'],
     ['domcontentloaded', 'browsingContext.domContentLoaded'],
 ]);
+/**
+ * @internal
+ */
 export function getBiDiLifecycleEvent(event) {
     const lifeCycles = getBiDiLifeCycles(event);
     const bidiEvent = lifeCycleToSubscribedEvent.get(lifeCycles[0]);
     return [bidiEvent, lifeCycles[1]];
 }
+/**
+ * @internal
+ */
 export function rewriteNavigationError(message, ms) {
     return catchError(error => {
         if (error instanceof ProtocolError) {

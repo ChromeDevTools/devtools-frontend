@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { JSHandle } from '../api/JSHandle.js';
+import { UnsupportedOperation } from '../common/Errors.js';
 import { BidiDeserializer } from './Deserializer.js';
 import { releaseReference } from './util.js';
 /**
@@ -80,7 +81,7 @@ export class BidiJSHandle extends JSHandle {
         return this.#remoteValue;
     }
     remoteObject() {
-        throw new Error('Not available in WebDriver BiDi');
+        throw new UnsupportedOperation('Not available in WebDriver BiDi');
     }
 }
 //# sourceMappingURL=JSHandle.js.map

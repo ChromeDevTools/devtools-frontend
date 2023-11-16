@@ -155,8 +155,9 @@ class ChromeLauncher extends ProductLauncher_js_1.ProductLauncher {
             '--disable-default-apps',
             '--disable-dev-shm-usage',
             '--disable-extensions',
-            `--disable-features=${disabledFeatures.join(',')}`,
+            '--disable-field-trial-config',
             '--disable-hang-monitor',
+            '--disable-infobars',
             '--disable-ipc-flooding-protection',
             '--disable-popup-blocking',
             '--disable-prompt-on-repost',
@@ -164,16 +165,14 @@ class ChromeLauncher extends ProductLauncher_js_1.ProductLauncher {
             '--disable-search-engine-choice-screen',
             '--disable-sync',
             '--enable-automation',
-            // TODO(sadym): remove '--enable-blink-features=IdleDetection' once
-            // IdleDetection is turned on by default.
-            '--enable-blink-features=IdleDetection',
-            `--enable-features=${enabledFeatures.join(',')}`,
             '--export-tagged-pdf',
             '--force-color-profile=srgb',
             '--metrics-recording-only',
             '--no-first-run',
             '--password-store=basic',
             '--use-mock-keychain',
+            `--disable-features=${disabledFeatures.join(',')}`,
+            `--enable-features=${enabledFeatures.join(',')}`,
         ];
         const { devtools = false, headless = !devtools, args = [], userDataDir, } = options;
         if (userDataDir) {

@@ -275,13 +275,6 @@ let Frame = (() => {
         constructor() {
             super();
         }
-        /**
-         * Is `true` if the frame is an out-of-process (OOP) frame. Otherwise,
-         * `false`.
-         */
-        isOOPFrame() {
-            throw new Error('Not implemented');
-        }
         #_document;
         /**
          * @internal
@@ -436,7 +429,7 @@ let Frame = (() => {
          *
          * @example
          *
-         * ```js
+         * ```ts
          * const divsCounts = await frame.$$eval('div', divs => divs.length);
          * ```
          *
@@ -890,15 +883,6 @@ let Frame = (() => {
             return await this.isolatedRealm().evaluate(() => {
                 return document.title;
             });
-        }
-        /**
-         * @internal
-         */
-        waitForDevicePrompt() {
-            throw new Error('Not implemented');
-        }
-        exposeFunction() {
-            throw new Error('Not implemented');
         }
     };
 })();

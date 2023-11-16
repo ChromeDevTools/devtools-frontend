@@ -77,5 +77,6 @@ export declare class CdpFrame extends Frame {
     _onLoadingStarted(): void;
     get detached(): boolean;
     [disposeSymbol](): void;
+    exposeFunction(): never;
 }
 //# sourceMappingURL=Frame.d.ts.map

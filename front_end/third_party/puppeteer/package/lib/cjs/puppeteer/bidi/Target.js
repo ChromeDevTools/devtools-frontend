@@ -17,6 +17,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BiDiPageTarget = exports.BiDiBrowsingContextTarget = exports.BiDiBrowserTarget = exports.BidiTarget = void 0;
 const Target_js_1 = require("../api/Target.js");
+const Errors_js_1 = require("../common/Errors.js");
 const BrowsingContext_js_1 = require("./BrowsingContext.js");
 const Page_js_1 = require("./Page.js");
 /**
@@ -26,6 +27,9 @@ class BidiTarget extends Target_js_1.Target {
     _browserContext;
     constructor(browserContext) {
         super();
+        this._browserContext = browserContext;
+    }
+    _setBrowserContext(browserContext) {
         this._browserContext = browserContext;
     }
     async worker() {
@@ -38,10 +42,10 @@ class BidiTarget extends Target_js_1.Target {
         return this._browserContext;
     }
     opener() {
-        throw new Error('Not implemented');
+        throw new Errors_js_1.UnsupportedOperation();
     }
-    _setBrowserContext(browserContext) {
-        this._browserContext = browserContext;
+    createCDPSession() {
+        throw new Errors_js_1.UnsupportedOperation();
     }
 }
 exports.BidiTarget = BidiTarget;

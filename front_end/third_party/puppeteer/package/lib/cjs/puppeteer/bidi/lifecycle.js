@@ -50,12 +50,18 @@ exports.lifeCycleToSubscribedEvent = new Map([
     ['load', 'browsingContext.load'],
     ['domcontentloaded', 'browsingContext.domContentLoaded'],
 ]);
+/**
+ * @internal
+ */
 function getBiDiLifecycleEvent(event) {
     const lifeCycles = getBiDiLifeCycles(event);
     const bidiEvent = exports.lifeCycleToSubscribedEvent.get(lifeCycles[0]);
     return [bidiEvent, lifeCycles[1]];
 }
 exports.getBiDiLifecycleEvent = getBiDiLifecycleEvent;
+/**
+ * @internal
+ */
 function rewriteNavigationError(message, ms) {
     return (0, rxjs_js_1.catchError)(error => {
         if (error instanceof Errors_js_1.ProtocolError) {

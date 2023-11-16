@@ -1,4 +1,3 @@
-"use strict";
 /**
  * Copyright 2017 Google Inc. All rights reserved.
  *
@@ -14,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Puppeteer = void 0;
-const CustomQueryHandler_js_1 = require("../common/CustomQueryHandler.js");
-const BrowserConnector_js_1 = require("./BrowserConnector.js");
+import { _connectToBiDiOverCdpBrowser, _connectToCdpBrowser, } from '../cdp/BrowserConnector.js';
+import { customQueryHandlers, } from './CustomQueryHandler.js';
 /**
  * The main Puppeteer class.
  *
@@ -28,14 +25,14 @@ const BrowserConnector_js_1 = require("./BrowserConnector.js");
  *
  * @public
  */
-class Puppeteer {
+export class Puppeteer {
     /**
      * Operations for {@link CustomQueryHandler | custom query handlers}. See
      * {@link CustomQueryHandlerRegistry}.
      *
      * @internal
      */
-    static customQueryHandlers = CustomQueryHandler_js_1.customQueryHandlers;
+    static customQueryHandlers = customQueryHandlers;
     /**
      * Registers a {@link CustomQueryHandler | custom query handler}.
      *
@@ -103,8 +100,12 @@ class Puppeteer {
      * @returns Promise which resolves to browser instance.
      */
     connect(options) {
-        return (0, BrowserConnector_js_1._connectToCdpBrowser)(options);
+        if (options.protocol === 'webDriverBiDi') {
+            return _connectToBiDiOverCdpBrowser(options);
+        }
+        else {
+            return _connectToCdpBrowser(options);
+        }
     }
 }
-exports.Puppeteer = Puppeteer;
 //# sourceMappingURL=Puppeteer.js.map

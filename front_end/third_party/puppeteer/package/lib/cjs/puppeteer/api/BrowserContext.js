@@ -57,33 +57,6 @@ class BrowserContext extends EventEmitter_js_1.EventEmitter {
         super();
     }
     /**
-     * Gets all active {@link Target | targets} inside this
-     * {@link BrowserContext | browser context}.
-     */
-    targets() {
-        throw new Error('Not implemented');
-    }
-    overridePermissions() {
-        throw new Error('Not implemented');
-    }
-    /**
-     * Clears all permission overrides for this
-     * {@link BrowserContext | browser context}.
-     *
-     * @example Clearing overridden permissions in the
-     * {@link Browser.defaultBrowserContext | default browser context}:
-     *
-     * ```ts
-     * const context = browser.defaultBrowserContext();
-     * context.overridePermissions('https://example.com', ['clipboard-read']);
-     * // do stuff ..
-     * context.clearPermissionOverrides();
-     * ```
-     */
-    clearPermissionOverrides() {
-        throw new Error('Not implemented');
-    }
-    /**
      * Whether this {@link BrowserContext | browser context} is closed.
      */
     get closed() {

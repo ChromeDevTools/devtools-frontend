@@ -56,7 +56,7 @@ export declare abstract class JSHandle<T = unknown> {
     /**
      * @internal
      */
-    get disposed(): boolean;
+    abstract get disposed(): boolean;
     /**
      * Evaluates the given function with the current handle as its first argument.
      */

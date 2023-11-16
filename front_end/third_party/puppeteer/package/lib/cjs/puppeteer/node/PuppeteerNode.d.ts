@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 import type { Browser } from '../api/Browser.js';
-import type { BrowserConnectOptions } from '../cdp/BrowserConnector.js';
-import { type CommonPuppeteerSettings, type ConnectOptions, Puppeteer } from '../cdp/Puppeteer.js';
 import type { Configuration } from '../common/Configuration.js';
+import type { ConnectOptions, BrowserConnectOptions } from '../common/ConnectOptions.js';
 import type { Product } from '../common/Product.js';
+import { type CommonPuppeteerSettings, Puppeteer } from '../common/Puppeteer.js';
 import type { BrowserLaunchArgumentOptions, ChromeReleaseChannel, LaunchOptions } from './LaunchOptions.js';
 /**
  * @public

@@ -42,5 +42,7 @@ export declare class BidiBrowserContext extends BrowserContext {
     browser(): BidiBrowser;
     pages(): Promise<BidiPage[]>;
     isIncognito(): boolean;
+    overridePermissions(): never;
+    clearPermissionOverrides(): never;
 }
 //# sourceMappingURL=BrowserContext.d.ts.map

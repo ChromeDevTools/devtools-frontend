@@ -96,6 +96,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiElementHandle = void 0;
 const ElementHandle_js_1 = require("../api/ElementHandle.js");
+const Errors_js_1 = require("../common/Errors.js");
 const decorators_js_1 = require("../util/decorators.js");
 const JSHandle_js_1 = require("./JSHandle.js");
 /**
@@ -170,6 +171,9 @@ let BidiElementHandle = (() => {
             finally {
                 __disposeResources(env_1);
             }
+        }
+        uploadFile() {
+            throw new Errors_js_1.UnsupportedOperation();
         }
     };
 })();

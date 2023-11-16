@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 import type * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
-import type {Protocol} from 'devtools-protocol';
 
 import type {Frame} from '../api/Frame.js';
 import type {
   ContinueRequestOverrides,
-  InterceptResolutionState,
   ResponseForRequest,
 } from '../api/HTTPRequest.js';
 import {HTTPRequest, type ResourceType} from '../api/HTTPRequest.js';
-import type {CDPSession} from '../puppeteer-core.js';
+import {UnsupportedOperation} from '../common/Errors.js';
 
 import type {BidiHTTPResponse} from './HTTPResponse.js';
 
@@ -71,8 +69,8 @@ export class BidiHTTPRequest extends HTTPRequest {
     }
   }
 
-  override get client(): CDPSession {
-    throw new Error('Not implemented');
+  override get client(): never {
+    throw new UnsupportedOperation();
   }
 
   override url(): string {
@@ -122,48 +120,46 @@ export class BidiHTTPRequest extends HTTPRequest {
     return this.#frame;
   }
 
-  override continueRequestOverrides(): ContinueRequestOverrides {
-    throw new Error('Not implemented');
+  override continueRequestOverrides(): never {
+    throw new UnsupportedOperation();
   }
 
-  override async continue(
-    _overrides: ContinueRequestOverrides = {}
-  ): Promise<void> {
-    throw new Error('Not implemented');
+  override continue(_overrides: ContinueRequestOverrides = {}): never {
+    throw new UnsupportedOperation();
   }
 
-  override responseForRequest(): Partial<ResponseForRequest> {
-    throw new Error('Not implemented');
+  override responseForRequest(): never {
+    throw new UnsupportedOperation();
   }
 
-  override abortErrorReason(): Protocol.Network.ErrorReason | null {
-    throw new Error('Not implemented');
+  override abortErrorReason(): never {
+    throw new UnsupportedOperation();
   }
 
-  override interceptResolutionState(): InterceptResolutionState {
-    throw new Error('Not implemented');
+  override interceptResolutionState(): never {
+    throw new UnsupportedOperation();
   }
 
-  override isInterceptResolutionHandled(): boolean {
-    throw new Error('Not implemented');
+  override isInterceptResolutionHandled(): never {
+    throw new UnsupportedOperation();
   }
 
-  override async finalizeInterceptions(): Promise<void> {
-    throw new Error('Not implemented');
+  override finalizeInterceptions(): never {
+    throw new UnsupportedOperation();
   }
 
-  override abort(): Promise<void> {
-    throw new Error('Not implemented');
+  override abort(): never {
+    throw new UnsupportedOperation();
   }
 
   override respond(
     _response: Partial<ResponseForRequest>,
     _priority?: number
-  ): Promise<void> {
-    throw new Error('Not implemented');
+  ): never {
+    throw new UnsupportedOperation();
   }
 
-  override failure(): {errorText: string} | null {
-    throw new Error('Not implemented');
+  override failure(): never {
+    throw new UnsupportedOperation();
   }
 }

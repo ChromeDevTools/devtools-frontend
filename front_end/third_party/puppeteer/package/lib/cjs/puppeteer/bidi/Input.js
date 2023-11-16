@@ -17,6 +17,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiTouchscreen = exports.BidiMouse = exports.BidiKeyboard = void 0;
 const Input_js_1 = require("../api/Input.js");
+const Errors_js_1 = require("../common/Errors.js");
 var SourceActionsType;
 (function (SourceActionsType) {
     SourceActionsType["None"] = "none";
@@ -540,6 +541,21 @@ class BidiMouse extends Input_js_1.Mouse {
                 },
             ],
         });
+    }
+    drag() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    dragOver() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    dragEnter() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    drop() {
+        throw new Errors_js_1.UnsupportedOperation();
+    }
+    dragAndDrop() {
+        throw new Errors_js_1.UnsupportedOperation();
     }
 }
 exports.BidiMouse = BidiMouse;

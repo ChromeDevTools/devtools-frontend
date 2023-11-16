@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { Target, TargetType } from '../api/Target.js';
+import { UnsupportedOperation } from '../common/Errors.js';
 import { CdpSessionWrapper } from './BrowsingContext.js';
 import { BidiPage } from './Page.js';
 /**
@@ -23,6 +24,9 @@ export class BidiTarget extends Target {
     _browserContext;
     constructor(browserContext) {
         super();
+        this._browserContext = browserContext;
+    }
+    _setBrowserContext(browserContext) {
         this._browserContext = browserContext;
     }
     async worker() {
@@ -35,10 +39,10 @@ export class BidiTarget extends Target {
         return this._browserContext;
     }
     opener() {
-        throw new Error('Not implemented');
+        throw new UnsupportedOperation();
     }
-    _setBrowserContext(browserContext) {
-        this._browserContext = browserContext;
+    createCDPSession() {
+        throw new UnsupportedOperation();
     }
 }
 /**

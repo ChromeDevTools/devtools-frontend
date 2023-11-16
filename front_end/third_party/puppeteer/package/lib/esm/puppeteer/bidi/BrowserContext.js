@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { BrowserContext } from '../api/BrowserContext.js';
+import { UnsupportedOperation } from '../common/Errors.js';
 /**
  * @internal
  */
@@ -86,6 +87,12 @@ export class BidiBrowserContext extends BrowserContext {
     }
     isIncognito() {
         return !this.#isDefault;
+    }
+    overridePermissions() {
+        throw new UnsupportedOperation();
+    }
+    clearPermissionOverrides() {
+        throw new UnsupportedOperation();
     }
 }
 //# sourceMappingURL=BrowserContext.js.map

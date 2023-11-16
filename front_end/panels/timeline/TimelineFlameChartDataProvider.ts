@@ -390,6 +390,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     } else if (!resetCompatibilityTracksAppender && this.timelineDataInternal) {
       this.compatibilityTracksAppender?.setFlameChartDataAndEntryData(
           this.timelineDataInternal, this.entryData, this.entryTypeByLevel);
+      this.compatibilityTracksAppender?.threadAppenders().forEach(
+          threadAppender => threadAppender.setHeaderAppended(false));
     }
   }
 
@@ -415,7 +417,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 
     if (rebuild) {
-      this.reset(false);
+      this.reset(/* resetCompatibilityTracksAppender= */ false);
     }
 
     this.flowEventIndexById.clear();

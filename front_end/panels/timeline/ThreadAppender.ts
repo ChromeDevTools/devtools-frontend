@@ -251,7 +251,6 @@ export class ThreadAppender implements TrackAppender {
    * appended the track's events.
    */
   appendTrackAtLevel(trackStartLevel: number, expanded: boolean = false): number {
-    this.#headerAppended = false;
     if (this.#entries.length === 0) {
       return trackStartLevel;
     }
@@ -275,6 +274,10 @@ export class ThreadAppender implements TrackAppender {
       this.#appendTrackHeaderAtLevel(trackStartLevel);
     }
     this.#headerAppended = true;
+  }
+
+  setHeaderAppended(headerAppended: boolean): void {
+    this.#headerAppended = headerAppended;
   }
 
   headerAppended(): boolean {

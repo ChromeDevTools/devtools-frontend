@@ -32,10 +32,7 @@ export class InsightProvider {
                                        return '\n`````\n' + result.codeChunk.code + '\n`````\n';
                                      }
                                      if ('error' in result) {
-                                       // Sometimes we get and 'error' entry next
-                                       // to a 'textChunk' in otherwise successful
-                                       // response. Ignoring this.
-                                       return '';
+                                       throw new Error(`${result['error']}: ${result['detail']}`);
                                      }
                                      throw new Error('Unknown chunk result');
                                    },

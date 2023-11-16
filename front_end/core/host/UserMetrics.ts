@@ -488,6 +488,22 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.ResourceTypeFilterItemSelected, resourceType, ResourceType.MaxValue);
   }
+
+  networkPanelMoreFiltersNumberOfSelectedChanged(itemCount: number): void {
+    const boundItemCount = Math.max(Math.min(itemCount, NetworkPanelMoreFilters.MaxValue), 0);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.NetworkPanelMoreFiltersNumberOfSelectedChanged, boundItemCount,
+        NetworkPanelMoreFilters.MaxValue);
+  }
+
+  networkPanelMoreFiltersItemSelected(filterName: string): void {
+    const filter = NetworkPanelMoreFilters[filterName as keyof typeof NetworkPanelMoreFilters];
+    if (filter === undefined) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.NetworkPanelMoreFiltersItemSelected, filter, NetworkPanelMoreFilters.MaxValue);
+  }
 }
 
 /**
@@ -1207,6 +1223,19 @@ export enum ResourceType {
   Other = 11,
   MaxValue = 12,
 }
+
+// TODO(crbug.com/1167717): Make this a const enum again
+/* eslint-disable @typescript-eslint/naming-convention */
+// eslint-disable-next-line rulesdir/const_enum
+export enum NetworkPanelMoreFilters {
+  'Hide data URLs' = 0,
+  'Hide extension URLs' = 1,
+  'Blocked response cookies' = 2,
+  'Blocked requests' = 3,
+  '3rd-party requests' = 4,
+  MaxValue = 5,
+}
+/* eslint-enable @typescript-eslint/naming-convention */
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum

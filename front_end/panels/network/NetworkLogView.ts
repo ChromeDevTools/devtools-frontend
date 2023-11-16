@@ -2768,6 +2768,7 @@ export class MoreFiltersDropDownUI extends
   private contextMenu?: UI.ContextMenu.ContextMenu;
   private activeFiltersCount: HTMLElement;
   private activeFiltersCountAdorner: Adorners.Adorner.Adorner;
+  private hasChanged = false;
 
   constructor(filterChangedCallback: () => void) {
     super();
@@ -2806,20 +2807,37 @@ export class MoreFiltersDropDownUI extends
     this.updateTooltip();
   }
 
+  emitUMA(): void {
+    if (this.hasChanged) {
+      const selectedFilters = this.selectedFilters();
+      Host.userMetrics.networkPanelMoreFiltersNumberOfSelectedChanged(selectedFilters.length);
+      for (const selectedFilter of selectedFilters) {
+        Host.userMetrics.networkPanelMoreFiltersItemSelected(selectedFilter);
+      }
+    }
+  }
+
+  #onSettingChanged(): void {
+    this.hasChanged = true;
+    this.filterChangedCallback();
+  }
+
   showMoreFiltersContextMenu(event: Common.EventTarget.EventTargetEvent<Event>): void {
     const mouseEvent = event.data;
+    this.hasChanged = false;
 
-    this.networkHideDataURLSetting.addChangeListener(this.filterChangedCallback.bind(this));
-    this.networkHideChromeExtensionsSetting.addChangeListener(this.filterChangedCallback.bind(this));
-    this.networkShowBlockedCookiesOnlySetting.addChangeListener(this.filterChangedCallback.bind(this));
-    this.networkOnlyBlockedRequestsSetting.addChangeListener(this.filterChangedCallback.bind(this));
-    this.networkOnlyThirdPartySetting.addChangeListener(this.filterChangedCallback.bind(this));
+    this.networkHideDataURLSetting.addChangeListener(this.#onSettingChanged.bind(this));
+    this.networkHideChromeExtensionsSetting.addChangeListener(this.#onSettingChanged.bind(this));
+    this.networkShowBlockedCookiesOnlySetting.addChangeListener(this.#onSettingChanged.bind(this));
+    this.networkOnlyBlockedRequestsSetting.addChangeListener(this.#onSettingChanged.bind(this));
+    this.networkOnlyThirdPartySetting.addChangeListener(this.#onSettingChanged.bind(this));
     this.contextMenu = new UI.ContextMenu.ContextMenu(mouseEvent, {
       useSoftMenu: true,
       keepOpen: true,
       x: this.dropDownButton.element.getBoundingClientRect().left,
       y: this.dropDownButton.element.getBoundingClientRect().top +
           (this.dropDownButton.element as HTMLElement).offsetHeight,
+      onSoftMenuClosed: this.emitUMA.bind(this),
     });
 
     this.contextMenu.defaultSection().appendCheckboxItem(

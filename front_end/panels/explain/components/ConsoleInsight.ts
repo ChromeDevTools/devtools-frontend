@@ -38,12 +38,14 @@ const negativeRatingReasons = [
   ['other', 'Other'],
 ];
 
-function buildLink(rating: 'Positive'|'Negative', reasonKeys: string[], comment: string, context: string):
-    Platform.DevToolsPath.UrlString {
+function buildLink(
+    rating: 'Positive'|'Negative', comment: string, context: string, consoleMessage: string, stackTrace: string,
+    relatedCode: string, networkData: string): Platform.DevToolsPath.UrlString {
   return `https://docs.google.com/forms/d/e/1FAIpQLSen1K-Uli0CSvlsNkI-L0Wq5iJ0FO9zFv0_mjM-3m5I8AKQGg/viewform?usp=pp_url&entry.1465663861=${
-             encodeURIComponent(rating)}&entry.166041694=${encodeURIComponent(reasonKeys.join(','))}&entry.109342357=${
-             encodeURIComponent(comment)}&entry.1805879004=${encodeURIComponent(context)}` as
-      Platform.DevToolsPath.UrlString;
+             encodeURIComponent(rating)}&entry.109342357=${encodeURIComponent(comment)}&entry.1805879004=${
+             encodeURIComponent(context)}&entry.623054399=${encodeURIComponent(consoleMessage)}&entry.720239045=${
+             encodeURIComponent(stackTrace)}&entry.1520357991=${encodeURIComponent(relatedCode)}&entry.1966708581=${
+             encodeURIComponent(networkData)}` as Platform.DevToolsPath.UrlString;
 }
 
 function localizeType(sourceType: SourceType): string {
@@ -77,7 +79,6 @@ export class ConsoleInsight extends HTMLElement {
   #selectedRating?: boolean;
   #selectedRatingReasons = new Set<string>();
   #context = {
-    prompt: '',
     result: '',
   };
   #loading = true;
@@ -126,7 +127,6 @@ export class ConsoleInsight extends HTMLElement {
       const {prompt, sources} = await this.#promptBuilder.buildPrompt();
       const result = await this.#insightProvider.getInsights(prompt);
       this.#context = {
-        prompt,
         result,
       };
       this.#sources = sources;
@@ -165,8 +165,12 @@ export class ConsoleInsight extends HTMLElement {
 
   #openFeedbackFrom(): void {
     const link = buildLink(
-        this.#selectedRating ? 'Positive' : 'Negative', Array.from(this.#selectedRatingReasons),
-        this.#shadow.querySelector('textarea')?.value || '', JSON.stringify(this.#context));
+        this.#selectedRating ? 'Positive' : 'Negative', this.#shadow.querySelector('textarea')?.value || '',
+        JSON.stringify(this.#context),
+        this.#sources.filter(s => s.type === SourceType.MESSAGE).map(s => s.value).join('\n'),
+        this.#sources.filter(s => s.type === SourceType.STACKTRACE).map(s => s.value).join('\n'),
+        this.#sources.filter(s => s.type === SourceType.RELATED_CODE).map(s => s.value).join('\n'),
+        this.#sources.filter(s => s.type === SourceType.NETWORK_REQUEST).map(s => s.value).join('\n'));
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(link);
   }
 

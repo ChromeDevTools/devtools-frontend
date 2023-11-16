@@ -52,6 +52,10 @@ This trace is a trace of example.com which was recorded via the OPP's "Start pro
 
 A trace of web.dev being loaded.
 
+### web-dev-with-commit
+
+The web-dev trace is old (recorded in 2021) and since its recording the events relating to frames have changed. In particular CompositeLayers was replaced by Commit, and frameSeqId was added to more events. This is a more recent (Nov 2023) trace that has the newer frame-related events in it. This was used when migrating the TimelineFrameModel to the new engine.
+
 ### multiple-top-level-renderers
 
 A trace containing multiple top level renderers.

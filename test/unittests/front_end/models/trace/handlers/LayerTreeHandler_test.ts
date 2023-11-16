@@ -33,7 +33,7 @@ describe('LayerTreeHandler', function() {
     const data = TraceModel.Handlers.ModelHandlers.LayerTreeHandler.data();
 
     assert.lengthOf(data.paints, 49);
-    assert.strictEqual(data.paintsToSnapshots.size, 33);
+    assert.strictEqual(data.paintsToSnapshots.size, 35);
     // Check that one expected pair got created
     const paintEvent = data.paints.find(paint => {
       return paint.ts === 42482841188;

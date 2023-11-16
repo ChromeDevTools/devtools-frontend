@@ -60,6 +60,7 @@ copy_to_gen("traces") {
     "user-timings-complex.json.gz",
     "user-timings.json.gz",
     "web-dev-with-advanced-instrumentation.json.gz",
+    "web-dev-with-commit.json.gz",
     "web-dev.json.gz",
   ]
 }

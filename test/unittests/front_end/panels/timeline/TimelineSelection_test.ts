@@ -13,7 +13,8 @@ const {assert} = chai;
 
 describeWithEnvironment('TimelineSelection', function() {
   it('can be created with a frame', function() {
-    const frame = new TimelineModel.TimelineFrameModel.TimelineFrame(1, 0);
+    const frame =
+        new TimelineModel.TimelineFrameModel.TimelineFrame(/* seqId */ 1, /* startTime */ 1, /* start offset */ 0);
     const selection = Timeline.TimelineSelection.TimelineSelection.fromFrame(frame);
     assert.strictEqual(selection.object, frame);
     assert.strictEqual(selection.startTime, frame.startTime);

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
@@ -17,7 +18,7 @@ const paintToSnapshotMap =
 let lastPaintForLayerId: Record<number, Types.TraceEvents.TraceEventPaint> = {};
 
 let currentMainFrameLayerTreeId: number|null = null;
-let lastUpdateLayerEvent: Types.TraceEvents.TraceEventUpdateLayer|null = null;
+const updateLayerEvents: Types.TraceEvents.TraceEventUpdateLayer[] = [];
 
 type RelevantLayerTreeEvent = Types.TraceEvents.TraceEventPaint|
                               Types.TraceEvents.TraceEventDisplayItemListSnapshot|
@@ -32,13 +33,13 @@ export function reset(): void {
 
   lastPaintForLayerId = {};
   currentMainFrameLayerTreeId = null;
-  lastUpdateLayerEvent = null;
+  updateLayerEvents.length = 0;
   relevantEvents.length = 0;
 }
 
 export function initialize(): void {
   if (handlerState !== HandlerState.UNINITIALIZED) {
-    throw new Error('LayerTre Handler was not reset before being initialized');
+    throw new Error('LayerTree Handler was not reset before being initialized');
   }
 
   handlerState = HandlerState.INITIALIZED;
@@ -61,9 +62,7 @@ export async function finalize(): Promise<void> {
   }
 
   const metaData = metaHandlerData();
-  relevantEvents.sort((eventA, eventB) => {
-    return eventA.ts - eventB.ts;
-  });
+  Helpers.Trace.sortTraceEventsInPlace(relevantEvents);
 
   for (const event of relevantEvents) {
     if (Types.TraceEvents.isTraceEventSetLayerId(event)) {
@@ -77,9 +76,10 @@ export async function finalize(): Promise<void> {
       // the information in it determines if we need to care about future
       // snapshot events - we need to know what the active layer is when we see a
       // snapshot.
-      lastUpdateLayerEvent = event;
+      updateLayerEvents.push(event);
     } else if (Types.TraceEvents.isTraceEventPaint(event)) {
-      if (event.args.data.layerId === 0) {
+      if (!event.args.data.layerId) {
+        // Note that this check purposefully includes excluding an event with a layerId of 0.
         // 0 indicates that this paint was for a subframe - we do not want these
         // as we only care about paints for top level frames.
         continue;
@@ -88,27 +88,33 @@ export async function finalize(): Promise<void> {
       lastPaintForLayerId[event.args.data.layerId] = event;
       continue;
     } else if (Types.TraceEvents.isTraceEventDisplayListItemListSnapshot(event)) {
-      if (!lastUpdateLayerEvent) {
+      // First we figure out which layer is active for this event's thread. To
+      // do this we work backwards through the list of UpdateLayerEvents,
+      // finding the first one (i.e. the most recent one) with the same pid and
+      // tid.
+      let lastUpdateLayerEventForThread: Types.TraceEvents.TraceEventUpdateLayer|null = null;
+      for (let i = updateLayerEvents.length - 1; i > -1; i--) {
+        const updateEvent = updateLayerEvents[i];
+        if (updateEvent.pid === event.pid && updateEvent.tid === event.tid) {
+          lastUpdateLayerEventForThread = updateEvent;
+          break;
+        }
+      }
+      if (!lastUpdateLayerEventForThread) {
         // No active layer, so this snapshot is not relevant.
         continue;
       }
-      if (lastUpdateLayerEvent.args.layerTreeId !== currentMainFrameLayerTreeId) {
+      if (lastUpdateLayerEventForThread.args.layerTreeId !== currentMainFrameLayerTreeId) {
         // Snapshot applies to a layer that is not the main frame, so discard.
         continue;
       }
-
-      const paintEvent = lastPaintForLayerId[lastUpdateLayerEvent.args.layerId];
+      const paintEvent = lastPaintForLayerId[lastUpdateLayerEventForThread.args.layerId];
       if (!paintEvent) {
         // No paint event for this layer, so discard.
         continue;
       }
       snapshotEvents.push(event);
 
-      // Make sure the events belong to the same process/thread before we pair
-      // them up.
-      if (paintEvent.pid !== event.pid || paintEvent.tid !== event.tid) {
-        continue;
-      }
       // Store the relationship between the paint and the snapshot.
       paintToSnapshotMap.set(paintEvent, event);
     }

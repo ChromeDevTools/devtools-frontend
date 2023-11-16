@@ -1,0 +1,31 @@
+# Copyright 2023 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../visibility.gni")
+
+devtools_module("frames") {
+  sources = [ "TimelineFrameModel.ts" ]
+
+  deps = [
+    "../../../core/platform:bundle",
+    "../../../core/sdk:bundle",
+    "../../../generated",
+    "../handlers:bundle",
+    "../helpers:bundle",
+    "../types:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "frames.ts"
+  deps = [ ":frames" ]
+  visibility = [
+    ":*",
+    "../*",
+  ]
+
+  visibility += devtools_models_visibility
+}

@@ -12,6 +12,7 @@ export interface ThreadData {
   pid: Types.TraceEvents.ProcessID;
   tid: Types.TraceEvents.ThreadID;
   entries: readonly Types.TraceEvents.TraceEntry[];
+  processIsOnMainFrame: boolean;
   tree: Helpers.TreeHelpers.TraceEntryTree;
   type: ThreadType;
   name: string|null;
@@ -69,6 +70,7 @@ export function threadsInTrace(traceParseData: TraceParseData): readonly ThreadD
           name: thread.name,
           pid,
           tid,
+          processIsOnMainFrame: process.isOnMainFrame,
           entries: thread.entries,
           tree: thread.tree,
           type: threadType,
@@ -92,6 +94,8 @@ export function threadsInTrace(traceParseData: TraceParseData): readonly ThreadD
           // CPU Profile threads do not have a name.
           name: null,
           entries: thread.profileCalls,
+          // There is no concept of a "Main Frame" in a CPU profile.
+          processIsOnMainFrame: false,
           tree: thread.profileTree,
           type: ThreadType.CPU_PROFILE,
           entryToNode: traceParseData.Samples.entryToNode,

@@ -473,6 +473,21 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.LegacyResourceTypeFilterItemSelected, resourceType, ResourceType.MaxValue);
   }
+
+  resourceTypeFilterNumberOfSelectedChanged(itemCount: number): void {
+    const boundItemCount = Math.max(Math.min(itemCount, ResourceType.MaxValue - 1), 1);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.ResourceTypeFilterNumberOfSelectedChanged, boundItemCount, ResourceType.MaxValue);
+  }
+
+  resourceTypeFilterItemSelected(resourceTypeName: string): void {
+    const resourceType = ResourceType[resourceTypeName as keyof typeof ResourceType];
+    if (resourceType === undefined) {
+      return;
+    }
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.ResourceTypeFilterItemSelected, resourceType, ResourceType.MaxValue);
+  }
 }
 
 /**

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../../../../front_end/core/common/common.js';
+import * as Host from '../../../../../front_end/core/host/host.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as Root from '../../../../../front_end/core/root/root.js';
@@ -399,6 +400,8 @@ describeWithMockConnection('NetworkLogView', () => {
 
     it('shows correct selected request types count', async () => {
       Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
+      const umaCountSpy = sinon.spy(Host.userMetrics, 'resourceTypeFilterNumberOfSelectedChanged');
+      const umaTypeSpy = sinon.spy(Host.userMetrics, 'resourceTypeFilterItemSelected');
 
       const dropdown = setupRequestTypesDropdown();
       const button = dropdown.element().querySelector('.toolbar-button');
@@ -417,6 +420,8 @@ describeWithMockConnection('NetworkLogView', () => {
 
       dropdown.discard();
       await raf();
+      assert.isTrue(umaCountSpy.calledOnceWith(1));
+      assert.isTrue(umaTypeSpy.calledOnceWith('Images'));
     });
 
     it('adjusts request types label dynamically', async () => {
@@ -448,6 +453,8 @@ describeWithMockConnection('NetworkLogView', () => {
 
     it('lists selected types in requests types tooltip', async () => {
       Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN);
+      const umaCountSpy = sinon.spy(Host.userMetrics, 'resourceTypeFilterNumberOfSelectedChanged');
+      const umaTypeSpy = sinon.spy(Host.userMetrics, 'resourceTypeFilterItemSelected');
 
       const dropdown = setupRequestTypesDropdown();
       const button = dropdown.element().querySelector('.toolbar-button');
@@ -466,6 +473,10 @@ describeWithMockConnection('NetworkLogView', () => {
 
       dropdown.discard();
       await raf();
+      assert.isTrue(umaCountSpy.calledOnceWith(2));
+      assert.isTrue(umaTypeSpy.calledTwice);
+      assert.isTrue(umaTypeSpy.calledWith('Images'));
+      assert.isTrue(umaTypeSpy.calledWith('Scripts'));
     });
 
     it('updates tooltip to default when request type deselected', async () => {

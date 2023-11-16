@@ -464,4 +464,6 @@ export enum EnumeratedHistogram {
   AnimationPointDragged = 'DevTools.AnimationPointDragged',
   LegacyResourceTypeFilterNumberOfSelectedChanged = 'DevTools.LegacyResourceTypeFilterNumberOfSelectedChanged',
   LegacyResourceTypeFilterItemSelected = 'DevTools.LegacyResourceTypeFilterItemSelected',
+  ResourceTypeFilterNumberOfSelectedChanged = 'DevTools.ResourceTypeFilterNumberOfSelectedChanged',
+  ResourceTypeFilterItemSelected = 'DevTools.ResourceTypeFilterItemSelected',
 }

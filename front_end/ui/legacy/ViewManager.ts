@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ARIAUtils from './ARIAUtils.js';
 import {type ContextMenu} from './ContextMenu.js';
@@ -708,8 +707,7 @@ class TabbedLocation extends Location implements TabbedViewLocation {
   private appendTab(view: View, index?: number): void {
     this.tabbedPaneInternal.appendTab(
         view.viewId(), view.title(), new ContainerWidget(view), undefined, false,
-        view.isCloseable() || view.isTransient(), view.isPreviewFeature(), index,
-        `${VisualLogging.panelTabHeader().track({click: true, drag: true}).context(view.viewId())}`);
+        view.isCloseable() || view.isTransient(), view.isPreviewFeature(), index);
   }
 
   appendView(view: View, insertBefore?: View|null): void {

@@ -90,6 +90,7 @@ export class CSSOverviewStartView extends HTMLElement {
           <${Buttons.Button.Button.litTagName}
             class="start-capture"
             .variant=${Buttons.Button.Variant.PRIMARY}
+            .jslogContext=${'css-overview.capture-overview'}
             @click=${this.#onStartCaptureClick}>
             ${i18nString(UIStrings.captureOverview)}
           </${Buttons.Button.Button.litTagName}>

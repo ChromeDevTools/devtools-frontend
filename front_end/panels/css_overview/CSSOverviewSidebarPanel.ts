@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import cssOverviewSidebarPanelStyles from './cssOverviewSidebarPanel.css.js';
 
@@ -52,7 +53,8 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
     UI.ARIAUtils.markAsTree(this.containerElement);
 
     // Clear overview.
-    const clearResultsButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearOverview), 'clear');
+    const clearResultsButton = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.clearOverview), 'clear', undefined, 'css-overview.clear-overview');
     clearResultsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.#reset, this);
 
     // Toolbar.
@@ -63,6 +65,7 @@ export class CSSOverviewSidebarPanel extends Common.ObjectWrapper.eventMixin<Eve
 
   addItem(name: string, id: string): void {
     const item = this.containerElement.createChild('div', CSSOverviewSidebarPanel.ITEM_CLASS_NAME);
+    item.setAttribute('jslog', `${VisualLogging.item().track({click: true}).context(`css-overview.${id}`)}`);
     UI.ARIAUtils.markAsTreeitem(item);
     item.textContent = name;
     item.dataset.id = id;

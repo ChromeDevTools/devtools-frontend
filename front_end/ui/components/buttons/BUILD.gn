@@ -16,6 +16,7 @@ devtools_module("button") {
 
   deps = [
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
     "../helpers:bundle",
     "../icon_button:bundle",
   ]

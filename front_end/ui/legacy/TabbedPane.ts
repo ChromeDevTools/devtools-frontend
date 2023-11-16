@@ -229,16 +229,15 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   appendTab(
       id: string, tabTitle: string, view: Widget, tabTooltip?: string, userGesture?: boolean, isCloseable?: boolean,
-      isPreviewFeature?: boolean, index?: number, jslog?: string): void {
+      isPreviewFeature?: boolean, index?: number): void {
     const closeable = typeof isCloseable === 'boolean' ? isCloseable : Boolean(this.closeableTabs);
     const tab = new TabbedPaneTab(this, id, tabTitle, closeable, Boolean(isPreviewFeature), view, tabTooltip);
     tab.setDelegate((this.delegate as TabbedPaneTabDelegate));
     console.assert(!this.tabsById.has(id), `Tabbed pane already contains a tab with id '${id}'`);
     this.tabsById.set(id, tab);
     tab.tabElement.tabIndex = -1;
-    if (jslog) {
-      tab.tabElement.setAttribute('jslog', jslog);
-    }
+    tab.tabElement.setAttribute(
+        'jslog', `${VisualLogging.panelTabHeader().track({click: true, drag: true}).context(id)}`);
     if (index !== undefined) {
       this.tabs.splice(index, 0, tab);
     } else {

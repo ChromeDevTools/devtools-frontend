@@ -10,7 +10,6 @@ h1 {
 
 .css-overview-start-view {
   padding: 24px;
-  height: 100%;
   display: flex;
   flex-direction: column;
   background-color: var(--sys-color-cdt-base-container);

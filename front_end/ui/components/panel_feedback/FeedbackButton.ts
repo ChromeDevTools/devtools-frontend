@@ -53,6 +53,7 @@ export class FeedbackButton extends HTMLElement {
           @click=${this.#onFeedbackClick}
           .iconUrl=${feedbackIconUrl}
           .variant=${Buttons.Button.Variant.SECONDARY}
+          .jslogContext=${'feedback'}
       >${i18nString(UIStrings.feedback)}</${Buttons.Button.Button.litTagName}>
       `, this.#shadow, {host: this});
     // clang-format on

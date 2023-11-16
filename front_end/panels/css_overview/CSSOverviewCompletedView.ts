@@ -7,15 +7,15 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import cssOverviewCompletedViewStyles from './cssOverviewCompletedView.css.js';
-
 import {
   Events as CSSOverViewControllerEvents,
   type OverviewController,
@@ -23,7 +23,7 @@ import {
   type PopulateNodesEventNodes,
   type PopulateNodesEventNodeTypes,
 } from './CSSOverviewController.js';
-import {CSSOverviewSidebarPanel, SidebarEvents, type ItemSelectedEvent} from './CSSOverviewSidebarPanel.js';
+import {CSSOverviewSidebarPanel, type ItemSelectedEvent, SidebarEvents} from './CSSOverviewSidebarPanel.js';
 import {type UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 const UIStrings = {
@@ -705,7 +705,8 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
       return UI.Fragment.Fragment.build`<li>
         <div class="title">${title}</div>
-        <button data-type="${type}" data-path="${path}" data-${dataLabel}="${title}">
+        <button data-type="${type}" data-path="${path}" data-${dataLabel}="${title}"
+        jslog="${VisualLogging.action().track({click: true}).context(`css-overview.${type}`)}">
           <div class="details">${itemLabel}</div>
           <div class="bar-container">
             <div class="bar" style="width: ${width}%;"></div>
@@ -754,7 +755,8 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
     const blockFragment = UI.Fragment.Fragment.build`<li>
       <button
         title="${title}" aria-label="${title}"
-        data-type="contrast" data-key="${key}" data-section="contrast" class="block" $="color">
+        data-type="contrast" data-key="${key}" data-section="contrast" class="block" $="color"
+        jslog="${VisualLogging.action().track({click: true}).context('css-overview.contrast')}">
         Text
       </button>
       <div class="block-title">
@@ -803,7 +805,8 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
   #colorsToFragment(section: string, color: string): UI.Fragment.Fragment|undefined {
     const blockFragment = UI.Fragment.Fragment.build`<li>
       <button title=${color} data-type="color" data-color="${color}"
-        data-section="${section}" class="block" $="color"></button>
+        data-section="${section}" class="block" $="color"
+        jslog="${VisualLogging.action().track({click: true}).context('css-overview.color')}"></button>
       <div class="block-title color-text">${color}</div>
     </li>`;
 

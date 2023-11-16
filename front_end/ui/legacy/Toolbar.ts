@@ -935,7 +935,7 @@ export interface ItemsProvider {
 export class ToolbarComboBox extends ToolbarItem<void> {
   protected selectElementInternal: HTMLSelectElement;
 
-  constructor(changeHandler: ((arg0: Event) => void)|null, title: string, className?: string) {
+  constructor(changeHandler: ((arg0: Event) => void)|null, title: string, className?: string, jslogContext?: string) {
     const element = document.createElement('span');
     element.classList.add('toolbar-select-container');
     super(element);
@@ -949,6 +949,9 @@ export class ToolbarComboBox extends ToolbarItem<void> {
     super.setTitle(title);
     if (className) {
       this.selectElementInternal.classList.add(className);
+    }
+    if (jslogContext) {
+      this.selectElementInternal.setAttribute('jslog', `${VisualLogging.dropDown().context(jslogContext)}`);
     }
   }
 

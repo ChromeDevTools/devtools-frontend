@@ -87,7 +87,13 @@ const setupTargetAndModels = () => {
 
 describeWithMockConnection('CoverageView', () => {
   beforeEach(() => {
-    registerNoopActions(['coverage.toggle-recording', 'coverage.reload', 'coverage.start-with-reload']);
+    registerNoopActions([
+      'coverage.clear',
+      'coverage.export',
+      'coverage.start-with-reload',
+      'coverage.toggle-recording',
+      'inspector_main.reload',
+    ]);
   });
 
   it('can handle back/forward cache navigations', async () => {

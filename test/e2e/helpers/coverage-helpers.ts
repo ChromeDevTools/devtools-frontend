@@ -28,11 +28,11 @@ export async function startInstrumentingCoverage() {
 
 export async function stopInstrumentingCoverage() {
   await click(STOP_INSTRUMENTING_BUTTON);
-  await waitForNone('button[aria-label="Clear all"][disabled]');
+  await waitForNone('button[aria-label="Clear coverage"][disabled]');
 }
 
 export async function clearCoverageContent() {
-  await click('button[aria-label="Clear all"]');
+  await click('button[aria-label="Clear coverage"]');
   await waitFor('.coverage-results .landing-page');
 }
 

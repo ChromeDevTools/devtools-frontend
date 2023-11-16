@@ -925,7 +925,9 @@ export enum KeyboardShortcutAction {
   'changes.copy' = 113,
   'elements.new-style-rule' = 114,
   'elements.refresh-event-listeners' = 115,
-  MaxValue = 116,
+  'coverage.clear' = 116,
+  'coverage.export' = 117,
+  MaxValue = 118,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

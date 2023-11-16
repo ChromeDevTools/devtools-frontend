@@ -104,7 +104,7 @@ DEPS = {
     "stylelint-config-standard": "24.0.0",
     "svgo": "2.8.0",
     "terser": "5.19.1",
-    "typescript": "5.1.3",
+    "typescript": "5.2.2",
     "ws": "8.4.0",
     "yargs": "17.3.1",
     "glob": "7.1.7",

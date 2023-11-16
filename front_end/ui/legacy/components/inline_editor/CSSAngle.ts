@@ -4,22 +4,20 @@
 
 import * as ComponentHelpers from '../../../components/helpers/helpers.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
-import cssAngleStyles from './cssAngle.css.js';
 
+import cssAngleStyles from './cssAngle.css.js';
+import {CSSAngleEditor, type CSSAngleEditorData} from './CSSAngleEditor.js';
+import {CSSAngleSwatch, type CSSAngleSwatchData} from './CSSAngleSwatch.js';
 import {
+  type Angle,
   AngleUnit,
   convertAngleUnit,
   getNewAngleFromEvent,
   getNextUnit,
   parseText,
   roundAngleByUnit,
-  type Angle,
 } from './CSSAngleUtils.js';
 import {ValueChangedEvent} from './InlineEditorUtils.js';
-
-import {CSSAngleEditor, type CSSAngleEditorData} from './CSSAngleEditor.js';
-
-import {CSSAngleSwatch, type CSSAngleSwatchData} from './CSSAngleSwatch.js';
 
 const {render, html} = LitHtml;
 const styleMap = LitHtml.Directives.styleMap;
@@ -97,7 +95,7 @@ export class CSSAngle extends HTMLElement {
   // We bind and unbind mouse event listeners upon popping over and minifying,
   // because we anticipate most of the time this widget is minified even when
   // it's attached to the DOM tree.
-  popover(): void {
+  popOver(): void {
     if (!this.containingPane) {
       return;
     }
@@ -183,7 +181,7 @@ export class CSSAngle extends HTMLElement {
       this.displayNextUnit();
       return;
     }
-    this.popoverOpen ? this.minify() : this.popover();
+    this.popoverOpen ? this.minify() : this.popOver();
   }
 
   // Fix that the previous text will be selected when double-clicking the angle icon

@@ -126,6 +126,7 @@ export class Item {
           enabled: !this.disabled,
           subItems: undefined,
           tooltip: this.#tooltip,
+          jslogContext: this.#jslogContext,
         };
         if (this.customElement) {
           result.element = this.customElement;

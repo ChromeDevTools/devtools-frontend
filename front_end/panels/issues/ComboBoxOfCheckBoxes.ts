@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../core/common/common.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
@@ -19,8 +19,8 @@ export class ComboBoxOfCheckBoxes extends UI.Toolbar.ToolbarButton {
   #options = new Array<MenuOption>();
   #headers = new Array<MenuHeader>();
   #onOptionClicked = (): void => {};
-  constructor(title: string) {
-    super(title);
+  constructor(title: string, jslogContext: string) {
+    super(title, undefined, undefined, jslogContext);
     this.turnIntoSelect();
     this.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.#showLevelContextMenu.bind(this));
     UI.ARIAUtils.markAsMenuButton(this.element);
@@ -61,10 +61,10 @@ export class ComboBoxOfCheckBoxes extends UI.Toolbar.ToolbarButton {
     for (const {title, callback} of this.#headers) {
       contextMenu.headerSection().appendItem(title, () => callback());
     }
-    for (const [index, {title, enabled}] of this.#options.entries()) {
+    for (const [index, {title, enabled, value}] of this.#options.entries()) {
       contextMenu.defaultSection().appendCheckboxItem(title, () => {
         this.setOptionEnabled(index, !enabled);
-      }, enabled);
+      }, enabled, false, undefined, undefined, value);
     }
     contextMenu.setContextMenuLabel(this.title ?? i18nString(UIStrings.genericMenuLabel));
     await contextMenu.show();

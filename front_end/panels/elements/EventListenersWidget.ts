@@ -44,10 +44,6 @@ const UIStrings = {
    */
   frameworkListeners: '`Framework` listeners',
   /**
-   *@description Text to refresh the page
-   */
-  refresh: 'Refresh',
-  /**
    *@description Tooltip text that appears on the setting when hovering over it in Event Listeners Widget of the Elements panel
    */
   showListenersOnTheAncestors: 'Show listeners on the ancestors',
@@ -108,9 +104,7 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
     this.eventListenersView.show(this.element);
     this.element.setAttribute('jslog', `${VisualLogging.eventListenersPane()}`);
 
-    const refreshButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.refresh), 'refresh', undefined, 'refresh');
-    refreshButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.update.bind(this));
-    this.toolbarItemsInternal.push(refreshButton);
+    this.toolbarItemsInternal.push(UI.Toolbar.Toolbar.createActionButtonForId('elements.refresh-event-listeners'));
     this.toolbarItemsInternal.push(new UI.Toolbar.ToolbarSettingCheckbox(
         this.showForAncestorsSetting, i18nString(UIStrings.showListenersOnTheAncestors),
         i18nString(UIStrings.ancestors)));
@@ -175,6 +169,16 @@ export class EventListenersWidget extends UI.ThrottledWidget.ThrottledWidget imp
         .then(this.showFrameworkListenersChanged.bind(this));
   }
 
+  override wasShown(): void {
+    UI.Context.Context.instance().setFlavor(EventListenersWidget, this);
+    super.wasShown();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    UI.Context.Context.instance().setFlavor(EventListenersWidget, null);
+  }
+
   toolbarItems(): UI.Toolbar.ToolbarItem[] {
     return this.toolbarItemsInternal;
   }
@@ -234,3 +238,26 @@ export const DispatchFilterBy = {
 };
 
 const objectGroupName = 'event-listeners-panel';
+
+let actionDelegateInstance: ActionDelegate;
+
+export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
+    switch (actionId) {
+      case 'elements.refresh-event-listeners': {
+        EventListenersWidget.instance().update();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  static instance(opts: {forceNew: boolean} = {forceNew: false}): ActionDelegate {
+    const {forceNew} = opts;
+    if (!actionDelegateInstance || forceNew) {
+      actionDelegateInstance = new ActionDelegate();
+    }
+
+    return actionDelegateInstance;
+  }
+}

@@ -7,7 +7,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type * as ElementsComponents from './components/components.js';
 import type * as Elements from './elements.js';
@@ -89,6 +88,14 @@ const UIStrings = {
    * @description Title/tooltip of an action in the elements panel to toggle element search on/off.
    */
   selectAnElementInThePageTo: 'Select an element in the page to inspect it',
+  /**
+   *@description Title/tooltip of an action in the elements panel to add a new style rule.
+   */
+  newStyleRule: 'New Style Rule',
+  /**
+   * @description Title/tooltip of an action in the elements panel to refresh the event listeners.
+   */
+  refreshEventListeners: 'Refresh event listeners',
   /**
    * @description Title of a setting under the Elements category in Settings. Whether words should be
    * wrapped around at the end of lines or not.
@@ -438,6 +445,34 @@ UI.ActionRegistration.registerActionExtension({
   ],
 });
 
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.ELEMENTS,
+  actionId: 'elements.new-style-rule',
+  title: i18nLazyString(UIStrings.newStyleRule),
+  iconClass: UI.ActionRegistration.IconClass.PLUS,
+  async loadActionDelegate() {
+    const Elements = await loadElementsModule();
+    return Elements.StylesSidebarPane.ActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Elements => [Elements.StylesSidebarPane.StylesSidebarPane]);
+  },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  category: UI.ActionRegistration.ActionCategory.ELEMENTS,
+  actionId: 'elements.refresh-event-listeners',
+  title: i18nLazyString(UIStrings.refreshEventListeners),
+  iconClass: UI.ActionRegistration.IconClass.REFRESH,
+  async loadActionDelegate() {
+    const Elements = await loadElementsModule();
+    return Elements.EventListenersWidget.ActionDelegate.instance();
+  },
+  contextTypes() {
+    return maybeRetrieveContextTypes(Elements => [Elements.EventListenersWidget.EventListenersWidget]);
+  },
+});
+
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.ELEMENTS,
   storageType: Common.Settings.SettingStorageType.Synced,
@@ -643,7 +678,6 @@ UI.Toolbar.registerToolbarItem({
   condition: undefined,
   separator: undefined,
   loadItem: undefined,
-  jslog: `${VisualLogging.toggleElementSearch().track({click: true})}`,
 });
 
 UI.UIUtils.registerRenderer({

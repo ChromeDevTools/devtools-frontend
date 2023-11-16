@@ -20,14 +20,6 @@ import changesViewStyles from './changesView.css.js';
 
 const UIStrings = {
   /**
-   *@description Screen reader/tooltip label for a button in the Changes tool that reverts all changes to the currently open file.
-   */
-  revertAllChangesToCurrentFile: 'Revert all changes to current file',
-  /**
-   *@description Screen reader/tooltip label for a button in the Changes tool that copies all changes from the currently open file.
-   */
-  copyAllChangesFromCurrentFile: 'Copy all changes from current file',
-  /**
    *@description Text in Changes View of the Changes tab
    */
   noChanges: 'No changes',
@@ -77,10 +69,8 @@ export class ChangesView extends UI.Widget.VBox {
   private readonly toolbar: UI.Toolbar.Toolbar;
   private readonly diffStats: UI.Toolbar.ToolbarText;
   private readonly diffView: DiffView.DiffView.DiffView;
-  private readonly copyButton: UI.Toolbar.ToolbarButton;
-  private readonly copyButtonSeparator: UI.Toolbar.ToolbarSeparator;
 
-  private constructor() {
+  constructor() {
     super(true);
 
     this.element.setAttribute('jslog', `${VisualLogging.panel().context('changes')}`);
@@ -107,18 +97,17 @@ export class ChangesView extends UI.Widget.VBox {
     this.diffView = this.diffContainer.appendChild(new DiffView.DiffView.DiffView());
 
     this.toolbar = new UI.Toolbar.Toolbar('changes-toolbar', mainWidget.element);
-    const revertButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.revertAllChangesToCurrentFile), 'undo', undefined, 'revert');
-    revertButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.revert.bind(this));
-    this.toolbar.appendToolbarItem(revertButton);
+    this.toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('changes.revert'));
     this.diffStats = new UI.Toolbar.ToolbarText('');
     this.toolbar.appendToolbarItem(this.diffStats);
 
-    this.copyButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.copyAllChangesFromCurrentFile), 'copy', UIStrings.copy);
-    this.copyButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.copyChanges.bind(this));
-    this.copyButtonSeparator = new UI.Toolbar.ToolbarSeparator();
-    this.toolbar.setEnabled(false);
+    this.toolbar.appendToolbarItem(new UI.Toolbar.ToolbarSeparator());
+    this.toolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('changes.copy', {
+      showLabel: true,
+      label() {
+        return i18nString(UIStrings.copy);
+      },
+    }));
 
     this.hideDiff(i18nString(UIStrings.noChanges));
     this.selectedUISourceCodeChanged();
@@ -135,16 +124,12 @@ export class ChangesView extends UI.Widget.VBox {
 
   private selectedUISourceCodeChanged(): void {
     this.revealUISourceCode(this.changesSidebar.selectedUISourceCode());
-    if (this.selectedUISourceCode?.contentType() === Common.ResourceType.resourceTypes.Stylesheet) {
-      this.toolbar.appendToolbarItem(this.copyButtonSeparator);
-      this.toolbar.appendToolbarItem(this.copyButton);
-    } else {
-      this.toolbar.removeToolbarItem(this.copyButtonSeparator);
-      this.toolbar.removeToolbarItem(this.copyButton);
-    }
+    UI.ActionRegistry.ActionRegistry.instance()
+        .getAction('changes.copy')
+        .setEnabled(this.selectedUISourceCode?.contentType() === Common.ResourceType.resourceTypes.Stylesheet);
   }
 
-  private revert(): void {
+  revert(): void {
     const uiSourceCode = this.selectedUISourceCode;
     if (!uiSourceCode) {
       return;
@@ -152,7 +137,7 @@ export class ChangesView extends UI.Widget.VBox {
     void this.workspaceDiff.revertToOriginal(uiSourceCode);
   }
 
-  private async copyChanges(): Promise<void> {
+  async copy(): Promise<void> {
     const uiSourceCode = this.selectedUISourceCode;
     if (!uiSourceCode) {
       return;
@@ -215,8 +200,15 @@ export class ChangesView extends UI.Widget.VBox {
   }
 
   override wasShown(): void {
-    void this.refreshDiff();
+    UI.Context.Context.instance().setFlavor(ChangesView, this);
     this.registerCSSFiles([changesViewStyles]);
+    super.wasShown();
+    void this.refreshDiff();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    UI.Context.Context.instance().setFlavor(ChangesView, null);
   }
 
   private async refreshDiff(): Promise<void> {
@@ -262,6 +254,31 @@ export class ChangesView extends UI.Widget.VBox {
       this.diffContainer.style.display = 'block';
       this.diffView.data = {diff, mimeType};
     }
+  }
+}
+
+let actionDelegateInstance: ActionDelegate;
+
+export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
+    switch (actionId) {
+      case 'changes.revert':
+        ChangesView.instance().revert();
+        return true;
+      case 'changes.copy':
+        void ChangesView.instance().copy();
+        return true;
+    }
+    return false;
+  }
+
+  static instance(opts: {forceNew: boolean} = {forceNew: false}): ActionDelegate {
+    const {forceNew} = opts;
+    if (!actionDelegateInstance || forceNew) {
+      actionDelegateInstance = new ActionDelegate();
+    }
+
+    return actionDelegateInstance;
   }
 }
 

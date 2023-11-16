@@ -112,7 +112,7 @@ describeWithEnvironment('ContextMenu', () => {
     assert.isTrue(recordImpression.calledOnce);
     assert.sameDeepMembers(
         recordImpression.firstCall.firstArg.impressions,
-        [{id: 3, type: 46, parent: 2, context: 42}, {id: 4, type: 46, parent: 2, context: 44}]);
+        [{id: 3, type: 29, parent: 2, context: 42}, {id: 4, type: 29, parent: 2, context: 44}]);
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, 1);

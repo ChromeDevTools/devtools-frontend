@@ -84,8 +84,8 @@ enum VisualElements {
   /* 61 used to be RenderingPanel, but free to grab now */
   ElementsBreadcrumbs = 62,
   FullAccessibilityTree = 63,
-  ToggleDeviceMode = 64,
-  ToggleElementSearch = 65,
+  /* 64 used to be ToggleDeviceMode, but free to grab now */
+  /* 65 used to be ToggleElementSearch, but free to grab now */
   PanelTabHeader = 66,
   Menu = 67,
   /* 68 used to be DeveloperResourcesPanel, but free to grab now */

@@ -253,7 +253,7 @@ export class SoftContextMenu {
             'jslog', `${VisualLogging.toggle().track({click: true}).context(item.jslogContext)}`);
       } else {
         menuItemElement.setAttribute(
-            'jslog', `${VisualLogging.item().track({click: true}).context(item.jslogContext)}`);
+            'jslog', `${VisualLogging.action().track({click: true}).context(item.jslogContext)}`);
       }
     }
     if (item.element && !item.label) {

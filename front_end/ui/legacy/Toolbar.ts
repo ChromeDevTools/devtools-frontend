@@ -239,16 +239,13 @@ export class Toolbar {
         void action.execute();
       };
     }
-    if (options.jslog) {
-      button.element.setAttribute('jslog', options.jslog);
-    }
     button.addEventListener(ToolbarButton.Events.Click, handler, action);
     action.addEventListener(ActionEvents.Enabled, enabledChanged);
     button.setEnabled(action.enabled());
     return button;
 
     function makeButton(): ToolbarButton {
-      const button = new ToolbarButton(action.title(), action.icon());
+      const button = new ToolbarButton(action.title(), action.icon(), undefined, action.id());
       if (action.title()) {
         Tooltip.installWithActionBinding(button.element, action.title(), action.id());
       }
@@ -256,7 +253,7 @@ export class Toolbar {
     }
 
     function makeToggle(): ToolbarToggle {
-      const toggleButton = new ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
+      const toggleButton = new ToolbarToggle(action.title(), action.icon(), action.toggledIcon(), action.id());
       toggleButton.setToggleWithRedColor(action.toggleWithRedColor());
       action.addEventListener(ActionEvents.Toggled, toggled);
       toggled();
@@ -276,8 +273,7 @@ export class Toolbar {
     }
   }
 
-  static createActionButtonForId(
-      actionId: string, options: ToolbarButtonOptions|undefined = TOOLBAR_BUTTON_DEFAULT_OPTIONS): ToolbarButton {
+  static createActionButtonForId(actionId: string, options?: ToolbarButtonOptions): ToolbarButton {
     const action = ActionRegistry.instance().getAction(actionId);
     return Toolbar.createActionButton(action, options);
   }
@@ -417,13 +413,13 @@ export class Toolbar {
 
     const filtered = extensions.filter(e => e.location === location);
     const items = await Promise.all(filtered.map(extension => {
-      const {separator, actionId, showLabel, label, loadItem, jslog} = extension;
+      const {separator, actionId, showLabel, label, loadItem} = extension;
       if (separator) {
         return new ToolbarSeparator();
       }
       if (actionId) {
         return Toolbar.createActionButtonForId(
-            actionId, {label, showLabel: Boolean(showLabel), userActionCode: undefined, jslog});
+            actionId, {label, showLabel: Boolean(showLabel), userActionCode: undefined});
       }
       // TODO(crbug.com/1134103) constratint the case checked with this if using TS type definitions once UI is TS-authored.
       if (!loadItem) {
@@ -443,7 +439,6 @@ export interface ToolbarButtonOptions {
   label?: () => Platform.UIString.LocalizedString;
   showLabel: boolean;
   userActionCode?: Host.UserMetrics.Action;
-  jslog?: string;
 }
 
 const TOOLBAR_BUTTON_DEFAULT_OPTIONS: ToolbarButtonOptions = {

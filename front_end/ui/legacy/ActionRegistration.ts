@@ -90,6 +90,10 @@ const UIStrings = {
    *@description Title of the keybind category 'Recorder' in Settings' Shortcuts pannel.
    */
   recorder: 'Recorder',
+  /**
+   *@description Title of the keybind category 'Changes' in Settings' Shortcuts pannel.
+   */
+  changes: 'Changes',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/ActionRegistration.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -305,6 +309,7 @@ export enum ActionCategory {
   RENDERING = 'RENDERING',
   EXPLAIN = 'EXPLAIN',
   RECORDER = 'RECORDER',
+  CHANGES = 'CHANGES',
 }
 
 export function getLocalizedActionCategory(category: ActionCategory): Platform.UIString.LocalizedString {
@@ -349,6 +354,8 @@ export function getLocalizedActionCategory(category: ActionCategory): Platform.U
       return i18nString(UIStrings.rendering);
     case ActionCategory.RECORDER:
       return i18nString(UIStrings.recorder);
+    case ActionCategory.CHANGES:
+      return i18nString(UIStrings.changes);
     case ActionCategory.NONE:
       return i18n.i18n.lockedString('');
   }
@@ -377,6 +384,8 @@ export const enum IconClass {
   BREAKPOINT_CROSSED_FILLED = 'breakpoint-crossed-filled',
   BREAKPOINT_CROSSED = 'breakpoint-crossed',
   PLUS = 'plus',
+  UNDO = 'undo',
+  COPY = 'copy',
 }
 
 export const enum KeybindSet {

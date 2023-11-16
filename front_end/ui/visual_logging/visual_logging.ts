@@ -77,8 +77,6 @@ const tableCell = LoggingConfig.makeConfigStringBuilder.bind(null, 'TableCell');
 const tableHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'TableHeader');
 const textField = LoggingConfig.makeConfigStringBuilder.bind(null, 'TextField');
 const toggle = LoggingConfig.makeConfigStringBuilder.bind(null, 'Toggle');
-const toggleDeviceMode = LoggingConfig.makeConfigStringBuilder.bind(null, 'ToggleDeviceMode');
-const toggleElementSearch = LoggingConfig.makeConfigStringBuilder.bind(null, 'ToggleElementSearch');
 const toggleSubpane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ToggleSubpane');
 const treeItem = LoggingConfig.makeConfigStringBuilder.bind(null, 'TreeItem');
 const treeItemExpand = LoggingConfig.makeConfigStringBuilder.bind(null, 'TreeItemExpand');
@@ -153,8 +151,6 @@ export {
   tableHeader,
   textField,
   toggle,
-  toggleDeviceMode,
-  toggleElementSearch,
   toggleSubpane,
   treeItem,
   treeItemExpand,

@@ -890,7 +890,11 @@ export enum KeyboardShortcutAction {
   'chrome_recorder.replay-recording' = 109,
   'chrome_recorder.toggle-code-view' = 110,
   'chrome_recorder.copy-recording-or-step' = 111,
-  MaxValue = 112,
+  'changes.revert' = 112,
+  'changes.copy' = 113,
+  'elements.new-style-rule' = 114,
+  'elements.refresh-event-listeners' = 115,
+  MaxValue = 116,
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

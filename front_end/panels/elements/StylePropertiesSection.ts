@@ -217,7 +217,7 @@ export class StylePropertiesSection {
 
     if (this.styleInternal.parentRule) {
       const newRuleButton = new UI.Toolbar.ToolbarButton(
-          i18nString(UIStrings.insertStyleRuleBelow), 'plus', undefined, 'add-styles-rule');
+          i18nString(UIStrings.insertStyleRuleBelow), 'plus', undefined, 'elements.new-style-rule');
       newRuleButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.onNewRuleClick, this);
       newRuleButton.element.tabIndex = -1;
       if (!this.newStyleRuleToolbar) {

@@ -485,7 +485,7 @@ export class ContextMenu extends SubMenu {
               parent || descriptors);
         } else if (descriptor.type === 'item') {
           VisualLogging.registerLoggable(
-              descriptor, `${VisualLogging.item().track({click: true}).context(descriptor.jslogContext)}`,
+              descriptor, `${VisualLogging.action().track({click: true}).context(descriptor.jslogContext)}`,
               parent || descriptors);
         } else if (descriptor.type !== 'subMenu') {
           VisualLogging.registerLoggable(

@@ -133,10 +133,6 @@ const UIStrings = {
    */
   invalidString: '{PH1}, property name: {PH2}, property value: {PH3}',
   /**
-   *@description Tooltip text that appears when hovering over the largeicon add button in the Styles Sidebar Pane of the Elements panel
-   */
-  newStyleRule: 'New Style Rule',
-  /**
    *@description Text that is announced by the screen reader when the user focuses on an input field for entering the name of a CSS property in the Styles panel
    *@example {margin} PH1
    */
@@ -257,7 +253,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     return stylesSidebarPaneInstance;
   }
 
-  private constructor() {
+  constructor() {
     super(true /* delegatesFocus */);
     this.setMinimumSize(96, 26);
     this.registerCSSFiles([stylesSidebarPaneStyles]);
@@ -1327,9 +1323,15 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.visibleSections = visibleSections;
   }
 
+  override wasShown(): void {
+    UI.Context.Context.instance().setFlavor(StylesSidebarPane, this);
+    super.wasShown();
+  }
+
   override willHide(): void {
     this.hideAllPopovers();
     super.willHide();
+    UI.Context.Context.instance().setFlavor(StylesSidebarPane, null);
   }
 
   hideAllPopovers(): void {
@@ -2451,14 +2453,36 @@ export class StylesSidebarPropertyRenderer {
   }
 }
 
+let actionDelegateInstance: ActionDelegate;
+
+export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
+    switch (actionId) {
+      case 'elements.new-style-rule': {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.NewStyleRuleAdded);
+        void StylesSidebarPane.instance().createNewRuleInViaInspectorStyleSheet();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  static instance(opts: {forceNew: boolean} = {forceNew: false}): ActionDelegate {
+    const {forceNew} = opts;
+    if (!actionDelegateInstance || forceNew) {
+      actionDelegateInstance = new ActionDelegate();
+    }
+
+    return actionDelegateInstance;
+  }
+}
+
 let buttonProviderInstance: ButtonProvider;
 
 export class ButtonProvider implements UI.Toolbar.Provider {
   private readonly button: UI.Toolbar.ToolbarButton;
   private constructor() {
-    this.button =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.newStyleRule), 'plus', undefined, 'add-styles-rule');
-    this.button.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.clicked, this);
+    this.button = UI.Toolbar.Toolbar.createActionButtonForId('elements.new-style-rule');
     const longclickTriangle = UI.Icon.Icon.create('triangle-bottom-right', 'long-click-glyph');
     this.button.element.appendChild(longclickTriangle);
 
@@ -2482,11 +2506,6 @@ export class ButtonProvider implements UI.Toolbar.Provider {
     }
 
     return buttonProviderInstance;
-  }
-
-  private clicked(): void {
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.NewStyleRuleAdded);
-    void StylesSidebarPane.instance().createNewRuleInViaInspectorStyleSheet();
   }
 
   private longClicked(event: Event): void {

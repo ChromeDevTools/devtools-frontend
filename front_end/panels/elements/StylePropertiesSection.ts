@@ -177,7 +177,7 @@ export class StylePropertiesSection {
     this.element.classList.add('styles-section');
     this.element.classList.add('matched-styles');
     this.element.classList.add('monospace');
-    this.element.setAttribute('jslog', `${VisualLogging.stylePropertiesSection()}`);
+    this.element.setAttribute('jslog', `${VisualLogging.section().context('style-properties')}`);
     UI.ARIAUtils.setLabel(this.element, `${this.headerText()}, css selector`);
     this.element.tabIndex = -1;
     UI.ARIAUtils.markAsListitem(this.element);

@@ -26,7 +26,6 @@ const ariaAttributes = LoggingConfig.makeConfigStringBuilder.bind(null, 'AriaAtt
 const bezierCurveEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierCurveEditor');
 const bezierEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierEditor');
 const bezierPresetCategory = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierPresetCategory');
-const bezierPreview = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierPreview');
 const changesPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'ChangesPanel');
 const colorCanvas = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorCanvas');
 const colorEyeDropper = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorEyeDropper');
@@ -65,14 +64,16 @@ const next = LoggingConfig.makeConfigStringBuilder.bind(null, 'Next');
 const paletteColorShades = LoggingConfig.makeConfigStringBuilder.bind(null, 'PaletteColorShades');
 const palettePanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'PalettePanel');
 const panelTabHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'PanelTabHeader');
+const preview = LoggingConfig.makeConfigStringBuilder.bind(null, 'Preview');
 const previous = LoggingConfig.makeConfigStringBuilder.bind(null, 'Previous');
 const renderingPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'RenderingPanel');
 const searchPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'SearchPanel');
+const sensorsPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'SensorsPanel');
 const showAllStyleProperties = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowAllStyleProperties');
 const showStyleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowStyleEditor');
 const slider = LoggingConfig.makeConfigStringBuilder.bind(null, 'Slider');
 const stylesComputedPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesComputedPane');
-const stylePropertiesSection = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylePropertiesSection');
+const section = LoggingConfig.makeConfigStringBuilder.bind(null, 'Section');
 const stylePropertiesSectionSeparator =
     LoggingConfig.makeConfigStringBuilder.bind(null, 'StylePropertiesSectionSeparator');
 const stylesMetricsPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'StylesMetricsPane');
@@ -108,7 +109,6 @@ export {
   bezierCurveEditor,
   bezierEditor,
   bezierPresetCategory,
-  bezierPreview,
   changesPanel,
   colorCanvas,
   colorEyeDropper,
@@ -147,14 +147,16 @@ export {
   paletteColorShades,
   palettePanel,
   panelTabHeader,
+  preview,
   previous,
   renderingPanel,
   searchPanel,
+  sensorsPanel,
   showAllStyleProperties,
   showStyleEditor,
   slider,
   stylesComputedPane,
-  stylePropertiesSection,
+  section,
   stylePropertiesSectionSeparator,
   stylesMetricsPane,
   stylesPane,

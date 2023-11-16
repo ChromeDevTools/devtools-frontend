@@ -38,11 +38,11 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, ty
 
     // Preview UI
     this.previewElement = this.contentElement.createChild('div', 'bezier-preview-container');
-    this.previewElement.setAttribute('jslog', `${VisualLogging.bezierPreview().track({click: true})}`);
+    this.previewElement.setAttribute('jslog', `${VisualLogging.preview().track({click: true})}`);
     this.previewElement.createChild('div', 'bezier-preview-animation');
     this.previewElement.addEventListener('click', this.startPreviewAnimation.bind(this));
     this.previewOnion = this.contentElement.createChild('div', 'bezier-preview-onion');
-    this.previewOnion.setAttribute('jslog', `${VisualLogging.bezierPreview().track({click: true})}`);
+    this.previewOnion.setAttribute('jslog', `${VisualLogging.preview().track({click: true})}`);
     this.previewOnion.addEventListener('click', this.startPreviewAnimation.bind(this));
 
     this.outerContainer = this.contentElement.createChild('div', 'bezier-container');

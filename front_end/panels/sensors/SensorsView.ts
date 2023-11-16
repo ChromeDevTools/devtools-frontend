@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import sensorsStyles from './sensors.css.js';
 
@@ -208,6 +209,7 @@ export class SensorsView extends UI.Widget.VBox {
 
   constructor() {
     super(true);
+    this.element.setAttribute('jslog', `${VisualLogging.sensorsPanel()}`);
     this.contentElement.classList.add('sensors-view');
 
     this.LocationSetting = Common.Settings.Settings.instance().createSetting('emulation.locationOverride', '');
@@ -254,6 +256,7 @@ export class SensorsView extends UI.Widget.VBox {
 
   private createLocationSection(location: SDK.EmulationModel.Location): void {
     const geogroup = this.contentElement.createChild('section', 'sensors-group');
+    geogroup.setAttribute('jslog', `${VisualLogging.section().context('location')}`);
     const geogroupTitle = UI.UIUtils.createLabel(i18nString(UIStrings.location), 'sensors-group-title');
     geogroup.appendChild(geogroupTitle);
     const fields = geogroup.createChild('div', 'geo-fields');
@@ -261,6 +264,8 @@ export class SensorsView extends UI.Widget.VBox {
 
     const noOverrideOption = {title: i18nString(UIStrings.noOverride), location: NonPresetOptions.NoOverride};
     this.locationSelectElement = (fields.createChild('select', 'chrome-select') as HTMLSelectElement);
+    this.locationSelectElement.setAttribute(
+        'jslog', `${VisualLogging.dropDown().track({click: true, keydown: 'ArrowUp,ArrowDown'})}`);
     UI.ARIAUtils.bindLabelToControl(geogroupTitle, this.locationSelectElement);
 
     // No override
@@ -270,6 +275,8 @@ export class SensorsView extends UI.Widget.VBox {
     const customLocations = Common.Settings.Settings.instance().moduleSetting('emulation.locations');
     const manageButton =
         UI.UIUtils.createTextButton(i18nString(UIStrings.manage), () => Common.Revealer.reveal(customLocations));
+    manageButton.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('sensors.manage-locations')}`);
     UI.ARIAUtils.setLabel(manageButton, i18nString(UIStrings.manageTheListOfLocations));
     fields.appendChild(manageButton);
     const fillCustomSettings = (): void => {
@@ -311,7 +318,7 @@ export class SensorsView extends UI.Widget.VBox {
     const cmdOrCtrl = Host.Platform.isMac() ? '\u2318' : 'Ctrl';
     const modifierKeyMessage = i18nString(UIStrings.adjustWithMousewheelOrUpdownKeys, {PH1: cmdOrCtrl});
 
-    this.latitudeInput = UI.UIUtils.createInput('', 'number');
+    this.latitudeInput = UI.UIUtils.createInput('', 'number', 'latitude');
     latitudeGroup.appendChild(this.latitudeInput);
     this.latitudeInput.setAttribute('step', 'any');
     this.latitudeInput.value = '0';
@@ -323,7 +330,7 @@ export class SensorsView extends UI.Widget.VBox {
     latitudeGroup.appendChild(
         UI.UIUtils.createLabel(i18nString(UIStrings.latitude), 'latlong-title', this.latitudeInput));
 
-    this.longitudeInput = UI.UIUtils.createInput('', 'number');
+    this.longitudeInput = UI.UIUtils.createInput('', 'number', 'longitude');
     longitudeGroup.appendChild(this.longitudeInput);
     this.longitudeInput.setAttribute('step', 'any');
     this.longitudeInput.value = '0';
@@ -335,7 +342,7 @@ export class SensorsView extends UI.Widget.VBox {
     longitudeGroup.appendChild(
         UI.UIUtils.createLabel(i18nString(UIStrings.longitude), 'latlong-title', this.longitudeInput));
 
-    this.timezoneInput = UI.UIUtils.createInput('', 'text');
+    this.timezoneInput = UI.UIUtils.createInput('', 'text', 'timezone');
     timezoneGroup.appendChild(this.timezoneInput);
     this.timezoneInput.value = 'Europe/Berlin';
     this.timezoneSetter = UI.UIUtils.bindInput(
@@ -346,7 +353,7 @@ export class SensorsView extends UI.Widget.VBox {
         UI.UIUtils.createLabel(i18nString(UIStrings.timezoneId), 'timezone-title', this.timezoneInput));
     this.timezoneError = (timezoneGroup.createChild('div', 'timezone-error') as HTMLElement);
 
-    this.localeInput = UI.UIUtils.createInput('', 'text');
+    this.localeInput = UI.UIUtils.createInput('', 'text', 'locale');
     localeGroup.appendChild(this.localeInput);
     this.localeInput.value = 'en-US';
     this.localeSetter = UI.UIUtils.bindInput(
@@ -441,6 +448,7 @@ export class SensorsView extends UI.Widget.VBox {
 
   private createDeviceOrientationSection(): void {
     const orientationGroup = this.contentElement.createChild('section', 'sensors-group');
+    orientationGroup.setAttribute('jslog', `${VisualLogging.section().context('device-orientation')}`);
     const orientationTitle = UI.UIUtils.createLabel(i18nString(UIStrings.orientation), 'sensors-group-title');
     orientationGroup.appendChild(orientationTitle);
     const orientationContent = orientationGroup.createChild('div', 'orientation-content');
@@ -463,6 +471,8 @@ export class SensorsView extends UI.Widget.VBox {
       ],
     }];
     this.orientationSelectElement = (this.contentElement.createChild('select', 'chrome-select') as HTMLSelectElement);
+    this.orientationSelectElement.setAttribute(
+        'jslog', `${VisualLogging.dropDown().track({click: true, keydown: 'ArrowUp,ArrowDown'})}`);
     UI.ARIAUtils.bindLabelToControl(orientationTitle, this.orientationSelectElement);
     this.orientationSelectElement.appendChild(new Option(orientationOffOption.title, orientationOffOption.orientation));
     this.orientationSelectElement.appendChild(
@@ -482,6 +492,7 @@ export class SensorsView extends UI.Widget.VBox {
 
     this.deviceOrientationFieldset = this.createDeviceOrientationOverrideElement(this.deviceOrientation);
     this.stageElement = (orientationContent.createChild('div', 'orientation-stage') as HTMLElement);
+    this.stageElement.setAttribute('jslog', `${VisualLogging.preview().track({drag: true})}`);
     this.orientationLayer = (this.stageElement.createChild('div', 'orientation-layer') as HTMLDivElement);
     this.boxElement = this.orientationLayer.createChild('section', 'orientation-box orientation-element');
 
@@ -608,21 +619,21 @@ export class SensorsView extends UI.Widget.VBox {
     fieldsetElement.classList.add('device-orientation-override-section');
     const cellElement = fieldsetElement.createChild('td', 'orientation-inputs-cell');
 
-    this.alphaElement = UI.UIUtils.createInput('', 'number');
+    this.alphaElement = UI.UIUtils.createInput('', 'number', 'alpha');
     this.alphaElement.setAttribute('step', 'any');
     this.alphaSetter = this.createAxisInput(
         cellElement, this.alphaElement, i18nString(UIStrings.alpha),
         SDK.EmulationModel.DeviceOrientation.alphaAngleValidator);
     this.alphaSetter(String(deviceOrientation.alpha));
 
-    this.betaElement = UI.UIUtils.createInput('', 'number');
+    this.betaElement = UI.UIUtils.createInput('', 'number', 'beta');
     this.betaElement.setAttribute('step', 'any');
     this.betaSetter = this.createAxisInput(
         cellElement, this.betaElement, i18nString(UIStrings.beta),
         SDK.EmulationModel.DeviceOrientation.betaAngleValidator);
     this.betaSetter(String(deviceOrientation.beta));
 
-    this.gammaElement = UI.UIUtils.createInput('', 'number');
+    this.gammaElement = UI.UIUtils.createInput('', 'number', 'gamma');
     this.gammaElement.setAttribute('step', 'any');
     this.gammaSetter = this.createAxisInput(
         cellElement, this.gammaElement, i18nString(UIStrings.gamma),
@@ -631,6 +642,8 @@ export class SensorsView extends UI.Widget.VBox {
 
     const resetButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.reset), this.resetDeviceOrientation.bind(this), 'orientation-reset-button');
+    resetButton.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('sensors.reset-device-orientiation')}`);
     UI.ARIAUtils.setLabel(resetButton, i18nString(UIStrings.resetDeviceOrientation));
     resetButton.setAttribute('type', 'reset');
     cellElement.appendChild(resetButton);

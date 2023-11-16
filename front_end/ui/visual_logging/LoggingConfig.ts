@@ -30,7 +30,7 @@ enum VisualElements {
   /* 7 used to be AddStylesRule, but free to grab now */
   TextField = 8,
   ShowAllStyleProperties = 9,
-  StylePropertiesSection = 10,
+  Section = 10,
   StylePropertiesSectionSeparator = 11,
   StylesPane = 12,
   StylesSelector = 13,
@@ -55,7 +55,7 @@ enum VisualElements {
   BezierCurveEditor = 32,
   BezierEditor = 33,
   BezierPresetCategory = 34,
-  BezierPreview = 35,
+  Preview = 35,
   ColorCanvas = 36,
   ColorEyeDropper = 37,
   ColorPicker = 38,
@@ -95,6 +95,7 @@ enum VisualElements {
   /* 72 used to be Clear, but free to grab now */
   /* 73 used to be Revert, but free to grab now */
   ChangesPanel = 74,
+  SensorsPanel = 75,
 }
 
 function resolveVe(ve: string): number {

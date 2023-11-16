@@ -1092,7 +1092,7 @@ export function createTextButton(
   return element;
 }
 
-export function createInput(className?: string, type?: string): HTMLInputElement {
+export function createInput(className?: string, type?: string, jslogContext?: string): HTMLInputElement {
   const element = document.createElement('input');
   if (className) {
     element.className = className;
@@ -1101,6 +1101,9 @@ export function createInput(className?: string, type?: string): HTMLInputElement
   element.classList.add('harmony-input');
   if (type) {
     element.type = type;
+  }
+  if (jslogContext) {
+    element.setAttribute('jslog', `${VisualLogging.textField().track({keydown: true}).context(jslogContext)}`);
   }
   return element;
 }

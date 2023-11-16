@@ -45,6 +45,12 @@ describe('LoggingConfig', () => {
       assert.strictEqual(config.ve, 61);
     });
 
+    it('for Preview', () => {
+      element.setAttribute('jslog', 'Preview');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.ve, 35);
+    });
+
     it('for DeveloperResourcesPanel', () => {
       element.setAttribute('jslog', 'DeveloperResourcesPanel');
       const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
@@ -73,6 +79,12 @@ describe('LoggingConfig', () => {
       element.setAttribute('jslog', 'ChangesPanel');
       const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
       assert.strictEqual(config.ve, 74);
+    });
+
+    it('for SensorsPanel', () => {
+      element.setAttribute('jslog', 'SensorsPanel');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.ve, 75);
     });
   });
 

@@ -345,11 +345,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.state = State.Idle;
     this.recordingPageReload = false;
     this.millisecondsToRecordAfterLoadEvent = 5000;
-    this.toggleRecordAction =
-        (UI.ActionRegistry.ActionRegistry.instance().action('timeline.toggle-recording') as
-         UI.ActionRegistration.Action);
-    this.recordReloadAction =
-        (UI.ActionRegistry.ActionRegistry.instance().action('timeline.record-reload') as UI.ActionRegistration.Action);
+    this.toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.toggle-recording');
+    this.recordReloadAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.record-reload');
 
     this.#historyManager = new TimelineHistoryManager(threadTracksSource, this.#minimapComponent);
 

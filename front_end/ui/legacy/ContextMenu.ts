@@ -181,13 +181,10 @@ export class Section {
   }
 
   appendAction(actionId: string, label?: string, optional?: boolean): void {
-    const action = ActionRegistry.instance().action(actionId);
-    if (!action) {
-      if (!optional) {
-        console.error(`Action ${actionId} was not defined`);
-      }
+    if (optional && !ActionRegistry.instance().hasAction(actionId)) {
       return;
     }
+    const action = ActionRegistry.instance().getAction(actionId);
     if (!label) {
       label = action.title();
     }

@@ -200,9 +200,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.networkLogLargeRowsSetting = Common.Settings.Settings.instance().createSetting('networkLogLargeRows', false);
     this.networkRecordFilmStripSetting =
         Common.Settings.Settings.instance().createSetting('networkRecordFilmStripSetting', false);
-    this.toggleRecordAction =
-        (UI.ActionRegistry.ActionRegistry.instance().action('network.toggle-recording') as
-         UI.ActionRegistration.Action);
+    this.toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('network.toggle-recording');
     this.networkItemView = null;
     this.filmStripView = null;
     this.filmStripRecorder = null;
@@ -289,10 +287,8 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 
     this.closeButtonElement = document.createElement('div', {is: 'dt-close-button'});
     this.closeButtonElement.addEventListener('click', async () => {
-      const action = UI.ActionRegistry.ActionRegistry.instance().action('network.hide-request-details');
-      if (action) {
-        await action.execute();
-      }
+      const action = UI.ActionRegistry.ActionRegistry.instance().getAction('network.hide-request-details');
+      await action.execute();
     }, false);
     this.closeButtonElement.style.margin = '0 5px';
 
@@ -382,10 +378,8 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 
   private async searchToggleClick(): Promise<void> {
-    const action = UI.ActionRegistry.ActionRegistry.instance().action('network.search');
-    if (action) {
-      await action.execute();
-    }
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('network.search');
+    await action.execute();
   }
 
   private setupToolbarButtons(splitWidget: UI.SplitWidget.SplitWidget): void {
@@ -398,8 +392,7 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
       }
     }
     this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));
-    this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(
-        (UI.ActionRegistry.ActionRegistry.instance().action('network.clear') as UI.ActionRegistration.Action)));
+    this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('network.clear'));
     this.panelToolbar.appendSeparator();
 
     this.panelToolbar.appendToolbarItem(this.filterBar.filterButton());

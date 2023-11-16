@@ -278,8 +278,8 @@ export class Toolbar {
 
   static createActionButtonForId(
       actionId: string, options: ToolbarButtonOptions|undefined = TOOLBAR_BUTTON_DEFAULT_OPTIONS): ToolbarButton {
-    const action = ActionRegistry.instance().action(actionId);
-    return Toolbar.createActionButton((action as Action), options);
+    const action = ActionRegistry.instance().getAction(actionId);
+    return Toolbar.createActionButton(action, options);
   }
 
   gripElementForResize(): Element {

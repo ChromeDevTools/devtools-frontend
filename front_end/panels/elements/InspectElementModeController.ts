@@ -39,12 +39,12 @@ import {ElementsPanel} from './ElementsPanel.js';
 let inspectElementModeController: InspectElementModeController;
 
 export class InspectElementModeController implements SDK.TargetManager.SDKModelObserver<SDK.OverlayModel.OverlayModel> {
-  private readonly toggleSearchAction: UI.ActionRegistration.Action|null;
+  private readonly toggleSearchAction: UI.ActionRegistration.Action;
   private mode: Protocol.Overlay.InspectMode;
   private readonly showDetailedInspectTooltipSetting: Common.Settings.Setting<boolean>;
 
   constructor() {
-    this.toggleSearchAction = UI.ActionRegistry.ActionRegistry.instance().action('elements.toggle-element-search');
+    this.toggleSearchAction = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     this.mode = Protocol.Overlay.InspectMode.None;
     SDK.TargetManager.TargetManager.instance().addEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this.suspendStateChanged, this);
@@ -121,9 +121,7 @@ export class InspectElementModeController implements SDK.TargetManager.SDKModelO
              SDK.OverlayModel.OverlayModel, {scoped: true})) {
       void overlayModel.setInspectMode(mode, this.showDetailedInspectTooltipSetting.get());
     }
-    if (this.toggleSearchAction) {
-      this.toggleSearchAction.setToggled(this.isInInspectElementMode());
-    }
+    this.toggleSearchAction.setToggled(this.isInInspectElementMode());
   }
 
   private suspendStateChanged(): void {
@@ -132,9 +130,7 @@ export class InspectElementModeController implements SDK.TargetManager.SDKModelO
     }
 
     this.mode = Protocol.Overlay.InspectMode.None;
-    if (this.toggleSearchAction) {
-      this.toggleSearchAction.setToggled(false);
-    }
+    this.toggleSearchAction.setToggled(false);
   }
 
   private inspectNode(node: SDK.DOMModel.DOMNode): void {

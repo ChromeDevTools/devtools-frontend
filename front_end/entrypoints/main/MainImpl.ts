@@ -601,9 +601,10 @@ export class MainImpl {
     UI.DockController.DockController.instance().initialize();
     app.presentUI(document);
 
-    const toggleSearchNodeAction = UI.ActionRegistry.ActionRegistry.instance().action('elements.toggle-element-search');
-    // TODO: we should not access actions from other modules.
-    if (toggleSearchNodeAction) {
+    if (UI.ActionRegistry.ActionRegistry.instance().hasAction('elements.toggle-element-search')) {
+      const toggleSearchNodeAction =
+          UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
+      // TODO: we should not access actions from other modules.
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
           Host.InspectorFrontendHostAPI.Events.EnterInspectElementMode, () => {
             void toggleSearchNodeAction.execute();

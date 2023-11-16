@@ -13,9 +13,8 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import emptyWidgetStyles from '../../ui/legacy/emptyWidget.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {type BackgroundServiceModel, Events} from './BackgroundServiceModel.js';
 import backgroundServiceViewStyles from './backgroundServiceView.css.js';
-
-import {Events, type BackgroundServiceModel} from './BackgroundServiceModel.js';
 
 const UIStrings = {
   /**
@@ -194,9 +193,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     this.storageKeyManager.addEventListener(
         SDK.StorageKeyManager.Events.MainStorageKeyChanged, () => this.onStorageKeyChanged());
 
-    this.recordAction =
-        (UI.ActionRegistry.ActionRegistry.instance().action('background-service.toggle-recording') as
-         UI.ActionRegistration.Action);
+    this.recordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('background-service.toggle-recording');
 
     this.toolbar = new UI.Toolbar.Toolbar('background-service-toolbar', this.contentElement);
     void this.setupToolbar();

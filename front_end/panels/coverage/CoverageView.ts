@@ -164,8 +164,7 @@ export class CoverageView extends UI.Widget.VBox {
     this.coverageTypeComboBox.setSelectedIndex(this.coverageTypeComboBoxSetting.get());
     this.coverageTypeComboBox.setEnabled(true);
     toolbar.appendToolbarItem(this.coverageTypeComboBox);
-    this.toggleRecordAction =
-        UI.ActionRegistry.ActionRegistry.instance().action('coverage.toggle-recording') as UI.ActionRegistration.Action;
+    this.toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('coverage.toggle-recording');
     this.toggleRecordButton = UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction);
     toolbar.appendToolbarItem(this.toggleRecordButton);
 
@@ -173,8 +172,7 @@ export class CoverageView extends UI.Widget.VBox {
     const mainTargetSupportsRecordOnReload = mainTarget && mainTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
     this.inlineReloadButton = null;
     if (mainTargetSupportsRecordOnReload) {
-      const startWithReloadAction = UI.ActionRegistry.ActionRegistry.instance().action('coverage.start-with-reload') as
-          UI.ActionRegistration.Action;
+      const startWithReloadAction = UI.ActionRegistry.ActionRegistry.instance().getAction('coverage.start-with-reload');
       this.startWithReloadButton = UI.Toolbar.Toolbar.createActionButton(startWithReloadAction);
       toolbar.appendToolbarItem(this.startWithReloadButton);
       this.toggleRecordButton.setEnabled(false);

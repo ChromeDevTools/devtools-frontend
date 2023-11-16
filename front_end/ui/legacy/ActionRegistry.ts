@@ -79,7 +79,15 @@ export class ActionRegistry {
     }
   }
 
-  action(actionId: string): Action|null {
-    return this.actionsById.get(actionId) || null;
+  hasAction(actionId: string): boolean {
+    return this.actionsById.has(actionId);
+  }
+
+  getAction(actionId: string): Action {
+    const action = this.actionsById.get(actionId);
+    if (action) {
+      return action;
+    }
+    throw new Error(`Cannot find registered action with ID '${actionId}'`);
   }
 }

@@ -162,8 +162,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     toolbarContainerLeft.classList.add('profiles-toolbar');
     this.panelSidebarElement().insertBefore(toolbarContainerLeft, this.panelSidebarElement().firstChild);
     const toolbar = new UI.Toolbar.Toolbar('', toolbarContainerLeft);
-    this.toggleRecordAction =
-        (UI.ActionRegistry.ActionRegistry.instance().action(recordingActionId) as UI.ActionRegistration.Action);
+    this.toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction(recordingActionId);
     this.toggleRecordButton = UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction);
     toolbar.appendToolbarItem(this.toggleRecordButton);
 

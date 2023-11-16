@@ -590,10 +590,10 @@ export class ShortcutListItem {
         shortcutInput.classList.add('error-input');
         UI.ARIAUtils.setInvalid(shortcutInput, true);
         errorMessageElement.classList.remove('hidden');
-        const action = UI.ActionRegistry.ActionRegistry.instance().action(conflicts[0]);
-        if (!action) {
+        if (!UI.ActionRegistry.ActionRegistry.instance().hasAction(conflicts[0])) {
           return;
         }
+        const action = UI.ActionRegistry.ActionRegistry.instance().getAction(conflicts[0]);
         const actionTitle = action.title();
         const actionCategory = action.category();
         errorMessageElement.textContent =

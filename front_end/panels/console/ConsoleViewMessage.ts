@@ -1303,8 +1303,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
 
     if (this.message.level === Protocol.Log.LogEntryLevel.Error ||
         this.message.level === Protocol.Log.LogEntryLevel.Warning) {
-      const action = UI.ActionRegistry.ActionRegistry.instance().action(EXPLAIN_HOVER_ACTION_ID);
-      if (action) {
+      if (UI.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_HOVER_ACTION_ID)) {
         if (document.documentElement.matches('.aida-available')) {
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsoleMessageShown);
         }
@@ -1330,10 +1329,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     button.onclick = (event: Event): void => {
       event.stopPropagation();
       UI.Context.Context.instance().setFlavor(ConsoleViewMessage, this);
-      const action = UI.ActionRegistry.ActionRegistry.instance().action(EXPLAIN_HOVER_ACTION_ID);
-      if (!action) {
-        return;
-      }
+      const action = UI.ActionRegistry.ActionRegistry.instance().getAction(EXPLAIN_HOVER_ACTION_ID);
       void action.execute();
     };
     const text = document.createElement('span');

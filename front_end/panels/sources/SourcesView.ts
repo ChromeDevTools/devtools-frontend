@@ -169,8 +169,8 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 
         const button = listItemElement.createChild('button');
         button.textContent = shortcut.description;
-        const action = UI.ActionRegistry.ActionRegistry.instance().action(shortcut.actionId);
-        button.addEventListener('click', () => action?.execute());
+        const action = UI.ActionRegistry.ActionRegistry.instance().getAction(shortcut.actionId);
+        button.addEventListener('click', () => action.execute());
       }
 
       if (shortcut.isWorkspace) {

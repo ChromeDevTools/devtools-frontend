@@ -2009,10 +2009,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   private editAsHTML(): void {
     const promise = Common.Revealer.reveal(this.node());
     void promise.then(() => {
-      const action = UI.ActionRegistry.ActionRegistry.instance().action('elements.edit-as-html');
-      if (!action) {
-        return;
-      }
+      const action = UI.ActionRegistry.ActionRegistry.instance().getAction('elements.edit-as-html');
       return action.execute();
     });
   }

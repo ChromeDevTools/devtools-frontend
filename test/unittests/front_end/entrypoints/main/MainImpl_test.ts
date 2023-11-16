@@ -32,7 +32,10 @@ describeWithMockConnection('MainMenuItem', () => {
       assertNotNullOrUndefined(item);
 
       const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
-      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'action')
+      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
+          .withArgs(sinon.match(/inspector_main.focus-debuggee|main.toggle-drawer/))
+          .returns(true);
+      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'getAction')
           .withArgs(sinon.match(/inspector_main.focus-debuggee|main.toggle-drawer/))
           .returns({execute: () => {}} as UI.ActionRegistration.Action);
       item.clicked(new MouseEvent('click', {
@@ -52,7 +55,8 @@ describeWithMockConnection('MainMenuItem', () => {
       assertNotNullOrUndefined(item);
 
       const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
-      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'action').withArgs('main.toggle-drawer').returns({
+      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction').withArgs('main.toggle-drawer').returns(true);
+      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'getAction').withArgs('main.toggle-drawer').returns({
         execute: () => {},
       } as UI.ActionRegistration.Action);
       item.clicked(new MouseEvent('click', {

@@ -2,12 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-import * as Elements from '../../../../../front_end/panels/elements/elements.js';
-
-import type * as Protocol from '../../../../../front_end/generated/protocol.js';
-import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import type * as Protocol from '../../../../../front_end/generated/protocol.js';
+import * as Elements from '../../../../../front_end/panels/elements/elements.js';
+import {createTarget, registerNoopActions, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../helpers/MockConnection.js';
 
 const {assert} = chai;
@@ -37,6 +36,7 @@ describeWithMockConnection('InspectElementModeController', () => {
 
   beforeEach(() => {
     stubNoopSettings();
+    registerNoopActions(['elements.toggle-element-search']);
     const tabTarget = createTarget({type: SDK.Target.Type.Tab});
     inScopeTarget = createTarget({parentTarget: tabTarget});
     inScopeSubTarget = createTarget({parentTarget: inScopeTarget});

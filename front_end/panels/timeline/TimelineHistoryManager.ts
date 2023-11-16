@@ -101,8 +101,7 @@ export class TimelineHistoryManager {
 
     this.recordings = [];
     this.#minimapComponent = minimapComponent;
-    this.action =
-        (UI.ActionRegistry.ActionRegistry.instance().action('timeline.show-history') as UI.ActionRegistration.Action);
+    this.action = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.show-history');
     this.nextNumberByDomain = new Map();
     this.buttonInternal = new ToolbarButton(this.action);
 

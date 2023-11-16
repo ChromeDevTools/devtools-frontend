@@ -1,8 +1,9 @@
 <script type="module">
-import {outer} from './multi-files-mycode.js';
-import {callfunc} from './multi-files-thirdparty.js';
+import {outer, userTimeout} from './multi-files-mycode.js';
+import {bindTimeoutTestCase, callfunc} from './multi-files-thirdparty.js';
 
 globalThis.f = outer;
 globalThis.wrapper = callfunc;
+globalThis.timeoutTestCase = bindTimeoutTestCase(userTimeout);
 
 </script>

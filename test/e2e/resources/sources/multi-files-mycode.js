@@ -7,3 +7,7 @@ function inner() {
 export function outer() {
   callfunc(inner);
 }
+
+export function userTimeout() {
+  setTimeout(() => {}, 0);
+}

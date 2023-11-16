@@ -5,15 +5,15 @@
 import {assert} from 'chai';
 import * as fs from 'fs';
 import * as path from 'path';
-
 import type * as puppeteer from 'puppeteer-core';
-import {requireTestRunnerConfigSetting} from '../../conductor/test_runner_config.js';
 
+import {requireTestRunnerConfigSetting} from '../../conductor/test_runner_config.js';
 import {
   $,
   $$,
   assertNotNullOrUndefined,
   click,
+  clickElement,
   getBrowserAndPages,
   getPendingEvents,
   getTestServerPort,
@@ -22,14 +22,15 @@ import {
   platform,
   pressKey,
   reloadDevTools,
+  setCheckBox,
   step,
   timeout,
   typeText,
   waitFor,
-  clickElement,
+  waitForAria,
   waitForFunction,
   waitForFunctionWithTries,
-  waitForAria,
+  waitForVisible,
 } from '../../shared/helper.js';
 
 export const ACTIVE_LINE = '.CodeMirror-activeline > pre > span';
@@ -418,6 +419,36 @@ export async function waitForStackTopMatch(matcher: RegExp) {
     return stepLocation?.match(matcher);
   }, {tries: 10});
   return stepLocation;
+}
+
+export async function setEventListenerBreakpoint(groupName: string, eventName: string) {
+  const {frontend} = getBrowserAndPages();
+  const eventListenerBreakpointsSection = await waitForAria('Event Listener Breakpoints');
+  const expanded = await eventListenerBreakpointsSection.evaluate(el => el.getAttribute('aria-expanded'));
+  if (expanded !== 'true') {
+    await click('[aria-label="Event Listener Breakpoints"]');
+    await waitFor('[aria-label="Event Listener Breakpoints"][aria-expanded="true"]');
+  }
+
+  const eventSelector = `input[type="checkbox"][title="${eventName}"]`;
+  const groupSelector = `input[type="checkbox"][title="${groupName}"]`;
+  const groupCheckbox = await waitFor(groupSelector);
+  await waitForVisible(groupSelector);
+  const eventCheckbox = await waitFor(eventSelector);
+  if (!(await eventCheckbox.evaluate(x => x.checkVisibility()))) {
+    // Unfortunately the shadow DOM makes it hard to find the expander element
+    // we are attempting to click on, so we click to the left of the checkbox
+    // bounding box.
+    const rectData = await groupCheckbox.evaluate(element => {
+      const {left, top, width, height} = element.getBoundingClientRect();
+      return {left, top, width, height};
+    });
+
+    await frontend.mouse.click(rectData.left - 10, rectData.top + rectData.height * .5);
+    await waitForVisible(eventSelector);
+  }
+
+  await setCheckBox(eventSelector, true);
 }
 
 declare global {

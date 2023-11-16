@@ -28,6 +28,7 @@ import {
   readIgnoreListedSources,
   readSourcesTreeView,
   RESUME_BUTTON,
+  setEventListenerBreakpoint,
   stepIn,
   stepOut,
 } from '../helpers/sources-helpers.js';
@@ -104,6 +105,34 @@ describe('Ignore list', async function() {
     assert.deepEqual(await getCallFrameNames(), ['outer', '(anonymous)']);
 
     await click(RESUME_BUTTON);
+    await scriptEvaluation;
+  });
+
+  it('skips instrumentation breakpoints', async function() {
+    await setIgnoreListPattern('thirdparty');
+    const {target, frontend} = getBrowserAndPages();
+    installEventListener(frontend, DEBUGGER_PAUSED_EVENT);
+
+    await openSourceCodeEditorForFile('multi-files-mycode.js', 'multi-files.html');
+    await setEventListenerBreakpoint('Timer', 'setTimeout');
+
+    const scriptEvaluation = target.evaluate('debugger; timeoutTestCase();');
+
+    await waitFor(RESUME_BUTTON);
+    await waitFor(PAUSE_INDICATOR_SELECTOR);
+    await waitForFunction(async () => await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
+    assert.deepEqual(await getCallFrameNames(), ['(anonymous)']);
+
+    await click(RESUME_BUTTON);
+    await waitFor('.call-frame-title-text[title="userTimeout"]');
+
+    await waitFor(RESUME_BUTTON);
+    await waitFor(PAUSE_INDICATOR_SELECTOR);
+    await waitForFunction(async () => await getPendingEvents(frontend, DEBUGGER_PAUSED_EVENT));
+    assert.deepEqual(await getCallFrameNames(), ['userTimeout', 'Promise.then (async)', '(anonymous)']);
+
+    await click(RESUME_BUTTON);
+
     await scriptEvaluation;
   });
 

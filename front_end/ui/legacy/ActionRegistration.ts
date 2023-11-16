@@ -307,7 +307,6 @@ export enum ActionCategory {
   DEBUGGER = 'DEBUGGER',
   SOURCES = 'SOURCES',
   RENDERING = 'RENDERING',
-  EXPLAIN = 'EXPLAIN',
   RECORDER = 'RECORDER',
   CHANGES = 'CHANGES',
 }

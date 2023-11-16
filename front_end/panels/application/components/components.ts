@@ -10,6 +10,7 @@ import * as InterestGroupAccessGrid from './InterestGroupAccessGrid.js';
 import * as OriginTrialTreeView from './OriginTrialTreeView.js';
 import * as ProtocolHandlersView from './ProtocolHandlersView.js';
 import * as ReportsGrid from './ReportsGrid.js';
+import * as ServiceWorkerRouterView from './ServiceWorkerRouterView.js';
 import * as SharedStorageAccessGrid from './SharedStorageAccessGrid.js';
 import * as SharedStorageMetadataView from './SharedStorageMetadataView.js';
 import * as StackTrace from './StackTrace.js';
@@ -25,6 +26,7 @@ export {
   OriginTrialTreeView,
   ProtocolHandlersView,
   ReportsGrid,
+  ServiceWorkerRouterView,
   SharedStorageAccessGrid,
   SharedStorageMetadataView,
   StackTrace,

@@ -6,17 +6,16 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
+import * as ApplicationComponents from './components/components.js';
 import serviceWorkersViewStyles from './serviceWorkersView.css.js';
 import serviceWorkerUpdateCycleViewStyles from './serviceWorkerUpdateCycleView.css.js';
-
-import type * as Protocol from '../../generated/protocol.js';
-import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
-import * as NetworkForward from '../../panels/network/forward/forward.js';
-
 import {ServiceWorkerUpdateCycleView} from './ServiceWorkerUpdateCycleView.js';
 
 const UIStrings = {
@@ -116,6 +115,10 @@ const UIStrings = {
    * @example {7/3/2019, 3:38:37 PM} PH1
    */
   receivedS: 'Received {PH1}',
+  /**
+   **@description Text in Service Workers View of the Application panel.
+   */
+  routers: 'Routers',
   /**
    *@description Text in Service Workers View of the Application panel
    *@example {example.com} PH1
@@ -481,6 +484,7 @@ export class Section {
   private readonly periodicSyncTagNameSetting: Common.Settings.Setting<string>;
   private readonly toolbar: UI.Toolbar.Toolbar;
   private readonly updateCycleView: ServiceWorkerUpdateCycleView;
+  private readonly routerView: ApplicationComponents.ServiceWorkerRouterView.ServiceWorkerRouterView;
   private readonly networkRequests: UI.Toolbar.ToolbarButton;
   private readonly updateButton: UI.Toolbar.ToolbarButton;
   private readonly deleteButton: UI.Toolbar.ToolbarButton;
@@ -491,6 +495,7 @@ export class Section {
   private readonly clientInfoCache: Map<string, Protocol.Target.TargetInfo>;
   private readonly throttler: Common.Throttler.Throttler;
   private updateCycleField?: Element;
+  private routerField?: Element;
 
   constructor(
       manager: SDK.ServiceWorkerManager.ServiceWorkerManager, section: UI.ReportView.Section,
@@ -510,6 +515,7 @@ export class Section {
     this.toolbar.renderAsLinks();
 
     this.updateCycleView = new ServiceWorkerUpdateCycleView(registration);
+    this.routerView = new ApplicationComponents.ServiceWorkerRouterView.ServiceWorkerRouterView();
     this.networkRequests = new UI.Toolbar.ToolbarButton(
         i18nString(UIStrings.networkRequests), undefined, i18nString(UIStrings.networkRequests));
     this.networkRequests.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.networkRequestsClicked, this);
@@ -537,6 +543,7 @@ export class Section {
         i18nString(UIStrings.periodicSync), this.periodicSyncTagNameSetting.get(),
         i18nString(UIStrings.periodicSyncTag), tag => this.periodicSync(tag));
     this.createUpdateCycleField();
+    this.maybeCreateRouterField();
 
     this.linkifier = new Components.Linkifier.Linkifier();
     this.clientInfoCache = new Map();
@@ -672,6 +679,7 @@ export class Section {
         this.createLink(activeEntry, i18nString(UIStrings.startString), this.startButtonClicked.bind(this));
       }
       this.updateClientsField(active);
+      this.maybeCreateRouterField();
     } else if (redundant) {
       this.updateSourceField(redundant);
       this.addVersion(
@@ -732,6 +740,26 @@ export class Section {
   private createUpdateCycleField(): void {
     this.updateCycleField = this.wrapWidget(this.section.appendField(i18nString(UIStrings.updateCycle)));
     this.updateCycleField.appendChild(this.updateCycleView.tableElement);
+  }
+
+  private maybeCreateRouterField(): void {
+    const versions = this.registration.versionsByMode();
+    const active = versions.get(SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.Active);
+    const title = i18nString(UIStrings.routers);
+    if (active && active.routerRules && active.routerRules.length > 0) {
+      // If there is at least one registered rule in the active version, append the router filed.
+      if (!this.routerField) {
+        this.routerField = this.wrapWidget(this.section.appendField(title));
+      }
+      if (!this.routerField.lastElementChild) {
+        this.routerField.appendChild(this.routerView);
+      }
+      this.routerView.update(active.routerRules);
+    } else {
+      // If no active worker or no registered rules, remove the field.
+      this.section.removeField(title);
+      this.routerField = undefined;
+    }
   }
 
   private updateButtonClicked(): void {

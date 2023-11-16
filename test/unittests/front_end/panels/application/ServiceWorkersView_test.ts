@@ -4,6 +4,7 @@
 
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Application from '../../../../../front_end/panels/application/application.js';
 import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
@@ -44,6 +45,136 @@ describeWithMockConnection('ServiceWorkersView', () => {
       const sectionTitle = view.currentWorkersView.contentElement.querySelector('.report-section-title');
       assertNotNullOrUndefined(sectionTitle);
       assert.strictEqual(sectionTitle.textContent, SCOPE_URL);
+    });
+
+    describe('router info', () => {
+      const registrationId = 'fake-sw-id' as Protocol.ServiceWorker.RegistrationID;
+      const origin = 'https://example.com';
+      const routerRules = [
+        {
+          condition: {urlPattern: '/foo/bar'},
+          source: ['network'],
+        },
+        {
+          condition: {urlPattern: '/baz'},
+          source: ['fetch-event'],
+        },
+      ];
+      let serviceWorkersManager: SDK.ServiceWorkerManager.ServiceWorkerManager|null;
+
+      const hasRouterField = (): boolean => {
+        return Array.from(view.currentWorkersView.contentElement.querySelectorAll('.report-field')).some(field => {
+          return field.querySelector('.report-field-name')?.textContent === 'Routers';
+        });
+      };
+
+      beforeEach(() => {
+        Application.ServiceWorkersView.setThrottleDisabledForDebugging(true);
+        view = new Application.ServiceWorkersView.ServiceWorkersView();
+        view.markAsRoot();
+        view.show(document.body);
+
+        serviceWorkersManager = target.model(SDK.ServiceWorkerManager.ServiceWorkerManager);
+        assertNotNullOrUndefined(serviceWorkersManager);
+
+        const securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
+        assertNotNullOrUndefined(securityOriginManager);
+        sinon.stub(securityOriginManager, 'securityOrigins').returns([origin]);
+      });
+
+      it('shows the router field if active version has at least one router rule', async () => {
+        const payload:
+            Protocol.ServiceWorker.ServiceWorkerRegistration = {registrationId, scopeURL: origin, isDeleted: false};
+        const registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration =
+            new SDK.ServiceWorkerManager.ServiceWorkerRegistration(payload);
+
+        const versionId = 1;
+        const versionPayload: Protocol.ServiceWorker.ServiceWorkerVersion = {
+          registrationId,
+          versionId: versionId.toString(),
+          scriptURL: '',
+          status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated,
+          runningStatus: Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running,
+          routerRules: JSON.stringify(routerRules),
+        };
+        registration.updateVersion(versionPayload);
+        serviceWorkersManager?.dispatchEventToListeners(
+            SDK.ServiceWorkerManager.Events.RegistrationUpdated, registration);
+        assert.isTrue(hasRouterField());
+      });
+
+      it('does not show the router field if active version does not have router rules', async () => {
+        const payload:
+            Protocol.ServiceWorker.ServiceWorkerRegistration = {registrationId, scopeURL: origin, isDeleted: false};
+        const registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration =
+            new SDK.ServiceWorkerManager.ServiceWorkerRegistration(payload);
+
+        let versionId = 1;
+        const versionPayload: Protocol.ServiceWorker.ServiceWorkerVersion = {
+          registrationId,
+          versionId: versionId.toString(),
+          scriptURL: '',
+          status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated,
+          runningStatus: Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running,
+        };
+        registration.updateVersion(versionPayload);
+        serviceWorkersManager?.dispatchEventToListeners(
+            SDK.ServiceWorkerManager.Events.RegistrationUpdated, registration);
+        assert.isFalse(hasRouterField());
+
+        // Update the version with the empty router rules.
+        versionId++;
+        registration.updateVersion(Object.assign({}, versionPayload, {
+          versionId: versionId.toString(),
+          routerRules: JSON.stringify([]),
+        }));
+        registration.updateVersion(versionPayload);
+        serviceWorkersManager?.dispatchEventToListeners(
+            SDK.ServiceWorkerManager.Events.RegistrationUpdated, registration);
+        assert.isFalse(hasRouterField());
+      });
+
+      it('does not show the router field if there is no active version', async () => {
+        const payload:
+            Protocol.ServiceWorker.ServiceWorkerRegistration = {registrationId, scopeURL: origin, isDeleted: false};
+        const registration: SDK.ServiceWorkerManager.ServiceWorkerRegistration =
+            new SDK.ServiceWorkerManager.ServiceWorkerRegistration(payload);
+
+        let versionId = 0;
+        const versionPayload: Protocol.ServiceWorker.ServiceWorkerVersion = {
+          registrationId,
+          versionId: versionId.toString(),
+          scriptURL: '',
+          status: Protocol.ServiceWorker.ServiceWorkerVersionStatus.New,
+          runningStatus: Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Starting,
+          routerRules: JSON.stringify(routerRules),
+        };
+
+        const updateAndDispatchEvent = (status: Protocol.ServiceWorker.ServiceWorkerVersionStatus): void => {
+          versionId++;
+          registration.updateVersion(Object.assign({}, versionPayload, {versionId: versionId.toString(), status}));
+          serviceWorkersManager?.dispatchEventToListeners(
+              SDK.ServiceWorkerManager.Events.RegistrationUpdated, registration);
+        };
+
+        updateAndDispatchEvent(Protocol.ServiceWorker.ServiceWorkerVersionStatus.New);
+        assert.isFalse(hasRouterField());
+
+        updateAndDispatchEvent(Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant);
+        assert.isFalse(hasRouterField());
+
+        updateAndDispatchEvent(Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing);
+        assert.isFalse(hasRouterField());
+
+        updateAndDispatchEvent(Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installed);
+        assert.isFalse(hasRouterField());
+
+        updateAndDispatchEvent(Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activating);
+        assert.isTrue(hasRouterField());
+
+        updateAndDispatchEvent(Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated);
+        assert.isTrue(hasRouterField());
+      });
     });
   };
 

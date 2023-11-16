@@ -209,7 +209,7 @@ export class SensorsView extends UI.Widget.VBox {
 
   constructor() {
     super(true);
-    this.element.setAttribute('jslog', `${VisualLogging.sensorsPanel()}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel().context('sensors')}`);
     this.contentElement.classList.add('sensors-view');
 
     this.LocationSetting = Common.Settings.Settings.instance().createSetting('emulation.locationOverride', '');

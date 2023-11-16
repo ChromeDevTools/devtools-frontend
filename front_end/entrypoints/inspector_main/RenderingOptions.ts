@@ -217,7 +217,7 @@ export class RenderingOptionsView extends UI.Widget.VBox {
   private constructor() {
     super(true);
 
-    this.element.setAttribute('jslog', `${VisualLogging.renderingPanel()}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel().context('rendering')}`);
 
     this.#appendCheckbox(
         i18nString(UIStrings.paintFlashing), i18nString(UIStrings.highlightsAreasOfThePageGreen),

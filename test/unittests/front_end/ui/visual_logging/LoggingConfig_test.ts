@@ -39,22 +39,16 @@ describe('LoggingConfig', () => {
       assert.strictEqual(config.ve, 29);
     });
 
-    it('for RenderingPanel', () => {
-      element.setAttribute('jslog', 'RenderingPanel');
-      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
-      assert.strictEqual(config.ve, 61);
-    });
-
     it('for Preview', () => {
       element.setAttribute('jslog', 'Preview');
       const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
       assert.strictEqual(config.ve, 35);
     });
 
-    it('for DeveloperResourcesPanel', () => {
-      element.setAttribute('jslog', 'DeveloperResourcesPanel');
+    it('for Panel', () => {
+      element.setAttribute('jslog', 'Panel');
       const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
-      assert.strictEqual(config.ve, 68);
+      assert.strictEqual(config.ve, 48);
     });
 
     it('for TableHeader', () => {
@@ -67,24 +61,6 @@ describe('LoggingConfig', () => {
       element.setAttribute('jslog', 'TableCell');
       const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
       assert.strictEqual(config.ve, 70);
-    });
-
-    it('for SearchPanel', () => {
-      element.setAttribute('jslog', 'SearchPanel');
-      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
-      assert.strictEqual(config.ve, 71);
-    });
-
-    it('for ChangesPanel', () => {
-      element.setAttribute('jslog', 'ChangesPanel');
-      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
-      assert.strictEqual(config.ve, 74);
-    });
-
-    it('for SensorsPanel', () => {
-      element.setAttribute('jslog', 'SensorsPanel');
-      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
-      assert.strictEqual(config.ve, 75);
     });
   });
 
@@ -100,9 +76,23 @@ describe('LoggingConfig', () => {
   });
 
   it('can parse simple context attribute', () => {
-    element.setAttribute('jslog', 'TreeItem;context:42');
-    const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
-    assert.strictEqual(config.context, '42');
+    it('for TreeItem', () => {
+      element.setAttribute('jslog', 'TreeItem;context:42');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.context, '42');
+    });
+
+    it('for Action', () => {
+      element.setAttribute('jslog', 'Action;context:console.clear');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.context, 'console.clear');
+    });
+
+    it('for Panel', () => {
+      element.setAttribute('jslog', 'Panel;context:developer-resources');
+      const config = VisualLogging.LoggingConfig.getLoggingConfig(element);
+      assert.strictEqual(config.context, 'developer-resources');
+    });
   });
 
   it('can parse parent attribute', () => {

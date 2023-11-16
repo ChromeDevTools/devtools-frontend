@@ -26,7 +26,6 @@ const ariaAttributes = LoggingConfig.makeConfigStringBuilder.bind(null, 'AriaAtt
 const bezierCurveEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierCurveEditor');
 const bezierEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierEditor');
 const bezierPresetCategory = LoggingConfig.makeConfigStringBuilder.bind(null, 'BezierPresetCategory');
-const changesPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'ChangesPanel');
 const colorCanvas = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorCanvas');
 const colorEyeDropper = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorEyeDropper');
 const colorPicker = LoggingConfig.makeConfigStringBuilder.bind(null, 'ColorPicker');
@@ -37,7 +36,6 @@ const cssFlexboxEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssFl
 const cssGridEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssGridEditor');
 const cssLayersPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssLayersPane');
 const cssShadowEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'cssShadowEditor');
-const developerResourcesPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'DeveloperResourcesPanel');
 const domBreakpoint = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpoint');
 const domBreakpointsPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpointsPane');
 const dropDown = LoggingConfig.makeConfigStringBuilder.bind(null, 'DropDown');
@@ -45,7 +43,6 @@ const elementsBreadcrumbs = LoggingConfig.makeConfigStringBuilder.bind(null, 'El
 const elementClassesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementClassesPane');
 const elementPropertiesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementPropertiesPane');
 const elementStatesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementStatesPan');
-const elementsPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementsPanel');
 const elementsTreeOutline = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementsTreeOutline');
 const eventListenersPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'EventListenersPane');
 const filterDropdown = LoggingConfig.makeConfigStringBuilder.bind(null, 'FilterDropdown');
@@ -62,13 +59,10 @@ const menu = LoggingConfig.makeConfigStringBuilder.bind(null, 'Menu');
 const metricsBox = LoggingConfig.makeConfigStringBuilder.bind(null, 'MetricsBox');
 const next = LoggingConfig.makeConfigStringBuilder.bind(null, 'Next');
 const paletteColorShades = LoggingConfig.makeConfigStringBuilder.bind(null, 'PaletteColorShades');
-const palettePanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'PalettePanel');
+const panel = LoggingConfig.makeConfigStringBuilder.bind(null, 'Panel');
 const panelTabHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'PanelTabHeader');
 const preview = LoggingConfig.makeConfigStringBuilder.bind(null, 'Preview');
 const previous = LoggingConfig.makeConfigStringBuilder.bind(null, 'Previous');
-const renderingPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'RenderingPanel');
-const searchPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'SearchPanel');
-const sensorsPanel = LoggingConfig.makeConfigStringBuilder.bind(null, 'SensorsPanel');
 const showAllStyleProperties = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowAllStyleProperties');
 const showStyleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowStyleEditor');
 const slider = LoggingConfig.makeConfigStringBuilder.bind(null, 'Slider');
@@ -109,7 +103,6 @@ export {
   bezierCurveEditor,
   bezierEditor,
   bezierPresetCategory,
-  changesPanel,
   colorCanvas,
   colorEyeDropper,
   colorPicker,
@@ -120,7 +113,6 @@ export {
   cssGridEditor,
   cssLayersPane,
   cssShadowEditor,
-  developerResourcesPanel,
   domBreakpoint,
   domBreakpointsPane,
   dropDown,
@@ -128,7 +120,6 @@ export {
   elementClassesPane,
   elementPropertiesPane,
   elementStatesPane,
-  elementsPanel,
   elementsTreeOutline,
   eventListenersPane,
   filterDropdown,
@@ -145,13 +136,10 @@ export {
   metricsBox,
   next,
   paletteColorShades,
-  palettePanel,
+  panel,
   panelTabHeader,
   preview,
   previous,
-  renderingPanel,
-  searchPanel,
-  sensorsPanel,
   showAllStyleProperties,
   showStyleEditor,
   slider,

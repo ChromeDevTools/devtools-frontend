@@ -43,7 +43,6 @@ import type * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type AXTreeNodeData} from './AccessibilityTreeUtils.js';
 import {AccessibilityTreeView} from './AccessibilityTreeView.js';
@@ -218,7 +217,6 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   constructor() {
     super('elements');
 
-    this.element.setAttribute('jslog', `${VisualLogging.elementsPanel()}`);
     this.splitWidget = new UI.SplitWidget.SplitWidget(true, true, 'elementsPanelSplitViewState', 325, 325);
     this.splitWidget.addEventListener(
         UI.SplitWidget.Events.SidebarSizeChanged, this.updateTreeOutlineVisibleWidth.bind(this));

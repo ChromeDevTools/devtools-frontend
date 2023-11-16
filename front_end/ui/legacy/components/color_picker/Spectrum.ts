@@ -394,7 +394,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.element.classList.add('flex-none');
     this.palettes = new Map();
     this.palettePanel = this.contentElement.createChild('div', 'palette-panel');
-    this.palettePanel.setAttribute('jslog', `${VisualLogging.palettePanel()}`);
+    this.palettePanel.setAttribute('jslog', `${VisualLogging.section().context('palette-panel')}`);
     this.palettePanelShowing = false;
     this.paletteSectionContainer = this.contentElement.createChild('div', 'spectrum-palette-container');
     this.paletteContainer = this.paletteSectionContainer.createChild('div', 'spectrum-palette');

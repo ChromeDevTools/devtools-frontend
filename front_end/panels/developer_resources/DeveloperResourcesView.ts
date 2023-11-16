@@ -56,7 +56,7 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
   constructor() {
     super(true);
 
-    this.element.setAttribute('jslog', `${VisualLogging.developerResourcesPanel()}`);
+    this.element.setAttribute('jslog', `${VisualLogging.panel().context('developer-resources')}`);
 
     const toolbarContainer = this.contentElement.createChild('div', 'developer-resource-view-toolbar-container');
     const toolbar = new UI.Toolbar.Toolbar('developer-resource-view-toolbar', toolbarContainer);

@@ -68,7 +68,7 @@ enum VisualElements {
   Next = 45,
   Item = 46,
   PaletteColorShades = 47,
-  PalettePanel = 48,
+  Panel = 48,
   Previous = 49,
   ShowStyleEditor = 50,
   Slider = 51,
@@ -79,23 +79,18 @@ enum VisualElements {
   FlexboxOverlays = 56,
   GridOverlays = 57,
   JumpToElement = 58,
-  ElementsPanel = 59,
+  /* 59 used to be ElementsPanel, but free to grab now */
   ElementsTreeOutline = 60,
-  RenderingPanel = 61,
+  /* 61 used to be RenderingPanel, but free to grab now */
   ElementsBreadcrumbs = 62,
   FullAccessibilityTree = 63,
   ToggleDeviceMode = 64,
   ToggleElementSearch = 65,
   PanelTabHeader = 66,
   Menu = 67,
-  DeveloperResourcesPanel = 68,
+  /* 68 used to be DeveloperResourcesPanel, but free to grab now */
   TableHeader = 69,
   TableCell = 70,
-  SearchPanel = 71,
-  /* 72 used to be Clear, but free to grab now */
-  /* 73 used to be Revert, but free to grab now */
-  ChangesPanel = 74,
-  SensorsPanel = 75,
 }
 
 function resolveVe(ve: string): number {

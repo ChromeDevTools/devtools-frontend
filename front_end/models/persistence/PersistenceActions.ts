@@ -102,7 +102,7 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
     const binding = uiSourceCode && PersistenceImpl.instance().binding(uiSourceCode);
     const fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
 
-    if (fileURL.startsWith('file://')) {
+    if (Common.ParsedURL.schemeIs(fileURL, 'file:')) {
       const path = Common.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host.Platform.isWin());
       contextMenu.revealSection().appendItem(
           i18nString(UIStrings.openInContainingFolder),

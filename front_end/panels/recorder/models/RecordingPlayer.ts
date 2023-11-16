@@ -2,13 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as puppeteer from '../../../third_party/puppeteer/puppeteer.js';
-import * as SDK from '../../../core/sdk/sdk.js';
 import * as Common from '../../../core/common/common.js';
-import * as PuppeteerService from '../../../services/puppeteer/puppeteer.js';
-import * as PuppeteerReplay from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
+import type * as Platform from '../../../core/platform/platform.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import type * as Protocol from '../../../generated/protocol.js';
+import * as PuppeteerService from '../../../services/puppeteer/puppeteer.js';
+import * as PuppeteerReplay from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
+import type * as puppeteer from '../../../third_party/puppeteer/puppeteer.js';
 
 import {type Step, type UserFlow} from './Schema.js';
 
@@ -36,8 +37,8 @@ export const defaultTimeout = 5000;  // ms
 function isPageTarget(target: Protocol.Target.TargetInfo): boolean {
   // Treat DevTools targets as page targets too.
   return (
-      target.url.startsWith('devtools://') || target.type === 'page' || target.type === 'background_page' ||
-      target.type === 'webview');
+      Common.ParsedURL.schemeIs(target.url as Platform.DevToolsPath.UrlString, 'devtools:') || target.type === 'page' ||
+      target.type === 'background_page' || target.type === 'webview');
 }
 
 export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
@@ -275,7 +276,8 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
           ): Promise<void> {
         // When replaying on a DevTools target we skip setViewport and navigate steps
         // because navigation and viewport changes are not supported there.
-        if (page?.url().startsWith('devtools://') && (step.type === 'setViewport' || step.type === 'navigate')) {
+        if (Common.ParsedURL.schemeIs(page?.url() as Platform.DevToolsPath.UrlString, 'devtools:') &&
+            (step.type === 'setViewport' || step.type === 'navigate')) {
           return;
         }
         // Focus the target in case it's not focused.

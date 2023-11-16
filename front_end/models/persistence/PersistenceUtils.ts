@@ -47,7 +47,7 @@ export class PersistenceUtils {
   static iconForUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): IconButton.Icon.Icon|null {
     const binding = PersistenceImpl.instance().binding(uiSourceCode);
     if (binding) {
-      if (!binding.fileSystem.url().startsWith('file://')) {
+      if (!Common.ParsedURL.schemeIs(binding.fileSystem.url(), 'file:')) {
         return null;
       }
       const icon = new IconButton.Icon.Icon();
@@ -62,7 +62,7 @@ export class PersistenceUtils {
     }
 
     if (uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.FileSystem ||
-        !uiSourceCode.url().startsWith('file://')) {
+        !Common.ParsedURL.schemeIs(uiSourceCode.url(), 'file:')) {
       return null;
     }
 

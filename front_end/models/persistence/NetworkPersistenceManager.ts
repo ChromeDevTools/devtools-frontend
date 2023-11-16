@@ -502,7 +502,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
   }
 
   private canHandleNetworkUISourceCode(uiSourceCode: Workspace.UISourceCode.UISourceCode): boolean {
-    return this.activeInternal && !uiSourceCode.url().startsWith('snippet://');
+    return this.activeInternal && !Common.ParsedURL.schemeIs(uiSourceCode.url(), 'snippet:');
   }
 
   private async networkUISourceCodeAdded(uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> {

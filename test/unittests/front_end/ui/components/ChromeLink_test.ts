@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as ChromeLink from '../../../../../front_end/ui/components/chrome_link/chrome_link.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
@@ -51,7 +52,7 @@ describe('ChromeLink', () => {
   it('throws an error when given a non-\'chrome://\' URL', async () => {
     const component = new ChromeLink.ChromeLink.ChromeLink();
     assert.throws(() => {
-      component.href = 'https://www.example.com';
+      component.href = 'https://www.example.com' as Platform.DevToolsPath.UrlString;
     }, 'ChromeLink href needs to start with \'chrome://\'');
   });
 });

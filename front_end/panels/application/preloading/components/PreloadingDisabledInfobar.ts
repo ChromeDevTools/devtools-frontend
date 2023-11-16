@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
+import type * as Platform from '../../../../core/platform/platform.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as ChromeLink from '../../../../ui/components/chrome_link/chrome_link.js';
 import * as Dialogs from '../../../../ui/components/dialogs/dialogs.js';
@@ -219,10 +220,10 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
 
   #maybeDisalebByPreference(): LitHtml.LitTemplate {
     const preloadingSettingLink = new ChromeLink.ChromeLink.ChromeLink();
-    preloadingSettingLink.href = 'chrome://settings/performance';
+    preloadingSettingLink.href = 'chrome://settings/performance' as Platform.DevToolsPath.UrlString;
     preloadingSettingLink.textContent = i18nString(UIStrings.preloadingPagesSettings);
     const extensionsSettingLink = new ChromeLink.ChromeLink.ChromeLink();
-    extensionsSettingLink.href = 'chrome://extensions';
+    extensionsSettingLink.href = 'chrome://extensions' as Platform.DevToolsPath.UrlString;
     extensionsSettingLink.textContent = i18nString(UIStrings.extensionsSettings);
     const description = i18n.i18n.getFormatLocalizedString(
         str_, UIStrings.descriptionDisabledByPreference, {PH1: preloadingSettingLink, PH2: extensionsSettingLink});

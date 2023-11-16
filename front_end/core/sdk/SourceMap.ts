@@ -202,7 +202,7 @@ export class SourceMap {
     this.#json = payload;
     this.#compiledURLInternal = compiledURL;
     this.#sourceMappingURL = sourceMappingURL;
-    this.#baseURL = (sourceMappingURL.startsWith('data:') ? compiledURL : sourceMappingURL);
+    this.#baseURL = (Common.ParsedURL.schemeIs(sourceMappingURL, 'data:')) ? compiledURL : sourceMappingURL;
 
     this.#mappingsInternal = null;
     this.#sourceInfos = new Map();

@@ -190,7 +190,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
       return {content: bytecode, isEncoded: true};
     }
     let content: string = scriptSource || '';
-    if (this.hasSourceURL && this.sourceURL.startsWith('snippet://')) {
+    if (this.hasSourceURL && Common.ParsedURL.schemeIs(this.sourceURL, 'snippet:')) {
       // TODO(crbug.com/1330846): Find a better way to establish the snippet automapping binding then adding
       // a sourceURL comment before evaluation and removing it here.
       content = Script.trimSourceURLComment(content);

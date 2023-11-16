@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 
 // VGA color palette
@@ -216,7 +218,8 @@ export const updateStyle = (currentStyle: Map<string, {value: string, priority: 
     // If any of them is not a `data` URL, we skip the whole property.
     const value = buffer.style.getPropertyValue(property);
     const potentialUrls = [...value.matchAll(URL_REGEX)].map(match => match[1]);
-    if (potentialUrls.some(potentialUrl => !potentialUrl.startsWith('data:'))) {
+    if (potentialUrls.some(
+            potentialUrl => !Common.ParsedURL.schemeIs(potentialUrl as Platform.DevToolsPath.UrlString, 'data:'))) {
       continue;
     }
     currentStyle.set(property, {

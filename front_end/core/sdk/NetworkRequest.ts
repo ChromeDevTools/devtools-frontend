@@ -442,7 +442,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   }
 
   isBlobRequest(): boolean {
-    return this.#urlInternal.startsWith('blob:');
+    return Common.ParsedURL.schemeIs(this.#urlInternal, 'blob:');
   }
 
   setUrl(x: Platform.DevToolsPath.UrlString): void {

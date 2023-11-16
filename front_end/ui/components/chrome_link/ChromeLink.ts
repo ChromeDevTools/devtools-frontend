@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
@@ -28,8 +29,8 @@ export class ChromeLink extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  set href(href: string) {
-    if (!href.startsWith('chrome://')) {
+  set href(href: Platform.DevToolsPath.UrlString) {
+    if (!Common.ParsedURL.schemeIs(href, 'chrome:')) {
       throw new Error('ChromeLink href needs to start with \'chrome://\'');
     }
     this.#href = href;

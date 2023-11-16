@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
@@ -270,7 +271,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     }
     const isTestRunning = (this.#screenStatus === ScreenStatusType.Running);
     // Prevent running BFCache test on the DevTools window itself via DevTools on DevTools
-    const isTestingForbidden = frame.url.startsWith('devtools://');
+    const isTestingForbidden = Common.ParsedURL.schemeIs(frame.url, 'devtools:');
     // clang-format off
     return LitHtml.html`
       ${this.#renderBackForwardCacheStatus(frame.backForwardCacheDetails.restoredFromCache)}

@@ -782,7 +782,8 @@ export class DebuggerLanguagePluginManager implements
                 console.log(i18nString(UIStrings.loadingDebugSymbolsFor, {PH1: plugin.name, PH2: url}));
               }
               try {
-                const code = (!symbolsUrl && url.startsWith('wasm://')) ? await script.getWasmBytecode() : undefined;
+                const code = (!symbolsUrl && Common.ParsedURL.schemeIs(url, 'wasm:')) ? await script.getWasmBytecode() :
+                                                                                        undefined;
                 const addModuleResult = await plugin.addRawModule(rawModuleId, symbolsUrl, {url, code});
                 // Check that the handle isn't stale by now. This works because the code that assigns to
                 // `rawModuleHandle` below will run before this code because of the `await` in the preceding

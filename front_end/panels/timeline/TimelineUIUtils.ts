@@ -3354,8 +3354,8 @@ export class TimelineUIUtils {
     if (!trimAt) {
       trimAt = 30;
     }
-    return url.startsWith('about:') ? `"${Platform.StringUtilities.trimMiddle(frame.name, trimAt)}"` :
-                                      frame.url.trimEnd(trimAt);
+    return Common.ParsedURL.schemeIs(url, 'about:') ? `"${Platform.StringUtilities.trimMiddle(frame.name, trimAt)}"` :
+                                                      frame.url.trimEnd(trimAt);
   }
 }
 

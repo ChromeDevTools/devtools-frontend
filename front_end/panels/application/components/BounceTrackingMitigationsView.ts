@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
@@ -103,7 +104,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
 
     if (this.#screenStatus === ScreenStatusType.Disabled) {
       const mitigationsFlagLink = new ChromeLink.ChromeLink.ChromeLink();
-      mitigationsFlagLink.href = 'chrome://flags/#bounce-tracking-mitigations';
+      mitigationsFlagLink.href = 'chrome://flags/#bounce-tracking-mitigations' as Platform.DevToolsPath.UrlString;
       mitigationsFlagLink.textContent = i18nString(UIStrings.featureFlag);
 
       // clang-format off

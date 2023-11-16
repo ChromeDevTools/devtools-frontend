@@ -654,7 +654,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
         continue;
       }
       const url = urlInfo.url();
-      if (url.startsWith('extensions::') || url.startsWith('chrome-extension://')) {
+      if (url.startsWith('extensions::') || Common.ParsedURL.schemeIs(url, 'chrome-extension:')) {
         continue;
       }
       result.push(...await urlInfo.entriesForExport());

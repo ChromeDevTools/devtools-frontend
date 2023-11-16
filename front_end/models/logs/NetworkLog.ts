@@ -343,7 +343,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
     // If a page resulted in an error, the browser will navigate to an internal error page
     // hosted at 'chrome-error://...'. In this case, skip the frame navigated event to preserve
     // the network log.
-    if (mainFrame.url !== mainFrame.unreachableUrl() && mainFrame.url.startsWith('chrome-error://')) {
+    if (mainFrame.url !== mainFrame.unreachableUrl() && Common.ParsedURL.schemeIs(mainFrame.url, 'chrome-error:')) {
       return;
     }
 

@@ -42,6 +42,10 @@ dimensions = struct(
         "cpu": "x86-64",
         "os": "Mac",
     },
+    mac_arm64 = {
+        "cpu": "arm64",
+        "os": "Mac",
+    },
 )
 
 default_timeout = 60 * time.minute
@@ -99,6 +103,7 @@ os_dimensions = {
     "linux": dimensions.default_ubuntu,
     "win64": dimensions.win10,
     "mac": dimensions.mac,
+    "mac_arm64": dimensions.mac_arm64,
 }
 
 def builder_coverage(covered_oss, builder_factory, builder_name_pattern, **kwargs):

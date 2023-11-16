@@ -128,6 +128,15 @@ builder_coverage(
 )
 
 builder_coverage(
+    covered_oss = ["mac_arm64"],
+    builder_factory = try_builder,
+    builder_name_pattern = "devtools_frontend_%s_rel",
+    recipe_name = "devtools/devtools-frontend",
+    execution_timeout = default_timeout,
+    properties = {"parallel": True},
+)
+
+builder_coverage(
     covered_oss = ["linux", "win64"],
     builder_factory = try_builder,
     builder_name_pattern = "devtools_frontend_%s_rel",
@@ -136,7 +145,7 @@ builder_coverage(
 )
 
 builder_coverage(
-    covered_oss = ["linux", "win64", "mac"],
+    covered_oss = ["linux", "win64", "mac", "mac_arm64"],
     builder_factory = try_builder,
     builder_name_pattern = "devtools_frontend_shuffled_parallel_%s_rel",
     recipe_name = "devtools/devtools-frontend",
@@ -155,7 +164,7 @@ builder_coverage(
 )
 
 builder_coverage(
-    covered_oss = ["linux", "win64", "mac"],
+    covered_oss = ["linux", "win64", "mac", "mac_arm64"],
     builder_factory = try_builder,
     builder_name_pattern = "e2e_stressor_%s",
     recipe_name = "devtools/dtf-e2e-stress",
@@ -165,7 +174,7 @@ builder_coverage(
 )
 
 builder_coverage(
-    covered_oss = ["linux", "mac", "win64"],
+    covered_oss = ["linux", "mac", "mac_arm64", "win64"],
     builder_factory = try_builder,
     builder_name_pattern = "devtools_screenshot_%s_rel",
     recipe_name = "devtools/dtf-screenshots",
@@ -187,6 +196,7 @@ cq_main = struct(
         "devtools_frontend_linux_dbg_fastbuild",
         "devtools_frontend_linux_rel",
         "devtools_frontend_mac_rel",
+        "devtools_frontend_mac_arm64_rel",
         "devtools_frontend_win64_rel",
         "dtf_presubmit_linux",
         "dtf_presubmit_win64",
@@ -194,12 +204,13 @@ cq_main = struct(
     experiment_builders = [
         # Quarantine a builder here
         # This will make them experiment 100%
-        "devtools_frontend_mac_rel",
+        "devtools_frontend_mac_arm64_rel",
     ],
     includable_only_builders = [
         "devtools_frontend_linux_blink_light_rel",
         "devtools_screenshot_linux_rel",
         "devtools_screenshot_mac_rel",
+        "devtools_screenshot_mac_arm64_rel",
         "devtools_screenshot_win64_rel",
         "devtools_frontend_shuffled_parallel_linux_rel",
         "devtools_frontend_shuffled_parallel_mac_rel",

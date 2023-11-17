@@ -25,6 +25,7 @@ below.**
 *   [Release Management](release_management.md)
 *   [Dependencies](dependencies.md)
 *   [Localization](l10n.md)
+*   [Material 3 in DevTools](material3_guidelines.md)
 *   [V8 debugger support checklist for new language features](https://goo.gle/v8-checklist)
 *   [Chrome DevTools Protocol](devtools-protocol.md)
 *   [UMA metrics in DevTools](uma_metrics.md)

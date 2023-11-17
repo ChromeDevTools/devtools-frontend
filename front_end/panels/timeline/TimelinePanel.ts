@@ -335,7 +335,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     super('timeline');
     this.#threadTracksSource = threadTracksSource;
     this.#minimapComponent = new TimelineMiniMap(threadTracksSource);
-    this.#traceEngineModel = TraceEngine.TraceModel.Model.createWithAllHandlers();
+
+    const config = TraceEngine.Types.Configuration.DEFAULT;
+    config.experiments.timelineShowAllEvents = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
+    config.experiments.timelineV8RuntimeCallStats = Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats');
+    this.#traceEngineModel = TraceEngine.TraceModel.Model.createWithAllHandlers(config);
+
     this.element.addEventListener('contextmenu', this.contextMenu.bind(this), false);
     this.dropTarget = new UI.DropTarget.DropTarget(
         this.element, [UI.DropTarget.Type.File, UI.DropTarget.Type.URI],

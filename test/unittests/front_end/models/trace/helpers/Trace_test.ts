@@ -378,4 +378,46 @@ describeWithEnvironment('TraceModel helpers', function() {
       assert.strictEqual(secondURL, 'https://www.google.com');
     });
   });
+
+  describe('createMatchedSortedSyntheticEvents', () => {
+    it('matches up arbitrary async events', async function() {
+      const events = await TraceLoader.rawEvents(this, 'user-timings.json.gz');
+      const asyncEvents = events.filter(event => TraceModel.Types.TraceEvents.isTraceEventAsyncPhase(event)) as
+          TraceModel.Types.TraceEvents.TraceEventNestableAsync[];
+      const synthEvents = TraceModel.Helpers.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
+
+      // There's a lot of events, let's only assert one event per name
+      const seen = new Set();
+      // Make a readable output of each event to assert
+      const eventSummary = (e: TraceModel.Types.TraceEvents.TraceEventSyntheticNestableAsyncEvent) =>
+          `@ ${(e.ts / 1000 - 1003e5).toFixed(3).padEnd(9)} for ${(e.dur / 1000).toFixed(3).padStart(8)}: ${e.name}`;
+      const eventsSummary = synthEvents
+                                .filter(e => {
+                                  const alreadySeen = seen.has(e.name);
+                                  seen.add(e.name);
+                                  return !alreadySeen;
+                                })
+                                .map(eventSummary);
+
+      assert.deepEqual(eventsSummary, [
+        '@ 22336.946 for   16.959: PipelineReporter',
+        '@ 22350.590 for    3.315: BeginImplFrameToSendBeginMainFrame',
+        '@ 40732.328 for    0.834: SendBeginMainFrameToCommit',
+        '@ 40733.162 for    0.307: Commit',
+        '@ 40733.469 for    0.097: EndCommitToActivation',
+        '@ 40733.566 for    0.019: Activation',
+        '@ 40733.585 for    1.775: EndActivateToSubmitCompositorFrame',
+        '@ 40735.360 for   58.412: SubmitCompositorFrameToPresentationCompositorFrame',
+        '@ 40735.360 for    0.148: SubmitToReceiveCompositorFrame',
+        '@ 40735.508 for    3.667: ReceiveCompositorFrameToStartDraw',
+        '@ 40739.175 for   54.136: StartDrawToSwapStart',
+        '@ 40793.311 for    0.461: Swap',
+        '@ 40810.809 for  205.424: first measure',
+        '@ 40810.809 for  606.224: second measure',
+        '@ 40825.971 for   11.802: InputLatency::MouseMove',
+        '@ 41818.833 for 2005.601: third measure',
+      ]);
+      assert.strictEqual(synthEvents.length, 237);
+    });
+  });
 });

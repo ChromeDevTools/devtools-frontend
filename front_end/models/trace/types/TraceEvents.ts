@@ -446,6 +446,7 @@ export interface TraceEventAnimation extends TraceEventData {
   id2?: {
     local?: string,
   };
+  ph: Phase.ASYNC_NESTABLE_START|Phase.ASYNC_NESTABLE_END;
 }
 
 // Metadata events.

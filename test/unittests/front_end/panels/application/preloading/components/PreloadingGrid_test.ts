@@ -2,39 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../../../../../../../front_end/core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../../../front_end/core/sdk/sdk.js';
-import * as PreloadingComponents from '../../../../../../../front_end/panels/application/preloading/components/components.js';
-
-import type * as Platform from '../../../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../../../front_end/generated/protocol.js';
-import * as DataGrid from '../../../../../../../front_end/ui/components/data_grid/data_grid.js';
+import * as PreloadingComponents from '../../../../../../../front_end/panels/application/preloading/components/components.js';
+import type * as DataGrid from '../../../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import {assertShadowRoot, getElementWithinComponent, renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
+import {assertShadowRoot, renderElementIntoDOM} from '../../../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../helpers/EnvironmentHelpers.js';
-import {getHeaderCells, getValuesOfAllBodyRows, getCellByIndexes} from '../../../../ui/components/DataGridHelpers.js';
+import {assertGridContents, getCellByIndexes} from '../../../../ui/components/DataGridHelpers.js';
 
 const {assert} = chai;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
-function assertGridContents(
-    gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]): DataGrid.DataGrid.DataGrid {
-  const controller = getElementWithinComponent(
-      gridComponent, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
-  const grid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
-  assertShadowRoot(grid.shadowRoot);
-
-  const headerGot = Array.from(getHeaderCells(grid.shadowRoot), cell => {
-    assertNotNullOrUndefined(cell.textContent);
-    return cell.textContent.trim();
-  });
-  const rowsGot = getValuesOfAllBodyRows(grid.shadowRoot);
-
-  assert.deepEqual([headerGot, rowsGot], [headerExpected, rowsExpected]);
-
-  return grid;
-}
 
 async function assertRenderResult(
     rowsInput: PreloadingComponents.PreloadingGrid.PreloadingGridData, headerExpected: string[],
@@ -309,7 +290,7 @@ describeWithEnvironment('PreloadingGrid', async () => {
             '/prerendered.html',
             'Prerender',
             'example.com/',
-            ' Failure - The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
+            'Failure - The prerendered page used a forbidden JavaScript API that is currently not supported. (Internal Mojo interface: device.mojom.GamepadMonitor)',
           ],
         ],
     );

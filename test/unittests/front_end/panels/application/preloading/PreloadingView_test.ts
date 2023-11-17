@@ -21,7 +21,7 @@ import {
   describeWithMockConnection,
   dispatchEvent,
 } from '../../../helpers/MockConnection.js';
-import {getHeaderCells, getValuesOfAllBodyRows} from '../../../ui/components/DataGridHelpers.js';
+import {assertGridContents} from '../../../ui/components/DataGridHelpers.js';
 
 const {assert} = chai;
 
@@ -32,21 +32,6 @@ const zip2 = <T, S>(xs: T[], ys: S[]): [T, S][] => {
 
   return Array.from(xs.map((_, i) => [xs[i], ys[i]]));
 };
-
-function assertGridContents(gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) {
-  const controller = getElementWithinComponent(
-      gridComponent, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
-  const grid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
-  assertShadowRoot(grid.shadowRoot);
-
-  const headerGot = Array.from(getHeaderCells(grid.shadowRoot), cell => {
-    assertNotNullOrUndefined(cell.textContent);
-    return cell.textContent.trim();
-  });
-  const rowsGot = getValuesOfAllBodyRows(grid.shadowRoot).map(row => row.map(cell => cell.trim()));
-
-  assert.deepEqual([headerGot, rowsGot], [headerExpected, rowsExpected]);
-}
 
 // Holds targets and ids, and emits events.
 class NavigationEmulator {

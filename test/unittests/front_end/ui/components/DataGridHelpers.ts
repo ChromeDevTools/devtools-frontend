@@ -2,8 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as DataGrid from '../../../../../front_end/ui/components/data_grid/data_grid.js';
 import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-import {assertElement, assertElements, dispatchFocusEvent, dispatchKeyDownEvent} from '../../helpers/DOMHelpers.js';
+import {
+  assertElement,
+  assertElements,
+  assertShadowRoot,
+  dispatchFocusEvent,
+  dispatchKeyDownEvent,
+  getElementWithinComponent,
+} from '../../helpers/DOMHelpers.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 const {assert} = chai;
@@ -72,6 +81,24 @@ export const assertSelectedRowIs = (shadowRoot: ShadowRoot, row: number) => {
   assertElement(selectedRow, HTMLTableRowElement);
   assert.strictEqual(selectedRow.getAttribute('aria-rowindex'), String(row), 'The row index was not as expected.');
 };
+
+export const assertGridContents =
+    (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]): DataGrid.DataGrid.DataGrid => {
+      const controller = getElementWithinComponent(
+          gridComponent, 'devtools-data-grid-controller', DataGrid.DataGridController.DataGridController);
+      const grid = getElementWithinComponent(controller, 'devtools-data-grid', DataGrid.DataGrid.DataGrid);
+      assertShadowRoot(grid.shadowRoot);
+
+      const headerGot = Array.from(getHeaderCells(grid.shadowRoot), cell => {
+        assertNotNullOrUndefined(cell.textContent);
+        return cell.textContent.trim();
+      });
+      const rowsGot = getValuesOfAllBodyRows(grid.shadowRoot).map(row => row.map(cell => cell.trim()));
+
+      assert.deepEqual([headerGot, rowsGot], [headerExpected, rowsExpected]);
+
+      return grid;
+    };
 
 export const focusCurrentlyFocusableCell = (shadowRoot: ShadowRoot) => {
   const cell = getFocusableCell(shadowRoot);

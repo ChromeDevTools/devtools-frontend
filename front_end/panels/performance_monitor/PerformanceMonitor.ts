@@ -10,6 +10,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import performanceMonitorStyles from './performanceMonitor.css.js';
 
@@ -79,6 +80,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
 
   constructor(pollIntervalMs: number) {
     super(true);
+
+    this.element.setAttribute('jslog', `${VisualLogging.panel().context('performance-monitor')}`);
 
     this.contentElement.classList.add('perfmon-pane');
     this.metricsBuffer = [];
@@ -583,6 +586,8 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       const chartName = chartInfo.metrics[0].name;
       const active = this.enabledCharts.has(chartName);
       const indicator = new MetricIndicator(this.element, chartInfo, active, this.onToggle.bind(this, chartName));
+      indicator.element.setAttribute(
+          'jslog', `${VisualLogging.toggle().track({click: true, keydown: 'Enter'}).context(chartName)}`);
       this.indicators.set(chartName, indicator);
     }
   }

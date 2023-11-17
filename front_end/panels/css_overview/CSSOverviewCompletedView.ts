@@ -224,7 +224,8 @@ function getBorderString(color: Common.Color.Legacy): string {
   return `1px solid hsl(${h}deg ${s}% ${l}%)`;
 }
 
-export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
+export class CSSOverviewCompletedView extends UI.Widget.VBox {
+  readonly #splitWidget: UI.SplitWidget.SplitWidget;
   #controller: OverviewController;
   #formatter: Intl.NumberFormat;
   readonly #mainContainer: UI.SplitWidget.SplitWidget;
@@ -239,10 +240,13 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
   #fragment?: UI.Fragment.Fragment;
 
   constructor(controller: OverviewController) {
-    super('css_overview_completed_view');
+    super();
 
     this.#controller = controller;
     this.#formatter = new Intl.NumberFormat('en-US');
+
+    this.#splitWidget = new UI.SplitWidget.SplitWidget(true, false, undefined, 200);
+    this.#splitWidget.show(this.element);
 
     this.#mainContainer = new UI.SplitWidget.SplitWidget(true, true);
     this.#resultsContainer = new UI.Widget.VBox();
@@ -265,8 +269,8 @@ export class CSSOverviewCompletedView extends UI.Panel.PanelWithSidebar {
 
     this.#sideBar = new CSSOverviewSidebarPanel();
     this.#sideBar.setMinimumSize(100, 25);
-    this.splitWidget().setSidebarWidget(this.#sideBar);
-    this.splitWidget().setMainWidget(this.#mainContainer);
+    this.#splitWidget.setSidebarWidget(this.#sideBar);
+    this.#splitWidget.setMainWidget(this.#mainContainer);
 
     this.#linkifier = new Components.Linkifier.Linkifier(/* maxLinkLength */ 20, /* useLinkDecorator */ true);
 

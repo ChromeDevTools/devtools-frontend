@@ -163,6 +163,20 @@ describe('TextUtils', () => {
             result[0], {key: undefined, regex: /complex\/regex/i, text: undefined, negative: false},
             'result was incorrect');
 
+        result = parse(String.raw`/regex\?/`);
+        assert.deepEqual(
+            result[0], {key: undefined, regex: /regex\?/i, text: undefined, negative: false}, 'result was incorrect');
+
+        result = parse(String.raw`/regex\//`);
+        assert.deepEqual(
+            result[0], {key: undefined, regex: /regex\//i, text: undefined, negative: false}, 'result was incorrect');
+
+        result = parse(String.raw`/regex\?/ text`);
+        assert.deepEqual(
+            result[0], {key: undefined, regex: /regex\?/i, text: undefined, negative: false}, 'result was incorrect');
+        assert.deepEqual(
+            result[1], {key: undefined, regex: undefined, text: 'text', negative: false}, 'result was incorrect');
+
         result = parse('/regex with spaces/');
         assert.deepEqual(
             result[0], {key: undefined, regex: /regex with spaces/i, text: undefined, negative: false},

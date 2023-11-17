@@ -1382,7 +1382,8 @@ export class TimelineUIUtils {
     }
     // This works for both legacy and new engine events.
     appendObjectProperties(traceEvent.args, 2);
-    return regExp.test(tokens.join('|'));
+    const result = tokens.join('|').match(regExp);
+    return result ? result.length > 0 : false;
 
     interface ContentObject {
       [x: string]: number|string|ContentObject;

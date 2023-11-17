@@ -10,6 +10,7 @@ node_ts_library("performance") {
     "recording_test.ts",
     "settings-throttle-persist_test.ts",
     "timeline-js-line-level-profile-no-url-end-to-end_test.ts",
+    "timeline/treeView_test.ts",
     "wasm/performance_profiling_test.ts",
   ]
 

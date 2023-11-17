@@ -150,6 +150,18 @@ const UIStrings = {
    *@description Data grid name for Timeline Stack data grids
    */
   timelineStack: 'Timeline Stack',
+  /**
+  /*@description Text to search by matching case of the input button
+   */
+  matchCase: 'Match Case',
+  /**
+   *@description Text for searching with regular expression button
+   */
+  useRegularExpression: 'Use Regular Expression',
+  /**
+   * @description Text for Match whole word button
+   */
+  matchWholeWord: 'Match whole word',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -174,6 +186,9 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   private root?: TimelineModel.TimelineProfileTree.Node;
   private currentResult?: number;
   textFilterUI?: UI.Toolbar.ToolbarInput;
+  private caseSensitiveButton: UI.Toolbar.ToolbarToggle|undefined;
+  private regexButton: UI.Toolbar.ToolbarToggle|undefined;
+  private matchWholeWord: UI.Toolbar.ToolbarToggle|undefined;
 
   #traceParseData: TraceEngine.Handlers.Types.TraceParseData|null = null;
 
@@ -307,15 +322,30 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   }
 
   populateToolbar(toolbar: UI.Toolbar.Toolbar): void {
+    this.caseSensitiveButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.matchCase));
+    this.caseSensitiveButton.setText('Aa');
+    this.caseSensitiveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+      this.#toggleFilterButton(this.caseSensitiveButton);
+    }, this);
+    toolbar.appendToolbarItem(this.caseSensitiveButton);
+
+    this.regexButton = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.useRegularExpression));
+    this.regexButton.setText('.*');
+    this.regexButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+      this.#toggleFilterButton(this.regexButton);
+    }, this);
+    toolbar.appendToolbarItem(this.regexButton);
+
+    this.matchWholeWord = new UI.Toolbar.ToolbarToggle(i18nString(UIStrings.matchWholeWord), 'match-whole-word');
+    this.matchWholeWord.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, () => {
+      this.#toggleFilterButton(this.matchWholeWord);
+    }, this);
+    toolbar.appendToolbarItem(this.matchWholeWord);
+
     const textFilterUI =
         new UI.Toolbar.ToolbarInput(i18nString(UIStrings.filter), this.getToolbarInputAccessiblePlaceHolder());
-    textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, () => {
-      const searchQuery = textFilterUI.value();
-      this.textFilterInternal.setRegExp(
-          searchQuery ? Platform.StringUtilities.createPlainTextSearchRegex(searchQuery, 'i') : null);
-      this.refreshTree();
-    }, this);
     this.textFilterUI = textFilterUI;
+    textFilterUI.addEventListener(UI.Toolbar.ToolbarInput.Event.TextChanged, this.#filterChanged, this);
     toolbar.appendToolbarItem(textFilterUI);
   }
 
@@ -460,6 +490,26 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
       const nameB = TimelineTreeView.eventNameForSorting(eventB);
       return nameA.localeCompare(nameB);
     }
+  }
+
+  #filterChanged(): void {
+    const searchQuery = this.textFilterUI && this.textFilterUI.value();
+    const caseSensitive = this.caseSensitiveButton !== undefined && this.caseSensitiveButton.toggled();
+    const isRegex = this.regexButton !== undefined && this.regexButton.toggled();
+    const matchWholeWord = this.matchWholeWord !== undefined && this.matchWholeWord.toggled();
+
+    this.textFilterInternal.setRegExp(
+        searchQuery ? Platform.StringUtilities.createSearchRegex(searchQuery, caseSensitive, isRegex, matchWholeWord) :
+                      null);
+    this.refreshTree();
+  }
+
+  #toggleFilterButton(toggleButton: UI.Toolbar.ToolbarToggle|undefined): void {
+    if (toggleButton) {
+      toggleButton.setToggled(!toggleButton.toggled());
+    }
+
+    this.#filterChanged();
   }
 
   private onShowModeChanged(): void {

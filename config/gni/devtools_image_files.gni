@@ -170,6 +170,7 @@ devtools_svg_sources = [
   "left-panel-open.svg",
   "lighthouse_logo.svg",
   "list.svg",
+  "match-whole-word.svg",
   "mediumIcons.svg",
   "memory.svg",
   "minus.svg",

@@ -796,6 +796,10 @@ span[is="dt-icon-label"] {
   -webkit-mask-image: var(--image-file-profile);
 }
 
+.spritesheet-match-whole-word.icon-mask {
+  -webkit-mask-image: var(--image-file-match-whole-word);
+}
+
 .spritesheet-record-start.icon-mask {
   -webkit-mask-image: var(--image-file-record-start);
 }

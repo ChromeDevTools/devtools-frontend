@@ -315,7 +315,8 @@ export class BottomUpRootNode extends Node {
 
   filterChildren(children: ChildrenCache): ChildrenCache {
     for (const [id, child] of children) {
-      if (child.event && !this.textFilter.accept(child.event)) {
+      // to provide better context to user only filter first (top) level.
+      if (child.event && child.depth <= 1 && !this.textFilter.accept(child.event)) {
         children.delete((id as string | symbol));
       }
     }

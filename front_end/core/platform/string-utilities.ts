@@ -274,7 +274,8 @@ export const filterRegex = function(query: string): RegExp {
   return new RegExp(regexString, 'i');
 };
 
-export const createSearchRegex = function(query: string, caseSensitive: boolean, isRegex: boolean): RegExp {
+export const createSearchRegex = function(
+    query: string, caseSensitive: boolean, isRegex: boolean, matchWholeWord: boolean = false): RegExp {
   const regexFlags = caseSensitive ? 'g' : 'gi';
   let regexObject;
 
@@ -288,6 +289,10 @@ export const createSearchRegex = function(query: string, caseSensitive: boolean,
 
   if (!regexObject) {
     regexObject = createPlainTextSearchRegex(query, regexFlags);
+  }
+
+  if (matchWholeWord && regexObject) {
+    regexObject = new RegExp(`\\b${regexObject.source}\\b`, regexFlags);
   }
 
   return regexObject;

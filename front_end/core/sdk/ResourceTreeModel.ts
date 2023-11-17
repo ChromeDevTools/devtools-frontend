@@ -234,6 +234,9 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     if (type) {
       frame.backForwardCacheDetails.restoredFromCache = type === Protocol.Page.NavigationType.BackForwardCacheRestore;
     }
+    if (frame.isMainFrame()) {
+      this.target().setInspectedURL(frame.url);
+    }
     this.dispatchEventToListeners(Events.FrameNavigated, frame);
 
     if (frame.isPrimaryFrame()) {
@@ -246,9 +249,6 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
       this.dispatchEventToListeners(Events.ResourceAdded, resources[i]);
     }
 
-    if (frame.isMainFrame()) {
-      this.target().setInspectedURL(frame.url);
-    }
     this.updateSecurityOrigins();
     void this.updateStorageKeys();
 

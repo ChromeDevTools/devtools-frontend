@@ -62,7 +62,7 @@ describe('data grid controller', () => {
     await waitForFunction(async () => {
       const hiddenCells = await $$('tbody td.hidden', dataGrid);
       return hiddenCells.length === 3;
-    });
+    }, undefined, '3 hidden cells in the data-grid');
 
     await waitForFunction(async () => {
       const renderedText = await getInnerTextOfDataGridCells(dataGrid, 3);

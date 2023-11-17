@@ -4,27 +4,27 @@
 
 import {assert} from 'chai';
 
-import {
-  $,
-  click,
-  disableExperiment,
-  getBrowserAndPages,
-  waitFor,
-  waitForFunction,
-} from '../../shared/helper.js';
+import {$, click, getBrowserAndPages, waitFor, waitForFunction, waitForNone} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {openSourceCodeEditorForFile, PAUSE_INDICATOR_SELECTOR, RESUME_BUTTON} from '../helpers/sources-helpers.js';
+
+const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print"]';
+const PRETTY_PRINTED_TOGGLE = 'devtools-text-editor.pretty-printed';
 
 describe('The Sources tab', async () => {
   it('should also scroll horizontally when stopping', async () => {
     const {target} = getBrowserAndPages();
 
-    // We need to disable the automatic pretty printing
-    // so that we can check whether the Sources panel
-    // correctly scrolls horizontally upon stopping.
-    await disableExperiment('sourcesPrettyPrint');
-
     await openSourceCodeEditorForFile('scroll-into-view.js', 'scroll-into-view.html');
+
+    // We need to disable the pretty printing, so that
+    // we can check whether the Sources panel correctly
+    // scrolls horizontally upon stopping.
+    await waitFor(PRETTY_PRINTED_TOGGLE);
+    await Promise.all([
+      click(PRETTY_PRINT_BUTTON),
+      waitForNone(PRETTY_PRINTED_TOGGLE),
+    ]);
 
     const scriptEvaluation = target.evaluate('funcWithLongLines()');
 

@@ -111,7 +111,6 @@ const REGISTERED_EXPERIMENTS = [
   'captureNodeCreationStacks',
   'preciseChanges',
   'protocolMonitor',
-  'sourcesPrettyPrint',
   'wasmDWARFDebugging',
   'timelineShowAllEvents',
   'timelineV8RuntimeCallStats',

@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {type BrowserAndPages} from '../../conductor/puppeteer-state.js';
 
+import {unregisterAllServiceWorkers} from '../../conductor/hooks.js';
+import {type BrowserAndPages} from '../../conductor/puppeteer-state.js';
 import {
   click,
-  disableExperiment,
   getBrowserAndPages,
   pressKey,
   step,
@@ -25,7 +25,6 @@ import {
   waitForSelectedRequestChange,
   waitForSomeRequestsToAppear,
 } from '../helpers/network-helpers.js';
-import {unregisterAllServiceWorkers} from '../../conductor/hooks.js';
 
 async function getRequestRowInfo(frontend: BrowserAndPages['frontend'], name: string) {
   const statusColumn = await frontend.evaluate(() => {
@@ -54,9 +53,6 @@ describe('The Network Tab', async function() {
   };
 
   beforeEach(async () => {
-    // Automatic pretty printing doesn't play well with the assertions.
-    await disableExperiment('sourcesPrettyPrint');
-
     await navigateToNetworkTab('empty.html');
     await setCacheDisabled(true);
     await setPersistLog(false);
@@ -166,6 +162,12 @@ describe('The Network Tab', async function() {
     await waitFor('[aria-label="Response"]');
     // Open the raw response HTML
     await click('[aria-label="Response"]');
+    // Disable pretty printing
+    await waitFor('[aria-label="Pretty print"][aria-pressed="true"]');
+    await Promise.all([
+      click('[aria-label="Pretty print"]'),
+      waitFor('[aria-label="Pretty print"][aria-pressed="true"]'),
+    ]);
     // Wait for the raw response editor to show up
     const codeMirrorEditor = await waitFor('[aria-label="Code editor"]');
 

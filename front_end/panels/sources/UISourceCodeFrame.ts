@@ -30,7 +30,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import * as Root from '../../core/root/root.js';
 import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js';  // eslint-disable-line rulesdir/es_modules_import
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Persistence from '../../models/persistence/persistence.js';
@@ -204,8 +203,7 @@ export class UISourceCodeFrame extends
     const canPrettyPrint = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(this.contentType) &&
         !this.uiSourceCodeInternal.project().canSetFileContent() &&
         Persistence.Persistence.PersistenceImpl.instance().binding(this.uiSourceCodeInternal) === null;
-    const autoPrettyPrint = Root.Runtime.experiments.isEnabled('sourcesPrettyPrint') &&
-        !this.uiSourceCodeInternal.contentType().isFromSourceMap();
+    const autoPrettyPrint = !this.uiSourceCodeInternal.contentType().isFromSourceMap();
     this.setCanPrettyPrint(canPrettyPrint, autoPrettyPrint);
   }
 

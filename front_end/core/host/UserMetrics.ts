@@ -953,7 +953,6 @@ export enum IssueOpener {
 export enum DevtoolsExperiments {
   'applyCustomStylesheet' = 0,
   'captureNodeCreationStacks' = 1,
-  'sourcesPrettyPrint' = 2,
   'liveHeapProfile' = 11,
   'protocolMonitor' = 13,
   'developerResourcesView' = 15,

@@ -7,7 +7,6 @@ import {assert} from 'chai';
 import {
   $$,
   click,
-  enableExperiment,
   getBrowserAndPages,
   step,
   typeText,
@@ -15,7 +14,7 @@ import {
   waitForFunction,
   waitForNone,
 } from '../../shared/helper.js';
-import {beforeEach, describe, it} from '../../shared/mocha-extensions.js';
+import {describe, it} from '../../shared/mocha-extensions.js';
 import {elementContainsTextWithSelector} from '../helpers/network-helpers.js';
 import {openGoToLineQuickOpen} from '../helpers/quick_open-helpers.js';
 import {
@@ -35,10 +34,6 @@ describe('The Sources Tab', function() {
   if (this.timeout() > 0) {
     this.timeout(10000);
   }
-
-  beforeEach(async () => {
-    await enableExperiment('sourcesPrettyPrint');
-  });
 
   it('can pretty-print a JavaScript file inline', async () => {
     await openSourceCodeEditorForFile('minified-sourcecode.js', 'minified-sourcecode.html');

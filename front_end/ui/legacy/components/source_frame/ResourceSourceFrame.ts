@@ -59,10 +59,9 @@ export class ResourceSourceFrame extends SourceFrameImpl {
     this.resourceInternal = resource;
   }
 
-  static createSearchableView(
-      resource: TextUtils.ContentProvider.ContentProvider, contentType: string,
-      autoPrettyPrint?: boolean): UI.Widget.Widget {
-    return new SearchableContainer(resource, contentType, autoPrettyPrint);
+  static createSearchableView(resource: TextUtils.ContentProvider.ContentProvider, contentType: string):
+      UI.Widget.Widget {
+    return new SearchableContainer(resource, contentType);
   }
 
   protected override getContentType(): string {
@@ -83,14 +82,14 @@ export class ResourceSourceFrame extends SourceFrameImpl {
 export class SearchableContainer extends UI.Widget.VBox {
   private readonly sourceFrame: ResourceSourceFrame;
 
-  constructor(resource: TextUtils.ContentProvider.ContentProvider, contentType: string, autoPrettyPrint?: boolean) {
+  constructor(resource: TextUtils.ContentProvider.ContentProvider, contentType: string) {
     super(true);
     this.registerRequiredCSS(resourceSourceFrameStyles);
     const simpleContentType = Common.ResourceType.ResourceType.simplifyContentType(contentType);
     const sourceFrame = new ResourceSourceFrame(resource, simpleContentType);
     this.sourceFrame = sourceFrame;
     const canPrettyPrint = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(simpleContentType);
-    sourceFrame.setCanPrettyPrint(canPrettyPrint, autoPrettyPrint);
+    sourceFrame.setCanPrettyPrint(canPrettyPrint, true /* autoPrettyPrint */);
     const searchableView = new UI.SearchableView.SearchableView(sourceFrame, sourceFrame);
     searchableView.element.classList.add('searchable-view');
     searchableView.setPlaceholder(i18nString(UIStrings.find));

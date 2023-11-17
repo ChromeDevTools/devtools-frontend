@@ -264,7 +264,6 @@ export class MainImpl {
   #initializeExperiments(): void {
     Root.Runtime.experiments.register('applyCustomStylesheet', 'Allow extensions to load custom stylesheets');
     Root.Runtime.experiments.register('captureNodeCreationStacks', 'Capture node creation stacks');
-    Root.Runtime.experiments.register('sourcesPrettyPrint', 'Automatically pretty print minified sources');
     Root.Runtime.experiments.register(
         'ignoreListJSFramesOnTimeline', 'Ignore List for JavaScript frames on Timeline', true);
     Root.Runtime.experiments.register('liveHeapProfile', 'Live heap profile', true);
@@ -425,7 +424,6 @@ export class MainImpl {
       'cssTypeComponentLength',
       Root.Runtime.ExperimentName.PRECISE_CHANGES,
       ...('EyeDropper' in window ? [Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER] : []),
-      'sourcesPrettyPrint',
       'setAllBreakpointsEagerly',
       Root.Runtime.ExperimentName.TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL,
       Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING,

@@ -8,7 +8,7 @@
   overflow: hidden;
   align-items: stretch;
   flex: auto;
-  background-color: var(--sys-color-cdt-base-container);
+  background-color: var(--sys-color-cdt-base);
 }
 
 .device-mode-toolbar {

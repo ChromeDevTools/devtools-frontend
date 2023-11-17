@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("//build/toolchain/rbe.gni")
+import("//build/toolchain/siso.gni")
 import("../../scripts/build/ninja/vars.gni")
 
 declare_args() {
@@ -57,6 +58,10 @@ template("ts_library") {
                            ])
 
     inputs += [
+      "//third_party/node/node.py",
+      "//third_party/node/node_modules.py",
+      "//third_party/node/node_modules.tar.gz.sha1",
+      devtools_location_prepend + "scripts/devtools_paths.py",
       devtools_location_prepend + "config/typescript/tsconfig.base.json",
       devtools_location_prepend + "node_modules/typescript/lib/tsc.js",
       devtools_location_prepend + "front_end/legacy/legacy-defs.d.ts",
@@ -65,6 +70,15 @@ template("ts_library") {
           "front_end/global_typings/request_idle_callback.d.ts",
       devtools_location_prepend + "node_modules/@types/filesystem/index.d.ts",
     ]
+
+    # When use_remoteexec=true or use_siso=true, node actions run on remote
+    # Linux worker. So it should include linux node binary in inputs.
+    if (use_remoteexec || use_siso) {
+      inputs += [
+        "//third_party/node/linux/node-linux-x64.tar.gz.sha1",
+        "//third_party/node/linux/node-linux-x64/bin/node",
+      ]
+    }
 
     _typescript_config_name = target_name
 

@@ -363,6 +363,88 @@ bc @ react-dom.production.min.js:73`;
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
     });
 
+    it('builds a prompt with related code and stacktrace', async () => {
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      const SCRIPT_ID = '1' as Protocol.Runtime.ScriptId;
+      const LINE_NUMBER = 42;
+      const URL = 'http://example.com/script.js' as Platform.DevToolsPath.UrlString;
+      const stackTrace = createStackTrace([
+        `${SCRIPT_ID}::userNestedFunction::${URL}::${LINE_NUMBER}::15`,
+        `${SCRIPT_ID}::userFunction::http://example.com/script.js::10::2`,
+        `${SCRIPT_ID}::entry::http://example.com/app.js::25::10`,
+      ]);
+      // Linkifier is mocked in this test, therefore, no link text after @.
+      const STACK_TRACE = ['userNestedFunction @ ', 'userFunction @ ', 'entry @'].join('\n');
+      const messageDetails = {
+        type: Protocol.Runtime.ConsoleAPICalledEventType.Log,
+        stackTrace,
+      };
+      const RELATED_CODE = `${'\n'.repeat(LINE_NUMBER)}console.error('kaboom!')`;
+      const {uiSourceCode, project} =
+          createContentProviderUISourceCode({url: URL, mimeType: 'text/javascript', content: RELATED_CODE});
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assertNotNullOrUndefined(debuggerModel);
+      const mapping = createFakeScriptMapping(debuggerModel, uiSourceCode, LINE_NUMBER, SCRIPT_ID);
+      debuggerWorkspaceBinding.addSourceMapping(mapping);
+      const ERROR_MESSAGE = 'kaboom!';
+      const rawMessage = new SDK.ConsoleModel.ConsoleMessage(
+          runtimeModel, SDK.ConsoleModel.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error,
+          ERROR_MESSAGE, messageDetails);
+      const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
+      const promptBuilder = new Explain.PromptBuilder(message);
+      const {prompt, sources} = await promptBuilder.buildPrompt();
+      assert.strictEqual(prompt, [
+        '',
+        PREAMBLE,
+        '',
+        MESSAGE_HEADER,
+        EXAMPLE_MESSAGE1,
+        RELATED_CODE_HEADER,
+        '```',
+        EXAMPLE_RELATED_CODE1,
+        '```',
+        EXPLANATION_HEADER,
+        EXAMPLE_EXPLANATION1,
+        '',
+        MESSAGE_HEADER,
+        EXAMPLE_MESSAGE2,
+        RELATED_CODE_HEADER,
+        '```',
+        EXAMPLE_RELATED_CODE2,
+        '```',
+        EXPLANATION_HEADER,
+        EXAMPLE_EXPLANATION2,
+        '',
+        MESSAGE_HEADER,
+        EXAMPLE_MESSAGE3,
+        RELATED_CODE_HEADER,
+        '```',
+        EXAMPLE_RELATED_CODE3,
+        '```',
+        EXPLANATION_HEADER,
+        EXAMPLE_EXPLANATION3,
+        '',
+        MESSAGE_HEADER,
+        ERROR_MESSAGE,
+        STACK_TRACE,
+        RELATED_CODE_HEADER,
+        '```',
+        RELATED_CODE,
+        '```',
+        EXPLANATION_HEADER,
+        '',
+      ].join('\n'));
+
+      assert.deepStrictEqual(sources, [
+        {type: 'message', value: ERROR_MESSAGE},
+        {type: 'stacktrace', value: STACK_TRACE},
+        {type: 'relatedCode', value: RELATED_CODE},
+      ]);
+
+      Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
+    });
+
     it('builds a prompt with related request', async () => {
       const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
       const REQUEST_ID = '29.1' as Protocol.Network.RequestId;

@@ -23,6 +23,7 @@ devtools_module("settings") {
   deps = [
     "../../../core/common:bundle",
     "../../lit-html:bundle",
+    "../../visual_logging:bundle",
     "../helpers:bundle",
     "../icon_button:bundle",
     "../input:bundle",

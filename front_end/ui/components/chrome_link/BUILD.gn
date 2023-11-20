@@ -18,6 +18,7 @@ devtools_module("chrome_link") {
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
     "../helpers:bundle",
   ]
 }

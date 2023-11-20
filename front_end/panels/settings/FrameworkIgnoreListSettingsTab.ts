@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import frameworkIgnoreListSettingsTabStyles from './frameworkIgnoreListSettingsTab.css.js';
 
@@ -90,6 +91,8 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
   constructor() {
     super(true);
 
+    this.element.setAttribute('jslog', `${VisualLogging.section().context('blackbox')}`);
+
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = i18nString(UIStrings.frameworkIgnoreList);
     UI.ARIAUtils.markAsHeading(header, 1);
@@ -121,6 +124,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     const automaticallyIgnoreLink = UI.XLink.XLink.create('http://goo.gle/skip-third-party');
     automaticallyIgnoreLink.textContent = '';
     automaticallyIgnoreLink.setAttribute('aria-label', i18nString(UIStrings.learnMore));
+    automaticallyIgnoreLink.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('learn-more')}`);
 
     const automaticallyIgnoreLinkIcon = new IconButton.Icon.Icon();
     automaticallyIgnoreLinkIcon.data = {iconName: 'help', color: 'var(--icon-default)', width: '16px', height: '16px'};
@@ -139,6 +143,8 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     this.list.show(ignoreListOptions);
     const addPatternButton =
         UI.UIUtils.createTextButton(i18nString(UIStrings.addPattern), this.addButtonClicked.bind(this), 'add-button');
+    addPatternButton.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('settings.add-ignore-list-pattern')}`);
     UI.ARIAUtils.setLabel(addPatternButton, i18nString(UIStrings.addFilenamePattern));
     ignoreListOptions.appendChild(addPatternButton);
     this.setting =
@@ -193,7 +199,8 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
 
     const listSetting = this.setting;
 
-    const checkbox = UI.UIUtils.CheckboxLabel.create(item.pattern, !item.disabled);
+    const checkbox =
+        UI.UIUtils.CheckboxLabel.create(item.pattern, !item.disabled, undefined, 'settings.ignore-list-pattern');
     const helpText = i18nString(UIStrings.ignoreScriptsWhoseNamesMatchS, {PH1: item.pattern});
     UI.Tooltip.Tooltip.install(checkbox, helpText);
     checkbox.checkboxElement.ariaLabel = helpText;

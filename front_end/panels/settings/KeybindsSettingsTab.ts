@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import keybindsSettingsTabStyles from './keybindsSettingsTab.css.js';
 
@@ -86,6 +87,8 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   constructor() {
     super(true);
 
+    this.element.setAttribute('jslog', `${VisualLogging.section().context('keybinds')}`);
+
     const header = this.contentElement.createChild('header');
     header.createChild('h1').textContent = i18nString(UIStrings.shortcuts);
     const keybindsSetSetting = Common.Settings.Settings.instance().moduleSetting('activeKeybindSet');
@@ -110,12 +113,17 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
     footer.classList.add('keybinds-footer');
     const docsLink = UI.XLink.XLink.create(
         'https://developer.chrome.com/docs/devtools/shortcuts/', i18nString(UIStrings.FullListOfDevtoolsKeyboard));
+    docsLink.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('learn-more')}`);
     docsLink.classList.add('docs-link');
     footer.appendChild(docsLink);
-    footer.appendChild(UI.UIUtils.createTextButton(i18nString(UIStrings.RestoreDefaultShortcuts), () => {
-      userShortcutsSetting.set([]);
-      keybindsSetSetting.set(UI.ShortcutRegistry.DefaultShortcutSetting);
-    }));
+    const restoreDefaultShortcutsButton =
+        UI.UIUtils.createTextButton(i18nString(UIStrings.RestoreDefaultShortcuts), () => {
+          userShortcutsSetting.set([]);
+          keybindsSetSetting.set(UI.ShortcutRegistry.DefaultShortcutSetting);
+        });
+    restoreDefaultShortcutsButton.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('restore-default-shortcuts')}`);
+    footer.appendChild(restoreDefaultShortcutsButton);
     this.editingItem = null;
     this.editingRow = null;
 
@@ -310,6 +318,7 @@ export class ShortcutListItem {
     this.settingsTab = settingsTab;
     this.item = item;
     this.element = document.createElement('div');
+    this.element.setAttribute('jslog', `${VisualLogging.item().context(item.id())}`);
     this.editedShortcuts = new Map();
     this.shortcutInputs = new Map();
     this.shortcuts = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(item.id());
@@ -360,6 +369,7 @@ export class ShortcutListItem {
   private setupEditor(): void {
     this.addShortcutLinkContainer = this.element.createChild('div', 'keybinds-shortcut devtools-link');
     const addShortcutLink = this.addShortcutLinkContainer.createChild('span', 'devtools-link') as HTMLDivElement;
+    addShortcutLink.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context('add-shortcut')}`);
     addShortcutLink.textContent = i18nString(UIStrings.addAShortcut);
     addShortcutLink.tabIndex = 0;
     UI.ARIAUtils.markAsLink(addShortcutLink);
@@ -371,13 +381,13 @@ export class ShortcutListItem {
     this.errorMessageElement = this.element.createChild('div', 'keybinds-info keybinds-error hidden');
     UI.ARIAUtils.markAsAlert(this.errorMessageElement);
     this.element.appendChild(this.createIconButton(
-        i18nString(UIStrings.ResetShortcutsForAction), 'undo', '', this.resetShortcutsToDefaults.bind(this)));
+        i18nString(UIStrings.ResetShortcutsForAction), 'undo', '', 'undo', this.resetShortcutsToDefaults.bind(this)));
     this.confirmButton = this.createIconButton(
-        i18nString(UIStrings.confirmChanges), 'checkmark', 'keybinds-confirm-button',
+        i18nString(UIStrings.confirmChanges), 'checkmark', 'keybinds-confirm-button', 'confirm',
         () => this.settingsTab.commitChanges(this.item, this.editedShortcuts));
     this.element.appendChild(this.confirmButton);
     this.element.appendChild(this.createIconButton(
-        i18nString(UIStrings.discardChanges), 'cross', 'keybinds-cancel-button',
+        i18nString(UIStrings.discardChanges), 'cross', 'keybinds-cancel-button', 'cancel',
         () => this.settingsTab.stopEditing(this.item)));
     this.element.addEventListener('keydown', event => {
       if (Platform.KeyboardUtilities.isEscKey(event)) {
@@ -411,6 +421,7 @@ export class ShortcutListItem {
     const shortcutElement = this.element.createChild('div', 'keybinds-shortcut keybinds-list-text');
     if (this.isEditing) {
       const shortcutInput = shortcutElement.createChild('input', 'harmony-input') as HTMLInputElement;
+      shortcutInput.setAttribute('jslog', `${VisualLogging.textField().track({keydown: true})}`);
       shortcutInput.spellcheck = false;
       shortcutInput.maxLength = 0;
       this.shortcutInputs.set(shortcut, shortcutInput);
@@ -430,7 +441,7 @@ export class ShortcutListItem {
         }
       });
       shortcutElement.appendChild(
-          this.createIconButton(i18nString(UIStrings.removeShortcut), 'bin', 'keybinds-delete-button', () => {
+          this.createIconButton(i18nString(UIStrings.removeShortcut), 'bin', 'keybinds-delete-button', 'delete', () => {
             const index = this.shortcuts.indexOf(shortcut);
             if (!shortcut.isDefault()) {
               this.shortcuts.splice(index, 1);
@@ -451,15 +462,17 @@ export class ShortcutListItem {
     }
   }
 
-  private createEditButton(): Element {
+  private createEditButton(): HTMLElement {
     return this.createIconButton(
-        i18nString(UIStrings.editShortcut), 'edit', 'keybinds-edit-button',
+        i18nString(UIStrings.editShortcut), 'edit', 'keybinds-edit-button', 'edit',
         () => this.settingsTab.startEditing(this.item));
   }
 
-  private createIconButton(label: string, iconName: string, className: string, listener: () => void):
-      HTMLButtonElement {
+  private createIconButton(
+      label: string, iconName: string, className: string, jslogContext: string,
+      listener: () => void): HTMLButtonElement {
     const button = document.createElement('button') as HTMLButtonElement;
+    button.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context(jslogContext)}`);
     button.setAttribute('title', label);
     button.appendChild(UI.Icon.Icon.create(iconName));
     button.addEventListener('click', listener);

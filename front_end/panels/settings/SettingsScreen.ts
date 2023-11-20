@@ -36,6 +36,7 @@ import * as Root from '../../core/root/root.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {PanelUtils} from '../utils/utils.js';
 
 import * as PanelComponents from './components/components.js';
@@ -110,6 +111,8 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
 
   private constructor() {
     super(true);
+
+    this.element.setAttribute('jslog', `${VisualLogging.panel().context('settings')}`);
 
     this.contentElement.classList.add('settings-window-main');
     this.contentElement.classList.add('vbox');
@@ -274,6 +277,8 @@ export class GenericSettingsTab extends SettingsTab {
   constructor() {
     super(i18nString(UIStrings.preferences), 'preferences-tab-content');
 
+    this.element.setAttribute('jslog', `${VisualLogging.section().context('preferences')}`);
+
     // GRID, MOBILE, EMULATION, and RENDERING are intentionally excluded from this list.
     const explicitSectionOrder: Common.Settings.SettingCategory[] = [
       Common.Settings.SettingCategory.NONE,
@@ -313,8 +318,11 @@ export class GenericSettingsTab extends SettingsTab {
       this.createSectionElement(sectionCategory, settingsForSection);
     }
 
-    this.appendSection().appendChild(
-        UI.UIUtils.createTextButton(i18nString(UIStrings.restoreDefaultsAndReload), restoreAndReload));
+    const restoreAndReloadButton =
+        UI.UIUtils.createTextButton(i18nString(UIStrings.restoreDefaultsAndReload), restoreAndReload);
+    restoreAndReloadButton.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('settings.restore-defaults-and-reload')}`);
+    this.appendSection().appendChild(restoreAndReloadButton);
 
     function restoreAndReload(): void {
       Common.Settings.Settings.instance().clearAll();
@@ -412,9 +420,11 @@ export class ExperimentsSettingsTab extends SettingsTab {
     const filterSection = this.appendSection();
     filterSection.classList.add('experiments-filter');
 
+    this.element.setAttribute('jslog', `${VisualLogging.section().context('experiments')}`);
+
     const labelElement = filterSection.createChild('label');
     labelElement.textContent = i18nString(UIStrings.filterExperimentsLabel);
-    this.#inputElement = UI.UIUtils.createInput('', 'text');
+    this.#inputElement = UI.UIUtils.createInput('', 'text', 'experiments-filter');
     UI.ARIAUtils.bindLabelToControl(labelElement, this.#inputElement);
     filterSection.appendChild(this.#inputElement);
     this.#inputElement.addEventListener(
@@ -477,7 +487,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
   }
 
   private createExperimentCheckbox(experiment: Root.Runtime.Experiment): HTMLParagraphElement {
-    const label = UI.UIUtils.CheckboxLabel.create(experiment.title, experiment.isEnabled());
+    const label = UI.UIUtils.CheckboxLabel.create(experiment.title, experiment.isEnabled(), undefined, experiment.name);
     label.classList.add('experiment-label');
     const input = label.checkboxElement;
     input.name = experiment.name;
@@ -501,6 +511,8 @@ export class ExperimentsSettingsTab extends SettingsTab {
       const link = UI.XLink.XLink.create(experiment.docLink);
       link.textContent = '';
       link.setAttribute('aria-label', i18nString(UIStrings.learnMore));
+      link.setAttribute(
+          'jslog', `${VisualLogging.link().track({click: true}).context(`${experiment.name}:documentation`)}`);
 
       const linkIcon = new IconButton.Icon.Icon();
       linkIcon.data = {iconName: 'help', color: 'var(--icon-default)', width: '16px', height: '16px'};
@@ -514,6 +526,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
       const link = UI.XLink.XLink.create(experiment.feedbackLink);
       link.textContent = i18nString(UIStrings.sendFeedback);
       link.classList.add('feedback-link');
+      link.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context(`${experiment.name}:feedback`)}`);
 
       p.appendChild(link);
     }

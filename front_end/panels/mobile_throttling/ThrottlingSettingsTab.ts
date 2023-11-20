@@ -4,11 +4,11 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-
-import throttlingSettingsTabStyles from './throttlingSettingsTab.css.js';
-
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+
+import throttlingSettingsTabStyles from './throttlingSettingsTab.css.js';
 
 const UIStrings = {
   /**
@@ -90,12 +90,15 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
   constructor() {
     super(true);
 
+    this.element.setAttribute('jslog', `${VisualLogging.section().context('throttling-conditions')}`);
+
     const header = this.contentElement.createChild('div', 'header');
     header.textContent = i18nString(UIStrings.networkThrottlingProfiles);
     UI.ARIAUtils.markAsHeading(header, 1);
 
     const addButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.addCustomProfile), this.addButtonClicked.bind(this), 'add-conditions-button');
+    addButton.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context('add-conditions')}`);
     this.contentElement.appendChild(addButton);
 
     this.list = new UI.ListWidget.ListWidget(this);

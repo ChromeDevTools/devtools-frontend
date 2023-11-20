@@ -48,7 +48,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     lastScheduleStyleRecalcByFrame.set(event.args.data.frame, event);
   } else if (Types.TraceEvents.isTraceEventUpdateLayoutTree(event)) {
     // IMPORTANT: although the trace event is called UpdateLayoutTree, this
-    // represents a Styls Recalculation. This event in the timeline is shown to
+    // represents a Styles Recalculation. This event in the timeline is shown to
     // the user as "Recalculate Styles."
     if (event.args.beginData) {
       // Store the last UpdateLayout event: we use this when we see an

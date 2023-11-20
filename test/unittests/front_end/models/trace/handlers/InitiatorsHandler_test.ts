@@ -58,7 +58,7 @@ describe('InitiatorsHandler', () => {
     assert.strictEqual(initiator.ts, 122411036517);
   });
 
-  it('for a Layout event it sets the initiator to the last ScheduledStyleRecalculation if it occurred before the InvalidateLayout vent',
+  it('for a Layout event it sets the initiator to the last ScheduledStyleRecalculation if it occurred before the InvalidateLayout event',
      async function() {
        const traceEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
        for (const event of traceEvents) {

@@ -205,7 +205,7 @@ module.exports = function(config) {
       // must be set before any other hooks in order to ensure all tests get the same environment.
       testSetupFilePattern,
       ...testFiles,
-      ...TEST_FILES_SOURCE_MAPS.map(pattern => ({pattern, served: true, included: false, watched: false})),
+      ...TEST_FILES_SOURCE_MAPS.map(pattern => ({pattern, served: true, included: false, watched: true})),
       ...TEST_SOURCES.map(source => ({pattern: source, served: true, included: false, watched: false})),
       {pattern: path.join(GEN_DIRECTORY, 'front_end/Images/*.{svg,png}'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/core/i18n/locales/*.json'), served: true, included: false},
@@ -215,7 +215,7 @@ module.exports = function(config) {
       {pattern: path.join(GEN_DIRECTORY, 'front_end/ui/legacy/tokens.css'), served: true, included: true},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.css'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js'), served: true, included: false},
-      {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js.map'), served: true, included: false},
+      {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.js.map'), served: true, included: false, watched: true},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.mjs'), served: true, included: false},
       {pattern: path.join(GEN_DIRECTORY, 'front_end/**/*.mjs.map'), served: true, included: false},
       {pattern: path.join(ROOT_DIRECTORY, 'front_end/**/*.ts'), served: true, included: false, watched: false},

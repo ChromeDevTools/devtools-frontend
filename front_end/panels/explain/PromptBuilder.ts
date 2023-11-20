@@ -28,12 +28,16 @@ export interface Source {
 
 export class PromptBuilder {
   #consoleMessage: Console.ConsoleViewMessage.ConsoleViewMessage;
+  #cachedSearchResults?: string;
 
   constructor(consoleMessage: Console.ConsoleViewMessage.ConsoleViewMessage) {
     this.#consoleMessage = consoleMessage;
   }
 
   async getSearchAnswers(): Promise<string> {
+    if (this.#cachedSearchResults !== undefined) {
+      return this.#cachedSearchResults;
+    }
     const apiKey = Root.Runtime.Runtime.queryParam('aidaApiKey');
     if (!apiKey) {
       return '';
@@ -54,7 +58,8 @@ export class PromptBuilder {
         break;
       }
     }
-    return result.join('\n');
+    this.#cachedSearchResults = result.join('\n');
+    return this.#cachedSearchResults;
   }
 
   async getNetworkRequest(): Promise<SDK.NetworkRequest.NetworkRequest|undefined> {
@@ -88,17 +93,18 @@ export class PromptBuilder {
     return {text, columnNumber: mappedLocation?.columnNumber ?? 0, lineNumber: mappedLocation?.lineNumber ?? 0};
   }
 
-  async buildPrompt(): Promise<{prompt: string, sources: Source[]}> {
+  async buildPrompt(sourcesTypes: SourceType[] = Object.values(SourceType)):
+      Promise<{prompt: string, sources: Source[]}> {
     const [sourceCode, request, searchAnswers] = await Promise.all([
-      this.getMessageSourceCode(),
-      this.getNetworkRequest(),
-      this.getSearchAnswers(),
+      sourcesTypes.includes(SourceType.RELATED_CODE) ? this.getMessageSourceCode() : undefined,
+      sourcesTypes.includes(SourceType.NETWORK_REQUEST) ? this.getNetworkRequest() : undefined,
+      sourcesTypes.includes(SourceType.SEARCH_ANSWERS) ? this.getSearchAnswers() : '',
     ]);
 
-    const relatedCode = sourceCode.text ? formatRelatedCode(sourceCode) : '';
+    const relatedCode = sourceCode?.text ? formatRelatedCode(sourceCode) : '';
     const relatedRequest = request ? formatNetworkRequest(request) : '';
     const message = formatConsoleMessage(this.#consoleMessage);
-    const stacktrace = formatStackTrace(this.#consoleMessage);
+    const stacktrace = sourcesTypes.includes(SourceType.STACKTRACE) ? formatStackTrace(this.#consoleMessage) : '';
 
     const prompt = this.formatPrompt({
       message: [message, stacktrace].join('\n').trim(),

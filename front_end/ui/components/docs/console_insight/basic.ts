@@ -11,9 +11,22 @@ await FrontendHelpers.initializeGlobalVars();
 
 const ConsoleInsight = Explain.ConsoleInsight;
 
+let count = 0;
+
 const component = new ConsoleInsight(
     {
       async buildPrompt() {
+        count++;
+
+        if (count === 1) {
+          return {
+            prompt: '',
+            sources: [{
+              type: Explain.SourceType.MESSAGE,
+              value: 'Something went wrong\n\nSomething went wrong',
+            }],
+          };
+        }
         return {
           prompt: '',
           sources: [
@@ -68,6 +81,25 @@ Response status: 404`,
     },
     {
       async getInsights() {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        if (count > 1) {
+          return `Some text with \`code\`. Some code:
+\`\`\`ts
+console.log('test');
+document.querySelector('test').style = 'black';
+\`\`\`
+Some text with \`code\`. Some code:
+\`\`\`ts
+console.log('test');
+document.querySelector('test').style = 'black';
+\`\`\`
+Some text with \`code\`. Some code:
+\`\`\`ts
+console.log('test');
+document.querySelector('test').style = 'black';
+\`\`\`
+`;
+        }
         return `## Result
 
 Some text with \`code\`. Some code:

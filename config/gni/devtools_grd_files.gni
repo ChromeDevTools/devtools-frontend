@@ -1243,6 +1243,7 @@ grd_files_debug_sources = [
   "front_end/panels/explain/PromptBuilder.js",
   "front_end/panels/explain/components/ConsoleInsight.js",
   "front_end/panels/explain/components/consoleInsight.css.js",
+  "front_end/panels/explain/components/consoleInsightSourcesList.css.js",
   "front_end/panels/issues/AffectedBlockedByResponseView.js",
   "front_end/panels/issues/AffectedCookiesView.js",
   "front_end/panels/issues/AffectedDirectivesView.js",

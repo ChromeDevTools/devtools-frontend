@@ -492,9 +492,12 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
 
   #renderEnumSetting(setting: EnumSetting): LitHtml.TemplateResult {
     const onEnumSettingChange = this.#onEnumSettingChange.bind(this, setting);
-    return html`<label data-enum-setting="true" class="select-label" title=${setting.title} jslog=${
-        VisualLogging.dropDown().track({change: true}).context(setting.name)}>
-      <select class="chrome-select" data-input="true" @change=${onEnumSettingChange}>
+    return html`<label data-enum-setting="true" class="select-label" title=${setting.title}>
+      <select
+        class="chrome-select"
+        data-input="true"
+        jslog=${VisualLogging.dropDown().track({change: true}).context(setting.name)}
+        @change=${onEnumSettingChange}>
         ${
         setting.options.map(
             opt => html`<option value=${opt.value} .selected=${setting.value === opt.value}>${opt.title}</option>`)}

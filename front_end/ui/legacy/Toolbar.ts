@@ -951,7 +951,8 @@ export class ToolbarComboBox extends ToolbarItem<void> {
       this.selectElementInternal.classList.add(className);
     }
     if (jslogContext) {
-      this.selectElementInternal.setAttribute('jslog', `${VisualLogging.dropDown().context(jslogContext)}`);
+      this.selectElementInternal.setAttribute(
+          'jslog', `${VisualLogging.dropDown().track({change: true}).context(jslogContext)}`);
     }
   }
 

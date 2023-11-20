@@ -338,7 +338,7 @@ export class Editor<T> {
       name: string, options: string[], validator: (arg0: T, arg1: number, arg2: EditorControl) => ValidatorResult,
       title?: string): HTMLSelectElement {
     const select = document.createElement('select');
-    select.setAttribute('jslog', `${VisualLogging.dropDown().track({click: true}).context(name)}`);
+    select.setAttribute('jslog', `${VisualLogging.dropDown().track({change: true}).context(name)}`);
     select.classList.add('chrome-select');
     for (let index = 0; index < options.length; ++index) {
       const option = (select.createChild('option') as HTMLOptionElement);

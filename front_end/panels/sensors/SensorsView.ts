@@ -264,8 +264,7 @@ export class SensorsView extends UI.Widget.VBox {
 
     const noOverrideOption = {title: i18nString(UIStrings.noOverride), location: NonPresetOptions.NoOverride};
     this.locationSelectElement = (fields.createChild('select', 'chrome-select') as HTMLSelectElement);
-    this.locationSelectElement.setAttribute(
-        'jslog', `${VisualLogging.dropDown().track({click: true, keydown: 'ArrowUp,ArrowDown'})}`);
+    this.locationSelectElement.setAttribute('jslog', `${VisualLogging.dropDown().track({change: true})}`);
     UI.ARIAUtils.bindLabelToControl(geogroupTitle, this.locationSelectElement);
 
     // No override
@@ -471,8 +470,7 @@ export class SensorsView extends UI.Widget.VBox {
       ],
     }];
     this.orientationSelectElement = (this.contentElement.createChild('select', 'chrome-select') as HTMLSelectElement);
-    this.orientationSelectElement.setAttribute(
-        'jslog', `${VisualLogging.dropDown().track({click: true, keydown: 'ArrowUp,ArrowDown'})}`);
+    this.orientationSelectElement.setAttribute('jslog', `${VisualLogging.dropDown().track({change: true})}`);
     UI.ARIAUtils.bindLabelToControl(orientationTitle, this.orientationSelectElement);
     this.orientationSelectElement.appendChild(new Option(orientationOffOption.title, orientationOffOption.orientation));
     this.orientationSelectElement.appendChild(

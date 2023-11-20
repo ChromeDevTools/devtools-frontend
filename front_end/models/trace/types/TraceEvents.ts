@@ -887,6 +887,18 @@ export interface TraceEventStyleRecalcInvalidation extends TraceEventInstant {
     },
   };
 }
+export interface TraceEventScheduleStyleRecalculation extends TraceEventInstant {
+  name: KnownEventName.ScheduleStyleRecalculation;
+  args: TraceEventArgs&{
+    data: {
+      frame: string,
+    },
+  };
+}
+export function isTraceEventScheduleStyleRecalculation(event: TraceEventData):
+    event is TraceEventScheduleStyleRecalculation {
+  return event.name === KnownEventName.ScheduleStyleRecalculation;
+}
 
 export interface TraceEventPrePaint extends TraceEventComplete {
   name: 'PrePaint';
@@ -1192,6 +1204,53 @@ export interface TraceEventActivateLayerTree extends TraceEventInstant {
 }
 export function isTraceEventActivateLayerTree(event: TraceEventData): event is TraceEventActivateLayerTree {
   return event.name === KnownEventName.ActivateLayerTree;
+}
+
+export interface TraceEventUpdateLayoutTree extends TraceEventComplete {
+  name: KnownEventName.UpdateLayoutTree;
+  args: TraceEventArgs&{
+    elementCount: number,
+    beginData?: {
+      frame: string,
+    },
+  };
+}
+export function isTraceEventUpdateLayoutTree(event: TraceEventData): event is TraceEventUpdateLayoutTree {
+  return event.name === KnownEventName.UpdateLayoutTree;
+}
+
+export interface TraceEventLayout extends TraceEventComplete {
+  name: KnownEventName.Layout;
+  args: TraceEventArgs&{
+    beginData: {
+      frame: string,
+      dirtyObjects: number,
+      partialLayout: boolean,
+      totalObjects: number,
+    },
+    endData: {
+      layoutRoots: Array<{
+        depth: number,
+        nodeId: Protocol.DOM.BackendNodeId,
+        quads: number[][],
+      }>,
+    },
+  };
+}
+export function isTraceEventLayout(event: TraceEventData): event is TraceEventLayout {
+  return event.name === KnownEventName.Layout;
+}
+export interface TraceEventInvalidateLayout extends TraceEventInstant {
+  name: KnownEventName.InvalidateLayout;
+  args: TraceEventArgs&{
+    data: {
+      frame: string,
+      nodeId: Protocol.DOM.BackendNodeId,
+    },
+  };
+}
+export function isTraceEventInvalidateLayout(event: TraceEventData): event is TraceEventInvalidateLayout {
+  return event.name === KnownEventName.InvalidateLayout;
 }
 
 class ProfileIdTag {

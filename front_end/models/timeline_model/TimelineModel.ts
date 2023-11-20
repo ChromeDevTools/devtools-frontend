@@ -890,13 +890,13 @@ export class TimelineModelImpl {
       }
 
       case RecordType.InvalidateLayout: {
-        // Consider style recalculation as a reason for layout invalidation,
-        // but only if we had no earlier layout invalidation records.
         if (!(event instanceof TraceEngine.Legacy.PayloadEvent)) {
           break;
         }
         let layoutInitator: TraceEngine.Types.TraceEvents.TraceEventData|null = event.rawPayload();
         const frameId = eventData['frame'];
+        // Consider style recalculation as a reason for layout invalidation,
+        // but only if we had no earlier layout invalidation records.
         if (!this.layoutInvalidate[frameId] && this.lastRecalculateStylesEvent &&
             this.lastRecalculateStylesEvent.endTime !== undefined &&
             this.lastRecalculateStylesEvent.endTime > event.startTime) {

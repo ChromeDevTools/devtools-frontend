@@ -11,6 +11,7 @@ devtools_module("handlers") {
     "AnimationHandler.ts",
     "AuctionWorkletsHandler.ts",
     "GPUHandler.ts",
+    "InitiatorsHandler.ts",
     "LargestImagePaintHandler.ts",
     "LargestTextPaintHandler.ts",
     "LayerTreeHandler.ts",

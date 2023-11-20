@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {MobileThrottlingSelector} from './MobileThrottlingSelector.js';
 import {NetworkThrottlingSelector} from './NetworkThrottlingSelector.js';
@@ -137,6 +138,12 @@ export class ThrottlingManager {
   decorateSelectWithNetworkThrottling(selectElement: HTMLSelectElement): NetworkThrottlingSelector {
     let options: (SDK.NetworkManager.Conditions|null)[] = [];
     const selector = new NetworkThrottlingSelector(populate, select, this.customNetworkConditionsSetting);
+    selectElement.setAttribute(
+        'jslog',
+        `${
+            VisualLogging.dropDown()
+                .track({change: true})
+                .context(this.currentNetworkThrottlingConditionsSetting.name)}`);
     selectElement.addEventListener('change', optionSelected, false);
     return selector;
 

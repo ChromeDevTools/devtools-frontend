@@ -242,7 +242,15 @@ export class ConsoleInsight extends HTMLElement {
         </header>
         ${this.#loading ? html`
         <main>
-          <div class="loader"></div>
+          <div class="loader" style="clip-path: url('#clipPath');">
+            <svg width="100%" height="64">
+              <clipPath id="clipPath">
+                <rect x="0" y="0" width="100%" height="16" rx="8"></rect>
+                <rect x="0" y="24" width="100%" height="16" rx="8"></rect>
+                <rect x="0" y="48" width="100%" height="16" rx="8"></rect>
+              </clipPath>
+            </svg>
+          </div>
         </main>` : html`
         <main>
           <${MarkdownView.MarkdownView.MarkdownView.litTagName}

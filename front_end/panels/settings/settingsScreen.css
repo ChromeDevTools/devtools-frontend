@@ -168,14 +168,6 @@ label {
   color: var(--sys-color-token-subtle);
 }
 
-.settings-tab .settings-block label:hover {
-  color: var(--sys-color-token-subtle);
-}
-
-.settings-tab .settings-block fieldset:disabled label:hover {
-  color: inherit;
-}
-
 .settings-tab select {
   margin-left: 10px;
   width: 80%;

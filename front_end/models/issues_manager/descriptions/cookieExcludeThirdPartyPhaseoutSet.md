@@ -1,6 +1,6 @@
-# Cookie is blocked when set in cross-site context.
+# Setting third-party cookie is blocked
 
-Cookies marked with `SameSite=None; Secure` and not `Partitioned` are blocked in cross-site contexts.
-This behavior protects user data from cross-site tracking.
+Cookies with the `SameSite=None; Secure` and not `Partitioned` attributes that operate in cross-site contexts are third-party cookies.
+Chrome blocks third-party cookies to protect user data from cross-site tracking.
 
 Please refer to the article linked to learn more about preparing your site to avoid potential breakage due to this.

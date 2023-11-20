@@ -1,6 +1,7 @@
-# Cookie sent in cross-site context will be blocked in future Chrome versions
+# Reading cookie in cross-site context will be blocked in future Chrome versions
 
-In a future version of the browser, cookies marked with `SameSite=None; Secure` and not `Partitioned` will be blocked in cross-site requests.
+Cookies with the `SameSite=None; Secure` and not `Partitioned` attributes that operate in cross-site contexts are third-party cookies.
+In future Chrome versions, reading third-party cookies will be blocked.
 This behavior protects user data from cross-site tracking.
 
 Please refer to the article linked to learn more about preparing your site to avoid potential breakage.

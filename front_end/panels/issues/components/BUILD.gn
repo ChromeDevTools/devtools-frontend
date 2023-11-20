@@ -28,6 +28,7 @@ devtools_module("components") {
     "../../../ui/components/icon_button:bundle",
     "../../../ui/legacy:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
   ]
 }
 

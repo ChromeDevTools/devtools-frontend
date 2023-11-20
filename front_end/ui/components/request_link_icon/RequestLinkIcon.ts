@@ -2,18 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as SDK from '../../../core/sdk/sdk.js';
+import * as Common from '../../../core/common/common.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
-import * as i18n from '../../../core/i18n/i18n.js';
-import * as Common from '../../../core/common/common.js';
-import * as NetworkForward from '../../../panels/network/forward/forward.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import type * as Logs from '../../../models/logs/logs.js';
+import * as NetworkForward from '../../../panels/network/forward/forward.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
-import type * as Protocol from '../../../generated/protocol.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+
 import requestLinkIconStyles from './requestLinkIcon.css.js';
 
 const UIStrings = {
@@ -214,6 +216,7 @@ export class RequestLinkIcon extends HTMLElement {
     return LitHtml.html`
       <span class=${LitHtml.Directives.classMap({'link': Boolean(this.#request)})}
             tabindex="0"
+            jslog=${VisualLogging.link().track({click: true}).context('network-request')}
             @click=${this.handleClick}>
         <${IconButton.Icon.Icon.litTagName} .data=${this.iconData() as IconButton.Icon.IconData}
           title=${this.#getTooltip()}></${IconButton.Icon.Icon.litTagName}>

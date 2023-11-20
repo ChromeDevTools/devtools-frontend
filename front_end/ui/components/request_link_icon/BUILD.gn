@@ -23,6 +23,7 @@ devtools_module("request_link_icon") {
     "../../../models/logs:bundle",
     "../../../panels/network/forward:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
     "../helpers:bundle",
     "../icon_button:bundle",
   ]

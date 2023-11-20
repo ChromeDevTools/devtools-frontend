@@ -4,6 +4,7 @@
 
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import elementsPanelLinkStyles from './elementsPanelLink.css.js';
 
@@ -40,6 +41,7 @@ export class ElementsPanelLink extends HTMLElement {
       LitHtml.render(LitHtml.html`
       <span
         class="element-reveal-icon"
+        jslog=${VisualLogging.link().track({click: true}).context('elements-panel-link')}
         @click=${this.#onElementRevealIconClick}
         @mouseenter=${this.#onElementRevealIconMouseEnter}
         @mouseleave=${this.#onElementRevealIconMouseLeave}></span>

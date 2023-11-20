@@ -7,17 +7,18 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Logs from '../../models/logs/logs.js';
+import type * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import type * as NetworkForward from '../../panels/network/forward/forward.js';
-import type * as Protocol from '../../generated/protocol.js';
-import * as RequestLinkIcon from '../../ui/components/request_link_icon/request_link_icon.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {type IssueView} from './IssueView.js';
 import {type AggregatedIssue} from './IssueAggregator.js';
+import {type IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**
@@ -258,6 +259,7 @@ export abstract class AffectedResourcesView extends UI.TreeOutline.TreeElement {
       const sourceAnchor = linkifier.linkifyScriptLocation(
           target || null, sourceLocation.scriptId || null, sourceLocation.url as Platform.DevToolsPath.UrlString,
           sourceLocation.lineNumber, {columnNumber: sourceLocation.columnNumber, inlineFrameIndex: 0});
+      sourceAnchor.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('source-location')}`);
       sourceCodeLocation.appendChild(sourceAnchor);
     }
     element.appendChild(sourceCodeLocation);

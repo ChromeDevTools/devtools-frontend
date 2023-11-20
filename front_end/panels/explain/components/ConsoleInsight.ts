@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -16,6 +17,122 @@ import {type PromptBuilder, type Source, SourceType} from '../PromptBuilder.js';
 
 import styles from './consoleInsight.css.js';
 import listStyles from './consoleInsightSourcesList.css.js';
+
+const UIStrings = {
+  /**
+   * @description The title of the button that allows providing the feebdack that a
+   * console message insight was inaccruate.
+   */
+  inaccurate: 'Inaccurate',
+  /**
+   * @description The title of the button that allows providing the feebdack that a
+   *console message insight was irrelevant.
+   */
+  irrelevant: 'Irrelevant',
+  /**
+   * @description The title of the button that allows providing the feebdack that a
+   *console message insight was inappropriate.
+   */
+  inappropriate: 'Inappropriate',
+  /**
+   * @description The title of the button that allows providing the feebdack that a
+   *console message insight was helpful.
+   */
+  notHelpful: 'Not helpful',
+  /**
+   * @description The title of the button that allows providing the feebdack that a
+   *console message insight was not good for an unknown "other" reason.
+   */
+  other: 'Other',
+  /**
+   * @description The title of the insight source "Console message".
+   */
+  consoleMessage: 'Console message',
+  /**
+   * @description The title of the insight source "Stacktrace".
+   */
+  stackTrace: 'Stacktrace',
+  /**
+   * @description The title of the insight source "Network request".
+   */
+  networkRequest: 'Network request',
+  /**
+   * @description The title of the insight source "Related code".
+   */
+  relatedCode: 'Related code',
+  /**
+   * @description The title of the insight source "Google search answers".
+   */
+  searchAnswers: '`Google` search answers',
+  /**
+   * @description The text appearing before the list of sources that DevTools
+   * could collect based on a console message. If the user clicks the button
+   * related to the text, these sources will be used to generate insights.
+   */
+  refineButtonHint:
+      'Click this button to send the following data to the AI model running on `Google`\'s servers, so it can generate a more accurate and relevant response:',
+  /**
+   * @description The title that is shown while the insight is being generated.
+   */
+  generating: 'Generating…',
+  /**
+   * @description The header that indicates that the content shown is a console
+   * insight.
+   */
+  insight: 'Insight',
+  /**
+   * @description The title of the a button that closes the insight pane.
+   */
+  close: 'Close',
+  /**
+   * @description The title of the list of source data that was used to generate the insight.
+   */
+  sources: 'Sources',
+  /**
+   * @description The title of the button that allows the user to include more
+   * sources for the generation of the console insight.
+   */
+  refine: 'Give context to personalize insight',
+  /**
+   * @description The title of the button that is shown while the console
+   * insight is being re-generated.
+   */
+  refining: 'Personalizing insight…',
+  /**
+   * @description The title of the button that allows submitting positive
+   * feedback about the console insight.
+   */
+  thumbUp: 'Thumb up',
+  /**
+   * @description The title of the button that allows submitting negative
+   * feedback about the console insight.
+   */
+  thumbDown: 'Thumb down',
+  /**
+   * @description The title of the link that allows submitting more feedback.
+   */
+  submitFeedback: 'Submit feedback',
+  /**
+   * @description The title indicating the dogfood phase of the feature.
+   */
+  dogfood: 'Dogfood',
+  /**
+   * @description The title of the rating form that asks for the reason for the rating.
+   */
+  reason: 'Why did you choose this rating? (optional)',
+  /**
+   * @description The placeholder for the textarea for providing additional
+   * feedback.
+   */
+  additionalFeedback: 'Provide additional feedback (optional)',
+  /**
+   * @description The title of the button that submits the feedback.
+   */
+  submit: 'Submit',
+};
+const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 const {render, html, Directives} = LitHtml;
 
@@ -31,12 +148,12 @@ type PublicPromptBuilder = Pick<PromptBuilder, 'buildPrompt'>;
 type PublicInsightProvider = Pick<InsightProvider, 'getInsights'>;
 
 // key => localized string.
-const negativeRatingReasons = [
-  ['inaccurate', 'Inaccurate'],
-  ['irrelevant', 'Irrelevant'],
-  ['inapproprate', 'Inappropriate'],
-  ['not-helpful', 'Not helpful'],
-  ['other', 'Other'],
+const negativeRatingReasons: Array<[string, () => Platform.UIString.LocalizedString]> = [
+  ['inaccurate', i18nLazyString(UIStrings.inaccurate)],
+  ['irrelevant', i18nLazyString(UIStrings.irrelevant)],
+  ['inapproprate', i18nLazyString(UIStrings.inappropriate)],
+  ['not-helpful', i18nLazyString(UIStrings.notHelpful)],
+  ['other', i18nLazyString(UIStrings.other)],
 ];
 
 function buildLink(
@@ -50,18 +167,17 @@ function buildLink(
 }
 
 function localizeType(sourceType: SourceType): string {
-  // TODO: localize.
   switch (sourceType) {
     case SourceType.MESSAGE:
-      return 'Console message';
+      return i18nString(UIStrings.consoleMessage);
     case SourceType.STACKTRACE:
-      return 'Stacktrace';
+      return i18nString(UIStrings.stackTrace);
     case SourceType.NETWORK_REQUEST:
-      return 'Network request';
+      return i18nString(UIStrings.networkRequest);
     case SourceType.RELATED_CODE:
-      return 'Related code';
+      return i18nString(UIStrings.relatedCode);
     case SourceType.SEARCH_ANSWERS:
-      return 'Google Search results';
+      return i18nString(UIStrings.searchAnswers);
   }
 }
 
@@ -152,8 +268,7 @@ export class ConsoleInsight extends HTMLElement {
           container.style.flexDirection = 'column';
           container.style.fontSize = '13px';
           const text = document.createElement('p');
-          // TODO: localization.
-          text.innerText = 'The following data is sent to an AI model to generate a more relevant response:';
+          text.innerText = i18nString(UIStrings.refineButtonHint);
           text.style.margin = '0';
           const list = document.createElement('devtools-console-insight-sources-list');
           list.sources = sources;
@@ -312,10 +427,10 @@ export class ConsoleInsight extends HTMLElement {
               }>
             </${IconButton.Icon.Icon.litTagName}>
           </div>
-          <div class="filler">${this.#loading === LoadingState.INITIAL_LOADING ? 'Generating…' : 'Insight'}</div>
+          <div class="filler">${this.#loading === LoadingState.INITIAL_LOADING ? i18nString(UIStrings.generating) : i18nString(UIStrings.insight)}</div>
           <div>
             <${Buttons.Button.Button.litTagName}
-              title=${'Close'}
+              title=${i18nString(UIStrings.close)}
               .data=${
                 {
                   variant: Buttons.Button.Variant.ROUND,
@@ -344,7 +459,7 @@ export class ConsoleInsight extends HTMLElement {
             .data=${{tokens: this.#tokens, renderer: this.#renderer} as MarkdownView.MarkdownView.MarkdownViewData}>
           </${MarkdownView.MarkdownView.MarkdownView.litTagName}>
           <details style="--list-height: ${this.#sources.length * 20}px;">
-            <summary>Sources</summary>
+            <summary>${i18nString(UIStrings.sources)}</summary>
             <${ConsoleInsightSourcesList.litTagName} .sources=${this.#sources}>
             </${ConsoleInsightSourcesList.litTagName}>
           </details>
@@ -360,7 +475,7 @@ export class ConsoleInsight extends HTMLElement {
                 }
                 @click=${this.#onRefine}
               >
-              ${this.#loading === LoadingState.REFINING ? 'Personalizing insight…' : 'Give context to personalize insight'}
+              ${this.#loading === LoadingState.REFINING ? i18nString(UIStrings.refining) : i18nString(UIStrings.refine)}
             </${Buttons.Button.Button.litTagName}>
             <${IconButton.Icon.Icon.litTagName}
               class="info"
@@ -379,7 +494,7 @@ export class ConsoleInsight extends HTMLElement {
         <footer>
           <div>
             <${Buttons.Button.Button.litTagName}
-              title=${'Thumb up'}
+              title=${i18nString(UIStrings.thumbUp)}
               data-rating=${'true'}
               .data=${
                 {
@@ -392,7 +507,7 @@ export class ConsoleInsight extends HTMLElement {
               @click=${this.#onRating}
             ></${Buttons.Button.Button.litTagName}>
             <${Buttons.Button.Button.litTagName}
-              title=${'Thumb down'}
+              title=${i18nString(UIStrings.thumbDown)}
               data-rating=${'false'}
               .data=${
                 {
@@ -417,8 +532,8 @@ export class ConsoleInsight extends HTMLElement {
                   } as IconButton.Icon.IconData
                 }>
               </${IconButton.Icon.Icon.litTagName}>
-              <span>Dogfood - </span>
-              <x-link href=${DOGFOODFEEDBACK_URL} class="link">Submit feedback</x-link>
+              <span>${i18nString(UIStrings.dogfood)} - </span>
+              <x-link href=${DOGFOODFEEDBACK_URL} class="link">${i18nString(UIStrings.submitFeedback)}</x-link>
           </div>`: ''}
         </footer>
         `}
@@ -426,10 +541,10 @@ export class ConsoleInsight extends HTMLElement {
       ${this.#ratingFormOpened ? html`
         <div class=${bottomWrapper}>
           <header>
-            <div class="filler">Why did you choose this rating? (optional)</div>
+            <div class="filler">${i18nString(UIStrings.reason)}</div>
             <div>
               <${Buttons.Button.Button.litTagName}
-                title=${'Close'}
+                title=${i18nString(UIStrings.close)}
                 .data=${
                   {
                     variant: Buttons.Button.Variant.ROUND,
@@ -457,19 +572,19 @@ export class ConsoleInsight extends HTMLElement {
                           } as Buttons.Button.ButtonData
                         }
                       >
-                        ${label}
+                        ${label()}
                       </${Buttons.Button.Button.litTagName}>
                     `;
                   })}
                 </div>
             ` : ''}
-            <textarea placeholder=${'Provide additional feedback (optional)'}></textarea>
+            <textarea placeholder=${i18nString(UIStrings.additionalFeedback)}></textarea>
           </main>
           <footer>
             <div class="filler"></div>
             <div>
               <${Buttons.Button.Button.litTagName}
-                title=${'Close'}
+                title=${i18nString(UIStrings.close)}
                 .data=${
                   {
                     variant: Buttons.Button.Variant.PRIMARY,
@@ -478,7 +593,7 @@ export class ConsoleInsight extends HTMLElement {
                 }
                 @click=${this.#onSubmit}
               >
-                Submit
+                ${i18nString(UIStrings.submit)}
               </${Buttons.Button.Button.litTagName}>
             </div>
           </footer>

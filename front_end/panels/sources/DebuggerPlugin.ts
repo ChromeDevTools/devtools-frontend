@@ -974,28 +974,6 @@ export class DebuggerPlugin extends Plugin {
     }
   }
 
-  // Create decorations to indicate the current debugging position
-  private computeExecutionDecorations(editorState: CodeMirror.EditorState, lineNumber: number, columnNumber: number):
-      CodeMirror.DecorationSet {
-    const {doc} = editorState;
-    if (lineNumber >= doc.lines) {
-      return CodeMirror.Decoration.none;
-    }
-    const line = doc.line(lineNumber + 1);
-    const decorations: CodeMirror.Range<CodeMirror.Decoration>[] = [executionLineDeco.range(line.from)];
-    const position = Math.min(line.to, line.from + columnNumber);
-    let syntaxNode = CodeMirror.syntaxTree(editorState).resolveInner(position, 1);
-    if (syntaxNode.to === syntaxNode.from - 1 && /[(.]/.test(doc.sliceString(syntaxNode.from, syntaxNode.to))) {
-      syntaxNode = syntaxNode.resolve(syntaxNode.to, 1);
-    }
-    const tokenEnd = Math.min(line.to, syntaxNode.to);
-    if (tokenEnd > position) {
-      decorations.push(executionTokenDeco.range(position, tokenEnd));
-    }
-
-    return CodeMirror.Decoration.set(decorations);
-  }
-
   // Show widgets with variable's values after lines that mention the
   // variables, if the debugger is paused in this file.
   private async updateValueDecorations(): Promise<void> {
@@ -1702,7 +1680,7 @@ export class DebuggerPlugin extends Plugin {
       const editorLocation =
           this.transformer.uiLocationToEditorLocation(executionLocation.lineNumber, executionLocation.columnNumber);
       const decorations =
-          this.computeExecutionDecorations(this.editor.state, editorLocation.lineNumber, editorLocation.columnNumber);
+          computeExecutionDecorations(this.editor.state, editorLocation.lineNumber, editorLocation.columnNumber);
       this.editor.dispatch({effects: executionLine.update.of(decorations)});
       void this.updateValueDecorations();
       if (this.controlDown) {
@@ -1990,6 +1968,31 @@ function defineStatefulDecoration(): {
 const executionLineDeco = CodeMirror.Decoration.line({attributes: {class: 'cm-executionLine'}});
 const executionTokenDeco = CodeMirror.Decoration.mark({attributes: {class: 'cm-executionToken'}});
 const executionLine = defineStatefulDecoration();
+
+// Create decorations to indicate the current debugging position
+export function computeExecutionDecorations(
+    state: CodeMirror.EditorState, lineNumber: number, columnNumber: number): CodeMirror.DecorationSet {
+  const {doc} = state;
+  if (lineNumber >= doc.lines) {
+    return CodeMirror.Decoration.none;
+  }
+  const line = doc.line(lineNumber + 1);
+  const decorations: CodeMirror.Range<CodeMirror.Decoration>[] = [executionLineDeco.range(line.from)];
+  const position = Math.min(line.to, line.from + columnNumber);
+  let syntaxTree = null;
+  while (syntaxTree === null) {
+    syntaxTree = CodeMirror.ensureSyntaxTree(state, line.to, /* timeout= */ 500);
+  }
+  let syntaxNode = syntaxTree.resolveInner(position, 1);
+  if (syntaxNode.to === syntaxNode.from - 1 && /[(.]/.test(doc.sliceString(syntaxNode.from, syntaxNode.to))) {
+    syntaxNode = syntaxNode.resolve(syntaxNode.to, 1);
+  }
+  const tokenEnd = Math.min(line.to, syntaxNode.to);
+  if (tokenEnd > position) {
+    decorations.push(executionTokenDeco.range(position, tokenEnd));
+  }
+  return CodeMirror.Decoration.set(decorations);
+}
 
 // Continue-to markers
 

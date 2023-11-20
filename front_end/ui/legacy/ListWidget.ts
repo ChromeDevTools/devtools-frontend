@@ -222,7 +222,7 @@ export class ListWidget<T> extends VBox {
     const isNew = !this.editElement;
     const editor = (this.editor as Editor<T>);
     this.stopEditing();
-    if (editItem) {
+    if (editItem !== null) {
       this.delegate.commitEdit(editItem, editor, isNew);
     }
   }

@@ -28,6 +28,7 @@ below.**
 *   [Material 3 in DevTools](material3_guidelines.md)
 *   [V8 debugger support checklist for new language features](https://goo.gle/v8-checklist)
 *   [Chrome DevTools Protocol](devtools-protocol.md)
+*   [Visual logging in DevTools](visual_logging.md)
 *   [UMA metrics in DevTools](uma_metrics.md)
     *   [How to add UMA metrics in DevTools frontend](add_uma_metrics.md)
 *   [How to add experiments in DevTools frontend](add_experiments.md)

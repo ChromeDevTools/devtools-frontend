@@ -7,11 +7,11 @@ import("../../../../../third_party/typescript/typescript.gni")
 ts_library("trace") {
   testonly = true
   sources = [
+    "EntriesFilter_test.ts",
     "LegacyTracingModel_test.ts",
     "ModelImpl_test.ts",
     "Processor_test.ts",
     "TracingManager_test.ts",
-    "TreeManipulator_test.ts",
   ]
 
   deps = [

@@ -173,7 +173,7 @@ export class ThreadAppender implements TrackAppender {
   readonly isOnMainFrame: boolean;
   #ignoreListingEnabled = Root.Runtime.experiments.isEnabled('ignoreListJSFramesOnTimeline');
   #showAllEventsEnabled = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
-  #treeManipulator?: TraceEngine.TreeManipulator.TreeManipulator;
+  #entriesFilter?: TraceEngine.EntriesFilter.EntriesFilter;
   constructor(
       compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
       processId: TraceEngine.Types.TraceEvents.ProcessID, threadId: TraceEngine.Types.TraceEvents.ThreadID,
@@ -216,18 +216,18 @@ export class ThreadAppender implements TrackAppender {
       this.appenderName = 'Thread_AuctionWorklet';
     }
 
-    this.#treeManipulator = new TraceEngine.TreeManipulator.TreeManipulator(
+    this.#entriesFilter = new TraceEngine.EntriesFilter.EntriesFilter(
         this.threadType === ThreadType.CPU_PROFILE ? traceParsedData.Samples.entryToNode :
                                                      traceParsedData.Renderer.entryToNode);
   }
 
   modifyTree(
-      traceEvent: TraceEngine.Types.TraceEvents.TraceEntry, action: TraceEngine.TreeManipulator.TreeAction,
+      traceEvent: TraceEngine.Types.TraceEvents.TraceEntry, action: TraceEngine.EntriesFilter.FilterAction,
       flameChartView: PerfUI.FlameChart.FlameChart): void {
-    if (!this.#treeManipulator) {
+    if (!this.#entriesFilter) {
       return;
     }
-    this.#treeManipulator.applyAction({type: action, entry: traceEvent});
+    this.#entriesFilter.applyAction({type: action, entry: traceEvent});
     flameChartView.dispatchEventToListeners(PerfUI.FlameChart.Events.EntriesModified);
   }
 
@@ -454,7 +454,7 @@ export class ThreadAppender implements TrackAppender {
   #appendNodesAtLevel(
       nodes: Iterable<TraceEngine.Helpers.TreeHelpers.TraceEntryNode>, startingLevel: number,
       parentIsIgnoredListed: boolean = false): number {
-    const invisibleEntries = this.#treeManipulator?.invisibleEntries() ?? [];
+    const invisibleEntries = this.#entriesFilter?.invisibleEntries() ?? [];
     let maxDepthInTree = startingLevel;
     for (const node of nodes) {
       let nextLevel = startingLevel;

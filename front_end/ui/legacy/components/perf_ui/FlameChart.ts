@@ -765,7 +765,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.dispatchEventToListeners(Events.EntryInvoked, this.highlightedEntryIndex);
     const contextMenu = new UI.ContextMenu.ContextMenu(_event);
 
-    const dispatchTreeModifiedEvent = (treeAction: TraceEngine.TreeManipulator.TreeAction): void => {
+    const dispatchTreeModifiedEvent = (treeAction: TraceEngine.EntriesFilter.FilterAction): void => {
       this.dispatchEventToListeners(Events.TreeModified, {
         group: group,
         node: this.selectedEntryIndex,
@@ -775,15 +775,15 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     // TODO(crbug.com/1469887): Change text/ui to the final designs when they are complete.
     contextMenu.headerSection().appendItem('Merge function', () => {
-      dispatchTreeModifiedEvent(TraceEngine.TreeManipulator.TreeAction.MERGE_FUNCTION);
+      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION);
     });
 
     contextMenu.headerSection().appendItem('Collapse function', () => {
-      dispatchTreeModifiedEvent(TraceEngine.TreeManipulator.TreeAction.COLLAPSE_FUNCTION);
+      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION);
     });
 
     contextMenu.headerSection().appendItem('Collapse repeating ancestors', () => {
-      dispatchTreeModifiedEvent(TraceEngine.TreeManipulator.TreeAction.COLLAPSE_REPEATING_ANCESTORS);
+      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS);
     });
 
     contextMenu.defaultSection().appendAction('timeline.load-from-file');
@@ -2838,7 +2838,7 @@ export type EventTypes = {
   [Events.TreeModified]: {
     group: Group,
     node: number,
-    action: TraceEngine.TreeManipulator.TreeAction,
+    action: TraceEngine.EntriesFilter.FilterAction,
   },
   [Events.EntriesModified]: void,
 };

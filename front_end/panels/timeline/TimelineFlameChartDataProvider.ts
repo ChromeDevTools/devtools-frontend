@@ -962,14 +962,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
       title = this.entryTitle(entryIndex);
 
-      if (this.legacyTimelineModel && this.legacyTimelineModel.isParseHTMLEvent(event)) {
-        const startLine = event.args['beginData']['startLine'];
-        const endLine = event.args['endData'] && event.args['endData']['endLine'];
-        const url = Bindings.ResourceUtils.displayNameForURL(event.args['beginData']['url']);
-        const range = (endLine !== -1 || endLine === startLine) ? `${startLine}...${endLine}` : startLine;
-        title += ` - ${url} [${range}]`;
-      }
-
     } else if (entryType === EntryType.Frame) {
       const frame = (this.entryData[entryIndex] as TimelineModel.TimelineFrameModel.TimelineFrame);
       time = i18n.TimeUtilities.preciseMillisToString(frame.duration, 1);

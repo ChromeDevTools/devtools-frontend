@@ -241,10 +241,6 @@ export class TimelineModelImpl {
     return event.name === RecordType.LayoutShift;
   }
 
-  isParseHTMLEvent(event: TraceEngine.Legacy.Event): boolean {
-    return event.name === RecordType.ParseHTML;
-  }
-
   static isJsFrameEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
     return event.name === RecordType.JSFrame || event.name === RecordType.JSIdleFrame ||
         event.name === RecordType.JSSystemFrame;

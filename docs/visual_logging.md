@@ -184,3 +184,9 @@ This only registers the element and doesn’t log anything yet. To log
 impressions, explicitly call `VisualLogging.logImpressions`.
 Similarly to log click, call `VisualLogging.logClick`.
 
+## Debugging
+
+You may find it useful to see which UI elements are annotated and how the tree
+structure look like. To do that, call `setVeDebuggingEnabled(true)` in DevTools
+on DevTools. This will add red outline to each visual element and will show the
+details of logging config for an element and all its ancestors on hover.

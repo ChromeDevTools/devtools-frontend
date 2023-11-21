@@ -191,7 +191,6 @@ circle.animation-keyframe-point:active {
   top: 28px;
   border-left: 1px solid var(--sys-color-error);
   z-index: 2;
-  cursor: col-resize;
 }
 
 .animation-scrubber-line {

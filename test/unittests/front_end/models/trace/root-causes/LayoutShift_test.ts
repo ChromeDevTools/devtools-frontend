@@ -179,6 +179,9 @@ describeWithMockConnection('LayoutShift root causes', () => {
       modelMut.LayoutShifts.layoutInvalidationEvents = layoutInvalidationEvents;
       modelMut.LayoutShifts.backendNodeIds = [...domNodeByBackendIdMap.keys()] as Protocol.DOM.BackendNodeId[];
       modelMut.LayoutShifts.clusters = clusters;
+      modelMut.Initiators = {
+        eventToInitiator: new Map(),
+      };
 
       resizeEventsNodeIds = resizeEvents.map(li => Number(li.args.data.nodeId));
       iframesNodeIds = injectedIframeEvents.map(li => Number(li.args.data.nodeId));
@@ -605,8 +608,17 @@ describeWithMockConnection('LayoutShift root causes', () => {
           } as TraceEngine.Types.TraceEvents.TraceEntry,
         } as TraceEngine.Helpers.TreeHelpers.TraceEntryNode;
         model.Renderer.entryToNode.set(model.Renderer.allTraceEntries[0], node);
+        // Fake out the initiator detection and link the Layout event with a fake InvalidateLayout event.
+        model.Initiators.eventToInitiator.set(model.Renderer.allTraceEntries[0], {
+          name: 'InvalidateLayout',
+          args: {
+            data: {
+              stackTrace: mockStackTrace,
+            },
+          },
+        } as TraceEngine.Types.TraceEvents.TraceEventData);
 
-        // Verify the Layoyt initiator's stack trace is added to the last shift.
+        // Verify the Layout initiator's stack trace is added to the last shift.
         const rootCauses =
             await Promise.all(shifts.map(shift => rootCausesEngine.layoutShifts.rootCausesForEvent(model, shift)));
         assertArrayHasNoNulls(rootCauses);

@@ -92,6 +92,8 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     if (lastInvalidation) {
       eventToInitiatorMap.set(event, lastInvalidation);
     }
+    // Now clear the last invalidation for the frame: the last invalidation has been linked to a Layout event, so it cannot be the initiator for any future layouts.
+    lastInvalidationEventForFrame.delete(event.args.beginData.frame);
   }
 }
 

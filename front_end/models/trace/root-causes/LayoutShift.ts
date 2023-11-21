@@ -256,7 +256,8 @@ export class LayoutShiftRootCauses {
         continue;
       }
       const layoutNode = modelData.Renderer.entryToNode.get(layout);
-      const stackTrace = layoutNode?.initiator?.args?.data?.stackTrace;
+      const initiator = layoutNode ? modelData.Initiators.eventToInitiator.get(layoutNode.entry) : null;
+      const stackTrace = initiator?.args?.data?.stackTrace;
       if (!stackTrace) {
         continue;
       }

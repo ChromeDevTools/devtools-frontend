@@ -961,10 +961,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             i18n.TimeUtilities.millisToString(totalTime, true);
       }
       title = this.entryTitle(entryIndex);
-      const warningElement = TimelineUIUtils.legacyBuildEventWarningElement(event);
-      if (warningElement) {
-        warningElements.push(warningElement);
-      }
 
       if (this.legacyTimelineModel && this.legacyTimelineModel.isParseHTMLEvent(event)) {
         const startLine = event.args['beginData']['startLine'];

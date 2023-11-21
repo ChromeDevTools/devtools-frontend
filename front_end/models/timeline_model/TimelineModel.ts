@@ -799,18 +799,6 @@ export class TimelineModelImpl {
     const eventStack = this.eventStack;
 
     if (!eventStack.length) {
-      if (this.currentTaskLayoutAndRecalcEvents && this.currentTaskLayoutAndRecalcEvents.length) {
-        const totalTime = this.currentTaskLayoutAndRecalcEvents.reduce((time, event) => {
-          return event.duration === undefined ? time : time + event.duration;
-        }, 0);
-        if (totalTime > TimelineModelImpl.Thresholds.ForcedLayout) {
-          for (const e of this.currentTaskLayoutAndRecalcEvents) {
-            const timelineData = EventOnTimelineData.forEvent(e);
-            timelineData.warning = e.name === RecordType.Layout ? TimelineModelImpl.WarningType.ForcedLayout :
-                                                                  TimelineModelImpl.WarningType.ForcedStyle;
-          }
-        }
-      }
       this.currentTaskLayoutAndRecalcEvents = [];
     }
 
@@ -930,27 +918,6 @@ export class TimelineModelImpl {
         break;
       }
 
-      case RecordType.Task: {
-        if (event.duration !== undefined && event.duration > TimelineModelImpl.Thresholds.LongTask) {
-          timelineData.warning = TimelineModelImpl.WarningType.LongTask;
-        }
-        break;
-      }
-
-      case RecordType.EventDispatch: {
-        if (event.duration !== undefined && event.duration > TimelineModelImpl.Thresholds.RecurringHandler) {
-          timelineData.warning = TimelineModelImpl.WarningType.LongHandler;
-        }
-        break;
-      }
-
-      case RecordType.TimerFire:
-      case RecordType.FireAnimationFrame: {
-        if (event.duration !== undefined && event.duration > TimelineModelImpl.Thresholds.RecurringHandler) {
-          timelineData.warning = TimelineModelImpl.WarningType.LongRecurringHandler;
-        }
-        break;
-      }
       // @ts-ignore fallthrough intended.
       case RecordType.FunctionCall: {
         // Compatibility with old format.
@@ -1121,14 +1088,6 @@ export class TimelineModelImpl {
           if (frame) {
             this.mainFrame = frame;
           }
-        }
-        break;
-      }
-
-      case RecordType.FireIdleCallback: {
-        if (event.duration !== undefined &&
-            event.duration > eventData['allottedMilliseconds'] + TimelineModelImpl.Thresholds.IdleCallbackAddon) {
-          timelineData.warning = TimelineModelImpl.WarningType.IdleDeadlineExceeded;
         }
         break;
       }
@@ -1481,18 +1440,6 @@ export namespace TimelineModelImpl {
     UserTiming: 'blink.user_timing',
     Loading: 'loading',
   };
-
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-  // eslint-disable-next-line rulesdir/const_enum
-  export enum WarningType {
-    LongTask = 'LongTask',
-    ForcedStyle = 'ForcedStyle',
-    ForcedLayout = 'ForcedLayout',
-    IdleDeadlineExceeded = 'IdleDeadlineExceeded',
-    LongHandler = 'LongHandler',
-    LongRecurringHandler = 'LongRecurringHandler',
-    V8Deopt = 'V8Deopt',
-  }
 
   export const WorkerThreadName = 'DedicatedWorker thread';
   export const WorkerThreadNameLegacy = 'DedicatedWorker Thread';

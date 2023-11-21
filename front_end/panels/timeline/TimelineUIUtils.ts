@@ -59,6 +59,11 @@ import {TimelineSelection} from './TimelineSelection.js';
 
 const UIStrings = {
   /**
+   *@description Text that only contain a placeholder
+   *@example {100ms (at 200ms)} PH1
+   */
+  emptyPlaceholder: '{PH1}',  // eslint-disable-line rulesdir/l10n_no_locked_or_placeholder_only_phrase
+  /**
    *@description Text in Timeline UIUtils of the Performance panel
    *@example {node1} PH1
    *@example {node2} PH2
@@ -1028,54 +1033,6 @@ const UIStrings = {
    */
   sAtSParentheses: '{PH1} (at {PH2})',
   /**
-   *@description Text that only contain a placeholder
-   *@example {100ms (at 200ms)} PH1
-   */
-  emptyPlaceholder: '{PH1}',  // eslint-disable-line rulesdir/l10n_no_locked_or_placeholder_only_phrase
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  forcedReflow: 'Forced reflow',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   *@example {Forced reflow} PH1
-   */
-  sIsALikelyPerformanceBottleneck: '{PH1} is a likely performance bottleneck.',
-  /**
-   *@description Span text content in Timeline UIUtils of the Performance panel
-   *@example {10ms} PH1
-   */
-  idleCallbackExecutionExtended: 'Idle callback execution extended beyond deadline by {PH1}',
-  /**
-   *@description Span text content in Timeline UIUtils of the Performance panel
-   *@example {10ms} PH1
-   */
-  handlerTookS: 'Handler took {PH1}',
-  /**
-   *@description Warning to the user in the Performance panel that an input handler, which was run multiple times, took too long. Placeholder text is time in ms.
-   *@example {20ms} PH1
-   */
-  recurringHandlerTookS: 'Recurring handler took {PH1}',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
-  longTask: 'Long task',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   *@example {task} PH1
-   *@example {10ms} PH2
-   */
-  sTookS: '{PH1} took {PH2}.',
-  /**
-   *@description Text that indicates something is not optimized
-   */
-  notOptimized: 'Not optimized',
-  /**
-   *@description Text that starts with a colon and includes a placeholder
-   *@example {3.0} PH1
-   */
-  emptyPlaceholderColon: ': {PH1}',
-  /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
   unknownCause: 'Unknown cause',
@@ -2015,19 +1972,12 @@ export class TimelineUIUtils {
     const initiator = timelineData.initiator();
     let url: Platform.DevToolsPath.UrlString|null = null;
 
-    if (event instanceof TraceEngine.Legacy.Event && timelineData.warning) {
-      contentHelper.appendWarningRow(event);
-    }
     if (TraceEngine.Legacy.eventIsFromNewEngine(event) && traceParseData) {
       const warnings = TimelineComponents.DetailsView.buildWarningElementsForEvent(event, traceParseData);
       for (const warning of warnings) {
         contentHelper.appendElementRow(i18nString(UIStrings.warning), warning, true);
       }
     }
-    if (event.name === recordTypes.JSFrame && eventData['deoptReason']) {
-      contentHelper.appendWarningRow(event, TimelineModel.TimelineModel.TimelineModelImpl.WarningType.V8Deopt);
-    }
-
     if (detailed && !Number.isNaN(duration || 0)) {
       contentHelper.appendTextRow(
           i18nString(UIStrings.totalTime), i18n.TimeUtilities.millisToString(duration || 0, true));
@@ -3286,70 +3236,6 @@ export class TimelineUIUtils {
     return colorGenerator.colorForID(id);
   }
 
-  static legacyBuildEventWarningElement(event: TraceEngine.Legacy.CompatibleTraceEvent, warningType?: string): Element
-      |null {
-    const timelineData = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event);
-    const {duration} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
-    const warning = warningType || timelineData?.warning;
-    if (!warning) {
-      return null;
-    }
-    const warnings = TimelineModel.TimelineModel.TimelineModelImpl.WarningType;
-    const span = document.createElement('span');
-    const eventData = event.args['data'];
-
-    switch (warning) {
-      case warnings.ForcedStyle:
-      case warnings.ForcedLayout: {
-        const forcedReflowLink = UI.XLink.XLink.create(
-            'https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts',
-            i18nString(UIStrings.forcedReflow));
-        span.appendChild(i18n.i18n.getFormatLocalizedString(
-            str_, UIStrings.sIsALikelyPerformanceBottleneck, {PH1: forcedReflowLink}));
-        break;
-      }
-
-      case warnings.IdleDeadlineExceeded: {
-        const exceededMs = i18n.TimeUtilities.millisToString((duration || 0) - eventData['allottedMilliseconds'], true);
-        span.textContent = i18nString(UIStrings.idleCallbackExecutionExtended, {PH1: exceededMs});
-        break;
-      }
-
-      case warnings.LongHandler: {
-        span.textContent =
-            i18nString(UIStrings.handlerTookS, {PH1: i18n.TimeUtilities.millisToString((duration || 0), true)});
-        break;
-      }
-
-      case warnings.LongRecurringHandler: {
-        span.textContent = i18nString(
-            UIStrings.recurringHandlerTookS, {PH1: i18n.TimeUtilities.millisToString((duration || 0), true)});
-        break;
-      }
-
-      case warnings.LongTask: {
-        const longTaskLink =
-            UI.XLink.XLink.create('https://web.dev/optimize-long-tasks/', i18nString(UIStrings.longTask));
-        span.appendChild(i18n.i18n.getFormatLocalizedString(
-            str_, UIStrings.sTookS,
-            {PH1: longTaskLink, PH2: i18n.TimeUtilities.millisToString((duration || 0), true)}));
-        break;
-      }
-
-      case warnings.V8Deopt: {
-        span.appendChild(UI.XLink.XLink.create(
-            'https://github.com/GoogleChrome/devtools-docs/issues/53', i18nString(UIStrings.notOptimized)));
-        UI.UIUtils.createTextChild(span, i18nString(UIStrings.emptyPlaceholderColon, {PH1: eventData['deoptReason']}));
-        break;
-      }
-
-      default: {
-        console.assert(false, 'Unhandled TimelineModel.WarningType');
-      }
-    }
-    return span;
-  }
-
   static displayNameForFrame(frame: TimelineModel.TimelineModel.PageFrame, trimAt: number = 30): string {
     const url = frame.url;
     if (!trimAt) {
@@ -3686,13 +3572,6 @@ export class TimelineDetailsContentHelper {
     const callFrameContents = LegacyComponents.JSPresentationUtils.buildStackTracePreviewContents(
         this.target, this.linkifierInternal, {stackTrace, tabStops: true});
     stackTraceElement.appendChild(callFrameContents.element);
-  }
-
-  appendWarningRow(event: TraceEngine.Legacy.CompatibleTraceEvent, warningType?: string): void {
-    const warningElement = TimelineUIUtils.legacyBuildEventWarningElement(event, warningType);
-    if (warningElement) {
-      this.appendElementRow(i18nString(UIStrings.warning), warningElement, true);
-    }
   }
 }
 

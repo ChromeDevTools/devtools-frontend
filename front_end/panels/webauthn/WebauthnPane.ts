@@ -9,6 +9,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import webauthnPaneStyles from './webauthnPane.css.js';
 
@@ -263,6 +264,9 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
   constructor() {
     super(true);
+
+    this.element.setAttribute('jslog', `${VisualLogging.panel().context('webauthn')}`);
+
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.WebAuthnModel.WebAuthnModel, this, {scoped: true});
 
     this.contentElement.classList.add('webauthn-pane');
@@ -334,6 +338,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     const enableCheckboxTitle = i18nString(UIStrings.enableVirtualAuthenticator);
     this.#enableCheckbox =
         new UI.Toolbar.ToolbarCheckbox(enableCheckboxTitle, enableCheckboxTitle, this.#handleCheckboxToggle.bind(this));
+    this.#enableCheckbox.inputElement.setAttribute(
+        'jslog', `${VisualLogging.toggle().track({click: true}).context('virtual-authenticators')}`);
     this.#topToolbar.appendToolbarItem(this.#enableCheckbox);
   }
 
@@ -523,13 +529,14 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   }
 
   #createNewAuthenticatorSection(): void {
+    const learnMoreLink = UI.XLink.XLink.create(
+        'https://developers.google.com/web/updates/2018/05/webauthn', i18nString(UIStrings.learnMore));
+    learnMoreLink.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('learn-more')}`);
     this.#learnMoreView = this.contentElement.createChild('div', 'learn-more');
     this.#learnMoreView.appendChild(UI.Fragment.html`
   <div>
   ${i18nString(UIStrings.useWebauthnForPhishingresistant)}<br /><br />
-  ${
-        UI.XLink.XLink.create(
-            'https://developers.google.com/web/updates/2018/05/webauthn', i18nString(UIStrings.learnMore))}
+  ${learnMoreLink}
   </div>
   `);
 
@@ -538,6 +545,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
         UI.UIUtils.createLabel(i18nString(UIStrings.newAuthenticator), 'new-authenticator-title');
     this.#newAuthenticatorSection.appendChild(newAuthenticatorTitle);
     this.#newAuthenticatorForm = this.#newAuthenticatorSection.createChild('div', 'new-authenticator-form');
+    this.#newAuthenticatorForm.setAttribute('jslog', `${VisualLogging.section().context('new-authenticator')}`);
 
     const protocolGroup = this.#newAuthenticatorForm.createChild('div', 'authenticator-option');
     const transportGroup = this.#newAuthenticatorForm.createChild('div', 'authenticator-option');
@@ -549,6 +557,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     const protocolSelectTitle = UI.UIUtils.createLabel(i18nString(UIStrings.protocol), 'authenticator-option-label');
     protocolGroup.appendChild(protocolSelectTitle);
     this.#protocolSelect = (protocolGroup.createChild('select', 'chrome-select') as HTMLSelectElement);
+    this.#protocolSelect.setAttribute('jslog', `${VisualLogging.dropDown().track({change: true}).context('protocol')}`);
     UI.ARIAUtils.bindLabelToControl(protocolSelectTitle, (this.#protocolSelect as Element));
     Object.values(PROTOCOL_AUTHENTICATOR_VALUES)
         .sort()
@@ -565,10 +574,13 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     const transportSelectTitle = UI.UIUtils.createLabel(i18nString(UIStrings.transport), 'authenticator-option-label');
     transportGroup.appendChild(transportSelectTitle);
     this.#transportSelect = (transportGroup.createChild('select', 'chrome-select') as HTMLSelectElement);
+    this.#transportSelect.setAttribute(
+        'jslog', `${VisualLogging.dropDown().track({change: true}).context('transport')}`);
     UI.ARIAUtils.bindLabelToControl(transportSelectTitle, (this.#transportSelect as Element));
     // transportSelect will be populated in updateNewAuthenticatorSectionOptions.
 
-    this.#residentKeyCheckboxLabel = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.supportsResidentKeys), false);
+    this.#residentKeyCheckboxLabel =
+        UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.supportsResidentKeys), false, undefined, 'resident-key');
     this.#residentKeyCheckboxLabel.textElement.classList.add('authenticator-option-label');
     residentKeyGroup.appendChild(this.#residentKeyCheckboxLabel.textElement);
     this.residentKeyCheckbox = this.#residentKeyCheckboxLabel.checkboxElement;
@@ -576,8 +588,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     this.residentKeyCheckbox.classList.add('authenticator-option-checkbox');
     residentKeyGroup.appendChild(this.#residentKeyCheckboxLabel);
 
-    this.#userVerificationCheckboxLabel =
-        UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.supportsUserVerification), false);
+    this.#userVerificationCheckboxLabel = UI.UIUtils.CheckboxLabel.create(
+        i18nString(UIStrings.supportsUserVerification), false, undefined, 'user-verification');
     this.#userVerificationCheckboxLabel.textElement.classList.add('authenticator-option-label');
     userVerificationGroup.appendChild(this.#userVerificationCheckboxLabel.textElement);
     this.#userVerificationCheckbox = this.#userVerificationCheckboxLabel.checkboxElement;
@@ -585,7 +597,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     this.#userVerificationCheckbox.classList.add('authenticator-option-checkbox');
     userVerificationGroup.appendChild(this.#userVerificationCheckboxLabel);
 
-    this.#largeBlobCheckboxLabel = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.supportsLargeBlob), false);
+    this.#largeBlobCheckboxLabel =
+        UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.supportsLargeBlob), false, undefined, 'large-blob');
     this.#largeBlobCheckboxLabel.textElement.classList.add('authenticator-option-label');
     largeBlobGroup.appendChild(this.#largeBlobCheckboxLabel.textElement);
     this.largeBlobCheckbox = this.#largeBlobCheckboxLabel.checkboxElement;
@@ -596,6 +609,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
     this.addAuthenticatorButton =
         UI.UIUtils.createTextButton(i18nString(UIStrings.add), this.#handleAddAuthenticatorButton.bind(this), '');
+    this.addAuthenticatorButton.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('add-authenticator')}`);
     addButtonGroup.createChild('div', 'authenticator-option-label');
     addButtonGroup.appendChild(this.addAuthenticatorButton);
     const addAuthenticatorTitle = UI.UIUtils.createLabel(i18nString(UIStrings.addAuthenticator), '');
@@ -631,6 +646,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     const section = document.createElement('div');
     section.classList.add('authenticator-section');
     section.setAttribute('data-authenticator-id', authenticatorId);
+    section.setAttribute('jslog', `${VisualLogging.section().context('authenticator')}`);
     this.#authenticatorsView.appendChild(section);
 
     const headerElement = section.createChild('div', 'authenticator-section-header');
@@ -641,7 +657,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     const activeButtonContainer = headerElement.createChild('div', 'active-button-container');
     const activeLabel =
         UI.UIUtils.createRadioLabel(`active-authenticator-${authenticatorId}`, i18nString(UIStrings.active));
-    activeLabel.radioElement.addEventListener('click', this.#setActiveAuthenticator.bind(this, authenticatorId));
+    activeLabel.radioElement.addEventListener('change', this.#setActiveAuthenticator.bind(this, authenticatorId));
     activeButtonContainer.appendChild(activeLabel);
     (activeLabel.radioElement as HTMLInputElement).checked = true;
     this.#activeAuthId = authenticatorId;  // Newly added authenticator is automatically set as active.
@@ -649,15 +665,18 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     const removeButton = headerElement.createChild('button', 'text-button');
     removeButton.textContent = i18nString(UIStrings.remove);
     removeButton.addEventListener('click', this.#removeAuthenticator.bind(this, authenticatorId));
+    removeButton.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('remove-authenticator')}`);
 
     const toolbar = new UI.Toolbar.Toolbar('edit-name-toolbar', titleElement);
-    const editName = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.editName), 'edit');
-    const saveName = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.saveName), 'checkmark');
+    const editName = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.editName), 'edit', undefined, 'edit-name');
+    const saveName = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.saveName), 'checkmark', undefined, 'save-name');
     saveName.setVisible(false);
 
     const nameField = (titleElement.createChild('input', 'authenticator-name-field') as HTMLInputElement);
     nameField.placeholder = i18nString(UIStrings.enterNewName);
     nameField.disabled = true;
+    nameField.setAttribute('jslog', `${VisualLogging.textField().track({keydown: true}).context('name')}`);
     const userFriendlyName = authenticatorId.slice(-5);  // User friendly name defaults to last 5 chars of UUID.
     nameField.value = i18nString(UIStrings.authenticatorS, {PH1: userFriendlyName});
     this.#updateActiveLabelTitle(activeLabel, nameField.value);

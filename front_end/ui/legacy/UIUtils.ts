@@ -1143,11 +1143,15 @@ export function createLabel(title: string, className?: string, associatedControl
   return element;
 }
 
-export function createRadioLabel(name: string, title: string, checked?: boolean): DevToolsRadioButton {
+export function createRadioLabel(
+    name: string, title: string, checked?: boolean, jslogContext?: string): DevToolsRadioButton {
   const element = (document.createElement('span', {is: 'dt-radio'}) as DevToolsRadioButton);
   element.radioElement.name = name;
   element.radioElement.checked = Boolean(checked);
   createTextChild(element.labelElement, title);
+  if (jslogContext) {
+    element.radioElement.setAttribute('jslog', `${VisualLogging.toggle().track({change: true}).context(jslogContext)}`);
+  }
   return element;
 }
 

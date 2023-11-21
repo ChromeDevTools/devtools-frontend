@@ -133,6 +133,35 @@ button.primary:disabled:hover {
   cursor: not-allowed;
 }
 
+button.tonal {
+  border: var(--button-border-size) solid transparent;
+  background: var(--sys-color-tonal-container);
+  color: var(--sys-color-on-tonal-container);
+}
+
+button.tonal:hover {
+  background: color-mix(in sRGB, var(--sys-color-tonal-container), var(--sys-color-state-hover-on-subtle));
+}
+
+button.tonal.active,
+button.tonal:active {
+  background: color-mix(in sRGB, var(--sys-color-tonal-container), var(--sys-color-state-ripple-primary));
+}
+
+button.tonal:focus-visible {
+  outline: 2px solid var(--sys-color-state-focus-ring);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+button.tonal:disabled,
+button.tonal:disabled:hover {
+  border: var(--button-border-size) solid var(--sys-color-state-disabled-container);
+  background: var(--sys-color-state-disabled-container);
+  color: var(--sys-color-state-disabled);
+  cursor: not-allowed;
+}
+
 button.secondary {
   border: var(--button-border-size) solid var(--sys-color-tonal-outline);
   background: var(--sys-color-cdt-base-container);
@@ -221,6 +250,10 @@ button.primary-toolbar devtools-icon {
 
 button.primary devtools-icon {
   --icon-color: var(--sys-color-cdt-base-container);
+}
+
+button.tonal devtools-icon {
+  --icon-color: var(--sys-color-on-tonal-container);
 }
 
 button.secondary devtools-icon {

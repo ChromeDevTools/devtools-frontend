@@ -299,6 +299,16 @@ smallRoundButtonDisabled.title = 'Small Disabled Round Button';
 smallRoundButtonDisabled.onclick = () => alert('clicked');
 appendButton(smallRoundButtonDisabled);
 
+// Tonal
+const tonalButton = new Buttons.Button.Button();
+tonalButton.data = {
+  variant: Buttons.Button.Variant.TONAL,
+};
+tonalButton.innerText = 'Click me';
+tonalButton.title = 'Custom title';
+tonalButton.onclick = () => alert('clicked');
+appendButton(tonalButton);
+
 for (let i = 0; i < 6; i++) {
   // Regular Toolbar Button
   const toolbarButton = new Buttons.Button.Button();

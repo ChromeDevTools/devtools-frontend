@@ -17,6 +17,7 @@ declare global {
 
 export const enum Variant {
   PRIMARY = 'primary',
+  TONAL = 'tonal',
   SECONDARY = 'secondary',
   TOOLBAR = 'toolbar',
   // Just like toolbar but has a style similar to a primary button.
@@ -73,7 +74,7 @@ export type ButtonData = CommonButtonData&(|{
   variant: Variant.PRIMARY_TOOLBAR | Variant.TOOLBAR | Variant.ROUND,
   iconName: string,
 }|{
-  variant: Variant.PRIMARY | Variant.SECONDARY,
+  variant: Variant.PRIMARY | Variant.SECONDARY | Variant.TONAL,
 });
 
 export class Button extends HTMLElement {
@@ -268,6 +269,7 @@ export class Button extends HTMLElement {
     const hasIcon = Boolean(this.#props.iconUrl) || Boolean(this.#props.iconName);
     const classes = {
       primary: this.#props.variant === Variant.PRIMARY,
+      tonal: this.#props.variant === Variant.TONAL,
       secondary: this.#props.variant === Variant.SECONDARY,
       toolbar: this.#isToolbarVariant(),
       'primary-toolbar': this.#props.variant === Variant.PRIMARY_TOOLBAR,

@@ -490,7 +490,7 @@ export class ConsoleInsight extends HTMLElement {
                 class="refine-button"
                 .data=${
                   {
-                    variant: Buttons.Button.Variant.PRIMARY,
+                    variant: Buttons.Button.Variant.TONAL,
                     size: Buttons.Button.Size.MEDIUM,
                     iconName: 'spark',
                   } as Buttons.Button.ButtonData

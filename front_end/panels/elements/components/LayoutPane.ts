@@ -16,8 +16,8 @@ import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import layoutPaneStyles from '../layoutPane.css.js';
 
+import layoutPaneStyles from './layoutPane.css.js';
 import {type BooleanSetting, type EnumSetting, type LayoutElement, type Setting} from './LayoutPaneUtils.js';
 
 const UIStrings = {

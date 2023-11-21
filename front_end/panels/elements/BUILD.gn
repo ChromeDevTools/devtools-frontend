@@ -18,7 +18,6 @@ generate_css("css_files") {
     "elementsPanel.css",
     "elementsTreeOutline.css",
     "layersWidget.css",
-    "layoutPane.css",
     "metricsSidebarPane.css",
     "nodeStackTraceWidget.css",
     "platformFontsWidget.css",

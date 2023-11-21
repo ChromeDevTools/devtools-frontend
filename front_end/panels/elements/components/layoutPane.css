@@ -54,6 +54,7 @@
   flex-direction: row;
   align-items: center;
   min-width: 40px;
+  width: fit-content;
 }
 
 .checkbox-settings .checkbox-label {
@@ -82,6 +83,7 @@
 
 .select-settings {
   margin-top: 16px;
+  width: fit-content;
 }
 
 .select-label {

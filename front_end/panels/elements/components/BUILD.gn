@@ -18,6 +18,7 @@ generate_css("css_files") {
     "cssVariableValueView.css",
     "elementsBreadcrumbs.css",
     "elementsTreeExpandButton.css",
+    "layoutPane.css",
     "queryContainer.css",
     "stylePropertyEditor.css",
   ]

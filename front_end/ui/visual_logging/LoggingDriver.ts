@@ -4,10 +4,11 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Coordinator from '../components/render_coordinator/render_coordinator.js';
 
 import {getDomState, isVisible} from './DomState.js';
-import {getLoggingConfig} from './LoggingConfig.js';
+import {debugString, getLoggingConfig} from './LoggingConfig.js';
 import {logChange, logClick, logDrag, logHover, logImpressions, logKeyDown} from './LoggingEvents.js';
 import {getOrCreateLoggingState} from './LoggingState.js';
 
@@ -74,6 +75,26 @@ function observeMutationsInShadowRoots(shadowRoots: ShadowRoot[]): void {
   }
 }
 
+let veDebuggingEnabled = false;
+let debugPopover: HTMLElement|null = null;
+
+function setVeDebuggingEnabled(enabled: boolean): void {
+  veDebuggingEnabled = enabled;
+  if (enabled && !debugPopover) {
+    debugPopover = document.createElement('div');
+    debugPopover.style.position = 'absolute';
+    debugPopover.style.bottom = '100px';
+    debugPopover.style.left = '100px';
+    debugPopover.style.background = 'black';
+    debugPopover.style.color = 'white';
+    debugPopover.style.zIndex = '100000';
+    document.body.appendChild(debugPopover);
+  }
+}
+
+// @ts-ignore
+globalThis.setVeDebuggingEnabled = setVeDebuggingEnabled;
+
 async function processDom(): Promise<void> {
   if (document.hidden) {
     return;
@@ -120,6 +141,25 @@ async function processDom(): Promise<void> {
         element.addEventListener('keydown', logKeyDown(codes, keyboardLogThrottler), {capture: true});
       }
       loggingState.processed = true;
+    }
+    if (veDebuggingEnabled && !loggingState.processedForDebugging) {
+      (element as HTMLElement).style.outline = 'solid 1px red';
+      element.addEventListener('mouseenter', () => {
+        assertNotNullOrUndefined(debugPopover);
+        debugPopover.style.display = 'block';
+        const pathToRoot = [loggingState];
+        let ancestor = loggingState.parent;
+        while (ancestor) {
+          pathToRoot.push(ancestor);
+          ancestor = ancestor.parent;
+        }
+        debugPopover.innerHTML = pathToRoot.map(s => debugString(s.config)).join('<br>');
+      }, {capture: true});
+      element.addEventListener('mouseleave', () => {
+        assertNotNullOrUndefined(debugPopover);
+        debugPopover.style.display = 'none';
+      }, {capture: true});
+      loggingState.processedForDebugging = true;
     }
   }
   await logImpressions(visibleElements);

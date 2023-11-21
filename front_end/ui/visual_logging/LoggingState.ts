@@ -11,6 +11,7 @@ export interface LoggingState {
   context: ContextProvider;
   veid: number;
   parent: LoggingState|null;
+  processedForDebugging?: boolean;
 }
 
 const state = new WeakMap<Loggable, LoggingState>();

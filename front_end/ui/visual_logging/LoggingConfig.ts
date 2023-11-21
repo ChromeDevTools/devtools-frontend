@@ -6,7 +6,7 @@ const LOGGING_ATTRIBUTE = 'jslog';
 
 export interface LoggingConfig {
   ve: number;
-  track?: Map<string, string>;
+  track?: Map<string, string|undefined>;
   context?: string;
   parent?: string;
 }
@@ -122,6 +122,21 @@ export function parseJsLog(jslog: string): LoggingConfig {
   }
 
   return config;
+}
+
+export function debugString(config: LoggingConfig): string {
+  const components = [VisualElements[config.ve]];
+  if (config.context) {
+    components.push(`context: ${config.context}`);
+  }
+  if (config.parent) {
+    components.push(`parent: ${config.parent}`);
+  }
+  if (config.track?.size) {
+    components.push(`track: ${
+            [...config.track?.entries()].map(([key, value]) => `${key}${value ? `: ${value}` : ''}`).join(', ')}`);
+  }
+  return components.join('; ');
 }
 
 export interface ConfigStringBuilder {

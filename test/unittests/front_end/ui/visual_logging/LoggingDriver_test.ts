@@ -265,4 +265,13 @@ describe('LoggingDriver', () => {
     assert.isFalse(recordDrag.called);
   });
 
+  it('marks loggable elements for debugging', async () => {
+    // @ts-ignore
+    globalThis.setVeDebuggingEnabled(true);
+    addLoggableElements();
+    await VisualLoggingTesting.LoggingDriver.startLogging();
+    assert.strictEqual(document.getElementById('parent')?.style.outline, 'red solid 1px');
+    assert.strictEqual(document.getElementById('element')?.style.outline, 'red solid 1px');
+  });
+
 });

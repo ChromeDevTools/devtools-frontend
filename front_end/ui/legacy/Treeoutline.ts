@@ -1270,6 +1270,14 @@ export class TreeElement {
   }
 
   onenter(): boolean {
+    if (this.expandable && !this.expanded) {
+      this.expand();
+      return true;
+    }
+    if (this.collapsible && this.expanded) {
+      this.collapse();
+      return true;
+    }
     return false;
   }
 

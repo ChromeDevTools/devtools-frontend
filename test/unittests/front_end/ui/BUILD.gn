@@ -15,7 +15,6 @@ ts_library("ui") {
     "ListModel_test.ts",
     "ListWidget_test.ts",
     "ShortcutRegistry_test.ts",
-    "Treeoutline-keyboard_test.ts",
     "UIUtils_test.ts",
     "ViewLocation_test.ts",
     "utils/measured-scrollbar-width_test.ts",

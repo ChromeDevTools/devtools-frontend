@@ -12,6 +12,7 @@ ts_library("legacy") {
     "Infobar_test.ts",
     "SuggestBox_test.ts",
     "Toolbar_test.ts",
+    "Treeoutline_test.ts",
     "UIUtils_test.ts",
     "XLink_test.ts",
   ]

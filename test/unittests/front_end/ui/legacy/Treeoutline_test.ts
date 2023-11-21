@@ -4,13 +4,42 @@
 
 const {assert} = chai;
 
-import * as UI from '../../../../front_end/ui/legacy/legacy.js';
-import * as Platform from '../../../../front_end/core/platform/platform.js';
+import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
+import * as Platform from '../../../../../front_end/core/platform/platform.js';
 
-import {assertNotNullOrUndefined} from '../../../../front_end/core/platform/platform.js';
-import {renderElementIntoDOM} from '../helpers/DOMHelpers.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import {dispatchKeyDownEvent, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 
 describe('TreeOutline', () => {
+  describe('correctly reacts to Enter key', () => {
+    it('by expanding collapsed parent nodes', () => {
+      const tree = new UI.TreeOutline.TreeOutlineInShadow();
+      renderElementIntoDOM(tree.element);
+
+      const parent = new UI.TreeOutline.TreeElement('parent', true);
+      parent.appendChild(new UI.TreeOutline.TreeElement('child', false));
+      tree.appendChild(parent);
+      parent.select();
+
+      dispatchKeyDownEvent(tree.contentElement, {bubbles: true, key: 'Enter'});
+      assert.isTrue(parent.expanded, 'Enter key was supposed to expand the parent node');
+    });
+
+    it('by collapsing expanded parent nodes', () => {
+      const tree = new UI.TreeOutline.TreeOutlineInShadow();
+      renderElementIntoDOM(tree.element);
+
+      const parent = new UI.TreeOutline.TreeElement('parent', true);
+      parent.appendChild(new UI.TreeOutline.TreeElement('child', false));
+      tree.appendChild(parent);
+      parent.select();
+      parent.expand();
+
+      dispatchKeyDownEvent(tree.contentElement, {bubbles: true, key: 'Enter'});
+      assert.isFalse(parent.expanded, 'Enter key was supposed to collapse the parent node');
+    });
+  });
+
   it('responds correctly to navigation keys', () => {
     const treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
     renderElementIntoDOM(treeOutline.element);

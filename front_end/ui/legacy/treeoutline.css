@@ -35,7 +35,7 @@
   color: var(--sys-color-on-surface-subtle);
 }
 
-.tree-outline li:hover:not(.selected) .selection {
+.tree-outline li:hover .selection {
   display: block;
   background-color: var(--sys-color-state-hover-on-subtle);
 }

@@ -4,17 +4,14 @@
 
 const {assert} = chai;
 import * as TraceEngine from '../../../../../../front_end/models/trace/trace.js';
-import {describeWithMockConnection, setMockConnectionResponseHandler} from '../../../helpers/MockConnection.js';
-import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
-import {createTarget} from '../../../helpers/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../../helpers/MockConnection.js';
 import {TraceLoader} from '../../../helpers/TraceLoader.js';
 
 describeWithMockConnection('new-TimelineFrameModel', () => {
   it('can parse out a trace and return the frames', async function() {
-    const target = createTarget();
     const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
     const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const frameModel = new TraceEngine.Frames.TimelineFrameModel.TimelineFrameModel(target, rawEvents, traceParsedData);
+    const frameModel = new TraceEngine.Frames.TimelineFrameModel.TimelineFrameModel(rawEvents, traceParsedData);
 
     const parsedFrames = frameModel.getFrames();
     assert.lengthOf(frameModel.getFrames(), 18);
@@ -36,10 +33,9 @@ describeWithMockConnection('new-TimelineFrameModel', () => {
     // to process it.
     this.timeout(20_000);
 
-    const target = createTarget();
     const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-with-advanced-instrumentation.json.gz');
     const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-advanced-instrumentation.json.gz');
-    const frameModel = new TraceEngine.Frames.TimelineFrameModel.TimelineFrameModel(target, rawEvents, traceParsedData);
+    const frameModel = new TraceEngine.Frames.TimelineFrameModel.TimelineFrameModel(rawEvents, traceParsedData);
 
     assert.lengthOf(frameModel.getFrames(), 25);
     const frameWithPaints = frameModel.getFrames().at(2);
@@ -49,31 +45,5 @@ describeWithMockConnection('new-TimelineFrameModel', () => {
     // Check we have the right one.
     assert.strictEqual(frameWithPaints.seqId, 1127448);
     assert.lengthOf(frameWithPaints.paints, 7);
-  });
-
-  it('can load the full snapshot from CDP', async function() {
-    // Advanced instrumentation trace file is large: allow the bots more time
-    // to process it.
-    this.timeout(20_000);
-    // https://chromedevtools.github.io/devtools-protocol/tot/LayerTree/#method-loadSnapshot
-    setMockConnectionResponseHandler('LayerTree.loadSnapshot', async () => {
-      return {
-        snapshotId: 'fake-snapshot-123',
-      };
-    });
-
-    const target = createTarget();
-    const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-with-advanced-instrumentation.json.gz');
-    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-advanced-instrumentation.json.gz');
-    const frameModel = new TraceEngine.Frames.TimelineFrameModel.TimelineFrameModel(target, rawEvents, traceParsedData);
-
-    assert.lengthOf(frameModel.getFrames(), 25);
-    const frameWithPaints = frameModel.getFrames().at(2);
-    const paintEvent = frameWithPaints?.paints.at(0);
-    if (!paintEvent) {
-      throw new Error('Could not find paint event.');
-    }
-    const result = await paintEvent.snapshotPromise();
-    assert.instanceOf(result?.snapshot, SDK.PaintProfiler.PaintProfilerSnapshot);
   });
 });

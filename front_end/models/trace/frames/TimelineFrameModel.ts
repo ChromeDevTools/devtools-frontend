@@ -31,7 +31,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import * as Platform from '../../../core/platform/platform.js';
-import * as SDK from '../../../core/sdk/sdk.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
@@ -85,7 +84,6 @@ export class TimelineFrameModel {
   private mainFrameRequested!: boolean;
   private lastLayerTree!: FrameLayerTreeData|null;
   private framePendingActivation!: PendingFrame|null;
-  private target!: SDK.Target.Target|null;
   private framePendingCommit?: PendingFrame|null;
   private lastBeginFrame?: number|null;
   private lastNeedsBeginFrame?: number|null;
@@ -96,9 +94,7 @@ export class TimelineFrameModel {
 
   #traceParseData: Handlers.Types.TraceParseData;
 
-  constructor(
-      target: SDK.Target.Target|null, allEvents: readonly Types.TraceEvents.TraceEventData[],
-      traceParseData: Handlers.Types.TraceParseData) {
+  constructor(allEvents: readonly Types.TraceEvents.TraceEventData[], traceParseData: Handlers.Types.TraceParseData) {
     this.reset();
     this.#traceParseData = traceParseData;
     const mainThreads = Handlers.Threads.threadsInTrace(traceParseData).filter(thread => {
@@ -112,7 +108,7 @@ export class TimelineFrameModel {
       };
     });
 
-    this.addTraceEvents(target, allEvents, threadData);
+    this.addTraceEvents(allEvents, threadData);
   }
 
   getFrames(): TimelineFrame[] {
@@ -141,7 +137,6 @@ export class TimelineFrameModel {
     this.lastNeedsBeginFrame = null;
     this.framePendingActivation = null;
     this.lastTaskBeginTime = null;
-    this.target = null;
     this.layerTreeId = null;
   }
 
@@ -279,12 +274,11 @@ export class TimelineFrameModel {
     this.framePendingActivation = null;
   }
 
-  addTraceEvents(target: SDK.Target.Target|null, events: readonly Types.TraceEvents.TraceEventData[], threadData: {
+  addTraceEvents(events: readonly Types.TraceEvents.TraceEventData[], threadData: {
     pid: Types.TraceEvents.ProcessID,
     tid: Types.TraceEvents.ThreadID,
     startTime: Types.Timing.MicroSeconds,
   }[]): void {
-    this.target = target;
     let j = 0;
     this.#activeThreadId = threadData.length && threadData[0].tid || null;
     this.#activeProcessId = threadData.length && threadData[0].pid || null;
@@ -310,7 +304,7 @@ export class TimelineFrameModel {
       this.layerTreeId = event.args.data.layerTreeId;
     } else if (
         entryId && Types.TraceEvents.isTraceEventLayerTreeHostImplSnapshot(event) &&
-        Number(entryId) === this.layerTreeId && this.target) {
+        Number(entryId) === this.layerTreeId) {
       this.handleLayerTreeSnapshot({
         entry: event,
         paints: [],
@@ -366,7 +360,7 @@ export class TimelineFrameModel {
     if (Types.TraceEvents.isTraceEventPaint(entry)) {
       const snapshot = this.#traceParseData.LayerTreeHandler.paintsToSnapshots.get(entry);
       if (snapshot) {
-        this.framePendingCommit.paints.push(new LayerPaintEvent(entry, snapshot, this.target));
+        this.framePendingCommit.paints.push(new LayerPaintEvent(entry, snapshot));
       }
     }
     // Commit will be replacing CompositeLayers but CompositeLayers is kept
@@ -432,45 +426,26 @@ export interface LayerPaintEventPicture {
   serializedPicture: string;
 }
 export class LayerPaintEvent {
-  private readonly eventInternal: Types.TraceEvents.TraceEventPaint;
-  private readonly target: SDK.Target.Target|null;
+  readonly #event: Types.TraceEvents.TraceEventPaint;
   #snapshot: Types.TraceEvents.TraceEventDisplayItemListSnapshot;
 
-  constructor(
-      event: Types.TraceEvents.TraceEventPaint, snapshot: Types.TraceEvents.TraceEventDisplayItemListSnapshot,
-      target: SDK.Target.Target|null) {
-    this.eventInternal = event;
+  constructor(event: Types.TraceEvents.TraceEventPaint, snapshot: Types.TraceEvents.TraceEventDisplayItemListSnapshot) {
+    this.#event = event;
     this.#snapshot = snapshot;
-    this.target = target;
   }
 
-  layerId(): string {
-    // TODO: could make this function return a number?
-    return String(this.eventInternal.args['data']['layerId']);
+  layerId(): number {
+    return this.#event.args.data.layerId;
   }
 
   event(): Types.TraceEvents.TraceEventPaint {
-    return this.eventInternal;
+    return this.#event;
   }
 
   picture(): LayerPaintEventPicture|null {
-    // TODO(crbug.com/1453234): this function does not need to be async now
     const rect = this.#snapshot.args.snapshot.params?.layer_rect;
     const pictureData = this.#snapshot.args.snapshot.skp64;
     return rect && pictureData ? {rect: rect, serializedPicture: pictureData} : null;
-  }
-
-  async snapshotPromise(): Promise<{
-    rect: Array<number>,
-    snapshot: SDK.PaintProfiler.PaintProfilerSnapshot,
-  }|null> {
-    const paintProfilerModel = this.target && this.target.model(SDK.PaintProfiler.PaintProfilerModel);
-    const picture = this.picture();
-    if (!picture || !paintProfilerModel) {
-      return null;
-    }
-    const snapshot = await paintProfilerModel.loadSnapshot(picture.serializedPicture);
-    return snapshot ? {rect: picture.rect, snapshot: snapshot} : null;
   }
 }
 

@@ -1361,6 +1361,8 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     text.innerText = this.getExplainLabel();
     button.append(text);
     button.classList.add('hover-button');
+    button.ariaLabel = this.getExplainLabel();
+    button.tabIndex = 0;
     hoverButtonObserver.observe(button);
     return button;
   }

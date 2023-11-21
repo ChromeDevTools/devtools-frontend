@@ -205,3 +205,10 @@ details[open] {
   margin-bottom: 12px;
   gap: 8px;
 }
+
+h2 {
+  display: block;
+  font-size: inherit;
+  margin: 0;
+  font-weight: inherit;
+}

@@ -507,6 +507,7 @@ devtools-console-insight {
   padding-right: 3px;
 }
 
+.hover-button:focus,
 .hover-button:hover {
   border-radius: 100px;
   max-width: 200px;
@@ -524,6 +525,7 @@ devtools-console-insight {
   width: 16px;
 }
 
+.hover-button:focus span,
 .hover-button:hover span {
   display: block;
 }
@@ -534,7 +536,9 @@ devtools-console-insight {
 }
 
 .aida-available .console-message-wrapper:not(.has-insight):hover .hover-button:hover,
-.aida-available .console-message-wrapper:not(.has-insight):focus .hover-button:hover {
+.aida-available .console-message-wrapper:not(.has-insight):focus .hover-button:hover,
+.aida-available .console-message-wrapper:not(.has-insight):hover .hover-button:focus,
+.aida-available .console-message-wrapper:not(.has-insight):focus .hover-button:focus {
   display: inline-flex;
 }
 

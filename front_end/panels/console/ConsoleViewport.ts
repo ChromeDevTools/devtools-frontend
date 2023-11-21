@@ -32,7 +32,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {type ConsoleViewMessage} from './ConsoleViewMessage.js';
+import {ConsoleViewMessage, getMessageForElement} from './ConsoleViewMessage.js';
 
 interface SelectionModel {
   item: number;
@@ -247,6 +247,10 @@ export class ConsoleViewport {
     }
     if (selectedElement && (focusLastChild || changed || containerHasFocus) && this.element.hasFocus()) {
       selectedElement.classList.add('console-selected');
+      const consoleViewMessage = getMessageForElement(selectedElement);
+      if (consoleViewMessage) {
+        UI.Context.Context.instance().setFlavor(ConsoleViewMessage, consoleViewMessage);
+      }
       // Do not focus the message if something within holds focus (e.g. object).
       if (focusLastChild) {
         this.setStickToBottom(false);

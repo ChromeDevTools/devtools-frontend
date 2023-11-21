@@ -42,6 +42,16 @@ describeWithEnvironment('TraceModel', async function() {
     assert.deepEqual(Object.keys(model.traceParsedData(0) || {}), ['Meta', 'Animation']);
   });
 
+  it('does not create a frames model if not given all handlers', async function() {
+    const model = new TraceModel.TraceModel.Model({
+      Animation: TraceModel.Handlers.ModelHandlers.Animations,
+    });
+    const file1 = await TraceLoader.rawEvents(this, 'animation.json.gz');
+    await model.parse(file1);
+    assert.deepEqual(Object.keys(model.traceParsedData(0) || {}), ['Meta', 'Animation']);
+    assert.isNull(model.framesModel());
+  });
+
   it('supports parsing multiple traces', async function() {
     const model = TraceModel.TraceModel.Model.createWithAllHandlers();
     const file1 = await TraceLoader.rawEvents(this, 'basic.json.gz');
@@ -76,6 +86,16 @@ describeWithEnvironment('TraceModel', async function() {
     model.deleteTraceByIndex(0);
     assert.strictEqual(model.size(), 0);
     assert.isNull(model.traceParsedData(0));
+  });
+
+  it('creates a frames model if all the handlers are enabled', async function() {
+    const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
+    const model = TraceModel.TraceModel.Model.createWithAllHandlers();
+    await model.parse(rawEvents);
+
+    const frames = model.framesModel();
+    assert.instanceOf(frames, TraceModel.Frames.TimelineFrameModel.TimelineFrameModel);
+    assert.lengthOf(frames?.getFrames() || [], 18);
   });
 
   it('names traces using their origin and defaults to "Trace n" when no origin is found', async function() {

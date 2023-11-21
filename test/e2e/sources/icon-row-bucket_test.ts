@@ -146,9 +146,17 @@ describe('The row\'s icon bucket', async function() {
     assert.deepEqual(issueMessages.sort(), expectedIssueMessages.sort());
   });
 
-  // TODO: Line number mapping is wrong for issues
-  it.skip('[crbug.com/1503031] should also mark issues in inline event handlers in HTML documents', async () => {
+  it('should also mark issues in inline event handlers in HTML documents', async () => {
     await openFileInSourceTab('trusted-type-violations-report-only-in-html.rawresponse');
+
+    // We need to disable the pretty printing, so that
+    // we can check whether the Sources panel correctly
+    // scrolls horizontally upon stopping.
+    await waitFor(PRETTY_PRINTED_TOGGLE);
+    await Promise.all([
+      click(PRETTY_PRINT_BUTTON),
+      waitForNone(PRETTY_PRINTED_TOGGLE),
+    ]);
 
     const icons = await getIconComponents('cm-messageIcon-issue');
     assert.strictEqual(icons.length, 1);

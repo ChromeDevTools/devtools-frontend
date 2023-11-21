@@ -724,7 +724,7 @@ class RowMessageDecorations {
   static create(messages: RowMessages, doc: CodeMirror.Text): RowMessageDecorations {
     const builder = new CodeMirror.RangeSetBuilder<CodeMirror.Decoration>();
     for (const row of messages.rows) {
-      const line = doc.line(row[0].lineNumber() + 1);
+      const line = doc.line(Math.min(doc.lines, row[0].lineNumber() + 1));
       const minCol = row.reduce((col, msg) => Math.min(col, msg.columnNumber() || 0), line.length);
       if (minCol < line.length) {
         builder.add(line.from + minCol, line.to, underlineMark);

@@ -13,7 +13,7 @@ export interface WarningsData {
   // Tracks warnings keyed by the event.
   perEvent: Map<Types.TraceEvents.TraceEventData, Warning[]>;
   // The same data in reverse: for each type of warning, track the events.
-  // Useful if we need to enumerate issues by type of issue
+  // Useful if we need to enumerate events by type of issue
   perWarning: Map<Warning, Types.TraceEvents.TraceEventData[]>;
 }
 

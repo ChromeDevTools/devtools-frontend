@@ -10,6 +10,7 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {AnimationsTrackAppender} from './AnimationsTrackAppender.js';
 import {getEventLevel} from './AppenderUtils.js';
+import * as TimelineComponents from './components/components.js';
 import {getEventStyle} from './EventUICategory.js';
 import {GPUTrackAppender} from './GPUTrackAppender.js';
 import {InteractionsTrackAppender} from './InteractionsTrackAppender.js';
@@ -582,6 +583,19 @@ export class CompatibilityTracksAppender {
     if (!track) {
       throw new Error('Track not found for level');
     }
-    return track.highlightedEntryInfo(event);
+
+    // Add any warnings information to the tooltip. Done here to avoid duplicating this call in every appender.
+    // By doing this here, we ensure that any warnings that are
+    // added to the WarningsHandler are automatically used and added
+    // to the tooltip.
+    const warningElements: HTMLSpanElement[] =
+        TimelineComponents.DetailsView.buildWarningElementsForEvent(event, this.#traceParsedData);
+
+    const {title, formattedTime, warningElements: extraWarningElements} = track.highlightedEntryInfo(event);
+    return {
+      title,
+      formattedTime,
+      warningElements: warningElements.concat(extraWarningElements || []),
+    };
   }
 }

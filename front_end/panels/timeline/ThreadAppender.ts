@@ -22,7 +22,6 @@ import {
   type TrackAppender,
   type TrackAppenderName,
 } from './CompatibilityTracksAppender.js';
-import * as TimelineComponents from './components/components.js';
 import {getCategoryStyles, getEventStyle} from './EventUICategory.js';
 
 const UIStrings = {
@@ -613,8 +612,6 @@ export class ThreadAppender implements TrackAppender {
       const range = (endLine !== -1 || endLine === startLine) ? `${startLine}...${endLine}` : startLine;
       title += ` - ${url} [${range}]`;
     }
-    const warningElements: HTMLSpanElement[] =
-        TimelineComponents.DetailsView.buildWarningElementsForEvent(event, this.#traceParsedData);
-    return {title, formattedTime: getFormattedTime(event.dur, event.selfTime), warningElements};
+    return {title, formattedTime: getFormattedTime(event.dur, event.selfTime)};
   }
 }

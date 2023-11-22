@@ -277,7 +277,10 @@ export class ConsoleModel extends SDKModel<EventTypes> {
     let message = '';
     if (call.args.length && call.args[0].unserializableValue) {
       message = call.args[0].unserializableValue;
-    } else if (call.args.length && (typeof call.args[0].value !== 'object' || call.args[0].value === null)) {
+    } else if (
+        call.args.length &&
+        ((typeof call.args[0].value !== 'object' && typeof call.args[0].value !== 'undefined') ||
+         call.args[0].value === null)) {
       message = String(call.args[0].value);
     } else if (call.args.length && call.args[0].description) {
       message = call.args[0].description;

@@ -86,6 +86,10 @@ const UIStrings = {
   /**
    *@description Tooltip to explain why a cookie was blocked
    */
+  thirdPartyPhaseout: 'This cookie was blocked due to third-party cookie phaseout. Learn more in the Issues tab.',
+  /**
+   *@description Tooltip to explain why a cookie was blocked
+   */
   unknownError: 'An unknown error was encountered when trying to send this cookie.',
   /**
    *@description Tooltip to explain why a cookie was blocked due to Schemeful Same-Site
@@ -111,6 +115,10 @@ const UIStrings = {
    *@description Tooltip to explain why an attempt to set a cookie via `Set-Cookie` HTTP header on a request's response was blocked.
    */
   thisSetcookieWasBlockedDueToUser: 'This attempt to set a cookie via a `Set-Cookie` header was blocked due to user preferences.',
+  /**
+   *@description Tooltip to explain why an attempt to set a cookie via `Set-Cookie` HTTP header on a request's response was blocked.
+   */
+   thisSetcookieWasBlockedDueThirdPartyPhaseout: 'Setting this cookie was blocked due to third-party cookie phaseout. Learn more in the Issues tab.',
   /**
    *@description Tooltip to explain why an attempt to set a cookie via `Set-Cookie` HTTP header on a request's response was blocked.
    */
@@ -1718,6 +1726,8 @@ export const cookieBlockedReasonToUiString = function(blockedReason: Protocol.Ne
       return i18nString(UIStrings.samePartyFromCrossPartyContext);
     case Protocol.Network.CookieBlockedReason.NameValuePairExceedsMaxSize:
       return i18nString(UIStrings.nameValuePairExceedsMaxSize);
+    case Protocol.Network.CookieBlockedReason.ThirdPartyPhaseout:
+      return i18nString(UIStrings.thirdPartyPhaseout);
   }
   return '';
 };
@@ -1763,6 +1773,8 @@ export const setCookieBlockedReasonToUiString = function(
       return i18nString(UIStrings.thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize);
     case Protocol.Network.SetCookieBlockedReason.DisallowedCharacter:
       return i18nString(UIStrings.thisSetcookieHadADisallowedCharacter);
+    case Protocol.Network.SetCookieBlockedReason.ThirdPartyPhaseout:
+      return i18nString(UIStrings.thisSetcookieWasBlockedDueThirdPartyPhaseout);
   }
   return '';
 };
@@ -1787,6 +1799,7 @@ export const cookieBlockedReasonToAttribute = function(blockedReason: Protocol.N
         case Protocol.Network.CookieBlockedReason.SamePartyFromCrossPartyContext:
         case Protocol.Network.CookieBlockedReason.NameValuePairExceedsMaxSize:
         case Protocol.Network.CookieBlockedReason.UserPreferences:
+        case Protocol.Network.CookieBlockedReason.ThirdPartyPhaseout:
         case Protocol.Network.CookieBlockedReason.UnknownError:
           return null;
       }
@@ -1815,6 +1828,7 @@ export const setCookieBlockedReasonToAttribute = function(blockedReason: Protoco
         case Protocol.Network.SetCookieBlockedReason.SamePartyFromCrossPartyContext:
         case Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize:
         case Protocol.Network.SetCookieBlockedReason.UserPreferences:
+        case Protocol.Network.SetCookieBlockedReason.ThirdPartyPhaseout:
         case Protocol.Network.SetCookieBlockedReason.SyntaxError:
         case Protocol.Network.SetCookieBlockedReason.SchemeNotSupported:
         case Protocol.Network.SetCookieBlockedReason.UnknownError:

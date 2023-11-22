@@ -1997,7 +1997,6 @@ export class TimelineAsyncEventTracker {
 }
 
 export class EventOnTimelineData {
-  warning: string|null;
   url: Platform.DevToolsPath.UrlString|null;
   backendNodeIds: Protocol.DOM.BackendNodeId[];
   stackTrace: Protocol.Runtime.CallFrame[]|null;
@@ -2006,7 +2005,6 @@ export class EventOnTimelineData {
   frameId: Protocol.Page.FrameId|null;
 
   constructor() {
-    this.warning = null;
     this.url = null;
     this.backendNodeIds = [];
     this.stackTrace = null;

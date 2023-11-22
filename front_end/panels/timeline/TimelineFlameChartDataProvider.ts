@@ -787,13 +787,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           startAtTime: TraceEngine.Handlers.ModelHandlers.Warnings.LONG_MAIN_THREAD_TASK_THRESHOLD,
         });
       }
-
-      if (entryType === EntryType.Event) {
-        if (TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).warning) {
-          this.#addDecorationToEvent(index, {type: 'WARNING_TRIANGLE'});
-        }
-      }
-
       maxStackDepth = Math.max(maxStackDepth, openEvents.length + 1);
       if (event.endTime) {
         openEvents.push(event);
@@ -1301,8 +1294,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 
     if (entryType === entryTypes.Event) {
-      const event = (this.entryData[entryIndex] as TraceEngine.Legacy.Event);
-      return Boolean(TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).warning);
+      // TODO: this entryType can no longer exist as all tracks are now
+      // migrated to appenders. This can be removed as part of the old engine
+      // removal.
+      return false;
     }
     const event = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData);
 

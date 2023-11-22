@@ -296,10 +296,6 @@ PerformanceTestRunner.printTraceEventPropertiesWithDetails = async function(even
       event, SDK.TargetManager.TargetManager.instance().primaryPageTarget(), new Components.Linkifier.Linkifier());
   TestRunner.waitForPendingLiveLocationUpdates();
   TestRunner.addResult(`Text details for ${event.name}: ${details}`);
-
-  if (TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).warning) {
-    TestRunner.addResult(`${event.name} has a warning`);
-  }
 };
 
 PerformanceTestRunner.mainTrack = function() {

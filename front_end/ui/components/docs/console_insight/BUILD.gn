@@ -10,6 +10,7 @@ ts_library("ts") {
   sources = [
     "basic.ts",
     "loading.ts",
+    "static.ts",
   ]
 
   deps = [
@@ -25,6 +26,7 @@ copy_to_gen("console_insight") {
   sources = [
     "basic.html",
     "loading.html",
+    "static.html",
   ]
 
   deps = [ ":ts" ]

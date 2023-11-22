@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
-.container {
+.placeholder-container {
   height: 100%;
   display: flex;
   justify-content: center;
@@ -17,4 +17,19 @@
 
 .address {
   padding: 15px;
+}
+
+.filled-fields-grid {
+  border-top: 1px solid var(--sys-color-divider);
+  box-sizing: border-box;
+}
+
+.content-container {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+.grid-wrapper {
+  flex-grow: 1;
 }

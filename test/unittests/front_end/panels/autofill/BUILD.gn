@@ -11,5 +11,6 @@ ts_library("autofill") {
   deps = [
     "../../../../../front_end/panels/autofill:bundle",
     "../../helpers",
+    "../../ui/components",
   ]
 }

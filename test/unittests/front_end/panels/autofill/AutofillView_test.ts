@@ -4,10 +4,15 @@
 
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import * as Autofill from '../../../../../front_end/panels/autofill/autofill.js';
+import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 import {assertShadowRoot, renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
+import {assertGridContents} from '../../ui/components/DataGridHelpers.js';
+
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const {assert} = chai;
 
@@ -20,7 +25,7 @@ describeWithMockConnection('AutofillView', () => {
     target = createTarget();
   });
 
-  it('renders autofilled address', async () => {
+  it('renders autofilled address and filled fields', async () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
     const model = target.model(SDK.AutofillModel.AutofillModel);
     assertNotNullOrUndefined(model);
@@ -59,12 +64,54 @@ describeWithMockConnection('AutofillView', () => {
           },
         ],
       },
-      filledFields: [],
+      filledFields: [
+        {
+          htmlType: 'text',
+          id: 'input1',
+          name: '',
+          value: 'Crocodile',
+          autofillType: 'First name',
+          fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+        },
+        {
+          htmlType: 'text',
+          id: '',
+          name: 'input2',
+          value: 'Dundee',
+          autofillType: 'Last name',
+          fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+        },
+        {
+          htmlType: 'text',
+          id: 'input3',
+          name: '',
+          value: 'Australia',
+          autofillType: 'Country',
+          fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+        },
+        {
+          htmlType: 'text',
+          id: 'input4',
+          name: '',
+          value: '12345',
+          autofillType: 'Zip code',
+          fillingStrategy: Protocol.Autofill.FillingStrategy.AutocompleteAttribute,
+        },
+      ],
     });
 
+    await coordinator.done();
     const addressDivs = view.shadowRoot.querySelectorAll('.address div');
     const addressLines = [...addressDivs].map(div => div.textContent);
     assert.deepStrictEqual(
         addressLines, ['Crocodile Dundee', 'Uluru Tours', 'Outback Road 1', 'Bundaberg Queensland 12345']);
+    const expectedHeaders = ['Form field', 'Predicted autofill value', 'Value'];
+    const expectedRows = [
+      ['#input1 (text)', 'First name \nheur', '"Crocodile"'],
+      ['input2 (text)', 'Last name \nheur', '"Dundee"'],
+      ['#input3 (text)', 'Country \nheur', '"Australia"'],
+      ['#input4 (text)', 'Zip code \nattr', '"12345"'],
+    ];
+    assertGridContents(view, expectedHeaders, expectedRows);
   });
 });

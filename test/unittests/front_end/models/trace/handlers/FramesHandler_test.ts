@@ -14,7 +14,7 @@ async function processTrace(events: readonly TraceEngine.Types.TraceEvents.Trace
     'Samples',
     'AuctionWorklets',
     'Renderer',
-    'LayerTreeHandler',
+    'LayerTree',
     'Frames',
   ];
   for (const handlerName of handlersInOrder) {

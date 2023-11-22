@@ -69,7 +69,7 @@ export function data(): FramesData {
 }
 
 export function deps(): TraceEventHandlerName[] {
-  return ['Meta', 'Renderer', 'AuctionWorklets', 'LayerTreeHandler'];
+  return ['Meta', 'Renderer', 'AuctionWorklets', 'LayerTree'];
 }
 
 type FrameEvent = Types.TraceEvents.TraceEventBeginFrame|Types.TraceEvents.TraceEventDroppedFrame|

@@ -15,9 +15,9 @@ describe('LayerTreeHandler', function() {
 
   beforeEach(() => {
     TraceModel.Handlers.ModelHandlers.Meta.reset();
-    TraceModel.Handlers.ModelHandlers.LayerTreeHandler.reset();
+    TraceModel.Handlers.ModelHandlers.LayerTree.reset();
     TraceModel.Handlers.ModelHandlers.Meta.initialize();
-    TraceModel.Handlers.ModelHandlers.LayerTreeHandler.initialize();
+    TraceModel.Handlers.ModelHandlers.LayerTree.initialize();
   });
 
   it('creates a relationship between paint events and the snapshot event', async function() {
@@ -25,12 +25,12 @@ describe('LayerTreeHandler', function() {
 
     for (const event of events) {
       TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
-      TraceModel.Handlers.ModelHandlers.LayerTreeHandler.handleEvent(event);
+      TraceModel.Handlers.ModelHandlers.LayerTree.handleEvent(event);
     }
     await TraceModel.Handlers.ModelHandlers.Meta.finalize();
-    await TraceModel.Handlers.ModelHandlers.LayerTreeHandler.finalize();
+    await TraceModel.Handlers.ModelHandlers.LayerTree.finalize();
 
-    const data = TraceModel.Handlers.ModelHandlers.LayerTreeHandler.data();
+    const data = TraceModel.Handlers.ModelHandlers.LayerTree.data();
 
     assert.lengthOf(data.paints, 49);
     assert.strictEqual(data.paintsToSnapshots.size, 35);

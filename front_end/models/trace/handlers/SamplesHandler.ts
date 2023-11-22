@@ -93,7 +93,7 @@ function buildProfileCalls(): void {
         if (!parentNode) {
           return;
         }
-        traceEntryNode.parentId = parentNode.id;
+        traceEntryNode.parent = parentNode;
         parentNode.children.push(traceEntryNode);
       }
     }

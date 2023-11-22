@@ -15,7 +15,7 @@ export const makeEmptyTraceEntryTree = (): TraceEntryTree => ({
 export const makeEmptyTraceEntryNode = (entry: Types.TraceEvents.TraceEntry, id: TraceEntryNodeId): TraceEntryNode => ({
   entry,
   id,
-  parentId: null,
+  parent: null,
   children: [],
   depth: 0,
 });
@@ -29,7 +29,7 @@ export interface TraceEntryNode {
   entry: Types.TraceEvents.TraceEntry;
   depth: number;
   id: TraceEntryNodeId;
-  parentId?: TraceEntryNodeId|null;
+  parent: TraceEntryNode|null;
   children: TraceEntryNode[];
 }
 
@@ -142,7 +142,7 @@ export function treify(entries: Types.TraceEvents.TraceEntry[], options?: {
     //    event, establish the parent/child relationship, then proceed with the
     //    next event.
     node.depth = stack.length;
-    node.parentId = parentNode.id;
+    node.parent = parentNode;
     parentNode.children.push(node);
     event.selfTime = Types.Timing.MicroSeconds(duration);
     if (parentEvent.selfTime !== undefined) {

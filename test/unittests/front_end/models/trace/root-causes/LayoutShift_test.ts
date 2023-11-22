@@ -590,7 +590,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
           },
         ];
 
-        // Mock a Layout event, which corresponds to the last shift. Add a mock initiator with
+        // Mock a Layout event, which corresponds to the last shift.
         // a stack trace.
         modelMut.Renderer.allTraceEntries = [{
           name: 'Layout',
@@ -599,14 +599,6 @@ describeWithMockConnection('LayoutShift root causes', () => {
 
         const node = {
           entry: model.Renderer.allTraceEntries[0],
-          initiator: {
-            name: 'InvalidateLayout',
-            args: {
-              data: {
-                stackTrace: mockStackTrace,
-              },
-            },
-          } as TraceEngine.Types.TraceEvents.TraceEntry,
         } as TraceEngine.Helpers.TreeHelpers.TraceEntryNode;
         model.Renderer.entryToNode.set(model.Renderer.allTraceEntries[0], node);
         // Fake out the initiator detection and link the Layout event with a fake InvalidateLayout event.

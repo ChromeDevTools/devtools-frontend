@@ -27,7 +27,6 @@ export interface TraceEntryTree {
 
 export interface TraceEntryNode {
   entry: Types.TraceEvents.TraceEntry;
-  initiator?: Types.TraceEvents.TraceEntry;
   depth: number;
   id: TraceEntryNodeId;
   parentId?: TraceEntryNodeId|null;

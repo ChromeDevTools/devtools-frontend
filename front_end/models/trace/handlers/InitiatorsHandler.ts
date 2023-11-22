@@ -24,13 +24,26 @@ const lastInvalidationEventForFrame = new Map<string, Types.TraceEvents.TraceEve
 // is called.
 const lastUpdateLayoutTreeByFrame = new Map<string, Types.TraceEvents.TraceEventUpdateLayoutTree>();
 
+// These two maps store the same data but in different directions.
+//
+// For a given event, tell me what its initiator was.
 const eventToInitiatorMap = new Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.TraceEventData>();
+// For a given event, tell me what event it initiated.
+const initiatorToEventMap = new Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.TraceEventData>();
+
+const requestAnimationFrameEventsById: Map<number, Types.TraceEvents.TraceEventRequestAnimationFrame> = new Map();
+const timerInstallEventsById: Map<number, Types.TraceEvents.TraceEventTimerInstall> = new Map();
+const requestIdleCallbackEventsById: Map<number, Types.TraceEvents.TraceEventRequestIdleCallback> = new Map();
 
 export function reset(): void {
   lastScheduleStyleRecalcByFrame.clear();
   lastInvalidationEventForFrame.clear();
   lastUpdateLayoutTreeByFrame.clear();
+  timerInstallEventsById.clear();
   eventToInitiatorMap.clear();
+  initiatorToEventMap.clear();
+  requestAnimationFrameEventsById.clear();
+  requestIdleCallbackEventsById.clear();
 
   handlerState = HandlerState.UNINITIALIZED;
 }
@@ -41,6 +54,12 @@ export function initialize(): void {
   }
 
   handlerState = HandlerState.INITIALIZED;
+}
+
+function storeInitiator(data: {initiator: Types.TraceEvents.TraceEventData, event: Types.TraceEvents.TraceEventData}):
+    void {
+  eventToInitiatorMap.set(data.event, data.initiator);
+  initiatorToEventMap.set(data.initiator, data.event);
 }
 
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
@@ -59,7 +78,10 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
       // considered to be the initiator of this StylesRecalc.
       const scheduledStyleForFrame = lastScheduleStyleRecalcByFrame.get(event.args.beginData.frame);
       if (scheduledStyleForFrame) {
-        eventToInitiatorMap.set(event, scheduledStyleForFrame);
+        storeInitiator({
+          event,
+          initiator: scheduledStyleForFrame,
+        });
       }
     }
   } else if (Types.TraceEvents.isTraceEventInvalidateLayout(event)) {
@@ -90,10 +112,43 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     // The initiator of a Layout event is the last Invalidation event.
     const lastInvalidation = lastInvalidationEventForFrame.get(event.args.beginData.frame);
     if (lastInvalidation) {
-      eventToInitiatorMap.set(event, lastInvalidation);
+      storeInitiator({
+        event,
+        initiator: lastInvalidation,
+      });
     }
     // Now clear the last invalidation for the frame: the last invalidation has been linked to a Layout event, so it cannot be the initiator for any future layouts.
     lastInvalidationEventForFrame.delete(event.args.beginData.frame);
+  } else if (Types.TraceEvents.isTraceEventRequestAnimationFrame(event)) {
+    requestAnimationFrameEventsById.set(event.args.data.id, event);
+  } else if (Types.TraceEvents.isTraceEventFireAnimationFrame(event)) {
+    // If we get a fire event, that means we should have had the
+    // RequestAnimationFrame event by now. If so, we can set that as the
+    // initiator for the fire event.
+    const matchingRequestEvent = requestAnimationFrameEventsById.get(event.args.data.id);
+    if (matchingRequestEvent) {
+      storeInitiator({
+        event,
+        initiator: matchingRequestEvent,
+      });
+    }
+  } else if (Types.TraceEvents.isTraceEventTimerInstall(event)) {
+    timerInstallEventsById.set(event.args.data.timerId, event);
+  } else if (Types.TraceEvents.isTraceEventTimerFire(event)) {
+    const matchingInstall = timerInstallEventsById.get(event.args.data.timerId);
+    if (matchingInstall) {
+      storeInitiator({event, initiator: matchingInstall});
+    }
+  } else if (Types.TraceEvents.isTraceEventRequestIdleCallback(event)) {
+    requestIdleCallbackEventsById.set(event.args.data.id, event);
+  } else if (Types.TraceEvents.isTraceEventFireIdleCallback(event)) {
+    const matchingRequestEvent = requestIdleCallbackEventsById.get(event.args.data.id);
+    if (matchingRequestEvent) {
+      storeInitiator({
+        event,
+        initiator: matchingRequestEvent,
+      });
+    }
   }
 }
 
@@ -107,9 +162,11 @@ export async function finalize(): Promise<void> {
 
 export interface InitiatorsData {
   eventToInitiator: Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.TraceEventData>;
+  initiatorToEvent: Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.TraceEventData>;
 }
 export function data(): InitiatorsData {
   return {
     eventToInitiator: new Map(eventToInitiatorMap),
+    initiatorToEvent: new Map(initiatorToEventMap),
   };
 }

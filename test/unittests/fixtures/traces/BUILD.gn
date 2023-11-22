@@ -55,6 +55,7 @@ copy_to_gen("traces") {
     "style-invalidation-change-id.json.gz",
     "sync-like-timings.json.gz",
     "threejs-gpu.json.gz",
+    "timer-initiators.json.gz",
     "timings-track.json.gz",
     "two-workers.json.gz",
     "user-timings-complex.json.gz",

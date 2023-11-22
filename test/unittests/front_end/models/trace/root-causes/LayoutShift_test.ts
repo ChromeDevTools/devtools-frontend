@@ -181,6 +181,7 @@ describeWithMockConnection('LayoutShift root causes', () => {
       modelMut.LayoutShifts.clusters = clusters;
       modelMut.Initiators = {
         eventToInitiator: new Map(),
+        initiatorToEvent: new Map(),
       };
 
       resizeEventsNodeIds = resizeEvents.map(li => Number(li.args.data.nodeId));

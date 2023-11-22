@@ -133,4 +133,6 @@ Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/f
 
 Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/two-workers. Runs two workers that both calculcate fibonnaci numbers.
 
+### timer-initiators
 
+Contains a `setTimeout`, `requestAnimationFrame` and `requestIdleCallback` call.

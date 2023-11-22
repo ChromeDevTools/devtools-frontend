@@ -80,4 +80,67 @@ describe('InitiatorsHandler', () => {
        assert.isTrue(TraceModel.Types.TraceEvents.isTraceEventScheduleStyleRecalculation(initiator));
        assert.strictEqual(initiator.ts, 122411054482);
      });
+
+  it('for a FireAnimationFrame event it sets the initiator to the RequestAnimationFrame event', async function() {
+    const traceEvents = await TraceLoader.rawEvents(this, 'timer-initiators.json.gz');
+    for (const event of traceEvents) {
+      TraceModel.Handlers.ModelHandlers.Initiators.handleEvent(event);
+    }
+    await TraceModel.Handlers.ModelHandlers.Initiators.finalize();
+    const data = TraceModel.Handlers.ModelHandlers.Initiators.data();
+
+    const fireAnimationFrameEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventFireAnimationFrame);
+    if (!fireAnimationFrameEvent) {
+      throw new Error('Could not find FireAnimationFrame event');
+    }
+    const requestAnimationFrameEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventRequestAnimationFrame);
+    if (!requestAnimationFrameEvent) {
+      throw new Error('Could not find RequestAnimationFrame event');
+    }
+
+    assert.strictEqual(data.eventToInitiator.get(fireAnimationFrameEvent), requestAnimationFrameEvent);
+    assert.strictEqual(data.initiatorToEvent.get(requestAnimationFrameEvent), fireAnimationFrameEvent);
+  });
+
+  it('for a TimerFire event sets the initiator to the TimerInstall', async function() {
+    const traceEvents = await TraceLoader.rawEvents(this, 'timer-initiators.json.gz');
+    for (const event of traceEvents) {
+      TraceModel.Handlers.ModelHandlers.Initiators.handleEvent(event);
+    }
+    await TraceModel.Handlers.ModelHandlers.Initiators.finalize();
+    const data = TraceModel.Handlers.ModelHandlers.Initiators.data();
+
+    const timerFireEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventTimerFire);
+    if (!timerFireEvent) {
+      throw new Error('Could not find TimerFire event');
+    }
+    const timerInstallEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventTimerInstall);
+    if (!timerInstallEvent) {
+      throw new Error('Could not find TimerInstall event');
+    }
+
+    assert.strictEqual(data.eventToInitiator.get(timerFireEvent), timerInstallEvent);
+    assert.strictEqual(data.initiatorToEvent.get(timerInstallEvent), timerFireEvent);
+  });
+
+  it('for a FireIdleCallback event sets the initiator to the RequestIdleCallback', async function() {
+    const traceEvents = await TraceLoader.rawEvents(this, 'timer-initiators.json.gz');
+    for (const event of traceEvents) {
+      TraceModel.Handlers.ModelHandlers.Initiators.handleEvent(event);
+    }
+    await TraceModel.Handlers.ModelHandlers.Initiators.finalize();
+    const data = TraceModel.Handlers.ModelHandlers.Initiators.data();
+
+    const fireIdleCallbackEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventFireIdleCallback);
+    if (!fireIdleCallbackEvent) {
+      throw new Error('Could not find FireIdleCallback event');
+    }
+    const requestIdleCallbackEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventRequestIdleCallback);
+    if (!requestIdleCallbackEvent) {
+      throw new Error('Could not find RequestIdleCallback event');
+    }
+
+    assert.strictEqual(data.eventToInitiator.get(fireIdleCallbackEvent), requestIdleCallbackEvent);
+    assert.strictEqual(data.initiatorToEvent.get(requestIdleCallbackEvent), fireIdleCallbackEvent);
+  });
 });

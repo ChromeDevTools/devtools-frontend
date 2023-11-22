@@ -173,7 +173,7 @@ export interface TraceEventComplete extends TraceEventData {
 }
 
 export interface TraceEventFireIdleCallback extends TraceEventComplete {
-  name: 'FireIdleCallback';
+  name: KnownEventName.FireIdleCallback;
   args: TraceEventArgs&{
     data: TraceEventArgsData & {
       allottedMilliseconds: MilliSeconds,
@@ -1710,6 +1710,76 @@ export interface TracingLayerTile {
   content_rect: number[];
 }
 /* eslint-enable @typescript-eslint/naming-convention */
+
+export interface TraceEventFireAnimationFrame extends TraceEventComplete {
+  name: KnownEventName.FireAnimationFrame;
+  args: TraceEventArgs&{
+    data: {
+      frame: string,
+      id: number,
+    },
+  };
+}
+export function isTraceEventFireAnimationFrame(event: TraceEventData): event is TraceEventFireAnimationFrame {
+  return event.name === KnownEventName.FireAnimationFrame;
+}
+
+export interface TraceEventRequestAnimationFrame extends TraceEventInstant {
+  name: KnownEventName.RequestAnimationFrame;
+  args: TraceEventArgs&{
+    data: {
+      frame: string,
+      id: number,
+      stackTrace?: TraceEventCallFrame,
+    },
+  };
+}
+export function isTraceEventRequestAnimationFrame(event: TraceEventData): event is TraceEventRequestAnimationFrame {
+  return event.name === KnownEventName.RequestAnimationFrame;
+}
+
+export interface TraceEventTimerInstall extends TraceEventInstant {
+  name: KnownEventName.TimerInstall;
+  args: TraceEventArgs&{
+    data: {
+      frame: string,
+      singleShot: boolean,
+      stackTrace?: TraceEventCallFrame, timeout: number, timerId: number,
+    },
+  };
+}
+export function isTraceEventTimerInstall(event: TraceEventData): event is TraceEventTimerInstall {
+  return event.name === KnownEventName.TimerInstall;
+}
+
+export interface TraceEventTimerFire extends TraceEventComplete {
+  name: KnownEventName.TimerFire;
+  args: TraceEventArgs&{
+    data: {
+      frame: string,
+      timerId: number,
+    },
+  };
+}
+export function isTraceEventTimerFire(event: TraceEventData): event is TraceEventTimerFire {
+  return event.name === KnownEventName.TimerFire;
+}
+
+export interface TraceEventRequestIdleCallback extends TraceEventInstant {
+  name: KnownEventName.RequestIdleCallback;
+  args: TraceEventArgs&{
+    data: {
+      frame: string,
+      id: number,
+      timeout: number,
+      stackTrace?: TraceEventCallFrame,
+    },
+
+  };
+}
+export function isTraceEventRequestIdleCallback(event: TraceEventData): event is TraceEventRequestIdleCallback {
+  return event.name === KnownEventName.RequestIdleCallback;
+}
 
 /**
  * This is an exhaustive list of events we track in the Performance

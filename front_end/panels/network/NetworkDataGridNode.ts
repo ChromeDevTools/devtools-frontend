@@ -179,12 +179,12 @@ const UIStrings = {
   /**
    *@description Text of a DOM element in Network Data Grid Node of the Network panel
    */
-  serviceworker: '(`ServiceWorker`)',
+  serviceWorker: '(`ServiceWorker`)',
   /**
    *@description Cell title in Network Data Grid Node of the Network panel
    *@example {4 B} PH1
    */
-  servedFromServiceworkerResource: 'Served from `ServiceWorker`, resource size: {PH1}',
+  servedFromServiceWorkerResource: 'Served from `ServiceWorker`, resource size: {PH1}',
   /**
    *@description Cell title in Network Data Grid Node of the Network panel
    *@example {4 B} PH1
@@ -213,6 +213,16 @@ const UIStrings = {
    *@example {10 B} PH1
    */
   servedFromDiskCacheResourceSizeS: 'Served from disk cache, resource size: {PH1}',
+  /**
+   *@description Text of a DOM element in Network Data Grid Node of the Network panel
+   */
+  serviceWorkerRouter: '(`ServiceWorker router`)',
+  /**
+   *@description Cell title in Network Data Grid Node of the Network panel
+   *@example {1} PH1
+   *@example {4 B} PH2
+   */
+  matchedToServiceWorkerRouter: 'Matched to `ServiceWorker router`#{PH1}, resource size: {PH2}',
   /**
    *@description Text in Network Data Grid Node of the Network panel
    */
@@ -1496,9 +1506,15 @@ export class NetworkRequestNode extends NetworkNode {
       UI.UIUtils.createTextChild(cell, i18nString(UIStrings.memoryCache));
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromMemoryCacheResource, {PH1: resourceSize}));
       cell.classList.add('network-dim-cell');
+    } else if (this.requestInternal.serviceWorkerRouterInfo) {
+      const ruleIdMatched = this.requestInternal.serviceWorkerRouterInfo.ruleIdMatched;
+      UI.UIUtils.createTextChild(cell, i18nString(UIStrings.serviceWorkerRouter));
+      UI.Tooltip.Tooltip.install(
+          cell, i18nString(UIStrings.matchedToServiceWorkerRouter, {PH1: ruleIdMatched, PH2: resourceSize}));
+      cell.classList.add('network-dim-cell');
     } else if (this.requestInternal.fetchedViaServiceWorker) {
-      UI.UIUtils.createTextChild(cell, i18nString(UIStrings.serviceworker));
-      UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromServiceworkerResource, {PH1: resourceSize}));
+      UI.UIUtils.createTextChild(cell, i18nString(UIStrings.serviceWorker));
+      UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromServiceWorkerResource, {PH1: resourceSize}));
       cell.classList.add('network-dim-cell');
     } else if (this.requestInternal.redirectSourceSignedExchangeInfoHasNoErrors()) {
       UI.UIUtils.createTextChild(cell, i18n.i18n.lockedString('(signed-exchange)'));

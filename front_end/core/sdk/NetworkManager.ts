@@ -513,6 +513,10 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       networkRequest.setResponseCacheStorageCacheName(response.cacheStorageCacheName);
     }
 
+    if (response.serviceWorkerRouterInfo) {
+      networkRequest.serviceWorkerRouterInfo = response.serviceWorkerRouterInfo;
+    }
+
     if (response.responseTime) {
       networkRequest.setResponseRetrievalTime(new Date(response.responseTime));
     }

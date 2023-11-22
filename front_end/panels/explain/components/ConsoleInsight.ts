@@ -133,6 +133,10 @@ const UIStrings = {
    * @description The title of the button that submits the feedback.
    */
   submit: 'Submit',
+  /**
+   * @description The text of the header inside the console insight pane when there was an error generating an insight.
+   */
+  error: 'Something went wrong…',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -160,16 +164,6 @@ const negativeRatingReasons: Array<[string, () => Platform.UIString.LocalizedStr
   ['other', i18nLazyString(UIStrings.other)],
 ];
 
-function buildLink(
-    rating: 'Positive'|'Negative', comment: string, context: string, consoleMessage: string, stackTrace: string,
-    relatedCode: string, networkData: string): Platform.DevToolsPath.UrlString {
-  return `https://docs.google.com/forms/d/e/1FAIpQLSen1K-Uli0CSvlsNkI-L0Wq5iJ0FO9zFv0_mjM-3m5I8AKQGg/viewform?usp=pp_url&entry.1465663861=${
-             encodeURIComponent(rating)}&entry.109342357=${encodeURIComponent(comment)}&entry.1805879004=${
-             encodeURIComponent(context)}&entry.623054399=${encodeURIComponent(consoleMessage)}&entry.720239045=${
-             encodeURIComponent(stackTrace)}&entry.1520357991=${encodeURIComponent(relatedCode)}&entry.1966708581=${
-             encodeURIComponent(networkData)}` as Platform.DevToolsPath.UrlString;
-}
-
 function localizeType(sourceType: SourceType): string {
   switch (sourceType) {
     case SourceType.MESSAGE:
@@ -186,69 +180,63 @@ function localizeType(sourceType: SourceType): string {
 }
 
 const DOGFOODFEEDBACK_URL =
-    'https://docs.google.com/forms/d/e/1FAIpQLSePjpPA0BUSbyG_xrsLR_HtrVixLqu5gAKOxgV-YfztVTf8Vg/viewform?usp=published_options';
+    'https://docs.google.com/forms/d/e/1FAIpQLSePjpPA0BUSbyG_xrsLR_HtrVixLqu5gAKOxgV-YfztVTf8Vg/viewform';
+
+function buildRatingFormLink(
+    rating: 'Positive'|'Negative', comment: string, explanation: string, consoleMessage: string, stackTrace: string,
+    relatedCode: string, networkData: string): Platform.DevToolsPath.UrlString {
+  return `https://docs.google.com/forms/d/e/1FAIpQLSen1K-Uli0CSvlsNkI-L0Wq5iJ0FO9zFv0_mjM-3m5I8AKQGg/viewform?usp=pp_url&entry.1465663861=${
+             encodeURIComponent(rating)}&entry.109342357=${encodeURIComponent(comment)}&entry.1805879004=${
+             encodeURIComponent(explanation)}&entry.623054399=${encodeURIComponent(consoleMessage)}&entry.720239045=${
+             encodeURIComponent(stackTrace)}&entry.1520357991=${encodeURIComponent(relatedCode)}&entry.1966708581=${
+             encodeURIComponent(networkData)}` as Platform.DevToolsPath.UrlString;
+}
 
 // TODO(crbug.com/1167717): Make this a const enum again
 // eslint-disable-next-line rulesdir/const_enum
-enum LoadingState {
-  NONE = 'none',
-  INITIAL_LOADING = 'initial_loading',
+enum State {
+  INSIGHT = 'insight',
+  LOADING = 'loading',
   REFINING = 'refining',
+  ERROR = 'error',
 }
 
-class ConsoleInsightSourcesList extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-console-insight-sources-list`;
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  #sources: Source[] = [];
-
-  constructor() {
-    super();
-    this.#shadow.adoptedStyleSheets = [listStyles];
-  }
-
-  #render(): void {
-    // clang-format off
-     render(html`
-      <ul>
-        ${Directives.repeat(this.#sources, item => item.value, item => {
-          const icon = new IconButton.Icon.Icon();
-          icon.data = {iconName: 'open-externally', color: 'var(--sys-color-primary)', width: '14px', height: '14px'};
-          return html`<li><x-link class="link" href=${`data:text/plain,${encodeURIComponent(item.value)}`}>${localizeType(item.type)}${icon}</x-link></li>`;
-        })}
-      </ul>
-    `, this.#shadow, {
-      host: this,
-    });
-    // clang-format on
-  }
-
-  set sources(values: Source[]) {
-    this.#sources = values;
-    this.#render();
-  }
-}
+type StateData = {
+  type: State.LOADING,
+}|{
+  type: State.REFINING | State.INSIGHT,
+  explanation: string,
+  tokens: MarkdownView.MarkdownView.MarkdownViewData['tokens'],
+  sources: Source[],
+  refined: boolean,
+}|{
+  type: State.ERROR,
+  error: string,
+};
 
 export class ConsoleInsight extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-console-insight`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
+  // Flip to false to enable non-dogfood branding. Note that rating is not
+  // implemented.
+  #dogfood = true;
+  // Flip to false to enable a refine button.
+  readonly #refinedByDefault = false;
+
   #promptBuilder: PublicPromptBuilder;
   #insightProvider: PublicInsightProvider;
-  #tokens: MarkdownView.MarkdownView.MarkdownViewData['tokens'] = [];
   #renderer = new MarkdownRenderer();
+
+  // Main state.
+  #state: StateData = {
+    type: State.LOADING,
+  };
+
+  // Rating sub-form state.
   #ratingFormOpened = false;
   #selectedRating?: boolean;
   #selectedRatingReasons = new Set<string>();
-  #context = {
-    result: '',
-  };
-  #loading = LoadingState.INITIAL_LOADING;
-  #sources: Source[] = [];
-  /** Flip to false to enable non-dogfood branding. Note that rating is not
-   * implemented. */
-  #dogfood = true;
-  /** Flip to false to enable a refine button. */
-  #refined = false;
 
   #popover: UI.PopoverHelper.PopoverHelper;
 
@@ -299,6 +287,11 @@ export class ConsoleInsight extends HTMLElement {
     });
     this.#popover.setTimeout(300);
     this.#popover.setHasPadding(true);
+    // Measure the height of the element after an animation. `--actual-height` can
+    // be used as the `from` value for the subsequent animation.
+    this.addEventListener('animationend', () => {
+      this.style.setProperty('--actual-height', `${this.offsetHeight}px`);
+    });
   }
 
   connectedCallback(): void {
@@ -315,52 +308,47 @@ export class ConsoleInsight extends HTMLElement {
     return this.#dogfood;
   }
 
-  #renderMarkdown(content: string): void {
-    this.#tokens = Marked.Marked.lexer(content);
+  #transitionTo(newState: StateData): void {
+    const previousState = this.#state;
+    this.#state = newState;
+    if (newState.type !== previousState.type && previousState.type === State.LOADING) {
+      this.classList.add('loaded');
+    }
     this.#render();
   }
 
-  #setLoading(loading: LoadingState): void {
-    const previousState = this.#loading;
-    this.#loading = loading;
-    this.#render();
-    if (loading === LoadingState.INITIAL_LOADING) {
-      this.style.setProperty('--actual-height', 'var(--loading-max-height)');
-    }
-    if (loading === LoadingState.NONE && previousState === LoadingState.INITIAL_LOADING) {
-      this.classList.toggle('loaded', true);
-    }
-  }
-
-  async update(loadingState = LoadingState.INITIAL_LOADING): Promise<void> {
-    this.#sources = [];
-    this.#setLoading(loadingState);
-    const requestedSources = this.#refined || loadingState === LoadingState.REFINING ? undefined : [SourceType.MESSAGE];
+  async update(includeContext = this.#refinedByDefault): Promise<void> {
+    this.#transitionTo(
+        this.#state.type === State.INSIGHT ? {
+          ...this.#state,
+          type: State.REFINING,
+        } :
+                                             {
+                                               type: State.LOADING,
+                                             });
     try {
+      const requestedSources = includeContext ? undefined : [SourceType.MESSAGE];
       const {prompt, sources} = await this.#promptBuilder.buildPrompt(requestedSources);
-      const result = await this.#insightProvider.getInsights(prompt);
-      this.#context = {
-        result,
-      };
-      this.#refined = this.#refined || loadingState === LoadingState.REFINING;
-      this.#sources = sources;
-      this.#renderMarkdown(result);
-      this.addEventListener('animationend', () => {
-        this.style.setProperty('--actual-height', `${this.offsetHeight}px`);
+      const explanation = await this.#insightProvider.getInsights(prompt);
+      this.#transitionTo({
+        type: State.INSIGHT,
+        tokens: Marked.Marked.lexer(explanation),
+        explanation,
+        sources,
+        refined: includeContext,
       });
     } catch (err) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErrored);
-      this.#renderMarkdown(`loading failed: ${err.message}`);
-    } finally {
-      this.#setLoading(LoadingState.NONE);
+      this.#transitionTo({
+        type: State.ERROR,
+        error: err.message,
+      });
     }
   }
 
   #onClose(): void {
     this.dispatchEvent(new CloseEvent());
     this.classList.add('closing');
-    this.classList.remove('opening');
-    this.classList.remove('loaded');
   }
 
   #onCloseRating(): void {
@@ -378,13 +366,16 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #openFeedbackFrom(): void {
-    const link = buildLink(
+    if (this.#state.type !== State.INSIGHT) {
+      throw new Error('Unexpected state');
+    }
+    const link = buildRatingFormLink(
         this.#selectedRating ? 'Positive' : 'Negative', this.#shadow.querySelector('textarea')?.value || '',
-        JSON.stringify(this.#context),
-        this.#sources.filter(s => s.type === SourceType.MESSAGE).map(s => s.value).join('\n'),
-        this.#sources.filter(s => s.type === SourceType.STACKTRACE).map(s => s.value).join('\n'),
-        this.#sources.filter(s => s.type === SourceType.RELATED_CODE).map(s => s.value).join('\n'),
-        this.#sources.filter(s => s.type === SourceType.NETWORK_REQUEST).map(s => s.value).join('\n'));
+        this.#state.explanation,
+        this.#state.sources.filter(s => s.type === SourceType.MESSAGE).map(s => s.value).join('\n'),
+        this.#state.sources.filter(s => s.type === SourceType.STACKTRACE).map(s => s.value).join('\n'),
+        this.#state.sources.filter(s => s.type === SourceType.RELATED_CODE).map(s => s.value).join('\n'),
+        this.#state.sources.filter(s => s.type === SourceType.NETWORK_REQUEST).map(s => s.value).join('\n'));
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(link);
   }
 
@@ -415,8 +406,146 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #onRefine(): void {
+    if (this.#state.type !== State.INSIGHT) {
+      throw new Error('Unexpected state');
+    }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightRefined);
-    void this.update(LoadingState.REFINING);
+    void this.update(true);
+  }
+
+  #renderMain(): LitHtml.TemplateResult {
+    // clang-format off
+    switch (this.#state.type) {
+      case State.LOADING:
+        return html`<main>
+            <div role="presentation" class="loader" style="clip-path: url('#clipPath');">
+              <svg width="100%" height="64">
+                <clipPath id="clipPath">
+                  <rect x="0" y="0" width="100%" height="16" rx="8"></rect>
+                  <rect x="0" y="24" width="100%" height="16" rx="8"></rect>
+                  <rect x="0" y="48" width="100%" height="16" rx="8"></rect>
+                </clipPath>
+              </svg>
+            </div>
+          </main>`;
+      case State.REFINING:
+      case State.INSIGHT:
+        return html`
+        <main>
+          <${MarkdownView.MarkdownView.MarkdownView.litTagName}
+            .data=${{tokens: this.#state.tokens, renderer: this.#renderer} as MarkdownView.MarkdownView.MarkdownViewData}>
+          </${MarkdownView.MarkdownView.MarkdownView.litTagName}>
+          <details style="--list-height: ${this.#state.sources.length * 20}px;">
+            <summary>${i18nString(UIStrings.sources)}</summary>
+            <${ConsoleInsightSourcesList.litTagName} .sources=${this.#state.sources}>
+            </${ConsoleInsightSourcesList.litTagName}>
+          </details>
+          ${!this.#state.refined ? html`<div class="refine-container">
+            <${Buttons.Button.Button.litTagName}
+                class="refine-button"
+                .data=${
+                  {
+                    variant: Buttons.Button.Variant.TONAL,
+                    size: Buttons.Button.Size.MEDIUM,
+                    iconName: 'spark',
+                  } as Buttons.Button.ButtonData
+                }
+                @click=${this.#onRefine}
+              >
+              ${this.#state.type === State.REFINING ? i18nString(UIStrings.refining) : i18nString(UIStrings.refine)}
+            </${Buttons.Button.Button.litTagName}>
+            <${IconButton.Icon.Icon.litTagName}
+              class="info"
+              tabindex="0"
+              .data=${
+                {
+                  iconName: 'info',
+                  color: 'var(--icon-default)',
+                  width: '16px',
+                  height: '16px',
+                } as IconButton.Icon.IconData
+              }>
+            </${IconButton.Icon.Icon.litTagName}>
+          </div>
+          ` : ''}
+        </main>`;
+      case State.ERROR:
+        return html`
+        <main>
+          <div class="error">${this.#state.error}</div>
+        </main>`;
+    }
+    // clang-format on
+  }
+
+  #renderFooter(): LitHtml.LitTemplate {
+    // clang-format off
+    switch (this.#state.type) {
+      case State.LOADING:
+      case State.ERROR:
+        return LitHtml.nothing;
+      case State.INSIGHT:
+      case State.REFINING:
+        return html`<footer>
+        <div>
+          <${Buttons.Button.Button.litTagName}
+            data-rating=${'true'}
+            .data=${
+              {
+                variant: Buttons.Button.Variant.ROUND,
+                size: Buttons.Button.Size.SMALL,
+                iconName: 'thumb-up',
+                active: this.#selectedRating,
+                title: i18nString(UIStrings.thumbUp),
+              } as Buttons.Button.ButtonData
+            }
+            @click=${this.#onRating}
+          ></${Buttons.Button.Button.litTagName}>
+          <${Buttons.Button.Button.litTagName}
+            data-rating=${'false'}
+            .data=${
+              {
+                variant: Buttons.Button.Variant.ROUND,
+                size: Buttons.Button.Size.SMALL,
+                iconName: 'thumb-down',
+                active: this.#selectedRating !== undefined && !this.#selectedRating,
+                title: i18nString(UIStrings.thumbDown),
+              } as Buttons.Button.ButtonData
+            }
+            @click=${this.#onRating}
+          ></${Buttons.Button.Button.litTagName}>
+        </div>
+        <div class="filler"></div>
+        ${this.#dogfood ? html`<div class="dogfood-feedback">
+            <${IconButton.Icon.Icon.litTagName}
+              role="presentation"
+              .data=${
+                {
+                  iconName: 'dog-paw',
+                  color: 'var(--icon-default)',
+                  width: '16px',
+                  height: '16px',
+                } as IconButton.Icon.IconData
+              }>
+            </${IconButton.Icon.Icon.litTagName}>
+            <span>${i18nString(UIStrings.dogfood)} - </span>
+            <x-link href=${DOGFOODFEEDBACK_URL} class="link">${i18nString(UIStrings.submitFeedback)}</x-link>
+        </div>`: ''}
+      </footer>`;
+    }
+    // clang-format on
+  }
+
+  #getHeader(): string {
+    switch (this.#state.type) {
+      case State.LOADING:
+        return i18nString(UIStrings.generating);
+      case State.INSIGHT:
+      case State.REFINING:
+        return i18nString(UIStrings.insight);
+      case State.ERROR:
+        return i18nString(UIStrings.error);
+    }
   }
 
   #render(): void {
@@ -447,7 +576,7 @@ export class ConsoleInsight extends HTMLElement {
           </div>
           <div class="filler">
             <h2>
-              ${this.#loading === LoadingState.INITIAL_LOADING ? i18nString(UIStrings.generating) : i18nString(UIStrings.insight)}
+              ${this.#getHeader()}
             </h2>
           </div>
           <div>
@@ -464,103 +593,8 @@ export class ConsoleInsight extends HTMLElement {
             ></${Buttons.Button.Button.litTagName}>
           </div>
         </header>
-        ${this.#loading === LoadingState.INITIAL_LOADING ? html`
-        <main>
-          <div role="presentation" class="loader" style="clip-path: url('#clipPath');">
-            <svg width="100%" height="64">
-              <clipPath id="clipPath">
-                <rect x="0" y="0" width="100%" height="16" rx="8"></rect>
-                <rect x="0" y="24" width="100%" height="16" rx="8"></rect>
-                <rect x="0" y="48" width="100%" height="16" rx="8"></rect>
-              </clipPath>
-            </svg>
-          </div>
-        </main>` : html`
-        <main>
-          <${MarkdownView.MarkdownView.MarkdownView.litTagName}
-            .data=${{tokens: this.#tokens, renderer: this.#renderer} as MarkdownView.MarkdownView.MarkdownViewData}>
-          </${MarkdownView.MarkdownView.MarkdownView.litTagName}>
-          <details style="--list-height: ${this.#sources.length * 20}px;">
-            <summary>${i18nString(UIStrings.sources)}</summary>
-            <${ConsoleInsightSourcesList.litTagName} .sources=${this.#sources}>
-            </${ConsoleInsightSourcesList.litTagName}>
-          </details>
-          ${!this.#refined ? html`<div class="refine-container">
-            <${Buttons.Button.Button.litTagName}
-                class="refine-button"
-                .data=${
-                  {
-                    variant: Buttons.Button.Variant.TONAL,
-                    size: Buttons.Button.Size.MEDIUM,
-                    iconName: 'spark',
-                  } as Buttons.Button.ButtonData
-                }
-                @click=${this.#onRefine}
-              >
-              ${this.#loading === LoadingState.REFINING ? i18nString(UIStrings.refining) : i18nString(UIStrings.refine)}
-            </${Buttons.Button.Button.litTagName}>
-            <${IconButton.Icon.Icon.litTagName}
-              class="info"
-              tabindex="0"
-              .data=${
-                {
-                  iconName: 'info',
-                  color: 'var(--icon-default)',
-                  width: '16px',
-                  height: '16px',
-                } as IconButton.Icon.IconData
-              }>
-            </${IconButton.Icon.Icon.litTagName}>
-          </div>
-          ` : ''}
-        </main>
-        <footer>
-          <div>
-            <${Buttons.Button.Button.litTagName}
-              data-rating=${'true'}
-              .data=${
-                {
-                  variant: Buttons.Button.Variant.ROUND,
-                  size: Buttons.Button.Size.SMALL,
-                  iconName: 'thumb-up',
-                  active: this.#selectedRating,
-                  title: i18nString(UIStrings.thumbUp),
-                } as Buttons.Button.ButtonData
-              }
-              @click=${this.#onRating}
-            ></${Buttons.Button.Button.litTagName}>
-            <${Buttons.Button.Button.litTagName}
-              data-rating=${'false'}
-              .data=${
-                {
-                  variant: Buttons.Button.Variant.ROUND,
-                  size: Buttons.Button.Size.SMALL,
-                  iconName: 'thumb-down',
-                  active: this.#selectedRating !== undefined && !this.#selectedRating,
-                  title: i18nString(UIStrings.thumbDown),
-                } as Buttons.Button.ButtonData
-              }
-              @click=${this.#onRating}
-            ></${Buttons.Button.Button.litTagName}>
-          </div>
-          <div class="filler"></div>
-          ${this.#dogfood ? html`<div class="dogfood-feedback">
-              <${IconButton.Icon.Icon.litTagName}
-                role="presentation"
-                .data=${
-                  {
-                    iconName: 'dog-paw',
-                    color: 'var(--icon-default)',
-                    width: '16px',
-                    height: '16px',
-                  } as IconButton.Icon.IconData
-                }>
-              </${IconButton.Icon.Icon.litTagName}>
-              <span>${i18nString(UIStrings.dogfood)} - </span>
-              <x-link href=${DOGFOODFEEDBACK_URL} class="link">${i18nString(UIStrings.submitFeedback)}</x-link>
-          </div>`: ''}
-        </footer>
-        `}
+        ${this.#renderMain()}
+        ${this.#renderFooter()}
       </div>
       ${this.#ratingFormOpened ? html`
         <div class=${bottomWrapper}>
@@ -627,6 +661,38 @@ export class ConsoleInsight extends HTMLElement {
       host: this,
     });
     // clang-format on
+  }
+}
+
+class ConsoleInsightSourcesList extends HTMLElement {
+  static readonly litTagName = LitHtml.literal`devtools-console-insight-sources-list`;
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #sources: Source[] = [];
+
+  constructor() {
+    super();
+    this.#shadow.adoptedStyleSheets = [listStyles];
+  }
+
+  #render(): void {
+    // clang-format off
+     render(html`
+      <ul>
+        ${Directives.repeat(this.#sources, item => item.value, item => {
+          const icon = new IconButton.Icon.Icon();
+          icon.data = {iconName: 'open-externally', color: 'var(--sys-color-primary)', width: '14px', height: '14px'};
+          return html`<li><x-link class="link" href=${`data:text/plain,${encodeURIComponent(item.value)}`}>${localizeType(item.type)}${icon}</x-link></li>`;
+        })}
+      </ul>
+    `, this.#shadow, {
+      host: this,
+    });
+    // clang-format on
+  }
+
+  set sources(values: Source[]) {
+    this.#sources = values;
+    this.#render();
   }
 }
 

@@ -26,13 +26,13 @@
   animation-fill-mode: forwards;
 }
 
-:host-context(.closing) {
-  animation: collapse var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized);
+:host-context(.loaded) {
+  animation: expand-to-full var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized);
   animation-fill-mode: forwards;
 }
 
-:host-context(.loaded) {
-  animation: expand-to-full var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized);
+:host-context(.closing) {
+  animation: collapse var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized);
   animation-fill-mode: forwards;
 }
 
@@ -48,7 +48,7 @@
 
 @keyframes expand-to-full {
   from {
-    max-height: var(--loading-max-height);
+    max-height: var(--actual-height, var(--loading-max-height));
   }
 
   to {

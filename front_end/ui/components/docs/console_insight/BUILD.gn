@@ -9,6 +9,7 @@ ts_library("ts") {
   testonly = true
   sources = [
     "basic.ts",
+    "error.ts",
     "loading.ts",
     "static.ts",
   ]
@@ -25,6 +26,7 @@ copy_to_gen("console_insight") {
   testonly = true
   sources = [
     "basic.html",
+    "error.html",
     "loading.html",
     "static.html",
   ]

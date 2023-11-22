@@ -113,7 +113,6 @@ export class PromptBuilder {
       searchAnswers,
     });
 
-    // TODO: separate the stack trace from message.
     const sources = [
       {
         type: SourceType.MESSAGE,

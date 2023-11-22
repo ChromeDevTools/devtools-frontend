@@ -2465,13 +2465,6 @@ declare namespace ProtocolProxyApi {
     invoke_getAdScriptId(params: Protocol.Page.GetAdScriptIdRequest): Promise<Protocol.Page.GetAdScriptIdResponse>;
 
     /**
-     * Returns all browser cookies for the page and all of its subframes. Depending
-     * on the backend support, will return detailed cookie information in the
-     * `cookies` field.
-     */
-    invoke_getCookies(): Promise<Protocol.Page.GetCookiesResponse>;
-
-    /**
      * Returns present frame tree structure.
      */
     invoke_getFrameTree(): Promise<Protocol.Page.GetFrameTreeResponse>;

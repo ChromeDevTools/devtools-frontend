@@ -3120,15 +3120,6 @@ export namespace ProtocolMapping {
       returnType: Protocol.Page.GetAdScriptIdResponse;
     };
     /**
-     * Returns all browser cookies for the page and all of its subframes. Depending
-     * on the backend support, will return detailed cookie information in the
-     * `cookies` field.
-     */
-    'Page.getCookies': {
-      paramsType: [];
-      returnType: Protocol.Page.GetCookiesResponse;
-    };
-    /**
      * Returns present frame tree structure.
      */
     'Page.getFrameTree': {

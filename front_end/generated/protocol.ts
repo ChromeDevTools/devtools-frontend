@@ -8147,6 +8147,10 @@ export namespace Network {
     UnspecifiedReason = 'unspecifiedReason',
   }
 
+  export interface ServiceWorkerRouterInfo {
+    ruleIdMatched: integer;
+  }
+
   /**
    * HTTP response data.
    */
@@ -8211,6 +8215,10 @@ export namespace Network {
      * Specifies that the request was served from the prefetch cache.
      */
     fromPrefetchCache?: boolean;
+    /**
+     * Infomation about how Service Worker Static Router was used.
+     */
+    serviceWorkerRouterInfo?: ServiceWorkerRouterInfo;
     /**
      * Total number of bytes received for this request so far.
      */
@@ -11951,13 +11959,6 @@ export namespace Page {
     adScriptId?: AdScriptId;
   }
 
-  export interface GetCookiesResponse extends ProtocolResponseWithError {
-    /**
-     * Array of cookie objects.
-     */
-    cookies: Network.Cookie[];
-  }
-
   export interface GetFrameTreeResponse extends ProtocolResponseWithError {
     /**
      * Present frame tree structure.
@@ -12176,6 +12177,10 @@ export namespace Page {
      * Whether or not to generate tagged (accessible) PDF. Defaults to embedder choice.
      */
     generateTaggedPDF?: boolean;
+    /**
+     * Whether or not to embed the document outline into the PDF.
+     */
+    generateDocumentOutline?: boolean;
   }
 
   export interface PrintToPDFResponse extends ProtocolResponseWithError {

@@ -823,7 +823,10 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
 
     if (Root.Runtime.experiments.isEnabled('evaluateExpressionsWithSourceMaps') && location) {
       return SourceMapScopes.NamesResolver.allVariablesAtPosition(location)
-          .then(nameMap => Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(condition, nameMap))
+          .then(
+              nameMap => nameMap.size > 0 ?
+                  Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(condition, nameMap) :
+                  condition)
           .then(subsitutedCondition => addSourceUrl(subsitutedCondition), () => addSourceUrl(condition));
     }
     return addSourceUrl(condition);

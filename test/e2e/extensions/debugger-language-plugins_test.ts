@@ -878,7 +878,10 @@ describe('The Debugger Language Plugins', async () => {
     await waitForNone('.watch-expression-editing');
 
     const watchResults = await waitForMany('.watch-expression', 2);
-    const watchTexts = await Promise.all(watchResults.map(async watch => await watch.evaluate(e => e.textContent)));
+    const watchTexts = await waitForFunction(async () => {
+      const texts = await Promise.all(watchResults.map(async watch => await watch.evaluate(e => e.textContent)));
+      return texts.every(t => t?.length) ? texts : null;
+    });
     assert.deepStrictEqual(watchTexts, ['foo: 23', 'bar: <not available>']);
 
     const tooltipText = await watchResults[1].evaluate(e => {

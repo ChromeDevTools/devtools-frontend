@@ -313,7 +313,8 @@ export class MainImpl {
         'wasmDWARFDebugging', 'WebAssembly Debugging: Enable DWARF support', undefined,
         'https://developer.chrome.com/blog/wasm-debugging-2020/');
     Root.Runtime.experiments.register(
-        'evaluateExpressionsWithSourceMaps', 'Resolve variable names in expressions using source maps', undefined);
+        'evaluateExpressionsWithSourceMaps', 'Resolve variable names in expressions using source maps', undefined,
+        'https://goo.gle/evaluate-source-var-default', 'https://crbug.com/1504123');
     Root.Runtime.experiments.register('instrumentationBreakpoints', 'Enable instrumentation breakpoints', true);
     Root.Runtime.experiments.register('setAllBreakpointsEagerly', 'Set all breakpoints eagerly at startup');
     Root.Runtime.experiments.register('useSourceMapScopes', 'Use scope information from source maps', true);
@@ -431,6 +432,7 @@ export class MainImpl {
       Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,
       Root.Runtime.ExperimentName.SELF_XSS_WARNING,
       Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL,
+      'evaluateExpressionsWithSourceMaps',
       ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ? ['protocolMonitor'] : []),
     ]);
 

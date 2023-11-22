@@ -4,7 +4,6 @@
 
 import * as Platform from '../../core/platform/platform.js';
 
-import * as Frames from './frames/frames.js';
 import * as Handlers from './handlers/handlers.js';
 import * as Helpers from './helpers/helpers.js';
 import {TraceParseProgressEvent, TraceProcessor} from './Processor.js';
@@ -107,7 +106,6 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     const file: ParsedTraceFile<EnabledModelHandlers> = {
       traceEvents,
       metadata,
-      frames: null,
       traceParsedData: null,
     };
 
@@ -116,10 +114,6 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
       // but perform all tasks in parallel.
       await this.#processor.parse(traceEvents, isFreshRecording);
       this.#storeParsedFileData(file, this.#processor.data);
-      if (this.#processor.data && Handlers.Types.handlerDataHasAllHandlers(this.#processor.data)) {
-        const framesModel = this.#createFramesModel(traceEvents, this.#processor.data);
-        file.frames = framesModel;
-      }
       // We only push the file onto this.#traces here once we know it's valid
       // and there's been no errors in the parsing.
       this.#traces.push(file);
@@ -131,14 +125,6 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
       // Finally, update any listeners that all processors are 'done'.
       this.dispatchEvent(new ModelUpdateEvent({type: ModelUpdateType.COMPLETE, data: 'done'}));
     }
-  }
-
-  #createFramesModel(
-      traceEvents: readonly Types.TraceEvents.TraceEventData[],
-      parsedData: Handlers.Types.TraceParseData,
-      ): Frames.TimelineFrameModel.TimelineFrameModel {
-    const model = new Frames.TimelineFrameModel.TimelineFrameModel(traceEvents, parsedData);
-    return model;
   }
 
   #storeParsedFileData(
@@ -170,14 +156,6 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
     }
 
     return this.#traces[index].traceParsedData;
-  }
-
-  framesModel(index: number = this.#traces.length - 1): Frames.TimelineFrameModel.TimelineFrameModel|null {
-    if (!this.#traces[index]) {
-      return null;
-    }
-
-    return this.#traces[index].frames;
   }
 
   metadata(index: number): Types.File.MetaData|null {
@@ -221,7 +199,6 @@ export class Model<EnabledModelHandlers extends {[key: string]: Handlers.Types.T
  */
 export type ParsedTraceFile<Handlers extends {[key: string]: Handlers.Types.TraceEventHandler}> = Types.File.TraceFile&{
   traceParsedData: Handlers.Types.EnabledHandlerDataWithMeta<Handlers>| null,
-  frames: Frames.TimelineFrameModel.TimelineFrameModel | null,
 };
 
 export const enum ModelUpdateType {

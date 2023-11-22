@@ -20,7 +20,6 @@ devtools_module("trace") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "extras:bundle",
-    "frames:bundle",
     "handlers:bundle",
     "helpers:bundle",
     "root-causes:bundle",

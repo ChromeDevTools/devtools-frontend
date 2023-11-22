@@ -5,6 +5,7 @@
 import type * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
+import {type AuctionWorkletsData} from './AuctionWorkletsHandler.js';
 import type * as Renderer from './RendererHandler.js';
 import {type TraceParseData} from './types.js';
 
@@ -29,7 +30,8 @@ export const enum ThreadType {
 }
 
 function getThreadTypeForRendererThread(
-    traceParseData: TraceParseData, pid: Types.TraceEvents.ProcessID, thread: Renderer.RendererThread): ThreadType {
+    auctionWorkletsData: AuctionWorkletsData, pid: Types.TraceEvents.ProcessID,
+    thread: Renderer.RendererThread): ThreadType {
   let threadType = ThreadType.OTHER;
   if (thread.name === 'CrRendererMain') {
     threadType = ThreadType.MAIN_THREAD;
@@ -37,29 +39,23 @@ function getThreadTypeForRendererThread(
     threadType = ThreadType.WORKER;
   } else if (thread.name?.startsWith('CompositorTileWorker')) {
     threadType = ThreadType.RASTERIZER;
-  } else if (traceParseData.AuctionWorklets.worklets.has(pid)) {
+  } else if (auctionWorkletsData.worklets.has(pid)) {
     threadType = ThreadType.AUCTION_WORKLET;
   }
   return threadType;
 }
 
-/**
- * Given trace parsed data, this helper will return a high level array of
- * ThreadData. This is useful because it allows you to get a list of threads
- * regardless of if the trace is a CPU Profile or a Tracing profile. Thus you
- * can use this helper to iterate over threads in confidence that it will work
- * for both trace types.
- */
-export function threadsInTrace(traceParseData: TraceParseData): readonly ThreadData[] {
+export function threadsInRenderer(
+    rendererData: Renderer.RendererHandlerData, auctionWorkletsData: AuctionWorkletsData): readonly ThreadData[] {
   const foundThreads: ThreadData[] = [];
   // If we have Renderer threads, we prefer to use those. In the event that a
   // trace is a CPU Profile trace, we will never have Renderer threads, so we
   // know if there are no Renderer threads that we can fallback to using the
   // data from the SamplesHandler.
-  if (traceParseData.Renderer.processes.size) {
-    for (const [pid, process] of traceParseData.Renderer.processes) {
+  if (rendererData.processes.size) {
+    for (const [pid, process] of rendererData.processes) {
       for (const [tid, thread] of process.threads) {
-        const threadType = getThreadTypeForRendererThread(traceParseData, pid, thread);
+        const threadType = getThreadTypeForRendererThread(auctionWorkletsData, pid, thread);
         if (!thread.tree) {
           // Drop threads where we could not create the tree; this indicates
           // unexpected data and we won't be able to support all the UI
@@ -74,11 +70,33 @@ export function threadsInTrace(traceParseData: TraceParseData): readonly ThreadD
           entries: thread.entries,
           tree: thread.tree,
           type: threadType,
-          entryToNode: traceParseData.Renderer.entryToNode,
+          entryToNode: rendererData.entryToNode,
         });
       }
     }
-  } else if (traceParseData.Samples.profilesInProcess.size) {
+  }
+  return foundThreads;
+}
+
+/**
+ * Given trace parsed data, this helper will return a high level array of
+ * ThreadData. This is useful because it allows you to get a list of threads
+ * regardless of if the trace is a CPU Profile or a Tracing profile. Thus you
+ * can use this helper to iterate over threads in confidence that it will work
+ * for both trace types.
+ */
+export function threadsInTrace(traceParseData: TraceParseData): readonly ThreadData[] {
+  // If we have Renderer threads, we prefer to use those. In the event that a
+  // trace is a CPU Profile trace, we will never have Renderer threads, so we
+  // know if there are no Renderer threads that we can fallback to using the
+  // data from the SamplesHandler.
+  const threadsFromRenderer = threadsInRenderer(traceParseData.Renderer, traceParseData.AuctionWorklets);
+  if (threadsFromRenderer.length) {
+    return threadsFromRenderer;
+  }
+
+  const foundThreads: ThreadData[] = [];
+  if (traceParseData.Samples.profilesInProcess.size) {
     for (const [pid, process] of traceParseData.Samples.profilesInProcess) {
       for (const [tid, thread] of process) {
         if (!thread.profileTree) {

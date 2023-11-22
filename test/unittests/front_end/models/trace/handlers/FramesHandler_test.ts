@@ -4,17 +4,46 @@
 
 const {assert} = chai;
 import * as TraceEngine from '../../../../../../front_end/models/trace/trace.js';
-import {describeWithMockConnection} from '../../../helpers/MockConnection.js';
 import {TraceLoader} from '../../../helpers/TraceLoader.js';
+import {describeWithMockConnection} from '../../../helpers/MockConnection.js';
 
-describeWithMockConnection('new-TimelineFrameModel', () => {
+async function processTrace(events: readonly TraceEngine.Types.TraceEvents.TraceEventData[]): Promise<void> {
+  // The FramesHandler depends on a few other handlers, so we run all of them as part of these tests.
+  const handlersInOrder: TraceEngine.Handlers.Types.TraceEventHandlerName[] = [
+    'Meta',
+    'Samples',
+    'AuctionWorklets',
+    'Renderer',
+    'LayerTreeHandler',
+    'Frames',
+  ];
+  for (const handlerName of handlersInOrder) {
+    const handler = TraceEngine.Handlers.ModelHandlers[handlerName];
+    handler.reset();
+    if ('initialize' in handler) {
+      handler.initialize();
+    }
+  }
+  for (const event of events) {
+    for (const handlerName of handlersInOrder) {
+      TraceEngine.Handlers.ModelHandlers[handlerName].handleEvent(event);
+    }
+  }
+  for (const handlerName of handlersInOrder) {
+    const handler = TraceEngine.Handlers.ModelHandlers[handlerName];
+    if ('finalize' in handler) {
+      await handler.finalize();
+    }
+  }
+}
+
+describeWithMockConnection('FramesHandler', () => {
   it('can parse out a trace and return the frames', async function() {
     const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
-    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const frameModel = new TraceEngine.Frames.TimelineFrameModel.TimelineFrameModel(rawEvents, traceParsedData);
+    await processTrace(rawEvents);
 
-    const parsedFrames = frameModel.getFrames();
-    assert.lengthOf(frameModel.getFrames(), 18);
+    const parsedFrames = TraceEngine.Handlers.ModelHandlers.Frames.data().frames;
+    assert.lengthOf(parsedFrames, 18);
 
     // Assert a couple of frames to check the data, including one that is partial and was dropped.
     assert.strictEqual(parsedFrames[0].startTime, 122411104714);
@@ -34,11 +63,10 @@ describeWithMockConnection('new-TimelineFrameModel', () => {
     this.timeout(20_000);
 
     const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-with-advanced-instrumentation.json.gz');
-    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev-with-advanced-instrumentation.json.gz');
-    const frameModel = new TraceEngine.Frames.TimelineFrameModel.TimelineFrameModel(rawEvents, traceParsedData);
-
-    assert.lengthOf(frameModel.getFrames(), 25);
-    const frameWithPaints = frameModel.getFrames().at(2);
+    await processTrace(rawEvents);
+    const parsedFrames = TraceEngine.Handlers.ModelHandlers.Frames.data().frames;
+    assert.lengthOf(parsedFrames, 25);
+    const frameWithPaints = parsedFrames.at(2);
     if (!frameWithPaints) {
       throw new Error('Could not find frame at index 2');
     }

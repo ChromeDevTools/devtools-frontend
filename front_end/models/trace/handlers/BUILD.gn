@@ -10,6 +10,7 @@ devtools_module("handlers") {
   sources = [
     "AnimationHandler.ts",
     "AuctionWorkletsHandler.ts",
+    "FramesHandler.ts",
     "GPUHandler.ts",
     "InitiatorsHandler.ts",
     "LargestImagePaintHandler.ts",

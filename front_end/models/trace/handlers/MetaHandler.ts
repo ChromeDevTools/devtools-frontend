@@ -316,7 +316,7 @@ export async function finalize(): Promise<void> {
   handlerState = HandlerState.FINALIZED;
 }
 
-type MetaHandlerData = {
+export type MetaHandlerData = {
   traceBounds: Types.Timing.TraceWindow,
   browserProcessId: Types.TraceEvents.ProcessID,
   browserThreadId: Types.TraceEvents.ThreadID,

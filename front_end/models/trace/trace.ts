@@ -4,7 +4,6 @@
 
 import * as EntriesFilter from './EntriesFilter.js';
 import * as Extras from './extras/extras.js';
-import * as Frames from './frames/frames.js';
 import * as Handlers from './handlers/handlers.js';
 import * as Helpers from './helpers/helpers.js';
 // Purposefully use a shorter name here so references to this are
@@ -19,7 +18,6 @@ import * as Types from './types/types.js';
 export {
   EntriesFilter,
   Extras,
-  Frames,
   Handlers,
   Helpers,
   Legacy,

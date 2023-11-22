@@ -9,6 +9,7 @@ ts_library("handlers") {
   sources = [
     "AnimationHandler_test.ts",
     "AuctionWorkletsHandler_test.ts",
+    "FramesHandler_test.ts",
     "GPUHandler_test.ts",
     "InitiatorsHandler_test.ts",
     "LargestImagePaintHandler_test.ts",

@@ -35,7 +35,6 @@ group("front_end") {
     "models/timeline_model",
     "models/trace",
     "models/trace/extras",
-    "models/trace/frames",
     "models/trace/handlers",
     "models/trace/helpers",
     "models/trace/root-causes",

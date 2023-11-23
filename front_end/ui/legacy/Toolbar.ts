@@ -1085,7 +1085,7 @@ export class ToolbarSettingComboBox extends ToolbarComboBox {
 export class ToolbarCheckbox extends ToolbarItem<void> {
   inputElement: HTMLInputElement;
 
-  constructor(text: string, tooltip?: string, listener?: ((arg0: MouseEvent) => void)) {
+  constructor(text: string, tooltip?: string, listener?: ((arg0: MouseEvent) => void), jslogContext?: string) {
     super(CheckboxLabel.create(text));
     this.element.classList.add('checkbox');
     this.inputElement = (this.element as CheckboxLabel).checkboxElement;
@@ -1096,6 +1096,9 @@ export class ToolbarCheckbox extends ToolbarItem<void> {
     }
     if (listener) {
       this.inputElement.addEventListener('click', listener, false);
+    }
+    if (jslogContext) {
+      this.inputElement.setAttribute('jslog', `${VisualLogging.toggle().track({change: true}).context(jslogContext)}`);
     }
   }
 
@@ -1119,8 +1122,7 @@ export class ToolbarCheckbox extends ToolbarItem<void> {
 
 export class ToolbarSettingCheckbox extends ToolbarCheckbox {
   constructor(setting: Common.Settings.Setting<boolean>, tooltip?: string, alternateTitle?: string) {
-    super(alternateTitle || setting.title() || '', tooltip);
-    this.inputElement.setAttribute('jslog', `${VisualLogging.toggle().track({click: true}).context(setting.name)}`);
+    super(alternateTitle || setting.title() || '', tooltip, undefined, setting.name);
     bindCheckbox(this.inputElement, setting);
   }
 }

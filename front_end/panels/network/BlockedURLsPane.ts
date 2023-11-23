@@ -7,6 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import blockedURLsPaneStyles from './blockedURLsPane.css.js';
 
@@ -71,6 +72,8 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   constructor(updateThrottler: Common.Throttler.Throttler) {
     super(true);
 
+    this.element.setAttribute('jslog', `${VisualLogging.panel().context('network.blocked-urls')}`);
+
     this.manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
     this.manager.addEventListener(SDK.NetworkManager.MultitargetNetworkManager.Events.BlockedPatternsChanged, () => {
       void this.update();
@@ -78,13 +81,16 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
 
     this.toolbar = new UI.Toolbar.Toolbar('', this.contentElement);
     this.enabledCheckbox = new UI.Toolbar.ToolbarCheckbox(
-        i18nString(UIStrings.enableNetworkRequestBlocking), undefined, this.toggleEnabled.bind(this));
+        i18nString(UIStrings.enableNetworkRequestBlocking), undefined, this.toggleEnabled.bind(this),
+        'network.enable-request-blocking');
     this.toolbar.appendToolbarItem(this.enabledCheckbox);
     this.toolbar.appendSeparator();
-    const addButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.addPattern), 'plus');
+    const addButton = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.addPattern), 'plus', undefined, 'network.add-blocked-url-pattern');
     addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.addButtonClicked, this);
     this.toolbar.appendToolbarItem(addButton);
-    const clearButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.removeAllPatterns), 'clear');
+    const clearButton = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.removeAllPatterns), 'clear', undefined, 'network.clear-blocked-url-patterns');
     clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.removeAll, this);
     this.toolbar.appendToolbarItem(clearButton);
 
@@ -120,6 +126,8 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     const element = this.contentElement.createChild('div', 'no-blocked-urls');
     const addButton =
         UI.UIUtils.createTextButton(i18nString(UIStrings.addPattern), this.addButtonClicked.bind(this), 'add-button');
+    addButton.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('network.add-blocked-url-pattern')}`);
     UI.ARIAUtils.setLabel(addButton, i18nString(UIStrings.addNetworkRequestBlockingPattern));
     element.appendChild(
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.networkRequestsAreNotBlockedS, {PH1: addButton}));
@@ -145,6 +153,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     checkbox.type = 'checkbox';
     checkbox.checked = pattern.enabled;
     checkbox.disabled = !editable;
+    checkbox.setAttribute('jslog', `${VisualLogging.toggle().track({change: true})}`);
     element.createChild('div', 'blocked-url-label').textContent = pattern.url;
     element.createChild('div', 'blocked-url-count').textContent = i18nString(UIStrings.dBlocked, {PH1: count});
     if (editable) {

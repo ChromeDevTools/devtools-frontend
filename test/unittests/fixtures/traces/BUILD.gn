@@ -57,6 +57,7 @@ copy_to_gen("traces") {
     "threejs-gpu.json.gz",
     "timer-initiators.json.gz",
     "timings-track.json.gz",
+    "two-functions-recursion.json.gz",
     "two-workers.json.gz",
     "user-timings-complex.json.gz",
     "user-timings.json.gz",

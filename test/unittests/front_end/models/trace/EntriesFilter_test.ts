@@ -153,4 +153,75 @@ describe('EntriesFilter', function() {
     });
     assert.isTrue(allFibonacciInStackAreHidden, 'Some fibonacci calls are still visible');
   });
+
+  it('supports collapsing all repeating entries among descendants', async function() {
+    const data = await TraceLoader.traceEngine(this, 'two-functions-recursion.json.gz');
+    const mainThread = getMainThread(data.Renderer);
+    /** This stack looks roughly like so (with some events omitted):
+     * ======== onclick ============
+     * =========== foo =============
+     *               ===== foo2 ====
+     *               ===== foo =====
+     *               ==== foo2 =====
+     *               ===== foo =====
+     *               ==== foo2 =====
+     *               ===== foo =====
+     *
+     * In this test we want to test the user collapsing all descendant foo calls of the first first one,
+     * which should have the effect of keeping the first foo visible, but removing all of its other calls:
+     * ======== onclick ============
+     * =========== foo =============
+     *               ===== foo2 ====                  << all foo except first removed
+     *               ==== foo2 =====
+     *               ==== foo2 =====
+     **/
+
+    const firstFooCallEntry = findFirstEntry(mainThread.entries, entry => {
+      return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'foo' &&
+          entry.dur === 233;
+    });
+
+    // Gather the foo() and foo2() calls under and including the first foo entry, by finding all
+    // the calls whose end time is less than or equal to the end time of the first `foo` function.
+    const firstFooCallEndTime = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(firstFooCallEntry).endTime;
+    const fooCalls = mainThread.entries.filter(entry => {
+      const isFooCall = TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'foo';
+      if (!isFooCall) {
+        return false;
+      }
+      const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(entry);
+      return endTime <= firstFooCallEndTime;
+    });
+
+    const foo2Calls = mainThread.entries.filter(entry => {
+      const isFoo2Call = TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.functionName === 'foo2';
+      if (!isFoo2Call) {
+        return false;
+      }
+      const {endTime} = TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(entry);
+      return endTime <= firstFooCallEndTime;
+    });
+
+    const stack = new TraceEngine.EntriesFilter.EntriesFilter(data.Renderer.entryToNode);
+    stack.applyAction(
+        {type: TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS, entry: firstFooCallEntry});
+
+    // We collapsed identical descendants after the first `foo` entry - so it should not be included in the invisible list itself,
+    // but all foo() calls below it in the stack should now be invisible.
+    const allFooExceptFirstInStackAreHidden = fooCalls.every((fibCall, i) => {
+      if (i === 0) {
+        // First foo should not be invisible.
+        return !stack.invisibleEntries().includes(fibCall);
+      }
+      return stack.invisibleEntries().includes(fibCall);
+    });
+    assert.isTrue(
+        allFooExceptFirstInStackAreHidden, 'First foo is invisible or some following foo calls are still visible');
+
+    // All of the foo2 calls that were inbetween foo calls should still be visible.
+    const allFoo2InStackAreVisible = foo2Calls.every(fibCall => {
+      return !stack.invisibleEntries().includes(fibCall);
+    });
+    assert.isTrue(allFoo2InStackAreVisible, 'Some foo2 calls are invisible');
+  });
 });

@@ -9,8 +9,6 @@ import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
-    "cspViolationsListView.css",
-    "cspViolationsView.css",
     "issuesPane.css",
     "issuesTree.css",
   ]
@@ -31,9 +29,6 @@ devtools_module("issues") {
     "AffectedSourcesView.ts",
     "AffectedTrackingSitesView.ts",
     "AttributionReportingIssueDetailsView.ts",
-    "CSPViolationsListView.ts",
-    "CSPViolationsView.ts",
-    "ComboBoxOfCheckBoxes.ts",
     "CorsIssueDetailsView.ts",
     "GenericIssueDetailsView.ts",
     "HiddenIssuesRow.ts",

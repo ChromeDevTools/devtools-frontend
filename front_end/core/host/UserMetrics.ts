@@ -966,7 +966,6 @@ export enum DevtoolsExperiments {
   'timelineV8RuntimeCallStats' = 28,
   'wasmDWARFDebugging' = 31,
   'APCA' = 39,
-  'cspViolationsView' = 40,
   'fontEditor' = 41,
   'fullAccessibilityTree' = 42,
   'ignoreListJSFramesOnTimeline' = 43,

@@ -13,7 +13,6 @@ node_ts_library("issues") {
     "cookie-domain-attribute-non-ascii_test.ts",
     "cors-issues_test.ts",
     "cors-private-network-issues_test.ts",
-    "csp-violations-tab_test.ts",
     "deprecation-issues_test.ts",
     "expect-ct-issues_test.ts",
     "generic-issues_test.ts",

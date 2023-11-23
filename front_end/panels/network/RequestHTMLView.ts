@@ -57,7 +57,7 @@ export class RequestHTMLView extends UI.Widget.VBox {
     const iframe = document.createElement('iframe');
     iframe.className = 'html-preview-frame';
     iframe.setAttribute('sandbox', '');  // Forbid to run JavaScript and set unique origin.
-    iframe.setAttribute('csp', 'default-src \'none\';style-src \'unsafe-inline\'');
+    iframe.setAttribute('csp', 'default-src \'none\';img-src data:;style-src \'unsafe-inline\'');
     iframe.setAttribute('src', this.dataURL);
     iframe.tabIndex = -1;
     UI.ARIAUtils.markAsPresentation(iframe);

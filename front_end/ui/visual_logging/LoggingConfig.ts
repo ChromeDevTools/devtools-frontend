@@ -91,10 +91,13 @@ enum VisualElements {
   /* 68 used to be DeveloperResourcesPanel, but free to grab now */
   TableHeader = 69,
   TableCell = 70,
+  StylesComputedPane = 71,
 }
 
+export type VisualElementName = keyof typeof VisualElements;
+
 function resolveVe(ve: string): number {
-  return VisualElements[ve as keyof typeof VisualElements] || 0;
+  return VisualElements[ve as VisualElementName] ?? 0;
 }
 
 export function parseJsLog(jslog: string): LoggingConfig {
@@ -153,8 +156,8 @@ export interface ConfigStringBuilder {
   toString: () => string;
 }
 
-export function makeConfigStringBuilder(veName: string): ConfigStringBuilder {
-  const components = [veName];
+export function makeConfigStringBuilder(veName: VisualElementName): ConfigStringBuilder {
+  const components: string[] = [veName];
   return {
     context: function(value: string|number): ConfigStringBuilder {
       components.push(`context: ${value}`);

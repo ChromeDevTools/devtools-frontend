@@ -179,8 +179,7 @@ function localizeType(sourceType: SourceType): string {
   }
 }
 
-const DOGFOODFEEDBACK_URL =
-    'https://docs.google.com/forms/d/e/1FAIpQLSePjpPA0BUSbyG_xrsLR_HtrVixLqu5gAKOxgV-YfztVTf8Vg/viewform';
+const DOGFOODFEEDBACK_URL = 'http://go/console-insights-experiment-general-feedback';
 
 function buildRatingFormLink(
     rating: 'Positive'|'Negative', comment: string, explanation: string, consoleMessage: string, stackTrace: string,

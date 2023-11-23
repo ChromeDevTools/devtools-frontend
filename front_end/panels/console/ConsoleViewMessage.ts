@@ -1305,9 +1305,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     this.consoleRowWrapper.appendChild(this.contentElement());
 
     if (UI.ActionRegistry.ActionRegistry.instance().hasAction(EXPLAIN_HOVER_ACTION_ID) && this.shouldShowInsights()) {
-      if (document.documentElement.matches('.aida-available')) {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsoleMessageShown);
-      }
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsoleMessageShown);
       this.consoleRowWrapper.append(this.#createHoverButton());
     }
 

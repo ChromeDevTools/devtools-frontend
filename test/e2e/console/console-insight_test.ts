@@ -20,6 +20,13 @@ describe('ConsoleInsight', async function() {
         cb({"response": JSON.stringify(${JSON.stringify(response)})});
       }
     `);
+    await frontend.goto(frontend.url() + '&enableAida=true', {
+      waitUntil: 'networkidle0',
+    });
+    await frontend.evaluate(`(async () => {
+      const Root = await import('./core/root/root.js');
+      Root.Runtime.experiments.setEnabled('consoleInsights', true);
+    })()`);
     await frontend.goto(frontend.url() + '&enableAida=true');
   }
 

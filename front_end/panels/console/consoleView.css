@@ -530,15 +530,15 @@ devtools-console-insight {
   display: block;
 }
 
-.aida-available .console-message-wrapper:not(.has-insight):hover .hover-button,
-.aida-available .console-message-wrapper:not(.has-insight):focus .hover-button {
+.console-message-wrapper:not(.has-insight):hover .hover-button,
+.console-message-wrapper:not(.has-insight):focus .hover-button {
   display: block;
 }
 
-.aida-available .console-message-wrapper:not(.has-insight):hover .hover-button:hover,
-.aida-available .console-message-wrapper:not(.has-insight):focus .hover-button:hover,
-.aida-available .console-message-wrapper:not(.has-insight):hover .hover-button:focus,
-.aida-available .console-message-wrapper:not(.has-insight):focus .hover-button:focus {
+.console-message-wrapper:not(.has-insight):hover .hover-button:hover,
+.console-message-wrapper:not(.has-insight):focus .hover-button:hover,
+.console-message-wrapper:not(.has-insight):hover .hover-button:focus,
+.console-message-wrapper:not(.has-insight):focus .hover-button:focus {
   display: inline-flex;
 }
 

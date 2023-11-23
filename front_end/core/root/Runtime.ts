@@ -315,6 +315,7 @@ export enum ExperimentName {
   TRACK_CONTEXT_MENU = 'trackContextMenu',
   AUTOFILL_VIEW = 'autofillView',
   INDENTATION_MARKERS_TEMP_DISABLE = 'sourcesFrameIndentationMarkersTemporarilyDisable',
+  CONSOLE_INSIGHTS = 'consoleInsights',
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

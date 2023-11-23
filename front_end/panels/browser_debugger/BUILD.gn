@@ -32,6 +32,7 @@ devtools_module("browser_debugger") {
     "../../panels/event_listeners:bundle",
     "../../panels/sources:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/visual_logging:bundle",
   ]
 }
 

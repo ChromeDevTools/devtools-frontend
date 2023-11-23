@@ -38,6 +38,7 @@ import * as LinearMemoryInspector from '../../ui/components/linear_memory_inspec
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import scopeChainSidebarPaneStyles from './scopeChainSidebarPane.css.js';
 
@@ -90,6 +91,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   private constructor() {
     super(true);
 
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('debugger-scope')}`);
     this.treeOutline = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionsTreeOutline();
 
     this.treeOutline.setShowSelectionOnKeyboardFocus(/* show */ true);

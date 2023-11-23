@@ -37,9 +37,10 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
 
-import {NavigatorView, type NavigatorUISourceCodeTreeNode} from './NavigatorView.js';
+import {type NavigatorUISourceCodeTreeNode, NavigatorView} from './NavigatorView.js';
 import sourcesNavigatorStyles from './sourcesNavigator.css.js';
 
 const UIStrings = {
@@ -109,6 +110,7 @@ export class NetworkNavigatorView extends NavigatorView {
     // Record the sources tool load time after the file navigator has loaded.
     Host.userMetrics.panelLoaded('sources', 'DevTools.Launch.Sources');
     SDK.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('navigator-network')}`);
   }
 
   override wasShown(): void {
@@ -189,6 +191,7 @@ export class FilesNavigatorView extends NavigatorView {
         this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
       }
     });
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('navigator-files')}`);
   }
 
   static instance(): FilesNavigatorView {
@@ -232,6 +235,7 @@ export class OverridesNavigatorView extends NavigatorView {
     this.toolbar = new UI.Toolbar.Toolbar('navigator-toolbar');
 
     this.contentElement.insertBefore(this.toolbar.element, this.contentElement.firstChild);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('navigator-overrides')}`);
 
     Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
         Persistence.NetworkPersistenceManager.Events.ProjectChanged, this.updateProjectAndUI, this);
@@ -324,6 +328,7 @@ export class ContentScriptsNavigatorView extends NavigatorView {
   <div>${i18nString(UIStrings.explainContentScripts)}</div><br />
   ${UI.XLink.XLink.create('https://developer.chrome.com/extensions/content_scripts', i18nString(UIStrings.learnMore))}
   `);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('navigator-contentScripts')}`);
   }
 
   static instance(opts: {
@@ -362,6 +367,7 @@ export class SnippetsNavigatorView extends NavigatorView {
           Snippets.ScriptSnippetFileSystem.findSnippetsProject(), '' as Platform.DevToolsPath.EncodedPathString);
     });
     toolbar.appendToolbarItem(newButton);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('navigator-snippets')}`);
     this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
   }
 

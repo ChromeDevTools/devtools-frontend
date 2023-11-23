@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CategorizedBreakpointsSidebarPane} from './CategorizedBreakpointsSidebarPane.js';
 
@@ -17,6 +18,7 @@ export class EventListenerBreakpointsSidebarPane extends CategorizedBreakpointsS
     breakpoints = breakpoints.concat(nonDomBreakpoints);
 
     super(breakpoints, 'sources.eventListenerBreakpoints', Protocol.Debugger.PausedEventReason.EventListener);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('debugger-event-breakpoints')}`);
   }
 
   static instance(): EventListenerBreakpointsSidebarPane {

@@ -45,7 +45,7 @@ enum VisualElements {
   JumpToSource = 22,
   MetricsBox = 23,
   MetricsBoxPart = 24,
-  DOMBreakpointsPane = 25,
+  /* 25 used to be DOMBreakpointsPane, but free to grab now */
   DOMBreakpoint = 26,
   ElementPropertiesPane = 27,
   EventListenersPane = 28,
@@ -92,6 +92,7 @@ enum VisualElements {
   TableHeader = 69,
   TableCell = 70,
   StylesComputedPane = 71,
+  Pane = 72,
 }
 
 export type VisualElementName = keyof typeof VisualElements;

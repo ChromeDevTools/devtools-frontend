@@ -4,6 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {CategorizedBreakpointsSidebarPane} from './CategorizedBreakpointsSidebarPane.js';
 
@@ -14,6 +15,7 @@ export class CSPViolationBreakpointsSidebarPane extends CategorizedBreakpointsSi
     const breakpoints: SDK.DOMDebuggerModel.CSPViolationBreakpoint[] =
         SDK.DOMDebuggerModel.DOMDebuggerManager.instance().cspViolationBreakpoints();
     super(breakpoints, 'sources.cspViolationBreakpoints', Protocol.Debugger.PausedEventReason.CSPViolation);
+    this.contentElement.setAttribute('jslog', `${VisualLogging.pane().context('debugger-csp-breakpoints')}`);
   }
 
   static instance(): CSPViolationBreakpointsSidebarPane {

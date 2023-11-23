@@ -37,7 +37,6 @@ const cssGridEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssGridE
 const cssLayersPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssLayersPane');
 const cssShadowEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssShadowEditor');
 const domBreakpoint = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpoint');
-const domBreakpointsPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpointsPane');
 const dropDown = LoggingConfig.makeConfigStringBuilder.bind(null, 'DropDown');
 const elementsBreadcrumbs = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementsBreadcrumbs');
 const elementClassesPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementClassesPane');
@@ -59,6 +58,7 @@ const menu = LoggingConfig.makeConfigStringBuilder.bind(null, 'Menu');
 const metricsBox = LoggingConfig.makeConfigStringBuilder.bind(null, 'MetricsBox');
 const next = LoggingConfig.makeConfigStringBuilder.bind(null, 'Next');
 const paletteColorShades = LoggingConfig.makeConfigStringBuilder.bind(null, 'PaletteColorShades');
+const pane = LoggingConfig.makeConfigStringBuilder.bind(null, 'Pane');
 const panel = LoggingConfig.makeConfigStringBuilder.bind(null, 'Panel');
 const panelTabHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'PanelTabHeader');
 const preview = LoggingConfig.makeConfigStringBuilder.bind(null, 'Preview');
@@ -112,7 +112,6 @@ export {
   cssLayersPane,
   cssShadowEditor,
   domBreakpoint,
-  domBreakpointsPane,
   dropDown,
   elementsBreadcrumbs,
   elementClassesPane,
@@ -134,6 +133,7 @@ export {
   metricsBox,
   next,
   paletteColorShades,
+  pane,
   panel,
   panelTabHeader,
   preview,

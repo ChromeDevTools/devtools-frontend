@@ -775,15 +775,27 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     // TODO(crbug.com/1469887): Change text/ui to the final designs when they are complete.
     contextMenu.headerSection().appendItem('Merge function', () => {
-      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterAction.MERGE_FUNCTION);
+      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterApplyAction.MERGE_FUNCTION);
     });
 
     contextMenu.headerSection().appendItem('Collapse function', () => {
-      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterAction.COLLAPSE_FUNCTION);
+      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_FUNCTION);
     });
 
-    contextMenu.headerSection().appendItem('Collapse repeating ancestors', () => {
-      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterAction.COLLAPSE_REPEATING_DESCENDANTS);
+    contextMenu.headerSection().appendItem('Collapse repeating descendants', () => {
+      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS);
+    });
+
+    contextMenu.headerSection().appendItem('Undo collapse function', () => {
+      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterUndoAction.UNDO_COLLAPSE_FUNCTION);
+    });
+
+    contextMenu.headerSection().appendItem('Undo collapse repeating descendants', () => {
+      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterUndoAction.UNDO_COLLAPSE_REPEATING_DESCENDANTS);
+    });
+
+    contextMenu.headerSection().appendItem('Undo all actions', () => {
+      dispatchTreeModifiedEvent(TraceEngine.EntriesFilter.FilterUndoAction.UNDO_ALL_ACTIONS);
     });
 
     contextMenu.defaultSection().appendAction('timeline.load-from-file');

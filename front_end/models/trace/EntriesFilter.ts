@@ -8,14 +8,46 @@ import * as Types from './types/types.js';
 
 type EntryToNodeMap = Map<Types.TraceEvents.TraceEntry, Helpers.TreeHelpers.TraceEntryNode>;
 
-export const enum FilterAction {
+export type FilterAction = FilterApplyAction|FilterUndoAction;
+
+export const enum FilterApplyAction {
   MERGE_FUNCTION = 'MERGE_FUNCTION',
   COLLAPSE_FUNCTION = 'COLLAPSE_FUNCTION',
   COLLAPSE_REPEATING_DESCENDANTS = 'COLLAPSE_REPEATING_DESCENDANTS',
 }
 
+// TODO(crbug.com/1469887): Implement UNDO_MERGE function when it's decided how to select merged function.
+export const enum FilterUndoAction {
+  UNDO_ALL_ACTIONS = 'UNDO_ALL_ACTIONS',
+  UNDO_COLLAPSE_FUNCTION = 'UNDO_COLLAPSE_FUNCTION',
+  UNDO_COLLAPSE_REPEATING_DESCENDANTS = 'UNDO_COLLAPSE_REPEATING_DESCENDANTS',
+}
+
+const filterApplyActionSet: Set<FilterApplyAction> = new Set([
+  FilterApplyAction.MERGE_FUNCTION,
+  FilterApplyAction.COLLAPSE_FUNCTION,
+  FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS,
+]);
+
+const filterUndoActionSet: Set<FilterUndoAction> = new Set([
+  FilterUndoAction.UNDO_ALL_ACTIONS,
+  FilterUndoAction.UNDO_COLLAPSE_FUNCTION,
+  FilterUndoAction.UNDO_COLLAPSE_REPEATING_DESCENDANTS,
+]);
+
+const actionToUndoActionMap: Map<FilterUndoAction, FilterApplyAction> = new Map([
+  [FilterUndoAction.UNDO_COLLAPSE_FUNCTION, FilterApplyAction.COLLAPSE_FUNCTION],
+  [FilterUndoAction.UNDO_COLLAPSE_REPEATING_DESCENDANTS, FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS],
+]);
+
+// Object passed from the frontend that can be either Undo or Apply filter action.
 export interface UserFilterAction {
   type: FilterAction;
+  entry: Types.TraceEvents.TraceEntry;
+}
+
+export interface UserApplyFilterAction {
+  type: FilterApplyAction;
   entry: Types.TraceEvents.TraceEntry;
 }
 
@@ -39,28 +71,56 @@ export class EntriesFilter {
   // re-generating this if the set of actions that have been applied has not
   // changed.
   #lastInvisibleEntries: Types.TraceEvents.TraceEntry[]|null = null;
-  #activeActions: UserFilterAction[] = [];
+  #activeActions: UserApplyFilterAction[] = [];
 
   constructor(entryToNode: EntryToNodeMap) {
     this.#entryToNode = entryToNode;
   }
 
   /**
-   * Applies an action to the visible tree. This will also clear the cache of
-   * invisible entries, ensuring that it will be recalculated with the latest set
-   * of actions.
+   * Adds or removes an action (filter) to/from activeActions
+   * array depending on the type of action.
    **/
   applyAction(action: UserFilterAction): void {
-    if (this.#actionIsActive(action)) {
-      // If the action is already active there is no reason to apply it again.
-      return;
+    if (/* FilterApplyActions */ this.isUserApplyFilterAction(action)) {
+      if (this.#actionIsActive(action)) {
+        // If the action is already active there is no reason to apply it again.
+        return;
+      }
+      this.#activeActions.push(action);
+    } else if (/* FilterUndoActions */ this.isFilterUndoAction(action.type)) {
+      this.#applyUndoAction(action.type, action.entry);
     }
-
-    this.#activeActions.push(action);
     // Clear the last list of invisible entries - this invalidates the cache and
     // ensures that the invisible list will be recalculated, which we have to do
     // now we have changed the list of actions.
     this.#lastInvisibleEntries = null;
+  }
+
+  /**
+   * If undo action is UNDO_ALL_ACTIONS, assign activeActions array to an empty one.
+   * Otherwise, get the action to remove from actionToUndoActionMap and remove it form the activeActions array.
+   * Afterwards, the FlameChart will be rerendered and activeActions will be reaplied without the removed action.
+   * **/
+  #applyUndoAction(action: FilterUndoAction, entry: Types.TraceEvents.TraceEntry): void {
+    switch (action) {
+      case FilterUndoAction.UNDO_ALL_ACTIONS: {
+        this.#activeActions = [];
+        break;
+      }
+      default: {
+        const actionToRemove = actionToUndoActionMap.get(action);
+        if (actionToRemove) {
+          this.removeActiveAction(
+              {
+                type: actionToRemove,
+                entry: entry,
+              },
+          );
+        }
+        break;
+      }
+    }
   }
 
   /**
@@ -72,23 +132,15 @@ export class EntriesFilter {
    * This is a no-op if the action is not active.
    **/
   removeActiveAction(action: UserFilterAction): void {
-    let removedAction = false;
     this.#activeActions = this.#activeActions.filter(activeAction => {
       if (activeAction.type === action.type && activeAction.entry === action.entry) {
-        removedAction = true;
         return false;
       }
       return true;
     });
-
-    if (removedAction) {
-      // If we found and removed an action, we need to clear the cache to force
-      // the set of invisible entries to be recalculcated.
-      this.#lastInvisibleEntries = null;
-    }
   }
 
-  #actionIsActive(action: UserFilterAction): boolean {
+  #actionIsActive(action: UserApplyFilterAction): boolean {
     return this.#activeActions.some(activeAction => {
       return action.entry === activeAction.entry && action.type === activeAction.type;
     });
@@ -125,7 +177,7 @@ export class EntriesFilter {
 
     for (const action of this.#activeActions) {
       switch (action.type) {
-        case FilterAction.MERGE_FUNCTION: {
+        case FilterApplyAction.MERGE_FUNCTION: {
           // The entry that was clicked on is merged into its parent. All its
           // children remain visible, so we just have to hide the entry that was
           // selected.
@@ -133,7 +185,7 @@ export class EntriesFilter {
           break;
         }
 
-        case FilterAction.COLLAPSE_FUNCTION: {
+        case FilterApplyAction.COLLAPSE_FUNCTION: {
           // The entry itself remains visible, but all of its ancestors are hidden.
           const entryNode = this.#entryToNode.get(action.entry);
           if (!entryNode) {
@@ -145,7 +197,7 @@ export class EntriesFilter {
           break;
         }
 
-        case FilterAction.COLLAPSE_REPEATING_DESCENDANTS: {
+        case FilterApplyAction.COLLAPSE_REPEATING_DESCENDANTS: {
           const entryNode = this.#entryToNode.get(action.entry);
           if (!entryNode) {
             // Invalid node was given, just ignore and move on.
@@ -215,5 +267,13 @@ export class EntriesFilter {
     }
 
     return repeatingNodes;
+  }
+
+  isUserApplyFilterAction(action: UserFilterAction): action is UserApplyFilterAction {
+    return filterApplyActionSet.has(action.type as FilterApplyAction);
+  }
+
+  isFilterUndoAction(action: FilterAction): action is FilterUndoAction {
+    return filterUndoActionSet.has(action as FilterUndoAction);
   }
 }

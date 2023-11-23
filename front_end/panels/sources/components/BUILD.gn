@@ -32,6 +32,7 @@ devtools_module("components") {
     "../../../ui/components/two_states_counter:bundle",
     "../../../ui/legacy/components/utils:bundle",
     "../../../ui/lit-html:bundle",
+    "../../../ui/visual_logging:bundle",
   ]
 }
 

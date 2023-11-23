@@ -14,7 +14,7 @@ export class InsightProvider {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.doAidaConversation(
           JSON.stringify({
             input,
-            client: 'GENERAL',
+            client: 'CHROME_DEVTOOLS',
           }),
           result => {
             console.timeEnd('request');

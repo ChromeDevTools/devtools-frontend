@@ -191,7 +191,7 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     if (!result) {
       return;
     }
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.WorkspaceDropFolder);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.WorkspaceSelectFolder);
     void UI.ViewManager.ViewManager.instance().showView('navigator-files');
   }
 

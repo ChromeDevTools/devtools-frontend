@@ -48,6 +48,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as MobileThrottling from '../mobile_throttling/mobile_throttling.js';
 
+import {TraceLoadEvent} from './BenchmarkEvents.js';
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
 import {Events, PerformanceModel, type WindowChangedEvent} from './PerformanceModel.js';
 import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
@@ -317,7 +318,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private cpuThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   private fileSelectorElement?: HTMLInputElement;
   private selection?: TimelineSelection|null;
-  private traceLoadStart!: number|null;
+  private traceLoadStart!: TraceEngine.Types.Timing.MilliSeconds|null;
   private primaryPageTargetPromiseCallback = (_target: SDK.Target.Target): void => {};
   // Note: this is technically unused, but we need it to define the promiseCallback function above.
   private primaryPageTargetPromise = new Promise<SDK.Target.Target>(res => {
@@ -1312,7 +1313,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (!this.loader) {
       this.statusPane.finish();
     }
-    this.traceLoadStart = performance.now();
+    this.traceLoadStart = TraceEngine.Types.Timing.MilliSeconds(performance.now());
     await this.loadingProgress(0);
   }
 
@@ -1449,8 +1450,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // for the first paint of the flamechart
     requestAnimationFrame(() => {
       setTimeout(() => {
-        const end = performance.now();
+        const end = TraceEngine.Types.Timing.MilliSeconds(performance.now());
         const measure = performance.measure('TraceLoad', {start, end});
+        const duration = TraceEngine.Types.Timing.MilliSeconds(measure.duration);
+        this.element.dispatchEvent(new TraceLoadEvent(duration));
         Host.userMetrics.performanceTraceLoad(measure);
       }, 0);
     });

@@ -241,20 +241,7 @@ export type EventTypes = {
   [Events.AfterDockSideChanged]: ChangeEvent,
 };
 
-let toggleDockActionDelegateInstance: ToggleDockActionDelegate;
-
 export class ToggleDockActionDelegate implements ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ToggleDockActionDelegate {
-    const {forceNew} = opts;
-    if (!toggleDockActionDelegateInstance || forceNew) {
-      toggleDockActionDelegateInstance = new ToggleDockActionDelegate();
-    }
-
-    return toggleDockActionDelegateInstance;
-  }
-
   handleAction(_context: Context, _actionId: string): boolean {
     DockController.instance().toggleDockSide();
     return true;

@@ -51,18 +51,7 @@ export class RecorderPanel extends UI.Panel.Panel {
   }
 }
 
-let recorderActionDelegateInstance: ActionDelegate;
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(
-      opts: {forceNew: boolean|null} = {forceNew: null},
-      ): ActionDelegate {
-    const {forceNew} = opts;
-    if (!recorderActionDelegateInstance || forceNew) {
-      recorderActionDelegateInstance = new ActionDelegate();
-    }
-    return recorderActionDelegateInstance;
-  }
-
   handleAction(
       _context: UI.Context.Context,
       actionId: Actions.RecorderActions,

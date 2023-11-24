@@ -1391,11 +1391,9 @@ export class CSSPropertyRevealer implements Common.Revealer.Revealer {
   }
 }
 
-let elementsActionDelegateInstance: ElementsActionDelegate;
-
 export class ElementsActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(context: UI.Context.Context, actionId: string): boolean {
-    const node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+    const node = context.flavor(SDK.DOMModel.DOMNode);
     if (!node) {
       return true;
     }
@@ -1441,17 +1439,6 @@ export class ElementsActionDelegate implements UI.ActionRegistration.ActionDeleg
       }
     }
     return false;
-  }
-
-  static instance(opts: {
-    forceNew: boolean|null,
-  }|undefined = {forceNew: null}): ElementsActionDelegate {
-    const {forceNew} = opts;
-    if (!elementsActionDelegateInstance || forceNew) {
-      elementsActionDelegateInstance = new ElementsActionDelegate();
-    }
-
-    return elementsActionDelegateInstance;
   }
 }
 

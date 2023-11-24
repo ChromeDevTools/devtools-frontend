@@ -141,7 +141,7 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'timeline.show-history',
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
   title: i18nLazyString(UIStrings.showRecentTimelineSessions),
@@ -172,7 +172,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   options: [
     {
@@ -206,7 +206,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.startProfilingAndReloadPage),
   async loadActionDelegate() {
     const Timeline = await loadTimelineModule();
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
   bindings: [
     {

@@ -616,10 +616,8 @@ export class CoverageView extends UI.Widget.VBox {
   }
 }
 
-let actionDelegateInstance: ActionDelegate;
-
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  handleAction(context: UI.Context.Context, actionId: string): boolean {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
     const coverageViewId = 'coverage';
     void UI.ViewManager.ViewManager.instance()
         .showView(coverageViewId, /** userGesture= */ false, /** omitFocus= */ true)
@@ -630,13 +628,6 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         .then(widget => this.innerHandleAction(widget as CoverageView, actionId));
 
     return true;
-  }
-  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): ActionDelegate {
-    const {forceNew} = opts;
-    if (!actionDelegateInstance || forceNew) {
-      actionDelegateInstance = new ActionDelegate();
-    }
-    return actionDelegateInstance;
   }
 
   private innerHandleAction(coverageView: CoverageView, actionId: string): void {

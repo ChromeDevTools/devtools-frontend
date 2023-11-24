@@ -142,10 +142,8 @@ export class InspectElementModeController implements SDK.TargetManager.SDKModelO
   }
 }
 
-let toggleSearchActionDelegateInstance: ToggleSearchActionDelegate;
-
 export class ToggleSearchActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  handleAction(context: UI.Context.Context, actionId: string): boolean {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
     if (Root.Runtime.Runtime.queryParam('isSharedWorker')) {
       return false;
     }
@@ -160,16 +158,5 @@ export class ToggleSearchActionDelegate implements UI.ActionRegistration.ActionD
       inspectElementModeController.captureScreenshotMode();
     }
     return true;
-  }
-
-  static instance(opts: {
-    forceNew: boolean|null,
-  }|undefined = {forceNew: null}): ToggleSearchActionDelegate {
-    const {forceNew} = opts;
-    if (!toggleSearchActionDelegateInstance || forceNew) {
-      toggleSearchActionDelegateInstance = new ToggleSearchActionDelegate();
-    }
-
-    return toggleSearchActionDelegateInstance;
   }
 }

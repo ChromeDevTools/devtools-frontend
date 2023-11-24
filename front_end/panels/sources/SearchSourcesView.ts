@@ -41,19 +41,7 @@ export class SearchSourcesView extends Search.SearchView.SearchView {
   }
 }
 
-let actionDelegateInstance: ActionDelegate;
-
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  }|undefined = {forceNew: null}): ActionDelegate {
-    const {forceNew} = opts;
-    if (!actionDelegateInstance || forceNew) {
-      actionDelegateInstance = new ActionDelegate();
-    }
-
-    return actionDelegateInstance;
-  }
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
     void this.showSearch();
     return true;

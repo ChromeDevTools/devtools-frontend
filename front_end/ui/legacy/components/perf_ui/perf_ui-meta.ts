@@ -62,7 +62,7 @@ UI.ActionRegistration.registerActionExtension({
   iconClass: UI.ActionRegistration.IconClass.BIN,
   async loadActionDelegate() {
     const PerfUI = await loadPerfUIModule();
-    return PerfUI.GCActionDelegate.GCActionDelegate.instance();
+    return new PerfUI.GCActionDelegate.GCActionDelegate();
   },
 });
 

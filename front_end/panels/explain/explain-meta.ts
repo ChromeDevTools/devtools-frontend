@@ -32,7 +32,7 @@ if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
     category: UI.ActionRegistration.ActionCategory.CONSOLE,
     async loadActionDelegate() {
       const Explain = await import('./explain.js');
-      return Explain.ActionDelegate.instance();
+      return new Explain.ActionDelegate();
     },
     title: i18nLazyString(UIStrings.explainThisMessage),
     contextTypes() {
@@ -46,7 +46,7 @@ if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
     category: UI.ActionRegistration.ActionCategory.CONSOLE,
     async loadActionDelegate() {
       const Explain = await import('./explain.js');
-      return Explain.ActionDelegate.instance();
+      return new Explain.ActionDelegate();
     },
     title: i18nLazyString(UIStrings.explainThisError),
     contextTypes() {
@@ -60,7 +60,7 @@ if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
     category: UI.ActionRegistration.ActionCategory.CONSOLE,
     async loadActionDelegate() {
       const Explain = await import('./explain.js');
-      return Explain.ActionDelegate.instance();
+      return new Explain.ActionDelegate();
     },
     title: i18nLazyString(UIStrings.explainThisWarning),
     contextTypes() {
@@ -74,7 +74,7 @@ if (Root.Runtime.Runtime.queryParam('enableAida') === 'true') {
     category: UI.ActionRegistration.ActionCategory.CONSOLE,
     async loadActionDelegate() {
       const Explain = await import('./explain.js');
-      return Explain.ActionDelegate.instance();
+      return new Explain.ActionDelegate();
     },
     title: i18nLazyString(UIStrings.explainThisMessage),
     contextTypes() {

@@ -102,21 +102,8 @@ export class QuickOpenImpl {
   }
 }
 
-let showActionDelegateInstance: ShowActionDelegate;
-
 export class ShowActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ShowActionDelegate {
-    const {forceNew} = opts;
-    if (!showActionDelegateInstance || forceNew) {
-      showActionDelegateInstance = new ShowActionDelegate();
-    }
-
-    return showActionDelegateInstance;
-  }
-
-  handleAction(context: UI.Context.Context, actionId: string): boolean {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
       case 'quickOpen.show':
         QuickOpenImpl.show('');

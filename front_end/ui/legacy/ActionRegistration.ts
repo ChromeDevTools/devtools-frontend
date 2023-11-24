@@ -457,7 +457,7 @@ export interface ActionRegistration {
    *   <...>
    *    async loadActionDelegate() {
    *      const Elements = await loadElementsModule();
-   *      return Elements.ElementsPanel.ElementsActionDelegate.instance();
+   *      return new Elements.ElementsPanel.ElementsActionDelegate();
    *    },
    *   <...>
    *  });

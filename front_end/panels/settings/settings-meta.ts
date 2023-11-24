@@ -120,7 +120,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.settings),
   async loadActionDelegate() {
     const Settings = await loadSettingsModule();
-    return Settings.SettingsScreen.ActionDelegate.instance();
+    return new Settings.SettingsScreen.ActionDelegate();
   },
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_SETTINGS_GEAR,
   bindings: [
@@ -156,7 +156,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.documentation),
   async loadActionDelegate() {
     const Settings = await loadSettingsModule();
-    return Settings.SettingsScreen.ActionDelegate.instance();
+    return new Settings.SettingsScreen.ActionDelegate();
   },
 });
 
@@ -166,7 +166,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.shortcuts),
   async loadActionDelegate() {
     const Settings = await loadSettingsModule();
-    return Settings.SettingsScreen.ActionDelegate.instance();
+    return new Settings.SettingsScreen.ActionDelegate();
   },
   bindings: [
     {

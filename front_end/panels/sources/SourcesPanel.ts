@@ -1323,19 +1323,7 @@ export class DebuggerPausedDetailsRevealer implements Common.Revealer.Revealer {
   }
 }
 
-let revealingActionDelegateInstance: RevealingActionDelegate;
-
 export class RevealingActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): RevealingActionDelegate {
-    const {forceNew} = opts;
-    if (!revealingActionDelegateInstance || forceNew) {
-      revealingActionDelegateInstance = new RevealingActionDelegate();
-    }
-
-    return revealingActionDelegateInstance;
-  }
   handleAction(context: UI.Context.Context, actionId: string): boolean {
     const panel = SourcesPanel.instance();
     if (!panel.ensureSourcesViewVisible()) {
@@ -1377,19 +1365,7 @@ export class RevealingActionDelegate implements UI.ActionRegistration.ActionDele
   }
 }
 
-let actionDelegateInstance: ActionDelegate;
-
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ActionDelegate {
-    const {forceNew} = opts;
-    if (!actionDelegateInstance || forceNew) {
-      actionDelegateInstance = new ActionDelegate();
-    }
-
-    return actionDelegateInstance;
-  }
   handleAction(context: UI.Context.Context, actionId: string): boolean {
     const panel = SourcesPanel.instance();
     switch (actionId) {
@@ -1418,11 +1394,11 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         return true;
       }
       case 'debugger.evaluate-selection': {
-        const frame = UI.Context.Context.instance().flavor(UISourceCodeFrame);
+        const frame = context.flavor(UISourceCodeFrame);
         if (frame) {
           const {state: editorState} = frame.textEditor;
           let text = editorState.sliceDoc(editorState.selection.main.from, editorState.selection.main.to);
-          const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
+          const executionContext = context.flavor(SDK.RuntimeModel.ExecutionContext);
           const consoleModel = executionContext?.target().model(SDK.ConsoleModel.ConsoleModel);
           if (executionContext && consoleModel) {
             const message = consoleModel.addCommandMessage(executionContext, text);

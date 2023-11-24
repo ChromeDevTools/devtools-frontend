@@ -203,7 +203,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.showStyles),
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
-    return Elements.ElementsPanel.ElementsActionDelegate.instance();
+    return new Elements.ElementsPanel.ElementsActionDelegate();
   },
 });
 
@@ -213,7 +213,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.showComputedStyles),
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
-    return Elements.ElementsPanel.ElementsActionDelegate.instance();
+    return new Elements.ElementsPanel.ElementsActionDelegate();
   },
 });
 
@@ -277,7 +277,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.hideElement),
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
-    return Elements.ElementsPanel.ElementsActionDelegate.instance();
+    return new Elements.ElementsPanel.ElementsActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Elements => [Elements.ElementsPanel.ElementsPanel]);
@@ -295,7 +295,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.toggleEyeDropper),
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
-    return Elements.ElementsPanel.ElementsActionDelegate.instance();
+    return new Elements.ElementsPanel.ElementsActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Elements => [Elements.ColorSwatchPopoverIcon.ColorSwatchPopoverIcon]);
@@ -313,7 +313,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.editAsHtml),
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
-    return Elements.ElementsPanel.ElementsActionDelegate.instance();
+    return new Elements.ElementsPanel.ElementsActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Elements => [Elements.ElementsPanel.ElementsPanel]);
@@ -331,7 +331,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.duplicateElement),
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
-    return Elements.ElementsPanel.ElementsActionDelegate.instance();
+    return new Elements.ElementsPanel.ElementsActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Elements => [Elements.ElementsPanel.ElementsPanel]);
@@ -349,7 +349,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.copyStyles),
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
-    return Elements.ElementsPanel.ElementsActionDelegate.instance();
+    return new Elements.ElementsPanel.ElementsActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Elements => [Elements.ElementsPanel.ElementsPanel]);
@@ -372,7 +372,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.undo),
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
-    return Elements.ElementsPanel.ElementsActionDelegate.instance();
+    return new Elements.ElementsPanel.ElementsActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Elements => [Elements.ElementsPanel.ElementsPanel]);
@@ -395,7 +395,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.redo),
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
-    return Elements.ElementsPanel.ElementsActionDelegate.instance();
+    return new Elements.ElementsPanel.ElementsActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Elements => [Elements.ElementsPanel.ElementsPanel]);
@@ -416,7 +416,7 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'elements.capture-area-screenshot',
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
-    return Elements.InspectElementModeController.ToggleSearchActionDelegate.instance();
+    return new Elements.InspectElementModeController.ToggleSearchActionDelegate();
   },
   condition: Root.Runtime.ConditionName.CAN_DOCK,
   title: i18nLazyString(UIStrings.captureAreaScreenshot),
@@ -429,7 +429,7 @@ UI.ActionRegistration.registerActionExtension({
   toggleable: true,
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
-    return Elements.InspectElementModeController.ToggleSearchActionDelegate.instance();
+    return new Elements.InspectElementModeController.ToggleSearchActionDelegate();
   },
   title: i18nLazyString(UIStrings.selectAnElementInThePageTo),
   iconClass: UI.ActionRegistration.IconClass.LARGEICON_NODE_SEARCH,
@@ -452,7 +452,7 @@ UI.ActionRegistration.registerActionExtension({
   iconClass: UI.ActionRegistration.IconClass.PLUS,
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
-    return Elements.StylesSidebarPane.ActionDelegate.instance();
+    return new Elements.StylesSidebarPane.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Elements => [Elements.StylesSidebarPane.StylesSidebarPane]);
@@ -466,7 +466,7 @@ UI.ActionRegistration.registerActionExtension({
   iconClass: UI.ActionRegistration.IconClass.REFRESH,
   async loadActionDelegate() {
     const Elements = await loadElementsModule();
-    return Elements.EventListenersWidget.ActionDelegate.instance();
+    return new Elements.EventListenersWidget.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Elements => [Elements.EventListenersWidget.EventListenersWidget]);

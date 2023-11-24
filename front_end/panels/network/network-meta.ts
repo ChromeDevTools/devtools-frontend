@@ -208,7 +208,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Network = await loadNetworkModule();
-    return Network.NetworkPanel.ActionDelegate.instance();
+    return new Network.NetworkPanel.ActionDelegate();
   },
   options: [
     {
@@ -239,7 +239,7 @@ UI.ActionRegistration.registerActionExtension({
   iconClass: UI.ActionRegistration.IconClass.CLEAR,
   async loadActionDelegate() {
     const Network = await loadNetworkModule();
-    return Network.NetworkPanel.ActionDelegate.instance();
+    return new Network.NetworkPanel.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Network => [Network.NetworkPanel.NetworkPanel]);
@@ -264,7 +264,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Network = await loadNetworkModule();
-    return Network.NetworkPanel.ActionDelegate.instance();
+    return new Network.NetworkPanel.ActionDelegate();
   },
   bindings: [
     {
@@ -282,7 +282,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Network = await loadNetworkModule();
-    return Network.NetworkPanel.ActionDelegate.instance();
+    return new Network.NetworkPanel.ActionDelegate();
   },
   bindings: [
     {

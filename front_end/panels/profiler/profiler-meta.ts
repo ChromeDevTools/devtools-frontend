@@ -97,7 +97,7 @@ UI.ActionRegistration.registerActionExtension({
   toggleWithRedColor: true,
   async loadActionDelegate() {
     const Profiler = await loadProfilerModule();
-    return Profiler.LiveHeapProfileView.ActionDelegate.instance();
+    return new Profiler.LiveHeapProfileView.ActionDelegate();
   },
   category: UI.ActionRegistration.ActionCategory.MEMORY,
   experiment: Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE,
@@ -118,7 +118,7 @@ UI.ActionRegistration.registerActionExtension({
   iconClass: UI.ActionRegistration.IconClass.REFRESH,
   async loadActionDelegate() {
     const Profiler = await loadProfilerModule();
-    return Profiler.LiveHeapProfileView.ActionDelegate.instance();
+    return new Profiler.LiveHeapProfileView.ActionDelegate();
   },
   category: UI.ActionRegistration.ActionCategory.MEMORY,
   experiment: Root.Runtime.ExperimentName.LIVE_HEAP_PROFILE,

@@ -402,19 +402,7 @@ export class Command {
   }
 }
 
-let showActionDelegateInstance: ShowActionDelegate;
 export class ShowActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ShowActionDelegate {
-    const {forceNew} = opts;
-    if (!showActionDelegateInstance || forceNew) {
-      showActionDelegateInstance = new ShowActionDelegate();
-    }
-
-    return showActionDelegateInstance;
-  }
-
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
     QuickOpenImpl.show('>');

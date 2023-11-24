@@ -77,7 +77,7 @@ UI.ActionRegistration.registerActionExtension({
   toggleWithRedColor: true,
   async loadActionDelegate() {
     const Coverage = await loadCoverageModule();
-    return Coverage.CoverageView.ActionDelegate.instance();
+    return new Coverage.CoverageView.ActionDelegate();
   },
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
   options: [
@@ -97,7 +97,7 @@ UI.ActionRegistration.registerActionExtension({
   iconClass: UI.ActionRegistration.IconClass.REFRESH,
   async loadActionDelegate() {
     const Coverage = await loadCoverageModule();
-    return Coverage.CoverageView.ActionDelegate.instance();
+    return new Coverage.CoverageView.ActionDelegate();
   },
   category: UI.ActionRegistration.ActionCategory.PERFORMANCE,
   title: i18nLazyString(UIStrings.startInstrumentingCoverageAnd),
@@ -110,7 +110,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.clearCoverage),
   async loadActionDelegate() {
     const Coverage = await loadCoverageModule();
-    return Coverage.CoverageView.ActionDelegate.instance();
+    return new Coverage.CoverageView.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Coverage => [Coverage.CoverageView.CoverageView]);
@@ -124,7 +124,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.exportCoverage),
   async loadActionDelegate() {
     const Coverage = await loadCoverageModule();
-    return Coverage.CoverageView.ActionDelegate.instance();
+    return new Coverage.CoverageView.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Coverage => [Coverage.CoverageView.CoverageView]);

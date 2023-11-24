@@ -571,20 +571,7 @@ function reloadDevTools(): void {
   Host.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());
 }
 
-let actionDelegateInstance: ActionDelegate;
-
 export class ActionDelegate implements ActionDelegateInterface {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ActionDelegate {
-    const {forceNew} = opts;
-    if (!actionDelegateInstance || forceNew) {
-      actionDelegateInstance = new ActionDelegate();
-    }
-
-    return actionDelegateInstance;
-  }
-
   handleAction(context: Context, actionId: string): boolean {
     switch (actionId) {
       case 'main.toggle-drawer':

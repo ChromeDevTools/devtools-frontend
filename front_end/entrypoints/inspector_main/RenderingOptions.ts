@@ -332,21 +332,8 @@ export class RenderingOptionsView extends UI.Widget.VBox {
   }
 }
 
-let reloadActionDelegateInstance: ReloadActionDelegate;
-
 export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ReloadActionDelegate {
-    const {forceNew} = opts;
-    if (!reloadActionDelegateInstance || forceNew) {
-      reloadActionDelegateInstance = new ReloadActionDelegate();
-    }
-
-    return reloadActionDelegateInstance;
-  }
-
-  handleAction(context: UI.Context.Context, actionId: string): boolean {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
     const emulatedCSSMediaFeaturePrefersColorSchemeSetting =
         Common.Settings.Settings.instance().moduleSetting('emulatedCSSMediaFeaturePrefersColorScheme');
 

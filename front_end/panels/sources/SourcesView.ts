@@ -668,20 +668,7 @@ export function getRegisteredEditorActions(): EditorAction[] {
   return registeredEditorActions.map(editorAction => editorAction());
 }
 
-let switchFileActionDelegateInstance: SwitchFileActionDelegate;
-
 export class SwitchFileActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): SwitchFileActionDelegate {
-    const {forceNew} = opts;
-    if (!switchFileActionDelegateInstance || forceNew) {
-      switchFileActionDelegateInstance = new SwitchFileActionDelegate();
-    }
-
-    return switchFileActionDelegateInstance;
-  }
-
   private static nextFile(currentUISourceCode: Workspace.UISourceCode.UISourceCode): Workspace.UISourceCode.UISourceCode
       |null {
     function fileNamePrefix(name: string): string {
@@ -711,8 +698,8 @@ export class SwitchFileActionDelegate implements UI.ActionRegistration.ActionDel
     return nextUISourceCode !== currentUISourceCode ? nextUISourceCode : null;
   }
 
-  handleAction(_context: UI.Context.Context, _actionId: string): boolean {
-    const sourcesView = UI.Context.Context.instance().flavor(SourcesView);
+  handleAction(context: UI.Context.Context, _actionId: string): boolean {
+    const sourcesView = context.flavor(SourcesView);
     if (!sourcesView) {
       return false;
     }
@@ -729,21 +716,9 @@ export class SwitchFileActionDelegate implements UI.ActionRegistration.ActionDel
   }
 }
 
-let actionDelegateInstance: ActionDelegate;
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  }|undefined = {forceNew: null}): ActionDelegate {
-    const {forceNew} = opts;
-    if (!actionDelegateInstance || forceNew) {
-      actionDelegateInstance = new ActionDelegate();
-    }
-
-    return actionDelegateInstance;
-  }
-
   handleAction(context: UI.Context.Context, actionId: string): boolean {
-    const sourcesView = UI.Context.Context.instance().flavor(SourcesView);
+    const sourcesView = context.flavor(SourcesView);
     if (!sourcesView) {
       return false;
     }

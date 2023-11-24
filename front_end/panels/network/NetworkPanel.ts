@@ -975,23 +975,10 @@ export class FilmStripRecorder implements TraceEngine.TracingManager.TracingMana
   }
 }
 
-let networkActionDelegateInstance: ActionDelegate;
-
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  }|undefined = {forceNew: null}): ActionDelegate {
-    const {forceNew} = opts;
-    if (!networkActionDelegateInstance || forceNew) {
-      networkActionDelegateInstance = new ActionDelegate();
-    }
-    return networkActionDelegateInstance;
-  }
-
   handleAction(context: UI.Context.Context, actionId: string): boolean {
-    const panel = UI.Context.Context.instance().flavor(NetworkPanel);
-    console.assert(Boolean(panel && panel instanceof NetworkPanel));
-    if (!panel) {
+    const panel = context.flavor(NetworkPanel);
+    if (panel === null) {
       return false;
     }
     switch (actionId) {

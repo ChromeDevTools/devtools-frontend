@@ -77,7 +77,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.clearSiteData),
   async loadActionDelegate() {
     const Resources = await loadResourcesModule();
-    return Resources.StorageView.ActionDelegate.instance();
+    return new Resources.StorageView.ActionDelegate();
   },
 });
 
@@ -87,7 +87,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.clearSiteDataIncludingThirdparty),
   async loadActionDelegate() {
     const Resources = await loadResourcesModule();
-    return Resources.StorageView.ActionDelegate.instance();
+    return new Resources.StorageView.ActionDelegate();
   },
 });
 
@@ -102,7 +102,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Resources = await loadResourcesModule();
-    return Resources.BackgroundServiceView.ActionDelegate.instance();
+    return new Resources.BackgroundServiceView.ActionDelegate();
   },
   category: UI.ActionRegistration.ActionCategory.BACKGROUND_SERVICES,
   options: [

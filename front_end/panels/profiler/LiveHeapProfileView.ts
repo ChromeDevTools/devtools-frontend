@@ -387,19 +387,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<unk
   }
 }
 
-let profilerActionDelegateInstance: ActionDelegate;
-
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ActionDelegate {
-    const {forceNew} = opts;
-    if (!profilerActionDelegateInstance || forceNew) {
-      profilerActionDelegateInstance = new ActionDelegate();
-    }
-    return profilerActionDelegateInstance;
-  }
-
   handleAction(_context: UI.Context.Context, actionId: string): boolean {
     void (async(): Promise<void> => {
       const profileViewId = 'live_heap_profile';

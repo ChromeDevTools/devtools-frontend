@@ -804,22 +804,10 @@ export class PresetOrientations {
   }
 }
 
-let showActionDelegateInstance: ShowActionDelegate;
-
 export class ShowActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, _actionId: string): boolean {
     void UI.ViewManager.ViewManager.instance().showView('sensors');
     return true;
-  }
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ShowActionDelegate {
-    const {forceNew} = opts;
-    if (!showActionDelegateInstance || forceNew) {
-      showActionDelegateInstance = new ShowActionDelegate();
-    }
-
-    return showActionDelegateInstance;
   }
 }
 

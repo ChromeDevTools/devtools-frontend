@@ -558,7 +558,7 @@ UI.ActionRegistration.registerActionExtension({
   toggledIconClass: UI.ActionRegistration.IconClass.LARGEICON_RESUME,
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.RevealingActionDelegate.instance();
+    return new Sources.SourcesPanel.RevealingActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(
@@ -609,7 +609,7 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'debugger.step-over',
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.ActionDelegate.instance();
+    return new Sources.SourcesPanel.ActionDelegate();
   },
 
   title: i18nLazyString(UIStrings.stepOverNextFunctionCall),
@@ -641,7 +641,7 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'debugger.step-into',
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.ActionDelegate.instance();
+    return new Sources.SourcesPanel.ActionDelegate();
   },
   title: i18nLazyString(UIStrings.stepIntoNextFunctionCall),
   iconClass: UI.ActionRegistration.IconClass.LARGE_ICON_STEP_INTO,
@@ -672,7 +672,7 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'debugger.step',
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.ActionDelegate.instance();
+    return new Sources.SourcesPanel.ActionDelegate();
   },
   title: i18nLazyString(UIStrings.step),
   iconClass: UI.ActionRegistration.IconClass.LARGE_ICON_STEP,
@@ -694,7 +694,7 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'debugger.step-out',
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.ActionDelegate.instance();
+    return new Sources.SourcesPanel.ActionDelegate();
   },
   title: i18nLazyString(UIStrings.stepOutOfCurrentFunction),
   iconClass: UI.ActionRegistration.IconClass.LARGE_ICON_STEP_OUT,
@@ -725,7 +725,7 @@ UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.DEBUGGER,
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.ActionDelegate.instance();
+    return new Sources.SourcesPanel.ActionDelegate();
   },
   title: i18nLazyString(UIStrings.runSnippet),
   iconClass: UI.ActionRegistration.IconClass.PLAY,
@@ -752,7 +752,7 @@ UI.ActionRegistration.registerActionExtension({
   toggleable: true,
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.ActionDelegate.instance();
+    return new Sources.SourcesPanel.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
@@ -807,7 +807,7 @@ UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.DEBUGGER,
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.ActionDelegate.instance();
+    return new Sources.SourcesPanel.ActionDelegate();
   },
   title: i18nLazyString(UIStrings.evaluateSelectedTextInConsole),
   contextTypes() {
@@ -831,7 +831,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.switchFile),
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesView.SwitchFileActionDelegate.instance();
+    return new Sources.SourcesView.SwitchFileActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
@@ -864,7 +864,7 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'sources.close-all',
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesView.ActionDelegate.instance();
+    return new Sources.SourcesView.ActionDelegate();
   },
   title: i18nLazyString(UIStrings.closeAll),
 });
@@ -875,7 +875,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.jumpToPreviousEditingLocation),
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesView.ActionDelegate.instance();
+    return new Sources.SourcesView.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
@@ -893,7 +893,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.jumpToNextEditingLocation),
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesView.ActionDelegate.instance();
+    return new Sources.SourcesView.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
@@ -911,7 +911,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.closeTheActiveTab),
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesView.ActionDelegate.instance();
+    return new Sources.SourcesView.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
@@ -942,7 +942,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.nextEditorTab),
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesView.ActionDelegate.instance();
+    return new Sources.SourcesView.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
@@ -973,7 +973,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.previousEditorTab),
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesView.ActionDelegate.instance();
+    return new Sources.SourcesView.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
@@ -1004,7 +1004,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.goToLine),
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesView.ActionDelegate.instance();
+    return new Sources.SourcesView.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
@@ -1026,7 +1026,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.goToAFunctionDeclarationruleSet),
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesView.ActionDelegate.instance();
+    return new Sources.SourcesView.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
@@ -1137,7 +1137,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.save),
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesView.ActionDelegate.instance();
+    return new Sources.SourcesView.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
@@ -1168,7 +1168,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.saveAll),
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesView.ActionDelegate.instance();
+    return new Sources.SourcesView.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
@@ -1204,7 +1204,7 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'sources.create-snippet',
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesNavigator.ActionDelegate.instance();
+    return new Sources.SourcesNavigator.ActionDelegate();
   },
   title: i18nLazyString(UIStrings.createNewSnippet),
 });
@@ -1215,7 +1215,7 @@ if (!Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
     actionId: 'sources.add-folder-to-workspace',
     async loadActionDelegate() {
       const Sources = await loadSourcesModule();
-      return Sources.SourcesNavigator.ActionDelegate.instance();
+      return new Sources.SourcesNavigator.ActionDelegate();
     },
     iconClass: UI.ActionRegistration.IconClass.PLUS,
     title: i18nLazyString(UIStrings.addFolderToWorkspace),
@@ -1228,7 +1228,7 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'debugger.previous-call-frame',
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.CallStackSidebarPane.ActionDelegate.instance();
+    return new Sources.CallStackSidebarPane.ActionDelegate();
   },
   title: i18nLazyString(UIStrings.previousCallFrame),
   contextTypes() {
@@ -1246,7 +1246,7 @@ UI.ActionRegistration.registerActionExtension({
   actionId: 'debugger.next-call-frame',
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.CallStackSidebarPane.ActionDelegate.instance();
+    return new Sources.CallStackSidebarPane.ActionDelegate();
   },
   title: i18nLazyString(UIStrings.nextCallFrame),
   contextTypes() {
@@ -1264,7 +1264,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.search),
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SearchSourcesView.ActionDelegate.instance();
+    return new Sources.SearchSourcesView.ActionDelegate();
   },
   category: UI.ActionRegistration.ActionCategory.SOURCES,
   bindings: [
@@ -1357,7 +1357,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.toggleNavigatorSidebar),
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.ActionDelegate.instance();
+    return new Sources.SourcesPanel.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);
@@ -1400,7 +1400,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.toggleDebuggerSidebar),
   async loadActionDelegate() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.ActionDelegate.instance();
+    return new Sources.SourcesPanel.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Sources => [Sources.SourcesView.SourcesView]);

@@ -769,21 +769,8 @@ globalThis.Main = globalThis.Main || {};
 // @ts-ignore Exported for Tests.js
 globalThis.Main.Main = MainImpl;
 
-let zoomActionDelegateInstance: ZoomActionDelegate;
-
 export class ZoomActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ZoomActionDelegate {
-    const {forceNew} = opts;
-    if (!zoomActionDelegateInstance || forceNew) {
-      zoomActionDelegateInstance = new ZoomActionDelegate();
-    }
-
-    return zoomActionDelegateInstance;
-  }
-
-  handleAction(context: UI.Context.Context, actionId: string): boolean {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
     if (Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {
       return false;
     }
@@ -803,21 +790,8 @@ export class ZoomActionDelegate implements UI.ActionRegistration.ActionDelegate 
   }
 }
 
-let searchActionDelegateInstance: SearchActionDelegate;
-
 export class SearchActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): SearchActionDelegate {
-    const {forceNew} = opts;
-    if (!searchActionDelegateInstance || forceNew) {
-      searchActionDelegateInstance = new SearchActionDelegate();
-    }
-
-    return searchActionDelegateInstance;
-  }
-
-  handleAction(context: UI.Context.Context, actionId: string): boolean {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
     let searchableView = UI.SearchableView.SearchableView.fromElement(
         Platform.DOMUtilities.deepActiveElement(document),
     );
@@ -1064,21 +1038,8 @@ export function sendOverProtocol(
   });
 }
 
-let reloadActionDelegateInstance: ReloadActionDelegate;
-
 export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ReloadActionDelegate {
-    const {forceNew} = opts;
-    if (!reloadActionDelegateInstance || forceNew) {
-      reloadActionDelegateInstance = new ReloadActionDelegate();
-    }
-
-    return reloadActionDelegateInstance;
-  }
-
-  handleAction(context: UI.Context.Context, actionId: string): boolean {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
       case 'main.debug-reload':
         Components.Reload.reload();

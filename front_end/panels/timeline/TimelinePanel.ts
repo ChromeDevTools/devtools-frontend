@@ -1842,23 +1842,12 @@ export class LoadTimelineHandler implements Common.QueryParamHandler.QueryParamH
   }
 }
 
-let actionDelegateInstance: ActionDelegate;
-
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  static instance(opts: {
-    forceNew: boolean|null,
-  }|undefined = {forceNew: null}): ActionDelegate {
-    const {forceNew} = opts;
-    if (!actionDelegateInstance || forceNew) {
-      actionDelegateInstance = new ActionDelegate();
+  handleAction(context: UI.Context.Context, actionId: string): boolean {
+    const panel = context.flavor(TimelinePanel);
+    if (panel === null) {
+      return false;
     }
-
-    return actionDelegateInstance;
-  }
-
-  handleAction(_context: UI.Context.Context, actionId: string): boolean {
-    const panel = (UI.Context.Context.instance().flavor(TimelinePanel) as TimelinePanel);
-    console.assert(panel && panel instanceof TimelinePanel);
     switch (actionId) {
       case 'timeline.toggle-recording':
         void panel.toggleRecording();

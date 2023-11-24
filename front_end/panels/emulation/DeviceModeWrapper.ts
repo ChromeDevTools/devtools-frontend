@@ -107,10 +107,8 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
   }
 }
 
-let actionDelegateInstance: ActionDelegate;
-
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
-  handleAction(context: UI.Context.Context, actionId: string): boolean {
+  handleAction(_context: UI.Context.Context, actionId: string): boolean {
     if (DeviceModeWrapper.instance()) {
       switch (actionId) {
         case 'emulation.capture-screenshot':
@@ -169,15 +167,5 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       }
     }
     return false;
-  }
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ActionDelegate {
-    const {forceNew} = opts;
-    if (!actionDelegateInstance || forceNew) {
-      actionDelegateInstance = new ActionDelegate();
-    }
-
-    return actionDelegateInstance;
   }
 }

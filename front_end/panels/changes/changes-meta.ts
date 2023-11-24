@@ -65,7 +65,7 @@ UI.ActionRegistration.registerActionExtension({
   iconClass: UI.ActionRegistration.IconClass.UNDO,
   async loadActionDelegate() {
     const Changes = await loadChangesModule();
-    return Changes.ChangesView.ActionDelegate.instance();
+    return new Changes.ChangesView.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Changes => [Changes.ChangesView.ChangesView]);
@@ -79,7 +79,7 @@ UI.ActionRegistration.registerActionExtension({
   iconClass: UI.ActionRegistration.IconClass.COPY,
   async loadActionDelegate() {
     const Changes = await loadChangesModule();
-    return Changes.ChangesView.ActionDelegate.instance();
+    return new Changes.ChangesView.ActionDelegate();
   },
   contextTypes() {
     return maybeRetrieveContextTypes(Changes => [Changes.ChangesView.ChangesView]);

@@ -257,8 +257,6 @@ export class ChangesView extends UI.Widget.VBox {
   }
 }
 
-let actionDelegateInstance: ActionDelegate;
-
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(_context: UI.Context.Context, actionId: string): boolean {
     switch (actionId) {
@@ -270,15 +268,6 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
         return true;
     }
     return false;
-  }
-
-  static instance(opts: {forceNew: boolean} = {forceNew: false}): ActionDelegate {
-    const {forceNew} = opts;
-    if (!actionDelegateInstance || forceNew) {
-      actionDelegateInstance = new ActionDelegate();
-    }
-
-    return actionDelegateInstance;
   }
 }
 

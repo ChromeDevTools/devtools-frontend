@@ -91,7 +91,7 @@ UI.ActionRegistration.registerActionExtension({
   title: i18nLazyString(UIStrings.createRecording),
   async loadActionDelegate() {
     const Recorder = await loadRecorderModule();
-    return Recorder.RecorderPanel.ActionDelegate.instance();
+    return new Recorder.RecorderPanel.ActionDelegate();
   },
 });
 
@@ -107,7 +107,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Recorder = await loadRecorderModule();
-    return Recorder.RecorderPanel.ActionDelegate.instance();
+    return new Recorder.RecorderPanel.ActionDelegate();
   },
   bindings: [
     {
@@ -130,7 +130,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Recorder = await loadRecorderModule();
-    return Recorder.RecorderPanel.ActionDelegate.instance();
+    return new Recorder.RecorderPanel.ActionDelegate();
   },
   bindings: [
     {
@@ -153,7 +153,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   async loadActionDelegate() {
     const Recorder = await loadRecorderModule();
-    return Recorder.RecorderPanel.ActionDelegate.instance();
+    return new Recorder.RecorderPanel.ActionDelegate();
   },
   bindings: [
     {

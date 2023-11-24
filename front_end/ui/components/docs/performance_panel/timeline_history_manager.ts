@@ -19,7 +19,7 @@ UI.ActionRegistration.registerActionExtension({
     return [Timeline.TimelinePanel.TimelinePanel];
   },
   async loadActionDelegate() {
-    return Timeline.TimelinePanel.ActionDelegate.instance();
+    return new Timeline.TimelinePanel.ActionDelegate();
   },
 });
 

@@ -33,6 +33,7 @@ describeWithMockConnection('AutofillView', () => {
     view = new Autofill.AutofillView.AutofillView();
     renderElementIntoDOM(view);
     await view.render();
+    await coordinator.done();
     assertShadowRoot(view.shadowRoot);
     const placeholderText = view.shadowRoot.querySelector('.placeholder')?.textContent?.trim();
     assert.strictEqual(placeholderText, 'No Autofill event detected');

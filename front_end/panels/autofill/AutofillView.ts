@@ -62,16 +62,21 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     SDK.TargetManager.SDKModelObserver<SDK.AutofillModel.AutofillModel> {
   static readonly litTagName = LitHtml.literal`devtools-autofill-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #renderBound = this.#render.bind(this);
   #addressUi: Protocol.Autofill.AddressUI|null = null;
   #filledFields: Protocol.Autofill.FilledField[] = [];
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [autofillViewStyles];
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.AutofillModel.AutofillModel, this, {scoped: true});
-    this.#render();
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
-  #render(): void {
+  async #render(): Promise<void> {
+    if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
+      throw new Error('AutofillView render was not scheduled');
+    }
+
     if (!this.#addressUi && !this.#filledFields.length) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
@@ -116,7 +121,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
                          .EventTargetEvent<SDK.AutofillModel.EventTypes[SDK.AutofillModel.Events.AddressFormFilled]>):
       void {
     ({addressUi: this.#addressUi, filledFields: this.#filledFields} = data.event);
-    this.#render();
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
   #renderFilledFields(): LitHtml.LitTemplate {

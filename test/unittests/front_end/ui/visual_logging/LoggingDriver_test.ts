@@ -23,11 +23,6 @@ describe('LoggingDriver', () => {
 
   afterEach(() => {
     VisualLoggingTesting.LoggingDriver.stopLogging();
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'instant',
-    });
   });
 
   function addLoggableElements() {
@@ -83,20 +78,28 @@ describe('LoggingDriver', () => {
     await assertImpressionRecordedDeferred();
   });
 
-  // Skip this test to allow tree to reopen.
-  it.skip('[crbug.com/1498863] logs impressions on scroll', async () => {
+  it('logs impressions on scroll', async () => {
     addLoggableElements();
     const parent = document.getElementById('parent') as HTMLElement;
     parent.style.marginTop = '2000px';
     await VisualLoggingTesting.LoggingDriver.startLogging({domProcessingThrottler: throttler});
 
+    let scrollendPromise = new Promise(resolve => window.addEventListener('scrollend', resolve, {once: true}));
     window.scrollTo({
       top: 2000,
       left: 0,
       behavior: 'instant',
     });
-    await new Promise(resolve => window.addEventListener('scrollend', resolve, {once: true}));
+    await scrollendPromise;
     await assertImpressionRecordedDeferred();
+
+    scrollendPromise = new Promise(resolve => window.addEventListener('scrollend', resolve, {once: true}));
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant',
+    });
+    await scrollendPromise;
   });
 
   it('logs impressions on mutation', async () => {
@@ -273,5 +276,4 @@ describe('LoggingDriver', () => {
     assert.strictEqual(document.getElementById('parent')?.style.outline, 'red solid 1px');
     assert.strictEqual(document.getElementById('element')?.style.outline, 'red solid 1px');
   });
-
 });

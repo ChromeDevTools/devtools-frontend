@@ -11,7 +11,8 @@ import {Capability, type Target} from './Target.js';
 
 export class AutofillModel extends SDKModel<EventTypes> implements ProtocolProxyApi.AutofillDispatcher {
   readonly agent: ProtocolProxyApi.AutofillApi;
-  private enabled?: boolean;
+  #enabled?: boolean;
+
   constructor(target: Target) {
     super(target);
 
@@ -21,18 +22,18 @@ export class AutofillModel extends SDKModel<EventTypes> implements ProtocolProxy
   }
 
   enable(): void {
-    if (this.enabled || Host.InspectorFrontendHost.isUnderTest()) {
+    if (this.#enabled || Host.InspectorFrontendHost.isUnderTest()) {
       return;
     }
     void this.agent.invoke_enable();
-    this.enabled = true;
+    this.#enabled = true;
   }
 
   disable(): void {
-    if (!this.enabled || Host.InspectorFrontendHost.isUnderTest()) {
+    if (!this.#enabled || Host.InspectorFrontendHost.isUnderTest()) {
       return;
     }
-    this.enabled = false;
+    this.#enabled = false;
     void this.agent.invoke_disable();
   }
 

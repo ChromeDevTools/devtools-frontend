@@ -40,6 +40,7 @@ devtools_module("media") {
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/perf_ui:bundle",
     "../../ui/legacy/theme_support:bundle",
+    "../../ui/visual_logging:bundle",
   ]
 }
 

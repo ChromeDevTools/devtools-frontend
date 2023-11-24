@@ -3,14 +3,13 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as UI from '../../ui/legacy/legacy.js';
-
-import playerListViewStyles from './playerListView.css.js';
-
 import type * as Protocol from '../../generated/protocol.js';
+import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type MainView, type TriggerDispatcher} from './MainView.js';
 import {type PlayerEvent} from './MediaModel.js';
+import playerListViewStyles from './playerListView.css.js';
 import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
 
 const UIStrings = {
@@ -54,6 +53,8 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
   constructor(mainContainer: MainView) {
     super(true);
 
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('player-list')}`);
+
     this.playerEntryFragments = new Map();
     this.playerEntriesWithHostnameFrameTitle = new Set();
 
@@ -75,7 +76,7 @@ export class PlayerListView extends UI.Widget.VBox implements TriggerDispatcher 
     </div>
     `;
     const element = entry.element();
-
+    element.setAttribute('jslog', `${VisualLogging.item().track({click: true}).context('player')}`);
     element.addEventListener('click', this.selectPlayer.bind(this, playerID, element));
     element.addEventListener('contextmenu', this.rightClickPlayer.bind(this, playerID));
 

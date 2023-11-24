@@ -3,15 +3,15 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type PlayerEvent} from './MediaModel.js';
-
 import {
   ColdColorScheme,
-  HotColorScheme,
-  TickingFlameChart,
   type Event,
   type EventProperties,
+  HotColorScheme,
+  TickingFlameChart,
 } from './TickingFlameChart.js';
 
 // Has to be a double, see https://v8.dev/blog/react-cliff
@@ -42,6 +42,8 @@ export class PlayerEventsTimeline extends TickingFlameChart {
 
   constructor() {
     super();
+
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('timeline')}`);
 
     this.normalizedTimestamp = NO_NORMALIZED_TIMESTAMP;
 

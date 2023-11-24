@@ -4,12 +4,12 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import playerPropertiesViewStyles from './playerPropertiesView.css.js';
-
-import type * as Protocol from '../../generated/protocol.js';
 
 const UIStrings = {
   /**
@@ -477,6 +477,9 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
 
   constructor() {
     super();
+
+    this.element.setAttribute('jslog', `${VisualLogging.pane().context('properties')}`);
+
     this.contentElement.classList.add('media-properties-frame');
 
     this.mediaElements = [];

@@ -25,6 +25,7 @@ if (testRunnerCWDConfig && testRunnerTestSourceDirConfig) {
   ROOT_DIRECTORY = path.join(testRunnerCWDConfig, testRunnerTestSourceDirConfig);
 }
 
+const setupFile = path.join(ROOT_DIRECTORY, 'setup/test_setup.ts');
 const allTestFiles = glob.sync(path.join(ROOT_DIRECTORY, '**/*_test.ts'));
 /**
  * TODO(jacktfranklin): once we are migrated to the new test runner, we can remove the fallback to process.env['TESET_PATTERNS']
@@ -39,6 +40,7 @@ const testFiles = !customPattern ? allTestFiles :
                                        .flat()
                                        .filter(filename => allTestFiles.includes(filename));
 
+testFiles.unshift(setupFile);
 
 if (customPattern && testFiles.length === 0) {
   throw new Error(

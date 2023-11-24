@@ -1785,9 +1785,10 @@ export interface TraceEventWebSocketCreate extends TraceEventInstant {
   name: KnownEventName.WebSocketCreate;
   args: TraceEventArgs&{
     data: {
-      frame: string,
       identifier: number,
       url: string,
+      frame?: string,
+      websocketProtocol?: string,
       stackTrace?: TraceEventCallFrame,
     },
   };
@@ -1835,6 +1836,12 @@ export interface TraceEventWebSocketDestroy extends TraceEventInstant {
 }
 export function isTraceEventWebSocketDestroy(event: TraceEventData): event is TraceEventWebSocketDestroy {
   return event.name === KnownEventName.WebSocketDestroy;
+}
+
+export function isWebSocketTraceEvent(event: TraceEventData): event is TraceEventWebSocketCreate|
+    TraceEventWebSocketDestroy|TraceEventWebSocketReceiveHandshakeResponse|TraceEventWebSocketSendHandshakeRequest {
+  return isTraceEventWebSocketCreate(event) || isTraceEventWebSocketDestroy(event) ||
+      isTraceEventWebSocketReceiveHandshakeResponse(event) || isTraceEventWebSocketSendHandshakeRequest(event);
 }
 
 /**

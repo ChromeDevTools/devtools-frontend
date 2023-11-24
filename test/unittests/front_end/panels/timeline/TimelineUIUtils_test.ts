@@ -610,6 +610,41 @@ describeWithMockConnection('TimelineUIUtils', function() {
           ],
       );
     });
+
+    it('shows information for the WebSocketCreate initiator when viewing a WebSocketSendHandshakeRequest event',
+       async function() {
+         const data = await TraceLoader.allModels(this, 'web-sockets.json.gz');
+         const events = data.traceParsedData.Renderer?.allTraceEntries;
+         if (!events) {
+           throw new Error('Could not find renderer events');
+         }
+
+         const sendHandshake = events.find(TraceEngine.Types.TraceEvents.isTraceEventWebSocketSendHandshakeRequest);
+         if (!sendHandshake) {
+           throw new Error('Could not find handshake event.');
+         }
+
+         const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+             sendHandshake,
+             data.timelineModel,
+             new Components.Linkifier.Linkifier(),
+             false,
+             data.traceParsedData,
+         );
+         const rowData = getRowDataForDetailsElement(details);
+         const expectedRowData = [
+           {title: 'URL', value: 'wss://socketsbay.com/wss/v2/1/demo/'},
+           {title: 'Pending for', value: '72.0 ms'},
+           {title: 'Initiator', 'value': 'Reveal'},
+           // This value looks odd, but it is because the stack trace UI cannot be
+           // easily represented as a string, so this is OK.
+           {title: 'First Invalidated', value: ''},
+         ];
+         assert.deepEqual(
+             rowData,
+             expectedRowData,
+         );
+       });
   });
 
   it('can generate details for a frame', async function() {

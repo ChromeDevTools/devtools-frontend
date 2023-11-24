@@ -750,10 +750,6 @@ const UIStrings = {
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  websocketProtocol: 'WebSocket Protocol',
-  /**
-   *@description Text in Timeline UIUtils of the Performance panel
-   */
   callbackFunction: 'Callback Function',
   /**
    *@description The current state of an item
@@ -2224,15 +2220,13 @@ export class TimelineUIUtils {
       case recordTypes.WebSocketSendHandshakeRequest:
       case recordTypes.WebSocketReceiveHandshakeResponse:
       case recordTypes.WebSocketDestroy: {
-        const initiatorData = initiator ? initiator.args?.['data'] : eventData;
-        if (typeof initiatorData['webSocketURL'] !== 'undefined') {
-          contentHelper.appendTextRow(i18n.i18n.lockedString('URL'), initiatorData['webSocketURL']);
-        }
-        if (typeof initiatorData['webSocketProtocol'] !== 'undefined') {
-          contentHelper.appendTextRow(i18nString(UIStrings.websocketProtocol), initiatorData['webSocketProtocol']);
-        }
-        if (typeof eventData['message'] !== 'undefined') {
-          contentHelper.appendTextRow(i18nString(UIStrings.message), eventData['message']);
+        // The events will be from tthe new engine; as we remove the old engine we can remove these checks.
+        if (TraceEngine.Legacy.eventIsFromNewEngine(event) &&
+            TraceEngine.Types.TraceEvents.isWebSocketTraceEvent(event) && traceParseData) {
+          const rows = TimelineComponents.DetailsView.buildRowsForWebSocketEvent(event, traceParseData);
+          for (const {key, value} of rows) {
+            contentHelper.appendTextRow(key, value);
+          }
         }
         break;
       }

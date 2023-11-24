@@ -51,6 +51,10 @@ const UIStrings = {
    *@example {Long interaction} PH1
    */
   sIsLikelyPoorPageResponsiveness: '{PH1} is indicating poor page responsiveness.',
+  /**
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
+  websocketProtocol: 'WebSocket Protocol',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/DetailsView.ts', UIStrings);
@@ -110,4 +114,33 @@ export function buildWarningElementsForEvent(
     warningElements.push(span);
   }
   return warningElements;
+}
+
+export interface DetailRow {
+  key: string;
+  value: string;
+}
+export function buildRowsForWebSocketEvent(
+    event: TraceEngine.Types.TraceEvents.TraceEventWebSocketCreate|
+    TraceEngine.Types.TraceEvents.TraceEventWebSocketDestroy|
+    TraceEngine.Types.TraceEvents.TraceEventWebSocketSendHandshakeRequest|
+    TraceEngine.Types.TraceEvents.TraceEventWebSocketReceiveHandshakeResponse,
+    traceParsedData: TraceEngine.Handlers.Types.TraceParseData): readonly DetailRow[] {
+  const rows: DetailRow[] = [];
+
+  const initiator = traceParsedData.Initiators.eventToInitiator.get(event);
+  if (initiator && TraceEngine.Types.TraceEvents.isTraceEventWebSocketCreate(initiator)) {
+    // The initiator will be a WebSocketCreate, but this check helps TypeScript to understand.
+    rows.push({key: i18n.i18n.lockedString('URL'), value: initiator.args.data.url});
+    if (initiator.args.data.websocketProtocol) {
+      rows.push({key: i18nString(UIStrings.websocketProtocol), value: initiator.args.data.websocketProtocol});
+    }
+  } else if (TraceEngine.Types.TraceEvents.isTraceEventWebSocketCreate(event)) {
+    rows.push({key: i18n.i18n.lockedString('URL'), value: event.args.data.url});
+    if (event.args.data.websocketProtocol) {
+      rows.push({key: i18nString(UIStrings.websocketProtocol), value: event.args.data.websocketProtocol});
+    }
+  }
+
+  return rows;
 }

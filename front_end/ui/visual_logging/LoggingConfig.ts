@@ -144,8 +144,29 @@ export function debugString(config: LoggingConfig): string {
 }
 
 export interface ConfigStringBuilder {
+  /**
+   * Specifies an optional context for the visual element. For string contexts
+   * the convention is to use kebap case (e.g. `foo-bar`).
+   *
+   * @param value Optional context, which can be either a string or a number.
+   * @returns The builder itself.
+   */
   context: (value: string|number) => ConfigStringBuilder;
+
+  /**
+   * Speficies the name of a `ParentProvider` used to lookup the parent visual element.
+   *
+   * @param value The name of a previously registered `ParentProvider`.
+   * @returns The builder itself.
+   */
   parent: (value: string) => ConfigStringBuilder;
+
+  /**
+   * Specifies which DOM events to track for this visual element.
+   *
+   * @param options The set of DOM events to track.
+   * @returns The builder itself.
+   */
   track: (options: {
     click?: boolean,
     dblclick?: boolean,
@@ -154,6 +175,12 @@ export interface ConfigStringBuilder {
     change?: boolean,
     keydown?: boolean|string,
   }) => ConfigStringBuilder;
+
+  /**
+   * Serializes the configuration into a `jslog` string.
+   *
+   * @returns The serialized string value to put on a DOM element via the `jslog` attribute.
+   */
   toString: () => string;
 }
 

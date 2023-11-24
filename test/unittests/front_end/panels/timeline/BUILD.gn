@@ -11,7 +11,6 @@ ts_library("timeline") {
     "EventTypeHelpers_test.ts",
     "SaveFileFormatter_test.ts",
     "SourceMapsResolver_test.ts",
-    "SourceMaps_test.ts",
     "TimelineController_test.ts",
     "TimelineDetailsView_test.ts",
     "TimelineFilters_test.ts",

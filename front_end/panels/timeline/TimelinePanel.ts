@@ -259,9 +259,6 @@ export enum ThreadTracksSource {
   OLD_ENGINE = 'OLD_ENGINE',
 }
 
-// TODO(crbug.com/1428024): Use the new engine.
-const DEFAULT_THREAD_TRACKS_SOURCE = ThreadTracksSource.NEW_ENGINE;
-
 // TypeScript will presumably get these types at some stage, and when it
 // does these temporary types should be removed.
 // TODO: Remove types when available in TypeScript.
@@ -328,14 +325,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #traceEngineModel: TraceEngine.TraceModel.Model<typeof TraceEngine.Handlers.ModelHandlers>;
   // Tracks the index of the trace that the user is currently viewing.
   #traceEngineActiveTraceIndex = -1;
-  #threadTracksSource: ThreadTracksSource;
   #sourceMapsResolver: SourceMapsResolver|null = null;
   #onSourceMapsNodeNamesResolvedBound = this.#onSourceMapsNodeNamesResolved.bind(this);
 
-  constructor(threadTracksSource: ThreadTracksSource) {
+  constructor() {
     super('timeline');
-    this.#threadTracksSource = threadTracksSource;
-    this.#minimapComponent = new TimelineMiniMap(threadTracksSource);
+    this.#minimapComponent = new TimelineMiniMap();
 
     const config = TraceEngine.Types.Configuration.DEFAULT;
     config.experiments.timelineShowAllEvents = Root.Runtime.experiments.isEnabled('timelineShowAllEvents');
@@ -354,7 +349,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.toggle-recording');
     this.recordReloadAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.record-reload');
 
-    this.#historyManager = new TimelineHistoryManager(threadTracksSource, this.#minimapComponent);
+    this.#historyManager = new TimelineHistoryManager(ThreadTracksSource.NEW_ENGINE, this.#minimapComponent);
 
     this.performanceModel = null;
     this.traceLoadStart = null;
@@ -399,7 +394,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this.loadEventFired, this);
 
-    this.flameChart = new TimelineFlameChartView(this, threadTracksSource);
+    this.flameChart = new TimelineFlameChartView(this);
     this.searchableViewInternal = new UI.SearchableView.SearchableView(this.flameChart, null);
     this.searchableViewInternal.setMinimumSize(0, 100);
     this.searchableViewInternal.element.classList.add('searchable-view');
@@ -449,13 +444,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   static instance(opts: {
     forceNew: boolean|null,
     isNode: boolean,
-    threadTracksSource?: ThreadTracksSource,
   }|undefined = {forceNew: null, isNode: false}): TimelinePanel {
     const {forceNew, isNode: isNodeMode} = opts;
     isNode = isNodeMode;
 
     if (!timelinePanelInstance || forceNew) {
-      timelinePanelInstance = new TimelinePanel(opts.threadTracksSource || DEFAULT_THREAD_TRACKS_SOURCE);
+      timelinePanelInstance = new TimelinePanel();
     }
 
     return timelinePanelInstance;
@@ -1364,13 +1358,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       await Promise.all([
         // Calling setTracingModel now and setModel so much later, leads to several problems due to addEventListener order being unexpected
         // TODO(paulirish): Resolve this, or just wait for the death of tracingModel. :)
-        this.performanceModel.setTracingModel(tracingModel, recordingIsFresh, {
-          // If we are using the new engine for everything, we do not need to
-          // resolve sourcemaps within the old engine.
-          resolveSourceMaps: this.#threadTracksSource !== ThreadTracksSource.NEW_ENGINE,
-          threadTracksSource: this.#threadTracksSource,
-          isCpuProfile,
-        }),
+        this.performanceModel.setTracingModel(tracingModel, recordingIsFresh),
         this.#executeNewTraceEngine(
             tracingModel, recordingIsFresh, isCpuProfile, this.performanceModel.recordStartTime()),
       ]);
@@ -1392,20 +1380,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         throw new Error(`Could not get trace data at index ${this.#traceEngineActiveTraceIndex}`);
       }
 
-      // If we are running the old engine for sync tracks, ensure we listen to
-      // and update the flamechart on any sourcemap resolution.
-      if (this.#threadTracksSource !== ThreadTracksSource.NEW_ENGINE &&
-          !this.performanceModel.hasEventListeners(Events.NamesResolved)) {
-        this.performanceModel.addEventListener(Events.NamesResolved, this.#onSourceMapsNodeNamesResolved, this);
-      }
-
-      // Otherwise if we are running the new engine, instantiate it with the
-      // trace data and update the flamechart on any sourcemap resolution
-      if (this.#threadTracksSource !== ThreadTracksSource.OLD_ENGINE) {
-        this.#sourceMapsResolver = new SourceMapsResolver(traceData);
-        this.#sourceMapsResolver.addEventListener(NodeNamesUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
-        await this.#sourceMapsResolver.install();
-      }
+      // Set up SourceMapsResolver to ensure we resolve any function names in
+      // profile calls.
+      this.#sourceMapsResolver = new SourceMapsResolver(traceData);
+      this.#sourceMapsResolver.addEventListener(NodeNamesUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
+      await this.#sourceMapsResolver.install();
 
       // We store the Performance Model and the index of the active trace.
       // However we also pass in the full trace data because we use it to build

@@ -51,7 +51,7 @@ export class TimelineMiniMap extends
   #threadTracksSource: ThreadTracksSource;
   #data: OverviewData|null = null;
 
-  constructor(threadTracksSource: ThreadTracksSource) {
+  constructor(threadTracksSource: ThreadTracksSource = ThreadTracksSource.NEW_ENGINE) {
     super();
     this.#threadTracksSource = threadTracksSource;
     this.element.classList.add('timeline-minimap');

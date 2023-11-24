@@ -103,10 +103,7 @@ if (params.has('initiators')) {
   Root.Runtime.experiments.setEnabled('timelineEventInitiators', true);
 }
 
-const threadTracksSource = Timeline.TimelinePanel.ThreadTracksSource.NEW_ENGINE;
-
-const timeline =
-    Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: isNodeMode, threadTracksSource});
+const timeline = Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: isNodeMode});
 const container = document.getElementById('container');
 if (!container) {
   throw new Error('could not find container');

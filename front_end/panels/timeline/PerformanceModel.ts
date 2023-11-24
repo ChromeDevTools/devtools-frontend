@@ -3,17 +3,12 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as SDK from '../../core/sdk/sdk.js';
-import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
-import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 
-import {ThreadTracksSource} from './TimelinePanel.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
-
-const resolveNamesTimeout = 500;
 
 export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   private mainTargetInternal: SDK.Target.Target|null;
@@ -22,7 +17,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
   private readonly timelineModelInternal: TimelineModel.TimelineModel.TimelineModelImpl;
   private readonly frameModelInternal: TimelineModel.TimelineFrameModel.TimelineFrameModel;
   private windowInternal: Window;
-  private willResolveNames = false;
   private recordStartTimeInternal?: number;
   #activeBreadcrumbWindow?: TraceEngine.Types.Timing.TraceWindow;
 
@@ -69,18 +63,9 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     return this.filtersInternal.every(f => f.accept(event));
   }
 
-  async setTracingModel(model: TraceEngine.Legacy.TracingModel, isFreshRecording = false, options = {
-    resolveSourceMaps: true,
-    threadTracksSource: ThreadTracksSource.OLD_ENGINE,
-    isCpuProfile: false,
-  }): Promise<void> {
+  async setTracingModel(model: TraceEngine.Legacy.TracingModel, isFreshRecording = false): Promise<void> {
     this.tracingModelInternal = model;
-    this.timelineModelInternal.setEvents(
-        model, isFreshRecording, options.isCpuProfile,
-        /* renderLegacySyncTracks */ options.threadTracksSource !== ThreadTracksSource.NEW_ENGINE);
-    if (options.resolveSourceMaps) {
-      await this.addSourceMapListeners();
-    }
+    this.timelineModelInternal.setEvents(model, isFreshRecording);
 
     const mainTracks = this.timelineModelInternal.tracks().filter(
         track => track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame &&
@@ -92,78 +77,6 @@ export class PerformanceModel extends Common.ObjectWrapper.ObjectWrapper<EventTy
     });
     this.frameModelInternal.addTraceEvents(
         this.mainTargetInternal, this.timelineModelInternal.inspectedTargetEvents(), threadData);
-  }
-
-  async addSourceMapListeners(): Promise<void> {
-    const debuggerModelsToListen = new Set<SDK.DebuggerModel.DebuggerModel>();
-    for (const profile of this.timelineModel().cpuProfiles()) {
-      for (const node of profile.cpuProfileData.nodes() || []) {
-        if (!node) {
-          continue;
-        }
-        const debuggerModelToListen = this.#maybeGetDebuggerModelForNode(node, profile.target);
-        if (!debuggerModelToListen) {
-          continue;
-        }
-
-        debuggerModelsToListen.add(debuggerModelToListen);
-      }
-    }
-    for (const debuggerModel of debuggerModelsToListen) {
-      debuggerModel.sourceMapManager().addEventListener(
-          SDK.SourceMapManager.Events.SourceMapAttached, this.#onAttachedSourceMap, this);
-    }
-    await this.#resolveNamesFromCPUProfile();
-  }
-
-  // If a node corresponds to a script that has not been parsed or a script
-  // that has a source map, we should listen to SourceMapAttached events to
-  // attempt a function name resolving.
-  #maybeGetDebuggerModelForNode(node: CPUProfile.ProfileTreeModel.ProfileNode, target: SDK.Target.Target|null):
-      SDK.DebuggerModel.DebuggerModel|null {
-    const debuggerModel = target?.model(SDK.DebuggerModel.DebuggerModel);
-    if (!debuggerModel) {
-      return null;
-    }
-    const script = debuggerModel.scriptForId(String(node.callFrame.scriptId));
-    const shouldListenToSourceMap = !script || script.sourceMapURL;
-    if (shouldListenToSourceMap) {
-      return debuggerModel;
-    }
-    return null;
-  }
-
-  async #resolveNamesFromCPUProfile(): Promise<void> {
-    for (const profile of this.timelineModel().cpuProfiles()) {
-      const target = profile.target;
-      if (!target) {
-        continue;
-      }
-
-      for (const node of profile.cpuProfileData.nodes() || []) {
-        const resolvedFunctionName =
-            await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(node.callFrame, target);
-        node.setFunctionName(resolvedFunctionName);
-      }
-    }
-  }
-
-  async #onAttachedSourceMap(): Promise<void> {
-    if (!this.willResolveNames) {
-      this.willResolveNames = true;
-      // Resolving names triggers a repaint of the flame chart. Instead of attempting to resolve
-      // names every time a source map is attached, wait for some time once the first source map is
-      // attached. This way we allow for other source maps to be parsed before attempting a name
-      // resolving using the available source maps. Otherwise the UI is blocked when the number
-      // of source maps is particularly large.
-      setTimeout(this.resolveNamesAndUpdate.bind(this), resolveNamesTimeout);
-    }
-  }
-
-  async resolveNamesAndUpdate(): Promise<void> {
-    this.willResolveNames = false;
-    await this.#resolveNamesFromCPUProfile();
-    this.dispatchEventToListeners(Events.NamesResolved);
   }
 
   tracingModel(): TraceEngine.Legacy.TracingModel {

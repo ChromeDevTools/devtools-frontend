@@ -34,13 +34,10 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as CPUProfile from '../cpu_profile/cpu_profile.js';
 import * as TraceEngine from '../trace/trace.js';
-
-import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
 
 const UIStrings = {
   /**
@@ -104,10 +101,8 @@ export class TimelineModelImpl {
   private legacyCurrentPage!: any;
   private currentTaskLayoutAndRecalcEvents: TraceEngine.Legacy.Event[];
   private tracingModelInternal: TraceEngine.Legacy.TracingModel|null;
-  private renderLegacySyncTracks = true;
   private mainFrameLayerTreeId?: any;
   #isFreshRecording = false;
-  #isCpuProfile = false;
 
   constructor() {
     this.minimumRecordTimeInternal = 0;
@@ -286,15 +281,11 @@ export class TimelineModelImpl {
     return this.#isFreshRecording;
   }
 
-  setEvents(
-      tracingModel: TraceEngine.Legacy.TracingModel, isFreshRecording: boolean = false, isCpuProfile: boolean = false,
-      renderLegacySyncTracks = true): void {
+  setEvents(tracingModel: TraceEngine.Legacy.TracingModel, isFreshRecording: boolean = false): void {
     this.#isFreshRecording = isFreshRecording;
-    this.#isCpuProfile = isCpuProfile;
     this.reset();
     this.resetProcessingState();
     this.tracingModelInternal = tracingModel;
-    this.renderLegacySyncTracks = renderLegacySyncTracks;
 
     this.minimumRecordTimeInternal = tracingModel.minimumRecordTime();
     this.maximumRecordTimeInternal = tracingModel.maximumRecordTime();
@@ -653,34 +644,6 @@ export class TimelineModelImpl {
     return null;
   }
 
-  private injectJSFrameEvents(tracingModel: TraceEngine.Legacy.TracingModel, thread: TraceEngine.Legacy.Thread):
-      TraceEngine.Legacy.Event[] {
-    const jsProfileModel = this.extractCpuProfileDataModel(tracingModel, thread);
-    let events = thread.events();
-    const jsSamples = jsProfileModel ?
-        TimelineJSProfileProcessor.generateConstructedEventsFromCpuProfileDataModel(jsProfileModel, thread) :
-        null;
-    if (jsSamples && jsSamples.length) {
-      events =
-          Platform.ArrayUtilities.mergeOrdered(events, jsSamples, TraceEngine.Legacy.Event.orderedCompareStartTime);
-    }
-    if (jsSamples ||
-        events.some(
-            e => e.name === RecordType.JSSample || e.name === RecordType.JSSystemSample ||
-                e.name === RecordType.JSIdleSample)) {
-      const jsFrameEvents = TimelineJSProfileProcessor.generateJSFrameEvents(events, {
-        showAllEvents: Root.Runtime.experiments.isEnabled('timelineShowAllEvents'),
-        showRuntimeCallStats: Root.Runtime.experiments.isEnabled('timelineV8RuntimeCallStats'),
-        isDataOriginCpuProfile: this.#isCpuProfile,
-      });
-      if (jsFrameEvents && jsFrameEvents.length) {
-        events = Platform.ArrayUtilities.mergeOrdered(
-            jsFrameEvents, events, TraceEngine.Legacy.Event.orderedCompareStartTime);
-      }
-    }
-    return events;
-  }
-
   private processThreadEvents(
       tracingModel: TraceEngine.Legacy.TracingModel, thread: TraceEngine.Legacy.Thread, isMainThread: boolean,
       isWorker: boolean, forMainFrame: boolean, url: Platform.DevToolsPath.UrlString|null): void {
@@ -700,10 +663,7 @@ export class TimelineModelImpl {
       track.type = TrackType.Raster;
     }
     this.tracksInternal.push(track);
-    let events = thread.events();
-    if (this.renderLegacySyncTracks) {
-      events = this.injectJSFrameEvents(tracingModel, thread);
-    }
+    const events = thread.events();
     this.eventStack = [];
     const eventStack = this.eventStack;
 

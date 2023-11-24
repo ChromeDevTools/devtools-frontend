@@ -99,7 +99,7 @@ describe('InitiatorsHandler', () => {
     }
 
     assert.strictEqual(data.eventToInitiator.get(fireAnimationFrameEvent), requestAnimationFrameEvent);
-    assert.strictEqual(data.initiatorToEvent.get(requestAnimationFrameEvent), fireAnimationFrameEvent);
+    assert.deepEqual(data.initiatorToEvents.get(requestAnimationFrameEvent), [fireAnimationFrameEvent]);
   });
 
   it('for a TimerFire event sets the initiator to the TimerInstall', async function() {
@@ -120,7 +120,7 @@ describe('InitiatorsHandler', () => {
     }
 
     assert.strictEqual(data.eventToInitiator.get(timerFireEvent), timerInstallEvent);
-    assert.strictEqual(data.initiatorToEvent.get(timerInstallEvent), timerFireEvent);
+    assert.deepEqual(data.initiatorToEvents.get(timerInstallEvent), [timerFireEvent]);
   });
 
   it('for a FireIdleCallback event sets the initiator to the RequestIdleCallback', async function() {
@@ -141,6 +141,58 @@ describe('InitiatorsHandler', () => {
     }
 
     assert.strictEqual(data.eventToInitiator.get(fireIdleCallbackEvent), requestIdleCallbackEvent);
-    assert.strictEqual(data.initiatorToEvent.get(requestIdleCallbackEvent), fireIdleCallbackEvent);
+    assert.deepEqual(data.initiatorToEvents.get(requestIdleCallbackEvent), [fireIdleCallbackEvent]);
+  });
+
+  it('for a WebSocketSendHandshakeRequest the initiator is the WebSocketCreate event', async function() {
+    const traceEvents = await TraceLoader.rawEvents(this, 'web-sockets.json.gz');
+    for (const event of traceEvents) {
+      TraceModel.Handlers.ModelHandlers.Initiators.handleEvent(event);
+    }
+    await TraceModel.Handlers.ModelHandlers.Initiators.finalize();
+    const data = TraceModel.Handlers.ModelHandlers.Initiators.data();
+
+    const webSocketCreateEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventWebSocketCreate);
+    if (!webSocketCreateEvent) {
+      throw new Error('Could not fnd WebSocketCreateEvent');
+    }
+
+    const webSocketSendHandshakeRequestEvent =
+        traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventWebSocketSendHandshakeRequest);
+    if (!webSocketSendHandshakeRequestEvent) {
+      throw new Error('Could not find WebSocketSendHandshakeRequest');
+    }
+
+    assert.strictEqual(data.eventToInitiator.get(webSocketSendHandshakeRequestEvent), webSocketCreateEvent);
+  });
+
+  it('for a WebSocketReceiveHandshakeResponse the initiator is the WebSocketCreate event', async function() {
+    const traceEvents = await TraceLoader.rawEvents(this, 'web-sockets.json.gz');
+    for (const event of traceEvents) {
+      TraceModel.Handlers.ModelHandlers.Initiators.handleEvent(event);
+    }
+    await TraceModel.Handlers.ModelHandlers.Initiators.finalize();
+    const data = TraceModel.Handlers.ModelHandlers.Initiators.data();
+
+    const webSocketCreateEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventWebSocketCreate);
+    if (!webSocketCreateEvent) {
+      throw new Error('Could not fnd WebSocketCreateEvent');
+    }
+
+    const webSocketReceieveHandshakeResponseEvent =
+        traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventWebSocketReceiveHandshakeResponse);
+    if (!webSocketReceieveHandshakeResponseEvent) {
+      throw new Error('Could not find WebSocketReceiveHandshakeResponse event');
+    }
+    const webSocketSendHandshakeRequestEvent =
+        traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventWebSocketSendHandshakeRequest);
+    if (!webSocketSendHandshakeRequestEvent) {
+      throw new Error('Could not find WebSocketSendHandshakeRequest');
+    }
+
+    assert.strictEqual(data.eventToInitiator.get(webSocketReceieveHandshakeResponseEvent), webSocketCreateEvent);
+    assert.deepEqual(
+        data.initiatorToEvents.get(webSocketCreateEvent),
+        [webSocketSendHandshakeRequestEvent, webSocketReceieveHandshakeResponseEvent]);
   });
 });

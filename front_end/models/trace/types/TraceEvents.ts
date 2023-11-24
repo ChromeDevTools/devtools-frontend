@@ -1781,6 +1781,62 @@ export function isTraceEventRequestIdleCallback(event: TraceEventData): event is
   return event.name === KnownEventName.RequestIdleCallback;
 }
 
+export interface TraceEventWebSocketCreate extends TraceEventInstant {
+  name: KnownEventName.WebSocketCreate;
+  args: TraceEventArgs&{
+    data: {
+      frame: string,
+      identifier: number,
+      url: string,
+      stackTrace?: TraceEventCallFrame,
+    },
+  };
+}
+export function isTraceEventWebSocketCreate(event: TraceEventData): event is TraceEventWebSocketCreate {
+  return event.name === KnownEventName.WebSocketCreate;
+}
+
+export interface TraceEventWebSocketSendHandshakeRequest extends TraceEventInstant {
+  name: KnownEventName.WebSocketSendHandshakeRequest;
+  args: TraceEventArgs&{
+    data: {
+      frame: string,
+      identifier: number,
+    },
+  };
+}
+export function isTraceEventWebSocketSendHandshakeRequest(event: TraceEventData):
+    event is TraceEventWebSocketSendHandshakeRequest {
+  return event.name === KnownEventName.WebSocketSendHandshakeRequest;
+}
+
+export interface TraceEventWebSocketReceiveHandshakeResponse extends TraceEventInstant {
+  name: KnownEventName.WebSocketReceiveHandshakeResponse;
+  args: TraceEventArgs&{
+    data: {
+      frame: string,
+      identifier: number,
+    },
+  };
+}
+export function isTraceEventWebSocketReceiveHandshakeResponse(event: TraceEventData):
+    event is TraceEventWebSocketReceiveHandshakeResponse {
+  return event.name === KnownEventName.WebSocketReceiveHandshakeResponse;
+}
+
+export interface TraceEventWebSocketDestroy extends TraceEventInstant {
+  name: KnownEventName.WebSocketDestroy;
+  args: TraceEventArgs&{
+    data: {
+      frame: string,
+      identifier: number,
+    },
+  };
+}
+export function isTraceEventWebSocketDestroy(event: TraceEventData): event is TraceEventWebSocketDestroy {
+  return event.name === KnownEventName.WebSocketDestroy;
+}
+
 /**
  * This is an exhaustive list of events we track in the Performance
  * panel. Note not all of them are necessarliry shown in the flame

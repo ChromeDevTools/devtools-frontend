@@ -26,14 +26,16 @@ const lastUpdateLayoutTreeByFrame = new Map<string, Types.TraceEvents.TraceEvent
 
 // These two maps store the same data but in different directions.
 //
-// For a given event, tell me what its initiator was.
+// For a given event, tell me what its initiator was. An event can only have one initiator.
 const eventToInitiatorMap = new Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.TraceEventData>();
-// For a given event, tell me what event it initiated.
-const initiatorToEventMap = new Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.TraceEventData>();
+// For a given event, tell me what events it initiated. An event can initiate
+// multiple events, hence why the value for this map is an array.
+const initiatorToEventsMap = new Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.TraceEventData[]>();
 
 const requestAnimationFrameEventsById: Map<number, Types.TraceEvents.TraceEventRequestAnimationFrame> = new Map();
 const timerInstallEventsById: Map<number, Types.TraceEvents.TraceEventTimerInstall> = new Map();
 const requestIdleCallbackEventsById: Map<number, Types.TraceEvents.TraceEventRequestIdleCallback> = new Map();
+const webSocketCreateEventsById: Map<number, Types.TraceEvents.TraceEventWebSocketCreate> = new Map();
 
 export function reset(): void {
   lastScheduleStyleRecalcByFrame.clear();
@@ -41,9 +43,10 @@ export function reset(): void {
   lastUpdateLayoutTreeByFrame.clear();
   timerInstallEventsById.clear();
   eventToInitiatorMap.clear();
-  initiatorToEventMap.clear();
+  initiatorToEventsMap.clear();
   requestAnimationFrameEventsById.clear();
   requestIdleCallbackEventsById.clear();
+  webSocketCreateEventsById.clear();
 
   handlerState = HandlerState.UNINITIALIZED;
 }
@@ -59,7 +62,9 @@ export function initialize(): void {
 function storeInitiator(data: {initiator: Types.TraceEvents.TraceEventData, event: Types.TraceEvents.TraceEventData}):
     void {
   eventToInitiatorMap.set(data.event, data.initiator);
-  initiatorToEventMap.set(data.initiator, data.event);
+  const eventsForInitiator = initiatorToEventsMap.get(data.initiator) || [];
+  eventsForInitiator.push(data.event);
+  initiatorToEventsMap.set(data.initiator, eventsForInitiator);
 }
 
 export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
@@ -149,6 +154,27 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
         initiator: matchingRequestEvent,
       });
     }
+  } else if (Types.TraceEvents.isTraceEventWebSocketCreate(event)) {
+    webSocketCreateEventsById.set(event.args.data.identifier, event);
+  } else if (Types.TraceEvents.isTraceEventWebSocketSendHandshakeRequest(event)) {
+    const matchingCreateEvent = webSocketCreateEventsById.get(event.args.data.identifier);
+    if (matchingCreateEvent) {
+      storeInitiator({
+        event,
+        initiator: matchingCreateEvent,
+      });
+    }
+  } else if (
+      Types.TraceEvents.isTraceEventWebSocketSendHandshakeRequest(event) ||
+      Types.TraceEvents.isTraceEventWebSocketReceiveHandshakeResponse(event) ||
+      Types.TraceEvents.isTraceEventWebSocketDestroy(event)) {
+    const matchingCreateEvent = webSocketCreateEventsById.get(event.args.data.identifier);
+    if (matchingCreateEvent) {
+      storeInitiator({
+        event,
+        initiator: matchingCreateEvent,
+      });
+    }
   }
 }
 
@@ -162,11 +188,11 @@ export async function finalize(): Promise<void> {
 
 export interface InitiatorsData {
   eventToInitiator: Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.TraceEventData>;
-  initiatorToEvent: Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.TraceEventData>;
+  initiatorToEvents: Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.TraceEventData[]>;
 }
 export function data(): InitiatorsData {
   return {
     eventToInitiator: new Map(eventToInitiatorMap),
-    initiatorToEvent: new Map(initiatorToEventMap),
+    initiatorToEvents: new Map(initiatorToEventsMap),
   };
 }

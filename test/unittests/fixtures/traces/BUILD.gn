@@ -66,5 +66,6 @@ copy_to_gen("traces") {
     "web-dev-with-advanced-instrumentation.json.gz",
     "web-dev-with-commit.json.gz",
     "web-dev.json.gz",
+    "web-sockets.json.gz",
   ]
 }

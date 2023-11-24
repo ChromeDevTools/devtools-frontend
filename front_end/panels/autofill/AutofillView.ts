@@ -63,12 +63,29 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
   static readonly litTagName = LitHtml.literal`devtools-autofill-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #renderBound = this.#render.bind(this);
-  #addressUi: Protocol.Autofill.AddressUI|null = null;
+  #addressUi: Protocol.Autofill.AddressUI = {addressFields: []};
   #filledFields: Protocol.Autofill.FilledField[] = [];
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [autofillViewStyles];
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.AutofillModel.AutofillModel, this, {scoped: true});
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.#onPrimaryPageChanged, this);
+
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+  }
+
+  #onPrimaryPageChanged(): void {
+    this.#addressUi = {addressFields: []};
+    this.#filledFields = [];
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
+  }
+
+  #addressFormFilled({data}: Common.EventTarget
+                         .EventTargetEvent<SDK.AutofillModel.EventTypes[SDK.AutofillModel.Events.AddressFormFilled]>):
+      void {
+    ({addressUi: this.#addressUi, filledFields: this.#filledFields} = data.event);
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
@@ -77,7 +94,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       throw new Error('AutofillView render was not scheduled');
     }
 
-    if (!this.#addressUi && !this.#filledFields.length) {
+    if (!this.#addressUi.addressFields.length && !this.#filledFields.length) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(LitHtml.html`
@@ -101,7 +118,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
   }
 
   #renderAddressUi(): LitHtml.LitTemplate {
-    if (!this.#addressUi) {
+    if (!this.#addressUi.addressFields.length) {
       return LitHtml.nothing;
     }
     return LitHtml.html`
@@ -115,13 +132,6 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     return LitHtml.html`
       <div>${fields.fields.map(field => field.value).join(' ')}</div>
     `;
-  }
-
-  #addressFormFilled({data}: Common.EventTarget
-                         .EventTargetEvent<SDK.AutofillModel.EventTypes[SDK.AutofillModel.Events.AddressFormFilled]>):
-      void {
-    ({addressUi: this.#addressUi, filledFields: this.#filledFields} = data.event);
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
   #renderFilledFields(): LitHtml.LitTemplate {

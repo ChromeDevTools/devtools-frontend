@@ -8,6 +8,7 @@ import {createTarget} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 import type * as SDKModule from '../../../../../front_end/core/sdk/sdk.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
+import * as Protocol from '../../../../../front_end/generated/protocol.js';
 
 describeWithMockConnection('AutofillModel', () => {
   let SDK: typeof SDKModule;
@@ -33,5 +34,39 @@ describeWithMockConnection('AutofillModel', () => {
     autofillModel.enable();
     assert.isTrue(enableSpy.calledOnce);
     assert.isTrue(disableSpy.notCalled);
+  });
+
+  it('dispatches addressFormFilledEvent on autofill event', () => {
+    const target = createTarget();
+    const autofillModel = target.model(SDK.AutofillModel.AutofillModel);
+    assertNotNullOrUndefined(autofillModel);
+
+    const dispatchedEvents: Array<SDKModule.AutofillModel.AddressFormFilledEvent> = [];
+    autofillModel.addEventListener(SDK.AutofillModel.Events.AddressFormFilled, e => dispatchedEvents.push(e.data));
+
+    const addressFormFilledEvent = {
+      addressUi: {
+        addressFields: [
+          {
+            fields: [
+              {name: 'NAME_FULL', value: 'Crocodile Dundee'},
+            ],
+          },
+        ],
+      },
+      filledFields: [
+        {
+          htmlType: 'text',
+          id: 'input1',
+          name: '',
+          value: 'Crocodile',
+          autofillType: 'First name',
+          fillingStrategy: Protocol.Autofill.FillingStrategy.AutofillInferred,
+        },
+      ],
+    };
+    autofillModel.addressFormFilled(addressFormFilledEvent);
+    assert.strictEqual(dispatchedEvents.length, 1);
+    assert.deepStrictEqual(dispatchedEvents[0].event, addressFormFilledEvent);
   });
 });

@@ -21,10 +21,6 @@ const UIStrings = {
    */
   addPattern: 'Add pattern',
   /**
-   *@description Tooltip text that appears when hovering over the clear button in the Blocked URLs Pane of the Network panel
-   */
-  removeAllPatterns: 'Remove all patterns',
-  /**
    *@description Accessible label for the button to add request blocking patterns in the network request blocking tool
    */
   addNetworkRequestBlockingPattern: 'Add network request blocking pattern',
@@ -85,14 +81,10 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
         'network.enable-request-blocking');
     this.toolbar.appendToolbarItem(this.enabledCheckbox);
     this.toolbar.appendSeparator();
-    const addButton = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.addPattern), 'plus', undefined, 'network.add-blocked-url-pattern');
-    addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.addButtonClicked, this);
-    this.toolbar.appendToolbarItem(addButton);
-    const clearButton = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.removeAllPatterns), 'clear', undefined, 'network.clear-blocked-url-patterns');
-    clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.Click, this.removeAll, this);
-    this.toolbar.appendToolbarItem(clearButton);
+    this.toolbar.appendToolbarItem(
+        UI.Toolbar.Toolbar.createActionButtonForId('network.add-network-request-blocking-pattern'));
+    this.toolbar.appendToolbarItem(
+        UI.Toolbar.Toolbar.createActionButtonForId('network.remove-all-network-request-blocking-patterns'));
 
     this.list = new UI.ListWidget.ListWidget(this);
     this.list.element.classList.add('blocked-urls');
@@ -125,9 +117,10 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
   private createEmptyPlaceholder(): Element {
     const element = this.contentElement.createChild('div', 'no-blocked-urls');
     const addButton =
-        UI.UIUtils.createTextButton(i18nString(UIStrings.addPattern), this.addButtonClicked.bind(this), 'add-button');
+        UI.UIUtils.createTextButton(i18nString(UIStrings.addPattern), this.addPattern.bind(this), 'add-button', true);
     addButton.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context('network.add-blocked-url-pattern')}`);
+        'jslog',
+        `${VisualLogging.action().track({click: true}).context('network.add-network-request-blocking-pattern')}`);
     UI.ARIAUtils.setLabel(addButton, i18nString(UIStrings.addNetworkRequestBlockingPattern));
     element.appendChild(
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.networkRequestsAreNotBlockedS, {PH1: addButton}));
@@ -140,9 +133,13 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     }
   }
 
-  private addButtonClicked(): void {
+  addPattern(): void {
     this.manager.setBlockingEnabled(true);
     this.list.addNewItem(0, {url: Platform.DevToolsPath.EmptyUrlString, enabled: true});
+  }
+
+  removeAllPatterns(): void {
+    this.manager.setBlockedPatterns([]);
   }
 
   renderItem(pattern: SDK.NetworkManager.BlockedPattern, editable: boolean): Element {
@@ -232,10 +229,6 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     return editor;
   }
 
-  private removeAll(): void {
-    this.manager.setBlockedPatterns([]);
-  }
-
   private update(): Promise<void> {
     const enabled = this.manager.blockingEnabled();
     this.list.element.classList.toggle('blocking-disabled', !enabled && Boolean(this.manager.blockedPatterns().length));
@@ -293,8 +286,35 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     }
   }
   override wasShown(): void {
+    UI.Context.Context.instance().setFlavor(BlockedURLsPane, this);
     super.wasShown();
     this.list.registerCSSFiles([blockedURLsPaneStyles]);
     this.registerCSSFiles([blockedURLsPaneStyles]);
+  }
+
+  override willHide(): void {
+    super.willHide();
+    UI.Context.Context.instance().setFlavor(BlockedURLsPane, null);
+  }
+}
+
+export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
+  handleAction(context: UI.Context.Context, actionId: string): boolean {
+    const blockedURLsPane = context.flavor(BlockedURLsPane);
+    if (blockedURLsPane === null) {
+      return false;
+    }
+    switch (actionId) {
+      case 'network.add-network-request-blocking-pattern': {
+        blockedURLsPane.addPattern();
+        return true;
+      }
+
+      case 'network.remove-all-network-request-blocking-patterns': {
+        blockedURLsPane.removeAllPatterns();
+        return true;
+      }
+    }
+    return false;
   }
 }

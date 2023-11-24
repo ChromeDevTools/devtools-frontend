@@ -112,6 +112,14 @@ const UIStrings = {
    *@description Title of a button for clearing the network log
    */
   clear: 'Clear network log',
+  /**
+   *@description Title of an action in the Network request blocking panel to add a new URL pattern to the blocklist.
+   */
+  addNetworkRequestBlockingPattern: 'Add network request blocking pattern',
+  /**
+   *@description Title of an action in the Network request blocking panel to clear all URL patterns.
+   */
+  removeAllNetworkRequestBlockingPatterns: 'Remove all network request blocking patterns',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/network-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -294,6 +302,34 @@ UI.ActionRegistration.registerActionExtension({
       ],
     },
   ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'network.add-network-request-blocking-pattern',
+  category: UI.ActionRegistration.ActionCategory.NETWORK,
+  title: i18nLazyString(UIStrings.addNetworkRequestBlockingPattern),
+  iconClass: UI.ActionRegistration.IconClass.PLUS,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Network => [Network.BlockedURLsPane.BlockedURLsPane]);
+  },
+  async loadActionDelegate() {
+    const Network = await loadNetworkModule();
+    return new Network.BlockedURLsPane.ActionDelegate();
+  },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'network.remove-all-network-request-blocking-patterns',
+  category: UI.ActionRegistration.ActionCategory.NETWORK,
+  title: i18nLazyString(UIStrings.removeAllNetworkRequestBlockingPatterns),
+  iconClass: UI.ActionRegistration.IconClass.CLEAR,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Network => [Network.BlockedURLsPane.BlockedURLsPane]);
+  },
+  async loadActionDelegate() {
+    const Network = await loadNetworkModule();
+    return new Network.BlockedURLsPane.ActionDelegate();
+  },
 });
 
 Common.Settings.registerSettingExtension({

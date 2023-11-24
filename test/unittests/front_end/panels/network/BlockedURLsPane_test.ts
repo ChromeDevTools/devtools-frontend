@@ -3,11 +3,10 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../../../../front_end/core/common/common.js';
-import * as Network from '../../../../../front_end/panels/network/network.js';
-import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
-
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
-import {createTarget} from '../../helpers/EnvironmentHelpers.js';
+import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
+import * as Network from '../../../../../front_end/panels/network/network.js';
+import {createTarget, registerNoopActions} from '../../helpers/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
 
 describeWithMockConnection('BlockedURLsPane', () => {
@@ -15,6 +14,10 @@ describeWithMockConnection('BlockedURLsPane', () => {
 
   beforeEach(() => {
     target = createTarget();
+    registerNoopActions([
+      'network.add-network-request-blocking-pattern',
+      'network.remove-all-network-request-blocking-patterns',
+    ]);
   });
 
   const updatesOnEvent = (inScope: boolean) => async () => {

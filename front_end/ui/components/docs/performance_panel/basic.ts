@@ -4,6 +4,7 @@
 
 import * as FrontendHelpers from '../../../../../test/unittests/front_end/helpers/EnvironmentHelpers.js';
 import * as Common from '../../../../core/common/common.js';
+import * as Root from '../../../../core/root/root.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Bindings from '../../../../models/bindings/bindings.js';
 import * as Workspace from '../../../../models/workspace/workspace.js';
@@ -98,6 +99,9 @@ const traceFileName = params.get('trace');
 const cpuprofileName = params.get('cpuprofile');
 const nodeMode = params.get('isNode');
 const isNodeMode = nodeMode === 'true' ? true : false;
+if (params.has('initiators')) {
+  Root.Runtime.experiments.setEnabled('timelineEventInitiators', true);
+}
 
 const threadTracksSource = Timeline.TimelinePanel.ThreadTracksSource.NEW_ENGINE;
 

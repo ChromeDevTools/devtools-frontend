@@ -30,6 +30,7 @@ devtools_module("timeline") {
     "EventUICategory.ts",
     "EventsTimelineTreeView.ts",
     "GPUTrackAppender.ts",
+    "Initiators.ts",
     "InteractionsTrackAppender.ts",
     "LayoutShiftsTrackAppender.ts",
     "NetworkTrackAppender.ts",

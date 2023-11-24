@@ -1969,7 +1969,9 @@ export class TimelineUIUtils {
 
     const eventData = event.args['data'];
     const timelineData = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event);
-    const initiator = timelineData.initiator();
+    const initiator = TraceEngine.Legacy.eventIsFromNewEngine(event) ?
+        traceParseData?.Initiators.eventToInitiator.get(event) ?? null :
+        null;
     let url: Platform.DevToolsPath.UrlString|null = null;
 
     if (TraceEngine.Legacy.eventIsFromNewEngine(event) && traceParseData) {
@@ -2403,7 +2405,7 @@ export class TimelineUIUtils {
 
     if (initiator || timelineData.stackTraceForSelfOrInitiator() ||
         TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event)) {
-      TimelineUIUtils.generateCauses(event, model.targetByEvent(event), relatedNodesMap, contentHelper);
+      TimelineUIUtils.generateCauses(event, model.targetByEvent(event), relatedNodesMap, contentHelper, traceParseData);
     }
 
     const stats: {
@@ -2680,27 +2682,27 @@ export class TimelineUIUtils {
 
   private static generateCauses(
       event: TraceEngine.Legacy.CompatibleTraceEvent, target: SDK.Target.Target|null,
-      relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null, contentHelper: TimelineDetailsContentHelper): void {
-    const recordTypes = TimelineModel.TimelineModel.RecordType;
+      relatedNodesMap: Map<number, SDK.DOMModel.DOMNode|null>|null, contentHelper: TimelineDetailsContentHelper,
+      traceParseData: TraceEngine.Handlers.Types.TraceParseData|null): void {
     const {startTime} = TraceEngine.Legacy.timesForEventInMilliseconds(event);
     let callSiteStackLabel;
     let stackLabel;
 
     switch (event.name) {
-      case recordTypes.TimerFire:
+      case TraceEngine.Types.TraceEvents.KnownEventName.TimerFire:
         callSiteStackLabel = i18nString(UIStrings.timerInstalled);
         break;
-      case recordTypes.FireAnimationFrame:
+      case TraceEngine.Types.TraceEvents.KnownEventName.FireAnimationFrame:
         callSiteStackLabel = i18nString(UIStrings.animationFrameRequested);
         break;
-      case recordTypes.FireIdleCallback:
+      case TraceEngine.Types.TraceEvents.KnownEventName.FireIdleCallback:
         callSiteStackLabel = i18nString(UIStrings.idleCallbackRequested);
         break;
-      case recordTypes.UpdateLayoutTree:
-      case recordTypes.RecalculateStyles:
+      case TraceEngine.Types.TraceEvents.KnownEventName.UpdateLayoutTree:
+      case TraceEngine.Types.TraceEvents.KnownEventName.RecalculateStyles:
         stackLabel = i18nString(UIStrings.recalculationForced);
         break;
-      case recordTypes.Layout:
+      case TraceEngine.Types.TraceEvents.KnownEventName.Layout:
         callSiteStackLabel = i18nString(UIStrings.firstLayoutInvalidation);
         stackLabel = i18nString(UIStrings.layoutForced);
         break;
@@ -2715,14 +2717,20 @@ export class TimelineUIUtils {
           TimelineUIUtils.stackTraceFromCallFrames(timelineData.stackTrace));
     }
 
-    const initiator = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(event).initiator();
-    // Indirect causes.
+    const initiator = traceParseData && TraceEngine.Legacy.eventIsFromNewEngine(event) ?
+        traceParseData.Initiators.eventToInitiator.get(event) :
+        undefined;
+
+    // If we have full InvalidationTracking, use this data.
     if (event instanceof TraceEngine.Legacy.Event &&
         TimelineModel.TimelineModel.InvalidationTracker.invalidationEventsFor(event) && target) {
       // Full invalidation tracking (experimental).
       contentHelper.addSection(i18nString(UIStrings.invalidations));
       TimelineUIUtils.generateInvalidations(event, target, relatedNodesMap, contentHelper);
-    } else if (initiator) {  // Partial invalidation tracking.
+    } else if (initiator) {
+      // If we do not have InvalidationTracking, but we do have an initiator
+      // for the event, we can show information about its initiator and a link
+      // to reveal it.
       const {startTime: initiatorStartTime} = TraceEngine.Legacy.timesForEventInMilliseconds(initiator);
       const delay = startTime - initiatorStartTime;
       contentHelper.appendTextRow(i18nString(UIStrings.pendingFor), i18n.TimeUtilities.preciseMillisToString(delay, 1));
@@ -2743,11 +2751,19 @@ export class TimelineUIUtils {
       });
       contentHelper.appendElementRow(i18nString(UIStrings.initiator), link);
 
-      const initiatorStackTrace = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(initiator).stackTrace;
-      if (initiatorStackTrace) {
-        contentHelper.appendStackTrace(
-            callSiteStackLabel || i18nString(UIStrings.firstInvalidated),
-            TimelineUIUtils.stackTraceFromCallFrames(initiatorStackTrace));
+      // If we have an initiator, show its Stack Trace on this event.
+      if (initiator && initiator.args?.data && 'stackTrace' in initiator.args.data) {
+        const trace = initiator.args.data.stackTrace;
+        if (trace) {
+          contentHelper.appendStackTrace(
+              callSiteStackLabel || i18nString(UIStrings.firstInvalidated),
+              TimelineUIUtils.stackTraceFromCallFrames(trace.map(frame => {
+                return {
+                  ...frame,
+                  scriptId: String(frame.scriptId) as Protocol.Runtime.ScriptId,
+                };
+              })));
+        }
       }
     }
   }
@@ -3553,7 +3569,7 @@ export class TimelineDetailsContentHelper {
   }
 
   appendStackTrace(title: string, stackTrace: Protocol.Runtime.StackTrace): void {
-    if (!this.linkifierInternal || !this.target) {
+    if (!this.linkifierInternal) {
       return;
     }
 
@@ -3563,7 +3579,7 @@ export class TimelineDetailsContentHelper {
   }
 
   createChildStackTraceElement(parentElement: Element, stackTrace: Protocol.Runtime.StackTrace): void {
-    if (!this.linkifierInternal || !this.target) {
+    if (!this.linkifierInternal) {
       return;
     }
     parentElement.classList.add('timeline-details-stack-values');

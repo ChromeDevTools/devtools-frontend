@@ -136,3 +136,7 @@ Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/t
 ### timer-initiators
 
 Contains a `setTimeout`, `requestAnimationFrame` and `requestIdleCallback` call.
+
+### nested-initiators
+
+Contains a `setTimeout` triggered by a prior `setTimeout`, so there is a larger initiator chain.

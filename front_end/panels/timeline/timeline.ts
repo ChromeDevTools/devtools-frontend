@@ -10,6 +10,7 @@ import * as CountersGraph from './CountersGraph.js';
 import * as EventsTimelineTreeView from './EventsTimelineTreeView.js';
 import * as EventUICategory from './EventUICategory.js';
 import * as GPUTrackAppender from './GPUTrackAppender.js';
+import * as Initiators from './Initiators.js';
 import * as InteractionsTrackAppender from './InteractionsTrackAppender.js';
 import * as LayoutShiftsTrackAppender from './LayoutShiftsTrackAppender.js';
 import * as NetworkTrackAppender from './NetworkTrackAppender.js';
@@ -46,6 +47,7 @@ export {
   EventsTimelineTreeView,
   EventUICategory,
   GPUTrackAppender,
+  Initiators,
   InteractionsTrackAppender,
   LayoutShiftsTrackAppender,
   NetworkTrackAppender,

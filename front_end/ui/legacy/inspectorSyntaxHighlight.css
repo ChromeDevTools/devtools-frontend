@@ -87,7 +87,8 @@
 }
 
 .devtools-link {
-  text-decoration: none;
+  color: var(--text-link);
+  text-decoration: underline;
   outline-offset: 2px;
 
   .elements-disclosure & {
@@ -110,14 +111,13 @@
     outline-width: unset;
   }
 
-  &.devtools-link-prevent-click {
+  &.invalid-link {
     color: var(--text-disabled);
+    text-decoration: none;
   }
 
-  &:not(.devtools-link-prevent-click) {
+  &:not(.devtools-link-prevent-click, .invalid-link) {
     cursor: pointer;
-    color: var(--text-link);
-    text-decoration: underline;
   }
 
   @media (forced-colors: active) {

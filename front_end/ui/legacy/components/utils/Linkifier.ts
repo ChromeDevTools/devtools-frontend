@@ -258,7 +258,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
 
     const createLinkOptions: _CreateLinkOptions = {
       tabStop: options?.tabStop,
-      preventClick: true,
     };
     const {link, linkInfo} = Linkifier.createLink(
         fallbackAnchor && fallbackAnchor.textContent ? fallbackAnchor.textContent : '', className, createLinkOptions);
@@ -458,6 +457,9 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
                   'style>');
         }
       }
+
+      anchor.classList.add('invalid-link');
+      anchor.removeAttribute('role');
       return;
     }
 
@@ -482,20 +484,6 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
       }
     }
     UI.Tooltip.Tooltip.install(anchor, titleText);
-    if (anchor.classList.contains('devtools-link-prevent-click')) {
-      anchor.classList.remove('devtools-link-prevent-click');
-      anchor.addEventListener('click', event => {
-        if (Linkifier.handleClick(event)) {
-          event.consume(true);
-        }
-      }, false);
-      anchor.addEventListener('keydown', event => {
-        if (event.key === 'Enter' && Linkifier.handleClick(event)) {
-          event.consume(true);
-        }
-      }, false);
-      UI.ARIAUtils.markAsLink(anchor);
-    }
     anchor.classList.toggle('ignore-list-link', await liveLocation.isIgnoreListed());
     Linkifier.updateLinkDecorations(anchor);
   }
@@ -627,10 +615,10 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
           event.consume(true);
         }
       }, false);
-      UI.ARIAUtils.markAsLink(link);
     } else {
       link.classList.add('devtools-link-prevent-click');
     }
+    UI.ARIAUtils.markAsLink(link);
     link.tabIndex = tabStop ? 0 : -1;
     return {link, linkInfo};
   }

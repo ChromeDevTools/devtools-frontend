@@ -361,11 +361,11 @@
 #console-messages .link {
   cursor: pointer;
   text-decoration: underline;
-  color: var(--text-link);
 }
 
 #console-messages .link,
-#console-messages .devtools-link {
+#console-messages .devtools-link:not(.invalid-link) {
+  color: var(--sys-color-primary);
   word-break: break-all;
 }
 

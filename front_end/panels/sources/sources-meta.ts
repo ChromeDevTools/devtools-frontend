@@ -1800,7 +1800,7 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
   async loadRevealer() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.UILocationRevealer.instance();
+    return new Sources.SourcesPanel.UILocationRevealer();
   },
 });
 
@@ -1813,7 +1813,7 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
   async loadRevealer() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.UILocationRangeRevealer.instance();
+    return new Sources.SourcesPanel.UILocationRangeRevealer();
   },
 });
 
@@ -1826,7 +1826,7 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
   async loadRevealer() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.DebuggerLocationRevealer.instance();
+    return new Sources.SourcesPanel.DebuggerLocationRevealer();
   },
 });
 
@@ -1839,7 +1839,7 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
   async loadRevealer() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.UISourceCodeRevealer.instance();
+    return new Sources.SourcesPanel.UISourceCodeRevealer();
   },
 });
 
@@ -1852,7 +1852,7 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
   async loadRevealer() {
     const Sources = await loadSourcesModule();
-    return Sources.SourcesPanel.DebuggerPausedDetailsRevealer.instance();
+    return new Sources.SourcesPanel.DebuggerPausedDetailsRevealer();
   },
 });
 
@@ -1865,7 +1865,7 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.SOURCES_PANEL,
   async loadRevealer() {
     const Sources = await loadSourcesModule();
-    return Sources.DebuggerPlugin.BreakpointLocationRevealer.instance();
+    return new Sources.DebuggerPlugin.BreakpointLocationRevealer();
   },
 });
 

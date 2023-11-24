@@ -412,7 +412,7 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.NETWORK_PANEL,
   async loadRevealer() {
     const Network = await loadNetworkModule();
-    return Network.NetworkPanel.RequestRevealer.instance();
+    return new Network.NetworkPanel.RequestRevealer();
   },
 });
 
@@ -420,11 +420,11 @@ Common.Revealer.registerRevealer({
   contextTypes() {
     return [NetworkForward.UIRequestLocation.UIRequestLocation];
   },
+  destination: undefined,
   async loadRevealer() {
     const Network = await loadNetworkModule();
-    return Network.NetworkPanel.RequestLocationRevealer.instance();
+    return new Network.NetworkPanel.RequestLocationRevealer();
   },
-  destination: undefined,
 });
 
 Common.Revealer.registerRevealer({
@@ -434,7 +434,7 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.NETWORK_PANEL,
   async loadRevealer() {
     const Network = await loadNetworkModule();
-    return Network.NetworkPanel.RequestIdRevealer.instance();
+    return new Network.NetworkPanel.RequestIdRevealer();
   },
 });
 
@@ -445,6 +445,6 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.NETWORK_PANEL,
   async loadRevealer() {
     const Network = await loadNetworkModule();
-    return Network.NetworkPanel.NetworkLogWithFilterRevealer.instance();
+    return new Network.NetworkPanel.NetworkLogWithFilterRevealer();
   },
 });

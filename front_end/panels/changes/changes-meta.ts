@@ -95,6 +95,6 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.CHANGES_DRAWER,
   async loadRevealer() {
     const Changes = await loadChangesModule();
-    return Changes.ChangesView.DiffUILocationRevealer.instance();
+    return new Changes.ChangesView.DiffUILocationRevealer();
   },
 });

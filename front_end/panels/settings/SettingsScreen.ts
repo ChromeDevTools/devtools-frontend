@@ -566,17 +566,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     return false;
   }
 }
-let revealerInstance: Revealer;
 export class Revealer implements Common.Revealer.Revealer<Root.Runtime.Experiment|Common.Settings.Setting<unknown>> {
-  static instance(opts: {forceNew: boolean} = {forceNew: false}): Revealer {
-    const {forceNew} = opts;
-    if (!revealerInstance || forceNew) {
-      revealerInstance = new Revealer();
-    }
-
-    return revealerInstance;
-  }
-
   reveal(object: Root.Runtime.Experiment|Common.Settings.Setting<unknown>): Promise<void> {
     if (object instanceof Root.Runtime.Experiment) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();

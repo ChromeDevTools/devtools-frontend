@@ -1213,20 +1213,7 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
 export let lastModificationTimeout = 200;
 export const minToolbarWidth = 215;
 
-let uILocationRevealerInstance: UILocationRevealer;
-
 export class UILocationRevealer implements Common.Revealer.Revealer<Workspace.UISourceCode.UILocation> {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): UILocationRevealer {
-    const {forceNew} = opts;
-    if (!uILocationRevealerInstance || forceNew) {
-      uILocationRevealerInstance = new UILocationRevealer();
-    }
-
-    return uILocationRevealerInstance;
-  }
-
   async reveal(uiLocation: Workspace.UISourceCode.UILocation, omitFocus?: boolean): Promise<void> {
     SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
   }
@@ -1247,20 +1234,7 @@ export class UILocationRangeRevealer implements Common.Revealer.Revealer<Workspa
   }
 }
 
-let debuggerLocationRevealerInstance: DebuggerLocationRevealer;
-
 export class DebuggerLocationRevealer implements Common.Revealer.Revealer<SDK.DebuggerModel.Location> {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): DebuggerLocationRevealer {
-    const {forceNew} = opts;
-    if (!debuggerLocationRevealerInstance || forceNew) {
-      debuggerLocationRevealerInstance = new DebuggerLocationRevealer();
-    }
-
-    return debuggerLocationRevealerInstance;
-  }
-
   async reveal(rawLocation: SDK.DebuggerModel.Location, omitFocus?: boolean): Promise<void> {
     const uiLocation =
         await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
@@ -1271,40 +1245,14 @@ export class DebuggerLocationRevealer implements Common.Revealer.Revealer<SDK.De
   }
 }
 
-let uISourceCodeRevealerInstance: UISourceCodeRevealer;
-
 export class UISourceCodeRevealer implements Common.Revealer.Revealer<Workspace.UISourceCode.UISourceCode> {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): UISourceCodeRevealer {
-    const {forceNew} = opts;
-    if (!uISourceCodeRevealerInstance || forceNew) {
-      uISourceCodeRevealerInstance = new UISourceCodeRevealer();
-    }
-
-    return uISourceCodeRevealerInstance;
-  }
-
   async reveal(uiSourceCode: Workspace.UISourceCode.UISourceCode, omitFocus?: boolean): Promise<void> {
     SourcesPanel.instance().showUISourceCode(uiSourceCode, undefined, omitFocus);
   }
 }
 
-let debuggerPausedDetailsRevealerInstance: DebuggerPausedDetailsRevealer;
-
 export class DebuggerPausedDetailsRevealer implements
     Common.Revealer.Revealer<SDK.DebuggerModel.DebuggerPausedDetails> {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): DebuggerPausedDetailsRevealer {
-    const {forceNew} = opts;
-    if (!debuggerPausedDetailsRevealerInstance || forceNew) {
-      debuggerPausedDetailsRevealerInstance = new DebuggerPausedDetailsRevealer();
-    }
-
-    return debuggerPausedDetailsRevealerInstance;
-  }
-
   async reveal(_object: SDK.DebuggerModel.DebuggerPausedDetails): Promise<void> {
     if (Common.Settings.Settings.instance().moduleSetting('autoFocusOnDebuggerPausedEnabled').get()) {
       return SourcesPanel.instance().setAsCurrentPanel();

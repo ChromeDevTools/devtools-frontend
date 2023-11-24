@@ -271,17 +271,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 }
 
-let diffUILocationRevealerInstance: DiffUILocationRevealer;
 export class DiffUILocationRevealer implements Common.Revealer.Revealer<WorkspaceDiff.WorkspaceDiff.DiffUILocation> {
-  static instance(opts: {forceNew: boolean} = {forceNew: false}): DiffUILocationRevealer {
-    const {forceNew} = opts;
-    if (!diffUILocationRevealerInstance || forceNew) {
-      diffUILocationRevealerInstance = new DiffUILocationRevealer();
-    }
-
-    return diffUILocationRevealerInstance;
-  }
-
   async reveal(diffUILocation: WorkspaceDiff.WorkspaceDiff.DiffUILocation, omitFocus?: boolean): Promise<void> {
     await UI.ViewManager.ViewManager.instance().showView('changes.changes');
     ChangesView.instance().changesSidebar.selectUISourceCode(diffUILocation.uiSourceCode, omitFocus);

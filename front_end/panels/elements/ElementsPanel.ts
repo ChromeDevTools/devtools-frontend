@@ -1271,20 +1271,8 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
     return contextMenuProviderInstance;
   }
 }
-let dOMNodeRevealerInstance: DOMNodeRevealer;
 export class DOMNodeRevealer implements
     Common.Revealer.Revealer<SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode|SDK.RemoteObject.RemoteObject> {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): DOMNodeRevealer {
-    const {forceNew} = opts;
-    if (!dOMNodeRevealerInstance || forceNew) {
-      dOMNodeRevealerInstance = new DOMNodeRevealer();
-    }
-
-    return dOMNodeRevealerInstance;
-  }
-
   reveal(node: SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode|SDK.RemoteObject.RemoteObject, omitFocus?: boolean):
       Promise<void> {
     const panel = ElementsPanel.instance();
@@ -1369,20 +1357,7 @@ export class DOMNodeRevealer implements
   }
 }
 
-let cSSPropertyRevealerInstance: CSSPropertyRevealer;
-
 export class CSSPropertyRevealer implements Common.Revealer.Revealer<SDK.CSSProperty.CSSProperty> {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): CSSPropertyRevealer {
-    const {forceNew} = opts;
-    if (!cSSPropertyRevealerInstance || forceNew) {
-      cSSPropertyRevealerInstance = new CSSPropertyRevealer();
-    }
-
-    return cSSPropertyRevealerInstance;
-  }
-
   reveal(property: SDK.CSSProperty.CSSProperty): Promise<void> {
     const panel = ElementsPanel.instance();
     return panel.revealProperty(property);

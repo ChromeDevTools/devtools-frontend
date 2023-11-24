@@ -8,17 +8,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {IssuesPane} from './IssuesPane.js';
 
-let issueRevealerInstance: IssueRevealer;
-
 export class IssueRevealer implements Common.Revealer.Revealer<IssuesManager.Issue.Issue> {
-  static instance(opts: {forceNew: boolean|null} = {forceNew: null}): IssueRevealer {
-    const {forceNew} = opts;
-    if (!issueRevealerInstance || forceNew) {
-      issueRevealerInstance = new IssueRevealer();
-    }
-    return issueRevealerInstance;
-  }
-
   async reveal(issue: IssuesManager.Issue.Issue): Promise<void> {
     await UI.ViewManager.ViewManager.instance().showView('issues-pane');
     const view = UI.ViewManager.ViewManager.instance().view('issues-pane');

@@ -601,7 +601,7 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.ELEMENTS_PANEL,
   async loadRevealer() {
     const Elements = await loadElementsModule();
-    return Elements.ElementsPanel.DOMNodeRevealer.instance();
+    return new Elements.ElementsPanel.DOMNodeRevealer();
   },
 });
 
@@ -614,7 +614,7 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.STYLES_SIDEBAR,
   async loadRevealer() {
     const Elements = await loadElementsModule();
-    return Elements.ElementsPanel.CSSPropertyRevealer.instance();
+    return new Elements.ElementsPanel.CSSPropertyRevealer();
   },
 });
 

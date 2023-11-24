@@ -205,7 +205,7 @@ Common.Revealer.registerRevealer({
   destination: undefined,
   async loadRevealer() {
     const Settings = await loadSettingsModule();
-    return Settings.SettingsScreen.Revealer.instance();
+    return new Settings.SettingsScreen.Revealer();
   },
 });
 

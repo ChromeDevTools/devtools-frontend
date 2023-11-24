@@ -204,81 +204,29 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
   }
 }
 
-let resourceRevealerInstance: ResourceRevealer;
-
 export class ResourceRevealer implements Common.Revealer.Revealer<SDK.Resource.Resource> {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ResourceRevealer {
-    const {forceNew} = opts;
-    if (!resourceRevealerInstance || forceNew) {
-      resourceRevealerInstance = new ResourceRevealer();
-    }
-
-    return resourceRevealerInstance;
-  }
-
   async reveal(resource: SDK.Resource.Resource): Promise<void> {
     const sidebar = await ResourcesPanel.showAndGetSidebar();
     await sidebar.showResource(resource);
   }
 }
 
-let frameDetailsRevealerInstance: FrameDetailsRevealer;
-
 export class FrameDetailsRevealer implements Common.Revealer.Revealer<SDK.ResourceTreeModel.ResourceTreeFrame> {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): FrameDetailsRevealer {
-    const {forceNew} = opts;
-    if (!frameDetailsRevealerInstance || forceNew) {
-      frameDetailsRevealerInstance = new FrameDetailsRevealer();
-    }
-
-    return frameDetailsRevealerInstance;
-  }
-
   async reveal(frame: SDK.ResourceTreeModel.ResourceTreeFrame): Promise<void> {
     const sidebar = await ResourcesPanel.showAndGetSidebar();
     sidebar.showFrame(frame);
   }
 }
 
-let ruleSetViewRevealerInstance: RuleSetViewRevealer;
-
 export class RuleSetViewRevealer implements Common.Revealer.Revealer<PreloadingHelper.PreloadingForward.RuleSetView> {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): RuleSetViewRevealer {
-    const {forceNew} = opts;
-    if (!ruleSetViewRevealerInstance || forceNew) {
-      ruleSetViewRevealerInstance = new RuleSetViewRevealer();
-    }
-
-    return ruleSetViewRevealerInstance;
-  }
-
   async reveal(revealInfo: PreloadingHelper.PreloadingForward.RuleSetView): Promise<void> {
     const sidebar = await ResourcesPanel.showAndGetSidebar();
     sidebar.showPreloadingRuleSetView(revealInfo);
   }
 }
 
-let attemptViewWithFilterRevealerInstance: AttemptViewWithFilterRevealer;
-
 export class AttemptViewWithFilterRevealer implements
     Common.Revealer.Revealer<PreloadingHelper.PreloadingForward.AttemptViewWithFilter> {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): AttemptViewWithFilterRevealer {
-    const {forceNew} = opts;
-    if (!attemptViewWithFilterRevealerInstance || forceNew) {
-      attemptViewWithFilterRevealerInstance = new AttemptViewWithFilterRevealer();
-    }
-
-    return attemptViewWithFilterRevealerInstance;
-  }
-
   async reveal(filter: PreloadingHelper.PreloadingForward.AttemptViewWithFilter): Promise<void> {
     const sidebar = await ResourcesPanel.showAndGetSidebar();
     sidebar.showPreloadingAttemptViewWithFilter(filter);

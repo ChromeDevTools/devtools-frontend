@@ -136,7 +136,7 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,
   async loadRevealer() {
     const Resources = await loadResourcesModule();
-    return Resources.ResourcesPanel.ResourceRevealer.instance();
+    return new Resources.ResourcesPanel.ResourceRevealer();
   },
 });
 
@@ -149,7 +149,7 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,
   async loadRevealer() {
     const Resources = await loadResourcesModule();
-    return Resources.ResourcesPanel.FrameDetailsRevealer.instance();
+    return new Resources.ResourcesPanel.FrameDetailsRevealer();
   },
 });
 
@@ -160,7 +160,7 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,
   async loadRevealer() {
     const Resources = await loadResourcesModule();
-    return Resources.ResourcesPanel.RuleSetViewRevealer.instance();
+    return new Resources.ResourcesPanel.RuleSetViewRevealer();
   },
 });
 
@@ -171,6 +171,6 @@ Common.Revealer.registerRevealer({
   destination: Common.Revealer.RevealerDestination.APPLICATION_PANEL,
   async loadRevealer() {
     const Resources = await loadResourcesModule();
-    return Resources.ResourcesPanel.AttemptViewWithFilterRevealer.instance();
+    return new Resources.ResourcesPanel.AttemptViewWithFilterRevealer();
   },
 });

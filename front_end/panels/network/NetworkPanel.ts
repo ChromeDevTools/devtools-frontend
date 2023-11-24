@@ -803,19 +803,7 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
     NetworkPanel.instance().appendApplicableItems(event, contextMenu, target);
   }
 }
-let requestRevealerInstance: RequestRevealer;
 export class RequestRevealer implements Common.Revealer.Revealer<SDK.NetworkRequest.NetworkRequest> {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): RequestRevealer {
-    const {forceNew} = opts;
-    if (!requestRevealerInstance || forceNew) {
-      requestRevealerInstance = new RequestRevealer();
-    }
-
-    return requestRevealerInstance;
-  }
-
   reveal(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {
     const panel = NetworkPanel.instance();
     return UI.ViewManager.ViewManager.instance().showView('network').then(
@@ -823,19 +811,7 @@ export class RequestRevealer implements Common.Revealer.Revealer<SDK.NetworkRequ
   }
 }
 
-let requestIdRevealerInstance: RequestIdRevealer;
 export class RequestIdRevealer implements Common.Revealer.Revealer<NetworkForward.NetworkRequestId.NetworkRequestId> {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): RequestIdRevealer {
-    const {forceNew} = opts;
-    if (!requestIdRevealerInstance || forceNew) {
-      requestIdRevealerInstance = new RequestIdRevealer();
-    }
-
-    return requestIdRevealerInstance;
-  }
-
   reveal(requestId: NetworkForward.NetworkRequestId.NetworkRequestId): Promise<void> {
     const panel = NetworkPanel.instance();
     return UI.ViewManager.ViewManager.instance().showView('network').then(
@@ -843,19 +819,7 @@ export class RequestIdRevealer implements Common.Revealer.Revealer<NetworkForwar
   }
 }
 
-let networkLogWithFilterRevealerInstance: NetworkLogWithFilterRevealer;
 export class NetworkLogWithFilterRevealer implements Common.Revealer.Revealer<NetworkForward.UIFilter.UIRequestFilter> {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): NetworkLogWithFilterRevealer {
-    const {forceNew} = opts;
-    if (!networkLogWithFilterRevealerInstance || forceNew) {
-      networkLogWithFilterRevealerInstance = new NetworkLogWithFilterRevealer();
-    }
-
-    return networkLogWithFilterRevealerInstance;
-  }
-
   reveal(request: NetworkForward.UIFilter.UIRequestFilter): Promise<void> {
     return NetworkPanel.revealAndFilter(request.filters);
   }
@@ -1006,20 +970,8 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 }
 
-let requestLocationRevealerInstance: RequestLocationRevealer;
-
 export class RequestLocationRevealer implements
     Common.Revealer.Revealer<NetworkForward.UIRequestLocation.UIRequestLocation> {
-  static instance(opts: {
-    forceNew: boolean|null,
-  }|undefined = {forceNew: null}): RequestLocationRevealer {
-    const {forceNew} = opts;
-    if (!requestLocationRevealerInstance || forceNew) {
-      requestLocationRevealerInstance = new RequestLocationRevealer();
-    }
-    return requestLocationRevealerInstance;
-  }
-
   async reveal(location: NetworkForward.UIRequestLocation.UIRequestLocation): Promise<void> {
     const view =
         await NetworkPanel.instance().selectAndActivateRequest(location.request, location.tab, location.filterOptions);

@@ -288,28 +288,19 @@ export class ViewManager {
     return widgetForView.get(view) || null;
   }
 
-  showView(viewId: string, userGesture?: boolean, omitFocus?: boolean): Promise<void> {
+  async showView(viewId: string, userGesture?: boolean, omitFocus?: boolean): Promise<void> {
     const view = this.views.get(viewId);
     if (!view) {
       console.error('Could not find view for id: \'' + viewId + '\' ' + new Error().stack);
-      return Promise.resolve();
+      return;
     }
 
-    const locationName = this.locationNameByViewId.get(viewId);
-
-    const location = locationForView.get(view);
-    if (location) {
-      location.reveal();
-      return location.showView(view, undefined, userGesture, omitFocus);
+    const location = locationForView.get(view) ?? await this.resolveLocation(this.locationNameByViewId.get(viewId));
+    if (!location) {
+      throw new Error('Could not resolve location for view: ' + viewId);
     }
-
-    return this.resolveLocation(locationName).then(location => {
-      if (!location) {
-        throw new Error('Could not resolve location for view: ' + viewId);
-      }
-      location.reveal();
-      return location.showView(view, undefined, userGesture, omitFocus);
-    });
+    location.reveal();
+    await location.showView(view, undefined, userGesture, omitFocus);
   }
 
   async resolveLocation(location?: string): Promise<Location|null> {

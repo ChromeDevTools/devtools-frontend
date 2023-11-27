@@ -271,6 +271,7 @@ export class ConsoleInsight extends HTMLElement {
           container.style.display = 'flex';
           container.style.flexDirection = 'column';
           container.style.fontSize = '13px';
+          container.style.lineHeight = '20px';
           const text = document.createElement('p');
           text.innerText = i18nString(UIStrings.refineButtonHint);
           text.style.margin = '0';

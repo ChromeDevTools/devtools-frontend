@@ -15,10 +15,9 @@ describe('The Console Tab', async () => {
     await waitForIssueButtonLabel('No Issues');
   });
 
-  // Skipped due to <portal> being removed
-  it.skip('[crbug.com/1505383] shows the toolbar button for one issue correctly', async () => {
+  it('shows the toolbar button for one issue correctly', async () => {
     // Navigate to page which causes a single issue.
-    await goToResource('issues/cross-origin-portal-post.html');
+    await goToResource('elements/quirks-mode.html');
     await navigateToConsoleTab();
 
     await waitForIssueButtonLabel('1 Issue:');

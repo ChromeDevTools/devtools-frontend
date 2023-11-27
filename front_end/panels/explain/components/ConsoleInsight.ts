@@ -63,14 +63,14 @@ const UIStrings = {
   /**
    * @description The title of the insight source "Google search answers".
    */
-  searchAnswers: '`Google` search answers',
+  searchAnswers: 'Google search answers',
   /**
    * @description The text appearing before the list of sources that DevTools
    * could collect based on a console message. If the user clicks the button
    * related to the text, these sources will be used to generate insights.
    */
   refineButtonHint:
-      'Click this button to send the following data to the AI model running on `Google`\'s servers, so it can generate a more accurate and relevant response:',
+      'Click this button to send the following data to the AI model running on Google\'s servers, so it can generate a more accurate and relevant response:',
   /**
    * @description The title that is shown while the insight is being generated.
    */

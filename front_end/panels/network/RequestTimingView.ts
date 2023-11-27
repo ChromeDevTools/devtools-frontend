@@ -36,9 +36,9 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {Events, type NetworkTimeCalculator} from './NetworkTimeCalculator.js';
-
 import networkingTimingTableStyles from './networkTimingTable.css.js';
 
 const UIStrings = {
@@ -363,6 +363,7 @@ export class RequestTimingView extends UI.Widget.VBox {
   static createTimingTable(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator): Element {
     const tableElement = document.createElement('table');
     tableElement.classList.add('network-timing-table');
+    tableElement.setAttribute('jslog', `${VisualLogging.pane().context('timing')}`);
     const colgroup = tableElement.createChild('colgroup');
     colgroup.createChild('col', 'labels');
     colgroup.createChild('col', 'bars');
@@ -464,9 +465,11 @@ export class RequestTimingView extends UI.Widget.VBox {
     const footer = tableElement.createChild('tr', 'network-timing-footer');
     const note = (footer.createChild('td') as HTMLTableCellElement);
     note.colSpan = 1;
-    note.appendChild(UI.XLink.XLink.create(
+    const explanationLink = UI.XLink.XLink.create(
         'https://developer.chrome.com/docs/devtools/network/reference/#timing-explanation',
-        i18nString(UIStrings.explanation)));
+        i18nString(UIStrings.explanation));
+    explanationLink.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('explanation')}`);
+    note.appendChild(explanationLink);
     footer.createChild('td');
     UI.UIUtils.createTextChild(footer.createChild('td'), i18n.TimeUtilities.secondsToString(totalDuration, true));
 
@@ -491,6 +494,7 @@ export class RequestTimingView extends UI.Widget.VBox {
 
       const link = UI.XLink.XLink.create(
           'https://web.dev/custom-metrics/#server-timing-api', i18nString(UIStrings.theServerTimingApi));
+      link.setAttribute('jslog', `${VisualLogging.link().track({click: true}).context('server-timing-api')}`);
       information.appendChild(
           i18n.i18n.getFormatLocalizedString(str_, UIStrings.duringDevelopmentYouCanUseSToAdd, {PH1: link}));
 

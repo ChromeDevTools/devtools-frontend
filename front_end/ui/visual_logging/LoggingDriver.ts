@@ -22,12 +22,17 @@ let keyboardLogThrottler: Common.Throttler.Throttler;
 let hoverLogThrottler: Common.Throttler.Throttler;
 let dragLogThrottler: Common.Throttler.Throttler;
 
-let bodyMutationObserver: MutationObserver|null;
+const mutationObservers = new WeakMap<Node, MutationObserver>();
+const documents: Document[] = [];
 
-function observeMutations(root: Node): MutationObserver {
-  const mutationObserver = new MutationObserver(scheduleProcessDom);
-  mutationObserver.observe(root, {attributes: true, childList: true, subtree: true});
-  return mutationObserver;
+function observeMutations(roots: Node[]): void {
+  for (const root of roots) {
+    if (!mutationObservers.has(root)) {
+      const observer = new MutationObserver(scheduleProcessDom);
+      observer.observe(root, {attributes: true, childList: true, subtree: true});
+      mutationObservers.set(root, observer);
+    }
+  }
 }
 
 export async function startLogging(options?: {
@@ -40,39 +45,37 @@ export async function startLogging(options?: {
   keyboardLogThrottler = options?.keyboardLogThrottler || new Common.Throttler.Throttler(KEYBOARD_LOG_INTERVAL);
   hoverLogThrottler = options?.hoverLogThrottler || new Common.Throttler.Throttler(HOVER_LOG_INTERVAL);
   dragLogThrottler = options?.dragLogThrottler || new Common.Throttler.Throttler(DRAG_LOG_INTERVAL);
+  await addDocument(document);
+}
+
+export async function addDocument(document: Document): Promise<void> {
+  documents.push(document);
   if (['interactive', 'complete'].includes(document.readyState)) {
     await processDom();
   }
   document.addEventListener('visibilitychange', scheduleProcessDom);
   document.addEventListener('scroll', scheduleProcessDom);
-  bodyMutationObserver = observeMutations(document.body);
+  observeMutations([document.body]);
 }
 
 export function stopLogging(): void {
-  document.removeEventListener('visibilitychange', scheduleProcessDom);
-  document.removeEventListener('scroll', scheduleProcessDom);
-  bodyMutationObserver?.disconnect();
-  bodyMutationObserver = null;
-  const {shadowRoots} = getDomState();
-  for (const shadowRoot of shadowRoots) {
-    observedShadowRoots.get(shadowRoot)?.disconnect();
+  for (const document of documents) {
+    document.removeEventListener('visibilitychange', scheduleProcessDom);
+    document.removeEventListener('scroll', scheduleProcessDom);
+    mutationObservers.get(document.body)?.disconnect();
+    mutationObservers.delete(document.body);
   }
+  const {shadowRoots} = getDomState(documents);
+  for (const shadowRoot of shadowRoots) {
+    mutationObservers.get(shadowRoot)?.disconnect();
+    mutationObservers.delete(shadowRoot);
+  }
+  documents.length = 0;
 }
 
 function scheduleProcessDom(): void {
   void domProcessingThrottler.schedule(
       () => Coordinator.RenderCoordinator.RenderCoordinator.instance().read('processDomForLogging', processDom));
-}
-
-const observedShadowRoots = new WeakMap<ShadowRoot, MutationObserver>();
-
-function observeMutationsInShadowRoots(shadowRoots: ShadowRoot[]): void {
-  for (const shadowRoot of shadowRoots) {
-    if (!observedShadowRoots.has(shadowRoot)) {
-      const observer = observeMutations(shadowRoot);
-      observedShadowRoots.set(shadowRoot, observer);
-    }
-  }
 }
 
 let veDebuggingEnabled = false;
@@ -100,10 +103,10 @@ async function processDom(): Promise<void> {
     return;
   }
   const startTime = performance.now();
-  const {loggables, shadowRoots} = getDomState();
+  const {loggables, shadowRoots} = getDomState(documents);
   const visibleElements: Element[] = [];
   const viewportRect = new DOMRect(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight);
-  observeMutationsInShadowRoots(shadowRoots);
+  observeMutations(shadowRoots);
   for (const {element, parent} of loggables) {
     const loggingState = getOrCreateLoggingState(element, getLoggingConfig(element), parent);
     if (!loggingState.impressionLogged) {

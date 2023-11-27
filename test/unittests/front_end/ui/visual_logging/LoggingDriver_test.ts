@@ -4,6 +4,7 @@
 
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Host from '../../../../../front_end/core/host/host.js';
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as VisualLoggingTesting from '../../../../../front_end/ui/visual_logging/visual_logging-testing.js';
 import {renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 
@@ -11,9 +12,10 @@ const {assert} = chai;
 
 describe('LoggingDriver', () => {
   let recordImpression: sinon.SinonStub;
-  const throttler = new Common.Throttler.Throttler(1000000000);
+  let throttler: Common.Throttler.Throttler;
 
   beforeEach(() => {
+    throttler = new Common.Throttler.Throttler(1000000000);
     VisualLoggingTesting.LoggingState.resetStateForTesting();
     recordImpression = sinon.stub(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
@@ -117,6 +119,18 @@ describe('LoggingDriver', () => {
 
     await VisualLoggingTesting.LoggingDriver.startLogging({domProcessingThrottler: throttler});
     shadowContent.innerHTML = '<div jslog="TreeItem" style="width:300px;height:300px"></div>';
+    await assertImpressionRecordedDeferred();
+  });
+
+  it('logs impressions on mutation in additional document', async () => {
+    const iframe = document.createElement('iframe') as HTMLIFrameElement;
+    renderElementIntoDOM(iframe);
+
+    await VisualLoggingTesting.LoggingDriver.startLogging({domProcessingThrottler: throttler});
+    const iframeDocument = iframe.contentDocument;
+    assertNotNullOrUndefined(iframeDocument);
+    await VisualLoggingTesting.LoggingDriver.addDocument(iframeDocument);
+    iframeDocument.body.innerHTML = '<div jslog="TreeItem" style="width:300px;height:300px"></div>';
     await assertImpressionRecordedDeferred();
   });
 

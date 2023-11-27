@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as VisualLogging from '../../../../../front_end/ui/visual_logging/visual_logging-testing.js';
 import {renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
 
@@ -15,7 +16,7 @@ describe('DomState', () => {
     renderElementIntoDOM(container);
   });
 
-  const el = (id: string) => document.getElementById(id) as Element;
+  const el = (id: string, d: Document = document) => d.getElementById(id) as Element;
 
   it('gets loggable elements and their parents', () => {
     container.innerHTML = `
@@ -37,7 +38,7 @@ describe('DomState', () => {
         </div>
       <div>
       <div jslog="TreeItem" id="2"></div>`;
-    const {loggables} = VisualLogging.DomState.getDomState();
+    const {loggables} = VisualLogging.DomState.getDomState([document]);
     assert.sameDeepMembers(loggables, [
       {element: el('2'), parent: undefined},
       {element: el('121'), parent: undefined},
@@ -47,6 +48,22 @@ describe('DomState', () => {
       {element: el('1112'), parent: el('11')},
       {element: el('1111'), parent: el('11')},
       {element: el('11111'), parent: el('1111')},
+    ]);
+  });
+
+  it('gets loggable elements across documents', () => {
+    container.innerHTML = `
+      <div jslog="TreeItem" id="1"></div>
+      <iframe id="iframe"></iframe>`;
+    const iframe = el('iframe') as HTMLIFrameElement;
+    const iframeDocument = iframe.contentDocument;
+    assertNotNullOrUndefined(iframeDocument);
+    iframeDocument.body.innerHTML = `
+      <div jslog="TreeItem" id="2"></div>`;
+    const {loggables} = VisualLogging.DomState.getDomState([document, iframeDocument]);
+    assert.sameDeepMembers(loggables, [
+      {element: el('1'), parent: undefined},
+      {element: el('2', iframeDocument), parent: undefined},
     ]);
   });
 
@@ -65,7 +82,7 @@ describe('DomState', () => {
       </div>`;
     shadow.appendChild(shadowContent);
 
-    const {loggables} = VisualLogging.DomState.getDomState();
+    const {loggables} = VisualLogging.DomState.getDomState([document]);
     assert.sameDeepMembers(loggables, [
       {element: el('1'), parent: undefined},
       {element: shadow.getElementById('1311') as Element, parent: el('1')},
@@ -94,7 +111,7 @@ describe('DomState', () => {
     for (const shadow of addedShadowRoots) {
       attachShadows(shadow);
     }
-    const {shadowRoots} = VisualLogging.DomState.getDomState();
+    const {shadowRoots} = VisualLogging.DomState.getDomState([document]);
     assert.sameDeepMembers(shadowRoots, addedShadowRoots);
   });
 

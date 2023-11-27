@@ -7,7 +7,7 @@ import * as LoggingConfig from './LoggingConfig.js';
 import * as LoggingState from './LoggingState.js';
 
 export type Loggable = LoggableModule.Loggable;
-export {startLogging, stopLogging} from './LoggingDriver.js';
+export {startLogging, stopLogging, addDocument} from './LoggingDriver.js';
 export {logClick, logImpressions} from './LoggingEvents.js';
 export {registerContextProvider, registerParentProvider} from './LoggingState.js';
 

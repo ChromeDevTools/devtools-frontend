@@ -9,7 +9,7 @@ interface ElementWithParent {
   parent?: Element;
 }
 
-export function getDomState(): {loggables: ElementWithParent[], shadowRoots: ShadowRoot[]} {
+export function getDomState(documents: Document[]): {loggables: ElementWithParent[], shadowRoots: ShadowRoot[]} {
   const loggables: ElementWithParent[] = [];
   const shadowRoots: ShadowRoot[] = [];
   const stack: ElementWithParent[] = [];
@@ -18,7 +18,9 @@ export function getDomState(): {loggables: ElementWithParent[], shadowRoots: Sha
       stack.push({element: child, parent});
     }
   };
-  putOnStack(document.body.children);
+  for (const document of documents) {
+    putOnStack(document.body.children);
+  }
   while (stack.length > 0) {
     const top = stack.pop();
     if (!top) {

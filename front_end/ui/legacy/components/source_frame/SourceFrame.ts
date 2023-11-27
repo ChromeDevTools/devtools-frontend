@@ -1015,7 +1015,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
 
   onContextMenu(event: MouseEvent): boolean {
     event.consume(true);  // Consume event now to prevent document from handling the async menu
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event, {jsLogContext: 'sources-text-area'});
     const {state} = this.textEditor;
     const pos = state.selection.main.from, line = state.doc.lineAt(pos);
     this.populateTextAreaContextMenu(contextMenu, line.number - 1, pos - line.from);
@@ -1030,7 +1030,7 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
 
   onLineGutterContextMenu(position: number, event: MouseEvent): boolean {
     event.consume(true);  // Consume event now to prevent document from handling the async menu
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event, {jsLogContext: 'sources-line-gutter'});
     const lineNumber = this.textEditor.state.doc.lineAt(position).number - 1;
     this.populateLineGutterContextMenu(contextMenu, lineNumber);
     contextMenu.appendApplicableItems(this);

@@ -494,30 +494,34 @@ export class DebuggerPlugin extends Plugin {
         contextMenu.debugSection().appendItem(
             i18nString(UIStrings.addBreakpoint),
             this.createNewBreakpoint.bind(
-                this, line, EMPTY_BREAKPOINT_CONDITION, /* enabled */ true, /* isLogpoint */ false));
+                this, line, EMPTY_BREAKPOINT_CONDITION, /* enabled */ true, /* isLogpoint */ false),
+            {jslogContext: 'add-breakpoint'});
         if (supportsConditionalBreakpoints) {
           contextMenu.debugSection().appendItem(i18nString(UIStrings.addConditionalBreakpoint), () => {
             Host.userMetrics.breakpointEditDialogRevealedFrom(
                 Host.UserMetrics.BreakpointEditDialogRevealedFrom.LineGutterContextMenu);
             this.editBreakpointCondition({line, breakpoint: null, location: null, isLogpoint: false});
-          });
+          }, {jslogContext: 'add-cnd-breakpoint'});
           contextMenu.debugSection().appendItem(i18nString(UIStrings.addLogpoint), () => {
             Host.userMetrics.breakpointEditDialogRevealedFrom(
                 Host.UserMetrics.BreakpointEditDialogRevealedFrom.LineGutterContextMenu);
             this.editBreakpointCondition({line, breakpoint: null, location: null, isLogpoint: true});
-          });
+          }, {jslogContext: 'add-logpoint'});
           contextMenu.debugSection().appendItem(
               i18nString(UIStrings.neverPauseHere),
               this.createNewBreakpoint.bind(
-                  this, line, NEVER_PAUSE_HERE_CONDITION, /* enabled */ true, /* isLogpoint */ false));
+                  this, line, NEVER_PAUSE_HERE_CONDITION, /* enabled */ true, /* isLogpoint */ false),
+              {jslogContext: 'never-pause-here'});
         }
       }
     } else {
       const removeTitle = i18nString(UIStrings.removeBreakpoint, {n: breakpoints.length});
-      contextMenu.debugSection().appendItem(removeTitle, () => breakpoints.forEach(breakpoint => {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointRemovedFromGutterContextMenu);
-        void breakpoint.remove(false);
-      }));
+      contextMenu.debugSection().appendItem(
+          removeTitle, () => breakpoints.forEach(breakpoint => {
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointRemovedFromGutterContextMenu);
+            void breakpoint.remove(false);
+          }),
+          {jslogContext: 'remove-breakpoint'});
       if (breakpoints.length === 1 && supportsConditionalBreakpoints) {
         // Editing breakpoints only make sense for conditional breakpoints
         // and logpoints and both are currently only available for JavaScript
@@ -526,19 +530,21 @@ export class DebuggerPlugin extends Plugin {
           Host.userMetrics.breakpointEditDialogRevealedFrom(
               Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointMarkerContextMenu);
           this.editBreakpointCondition({line, breakpoint: breakpoints[0], location: null});
-        });
+        }, {jslogContext: 'edit-breakpoint'});
       }
       const hasEnabled = breakpoints.some(breakpoint => breakpoint.enabled());
       if (hasEnabled) {
         const title = i18nString(UIStrings.disableBreakpoint, {n: breakpoints.length});
         contextMenu.debugSection().appendItem(
-            title, () => breakpoints.forEach(breakpoint => breakpoint.setEnabled(false)));
+            title, () => breakpoints.forEach(breakpoint => breakpoint.setEnabled(false)),
+            {jslogContext: 'enable-breakpoint'});
       }
       const hasDisabled = breakpoints.some(breakpoint => !breakpoint.enabled());
       if (hasDisabled) {
         const title = i18nString(UIStrings.enableBreakpoint, {n: breakpoints.length});
         contextMenu.debugSection().appendItem(
-            title, () => breakpoints.forEach(breakpoint => breakpoint.setEnabled(true)));
+            title, () => breakpoints.forEach(breakpoint => breakpoint.setEnabled(true)),
+            {jslogContext: 'disable-breakpoint'});
       }
     }
   }
@@ -579,12 +585,14 @@ export class DebuggerPlugin extends Plugin {
         const scriptFile: Bindings.ResourceScriptMapping.ResourceScriptFile =
             this.scriptFileForDebuggerModel.values().next().value;
         const addSourceMapURLLabel = i18nString(UIStrings.addSourceMap);
-        contextMenu.debugSection().appendItem(addSourceMapURLLabel, addSourceMapURL.bind(null, scriptFile));
+        contextMenu.debugSection().appendItem(
+            addSourceMapURLLabel, addSourceMapURL.bind(null, scriptFile), {jslogContext: 'add-source-map'});
         if (scriptFile.script?.isWasm() &&
             !Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager?.hasPluginForScript(
                 scriptFile.script)) {
           contextMenu.debugSection().appendItem(
-              i18nString(UIStrings.addWasmDebugInfo), addDebugInfoURL.bind(null, scriptFile));
+              i18nString(UIStrings.addWasmDebugInfo), addDebugInfoURL.bind(null, scriptFile),
+              {jslogContext: 'add-wasm-debug-info'});
         }
       }
     }
@@ -1378,31 +1386,32 @@ export class DebuggerPlugin extends Plugin {
             this.uiSourceCode)) {
       return;
     }
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu.ContextMenu(event, {jsLogContext: 'sources-inline-breakpoint'});
     if (breakpoint) {
       contextMenu.debugSection().appendItem(i18nString(UIStrings.editBreakpoint), () => {
         Host.userMetrics.breakpointEditDialogRevealedFrom(
             Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointMarkerContextMenu);
         this.editBreakpointCondition({line, breakpoint, location: null});
-      });
+      }, {jslogContext: 'edit-breakpoint'});
     } else {
       const uiLocation = this.transformer.editorLocationToUILocation(line.number - 1, position - line.from);
       contextMenu.debugSection().appendItem(i18nString(UIStrings.addConditionalBreakpoint), () => {
         Host.userMetrics.breakpointEditDialogRevealedFrom(
             Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointMarkerContextMenu);
         this.editBreakpointCondition({line, breakpoint: null, location: uiLocation, isLogpoint: false});
-      });
+      }, {jslogContext: 'add-cnd-breakpoint'});
       contextMenu.debugSection().appendItem(i18nString(UIStrings.addLogpoint), () => {
         Host.userMetrics.breakpointEditDialogRevealedFrom(
             Host.UserMetrics.BreakpointEditDialogRevealedFrom.BreakpointMarkerContextMenu);
         this.editBreakpointCondition({line, breakpoint: null, location: uiLocation, isLogpoint: true});
-      });
+      }, {jslogContext: 'add-logpoint'});
 
       contextMenu.debugSection().appendItem(
           i18nString(UIStrings.neverPauseHere),
           () => this.setBreakpoint(
               uiLocation.lineNumber, uiLocation.columnNumber, NEVER_PAUSE_HERE_CONDITION, /* enabled */ true,
-              /* isLogpoint */ false));
+              /* isLogpoint */ false),
+          {jslogContext: 'never-pause-here'});
     }
     void contextMenu.show();
   }

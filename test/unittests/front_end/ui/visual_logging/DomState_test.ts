@@ -51,6 +51,35 @@ describe('DomState', () => {
     ]);
   });
 
+  it('returns element in a BFS order', () => {
+    container.innerHTML = `
+      <li jslog="TreeItem" id="1">
+      </li>
+      <ol>
+        <li jslog="TreeItem" id="11">
+        </li>
+        <li jslog="TreeItem" id="12">
+      </ol>
+      <li jslog="TreeItem" id="2">
+      </li>
+      <ol>
+        <li jslog="TreeItem" id="21">
+        </li>
+        <li jslog="TreeItem" id="22">
+        </li>
+        </li>
+      </ol>`;
+    const {loggables} = VisualLogging.DomState.getDomState([document]);
+    assert.deepEqual(loggables, [
+      {element: el('1'), parent: undefined},
+      {element: el('2'), parent: undefined},
+      {element: el('11'), parent: undefined},
+      {element: el('12'), parent: undefined},
+      {element: el('21'), parent: undefined},
+      {element: el('22'), parent: undefined},
+    ]);
+  });
+
   it('gets loggable elements across documents', () => {
     container.innerHTML = `
       <div jslog="TreeItem" id="1"></div>

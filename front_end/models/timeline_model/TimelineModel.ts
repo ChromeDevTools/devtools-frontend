@@ -236,11 +236,6 @@ export class TimelineModelImpl {
     return event.name === RecordType.LayoutShift;
   }
 
-  static isJsFrameEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): boolean {
-    return event.name === RecordType.JSFrame || event.name === RecordType.JSIdleFrame ||
-        event.name === RecordType.JSSystemFrame;
-  }
-
   static globalEventId(event: TraceEngine.Legacy.Event, field: string): string {
     const data = event.args['data'] || event.args['beginData'];
     const id = data && data[field];

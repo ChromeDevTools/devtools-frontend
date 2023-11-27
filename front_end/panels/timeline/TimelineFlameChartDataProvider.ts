@@ -777,11 +777,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (TraceEngine.Legacy.eventIsFromNewEngine(event) && TraceEngine.Types.TraceEvents.isProfileCall(event)) {
       return this.isIgnoreListedURL(event.callFrame.url as Platform.DevToolsPath.UrlString);
     }
-    if (!TimelineModel.TimelineModel.TimelineModelImpl.isJsFrameEvent(event)) {
-      return false;
-    }
-    const url = event.args['data']['url'] as Platform.DevToolsPath.UrlString;
-    return url && this.isIgnoreListedURL(url);
+    return false;
   }
 
   private isIgnoreListedURL(url: Platform.DevToolsPath.UrlString): boolean {

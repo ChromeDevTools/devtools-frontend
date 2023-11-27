@@ -7,7 +7,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
-import {EventOnTimelineData, RecordType, TimelineModelImpl} from './TimelineModel.js';
+import {RecordType, TimelineModelImpl} from './TimelineModel.js';
 import {type TimelineModelFilter} from './TimelineModelFilter.js';
 
 export class Node {
@@ -531,6 +531,12 @@ export function eventURL(event: TraceEngine.Legacy.Event|
   if (data && data['url']) {
     return data['url'];
   }
+  // Temporary break to aid migration: no events are from the old engine now,
+  // and we are incrementally removing these checks
+  if (!TraceEngine.Legacy.eventIsFromNewEngine(event)) {
+    return null;
+  }
+
   let frame = eventStackFrame(event);
   while (frame) {
     const url = frame['url'] as Platform.DevToolsPath.UrlString;
@@ -544,22 +550,15 @@ export function eventURL(event: TraceEngine.Legacy.Event|
   return null;
 }
 
-export function eventStackFrame(event: TraceEngine.Legacy.Event|
-                                TraceEngine.Types.TraceEvents.TraceEventData): Protocol.Runtime.CallFrame|null {
-  if (TraceEngine.Legacy.eventIsFromNewEngine(event) && TraceEngine.Types.TraceEvents.isProfileCall(event)) {
+export function eventStackFrame(event: TraceEngine.Types.TraceEvents.TraceEventData): Protocol.Runtime.CallFrame|null {
+  if (TraceEngine.Types.TraceEvents.isProfileCall(event)) {
     return event.callFrame;
   }
-  if (TraceEngine.Legacy.eventIsFromNewEngine(event)) {
-    const topFrame = event.args?.data?.stackTrace?.[0];
-    if (!topFrame) {
-      return null;
-    }
-    return {...topFrame, scriptId: String(topFrame.scriptId) as Protocol.Runtime.ScriptId};
+  const topFrame = event.args?.data?.stackTrace?.[0];
+  if (!topFrame) {
+    return null;
   }
-  if (TimelineModelImpl.isJsFrameEvent(event)) {
-    return event.args['data'] || null as Protocol.Runtime.CallFrame | null;
-  }
-  return EventOnTimelineData.forEvent(event).topFrame();
+  return {...topFrame, scriptId: String(topFrame.scriptId) as Protocol.Runtime.ScriptId};
 }
 
 export function generateEventID(event: TraceEngine.Legacy.CompatibleTraceEvent): string {
@@ -575,16 +574,7 @@ export function generateEventID(event: TraceEngine.Legacy.CompatibleTraceEvent):
     return `${event.name}:${event.args.data.message}`;
   }
 
-  if (!TimelineModelImpl.isJsFrameEvent(event)) {
-    return event.name;
-  }
-  const frame = event.args['data'];
-  const location = frame['scriptId'] || frame['url'] || '';
-  const functionName = frame['functionName'];
-  const name = TimelineJSProfileProcessor.isNativeRuntimeFrame(frame) ?
-      TimelineJSProfileProcessor.nativeGroup(functionName) || functionName :
-      `${functionName}:${frame['lineNumber']}:${frame['columnNumber']}`;
-  return `f:${name}@${location}`;
+  return event.name;
 }
 
 export type ChildrenCache = Map<string|symbol, Node>;

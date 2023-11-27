@@ -186,34 +186,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
 
       assert.strictEqual(node.textContent, 'original-script.ts:1:1');
     });
-    it('maps to the authored script when a trace event from the old engine with a stack trace is provided',
-       async function() {
-         const functionCallEvent = new TraceEngine.Legacy.ConstructedEvent(
-             'devtools.timeline', TimelineModel.TimelineModel.RecordType.FunctionCall,
-             TraceEngine.Types.TraceEvents.Phase.COMPLETE, 10, thread);
-         functionCallEvent.addArgs({
-           data: {
-             stackTrace: [{
-               functionName: 'test',
-               url: 'https://google.com/test.js',
-               scriptId: SCRIPT_ID_STRING,
-               lineNumber: 0,
-               columnNumber: 0,
-             }],
-           },
-         });
-         const data = TimelineModel.TimelineModel.EventOnTimelineData.forEvent(functionCallEvent);
-         data.stackTrace = functionCallEvent.args.data.stackTrace;
-         const linkifier = new Components.Linkifier.Linkifier();
-         const node =
-             Timeline.TimelineUIUtils.TimelineUIUtils.linkifyTopCallFrame(functionCallEvent, target, linkifier, true);
-         if (!node) {
-           throw new Error('Node was unexpectedly null');
-         }
-         await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
-             .pendingLiveLocationChangesPromise();
-         assert.strictEqual(node.textContent, 'original-script.ts:1:1');
-       });
+
     it('maps to the authored script when a trace event from the new engine with a stack trace is provided',
        async function() {
          const functionCallEvent = makeCompleteEvent('FunctionCall', 10, 100);

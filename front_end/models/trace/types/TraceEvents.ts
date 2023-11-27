@@ -460,7 +460,7 @@ export interface TraceEventMetadata extends TraceEventData {
 }
 
 export interface TraceEventThreadName extends TraceEventMetadata {
-  name: 'thread_name';
+  name: KnownEventName.ThreadName;
   args: TraceEventArgs&{
     name?: string,
   };
@@ -1333,7 +1333,7 @@ export function isTraceEventUpdateCounters(event: TraceEventData): event is Trac
 export function isThreadName(
     traceEventData: TraceEventData,
     ): traceEventData is TraceEventThreadName {
-  return traceEventData.name === 'thread_name';
+  return traceEventData.name === KnownEventName.ThreadName;
 }
 
 export function isProcessName(
@@ -1851,6 +1851,9 @@ export function isWebSocketTraceEvent(event: TraceEventData): event is TraceEven
  * TODO(crbug.com/1428024): Complete this enum.
  */
 export const enum KnownEventName {
+  /* Metadata */
+  ThreadName = 'thread_name',
+
   /* Task */
   Program = 'Program',
   RunTask = 'RunTask',

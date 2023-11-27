@@ -1385,12 +1385,6 @@ export class TimelineUIUtils {
   }
 
   static eventColor(event: TraceEngine.Legacy.CompatibleTraceEvent): string {
-    if (TimelineModel.TimelineModel.TimelineModelImpl.isJsFrameEvent(event)) {
-      const frame = event.args['data'];
-      if (TimelineUIUtils.isUserFrame(frame)) {
-        return TimelineUIUtils.colorForId(frame.url);
-      }
-    }
     if (TraceEngine.Legacy.eventIsFromNewEngine(event) && TraceEngine.Types.TraceEvents.isProfileCall(event)) {
       const frame = event.callFrame;
       if (TimelineUIUtils.isUserFrame(frame)) {
@@ -1420,9 +1414,6 @@ export class TimelineUIUtils {
     }
     const recordType = TimelineModel.TimelineModel.RecordType;
     const eventData = event.args['data'];
-    if (TimelineModel.TimelineModel.TimelineModelImpl.isJsFrameEvent(event)) {
-      return TimelineUIUtils.frameDisplayName(eventData);
-    }
 
     if (event.name === 'EventTiming') {
       let payload: TraceEngine.Types.TraceEvents.TraceEventData|null = null;
@@ -1791,7 +1782,9 @@ export class TimelineUIUtils {
                 event, TimelineModel.TimelineModel.TimelineModelImpl.Category.Console)) {
           detailsText = null;
         } else {
-          details = this.linkifyTopCallFrame(event, target, linkifier, isFreshRecording);
+          details = TraceEngine.Legacy.eventIsFromNewEngine(event) ?
+              this.linkifyTopCallFrame(event, target, linkifier, isFreshRecording) :
+              null;
         }
         break;
       }
@@ -1821,7 +1814,7 @@ export class TimelineUIUtils {
   }
 
   static linkifyTopCallFrame(
-      event: TraceEngine.Legacy.CompatibleTraceEvent, target: SDK.Target.Target|null,
+      event: TraceEngine.Types.TraceEvents.TraceEventData, target: SDK.Target.Target|null,
       linkifier: LegacyComponents.Linkifier.Linkifier, isFreshRecording = false): Element|null {
     const frame = TimelineModel.TimelineProfileTree.eventStackFrame(event);
     if (!frame) {

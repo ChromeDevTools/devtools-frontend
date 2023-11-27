@@ -36,7 +36,8 @@ describe('The Application Tab', async () => {
     await target.deleteCookie(...cookies);
   });
 
-  it('deletes only first party cookies when clearing site data', async () => {
+  // Skipped due to third party cookies removal
+  it.skip('[crbug.com/1505387] deletes only first party cookies when clearing site data', async () => {
     const {target} = getBrowserAndPages();
     await navigateToApplicationTab(target, 'cross-origin-cookies');
 
@@ -79,46 +80,49 @@ describe('The Application Tab', async () => {
                            }]);
   });
 
-  it('deletes first and third party cookies when clearing site data with the flag enabled', async () => {
-    const {target} = getBrowserAndPages();
-    // This sets a new cookie foo=bar
-    await navigateToApplicationTab(target, 'cross-origin-cookies');
+  // Skipped due to third party cookies removal
+  it.skip(
+      '[crbug.com/1505387] deletes first and third party cookies when clearing site data with the flag enabled',
+      async () => {
+        const {target} = getBrowserAndPages();
+        // This sets a new cookie foo=bar
+        await navigateToApplicationTab(target, 'cross-origin-cookies');
 
-    await doubleClickSourceTreeItem(COOKIES_SELECTOR);
-    await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+        await doubleClickSourceTreeItem(COOKIES_SELECTOR);
+        await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
 
-    const dataGridRowValuesBefore = await waitForFunction(async () => {
-      const data = await getStorageItemsData(['name', 'value'], 3);
-      return data.length ? data : undefined;
-    });
+        const dataGridRowValuesBefore = await waitForFunction(async () => {
+          const data = await getStorageItemsData(['name', 'value'], 3);
+          return data.length ? data : undefined;
+        });
 
-    assert.sameDeepMembers(dataGridRowValuesBefore, [
-      {
-        name: 'third_party',
-        value: 'test',
-      },
-      {
-        name: 'foo2',
-        value: 'bar',
-      },
-      {
-        name: 'foo',
-        value: 'bar',
-      },
-    ]);
+        assert.sameDeepMembers(dataGridRowValuesBefore, [
+          {
+            name: 'third_party',
+            value: 'test',
+          },
+          {
+            name: 'foo2',
+            value: 'bar',
+          },
+          {
+            name: 'foo',
+            value: 'bar',
+          },
+        ]);
 
-    await doubleClickSourceTreeItem(STORAGE_SELECTOR);
-    await click(INCLUDE_3RD_PARTY_COOKIES_SELECTOR);
-    await click(CLEAR_SITE_DATA_BUTTON_SELECTOR);
+        await doubleClickSourceTreeItem(STORAGE_SELECTOR);
+        await click(INCLUDE_3RD_PARTY_COOKIES_SELECTOR);
+        await click(CLEAR_SITE_DATA_BUTTON_SELECTOR);
 
-    await doubleClickSourceTreeItem(COOKIES_SELECTOR);
-    await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
+        await doubleClickSourceTreeItem(COOKIES_SELECTOR);
+        await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
 
-    await waitForFunction(async () => {
-      const data = await getStorageItemsData(['name', 'value'], 0);
-      return data.length === 0;
-    });
-  });
+        await waitForFunction(async () => {
+          const data = await getStorageItemsData(['name', 'value'], 0);
+          return data.length === 0;
+        });
+      });
 
   describe('the Storage pane', async function() {
     // The tests in this suite are particularly slow, as they perform a lot of actions

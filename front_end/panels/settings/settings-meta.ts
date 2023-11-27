@@ -202,11 +202,11 @@ Common.Revealer.registerRevealer({
       Root.Runtime.Experiment,
     ];
   },
+  destination: undefined,
   async loadRevealer() {
     const Settings = await loadSettingsModule();
     return Settings.SettingsScreen.Revealer.instance();
   },
-  destination: undefined,
 });
 
 UI.ContextMenu.registerItem({

@@ -66,13 +66,13 @@ describeWithLocale('CommandMenu', () => {
   it('reveals the setting when calling a deprecated setting', () => {
     const deprecation = {disabled: true, warning};
     const {setting, command} = createCommandMenuProvider(deprecation);
-    const callback = sinon.fake((_object: Object, _omitFocus?: boolean|undefined) => Promise.resolve());
+    const callback = sinon.fake((_object: Object, _omitFocus?: boolean) => Promise.resolve());
     TestRevealer.install(callback);
 
     command.execute();
 
     assert.isTrue(
-        callback.calledOnceWithExactly(setting, undefined),
+        callback.calledOnceWithExactly(setting),
         'Revealer was either not called or was called with unexpected arguments');
     TestRevealer.reset();
   });

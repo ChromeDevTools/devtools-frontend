@@ -272,7 +272,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 }
 
 let diffUILocationRevealerInstance: DiffUILocationRevealer;
-export class DiffUILocationRevealer implements Common.Revealer.Revealer {
+export class DiffUILocationRevealer implements Common.Revealer.Revealer<WorkspaceDiff.WorkspaceDiff.DiffUILocation> {
   static instance(opts: {forceNew: boolean} = {forceNew: false}): DiffUILocationRevealer {
     const {forceNew} = opts;
     if (!diffUILocationRevealerInstance || forceNew) {
@@ -282,10 +282,7 @@ export class DiffUILocationRevealer implements Common.Revealer.Revealer {
     return diffUILocationRevealerInstance;
   }
 
-  async reveal(diffUILocation: Object, omitFocus?: boolean|undefined): Promise<void> {
-    if (!(diffUILocation instanceof WorkspaceDiff.WorkspaceDiff.DiffUILocation)) {
-      throw new Error('Internal error: not a diff ui location');
-    }
+  async reveal(diffUILocation: WorkspaceDiff.WorkspaceDiff.DiffUILocation, omitFocus?: boolean): Promise<void> {
     await UI.ViewManager.ViewManager.instance().showView('changes.changes');
     ChangesView.instance().changesSidebar.selectUISourceCode(diffUILocation.uiSourceCode, omitFocus);
   }

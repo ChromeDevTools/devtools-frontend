@@ -1272,7 +1272,8 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
   }
 }
 let dOMNodeRevealerInstance: DOMNodeRevealer;
-export class DOMNodeRevealer implements Common.Revealer.Revealer {
+export class DOMNodeRevealer implements
+    Common.Revealer.Revealer<SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode|SDK.RemoteObject.RemoteObject> {
   static instance(opts: {
     forceNew: boolean|null,
   } = {forceNew: null}): DOMNodeRevealer {
@@ -1284,7 +1285,8 @@ export class DOMNodeRevealer implements Common.Revealer.Revealer {
     return dOMNodeRevealerInstance;
   }
 
-  reveal(node: Object, omitFocus?: boolean): Promise<void> {
+  reveal(node: SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode|SDK.RemoteObject.RemoteObject, omitFocus?: boolean):
+      Promise<void> {
     const panel = ElementsPanel.instance();
     panel.pendingNodeReveal = true;
 
@@ -1308,7 +1310,7 @@ export class DOMNodeRevealer implements Common.Revealer.Revealer {
         onNodeResolved((node as SDK.DOMModel.DOMNode));
       } else if (node instanceof SDK.DOMModel.DeferredDOMNode) {
         (node as SDK.DOMModel.DeferredDOMNode).resolve(checkDeferredDOMNodeThenReveal);
-      } else if (node instanceof SDK.RemoteObject.RemoteObject) {
+      } else {
         const domModel = node.runtimeModel().target().model(SDK.DOMModel.DOMModel);
         if (domModel) {
           void domModel.pushObjectAsNodeToFrontend(node).then(checkRemoteObjectThenReveal);
@@ -1316,10 +1318,6 @@ export class DOMNodeRevealer implements Common.Revealer.Revealer {
           const msg = i18nString(UIStrings.nodeCannotBeFoundInTheCurrent);
           reject(new Platform.UserVisibleError.UserVisibleError(msg));
         }
-      } else {
-        const msg = i18nString(UIStrings.theRemoteObjectCouldNotBe);
-        reject(new Platform.UserVisibleError.UserVisibleError(msg));
-        panel.pendingNodeReveal = false;
       }
 
       function onNodeResolved(resolvedNode: SDK.DOMModel.DOMNode): void {
@@ -1373,7 +1371,7 @@ export class DOMNodeRevealer implements Common.Revealer.Revealer {
 
 let cSSPropertyRevealerInstance: CSSPropertyRevealer;
 
-export class CSSPropertyRevealer implements Common.Revealer.Revealer {
+export class CSSPropertyRevealer implements Common.Revealer.Revealer<SDK.CSSProperty.CSSProperty> {
   static instance(opts: {
     forceNew: boolean|null,
   } = {forceNew: null}): CSSPropertyRevealer {
@@ -1385,9 +1383,9 @@ export class CSSPropertyRevealer implements Common.Revealer.Revealer {
     return cSSPropertyRevealerInstance;
   }
 
-  reveal(property: Object): Promise<void> {
+  reveal(property: SDK.CSSProperty.CSSProperty): Promise<void> {
     const panel = ElementsPanel.instance();
-    return panel.revealProperty((property as SDK.CSSProperty.CSSProperty));
+    return panel.revealProperty(property);
   }
 }
 

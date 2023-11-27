@@ -48,7 +48,7 @@ export interface RequestLinkIconData {
   // If displayURL only, uses filename of the URL.
   urlToDisplay?: string;
   additionalOnClickAction?: () => void;
-  revealOverride?: (revealable: Object|null, omitFocus?: boolean|undefined) => Promise<void>;
+  revealOverride?: (revealable: unknown, omitFocus?: boolean) => Promise<void>;
 }
 
 export const extractShortPath = (path: Platform.DevToolsPath.UrlString): string => {

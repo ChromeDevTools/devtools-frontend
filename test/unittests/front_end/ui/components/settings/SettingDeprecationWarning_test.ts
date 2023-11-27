@@ -63,7 +63,7 @@ describe('SettingDeprecationWarning', () => {
     element.click();
 
     assert.isTrue(
-        callback.calledOnceWithExactly(experiment, undefined),
+        callback.calledOnceWithExactly(experiment),
         'Revealer was either not called or was called with unexpected arguments');
     TestRevealer.reset();
   });

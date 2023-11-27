@@ -440,9 +440,7 @@ Common.Revealer.registerRevealer({
 
 Common.Revealer.registerRevealer({
   contextTypes() {
-    return [
-      NetworkForward.UIFilter.UIRequestFilter,
-    ];
+    return [NetworkForward.UIFilter.UIRequestFilter];
   },
   destination: Common.Revealer.RevealerDestination.NETWORK_PANEL,
   async loadRevealer() {

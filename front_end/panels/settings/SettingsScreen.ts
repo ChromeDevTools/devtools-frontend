@@ -567,7 +567,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   }
 }
 let revealerInstance: Revealer;
-export class Revealer implements Common.Revealer.Revealer {
+export class Revealer implements Common.Revealer.Revealer<Root.Runtime.Experiment|Common.Settings.Setting<unknown>> {
   static instance(opts: {forceNew: boolean} = {forceNew: false}): Revealer {
     const {forceNew} = opts;
     if (!revealerInstance || forceNew) {
@@ -577,21 +577,19 @@ export class Revealer implements Common.Revealer.Revealer {
     return revealerInstance;
   }
 
-  reveal(object: Object): Promise<void> {
+  reveal(object: Root.Runtime.Experiment|Common.Settings.Setting<unknown>): Promise<void> {
     if (object instanceof Root.Runtime.Experiment) {
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
       void SettingsScreen.showSettingsScreen({name: 'experiments'})
           .then(() => ExperimentsSettingsTab.instance().highlightObject(object));
       return Promise.resolve();
     }
-    console.assert(object instanceof Common.Settings.Setting);
-    const setting = object as Common.Settings.Setting<string>;
 
     for (const settingRegistration of Common.Settings.getRegisteredSettings()) {
       if (!GenericSettingsTab.isSettingVisible(settingRegistration)) {
         continue;
       }
-      if (settingRegistration.settingName === setting.name) {
+      if (settingRegistration.settingName === object.name) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
         void SettingsScreen.showSettingsScreen().then(() => GenericSettingsTab.instance().highlightObject(object));
         return Promise.resolve();
@@ -606,7 +604,7 @@ export class Revealer implements Common.Revealer.Revealer {
         continue;
       }
       const settings = view.settings();
-      if (settings && settings.indexOf(setting.name) !== -1) {
+      if (settings && settings.indexOf(object.name) !== -1) {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
         void SettingsScreen.showSettingsScreen({name: id}).then(async () => {
           const widget = await view.widget();

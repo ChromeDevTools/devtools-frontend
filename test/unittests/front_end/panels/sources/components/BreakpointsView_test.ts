@@ -142,8 +142,8 @@ async function setUpTestWithOneBreakpointLocation(
   return {controller, groups: data.groups, location: locations[0]};
 }
 
-class MockRevealer implements Common.Revealer.Revealer {
-  async reveal(_object: Object, _omitFocus?: boolean|undefined): Promise<void> {
+class MockRevealer<T> implements Common.Revealer.Revealer<T> {
+  async reveal(_revealable: T, _omitFocus?: boolean): Promise<void> {
   }
 }
 
@@ -382,7 +382,7 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
   it('correctly reveals source location', async () => {
     const {groups, location: {uiLocation}} = await setUpTestWithOneBreakpointLocation();
     const breakpointItem = groups[0].breakpointItems[0];
-    const revealer = sinon.createStubInstance(MockRevealer);
+    const revealer = sinon.createStubInstance(MockRevealer<Workspace.UISourceCode.UILocation>);
 
     Common.Revealer.registerRevealer({
       contextTypes() {
@@ -401,7 +401,7 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
   it('correctly reveals breakpoint editor', async () => {
     const {groups, location} = await setUpTestWithOneBreakpointLocation();
     const breakpointItem = groups[0].breakpointItems[0];
-    const revealer = sinon.createStubInstance(MockRevealer);
+    const revealer = sinon.createStubInstance(MockRevealer<Breakpoints.BreakpointManager.BreakpointLocation>);
 
     Common.Revealer.registerRevealer({
       contextTypes() {

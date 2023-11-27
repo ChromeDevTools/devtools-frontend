@@ -41,7 +41,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TraceEngine from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
-import * as NetworkForward from '../../panels/network/forward/forward.js';
+import type * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -804,7 +804,7 @@ export class ContextMenuProvider implements UI.ContextMenu.Provider {
   }
 }
 let requestRevealerInstance: RequestRevealer;
-export class RequestRevealer implements Common.Revealer.Revealer {
+export class RequestRevealer implements Common.Revealer.Revealer<SDK.NetworkRequest.NetworkRequest> {
   static instance(opts: {
     forceNew: boolean|null,
   } = {forceNew: null}): RequestRevealer {
@@ -816,10 +816,7 @@ export class RequestRevealer implements Common.Revealer.Revealer {
     return requestRevealerInstance;
   }
 
-  reveal(request: Object): Promise<void> {
-    if (!(request instanceof SDK.NetworkRequest.NetworkRequest)) {
-      return Promise.reject(new Error('Internal error: not a network request'));
-    }
+  reveal(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {
     const panel = NetworkPanel.instance();
     return UI.ViewManager.ViewManager.instance().showView('network').then(
         panel.revealAndHighlightRequest.bind(panel, request));
@@ -827,7 +824,7 @@ export class RequestRevealer implements Common.Revealer.Revealer {
 }
 
 let requestIdRevealerInstance: RequestIdRevealer;
-export class RequestIdRevealer implements Common.Revealer.Revealer {
+export class RequestIdRevealer implements Common.Revealer.Revealer<NetworkForward.NetworkRequestId.NetworkRequestId> {
   static instance(opts: {
     forceNew: boolean|null,
   } = {forceNew: null}): RequestIdRevealer {
@@ -839,10 +836,7 @@ export class RequestIdRevealer implements Common.Revealer.Revealer {
     return requestIdRevealerInstance;
   }
 
-  reveal(requestId: Object): Promise<void> {
-    if (!(requestId instanceof NetworkForward.NetworkRequestId.NetworkRequestId)) {
-      return Promise.reject(new Error('Internal error: not a network request ID'));
-    }
+  reveal(requestId: NetworkForward.NetworkRequestId.NetworkRequestId): Promise<void> {
     const panel = NetworkPanel.instance();
     return UI.ViewManager.ViewManager.instance().showView('network').then(
         panel.revealAndHighlightRequestWithId.bind(panel, requestId));
@@ -850,7 +844,7 @@ export class RequestIdRevealer implements Common.Revealer.Revealer {
 }
 
 let networkLogWithFilterRevealerInstance: NetworkLogWithFilterRevealer;
-export class NetworkLogWithFilterRevealer implements Common.Revealer.Revealer {
+export class NetworkLogWithFilterRevealer implements Common.Revealer.Revealer<NetworkForward.UIFilter.UIRequestFilter> {
   static instance(opts: {
     forceNew: boolean|null,
   } = {forceNew: null}): NetworkLogWithFilterRevealer {
@@ -862,10 +856,7 @@ export class NetworkLogWithFilterRevealer implements Common.Revealer.Revealer {
     return networkLogWithFilterRevealerInstance;
   }
 
-  reveal(request: Object): Promise<void> {
-    if (!(request instanceof NetworkForward.UIFilter.UIRequestFilter)) {
-      return Promise.reject(new Error('Internal error: not a UIRequestFilter'));
-    }
+  reveal(request: NetworkForward.UIFilter.UIRequestFilter): Promise<void> {
     return NetworkPanel.revealAndFilter(request.filters);
   }
 }
@@ -1017,7 +1008,8 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
 
 let requestLocationRevealerInstance: RequestLocationRevealer;
 
-export class RequestLocationRevealer implements Common.Revealer.Revealer {
+export class RequestLocationRevealer implements
+    Common.Revealer.Revealer<NetworkForward.UIRequestLocation.UIRequestLocation> {
   static instance(opts: {
     forceNew: boolean|null,
   }|undefined = {forceNew: null}): RequestLocationRevealer {
@@ -1028,8 +1020,7 @@ export class RequestLocationRevealer implements Common.Revealer.Revealer {
     return requestLocationRevealerInstance;
   }
 
-  async reveal(match: Object): Promise<void> {
-    const location = match as NetworkForward.UIRequestLocation.UIRequestLocation;
+  async reveal(location: NetworkForward.UIRequestLocation.UIRequestLocation): Promise<void> {
     const view =
         await NetworkPanel.instance().selectAndActivateRequest(location.request, location.tab, location.filterOptions);
     if (!view) {

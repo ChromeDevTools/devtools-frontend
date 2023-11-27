@@ -319,7 +319,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #associatedData = new Map<string, object>();
   #hasOverriddenContent: boolean;
 
-  private constructor(
+  constructor(
       requestId: string, backendRequestId: Protocol.Network.RequestId|undefined, url: Platform.DevToolsPath.UrlString,
       documentURL: Platform.DevToolsPath.UrlString, frameId: Protocol.Page.FrameId|null,
       loaderId: Protocol.Network.LoaderId|null, initiator: Protocol.Network.Initiator|null, hasUserGesture?: boolean) {

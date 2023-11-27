@@ -14,7 +14,7 @@ import {DatabaseQueryView} from './DatabaseQueryView.js';
 import {DatabaseTableView} from './DatabaseTableView.js';
 import {DOMStorageItemsView} from './DOMStorageItemsView.js';
 import {type DOMStorage} from './DOMStorageModel.js';
-import * as PreloadingHelper from './preloading/helper/helper.js';
+import type * as PreloadingHelper from './preloading/helper/helper.js';
 import resourcesPanelStyles from './resourcesPanel.css.js';
 import {StorageItemsView} from './StorageItemsView.js';
 
@@ -206,7 +206,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
 
 let resourceRevealerInstance: ResourceRevealer;
 
-export class ResourceRevealer implements Common.Revealer.Revealer {
+export class ResourceRevealer implements Common.Revealer.Revealer<SDK.Resource.Resource> {
   static instance(opts: {
     forceNew: boolean|null,
   } = {forceNew: null}): ResourceRevealer {
@@ -218,10 +218,7 @@ export class ResourceRevealer implements Common.Revealer.Revealer {
     return resourceRevealerInstance;
   }
 
-  async reveal(resource: Object): Promise<void> {
-    if (!(resource instanceof SDK.Resource.Resource)) {
-      throw new Error('Internal error: not a resource');
-    }
+  async reveal(resource: SDK.Resource.Resource): Promise<void> {
     const sidebar = await ResourcesPanel.showAndGetSidebar();
     await sidebar.showResource(resource);
   }
@@ -229,7 +226,7 @@ export class ResourceRevealer implements Common.Revealer.Revealer {
 
 let frameDetailsRevealerInstance: FrameDetailsRevealer;
 
-export class FrameDetailsRevealer implements Common.Revealer.Revealer {
+export class FrameDetailsRevealer implements Common.Revealer.Revealer<SDK.ResourceTreeModel.ResourceTreeFrame> {
   static instance(opts: {
     forceNew: boolean|null,
   } = {forceNew: null}): FrameDetailsRevealer {
@@ -241,10 +238,7 @@ export class FrameDetailsRevealer implements Common.Revealer.Revealer {
     return frameDetailsRevealerInstance;
   }
 
-  async reveal(frame: Object): Promise<void> {
-    if (!(frame instanceof SDK.ResourceTreeModel.ResourceTreeFrame)) {
-      throw new Error('Internal error: not a frame');
-    }
+  async reveal(frame: SDK.ResourceTreeModel.ResourceTreeFrame): Promise<void> {
     const sidebar = await ResourcesPanel.showAndGetSidebar();
     sidebar.showFrame(frame);
   }
@@ -252,10 +246,10 @@ export class FrameDetailsRevealer implements Common.Revealer.Revealer {
 
 let ruleSetViewRevealerInstance: RuleSetViewRevealer;
 
-export class RuleSetViewRevealer implements Common.Revealer.Revealer {
+export class RuleSetViewRevealer implements Common.Revealer.Revealer<PreloadingHelper.PreloadingForward.RuleSetView> {
   static instance(opts: {
     forceNew: boolean|null,
-  } = {forceNew: null}): FrameDetailsRevealer {
+  } = {forceNew: null}): RuleSetViewRevealer {
     const {forceNew} = opts;
     if (!ruleSetViewRevealerInstance || forceNew) {
       ruleSetViewRevealerInstance = new RuleSetViewRevealer();
@@ -264,10 +258,7 @@ export class RuleSetViewRevealer implements Common.Revealer.Revealer {
     return ruleSetViewRevealerInstance;
   }
 
-  async reveal(revealInfo: Object): Promise<void> {
-    if (!(revealInfo instanceof PreloadingHelper.PreloadingForward.RuleSetView)) {
-      throw new Error('Internal error: not an RuleSetView');
-    }
+  async reveal(revealInfo: PreloadingHelper.PreloadingForward.RuleSetView): Promise<void> {
     const sidebar = await ResourcesPanel.showAndGetSidebar();
     sidebar.showPreloadingRuleSetView(revealInfo);
   }
@@ -275,10 +266,11 @@ export class RuleSetViewRevealer implements Common.Revealer.Revealer {
 
 let attemptViewWithFilterRevealerInstance: AttemptViewWithFilterRevealer;
 
-export class AttemptViewWithFilterRevealer implements Common.Revealer.Revealer {
+export class AttemptViewWithFilterRevealer implements
+    Common.Revealer.Revealer<PreloadingHelper.PreloadingForward.AttemptViewWithFilter> {
   static instance(opts: {
     forceNew: boolean|null,
-  } = {forceNew: null}): FrameDetailsRevealer {
+  } = {forceNew: null}): AttemptViewWithFilterRevealer {
     const {forceNew} = opts;
     if (!attemptViewWithFilterRevealerInstance || forceNew) {
       attemptViewWithFilterRevealerInstance = new AttemptViewWithFilterRevealer();
@@ -287,10 +279,7 @@ export class AttemptViewWithFilterRevealer implements Common.Revealer.Revealer {
     return attemptViewWithFilterRevealerInstance;
   }
 
-  async reveal(filter: Object): Promise<void> {
-    if (!(filter instanceof PreloadingHelper.PreloadingForward.AttemptViewWithFilter)) {
-      throw new Error('Internal error: not an AttemptViewWithFilter');
-    }
+  async reveal(filter: PreloadingHelper.PreloadingForward.AttemptViewWithFilter): Promise<void> {
     const sidebar = await ResourcesPanel.showAndGetSidebar();
     sidebar.showPreloadingAttemptViewWithFilter(filter);
   }

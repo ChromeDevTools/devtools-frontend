@@ -1757,7 +1757,8 @@ export class DebuggerPlugin extends Plugin {
 
 let breakpointLocationRevealerInstance: BreakpointLocationRevealer;
 
-export class BreakpointLocationRevealer implements Common.Revealer.Revealer {
+export class BreakpointLocationRevealer implements
+    Common.Revealer.Revealer<Breakpoints.BreakpointManager.BreakpointLocation> {
   static instance({forceNew}: {forceNew: boolean} = {forceNew: false}): BreakpointLocationRevealer {
     if (!breakpointLocationRevealerInstance || forceNew) {
       breakpointLocationRevealerInstance = new BreakpointLocationRevealer();
@@ -1766,10 +1767,8 @@ export class BreakpointLocationRevealer implements Common.Revealer.Revealer {
     return breakpointLocationRevealerInstance;
   }
 
-  async reveal(breakpointLocation: Object, omitFocus?: boolean|undefined): Promise<void> {
-    if (!(breakpointLocation instanceof Breakpoints.BreakpointManager.BreakpointLocation)) {
-      throw new Error('Internal error: not a breakpoint location');
-    }
+  async reveal(breakpointLocation: Breakpoints.BreakpointManager.BreakpointLocation, omitFocus?: boolean|undefined):
+      Promise<void> {
     const {uiLocation} = breakpointLocation;
     SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
     const debuggerPlugin = debuggerPluginForUISourceCode.get(uiLocation.uiSourceCode);

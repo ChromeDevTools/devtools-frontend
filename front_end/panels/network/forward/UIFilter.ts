@@ -54,7 +54,7 @@ interface UIFilter {
 export class UIRequestFilter {
   readonly filters: UIFilter[];
 
-  private constructor(filters: UIFilter[]) {
+  constructor(filters: UIFilter[]) {
     this.filters = filters;
   }
 

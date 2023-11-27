@@ -38,7 +38,7 @@ export interface IssueLinkIconData {
   issueId?: Protocol.Audits.IssueId;
   issueResolver?: IssuesManager.IssueResolver.IssueResolver;
   additionalOnClickAction?: () => void;
-  revealOverride?: (revealable: Object|null, omitFocus?: boolean|undefined) => Promise<void>;
+  revealOverride?: (revealable: unknown, omitFocus?: boolean) => Promise<void>;
 }
 
 export const extractShortPath = (path: string): string => {

@@ -46,7 +46,7 @@ export class UIRequestLocation {
   readonly tab: UIRequestTabs|undefined;
   readonly filterOptions: FilterOptions|undefined;
 
-  private constructor(
+  constructor(
       request: SDK.NetworkRequest.NetworkRequest, header: UIHeaderLocation|null,
       searchMatch: TextUtils.ContentProvider.SearchMatch|null, urlMatch: boolean, tab: UIRequestTabs|undefined,
       filterOptions: FilterOptions|undefined) {

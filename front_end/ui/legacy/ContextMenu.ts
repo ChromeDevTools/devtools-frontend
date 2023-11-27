@@ -363,6 +363,7 @@ export interface ContextMenuOptions {
   onSoftMenuClosed?: () => void;
   x?: number;
   y?: number;
+  jsLogContext?: string;
 }
 
 export class ContextMenu extends SubMenu {
@@ -376,6 +377,7 @@ export class ContextMenu extends SubMenu {
   private x: number;
   private y: number;
   private onSoftMenuClosed?: () => void;
+  private jsLogContext?: string;
   private readonly handlers: Map<number, () => void>;
   override idInternal: number;
   private softMenu?: SoftContextMenu;
@@ -398,6 +400,7 @@ export class ContextMenu extends SubMenu {
     this.x = options.x === undefined ? mouseEvent.x : options.x;
     this.y = options.y === undefined ? mouseEvent.y : options.y;
     this.onSoftMenuClosed = options.onSoftMenuClosed;
+    this.jsLogContext = options.jsLogContext;
     this.handlers = new Map();
     this.idInternal = 0;
     this.openHostedMenu = null;
@@ -532,7 +535,11 @@ export class ContextMenu extends SubMenu {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
             Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
       }
-      VisualLogging.registerLoggable(menuObject, `${VisualLogging.menu()}`, null);
+      const visualElement = VisualLogging.menu();
+      if (this.jsLogContext) {
+        visualElement.context(this.jsLogContext);
+      }
+      VisualLogging.registerLoggable(menuObject, `${visualElement}`, null);
       const loggables = this.registerLoggablesWithin(menuObject);
       if (loggables.length) {
         void VisualLogging.logImpressions(loggables);

@@ -72,6 +72,9 @@ export class EntriesFilter {
   // changed.
   #lastInvisibleEntries: Types.TraceEvents.TraceEntry[]|null = null;
   #activeActions: UserApplyFilterAction[] = [];
+  // List of entries whose children are modified. This list is used to
+  // keep track of entries that should be identified in the UI as modified.
+  #modifiedVisibleEntries: Types.TraceEvents.TraceEventData[] = [];
 
   constructor(entryToNode: EntryToNodeMap) {
     this.#entryToNode = entryToNode;
@@ -83,12 +86,17 @@ export class EntriesFilter {
    **/
   applyAction(action: UserFilterAction): void {
     if (/* FilterApplyActions */ this.isUserApplyFilterAction(action)) {
+      this.#modifiedVisibleEntries.push(action.entry);
       if (this.#actionIsActive(action)) {
         // If the action is already active there is no reason to apply it again.
         return;
       }
       this.#activeActions.push(action);
     } else if (/* FilterUndoActions */ this.isFilterUndoAction(action.type)) {
+      const entryIndex = this.#modifiedVisibleEntries.indexOf(action.entry);
+      this.#modifiedVisibleEntries.splice(entryIndex);
+      // this.#modifiedVisibleEntries.delete(action.entry);
+
       this.#applyUndoAction(action.type, action.entry);
     }
     // Clear the last list of invisible entries - this invalidates the cache and
@@ -106,6 +114,7 @@ export class EntriesFilter {
     switch (action) {
       case FilterUndoAction.UNDO_ALL_ACTIONS: {
         this.#activeActions = [];
+        this.#modifiedVisibleEntries = [];
         break;
       }
       default: {
@@ -267,6 +276,10 @@ export class EntriesFilter {
     }
 
     return repeatingNodes;
+  }
+
+  isEntryModified(event: Types.TraceEvents.TraceEventData): boolean {
+    return this.#modifiedVisibleEntries.includes(event);
   }
 
   isUserApplyFilterAction(action: UserFilterAction): action is UserApplyFilterAction {

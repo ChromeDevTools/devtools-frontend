@@ -246,8 +246,8 @@ it('can highlight HTML with <script type="text/jsx"> blocks', testHighlight(`
 
   it('can highlight JSON', testHighlight(`
 {
-  [property "one"]: [number 2],
-  [property "two"]: [atom true]
+  [string "one"]: [number 2],
+  [string "two"]: [atom true]
 }`, 'application/json'));
 
   it('can highlight Markdown', testHighlight(`
@@ -299,8 +299,8 @@ it('can highlight PHP', testHighlight(`
 
   it('can highlight Web app manifests', testHighlight(`
 {
-  [property "name"]: [string "Test"],
-  [property "start_url"]: [string "."]
+  [string "name"]: [string "Test"],
+  [string "start_url"]: [string "."]
 }
   `, 'application/manifest+json'));
   // clang_format on

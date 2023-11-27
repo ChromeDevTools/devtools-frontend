@@ -6969,94 +6969,6 @@ declare namespace _codemirror_lang_less {
   };
 }
 
-type Severity = "hint" | "info" | "warning" | "error";
-/**
-Describes a problem or hint for a piece of code.
-*/
-interface Diagnostic {
-    /**
-    The start position of the relevant text.
-    */
-    from: number;
-    /**
-    The end position. May be equal to `from`, though actually
-    covering text is preferable.
-    */
-    to: number;
-    /**
-    The severity of the problem. This will influence how it is
-    displayed.
-    */
-    severity: Severity;
-    /**
-    When given, add an extra CSS class to parts of the code that
-    this diagnostic applies to.
-    */
-    markClass?: string;
-    /**
-    An optional source string indicating where the diagnostic is
-    coming from. You can put the name of your linter here, if
-    applicable.
-    */
-    source?: string;
-    /**
-    The message associated with this diagnostic.
-    */
-    message: string;
-    /**
-    An optional custom rendering function that displays the message
-    as a DOM node.
-    */
-    renderMessage?: () => Node;
-    /**
-    An optional array of actions that can be taken on this
-    diagnostic.
-    */
-    actions?: readonly Action[];
-}
-/**
-An action associated with a diagnostic.
-*/
-interface Action {
-    /**
-    The label to show to the user. Should be relatively short.
-    */
-    name: string;
-    /**
-    The function to call when the user activates this action. Is
-    given the diagnostic's _current_ position, which may have
-    changed since the creation of the diagnostic, due to editing.
-    */
-    apply: (view: EditorView, from: number, to: number) => void;
-}
-
-/**
-Calls
-[`JSON.parse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse)
-on the document and, if that throws an error, reports it as a
-single diagnostic.
-*/
-declare const jsonParseLinter: () => (view: EditorView) => Diagnostic[];
-
-/**
-A language provider that provides JSON parsing.
-*/
-declare const jsonLanguage: LRLanguage;
-/**
-JSON language support.
-*/
-declare function json$1(): LanguageSupport;
-
-declare const _codemirror_lang_json_jsonLanguage: typeof jsonLanguage;
-declare const _codemirror_lang_json_jsonParseLinter: typeof jsonParseLinter;
-declare namespace _codemirror_lang_json {
-  export {
-    json$1 as json,
-    _codemirror_lang_json_jsonLanguage as jsonLanguage,
-    _codemirror_lang_json_jsonParseLinter as jsonParseLinter,
-  };
-}
-
 /**
 A language provider based on the [Lezer Java
 parser](https://github.com/lezer-parser/java), extended with
@@ -7399,6 +7311,67 @@ declare namespace index_d$1 {
   };
 }
 
+type Severity = "hint" | "info" | "warning" | "error";
+/**
+Describes a problem or hint for a piece of code.
+*/
+interface Diagnostic {
+    /**
+    The start position of the relevant text.
+    */
+    from: number;
+    /**
+    The end position. May be equal to `from`, though actually
+    covering text is preferable.
+    */
+    to: number;
+    /**
+    The severity of the problem. This will influence how it is
+    displayed.
+    */
+    severity: Severity;
+    /**
+    When given, add an extra CSS class to parts of the code that
+    this diagnostic applies to.
+    */
+    markClass?: string;
+    /**
+    An optional source string indicating where the diagnostic is
+    coming from. You can put the name of your linter here, if
+    applicable.
+    */
+    source?: string;
+    /**
+    The message associated with this diagnostic.
+    */
+    message: string;
+    /**
+    An optional custom rendering function that displays the message
+    as a DOM node.
+    */
+    renderMessage?: () => Node;
+    /**
+    An optional array of actions that can be taken on this
+    diagnostic.
+    */
+    actions?: readonly Action[];
+}
+/**
+An action associated with a diagnostic.
+*/
+interface Action {
+    /**
+    The label to show to the user. Should be relatively short.
+    */
+    name: string;
+    /**
+    The function to call when the user activates this action. Is
+    given the diagnostic's _current_ position, which may have
+    changed since the creation of the diagnostic, due to editing.
+    */
+    apply: (view: EditorView, from: number, to: number) => void;
+}
+
 /**
 A language provider based on the [Lezer JavaScript
 parser](https://github.com/lezer-parser/javascript), extended with
@@ -7603,7 +7576,6 @@ declare function dart(): Promise<StreamLanguage<unknown>>;
 declare function gss(): Promise<StreamLanguage<unknown>>;
 declare function go(): Promise<StreamLanguage<unknown>>;
 declare function java(): Promise<typeof _codemirror_lang_java>;
-declare function json(): Promise<typeof _codemirror_lang_json>;
 declare function kotlin(): Promise<StreamLanguage<unknown>>;
 declare function less(): Promise<typeof _codemirror_lang_less>;
 declare function markdown(): Promise<typeof _codemirror_lang_markdown>;
@@ -7618,4 +7590,4 @@ declare function vue(): Promise<typeof _codemirror_lang_vue>;
 declare function wast(): Promise<typeof _codemirror_lang_wast>;
 declare function xml(): Promise<typeof _codemirror_lang_xml>;
 
-export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MapMode, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, angular, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, closeCompletion, codeFolding, coffeescript, completeAnyWord, completionStatus, cpp, css, cssStreamParser, currentCompletions, cursorGroupLeft, cursorGroupRight, cursorMatchingBracket, cursorSyntaxLeft, cursorSyntaxRight, dart, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, go, gss, gutter, gutters, highlightSelectionMatches, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, indentationMarkers, insertNewlineAndIndent, java, index_d as javascript, json, keymap, kotlin, less, lineNumberMarkers, lineNumbers, markdown, moveCompletionSelection, php, placeholder, python, redo, redoSelection, repositionTooltips, sass, scala, scrollPastEnd, selectGroupLeft, selectGroupRight, selectMatchingBracket, selectNextOccurrence, selectSyntaxLeft, selectSyntaxRight, selectedCompletion, selectedCompletionIndex, shell, showPanel, showTooltip, standardKeymap, startCompletion, svelte, syntaxHighlighting, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, vue, wast, xml };
+export { Annotation, AnnotationType, ChangeDesc, ChangeSet, ChangeSpec, Command, Compartment, Completion, CompletionContext, CompletionResult, CompletionSource, Decoration, DecorationSet, EditorSelection, EditorState, EditorStateConfig, EditorView, Extension, Facet, GutterMarker, HighlightStyle, KeyBinding, LRParser, Language, LanguageSupport, Line$1 as Line, MapMode, MatchDecorator, NodeProp, NodeSet, NodeType, Panel, Parser, Prec, Range, RangeSet, RangeSetBuilder, SelectionRange, StateEffect, StateEffectType, StateField, StreamLanguage, StreamParser, StringStream, StyleModule, SyntaxNode, Tag, TagStyle, Text, TextIterator, Tooltip, TooltipView, Transaction, TransactionSpec, Tree, TreeCursor, ViewPlugin, ViewUpdate, WidgetType, acceptCompletion, angular, autocompletion, bracketMatching, clojure, closeBrackets, closeBracketsKeymap, closeCompletion, codeFolding, coffeescript, completeAnyWord, completionStatus, cpp, css, cssStreamParser, currentCompletions, cursorGroupLeft, cursorGroupRight, cursorMatchingBracket, cursorSyntaxLeft, cursorSyntaxRight, dart, drawSelection, ensureSyntaxTree, foldGutter, foldKeymap, go, gss, gutter, gutters, highlightSelectionMatches, highlightSpecialChars, highlightTree, history, historyKeymap, index_d$1 as html, ifNotIn, indentLess, indentMore, indentOnInput, indentUnit, indentationMarkers, insertNewlineAndIndent, java, index_d as javascript, keymap, kotlin, less, lineNumberMarkers, lineNumbers, markdown, moveCompletionSelection, php, placeholder, python, redo, redoSelection, repositionTooltips, sass, scala, scrollPastEnd, selectGroupLeft, selectGroupRight, selectMatchingBracket, selectNextOccurrence, selectSyntaxLeft, selectSyntaxRight, selectedCompletion, selectedCompletionIndex, shell, showPanel, showTooltip, standardKeymap, startCompletion, svelte, syntaxHighlighting, syntaxTree, tags, toggleComment, tooltips, undo, undoSelection, vue, wast, xml };

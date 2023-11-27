@@ -21,8 +21,6 @@ devtools_pre_built("codemirror.next-sources") {
     "chunk/cpp.js.map",
     "chunk/java.js",
     "chunk/java.js.map",
-    "chunk/json.js",
-    "chunk/json.js.map",
     "chunk/legacy.js",
     "chunk/legacy.js.map",
     "chunk/less.js",

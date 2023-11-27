@@ -118,7 +118,7 @@
 }
 
 .create-breadcrumb-button:hover {
-  background: var(--ref-palette-neutral95);
+  background: var(--sys-color-neutral-container);
 }
 
 @media (forced-colors: active) {

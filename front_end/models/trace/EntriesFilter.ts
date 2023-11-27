@@ -95,7 +95,6 @@ export class EntriesFilter {
     } else if (/* FilterUndoActions */ this.isFilterUndoAction(action.type)) {
       const entryIndex = this.#modifiedVisibleEntries.indexOf(action.entry);
       this.#modifiedVisibleEntries.splice(entryIndex);
-      // this.#modifiedVisibleEntries.delete(action.entry);
 
       this.#applyUndoAction(action.type, action.entry);
     }

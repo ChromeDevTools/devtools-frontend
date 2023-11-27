@@ -16,7 +16,8 @@ import {
   navigateToIssuesTab,
 } from '../helpers/issues-helpers.js';
 
-describe('Hide issues row', async () => {
+// Skipped due to <portal> being removed
+describe.skip('[crbug.com/1505383] Hide issues row', async () => {
   it('should be visible after hiding an issue', async () => {
     await goToResource('issues/cross-origin-portal-post.html');
     await navigateToIssuesTab();

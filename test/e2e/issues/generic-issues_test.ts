@@ -19,7 +19,8 @@ import {
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
 
-describe('Cross-origin portal post message issue', async () => {
+// Skipped due to <portal> being removed
+describe.skip('[crbug.com/1505383] Cross-origin portal post message issue', async () => {
   it('should display correct information', async () => {
     await goToResource('issues/cross-origin-portal-post.html');
     await navigateToIssuesTab();

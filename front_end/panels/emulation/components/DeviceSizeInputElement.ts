@@ -5,8 +5,9 @@
 import type * as Platform from '../../../core/platform/platform.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as UILegacy from '../../../ui/legacy/legacy.js';
+import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 class SizeChangedEvent extends Event {
   static readonly eventName = 'sizechanged';
@@ -25,12 +26,14 @@ export class SizeInputElement extends HTMLElement {
   #size = '0';
   #placeholder = '';
   #title: Platform.UIString.LocalizedString;
+  #jslogContext: string;
 
   static readonly litTagName = LitHtml.literal`device-mode-emulation-size-input`;
 
-  constructor(title: Platform.UIString.LocalizedString) {
+  constructor(title: Platform.UIString.LocalizedString, {jslogContext}: {jslogContext: string}) {
     super();
     this.#title = title;
+    this.#jslogContext = jslogContext;
   }
 
   connectedCallback(): void {
@@ -90,6 +93,7 @@ export class SizeInputElement extends HTMLElement {
       <input type="number"
              max=${EmulationModel.DeviceModeModel.MaxDeviceSize}
              min=${EmulationModel.DeviceModeModel.MinDeviceSize}
+             jslog=${VisualLogging.textField().track({change: true}).context(this.#jslogContext)}
              maxlength="4"
              title=${this.#title}
              placeholder=${this.#placeholder}

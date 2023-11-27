@@ -838,8 +838,8 @@ export class ToolbarMenuButton extends ToolbarButton {
   private readonly useSoftMenu: boolean;
   private triggerTimeout?: number;
   private lastTriggerTime?: number;
-  constructor(contextMenuHandler: (arg0: ContextMenu) => void, useSoftMenu?: boolean) {
-    super('', 'dots-vertical');
+  constructor(contextMenuHandler: (arg0: ContextMenu) => void, useSoftMenu?: boolean, jslogContext?: string) {
+    super('', 'dots-vertical', undefined, jslogContext);
     this.contextMenuHandler = contextMenuHandler;
     this.useSoftMenu = Boolean(useSoftMenu);
     ARIAUtils.markAsMenuButton(this.element);

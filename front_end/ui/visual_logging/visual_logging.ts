@@ -44,6 +44,7 @@ export const cssFlexboxEditor = LoggingConfig.makeConfigStringBuilder.bind(null,
 export const cssGridEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssGridEditor');
 export const cssLayersPane = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssLayersPane');
 export const cssShadowEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'CssShadowEditor');
+export const deviceModeRuler = LoggingConfig.makeConfigStringBuilder.bind(null, 'DeviceModeRuler');
 export const domBreakpoint = LoggingConfig.makeConfigStringBuilder.bind(null, 'DOMBreakpoint');
 export const dropDown = LoggingConfig.makeConfigStringBuilder.bind(null, 'DropDown');
 export const elementsBreadcrumbs = LoggingConfig.makeConfigStringBuilder.bind(null, 'ElementsBreadcrumbs');
@@ -68,6 +69,7 @@ export const key = LoggingConfig.makeConfigStringBuilder.bind(null, 'Key');
  */
 export const link = LoggingConfig.makeConfigStringBuilder.bind(null, 'Link');
 
+export const mediaInspectorView = LoggingConfig.makeConfigStringBuilder.bind(null, 'MediaInspectorView');
 export const menu = LoggingConfig.makeConfigStringBuilder.bind(null, 'Menu');
 export const metricsBox = LoggingConfig.makeConfigStringBuilder.bind(null, 'MetricsBox');
 export const next = LoggingConfig.makeConfigStringBuilder.bind(null, 'Next');
@@ -84,6 +86,7 @@ export const panel = LoggingConfig.makeConfigStringBuilder.bind(null, 'Panel');
 export const panelTabHeader = LoggingConfig.makeConfigStringBuilder.bind(null, 'PanelTabHeader');
 export const preview = LoggingConfig.makeConfigStringBuilder.bind(null, 'Preview');
 export const previous = LoggingConfig.makeConfigStringBuilder.bind(null, 'Previous');
+export const responsivePresets = LoggingConfig.makeConfigStringBuilder.bind(null, 'ResponsivePresets');
 export const showAllStyleProperties = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowAllStyleProperties');
 export const showStyleEditor = LoggingConfig.makeConfigStringBuilder.bind(null, 'ShowStyleEditor');
 export const slider = LoggingConfig.makeConfigStringBuilder.bind(null, 'Slider');

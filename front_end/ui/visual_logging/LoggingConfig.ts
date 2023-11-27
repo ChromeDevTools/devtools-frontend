@@ -93,6 +93,9 @@ enum VisualElements {
   TableCell = 70,
   StylesComputedPane = 71,
   Pane = 72,
+  ResponsivePresets = 73,
+  DeviceModeRuler = 74,
+  MediaInspectorView = 75,
 }
 
 export type VisualElementName = keyof typeof VisualElements;

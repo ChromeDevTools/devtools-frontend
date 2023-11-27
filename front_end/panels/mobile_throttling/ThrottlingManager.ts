@@ -218,7 +218,7 @@ export class ThrottlingManager {
   }
 
   createMobileThrottlingButton(): UI.Toolbar.ToolbarMenuButton {
-    const button = new UI.Toolbar.ToolbarMenuButton(appendItems);
+    const button = new UI.Toolbar.ToolbarMenuButton(appendItems, undefined, 'mobileThrottling');
     button.setTitle(i18nString(UIStrings.throttling));
     button.setGlyph('');
     button.turnIntoSelect();
@@ -240,8 +240,8 @@ export class ThrottlingManager {
           continue;
         }
         contextMenu.defaultSection().appendCheckboxItem(
-            conditions.title, selector.optionSelected.bind(selector, conditions as Conditions),
-            selectedIndex === index);
+            conditions.title, selector.optionSelected.bind(selector, conditions as Conditions), selectedIndex === index,
+            undefined, undefined, undefined, conditions.jslogContext);
       }
     }
 

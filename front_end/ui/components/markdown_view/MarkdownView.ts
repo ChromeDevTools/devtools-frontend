@@ -136,7 +136,7 @@ export class MarkdownLitRenderer {
         <div class="lang">${token.lang}</div>
         <div class="copy">
           <${Buttons.Button.Button.litTagName}
-            title=${i18nString(UIStrings.copy)}
+            .title=${i18nString(UIStrings.copy)}
             .size=${Buttons.Button.Size.SMALL}
             .iconName=${'copy'}
             .variant=${Buttons.Button.Variant.TOOLBAR}

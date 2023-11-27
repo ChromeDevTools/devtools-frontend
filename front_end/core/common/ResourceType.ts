@@ -44,23 +44,15 @@ const UIStrings = {
   /**
    *@description Text that appears in a tooltip for the JavaScript types filter.
    */
-  scripts: 'Scripts',
+  javascript: 'JavaScript',
   /**
    *@description Text that appears on a button for the JavaScript resource type filter.
    */
   js: 'JS',
   /**
-   *@description Text that appears in a tooltip for the css types filter.
-   */
-  stylesheets: 'Stylesheets',
-  /**
    *@description Text that appears on a button for the css resource type filter.
    */
   css: 'CSS',
-  /**
-   *@description Text that appears in a tooltip for the image types filter.
-   */
-  images: 'Images',
   /**
    *@description Text that appears on a button for the image resource type filter.
    */
@@ -70,25 +62,13 @@ const UIStrings = {
    */
   media: 'Media',
   /**
-   *@description Text that appears in a tooltip for the resource types filter.
-   */
-  fonts: 'Fonts',
-  /**
    *@description Text that appears on a button for the font resource type filter.
    */
   font: 'Font',
   /**
-   *@description Text for documents, a type of resources
-   */
-  documents: 'Documents',
-  /**
    *@description Text that appears on a button for the document resource type filter.
    */
   doc: 'Doc',
-  /**
-   *@description Text that appears in a tooltip for the websocket types filter.
-   */
-  websockets: 'WebSockets',
   /**
    *@description Text that appears on a button for the websocket resource type filter.
    */
@@ -377,15 +357,15 @@ export class ResourceCategory {
 }
 
 export const resourceCategories = {
-  Document: new ResourceCategory(i18nLazyString(UIStrings.documents), i18nLazyString(UIStrings.doc)),
-  Script: new ResourceCategory(i18nLazyString(UIStrings.scripts), i18nLazyString(UIStrings.js)),
   XHR: new ResourceCategory(i18nLazyString(UIStrings.xhrAndFetch), i18n.i18n.lockedLazyString('Fetch/XHR')),
-  Stylesheet: new ResourceCategory(i18nLazyString(UIStrings.stylesheets), i18nLazyString(UIStrings.css)),
-  Font: new ResourceCategory(i18nLazyString(UIStrings.fonts), i18nLazyString(UIStrings.font)),
-  Image: new ResourceCategory(i18nLazyString(UIStrings.images), i18nLazyString(UIStrings.img)),
+  Document: new ResourceCategory(i18nLazyString(UIStrings.document), i18nLazyString(UIStrings.doc)),
+  Stylesheet: new ResourceCategory(i18nLazyString(UIStrings.css), i18nLazyString(UIStrings.css)),
+  Script: new ResourceCategory(i18nLazyString(UIStrings.javascript), i18nLazyString(UIStrings.js)),
+  Font: new ResourceCategory(i18nLazyString(UIStrings.font), i18nLazyString(UIStrings.font)),
+  Image: new ResourceCategory(i18nLazyString(UIStrings.image), i18nLazyString(UIStrings.img)),
   Media: new ResourceCategory(i18nLazyString(UIStrings.media), i18nLazyString(UIStrings.media)),
   Manifest: new ResourceCategory(i18nLazyString(UIStrings.manifest), i18nLazyString(UIStrings.manifest)),
-  WebSocket: new ResourceCategory(i18nLazyString(UIStrings.websockets), i18nLazyString(UIStrings.ws)),
+  WebSocket: new ResourceCategory(i18nLazyString(UIStrings.websocket), i18nLazyString(UIStrings.ws)),
   Wasm: new ResourceCategory(i18nLazyString(UIStrings.webassembly), i18nLazyString(UIStrings.wasm)),
   Other: new ResourceCategory(i18nLazyString(UIStrings.other), i18nLazyString(UIStrings.other)),
 };

@@ -45,7 +45,7 @@ describeWithEnvironment('ResourceType class', () => {
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'document', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Document', 'title was not set correctly');
-    assert.strictEqual(result.category().title(), 'Documents', 'category title was not set correctly');
+    assert.strictEqual(result.category().title(), 'Document', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'Doc', 'category short title was not set correctly');
     assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
@@ -55,7 +55,7 @@ describeWithEnvironment('ResourceType class', () => {
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'stylesheet', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Stylesheet', 'title was not set correctly');
-    assert.strictEqual(result.category().title(), 'Stylesheets', 'category title was not set correctly');
+    assert.strictEqual(result.category().title(), 'CSS', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'CSS', 'category short title was not set correctly');
     assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
@@ -65,7 +65,7 @@ describeWithEnvironment('ResourceType class', () => {
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'image', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Image', 'title was not set correctly');
-    assert.strictEqual(result.category().title(), 'Images', 'category title was not set correctly');
+    assert.strictEqual(result.category().title(), 'Image', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'Img', 'category short title was not set correctly');
     assert.isFalse(result.isTextType(), 'resource type was not set correctly');
   });
@@ -75,7 +75,7 @@ describeWithEnvironment('ResourceType class', () => {
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'script', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
-    assert.strictEqual(result.category().title(), 'Scripts', 'category title was not set correctly');
+    assert.strictEqual(result.category().title(), 'JavaScript', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'JS', 'category short title was not set correctly');
     assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
@@ -85,7 +85,7 @@ describeWithEnvironment('ResourceType class', () => {
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'font', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Font', 'title was not set correctly');
-    assert.strictEqual(result.category().title(), 'Fonts', 'category title was not set correctly');
+    assert.strictEqual(result.category().title(), 'Font', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'Font', 'category short title was not set correctly');
     assert.isFalse(result.isTextType(), 'resource type was not set correctly');
   });
@@ -95,7 +95,7 @@ describeWithEnvironment('ResourceType class', () => {
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'script', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
-    assert.strictEqual(result.category().title(), 'Scripts', 'category title was not set correctly');
+    assert.strictEqual(result.category().title(), 'JavaScript', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'JS', 'category short title was not set correctly');
     assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
@@ -115,7 +115,7 @@ describeWithEnvironment('ResourceType class', () => {
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'script', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
-    assert.strictEqual(result.category().title(), 'Scripts', 'category title was not set correctly');
+    assert.strictEqual(result.category().title(), 'JavaScript', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'JS', 'category short title was not set correctly');
     assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
@@ -158,7 +158,7 @@ describeWithEnvironment('ResourceType class', () => {
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'script', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
-    assert.strictEqual(result.category().title(), 'Scripts', 'category title was not set correctly');
+    assert.strictEqual(result.category().title(), 'JavaScript', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'JS', 'category short title was not set correctly');
     assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });
@@ -169,7 +169,7 @@ describeWithEnvironment('ResourceType class', () => {
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'image', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Image', 'title was not set correctly');
-    assert.strictEqual(result.category().title(), 'Images', 'category title was not set correctly');
+    assert.strictEqual(result.category().title(), 'Image', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'Img', 'category short title was not set correctly');
     assert.isTrue(result.isImage(), 'resource type was not set correctly');
   });
@@ -180,7 +180,7 @@ describeWithEnvironment('ResourceType class', () => {
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'image', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Image', 'title was not set correctly');
-    assert.strictEqual(result.category().title(), 'Images', 'category title was not set correctly');
+    assert.strictEqual(result.category().title(), 'Image', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'Img', 'category short title was not set correctly');
     assert.isTrue(result.isImage(), 'resource type was not set correctly');
   });
@@ -191,7 +191,7 @@ describeWithEnvironment('ResourceType class', () => {
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'font', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Font', 'title was not set correctly');
-    assert.strictEqual(result.category().title(), 'Fonts', 'category title was not set correctly');
+    assert.strictEqual(result.category().title(), 'Font', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'Font', 'category short title was not set correctly');
     assert.isFalse(result.isTextType(), 'resource type was not set correctly');
   });
@@ -207,7 +207,7 @@ describeWithEnvironment('ResourceType class', () => {
     assert.instanceOf(result, ResourceType, 'result type is incorrect');
     assert.strictEqual(result.name(), 'script', 'name was not set correctly');
     assert.strictEqual(result.title(), 'Script', 'title was not set correctly');
-    assert.strictEqual(result.category().title(), 'Scripts', 'category title was not set correctly');
+    assert.strictEqual(result.category().title(), 'JavaScript', 'category title was not set correctly');
     assert.strictEqual(result.category().shortTitle(), 'JS', 'category short title was not set correctly');
     assert.isTrue(result.isTextType(), 'resource type was not set correctly');
   });

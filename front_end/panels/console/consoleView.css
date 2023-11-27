@@ -516,6 +516,11 @@ devtools-console-insight {
   gap: 3px;
 }
 
+.hover-button:focus-visible {
+  outline: 2px solid var(--sys-color-primary);
+  outline-offset: 2px;
+}
+
 .hover-button devtools-icon {
   box-sizing: border-box;
   flex-shrink: 0;
@@ -530,17 +535,23 @@ devtools-console-insight {
   display: block;
 }
 
-.console-message-wrapper:not(.has-insight):hover .hover-button,
-.console-message-wrapper:not(.has-insight):focus .hover-button {
-  display: block;
-}
+/* It does not look like the linter works with CSS nesting correctly. */
+/* stylelint-disable no-descending-specificity */
+.console-message-wrapper:not(.has-insight) {
+  &:hover,
+  &:focus,
+  &.console-selected {
+    .hover-button {
+      display: block;
 
-.console-message-wrapper:not(.has-insight):hover .hover-button:hover,
-.console-message-wrapper:not(.has-insight):focus .hover-button:hover,
-.console-message-wrapper:not(.has-insight):hover .hover-button:focus,
-.console-message-wrapper:not(.has-insight):focus .hover-button:focus {
-  display: inline-flex;
+      &:focus,
+      &:hover {
+        display: inline-flex;
+      }
+    }
+  }
 }
+/* stylelint-enable no-descending-specificity */
 
 @media (forced-colors: active) {
   .console-message-expand-icon,

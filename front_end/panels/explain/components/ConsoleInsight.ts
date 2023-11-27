@@ -184,11 +184,28 @@ const DOGFOODFEEDBACK_URL = 'http://go/console-insights-experiment-general-feedb
 function buildRatingFormLink(
     rating: 'Positive'|'Negative', comment: string, explanation: string, consoleMessage: string, stackTrace: string,
     relatedCode: string, networkData: string): Platform.DevToolsPath.UrlString {
-  return `https://docs.google.com/forms/d/e/1FAIpQLSen1K-Uli0CSvlsNkI-L0Wq5iJ0FO9zFv0_mjM-3m5I8AKQGg/viewform?usp=pp_url&entry.1465663861=${
-             encodeURIComponent(rating)}&entry.109342357=${encodeURIComponent(comment)}&entry.1805879004=${
-             encodeURIComponent(explanation)}&entry.623054399=${encodeURIComponent(consoleMessage)}&entry.720239045=${
-             encodeURIComponent(stackTrace)}&entry.1520357991=${encodeURIComponent(relatedCode)}&entry.1966708581=${
-             encodeURIComponent(networkData)}` as Platform.DevToolsPath.UrlString;
+  const params: {[key: string]: string} = rating === 'Negative' ? {
+    'entry.1465663861': rating,
+    'entry.1232404632': explanation,
+    'entry.37285503': stackTrace,
+    'entry.542010749': consoleMessage,
+    'entry.420621380': relatedCode,
+    'entry.822323774': networkData,
+  } :
+                                                                  {
+                                                                    'entry.1465663861': rating,
+                                                                    'entry.1805879004': explanation,
+                                                                    'entry.720239045': stackTrace,
+                                                                    'entry.623054399': consoleMessage,
+                                                                    'entry.1520357991': relatedCode,
+                                                                    'entry.1966708581': networkData,
+                                                                  };
+  return `http://go/console-insights-experiment-rating?usp=pp_url&${
+             Object.keys(params)
+                 .map(param => {
+                   return `${param}=${encodeURIComponent(params[param])}`;
+                 })
+                 .join('&')}` as Platform.DevToolsPath.UrlString;
 }
 
 // TODO(crbug.com/1167717): Make this a const enum again

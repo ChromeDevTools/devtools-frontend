@@ -125,6 +125,27 @@ it('can highlight HTML with <script type="speculationrules"> blocks', testHighli
 }
 </[tag script]>`, 'text/html'));
 
+it('can highlight HTML with <script type="application/json"> blocks', testHighlight(`
+[meta <!DOCTYPE html>]
+<[tag script] [attribute type]=[attribute-value "application/json"]>
+{
+  [string "one"]: [number 2],
+  [string "two"]: [atom true]
+}
+</[tag script]>`, 'text/html'));
+
+it('can highlight HTML with <script type="application/ld+json"> blocks', testHighlight(`
+[meta <!DOCTYPE html>]
+<[tag script] [attribute type]=[attribute-value "application/ld+json"]>
+{
+  [string "@type"]: [string "PostalAddress"],
+  [string "streetAddress"]: [string "Musterstrasse 1"],
+  [string "addressLocality"]: [string "Musterstadt"],
+  [string "postalCode"]: [string "12345"],
+  [string "addressCountry"]: [string "DE"],
+}
+</[tag script]>`, 'text/html'));
+
 it('can highlight HTML with <script type="text/jsx"> blocks', testHighlight(`
 [meta <!DOCTYPE html>]
 <[tag script] [attribute type]=[attribute-value "text/jsx"]>

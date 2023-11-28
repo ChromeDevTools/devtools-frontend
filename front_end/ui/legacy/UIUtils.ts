@@ -1395,14 +1395,14 @@ export function bindInput(
     }
 
     const value = modifiedFloatNumber(parseFloat(input.value), event, modifierMultiplier);
-    const stringValue = value ? String(value) : '';
-    const {valid} = validate(stringValue);
-    if (!valid || !value) {
+    if (value === null) {
       return;
     }
-
-    input.value = stringValue;
-    apply(input.value);
+    const stringValue = String(value);
+    const {valid} = validate(stringValue);
+    if (valid) {
+      setValue(stringValue);
+    }
     event.preventDefault();
   }
 

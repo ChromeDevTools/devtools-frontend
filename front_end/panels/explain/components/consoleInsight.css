@@ -214,3 +214,8 @@ h2 {
   margin: 0;
   font-weight: inherit;
 }
+
+.info {
+  width: 16px;
+  height: 16px;
+}

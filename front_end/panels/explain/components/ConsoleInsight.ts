@@ -137,6 +137,12 @@ const UIStrings = {
    * @description The text of the header inside the console insight pane when there was an error generating an insight.
    */
   error: 'Something went wrong…',
+  /**
+   * @description Title of the info icon button that shows more details about
+   * how refining a console insight will work. It shows a tooltip with
+   * additional info when hovered or pressed.
+   */
+  refineInfo: 'Learn how personalizing of insights works',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -230,6 +236,8 @@ type StateData = {
   error: string,
 };
 
+let nextInstanceId = 0;
+
 export class ConsoleInsight extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-console-insight`;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -255,6 +263,7 @@ export class ConsoleInsight extends HTMLElement {
   #selectedRatingReasons = new Set<string>();
 
   #popover: UI.PopoverHelper.PopoverHelper;
+  #id: number;
 
   constructor(promptBuilder: PublicPromptBuilder, insightProvider: PublicInsightProvider) {
     super();
@@ -273,10 +282,12 @@ export class ConsoleInsight extends HTMLElement {
       e.stopPropagation();
     });
     this.tabIndex = 0;
+    this.#id = nextInstanceId++;
     this.focus();
     this.#popover = new UI.PopoverHelper.PopoverHelper(this, event => {
       const hoveredNode = event.composedPath()[0] as Element;
-      if (!hoveredNode || !hoveredNode.parentElementOrShadowHost()?.matches('.info')) {
+      if (!hoveredNode ||
+          (!hoveredNode?.matches('.info') && !hoveredNode.parentElementOrShadowHost()?.matches('.info'))) {
         return null;
       }
 
@@ -296,6 +307,10 @@ export class ConsoleInsight extends HTMLElement {
           list.sources = sources;
           container.append(text);
           container.append(list);
+          container.setAttribute('role', 'tooltip');
+          const tooltipId = `console-insight-tooltip-${this.#id}`;
+          container.setAttribute('id', tooltipId);
+          this.#shadow.querySelector('.info')?.setAttribute('aria-describedby', tooltipId);
           popover.contentElement.append(container);
           popover.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PreferBottom);
           return true;
@@ -314,6 +329,10 @@ export class ConsoleInsight extends HTMLElement {
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [styles];
     this.classList.add('opening');
+  }
+
+  disonnectedCallback(): void {
+    this.#popover.dispose();
   }
 
   set dogfood(value: boolean) {
@@ -430,6 +449,26 @@ export class ConsoleInsight extends HTMLElement {
     void this.update(true);
   }
 
+  #onInfoKeyDown(event: Event): void {
+    if (event instanceof KeyboardEvent) {
+      switch (event.key) {
+        case 'Escape':
+          this.#popover.hidePopover();
+          break;
+        case 'Enter':
+        case ' ':
+          event.target?.dispatchEvent(new MouseEvent('mousedown', {
+            bubbles: true,
+            composed: true,
+            cancelable: true,
+            clientX: (event.target as HTMLElement).getBoundingClientRect().x,
+            clientY: (event.target as HTMLElement).getBoundingClientRect().y,
+          }));
+          break;
+      }
+    }
+  }
+
   #renderMain(): LitHtml.TemplateResult {
     // clang-format off
     switch (this.#state.type) {
@@ -473,7 +512,10 @@ export class ConsoleInsight extends HTMLElement {
             </${Buttons.Button.Button.litTagName}>
             <${IconButton.Icon.Icon.litTagName}
               class="info"
+              role="button"
+              title=${i18nString(UIStrings.refineInfo)}
               tabindex="0"
+              @keydown=${this.#onInfoKeyDown}
               .data=${
                 {
                   iconName: 'info',

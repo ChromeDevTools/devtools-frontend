@@ -1506,6 +1506,16 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return lines.join('\n');
   }
 
+  toMessageTextString(): string {
+    const root = this.contentElement();
+    const consoleText = root.querySelector('.console-message-text');
+    if (consoleText) {
+      return consoleText.deepTextContent().trim();
+    }
+    // Fallback to SDK's message text.
+    return this.consoleMessage().messageText;
+  }
+
   setSearchRegex(regex: RegExp|null): void {
     if (this.searchHighlightNodeChanges && this.searchHighlightNodeChanges.length) {
       UI.UIUtils.revertDomChanges(this.searchHighlightNodeChanges);

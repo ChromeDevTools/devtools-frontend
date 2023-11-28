@@ -4,127 +4,22 @@
 
 import {assert} from 'chai';
 
-import {expectError} from '../../conductor/events.js';
-import {click, getBrowserAndPages, getTestServerPort, waitForFunction} from '../../shared/helper.js';
+import {click, getBrowserAndPages, waitForFunction} from '../../shared/helper.js';
 import {describe, it} from '../../shared/mocha-extensions.js';
 import {
   doubleClickSourceTreeItem,
   getPieChartLegendRows,
   getQuotaUsage,
-  getStorageItemsData,
   navigateToApplicationTab,
   waitForQuotaUsage,
 } from '../helpers/application-helpers.js';
 
 // The parent suffix makes sure we wait for the Cookies item to have children before trying to click it.
-const COOKIES_SELECTOR = '[aria-label="Cookies"].parent';
 const STORAGE_SELECTOR = '[aria-label="Storage"]';
 const CLEAR_SITE_DATA_BUTTON_SELECTOR = '#storage-view-clear-button';
-const INCLUDE_3RD_PARTY_COOKIES_SELECTOR = '[title="including third-party cookies"]';
 
-let DOMAIN_SELECTOR: string;
-
-describe('The Application Tab', async () => {
-  before(async () => {
-    DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="https://localhost:${getTestServerPort()}"]`;
-  });
-
-  afterEach(async () => {
-    expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
-    const {target} = getBrowserAndPages();
-    const cookies = await target.cookies();
-    await target.deleteCookie(...cookies);
-  });
-
-  // Skipped due to third party cookies removal
-  it.skip('[crbug.com/1505387] deletes only first party cookies when clearing site data', async () => {
-    const {target} = getBrowserAndPages();
-    await navigateToApplicationTab(target, 'cross-origin-cookies');
-
-    await doubleClickSourceTreeItem(COOKIES_SELECTOR);
-    await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
-
-    const dataGridRowValuesBefore = await waitForFunction(async () => {
-      const data = await getStorageItemsData(['name', 'value'], 3);
-      return data.length ? data : undefined;
-    });
-
-    assert.sameDeepMembers(dataGridRowValuesBefore, [
-      {
-        name: 'third_party',
-        value: 'test',
-      },
-      {
-        name: 'foo2',
-        value: 'bar',
-      },
-      {
-        name: 'foo',
-        value: 'bar',
-      },
-    ]);
-
-    await doubleClickSourceTreeItem(STORAGE_SELECTOR);
-    await click(CLEAR_SITE_DATA_BUTTON_SELECTOR);
-
-    await doubleClickSourceTreeItem(COOKIES_SELECTOR);
-    await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
-
-    const dataGridRowValuesAfter = await waitForFunction(async () => {
-      const data = await getStorageItemsData(['name', 'value']);
-      return data.length ? data : undefined;
-    });
-    assert.sameDeepMembers(dataGridRowValuesAfter, [{
-                             name: 'third_party',
-                             value: 'test',
-                           }]);
-  });
-
-  // Skipped due to third party cookies removal
-  it.skip(
-      '[crbug.com/1505387] deletes first and third party cookies when clearing site data with the flag enabled',
-      async () => {
-        const {target} = getBrowserAndPages();
-        // This sets a new cookie foo=bar
-        await navigateToApplicationTab(target, 'cross-origin-cookies');
-
-        await doubleClickSourceTreeItem(COOKIES_SELECTOR);
-        await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
-
-        const dataGridRowValuesBefore = await waitForFunction(async () => {
-          const data = await getStorageItemsData(['name', 'value'], 3);
-          return data.length ? data : undefined;
-        });
-
-        assert.sameDeepMembers(dataGridRowValuesBefore, [
-          {
-            name: 'third_party',
-            value: 'test',
-          },
-          {
-            name: 'foo2',
-            value: 'bar',
-          },
-          {
-            name: 'foo',
-            value: 'bar',
-          },
-        ]);
-
-        await doubleClickSourceTreeItem(STORAGE_SELECTOR);
-        await click(INCLUDE_3RD_PARTY_COOKIES_SELECTOR);
-        await click(CLEAR_SITE_DATA_BUTTON_SELECTOR);
-
-        await doubleClickSourceTreeItem(COOKIES_SELECTOR);
-        await doubleClickSourceTreeItem(DOMAIN_SELECTOR);
-
-        await waitForFunction(async () => {
-          const data = await getStorageItemsData(['name', 'value'], 0);
-          return data.length === 0;
-        });
-      });
-
-  describe('the Storage pane', async function() {
+describe('The Application Tab', () => {
+  describe('contains a Storage pane', function() {
     // The tests in this suite are particularly slow, as they perform a lot of actions
     this.timeout(20000);
     beforeEach(async () => {
@@ -133,7 +28,7 @@ describe('The Application Tab', async () => {
       await doubleClickSourceTreeItem(STORAGE_SELECTOR);
     });
 
-    it('clear button clears storage correctly', async () => {
+    it('which clears storage correctly using the clear button', async () => {
       const {target} = getBrowserAndPages();
       await target.bringToFront();
       await target.evaluate(async () => {
@@ -161,7 +56,7 @@ describe('The Application Tab', async () => {
       });
     });
 
-    it('reports storage correctly, including the pie chart legend', async () => {
+    it('which reports storage correctly, including the pie chart legend', async () => {
       const {target} = getBrowserAndPages();
 
       await target.evaluate(async () => {

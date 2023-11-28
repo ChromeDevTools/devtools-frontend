@@ -352,6 +352,9 @@ function main() {
       fs.cpSync(
           'interactions-coverage', `${yargsObject['swarming-output-file']}/interactions-coverage`, {recursive: true});
     }
+    if (fs.existsSync('perf-data')) {
+      fs.cpSync('perf-data', `${yargsObject['swarming-output-file']}/perf-data`, {recursive: true});
+    }
     fs.cpSync('test/interactions/goldens', `${yargsObject['swarming-output-file']}/goldens`, {recursive: true});
   }
   process.exit(resultStatusCode);

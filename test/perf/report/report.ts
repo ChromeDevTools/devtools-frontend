@@ -32,4 +32,6 @@ export function writeReport() {
 
   const filePath = join(directory, 'devtools-perf.json');
   fs.writeFileSync(filePath, JSON.stringify(results), {encoding: 'utf8'});
+  // eslint-disable-next-line no-console
+  console.log(`perf report file was written to ${filePath}`);
 }

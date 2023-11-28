@@ -454,7 +454,7 @@ export class TreeElement {
   private trailingIconsElement: HTMLElement|null;
   protected selectionElementInternal: HTMLElement|null;
   private disableSelectFocus: boolean;
-  constructor(title?: string|Node, expandable?: boolean) {
+  constructor(title?: string|Node, expandable?: boolean, jslogContext?: string|number) {
     this.treeOutline = null;
     this.parent = null;
     this.previousSibling = null;
@@ -474,7 +474,11 @@ export class TreeElement {
     this.listItemNode.addEventListener('dblclick', this.handleDoubleClick.bind(this), false);
     this.listItemNode.setAttribute(
         'jslog',
-        `${VisualLogging.treeItem().track({click: true}).parent('parentTreeItem').context('disclosureTriangle')}`);
+        `${
+            VisualLogging.treeItem()
+                .track({click: true})
+                .parent('parentTreeItem')
+                .context(jslogContext ?? 'disclosureTriangle')}`);
     ARIAUtils.markAsTreeitem(this.listItemNode);
 
     this.childrenInternal = null;

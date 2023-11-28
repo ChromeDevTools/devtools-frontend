@@ -959,7 +959,6 @@ declare class TreeCursor implements SyntaxNodeRef {
     private bufferNode;
     private yieldNode;
     private yieldBuf;
-    private yield;
     /**
     Move the cursor to this node's first child. When this returns
     false, the node has no child, and the cursor has not been moved.
@@ -1903,7 +1902,7 @@ declare class Facet<Input, Output = readonly Input[]> implements FacetReader<Out
     tag: Output;
 }
 /**
-A facet reader can be used to fetch the value of a facet, though
+A facet reader can be used to fetch the value of a facet, through
 [`EditorState.facet`](https://codemirror.net/6/docs/ref/#state.EditorState.facet) or as a dependency
 in [`Facet.compute`](https://codemirror.net/6/docs/ref/#state.Facet.compute), but not to define new
 values for the facet.

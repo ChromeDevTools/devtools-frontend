@@ -5,6 +5,7 @@
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Host from '../../../../../front_end/core/host/host.js';
 import * as VisualLogging from '../../../../../front_end/ui/visual_logging/visual_logging-testing.js';
+import {stabilizeEvent, stabilizeImpressions} from '../../helpers/VisualLoggingHelpers.js';
 
 const {assert} = chai;
 
@@ -13,7 +14,6 @@ describe('LoggingEvents', () => {
   let element: Element;
 
   beforeEach(() => {
-    VisualLogging.LoggingState.resetStateForTesting();
     parent = document.createElement('div');
     element = document.createElement('div');
     VisualLogging.LoggingState.getOrCreateLoggingState(parent, {ve: 1});
@@ -28,7 +28,8 @@ describe('LoggingEvents', () => {
     await VisualLogging.LoggingEvents.logImpressions([element, parent]);
     assert.isTrue(recordImpression.calledOnce);
     assert.sameDeepMembers(
-        recordImpression.firstCall.firstArg.impressions, [{id: 2, type: 1, context: 42, parent: 1}, {id: 1, type: 1}]);
+        stabilizeImpressions(recordImpression.firstCall.firstArg.impressions),
+        [{id: 0, type: 1, context: 42, parent: -1}, {id: -1, type: 1}]);
   });
 
   it('calls UI binding to log a click', async () => {
@@ -39,7 +40,8 @@ describe('LoggingEvents', () => {
     const event = new MouseEvent('click', {button: 1});
     await VisualLogging.LoggingEvents.logClick(element, event);
     assert.isTrue(recordClick.calledOnce);
-    assert.deepStrictEqual(recordClick.firstCall.firstArg, {veid: 2, context: 42, mouseButton: 1, doubleClick: false});
+    assert.deepStrictEqual(
+        stabilizeEvent(recordClick.firstCall.firstArg), {veid: 0, context: 42, mouseButton: 1, doubleClick: false});
   });
 
   it('calls UI binding to log a double click', async () => {
@@ -50,7 +52,8 @@ describe('LoggingEvents', () => {
     const event = new MouseEvent('dblclick', {button: 1});
     await VisualLogging.LoggingEvents.logClick(element, event, {doubleClick: true});
     assert.isTrue(recordClick.calledOnce);
-    assert.deepStrictEqual(recordClick.firstCall.firstArg, {veid: 2, context: 42, mouseButton: 1, doubleClick: true});
+    assert.deepStrictEqual(
+        stabilizeEvent(recordClick.firstCall.firstArg), {veid: 0, context: 42, mouseButton: 1, doubleClick: true});
   });
 
   it('calls UI binding to log a change', async () => {
@@ -62,7 +65,7 @@ describe('LoggingEvents', () => {
     sinon.stub(event, 'currentTarget').value(element);
     await VisualLogging.LoggingEvents.logChange(event);
     assert.isTrue(recordChange.calledOnce);
-    assert.deepStrictEqual(recordChange.firstCall.firstArg, {veid: 2, context: 42});
+    assert.deepStrictEqual(stabilizeEvent(recordChange.firstCall.firstArg), {veid: 0, context: 42});
   });
 
   it('calls UI binding to log a keydown with any code', async () => {
@@ -78,7 +81,7 @@ describe('LoggingEvents', () => {
     assert.isFalse(recordKeyDown.called);
     await throttler.process?.();
     assert.isTrue(recordKeyDown.calledOnce);
-    assert.deepStrictEqual(recordKeyDown.firstCall.firstArg, {veid: 2, context: 42});
+    assert.deepStrictEqual(stabilizeEvent(recordKeyDown.firstCall.firstArg), {veid: 0, context: 42});
   });
 
   it('calls UI binding to log a keydown with a matching code', async () => {
@@ -94,7 +97,7 @@ describe('LoggingEvents', () => {
     assert.isFalse(recordKeyDown.called);
     await throttler.process?.();
     assert.isTrue(recordKeyDown.calledOnce);
-    assert.deepStrictEqual(recordKeyDown.firstCall.firstArg, {veid: 2, context: 42});
+    assert.deepStrictEqual(stabilizeEvent(recordKeyDown.firstCall.firstArg), {veid: 0, context: 42});
   });
 
   it('does not call UI binding to log a keydown with a non-matching code', async () => {
@@ -123,7 +126,7 @@ describe('LoggingEvents', () => {
     assert.isFalse(recordHover.called);
     await throttler.process?.();
     assert.isTrue(recordHover.calledOnce);
-    assert.deepStrictEqual(recordHover.firstCall.firstArg, {veid: 2, context: 42});
+    assert.deepStrictEqual(stabilizeEvent(recordHover.firstCall.firstArg), {veid: 0, context: 42});
   });
 
   it('calls UI binding to log a drag event', async () => {
@@ -139,6 +142,6 @@ describe('LoggingEvents', () => {
     assert.isFalse(recordDrag.called);
     await throttler.process?.();
     assert.isTrue(recordDrag.calledOnce);
-    assert.deepStrictEqual(recordDrag.firstCall.firstArg, {veid: 2, context: 42});
+    assert.deepStrictEqual(stabilizeEvent(recordDrag.firstCall.firstArg), {veid: 0, context: 42});
   });
 });

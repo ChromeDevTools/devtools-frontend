@@ -31,6 +31,7 @@ ts_library("helpers") {
     "TrackAsyncOperations.ts",
     "UISourceCodeHelpers.ts",
     "UserMetricsHelpers.ts",
+    "VisualLoggingHelpers.ts",
   ]
 
   deps = [

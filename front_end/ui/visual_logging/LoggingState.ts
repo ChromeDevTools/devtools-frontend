@@ -18,10 +18,6 @@ const state = new WeakMap<Loggable, LoggingState>();
 
 let nextVeId = 0;
 
-export function resetStateForTesting(): void {
-  nextVeId = 0;
-}
-
 export function getOrCreateLoggingState(loggable: Loggable, config: LoggingConfig, parent?: Loggable): LoggingState {
   if (state.has(loggable)) {
     return state.get(loggable) as LoggingState;

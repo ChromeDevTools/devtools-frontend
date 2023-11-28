@@ -6,6 +6,7 @@ import * as Host from '../../../../../front_end/core/host/host.js';
 import * as UI from '../../../../../front_end/ui/legacy/legacy.js';
 import {assertElement, assertShadowRoot, dispatchMouseUpEvent} from '../../helpers/DOMHelpers.js';
 import {describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
+import {stabilizeEvent, stabilizeImpressions} from '../../helpers/VisualLoggingHelpers.js';
 
 function getContextMenuElement(): HTMLElement {
   const container = document.querySelector('div[data-devtools-glass-pane]');
@@ -111,14 +112,15 @@ describeWithEnvironment('ContextMenu', () => {
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isTrue(recordImpression.calledOnce);
     assert.sameDeepMembers(
-        recordImpression.firstCall.firstArg.impressions,
-        [{id: 3, type: 29, parent: 2, context: 42}, {id: 4, type: 29, parent: 2, context: 44}]);
+        stabilizeImpressions(recordImpression.firstCall.firstArg.impressions),
+        [{id: 0, type: 29, parent: -1, context: 42}, {id: 1, type: 29, parent: -1, context: 44}]);
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.dispatchEventToListeners(
         Host.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, 1);
 
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isTrue(recordClick.calledOnce);
-    assert.deepStrictEqual(recordClick.firstCall.firstArg, {veid: 4, mouseButton: 0, doubleClick: false, context: 44});
+    assert.deepStrictEqual(
+        stabilizeEvent(recordClick.firstCall.firstArg), {veid: 0, mouseButton: 0, doubleClick: false, context: 44});
   });
 });

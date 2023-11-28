@@ -7,6 +7,7 @@ import * as Host from '../../../../../front_end/core/host/host.js';
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as VisualLoggingTesting from '../../../../../front_end/ui/visual_logging/visual_logging-testing.js';
 import {renderElementIntoDOM} from '../../helpers/DOMHelpers.js';
+import {stabilizeEvent, stabilizeImpressions} from '../../helpers/VisualLoggingHelpers.js';
 
 const {assert} = chai;
 
@@ -16,7 +17,6 @@ describe('LoggingDriver', () => {
 
   beforeEach(() => {
     throttler = new Common.Throttler.Throttler(1000000000);
-    VisualLoggingTesting.LoggingState.resetStateForTesting();
     recordImpression = sinon.stub(
         Host.InspectorFrontendHost.InspectorFrontendHostInstance,
         'recordImpression',
@@ -47,7 +47,8 @@ describe('LoggingDriver', () => {
     await VisualLoggingTesting.LoggingDriver.startLogging();
     assert.isTrue(recordImpression.calledOnce);
     assert.sameDeepMembers(
-        recordImpression.firstCall.firstArg.impressions, [{id: 2, type: 1, context: 42, parent: 1}, {id: 1, type: 1}]);
+        stabilizeImpressions(recordImpression.firstCall.firstArg.impressions),
+        [{id: 1, type: 1, context: 42, parent: 0}, {id: 0, type: 1}]);
   });
 
   async function assertImpressionRecordedDeferred() {
@@ -259,7 +260,7 @@ describe('LoggingDriver', () => {
 
     await hoverLogThrottler.process?.();
     assert.isTrue(recordHover.called);
-    assert.deepStrictEqual(recordHover.firstCall.firstArg, {veid: 2, context: 42});
+    assert.deepStrictEqual(stabilizeEvent(recordHover.firstCall.firstArg), {veid: 0, context: 42});
   });
 
   it('logs drag', async () => {

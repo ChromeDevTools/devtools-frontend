@@ -4,6 +4,7 @@
 
 import {assertNotNullOrUndefined} from '../../../../../front_end/core/platform/platform.js';
 import * as VisualLogging from '../../../../../front_end/ui/visual_logging/visual_logging-testing.js';
+import {stabilizeState} from '../../helpers/VisualLoggingHelpers.js';
 
 const {assert} = chai;
 
@@ -12,7 +13,6 @@ describe('LoggingState', () => {
   let element: Element;
 
   beforeEach(() => {
-    VisualLogging.LoggingState.resetStateForTesting();
     parent = document.createElement('div');
     element = document.createElement('div');
   });
@@ -20,16 +20,16 @@ describe('LoggingState', () => {
   it('getOrCreateLoggingState creates state entry on demand', () => {
     VisualLogging.LoggingState.getOrCreateLoggingState(parent, {ve: 1});
     const state = VisualLogging.LoggingState.getOrCreateLoggingState(element, {ve: 1, context: '42'}, parent);
-    assert.deepEqual(state, {
+    assert.deepEqual(stabilizeState(state), {
       impressionLogged: false,
       config: {ve: 1, context: '42'},
-      veid: 2,
+      veid: 0,
       processed: false,
       context: state.context,
       parent: {
         impressionLogged: false,
         config: {ve: 1},
-        veid: 1,
+        veid: -1,
         processed: false,
         context: state.parent?.context as VisualLogging.LoggingState.ContextProvider,
         parent: null,

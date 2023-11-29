@@ -205,6 +205,7 @@ button.round:active {
 button.toolbar:focus-visible,
 button.round:focus-visible {
   background-color: var(--sys-color-tonal-container);
+  outline: none;
 }
 
 button.toolbar:disabled,

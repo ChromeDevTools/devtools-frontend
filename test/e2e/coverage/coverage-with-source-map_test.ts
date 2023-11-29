@@ -18,18 +18,28 @@ import {
   waitForTheCoveragePanelToLoad,
 } from '../helpers/coverage-helpers.js';
 
-// Flaky; most likely expanding the coverage items doesn't work reliably.
-describe.skip('[crbug.com/1501829] Coverage Panel', async () => {
+describe('Coverage Panel', function() {
+  // This test takes longer than usual because as we need to wait for the coverage data to be loaded and datagrid expanded.
+  this.timeout(20000);
   beforeEach(async () => {
     await waitForTheCoveragePanelToLoad();
     await startInstrumentingCoverage();
     await goToResource('coverage/with-source-map.html');
-    await waitFor('.coverage-results');
+    const resultsElement = await waitFor('.coverage-results');
     await click('#tab-coverage');  // Make sure the focus is on the coverage tab.
     const {frontend} = getBrowserAndPages();
     await frontend.keyboard.press('Enter');       // Focus on coverage view
-    await frontend.keyboard.press('ArrowDown');   // select the fist item
+    await waitFor(
+        '.data-grid-data-grid-node.revealed.parent', resultsElement);  // wait for the parent node to be loaded
+    await frontend.keyboard.press('ArrowDown');                        // select the parent node
+    await waitFor(
+        '.data-grid-data-grid-node.revealed.parent.selected',
+        resultsElement);                          // wait for the first item to be selected
     await frontend.keyboard.press('ArrowRight');  // expand
+    await waitFor(
+        '.data-grid-data-grid-node.revealed.parent.selected.expanded',
+        resultsElement);                                                      // wait for the first item to be expanded
+    await waitFor('.data-grid-data-grid-node:not(.parent)', resultsElement);  // wait for children to be loaded
   });
 
   it('Shows coverage data for sources if a script has source map', async () => {

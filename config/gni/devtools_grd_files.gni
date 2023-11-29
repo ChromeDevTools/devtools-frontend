@@ -2154,6 +2154,7 @@ grd_files_debug_sources = [
   "front_end/ui/visual_logging/LoggingDriver.js",
   "front_end/ui/visual_logging/LoggingEvents.js",
   "front_end/ui/visual_logging/LoggingState.js",
+  "front_end/ui/visual_logging/NonDomState.js",
 ]
 
 # Confirm that there is no overlap between the two lists.

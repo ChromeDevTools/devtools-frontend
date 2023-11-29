@@ -12,6 +12,7 @@ ts_library("visual_logging") {
     "LoggingDriver_test.ts",
     "LoggingEvents_test.ts",
     "LoggingState_test.ts",
+    "NonDomState_test.ts",
   ]
 
   deps = [

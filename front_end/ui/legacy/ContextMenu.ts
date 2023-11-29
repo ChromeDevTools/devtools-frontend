@@ -478,9 +478,7 @@ export class ContextMenu extends SubMenu {
 
   private registerLoggablesWithin(
       descriptors: Host.InspectorFrontendHostAPI.ContextMenuDescriptor[],
-      parent?: Host.InspectorFrontendHostAPI.ContextMenuDescriptor):
-      Host.InspectorFrontendHostAPI.ContextMenuDescriptor[] {
-    const loggables = [];
+      parent?: Host.InspectorFrontendHostAPI.ContextMenuDescriptor): void {
     for (const descriptor of descriptors) {
       if (descriptor.jslogContext) {
         if (descriptor.type === 'checkbox') {
@@ -491,17 +489,15 @@ export class ContextMenu extends SubMenu {
           VisualLogging.registerLoggable(
               descriptor, `${VisualLogging.action().track({click: true}).context(descriptor.jslogContext)}`,
               parent || descriptors);
-        } else if (descriptor.type !== 'subMenu') {
+        } else if (descriptor.type === 'subMenu') {
           VisualLogging.registerLoggable(
               descriptor, `${VisualLogging.item().context(descriptor.jslogContext)}`, parent || descriptors);
         }
-        loggables.push(descriptor);
         if (descriptor.subItems) {
-          loggables.push(...this.registerLoggablesWithin(descriptor.subItems, descriptor));
+          this.registerLoggablesWithin(descriptor.subItems, descriptor);
         }
       }
     }
-    return loggables;
   }
 
   private innerShow(): void {
@@ -540,10 +536,8 @@ export class ContextMenu extends SubMenu {
         visualElement.context(this.jsLogContext);
       }
       VisualLogging.registerLoggable(menuObject, `${visualElement}`, null);
-      const loggables = this.registerLoggablesWithin(menuObject);
-      if (loggables.length) {
-        void VisualLogging.logImpressions(loggables);
-      }
+      this.registerLoggablesWithin(menuObject);
+      void VisualLogging.logImpressions([menuObject]);
       this.openHostedMenu = menuObject;
       // showContextMenuAtPoint call above synchronously issues a clear event for previous context menu (if any),
       // so we skip it before subscribing to the clear event.

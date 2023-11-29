@@ -13,6 +13,7 @@ devtools_module("visual_logging") {
     "LoggingDriver.ts",
     "LoggingEvents.ts",
     "LoggingState.ts",
+    "NonDomState.ts",
   ]
   deps = [
     "../../core/common:bundle",

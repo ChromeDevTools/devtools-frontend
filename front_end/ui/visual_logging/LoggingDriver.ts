@@ -8,16 +8,18 @@ import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 import * as Coordinator from '../components/render_coordinator/render_coordinator.js';
 
 import {getDomState, isVisible} from './DomState.js';
+import {type Loggable} from './Loggable.js';
 import {debugString, getLoggingConfig} from './LoggingConfig.js';
 import {logChange, logClick, logDrag, logHover, logImpressions, logKeyDown} from './LoggingEvents.js';
 import {getOrCreateLoggingState} from './LoggingState.js';
+import {getNonDomState, unregisterLoggable} from './NonDomState.js';
 
 const PROCESS_DOM_INTERVAL = 500;
 const KEYBOARD_LOG_INTERVAL = 3000;
 const HOVER_LOG_INTERVAL = 1000;
 const DRAG_LOG_INTERVAL = 500;
 
-let domProcessingThrottler: Common.Throttler.Throttler;
+let processingThrottler: Common.Throttler.Throttler|null;
 let keyboardLogThrottler: Common.Throttler.Throttler;
 let hoverLogThrottler: Common.Throttler.Throttler;
 let dragLogThrottler: Common.Throttler.Throttler;
@@ -28,7 +30,7 @@ const documents: Document[] = [];
 function observeMutations(roots: Node[]): void {
   for (const root of roots) {
     if (!mutationObservers.has(root)) {
-      const observer = new MutationObserver(scheduleProcessDom);
+      const observer = new MutationObserver(scheduleProcessing);
       observer.observe(root, {attributes: true, childList: true, subtree: true});
       mutationObservers.set(root, observer);
     }
@@ -36,12 +38,12 @@ function observeMutations(roots: Node[]): void {
 }
 
 export async function startLogging(options?: {
-  domProcessingThrottler?: Common.Throttler.Throttler,
+  processingThrottler?: Common.Throttler.Throttler,
   keyboardLogThrottler?: Common.Throttler.Throttler,
   hoverLogThrottler?: Common.Throttler.Throttler,
   dragLogThrottler?: Common.Throttler.Throttler,
 }): Promise<void> {
-  domProcessingThrottler = options?.domProcessingThrottler || new Common.Throttler.Throttler(PROCESS_DOM_INTERVAL);
+  processingThrottler = options?.processingThrottler || new Common.Throttler.Throttler(PROCESS_DOM_INTERVAL);
   keyboardLogThrottler = options?.keyboardLogThrottler || new Common.Throttler.Throttler(KEYBOARD_LOG_INTERVAL);
   hoverLogThrottler = options?.hoverLogThrottler || new Common.Throttler.Throttler(HOVER_LOG_INTERVAL);
   dragLogThrottler = options?.dragLogThrottler || new Common.Throttler.Throttler(DRAG_LOG_INTERVAL);
@@ -51,17 +53,17 @@ export async function startLogging(options?: {
 export async function addDocument(document: Document): Promise<void> {
   documents.push(document);
   if (['interactive', 'complete'].includes(document.readyState)) {
-    await processDom();
+    await process();
   }
-  document.addEventListener('visibilitychange', scheduleProcessDom);
-  document.addEventListener('scroll', scheduleProcessDom);
+  document.addEventListener('visibilitychange', scheduleProcessing);
+  document.addEventListener('scroll', scheduleProcessing);
   observeMutations([document.body]);
 }
 
 export function stopLogging(): void {
   for (const document of documents) {
-    document.removeEventListener('visibilitychange', scheduleProcessDom);
-    document.removeEventListener('scroll', scheduleProcessDom);
+    document.removeEventListener('visibilitychange', scheduleProcessing);
+    document.removeEventListener('scroll', scheduleProcessing);
     mutationObservers.get(document.body)?.disconnect();
     mutationObservers.delete(document.body);
   }
@@ -71,11 +73,15 @@ export function stopLogging(): void {
     mutationObservers.delete(shadowRoot);
   }
   documents.length = 0;
+  processingThrottler = null;
 }
 
-function scheduleProcessDom(): void {
-  void domProcessingThrottler.schedule(
-      () => Coordinator.RenderCoordinator.RenderCoordinator.instance().read('processDomForLogging', processDom));
+export function scheduleProcessing(): void {
+  if (!processingThrottler) {
+    return;
+  }
+  void processingThrottler.schedule(
+      () => Coordinator.RenderCoordinator.RenderCoordinator.instance().read('processForLogging', process));
 }
 
 let veDebuggingEnabled = false;
@@ -98,24 +104,29 @@ function setVeDebuggingEnabled(enabled: boolean): void {
 // @ts-ignore
 globalThis.setVeDebuggingEnabled = setVeDebuggingEnabled;
 
-async function processDom(): Promise<void> {
+async function process(): Promise<void> {
   if (document.hidden) {
     return;
   }
   const startTime = performance.now();
   const {loggables, shadowRoots} = getDomState(documents);
-  const visibleElements: Element[] = [];
+  const visibleLoggables: Loggable[] = [];
   const viewportRects = new Map<Document, DOMRect>();
   observeMutations(shadowRoots);
+
+  const viewportRectFor = (element: Element): DOMRect => {
+    const ownerDocument = element.ownerDocument;
+    const viewportRect = viewportRects.get(ownerDocument) ||
+        new DOMRect(0, 0, ownerDocument.defaultView?.innerWidth || 0, ownerDocument.defaultView?.innerHeight || 0);
+    viewportRects.set(ownerDocument, viewportRect);
+    return viewportRect;
+  };
+
   for (const {element, parent} of loggables) {
     const loggingState = getOrCreateLoggingState(element, getLoggingConfig(element), parent);
     if (!loggingState.impressionLogged) {
-      const ownerDocument = element.ownerDocument;
-      const viewportRect = viewportRects.get(ownerDocument) ||
-          new DOMRect(0, 0, ownerDocument.defaultView?.innerWidth || 0, ownerDocument.defaultView?.innerHeight || 0);
-      viewportRects.set(ownerDocument, viewportRect);
-      if (isVisible(element, viewportRect)) {
-        visibleElements.push(element);
+      if (isVisible(element, viewportRectFor(element))) {
+        visibleLoggables.push(element);
         loggingState.impressionLogged = true;
       }
     }
@@ -169,6 +180,18 @@ async function processDom(): Promise<void> {
       loggingState.processedForDebugging = true;
     }
   }
-  await logImpressions(visibleElements);
+  for (const {loggable, config, parent} of getNonDomState().loggables) {
+    const loggingState = getOrCreateLoggingState(loggable, config, parent);
+    const visible = !loggingState.parent || loggingState.parent.impressionLogged;
+    if (!visible) {
+      continue;
+    }
+    visibleLoggables.push(loggable);
+    loggingState.impressionLogged = true;
+    // No need to track loggable as soon as we've logged the impression
+    // We can still log interaction events with a handle to a loggable
+    unregisterLoggable(loggable);
+  }
+  await logImpressions(visibleLoggables);
   Host.userMetrics.visualLoggingProcessingDone(performance.now() - startTime);
 }

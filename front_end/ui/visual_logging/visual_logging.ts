@@ -4,7 +4,8 @@
 
 import type * as LoggableModule from './Loggable.js';
 import * as LoggingConfig from './LoggingConfig.js';
-import * as LoggingState from './LoggingState.js';
+import * as LoggingDriver from './LoggingDriver.js';
+import * as NonDomState from './NonDomState.js';
 
 export type Loggable = LoggableModule.Loggable;
 export {startLogging, stopLogging, addDocument} from './LoggingDriver.js';
@@ -12,7 +13,8 @@ export {logClick, logImpressions} from './LoggingEvents.js';
 export {registerContextProvider, registerParentProvider} from './LoggingState.js';
 
 export function registerLoggable(loggable: Loggable, config: string, parent: Loggable|null): void {
-  LoggingState.getOrCreateLoggingState(loggable, LoggingConfig.parseJsLog(config), parent || undefined);
+  NonDomState.registerLoggable(loggable, LoggingConfig.parseJsLog(config), parent || undefined);
+  LoggingDriver.scheduleProcessing();
 }
 
 export const accessibilityComputedProperties =

@@ -40,7 +40,8 @@ describe('Performance panel trace load performance', () => {
       percentile99: 0,
     };
     for (let run = 1; run <= RUNS; run++) {
-      it(`run ${run}/${RUNS}`, async () => {
+      it(`run ${run}/${RUNS}`, async function() {
+        this.timeout(20_000);
         const panelElement = await getPanelWithFixture('web-dev');
         const eventPromise = panelElement.evaluate(el => {
           return new Promise<number>(resolve => {

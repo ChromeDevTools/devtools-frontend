@@ -2,25 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../../core/host/host.js';
-import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Marked from '../../../third_party/marked/marked.js';
-import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
+import {CodeBlock} from './CodeBlock.js';
 import {MarkdownImage, type MarkdownImageData} from './MarkdownImage.js';
 import {MarkdownLink, type MarkdownLinkData} from './MarkdownLink.js';
 import markdownViewStyles from './markdownView.css.js';
-
-const UIStrings = {
-  /**
-   * @description The title of the button to copy the codeblock from a Markdown view.
-   */
-  copy: 'Copy',
-};
-const str_ = i18n.i18n.registerUIStrings('ui/components/markdown_view/MarkdownView.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const html = LitHtml.html;
 const render = LitHtml.render;
@@ -131,23 +120,12 @@ export class MarkdownLitRenderer {
   }
 
   renderCodeBlock(token: Marked.Marked.Tokens.Code): LitHtml.TemplateResult {
-    return html`<div class="codeblock">
-      <div class="toolbar">
-        <div class="lang">${token.lang}</div>
-        <div class="copy">
-          <${Buttons.Button.Button.litTagName}
-            .title=${i18nString(UIStrings.copy)}
-            .size=${Buttons.Button.Size.SMALL}
-            .iconName=${'copy'}
-            .variant=${Buttons.Button.Variant.TOOLBAR}
-            @click=${(): void => {
-      Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(token.text);
-    }}
-          ></${Buttons.Button.Button.litTagName}>
-        </div>
-      </div>
-      <code>${this.unescape(token.text)}</code>
-    </div>`;
+    // clang-format off
+    return html`<${CodeBlock.litTagName}
+      .code=${this.unescape(token.text)}
+      .codeLang=${token.lang}>
+    </${CodeBlock.litTagName}>`;
+    // clang-format one
   }
 
   templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {

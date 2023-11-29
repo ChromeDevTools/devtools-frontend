@@ -137,7 +137,8 @@ ${paragraphText}
 `;
 
   const renderString =
-      (string: string, selector: 'p'|'code', renderer?: MarkdownView.MarkdownView.MarkdownLitRenderer): HTMLElement => {
+      (string: string, selector: 'p'|'code'|'devtools-code-block',
+       renderer?: MarkdownView.MarkdownView.MarkdownLitRenderer): HTMLElement => {
         const component = new MarkdownView.MarkdownView.MarkdownView();
         renderElementIntoDOM(component);
         component.data = {tokens: Marked.Marked.lexer(string), renderer};
@@ -169,8 +170,8 @@ ${paragraphText}
           `\`\`\`
 console.log('test')
 \`\`\``,
-          'code');
-      assert.strictEqual(codeBlock.innerText, 'console.log(\'test\')');
+          'devtools-code-block');
+      assert.strictEqual((codeBlock as MarkdownView.CodeBlock.CodeBlock).code, 'console.log(\'test\')');
     });
 
     it('renders using a custom renderer', () => {

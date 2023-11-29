@@ -9,6 +9,7 @@ import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "codeBlock.css",
     "markdownImage.css",
     "markdownLink.css",
     "markdownView.css",
@@ -17,6 +18,7 @@ generate_css("css_files") {
 
 devtools_module("markdown_view") {
   sources = [
+    "CodeBlock.ts",
     "MarkdownImage.ts",
     "MarkdownImagesMap.ts",
     "MarkdownLink.ts",

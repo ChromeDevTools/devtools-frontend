@@ -352,10 +352,6 @@ export class MainImpl {
         Root.Runtime.ExperimentName.HIGHLIGHT_ERRORS_ELEMENTS_PANEL,
         'Highlights a violating node or attribute in the Elements panel DOM tree');
 
-    // Local overrides
-    Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.HEADER_OVERRIDES, 'Local overrides for response headers');
-
     // Enable color picking outside the browser window (using Eyedropper API)
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.EYEDROPPER_COLOR_PICKER, 'Enable color picking outside the browser window');
@@ -425,7 +421,6 @@ export class MainImpl {
       'setAllBreakpointsEagerly',
       Root.Runtime.ExperimentName.TIMELINE_AS_CONSOLE_PROFILE_RESULT_PANEL,
       Root.Runtime.ExperimentName.WASM_DWARF_DEBUGGING,
-      Root.Runtime.ExperimentName.HEADER_OVERRIDES,
       Root.Runtime.ExperimentName.OUTERMOST_TARGET_SELECTOR,
       Root.Runtime.ExperimentName.SELF_XSS_WARNING,
       Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL,

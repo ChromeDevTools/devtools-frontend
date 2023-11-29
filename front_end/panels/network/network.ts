@@ -16,7 +16,6 @@ import './NetworkManageCustomHeadersView.js';
 import './NetworkSearchScope.js';
 import './NetworkWaterfallColumn.js';
 import './RequestCookiesView.js';
-import './RequestHeadersView.js';
 import './RequestHTMLView.js';
 import './RequestInitiatorView.js';
 import './RequestResponseView.js';
@@ -43,7 +42,6 @@ import * as NetworkSearchScope from './NetworkSearchScope.js';
 import * as NetworkTimeCalculator from './NetworkTimeCalculator.js';
 import * as NetworkWaterfallColumn from './NetworkWaterfallColumn.js';
 import * as RequestCookiesView from './RequestCookiesView.js';
-import * as RequestHeadersView from './RequestHeadersView.js';
 import * as RequestHTMLView from './RequestHTMLView.js';
 import * as RequestInitiatorView from './RequestInitiatorView.js';
 import * as RequestPayloadView from './RequestPayloadView.js';
@@ -70,7 +68,6 @@ export {
   NetworkTimeCalculator,
   NetworkWaterfallColumn,
   RequestCookiesView,
-  RequestHeadersView,
   RequestHTMLView,
   RequestInitiatorView,
   RequestPayloadView,

@@ -20,7 +20,6 @@ import {createWorkspaceProject, setUpEnvironment} from '../../../helpers/Overrid
 import type * as Platform from '../../../../../../front_end/core/platform/platform.js';
 import * as Workspace from '../../../../../../front_end/models/workspace/workspace.js';
 import type * as Persistence from '../../../../../../front_end/models/persistence/persistence.js';
-import * as Root from '../../../../../../front_end/core/root/root.js';
 import * as Common from '../../../../../../front_end/core/common/common.js';
 import * as NetworkForward from '../../../../../../front_end/panels/network/forward/forward.js';
 import {recordedMetricsContain, resetRecordedMetrics} from '../../../helpers/UserMetricsHelpers.js';
@@ -173,10 +172,6 @@ function isRowFocused(
 }
 
 describeWithEnvironment('ResponseHeaderSection', () => {
-  before(() => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
-  });
-
   beforeEach(async () => {
     await setUpEnvironment();
     resetRecordedMetrics();

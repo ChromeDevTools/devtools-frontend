@@ -1750,10 +1750,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     footerSection.appendItem(i18nString(UIStrings.copyAllAsHar), this.copyAll.bind(this));
 
     contextMenu.saveSection().appendItem(i18nString(UIStrings.saveAllAsHarWithContent), this.exportAll.bind(this));
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES)) {
-      contextMenu.overrideSection().appendItem(
-          i18nString(UIStrings.overrideHeaders), this.#handleCreateResponseHeaderOverrideClick.bind(this, request));
-    }
+    contextMenu.overrideSection().appendItem(
+        i18nString(UIStrings.overrideHeaders), this.#handleCreateResponseHeaderOverrideClick.bind(this, request));
 
     contextMenu.editSection().appendItem(i18nString(UIStrings.clearBrowserCache), this.clearBrowserCache.bind(this));
     contextMenu.editSection().appendItem(

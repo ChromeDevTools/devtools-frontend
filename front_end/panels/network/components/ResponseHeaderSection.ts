@@ -28,7 +28,6 @@ import type * as Workspace from '../../../models/workspace/workspace.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Common from '../../../core/common/common.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as Root from '../../../core/root/root.js';
 
 import responseHeaderSectionStyles from './ResponseHeaderSection.css.js';
 
@@ -227,7 +226,7 @@ export class ResponseHeaderSection extends HTMLElement {
       if (!this.#overrides.every(Persistence.NetworkPersistenceManager.isHeaderOverride)) {
         throw 'Type mismatch after parsing';
       }
-      this.#headersAreOverrideable = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES) &&
+      this.#headersAreOverrideable =
           Common.Settings.Settings.instance().moduleSetting('persistenceNetworkOverridesEnabled').get();
       for (const header of this.#headerEditors) {
         header.valueEditable = this.#headersAreOverrideable;

@@ -4,7 +4,6 @@
 
 import * as Common from '../../../../../../front_end/core/common/common.js';
 import * as Host from '../../../../../../front_end/core/host/host.js';
-import * as Root from '../../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../../front_end/generated/protocol.js';
 import * as Persistence from '../../../../../../front_end/models/persistence/persistence.js';
@@ -108,7 +107,6 @@ describeWithMockConnection('RequestHeadersView', () => {
   let component: NetworkComponents.RequestHeadersView.RequestHeadersView|null|undefined = null;
 
   beforeEach(() => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
     setUpEnvironment();
     resetRecordedMetrics();
   });

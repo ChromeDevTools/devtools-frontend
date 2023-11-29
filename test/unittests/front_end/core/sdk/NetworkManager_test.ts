@@ -9,7 +9,6 @@ import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as Platform from '../../../../../front_end/core/platform/platform.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
-import * as Root from '../../../../../front_end/core/root/root.js';
 import {createTarget, describeWithEnvironment} from '../../helpers/EnvironmentHelpers.js';
 import {createWorkspaceProject} from '../../helpers/OverridesHelpers.js';
 import {describeWithMockConnection} from '../../helpers/MockConnection.js';
@@ -360,7 +359,6 @@ describeWithMockConnection('InterceptedRequest', () => {
 
   beforeEach(async () => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
     target = createTarget();
     const networkPersistenceManager =
         await createWorkspaceProject('file:///path/to/overrides' as Platform.DevToolsPath.UrlString, [
@@ -668,28 +666,6 @@ describeWithMockConnection('InterceptedRequest', () => {
             {name: 'age', value: 'overridden'},
             {name: 'content-type', value: 'text/html; charset=utf-8'},
           ],
-        });
-  });
-
-  it('can override content for a request with a \'file:/\'-URL', async () => {
-    Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
-    const responseCode = 200;
-    const requestId = 'request_id_7' as Protocol.Fetch.RequestId;
-    const responseBody = 'interceptedRequest content';
-    const responseHeaders = [
-      {name: 'age', value: 'original'},
-      {name: 'content-type', value: 'text/html; charset=utf-8'},
-    ];
-    await checkRequestOverride(
-        target, {
-          method: 'GET',
-          url: 'file:///usr/local/foo/content/something.html',
-        } as Protocol.Network.Request,
-        requestId, responseCode, responseHeaders, responseBody, {
-          requestId,
-          responseCode,
-          body: btoa('Override for something'),
-          responseHeaders,
         });
   });
 

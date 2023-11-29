@@ -7,7 +7,6 @@ const {assert} = chai;
 import * as Common from '../../../../../front_end/core/common/common.js';
 import * as Host from '../../../../../front_end/core/host/host.js';
 import type * as Platform from '../../../../../front_end/core/platform/platform.js';
-import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Persistence from '../../../../../front_end/models/persistence/persistence.js';
 import * as Workspace from '../../../../../front_end/models/workspace/workspace.js';
@@ -82,7 +81,6 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
 describeWithMockConnection('NetworkPersistenceManager', () => {
   it('does not create interception patterns for forbidden URLs', async () => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
     const target = createTarget();
 
     const networkPersistenceManager =
@@ -117,7 +115,6 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
 
   beforeEach(async () => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
     const target = createTarget();
     networkPersistenceManager =
         await createWorkspaceProject('file:///path/to/overrides' as Platform.DevToolsPath.UrlString, [
@@ -700,7 +697,6 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
 describeWithMockConnection('NetworkPersistenceManager', () => {
   beforeEach(() => {
     SDK.NetworkManager.MultitargetNetworkManager.dispose();
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.HEADER_OVERRIDES);
   });
 
   it('updates active state when target detach and attach', async () => {

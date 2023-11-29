@@ -8,7 +8,6 @@ import {
   activeElement,
   activeElementTextContent,
   click,
-  enableExperiment,
   goToResource,
   pasteText,
   pressKey,
@@ -100,7 +99,6 @@ describe('The Overrides Panel', async function() {
 
   // Skip until flake is fixed
   it.skip('[crbug.com/1432925]: can create header overrides', async () => {
-    await enableExperiment('headerOverrides');
     await goToResource('empty.html');
     await openSourcesPanel();
     await enableLocalOverrides();
@@ -121,7 +119,6 @@ describe('The Overrides Panel', async function() {
 
   // Skip until flake is fixed
   it.skip('[crbug.com/1432925]: can override headers via network panel', async () => {
-    await enableExperiment('headerOverrides');
     await navigateToNetworkTab('hello.html');
     await waitForSomeRequestsToAppear(1);
     await selectRequestByName('hello.html');

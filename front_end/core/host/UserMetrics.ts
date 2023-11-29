@@ -973,7 +973,6 @@ export enum DevtoolsExperiments {
   'experimentalCookieFeatures' = 45,
   'bfcacheDisplayTree' = 54,
   'stylesPaneCSSChanges' = 55,
-  'headerOverrides' = 56,
   'evaluateExpressionsWithSourceMaps' = 58,
   'eyedropperColorPicker' = 60,
   'instrumentationBreakpoints' = 61,

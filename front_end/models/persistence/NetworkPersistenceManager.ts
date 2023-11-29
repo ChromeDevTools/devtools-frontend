@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -699,8 +698,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         continue;
       }
       const pattern = this.patternForFileSystemUISourceCode(uiSourceCode);
-      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES) &&
-          uiSourceCode.name() === HEADERS_FILENAME) {
+      if (uiSourceCode.name() === HEADERS_FILENAME) {
         const {headerPatterns, path, overridesWithRegex} = await this.generateHeaderPatterns(uiSourceCode);
         if (headerPatterns.size > 0) {
           patterns = new Set([...patterns, ...headerPatterns]);
@@ -925,10 +923,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     const proj = this.projectInternal as FileSystem;
     const path = this.fileUrlFromNetworkUrl(interceptedRequest.request.url as Platform.DevToolsPath.UrlString);
     const fileSystemUISourceCode = proj.uiSourceCodeForURL(path);
-    let responseHeaders: Protocol.Fetch.HeaderEntry[] = [];
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.HEADER_OVERRIDES)) {
-      responseHeaders = this.handleHeaderInterception(interceptedRequest);
-    }
+    let responseHeaders = this.handleHeaderInterception(interceptedRequest);
     if (!fileSystemUISourceCode && !responseHeaders.length) {
       return;
     }

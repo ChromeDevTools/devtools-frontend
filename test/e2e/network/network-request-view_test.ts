@@ -9,7 +9,6 @@ import {
   $,
   $$,
   click,
-  enableExperiment,
   step,
   typeText,
   waitFor,
@@ -504,7 +503,6 @@ describe('The Network Request view', async () => {
   });
 
   it('can create header overrides via request\'s context menu', async () => {
-    await enableExperiment('headerOverrides');
     await navigateToNetworkTab('hello.html');
     await selectRequestByName('hello.html', {button: 'right'});
 
@@ -514,7 +512,6 @@ describe('The Network Request view', async () => {
   });
 
   it('can create header overrides via header\'s pencil icon', async () => {
-    await enableExperiment('headerOverrides');
     await navigateToNetworkTab('hello.html');
     await selectRequestByName('hello.html');
 

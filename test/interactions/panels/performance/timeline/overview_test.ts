@@ -43,11 +43,6 @@ describe('Performance panel overview/minimap', function() {
     await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview-memory.png', 3);
   });
 
-  itScreenshot('supports being drawn from the new engine trace data', async () => {
-    await loadComponentDocExample('performance_panel/overview.html?trace=web-dev');
-    const pane = await waitFor('.container-new-engine #timeline-overview-pane');
-    await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview-new-engine.png', 3);
-  });
   it('renders markers in the minimap correctly', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=web-dev');
     const minimapMarkers = await waitForMany('.resources-event-divider', 4);

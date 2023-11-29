@@ -17,7 +17,6 @@ import {
 } from './TimelineEventOverview.js';
 import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
 import {type TimelineMiniMap} from './TimelineMiniMap.js';
-import {ThreadTracksSource} from './TimelinePanel.js';
 
 const UIStrings = {
   /**
@@ -92,13 +91,8 @@ export class TimelineHistoryManager {
   private totalHeight: number;
   private enabled: boolean;
   private lastActiveModel: PerformanceModel|null;
-  #threadTracksSource: ThreadTracksSource = ThreadTracksSource.OLD_ENGINE;
   #minimapComponent?: TimelineMiniMap;
-  constructor(threadTracksSource?: ThreadTracksSource, minimapComponent?: TimelineMiniMap) {
-    if (threadTracksSource) {
-      this.#threadTracksSource = threadTracksSource;
-    }
-
+  constructor(minimapComponent?: TimelineMiniMap) {
     this.recordings = [];
     this.#minimapComponent = minimapComponent;
     this.action = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.show-history');
@@ -123,19 +117,14 @@ export class TimelineHistoryManager {
         height: 3,
       },
       {
-        constructor: (_traceParsedData, performanceModel): TimelineEventOverviewCPUActivity => {
+        constructor: (traceParsedData): TimelineEventOverviewCPUActivity => {
           const cpuOverviewFromMinimap =
               this.#minimapComponent?.getControls().find(
                   control => control instanceof TimelineEventOverviewCPUActivity) as TimelineEventOverviewCPUActivity;
           if (cpuOverviewFromMinimap) {
             return cpuOverviewFromMinimap;
           }
-          // TODO(crbug.com/1464206): remove this conditional once ThreadTracksSource has been fully shipped and the flag removed.
-          if (this.#threadTracksSource === ThreadTracksSource.NEW_ENGINE) {
-            return new TimelineEventOverviewCPUActivity(null, _traceParsedData);
-          }
-
-          return new TimelineEventOverviewCPUActivity(performanceModel, null);
+          return new TimelineEventOverviewCPUActivity(traceParsedData);
         },
         height: 20,
       },

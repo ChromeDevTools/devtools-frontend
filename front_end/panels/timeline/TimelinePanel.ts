@@ -251,14 +251,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let timelinePanelInstance: TimelinePanel;
 let isNode: boolean;
 
-// TODO(crbug.com/1386091): Remove this enum when we can remove the
-// old engine.
-// eslint-disable-next-line rulesdir/const_enum
-export enum ThreadTracksSource {
-  NEW_ENGINE = 'NEW_ENGINE',
-  OLD_ENGINE = 'OLD_ENGINE',
-}
-
 // TypeScript will presumably get these types at some stage, and when it
 // does these temporary types should be removed.
 // TODO: Remove types when available in TypeScript.
@@ -349,7 +341,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.toggle-recording');
     this.recordReloadAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.record-reload');
 
-    this.#historyManager = new TimelineHistoryManager(ThreadTracksSource.NEW_ENGINE, this.#minimapComponent);
+    this.#historyManager = new TimelineHistoryManager(this.#minimapComponent);
 
     this.performanceModel = null;
     this.traceLoadStart = null;
@@ -777,9 +769,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const traceParsedData = this.#traceEngineModel.traceParsedData(this.#traceEngineActiveTraceIndex);
     const isCpuProfile = this.#traceEngineModel.metadata(this.#traceEngineActiveTraceIndex)?.dataOrigin ===
         TraceEngine.Types.File.DataOrigin.CPUProfile;
+    if (!traceParsedData) {
+      return;
+    }
 
     this.#minimapComponent.setData({
-      performanceModel: this.performanceModel,
       traceParsedData,
       isCpuProfile,
       settings: {

@@ -12,18 +12,17 @@ import {TraceLoader} from '../../helpers/TraceLoader.js';
 
 describeWithEnvironment('TimelineMiniMap', function() {
   it('always shows the responsiveness, CPU activity and network panel', async function() {
-    const models = await TraceLoader.allModels(this, 'web-dev.json.gz');
+    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
     const container = document.createElement('div');
     renderElementIntoDOM(container);
 
-    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap(Timeline.TimelinePanel.ThreadTracksSource.NEW_ENGINE);
+    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
     minimap.markAsRoot();
     minimap.show(container);
 
     minimap.setData({
-      traceParsedData: models.traceParsedData,
-      performanceModel: models.performanceModel,
+      traceParsedData,
       settings: {
         showMemory: false,
         showScreenshots: false,
@@ -40,18 +39,17 @@ describeWithEnvironment('TimelineMiniMap', function() {
   });
 
   it('will show the other panels if they are set to visible', async function() {
-    const models = await TraceLoader.allModels(this, 'web-dev.json.gz');
+    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
     const container = document.createElement('div');
     renderElementIntoDOM(container);
 
-    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap(Timeline.TimelinePanel.ThreadTracksSource.NEW_ENGINE);
+    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
     minimap.markAsRoot();
     minimap.show(container);
 
     minimap.setData({
-      traceParsedData: models.traceParsedData,
-      performanceModel: models.performanceModel,
+      traceParsedData,
       settings: {
         showMemory: true,
         showScreenshots: true,
@@ -69,18 +67,17 @@ describeWithEnvironment('TimelineMiniMap', function() {
 
   it('creates the first breadcrumb when breadcrumbsPerformancePanel experiment is enabled', async function() {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.BREADCRUMBS_PERFORMANCE_PANEL);
-    const models = await TraceLoader.allModels(this, 'web-dev.json.gz');
+    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
     const container = document.createElement('div');
     renderElementIntoDOM(container);
 
-    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap(Timeline.TimelinePanel.ThreadTracksSource.NEW_ENGINE);
+    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
     minimap.markAsRoot();
     minimap.show(container);
 
     minimap.setData({
-      traceParsedData: models.traceParsedData,
-      performanceModel: models.performanceModel,
+      traceParsedData,
       settings: {
         showMemory: true,
         showScreenshots: true,
@@ -105,18 +102,17 @@ describeWithEnvironment('TimelineMiniMap', function() {
   });
 
   it('does not create breadcrumbs when breadcrumbsPerformancePanel experiment is disabled', async function() {
-    const models = await TraceLoader.allModels(this, 'web-dev.json.gz');
+    const traceParsedData = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
     const container = document.createElement('div');
     renderElementIntoDOM(container);
 
-    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap(Timeline.TimelinePanel.ThreadTracksSource.NEW_ENGINE);
+    const minimap = new Timeline.TimelineMiniMap.TimelineMiniMap();
     minimap.markAsRoot();
     minimap.show(container);
 
     minimap.setData({
-      traceParsedData: models.traceParsedData,
-      performanceModel: models.performanceModel,
+      traceParsedData,
       settings: {
         showMemory: true,
         showScreenshots: true,

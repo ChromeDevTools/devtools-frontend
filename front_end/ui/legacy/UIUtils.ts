@@ -1212,7 +1212,7 @@ export class CheckboxLabel extends HTMLSpanElement {
     element.checkboxElement.checked = Boolean(checked);
     if (jslogContext) {
       element.checkboxElement.setAttribute(
-          'jslog', `${VisualLogging.toggle().track({click: true}).context(jslogContext)}`);
+          'jslog', `${VisualLogging.toggle().track({change: true}).context(jslogContext)}`);
     }
     if (title !== undefined) {
       element.textElement.textContent = title;

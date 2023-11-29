@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/es_modules_import */
 import {type Schema} from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
 
 export type ClickStep = Schema.ClickStep;

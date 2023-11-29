@@ -5,7 +5,6 @@
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-// eslint-disable-next-line rulesdir/es_modules_import
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Models from '../models/models.js';

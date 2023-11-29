@@ -38,7 +38,6 @@ devtools_module("components") {
   ]
 
   deps = [
-    "..:actions",
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/platform:bundle",
@@ -64,6 +63,7 @@ devtools_module("components") {
     "../converters:bundle",
     "../extensions:bundle",
     "../models:bundle",
+    "../recorder-actions:bundle",
   ]
 }
 

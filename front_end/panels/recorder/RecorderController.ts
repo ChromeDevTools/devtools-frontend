@@ -27,7 +27,7 @@ import type * as Controllers from './controllers/controllers.js';
 import * as Converters from './converters/converters.js';
 import * as Extensions from './extensions/extensions.js';
 import * as Models from './models/models.js';
-import * as Actions from './recorder-actions.js';
+import * as Actions from './recorder-actions/recorder-actions.js';
 import recorderControllerStyles from './recorderController.css.js';
 import * as Events from './RecorderEvents.js';
 

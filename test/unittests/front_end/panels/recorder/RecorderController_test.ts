@@ -6,7 +6,7 @@
 
 const {assert} = chai;
 
-import {RecorderActions} from '../../../../../front_end/panels/recorder/recorder-actions.js';
+import {RecorderActions} from '../../../../../front_end/panels/recorder/recorder-actions/recorder-actions.js';
 import {RecorderController} from '../../../../../front_end/panels/recorder/recorder.js';
 import * as Models from '../../../../../front_end/panels/recorder/models/models.js';
 import * as Components from '../../../../../front_end/panels/recorder/components/components.js';

@@ -5,7 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import * as Actions from './recorder-actions.js';
+import * as Actions from './recorder-actions/recorder-actions.js';
 import type * as Recorder from './recorder.js';
 
 const UIStrings = {

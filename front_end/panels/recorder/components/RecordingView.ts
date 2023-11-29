@@ -6,42 +6,38 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as PublicExtensions from '../../../models/extensions/extensions.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
+import type * as PuppeteerReplay from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as CodeHighlighter from '../../../ui/components/code_highlighter/code_highlighter.js';
+import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
+import * as Menus from '../../../ui/components/menus/menus.js';
+import * as SplitView from '../../../ui/components/split_view/split_view.js';
 import * as TextEditor from '../../../ui/components/text_editor/text_editor.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
-import * as Menus from '../../../ui/components/menus/menus.js';
-
-import type * as PuppeteerReplay from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
-import type * as PublicExtensions from '../../../models/extensions/extensions.js';
-
-import type * as Extensions from '../extensions/extensions.js';
 import type * as Converters from '../converters/converters.js';
+import type * as Extensions from '../extensions/extensions.js';
 import * as Models from '../models/models.js';
-import * as Actions from '../recorder-actions.js';  // eslint-disable-line rulesdir/es_modules_import
-
-import recordingViewStyles from './recordingView.css.js';
-
-import {
-  State,
-  StepView,
-  type StepViewData,
-  type CopyStepEvent,
-} from './StepView.js';
-
 import {PlayRecordingSpeed} from '../models/RecordingPlayer.js';
+import * as Actions from '../recorder-actions/recorder-actions.js';
+
+import {ExtensionView} from './ExtensionView.js';
+import recordingViewStyles from './recordingView.css.js';
 import {
   ReplayButton,
   type ReplayButtonData,
   type StartReplayEvent,
 } from './ReplayButton.js';
-import * as SplitView from '../../../ui/components/split_view/split_view.js';
-import {ExtensionView} from './ExtensionView.js';
+import {
+  type CopyStepEvent,
+  State,
+  StepView,
+  type StepViewData,
+} from './StepView.js';
 
 const UIStrings = {
   /**

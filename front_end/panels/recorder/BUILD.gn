@@ -18,7 +18,6 @@ devtools_module("recorder") {
   ]
 
   deps = [
-    ":actions",
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../models/extensions:bundle",
@@ -35,6 +34,7 @@ devtools_module("recorder") {
     "./converters:bundle",
     "./extensions:bundle",
     "./models:bundle",
+    "./recorder-actions:bundle",
   ]
 }
 
@@ -60,7 +60,6 @@ devtools_entrypoint("meta") {
   entrypoint = "recorder-meta.ts"
 
   deps = [
-    ":actions",
     ":bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
@@ -69,22 +68,12 @@ devtools_entrypoint("meta") {
     "../../models/bindings:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/legacy:bundle",
+    "./recorder-actions:bundle",
   ]
 
   visibility = [
     "../..:*",
     "../../entrypoints/devtools_app:*",
     "../../entrypoints/inspector:*",
-  ]
-}
-
-devtools_entrypoint("actions") {
-  entrypoint = "recorder-actions.ts"
-
-  deps = []
-
-  visibility = [
-    ":*",
-    "./components:*",
   ]
 }

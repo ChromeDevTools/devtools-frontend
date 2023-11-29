@@ -8,7 +8,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Models from '../models/models.js';
-import * as Actions from '../recorder-actions.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Actions from '../recorder-actions/recorder-actions.js';
 
 import recordingListViewStyles from './recordingListView.css.js';
 

@@ -6,17 +6,16 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-
+import type * as Extensions from '../extensions/extensions.js';
 import type * as Models from '../models/models.js';
 import {PlayRecordingSpeed} from '../models/RecordingPlayer.js';
-import * as Actions from '../recorder-actions.js';  // eslint-disable-line rulesdir/es_modules_import
-import type * as Extensions from '../extensions/extensions.js';
+import * as Actions from '../recorder-actions/recorder-actions.js';
 
 import {
   SelectButton,
-  Variant as SelectButtonVariant,
-  type SelectButtonItem,
   type SelectButtonClickEvent,
+  type SelectButtonItem,
+  Variant as SelectButtonVariant,
 } from './SelectButton.js';
 
 const UIStrings = {

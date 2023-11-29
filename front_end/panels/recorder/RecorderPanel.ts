@@ -4,7 +4,7 @@
 
 import * as UI from '../../ui/legacy/legacy.js';
 
-import type * as Actions from './recorder-actions.js';
+import type * as Actions from './recorder-actions/recorder-actions.js';
 import {RecorderController} from './RecorderController.js';
 
 let recorderPanelInstance: RecorderPanel;

@@ -3053,6 +3053,8 @@ declare namespace ProtocolProxyApi {
   }
 
   export interface TracingApi {
+    invoke_getTraceSystemsAndLevels(): Promise<Protocol.Tracing.GetTraceSystemsAndLevelsResponse>;
+
     /**
      * Stop trace events collection.
      */

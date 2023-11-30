@@ -752,6 +752,7 @@ inspectorBackend.registerEnum("Tracing.TracingBackend", {Auto: "auto", Chrome: "
 inspectorBackend.registerEvent("Tracing.bufferUsage", ["percentFull", "eventCount", "value"]);
 inspectorBackend.registerEvent("Tracing.dataCollected", ["value"]);
 inspectorBackend.registerEvent("Tracing.tracingComplete", ["dataLossOccurred", "stream", "traceFormat", "streamCompression"]);
+inspectorBackend.registerCommand("Tracing.getTraceSystemsAndLevels", [], ["systems", "levels"]);
 inspectorBackend.registerCommand("Tracing.end", [], []);
 inspectorBackend.registerCommand("Tracing.getCategories", [], ["categories"]);
 inspectorBackend.registerCommand("Tracing.recordClockSyncMarker", [{"name": "syncId", "type": "string", "optional": false}], []);

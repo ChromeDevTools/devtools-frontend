@@ -19238,9 +19238,43 @@
                         "chrome",
                         "system"
                     ]
+                },
+                {
+                    "id": "TraceCategoryDefinition",
+                    "description": "COHERENT_BEGIN",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "type": "string"
+                        },
+                        {
+                            "name": "categoryString",
+                            "type": "string"
+                        }
+                    ]
                 }
             ],
             "commands": [
+                {
+                    "name": "getTraceSystemsAndLevels",
+                    "returns": [
+                        {
+                            "name": "systems",
+                            "type": "array",
+                            "items": {
+                                "$ref": "TraceCategoryDefinition"
+                            }
+                        },
+                        {
+                            "name": "levels",
+                            "type": "array",
+                            "items": {
+                                "$ref": "TraceCategoryDefinition"
+                            }
+                        }
+                    ]
+                },
                 {
                     "name": "end",
                     "description": "Stop trace events collection."

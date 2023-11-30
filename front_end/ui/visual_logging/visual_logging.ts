@@ -13,6 +13,9 @@ export {logClick, logImpressions} from './LoggingEvents.js';
 export {registerContextProvider, registerParentProvider} from './LoggingState.js';
 
 export function registerLoggable(loggable: Loggable, config: string, parent: Loggable|null): void {
+  if (!LoggingDriver.isLogging()) {
+    return;
+  }
   NonDomState.registerLoggable(loggable, LoggingConfig.parseJsLog(config), parent || undefined);
   LoggingDriver.scheduleProcessing();
 }

@@ -23,3 +23,7 @@ export function unregisterLoggable(loggable: Loggable): void {
 export function getNonDomState(): {loggables: LoggableRegistration[]} {
   return {loggables: [...registry.values()]};
 }
+
+export function unregisterAllLoggables(): void {
+  registry.clear();
+}

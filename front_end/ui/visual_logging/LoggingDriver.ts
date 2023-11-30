@@ -12,7 +12,7 @@ import {type Loggable} from './Loggable.js';
 import {debugString, getLoggingConfig} from './LoggingConfig.js';
 import {logChange, logClick, logDrag, logHover, logImpressions, logKeyDown} from './LoggingEvents.js';
 import {getOrCreateLoggingState} from './LoggingState.js';
-import {getNonDomState, unregisterLoggable} from './NonDomState.js';
+import {getNonDomState, unregisterAllLoggables, unregisterLoggable} from './NonDomState.js';
 
 const PROCESS_DOM_INTERVAL = 500;
 const KEYBOARD_LOG_INTERVAL = 3000;
@@ -37,12 +37,19 @@ function observeMutations(roots: Node[]): void {
   }
 }
 
+let logging = false;
+
+export function isLogging(): boolean {
+  return logging;
+}
+
 export async function startLogging(options?: {
   processingThrottler?: Common.Throttler.Throttler,
   keyboardLogThrottler?: Common.Throttler.Throttler,
   hoverLogThrottler?: Common.Throttler.Throttler,
   dragLogThrottler?: Common.Throttler.Throttler,
 }): Promise<void> {
+  logging = true;
   processingThrottler = options?.processingThrottler || new Common.Throttler.Throttler(PROCESS_DOM_INTERVAL);
   keyboardLogThrottler = options?.keyboardLogThrottler || new Common.Throttler.Throttler(KEYBOARD_LOG_INTERVAL);
   hoverLogThrottler = options?.hoverLogThrottler || new Common.Throttler.Throttler(HOVER_LOG_INTERVAL);
@@ -61,6 +68,8 @@ export async function addDocument(document: Document): Promise<void> {
 }
 
 export function stopLogging(): void {
+  logging = false;
+  unregisterAllLoggables();
   for (const document of documents) {
     document.removeEventListener('visibilitychange', scheduleProcessing);
     document.removeEventListener('scroll', scheduleProcessing);

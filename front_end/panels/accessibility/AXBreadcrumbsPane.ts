@@ -69,8 +69,7 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
 
     this.hoveredBreadcrumb = null;
     const previewToggle = new Feedback.PreviewToggle.PreviewToggle();
-    previewToggle.setAttribute(
-        'jslog', `${VisualLogging.toggle().track({click: true}).context('fullAccessibilityTree')}`);
+    previewToggle.setAttribute('jslog', `${VisualLogging.toggle().context('fullAccessibilityTree')}`);
     const name = i18nString(UIStrings.fullTreeExperimentName);
     const experiment = Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE;
     const onChangeCallback: (checked: boolean) => void = checked => {
@@ -339,12 +338,14 @@ export class AXBreadcrumbsPane extends AccessibilitySubPane {
       // This will collapse and preselect/focus the breadcrumb.
       this.collapseBreadcrumb(breadcrumb);
       breadcrumb.nodeElement().focus();
+      void VisualLogging.logClick(breadcrumb.expandLoggable, event);
       return;
     }
     if (!breadcrumb.isDOMNode()) {
       return;
     }
     this.inspectDOMNode(breadcrumb.axNode());
+    void VisualLogging.logClick(breadcrumb.expandLoggable, event);
   }
 
   private setHoveredBreadcrumb(breadcrumb: AXBreadcrumb|null): void {
@@ -442,6 +443,7 @@ export class AXBreadcrumb {
   private preselectedInternal: boolean;
   private parent: AXBreadcrumb|null;
   private inspectedInternal: boolean;
+  expandLoggable = {};
   constructor(axNode: SDK.AccessibilityModel.AccessibilityNode, depth: number, inspected: boolean) {
     this.axNodeInternal = axNode;
 
@@ -493,6 +495,7 @@ export class AXBreadcrumb {
     if (!this.axNodeInternal.ignored() && this.axNodeInternal.hasOnlyUnloadedChildren()) {
       this.nodeElementInternal.classList.add('children-unloaded');
       UI.ARIAUtils.setExpanded(this.nodeElementInternal, false);
+      VisualLogging.registerLoggable(this.expandLoggable, `${VisualLogging.treeItemExpand()}`, this.elementInternal);
     }
 
     if (!this.axNodeInternal.isDOMNode()) {
@@ -514,6 +517,7 @@ export class AXBreadcrumb {
     this.nodeElementInternal.classList.add('parent');
     UI.ARIAUtils.setExpanded(this.nodeElementInternal, true);
     this.childrenGroupElement.appendChild(breadcrumb.element());
+    VisualLogging.registerLoggable(this.expandLoggable, `${VisualLogging.treeItemExpand()}`, this.elementInternal);
   }
 
   hasExpandedChildren(): number {

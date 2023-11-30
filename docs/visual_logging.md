@@ -59,7 +59,7 @@ or
 
 ```
 button.element.setAttribute('jslog', `${VisualLogging.dropDown()
-    .track({click: true}).context('renderingEmulations')}`);
+    .track({click: true}).context('rendering-emulations')}`);
 ```
 
 In LitHTML, the usage is:

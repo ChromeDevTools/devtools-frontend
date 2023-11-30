@@ -191,6 +191,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       this.mainFlameChart.setTotalAndMinimumBreadcrumbValues(minMilliseconds, maxMilliseconds);
       this.networkFlameChart.setTotalAndMinimumBreadcrumbValues(minMilliseconds, maxMilliseconds);
       this.mainFlameChart.update();
+    } else {
+      this.#currentBreadcrumbTimeWindow = undefined;
     }
 
     // If breadcrumbs are not activated, update window times at all times,
@@ -210,7 +212,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   windowChanged(windowStartTime: number, windowEndTime: number, animate: boolean): void {
     if (this.model) {
-      this.model.setWindow({left: windowStartTime, right: windowEndTime}, animate);
+      this.model.setWindow({left: windowStartTime, right: windowEndTime}, animate, this.#currentBreadcrumbTimeWindow);
     }
     TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
         TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(

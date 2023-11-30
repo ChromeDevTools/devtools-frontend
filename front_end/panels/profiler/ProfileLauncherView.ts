@@ -33,9 +33,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {IsolateSelector} from './IsolateSelector.js';
-import profileLauncherViewStyles from './profileLauncherView.css.js';
-
 import {type ProfileType} from './ProfileHeader.js';
+import profileLauncherViewStyles from './profileLauncherView.css.js';
 import {type ProfilesPanel} from './ProfilesPanel.js';
 
 const UIStrings = {
@@ -118,7 +117,8 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
   }
 
   loadButtonClicked(): void {
-    this.panel.showLoadFromFileDialog();
+    const loadFromFileAction = UI.ActionRegistry.ActionRegistry.instance().getAction('profiler.load-from-file');
+    void loadFromFileAction.execute();
   }
 
   updateControls(): void {

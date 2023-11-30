@@ -92,6 +92,7 @@ export class HeapProfilerPanel extends ProfilesPanel implements UI.ContextMenu.P
 
   override willHide(): void {
     UI.Context.Context.instance().setFlavor(HeapProfilerPanel, null);
+    super.willHide();
   }
 
   override showObject(snapshotObjectId: string, perspectiveName: string): void {

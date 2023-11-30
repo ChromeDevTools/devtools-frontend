@@ -6,23 +6,19 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import type * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
-import type * as Protocol from '../../generated/protocol.js';
-import type * as CPUProfile from '../../models/cpu_profile/cpu_profile.js';
-
-import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {BottomUpProfileDataGridTree} from './BottomUpProfileDataGrid.js';
-
 import {CPUProfileFlameChart, type ProfileFlameChartDataProvider} from './CPUProfileFlameChart.js';
-
-import {ProfileDataGridTree, type Formatter, type ProfileDataGridNode} from './ProfileDataGrid.js';
-
-import {Events, ProfileHeader, type DataDisplayDelegate, type ProfileType} from './ProfileHeader.js';
+import {type Formatter, type ProfileDataGridNode, ProfileDataGridTree} from './ProfileDataGrid.js';
+import {type DataDisplayDelegate, ProfileHeader, type ProfileType} from './ProfileHeader.js';
 import {ProfileSidebarTreeElement} from './ProfileSidebarTreeElement.js';
 import {TopDownProfileDataGridTree} from './TopDownProfileDataGrid.js';
 
@@ -552,10 +548,15 @@ export class WritableProfileHeader extends ProfileHeader implements Common.Strin
   jsonifiedProfile?: string|null;
   profile?: Protocol.Profiler.Profile;
   protocolProfileInternal?: Protocol.Profiler.Profile;
+  #profileReceivedPromise: Promise<void>;
+  #profileReceivedFulfill = (): void => {};
 
   constructor(debuggerModel: SDK.DebuggerModel.DebuggerModel|null, type: ProfileType, title?: string) {
     super(type, title || i18nString(UIStrings.profileD, {PH1: type.nextProfileUid()}));
     this.debuggerModel = debuggerModel;
+    this.#profileReceivedPromise = new Promise(resolve => {
+      this.#profileReceivedFulfill = resolve;
+    });
   }
 
   onChunkTransferred(_reader: Bindings.FileUtils.ChunkedReader): void {
@@ -589,10 +590,11 @@ export class WritableProfileHeader extends ProfileHeader implements Common.Strin
   }
 
   override canSaveToFile(): boolean {
-    return !this.fromFile() && Boolean(this.protocolProfileInternal);
+    return !this.fromFile();
   }
 
   override async saveToFile(): Promise<void> {
+    await this.#profileReceivedPromise;
     const fileOutputStream = new Bindings.FileUtils.FileOutputStream();
     if (!this.fileName) {
       const now = Platform.DateUtilities.toISO8601Compact(new Date());
@@ -646,8 +648,6 @@ export class WritableProfileHeader extends ProfileHeader implements Common.Strin
     this.protocolProfileInternal = profile;
     this.tempFile = new Bindings.TempFile.TempFile();
     this.tempFile.write([JSON.stringify(profile)]);
-    if (this.canSaveToFile()) {
-      this.dispatchEventToListeners(Events.ProfileReceived);
-    }
+    this.#profileReceivedFulfill();
   }
 }

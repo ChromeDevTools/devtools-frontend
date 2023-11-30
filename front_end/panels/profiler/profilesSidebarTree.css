@@ -50,21 +50,6 @@ ol.tree-outline {
 }
 /* Generic items styling */
 
-.title-container > .save-link {
-  text-decoration: underline;
-  margin-left: auto;
-  display: none;
-}
-
-.title-container > .save-link:focus-visible {
-  outline-width: unset;
-}
-
-li.selected .title-container > .save-link {
-  display: block;
-  cursor: pointer;
-}
-
 li .icon {
   width: 20px;
   height: 20px;
@@ -137,6 +122,17 @@ li .subtitle {
 li.small .subtitle {
   display: none;
 }
+
+li button {
+  border: none;
+  background: none;
+  visibility: hidden;
+}
+
+li.selected button {
+  visibility: visible;
+}
+
 /* Launcher */
 
 .profile-launcher-view-tree-item {

@@ -44,7 +44,18 @@ const UIStrings = {
    *@description Command for showing the 'Live Heap Profile' tool in the bottom drawer
    */
   showLiveHeapProfile: 'Show Live Heap Profile',
-
+  /**
+   *@description Tooltip text that appears when hovering over the largeicon download button
+   */
+  saveProfile: 'Save profile…',
+  /**
+   *@description Tooltip text that appears when hovering over the largeicon load button
+   */
+  loadProfile: 'Load profile…',
+  /**
+   *@description Command for deleting a profile in the Profiler panel
+   */
+  deleteProfile: 'Delete profile',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/profiler-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -152,6 +163,68 @@ UI.ActionRegistration.registerActionExtension({
   ],
 });
 
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'profiler.load-from-file',
+  category: UI.ActionRegistration.ActionCategory.MEMORY,
+  iconClass: UI.ActionRegistration.IconClass.IMPORT,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Profiler => [Profiler.ProfilesPanel.ProfilesPanel]);
+  },
+  async loadActionDelegate() {
+    const Profiler = await loadProfilerModule();
+    return new Profiler.ProfilesPanel.ActionDelegate();
+  },
+  title: i18nLazyString(UIStrings.loadProfile),
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+O',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+O',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'profiler.save-to-file',
+  category: UI.ActionRegistration.ActionCategory.MEMORY,
+  iconClass: UI.ActionRegistration.IconClass.DOWNLOAD,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Profiler => [Profiler.ProfileHeader.ProfileHeader]);
+  },
+  async loadActionDelegate() {
+    const Profiler = await loadProfilerModule();
+    return new Profiler.ProfilesPanel.ActionDelegate();
+  },
+  title: i18nLazyString(UIStrings.saveProfile),
+  bindings: [
+    {
+      platform: UI.ActionRegistration.Platforms.WindowsLinux,
+      shortcut: 'Ctrl+S',
+    },
+    {
+      platform: UI.ActionRegistration.Platforms.Mac,
+      shortcut: 'Meta+S',
+    },
+  ],
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'profiler.delete-profile',
+  category: UI.ActionRegistration.ActionCategory.MEMORY,
+  iconClass: UI.ActionRegistration.IconClass.DOWNLOAD,
+  contextTypes() {
+    return maybeRetrieveContextTypes(Profiler => [Profiler.ProfileHeader.ProfileHeader]);
+  },
+  async loadActionDelegate() {
+    const Profiler = await loadProfilerModule();
+    return new Profiler.ProfilesPanel.ActionDelegate();
+  },
+  title: i18nLazyString(UIStrings.deleteProfile),
+});
+
 UI.ContextMenu.registerProvider({
   contextTypes() {
     return [
@@ -163,4 +236,16 @@ UI.ContextMenu.registerProvider({
     return Profiler.HeapProfilerPanel.HeapProfilerPanel.instance();
   },
   experiment: undefined,
+});
+
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.PROFILER_MENU_DEFAULT,
+  actionId: 'profiler.save-to-file',
+  order: 10,
+});
+
+UI.ContextMenu.registerItem({
+  location: UI.ContextMenu.ItemLocation.PROFILER_MENU_DEFAULT,
+  actionId: 'profiler.delete-profile',
+  order: 11,
 });

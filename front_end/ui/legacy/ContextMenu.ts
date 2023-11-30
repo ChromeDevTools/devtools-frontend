@@ -189,7 +189,10 @@ export class Section {
     if (!label) {
       label = action.title();
     }
-    const result = this.appendItem(label, action.execute.bind(action), {jslogContext: actionId});
+    const result = this.appendItem(label, action.execute.bind(action), {
+      disabled: !action.enabled(),
+      jslogContext: actionId,
+    });
     const shortcut = ShortcutRegistry.instance().shortcutTitleForAction(actionId);
     if (shortcut) {
       result.setShortcut(shortcut);
@@ -696,6 +699,7 @@ export enum ItemLocation {
   MAIN_MENU_FOOTER = 'mainMenu/footer',
   MAIN_MENU_HELP_DEFAULT = 'mainMenuHelp/default',
   NAVIGATOR_MENU_DEFAULT = 'navigatorMenu/default',
+  PROFILER_MENU_DEFAULT = 'profilerMenu/default',
   TIMELINE_MENU_OPEN = 'timelineMenu/open',
 }
 

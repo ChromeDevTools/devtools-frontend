@@ -94,13 +94,11 @@ export class StatusUpdate {
 // eslint-disable-next-line rulesdir/const_enum
 export enum Events {
   UpdateStatus = 'UpdateStatus',
-  ProfileReceived = 'ProfileReceived',
   ProfileTitleChanged = 'ProfileTitleChanged',
 }
 
 export type EventTypes = {
   [Events.UpdateStatus]: StatusUpdate,
-  [Events.ProfileReceived]: void,
   [Events.ProfileTitleChanged]: ProfileHeader,
 };
 

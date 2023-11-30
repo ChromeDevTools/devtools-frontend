@@ -23,6 +23,13 @@ describeWithMockConnection('MainMenuItem', () => {
         shortcutsForAction: () => [],
       } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
       targetFactory();
+
+      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
+          .withArgs(sinon.match(/inspector_main.focus-debuggee|main.toggle-drawer/))
+          .returns(true);
+      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'getAction')
+          .withArgs(sinon.match(/inspector_main.focus-debuggee|main.toggle-drawer/))
+          .returns(sinon.createStubInstance(UI.ActionRegistration.Action));
     });
 
     it('includes focus debuggee item when undocked', async () => {
@@ -32,12 +39,6 @@ describeWithMockConnection('MainMenuItem', () => {
       assertNotNullOrUndefined(item);
 
       const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
-      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction')
-          .withArgs(sinon.match(/inspector_main.focus-debuggee|main.toggle-drawer/))
-          .returns(true);
-      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'getAction')
-          .withArgs(sinon.match(/inspector_main.focus-debuggee|main.toggle-drawer/))
-          .returns({execute: () => {}} as UI.ActionRegistration.Action);
       item.clicked(new MouseEvent('click', {
         bubbles: true,
         cancelable: true,
@@ -55,10 +56,6 @@ describeWithMockConnection('MainMenuItem', () => {
       assertNotNullOrUndefined(item);
 
       const contextMenuShow = sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
-      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'hasAction').withArgs('main.toggle-drawer').returns(true);
-      sinon.stub(UI.ActionRegistry.ActionRegistry.instance(), 'getAction').withArgs('main.toggle-drawer').returns({
-        execute: () => {},
-      } as UI.ActionRegistration.Action);
       item.clicked(new MouseEvent('click', {
         bubbles: true,
         cancelable: true,

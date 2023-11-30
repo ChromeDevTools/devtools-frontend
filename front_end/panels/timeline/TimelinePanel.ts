@@ -1151,7 +1151,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       });
     }
     this.flameChart.setModel(model, traceParsedData, isCpuProfile);
-
     this.#minimapComponent.reset();
     if (model) {
       model.addEventListener(Events.WindowChanged, this.onModelWindowChanged, this);

@@ -690,13 +690,13 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
     switch (columnId) {
       case 'startTime': {
         event = this.profileNode.event;
-        const model = this.treeView.model();
-        if (!model) {
-          throw new Error('Unable to find model for tree view');
+        const traceParseData = this.treeView.traceParseData();
+        if (!traceParseData) {
+          throw new Error('Unable to load trace data for tree view');
         }
         const timings = event && TraceEngine.Legacy.timesForEventInMilliseconds(event);
         const startTime = timings?.startTime ?? 0;
-        value = startTime - model.timelineModel().minimumRecordTime();
+        value = startTime - TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParseData.Meta.traceBounds.min);
       } break;
       case 'self':
         value = this.profileNode.selfTime;

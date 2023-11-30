@@ -238,27 +238,15 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.legacyPerformanceModel = performanceModel;
     this.legacyTimelineModel = performanceModel && performanceModel.timelineModel();
     this.traceEngineData = newTraceEngineData;
-    this.isCpuProfile = isCpuProfile;
-    if (this.legacyTimelineModel) {
-      this.minimumBoundaryInternal = this.legacyTimelineModel.minimumRecordTime();
-      this.timeSpan = this.legacyTimelineModel.isEmpty() ?
-          1000 :
-          this.legacyTimelineModel.maximumRecordTime() - this.minimumBoundaryInternal;
-    } else if (this.traceEngineData) {
-      this.setTimingBoundsData(this.traceEngineData);
-    }
-  }
 
-  /**
-   * Sets the minimum time and total time span of a trace using the
-   * new engine data.
-   */
-  setTimingBoundsData(newTraceEngineData: TraceEngine.Handlers.Types.TraceParseData): void {
-    const {traceBounds} = newTraceEngineData.Meta;
-    const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceBounds.min);
-    const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceBounds.max);
-    this.minimumBoundaryInternal = minTime;
-    this.timeSpan = minTime === maxTime ? 1000 : maxTime - this.minimumBoundaryInternal;
+    this.isCpuProfile = isCpuProfile;
+    if (newTraceEngineData) {
+      const {traceBounds} = newTraceEngineData.Meta;
+      const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceBounds.min);
+      const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceBounds.max);
+      this.minimumBoundaryInternal = minTime;
+      this.timeSpan = minTime === maxTime ? 1000 : maxTime - this.minimumBoundaryInternal;
+    }
   }
 
   /**

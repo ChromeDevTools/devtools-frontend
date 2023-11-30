@@ -584,7 +584,7 @@ export class TimelineModelImpl {
           if (parent) {
             parent.selfTime -= event.duration;
             if (parent.selfTime < 0) {
-              this.fixNegativeDuration(parent, event);
+              parent.selfTime = 0;
             }
           }
         }
@@ -600,16 +600,6 @@ export class TimelineModelImpl {
     }
 
     this.processAsyncEvents(thread);
-  }
-
-  private fixNegativeDuration(event: TraceEngine.Legacy.Event, child: TraceEngine.Legacy.Event): void {
-    const epsilon = 1e-3;
-    if (event.selfTime < -epsilon) {
-      console.error(
-          `Children are longer than parent at ${event.startTime} ` +
-          `(${(child.startTime - this.minimumRecordTime()).toFixed(3)} by ${(-event.selfTime).toFixed(3)}`);
-    }
-    event.selfTime = 0;
   }
 
   private processAsyncEvents(thread: TraceEngine.Legacy.Thread): void {
@@ -1059,10 +1049,6 @@ export class TimelineModelImpl {
 
   tracks(): Track[] {
     return this.tracksInternal;
-  }
-
-  isEmpty(): boolean {
-    return this.minimumRecordTime() === 0 && this.maximumRecordTime() === 0;
   }
 
   rootFrames(): PageFrame[] {

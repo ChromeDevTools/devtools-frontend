@@ -97,19 +97,19 @@ This works with Chromium 79 or later.
 To run on **Mac**:
 
 ```bash
-<path-to-devtools-frontend>./third_party/chrome/chrome-mac/Google\ Chrome\ for\ Testing.app/Contents/Mac OS/Google\ Chrome\ for\ Testing --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end) --use-mock-keychain
+<path-to-devtools-frontend>./third_party/chrome/chrome-mac/Google\ Chrome\ for\ Testing.app/Contents/Mac OS/Google\ Chrome\ for\ Testing --disable-infobars --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end) --use-mock-keychain
 ```
 
 To run on **Linux**:
 
 ```bash
-<path-to-devtools-frontend>./third_party/chrome/chrome-linux/chrome --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
+<path-to-devtools-frontend>./third_party/chrome/chrome-linux/chrome --disable-infobars --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
 ```
 
 To run on **Windows**:
 
 ```bash
-<path-to-devtools-frontend>./third_party/chrome/chrome-win/chrome.exe --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
+<path-to-devtools-frontend>./third_party/chrome/chrome-win/chrome.exe --disable-infobars --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
 ```
 
 Note that `$(realpath out/Default/gen/front_end)` expands to the absolute path to build artifacts for DevTools frontend.
@@ -129,7 +129,7 @@ Serve the content of `out/Default/gen/front_end` on a web server, e.g. via `pyth
 Then point to that web server when starting Chromium, for example:
 
 ```bash
-<path-to-devtools-frontend>/third_party/chromium/chrome-<platform>/chrome --custom-devtools-frontend=http://localhost:8000/
+<path-to-devtools-frontend>/third_party/chrome/chrome-<platform>/chrome --disable-infobars --custom-devtools-frontend=http://localhost:8000/
 ```
 
 Open DevTools via F12 or Ctrl+Shift+J on Windows/Linux or Cmd+Option+I on Mac.
@@ -138,10 +138,10 @@ Open DevTools via F12 or Ctrl+Shift+J on Windows/Linux or Cmd+Option+I on Mac.
 
 Serve the content of `out/Default/gen/front_end` on a web server, e.g. via `python3 -m http.server 8000`.
 
-Then start Chromium, allowing for accesses from the web server:
+Then start Chrome, allowing for accesses from the web server:
 
 ```bash
-<path-to-devtools-frontend>/third_party/chrome/chrome-<platform>/chrome --remote-debugging-port=9222 --remote-allow-origins=http://localhost:8000 about:blank
+<path-to-devtools-frontend>/third_party/chrome/chrome-<platform>/chrome --disable-infobars --remote-debugging-port=9222 --remote-allow-origins=http://localhost:8000 about:blank
 ```
 
 Get the list of pages together with their DevTools frontend URLs:

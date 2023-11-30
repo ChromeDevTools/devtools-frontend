@@ -2,12 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
+  /**
+   *@description Icon title in Network Panel Indicator of the Network panel
+   */
+  browserCacheDisabled: 'Browser cache is disabled',
   /**
    *@description Icon title in Network Panel Indicator of the Network panel
    */
@@ -41,6 +46,8 @@ export class NetworkPanelIndicator {
     manager.addEventListener(SDK.NetworkManager.MultitargetNetworkManager.Events.InterceptorsChanged, updateVisibility);
     manager.addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.AcceptedEncodingsChanged, updateVisibility);
+    Common.Settings.Settings.instance().moduleSetting('cacheDisabled').addChangeListener(updateVisibility, this);
+
     updateVisibility();
 
     function updateVisibility(): void {
@@ -48,6 +55,8 @@ export class NetworkPanelIndicator {
       icon.data = {iconName: 'warning-filled', color: 'var(--icon-warning)', width: '14px', height: '14px'};
       if (manager.isThrottling()) {
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.networkThrottlingIsEnabled));
+      } else if (Common.Settings.Settings.instance().moduleSetting('cacheDisabled').get()) {
+        UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.browserCacheDisabled));
       } else if (SDK.NetworkManager.MultitargetNetworkManager.instance().isIntercepting()) {
         UI.Tooltip.Tooltip.install(icon, i18nString(UIStrings.requestsMayBeOverridden));
       } else if (manager.isBlocking()) {

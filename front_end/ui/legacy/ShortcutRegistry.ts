@@ -290,8 +290,7 @@ export class ShortcutRegistry {
       }
     }
     for (const otherShortcut of this.actionToShortcut.get(shortcut.action)) {
-      if (otherShortcut.descriptorsMatch(shortcut.descriptors) &&
-          otherShortcut.hasKeybindSet(this.keybindSetSetting.get())) {
+      if (otherShortcut.descriptorsMatch(shortcut.descriptors)) {
         // don't allow duplicate shortcuts
         return;
       }

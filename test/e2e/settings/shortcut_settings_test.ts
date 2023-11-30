@@ -112,6 +112,40 @@ describe('Shortcuts Settings tab', async () => {
     assert.deepStrictEqual(shortcuts, CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT);
   });
 
+  it('should allow users to open shortcut editor and change and reset shortcuts', async () => {
+    const {frontend} = getBrowserAndPages();
+
+    await openSettingsTab('Shortcuts');
+    const defaultShortcuts = await shortcutsForAction('Start recording events');
+
+    await editShortcutListItem('Start recording events');
+
+    await frontend.keyboard.down('Control');
+    await frontend.keyboard.press('1');
+    await frontend.keyboard.up('Control');
+
+    await clickAddShortcutLink();
+    await waitForEmptyShortcutInput();
+    await frontend.keyboard.down('Control');
+    await frontend.keyboard.press('2');
+    await frontend.keyboard.up('Control');
+
+    await clickShortcutConfirmButton();
+    await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
+
+    const modifiedShortcuts = await shortcutsForAction('Start recording events');
+    assert.deepStrictEqual(modifiedShortcuts, CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT);
+
+    await editShortcutListItem('Start recording events');
+    await clickShortcutResetButton();
+
+    await clickShortcutConfirmButton();
+    await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
+
+    const shortcuts = await shortcutsForAction('Start recording events');
+    assert.deepStrictEqual(shortcuts, defaultShortcuts, 'Default shortcuts weren\'t restored correctly');
+  });
+
   it('should allow users to open the shortcut editor and delete and reset shortcuts', async () => {
     const {frontend} = getBrowserAndPages();
 

@@ -8968,6 +8968,20 @@ experimental domain Tracing
       chrome
       system
 
+  # COHERENT_BEGIN
+  type TraceCategoryDefinition extends object
+    properties
+      string name
+      string categoryString
+    
+  command getTraceSystemsAndLevels
+    returns
+      array of TraceCategoryDefinition systems
+      array of TraceCategoryDefinition levels
+
+  # COHERENT_END
+
+
   # Stop trace events collection.
   command end
 

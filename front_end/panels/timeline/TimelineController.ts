@@ -113,6 +113,20 @@ export class TimelineController implements SDK.TargetManager.SDKModelObserver<SD
     if (options.captureFilmStrip) {
       categoriesArray.push(disabledByDefault('devtools.screenshot'));
     }
+    
+    // COHERENT_BEGIN
+    if (options.traceFilteringEnabled) {
+      categoriesArray.push('trace-filtering.on');
+
+      if (options.traceLevel) {
+        categoriesArray.push(options.traceLevel);      
+      }
+  
+      if (options.traceSystem) {
+        categoriesArray.push(options.traceSystem);
+      }
+    }
+    // COHERENT_END
 
     this._extensionSessions = providers.map(provider => new ExtensionTracingSession(provider, this._performanceModel));
     this._extensionSessions.forEach(session => session.start());
@@ -378,4 +392,9 @@ export interface RecordingOptions {
   capturePictures?: boolean;
   captureFilmStrip?: boolean;
   startCoverage?: boolean;
+  // COHERENT_BEGIN
+  traceFilteringEnabled: boolean,
+  traceLevel?: string;
+  traceSystem?: string;
+  // COHERENT_END
 }

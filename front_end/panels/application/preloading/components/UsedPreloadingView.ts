@@ -403,7 +403,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
             ${badges}
           </div>
 
-          <div>
+          <div class="reveal-links">
             <button class="link devtools-link" @click=${revealRuleSetView}>
               ${i18nString(UIStrings.viewAllRules)}
             </button>

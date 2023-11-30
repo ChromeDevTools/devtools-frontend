@@ -10,6 +10,7 @@ devtools_module("extras") {
   sources = [
     "FetchNodes.ts",
     "FilmStrip.ts",
+    "MainThreadActivity.ts",
     "Metadata.ts",
   ]
 

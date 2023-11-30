@@ -9,6 +9,7 @@ ts_library("extras") {
   sources = [
     "FetchNodes_test.ts",
     "FilmStrip_test.ts",
+    "MainThreadActivity_test.ts",
     "Metadata_test.ts",
   ]
 

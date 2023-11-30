@@ -1158,9 +1158,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           TraceEngine.Types.Timing.MilliSeconds(model.timelineModel().minimumRecordTime()),
           TraceEngine.Types.Timing.MilliSeconds(model.timelineModel().maximumRecordTime()));
       PerfUI.LineLevelProfile.Performance.instance().reset();
-      for (const profile of model.timelineModel().cpuProfiles()) {
-        PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(profile.cpuProfileData, profile.target);
-      }
       this.flameChart.setSelection(null);
       const {left, right} = model.calculateWindowForMainThreadActivity();
       model.setWindow({left, right});
@@ -1169,6 +1166,20 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
             TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(left, right),
         );
+      }
+    }
+    // Set up line level profiling with CPU profiles, if we found any.
+    PerfUI.LineLevelProfile.Performance.instance().reset();
+    if (traceParsedData && traceParsedData.Samples.profilesInProcess.size) {
+      const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
+      // Gather up all CPU Profiles we found when parsing this trace.
+      const cpuProfiles =
+          Array.from(traceParsedData.Samples.profilesInProcess).flatMap(([_processId, threadsInProcess]) => {
+            const profiles = Array.from(threadsInProcess.values()).map(profileData => profileData.parsedProfile);
+            return profiles;
+          });
+      for (const profile of cpuProfiles) {
+        PerfUI.LineLevelProfile.Performance.instance().appendCPUProfile(profile, rootTarget);
       }
     }
 

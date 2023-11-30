@@ -36,7 +36,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import type * as CPUProfile from '../cpu_profile/cpu_profile.js';
 import * as TraceEngine from '../trace/trace.js';
 
 const UIStrings = {
@@ -72,8 +71,6 @@ export class TimelineModelImpl {
   private sessionId!: string|null;
   private mainFrameNodeId!: number|null;
   private pageFrames!: Map<Protocol.Page.FrameId, PageFrame>;
-  private cpuProfilesInternal!:
-      {cpuProfileData: CPUProfile.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null}[];
   private workerIdByThread!: WeakMap<TraceEngine.Legacy.Thread, string>;
   private requestsFromBrowser!: Map<string, TraceEngine.Legacy.Event>;
   private mainFrame!: PageFrame;
@@ -243,11 +240,6 @@ export class TimelineModelImpl {
   static eventFrameId(event: TraceEngine.Legacy.Event): Protocol.Page.FrameId|null {
     const data = event.args['data'] || event.args['beginData'];
     return data && data['frame'] || null;
-  }
-
-  cpuProfiles():
-      {cpuProfileData: CPUProfile.CPUProfileDataModel.CPUProfileDataModel, target: SDK.Target.Target|null}[] {
-    return this.cpuProfilesInternal;
   }
 
   targetByEvent(event: TraceEngine.Legacy.CompatibleTraceEvent): SDK.Target.Target|null {
@@ -1018,7 +1010,6 @@ export class TimelineModelImpl {
     this.inspectedTargetEventsInternal = [];
     this.sessionId = null;
     this.mainFrameNodeId = null;
-    this.cpuProfilesInternal = [];
     this.workerIdByThread = new WeakMap();
     this.pageFrames = new Map();
     this.requestsFromBrowser = new Map();

@@ -529,6 +529,7 @@ export class SensorsView extends UI.Widget.VBox {
     if (value === NonPresetOptions.NoOverride) {
       this.deviceOrientationOverrideEnabled = false;
       this.enableOrientationFields(true);
+      this.applyDeviceOrientation();
     } else if (value === NonPresetOptions.Custom) {
       this.deviceOrientationOverrideEnabled = true;
       this.resetDeviceOrientation();

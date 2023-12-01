@@ -16,6 +16,7 @@ export class StubIssue extends Issue {
   private issueKind: IssueKind;
   private locations: Protocol.Audits.SourceCodeLocation[] = [];
   private mockIssueId?: Protocol.Audits.IssueId;
+  private mockIssueCategory?: IssueCategory;
 
   constructor(code: string, requestIds: string[], cookieNames: string[], issueKind = IssueKind.Improvement) {
     super(code);
@@ -39,8 +40,8 @@ export class StubIssue extends Issue {
     });
   }
 
-  getCategory() {
-    return IssueCategory.Other;
+  getCategory(): IssueCategory {
+    return this.mockIssueCategory ? this.mockIssueCategory as unknown as IssueCategory : IssueCategory.Other;
   }
 
   override sources() {
@@ -82,6 +83,12 @@ export class StubIssue extends Issue {
   static createFromIssueId(issueId: Protocol.Audits.IssueId) {
     const issue = new StubIssue('StubIssue', [], []);
     issue.mockIssueId = issueId;
+    return issue;
+  }
+
+  static createCookieIssue(code: string) {
+    const issue = new StubIssue(code, [], []);
+    issue.mockIssueCategory = IssueCategory.Cookie;
     return issue;
   }
 }

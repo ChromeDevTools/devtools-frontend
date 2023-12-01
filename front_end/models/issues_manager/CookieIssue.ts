@@ -50,6 +50,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/CookieIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
+// The enum string values need to match the IssueExpanded enum values in UserMetrics.ts.
+export const enum CookieIssueSubCategory {
+  GenericCookie = 'GenericCookie',
+  SameSiteCookie = 'SameSiteCookie',
+  ThirdPartyPhaseoutCookie = 'ThirdPartyPhaseoutCookie',
+}
+
 export class CookieIssue extends Issue {
   #issueDetails: Protocol.Audits.CookieIssueDetails;
 
@@ -114,6 +121,8 @@ export class CookieIssue extends Issue {
    * can uniquely identify a specific cookie issue.
    * warningReasons is only needed for some CookieExclusionReason in order to determine if an issue should be raised.
    * It is not required if reason is a CookieWarningReason.
+   *
+   * The issue code will be mapped to a CookieIssueSubCategory enum for metric purpose.
    */
   static codeForCookieIssueDetails(
       reason: Protocol.Audits.CookieExclusionReason|Protocol.Audits.CookieWarningReason,
@@ -233,6 +242,16 @@ export class CookieIssue extends Issue {
     }
 
     return CookieIssue.createIssuesFromCookieIssueDetails(cookieIssueDetails, issuesModel);
+  }
+
+  static getSubCategory(code: string): CookieIssueSubCategory {
+    if (code.includes('SameSite') || code.includes('Downgrade')) {
+      return CookieIssueSubCategory.SameSiteCookie;
+    }
+    if (code.includes('ThirdPartyPhaseout')) {
+      return CookieIssueSubCategory.ThirdPartyPhaseoutCookie;
+    }
+    return CookieIssueSubCategory.GenericCookie;
   }
 }
 

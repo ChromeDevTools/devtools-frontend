@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Root from '../../../../../front_end/core/root/root.js';
 import * as SDK from '../../../../../front_end/core/sdk/sdk.js';
 import * as Protocol from '../../../../../front_end/generated/protocol.js';
 import type * as ElementsModule from '../../../../../front_end/panels/elements/elements.js';
@@ -197,6 +198,99 @@ describeWithEnvironment('StylesSidebarPropertyRenderer', () => {
     const node = renderer.renderValue();
 
     assert.deepEqual(node.textContent, nodeContents);
+  });
+
+  it('parses colors correctly', () => {
+    const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
+        null, null, 'border', 'rgb(.5 .5 .5 .5) 1px solid');
+    renderer.setColorHandler(() => document.createTextNode('MATCH'));
+
+    const node = renderer.renderValue();
+
+    // The MATCH on `solid` is bogus but expected with the color matcher.
+    assert.deepEqual(node.textContent, 'MATCH 1px MATCH');
+  });
+
+  it('parses colors with comments correctly', () => {
+    const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
+        null, null, 'background-color', 'rgb(/* R */155, /* G */51, /* B */255)');
+    renderer.setColorHandler(() => document.createTextNode('MATCH'));
+
+    const node = renderer.renderValue();
+
+    assert.deepEqual(node.textContent, 'MATCH');
+  });
+
+  it('parses lengths correctly', () => {
+    Root.Runtime.experiments.enableForTest('cssTypeComponentLength');
+    const renderer =
+        new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(null, null, 'width', 'calc(6em + 7em)');
+    renderer.setLengthHandler(() => document.createTextNode('MATCH'));
+
+    const node = renderer.renderValue();
+
+    assert.deepEqual(node.textContent, 'calc(MATCH + MATCH)');
+  });
+
+  it('parses vars correctly', () => {
+    const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
+        null, null, 'width', 'calc(var(--a, var(--b)) + var(--b))');
+    renderer.setVarHandler(() => document.createTextNode('MATCH'));
+
+    const node = renderer.renderValue();
+
+    // Regex fails to match the closing parenthesis correctly for fallbacks.
+    assert.deepEqual(node.textContent, 'calc(MATCH) + MATCH)');
+  });
+
+  it('parses font-family correctly', () => {
+    const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
+        null, null, 'font-family', '"Gill Sans", sans-serif');
+    renderer.setFontHandler(() => document.createTextNode('MATCH'));
+    const node = renderer.renderValue();
+    assert.deepEqual(node.textContent, 'MATCH');
+  });
+
+  it('parses font-* correctly', () => {
+    for (const fontSize of ['-.23', 'smaller', '17px']) {
+      const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(null, null, 'font-size', fontSize);
+      renderer.setFontHandler(() => document.createTextNode('MATCH'));
+      const node = renderer.renderValue();
+      assert.deepEqual(node.textContent, 'MATCH');
+    }
+    const renderer =
+        new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(null, null, 'font-size', 'calc(17px + 17px)');
+    renderer.setFontHandler(() => document.createTextNode('MATCH'));
+    const node = renderer.renderValue();
+
+    // The bogus match on `calc` is expected.
+    assert.deepEqual(node.textContent, 'MATCH(MATCH + MATCH)');
+  });
+
+  it('parses font-family correctly', () => {
+    const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
+        null, null, 'font-family', '"Gill Sans", sans-serif');
+    renderer.setFontHandler(() => document.createTextNode('MATCH'));
+    const node = renderer.renderValue();
+    assert.deepEqual(node.textContent, 'MATCH');
+  });
+
+  it('parses angles correctly', () => {
+    const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
+        null, null, 'transform', 'rotate(calc(45deg + 3.141rad))');
+    renderer.setAngleHandler(() => document.createTextNode('MATCH'));
+    const node = renderer.renderValue();
+    assert.deepEqual(node.textContent, 'rotate(calc(MATCH + MATCH))');
+  });
+
+  it('parses cubic bezier correctly', () => {
+    for (const bezier of ['linear', 'ease', 'cubic-bezier(.25 .25 0 0)']) {
+      const renderer = new Elements.StylesSidebarPane.StylesSidebarPropertyRenderer(
+          null, null, 'transition', `display 1s ${bezier} 1s`);
+      renderer.setBezierHandler(() => document.createTextNode('MATCH'));
+      const node = renderer.renderValue();
+      assert.deepEqual(node.textContent, 'display 1s MATCH 1s');
+    }
   });
 });
 

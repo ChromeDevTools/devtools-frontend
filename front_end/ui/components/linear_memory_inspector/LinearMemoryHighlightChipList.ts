@@ -4,11 +4,12 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
+import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
-import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
 import * as IconButton from '../icon_button/icon_button.js';
 
 import linearMemoryHighlightChipListStyles from './linearMemoryHighlightChipList.css.js';
+import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
 
 const UIStrings = {
   /**
@@ -98,16 +99,17 @@ export class LinearMemoryHighlightChipList extends HTMLElement {
     // clang-format off
     return html`
       <div class=${LitHtml.Directives.classMap(classMap)}>
-        <button class="jump-to-highlight-button" title=${
-            i18nString(UIStrings.jumpToAddress)}
+        <button class="jump-to-highlight-button" title=${i18nString(UIStrings.jumpToAddress)}
+            jslog=${VisualLogging.action().track({click:true}).context('linear-memory-inspector.jump-to-highlight')}
             @click=${():void => this.#onJumpToHighlightClick(highlightInfo.startAddress)}>
           <span class="source-code">
             <span class="value">${expressionName}</span><span class="separator">: </span><span>${expressionType}</span>
           </span>
         </button>
         <div class="delete-highlight-container">
-          <button class="delete-highlight-button" title=${
-              i18nString(UIStrings.deleteHighlight)} @click=${():void => this.#onDeleteHighlightClick(highlightInfo)}>
+          <button class="delete-highlight-button" title=${i18nString(UIStrings.deleteHighlight)}
+              jslog=${VisualLogging.action().track({click:true}).context('linear-memory-inspector.delete-highlight')}
+              @click=${():void => this.#onDeleteHighlightClick(highlightInfo)}>
             <${IconButton.Icon.Icon.litTagName} .data=${{
               iconName: 'cross',
               color: 'var(--icon-default-hover)',

@@ -4,8 +4,10 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
+import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import * as IconButton from '../icon_button/icon_button.js';
+
 import linearMemoryNavigatorStyles from './linearMemoryNavigator.css.js';
 
 const UIStrings = {
@@ -134,19 +136,24 @@ export class LinearMemoryNavigator extends HTMLElement {
       <div class="navigator">
         <div class="navigator-item">
           ${this.#createButton({icon: 'undo', title: i18nString(UIStrings.goBackInAddressHistory),
-              event: new HistoryNavigationEvent(Navigation.Backward), enabled: this.#canGoBackInHistory})}
+              event: new HistoryNavigationEvent(Navigation.Backward), enabled: this.#canGoBackInHistory,
+              jslogContext:'linear-memory-inspector.history-back'})}
           ${this.#createButton({icon: 'redo', title: i18nString(UIStrings.goForwardInAddressHistory),
-              event: new HistoryNavigationEvent(Navigation.Forward), enabled: this.#canGoForwardInHistory})}
+              event: new HistoryNavigationEvent(Navigation.Forward), enabled: this.#canGoForwardInHistory,
+              jslogContext:'linear-memory-inspector.history-forward'})}
         </div>
         <div class="navigator-item">
           ${this.#createButton({icon: 'chevron-left', title: i18nString(UIStrings.previousPage),
-              event: new PageNavigationEvent(Navigation.Backward), enabled: true})}
+              event: new PageNavigationEvent(Navigation.Backward), enabled: true,
+              jslogContext:'linear-memory-inspector.previous-page'})}
           ${this.#createAddressInput()}
           ${this.#createButton({icon: 'chevron-right', title: i18nString(UIStrings.nextPage),
-              event: new PageNavigationEvent(Navigation.Forward), enabled: true})}
+              event: new PageNavigationEvent(Navigation.Forward), enabled: true,
+              jslogContext:'linear-memory-inspector.next-page'})}
         </div>
         ${this.#createButton({icon: 'refresh', title: i18nString(UIStrings.refresh),
-            event: new RefreshRequestedEvent(), enabled: true})}
+            event: new RefreshRequestedEvent(), enabled: true,
+            jslogContext:'linear-memory-inspector.refresh'})}
       </div>
       `;
       render(result, this.#shadow, {host: this});
@@ -160,6 +167,7 @@ export class LinearMemoryNavigator extends HTMLElement {
     };
     return html`
       <input class=${LitHtml.Directives.classMap(classMap)} data-input="true" .value=${this.#address}
+        jslog=${VisualLogging.textField().track({keydown: true}).context('linear-memory-inspector.address')}
         title=${this.#valid ? i18nString(UIStrings.enterAddress) : this.#error} @change=${
         this.#onAddressChange.bind(this, Mode.Submitted)} @input=${this.#onAddressChange.bind(this, Mode.Edit)}/>`;
   }
@@ -169,9 +177,11 @@ export class LinearMemoryNavigator extends HTMLElement {
     this.dispatchEvent(new AddressInputChangedEvent(addressInput.value, mode));
   }
 
-  #createButton(data: {icon: string, title: string, event: Event, enabled: boolean}): LitHtml.TemplateResult {
+  #createButton(data: {icon: string, title: string, event: Event, enabled: boolean, jslogContext: string}):
+      LitHtml.TemplateResult {
     return html`
       <button class="navigator-button" ?disabled=${!data.enabled}
+        jslog=${VisualLogging.action().track({click: true, keydown: 'Enter'}).context(data.jslogContext)}
         data-button=${data.event.type} title=${data.title}
         @click=${this.dispatchEvent.bind(this, data.event)}>
         <${IconButton.Icon.Icon.litTagName} .data=${

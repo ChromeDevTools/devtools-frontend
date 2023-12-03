@@ -2,21 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
+import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import * as ComponentHelpers from '../helpers/helpers.js';
 import * as IconButton from '../icon_button/icon_button.js';
-import linearMemoryValueInterpreterStyles from './linearMemoryValueInterpreter.css.js';
 
-import {ValueInterpreterDisplay, type ValueDisplayData} from './ValueInterpreterDisplay.js';
+import linearMemoryValueInterpreterStyles from './linearMemoryValueInterpreter.css.js';
+import {type ValueDisplayData, ValueInterpreterDisplay} from './ValueInterpreterDisplay.js';
+import {Endianness, type ValueType, type ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
 import {
-  ValueInterpreterSettings,
   type TypeToggleEvent,
+  ValueInterpreterSettings,
   type ValueInterpreterSettingsData,
 } from './ValueInterpreterSettings.js';
-
-import {Endianness, type ValueType, type ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
-
-import * as i18n from '../../../core/i18n/i18n.js';
 
 const UIStrings = {
   /**
@@ -94,7 +93,9 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
       <div class="value-interpreter">
         <div class="settings-toolbar">
           ${this.#renderEndiannessSetting()}
-          <button data-settings="true" class="settings-toolbar-button ${this.#showSettings ? 'active' : ''}" title=${i18nString(UIStrings.toggleValueTypeSettings)} @click=${this.#onSettingsToggle}>
+          <button data-settings="true" class="settings-toolbar-button ${this.#showSettings ? 'active' : ''}"
+              title=${i18nString(UIStrings.toggleValueTypeSettings)} @click=${this.#onSettingsToggle}
+              jslog=${VisualLogging.action().track({click: true}).context('linear-memory-inspector.toggle-value-settings')}>
             <${IconButton.Icon.Icon.litTagName}
               .data=${{ iconName: 'gear', color: 'var(--icon-default)', width: '20px' } as IconButton.Icon.IconWithName}>
             </${IconButton.Icon.Icon.litTagName}>
@@ -140,6 +141,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
     return html`
     <label data-endianness-setting="true" title=${i18nString(UIStrings.changeEndianness)}>
       <select class="chrome-select"
+        jslog=${VisualLogging.toggle().track({change: true}).context('linear-memory-inspector.endianess')}
         style="border: none; background-color: transparent; cursor: pointer;"
         data-endianness="true" @change=${onEnumSettingChange}>
         ${[Endianness.Little, Endianness.Big].map(endianness => {

@@ -5,18 +5,18 @@
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as UI from '../../legacy/legacy.js';
+import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
+import {DeleteMemoryHighlightEvent} from './LinearMemoryHighlightChipList.js';
 import {
   AddressChangedEvent,
   LinearMemoryInspector,
   MemoryRequestEvent,
-  SettingsChangedEvent,
   type Settings,
+  SettingsChangedEvent,
 } from './LinearMemoryInspector.js';
-
-import {LinearMemoryInspectorController, type LazyUint8Array} from './LinearMemoryInspectorController.js';
+import {type LazyUint8Array, LinearMemoryInspectorController} from './LinearMemoryInspectorController.js';
 import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
-import {DeleteMemoryHighlightEvent} from './LinearMemoryHighlightChipList.js';
 
 const UIStrings = {
   /**
@@ -36,6 +36,7 @@ export class Wrapper extends UI.Widget.VBox {
   view: LinearMemoryInspectorPaneImpl;
   private constructor() {
     super();
+    this.element.setAttribute('jslog', `${VisualLogging.panel().context('linear-memory-inspector')}`);
     this.view = LinearMemoryInspectorPaneImpl.instance();
   }
 

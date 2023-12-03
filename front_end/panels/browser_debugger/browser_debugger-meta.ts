@@ -227,7 +227,7 @@ UI.ContextMenu.registerProvider({
   },
   async loadProvider() {
     const BrowserDebugger = await loadBrowserDebuggerModule();
-    return BrowserDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider.instance();
+    return new BrowserDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider();
   },
   experiment: undefined,
 });

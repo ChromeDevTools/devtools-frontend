@@ -159,7 +159,10 @@ const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkPanel.ts', UIStr
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let networkPanelInstance: NetworkPanel;
 
-export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provider, UI.View.ViewLocationResolver {
+export class NetworkPanel extends UI.Panel.Panel implements
+    UI.ContextMenu
+        .Provider<SDK.NetworkRequest.NetworkRequest|SDK.Resource.Resource|Workspace.UISourceCode.UISourceCode>,
+    UI.View.ViewLocationResolver {
   private readonly networkLogShowOverviewSetting: Common.Settings.Setting<boolean>;
   private readonly networkLogLargeRowsSetting: Common.Settings.Setting<boolean>;
   private readonly networkRecordFilmStripSetting: Common.Settings.Setting<boolean>;
@@ -708,47 +711,41 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  appendApplicableItems(this: NetworkPanel, event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object):
-      void {
-    function reveal(this: NetworkPanel, request: SDK.NetworkRequest.NetworkRequest): void {
-      void UI.ViewManager.ViewManager.instance()
-          .showView('network')
-          .then(this.networkLogView.resetFilter.bind(this.networkLogView))
-          .then(this.revealAndHighlightRequest.bind(this, request));
-    }
+  appendApplicableItems(
+      this: NetworkPanel, event: Event, contextMenu: UI.ContextMenu.ContextMenu,
+      target: SDK.NetworkRequest.NetworkRequest|SDK.Resource.Resource|Workspace.UISourceCode.UISourceCode): void {
+    const appendRevealItem = (request: SDK.NetworkRequest.NetworkRequest): void => {
+      contextMenu.revealSection().appendItem(
+          i18nString(UIStrings.revealInNetworkPanel),
+          () => UI.ViewManager.ViewManager.instance()
+                    .showView('network')
+                    .then(this.networkLogView.resetFilter.bind(this.networkLogView))
+                    .then(this.revealAndHighlightRequest.bind(this, request)));
+    };
 
-    function appendRevealItem(this: NetworkPanel, request: SDK.NetworkRequest.NetworkRequest): void {
-      contextMenu.revealSection().appendItem(i18nString(UIStrings.revealInNetworkPanel), reveal.bind(this, request));
-    }
     if ((event.target as Node).isSelfOrDescendant(this.element)) {
       return;
     }
 
     if (target instanceof SDK.Resource.Resource) {
-      const resource = (target as SDK.Resource.Resource);
-      if (resource.request) {
-        appendRevealItem.call(this, resource.request);
+      if (target.request) {
+        appendRevealItem(target.request);
       }
       return;
     }
     if (target instanceof Workspace.UISourceCode.UISourceCode) {
-      const uiSourceCode = (target as Workspace.UISourceCode.UISourceCode);
-      const resource = Bindings.ResourceUtils.resourceForURL(uiSourceCode.url());
+      const resource = Bindings.ResourceUtils.resourceForURL(target.url());
       if (resource && resource.request) {
-        appendRevealItem.call(this, resource.request);
+        appendRevealItem(resource.request);
       }
       return;
     }
 
-    if (!(target instanceof SDK.NetworkRequest.NetworkRequest)) {
-      return;
-    }
-    const request = (target as SDK.NetworkRequest.NetworkRequest);
-    if (this.networkItemView && this.networkItemView.isShowing() && this.networkItemView.request() === request) {
+    if (this.networkItemView && this.networkItemView.isShowing() && this.networkItemView.request() === target) {
       return;
     }
 
-    appendRevealItem.call(this, request);
+    appendRevealItem(target);
   }
 
   private onFilmFrameSelected(event: Common.EventTarget.EventTargetEvent<number>): void {
@@ -786,23 +783,6 @@ export class NetworkPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
   }
 }
 
-let contextMenuProviderInstance: ContextMenuProvider;
-
-export class ContextMenuProvider implements UI.ContextMenu.Provider {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ContextMenuProvider {
-    const {forceNew} = opts;
-    if (!contextMenuProviderInstance || forceNew) {
-      contextMenuProviderInstance = new ContextMenuProvider();
-    }
-
-    return contextMenuProviderInstance;
-  }
-  appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
-    NetworkPanel.instance().appendApplicableItems(event, contextMenu, target);
-  }
-}
 export class RequestRevealer implements Common.Revealer.Revealer<SDK.NetworkRequest.NetworkRequest> {
   reveal(request: SDK.NetworkRequest.NetworkRequest): Promise<void> {
     const panel = NetworkPanel.instance();

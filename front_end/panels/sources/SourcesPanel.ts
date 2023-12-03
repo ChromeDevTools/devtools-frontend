@@ -178,8 +178,10 @@ const primitiveRemoteObjectTypes = new Set(['number', 'boolean', 'bigint', 'unde
 let sourcesPanelInstance: SourcesPanel;
 let wrapperViewInstance: WrapperView;
 
-export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provider, SDK.TargetManager.Observer,
-                                                            UI.View.ViewLocationResolver {
+export class SourcesPanel extends UI.Panel.Panel implements
+    UI.ContextMenu.Provider<Workspace.UISourceCode.UISourceCode|Workspace.UISourceCode.UILocation|
+                            SDK.RemoteObject.RemoteObject|SDK.NetworkRequest.NetworkRequest|UISourceCodeFrame>,
+    SDK.TargetManager.Observer, UI.View.ViewLocationResolver {
   private readonly workspace: Workspace.Workspace.WorkspaceImpl;
   private readonly togglePauseAction: UI.ActionRegistration.Action;
   private readonly stepOverAction: UI.ActionRegistration.Action;
@@ -859,20 +861,35 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     return debugToolbarDrawer;
   }
 
-  appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
-    this.appendUISourceCodeItems(event, contextMenu, target);
-    this.appendUISourceCodeFrameItems(event, contextMenu, target);
-    this.appendUILocationItems(contextMenu, target);
-    this.appendRemoteObjectItems(contextMenu, target);
+  appendApplicableItems(
+      event: Event, contextMenu: UI.ContextMenu.ContextMenu,
+      target: Workspace.UISourceCode.UISourceCode|Workspace.UISourceCode.UILocation|SDK.RemoteObject.RemoteObject|
+      SDK.NetworkRequest.NetworkRequest|UISourceCodeFrame): void {
+    if (target instanceof Workspace.UISourceCode.UISourceCode) {
+      this.appendUISourceCodeItems(event, contextMenu, target);
+      return;
+    }
+    if (target instanceof UISourceCodeFrame) {
+      this.appendUISourceCodeFrameItems(contextMenu, target);
+      return;
+    }
+    if (target instanceof Workspace.UISourceCode.UILocation) {
+      this.appendUILocationItems(contextMenu, target);
+      return;
+    }
+    if (target instanceof SDK.RemoteObject.RemoteObject) {
+      this.appendRemoteObjectItems(contextMenu, target);
+      return;
+    }
     this.appendNetworkRequestItems(contextMenu, target);
   }
 
-  private appendUISourceCodeItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
-    if (!(target instanceof Workspace.UISourceCode.UISourceCode) || !event.target) {
+  private appendUISourceCodeItems(
+      event: Event, contextMenu: UI.ContextMenu.ContextMenu, uiSourceCode: Workspace.UISourceCode.UISourceCode): void {
+    if (!event.target) {
       return;
     }
 
-    const uiSourceCode = (target as Workspace.UISourceCode.UISourceCode);
     const eventTarget = (event.target as Node);
     if (!uiSourceCode.project().isServiceProject() &&
         !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) &&
@@ -891,21 +908,14 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  private appendUISourceCodeFrameItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
-    if (!(target instanceof UISourceCodeFrame)) {
-      return;
-    }
+  private appendUISourceCodeFrameItems(contextMenu: UI.ContextMenu.ContextMenu, target: UISourceCodeFrame): void {
     if (target.uiSourceCode().contentType().isFromSourceMap() || target.textEditor.state.selection.main.empty) {
       return;
     }
     contextMenu.debugSection().appendAction('debugger.evaluate-selection');
   }
 
-  appendUILocationItems(contextMenu: UI.ContextMenu.ContextMenu, object: Object): void {
-    if (!(object instanceof Workspace.UISourceCode.UILocation)) {
-      return;
-    }
-    const uiLocation = (object as Workspace.UISourceCode.UILocation);
+  appendUILocationItems(contextMenu: UI.ContextMenu.ContextMenu, uiLocation: Workspace.UISourceCode.UILocation): void {
     const uiSourceCode = uiLocation.uiSourceCode;
 
     if (!Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
@@ -932,12 +942,9 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     this.revealInNavigator(uiSourceCode);
   }
 
-  private appendRemoteObjectItems(contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
-    if (!(target instanceof SDK.RemoteObject.RemoteObject)) {
-      return;
-    }
+  private appendRemoteObjectItems(contextMenu: UI.ContextMenu.ContextMenu, remoteObject: SDK.RemoteObject.RemoteObject):
+      void {
     const indent = Common.Settings.Settings.instance().moduleSetting('textEditorIndent').get();
-    const remoteObject = (target as SDK.RemoteObject.RemoteObject);
     const executionContext = UI.Context.Context.instance().flavor(SDK.RuntimeModel.ExecutionContext);
 
     function getObjectTitle(): string|undefined {
@@ -1034,11 +1041,8 @@ export class SourcesPanel extends UI.Panel.Panel implements UI.ContextMenu.Provi
     }
   }
 
-  private appendNetworkRequestItems(contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
-    if (!(target instanceof SDK.NetworkRequest.NetworkRequest)) {
-      return;
-    }
-    const request = (target as SDK.NetworkRequest.NetworkRequest);
+  private appendNetworkRequestItems(
+      contextMenu: UI.ContextMenu.ContextMenu, request: SDK.NetworkRequest.NetworkRequest): void {
     const uiSourceCode = this.workspace.uiSourceCodeForURL(request.url());
     if (!uiSourceCode) {
       return;

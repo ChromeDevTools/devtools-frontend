@@ -1770,7 +1770,7 @@ export class Renderer implements UI.UIUtils.Renderer {
   }
 }
 
-export class ObjectPropertyValue implements UI.ContextMenu.Provider {
+export class ObjectPropertyValue implements UI.ContextMenu.Provider<Object> {
   element: Element;
   constructor(element: Element) {
     this.element = element;

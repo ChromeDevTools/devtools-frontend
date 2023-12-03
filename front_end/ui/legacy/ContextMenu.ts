@@ -371,9 +371,8 @@ export interface ContextMenuOptions {
 
 export class ContextMenu extends SubMenu {
   protected override contextMenu: this;
-  private readonly defaultSectionInternal: Section;
-  private pendingPromises: Promise<Provider[]>[];
-  private pendingTargets: Object[];
+  private pendingPromises: Promise<Provider<unknown>[]>[];
+  private pendingTargets: unknown[];
   private readonly event: MouseEvent;
   private readonly useSoftMenu: boolean;
   private readonly keepOpen: boolean;
@@ -393,7 +392,6 @@ export class ContextMenu extends SubMenu {
     const mouseEvent = (event as MouseEvent);
     this.contextMenu = this;
     super.init();
-    this.defaultSectionInternal = this.defaultSection();
     this.pendingPromises = [];
     this.pendingTargets = [];
     this.event = mouseEvent;
@@ -450,7 +448,7 @@ export class ContextMenu extends SubMenu {
   async show(): Promise<void> {
     ContextMenu.pendingMenu = this;
     this.event.consume(true);
-    const loadedProviders: Provider[][] = await Promise.all(this.pendingPromises);
+    const loadedProviders = await Promise.all(this.pendingPromises);
 
     // After loading all providers, the contextmenu might be hidden again, so bail out.
     if (ContextMenu.pendingMenu !== this) {
@@ -618,7 +616,7 @@ export class ContextMenu extends SubMenu {
     return this.pendingTargets.indexOf(target) >= 0;
   }
 
-  appendApplicableItems(target: Object): void {
+  appendApplicableItems(target: unknown): void {
     this.pendingPromises.push(loadApplicableRegisteredProviders(target));
     this.pendingTargets.push(target);
   }
@@ -637,37 +635,32 @@ export class ContextMenu extends SubMenu {
       ['header', 'new', 'reveal', 'edit', 'clipboard', 'debug', 'view', 'default', 'override', 'save', 'footer'];
 }
 
-export interface Provider {
-  appendApplicableItems(event: Event, contextMenu: ContextMenu, target: Object): void;
+export interface Provider<T> {
+  appendApplicableItems(event: Event, contextMenu: ContextMenu, target: T): void;
 }
 
-const registeredProviders: ProviderRegistration[] = [];
+const registeredProviders: ProviderRegistration<unknown>[] = [];
 
-export function registerProvider(registration: ProviderRegistration): void {
+export function registerProvider<T>(registration: ProviderRegistration<T>): void {
   registeredProviders.push(registration);
 }
 
-async function loadApplicableRegisteredProviders(target: Object): Promise<Provider[]> {
-  return Promise.all(
-      registeredProviders.filter(isProviderApplicableToContextTypes).map(registration => registration.loadProvider()));
-
-  function isProviderApplicableToContextTypes(providerRegistration: ProviderRegistration): boolean {
+async function loadApplicableRegisteredProviders(target: unknown): Promise<Array<Provider<unknown>>> {
+  const providers: Array<Provider<unknown>> = [];
+  for (const providerRegistration of registeredProviders) {
     if (!Root.Runtime.Runtime.isDescriptorEnabled(
             {experiment: providerRegistration.experiment, condition: undefined})) {
-      return false;
+      continue;
     }
-    if (!providerRegistration.contextTypes) {
-      return true;
-    }
-    for (const contextType of providerRegistration.contextTypes()) {
-      // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-      // @ts-expect-error
-      if (target instanceof contextType) {
-        return true;
+    if (providerRegistration.contextTypes) {
+      for (const contextType of providerRegistration.contextTypes()) {
+        if (target instanceof contextType) {
+          providers.push(await providerRegistration.loadProvider());
+        }
       }
     }
-    return false;
   }
+  return providers;
 }
 
 const registeredItemsProviders: ContextMenuItemRegistration[] = [];
@@ -703,9 +696,10 @@ export enum ItemLocation {
   TIMELINE_MENU_OPEN = 'timelineMenu/open',
 }
 
-export interface ProviderRegistration {
-  contextTypes: () => unknown[];
-  loadProvider: () => Promise<Provider>;
+export interface ProviderRegistration<T> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  contextTypes: () => Array<abstract new(...any: any) => T>;
+  loadProvider: () => Promise<Provider<T>>;
   experiment?: Root.Runtime.ExperimentName;
 }
 

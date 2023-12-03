@@ -301,29 +301,17 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
   }
 }
 
-let openLinearMemoryInspectorInstance: OpenLinearMemoryInspector;
-
-export class OpenLinearMemoryInspector extends UI.Widget.VBox implements UI.ContextMenu.Provider {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): OpenLinearMemoryInspector {
-    const {forceNew} = opts;
-    if (!openLinearMemoryInspectorInstance || forceNew) {
-      openLinearMemoryInspectorInstance = new OpenLinearMemoryInspector();
-    }
-
-    return openLinearMemoryInspectorInstance;
-  }
-
-  appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
-    if (target instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement) {
-      if (target.property && target.property.value &&
-          LinearMemoryInspector.LinearMemoryInspectorController.isMemoryObjectProperty(target.property.value)) {
-        const expression = target.path();
-        contextMenu.debugSection().appendItem(
-            i18nString(UIStrings.revealInMemoryInspectorPanel),
-            this.openMemoryInspector.bind(this, expression, target.property.value));
-      }
+export class OpenLinearMemoryInspector extends UI.Widget.VBox implements
+    UI.ContextMenu.Provider<ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement> {
+  appendApplicableItems(
+      event: Event, contextMenu: UI.ContextMenu.ContextMenu,
+      target: ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement): void {
+    if (target.property && target.property.value &&
+        LinearMemoryInspector.LinearMemoryInspectorController.isMemoryObjectProperty(target.property.value)) {
+      const expression = target.path();
+      contextMenu.debugSection().appendItem(
+          i18nString(UIStrings.revealInMemoryInspectorPanel),
+          this.openMemoryInspector.bind(this, expression, target.property.value));
     }
   }
 

@@ -112,7 +112,7 @@ UI.ContextMenu.registerProvider({
   },
   async loadProvider() {
     const Persistence = await loadPersistenceModule();
-    return Persistence.PersistenceActions.ContextMenuProvider.instance();
+    return new Persistence.PersistenceActions.ContextMenuProvider();
   },
   experiment: undefined,
 });

@@ -835,21 +835,9 @@ export namespace LinkDecorator {
   };
 }
 
-let linkContextMenuProviderInstance: LinkContextMenuProvider;
-
-export class LinkContextMenuProvider implements UI.ContextMenu.Provider {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): LinkContextMenuProvider {
-    const {forceNew} = opts;
-    if (!linkContextMenuProviderInstance || forceNew) {
-      linkContextMenuProviderInstance = new LinkContextMenuProvider();
-    }
-
-    return linkContextMenuProviderInstance;
-  }
-  appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
-    let targetNode: (Node|null) = (target as Node | null);
+export class LinkContextMenuProvider implements UI.ContextMenu.Provider<Node> {
+  appendApplicableItems(_event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Node): void {
+    let targetNode: Node|null = target;
     while (targetNode && !infoByAnchor.get(targetNode)) {
       targetNode = targetNode.parentNodeOrShadowHost();
     }
@@ -936,22 +924,13 @@ function listenForNewComponentLinkifierEvents(): void {
 
 listenForNewComponentLinkifierEvents();
 
-let contentProviderContextMenuProviderInstance: ContentProviderContextMenuProvider;
-
-export class ContentProviderContextMenuProvider implements UI.ContextMenu.Provider {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ContentProviderContextMenuProvider {
-    const {forceNew} = opts;
-    if (!contentProviderContextMenuProviderInstance || forceNew) {
-      contentProviderContextMenuProviderInstance = new ContentProviderContextMenuProvider();
-    }
-
-    return contentProviderContextMenuProviderInstance;
-  }
-
-  appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
-    const contentProvider = (target as Workspace.UISourceCode.UISourceCode);
+export class ContentProviderContextMenuProvider implements
+    UI.ContextMenu
+        .Provider<Workspace.UISourceCode.UISourceCode|SDK.Resource.Resource|SDK.NetworkRequest.NetworkRequest> {
+  appendApplicableItems(
+      _event: Event, contextMenu: UI.ContextMenu.ContextMenu,
+      contentProvider: Workspace.UISourceCode.UISourceCode|SDK.Resource.Resource|
+      SDK.NetworkRequest.NetworkRequest): void {
     const contentUrl = contentProvider.contentURL();
     if (!contentUrl) {
       return;
@@ -981,9 +960,16 @@ export class ContentProviderContextMenuProvider implements UI.ContextMenu.Provid
         UI.UIUtils.copyLinkAddressLabel(),
         () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentUrl));
 
-    contextMenu.clipboardSection().appendItem(
-        UI.UIUtils.copyFileNameLabel(),
-        () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentProvider.displayName()));
+    // TODO(bmeurer): `displayName` should be an accessor/data property consistently.
+    if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
+      contextMenu.clipboardSection().appendItem(
+          UI.UIUtils.copyFileNameLabel(),
+          () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentProvider.displayName()));
+    } else {
+      contextMenu.clipboardSection().appendItem(
+          UI.UIUtils.copyFileNameLabel(),
+          () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentProvider.displayName));
+    }
   }
 }
 

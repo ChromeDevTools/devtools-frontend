@@ -386,7 +386,7 @@ describeWithEnvironment('ContentProviderContextMenuProvider', async () => {
   });
 
   it('does not add \'Open in new tab\'-entry for file URLs', async () => {
-    const provider = Components.Linkifier.ContentProviderContextMenuProvider.instance();
+    const provider = new Components.Linkifier.ContentProviderContextMenuProvider();
 
     let contextMenu = new UI.ContextMenu.ContextMenu({} as Event);
     let uiSourceCode = {

@@ -90,7 +90,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let watchExpressionsSidebarPaneInstance: WatchExpressionsSidebarPane;
 
 export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWidget implements
-    UI.ActionRegistration.ActionDelegate, UI.Toolbar.ItemsProvider, UI.ContextMenu.Provider {
+    UI.ActionRegistration.ActionDelegate, UI.Toolbar.ItemsProvider,
+    UI.ContextMenu.Provider<ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement|UISourceCodeFrame> {
   private watchExpressions: WatchExpression[];
   private emptyElement!: HTMLElement;
   private readonly watchExpressionsSetting: Common.Settings.Setting<string[]>;
@@ -278,19 +279,24 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     return true;
   }
 
-  appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, target: Object): void {
-    if (target instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement && !target.property.synthetic) {
-      contextMenu.debugSection().appendItem(
-          i18nString(UIStrings.addPropertyPathToWatch), () => this.focusAndAddExpressionToWatch(target.path()));
+  appendApplicableItems(
+      _event: Event, contextMenu: UI.ContextMenu.ContextMenu,
+      target: ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement|UISourceCodeFrame): void {
+    if (target instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement) {
+      if (!target.property.synthetic) {
+        contextMenu.debugSection().appendItem(
+            i18nString(UIStrings.addPropertyPathToWatch), () => this.focusAndAddExpressionToWatch(target.path()));
+      }
+      return;
     }
 
-    const frame = UI.Context.Context.instance().flavor(UISourceCodeFrame);
-    if (!frame || frame.textEditor.state.selection.main.empty) {
+    if (target.textEditor.state.selection.main.empty) {
       return;
     }
 
     contextMenu.debugSection().appendAction('sources.add-to-watch');
   }
+
   override wasShown(): void {
     super.wasShown();
     this.treeOutline.registerCSSFiles([watchExpressionsSidebarPaneStyles]);

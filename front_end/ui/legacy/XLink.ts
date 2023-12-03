@@ -122,22 +122,9 @@ export class XLink extends XElement {
   }
 }
 
-let contextMenuProviderInstance: ContextMenuProvider;
-
-export class ContextMenuProvider implements Provider {
-  static instance(opts: {
-    forceNew: boolean|null,
-  } = {forceNew: null}): ContextMenuProvider {
-    const {forceNew} = opts;
-    if (!contextMenuProviderInstance || forceNew) {
-      contextMenuProviderInstance = new ContextMenuProvider();
-    }
-
-    return contextMenuProviderInstance;
-  }
-
-  appendApplicableItems(event: Event, contextMenu: ContextMenu, target: Object): void {
-    let targetNode: (Node|null) = (target as Node | null);
+export class ContextMenuProvider implements Provider<Node> {
+  appendApplicableItems(_event: Event, contextMenu: ContextMenu, target: Node): void {
+    let targetNode: Node|null = target;
     while (targetNode && !(targetNode instanceof XLink)) {
       targetNode = targetNode.parentNodeOrShadowHost();
     }

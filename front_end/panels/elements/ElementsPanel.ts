@@ -1249,28 +1249,22 @@ const TrackedCSSProperties = [
   },
 ];
 
-let contextMenuProviderInstance: ContextMenuProvider;
-
-export class ContextMenuProvider implements UI.ContextMenu.Provider {
-  appendApplicableItems(event: Event, contextMenu: UI.ContextMenu.ContextMenu, object: Object): void {
-    if (!(object instanceof SDK.RemoteObject.RemoteObject && (object as SDK.RemoteObject.RemoteObject).isNode()) &&
-        !(object instanceof SDK.DOMModel.DOMNode) && !(object instanceof SDK.DOMModel.DeferredDOMNode)) {
+export class ContextMenuProvider implements
+    UI.ContextMenu.Provider<SDK.RemoteObject.RemoteObject|SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode> {
+  appendApplicableItems(
+      event: Event, contextMenu: UI.ContextMenu.ContextMenu,
+      object: SDK.RemoteObject.RemoteObject|SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode): void {
+    if (object instanceof SDK.RemoteObject.RemoteObject && !object.isNode()) {
       return;
     }
-    if (ElementsPanel.instance().element.isAncestor((event.target as Node))) {
+    if (ElementsPanel.instance().element.isAncestor(event.target as (Node | null))) {
       return;
     }
     contextMenu.revealSection().appendItem(
         i18nString(UIStrings.revealInElementsPanel), () => Common.Revealer.reveal(object));
   }
-
-  static instance(): ContextMenuProvider {
-    if (!contextMenuProviderInstance) {
-      contextMenuProviderInstance = new ContextMenuProvider();
-    }
-    return contextMenuProviderInstance;
-  }
 }
+
 export class DOMNodeRevealer implements
     Common.Revealer.Revealer<SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode|SDK.RemoteObject.RemoteObject> {
   reveal(node: SDK.DOMModel.DOMNode|SDK.DOMModel.DeferredDOMNode|SDK.RemoteObject.RemoteObject, omitFocus?: boolean):

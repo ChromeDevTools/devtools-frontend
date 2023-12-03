@@ -1762,26 +1762,16 @@ UI.ContextMenu.registerProvider({
   contextTypes() {
     return [
       ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement,
+      ...maybeRetrieveContextTypes(Sources => [Sources.UISourceCodeFrame.UISourceCodeFrame]),
     ];
   },
   experiment: undefined,
 });
 
 UI.ContextMenu.registerProvider({
-  contextTypes() {
-    return maybeRetrieveContextTypes(Sources => [Sources.UISourceCodeFrame.UISourceCodeFrame]);
-  },
   async loadProvider() {
     const Sources = await loadSourcesModule();
-    return Sources.WatchExpressionsSidebarPane.WatchExpressionsSidebarPane.instance();
-  },
-  experiment: undefined,
-});
-
-UI.ContextMenu.registerProvider({
-  async loadProvider() {
-    const Sources = await loadSourcesModule();
-    return Sources.ScopeChainSidebarPane.OpenLinearMemoryInspector.instance();
+    return new Sources.ScopeChainSidebarPane.OpenLinearMemoryInspector();
   },
   experiment: undefined,
   contextTypes() {

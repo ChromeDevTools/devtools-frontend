@@ -39,6 +39,6 @@ UI.ViewManager.registerViewExtension({
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   async loadView() {
     const LinearMemoryInspector = await loadLinearMemoryInspectorModule();
-    return LinearMemoryInspector.LinearMemoryInspectorPane.Wrapper.instance();
+    return LinearMemoryInspector.LinearMemoryInspectorPane.LinearMemoryInspectorPane.instance();
   },
 });

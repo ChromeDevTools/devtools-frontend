@@ -7,19 +7,18 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
+import * as Bindings from '../../../models/bindings/bindings.js';
 import * as UI from '../../legacy/legacy.js';
 
 import {type Settings} from './LinearMemoryInspector.js';
-import {Events as LmiEvents, LinearMemoryInspectorPaneImpl} from './LinearMemoryInspectorPane.js';
-
+import {Events as LmiEvents, LinearMemoryInspectorPane} from './LinearMemoryInspectorPane.js';
+import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
 import {
   Endianness,
   getDefaultValueTypeMapping,
   type ValueType,
   type ValueTypeMode,
 } from './ValueInterpreterDisplayUtils.js';
-import * as Bindings from '../../../models/bindings/bindings.js';
-import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
 
 const UIStrings = {
   /**
@@ -106,7 +105,7 @@ type SerializableSettings = {
 };
 
 export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelObserver<SDK.RuntimeModel.RuntimeModel> {
-  #paneInstance = LinearMemoryInspectorPaneImpl.instance();
+  #paneInstance = LinearMemoryInspectorPane.instance();
   #bufferIdToRemoteObject: Map<string, SDK.RemoteObject.RemoteObject> = new Map();
   #bufferIdToHighlightInfo: Map<string, HighlightInfo> = new Map();
   #settings: Common.Settings.Setting<SerializableSettings>;

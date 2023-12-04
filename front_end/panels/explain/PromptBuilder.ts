@@ -5,6 +5,7 @@
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as Formatter from '../../models/formatter/formatter.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import type * as Console from '../console/console.js';
@@ -90,6 +91,15 @@ export class PromptBuilder {
             rawLocation);
     const content = await mappedLocation?.uiSourceCode.requestContent();
     const text = !content?.isEncoded && content?.content ? content.content : '';
+    const firstNewline = text.indexOf('\n');
+    if (text.length > MAX_CODE_SIZE && (firstNewline < 0 || firstNewline > MAX_CODE_SIZE)) {
+      // Use formatter
+      const {formattedContent, formattedMapping} = await Formatter.ScriptFormatter.formatScriptContent(
+          mappedLocation?.uiSourceCode.mimeType() ?? 'text/javascript', text);
+      const [lineNumber, columnNumber] =
+          formattedMapping.originalToFormatted(mappedLocation?.lineNumber ?? 0, mappedLocation?.columnNumber ?? 0);
+      return {text: formattedContent, columnNumber, lineNumber};
+    }
     return {text, columnNumber: mappedLocation?.columnNumber ?? 0, lineNumber: mappedLocation?.lineNumber ?? 0};
   }
 
@@ -317,34 +327,71 @@ export function allowHeader(header: SDK.NetworkRequest.NameValue): boolean {
   return true;
 }
 
+export function lineWhitespace(line: string): string|null {
+  const matches = /^\s*/.exec(line);
+  if (!matches || !matches.length) {
+    // This should not happen
+    return null;
+  }
+  const whitespace = matches[0];
+  if (whitespace === line) {
+    return null;
+  }
+  return whitespace;
+}
+
 export function formatRelatedCode(
     {text, columnNumber, lineNumber}: {text: string, columnNumber: number, lineNumber: number},
     maxCodeSize = MAX_CODE_SIZE): string {
-  const relatedCode: string[] = [];
-  let relatedCodeSize = 0;
   const lines = text.split('\n');
-  let currentLineNumber = lineNumber;
-  if (lines[currentLineNumber].length >= maxCodeSize / 2) {
+  if (lines[lineNumber].length >= maxCodeSize / 2) {
     const start = Math.max(columnNumber - maxCodeSize / 2, 0);
-    const end = Math.min(columnNumber + maxCodeSize / 2, lines[currentLineNumber].length);
-    relatedCode.push(lines[currentLineNumber].substring(start, end));
-    relatedCodeSize += end - start;
-  } else {
-    while (lines[currentLineNumber] !== undefined &&
-           (relatedCodeSize + lines[currentLineNumber].length <= maxCodeSize / 2)) {
-      relatedCode.push(lines[currentLineNumber]);
-      relatedCodeSize += lines[currentLineNumber].length;
-      currentLineNumber--;
-    }
+    const end = Math.min(columnNumber + maxCodeSize / 2, lines[lineNumber].length);
+    return lines[lineNumber].substring(start, end);
   }
-  relatedCode.reverse();
+  let relatedCodeSize = 0;
+  let currentLineNumber = lineNumber;
+  let currentWhitespace = lineWhitespace(lines[lineNumber]);
+  const startByPrefix: Map<string, number> = new Map();
+  while (lines[currentLineNumber] !== undefined &&
+         (relatedCodeSize + lines[currentLineNumber].length <= maxCodeSize / 2)) {
+    const whitespace = lineWhitespace(lines[currentLineNumber]);
+    if (whitespace !== null && currentWhitespace !== null &&
+        (whitespace === currentWhitespace || !whitespace.startsWith(currentWhitespace))) {
+      // Don't start on a line that begins with a closing character
+      if (!/^\s*[\}\)\]]/.exec(lines[currentLineNumber])) {
+        // Update map of where code should start based on its indentation
+        startByPrefix.set(whitespace, currentLineNumber);
+      }
+      currentWhitespace = whitespace;
+    }
+    relatedCodeSize += lines[currentLineNumber].length + 1;
+    currentLineNumber--;
+  }
   currentLineNumber = lineNumber + 1;
+  let startLine = lineNumber;
+  let endLine = lineNumber;
+  currentWhitespace = lineWhitespace(lines[lineNumber]);
   while (lines[currentLineNumber] !== undefined && (relatedCodeSize + lines[currentLineNumber].length <= maxCodeSize)) {
-    relatedCode.push(lines[currentLineNumber]);
     relatedCodeSize += lines[currentLineNumber].length;
+    const whitespace = lineWhitespace(lines[currentLineNumber]);
+    if (whitespace !== null && currentWhitespace !== null &&
+        (whitespace === currentWhitespace || !whitespace.startsWith(currentWhitespace))) {
+      // We shouldn't end on a line if it is followed by an indented line
+      const nextLine = lines[currentLineNumber + 1];
+      const nextWhitespace = nextLine ? lineWhitespace(nextLine) : null;
+      if (!nextWhitespace || nextWhitespace === whitespace || !nextWhitespace.startsWith(whitespace)) {
+        // Look up where code should start based on its indentation
+        if (startByPrefix.has(whitespace)) {
+          startLine = startByPrefix.get(whitespace) ?? 0;
+          endLine = currentLineNumber;
+        }
+      }
+      currentWhitespace = whitespace;
+    }
     currentLineNumber++;
   }
-  return relatedCode.join('\n');
+  return lines.slice(startLine, endLine + 1).join('\n');
 }
 
 export function formatNetworkRequest(

@@ -130,9 +130,77 @@ Response status: 404 Not found`);
                 columnNumber: 1,
                 lineNumber: 1,
               },
-              /* maxLength=*/ 12),
+              /* maxLength=*/ 16),
           '123\n456\n789\n123');
     });
+
+    it('uses indentation to select blocks or functions', () => {
+      // Somewhat realistic code
+      const text = `import something;
+import anotherthing;
+
+const x = 1;
+function f1() {
+  // a
+
+  // b
+}
+
+function bigger() {
+  // x
+  if (true) {
+    // y
+
+    // zzzzzz
+  }
+
+  let y = x + 2;
+
+  if (false) {
+    // a
+
+    f1();
+    if (x == x) {
+      // z
+    }
+  }
+}
+
+export const y = "";
+`;
+      assert.strictEqual(
+          Explain.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 233),
+          '  // x\n  if (true) {\n    // y\n\n    // zzzzzz\n  }\n\n  let y = x + 2;\n\n  if (false) {\n    // a\n\n    f1();\n    if (x == x) {\n      // z\n    }\n  }',
+      );
+      assert.strictEqual(
+          Explain.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 232),
+          '  // x\n  if (true) {\n    // y\n\n    // zzzzzz\n  }\n\n  let y = x + 2;',
+      );
+      assert.strictEqual(
+          Explain.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 600),
+          text.trim(),
+      );
+      assert.strictEqual(
+          Explain.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 50),
+          '  // x\n  if (true) {\n    // y\n\n    // zzzzzz\n  }',
+      );
+      assert.strictEqual(
+          Explain.formatRelatedCode({text, columnNumber: 4, lineNumber: 11}, /* maxLength=*/ 40),
+          '  // x',
+      );
+      assert.strictEqual(
+          Explain.formatRelatedCode({text, columnNumber: 4, lineNumber: 18}, /* maxLength=*/ 50),
+          '  let y = x + 2;',
+      );
+    });
+  });
+
+  it('Extracts expected whitespace from beginnings of lines', () => {
+    assert.strictEqual(Explain.lineWhitespace(' a'), ' ');
+    assert.strictEqual(Explain.lineWhitespace('a'), '');
+    assert.strictEqual(Explain.lineWhitespace(' '), null);
+    assert.strictEqual(Explain.lineWhitespace(''), null);
+    assert.strictEqual(Explain.lineWhitespace('\t\ta'), '\t\t');
   });
 
   describeWithMockConnection('buildPrompt', () => {
@@ -350,14 +418,14 @@ bc @ react-dom.production.min.js:73`;
         ERROR_MESSAGE,
         RELATED_CODE_HEADER,
         '```',
-        RELATED_CODE,
+        RELATED_CODE.trim(),
         '```',
         EXPLANATION_HEADER,
         '',
       ].join('\n'));
 
       assert.deepStrictEqual(
-          sources, [{type: 'message', value: ERROR_MESSAGE}, {type: 'relatedCode', value: RELATED_CODE}]);
+          sources, [{type: 'message', value: ERROR_MESSAGE}, {type: 'relatedCode', value: RELATED_CODE.trim()}]);
 
       Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
       Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
@@ -429,7 +497,7 @@ bc @ react-dom.production.min.js:73`;
         STACK_TRACE,
         RELATED_CODE_HEADER,
         '```',
-        RELATED_CODE,
+        RELATED_CODE.trim(),
         '```',
         EXPLANATION_HEADER,
         '',
@@ -438,7 +506,7 @@ bc @ react-dom.production.min.js:73`;
       assert.deepStrictEqual(sources, [
         {type: 'message', value: ERROR_MESSAGE},
         {type: 'stacktrace', value: STACK_TRACE},
-        {type: 'relatedCode', value: RELATED_CODE},
+        {type: 'relatedCode', value: RELATED_CODE.trim()},
       ]);
 
       Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
